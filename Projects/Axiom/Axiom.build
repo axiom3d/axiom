@@ -186,7 +186,7 @@
 		<mkdir dir="${axiom.build.dir}" />
 	</target>
 
-	<target name="build.axiom" depends="build.axiom.setup" description="Builds the Axiom3D engine for the current build configuration">
+	<target name="build.axiom" depends="build.axiom.setup" description="Builds the Axiom engine for the current build configuration">
 		<!-- Call required targets in order -->
 		<!-- 
 			Call targets building Windows-specific assemblies only on 

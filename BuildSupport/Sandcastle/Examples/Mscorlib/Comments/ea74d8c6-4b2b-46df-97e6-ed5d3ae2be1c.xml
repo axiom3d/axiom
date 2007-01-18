@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="ea74d8c6-4b2b-46df-97e6-ed5d3ae2be1c" revisionNumber="3">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.Predicate`1">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents the method that defines a set of criteria and determines whether the specified object meets those criteria.</para>
+        </summary>
+        <genericParameters>
+          <genericParameter>
+            <parameterReference>T</parameterReference>
+            <content>
+              <para>The type of the object to compare.</para>
+            </content>
+          </genericParameter>
+        </genericParameters>
+        <parameters>
+          <parameter>
+            <parameterReference>obj</parameterReference>
+            <content>
+              <para>The object to compare against the criteria defined within the method represented by this delegate.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>obj</parameterReference> meets the criteria defined within the method represented by this delegate; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This delegate is used by several methods of the <codeEntityReference autoUpgrade="true">T:System.Array</codeEntityReference> and <codeEntityReference autoUpgrade="true">T:System.Collections.Generic.List`1</codeEntityReference> classes to search for elements in the collection.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example uses a <codeEntityReference autoUpgrade="true">T:System.Predicate`1</codeEntityReference> delegate with the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Array.Find``1(``0[],System.Predicate{``0})</codeEntityReference> method to search an array of <codeEntityReference autoUpgrade="true">T:System.Drawing.Point</codeEntityReference> structures. The method the delegate represents, <codeInline>ProductGT10</codeInline>, returns <languageKeyword>true</languageKeyword> if the product of the X and Y fields is greater than 100,000. The <codeEntityReference autoUpgrade="true">M:System.Array.Find``1(``0[],System.Predicate{``0})</codeEntityReference> method calls the delegate for each element of the array, stopping at the first point that meets the test condition. </para>
+                <alert class="note">
+                  <para>Visual Basic and C# users do not need to create the delegate explicitly, or to specify the type argument of the generic method. The compilers determine the necessary types from the method arguments you supply.</para>
+                </alert>
+                <codeReference>System.Predicate`1#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Array.Find``1(``0[],System.Predicate{``0})</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

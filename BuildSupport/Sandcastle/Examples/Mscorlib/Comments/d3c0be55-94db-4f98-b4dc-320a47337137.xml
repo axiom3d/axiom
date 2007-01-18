@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="d3c0be55-94db-4f98-b4dc-320a47337137" revisionNumber="3">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.InvalidOperationException">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The exception that is thrown when a method call is invalid for the object's current state.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference> is used in cases when the failure to invoke a method is caused by reasons other than invalid arguments. For example, <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference> is thrown by: </para>
+            <list class="bullet">
+              <listItem>
+                <para>
+                  <codeEntityReference autoUpgrade="true">M:System.Collections.IEnumerator.MoveNext</codeEntityReference> if objects of a collection are modified after the enumerator is created.</para>
+              </listItem>
+              <listItem>
+                <para>
+                  <codeEntityReference autoUpgrade="true">M:System.Resources.ResourceSet.GetString(System.String)</codeEntityReference> if the resource set is closed before the method call is made.</para>
+              </listItem>
+            </list>
+            <para>If the method invocation failure is due to invalid arguments, then <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference> or one of its derived classes, <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference> or <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>, should be thrown instead.</para>
+            <list class="bullet">
+              <listItem>
+                <para>The <codeEntityReference autoUpgrade="true">F:System.Reflection.Emit.OpCodes.Ldflda</codeEntityReference> Microsoft intermediate language (MSIL) instruction throws <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>.</para>
+              </listItem>
+            </list>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference> uses the HRESULT COR_E_INVALIDOPERATION, which has the value 0x80131509.</para>
+            <para>For a list of initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>, see the <codeEntityReference autoUpgrade="true">M:System.InvalidOperationException.#ctor</codeEntityReference> constructors.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Exception</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Collections.IEnumerator</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Resources.ResourceSet</codeEntityReference>
+          <link xlink:href="F99A1D29-A2A8-47AF-9707-9909F9010735">[&lt;topic://cpconHandlingThrowingExceptions&gt;]</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.InvalidOperationException.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference> class.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>This constructor initializes the <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference> property of the new instance to a system-supplied message that describes the error, such as "The requested operation cannot be performed." This message takes into account the current system culture.</para>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>A null reference (<languageKeyword>Nothing</languageKeyword> in Visual Basic). </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The localized error message string. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+      <overload>
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference> class.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.InvalidOperationException.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference> class.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.InvalidOperationException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference> class with serialized data.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>info</parameterReference>
+            <content>
+              <para>The object that holds the serialized object data. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>context</parameterReference>
+            <content>
+              <para>The contextual information about the source or destination. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>This constructor is called during deserialization to reconstitute the exception object transmitted over a stream. For more information, see <link xlink:href="832AC524-21BC-419A-A27B-CA8BFC45840F">[&lt;topic://cpconSerialization&gt;]</link>.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <link xlink:href="832AC524-21BC-419A-A27B-CA8BFC45840F">[&lt;topic://cpconSerialization&gt;]</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.InvalidOperationException.#ctor(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference> class with a specified error message.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>message</parameterReference>
+            <content>
+              <para>The message that describes the error. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>This constructor initializes the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.Exception.Message</codeEntityReference> property of the new exception using the <parameterReference>message</parameterReference> parameter. The content of <parameterReference>message</parameterReference> is intended to be understood by humans. The caller of this constructor is required to ensure that this string has been localized for the current system culture.</para>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>A null reference (<languageKeyword>Nothing</languageKeyword> in Visual Basic). </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The error message string. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.InvalidOperationException.#ctor(System.String,System.Exception)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference> class with a specified error message and a reference to the inner exception that is the cause of this exception.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>message</parameterReference>
+            <content>
+              <para>The error message that explains the reason for the exception. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>innerException</parameterReference>
+            <content>
+              <para>The exception that is the cause of the current exception. If the <parameterReference>innerException</parameterReference> parameter is not a null reference (<languageKeyword>Nothing</languageKeyword> in Visual Basic), the current exception is raised in a <languageKeyword>catch</languageKeyword> block that handles the inner exception. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>An exception that is thrown as a direct result of a previous exception should include a reference to the previous exception in the <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property. The <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property returns the same value that is passed into the constructor, or a null reference (<languageKeyword>Nothing</languageKeyword> in Visual Basic) if the <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property does not supply the inner exception value to the constructor.</para>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The inner exception reference. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The error message string. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Exception</codeEntityReference>
+          <link xlink:href="F99A1D29-A2A8-47AF-9707-9909F9010735">[&lt;topic://cpconHandlingThrowingExceptions&gt;]</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

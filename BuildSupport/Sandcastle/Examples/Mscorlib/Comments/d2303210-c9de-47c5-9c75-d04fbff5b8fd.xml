@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="d2303210-c9de-47c5-9c75-d04fbff5b8fd" revisionNumber="3">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.IAsyncResult">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents the status of an asynchronous operation. </para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.IAsyncResult</codeEntityReference> interface is implemented by classes containing methods that can operate asynchronously. It is the return type of methods that initiate an asynchronous operation, such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.IO.FileStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)</codeEntityReference>, and is the type of the third parameter of methods that conclude an asynchronous operation, such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.IO.FileStream.EndRead(System.IAsyncResult)</codeEntityReference>. <codeEntityReference autoUpgrade="true">T:System.IAsyncResult</codeEntityReference> objects are also passed to methods invoked by <codeEntityReference autoUpgrade="true">T:System.AsyncCallback</codeEntityReference> delegates when an asynchronous operation completes.</para>
+            <para>An object that supports the <codeEntityReference autoUpgrade="true">T:System.IAsyncResult</codeEntityReference> interface stores state information for an asynchronous operation, and provides a synchronization object to allow threads to be signaled when the operation completes.</para>
+            <para>For a detailed description of how the <codeEntityReference autoUpgrade="true">T:System.IAsyncResult</codeEntityReference> interface is used, see the <link xlink:href="41972034-92ED-450A-9664-AB93FCC6F1FB">Asynchronous Programming Overview</link> topic.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following sample demonstrates using an <codeEntityReference autoUpgrade="true">T:System.IAsyncResult</codeEntityReference> to obtain the return value of an asynchronous operation.</para>
+                <codeReference>AsyncResult.NewExamples#4</codeReference>
+                <para>The following sample demonstrates waiting for an asynchronous operation to complete.</para>
+                <codeReference>AsyncResult.ClassRemarks#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.IAsyncResult.AsyncState">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a user-defined object that qualifies or contains information about an asynchronous operation.</para>
+        </summary>
+        <returnValue>
+          <para>A user-defined object that qualifies or contains information about an asynchronous operation.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This property returns the object that is the last parameter of the method that initiates an asynchronous operation.</para>
+          </content>
+        </remarks>
+        <notesForImplementers>
+          <para>Implement this property to allow the caller of an asynchronous operation to obtain an application-defined object specified at the start of the operation.</para>
+        </notesForImplementers>
+        <notesForCallers>
+          <para>This object can be used to pass state information for the asynchronous operation to an <codeEntityReference autoUpgrade="true">T:System.AsyncCallback</codeEntityReference> that you provide.</para>
+        </notesForCallers>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.AsyncCallback</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="P:System.IAsyncResult.AsyncWaitHandle">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a <codeEntityReference autoUpgrade="true">T:System.Threading.WaitHandle</codeEntityReference> that is used to wait for an asynchronous operation to complete.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.Threading.WaitHandle</codeEntityReference> that is used to wait for an asynchronous operation to complete.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The return value allows the client to wait for an asynchronous operation to complete instead of polling <codeEntityReference autoUpgrade="true">P:System.IAsyncResult.IsCompleted</codeEntityReference> until the operation concludes. The return value can be used to perform a <codeEntityReference autoUpgrade="true">M:System.Threading.WaitHandle.WaitOne(System.Int32,System.Boolean)</codeEntityReference>, <codeEntityReference autoUpgrade="true">M:System.Threading.WaitHandle.WaitAny(System.Threading.WaitHandle[],System.Int32,System.Boolean)</codeEntityReference>, or <codeEntityReference autoUpgrade="true">M:System.Threading.WaitHandle.WaitAll(System.Threading.WaitHandle[],System.Int32,System.Boolean)</codeEntityReference> operation.</para>
+            <para>The common language runtime supplies a number of waitable objects, such as <codeEntityReference autoUpgrade="true">T:System.Threading.ManualResetEvent</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.Threading.AutoResetEvent</codeEntityReference>, and <codeEntityReference autoUpgrade="true">T:System.Threading.Mutex</codeEntityReference>, all of which mirror Win32 synchronization primitives.</para>
+          </content>
+        </remarks>
+        <notesForImplementers>
+          <para>The object that implements <codeEntityReference autoUpgrade="true">T:System.IAsyncResult</codeEntityReference> does not need to create the <codeEntityReference autoUpgrade="true">T:System.Threading.WaitHandle</codeEntityReference> until the <codeEntityReference autoUpgrade="true">P:System.IAsyncResult.AsyncWaitHandle</codeEntityReference> property is read. It is the choice of the <codeEntityReference autoUpgrade="true">T:System.IAsyncResult</codeEntityReference> implementer. However, if the implementer creates <codeEntityReference autoUpgrade="true">P:System.IAsyncResult.AsyncWaitHandle</codeEntityReference>, it is the responsibility of the implementer to signal the <codeEntityReference autoUpgrade="true">T:System.Threading.WaitHandle</codeEntityReference> that will terminate the wait at the appropriate time. For example, <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Runtime.Remoting.Messaging.AsyncResult</codeEntityReference> terminates the wait on behalf of the caller when an asynchronously invoked method returns. Once created, <codeEntityReference autoUpgrade="true">P:System.IAsyncResult.AsyncWaitHandle</codeEntityReference> should be kept alive until the user calls the method that concludes the asynchronous operation. At that time the object behind <codeEntityReference autoUpgrade="true">P:System.IAsyncResult.AsyncWaitHandle</codeEntityReference> can be discarded.</para>
+        </notesForImplementers>
+        <notesForCallers>
+          <para>Clients that wait for the operation to complete (as opposed to polling) use this property to obtain a synchronization object to wait on.</para>
+        </notesForCallers>
+      </dduexml>
+    </member>
+    <member name="P:System.IAsyncResult.CompletedSynchronously">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets an indication of whether the asynchronous operation completed synchronously.</para>
+        </summary>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the asynchronous operation completed synchronously; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>If the synchronous completion of the call is detected in the <codeEntityReference autoUpgrade="true">T:System.AsyncCallback</codeEntityReference> delegate, it is probable that the thread that initiated the asynchronous operation is the current thread.</para>
+          </content>
+        </remarks>
+        <notesForImplementers>
+          <para>Most implementers of the <codeEntityReference autoUpgrade="true">T:System.IAsyncResult</codeEntityReference> interface will not use this property and should return <languageKeyword>false</languageKeyword>.</para>
+        </notesForImplementers>
+        <notesForCallers>
+          <para>Use this property to determine if the asynchronous operation completed synchronously. For example, this property can return <languageKeyword>true</languageKeyword> for an asynchronous I/O operation if the I/O request was small.</para>
+        </notesForCallers>
+      </dduexml>
+    </member>
+    <member name="P:System.IAsyncResult.IsCompleted">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets an indication whether the asynchronous operation has completed.</para>
+        </summary>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the operation is complete; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>You can assume it is safe to discard any resources you allocate for use by the asynchronous operation when this property is true.</para>
+          </content>
+        </remarks>
+        <notesForImplementers>
+          <para>Implementers will typically return the value of a private field or internal test as the value of this property.</para>
+        </notesForImplementers>
+        <notesForCallers>
+          <para>Clients that poll for operation status (as opposed to waiting on a synchronization object), use this property to determine the status of the operation.</para>
+        </notesForCallers>
+      </dduexml>
+    </member>
+  </members>
+</doc>

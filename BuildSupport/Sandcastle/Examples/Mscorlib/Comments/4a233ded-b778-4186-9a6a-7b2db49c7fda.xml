@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="4a233ded-b778-4186-9a6a-7b2db49c7fda" revisionNumber="1">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.ICloneable">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Supports cloning, which creates a new instance of a class with the same value as an existing instance.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.ICloneable</codeEntityReference> interface contains one member, <codeEntityReference autoUpgrade="true">M:System.ICloneable.Clone</codeEntityReference>, which is intended to support cloning beyond that supplied by <codeEntityReference autoUpgrade="true">M:System.Object.MemberwiseClone</codeEntityReference>.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.ICloneable.Clone">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates a new object that is a copy of the current instance.</para>
+        </summary>
+        <returnValue>
+          <para>A new object that is a copy of this instance.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>
+              <codeEntityReference autoUpgrade="true">M:System.ICloneable.Clone</codeEntityReference> can be implemented either as a deep copy or a shallow copy. In a deep copy, all objects are duplicated; whereas, in a shallow copy, only the top-level objects are duplicated and the lower levels contain references.</para>
+            <para>The resulting clone must be of the same type as or a compatible type to the original instance.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+  </members>
+</doc>

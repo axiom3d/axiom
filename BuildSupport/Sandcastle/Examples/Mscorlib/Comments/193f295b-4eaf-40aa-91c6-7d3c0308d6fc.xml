@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="193f295b-4eaf-40aa-91c6-7d3c0308d6fc" revisionNumber="9">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.ConsoleCancelEventArgs">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides data for the <codeEntityReference qualifyHint="true" autoUpgrade="true">E:System.Console.CancelKeyPress</codeEntityReference> event. This class cannot be inherited.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>A user can interrupt a console application process by simultaneously pressing the <codeEntityReference autoUpgrade="true">F:System.ConsoleModifiers.Control</codeEntityReference> modifier key and the <codeEntityReference autoUpgrade="true">F:System.ConsoleKey.C</codeEntityReference> console key (CTRL+C), or the <codeEntityReference autoUpgrade="true">F:System.ConsoleModifiers.Control</codeEntityReference> modifier key and the BREAK console key (CTRL+BREAK). The .NET Framework consequently provides a <codeEntityReference autoUpgrade="true">T:System.ConsoleCancelEventArgs</codeEntityReference> object to the event handler for the <codeEntityReference qualifyHint="true" autoUpgrade="true">E:System.Console.CancelKeyPress</codeEntityReference> event. </para>
+            <para>If CTRL+C was pressed and the <codeEntityReference autoUpgrade="true">P:System.ConsoleCancelEventArgs.Cancel</codeEntityReference> property is set to <languageKeyword>true</languageKeyword> in the event handler, the process is resumed; otherwise, the process is terminated. If CTRL+BREAK is pressed, the process is terminated if you set the <codeEntityReference autoUpgrade="true">P:System.ConsoleCancelEventArgs.Cancel</codeEntityReference> property to <languageKeyword>false</languageKeyword>, and an exception is thrown if you set the <codeEntityReference autoUpgrade="true">P:System.ConsoleCancelEventArgs.Cancel</codeEntityReference> property to <languageKeyword>true</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates how to use the <codeEntityReference autoUpgrade="true">T:System.ConsoleCancelEventArgs</codeEntityReference> class to handle an event.</para>
+                <codeReference>console.cancelkeypress#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.ConsoleCancelEventArgs.Cancel">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets a value indicating whether simultaneously pressing the <codeEntityReference autoUpgrade="true">F:System.ConsoleModifiers.Control</codeEntityReference> modifier key and <codeEntityReference autoUpgrade="true">F:System.ConsoleKey.C</codeEntityReference> console key (CTRL+C) terminates the current process.</para>
+        </summary>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the current process should resume when the event handler concludes; <languageKeyword>false</languageKeyword> if the current process should terminate.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>
+                <languageKeyword>true</languageKeyword> was specified in a set operation and the event was caused by simultaneously pressing the <codeEntityReference autoUpgrade="true">F:System.ConsoleModifiers.Control</codeEntityReference> modifier key and the BREAK console key (CTRL+BREAK).</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.ConsoleCancelEventArgs.Cancel</codeEntityReference> property is automatically initialized to <languageKeyword>false</languageKeyword> when the handler for the <codeEntityReference autoUpgrade="true">E:System.Console.CancelKeyPress</codeEntityReference> event is invoked. The value of the <codeEntityReference autoUpgrade="true">P:System.ConsoleCancelEventArgs.Cancel</codeEntityReference> property when the event handler finishes determines whether the current process resumes or terminates. </para>
+            <para>In a set operation after CTRL+C is pressed, specify <languageKeyword>true</languageKeyword> to indicate that the current process should resume when the event handler concludes, or <languageKeyword>false</languageKeyword> to indicate that the current process should terminate. </para>
+            <para>In a set operation after CTRL+BREAK is pressed, the current process terminates regardless of the setting of the <codeEntityReference autoUpgrade="true">P:System.ConsoleCancelEventArgs.Cancel</codeEntityReference> property. That is, you cannot prevent the current process from terminating if CTRL+BREAK is pressed. Furthermore, there is no effect if you set the <codeEntityReference autoUpgrade="true">P:System.ConsoleCancelEventArgs.Cancel</codeEntityReference> property to <languageKeyword>false</languageKeyword>, but an exception is thrown if you specify <languageKeyword>true</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates how to use the <codeEntityReference autoUpgrade="true">P:System.ConsoleCancelEventArgs.Cancel</codeEntityReference> property to handle an event.</para>
+                <codeReference>console.cancelkeypress#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.ConsoleCancelEventHandler</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.ConsoleKey</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.ConsoleModifiers</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">P:System.ConsoleCancelEventArgs.SpecialKey</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="P:System.ConsoleCancelEventArgs.SpecialKeys">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the combination of modifier and console keys that interrupted the current process.</para>
+        </summary>
+        <returnValue>
+          <para>One of the <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.ConsoleSpecialKey</codeEntityReference> values. There is no default value.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="P:System.ConsoleCancelEventArgs.SpecialKey">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the combination of modifier and console keys that interrupted the current process.</para>
+        </summary>
+        <returnValue>
+          <para>One of the <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.ConsoleSpecialKey</codeEntityReference> values. There is no default value.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates how to use the <codeEntityReference autoUpgrade="true">P:System.ConsoleCancelEventArgs.SpecialKey</codeEntityReference> property to handle an event.</para>
+                <codeReference>console.cancelkeypress#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,2345 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<reflection>
+  <assemblies>
+    <assembly name="System.Deployment" version="2.0.0.0" culture="" key="002400000480000094000000060200000024000052534131000400000100010007D1FA57C4AED9F0A32E84AA0FAEFD0DE9E8FD6AEC8F87FB03766C834C99921EB23BE79AD9D5DCC1DD9AD236132102900B723CF980957FC4E177108FC607774F29E8320E92EA05ECE4E821C0A5EFE8F1645C4C0C93C1AB99285D622CAA652C1DFAD63D745D6F2DE5F17E5EAF0FC4963D261C8A12436518206DC093344D5AD293" hash="SHA1">
+      <attributes>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDescriptionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.Deployment.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.AllowPartiallyTrustedCallersAttribute" ref="true" />
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDefaultAliasAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.Deployment.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyTitleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.Deployment.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.CLSCompliantAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Diagnostics.DebuggableAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Diagnostics.DebuggableAttribute.DebuggingModes" ref="false" />
+            <enumValue>
+              <field name="IgnoreSymbolStoreSequencePoints" />
+            </enumValue>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.CompilationRelaxationsAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>8</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.InternalsVisibleToAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>dfsvc, PublicKey=002400000480000094000000060200000024000052534131000400000100010007d1fa57c4aed9f0a32e84aa0faefd0de9e8fd6aec8f87fb03766c834c99921eb23be79ad9d5dcc1dd9ad236132102900b723cf980957fc4e177108fc607774f29e8320e92ea05ece4e821c0a5efe8f1645c4c0c93c1ab99285d622caa652c1dfad63d745d6f2de5f17e5eaf0fc4963d261c8a12436518206dc093344d5ad293</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute" ref="true" />
+          <assignment name="WrapNonExceptionThrows">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyKeyFileAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>f:\RTM\Tools\devdiv\FinalPublicKey.snk</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDelaySignAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.NeutralResourcesLanguageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>en-US</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.SatelliteContractVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.0.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyInformationalVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.50727.12</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyFileVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.50727.12</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCopyrightAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>c Microsoft Corporation.  All rights reserved.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyProductAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoftr .NET Framework</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCompanyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft Corporation</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.SecurityPermissionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="RequestMinimum" />
+            </enumValue>
+          </argument>
+          <assignment name="SkipVerification">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+    </assembly>
+  </assemblies>
+  <apis>
+    <api id="T:System.Deployment.Application.ApplicationDeployment">
+      <apidata name="ApplicationDeployment" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Deployment.Application.ApplicationDeployment.CheckForDetailedUpdate" />
+        <element api="M:System.Deployment.Application.ApplicationDeployment.CheckForUpdate" />
+        <element api="M:System.Deployment.Application.ApplicationDeployment.CheckForUpdateAsync" />
+        <element api="M:System.Deployment.Application.ApplicationDeployment.CheckForUpdateAsyncCancel" />
+        <element api="M:System.Deployment.Application.ApplicationDeployment.Update" />
+        <element api="M:System.Deployment.Application.ApplicationDeployment.UpdateAsync" />
+        <element api="M:System.Deployment.Application.ApplicationDeployment.UpdateAsyncCancel" />
+        <element api="M:System.Deployment.Application.ApplicationDeployment.DownloadFileGroup(System.String)" />
+        <element api="M:System.Deployment.Application.ApplicationDeployment.DownloadFileGroupAsync(System.String)" />
+        <element api="M:System.Deployment.Application.ApplicationDeployment.DownloadFileGroupAsync(System.String,System.Object)" />
+        <element api="M:System.Deployment.Application.ApplicationDeployment.IsFileGroupDownloaded(System.String)" />
+        <element api="M:System.Deployment.Application.ApplicationDeployment.DownloadFileGroupAsyncCancel(System.String)" />
+        <element api="P:System.Deployment.Application.ApplicationDeployment.CurrentDeployment" />
+        <element api="P:System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed" />
+        <element api="P:System.Deployment.Application.ApplicationDeployment.CurrentVersion" />
+        <element api="P:System.Deployment.Application.ApplicationDeployment.UpdatedVersion" />
+        <element api="P:System.Deployment.Application.ApplicationDeployment.UpdatedApplicationFullName" />
+        <element api="P:System.Deployment.Application.ApplicationDeployment.TimeOfLastUpdateCheck" />
+        <element api="P:System.Deployment.Application.ApplicationDeployment.UpdateLocation" />
+        <element api="P:System.Deployment.Application.ApplicationDeployment.ActivationUri" />
+        <element api="P:System.Deployment.Application.ApplicationDeployment.DataDirectory" />
+        <element api="P:System.Deployment.Application.ApplicationDeployment.IsFirstRun" />
+        <element api="E:System.Deployment.Application.ApplicationDeployment.CheckForUpdateProgressChanged" />
+        <element api="E:System.Deployment.Application.ApplicationDeployment.CheckForUpdateCompleted" />
+        <element api="E:System.Deployment.Application.ApplicationDeployment.UpdateProgressChanged" />
+        <element api="E:System.Deployment.Application.ApplicationDeployment.UpdateCompleted" />
+        <element api="E:System.Deployment.Application.ApplicationDeployment.DownloadFileGroupProgressChanged" />
+        <element api="E:System.Deployment.Application.ApplicationDeployment.DownloadFileGroupCompleted" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+      </containers>
+      <file name="2b2e71b6-1692-cb5c-3577-f6b4d5f7fb6c" />
+    </api>
+    <api id="Overload:System.Deployment.Application.ApplicationDeployment.DownloadFileGroupAsync">
+      <apidata name="DownloadFileGroupAsync" group="member" subgroup="method" pseudo="true" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" />
+      </containers>
+      <elements>
+        <element api="M:System.Deployment.Application.ApplicationDeployment.DownloadFileGroupAsync(System.String)" />
+        <element api="M:System.Deployment.Application.ApplicationDeployment.DownloadFileGroupAsync(System.String,System.Object)" />
+      </elements>
+      <file name="3f8e6a10-efc7-287d-eb2e-b6f0e7171d2f" />
+    </api>
+    <api id="P:System.Deployment.Application.ApplicationDeployment.ActivationUri">
+      <apidata name="ActivationUri" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Uri" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="aaf2f397-6d45-b09d-50c8-d6cd3d163732" />
+    </api>
+    <api id="M:System.Deployment.Application.ApplicationDeployment.CheckForDetailedUpdate">
+      <apidata name="CheckForDetailedUpdate" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <returns>
+        <type api="T:System.Deployment.Application.UpdateCheckInfo" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="a33dd6b1-28c0-265d-dad2-e3430cb19b47" />
+    </api>
+    <api id="M:System.Deployment.Application.ApplicationDeployment.CheckForUpdate">
+      <apidata name="CheckForUpdate" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="f4795537-ef1a-aca3-3ce5-cbc02f623953" />
+    </api>
+    <api id="M:System.Deployment.Application.ApplicationDeployment.CheckForUpdateAsync">
+      <apidata name="CheckForUpdateAsync" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="e631ccee-6e39-daf7-d2cb-c3bf75ce90ce" />
+    </api>
+    <api id="M:System.Deployment.Application.ApplicationDeployment.CheckForUpdateAsyncCancel">
+      <apidata name="CheckForUpdateAsyncCancel" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="35d0c8ff-50e8-28d3-a030-ab14746e928d" />
+    </api>
+    <api id="E:System.Deployment.Application.ApplicationDeployment.CheckForUpdateCompleted">
+      <apidata name="CheckForUpdateCompleted" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:System.Deployment.Application.CheckForUpdateCompletedEventHandler" ref="true" />
+      </eventhandler>
+      <eventargs>
+        <type api="T:System.Deployment.Application.CheckForUpdateCompletedEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="4e8baf23-a3d7-f67a-df0f-ad1281e2cf59" />
+    </api>
+    <api id="E:System.Deployment.Application.ApplicationDeployment.CheckForUpdateProgressChanged">
+      <apidata name="CheckForUpdateProgressChanged" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:System.Deployment.Application.DeploymentProgressChangedEventHandler" ref="true" />
+      </eventhandler>
+      <eventargs>
+        <type api="T:System.Deployment.Application.DeploymentProgressChangedEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="049731d9-c50c-e4f9-ee5d-173c61024a38" />
+    </api>
+    <api id="P:System.Deployment.Application.ApplicationDeployment.CurrentDeployment">
+      <apidata name="CurrentDeployment" group="member" subgroup="property" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="7f0792d6-e972-5fcc-e1b3-8d29de9de589" />
+    </api>
+    <api id="P:System.Deployment.Application.ApplicationDeployment.CurrentVersion">
+      <apidata name="CurrentVersion" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Version" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="a848f1ad-bea0-1762-ff71-542adc0cdcc9" />
+    </api>
+    <api id="P:System.Deployment.Application.ApplicationDeployment.DataDirectory">
+      <apidata name="DataDirectory" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="1715c7d0-8ea6-5134-9782-0d053d11e139" />
+    </api>
+    <api id="M:System.Deployment.Application.ApplicationDeployment.DownloadFileGroup(System.String)">
+      <apidata name="DownloadFileGroup" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="groupName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="ea420a92-a55f-41da-45d2-69675b2336fc" />
+    </api>
+    <api id="M:System.Deployment.Application.ApplicationDeployment.DownloadFileGroupAsync(System.String)">
+      <apidata name="DownloadFileGroupAsync" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" overload="true" />
+      <parameters>
+        <parameter name="groupName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="aa560e3b-9e24-2f3e-1f4c-838d425baba9" />
+    </api>
+    <api id="M:System.Deployment.Application.ApplicationDeployment.DownloadFileGroupAsync(System.String,System.Object)">
+      <apidata name="DownloadFileGroupAsync" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" overload="true" />
+      <parameters>
+        <parameter name="groupName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="userState">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="a7529bd5-6954-17aa-45bf-fafc6e622eb3" />
+    </api>
+    <api id="M:System.Deployment.Application.ApplicationDeployment.DownloadFileGroupAsyncCancel(System.String)">
+      <apidata name="DownloadFileGroupAsyncCancel" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="groupName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="62753ac3-7abb-adc7-5849-2e8fc74a52f4" />
+    </api>
+    <api id="E:System.Deployment.Application.ApplicationDeployment.DownloadFileGroupCompleted">
+      <apidata name="DownloadFileGroupCompleted" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:System.Deployment.Application.DownloadFileGroupCompletedEventHandler" ref="true" />
+      </eventhandler>
+      <eventargs>
+        <type api="T:System.Deployment.Application.DownloadFileGroupCompletedEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="acb24db6-468e-fb4a-f6bf-2ada660fda9b" />
+    </api>
+    <api id="E:System.Deployment.Application.ApplicationDeployment.DownloadFileGroupProgressChanged">
+      <apidata name="DownloadFileGroupProgressChanged" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:System.Deployment.Application.DeploymentProgressChangedEventHandler" ref="true" />
+      </eventhandler>
+      <eventargs>
+        <type api="T:System.Deployment.Application.DeploymentProgressChangedEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="fa8a1b39-4fcc-4899-ed3e-9169dcea75b1" />
+    </api>
+    <api id="M:System.Deployment.Application.ApplicationDeployment.IsFileGroupDownloaded(System.String)">
+      <apidata name="IsFileGroupDownloaded" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="groupName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="9294463e-353b-5b92-e924-83d086626819" />
+    </api>
+    <api id="P:System.Deployment.Application.ApplicationDeployment.IsFirstRun">
+      <apidata name="IsFirstRun" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="aebf3b0c-3cff-cb42-62aa-ed4f00665412" />
+    </api>
+    <api id="P:System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed">
+      <apidata name="IsNetworkDeployed" group="member" subgroup="property" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="7362f5a5-2b38-e9ad-7c02-10f4b99375f6" />
+    </api>
+    <api id="P:System.Deployment.Application.ApplicationDeployment.TimeOfLastUpdateCheck">
+      <apidata name="TimeOfLastUpdateCheck" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.DateTime" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="8b10f607-9c90-f5df-4094-77e6bbcbd11c" />
+    </api>
+    <api id="M:System.Deployment.Application.ApplicationDeployment.Update">
+      <apidata name="Update" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="82451adc-e657-d5dd-2f71-c5a1b2281286" />
+    </api>
+    <api id="M:System.Deployment.Application.ApplicationDeployment.UpdateAsync">
+      <apidata name="UpdateAsync" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="66535769-e051-eb8f-63ff-bb5075d7bb39" />
+    </api>
+    <api id="M:System.Deployment.Application.ApplicationDeployment.UpdateAsyncCancel">
+      <apidata name="UpdateAsyncCancel" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="32852409-b01a-6c78-66d0-e037f32d31e1" />
+    </api>
+    <api id="E:System.Deployment.Application.ApplicationDeployment.UpdateCompleted">
+      <apidata name="UpdateCompleted" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:System.ComponentModel.AsyncCompletedEventHandler" ref="true" />
+      </eventhandler>
+      <eventargs>
+        <type api="T:System.ComponentModel.AsyncCompletedEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="ea2d8129-de75-b9ba-9b16-9cc5d6317b1c" />
+    </api>
+    <api id="P:System.Deployment.Application.ApplicationDeployment.UpdatedApplicationFullName">
+      <apidata name="UpdatedApplicationFullName" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="0e480c4f-4716-ac76-4d96-801be0d64fee" />
+    </api>
+    <api id="P:System.Deployment.Application.ApplicationDeployment.UpdatedVersion">
+      <apidata name="UpdatedVersion" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Version" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="8ccdbf7b-ab14-b402-129e-1a0187ecc790" />
+    </api>
+    <api id="P:System.Deployment.Application.ApplicationDeployment.UpdateLocation">
+      <apidata name="UpdateLocation" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Uri" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="09c219c5-59c9-94f8-7517-a6c4e60e71ea" />
+    </api>
+    <api id="E:System.Deployment.Application.ApplicationDeployment.UpdateProgressChanged">
+      <apidata name="UpdateProgressChanged" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:System.Deployment.Application.DeploymentProgressChangedEventHandler" ref="true" />
+      </eventhandler>
+      <eventargs>
+        <type api="T:System.Deployment.Application.DeploymentProgressChangedEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.ApplicationDeployment" ref="true" />
+      </containers>
+      <file name="bcf07f76-59d6-8d2d-7b52-f12961925969" />
+    </api>
+    <api id="T:System.Deployment.Application.CheckForUpdateCompletedEventArgs">
+      <apidata name="CheckForUpdateCompletedEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.ComponentModel.AsyncCompletedEventArgs" ref="true" />
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="P:System.Deployment.Application.CheckForUpdateCompletedEventArgs.UpdateAvailable" />
+        <element api="P:System.Deployment.Application.CheckForUpdateCompletedEventArgs.AvailableVersion" />
+        <element api="P:System.Deployment.Application.CheckForUpdateCompletedEventArgs.IsUpdateRequired" />
+        <element api="P:System.Deployment.Application.CheckForUpdateCompletedEventArgs.MinimumRequiredVersion" />
+        <element api="P:System.Deployment.Application.CheckForUpdateCompletedEventArgs.UpdateSizeBytes" />
+        <element api="M:System.ComponentModel.AsyncCompletedEventArgs.RaiseExceptionIfNecessary" />
+        <element api="P:System.ComponentModel.AsyncCompletedEventArgs.Cancelled" />
+        <element api="P:System.ComponentModel.AsyncCompletedEventArgs.Error" />
+        <element api="P:System.ComponentModel.AsyncCompletedEventArgs.UserState" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+      </containers>
+      <file name="e66ab8c5-a293-9052-13ad-54ef078fc6d9" />
+    </api>
+    <api id="P:System.Deployment.Application.CheckForUpdateCompletedEventArgs.AvailableVersion">
+      <apidata name="AvailableVersion" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Version" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.CheckForUpdateCompletedEventArgs" ref="true" />
+      </containers>
+      <file name="a63b0b6d-7f5e-0965-ccd7-3cae987fd510" />
+    </api>
+    <api id="P:System.Deployment.Application.CheckForUpdateCompletedEventArgs.IsUpdateRequired">
+      <apidata name="IsUpdateRequired" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.CheckForUpdateCompletedEventArgs" ref="true" />
+      </containers>
+      <file name="0cce153e-3e06-6a16-003d-84f307822007" />
+    </api>
+    <api id="P:System.Deployment.Application.CheckForUpdateCompletedEventArgs.MinimumRequiredVersion">
+      <apidata name="MinimumRequiredVersion" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Version" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.CheckForUpdateCompletedEventArgs" ref="true" />
+      </containers>
+      <file name="b9aebbc6-4fb6-16dc-81b8-e98acc13054a" />
+    </api>
+    <api id="P:System.Deployment.Application.CheckForUpdateCompletedEventArgs.UpdateAvailable">
+      <apidata name="UpdateAvailable" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.CheckForUpdateCompletedEventArgs" ref="true" />
+      </containers>
+      <file name="9c4bfff6-128a-3a49-e6e9-2b78411c6049" />
+    </api>
+    <api id="P:System.Deployment.Application.CheckForUpdateCompletedEventArgs.UpdateSizeBytes">
+      <apidata name="UpdateSizeBytes" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int64" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.CheckForUpdateCompletedEventArgs" ref="true" />
+      </containers>
+      <file name="88a69afa-79c5-087d-6102-7530588add6d" />
+    </api>
+    <api id="T:System.Deployment.Application.CheckForUpdateCompletedEventHandler">
+      <apidata name="CheckForUpdateCompletedEventHandler" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <parameters>
+        <parameter name="sender">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+        <parameter name="e">
+          <type api="T:System.Deployment.Application.CheckForUpdateCompletedEventArgs" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+      </containers>
+      <file name="34c9c304-cf0a-806f-776b-87fc7d31411a" />
+    </api>
+    <api id="T:System.Deployment.Application.DependentPlatformMissingException">
+      <apidata name="DependentPlatformMissingException" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Deployment.Application.DeploymentException" ref="true" />
+          <type api="T:System.SystemException" ref="true" />
+          <type api="T:System.Exception" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Deployment.Application.DependentPlatformMissingException.#ctor" />
+        <element api="M:System.Deployment.Application.DependentPlatformMissingException.#ctor(System.String)" />
+        <element api="M:System.Deployment.Application.DependentPlatformMissingException.#ctor(System.String,System.Exception)" />
+        <element api="M:System.Deployment.Application.DependentPlatformMissingException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Deployment.Application.DependentPlatformMissingException.#ctor(System.String,System.Uri)" />
+        <element api="M:System.Deployment.Application.DependentPlatformMissingException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Exception.GetBaseException" />
+        <element api="M:System.Exception.ToString" />
+        <element api="M:System.Exception.GetType" />
+        <element api="P:System.Exception.Message" />
+        <element api="P:System.Exception.Data" />
+        <element api="P:System.Exception.InnerException" />
+        <element api="P:System.Exception.TargetSite" />
+        <element api="P:System.Exception.StackTrace" />
+        <element api="P:System.Exception.HelpLink" />
+        <element api="P:System.Exception.Source" />
+        <element api="P:System.Exception.HResult" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+      </containers>
+      <file name="b66f3966-ce9e-d576-81c4-7b42f104a7d6" />
+    </api>
+    <api id="Overload:System.Deployment.Application.DependentPlatformMissingException.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DependentPlatformMissingException" />
+      </containers>
+      <elements>
+        <element api="M:System.Deployment.Application.DependentPlatformMissingException.#ctor" />
+        <element api="M:System.Deployment.Application.DependentPlatformMissingException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Deployment.Application.DependentPlatformMissingException.#ctor(System.String)" />
+        <element api="M:System.Deployment.Application.DependentPlatformMissingException.#ctor(System.String,System.Exception)" />
+        <element api="M:System.Deployment.Application.DependentPlatformMissingException.#ctor(System.String,System.Uri)" />
+      </elements>
+      <file name="d0e1883f-a60e-98e1-c4f2-5dbb15adcb2c" />
+    </api>
+    <api id="M:System.Deployment.Application.DependentPlatformMissingException.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DependentPlatformMissingException" ref="true" />
+      </containers>
+      <file name="f74520e1-2825-34df-c117-cfac522daa22" />
+    </api>
+    <api id="M:System.Deployment.Application.DependentPlatformMissingException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <parameters>
+        <parameter name="serializationInfo">
+          <type api="T:System.Runtime.Serialization.SerializationInfo" ref="true" />
+        </parameter>
+        <parameter name="streamingContext">
+          <type api="T:System.Runtime.Serialization.StreamingContext" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DependentPlatformMissingException" ref="true" />
+      </containers>
+      <file name="6a407199-c277-ff7d-7ab2-b06ffb360686" />
+    </api>
+    <api id="M:System.Deployment.Application.DependentPlatformMissingException.#ctor(System.String)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DependentPlatformMissingException" ref="true" />
+      </containers>
+      <file name="d3791de8-32bb-bb76-4143-30e913db509c" />
+    </api>
+    <api id="M:System.Deployment.Application.DependentPlatformMissingException.#ctor(System.String,System.Exception)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="innerException">
+          <type api="T:System.Exception" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DependentPlatformMissingException" ref="true" />
+      </containers>
+      <file name="c461d8ba-9202-edb6-b4f5-994373e86194" />
+    </api>
+    <api id="M:System.Deployment.Application.DependentPlatformMissingException.#ctor(System.String,System.Uri)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="supportUrl">
+          <type api="T:System.Uri" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DependentPlatformMissingException" ref="true" />
+      </containers>
+      <file name="2878dcde-aa6a-981d-c8d9-ba73142168ac" />
+    </api>
+    <api id="M:System.Deployment.Application.DependentPlatformMissingException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <apidata name="GetObjectData" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" overrides="M:System.Deployment.Application.DeploymentException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+      <parameters>
+        <parameter name="info">
+          <type api="T:System.Runtime.Serialization.SerializationInfo" ref="true" />
+        </parameter>
+        <parameter name="context">
+          <type api="T:System.Runtime.Serialization.StreamingContext" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DependentPlatformMissingException" ref="true" />
+      </containers>
+      <file name="6fb02ba7-ab11-63fa-38ca-dc38ca427406" />
+    </api>
+    <api id="T:System.Deployment.Application.DeploymentDownloadException">
+      <apidata name="DeploymentDownloadException" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Deployment.Application.DeploymentException" ref="true" />
+          <type api="T:System.SystemException" ref="true" />
+          <type api="T:System.Exception" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Deployment.Application.DeploymentDownloadException.#ctor" />
+        <element api="M:System.Deployment.Application.DeploymentDownloadException.#ctor(System.String)" />
+        <element api="M:System.Deployment.Application.DeploymentDownloadException.#ctor(System.String,System.Exception)" />
+        <element api="M:System.Deployment.Application.DeploymentDownloadException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Deployment.Application.DeploymentException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Exception.GetBaseException" />
+        <element api="M:System.Exception.ToString" />
+        <element api="M:System.Exception.GetType" />
+        <element api="P:System.Exception.Message" />
+        <element api="P:System.Exception.Data" />
+        <element api="P:System.Exception.InnerException" />
+        <element api="P:System.Exception.TargetSite" />
+        <element api="P:System.Exception.StackTrace" />
+        <element api="P:System.Exception.HelpLink" />
+        <element api="P:System.Exception.Source" />
+        <element api="P:System.Exception.HResult" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+      </containers>
+      <file name="884a7926-396c-cb48-d955-c9e2fba98b95" />
+    </api>
+    <api id="Overload:System.Deployment.Application.DeploymentDownloadException.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DeploymentDownloadException" />
+      </containers>
+      <elements>
+        <element api="M:System.Deployment.Application.DeploymentDownloadException.#ctor" />
+        <element api="M:System.Deployment.Application.DeploymentDownloadException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Deployment.Application.DeploymentDownloadException.#ctor(System.String)" />
+        <element api="M:System.Deployment.Application.DeploymentDownloadException.#ctor(System.String,System.Exception)" />
+      </elements>
+      <file name="3af3c2f6-0f46-ea44-c35f-6406fb669ab5" />
+    </api>
+    <api id="M:System.Deployment.Application.DeploymentDownloadException.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DeploymentDownloadException" ref="true" />
+      </containers>
+      <file name="1cdd5df9-0622-4d79-9d53-9ab632534c2b" />
+    </api>
+    <api id="M:System.Deployment.Application.DeploymentDownloadException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <parameters>
+        <parameter name="serializationInfo">
+          <type api="T:System.Runtime.Serialization.SerializationInfo" ref="true" />
+        </parameter>
+        <parameter name="streamingContext">
+          <type api="T:System.Runtime.Serialization.StreamingContext" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DeploymentDownloadException" ref="true" />
+      </containers>
+      <file name="26029b58-5ac4-1c2a-4997-039033194f18" />
+    </api>
+    <api id="M:System.Deployment.Application.DeploymentDownloadException.#ctor(System.String)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DeploymentDownloadException" ref="true" />
+      </containers>
+      <file name="04cfa8f6-f2e4-f6d8-ec5f-1c7c21f90056" />
+    </api>
+    <api id="M:System.Deployment.Application.DeploymentDownloadException.#ctor(System.String,System.Exception)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="innerException">
+          <type api="T:System.Exception" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DeploymentDownloadException" ref="true" />
+      </containers>
+      <file name="05ef956e-fe3b-736c-4b38-8f1c769da06f" />
+    </api>
+    <api id="T:System.Deployment.Application.DeploymentException">
+      <apidata name="DeploymentException" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.SystemException" ref="true" />
+          <type api="T:System.Exception" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Deployment.Application.DeploymentException.#ctor" />
+        <element api="M:System.Deployment.Application.DeploymentException.#ctor(System.String)" />
+        <element api="M:System.Deployment.Application.DeploymentException.#ctor(System.String,System.Exception)" />
+        <element api="M:System.Deployment.Application.DeploymentException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Deployment.Application.DeploymentException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Exception.GetBaseException" />
+        <element api="M:System.Exception.ToString" />
+        <element api="M:System.Exception.GetType" />
+        <element api="P:System.Exception.Message" />
+        <element api="P:System.Exception.Data" />
+        <element api="P:System.Exception.InnerException" />
+        <element api="P:System.Exception.TargetSite" />
+        <element api="P:System.Exception.StackTrace" />
+        <element api="P:System.Exception.HelpLink" />
+        <element api="P:System.Exception.Source" />
+        <element api="P:System.Exception.HResult" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+      </containers>
+      <file name="8d910097-129c-af44-5f2d-cd96d7f790e0" />
+    </api>
+    <api id="Overload:System.Deployment.Application.DeploymentException.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DeploymentException" />
+      </containers>
+      <elements>
+        <element api="M:System.Deployment.Application.DeploymentException.#ctor" />
+        <element api="M:System.Deployment.Application.DeploymentException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Deployment.Application.DeploymentException.#ctor(System.String)" />
+        <element api="M:System.Deployment.Application.DeploymentException.#ctor(System.String,System.Exception)" />
+      </elements>
+      <file name="c046e595-d522-5d54-8a96-66f8c8ee9745" />
+    </api>
+    <api id="M:System.Deployment.Application.DeploymentException.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DeploymentException" ref="true" />
+      </containers>
+      <file name="de5dc627-5079-c394-908b-37bbda7de8ce" />
+    </api>
+    <api id="M:System.Deployment.Application.DeploymentException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <parameters>
+        <parameter name="serializationInfo">
+          <type api="T:System.Runtime.Serialization.SerializationInfo" ref="true" />
+        </parameter>
+        <parameter name="streamingContext">
+          <type api="T:System.Runtime.Serialization.StreamingContext" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DeploymentException" ref="true" />
+      </containers>
+      <file name="493615dc-bd50-e067-a5a6-e5b3cae6bddd" />
+    </api>
+    <api id="M:System.Deployment.Application.DeploymentException.#ctor(System.String)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DeploymentException" ref="true" />
+      </containers>
+      <file name="36520476-e174-304b-4a8e-f78820568062" />
+    </api>
+    <api id="M:System.Deployment.Application.DeploymentException.#ctor(System.String,System.Exception)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="innerException">
+          <type api="T:System.Exception" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DeploymentException" ref="true" />
+      </containers>
+      <file name="d51fceb6-510b-6d58-c4cb-9a6eea117a9e" />
+    </api>
+    <api id="M:System.Deployment.Application.DeploymentException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <apidata name="GetObjectData" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" overrides="M:System.Exception.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+      <parameters>
+        <parameter name="info">
+          <type api="T:System.Runtime.Serialization.SerializationInfo" ref="true" />
+        </parameter>
+        <parameter name="context">
+          <type api="T:System.Runtime.Serialization.StreamingContext" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DeploymentException" ref="true" />
+      </containers>
+      <file name="061810b5-e2ee-57fd-b015-aeb5fc145528" />
+    </api>
+    <api id="T:System.Deployment.Application.DeploymentProgressChangedEventArgs">
+      <apidata name="DeploymentProgressChangedEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.ComponentModel.ProgressChangedEventArgs" ref="true" />
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="P:System.Deployment.Application.DeploymentProgressChangedEventArgs.BytesCompleted" />
+        <element api="P:System.Deployment.Application.DeploymentProgressChangedEventArgs.BytesTotal" />
+        <element api="P:System.Deployment.Application.DeploymentProgressChangedEventArgs.State" />
+        <element api="P:System.Deployment.Application.DeploymentProgressChangedEventArgs.Group" />
+        <element api="P:System.ComponentModel.ProgressChangedEventArgs.ProgressPercentage" />
+        <element api="P:System.ComponentModel.ProgressChangedEventArgs.UserState" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+      </containers>
+      <file name="56394285-eeb7-ef9e-92c4-c4745563505c" />
+    </api>
+    <api id="P:System.Deployment.Application.DeploymentProgressChangedEventArgs.BytesCompleted">
+      <apidata name="BytesCompleted" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int64" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DeploymentProgressChangedEventArgs" ref="true" />
+      </containers>
+      <file name="494d9093-9ca4-8acb-4860-3334679098cf" />
+    </api>
+    <api id="P:System.Deployment.Application.DeploymentProgressChangedEventArgs.BytesTotal">
+      <apidata name="BytesTotal" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int64" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DeploymentProgressChangedEventArgs" ref="true" />
+      </containers>
+      <file name="a3882927-966a-5d5f-ff22-be2f3a83559a" />
+    </api>
+    <api id="P:System.Deployment.Application.DeploymentProgressChangedEventArgs.Group">
+      <apidata name="Group" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DeploymentProgressChangedEventArgs" ref="true" />
+      </containers>
+      <file name="045e892f-7007-fe70-5849-2ac1b0952d9f" />
+    </api>
+    <api id="P:System.Deployment.Application.DeploymentProgressChangedEventArgs.State">
+      <apidata name="State" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Deployment.Application.DeploymentProgressState" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DeploymentProgressChangedEventArgs" ref="true" />
+      </containers>
+      <file name="b2c13b57-0465-ba2e-4c17-0e31347b4931" />
+    </api>
+    <api id="T:System.Deployment.Application.DeploymentProgressChangedEventHandler">
+      <apidata name="DeploymentProgressChangedEventHandler" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <parameters>
+        <parameter name="sender">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+        <parameter name="e">
+          <type api="T:System.Deployment.Application.DeploymentProgressChangedEventArgs" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+      </containers>
+      <file name="b84f5198-f1e8-42af-04b5-509eec0395b2" />
+    </api>
+    <api id="T:System.Deployment.Application.DeploymentProgressState">
+      <apidata name="DeploymentProgressState" group="type" subgroup="enumeration" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <enumerationbase>
+        <type api="T:System.Int32" ref="false" />
+      </enumerationbase>
+      <elements>
+        <element api="F:System.Deployment.Application.DeploymentProgressState.DownloadingDeploymentInformation" />
+        <element api="F:System.Deployment.Application.DeploymentProgressState.DownloadingApplicationInformation" />
+        <element api="F:System.Deployment.Application.DeploymentProgressState.DownloadingApplicationFiles" />
+      </elements>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+      </containers>
+      <file name="6d4ff7f3-acb3-a782-c8c8-c50017a33711" />
+    </api>
+    <api id="T:System.Deployment.Application.DeploymentServiceCom">
+      <apidata name="DeploymentServiceCom" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="sequential" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Deployment.Application.DeploymentServiceCom.#ctor" />
+        <element api="M:System.Deployment.Application.DeploymentServiceCom.ActivateDeployment(System.String,System.Boolean)" />
+        <element api="M:System.Deployment.Application.DeploymentServiceCom.MaintainSubscription(System.String)" />
+        <element api="M:System.Deployment.Application.DeploymentServiceCom.CheckForDeploymentUpdate(System.String)" />
+        <element api="M:System.Deployment.Application.DeploymentServiceCom.EndServiceRightNow" />
+        <element api="M:System.Deployment.Application.DeploymentServiceCom.CleanOnlineAppCache" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>33246f92-d56f-4e34-837a-9a49bfc91df3</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ClassInterfaceAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ClassInterfaceType" ref="false" />
+            <enumValue>
+              <field name="AutoDispatch" />
+            </enumValue>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.PermissionSetAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="Demand" />
+            </enumValue>
+          </argument>
+          <assignment name="Name">
+            <type api="T:System.String" ref="true" />
+            <value>FullTrust</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="d69fcca6-029c-f5e5-f9c3-4b29d1380b3c" />
+    </api>
+    <api id="M:System.Deployment.Application.DeploymentServiceCom.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DeploymentServiceCom" ref="true" />
+      </containers>
+      <file name="7576965a-5886-1a74-cfd9-ea78268c4947" />
+    </api>
+    <api id="M:System.Deployment.Application.DeploymentServiceCom.ActivateDeployment(System.String,System.Boolean)">
+      <apidata name="ActivateDeployment" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="deploymentLocation">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="isShortcut">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DeploymentServiceCom" ref="true" />
+      </containers>
+      <file name="e6d3e7a0-373f-88b7-b663-df118f7919ab" />
+    </api>
+    <api id="M:System.Deployment.Application.DeploymentServiceCom.CheckForDeploymentUpdate(System.String)">
+      <apidata name="CheckForDeploymentUpdate" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="textualSubId">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DeploymentServiceCom" ref="true" />
+      </containers>
+      <file name="d04779f6-9275-b3d3-44fa-183497051d53" />
+    </api>
+    <api id="M:System.Deployment.Application.DeploymentServiceCom.CleanOnlineAppCache">
+      <apidata name="CleanOnlineAppCache" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DeploymentServiceCom" ref="true" />
+      </containers>
+      <file name="83a1768d-7e23-c3b9-6231-3c3ef1491410" />
+    </api>
+    <api id="M:System.Deployment.Application.DeploymentServiceCom.EndServiceRightNow">
+      <apidata name="EndServiceRightNow" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DeploymentServiceCom" ref="true" />
+      </containers>
+      <file name="11d9baba-efa8-f79d-29c2-d402ffcf967d" />
+    </api>
+    <api id="M:System.Deployment.Application.DeploymentServiceCom.MaintainSubscription(System.String)">
+      <apidata name="MaintainSubscription" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="textualSubId">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DeploymentServiceCom" ref="true" />
+      </containers>
+      <file name="d83daf2a-7887-dd42-a3ff-2b0bd12dd5ea" />
+    </api>
+    <api id="T:System.Deployment.Application.DownloadApplicationCompletedEventArgs">
+      <apidata name="DownloadApplicationCompletedEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.ComponentModel.AsyncCompletedEventArgs" ref="true" />
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="P:System.Deployment.Application.DownloadApplicationCompletedEventArgs.LogFilePath" />
+        <element api="M:System.ComponentModel.AsyncCompletedEventArgs.RaiseExceptionIfNecessary" />
+        <element api="P:System.ComponentModel.AsyncCompletedEventArgs.Cancelled" />
+        <element api="P:System.ComponentModel.AsyncCompletedEventArgs.Error" />
+        <element api="P:System.ComponentModel.AsyncCompletedEventArgs.UserState" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+      </containers>
+      <file name="4a1af6e8-79e9-c54f-9f1f-61406418eca9" />
+    </api>
+    <api id="P:System.Deployment.Application.DownloadApplicationCompletedEventArgs.LogFilePath">
+      <apidata name="LogFilePath" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DownloadApplicationCompletedEventArgs" ref="true" />
+      </containers>
+      <file name="3a5395cc-4f46-6a24-32a1-66f490a6ba8a" />
+    </api>
+    <api id="T:System.Deployment.Application.DownloadFileGroupCompletedEventArgs">
+      <apidata name="DownloadFileGroupCompletedEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.ComponentModel.AsyncCompletedEventArgs" ref="true" />
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="P:System.Deployment.Application.DownloadFileGroupCompletedEventArgs.Group" />
+        <element api="M:System.ComponentModel.AsyncCompletedEventArgs.RaiseExceptionIfNecessary" />
+        <element api="P:System.ComponentModel.AsyncCompletedEventArgs.Cancelled" />
+        <element api="P:System.ComponentModel.AsyncCompletedEventArgs.Error" />
+        <element api="P:System.ComponentModel.AsyncCompletedEventArgs.UserState" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+      </containers>
+      <file name="682634c7-a647-6f1b-0e67-5eaaef3562b5" />
+    </api>
+    <api id="P:System.Deployment.Application.DownloadFileGroupCompletedEventArgs.Group">
+      <apidata name="Group" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DownloadFileGroupCompletedEventArgs" ref="true" />
+      </containers>
+      <file name="c5b6ab26-06e1-2d52-6aed-a68464bcc19c" />
+    </api>
+    <api id="T:System.Deployment.Application.DownloadFileGroupCompletedEventHandler">
+      <apidata name="DownloadFileGroupCompletedEventHandler" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <parameters>
+        <parameter name="sender">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+        <parameter name="e">
+          <type api="T:System.Deployment.Application.DownloadFileGroupCompletedEventArgs" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+      </containers>
+      <file name="9c0285f5-9a66-cef5-7d97-6859fed24f2e" />
+    </api>
+    <api id="T:System.Deployment.Application.DownloadProgressChangedEventArgs">
+      <apidata name="DownloadProgressChangedEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.ComponentModel.ProgressChangedEventArgs" ref="true" />
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="P:System.Deployment.Application.DownloadProgressChangedEventArgs.BytesDownloaded" />
+        <element api="P:System.Deployment.Application.DownloadProgressChangedEventArgs.TotalBytesToDownload" />
+        <element api="P:System.Deployment.Application.DownloadProgressChangedEventArgs.State" />
+        <element api="P:System.ComponentModel.ProgressChangedEventArgs.ProgressPercentage" />
+        <element api="P:System.ComponentModel.ProgressChangedEventArgs.UserState" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+      </containers>
+      <file name="875de663-c806-eddb-327b-8b3a67f97d68" />
+    </api>
+    <api id="P:System.Deployment.Application.DownloadProgressChangedEventArgs.BytesDownloaded">
+      <apidata name="BytesDownloaded" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int64" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DownloadProgressChangedEventArgs" ref="true" />
+      </containers>
+      <file name="97db4d1a-87cf-fc3a-1987-d7057993b638" />
+    </api>
+    <api id="P:System.Deployment.Application.DownloadProgressChangedEventArgs.State">
+      <apidata name="State" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Deployment.Application.DeploymentProgressState" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DownloadProgressChangedEventArgs" ref="true" />
+      </containers>
+      <file name="b29dbe35-83af-6914-df90-91f6451def93" />
+    </api>
+    <api id="P:System.Deployment.Application.DownloadProgressChangedEventArgs.TotalBytesToDownload">
+      <apidata name="TotalBytesToDownload" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int64" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.DownloadProgressChangedEventArgs" ref="true" />
+      </containers>
+      <file name="3902cd84-b500-444b-2ea5-cdfa9852065b" />
+    </api>
+    <api id="T:System.Deployment.Application.GetManifestCompletedEventArgs">
+      <apidata name="GetManifestCompletedEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.ComponentModel.AsyncCompletedEventArgs" ref="true" />
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="P:System.Deployment.Application.GetManifestCompletedEventArgs.ApplicationIdentity" />
+        <element api="P:System.Deployment.Application.GetManifestCompletedEventArgs.Version" />
+        <element api="P:System.Deployment.Application.GetManifestCompletedEventArgs.IsCached" />
+        <element api="P:System.Deployment.Application.GetManifestCompletedEventArgs.ProductName" />
+        <element api="P:System.Deployment.Application.GetManifestCompletedEventArgs.SupportUri" />
+        <element api="P:System.Deployment.Application.GetManifestCompletedEventArgs.LogFilePath" />
+        <element api="P:System.Deployment.Application.GetManifestCompletedEventArgs.DeploymentManifest" />
+        <element api="P:System.Deployment.Application.GetManifestCompletedEventArgs.ApplicationManifest" />
+        <element api="M:System.ComponentModel.AsyncCompletedEventArgs.RaiseExceptionIfNecessary" />
+        <element api="P:System.ComponentModel.AsyncCompletedEventArgs.Cancelled" />
+        <element api="P:System.ComponentModel.AsyncCompletedEventArgs.Error" />
+        <element api="P:System.ComponentModel.AsyncCompletedEventArgs.UserState" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+      </containers>
+      <file name="00ed28e2-8180-b79a-89bd-057bc99acbf5" />
+    </api>
+    <api id="P:System.Deployment.Application.GetManifestCompletedEventArgs.ApplicationIdentity">
+      <apidata name="ApplicationIdentity" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.ApplicationIdentity" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.GetManifestCompletedEventArgs" ref="true" />
+      </containers>
+      <file name="fbbcce02-2a88-b692-81c8-e54f1093f490" />
+    </api>
+    <api id="P:System.Deployment.Application.GetManifestCompletedEventArgs.ApplicationManifest">
+      <apidata name="ApplicationManifest" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Xml.XmlReader" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.GetManifestCompletedEventArgs" ref="true" />
+      </containers>
+      <file name="24cb1ec5-8104-bd9e-6153-5791ccf152fa" />
+    </api>
+    <api id="P:System.Deployment.Application.GetManifestCompletedEventArgs.DeploymentManifest">
+      <apidata name="DeploymentManifest" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Xml.XmlReader" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.GetManifestCompletedEventArgs" ref="true" />
+      </containers>
+      <file name="438dafd9-5cae-1185-b49f-5ebb1ec721d6" />
+    </api>
+    <api id="P:System.Deployment.Application.GetManifestCompletedEventArgs.IsCached">
+      <apidata name="IsCached" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.GetManifestCompletedEventArgs" ref="true" />
+      </containers>
+      <file name="4cd51694-325e-e157-6782-e0c7e439677e" />
+    </api>
+    <api id="P:System.Deployment.Application.GetManifestCompletedEventArgs.LogFilePath">
+      <apidata name="LogFilePath" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.GetManifestCompletedEventArgs" ref="true" />
+      </containers>
+      <file name="16b9efc0-6367-76a1-ba93-028dbe61a786" />
+    </api>
+    <api id="P:System.Deployment.Application.GetManifestCompletedEventArgs.ProductName">
+      <apidata name="ProductName" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.GetManifestCompletedEventArgs" ref="true" />
+      </containers>
+      <file name="82d0c09f-a6ea-c704-9577-07d3f0b74533" />
+    </api>
+    <api id="P:System.Deployment.Application.GetManifestCompletedEventArgs.SupportUri">
+      <apidata name="SupportUri" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Uri" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.GetManifestCompletedEventArgs" ref="true" />
+      </containers>
+      <file name="85860994-24ad-da95-9c24-d5bd37ab8870" />
+    </api>
+    <api id="P:System.Deployment.Application.GetManifestCompletedEventArgs.Version">
+      <apidata name="Version" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Version" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.GetManifestCompletedEventArgs" ref="true" />
+      </containers>
+      <file name="8fdada44-4fb2-577e-c370-6e2fd974f91f" />
+    </api>
+    <api id="T:System.Deployment.Application.InPlaceHostingManager">
+      <apidata name="InPlaceHostingManager" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.IDisposable" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Deployment.Application.InPlaceHostingManager.#ctor(System.Uri,System.Boolean)" />
+        <element api="M:System.Deployment.Application.InPlaceHostingManager.#ctor(System.Uri)" />
+        <element api="M:System.Deployment.Application.InPlaceHostingManager.GetManifestAsync" />
+        <element api="M:System.Deployment.Application.InPlaceHostingManager.AssertApplicationRequirements" />
+        <element api="M:System.Deployment.Application.InPlaceHostingManager.DownloadApplicationAsync" />
+        <element api="M:System.Deployment.Application.InPlaceHostingManager.Execute" />
+        <element api="M:System.Deployment.Application.InPlaceHostingManager.CancelAsync" />
+        <element api="M:System.Deployment.Application.InPlaceHostingManager.Dispose" />
+        <element api="E:System.Deployment.Application.InPlaceHostingManager.GetManifestCompleted" />
+        <element api="E:System.Deployment.Application.InPlaceHostingManager.DownloadProgressChanged" />
+        <element api="E:System.Deployment.Application.InPlaceHostingManager.DownloadApplicationCompleted" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Security.Permissions.SecurityPermissionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="Demand" />
+            </enumValue>
+          </argument>
+          <assignment name="Unrestricted">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="8742981b-0cde-0be3-7e6e-9fc667fde4cd" />
+    </api>
+    <api id="Overload:System.Deployment.Application.InPlaceHostingManager.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.InPlaceHostingManager" />
+      </containers>
+      <elements>
+        <element api="M:System.Deployment.Application.InPlaceHostingManager.#ctor(System.Uri)" />
+        <element api="M:System.Deployment.Application.InPlaceHostingManager.#ctor(System.Uri,System.Boolean)" />
+      </elements>
+      <file name="d6215633-05a2-704c-1869-ecff9286b2ab" />
+    </api>
+    <api id="M:System.Deployment.Application.InPlaceHostingManager.#ctor(System.Uri)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="deploymentManifest">
+          <type api="T:System.Uri" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.InPlaceHostingManager" ref="true" />
+      </containers>
+      <file name="531006bd-eed1-6615-342a-e4e8835e7b09" />
+    </api>
+    <api id="M:System.Deployment.Application.InPlaceHostingManager.#ctor(System.Uri,System.Boolean)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="deploymentManifest">
+          <type api="T:System.Uri" ref="true" />
+        </parameter>
+        <parameter name="launchInHostProcess">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.InPlaceHostingManager" ref="true" />
+      </containers>
+      <file name="21deb58d-4cbe-e55e-5fbc-4385f986c451" />
+    </api>
+    <api id="M:System.Deployment.Application.InPlaceHostingManager.AssertApplicationRequirements">
+      <apidata name="AssertApplicationRequirements" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.InPlaceHostingManager" ref="true" />
+      </containers>
+      <file name="28262fd2-2278-157c-3687-f33e59dbc6dd" />
+    </api>
+    <api id="M:System.Deployment.Application.InPlaceHostingManager.CancelAsync">
+      <apidata name="CancelAsync" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.InPlaceHostingManager" ref="true" />
+      </containers>
+      <file name="175fbecf-7be6-95ab-03fc-b65c88da16a4" />
+    </api>
+    <api id="M:System.Deployment.Application.InPlaceHostingManager.Dispose">
+      <apidata name="Dispose" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.InPlaceHostingManager" ref="true" />
+      </containers>
+      <file name="31fa4362-af4a-8e3e-3ec1-d173e0ead84e" />
+    </api>
+    <api id="M:System.Deployment.Application.InPlaceHostingManager.DownloadApplicationAsync">
+      <apidata name="DownloadApplicationAsync" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.InPlaceHostingManager" ref="true" />
+      </containers>
+      <file name="93a852fd-d931-49df-331a-376d25e1b2f3" />
+    </api>
+    <api id="E:System.Deployment.Application.InPlaceHostingManager.DownloadApplicationCompleted">
+      <apidata name="DownloadApplicationCompleted" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:System.EventHandler`1" ref="true">
+          <specialization>
+            <type api="T:System.Deployment.Application.DownloadApplicationCompletedEventArgs" ref="true" />
+          </specialization>
+        </type>
+      </eventhandler>
+      <eventargs>
+        <type api="T:System.Deployment.Application.DownloadApplicationCompletedEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.InPlaceHostingManager" ref="true" />
+      </containers>
+      <file name="26eac578-a7a1-fa59-bc20-df764842ec2b" />
+    </api>
+    <api id="E:System.Deployment.Application.InPlaceHostingManager.DownloadProgressChanged">
+      <apidata name="DownloadProgressChanged" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:System.EventHandler`1" ref="true">
+          <specialization>
+            <type api="T:System.Deployment.Application.DownloadProgressChangedEventArgs" ref="true" />
+          </specialization>
+        </type>
+      </eventhandler>
+      <eventargs>
+        <type api="T:System.Deployment.Application.DownloadProgressChangedEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.InPlaceHostingManager" ref="true" />
+      </containers>
+      <file name="d3386d96-2cfb-ed1c-919c-584f602c50aa" />
+    </api>
+    <api id="M:System.Deployment.Application.InPlaceHostingManager.Execute">
+      <apidata name="Execute" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <returns>
+        <type api="T:System.Runtime.Remoting.ObjectHandle" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.InPlaceHostingManager" ref="true" />
+      </containers>
+      <file name="7e730a40-0ab9-955e-25af-3d1d09352a6f" />
+    </api>
+    <api id="M:System.Deployment.Application.InPlaceHostingManager.GetManifestAsync">
+      <apidata name="GetManifestAsync" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.InPlaceHostingManager" ref="true" />
+      </containers>
+      <file name="24858b4e-43f9-3f32-bd30-b597960143dc" />
+    </api>
+    <api id="E:System.Deployment.Application.InPlaceHostingManager.GetManifestCompleted">
+      <apidata name="GetManifestCompleted" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:System.EventHandler`1" ref="true">
+          <specialization>
+            <type api="T:System.Deployment.Application.GetManifestCompletedEventArgs" ref="true" />
+          </specialization>
+        </type>
+      </eventhandler>
+      <eventargs>
+        <type api="T:System.Deployment.Application.GetManifestCompletedEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.InPlaceHostingManager" ref="true" />
+      </containers>
+      <file name="d890b1be-a10c-0eff-c637-47d9a9c38e01" />
+    </api>
+    <api id="T:System.Deployment.Application.InvalidDeploymentException">
+      <apidata name="InvalidDeploymentException" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Deployment.Application.DeploymentException" ref="true" />
+          <type api="T:System.SystemException" ref="true" />
+          <type api="T:System.Exception" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Deployment.Application.InvalidDeploymentException.#ctor" />
+        <element api="M:System.Deployment.Application.InvalidDeploymentException.#ctor(System.String)" />
+        <element api="M:System.Deployment.Application.InvalidDeploymentException.#ctor(System.String,System.Exception)" />
+        <element api="M:System.Deployment.Application.InvalidDeploymentException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Deployment.Application.DeploymentException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Exception.GetBaseException" />
+        <element api="M:System.Exception.ToString" />
+        <element api="M:System.Exception.GetType" />
+        <element api="P:System.Exception.Message" />
+        <element api="P:System.Exception.Data" />
+        <element api="P:System.Exception.InnerException" />
+        <element api="P:System.Exception.TargetSite" />
+        <element api="P:System.Exception.StackTrace" />
+        <element api="P:System.Exception.HelpLink" />
+        <element api="P:System.Exception.Source" />
+        <element api="P:System.Exception.HResult" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+      </containers>
+      <file name="da62a072-8ee1-3b5b-5184-33dbf49626ec" />
+    </api>
+    <api id="Overload:System.Deployment.Application.InvalidDeploymentException.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.InvalidDeploymentException" />
+      </containers>
+      <elements>
+        <element api="M:System.Deployment.Application.InvalidDeploymentException.#ctor" />
+        <element api="M:System.Deployment.Application.InvalidDeploymentException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Deployment.Application.InvalidDeploymentException.#ctor(System.String)" />
+        <element api="M:System.Deployment.Application.InvalidDeploymentException.#ctor(System.String,System.Exception)" />
+      </elements>
+      <file name="b6e2d80e-1bb9-13f3-0dab-858b50b657f1" />
+    </api>
+    <api id="M:System.Deployment.Application.InvalidDeploymentException.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.InvalidDeploymentException" ref="true" />
+      </containers>
+      <file name="5b298575-6c6d-985f-5a84-7d652e36d959" />
+    </api>
+    <api id="M:System.Deployment.Application.InvalidDeploymentException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <parameters>
+        <parameter name="serializationInfo">
+          <type api="T:System.Runtime.Serialization.SerializationInfo" ref="true" />
+        </parameter>
+        <parameter name="streamingContext">
+          <type api="T:System.Runtime.Serialization.StreamingContext" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.InvalidDeploymentException" ref="true" />
+      </containers>
+      <file name="9ac82001-d178-771f-ca7b-c581f97f5eaf" />
+    </api>
+    <api id="M:System.Deployment.Application.InvalidDeploymentException.#ctor(System.String)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.InvalidDeploymentException" ref="true" />
+      </containers>
+      <file name="5a6ad717-eb3e-6d4e-582b-fbd6ecef0f7c" />
+    </api>
+    <api id="M:System.Deployment.Application.InvalidDeploymentException.#ctor(System.String,System.Exception)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="innerException">
+          <type api="T:System.Exception" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.InvalidDeploymentException" ref="true" />
+      </containers>
+      <file name="eacd9fb3-a022-4843-5e2c-e692e6e25c4e" />
+    </api>
+    <api id="T:System.Deployment.Application.TrustNotGrantedException">
+      <apidata name="TrustNotGrantedException" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Deployment.Application.DeploymentException" ref="true" />
+          <type api="T:System.SystemException" ref="true" />
+          <type api="T:System.Exception" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Deployment.Application.TrustNotGrantedException.#ctor" />
+        <element api="M:System.Deployment.Application.TrustNotGrantedException.#ctor(System.String)" />
+        <element api="M:System.Deployment.Application.TrustNotGrantedException.#ctor(System.String,System.Exception)" />
+        <element api="M:System.Deployment.Application.TrustNotGrantedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Deployment.Application.DeploymentException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Exception.GetBaseException" />
+        <element api="M:System.Exception.ToString" />
+        <element api="M:System.Exception.GetType" />
+        <element api="P:System.Exception.Message" />
+        <element api="P:System.Exception.Data" />
+        <element api="P:System.Exception.InnerException" />
+        <element api="P:System.Exception.TargetSite" />
+        <element api="P:System.Exception.StackTrace" />
+        <element api="P:System.Exception.HelpLink" />
+        <element api="P:System.Exception.Source" />
+        <element api="P:System.Exception.HResult" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+      </containers>
+      <file name="b74d7058-789a-e0c2-3cb0-098ebbea3a76" />
+    </api>
+    <api id="Overload:System.Deployment.Application.TrustNotGrantedException.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.TrustNotGrantedException" />
+      </containers>
+      <elements>
+        <element api="M:System.Deployment.Application.TrustNotGrantedException.#ctor" />
+        <element api="M:System.Deployment.Application.TrustNotGrantedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Deployment.Application.TrustNotGrantedException.#ctor(System.String)" />
+        <element api="M:System.Deployment.Application.TrustNotGrantedException.#ctor(System.String,System.Exception)" />
+      </elements>
+      <file name="b427b1bb-6890-381f-5e50-14900c2f1980" />
+    </api>
+    <api id="M:System.Deployment.Application.TrustNotGrantedException.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.TrustNotGrantedException" ref="true" />
+      </containers>
+      <file name="f9532c8e-63e6-486a-5945-be79532f2684" />
+    </api>
+    <api id="M:System.Deployment.Application.TrustNotGrantedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <parameters>
+        <parameter name="serializationInfo">
+          <type api="T:System.Runtime.Serialization.SerializationInfo" ref="true" />
+        </parameter>
+        <parameter name="streamingContext">
+          <type api="T:System.Runtime.Serialization.StreamingContext" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.TrustNotGrantedException" ref="true" />
+      </containers>
+      <file name="d26c0cd0-b533-91e6-058c-3812a7fb39af" />
+    </api>
+    <api id="M:System.Deployment.Application.TrustNotGrantedException.#ctor(System.String)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.TrustNotGrantedException" ref="true" />
+      </containers>
+      <file name="e29c4cd3-a923-6d19-637f-eb79bf75289c" />
+    </api>
+    <api id="M:System.Deployment.Application.TrustNotGrantedException.#ctor(System.String,System.Exception)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="innerException">
+          <type api="T:System.Exception" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.TrustNotGrantedException" ref="true" />
+      </containers>
+      <file name="6fd53819-cf0c-2dd9-e917-9fe1f9f8fbe0" />
+    </api>
+    <api id="T:System.Deployment.Application.UpdateCheckInfo">
+      <apidata name="UpdateCheckInfo" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="P:System.Deployment.Application.UpdateCheckInfo.UpdateAvailable" />
+        <element api="P:System.Deployment.Application.UpdateCheckInfo.AvailableVersion" />
+        <element api="P:System.Deployment.Application.UpdateCheckInfo.IsUpdateRequired" />
+        <element api="P:System.Deployment.Application.UpdateCheckInfo.MinimumRequiredVersion" />
+        <element api="P:System.Deployment.Application.UpdateCheckInfo.UpdateSizeBytes" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+      </containers>
+      <file name="fde7ac23-411d-df6e-e5c2-04a51e6fce06" />
+    </api>
+    <api id="P:System.Deployment.Application.UpdateCheckInfo.AvailableVersion">
+      <apidata name="AvailableVersion" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Version" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.UpdateCheckInfo" ref="true" />
+      </containers>
+      <file name="649a916b-8305-ee79-3a01-d0fe6a660091" />
+    </api>
+    <api id="P:System.Deployment.Application.UpdateCheckInfo.IsUpdateRequired">
+      <apidata name="IsUpdateRequired" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.UpdateCheckInfo" ref="true" />
+      </containers>
+      <file name="2d208f48-e5d3-a7bd-66df-9f41b17e682b" />
+    </api>
+    <api id="P:System.Deployment.Application.UpdateCheckInfo.MinimumRequiredVersion">
+      <apidata name="MinimumRequiredVersion" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Version" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.UpdateCheckInfo" ref="true" />
+      </containers>
+      <file name="152df091-9536-8ccc-b069-2a7b869ca5a7" />
+    </api>
+    <api id="P:System.Deployment.Application.UpdateCheckInfo.UpdateAvailable">
+      <apidata name="UpdateAvailable" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.UpdateCheckInfo" ref="true" />
+      </containers>
+      <file name="ba941a9f-d988-1d01-a9f5-6b8399ae1dc4" />
+    </api>
+    <api id="P:System.Deployment.Application.UpdateCheckInfo.UpdateSizeBytes">
+      <apidata name="UpdateSizeBytes" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int64" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Deployment" module="System.Deployment" />
+        <namespace api="N:System.Deployment.Application" />
+        <type api="T:System.Deployment.Application.UpdateCheckInfo" ref="true" />
+      </containers>
+      <file name="70551d8b-d06f-07e6-d0bd-f4285aa7070f" />
+    </api>
+  </apis>
+</reflection>

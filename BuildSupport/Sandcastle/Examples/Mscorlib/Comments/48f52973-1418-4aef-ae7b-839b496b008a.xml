@@ -1,0 +1,1615 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="48f52973-1418-4aef-ae7b-839b496b008a" revisionNumber="9">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.Enum">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides the base class for enumerations.</para>
+        </summary>
+        <threadSafety>
+          <para>This type is safe for multithreaded operations.</para>
+        </threadSafety>
+        <remarks>
+          <content>
+            <para>An enumeration is a named constant whose underlying type is any integral type except <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference>. If no underlying type is explicitly declared, <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference> is used. Programming languages typically provide syntax to declare an enumeration that consists of a set of named constants and their values.</para>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.Enum</codeEntityReference> provides methods to compare instances of this class, convert the value of an instance to its string representation, convert the string representation of a number to an instance of this class, and create an instance of a specified enumeration and value.</para>
+            <para>You can also treat an enumeration as a bit field. For more information, see <codeEntityReference autoUpgrade="true">T:System.FlagsAttribute</codeEntityReference>.</para>
+          </content>
+          <sections>
+            <section>
+              <title>Implemented Interfaces</title>
+              <content>
+                <para>This class inherits from <codeEntityReference autoUpgrade="true">T:System.ValueType</codeEntityReference>, and implements the <codeEntityReference autoUpgrade="true">T:System.IComparable</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.IFormattable</codeEntityReference>, and <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference> interfaces. Use the <codeEntityReference autoUpgrade="true">T:System.Convert</codeEntityReference> class for conversions instead of this class' explicit interface member implementation of <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference>.</para>
+              </content>
+            </section>
+            <section>
+              <title>Guidelines for FlagsAttribute and Enum</title>
+              <content>
+                <list class="bullet">
+                  <listItem>
+                    <para>Use the <codeEntityReference autoUpgrade="true">T:System.FlagsAttribute</codeEntityReference> custom attribute for an enumeration only if a bitwise operation (AND, OR, EXCLUSIVE OR) is to be performed on a numeric value. </para>
+                  </listItem>
+                  <listItem>
+                    <para>Define enumeration constants in powers of two, that is, 1, 2, 4, 8, and so on. This means the individual flags in combined enumeration constants do not overlap. </para>
+                  </listItem>
+                  <listItem>
+                    <para>Consider creating an enumerated constant for commonly used flag combinations. For example, if you have an enumeration used for file I/O operations that contains the enumerated constants <codeInline>Read = 1</codeInline> and <codeInline>Write = 2</codeInline>, consider creating the enumerated constant <codeInline>ReadWrite = Read OR Write</codeInline>, which combines the <codeInline>Read</codeInline> and <codeInline>Write</codeInline> flags. In addition, the bitwise OR operation used to combine the flags might be considered an advanced concept in some circumstances that should not be required for simple tasks.</para>
+                  </listItem>
+                  <listItem>
+                    <para>Use caution if you define a negative number as a flag enumerated constant because many flag positions might be set to 1, which might make your code confusing and encourage coding errors.</para>
+                  </listItem>
+                  <listItem>
+                    <para>A convenient way to test whether a flag is set in a numeric value is to perform a bitwise AND operation between the numeric value and the flag enumerated constant, which sets all bits in the numeric value to zero that do not correspond to the flag, then test whether the result of that operation is equal to the flag enumerated constant.</para>
+                  </listItem>
+                  <listItem>
+                    <para>Use <codeInline>None</codeInline> as the name of the flag enumerated constant whose value is zero. You cannot use the <codeInline>None</codeInline> enumerated constant in a bitwise AND operation to test for a flag because the result is always zero. However, you can perform a logical, not a bitwise, comparison between the numeric value and the <codeInline>None</codeInline> enumerated constant to determine whether any bits in the numeric value are set. </para>
+                    <para>If you create a value enumeration instead of a flags enumeration, it is still worthwhile to create a <codeInline>None</codeInline> enumerated constant. The reason is that by default the memory used for the enumeration is initialized to zero by the common language runtime. Consequently, if you do not define a constant whose value is zero, the enumeration will contain an illegal value when it is created. </para>
+                    <para>If there is an obvious default case your application needs to represent, consider using an enumerated constant whose value is zero to represent the default. If there is no default case, consider using an enumerated constant whose value is zero that means the case that is not represented by any of the other enumerated constants. </para>
+                  </listItem>
+                  <listItem>
+                    <para>Do not define an enumeration value solely to mirror the state of the enumeration itself. For example, do not define an enumerated constant that merely marks the end of the enumeration. If you need to determine the last value of the enumeration, check for that value explicitly. In addition, you can perform a range check for the first and last enumerated constant if all values within the range are valid. </para>
+                  </listItem>
+                  <listItem>
+                    <para>Do not specify enumerated constants that are reserved for future use.</para>
+                  </listItem>
+                  <listItem>
+                    <para>When you define a method or property that takes an enumerated constant as a value, consider validating the value. The reason is that you can cast a numeric value to the enumeration type even if that numeric value is not defined in the enumeration.  </para>
+                  </listItem>
+                </list>
+              </content>
+            </section>
+          </sections>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code sample demonstrates using an enumeration to represent named values and another enumeration to represent named bit fields. </para>
+                <codeReference>enummain#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.ValueType</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.FlagsAttribute</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.Enum</codeEntityReference> class. </para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.CompareTo(System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Compares this instance to a specified object and returns an indication of their relative values.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>target</parameterReference>
+            <content>
+              <para>An object to compare, or <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A signed number indicating the relative values of this instance and <parameterReference>target</parameterReference>.</para>
+          <table>
+            <tableHeader>
+              <row>
+                <entry>
+                  <para>Return Value </para>
+                </entry>
+                <entry>
+                  <para>Description </para>
+                </entry>
+              </row>
+            </tableHeader>
+            <row>
+              <entry>
+                <para>Less than zero </para>
+              </entry>
+              <entry>
+                <para>The value of this instance is less than the value of <parameterReference>target</parameterReference>. </para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Zero </para>
+              </entry>
+              <entry>
+                <para>The value of this instance is equal to the value of <parameterReference>target</parameterReference>. </para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Greater than zero </para>
+              </entry>
+              <entry>
+                <para>The value of this instance is greater than the value of <parameterReference>target</parameterReference>.</para>
+                <para>-or- </para>
+                <para>
+                  <parameterReference>target</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+              </entry>
+            </row>
+          </table>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>target</parameterReference> and this instance are not the same type. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>This instance is not type <codeEntityReference autoUpgrade="true">T:System.SByte</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.Int16</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.Int64</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.UInt16</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.UInt32</codeEntityReference>, or <codeEntityReference autoUpgrade="true">T:System.UInt64</codeEntityReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code sample illustrates the use of <languageKeyword>CompareTo</languageKeyword> in the context of <languageKeyword>Enum</languageKeyword> : </para>
+                <codeReference>enumcompareto#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Enum.Equals(System.Object)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Enum.Equals">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a value indicating whether this instance is equal to a specified object.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.Equals(System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a value indicating whether this instance is equal to a specified object.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>obj</parameterReference>
+            <content>
+              <para>An object to compare with this instance, or <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>obj</parameterReference> is an <codeEntityReference autoUpgrade="true">T:System.Enum</codeEntityReference> with the same underlying type and value as this instance; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code sample illustrates the use of <languageKeyword>Equals</languageKeyword> in the context of <languageKeyword>Enum</languageKeyword> : </para>
+                <codeReference>enumequals#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Enum.CompareTo(System.Object)</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Returns a value indicating whether this instance is equal to a specified object.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Enum.Format(System.Type,System.Object,System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the specified value of a specified enumerated type to its equivalent string representation according to the specified format.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>enumType</parameterReference>
+            <content>
+              <para>The enumeration type of the value to convert. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The value to convert. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>format</parameterReference>
+            <content>
+              <para>The output format to use. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A string representation of <parameterReference>value</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>The <parameterReference>enumType</parameterReference>, <parameterReference>value</parameterReference>, or <parameterReference>format</parameterReference> parameter is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>The <parameterReference>enumType</parameterReference> parameter is not an <codeEntityReference autoUpgrade="true">T:System.Enum</codeEntityReference> type.</para>
+              <para>-or- </para>
+              <para>The <parameterReference>value</parameterReference> is from an enumeration that differs in type from <parameterReference>enumType</parameterReference>.</para>
+              <para>-or- </para>
+              <para>The type of <parameterReference>value</parameterReference> is not an underlying type of <parameterReference>enumType</parameterReference>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.FormatException</codeEntityReference>
+            <content>
+              <para>The <parameterReference>format</parameterReference> parameter contains an invalid value. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The valid format values are: </para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Format </para>
+                  </entry>
+                  <entry>
+                    <para>Description </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>"G" or "g" </para>
+                </entry>
+                <entry>
+                  <para>If <parameterReference>value</parameterReference> is equal to a named enumerated constant, the name of that constant is returned; otherwise, the decimal equivalent of <parameterReference>value</parameterReference> is returned.</para>
+                  <para>For example, suppose the only enumerated constant is named, Red, and its value is 1. If <parameterReference>value</parameterReference> is specified as 1, then this format returns "Red". However, if <parameterReference>value</parameterReference> is specified as 2, this format returns "2".</para>
+                  <para>-or- </para>
+                  <para>If the <codeEntityReference autoUpgrade="true">T:System.FlagsAttribute</codeEntityReference> custom attribute is applied to the enumeration, then <parameterReference>value</parameterReference> is treated as a bit field that contains one or more flags that consist of one or more bits.</para>
+                  <para>If <parameterReference>value</parameterReference> is equal to a combination of named enumerated constants, a delimiter-separated list of the names of those constants is returned. <parameterReference>value</parameterReference> is searched for flags, going from the flag with the largest value to the smallest value. For each flag that corresponds to a bit field in <parameterReference>value</parameterReference>, the name of the constant is concatenated to the delimiter-separated list. Then the value of that flag is excluded from further consideration, and the search continues for the next flag.</para>
+                  <para>If <parameterReference>value</parameterReference> is not equal to a combination of named enumerated constants, the decimal equivalent of <parameterReference>value</parameterReference> is returned. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>"X" or "x" </para>
+                </entry>
+                <entry>
+                  <para>Represents <parameterReference>value</parameterReference> in hexadecimal without a leading "0x". </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>"D" or "d" </para>
+                </entry>
+                <entry>
+                  <para>Represents <parameterReference>value</parameterReference> in decimal form. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>"F" or "f" </para>
+                </entry>
+                <entry>
+                  <para>Behaves identically to "G" or "g", except the <codeEntityReference autoUpgrade="true">T:System.FlagsAttribute</codeEntityReference> is not required to be present on the <codeEntityReference autoUpgrade="true">T:System.Enum</codeEntityReference> declaration. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code sample illustrates the use of <languageKeyword>Format</languageKeyword> in the context of <languageKeyword>Enum</languageKeyword> : </para>
+                <codeReference>enumformat#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <link xlink:href="0D1364DA-5B30-4D42-8E6B-03378343343F">[&lt;topic://cpConFormattingOverview&gt;]</link>
+          <link xlink:href="DD1FF672-1052-42CF-8666-4924FB6CD1A1">[&lt;topic://cpConEnumerationFormatStrings&gt;]</link>
+          <codeEntityReference autoUpgrade="true">M:System.Enum.ToString(System.String)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.GetHashCode">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the hash code for the value of this instance.</para>
+        </summary>
+        <returnValue>
+          <para>A 32-bit signed integer hash code.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.GetName(System.Type,System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Retrieves the name of the constant in the specified enumeration that has the specified value.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>enumType</parameterReference>
+            <content>
+              <para>An enumeration type. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The value of a particular enumerated constant in terms of its underlying type. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A string containing the name of the enumerated constant in <parameterReference>enumType</parameterReference> whose value is <parameterReference>value</parameterReference>, or <languageKeyword>null</languageKeyword> if no such constant is found.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> or <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is not an <codeEntityReference autoUpgrade="true">T:System.Enum</codeEntityReference>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>value</parameterReference> is neither of type <parameterReference>enumType</parameterReference> nor does it have the same underlying type as <parameterReference>enumType</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code sample illustrates the use of <languageKeyword>GetName</languageKeyword> : </para>
+                <codeReference>enumgetname#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.GetNames(System.Type)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Retrieves an array of the names of the constants in a specified enumeration.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>enumType</parameterReference>
+            <content>
+              <para>An enumeration type. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A string array of the names of the constants in <parameterReference>enumType</parameterReference>. </para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> parameter is not an <codeEntityReference autoUpgrade="true">T:System.Enum</codeEntityReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The elements of the return value array are sorted by the values of the enumerated constants. If there are enumerated constants with same value, the order of their corresponding names is unspecified.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code sample illustrates the use of <languageKeyword>GetNames</languageKeyword> : </para>
+                <codeReference>enumgetnames#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.GetTypeCode">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the underlying <codeEntityReference autoUpgrade="true">T:System.TypeCode</codeEntityReference> for this instance.</para>
+        </summary>
+        <returnValue>
+          <para>The <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.TypeCode</codeEntityReference> for this instance.</para>
+        </returnValue>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Enum.GetUnderlyingType(System.Type)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.GetUnderlyingType(System.Type)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the underlying type of the specified enumeration.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>enumType</parameterReference>
+            <content>
+              <para>An enumeration type. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The underlying <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> of <parameterReference>enumType</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is not an <codeEntityReference autoUpgrade="true">T:System.Enum</codeEntityReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The following code sample illustrates the use of <languageKeyword>GetUnderlyingType</languageKeyword> : </para>
+            <codeReference>Enum Example#5</codeReference>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Enum.GetTypeCode</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.GetValues(System.Type)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Retrieves an array of the values of the constants in a specified enumeration.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>enumType</parameterReference>
+            <content>
+              <para>An enumeration type. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An <codeEntityReference autoUpgrade="true">T:System.Array</codeEntityReference> of the values of the constants in <parameterReference>enumType</parameterReference>. The elements of the array are sorted by the values of the enumeration constants.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is not an <codeEntityReference autoUpgrade="true">T:System.Enum</codeEntityReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code sample illustrates the use of <languageKeyword>GetValues</languageKeyword> : </para>
+                <codeReference>enumgetvalues#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.IsDefined(System.Type,System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns an indication whether a constant with a specified value exists in a specified enumeration.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>enumType</parameterReference>
+            <content>
+              <para>An enumeration type. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The value or name of a constant in <parameterReference>enumType</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if a constant in <parameterReference>enumType</parameterReference> has a value equal to <parameterReference>value</parameterReference>; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> or <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is not an <languageKeyword>Enum</languageKeyword>.</para>
+              <para>-or- </para>
+              <para>The type of <parameterReference>value</parameterReference> is not an <parameterReference>enumType</parameterReference>.</para>
+              <para>-or- </para>
+              <para>The type of <parameterReference>value</parameterReference> is not an underlying type of <parameterReference>enumType</parameterReference>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>value</parameterReference> is not type <codeEntityReference autoUpgrade="true">T:System.SByte</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.Int16</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.Int64</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.UInt16</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.UInt32</codeEntityReference>, or <codeEntityReference autoUpgrade="true">T:System.UInt64</codeEntityReference>, or <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.Parse(System.Type,System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the string representation of the name or numeric value of one or more enumerated constants to an equivalent enumerated object.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>enumType</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> of the enumeration. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>A string containing the name or value to convert. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An object of type <parameterReference>enumType</parameterReference> whose value is represented by <parameterReference>value</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> or <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is not an <codeEntityReference autoUpgrade="true">T:System.Enum</codeEntityReference>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>value</parameterReference> is either an empty string or only contains white space.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>value</parameterReference> is a name, but not one of the named constants defined for the enumeration. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <parameterReference>value</parameterReference> parameter contains a value, a named constant, or a list of named constants delimited by commas (,). One or more blanks spaces can precede or follow each value, name, or comma in <parameterReference>value</parameterReference>. If <parameterReference>value</parameterReference> is a list, the return value is the value of the specified names combined with a bitwise OR operation.</para>
+            <para>This operation is case-sensitive.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code sample illustrates the use of <languageKeyword>Parse</languageKeyword>, taking a <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> and a <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> as parameters: </para>
+                <codeReference>enumparse#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>Converts the string representation of the name or numeric value of one or more enumerated constants to an equivalent enumerated object.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.Enum.Parse">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the string representation of the name or numeric value of one or more enumerated constants to an equivalent enumerated object.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.Parse(System.Type,System.String,System.Boolean)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the string representation of the name or numeric value of one or more enumerated constants to an equivalent enumerated object. A parameter specifies whether the operation is case-sensitive.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>enumType</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> of the enumeration. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>A string containing the name or value to convert. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>ignoreCase</parameterReference>
+            <content>
+              <para>If <languageKeyword>true</languageKeyword>, ignore case; otherwise, regard case. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An object of type <parameterReference>enumType</parameterReference> whose value is represented by <parameterReference>value</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> or <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is not an <codeEntityReference autoUpgrade="true">T:System.Enum</codeEntityReference>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>value</parameterReference> is either an empty string ("") or only contains white space.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>value</parameterReference> is a name, but not one of the named constants defined for the enumeration. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <parameterReference>value</parameterReference> parameter contains a value, a named constant, or a list of named constants delimited by commas (,). One or more blanks spaces can precede or follow each value, name, or comma in <parameterReference>value</parameterReference>. If <parameterReference>value</parameterReference> is a list, the return value is the value of the specified names combined with a bitwise OR operation.</para>
+            <para>The <parameterReference>ignoreCase</parameterReference> parameter specifies whether this operation is case-sensitive.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code sample illustrates the use of <languageKeyword>Parse</languageKeyword>, taking a <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> and a <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> as parameters: </para>
+                <codeReference>enumparse#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.System.IConvertible.ToBoolean(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts the current value to a Boolean value based on the underlying type.</para>
+        </summary>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>Always. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Currently not implemented. Always throws an exception.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.System.IConvertible.ToByte(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts the current value to an 8-bit unsigned integer based on the underlying type.</para>
+        </summary>
+        <returnValue>
+          <para>The converted value.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Uses <codeEntityReference autoUpgrade="true">T:System.Convert</codeEntityReference> to perform the conversion.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.System.IConvertible.ToChar(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts the current value to a unicode character based on the underlying type.</para>
+        </summary>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>Always. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Currently not implemented. Always throws an exception.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.System.IConvertible.ToDateTime(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts the current value to a <codeEntityReference autoUpgrade="true">T:System.DateTime</codeEntityReference> based on the underlying type.</para>
+        </summary>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>Always. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Currently not implemented. Always throws an exception.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.System.IConvertible.ToDecimal(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts the current value to a <codeEntityReference autoUpgrade="true">T:System.Decimal</codeEntityReference> based on the underlying type.</para>
+        </summary>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>Always. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Currently not implemented. Always throws an exception.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.System.IConvertible.ToDouble(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts the current value to a double-precision floating point number based on the underlying type.</para>
+        </summary>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>Always. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Currently not implemented. Always throws an exception.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.System.IConvertible.ToInt16(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts the current value to a 16-bit signed integer based on the underlying type.</para>
+        </summary>
+        <returnValue>
+          <para>The converted value.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Uses <codeEntityReference autoUpgrade="true">T:System.Convert</codeEntityReference> to perform the conversion.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.System.IConvertible.ToInt32(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts the current value to a 32-bit signed integer based on the underlying type.</para>
+        </summary>
+        <returnValue>
+          <para>The converted value.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Uses <codeEntityReference autoUpgrade="true">T:System.Convert</codeEntityReference> to perform the conversion.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.System.IConvertible.ToInt64(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts the current value to a 64-bit signed integer based on the underlying type.</para>
+        </summary>
+        <returnValue>
+          <para>The converted value.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Uses <codeEntityReference autoUpgrade="true">T:System.Convert</codeEntityReference> to perform the conversion.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.System.IConvertible.ToSByte(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts the current value to an 8-bit signed integer based on the underlying type.</para>
+        </summary>
+        <returnValue>
+          <para>The converted value.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Uses <codeEntityReference autoUpgrade="true">T:System.Convert</codeEntityReference> to perform the conversion.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.System.IConvertible.ToSingle(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts the current value to a single-precision floating point number based on the underlying type.</para>
+        </summary>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>Always. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Currently not implemented. Always throws an exception.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.System.IConvertible.ToType(System.Type,System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts the current value to a specified type based on the underlying type.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>type</parameterReference>
+            <content>
+              <para>The type to convert to. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The converted value.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Uses <codeEntityReference autoUpgrade="true">T:System.Convert</codeEntityReference> to perform the conversion.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.System.IConvertible.ToUInt16(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts the current value to a 16-bit unsigned integer based on the underlying type.</para>
+        </summary>
+        <returnValue>
+          <para>The converted value.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Uses <codeEntityReference autoUpgrade="true">T:System.Convert</codeEntityReference> to perform the conversion.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.System.IConvertible.ToUInt32(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts the current value to a 32-bit unsigned integer based on the underlying type.</para>
+        </summary>
+        <returnValue>
+          <para>The converted value.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Uses <codeEntityReference autoUpgrade="true">T:System.Convert</codeEntityReference> to perform the conversion.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.System.IConvertible.ToUInt64(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts the current value to a 64-bit unsigned integer based on the underlying type.</para>
+        </summary>
+        <returnValue>
+          <para>The converted value.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Uses <codeEntityReference autoUpgrade="true">T:System.Convert</codeEntityReference> to perform the conversion.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.ToObject(System.Type,System.Byte)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns an instance of the specified enumeration type set to the specified 8-bit unsigned integer value.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>enumType</parameterReference>
+            <content>
+              <para>The enumeration for which to create a value. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The value to set. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An instance of the enumeration set to <parameterReference>value</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is not an <codeEntityReference autoUpgrade="true">T:System.Enum</codeEntityReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+      <overload>
+        <summary>
+          <para>Returns an instance of the specified enumeration type set to the specified value.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Enum.ToObject(System.Type,System.Int16)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns an instance of the specified enumeration type set to the specified 16-bit signed integer value.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>enumType</parameterReference>
+            <content>
+              <para>The enumeration for which to create a value. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The value to set. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An instance of the enumeration set to <parameterReference>value</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is not an <codeEntityReference autoUpgrade="true">T:System.Enum</codeEntityReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.ToObject(System.Type,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns an instance of the specified enumeration type set to the specified 32-bit signed integer value.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>enumType</parameterReference>
+            <content>
+              <para>The enumeration for which to create a value. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The value to set. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An instance of the enumeration set to <parameterReference>value</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is not an <codeEntityReference autoUpgrade="true">T:System.Enum</codeEntityReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.ToObject(System.Type,System.Int64)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns an instance of the specified enumeration type set to the specified 64-bit signed integer value.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>enumType</parameterReference>
+            <content>
+              <para>The enumeration for which to create a value. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The value to set. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An instance of the enumeration set to <parameterReference>value</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is not an <codeEntityReference autoUpgrade="true">T:System.Enum</codeEntityReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.ToObject(System.Type,System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns an instance of the specified enumeration set to the specified value.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>enumType</parameterReference>
+            <content>
+              <para>An enumeration. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The value. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An enumeration object whose value is <parameterReference>value</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is not an <codeEntityReference autoUpgrade="true">T:System.Enum</codeEntityReference>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>value</parameterReference> is not type <codeEntityReference autoUpgrade="true">T:System.SByte</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.Int16</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.Int64</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.UInt16</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.UInt32</codeEntityReference>, or <codeEntityReference autoUpgrade="true">T:System.UInt64</codeEntityReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <parameterReference>value</parameterReference> parameter is specified in terms of the underlying type of the enumeration.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.ToObject(System.Type,System.SByte)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns an instance of the specified enumeration type set to the specified 8-bit signed integer value.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>enumType</parameterReference>
+            <content>
+              <para>The enumeration for which to create a value. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The value to set. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An instance of the enumeration set to <parameterReference>value</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is not an <codeEntityReference autoUpgrade="true">T:System.Enum</codeEntityReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Enum.ToObject">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns an instance of the specified enumeration type set to the specified value.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.ToObject(System.Type,System.UInt16)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns an instance of the specified enumeration type set to the specified 16-bit unsigned integer value.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>enumType</parameterReference>
+            <content>
+              <para>The enumeration for which to create a value. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The value to set. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An instance of the enumeration set to <parameterReference>value</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is not an <codeEntityReference autoUpgrade="true">T:System.Enum</codeEntityReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.ToObject(System.Type,System.UInt32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns an instance of the specified enumeration type set to the specified 32-bit unsigned integer value.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>enumType</parameterReference>
+            <content>
+              <para>The enumeration for which to create a value. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The value to set. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An instance of the enumeration set to <parameterReference>value</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is not an <codeEntityReference autoUpgrade="true">T:System.Enum</codeEntityReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.ToObject(System.Type,System.UInt64)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns an instance of the specified enumeration type set to the specified 64-bit unsigned integer value.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>enumType</parameterReference>
+            <content>
+              <para>The enumeration for which to create a value. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The value to set. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An instance of the enumeration set to <parameterReference>value</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>enumType</parameterReference> is not an <codeEntityReference autoUpgrade="true">T:System.Enum</codeEntityReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.ToString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of this instance to its equivalent string representation.</para>
+        </summary>
+        <returnValue>
+          <para>The string representation of the value of this instance.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This method works as if the general format character, "G", were specified. That is, if the <codeEntityReference autoUpgrade="true">T:System.FlagsAttribute</codeEntityReference> is not applied to this enumerated type and there is a named constant equal to the value of this instance, then the return value is a string containing the name of the constant. If the <codeEntityReference autoUpgrade="true">T:System.FlagsAttribute</codeEntityReference> is applied and there is a combination of one or more named constants equal to the value of this instance, then the return value is a string containing a delimiter-separated list of the names of the constants. Otherwise, the return value is the string representation of the numeric value of this instance.</para>
+            <para>For more information about format characters, see the Remarks section of the <codeEntityReference autoUpgrade="true">M:System.Enum.Format(System.Type,System.Object,System.String)</codeEntityReference> method. For more information about formatting in general, see <link xlink:href="0D1364DA-5B30-4D42-8E6B-03378343343F">[&lt;topic://cpConFormattingOverview&gt;]</link>.</para>
+          </content>
+        </remarks>
+        <platformNotes>
+          <platformNote>
+            <platforms>
+              <platform>NETCF</platform>
+            </platforms>
+            <content>
+              <para>Because this method searches metadata tables, it heavily uses system resources and can impede performance.</para>
+            </content>
+          </platformNote>
+        </platformNotes>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates converting an enumerated value to a string.</para>
+                <codeReference>Classic Enum.ToString2 Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Enum.Format(System.Type,System.Object,System.String)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Enum.Parse(System.Type,System.String)</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Converts the value of this instance to its equivalent string representation.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Enum.ToString(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of this instance to its equivalent string representation using the specified format information.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>(Reserved) An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> that supplies format information about this instance. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The string representation of the name of the value of this instance as specified by <parameterReference>provider</parameterReference>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <parameterReference>provider</parameterReference> parameter is reserved; it does not participate in this operation and can be specified as <languageKeyword>null</languageKeyword>. Therefore, this method is equivalent to the <codeEntityReference autoUpgrade="true">M:System.Enum.ToString(System.String)</codeEntityReference> method that takes no parameters.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Enum.Format(System.Type,System.Object,System.String)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Enum.Parse(System.Type,System.String)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.ToString(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of this instance to its equivalent string representation using the specified format.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>format</parameterReference>
+            <content>
+              <para>A format string. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The string representation of the value of this instance as specified by <parameterReference>format</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.FormatException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>format</parameterReference> contains an invalid specification. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <parameterReference>format</parameterReference> parameter can contain format characters "G" or "g", "D" or "d", "X" or "x", and "F" or "f". If <parameterReference>format</parameterReference> is <languageKeyword>null</languageKeyword> or an empty string (""), the general format specifier ("G") is used. For more information about these format characters, see the Remarks section of the <codeEntityReference autoUpgrade="true">M:System.Enum.Format(System.Type,System.Object,System.String)</codeEntityReference> method. For more information about formatting in general, see <link xlink:href="0D1364DA-5B30-4D42-8E6B-03378343343F">[&lt;topic://cpConFormattingOverview&gt;]</link>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <codeReference>enum.tostring#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <link xlink:href="0D1364DA-5B30-4D42-8E6B-03378343343F">[&lt;topic://cpConFormattingOverview&gt;]</link>
+          <link xlink:href="DD1FF672-1052-42CF-8666-4924FB6CD1A1">[&lt;topic://cpConEnumerationFormatStrings&gt;]</link>
+          <codeEntityReference autoUpgrade="true">M:System.Enum.Format(System.Type,System.Object,System.String)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Enum.Parse(System.Type,System.String)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Enum.ToString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of this instance to its equivalent string representation.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Enum.ToString(System.String,System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of this instance to its equivalent string representation using the specified format and format information.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>format</parameterReference>
+            <content>
+              <para>A format specification. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>(Reserved) An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> that supplies format information about this instance. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The string representation of the value of this instance as specified by <parameterReference>format</parameterReference> and <parameterReference>provider</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.FormatException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>format</parameterReference> does not contain a valid format specification. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <parameterReference>format</parameterReference> parameter can contain format characters "G" or "g", "D" or "d", "X" or "x", and "F" or "f". If <parameterReference>format</parameterReference> is <languageKeyword>null</languageKeyword> or an empty string (""), the general format specifier ("G") is used. For more information about these format characters, see the Remarks section of the <codeEntityReference autoUpgrade="true">M:System.Enum.Format(System.Type,System.Object,System.String)</codeEntityReference> method. For more information about formatting in general, see <link xlink:href="0D1364DA-5B30-4D42-8E6B-03378343343F">[&lt;topic://cpConFormattingOverview&gt;]</link>.</para>
+            <para>The <parameterReference>provider</parameterReference> parameter is reserved; it does not participate in this operation and can be specified as <languageKeyword>null</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <link xlink:href="0D1364DA-5B30-4D42-8E6B-03378343343F">[&lt;topic://cpConFormattingOverview&gt;]</link>
+          <link xlink:href="DD1FF672-1052-42CF-8666-4924FB6CD1A1">[&lt;topic://cpConEnumerationFormatStrings&gt;]</link>
+          <codeEntityReference autoUpgrade="true">M:System.Enum.Format(System.Type,System.Object,System.String)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Enum.Parse(System.Type,System.String)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

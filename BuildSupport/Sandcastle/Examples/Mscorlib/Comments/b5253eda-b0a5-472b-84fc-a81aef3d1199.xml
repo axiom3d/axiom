@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="b5253eda-b0a5-472b-84fc-a81aef3d1199" revisionNumber="5">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.Random">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents a pseudo-random number generator, a device that produces a sequence of numbers that meet certain statistical requirements for randomness.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>Pseudo-random numbers are chosen with equal probability from a finite set of numbers. The chosen numbers are not completely random because a definite mathematical algorithm is used to select them, but they are sufficiently random for practical purposes. The current implementation of the <codeEntityReference autoUpgrade="true">T:System.Random</codeEntityReference> class is based on Donald E. Knuth's subtractive random number generator algorithm. For more information, see D. E. Knuth. "The Art of Computer Programming, volume 2: Seminumerical Algorithms". Addision-Wesley, Reading, MA, second edition, 1981. </para>
+            <para>The random number generation starts from a seed value. If the same seed is used repeatedly, the same series of numbers is generated. One way to produce different sequences is to make the seed value time-dependent, thereby producing a different series with each new instance of <codeEntityReference autoUpgrade="true">T:System.Random</codeEntityReference>.</para>
+            <para>To improve performance, create one <codeEntityReference autoUpgrade="true">T:System.Random</codeEntityReference> to generate many random numbers over time, instead of repeatedly creating a new <codeEntityReference autoUpgrade="true">T:System.Random</codeEntityReference> to generate one random number.</para>
+            <para>To generate a cryptographically secure random number suitable for creating a random password, for example, use a class derived from <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Security.Cryptography.RandomNumberGenerator</codeEntityReference> such as <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Security.Cryptography.RNGCryptoServiceProvider</codeEntityReference>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example creates <languageKeyword>Random</languageKeyword> objects with different overloads of the class constructor and generates sequences of random integers and doubles from the objects.</para>
+                <codeReference>System.Random.Ctor#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Random.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.Random</codeEntityReference> class.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Random.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <languageKeyword>Random</languageKeyword> class, using a time-dependent default seed value.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The distribution of the generated numbers is uniform; each number is equally likely to be returned.</para>
+            <para>The default seed value is derived from the system clock. However, when generating random numbers on high-performance systems, the system clock value might not produce the expected behavior. For details, see the Remarks section of the <codeEntityReference autoUpgrade="true">M:System.Random.#ctor(System.Int32)</codeEntityReference> constructor.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example creates <languageKeyword>Random</languageKeyword> objects with the parameterless class constructor and generates a sequence of random integers and doubles. The example illustrates that a different sequence is generated when the <languageKeyword>Random</languageKeyword> object is created again with the parameterless constructor.</para>
+                <codeReference>System.Random.Ctor#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.Random</codeEntityReference> class.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Random.#ctor(System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.Random</codeEntityReference> class, using the specified seed value.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>Seed</parameterReference>
+            <content>
+              <para>A number used to calculate a starting value for the pseudo-random number sequence. If a negative number is specified, the absolute value of the number is used. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.OverflowException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>Seed</parameterReference> is <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Int32.MinValue</codeEntityReference>, which causes an overflow when its absolute value is calculated. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>If your application requires different random number sequences, invoke this constructor repeatedly with different seed values. One way to produce a unique seed value is to make it time-dependent. For example, derive the seed value from the system clock.</para>
+            <para>However, if your application runs on a fast computer the system clock might not have time to change between invocations of this constructor; the seed value might be the same for different instances of <languageKeyword>Random</languageKeyword>. In that case, apply an algorithm to differentiate the seed value in each invocation.</para>
+            <para>For instance, the following C# expressions use a bitwise complement operation to generate two different seed values even if the system time value is the same.</para>
+            <code>Random rdm1 = new Random(unchecked((int)DateTime.Now.Ticks));
+Random rdm2 = new Random(~unchecked((int)DateTime.Now.Ticks));</code>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example creates Random objects with the class constructor that takes a seed parameter and generates a sequence of random integers and doubles. The example illustrates that the same sequence is generated when the Random object is created again with the constructor and seed parameter.</para>
+                <codeReference>System.Random.Ctor#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Random.Next">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a random number.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Random.Next">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a nonnegative random number.</para>
+        </summary>
+        <returnValue>
+          <para>A 32-bit signed integer greater than or equal to zero and less than <codeEntityReference autoUpgrade="true">F:System.Int32.MaxValue</codeEntityReference>.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example generates random integers with various overloads of the <languageKeyword>Next</languageKeyword> method.</para>
+                <codeReference>System.Random.Next#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Returns a random number.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Random.Next(System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a nonnegative random number less than the specified maximum.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>maxValue</parameterReference>
+            <content>
+              <para>The exclusive upper bound of the random number to be generated. <parameterReference>maxValue</parameterReference> must be greater than or equal to zero. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A 32-bit signed integer greater than or equal to zero, and less than <parameterReference>maxValue</parameterReference>; that is, the range of return values includes zero but not <parameterReference>maxValue</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>maxValue</parameterReference> is less than zero. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example generates random integers with various overloads of the <languageKeyword>Next</languageKeyword> method.</para>
+                <codeReference>System.Random.Next#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Random.Next(System.Int32,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a random number within a specified range.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>minValue</parameterReference>
+            <content>
+              <para>The inclusive lower bound of the random number returned. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>maxValue</parameterReference>
+            <content>
+              <para>The exclusive upper bound of the random number returned. <parameterReference>maxValue</parameterReference> must be greater than or equal to <parameterReference>minValue</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A 32-bit signed integer greater than or equal to <parameterReference>minValue</parameterReference> and less than <parameterReference>maxValue</parameterReference>; that is, the range of return values includes <parameterReference>minValue</parameterReference> but not <parameterReference>maxValue</parameterReference>. If <parameterReference>minValue</parameterReference> equals <parameterReference>maxValue</parameterReference>, <parameterReference>minValue</parameterReference> is returned.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>minValue</parameterReference> is greater than <parameterReference>maxValue</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example generates random integers with various overloads of the <languageKeyword>Next</languageKeyword> method.</para>
+                <codeReference>System.Random.Next#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Random.NextBytes(System.Byte[])">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Fills the elements of a specified array of bytes with random numbers.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>buffer</parameterReference>
+            <content>
+              <para>An array of bytes to contain random numbers. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>buffer</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Each element of the array of bytes is set to a random number greater than or equal to zero, and less than or equal to <codeEntityReference autoUpgrade="true">F:System.Byte.MaxValue</codeEntityReference>.</para>
+            <para>To generate a cryptographically secured random number suitable for creating a random password, for example, use a method such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Security.Cryptography.RNGCryptoServiceProvider.GetBytes(System.Byte[])</codeEntityReference>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <codeReference>Classic Random.NextBytes Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Random.NextDouble">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a random number between 0.0 and 1.0.</para>
+        </summary>
+        <returnValue>
+          <para>A double-precision floating point number greater than or equal to 0.0, and less than 1.0.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This method is the public version of the protected method, <codeEntityReference autoUpgrade="true">M:System.Random.Sample</codeEntityReference>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example uses the <languageKeyword>NextDouble</languageKeyword> method to generate sequences of random doubles.</para>
+                <codeReference>System.Random.Ctor#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Random.Sample">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a random number between 0.0 and 1.0.</para>
+        </summary>
+        <returnValue>
+          <para>A double-precision floating point number greater than or equal to 0.0, and less than 1.0.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Create a derived class of <codeEntityReference autoUpgrade="true">T:System.Random</codeEntityReference> to override this method and produce a different distribution.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example derives a class from <languageKeyword>Random</languageKeyword> and overrides the <languageKeyword>Sample</languageKeyword> method to generate a distribution of random numbers. This distribution is different than the uniform distribution generated by the <languageKeyword>Sample</languageKeyword> method of the base class.</para>
+                <codeReference>System.Random.Sample#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Random.NextDouble</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="9a755a94-6186-4719-8a0f-ccbc8f132fbe" revisionNumber="8">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.StackOverflowException">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The exception that is thrown when the execution stack overflows by having too many pending method calls. This class cannot be inherited.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.StackOverflowException</codeEntityReference> is thrown for execution stack overflow errors, typically in case of a very deep or unbounded recursion. The <codeEntityReference autoUpgrade="true">F:System.Reflection.Emit.OpCodes.Localloc</codeEntityReference> Microsoft intermediate language (MSIL) instruction throws <codeEntityReference autoUpgrade="true">T:System.StackOverflowException</codeEntityReference>.</para>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.StackOverflowException</codeEntityReference> uses the HRESULT COR_E_STACKOVERFLOW, that has the value 0x800703E9. For a list of initial property values for a <codeEntityReference autoUpgrade="true">T:System.StackOverflowException</codeEntityReference> object, see the <codeEntityReference autoUpgrade="true">M:System.StackOverflowException.#ctor</codeEntityReference> constructors.</para>
+            <alert class="note">
+              <para>The value of the inherited <codeEntityReference autoUpgrade="true">P:System.Exception.Data</codeEntityReference> property is always <languageKeyword>null</languageKeyword>.</para>
+            </alert>
+          </content>
+          <sections>
+            <section>
+              <title>Version Considerations</title>
+              <content>
+                <para>In prior versions of the .NET Framework, your application could catch a <codeEntityReference autoUpgrade="true">T:System.StackOverflowException</codeEntityReference> object (for example, to recover from unbounded recursion). However, that practice is currently discouraged because significant additional code is required to reliably catch a stack overflow exception and continue program execution. </para>
+                <para>Starting with the .NET Framework version 2.0, a <codeEntityReference autoUpgrade="true">T:System.StackOverflowException</codeEntityReference> object cannot be caught by a try-catch block and the corresponding process is terminated by default. Consequently, users are advised to write their code to detect and prevent a stack overflow. For example, if your application depends on recursion use a counter or a state condition to terminate the recursive loop.</para>
+              </content>
+            </section>
+          </sections>
+        </remarks>
+        <platformNotes>
+          <platformNote>
+            <platforms>
+              <platform>Win9xFamily</platform>
+            </platforms>
+            <content>
+              <para>A thrown <codeEntityReference autoUpgrade="true">T:System.StackOverflowException</codeEntityReference> cannot be caught by a try-catch block. Consequently, the exception causes the process to terminate immediately. </para>
+            </content>
+          </platformNote>
+        </platformNotes>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Exception</codeEntityReference>
+          <link xlink:href="f99a1d29-a2a8-47af-9707-9909f9010735">Handling and Throwing Exceptions</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.StackOverflowException.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.StackOverflowException</codeEntityReference> class, setting the <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference> property of the new instance to a system-supplied message that describes the error, such as "The requested operation caused a stack overflow." This message takes into account the current system culture.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.StackOverflowException</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>
+                    <languageKeyword>null</languageKeyword>. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The localized error message string. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+      <overload>
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.StackOverflowException</codeEntityReference> class.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.StackOverflowException.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.StackOverflowException</codeEntityReference> class.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.StackOverflowException.#ctor(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.StackOverflowException</codeEntityReference> class with a specified error message.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>message</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> that describes the error. The content of message is intended to be understood by humans. The caller of this constructor is required to ensure that this string has been localized for the current system culture. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.StackOverflowException</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>A null reference (<languageKeyword>Nothing</languageKeyword> in Visual Basic). </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The error message string. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.StackOverflowException.#ctor(System.String,System.Exception)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.StackOverflowException</codeEntityReference> class with a specified error message and a reference to the inner exception that is the cause of this exception.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>message</parameterReference>
+            <content>
+              <para>The error message that explains the reason for the exception. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>innerException</parameterReference>
+            <content>
+              <para>The exception that is the cause of the current exception. If the <parameterReference>innerException</parameterReference> parameter is not a null reference (<languageKeyword>Nothing</languageKeyword> in Visual Basic), the current exception is raised in a <languageKeyword>catch</languageKeyword> block that handles the inner exception. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>An exception that is thrown as a direct result of a previous exception can include a reference to the previous exception in the <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property. The <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property returns the same value that is passed into the constructor, or a null reference (<languageKeyword>Nothing</languageKeyword> in Visual Basic) if the <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property does not supply the inner exception value to the constructor.</para>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.StackOverflowException</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The inner exception reference. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The error message string. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Exception</codeEntityReference>
+          <link xlink:href="F99A1D29-A2A8-47AF-9707-9909F9010735">[&lt;topic://cpconHandlingThrowingExceptions&gt;]</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

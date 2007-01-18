@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="192bcbb9-9807-4e30-b490-314ae0e95e4c" revisionNumber="3">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.TypeCode">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Specifies the type of an object.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>Call the <codeEntityReference autoUpgrade="true">M:System.IConvertible.GetTypeCode</codeEntityReference> method on classes that implement the <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference> interface to obtain the type code for an instance of that class.</para>
+            <para>Otherwise, call an object's <codeEntityReference autoUpgrade="true">M:System.Object.GetType</codeEntityReference> method to obtain its <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> object, then call the <languageKeyword>Type</languageKeyword> object's <codeEntityReference autoUpgrade="true">M:System.Type.GetTypeCode(System.Type)</codeEntityReference> method to obtain the object's type code.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates how the <codeEntityReference autoUpgrade="true">T:System.TypeCode</codeEntityReference> enumeration can be used. In a decision block inside the WriteObjectInfo method, the <codeEntityReference autoUpgrade="true">T:System.TypeCode</codeEntityReference> of an <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference> parameter is examined, and an appropriate message is written to the console.</para>
+                <codeReference>System.TypeCode#2</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="F:System.TypeCode.Boolean">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>A simple type representing Boolean values of <languageKeyword>true</languageKeyword> or <languageKeyword>false</languageKeyword>.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.TypeCode.Byte">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>An integral type representing unsigned 8-bit integers with values between 0 and 255.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.TypeCode.Char">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>An integral type representing unsigned 16-bit integers with values between 0 and 65535. The set of possible values for the <codeEntityReference autoUpgrade="true">F:System.TypeCode.Char</codeEntityReference> type corresponds to the Unicode character set.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.TypeCode.DateTime">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>A type representing a date and time value.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.TypeCode.DBNull">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>A database null (column) value.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.TypeCode.Decimal">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>A simple type representing values ranging from 1.0 x 10 <superscript>-28</superscript> to approximately 7.9 x 10 <superscript>28</superscript> with 28-29 significant digits.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.TypeCode.Double">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>A floating point type representing values ranging from approximately 5.0 x 10 <superscript>-324</superscript> to 1.7 x 10 <superscript>308</superscript> with a precision of 15-16 digits.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.TypeCode.Empty">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>A null reference.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.TypeCode.Int16">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>An integral type representing signed 16-bit integers with values between -32768 and 32767.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.TypeCode.Int32">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>An integral type representing signed 32-bit integers with values between -2147483648 and 2147483647.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.TypeCode.Int64">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>An integral type representing signed 64-bit integers with values between -9223372036854775808 and 9223372036854775807.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.TypeCode.Object">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>A general type representing any reference or value type not explicitly represented by another <languageKeyword>TypeCode</languageKeyword>.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.TypeCode.SByte">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>An integral type representing signed 8-bit integers with values between -128 and 127.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.TypeCode.Single">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>A floating point type representing values ranging from approximately 1.5 x 10 <superscript>-45</superscript> to 3.4 x 10 <superscript>38</superscript> with a precision of 7 digits.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.TypeCode.String">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>A sealed class type representing Unicode character strings.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.TypeCode.UInt16">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>An integral type representing unsigned 16-bit integers with values between 0 and 65535.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.TypeCode.UInt32">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>An integral type representing unsigned 32-bit integers with values between 0 and 4294967295.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.TypeCode.UInt64">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>An integral type representing unsigned 64-bit integers with values between 0 and 18446744073709551615.</para>
+        </summary>
+      </dduexml>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="df505505-7a1a-43c8-8ddf-888b3f5c1b94" revisionNumber="5">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.EventArgs">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>
+            <codeEntityReference autoUpgrade="true">T:System.EventArgs</codeEntityReference> is the base class for classes containing event data. </para>
+        </summary>
+        <remarks>
+          <content>
+            <para>This class contains no event data; it is used by events that do not pass state information to an event handler when an event is raised. If the event handler requires state information, the application must derive a class from this class to hold the data.</para>
+            <para>For example, the <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.AssemblyLoadEventArgs</codeEntityReference> class is used to hold the data for assembly load events, and contains a <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Reflection.Assembly</codeEntityReference> that describes the loaded assembly.</para>
+            <para>For more information about events, see the <codeEntityReference autoUpgrade="true">T:System.EventHandler</codeEntityReference> topic.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code sample illustrates the use of <languageKeyword>EventArgs</languageKeyword>.</para>
+                <para>In this sample, FireEventArgs is a set of event arguments derived from <languageKeyword>EventArgs</languageKeyword>, and passed to the FireEventHandler when an event is raised by calling ActivateFireAlarm.</para>
+                <codeReference>EventArgs introduction#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.EventArgs.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.EventArgs</codeEntityReference> class.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>This constructor is only called by the common language runtime.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="F:System.EventArgs.Empty">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents an event with no event data.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The value of <codeEntityReference autoUpgrade="true">F:System.EventArgs.Empty</codeEntityReference> is a read-only instance of <codeEntityReference autoUpgrade="true">T:System.EventArgs</codeEntityReference> equivalent to the result of calling the <codeEntityReference autoUpgrade="true">M:System.EventArgs.#ctor</codeEntityReference> constructor.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+  </members>
+</doc>

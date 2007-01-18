@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="d0e59109-5ab5-4bef-a59f-8cbae73b58a0" revisionNumber="8">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.AppDomainInitializer">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents the callback method to invoke when the application domain is initialized.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>args</parameterReference>
+            <content>
+              <para>An array of strings to pass as arguments to the callback method.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>Use an <codeEntityReference autoUpgrade="true">T:System.AppDomainInitializer</codeEntityReference> delegate to specify the callback method to invoke when an instance of the <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference> class is initialized.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+  </members>
+</doc>

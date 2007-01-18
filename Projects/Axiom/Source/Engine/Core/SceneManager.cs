@@ -1855,6 +1855,11 @@ namespace Axiom.Core
                         pass.Emissive,
                         pass.Shininess );
                 }
+                else
+                {
+                    // Even with lighting off we still need to set ambient to white.
+                    targetRenderSystem.SetSurfaceParams( ColorEx.White, ColorEx.Black, ColorEx.Black, ColorEx.Black, 0 );
+                }
 
                 // Dynamic lighting enabled?
                 targetRenderSystem.LightingEnabled = pass.LightingEnabled;

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="ecc9dba5-7f7f-4b90-bc1b-dd9f4f6a8214" revisionNumber="9">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.MidpointRounding">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Specifies how mathematical rounding methods should process a number that is midway between two numbers.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>Use <codeEntityReference autoUpgrade="true">T:System.MidpointRounding</codeEntityReference> with appropriate overloads of <codeEntityReference qualifyHint="true" autoUpgrade="true">Overload:System.Math.Round</codeEntityReference> to provide more control in the rounding process. </para>
+            <para>It is ambiguous how a rounding method should handle a number that is at the midpoint between two numbers. For example, the number 2.5 is at the midpoint between 2 and 3. <codeEntityReference autoUpgrade="true">T:System.MidpointRounding</codeEntityReference> specifies whether rounding should be toward the even number, which yields 2 in this example, or away from zero, which yields 3. </para>
+            <para>The following table demonstrates the results of rounding some negative and positive numbers in conjunction with the values of <codeEntityReference autoUpgrade="true">T:System.MidpointRounding</codeEntityReference>:</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Original number</para>
+                  </entry>
+                  <entry>
+                    <para>AwayFromZero</para>
+                  </entry>
+                  <entry>
+                    <para>ToEven</para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>3.5</para>
+                </entry>
+                <entry>
+                  <para>4</para>
+                </entry>
+                <entry>
+                  <para>4</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>2.8</para>
+                </entry>
+                <entry>
+                  <para>3</para>
+                </entry>
+                <entry>
+                  <para>3</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>2.5</para>
+                </entry>
+                <entry>
+                  <para>3</para>
+                </entry>
+                <entry>
+                  <para>2</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>2.1</para>
+                </entry>
+                <entry>
+                  <para>2</para>
+                </entry>
+                <entry>
+                  <para>2</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>-2.1</para>
+                </entry>
+                <entry>
+                  <para>-2</para>
+                </entry>
+                <entry>
+                  <para>-2</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>-2.5</para>
+                </entry>
+                <entry>
+                  <para>-3</para>
+                </entry>
+                <entry>
+                  <para>-2</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>-2.8</para>
+                </entry>
+                <entry>
+                  <para>-3</para>
+                </entry>
+                <entry>
+                  <para>-3</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>-3.5 </para>
+                </entry>
+                <entry>
+                  <para>-4</para>
+                </entry>
+                <entry>
+                  <para>-4</para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the <codeEntityReference autoUpgrade="true">M:System.Math.Round(System.Decimal,System.Int32,System.MidpointRounding)</codeEntityReference>  method in conjunction with the <codeEntityReference autoUpgrade="true">T:System.MidpointRounding</codeEntityReference> enumeration.</para>
+                <codeReference>math.midpointrounding#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="F:System.MidpointRounding.AwayFromZero">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>When a number is halfway between two others, it is rounded toward the nearest number that is away from zero.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.MidpointRounding.ToEven">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>When a number is halfway between two others, it is rounded toward the nearest even number.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+  </members>
+</doc>

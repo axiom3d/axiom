@@ -1,0 +1,758 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="a45ee9c1-c9c7-43f9-9040-633ebfa28318" revisionNumber="2">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.DBNull">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents a null value.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>This class is used to indicate the absence of a known value, typically in a database application.</para>
+            <para>In database applications, a null object is a valid value for a field. This class differentiates between a null value (a null object) and an uninitialized value (the <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.DBNull.Value</codeEntityReference> instance). For example, a table can have records with uninitialized fields. By default, these uninitialized fields have the <codeEntityReference autoUpgrade="true">T:System.DBNull</codeEntityReference> value.</para>
+            <para>This class is also used in COM interop to distinguish between a VT_NULL variant, which is associated with a null object, and a VT_EMPTY variant, which is associated with the <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.DBNull.Value</codeEntityReference> instance.</para>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.DBNull</codeEntityReference> is never equal to anything.</para>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.DBNull</codeEntityReference> is a singleton class, which means only one instance of this class can exist. That sole instance is <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.DBNull.Value</codeEntityReference>.</para>
+            <para>Data intensive applications accessing SQL databases must use the <codeEntityReference qualifyHint="true" autoUpgrade="true">N:System.Data.SqlTypes</codeEntityReference> classes, which have inherent support for null values.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Convert.DBNull</codeEntityReference>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Convert.IsDBNull(System.Object)</codeEntityReference>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Runtime.InteropServices.VarEnum</codeEntityReference>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">N:System.Data.SqlTypes</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.DBNull.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Implements the <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.ISerializable</codeEntityReference> interface and returns the data needed to serialize the <codeEntityReference autoUpgrade="true">T:System.DBNull</codeEntityReference> object.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>info</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference> object containing information required to serialize the <codeEntityReference autoUpgrade="true">T:System.DBNull</codeEntityReference> object. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>context</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.StreamingContext</codeEntityReference> object containing the source and destination of the serialized stream associated with the <codeEntityReference autoUpgrade="true">T:System.DBNull</codeEntityReference> object. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>info</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.ISerializable</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.StreamingContext</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.DBNull.GetTypeCode">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the <codeEntityReference autoUpgrade="true">T:System.TypeCode</codeEntityReference> value for <codeEntityReference autoUpgrade="true">T:System.DBNull</codeEntityReference>.</para>
+        </summary>
+        <returnValue>
+          <para>The <codeEntityReference autoUpgrade="true">T:System.TypeCode</codeEntityReference> value for <codeEntityReference autoUpgrade="true">T:System.DBNull</codeEntityReference>, which is <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.TypeCode.DBNull</codeEntityReference>.</para>
+        </returnValue>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.TypeCode</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.DBNull.System.IConvertible.ToBoolean(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Throws an <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>. Called by the <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference> method.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> to be used to format the return value.</para>
+              <para>-or- </para>
+              <para>
+                <languageKeyword>null</languageKeyword> to obtain the format information from the current locale setting of the operating system. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>None, but the return value is typed <languageKeyword>bool</languageKeyword> to implement the <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference> interface.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>(Always thrown.) </para>
+            </content>
+          </exception>
+        </exceptions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.DBNull.System.IConvertible.ToByte(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Throws an <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>. Called by the <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference> method.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> to be used to format the return value.</para>
+              <para>-or- </para>
+              <para>
+                <languageKeyword>null</languageKeyword> to obtain the format information from the current locale setting of the operating system. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>None, but the return value is typed <languageKeyword>byte</languageKeyword> to implement the <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference> interface.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>(Always thrown.) </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>If the ToType <parameterReference>type</parameterReference> is a byte this method is called. This method throws an InvalidCastException.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.DBNull.System.IConvertible.ToChar(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Throws an <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>. Called by the <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference> method.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> to be used to format the return value.</para>
+              <para>-or- </para>
+              <para>
+                <languageKeyword>null</languageKeyword> to obtain the format information from the current locale setting of the operating system. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>None, but the return value is typed <languageKeyword>char</languageKeyword> to implement the <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference> interface.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>(Always thrown.) </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>If the ToType <parameterReference>type</parameterReference> is a char this method is called. This method throws an InvalidCastException.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.DBNull.System.IConvertible.ToDateTime(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Throws an <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>. Called by the <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference> method.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> to be used to format the return value.</para>
+              <para>-or- </para>
+              <para>
+                <languageKeyword>null</languageKeyword> to obtain the format information from the current locale setting of the operating system. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>None, but the return value is typed <languageKeyword>DateTime</languageKeyword> to implement the <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference> interface.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>(Always thrown.) </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>If the ToType <parameterReference>type</parameterReference> is a DateTime this method is called. This method throws an InvalidCastException.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.DateTime</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.DBNull.System.IConvertible.ToDecimal(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Throws an <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>. Called by the <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference> method.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> to be used to format the return value.</para>
+              <para>-or- </para>
+              <para>
+                <languageKeyword>null</languageKeyword> to obtain the format information from the current locale setting of the operating system. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>None, but the return value is typed <languageKeyword>decimal</languageKeyword> to implement the <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference> interface.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>If the ToType <parameterReference>type</parameterReference> is a Decimal this method is called. This method throws an InvalidCastException.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Decimal</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.DBNull.System.IConvertible.ToDouble(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Throws an <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>. Called by the <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference> method.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> to be used to format the return value.</para>
+              <para>-or- </para>
+              <para>
+                <languageKeyword>null</languageKeyword> to obtain the format information from the current locale setting of the operating system. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>None, but the return value is typed <languageKeyword>double</languageKeyword> to implement the <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference> interface.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>(Always thrown.) </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>If the ToType <parameterReference>type</parameterReference> is a double this method is called. This method throws an InvalidCastException.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Double</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.DBNull.System.IConvertible.ToInt16(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Throws an <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>. Called by the <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference> method.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> to be used to format the return value.</para>
+              <para>-or- </para>
+              <para>
+                <languageKeyword>null</languageKeyword> to obtain the format information from the current locale setting of the operating system. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>None, but the return value is typed <languageKeyword>short</languageKeyword> to implement the <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference> interface.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>(Always thrown.) </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>If the ToType <parameterReference>type</parameterReference> is a short this method is called. This method throws an InvalidCastException.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Int16</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.DBNull.System.IConvertible.ToInt32(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Throws an <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>. Called by the <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference> method.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> to be used to format the return value.</para>
+              <para>-or- </para>
+              <para>
+                <languageKeyword>null</languageKeyword> to obtain the format information from the current locale setting of the operating system. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>None, but the return value is typed <languageKeyword>int</languageKeyword> to implement the <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference> interface.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>(Always thrown.) </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>If the ToType <parameterReference>type</parameterReference> is an int this method is called. This method throws an InvalidCastException.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.DBNull.System.IConvertible.ToInt64(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Throws an <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>. Called by the <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference> method.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> to be used to format the return value.</para>
+              <para>-or- </para>
+              <para>
+                <languageKeyword>null</languageKeyword> to obtain the format information from the current locale setting of the operating system. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>None, but the return value is typed <languageKeyword>long</languageKeyword> to implement the <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference> interface.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>(Always thrown.) </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>If the ToType <parameterReference>type</parameterReference> is a long this method is called. This method throws an InvalidCastException.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Int64</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.DBNull.System.IConvertible.ToSByte(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Throws an <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>. Called by the <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference> method.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> to be used to format the return value.</para>
+              <para>-or- </para>
+              <para>
+                <languageKeyword>null</languageKeyword> to obtain the format information from the current locale setting of the operating system. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>None, but the return value is typed <languageKeyword>sbyte</languageKeyword> to implement the <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference> interface.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>(Always thrown.) </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>If the ToType <parameterReference>type</parameterReference> is a sbyte this method is called. This method throws an InvalidCastException.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.SByte</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.DBNull.System.IConvertible.ToSingle(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Throws an <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>. Called by the <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference> method.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> to be used to format the return value.</para>
+              <para>-or- </para>
+              <para>
+                <languageKeyword>null</languageKeyword> to obtain the format information from the current locale setting of the operating system. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>None, but the return value is typed <languageKeyword>float</languageKeyword> to implement the <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference> interface.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>(Always thrown.) </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>If the ToType <parameterReference>type</parameterReference> is a float this method is called. This method throws an InvalidCastException.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Single</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.DBNull.System.IConvertible.ToType(System.Type,System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Calls the appropriate method, depending on the specified type.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>type</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> to <codeEntityReference autoUpgrade="true">T:System.DBNull</codeEntityReference> into. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> to be used to format the return value.</para>
+              <para>-or- </para>
+              <para>
+                <languageKeyword>null</languageKeyword> to obtain the format information from the current locale setting of the operating system. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>None, but the return value is typed the same as <parameterReference>type</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>(Always thrown.) </para>
+            </content>
+          </exception>
+        </exceptions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.DBNull.System.IConvertible.ToUInt16(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Throws an <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>. Called by the <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference> method.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> to be used to format the return value.</para>
+              <para>-or- </para>
+              <para>
+                <languageKeyword>null</languageKeyword> to obtain the format information from the current locale setting of the operating system. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>None, but the return value is typed <languageKeyword>ushort</languageKeyword> to implement the <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference> interface.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>(Always thrown.) </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>If the ToType <parameterReference>type</parameterReference> is a ushort this method is called. This method throws an InvalidCastException.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.UInt16</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.DBNull.System.IConvertible.ToUInt32(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Throws an <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>. Called by the <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference> method.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> to be used to format the return value.</para>
+              <para>-or- </para>
+              <para>
+                <languageKeyword>null</languageKeyword> to obtain the format information from the current locale setting of the operating system. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>None, but the return value is typed <languageKeyword>uint</languageKeyword> to implement the <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference> interface.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>(Always thrown.) </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>If the ToType <parameterReference>type</parameterReference> is a uint this method is called. This method throws an InvalidCastException.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.UInt32</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.DBNull.System.IConvertible.ToUInt64(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Throws an <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>. Called by the <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference> method.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> to be used to format the return value.</para>
+              <para>-or- </para>
+              <para>
+                <languageKeyword>null</languageKeyword> to obtain the format information from the current locale setting of the operating system. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>None, but the return value is typed <languageKeyword>ulong</languageKeyword> to implement the <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference> interface.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>(Always thrown.) </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>If the ToType <parameterReference>type</parameterReference> is a ulong this method is called. This method throws an InvalidCastException.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.IConvertible.ToType(System.Type,System.IFormatProvider)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.UInt64</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.DBNull.ToString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns an empty string (<codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.String.Empty</codeEntityReference>).</para>
+        </summary>
+        <returnValue>
+          <para>An empty string (<codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.String.Empty</codeEntityReference>).</para>
+        </returnValue>
+        <relatedTopics>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.String.Empty</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Returns an empty string.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.DBNull.ToString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns an empty string.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.DBNull.ToString(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns an empty string using the specified <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.IFormatProvider</codeEntityReference>.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> to be used to format the return value.</para>
+              <para>-or- </para>
+              <para>
+                <languageKeyword>null</languageKeyword> to obtain the format information from the current locale setting of the operating system. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An empty string (<codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.String.Empty</codeEntityReference>).</para>
+        </returnValue>
+        <relatedTopics>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.String.Empty</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="F:System.DBNull.Value">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents the sole instance of the <codeEntityReference autoUpgrade="true">T:System.DBNull</codeEntityReference> class.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.DBNull</codeEntityReference> is a singleton class, which means only this instance of this class can exist.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+  </members>
+</doc>

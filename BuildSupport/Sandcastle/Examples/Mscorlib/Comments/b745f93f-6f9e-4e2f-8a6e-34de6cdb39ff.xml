@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="b745f93f-6f9e-4e2f-8a6e-34de6cdb39ff" revisionNumber="1">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.IAppDomainSetup">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents assembly binding information that can be added to an instance of <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference>.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>Members of this interface are used with the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.GetData(System.String)</codeEntityReference> and <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.SetData(System.String,System.Object)</codeEntityReference> methods to identify the <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference> data to use.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.IAppDomainSetup.ApplicationBase">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets the name of the directory containing the application.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> containg the name of the application base directory.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Used when getting or setting the assembly cache manager's APPBASE variable. This is the directory where the assembly manager should begin probing for assemblies. This property cannot be changed after the <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference> has finished its first bind.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.IAppDomainSetup.ApplicationName">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets the name of the application.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> that is the name of the application.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="P:System.IAppDomainSetup.CachePath">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets and sets the name of an area specific to the application where files are shadow copied.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> that is the fully-qualified name of the directory path and file name where files are shadow copied.</para>
+        </returnValue>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">P:System.IAppDomainSetup.ShadowCopyFiles</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">P:System.IAppDomainSetup.ShadowCopyDirectories</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="P:System.IAppDomainSetup.ConfigurationFile">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets and sets the name of the configuration file for an application domain.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> that specifies the name of the configuration file.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The configuration file describes the search rules and configuration data for the application domain. The host that creates the application domain is responsible for supplying this data because the meaningful values vary from situation to situation.</para>
+            <para>For example, the configuration data for ASP.NET applications is stored for each application, site, and computer, while the configuration data for an executable is stored for each application, user, and computer. Only the host knows the specifics of the configuration data for a particular circumstance.</para>
+            <para>This property cannot be changed after the <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference> has finished its first bind.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.IAppDomainSetup.DynamicBase">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets the directory where dynamically generated files are stored and accessed.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> that specifies the directory containing dynamic assemblies.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>When an <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference> is created, a directory called the Dynamic Directory can be specified to store dynamic assemblies. This directory is logically located under the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ApplicationBase</codeEntityReference>, although it can reside in another part of the directory.</para>
+            <para>This property cannot be changed after the <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference> has finished its first bind.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.IAppDomainSetup.LicenseFile">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets the location of the license file associated with this domain.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> that specifies the name of the license file.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="P:System.IAppDomainSetup.PrivateBinPath">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets the list of directories that is combined with the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ApplicationBase</codeEntityReference> directory to probe for private assemblies.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> containing a list of directory names, where each name is separated by a semicolon.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Private assemblies are deployed in the same directory structure as the application.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.IAppDomainSetup.PrivateBinPathProbe">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets the private binary directory path used to locate an application.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> containing a list of directory names, where each name is separated by a semicolon.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Set this property to exclude the application directory path from the search for the application. The search is restricted to private and global binary directory paths, and the global assembly cache.</para>
+            <para>This property cannot be changed after the <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference> has finished its first bind.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.IAppDomainSetup.ShadowCopyDirectories">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets the names of the directories containing assemblies to be shadow copied.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> containing a list of directory names, where each name is separated by a semicolon.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>All directories specified by <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.PrivateBinPath</codeEntityReference>, including the directory specified by <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ApplicationBase</codeEntityReference>, are shadow copied by default if this property is not set.</para>
+            <para>If an executable file is in use, updates to the executable file are stored in a shadow copy directory. Existing users continue using the original executable file until it terminates, while new users use the shadow copied executable file.</para>
+            <para>This property cannot be changed after the <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference> has finished its first bind.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.IAppDomainSetup.ShadowCopyFiles">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets a string that indicates whether shadow copying is turned on or off.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> containing the value "true" to indicate that shadow copying is turned on; or "false" to indicate that shadow copying is turned off.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This property cannot be changed after the <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference> has finished its first bind.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+  </members>
+</doc>

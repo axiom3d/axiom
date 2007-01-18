@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="90d56fab-e5d3-4333-9827-5fad9b638345" revisionNumber="1">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.ResolveEventArgs">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides data for the <codeEntityReference autoUpgrade="true">E:System.AppDomain.TypeResolve</codeEntityReference>, <codeEntityReference autoUpgrade="true">E:System.AppDomain.ResourceResolve</codeEntityReference>, and <codeEntityReference autoUpgrade="true">E:System.AppDomain.AssemblyResolve</codeEntityReference> events.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.ResolveEventArgs.#ctor(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.ResolveEventArgs</codeEntityReference> class.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>name</parameterReference>
+            <content>
+              <para>The name of an item to resolve. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>This constructor is typically only called by the common language runtime.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.ResolveEventArgs.Name">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the name of the item to resolve.</para>
+        </summary>
+        <returnValue>
+          <para>The name of the item to resolve.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+  </members>
+</doc>

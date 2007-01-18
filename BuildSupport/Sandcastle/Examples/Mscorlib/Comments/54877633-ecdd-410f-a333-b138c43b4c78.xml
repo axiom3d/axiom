@@ -1,0 +1,3208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="54877633-ecdd-410f-a333-b138c43b4c78" revisionNumber="20">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.Char">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents a Unicode character.</para>
+        </summary>
+        <threadSafety>
+          <para>This type is safe for multithreaded operations.</para>
+        </threadSafety>
+        <remarks>
+          <content>
+            <para>The .NET Framework uses the <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> structure to represent Unicode characters. The Unicode Standard identifies each Unicode character with a unique 21-bit scalar number called a code point, and defines the UTF-16 encoding form that specifies how a code point is encoded into a sequence of one or more 16-bit values. Each 16-bit value ranges from hexadecimal 0x0000 through 0xFFFF and is stored in a <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> structure.  The value of a <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object is its 16-bit numeric (ordinal) value.</para>
+            <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> object is a sequential collection of <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> structures that represents a string of text. Most Unicode characters can be represented by a single <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object, but a character that is encoded as a base character, surrogate pair, and/or combining character sequence is represented by multiple <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> objects. For this reason, a <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> structure in a <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> object is not necessarily equivalent to a single Unicode character.</para>
+            <para>For more information about the Unicode Standard, see the <externalLink><linkText>Unicode home page</linkText><linkUri>http://go.microsoft.com/fwlink/?LinkId=37123</linkUri></externalLink>.</para>
+          </content>
+          <sections>
+            <section>
+              <title>Functionality</title>
+              <content>
+                <para>The <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> structure provides methods to compare <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> objects, convert the value of the current <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object to an object of another type, and determine the Unicode category of a <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object:  </para>
+                <list class="bullet">
+                  <listItem>
+                    <para>Use the <codeEntityReference autoUpgrade="true">Overload:System.Char.CompareTo</codeEntityReference> and <codeEntityReference autoUpgrade="true">Overload:System.Char.Equals</codeEntityReference> methods to compare <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> objects.</para>
+                  </listItem>
+                  <listItem>
+                    <para>Use the <codeEntityReference autoUpgrade="true">M:System.Char.ConvertFromUtf32(System.Int32)</codeEntityReference> method to convert a code point to a string. Use the <codeEntityReference autoUpgrade="true">Overload:System.Char.ConvertToUtf32</codeEntityReference> methods to convert a <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object or a surrogate pair of <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> objects to a code point.</para>
+                  </listItem>
+                  <listItem>
+                    <para>Use the <codeEntityReference autoUpgrade="true">Overload:System.Char.GetUnicodeCategory</codeEntityReference> methods to get the Unicode category of a character. Use the <codeEntityReference autoUpgrade="true">Overload:System.Char.IsControl</codeEntityReference>, <codeEntityReference autoUpgrade="true">Overload:System.Char.IsDigit</codeEntityReference>, <codeEntityReference autoUpgrade="true">Overload:System.Char.IsHighSurrogate</codeEntityReference>, <codeEntityReference autoUpgrade="true">Overload:System.Char.IsLetter</codeEntityReference>, <codeEntityReference autoUpgrade="true">Overload:System.Char.IsLetterOrDigit</codeEntityReference>, <codeEntityReference autoUpgrade="true">Overload:System.Char.IsLower</codeEntityReference>, <codeEntityReference autoUpgrade="true">Overload:System.Char.IsLowSurrogate</codeEntityReference>, <codeEntityReference autoUpgrade="true">Overload:System.Char.IsNumber</codeEntityReference>, <codeEntityReference autoUpgrade="true">Overload:System.Char.IsPunctuation</codeEntityReference>, <codeEntityReference autoUpgrade="true">Overload:System.Char.IsSeparator</codeEntityReference>, <codeEntityReference autoUpgrade="true">Overload:System.Char.IsSurrogate</codeEntityReference>, <codeEntityReference autoUpgrade="true">Overload:System.Char.IsSurrogatePair</codeEntityReference>, <codeEntityReference autoUpgrade="true">Overload:System.Char.IsSymbol</codeEntityReference>, <codeEntityReference autoUpgrade="true">Overload:System.Char.IsUpper</codeEntityReference>, and <codeEntityReference autoUpgrade="true">Overload:System.Char.IsWhiteSpace</codeEntityReference> methods to determine whether a character is in a particular Unicode category such as digit, letter, punctuation, control character, and so on.</para>
+                  </listItem>
+                  <listItem>
+                    <para>Use the <codeEntityReference autoUpgrade="true">Overload:System.Char.GetNumericValue</codeEntityReference> methods to convert a <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object that represents a number to a numeric value type. Use <codeEntityReference autoUpgrade="true">M:System.Char.Parse(System.String)</codeEntityReference> and <codeEntityReference autoUpgrade="true">M:System.Char.TryParse(System.String,System.Char@)</codeEntityReference> to convert a character in a string into a <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object. Use <codeEntityReference autoUpgrade="true">Overload:System.Char.ToString</codeEntityReference> to convert a <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object to a <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> object.</para>
+                  </listItem>
+                  <listItem>
+                    <para>Use the <codeEntityReference autoUpgrade="true">Overload:System.Char.ToLower</codeEntityReference>, <codeEntityReference autoUpgrade="true">M:System.Char.ToLowerInvariant(System.Char)</codeEntityReference>, <codeEntityReference autoUpgrade="true">Overload:System.Char.ToUpper</codeEntityReference>, and <codeEntityReference autoUpgrade="true">M:System.Char.ToUpperInvariant(System.Char)</codeEntityReference> methods to change the case of a <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object. </para>
+                  </listItem>
+                </list>
+              </content>
+            </section>
+            <section>
+              <title>Interface Implementations</title>
+              <content>
+                <para>This type implements the <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.IComparable</codeEntityReference>, and <codeEntityReference autoUpgrade="true">T:System.IComparable`1</codeEntityReference> interfaces. Use the <codeEntityReference autoUpgrade="true">T:System.Convert</codeEntityReference> class for conversions instead of this type's explicit interface member implementation of <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference>.</para>
+              </content>
+            </section>
+          </sections>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates some of the methods in <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference>.</para>
+                <codeReference>System.Char [Type Level]#23</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.IComparable</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Char.CompareTo">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Compares this instance to a specified object or value type, and returns an indication of their relative values.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.CompareTo(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Compares this instance to a specified <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object and returns an indication of their relative values.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object to compare. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A signed number indicating the relative values of this instance and the <parameterReference>value</parameterReference> parameter.</para>
+          <table>
+            <tableHeader>
+              <row>
+                <entry>
+                  <para>Return Value </para>
+                </entry>
+                <entry>
+                  <para>Description </para>
+                </entry>
+              </row>
+            </tableHeader>
+            <row>
+              <entry>
+                <para>Less than zero </para>
+              </entry>
+              <entry>
+                <para>This instance is less than <parameterReference>value</parameterReference>. </para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Zero </para>
+              </entry>
+              <entry>
+                <para>This instance is equal to <parameterReference>value</parameterReference>. </para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Greater than zero </para>
+              </entry>
+              <entry>
+                <para>This instance is greater than <parameterReference>value</parameterReference>. </para>
+              </entry>
+            </row>
+          </table>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This method implements the <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.IComparable`1</codeEntityReference> interface and performs slightly better than the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Char.CompareTo(System.Object)</codeEntityReference> method because it does not have to convert the <parameterReference>value</parameterReference> parameter to an object.</para>
+            <para>The comparison performed by this method is based on the encoded values of this instance and <parameterReference>value</parameterReference>, not their lexicographical characteristics.</para>
+            <para>If the <codeEntityReference autoUpgrade="true">M:System.Char.CompareTo(System.Object)</codeEntityReference> method parameter type has fewer bits (is narrower) than the instance type, some programming languages perform an implicit widening conversion that transforms the value of the parameter into a value with more bits.</para>
+            <para>For example, suppose the instance type is <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference> and the parameter type is <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference>. The Microsoft C# compiler generates instructions to represent the value of the parameter as an <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference> object, then generates a <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Int32.CompareTo(System.Object)</codeEntityReference> method that compares the values of the <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference> instance and the <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference> parameter representation.</para>
+            <para>Typically, implicit widening conversions are performed on numeric types. Consult your programming language's documentation to determine if its compiler performs widening conversions. If the instance and parameter types mismatch and a suitable conversion is not available, the compiler generates instructions to box the parameter and invoke the <codeEntityReference autoUpgrade="true">M:System.Char.CompareTo(System.Object)</codeEntityReference> overload that takes an <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference> parameter.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates generic and non-generic versions of the <languageKeyword>CompareTo</languageKeyword> method for several value and reference types.</para>
+                <codeReference>T.CompareTo#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.IComparable</codeEntityReference>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Char.Equals(System.Object)</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Compares this instance to a specified object or value type, and returns an indication of their relative values.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Char.CompareTo(System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Compares this instance to a specified object and returns an indication of their relative values.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>An object to compare this instance to, or <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A signed number indicating the relative values of this instance and the <parameterReference>value</parameterReference> parameter.</para>
+          <table>
+            <tableHeader>
+              <row>
+                <entry>
+                  <para>Return Value </para>
+                </entry>
+                <entry>
+                  <para>Description </para>
+                </entry>
+              </row>
+            </tableHeader>
+            <row>
+              <entry>
+                <para>Less than zero </para>
+              </entry>
+              <entry>
+                <para>This instance is less than <parameterReference>value</parameterReference>. </para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Zero </para>
+              </entry>
+              <entry>
+                <para>This instance is equal to <parameterReference>value</parameterReference>. </para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Greater than zero </para>
+              </entry>
+              <entry>
+                <para>This instance is greater than <parameterReference>value</parameterReference>.</para>
+                <para>-or- </para>
+                <para>
+                  <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+              </entry>
+            </row>
+          </table>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>value</parameterReference> is not a <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.Char.CompareTo(System.Object)</codeEntityReference> method implements the <codeEntityReference autoUpgrade="true">T:System.IComparable</codeEntityReference> interface. </para>
+            <para>The <parameterReference>value</parameterReference> parameter must be <languageKeyword>null</languageKeyword> or an instance of <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference>; otherwise, an exception is thrown.</para>
+            <para>The comparison performed by this method is based on the encoded values of this instance and <parameterReference>value</parameterReference>, not necessarily their lexicographical characteristics. Any instance of <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference>, regardless of its value, is considered greater than <languageKeyword>null</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.CompareTo(System.Object)</codeEntityReference>.</para>
+                <codeReference>System.Char.CompareTo#19</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.IComparable</codeEntityReference>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Char.Equals(System.Object)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.ConvertFromUtf32(System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the specified Unicode code point into a UTF-16 encoded string.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>utf32</parameterReference>
+            <content>
+              <para>A 21-bit Unicode code point. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A string consisting of one <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object or a surrogate pair of <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> objects equivalent to the code point specified by the <parameterReference>utf32</parameterReference> parameter.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>utf32</parameterReference> is not a valid 21-bit Unicode code point ranging from U+0 through U+10FFFF, excluding the surrogate pair range from U+D800 through U+DFFF. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Use this method to convert a 21-bit Unicode code point to a UTF-16 encoded string before testing the string with methods such as <codeEntityReference autoUpgrade="false">M:System.Char.IsLowSurrogate(System.Char)</codeEntityReference> and <codeEntityReference autoUpgrade="false">M:System.Char.IsHighSurrogate(System.Char)</codeEntityReference>.</para>
+            <para>A valid code point outside the Basic Multilingual Plane (BMP) always yields a valid surrogate pair. However, a valid code point within the BMP might not yield a valid result according to the Unicode standard because no linguistic processing is used in the conversion. For that reason, use the <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Text.UTF32Encoding</codeEntityReference> class to convert bulk UTF-32 data into bulk UTF-16 data.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the <codeEntityReference autoUpgrade="true">M:System.Char.ConvertToUtf32(System.Char,System.Char)</codeEntityReference> and <codeEntityReference autoUpgrade="true">M:System.Char.ConvertFromUtf32(System.Int32)</codeEntityReference> methods.</para>
+                <codeReference>char.cvtutf32#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Char.ConvertToUtf32(System.Char,System.Char)</codeEntityReference>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Text.UTF32Encoding</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Char.ConvertToUtf32">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of a UTF-16 encoded surrogate pair into a Unicode code point.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.ConvertToUtf32(System.Char,System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of a UTF-16 encoded surrogate pair into a Unicode code point.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>highSurrogate</parameterReference>
+            <content>
+              <para>A high surrogate character (that is, a code point ranging from U+D800 through U+DBFF). </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>lowSurrogate</parameterReference>
+            <content>
+              <para>A low surrogate character (that is, a code point ranging from U+DC00 through U+DFFF). </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The 21-bit Unicode code point represented by the <parameterReference>highSurrogate</parameterReference> and <parameterReference>lowSurrogate</parameterReference> parameters.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>highSurrogate</parameterReference> is not in the range U+D800 through U+DBFF, or <parameterReference>lowSurrogate</parameterReference> is not in the range U+DC00 through U+DFFF. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Use this method to convert a surrogate pair into a 21-bit Unicode code point. To convert UTF-16 data into UTF-32 data, use the <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Text.UTF32Encoding</codeEntityReference> class.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the <codeEntityReference autoUpgrade="true">M:System.Char.ConvertToUtf32(System.Char,System.Char)</codeEntityReference> and <codeEntityReference autoUpgrade="true">M:System.Char.ConvertFromUtf32(System.Int32)</codeEntityReference> methods.</para>
+                <codeReference>char.cvtutf32#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Char.ConvertFromUtf32(System.Int32)</codeEntityReference>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Text.UTF32Encoding</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Converts the value of a UTF-16 encoded surrogate pair into a Unicode code point.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Char.ConvertToUtf32(System.String,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of a UTF-16 encoded character or surrogate pair at a specified position in a string into a Unicode code point.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A string that contains a character or surrogate pair. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>index</parameterReference>
+            <content>
+              <para>The index position of the character or surrogate pair in <parameterReference>s</parameterReference>.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The 21-bit Unicode code point represented by the character or surrogate pair at the position in the <parameterReference>s</parameterReference> parameter specified by the <parameterReference>index</parameterReference> parameter.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>index</parameterReference> is not a position within <parameterReference>s</parameterReference>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>The specified index position contains a surrogate pair, and either the first character in the pair is not a valid high surrogate or the second character in the pair is not a valid low surrogate. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Use this method to convert a character or surrogate pair into a 21-bit Unicode code point. To convert UTF-16 data into UTF-32 data, use the <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Text.UTF32Encoding</codeEntityReference> class.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the <codeEntityReference autoUpgrade="true">M:System.Char.ConvertToUtf32(System.Char,System.Char)</codeEntityReference> and <codeEntityReference autoUpgrade="true">M:System.Char.ConvertFromUtf32(System.Int32)</codeEntityReference> methods.</para>
+                <codeReference>char.cvtutf32#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Char.ConvertFromUtf32(System.Int32)</codeEntityReference>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Text.UTF32Encoding</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Char.Equals">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.Equals(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a value indicating whether this instance is equal to the specified <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>obj</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object to compare to this instance. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the <parameterReference>value</parameterReference> parameter equals the value of this instance; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This method implements the <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.IEquatable`1</codeEntityReference> interface, and performs slightly better than <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Char.Equals(System.Object)</codeEntityReference> because it does not need to unbox the <parameterReference>obj</parameterReference> parameter.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Char.Equals(System.Object)</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Char.Equals(System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a value indicating whether this instance is equal to a specified object.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>obj</parameterReference>
+            <content>
+              <para>An object to compare with this instance or <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>obj</parameterReference> is an instance of <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> and equals the value of this instance; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The comparison performed by this method is based on the encoded values of this instance and <parameterReference>obj</parameterReference>, not necessarily their lexicographical characteristics.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.Equals(System.Object)</codeEntityReference>.</para>
+                <codeReference>System.Char.Equals#20</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Char.CompareTo(System.Object)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.GetHashCode">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the hash code for this instance.</para>
+        </summary>
+        <returnValue>
+          <para>A 32-bit signed integer hash code.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Char.GetNumericValue">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts a specified numeric Unicode character to a double-precision floating point number.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.GetNumericValue(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the specified numeric Unicode character to a double-precision floating point number.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>c</parameterReference>
+            <content>
+              <para>A Unicode character. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The numeric value of <parameterReference>c</parameterReference> if that character represents a number; otherwise, -1.0.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>For example, if <parameterReference>c</parameterReference> is '5', the return value is 5. However, if <parameterReference>c</parameterReference> is 'z', the return value is -1.0.</para>
+            <para>A character has an associated numeric value if and only if it is a member of one of the following categories in <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>DecimalDigitNumber</languageKeyword>, <languageKeyword>LetterNumber</languageKeyword>, or <languageKeyword>OtherNumber</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.GetNumericValue(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.GetNumericValue#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>Converts a specified numeric Unicode character to a double-precision floating point number.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Char.GetNumericValue(System.String,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the numeric Unicode character at the specified position in a specified string to a double-precision floating point number.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>index</parameterReference>
+            <content>
+              <para>The character position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The numeric value of the character at position <parameterReference>index</parameterReference> in <parameterReference>s</parameterReference> if that character represents a number; otherwise, -1.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>index</parameterReference> is less than zero or greater than the last position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>For example, if the character at position <parameterReference>index</parameterReference> in <parameterReference>s</parameterReference> is '5', the return value is 5. However, if the character at position <parameterReference>index</parameterReference> in <parameterReference>s</parameterReference> is 'z', the return value is -1.</para>
+            <para>Character positions in a string are indexed starting from zero.</para>
+            <para>A character has an associated numeric value if and only if it is a member of one of the following categories in <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>DecimalDigitNumber</languageKeyword>, <languageKeyword>LetterNumber</languageKeyword>, or <languageKeyword>OtherNumber</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.GetNumericValue(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.GetNumericValue#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.GetTypeCode">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the <codeEntityReference autoUpgrade="true">T:System.TypeCode</codeEntityReference> for value type <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference>.</para>
+        </summary>
+        <returnValue>
+          <para>The enumerated constant, <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.TypeCode.Char</codeEntityReference>.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Char.GetUnicodeCategory">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Categorizes a Unicode character into a group identified by one of the <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference> values.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.GetUnicodeCategory(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Categorizes a specified Unicode character into a group identified by one of the <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference> values.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>c</parameterReference>
+            <content>
+              <para>A Unicode character. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference> value that identifies the group that contains <parameterReference>c</parameterReference>.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.GetUnicodeCategory(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.GetUnicodeCategory#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>Categorizes a Unicode character into a group identified by one of the <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference> values.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Char.GetUnicodeCategory(System.String,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Categorizes the character at the specified position in a specified string into a group identified by one of the <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference> values.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>index</parameterReference>
+            <content>
+              <para>The character position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference> enumerated constant that identifies the group that contains the character at position <parameterReference>index</parameterReference> in <parameterReference>s</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>index</parameterReference> is less than zero or greater than the last position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Character positions in a string are indexed starting from zero.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.GetUnicodeCategory(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.GetUnicodeCategory#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Char.IsControl">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether a specified Unicode character is categorized as a control character.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.IsControl(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the specified Unicode character is categorized as a control character.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>c</parameterReference>
+            <content>
+              <para>A Unicode character. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>c</parameterReference> is a control character; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Valid control characters are members of the following category in <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>Control</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.IsControl(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.IsControl#3</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>Indicates whether a specified Unicode character is categorized as a control character.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Char.IsControl(System.String,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the character at the specified position in a specified string is categorized as a control character.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A string. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>index</parameterReference>
+            <content>
+              <para>The character position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the character at position <parameterReference>index</parameterReference> in <parameterReference>s</parameterReference> is a control character; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>index</parameterReference> is less than zero or greater than the last position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Character positions in a string are indexed starting from zero.</para>
+            <para>Valid control characters are members of the following category in <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>Control</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.IsControl(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.IsControl#3</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Char.IsDigit">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether a Unicode character is categorized as a decimal digit.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.IsDigit(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the specified Unicode character is categorized as a decimal digit.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>c</parameterReference>
+            <content>
+              <para>A Unicode character. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>c</parameterReference> is a decimal digit; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This method determines if a <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> is a radix-10 digit. This contrasts with <codeEntityReference autoUpgrade="true">M:System.Char.IsNumber(System.Char)</codeEntityReference> which determines if a <languageKeyword>Char</languageKeyword> is of any numeric Unicode category.</para>
+            <para>Valid digits are members of the following category in <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>DecimalDigitNumber</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.IsDigit(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.IsDigit#4</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Char.IsNumber(System.Char)</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Indicates whether a Unicode character is categorized as a decimal digit.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Char.IsDigit(System.String,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the character at the specified position in a specified string is categorized as a decimal digit.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>index</parameterReference>
+            <content>
+              <para>The character position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the character at position <parameterReference>index</parameterReference> in <parameterReference>s</parameterReference> is a decimal digit; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>index</parameterReference> is less than zero or greater than the last position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This method determines if a <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> is a radix-10 digit. This contrasts with <codeEntityReference autoUpgrade="true">M:System.Char.IsNumber(System.Char)</codeEntityReference>, which determines if a <languageKeyword>Char</languageKeyword> is of any numeric Unicode category.</para>
+            <para>Character positions in a string are indexed starting from zero.</para>
+            <para>Valid digits are members of the following category in <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>DecimalDigitNumber</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.IsDigit(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.IsDigit#4</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Char.IsNumber(System.Char)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Char.IsHighSurrogate">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the specified <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object is a high surrogate.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.IsHighSurrogate(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the specified <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object is a high surrogate.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>c</parameterReference>
+            <content>
+              <para>A character. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the numeric value of the <parameterReference>c</parameterReference> parameter ranges from U+D800 through U+DBFF; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the <codeEntityReference autoUpgrade="true">M:System.Char.IsHighSurrogate(System.Char)</codeEntityReference>, <codeEntityReference autoUpgrade="true">M:System.Char.IsLowSurrogate(System.Char)</codeEntityReference>, and <codeEntityReference autoUpgrade="true">M:System.Char.IsSurrogatePair(System.String,System.Int32)</codeEntityReference> methods.</para>
+                <codeReference>char.surrogate#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>Indicates whether the specified <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object is a high surrogate.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Char.IsHighSurrogate(System.String,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object at the specified position in a string is a high surrogate.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A string. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>index</parameterReference>
+            <content>
+              <para>A position within <parameterReference>s</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the numeric value of the specified character in the <parameterReference>s</parameterReference> parameter ranges from U+D800 through U+DBFF; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>index</parameterReference> is not a position within <parameterReference>s</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the <codeEntityReference autoUpgrade="true">M:System.Char.IsHighSurrogate(System.Char)</codeEntityReference>, <codeEntityReference autoUpgrade="true">M:System.Char.IsLowSurrogate(System.Char)</codeEntityReference>, and <codeEntityReference autoUpgrade="true">M:System.Char.IsSurrogatePair(System.String,System.Int32)</codeEntityReference> methods.</para>
+                <codeReference>char.surrogate#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Char.IsLetter">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether a Unicode character is categorized as an alphabetic letter.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.IsLetter(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the specified Unicode character is categorized as an alphabetic letter.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>c</parameterReference>
+            <content>
+              <para>A Unicode character. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>c</parameterReference> is an alphabetic letter; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Valid letters are members of the following categories in <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>UppercaseLetter</languageKeyword>, <languageKeyword>LowercaseLetter</languageKeyword>, <languageKeyword>TitlecaseLetter</languageKeyword>, <languageKeyword>ModifierLetter</languageKeyword>, and <languageKeyword>OtherLetter</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.IsLetter(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.IsLetter#5</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Indicates whether a Unicode character is categorized as an alphabetic letter.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Char.IsLetter(System.String,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the character at the specified position in a specified string is categorized as an alphabetic character.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A string. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>index</parameterReference>
+            <content>
+              <para>The character position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the character at position <parameterReference>index</parameterReference> in <parameterReference>s</parameterReference> is an alphabetic character; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>index</parameterReference> is less than zero or greater than the last position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Character positions in a string are indexed starting from zero.</para>
+            <para>Valid letters are members of the following categories in <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>UppercaseLetter</languageKeyword>, <languageKeyword>LowercaseLetter</languageKeyword>, <languageKeyword>TitlecaseLetter</languageKeyword>, <languageKeyword>ModifierLetter</languageKeyword>, and <languageKeyword>OtherLetter</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.IsLetter(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.IsLetter#5</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Char.IsLetterOrDigit">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether a Unicode character is categorized as an alphabetic letter or a decimal digit.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.IsLetterOrDigit(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the specified Unicode character is categorized as an alphabetic letter or a decimal digit.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>c</parameterReference>
+            <content>
+              <para>A Unicode character. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>c</parameterReference> is an alphabetic letter or a decimal digit; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Valid alphabetic letters and decimal digits are members of the following categories in <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>UppercaseLetter</languageKeyword>, <languageKeyword>LowercaseLetter</languageKeyword>, <languageKeyword>TitlecaseLetter</languageKeyword>, <languageKeyword>ModifierLetter</languageKeyword>, <languageKeyword>OtherLetter</languageKeyword>, or <languageKeyword>DecimalDigitNumber</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.IsLetterOrDigit(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.IsLetterOrDigit#6</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Indicates whether a Unicode character is categorized as an alphabetic letter or a decimal digit.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Char.IsLetterOrDigit(System.String,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the character at the specified position in a specified string is categorized as an alphabetic character or a decimal digit.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A string. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>index</parameterReference>
+            <content>
+              <para>The character position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the character at position <parameterReference>index</parameterReference> in <parameterReference>s</parameterReference> is an alphabetic character or a decimal digit; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>index</parameterReference> is less than zero or greater than the last position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Character positions in a string are indexed starting from zero.</para>
+            <para>Valid alphabetic letters and decimal digits are members of the following categories in <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>UppercaseLetter</languageKeyword>, <languageKeyword>LowercaseLetter</languageKeyword>, <languageKeyword>TitlecaseLetter</languageKeyword>, <languageKeyword>ModifierLetter</languageKeyword>, <languageKeyword>OtherLetter</languageKeyword>, or <languageKeyword>DecimalDigitNumber</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.IsLetterOrDigit(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.IsLetterOrDigit#6</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Char.IsLower">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether a Unicode character is categorized as a lowercase letter.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.IsLower(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the specified Unicode character is categorized as a lowercase letter.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>c</parameterReference>
+            <content>
+              <para>A Unicode character. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>c</parameterReference> is a lowercase letter; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Valid lowercase letters are members of the following category in <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>LowercaseLetter</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.IsLower(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.IsLower#7</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Char.IsUpper(System.Char)</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Indicates whether a Unicode character is categorized as a lowercase letter.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Char.IsLower(System.String,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the character at the specified position in a specified string is categorized as a lowercase letter.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A string. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>index</parameterReference>
+            <content>
+              <para>The character position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the character at position <parameterReference>index</parameterReference> in <parameterReference>s</parameterReference> is a lowercase letter; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>index</parameterReference> is less than zero or greater than the last position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Character positions in a string are indexed starting from zero.</para>
+            <para>Valid lowercase letters are members of the following category in <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>LowercaseLetter</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.IsLower(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.IsLower#7</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Char.IsUpper(System.Char)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Char.IsLowSurrogate">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the specified <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object is a low surrogate.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.IsLowSurrogate(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the specified <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object is a low surrogate.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>c</parameterReference>
+            <content>
+              <para>A character. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the numeric value of the <parameterReference>c</parameterReference> parameter ranges from U+DC00 through U+DFFF; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the <codeEntityReference autoUpgrade="true">M:System.Char.IsHighSurrogate(System.Char)</codeEntityReference>, <codeEntityReference autoUpgrade="true">M:System.Char.IsLowSurrogate(System.Char)</codeEntityReference>, and <codeEntityReference autoUpgrade="true">M:System.Char.IsSurrogatePair(System.String,System.Int32)</codeEntityReference> methods.</para>
+                <codeReference>char.surrogate#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>Indicates whether the specified <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object is a low surrogate.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Char.IsLowSurrogate(System.String,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object at the specified position in a string is a low surrogate.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A string. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>index</parameterReference>
+            <content>
+              <para>A position within <parameterReference>s</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the numeric value of the specified character in the <parameterReference>s</parameterReference> parameter ranges from U+DC00 through U+DFFF; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>index</parameterReference> is not a position within <parameterReference>s</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the <codeEntityReference autoUpgrade="true">M:System.Char.IsHighSurrogate(System.Char)</codeEntityReference>, <codeEntityReference autoUpgrade="true">M:System.Char.IsLowSurrogate(System.Char)</codeEntityReference>, and <codeEntityReference autoUpgrade="true">M:System.Char.IsSurrogatePair(System.String,System.Int32)</codeEntityReference> methods.</para>
+                <codeReference>char.surrogate#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Char.IsNumber">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether a Unicode character is categorized as a number.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.IsNumber(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the specified Unicode character is categorized as a number.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>c</parameterReference>
+            <content>
+              <para>A Unicode character. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>c</parameterReference> is a number; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This method determines if a <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> is of any numeric Unicode category. This contrasts with <codeEntityReference autoUpgrade="true">M:System.Char.IsDigit(System.Char)</codeEntityReference>, which determines if a <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> is a radix-10 digit.</para>
+            <para>Valid numbers are members of the following categories in <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>DecimalDigitNumber</languageKeyword>, <languageKeyword>LetterNumber</languageKeyword>, or <languageKeyword>OtherNumber</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.IsNumber(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.IsNumber#8</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Char.IsDigit(System.Char)</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Indicates whether a Unicode character is categorized as a number.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Char.IsNumber(System.String,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the character at the specified position in a specified string is categorized as a number.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A string. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>index</parameterReference>
+            <content>
+              <para>The character position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the character at position <parameterReference>index</parameterReference> in <parameterReference>s</parameterReference> is a number; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>index</parameterReference> is less than zero or greater than the last position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This method determines if a <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> is of any numeric Unicode category. This contrasts with <codeEntityReference autoUpgrade="true">M:System.Char.IsDigit(System.Char)</codeEntityReference>, which determines if a <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> is a radix-10 digit.</para>
+            <para>Character positions in a string are indexed starting from zero.</para>
+            <para>Valid numbers are members of the following categories in <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>DecimalDigitNumber</languageKeyword>, <languageKeyword>LetterNumber</languageKeyword>, or <languageKeyword>OtherNumber</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.IsNumber(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.IsNumber#8</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Char.IsDigit(System.Char)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Char.IsPunctuation">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether a Unicode character is categorized as a punctuation mark.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.IsPunctuation(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the specified Unicode character is categorized as a punctuation mark.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>c</parameterReference>
+            <content>
+              <para>A Unicode character. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>c</parameterReference> is a punctuation mark; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Valid punctuation marks are members of the following categories in <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>ConnectorPunctuation</languageKeyword>, <languageKeyword>DashPunctuation</languageKeyword>, <languageKeyword>OpenPunctuation</languageKeyword>, <languageKeyword>ClosePunctuation</languageKeyword>, <languageKeyword>InititalQuotePunctuation</languageKeyword>, <languageKeyword>FinalQuotePunctuation</languageKeyword>, or <languageKeyword>OtherPunctuation</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.IsPunctuation(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.IsPunctuation#9</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Indicates whether a Unicode character is categorized as a punctuation mark.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Char.IsPunctuation(System.String,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the character at the specified position in a specified string is categorized as a punctuation mark.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A string. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>index</parameterReference>
+            <content>
+              <para>The character position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the character at position <parameterReference>index</parameterReference> in <parameterReference>s</parameterReference> is a punctuation mark; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>index</parameterReference> is less than zero or greater than the last position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Character positions in a string are indexed starting from zero.</para>
+            <para>Valid punctuation marks are members of the following categories in <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>ConnectorPunctuation</languageKeyword>, <languageKeyword>DashPunctuation</languageKeyword>, <languageKeyword>OpenPunctuation</languageKeyword>, <languageKeyword>ClosePunctuation</languageKeyword>, <languageKeyword>InititalQuotePunctuation</languageKeyword>, <languageKeyword>FinalQuotePunctuation</languageKeyword>, or <languageKeyword>OtherPunctuation</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.IsPunctuation(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.IsPunctuation#9</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Char.IsSeparator">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether a Unicode character is categorized as a separator character.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.IsSeparator(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the specified Unicode character is categorized as a separator character.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>c</parameterReference>
+            <content>
+              <para>A Unicode character. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>c</parameterReference> is a separator character; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Valid separator characters are members of the following categories in <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>SpaceSeparator</languageKeyword>, <languageKeyword>LineSeparator</languageKeyword>, or <languageKeyword>ParagraphSeparator</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.IsSeparator(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.IsSeparator#10</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Indicates whether a Unicode character is categorized as a separator character.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Char.IsSeparator(System.String,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the character at the specified position in a specified string is categorized as a separator character.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A string. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>index</parameterReference>
+            <content>
+              <para>The character position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the character at position <parameterReference>index</parameterReference> in <parameterReference>s</parameterReference> is a separator character; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>index</parameterReference> is less than zero or greater than the last position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Character positions in a string are indexed starting from zero.</para>
+            <para>Valid separator characters are members of the following categories in <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>SpaceSeparator</languageKeyword>, <languageKeyword>LineSeparator</languageKeyword>, or <languageKeyword>ParagraphSeparator</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.IsSeparator(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.IsSeparator#10</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Char.IsSurrogate">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether a Unicode character is categorized as a surrogate character.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.IsSurrogate(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the specified Unicode character is categorized as a surrogate character.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>c</parameterReference>
+            <content>
+              <para>A Unicode character. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>c</parameterReference> is a surrogate character; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Valid surrogate characters are members of the following category in <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>Surrogate</languageKeyword>.</para>
+            <para>For more information about surrogate pairs, see the Unicode Standard at the <externalLink><linkText>Unicode home page</linkText><linkUri>http://go.microsoft.com/fwlink/?linkid=37123</linkUri></externalLink>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.IsSurrogate(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.IsSurrogate#11</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Indicates whether a Unicode character is categorized as a surrogate character.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Char.IsSurrogate(System.String,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the character at the specified position in a specified string is categorized as a surrogate character.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A string. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>index</parameterReference>
+            <content>
+              <para>The character position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the character at position <parameterReference>index</parameterReference> in <parameterReference>s</parameterReference> is a surrogate character; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>index</parameterReference> is less than zero or greater than the last position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Character positions in a string are indexed starting from zero.</para>
+            <para>Valid surrogate characters are members of the following category in <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>Surrogate</languageKeyword>.</para>
+            <para>For more information about surrogate pairs, see the Unicode Standard at the <externalLink><linkText>Unicode </linkText><linkUri>http://go.microsoft.com/fwlink/?linkid=37123</linkUri></externalLink>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.IsSurrogate(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.IsSurrogate#11</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Char.IsSurrogatePair">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether two specified <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> objects form a surrogate pair.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.IsSurrogatePair(System.Char,System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the two specified <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> objects form a surrogate pair.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>highSurrogate</parameterReference>
+            <content>
+              <para>A character. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>lowSurrogate</parameterReference>
+            <content>
+              <para>A character. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the numeric value of the <parameterReference>highSurrogate</parameterReference> parameter ranges from U+D800 through U+DBFF, and the numeric value of the <parameterReference>lowSurrogate</parameterReference> parameter ranges from U+DC00 through U+DFFF; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the <codeEntityReference autoUpgrade="true">M:System.Char.IsHighSurrogate(System.Char)</codeEntityReference>, <codeEntityReference autoUpgrade="true">M:System.Char.IsLowSurrogate(System.Char)</codeEntityReference>, and <codeEntityReference autoUpgrade="true">M:System.Char.IsSurrogatePair(System.String,System.Int32)</codeEntityReference> methods.</para>
+                <codeReference>char.surrogate#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Char.IsHighSurrogate(System.Char)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Char.IsLowSurrogate(System.Char)</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Indicates whether two specified <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> objects form a surrogate pair.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Char.IsSurrogatePair(System.String,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether two adjacent <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> objects at a specified position in a string form a surrogate pair.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A string. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>index</parameterReference>
+            <content>
+              <para>A position within <parameterReference>s</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the <parameterReference>s</parameterReference> parameter and the <parameterReference>index</parameterReference> parameter specify a pair of adjacent characters, and the numeric value of the character at position <parameterReference>index</parameterReference> ranges from U+D800 through U+DBFF, and the numeric value of the character at position <parameterReference>index</parameterReference>+1 ranges from U+DC00 through U+DFFF; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>index</parameterReference> is not a position within <parameterReference>s</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the <codeEntityReference autoUpgrade="true">M:System.Char.IsHighSurrogate(System.Char)</codeEntityReference>, <codeEntityReference autoUpgrade="true">M:System.Char.IsLowSurrogate(System.Char)</codeEntityReference>, and <codeEntityReference autoUpgrade="true">M:System.Char.IsSurrogatePair(System.String,System.Int32)</codeEntityReference> methods.</para>
+                <codeReference>char.surrogate#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Char.IsHighSurrogate(System.Char)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Char.IsLowSurrogate(System.Char)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Char.IsSymbol">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether a Unicode character is categorized as a symbol character.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.IsSymbol(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the specified Unicode character is categorized as a symbol character.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>c</parameterReference>
+            <content>
+              <para>A Unicode character. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>c</parameterReference> is a symbol character; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Valid symbols are members of the following categories in <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>MathSymbol</languageKeyword>, <languageKeyword>CurrencySymbol</languageKeyword>, <languageKeyword>ModifierSymbol</languageKeyword>, and <languageKeyword>OtherSymbol</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.IsSymbol(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.IsSymbol#12</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Indicates whether a Unicode character is categorized as a symbol character.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Char.IsSymbol(System.String,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the character at the specified position in a specified string is categorized as a symbol character.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A string. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>index</parameterReference>
+            <content>
+              <para>The character position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the character at position <parameterReference>index</parameterReference> in <parameterReference>s</parameterReference> is a symbol character; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>index</parameterReference> is less than zero or greater than the last position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Character positions in a string are indexed starting from zero.</para>
+            <para>Valid symbols are members of the following categories in <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>MathSymbol</languageKeyword>, <languageKeyword>CurrencySymbol</languageKeyword>, <languageKeyword>ModifierSymbol</languageKeyword>, and <languageKeyword>OtherSymbol</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.IsSymbol(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.IsSymbol#12</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Char.IsUpper">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether a Unicode character is categorized as an uppercase letter.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.IsUpper(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the specified Unicode character is categorized as an uppercase letter.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>c</parameterReference>
+            <content>
+              <para>A Unicode character. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>c</parameterReference> is an uppercase letter; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Valid uppercase letters are members of the following category in <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>UppercaseLetter</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Char.IsLower(System.Char)</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Indicates whether a Unicode character is categorized as an uppercase letter.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Char.IsUpper(System.String,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the character at the specified position in a specified string is categorized as an uppercase letter.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A string. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>index</parameterReference>
+            <content>
+              <para>The character position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the character at position <parameterReference>index</parameterReference> in <parameterReference>s</parameterReference> is an uppercase letter; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>index</parameterReference> is less than zero or greater than the last position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Character positions in a string are indexed starting from zero.</para>
+            <para>Valid uppercase letters are members of the following category in <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>: <languageKeyword>UppercaseLetter</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Char.IsWhiteSpace">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether a Unicode character is categorized as white space.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.IsWhiteSpace(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the specified Unicode character is categorized as white space.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>c</parameterReference>
+            <content>
+              <para>A Unicode character. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>c</parameterReference> is white space; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>White space characters are the following Unicode characters:</para>
+            <list class="bullet">
+              <listItem>
+                <para>Members of the <codeEntityReference autoUpgrade="true">F:System.Globalization.UnicodeCategory.SpaceSeparator</codeEntityReference> category, which includes the SPACE character (U+0020).</para>
+              </listItem>
+              <listItem>
+                <para>Members of the <codeEntityReference autoUpgrade="true">F:System.Globalization.UnicodeCategory.LineSeparator</codeEntityReference> category, which consists solely of the LINE SEPARATOR character (U+2028).</para>
+              </listItem>
+              <listItem>
+                <para>Members of the <codeEntityReference autoUpgrade="true">F:System.Globalization.UnicodeCategory.ParagraphSeparator</codeEntityReference> category, which consists solely of the PARAGRAPH SEPARATOR character (U+2029).</para>
+              </listItem>
+              <listItem>
+                <para>The characters CHARACTER TABULATION (U+0009), LINE FEED (U+000A), LINE TABULATION (U+000B), FORM FEED (U+000C), CARRIAGE RETURN (U+000D), NEXT LINE (U+0085), and NO-BREAK SPACE (U+0000A0).</para>
+              </listItem>
+            </list>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.IsWhiteSpace(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.IsWhiteSpace#14</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Indicates whether a Unicode character is categorized as white space.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Char.IsWhiteSpace(System.String,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the character at the specified position in a specified string is categorized as white space.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A string. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>index</parameterReference>
+            <content>
+              <para>The character position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the character at position <parameterReference>index</parameterReference> in <parameterReference>s</parameterReference> is white space; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>index</parameterReference> is less than zero or greater than the last position in <parameterReference>s</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Character positions in a string are indexed starting from zero.</para>
+            <para>White space characters are the following Unicode characters:</para>
+            <list class="bullet">
+              <listItem>
+                <para>Members of the <codeEntityReference autoUpgrade="true">F:System.Globalization.UnicodeCategory.SpaceSeparator</codeEntityReference> category, which includes the SPACE character (U+0020).</para>
+              </listItem>
+              <listItem>
+                <para>Members of the <codeEntityReference autoUpgrade="true">F:System.Globalization.UnicodeCategory.LineSeparator</codeEntityReference> category, which consists solely of the LINE SEPARATOR character (U+2028).</para>
+              </listItem>
+              <listItem>
+                <para>Members of the <codeEntityReference autoUpgrade="true">F:System.Globalization.UnicodeCategory.ParagraphSeparator</codeEntityReference> category, which consists solely of the PARAGRAPH SEPARATOR character (U+2029).</para>
+              </listItem>
+              <listItem>
+                <para>The characters CHARACTER TABULATION (U+0009), LINE FEED (U+000A), LINE TABULATION (U+000B), FORM FEED (U+000C), CARRIAGE RETURN (U+000D), NEXT LINE (U+0085), and NO-BREAK SPACE (U+0000A0).</para>
+              </listItem>
+            </list>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.IsWhiteSpace(System.Char)</codeEntityReference>.</para>
+                <codeReference>System.Char.IsWhiteSpace#14</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Globalization.UnicodeCategory</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="F:System.Char.MaxValue">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents the largest possible value of a <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference>. This field is constant.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The value of this constant is hexadecimal 0xFFFF.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">F:System.Char.MinValue</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="F:System.Char.MinValue">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents the smallest possible value of a <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference>. This field is constant.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The value of this constant is hexadecimal 0x00.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">F:System.Char.MaxValue</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.Parse(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of the specified string to its equivalent Unicode character.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A string containing a single character or <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A Unicode character equivalent to the sole character in <parameterReference>s</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.FormatException</codeEntityReference>
+            <content>
+              <para>The length of <parameterReference>s</parameterReference> is not 1. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.Parse(System.String)</codeEntityReference>.</para>
+                <codeReference>System.Char.Parse#15</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Char.ToString</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.System.IConvertible.ToBoolean(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>
+            <embeddedLabel>Note</embeddedLabel>   This conversion is not supported. Attempting to do so throws an <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> object. (Specify <languageKeyword>null</languageKeyword> because the <parameterReference>provider</parameterReference> parameter is ignored.)</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>No value is returned.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>This conversion is not supported.</para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.System.IConvertible.ToByte(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts the value of the current <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object to an 8-bit unsigned integer.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> object. (Specify <languageKeyword>null</languageKeyword> because the <parameterReference>provider</parameterReference> parameter is ignored.)</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The converted value of the current <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.System.IConvertible.ToChar(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Returns the current <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> object. (Specify <languageKeyword>null</languageKeyword> because the <parameterReference>provider</parameterReference> parameter is ignored.)</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The value of the current <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.System.IConvertible.ToDateTime(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>
+            <embeddedLabel>Note</embeddedLabel>   This conversion is not supported. Attempting to do so throws an <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> object. (Specify <languageKeyword>null</languageKeyword> because the <parameterReference>provider</parameterReference> parameter is ignored.)</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>No value is returned.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>This conversion is not supported.</para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.System.IConvertible.ToDecimal(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>
+            <embeddedLabel>Note</embeddedLabel>   This conversion is not supported. Attempting to do so throws an <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> object. (Specify <languageKeyword>null</languageKeyword> because the <parameterReference>provider</parameterReference> parameter is ignored.)</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>No value is returned.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>This conversion is not supported.</para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.System.IConvertible.ToDouble(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>
+            <embeddedLabel>Note</embeddedLabel>   This conversion is not supported. Attempting to do so throws an <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> object. (Specify <languageKeyword>null</languageKeyword> because the <parameterReference>provider</parameterReference> parameter is ignored.)</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>No value is returned.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>This conversion is not supported.</para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.System.IConvertible.ToInt16(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts value of the current <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object to a 16-bit signed integer.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> object. (Specify <languageKeyword>null</languageKeyword> because the <parameterReference>provider</parameterReference> parameter is ignored.)</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The converted value of the current <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object.</para>
+        </returnValue>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.System.IConvertible.ToInt32(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts value of the current <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object to a 32-bit signed integer.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> object. (Specify <languageKeyword>null</languageKeyword> because the <parameterReference>provider</parameterReference> parameter is ignored.)</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The converted value of the current <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object.</para>
+        </returnValue>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.System.IConvertible.ToInt64(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts value of the current <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object to a 64-bit signed integer.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> object. (Specify <languageKeyword>null</languageKeyword> because the <parameterReference>provider</parameterReference> parameter is ignored.)</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The converted value of the current <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object.</para>
+        </returnValue>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.System.IConvertible.ToSByte(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts value of the current <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object to an 8-bit signed integer.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> object. (Specify <languageKeyword>null</languageKeyword> because the <parameterReference>provider</parameterReference> parameter is ignored.)</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The converted value of the current <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object.</para>
+        </returnValue>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.System.IConvertible.ToSingle(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>
+            <embeddedLabel>Note</embeddedLabel>   This conversion is not supported. Attempting to do so throws an <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> object. (Specify <languageKeyword>null</languageKeyword> because the <parameterReference>provider</parameterReference> parameter is ignored.)</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>No value is returned.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>This conversion is not supported.</para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.System.IConvertible.ToType(System.Type,System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts the value of the current <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object to an object of the specified type using the specified <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> object.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>type</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> object. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> object. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An object of the specified type.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>type</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>The value of the current <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object cannot be converted to the type specified by the <parameterReference>type</parameterReference> parameter. </para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.System.IConvertible.ToUInt16(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts value of the current <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object to a 16-bit unsigned integer.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> object. (Specify <languageKeyword>null</languageKeyword> because the <parameterReference>provider</parameterReference> parameter is ignored.)</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The converted value of the current <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.System.IConvertible.ToUInt32(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts value of the current <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object to a 32-bit unsigned integer.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> object. (Specify <languageKeyword>null</languageKeyword> because the <parameterReference>provider</parameterReference> parameter is ignored.)</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The converted value of the current <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.System.IConvertible.ToUInt64(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts value of the current <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object to a 64-bit unsigned integer.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> object. (Specify <languageKeyword>null</languageKeyword> because the <parameterReference>provider</parameterReference> parameter is ignored.)</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The converted value of the current <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> object.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.ToLower(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of a Unicode character to its lowercase equivalent.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>c</parameterReference>
+            <content>
+              <para>A Unicode character. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The lowercase equivalent of <parameterReference>c</parameterReference>, or the unchanged value of <parameterReference>c</parameterReference>, if <parameterReference>c</parameterReference> is already lowercase or not alphabetic.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Casing rules are obtained from the current culture.</para>
+            <para>Use <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.String.ToLower</codeEntityReference> to convert a string to lowercase.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.ToLower(System.Char,System.Globalization.CultureInfo)</codeEntityReference>.</para>
+                <codeReference>System.Char.ToLower#16</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.String.ToLower</codeEntityReference>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Char.ToUpper(System.Char,System.Globalization.CultureInfo)</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Converts the value of a Unicode character to its lowercase equivalent.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Char.ToLower(System.Char,System.Globalization.CultureInfo)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of a specified Unicode character to its lowercase equivalent using specified culture-specific formatting information.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>c</parameterReference>
+            <content>
+              <para>A Unicode character. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>culture</parameterReference>
+            <content>
+              <para>A <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Globalization.CultureInfo</codeEntityReference> object that supplies culture-specific casing rules, or <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The lowercase equivalent of <parameterReference>c</parameterReference>, modified according to <parameterReference>culture</parameterReference>, or the unchanged value of <parameterReference>c</parameterReference>, if <parameterReference>c</parameterReference> is already lowercase or not alphabetic.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>culture</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Use <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.String.ToLower</codeEntityReference> to convert a string to lowercase.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.ToLower(System.Char,System.Globalization.CultureInfo)</codeEntityReference>.</para>
+                <codeReference>System.Char.ToLower#16</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.Globalization.CultureInfo.CurrentCulture</codeEntityReference>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.String.ToLower</codeEntityReference>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Char.ToUpper(System.Char,System.Globalization.CultureInfo)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Char.ToLower">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of a Unicode character to its lowercase equivalent.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.ToLowerInvariant(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of a Unicode character to its lowercase equivalent using the casing rules of the invariant culture.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>c</parameterReference>
+            <content>
+              <para>A Unicode character. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The lowercase equivalent of the <parameterReference>c</parameterReference> parameter, or the unchanged value of <parameterReference>c</parameterReference>, if <parameterReference>c</parameterReference> is already lowercase or not alphabetic.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>If your application is unaffected by the current culture and depends on the case of a character changing in a predictable way, then use the <codeEntityReference autoUpgrade="true">M:System.Char.ToLowerInvariant(System.Char)</codeEntityReference> method. The <codeEntityReference autoUpgrade="true">M:System.Char.ToLowerInvariant(System.Char)</codeEntityReference> method is equivalent to <codeInline>ToLower(Char, CultureInfo.InvariantCulture)</codeInline>.</para>
+            <para>Use <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.String.ToLowerInvariant</codeEntityReference> to convert a string to lowercase.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.String.ToLower</codeEntityReference>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Char.ToUpper(System.Char,System.Globalization.CultureInfo)</codeEntityReference>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.Globalization.CultureInfo.InvariantCulture</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Char.ToString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of this instance to its equivalent string representation.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.ToString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of this instance to its equivalent string representation.</para>
+        </summary>
+        <returnValue>
+          <para>The string representation of the value of this instance.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.ToString</codeEntityReference>.</para>
+                <codeReference>System.Char.ToString#17</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Char.Parse(System.String)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Converts the value of this instance to its equivalent string representation.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Char.ToString(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the specified Unicode character to its equivalent string representation.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>c</parameterReference>
+            <content>
+              <para>A Unicode character. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The string representation of the value of <parameterReference>c</parameterReference>.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates <codeEntityReference autoUpgrade="true">M:System.Char.ToString</codeEntityReference>.</para>
+                <codeReference>System.Char.ToString#17</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Char.Parse(System.String)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.ToString(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of this instance to its equivalent string representation using the specified culture-specific format information.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>(Reserved) An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> that supplies culture-specific formatting information. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The string representation of the value of this instance as specified by <parameterReference>provider</parameterReference>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <parameterReference>provider</parameterReference> parameter is ignored; it does not participate in this operation.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates an overload of <codeEntityReference autoUpgrade="true">M:System.Char.ToString</codeEntityReference>.</para>
+                <codeReference>System.Char.ToString#17</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Char.Parse(System.String)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Char.ToUpper">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of a Unicode character to its uppercase equivalent.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.ToUpper(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of a Unicode character to its uppercase equivalent.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>c</parameterReference>
+            <content>
+              <para>A Unicode character. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The uppercase equivalent of <parameterReference>c</parameterReference>, or the unchanged value of <parameterReference>c</parameterReference>, if <parameterReference>c</parameterReference> is already uppercase or not alphabetic.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Casing rules are obtained from the current culture.</para>
+            <para>Use <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.String.ToUpper</codeEntityReference> to convert a string to uppercase.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.String.ToUpper</codeEntityReference>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Char.ToLower(System.Char,System.Globalization.CultureInfo)</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Converts the value of a Unicode character to its uppercase equivalent.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Char.ToUpper(System.Char,System.Globalization.CultureInfo)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of a specified Unicode character to its uppercase equivalent using specified culture-specific formatting information.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>c</parameterReference>
+            <content>
+              <para>A Unicode character. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>culture</parameterReference>
+            <content>
+              <para>A <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Globalization.CultureInfo</codeEntityReference> object that supplies culture-specific casing rules, or <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The uppercase equivalent of <parameterReference>c</parameterReference>, modified according to <parameterReference>culture</parameterReference>, or the unchanged value of <parameterReference>c</parameterReference>, if <parameterReference>c</parameterReference> is already uppercase or not alphabetic.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>culture</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Use <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.String.ToUpper</codeEntityReference> to convert a string to uppercase.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.Globalization.CultureInfo.CurrentCulture</codeEntityReference>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.String.ToUpper</codeEntityReference>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Char.ToLower(System.Char,System.Globalization.CultureInfo)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.ToUpperInvariant(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of a Unicode character to its uppercase equivalent using the casing rules of the invariant culture.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>c</parameterReference>
+            <content>
+              <para>A Unicode character. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The uppercase equivalent of the <parameterReference>c</parameterReference> parameter, or the unchanged value of <parameterReference>c</parameterReference>, if <parameterReference>c</parameterReference> is already uppercase or not alphabetic.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>If your application is unaffected by the current culture and depends on the case of a character changing in a predictable way, use the <codeEntityReference autoUpgrade="true">M:System.Char.ToUpperInvariant(System.Char)</codeEntityReference> method.  The <codeEntityReference autoUpgrade="true">M:System.Char.ToUpperInvariant(System.Char)</codeEntityReference> method is equivalent to <codeInline>ToUpper(Char, CultureInfo.InvariantCulture)</codeInline>.</para>
+            <para>Use <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.String.ToUpperInvariant</codeEntityReference> to convert a string to uppercase.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.String.ToUpper</codeEntityReference>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Char.ToUpper(System.Char,System.Globalization.CultureInfo)</codeEntityReference>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.Globalization.CultureInfo.InvariantCulture</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Char.TryParse(System.String,System.Char@)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of the specified string to its equivalent Unicode character. A return code indicates whether the conversion succeeded or failed.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A string containing a single character or <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>result</parameterReference>
+            <content>
+              <para>When this method returns, contains a Unicode character equivalent to the sole character in <parameterReference>s</parameterReference>, if the conversion succeeded, or an undefined value if the conversion failed. The conversion fails if the <parameterReference>s</parameterReference> parameter is <languageKeyword>null</languageKeyword> or the length of <parameterReference>s</parameterReference> is not 1. This parameter is passed uninitialized. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the <parameterReference>s</parameterReference> parameter was converted successfully; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.Char.TryParse(System.String,System.Char@)</codeEntityReference> method is like the <codeEntityReference autoUpgrade="true">M:System.Char.Parse(System.String)</codeEntityReference> method, except the <codeEntityReference autoUpgrade="true">M:System.Char.TryParse(System.String,System.Char@)</codeEntityReference> method does not throw an exception if the conversion fails.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates overloads of the <codeEntityReference autoUpgrade="true">M:System.Char.TryParse(System.String,System.Char@)</codeEntityReference> method for several base types, and the <codeEntityReference autoUpgrade="true">Overload:System.DateTime.TryParseExact</codeEntityReference> method for the <codeEntityReference autoUpgrade="true">T:System.DateTime</codeEntityReference> base type.</para>
+                <codeReference>T.TryParse#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Char.Parse(System.String)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Char.ToString</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

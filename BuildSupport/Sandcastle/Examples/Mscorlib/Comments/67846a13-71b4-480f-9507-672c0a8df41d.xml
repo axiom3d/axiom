@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="67846a13-71b4-480f-9507-672c0a8df41d" revisionNumber="2">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.ResolveEventHandler">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents the method that handles the <codeEntityReference autoUpgrade="true">E:System.AppDomain.TypeResolve</codeEntityReference>, <codeEntityReference autoUpgrade="true">E:System.AppDomain.ResourceResolve</codeEntityReference>, and <codeEntityReference autoUpgrade="true">E:System.AppDomain.AssemblyResolve</codeEntityReference> events of an <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference>.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>sender</parameterReference>
+            <content>
+              <para>The source of the event. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>args</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.ResolveEventArgs</codeEntityReference> that contains the event data. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The <codeEntityReference autoUpgrade="true">T:System.Reflection.Assembly</codeEntityReference> that resolves the type, assembly, or resource.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>If the runtime class loader cannot resolve a reference to an assembly, type, or resource, then the corresponding events are raised to give the callback a chance to tell the runtime which assembly the referenced assembly, type, or resource is in. It is the responsibility of the <codeEntityReference autoUpgrade="true">T:System.ResolveEventHandler</codeEntityReference> to return the assembly that resolves the type, assembly, or resource.</para>
+            <para>Every derived class of <codeEntityReference autoUpgrade="true">T:System.Delegate</codeEntityReference> and <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference> has a constructor and an <languageKeyword>Invoke</languageKeyword> method. See the C++ code example in the description for the <codeEntityReference autoUpgrade="true">T:System.Delegate</codeEntityReference> class.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+  </members>
+</doc>

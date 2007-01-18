@@ -1,0 +1,2410 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="35bc50ad-605f-4ba1-a082-97096598eea9" revisionNumber="17">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.Delegate">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents a delegate, which is a data structure that refers to a static method or to a class instance and an instance method of that class.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.Delegate</codeEntityReference> class is the base class for delegate types. However, only the system and compilers can derive explicitly from the <codeEntityReference autoUpgrade="true">T:System.Delegate</codeEntityReference> class or from the <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference> class. It is also not permissible to derive a new type from a delegate type. The <codeEntityReference autoUpgrade="true">T:System.Delegate</codeEntityReference> class is not considered a delegate type; it is a class used to derive delegate types.</para>
+            <para>Most languages implement a <languageKeyword>delegate</languageKeyword> keyword, and compilers for those languages are able to derive from the <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference> class; therefore, users should use the <languageKeyword>delegate</languageKeyword> keyword provided by the language.</para>
+            <para>The declaration of a delegate type establishes a contract that specifies the signature of one or more methods. A delegate is an instance of a delegate type that has references to: </para>
+            <list class="bullet">
+              <listItem>
+                <para>An instance method of a type and a target object assignable to that type. </para>
+              </listItem>
+              <listItem>
+                <para>An instance method of a type, with the hidden <parameterReference>this</parameterReference> parameter exposed in the formal parameter list. The delegate is said to be an open instance delegate.</para>
+              </listItem>
+              <listItem>
+                <para>A static method.</para>
+              </listItem>
+              <listItem>
+                <para>A static method and a target object assignable to the first parameter of the method. The delegate is said to be closed over its first argument.</para>
+              </listItem>
+            </list>
+            <para>For more information on delegate binding, see <link xlink:href="d69ea3da-d2bb-4a54-a6b6-8d8e71b89b94">Delegates in the Common Type System</link> and <codeEntityReference autoUpgrade="false">M:System.Delegate.CreateDelegate(System.Type,System.Object,System.Reflection.MethodInfo,System.Boolean)</codeEntityReference>. </para>
+            <alert class="note">
+              <para>In the .NET Framework versions 1.0 and 1.1, a delegate can represent a method only if the signature of the method exactly matches the signature specified by the delegate type. Thus, only the first and third bullets in the preceding list are supported, and the first bullet requires an exact type match.</para>
+            </alert>
+            <para>When a delegate represents an instance method closed over its first argument (the most common case), the delegate stores a reference to the method's entry point and a reference to an object, called the target, which is of a type assignable to the type that defined the method. When a delegate represents an open instance method, it stores a reference to the method's entry point. The delegate signature must include the hidden <parameterReference>this</parameterReference> parameter in its formal parameter list; in this case, the delegate does not have a reference to a target object, and a target object must be supplied when the delegate is invoked. </para>
+            <para>When a delegate represents a static method, the delegate stores a reference to the method's entry point. When a delegate represents a static method closed over its first argument, the delegate stores a reference to the method's entry point and a reference to a target object assignable to the type of the method's first argument. When the delegate is invoked, the first argument of the static method receives the target object.</para>
+            <para>The invocation list of a delegate is an ordered set of delegates in which each element of the list invokes exactly one of the methods represented by the delegate. An invocation list can contain duplicate methods. During an invocation, methods are invoked in the order in which they appear in the invocation list. A delegate attempts to invoke every method in its invocation list; duplicates are invoked once for each time they appear in the invocation list. Delegates are immutable; once created, the invocation list of a delegate does not change.</para>
+            <para>Delegates are referred to as multicast, or combinable, because a delegate can invoke one or more methods and can be used in combining operations. </para>
+            <para>Combining operations, such as <codeEntityReference autoUpgrade="true">M:System.Delegate.Combine(System.Delegate,System.Delegate)</codeEntityReference> and <codeEntityReference autoUpgrade="true">M:System.Delegate.Remove(System.Delegate,System.Delegate)</codeEntityReference>, do not alter existing delegates. Instead, such an operation returns a new delegate that contains the results of the operation, an unchanged delegate, or <languageKeyword>null</languageKeyword>. A combining operation returns <languageKeyword>null</languageKeyword> when the result of the operation is a delegate that does not reference at least one method. A combining operation returns an unchanged delegate when the requested operation has no effect.</para>
+            <para>If an invoked method throws an exception, the method stops executing, the exception is passed back to the caller of the delegate, and remaining methods in the invocation list are not invoked. Catching the exception in the caller does not alter this behavior.</para>
+            <para>When the signature of the methods invoked by a delegate includes a return value, the delegate returns the return value of the last element in the invocation list. When the signature includes a parameter that is passed by reference, the final value of the parameter is the result of every method in the invocation list executing sequentially and updating the parameter's value.</para>
+            <para>Compilers provide two additional methods to the delegate: <languageKeyword>BeginInvoke</languageKeyword> and <languageKeyword>EndInvoke</languageKeyword>. For more information on these methods, see <link xlink:href="41972034-92ed-450a-9664-ab93fcc6f1fb">Asynchronous Programming Overview</link>.</para>
+            <para>The closest equivalent of a delegate in C or C++ is a function pointer. A delegate can represent a static method or an instance method. When the delegate represents an instance method, the delegate stores not only a reference to the method's entry point, but also a reference to the class instance. Unlike function pointers, delegates are object oriented and type safe.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example shows how to define a standard delegate.</para>
+                <codeReference>Classic Delegate Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>
+          <link xlink:href="41972034-92ed-450a-9664-ab93fcc6f1fb">Asynchronous Programming Overview</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.#ctor(System.Object,System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a delegate that invokes the specified instance method on the specified class instance.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>target</parameterReference>
+            <content>
+              <para>The class instance on which the delegate invokes <parameterReference>method</parameterReference>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>method</parameterReference>
+            <content>
+              <para>The name of the instance method that the delegate represents. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>target</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>method</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>There was an error binding to the target method.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This constructor is called by a compiler-generated delegate type to create a delegate based on the name of an instance method and an instance of the class that defines that method.</para>
+            <para>This constructor creates delegates for instance methods only. An instance method is a method that is associated with an instance of a class; a static method is a method that is associated with the class itself.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Initializes a new delegate.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.Delegate.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new delegate.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.#ctor(System.Type,System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a delegate that invokes the specified static method from the specified class.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>target</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> representing the class that defines <parameterReference>method</parameterReference>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>method</parameterReference>
+            <content>
+              <para>The name of the static method that the delegate represents. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>target</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>method</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>target</parameterReference> is not a <languageKeyword>RuntimeType</languageKeyword>. See <link xlink:href="c1439fb5-cf76-475d-a9d2-fe64ba858858">Runtime Types in Reflection</link>.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>target</parameterReference> represents an open generic type.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This constructor is called by a compiler-generated delegate type to create a delegate based on the name of a static method and the <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> representing the class that defines that method.</para>
+            <para>This constructor creates delegates for static methods only. An instance method is a method that is associated with an instance of a class; a static method is a method that is associated with the class itself.</para>
+            <para>To get the <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> that represents a class, use the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.GetType</codeEntityReference> method with the fully qualified (including namespace) name of the class. For example, passing "System.Threading.ThreadStart" to <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.GetType</codeEntityReference> returns a <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> for the <codeEntityReference autoUpgrade="true">T:System.Threading.ThreadStart</codeEntityReference> class.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.Clone">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates a shallow copy of the delegate.</para>
+        </summary>
+        <returnValue>
+          <para>A shallow copy of the delegate.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The clone has the same <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>, target, method, and invocation list as the original delegate.</para>
+            <para>A shallow copy creates a new instance of the same type as the original object, and then copies the nonstatic fields of the original object. If the field is a value type, a bit-by-bit copy of the field is performed. If the field is a reference type, the reference is copied but the referred object is not; therefore, the reference in the original object and the reference in the clone point to the same object. In contrast, a deep copy of an object duplicates everything directly or indirectly referenced by the fields in the object.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.Combine(System.Delegate,System.Delegate)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Concatenates the invocation lists of two delegates.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>a</parameterReference>
+            <content>
+              <para>The delegate whose invocation list comes first. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>b</parameterReference>
+            <content>
+              <para>The delegate whose invocation list comes last. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A new delegate with an invocation list that concatenates the invocation lists of <parameterReference>a</parameterReference> and <parameterReference>b</parameterReference> in that order. Returns <parameterReference>a</parameterReference> if <parameterReference>b</parameterReference> is <languageKeyword>null</languageKeyword>, returns <parameterReference>b</parameterReference> if <parameterReference>a</parameterReference> is a null reference, and returns a null reference if both <parameterReference>a</parameterReference> and <parameterReference>b</parameterReference> are null references.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>Both <parameterReference>a</parameterReference> and <parameterReference>b</parameterReference> are not <languageKeyword>null</languageKeyword>, and <parameterReference>a</parameterReference> and <parameterReference>b</parameterReference> are not instances of the same delegate type. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The invocation list can contain duplicate entries; that is, entries that refer to the same method on the same object.</para>
+            <para>
+              <codeEntityReference autoUpgrade="true">M:System.Delegate.Combine(System.Delegate,System.Delegate)</codeEntityReference> is useful for creating event handlers that call multiple methods each time an event occurs.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Delegate.CombineImpl(System.Delegate)</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Concatenates the invocation lists of the specified multicast (combinable) delegates.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.Delegate.Combine">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Concatenates the invocation lists of the specified multicast (combinable) delegates.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.Combine(System.Delegate[])">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Concatenates the invocation lists of an array of delegates.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>delegates</parameterReference>
+            <content>
+              <para>The array of delegates to combine. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A new delegate with an invocation list that concatenates the invocation lists of the delegates in the <parameterReference>delegates</parameterReference> array. Returns <languageKeyword>null</languageKeyword> if <parameterReference>delegates</parameterReference> is <languageKeyword>null</languageKeyword>, if <parameterReference>delegates</parameterReference> contains zero elements, or if every entry in <parameterReference>delegates</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>Not all the non-null entries in <parameterReference>delegates</parameterReference> are instances of the same delegate type. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>If the <parameterReference>delegates</parameterReference> array contains entries that are <languageKeyword>null</languageKeyword>, those entries are ignored.</para>
+            <para>The invocation list can contain duplicate entries; that is, entries that refer to the same method on the same object.</para>
+            <para>
+              <codeEntityReference autoUpgrade="true">M:System.Delegate.Combine(System.Delegate,System.Delegate)</codeEntityReference> is useful for creating event handlers that call multiple methods each time an event occurs.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Delegate.CombineImpl(System.Delegate)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.CombineImpl(System.Delegate)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Concatenates the invocation lists of the specified multicast (combinable) delegate and the current multicast (combinable) delegate.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>d</parameterReference>
+            <content>
+              <para>The multicast (combinable) delegate whose invocation list to append to the end of the invocation list of the current multicast (combinable) delegate. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A new multicast (combinable) delegate with an invocation list that concatenates the invocation list of the current multicast (combinable) delegate and the invocation list of <parameterReference>d</parameterReference>, or the current multicast (combinable) delegate if <parameterReference>d</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MulticastNotSupportedException</codeEntityReference>
+            <content>
+              <para>Always thrown. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This method applies only if the current delegate is multicast (combinable).</para>
+            <para>The current implementation simply throws a <codeEntityReference autoUpgrade="true">T:System.MulticastNotSupportedException</codeEntityReference>.</para>
+            <para>The invocation list can contain duplicate entries; that is, entries that refer to the same method on the same object.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Delegate.Combine(System.Delegate,System.Delegate)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.DynamicInvoke(System.Object[])">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Dynamically invokes (late-bound) the method represented by the current delegate.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>args</parameterReference>
+            <content>
+              <para>An array of objects that are the arguments to pass to the method represented by the current delegate.</para>
+              <para>-or- </para>
+              <para>
+                <languageKeyword>null</languageKeyword>, if the method represented by the current delegate does not require arguments. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The object returned by the method represented by the delegate.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MemberAccessException</codeEntityReference>
+            <content>
+              <para>The caller does not have access to the method represented by the delegate (for example, if the method is private).</para>
+              <para>-or- </para>
+              <para>The number, order, or type of parameters listed in <parameterReference>args</parameterReference> is invalid. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.Reflection.TargetException</codeEntityReference>
+            <content>
+              <para>The method represented by the delegate is an instance method and the target object is <languageKeyword>null</languageKeyword>.</para>
+              <para>-or- </para>
+              <para>The method represented by the delegate is invoked on an object or a class that does not support it. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.Reflection.TargetInvocationException</codeEntityReference>
+            <content>
+              <para>One of the encapsulated methods throws an exception. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This method calls the <codeEntityReference autoUpgrade="true">M:System.Delegate.DynamicInvokeImpl(System.Object[])</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Delegate.DynamicInvokeImpl(System.Object[])</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.DynamicInvokeImpl(System.Object[])">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Dynamically invokes (late-bound) the method represented by the current delegate.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>args</parameterReference>
+            <content>
+              <para>An array of objects that are the arguments to pass to the method represented by the current delegate.</para>
+              <para>-or- </para>
+              <para>
+                <languageKeyword>null</languageKeyword>, if the method represented by the current delegate does not require arguments. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The object returned by the method represented by the delegate.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MemberAccessException</codeEntityReference>
+            <content>
+              <para>The caller does not have access to the method represented by the delegate (for example, if the method is private).</para>
+              <para>-or- </para>
+              <para>The number, order, or type of parameters listed in <parameterReference>args</parameterReference> is invalid. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.Reflection.TargetException</codeEntityReference>
+            <content>
+              <para>The method represented by the delegate is an instance method and the target object is <languageKeyword>null</languageKeyword>.</para>
+              <para>-or- </para>
+              <para>The method represented by the delegate is invoked on an object or a class that does not support it. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.Reflection.TargetInvocationException</codeEntityReference>
+            <content>
+              <para>One of the encapsulated methods throws an exception. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This method implements the <codeEntityReference autoUpgrade="true">M:System.Delegate.DynamicInvoke(System.Object[])</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Delegate.DynamicInvoke(System.Object[])</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.Equals(System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Determines whether the specified object and the current delegate are of the same type and share the same targets, methods, and invocation list.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>obj</parameterReference>
+            <content>
+              <para>The object to compare with the current delegate. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>obj</parameterReference> and the current delegate have the same targets, methods, and invocation list; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MemberAccessException</codeEntityReference>
+            <content>
+              <para>The caller does not have access to the method represented by the delegate (for example, if the method is private). </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>If the two delegates are not of the same type, they are not considered equal.</para>
+            <alert class="important">
+              <para>In the .NET Framework version 1.0 and 1.1, two delegates were considered equal if their targets, methods, and invocation list were equal, even if the delegates were of different types.</para>
+            </alert>
+            <para>The methods and targets are compared for equality as follows: </para>
+            <list class="bullet">
+              <listItem>
+                <para>If the two methods being compared are both static and are the same method on the same class, the methods are considered equal and the targets are also considered equal.</para>
+              </listItem>
+              <listItem>
+                <para>If the two methods being compared are instance methods and are the same method on the same object, the methods are considered equal and the targets are also considered equal.</para>
+              </listItem>
+              <listItem>
+                <para>Otherwise, the methods are not considered to be equal and the targets are also not considered to be equal.</para>
+              </listItem>
+            </list>
+            <para>Two invocation lists are considered identical only if they have the same order and the corresponding elements from the two lists represent the same method and target.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.GetHashCode">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a hash code for the delegate.</para>
+        </summary>
+        <returnValue>
+          <para>A hash code for the delegate.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The return value of this method must not be persisted for two reasons. First, the hash function of a class might be altered to generate a better distribution, rendering any values from the old hash function useless. Second, the default implementation of this class does not guarantee that the same value will be returned by different instances.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Object.GetHashCode</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.GetInvocationList">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the invocation list of the delegate.</para>
+        </summary>
+        <returnValue>
+          <para>An array of delegates representing the invocation list of the current delegate.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Each delegate in the array represents exactly one method.</para>
+            <para>The order of the delegates in the array is the same order in which the current delegate invokes the methods that those delegates represent.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.GetMethodImpl">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the static method represented by the current delegate.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.Reflection.MethodInfo</codeEntityReference> describing the static method represented by the current delegate.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MemberAccessException</codeEntityReference>
+            <content>
+              <para>The caller does not have access to the method represented by the delegate (for example, if the method is private). </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This method applies only if the current delegate represents a static method.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Reflection.MethodInfo</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">P:System.Delegate.Method</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Not supported.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>info</parameterReference>
+            <content>
+              <para>Not supported. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>context</parameterReference>
+            <content>
+              <para>Not supported. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.NotSupportedException</codeEntityReference>
+            <content>
+              <para>This method is not supported.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.ISerializable</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.StreamingContext</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="P:System.Delegate.Method">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the method represented by the delegate.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.Reflection.MethodInfo</codeEntityReference> describing the method represented by the delegate.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MemberAccessException</codeEntityReference>
+            <content>
+              <para>The caller does not have access to the method represented by the delegate (for example, if the method is private). </para>
+            </content>
+          </exception>
+        </exceptions>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Reflection.MethodInfo</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Delegate.GetMethodImpl</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.op_Equality(System.Delegate,System.Delegate)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <equivalentCodeEntity>
+          <codeEntityReference>M:System.Delegate.Equals(System.Object)</codeEntityReference>
+          <content>
+          </content>
+        </equivalentCodeEntity>
+        <summary>
+          <para>Determines whether the specified delegates are equal.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>d1</parameterReference>
+            <content>
+              <para>The first delegate to compare. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>d2</parameterReference>
+            <content>
+              <para>The second delegate to compare. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>d1</parameterReference> is equal to <parameterReference>d2</parameterReference>; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Two delegates of the same type with the same targets, methods, and invocation lists are considered equal.</para>
+            <para>If the two delegates are not of the same type, they are not considered equal.</para>
+            <alert class="important">
+              <para>In the .NET Framework version 1.0 and 1.1, two delegates were considered equal if their targets, methods, and invocation list were equal, even if the delegates were of different types.</para>
+            </alert>
+            <para>The methods and targets are compared for equality as follows: </para>
+            <list class="bullet">
+              <listItem>
+                <para>If the two methods being compared are both static and are the same method on the same class, the methods are considered equal and the targets are also considered equal.</para>
+              </listItem>
+              <listItem>
+                <para>If the two methods being compared are instance methods and are the same method on the same object, the methods are considered equal and the targets are also considered equal.</para>
+              </listItem>
+              <listItem>
+                <para>Otherwise, the methods are not considered to be equal and the targets are also not considered to be equal.</para>
+              </listItem>
+            </list>
+            <para>Two invocation lists are considered identical if they have the same order and the corresponding elements from the two lists represent the same method and target.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Delegate.Equals(System.Object)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.op_Inequality(System.Delegate,System.Delegate)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <equivalentCodeEntity>
+          <codeEntityReference>M:System.Delegate.Equals(System.Object)</codeEntityReference>
+          <content>
+          </content>
+        </equivalentCodeEntity>
+        <summary>
+          <para>Determines whether the specified delegates are not equal.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>d1</parameterReference>
+            <content>
+              <para>The first delegate to compare. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>d2</parameterReference>
+            <content>
+              <para>The second delegate to compare. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>d1</parameterReference> is not equal to <parameterReference>d2</parameterReference>; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Two delegates are considered not equal if they are of different types, or have different methods, different targets, or different invocation lists.</para>
+            <para>If the two delegates are not of the same type, they are not considered equal.</para>
+            <alert class="important">
+              <para>In the .NET Framework version 1.0 and 1.1, two delegates are considered equal if their targets, methods, and invocation list were equal, even if the delegates were of different types.</para>
+            </alert>
+            <para>The methods and targets are compared for equality as follows: </para>
+            <list class="bullet">
+              <listItem>
+                <para>If the two methods being compared are both static and are the same method on the same class, the methods are considered equal and the targets are also considered equal.</para>
+              </listItem>
+              <listItem>
+                <para>If the two methods being compared are instance methods and are the same method on the same object, the methods are considered equal and the targets are also considered equal.</para>
+              </listItem>
+              <listItem>
+                <para>Otherwise, the methods are not considered to be equal and the targets are also not considered to be equal.</para>
+              </listItem>
+            </list>
+            <para>Two invocation lists are not equal if they have different sizes, if they are ordered differently, or if at least one element from one list represents a method or target that is different from that represented by its corresponding element in the other list.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Delegate.Equals(System.Object)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.Remove(System.Delegate,System.Delegate)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Removes the last occurrence of the invocation list of a delegate from the invocation list of another delegate.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>source</parameterReference>
+            <content>
+              <para>The delegate from which to remove the invocation list of <parameterReference>value</parameterReference>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The delegate that supplies the invocation list to remove from the invocation list of <parameterReference>source</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A new delegate with an invocation list formed by taking the invocation list of <parameterReference>source</parameterReference> and removing the last occurrence of the invocation list of <parameterReference>value</parameterReference>, if the invocation list of <parameterReference>value</parameterReference> is found within the invocation list of <parameterReference>source</parameterReference>. Returns <parameterReference>source</parameterReference> if <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword> or if the invocation list of <parameterReference>value</parameterReference> is not found within the invocation list of <parameterReference>source</parameterReference>. Returns a null reference if the invocation list of <parameterReference>value</parameterReference> is equal to the invocation list of <parameterReference>source</parameterReference> or if <parameterReference>source</parameterReference> is a null reference.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MemberAccessException</codeEntityReference>
+            <content>
+              <para>The caller does not have access to the method represented by the delegate (for example, if the method is private). </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>The delegate types do not match.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>If the invocation list of <parameterReference>value</parameterReference> matches a contiguous set of elements in the invocation list of <parameterReference>source</parameterReference>, then the invocation list of <parameterReference>value</parameterReference> is said to occur within the invocation list of <parameterReference>source</parameterReference>. If the invocation list of <parameterReference>value</parameterReference> occurs more than once in the invocation list of <parameterReference>source</parameterReference>, the last occurrence is removed.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Delegate.RemoveAll(System.Delegate,System.Delegate)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Delegate.RemoveImpl(System.Delegate)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Delegate.Equals(System.Object)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.RemoveAll(System.Delegate,System.Delegate)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Removes all occurrences of the invocation list of a delegate from the invocation list of another delegate.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>source</parameterReference>
+            <content>
+              <para>The delegate from which to remove the invocation list of <parameterReference>value</parameterReference>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The delegate that supplies the invocation list to remove from the invocation list of <parameterReference>source</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A new delegate with an invocation list formed by taking the invocation list of <parameterReference>source</parameterReference> and removing all occurrences of the invocation list of <parameterReference>value</parameterReference>, if the invocation list of <parameterReference>value</parameterReference> is found within the invocation list of <parameterReference>source</parameterReference>. Returns <parameterReference>source</parameterReference> if <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword> or if the invocation list of <parameterReference>value</parameterReference> is not found within the invocation list of <parameterReference>source</parameterReference>. Returns a null reference if the invocation list of <parameterReference>value</parameterReference> is equal to the invocation list of <parameterReference>source</parameterReference>, if <parameterReference>source</parameterReference> contains only a series of invocation lists that are equal to the invocation list of <parameterReference>value</parameterReference>, or if <parameterReference>source</parameterReference> is a null reference.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MemberAccessException</codeEntityReference>
+            <content>
+              <para>The caller does not have access to the method represented by the delegate (for example, if the method is private). </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>The delegate types do not match.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>If the invocation list of <parameterReference>value</parameterReference> matches a contiguous set of elements in the invocation list of <parameterReference>source</parameterReference>, then the invocation list of <parameterReference>value</parameterReference> is said to occur within the invocation list of <parameterReference>source</parameterReference>. If the invocation list of <parameterReference>value</parameterReference> occurs more than once in the invocation list of <parameterReference>source</parameterReference>, all occurrences are removed.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Delegate.Remove(System.Delegate,System.Delegate)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Delegate.RemoveImpl(System.Delegate)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Delegate.Equals(System.Object)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.RemoveImpl(System.Delegate)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Removes the invocation list of a delegate from the invocation list of another delegate.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>d</parameterReference>
+            <content>
+              <para>The delegate that supplies the invocation list to remove from the invocation list of the current delegate. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A new delegate with an invocation list formed by taking the invocation list of the current delegate and removing the invocation list of <parameterReference>value</parameterReference>, if the invocation list of <parameterReference>value</parameterReference> is found within the current delegate's invocation list. Returns the current delegate if <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword> or if the invocation list of <parameterReference>value</parameterReference> is not found within the current delegate's invocation list. Returns <languageKeyword>null</languageKeyword> if the invocation list of <parameterReference>value</parameterReference> is equal to the current delegate's invocation list.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MemberAccessException</codeEntityReference>
+            <content>
+              <para>The caller does not have access to the method represented by the delegate (for example, if the method is private). </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>If the invocation list of <parameterReference>value</parameterReference> matches a contiguous set of elements in the current delegate's invocation list, then the invocation list of <parameterReference>value</parameterReference> is said to occur within the current delegate's invocation list. If the invocation list of <parameterReference>value</parameterReference> occurs more than once in the current delegate's invocation list, the last occurrence is removed.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Delegate.Remove(System.Delegate,System.Delegate)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Delegate.Equals(System.Object)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="P:System.Delegate.Target">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the class instance on which the current delegate invokes the instance method.</para>
+        </summary>
+        <returnValue>
+          <para>The object on which the current delegate invokes the instance method, if the delegate represents an instance method; <languageKeyword>null</languageKeyword> if the delegate represents a static method.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>An instance method is a method that is associated with an instance of a class; a static method is a method that is associated with the class itself.</para>
+            <para>If the delegate invokes one or more instance methods, this property returns the target of the last instance method in the invocation list.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Delegate.CreateDelegate">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates a delegate of the specified type.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.CreateDelegate(System.Type,System.Reflection.MethodInfo)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates a delegate of the specified type to represent the specified static method.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>type</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> of delegate to create. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>method</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Reflection.MethodInfo</codeEntityReference> describing the static or instance method the delegate is to represent. Only static methods are supported in the .NET Framework version 1.0 and 1.1.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A delegate of the specified type to represent the specified static method.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>type</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>method</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>type</parameterReference> does not inherit <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>type</parameterReference> is not a <languageKeyword>RuntimeType</languageKeyword>. See <link xlink:href="c1439fb5-cf76-475d-a9d2-fe64ba858858">Runtime Types in Reflection</link>. </para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>method</parameterReference> is not a static method, and the .NET Framework version is 1.0 or 1.1. </para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>method</parameterReference> cannot be bound.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>method</parameterReference> is not a <languageKeyword>RuntimeMethodInfo</languageKeyword>. See <link xlink:href="c1439fb5-cf76-475d-a9d2-fe64ba858858">Runtime Types in Reflection</link>.</para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MissingMethodException</codeEntityReference>
+            <content>
+              <para>The <languageKeyword>Invoke</languageKeyword> method of <parameterReference>type</parameterReference> is not found. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MethodAccessException</codeEntityReference>
+            <content>
+              <para>The caller does not have the permissions necessary to access <parameterReference>method</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>In the .NET Framework version 1.0 and 1.1, this method overload creates delegates for static methods only. In the .NET Framework version 2.0, this method overload also can create open instance method delegates; that is, delegates that explicitly supply the hidden first argument of instance methods. For a detailed explanation, see the more general <codeEntityReference autoUpgrade="false">M:System.Delegate.CreateDelegate(System.Type,System.Object,System.Reflection.MethodInfo)</codeEntityReference> method overload, which allows you to create all combinations of open or closed delegates for instance or static methods, and optionally to specify a first argument. </para>
+            <alert class="note">
+              <para>This method overload should be used when the delegate is not closed over its first argument, because it is somewhat faster in that case.</para>
+            </alert>
+            <para>This method overload is equivalent to calling the <codeEntityReference autoUpgrade="false">M:System.Delegate.CreateDelegate(System.Type,System.Reflection.MethodInfo,System.Boolean)</codeEntityReference> method overload and specifying <languageKeyword>true</languageKeyword> for <parameterReference>throwOnBindFailure</parameterReference>.</para>
+          </content>
+          <sections>
+            <section>
+              <title>Compatible Parameter Types and Return Type</title>
+              <content>
+                <para>In the .NET Framework version 2.0, the parameter types and return type of a delegate created using this method overload must be compatible with the parameter types and return type of the method the delegate represents; the types do not have to match exactly. This represents a relaxation of the binding behavior in the .NET Framework version 1.0 and 1.1, where the types must match exactly.</para>
+                <para>A parameter of a delegate is compatible with the corresponding parameter of a method if the type of the delegate parameter is more restrictive than the type of the method parameter, because this guarantees that an argument passed to the delegate can be passed safely to the method.</para>
+                <para>Similarly, the return type of a delegate is compatible with the return type of a method if the return type of the method is more restrictive than the return type of the delegate, because this guarantees that the return value of the method can be cast safely to the return type of the delegate.</para>
+                <para>For example, a delegate with a parameter of type <codeEntityReference autoUpgrade="true">T:System.Collections.Hashtable</codeEntityReference> and a return type of <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference> can represent a method with a parameter of type <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference> and a return value of type <codeEntityReference autoUpgrade="true">T:System.Collections.Hashtable</codeEntityReference>.</para>
+              </content>
+            </section>
+          </sections>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>This section contains two code examples. The first example demonstrates the two kinds of delegates that can be created with this method overload: open over an instance method and open over a static method.</para>
+                <para>The second code example demonstrates compatible parameter types and return types.</para>
+                <para>
+                  <embeddedLabel>Example 1</embeddedLabel>
+                </para>
+                <para>The following code example demonstrates the two ways a delegate can be created using this overload of the <codeEntityReference autoUpgrade="true">Overload:System.Delegate.CreateDelegate</codeEntityReference> method. </para>
+                <alert class="note">
+                  <para>There are two overloads of the <codeEntityReference autoUpgrade="true">Overload:System.Delegate.CreateDelegate</codeEntityReference> method that specify a <codeEntityReference autoUpgrade="true">T:System.Reflection.MethodInfo</codeEntityReference> but not a first argument; their functionality is the same except that one allows you to specify whether to throw on failure to bind, and the other always throws. This code example uses both overloads.</para>
+                </alert>
+                <para>The example declares a class <codeInline>C</codeInline> with a static method <codeInline>M2</codeInline> and an instance method <codeInline>M1</codeInline>, and two delegate types: <codeInline>D1</codeInline> takes an instance of <codeInline>C</codeInline> and a string, and <codeInline>D2</codeInline> takes a string. </para>
+                <para>A second class named <codeInline>Example</codeInline> contains the code that creates the delegates. </para>
+                <list class="bullet">
+                  <listItem>
+                    <para>A delegate of type <codeInline>D1</codeInline>, representing an open instance method, is created for the instance method <codeInline>M1</codeInline>. An instance must be passed when the delegate is invoked.</para>
+                  </listItem>
+                  <listItem>
+                    <para>A delegate of type <codeInline>D2</codeInline>, representing an open static method, is created for the static method <codeInline>M2</codeInline>.</para>
+                  </listItem>
+                </list>
+                <codeReference>Delegate.CreateDelegateTOM#1</codeReference>
+                <para>
+                  <embeddedLabel>Example 2</embeddedLabel>
+                </para>
+                <para>The following code example demonstrates compatibility of parameter types and return types. </para>
+                <para>The code example defines a base class named <codeInline>Base</codeInline> and a class named <codeInline>Derived</codeInline> that derives from <codeInline>Base</codeInline>. The derived class has a <languageKeyword>static</languageKeyword> (<languageKeyword>Shared</languageKeyword> in Visual Basic) method named <codeInline>MyMethod</codeInline> with one parameter of type <codeInline>Base</codeInline> and a return type of <codeInline>Derived</codeInline>. The code example also defines a delegate named <codeInline>Example</codeInline> that has one parameter of type <codeInline>Derived</codeInline> and a return type of <codeInline>Base</codeInline>.</para>
+                <para>The code example demonstrates that the delegate named <codeInline>Example</codeInline> can be used to represent the method <codeInline>MyMethod</codeInline>. The method can be bound to the delegate because:</para>
+                <list class="bullet">
+                  <listItem>
+                    <para>The parameter type of the delegate (<codeInline>Derived</codeInline>) is more restrictive than the parameter type of <codeInline>MyMethod</codeInline> (<codeInline>Base</codeInline>), so that it is always safe to pass the argument of the delegate to <codeInline>MyMethod</codeInline>.</para>
+                  </listItem>
+                  <listItem>
+                    <para>The return type of <codeInline>MyMethod</codeInline> (<codeInline>Derived</codeInline>) is more restrictive than the parameter type of the delegate (<codeInline>Base</codeInline>), so that it is always safe to cast the return type of the method to the return type of the delegate.</para>
+                  </listItem>
+                </list>
+                <para>The code example produces no output.</para>
+                <codeReference>Delegate.CreateDelegate_RelaxedFit#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>for access to the method represented by the delegate. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Reflection.MethodInfo</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Creates a delegate of the specified type.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Delegate.CreateDelegate(System.Type,System.Reflection.MethodInfo,System.Boolean)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates a delegate of the specified type to represent the specified static method, with the specified behavior on failure to bind.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>type</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> of delegate to create. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>method</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Reflection.MethodInfo</codeEntityReference> describing the static or instance method the delegate is to represent.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>throwOnBindFailure</parameterReference>
+            <content>
+              <para>
+                <languageKeyword>true</languageKeyword> to throw an exception if <parameterReference>method</parameterReference> cannot be bound; otherwise, <languageKeyword>false</languageKeyword>.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A delegate of the specified type to represent the specified static method.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>type</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>method</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>type</parameterReference> does not inherit <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>type</parameterReference> is not a <languageKeyword>RuntimeType</languageKeyword>. See <link xlink:href="c1439fb5-cf76-475d-a9d2-fe64ba858858">Runtime Types in Reflection</link>. </para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>method</parameterReference> cannot be bound, and <parameterReference>throwOnBindFailure</parameterReference> is <languageKeyword>true</languageKeyword>.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>method</parameterReference> is not a <languageKeyword>RuntimeMethodInfo</languageKeyword>. See <link xlink:href="c1439fb5-cf76-475d-a9d2-fe64ba858858">Runtime Types in Reflection</link>.</para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MissingMethodException</codeEntityReference>
+            <content>
+              <para>The <languageKeyword>Invoke</languageKeyword> method of <parameterReference>type</parameterReference> is not found. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MethodAccessException</codeEntityReference>
+            <content>
+              <para>The caller does not have the permissions necessary to access <parameterReference>method</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This method overload can create open static method delegates and open instance method delegates — that is, delegates that expose the hidden first argument of instance methods. For a detailed explanation, see the more general <codeEntityReference autoUpgrade="false">M:System.Delegate.CreateDelegate(System.Type,System.Object,System.Reflection.MethodInfo,System.Boolean)</codeEntityReference> method overload, which allows you to create all combinations of open or closed delegates for instance or static methods. </para>
+            <alert class="note">
+              <para>This method overload should be used when the delegate is not closed over its first argument, because it is somewhat faster in that case.</para>
+            </alert>
+          </content>
+          <sections>
+            <section>
+              <title>Compatible Parameter Types and Return Type</title>
+              <content>
+                <para>The parameter types and return type of a delegate must be compatible with the parameter types and return type of the method the delegate represents; the types do not have to match exactly. </para>
+                <alert class="note">
+                  <para>In the .NET Framework version 1.0 and 1.1, the types must match exactly.</para>
+                </alert>
+                <para>A parameter of a delegate is compatible with the corresponding parameter of a method if the type of the delegate parameter is more restrictive than the type of the method parameter, because this guarantees that an argument passed to the delegate can be passed safely to the method.</para>
+                <para>Similarly, the return type of a delegate is compatible with the return type of a method if the return type of the method is more restrictive than the return type of the delegate, because this guarantees that the return value of the method can be cast safely to the return type of the delegate.</para>
+                <para>For example, a delegate with a parameter of type <codeEntityReference autoUpgrade="true">T:System.Collections.Hashtable</codeEntityReference> and a return type of <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference> can represent a method with a parameter of type <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference> and a return value of type <codeEntityReference autoUpgrade="true">T:System.Collections.Hashtable</codeEntityReference>.</para>
+              </content>
+            </section>
+          </sections>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>This section contains two code examples. The first example demonstrates the two kinds of delegates that can be created with this method overload: open over an instance method and open over a static method.</para>
+                <para>The second code example demonstrates compatible parameter types and return types.</para>
+                <para>
+                  <embeddedLabel>Example 1</embeddedLabel>
+                </para>
+                <para>The following code example demonstrates the two ways a delegate can be created using this overload of the <codeEntityReference autoUpgrade="true">Overload:System.Delegate.CreateDelegate</codeEntityReference> method. </para>
+                <alert class="note">
+                  <para>There are two overloads of the <codeEntityReference autoUpgrade="true">Overload:System.Delegate.CreateDelegate</codeEntityReference> method that specify a <codeEntityReference autoUpgrade="true">T:System.Reflection.MethodInfo</codeEntityReference> but not a first argument; their functionality is the same except that one allows you to specify whether to throw on failure to bind, and the other always throws. This code example uses both overloads.</para>
+                </alert>
+                <para>The example declares a class <codeInline>C</codeInline> with a static method <codeInline>M2</codeInline> and an instance method <codeInline>M1</codeInline>, and two delegate types: <codeInline>D1</codeInline> takes an instance of <codeInline>C</codeInline> and a string, and <codeInline>D2</codeInline> takes a string. </para>
+                <para>A second class named <codeInline>Example</codeInline> contains the code that creates the delegates. </para>
+                <list class="bullet">
+                  <listItem>
+                    <para>A delegate of type <codeInline>D1</codeInline>, representing an open instance method, is created for the instance method <codeInline>M1</codeInline>. An instance must be passed when the delegate is invoked.</para>
+                  </listItem>
+                  <listItem>
+                    <para>A delegate of type <codeInline>D2</codeInline>, representing an open static method, is created for the static method <codeInline>M2</codeInline>.</para>
+                  </listItem>
+                </list>
+                <codeReference>Delegate.CreateDelegateTOM#1</codeReference>
+                <para>
+                  <embeddedLabel>Example 2</embeddedLabel>
+                </para>
+                <para>The following code example demonstrates compatibility of parameter types and return types. </para>
+                <alert class="note">
+                  <para>This code example uses the <codeEntityReference autoUpgrade="false">M:System.Delegate.CreateDelegate(System.Type,System.Reflection.MethodInfo)</codeEntityReference> method overload. The use of other overloads that take <codeEntityReference autoUpgrade="true">T:System.Reflection.MethodInfo</codeEntityReference> is similar.</para>
+                </alert>
+                <para>The code example defines a base class named <codeInline>Base</codeInline> and a class named <codeInline>Derived</codeInline> that derives from <codeInline>Base</codeInline>. The derived class has a <languageKeyword>static</languageKeyword> (<languageKeyword>Shared</languageKeyword> in Visual Basic) method named <codeInline>MyMethod</codeInline> with one parameter of type <codeInline>Base</codeInline> and a return type of <codeInline>Derived</codeInline>. The code example also defines a delegate named <codeInline>Example</codeInline> that has one parameter of type <codeInline>Derived</codeInline> and a return type of <codeInline>Base</codeInline>.</para>
+                <para>The code example demonstrates that the delegate named <codeInline>Example</codeInline> can be used to represent the method <codeInline>MyMethod</codeInline>. The method can be bound to the delegate because:</para>
+                <list class="bullet">
+                  <listItem>
+                    <para>The parameter type of the delegate (<codeInline>Derived</codeInline>) is more restrictive than the parameter type of <codeInline>MyMethod</codeInline> (<codeInline>Base</codeInline>), so that it is always safe to pass the argument of the delegate to <codeInline>MyMethod</codeInline>.</para>
+                  </listItem>
+                  <listItem>
+                    <para>The return type of <codeInline>MyMethod</codeInline> (<codeInline>Derived</codeInline>) is more restrictive than the parameter type of the delegate (<codeInline>Base</codeInline>), so that it is always safe to cast the return type of the method to the return type of the delegate.</para>
+                  </listItem>
+                </list>
+                <para>The code example produces no output.</para>
+                <codeReference>Delegate.CreateDelegate_RelaxedFit#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>for access to the method represented by the delegate. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Reflection.MethodInfo</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.CreateDelegate(System.Type,System.Object,System.Reflection.MethodInfo)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates a delegate of the specified type that represents the specified static or instance method, with the specified first argument.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>type</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> of delegate to create. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>firstArgument</parameterReference>
+            <content>
+              <para>The object to which the delegate is bound, or <languageKeyword>null</languageKeyword> to treat <parameterReference>method</parameterReference> as <languageKeyword>static</languageKeyword> (<languageKeyword>Shared</languageKeyword> in Visual Basic). </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>method</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Reflection.MethodInfo</codeEntityReference> describing the static or instance method the delegate is to represent.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A delegate of the specified type that represents the specified static or instance method. </para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>type</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>method</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>type</parameterReference> does not inherit <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>type</parameterReference> is not a <languageKeyword>RuntimeType</languageKeyword>. See <link xlink:href="c1439fb5-cf76-475d-a9d2-fe64ba858858">Runtime Types in Reflection</link>. </para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>method</parameterReference> cannot be bound.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>method</parameterReference> is not a <languageKeyword>RuntimeMethodInfo</languageKeyword>. See <link xlink:href="c1439fb5-cf76-475d-a9d2-fe64ba858858">Runtime Types in Reflection</link>.</para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MissingMethodException</codeEntityReference>
+            <content>
+              <para>The <languageKeyword>Invoke</languageKeyword> method of <parameterReference>type</parameterReference> is not found. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MethodAccessException</codeEntityReference>
+            <content>
+              <para>The caller does not have the permissions necessary to access <parameterReference>method</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Calling this method overload is equivalent to calling the <codeEntityReference autoUpgrade="false">M:System.Delegate.CreateDelegate(System.Type,System.Object,System.Reflection.MethodInfo,System.Boolean)</codeEntityReference> method overload and specifying <languageKeyword>true</languageKeyword> for <parameterReference>throwOnBindFailure</parameterReference>. These two overloads provide the most flexible way to create delegates. You can use them to create delegates for either static or instance methods, and optionally to specify the first argument.</para>
+            <alert class="note">
+              <para>If you do not supply a first argument, use the <codeEntityReference autoUpgrade="false">M:System.Delegate.CreateDelegate(System.Type,System.Reflection.MethodInfo)</codeEntityReference> method overload for better performance.</para>
+            </alert>
+            <para>The delegate type and the method must have compatible return types. That is, the return type of <parameterReference>method</parameterReference> must be assignable to the return type of <parameterReference>type</parameterReference>.</para>
+            <para>If <parameterReference>firstArgument</parameterReference> is supplied, it is passed to <parameterReference>method</parameterReference> every time the delegate is invoked; <parameterReference>firstArgument</parameterReference> is said to be bound to the delegate, and the delegate is said to be closed over its first argument. If <parameterReference>method</parameterReference> is <languageKeyword>static</languageKeyword> (<languageKeyword>Shared</languageKeyword> in Visual Basic), the argument list supplied when invoking the delegate includes all parameters except the first; if <parameterReference>method</parameterReference> is an instance method, then <parameterReference>firstArgument</parameterReference> is passed to the hidden instance parameter (represented by <languageKeyword>this</languageKeyword> in C#, or by <languageKeyword>Me</languageKeyword> in Visual Basic).</para>
+            <para>If <parameterReference>firstArgument</parameterReference> is supplied, the first parameter of <parameterReference>method</parameterReference> must be a reference type, and <parameterReference>firstArgument</parameterReference> must be compatible with that type. </para>
+            <alert class="important">
+              <para>If <parameterReference>method</parameterReference> is <languageKeyword>static</languageKeyword> (<languageKeyword>Shared</languageKeyword> in Visual Basic) and its first parameter is of type <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference> or <codeEntityReference autoUpgrade="true">T:System.ValueType</codeEntityReference>, then <parameterReference>firstArgument</parameterReference> can be a value type. In this case <parameterReference>firstArgument</parameterReference> is automatically boxed. Automatic boxing does not occur for any other arguments, as it would in a C# or Visual Basic function call. </para>
+            </alert>
+            <para>If <parameterReference>firstArgument</parameterReference> is a null reference and <parameterReference>method</parameterReference> is an instance method, the result depends on the signatures of the delegate type <parameterReference>type</parameterReference> and of <parameterReference>method</parameterReference>:</para>
+            <list class="bullet">
+              <listItem>
+                <para>If the signature of <parameterReference>type</parameterReference> explicitly includes the hidden first parameter of <parameterReference>method</parameterReference>, the delegate is said to represent an open instance method. When the delegate is invoked, the first argument in the argument list is passed to the hidden instance parameter of <parameterReference>method</parameterReference>.</para>
+              </listItem>
+              <listItem>
+                <para>If the signatures of <parameterReference>method</parameterReference> and <parameterReference>type</parameterReference> match (that is, all parameter types are compatible), then the delegate is said to be closed over a null reference. Invoking the delegate is like calling an instance method on a null instance, which is not a particularly useful thing to do. </para>
+              </listItem>
+            </list>
+            <para>If <parameterReference>firstArgument</parameterReference> is a null reference and <parameterReference>method</parameterReference> is static, the result depends on the signatures of the delegate type <parameterReference>type</parameterReference> and of <parameterReference>method</parameterReference>:</para>
+            <list class="bullet">
+              <listItem>
+                <para>If the signature of <parameterReference>method</parameterReference> and <parameterReference>type</parameterReference> match (that is, all parameter types are compatible), the delegate is said to represent an open static method. This is the most common case for static methods. In this case, you can get slightly better performance by using the <codeEntityReference autoUpgrade="false">M:System.Delegate.CreateDelegate(System.Type,System.Reflection.MethodInfo)</codeEntityReference> method overload.</para>
+              </listItem>
+              <listItem>
+                <para>If the signature of <parameterReference>type</parameterReference> begins with the second parameter of <parameterReference>method</parameterReference> and the rest of the parameter types are compatible, then the delegate is said to be closed over a null reference. When the delegate is invoked, a null reference is passed to the first parameter of <parameterReference>method</parameterReference>. </para>
+              </listItem>
+            </list>
+          </content>
+          <sections>
+            <section>
+              <title>Compatible Parameter Types and Return Type</title>
+              <content>
+                <para>The parameter types and return type of a delegate must be compatible with the parameter types and return type of the method the delegate represents; the types do not have to match exactly. </para>
+                <alert class="note">
+                  <para>In the .NET Framework version 1.0 and 1.1, the types must match exactly.</para>
+                </alert>
+                <para>A parameter of a delegate is compatible with the corresponding parameter of a method if the type of the delegate parameter is more restrictive than the type of the method parameter, because this guarantees that an argument passed to the delegate can be passed safely to the method.</para>
+                <para>Similarly, the return type of a delegate is compatible with the return type of a method if the return type of the method is more restrictive than the return type of the delegate, because this guarantees that the return value of the method can be cast safely to the return type of the delegate.</para>
+                <para>For example, a delegate with a parameter of type <codeEntityReference autoUpgrade="true">T:System.Collections.Hashtable</codeEntityReference> and a return type of <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference> can represent a method with a parameter of type <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference> and a return value of type <codeEntityReference autoUpgrade="true">T:System.Collections.Hashtable</codeEntityReference>.</para>
+              </content>
+            </section>
+            <section>
+              <title>Determining the Methods a Delegate Can Represent</title>
+              <content>
+                <para>Another useful way to think of the flexibility provided by this overload of <codeEntityReference autoUpgrade="true">Overload:System.Delegate.CreateDelegate</codeEntityReference> is that any given delegate can represent four different combinations of method signature and method kind (static versus instance). Consider a delegate type <codeInline>D</codeInline> with one argument of type <codeInline>C</codeInline>. The following describes the methods <codeInline>D</codeInline> can represent, ignoring the return type since it must match in all cases:</para>
+                <list class="bullet">
+                  <listItem>
+                    <para>
+                      <codeInline>D</codeInline> can represent any instance method that has exactly one argument of type <codeInline>C</codeInline>, regardless of what type the instance method belongs to. When <codeEntityReference autoUpgrade="true">M:System.Delegate.CreateDelegate(System.Type,System.Object,System.Reflection.MethodInfo,System.Boolean)</codeEntityReference> is called, <parameterReference>firstArgument</parameterReference> is an instance of the type <parameterReference>method</parameterReference> belongs to, and the resulting delegate is said to be closed over that instance. (Trivially, <codeInline>D</codeInline> can also be closed over a null reference if <parameterReference>firstArgument</parameterReference> is a null reference.)</para>
+                  </listItem>
+                  <listItem>
+                    <para>
+                      <codeInline>D</codeInline> can represent an instance method of <codeInline>C</codeInline> that has no arguments. When <codeEntityReference autoUpgrade="true">M:System.Delegate.CreateDelegate(System.Type,System.Object,System.Reflection.MethodInfo,System.Boolean)</codeEntityReference> is called, <parameterReference>firstArgument</parameterReference> is a null reference. The resulting delegate represents an open instance method, and an instance of <codeInline>C</codeInline> must be supplied each time it is invoked. </para>
+                  </listItem>
+                  <listItem>
+                    <para>
+                      <codeInline>D</codeInline> can represent a static method that takes one argument of type <codeInline>C</codeInline>, and that method can belong to any type. When <codeEntityReference autoUpgrade="true">M:System.Delegate.CreateDelegate(System.Type,System.Object,System.Reflection.MethodInfo,System.Boolean)</codeEntityReference> is called, <parameterReference>firstArgument</parameterReference> is a null reference. The resulting delegate represents an open static method, and an instance of <codeInline>C</codeInline> must be supplied each time it is invoked.</para>
+                  </listItem>
+                  <listItem>
+                    <para>
+                      <codeInline>D</codeInline> can represent a static method that belongs to type <codeInline>F</codeInline> and has two arguments, of type <codeInline>F</codeInline> and type <codeInline>C</codeInline>. When <codeEntityReference autoUpgrade="true">M:System.Delegate.CreateDelegate(System.Type,System.Object,System.Reflection.MethodInfo,System.Boolean)</codeEntityReference> is called, <parameterReference>firstArgument</parameterReference> is an instance of <codeInline>F</codeInline>. The resulting delegate represents a static method that is closed over that instance of <codeInline>F</codeInline>. Note that in the case where <codeInline>F</codeInline> and <codeInline>C</codeInline> are the same type, the static method has two arguments of that type. (In this case, <codeInline>D</codeInline> is closed over a null reference if <parameterReference>firstArgument</parameterReference> is a null reference.)</para>
+                  </listItem>
+                </list>
+              </content>
+            </section>
+          </sections>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>This section contains three code examples. The first example demonstrates the four kinds of delegates that can be created: closed over an instance method, open over an instance method, open over a static method, and closed over a static method.</para>
+                <para>The second code example demonstrates compatible parameter types and return types.</para>
+                <para>The third code example defines a single delegate type, and shows all the methods that delegate type can represent.</para>
+                <para>
+                  <embeddedLabel>Example 1</embeddedLabel>
+                </para>
+                <para>The following code example demonstrates the four ways a delegate can be created using this overload of the <codeEntityReference autoUpgrade="true">Overload:System.Delegate.CreateDelegate</codeEntityReference> method. </para>
+                <alert class="note">
+                  <para>There are two overloads of the <codeEntityReference autoUpgrade="true">Overload:System.Delegate.CreateDelegate</codeEntityReference> method that specify <parameterReference>firstArgument</parameterReference> and a <codeEntityReference autoUpgrade="true">T:System.Reflection.MethodInfo</codeEntityReference>; their functionality is the same except that one allows you to specify whether to throw on failure to bind, and the other always throws. This code example uses both overloads.</para>
+                </alert>
+                <para>The example declares a class <codeInline>C</codeInline> with a static method <codeInline>M2</codeInline> and an instance method <codeInline>M1</codeInline>, and three delegate types: <codeInline>D1</codeInline> takes an instance of <codeInline>C</codeInline> and a string, <codeInline>D2</codeInline> takes a string, and <codeInline>D3</codeInline> has no arguments. </para>
+                <para>A second class named <codeInline>Example</codeInline> contains the code that creates the delegates. </para>
+                <list class="bullet">
+                  <listItem>
+                    <para>A delegate of type <codeInline>D2</codeInline>, closed over an instance of <codeInline>C</codeInline>, is created for the instance method <codeInline>M1</codeInline>. It is invoked with different strings, to show that the bound instance of <codeInline>C</codeInline> is always used.</para>
+                  </listItem>
+                  <listItem>
+                    <para>A delegate of type <codeInline>D1</codeInline>, representing an open instance method, is created for the instance method <codeInline>M1</codeInline>. An instance must be passed when the delegate is invoked.</para>
+                  </listItem>
+                  <listItem>
+                    <para>A delegate of type <codeInline>D2</codeInline>, representing an open static method, is created for the static method <codeInline>M2</codeInline>.</para>
+                  </listItem>
+                  <listItem>
+                    <para>Finally, a delegate of type <codeInline>D3</codeInline>, closed over a string, is created for the static method <codeInline>M2</codeInline>. The method is invoked to show that it uses the bound string.</para>
+                  </listItem>
+                </list>
+                <codeReference>Delegate.CreateDelegateTOM#1</codeReference>
+                <para>
+                  <embeddedLabel>Example 2</embeddedLabel>
+                </para>
+                <para>The following code example demonstrates compatibility of parameter types and return types. </para>
+                <alert class="note">
+                  <para>This code example uses the <codeEntityReference autoUpgrade="false">M:System.Delegate.CreateDelegate(System.Type,System.Reflection.MethodInfo)</codeEntityReference> method overload. The use of other overloads that take <codeEntityReference autoUpgrade="true">T:System.Reflection.MethodInfo</codeEntityReference> is similar.</para>
+                </alert>
+                <para>The code example defines a base class named <codeInline>Base</codeInline> and a class named <codeInline>Derived</codeInline> that derives from <codeInline>Base</codeInline>. The derived class has a <languageKeyword>static</languageKeyword> (<languageKeyword>Shared</languageKeyword> in Visual Basic) method named <codeInline>MyMethod</codeInline> with one parameter of type <codeInline>Base</codeInline> and a return type of <codeInline>Derived</codeInline>. The code example also defines a delegate named <codeInline>Example</codeInline> that has one parameter of type <codeInline>Derived</codeInline> and a return type of <codeInline>Base</codeInline>.</para>
+                <para>The code example demonstrates that the delegate named <codeInline>Example</codeInline> can be used to represent the method <codeInline>MyMethod</codeInline>. The method can be bound to the delegate because:</para>
+                <list class="bullet">
+                  <listItem>
+                    <para>The parameter type of the delegate (<codeInline>Derived</codeInline>) is more restrictive than the parameter type of <codeInline>MyMethod</codeInline> (<codeInline>Base</codeInline>), so that it is always safe to pass the argument of the delegate to <codeInline>MyMethod</codeInline>.</para>
+                  </listItem>
+                  <listItem>
+                    <para>The return type of <codeInline>MyMethod</codeInline> (<codeInline>Derived</codeInline>) is more restrictive than the parameter type of the delegate (<codeInline>Base</codeInline>), so that it is always safe to cast the return type of the method to the return type of the delegate.</para>
+                  </listItem>
+                </list>
+                <para>The code example produces no output.</para>
+                <codeReference>Delegate.CreateDelegate_RelaxedFit#1</codeReference>
+                <para>
+                  <embeddedLabel>Example 3</embeddedLabel>
+                </para>
+                <para>The following code example shows all the methods a single delegate type can represent, using the <codeEntityReference autoUpgrade="true">M:System.Delegate.CreateDelegate(System.Type,System.Object,System.Reflection.MethodInfo,System.Boolean)</codeEntityReference> method to create the delegates. </para>
+                <alert class="note">
+                  <para>There are two overloads of the <codeEntityReference autoUpgrade="true">Overload:System.Delegate.CreateDelegate</codeEntityReference> method that specify <parameterReference>firstArgument</parameterReference> and a <codeEntityReference autoUpgrade="true">T:System.Reflection.MethodInfo</codeEntityReference>; their functionality is the same except that one allows you to specify whether to throw on failure to bind, and the other always throws. This code example uses both overloads.</para>
+                </alert>
+                <para>The code example defines two classes, <codeInline>C</codeInline> and <codeInline>F</codeInline>, and a delegate type <codeInline>D</codeInline> with one argument of type <codeInline>C</codeInline>. The classes have matching static and instance methods <codeInline>M1</codeInline>, <codeInline>M3</codeInline>, and <codeInline>M4</codeInline>, and class <codeInline>C</codeInline> also has an instance method <codeInline>M2</codeInline> that has no arguments. </para>
+                <para>A third class named <codeInline>Example</codeInline> contains the code that creates the delegates. </para>
+                <list class="bullet">
+                  <listItem>
+                    <para>Delegates are created for instance method <codeInline>M1</codeInline> of type <codeInline>C</codeInline> and type <codeInline>F</codeInline>; each is closed over an instance of the respective type. Method <codeInline>M1</codeInline> of type <codeInline>C</codeInline> displays the <codeInline>ID</codeInline> properties of the bound instance and of the argument.</para>
+                  </listItem>
+                  <listItem>
+                    <para>A delegate is created for method <codeInline>M2</codeInline> of type <codeInline>C</codeInline>. This is an open instance delegate, in which the argument of the delegate represents the hidden first argument on the instance method. The method has no other arguments. It is called as if it were a static method.</para>
+                  </listItem>
+                  <listItem>
+                    <para>Delegates are created for static method <codeInline>M3</codeInline> of type <codeInline>C</codeInline> and type <codeInline>F</codeInline>; these are open static delegates.</para>
+                  </listItem>
+                  <listItem>
+                    <para>Finally, delegates are created for static method <codeInline>M4</codeInline> of type <codeInline>C</codeInline> and type <codeInline>F</codeInline>; each method has the declaring type as its first argument, and an instance of the type is supplied, so the delegates are closed over their first arguments. Method <codeInline>M4</codeInline> of type <codeInline>C</codeInline> displays the <codeInline>ID</codeInline> properties of the bound instance and of the argument. </para>
+                  </listItem>
+                </list>
+                <codeReference>Delegate.CreateDelegateTOM_2#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>for access to the method represented by the delegate. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Reflection.MethodInfo</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.CreateDelegate(System.Type,System.Object,System.Reflection.MethodInfo,System.Boolean)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates a delegate of the specified type that represents the specified static or instance method, with the specified first argument and the specified behavior on failure to bind.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>type</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> representing the type of delegate to create. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>firstArgument</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference> that is the first argument of the method the delegate represents. For instance methods, it must be compatible with the instance type. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>method</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Reflection.MethodInfo</codeEntityReference> describing the static or instance method the delegate is to represent.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>throwOnBindFailure</parameterReference>
+            <content>
+              <para>
+                <languageKeyword>true</languageKeyword> to throw an exception if <parameterReference>method</parameterReference> cannot be bound; otherwise, <languageKeyword>false</languageKeyword>.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A delegate of the specified type that represents the specified static or instance method, or <languageKeyword>null</languageKeyword> if <parameterReference>throwOnBindFailure</parameterReference> is <languageKeyword>false</languageKeyword> and the delegate cannot be bound to <parameterReference>method</parameterReference>. </para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>type</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>method</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>type</parameterReference> does not inherit <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>type</parameterReference> is not a <languageKeyword>RuntimeType</languageKeyword>. See <link xlink:href="c1439fb5-cf76-475d-a9d2-fe64ba858858">Runtime Types in Reflection</link>. </para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>method</parameterReference> cannot be bound, and <parameterReference>throwOnBindFailure</parameterReference> is <languageKeyword>true</languageKeyword>.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>method</parameterReference> is not a <languageKeyword>RuntimeMethodInfo</languageKeyword>. See <link xlink:href="c1439fb5-cf76-475d-a9d2-fe64ba858858">Runtime Types in Reflection</link>.</para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MissingMethodException</codeEntityReference>
+            <content>
+              <para>The <languageKeyword>Invoke</languageKeyword> method of <parameterReference>type</parameterReference> is not found. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MethodAccessException</codeEntityReference>
+            <content>
+              <para>The caller does not have the permissions necessary to access <parameterReference>method</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This method overload and the <codeEntityReference autoUpgrade="false">M:System.Delegate.CreateDelegate(System.Type,System.Object,System.Reflection.MethodInfo)</codeEntityReference> method overload, which always throws on failure to bind, provide the most flexible way to create delegates. You can use them to create delegates for either static or instance methods, with or without a first argument.</para>
+            <alert class="note">
+              <para>If you do not supply a first argument, use the <codeEntityReference autoUpgrade="false">M:System.Delegate.CreateDelegate(System.Type,System.Reflection.MethodInfo,System.Boolean)</codeEntityReference> method overload for better performance.</para>
+            </alert>
+            <para>The delegate type and the method must have compatible return types. That is, the return type of <parameterReference>method</parameterReference> must be assignable to the return type of <parameterReference>type</parameterReference>.</para>
+            <para>If <parameterReference>firstArgument</parameterReference> is supplied, it is passed to <parameterReference>method</parameterReference> every time the delegate is invoked; <parameterReference>firstArgument</parameterReference> is said to be bound to the delegate, and the delegate is said to be closed over its first argument. If <parameterReference>method</parameterReference> is <languageKeyword>static</languageKeyword> (<languageKeyword>Shared</languageKeyword> in Visual Basic), the argument list supplied when invoking the delegate includes all parameters except the first; if <parameterReference>method</parameterReference> is an instance method, then <parameterReference>firstArgument</parameterReference> is passed to the hidden instance parameter (represented by <languageKeyword>this</languageKeyword> in C#, or by <languageKeyword>Me</languageKeyword> in Visual Basic).</para>
+            <para>If <parameterReference>firstArgument</parameterReference> is supplied, the first parameter of <parameterReference>method</parameterReference> must be a reference type, and <parameterReference>firstArgument</parameterReference> must be compatible with that type. </para>
+            <alert class="important">
+              <para>If <parameterReference>method</parameterReference> is <languageKeyword>static</languageKeyword> (<languageKeyword>Shared</languageKeyword> in Visual Basic) and its first parameter is of type <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference> or <codeEntityReference autoUpgrade="true">T:System.ValueType</codeEntityReference>, then <parameterReference>firstArgument</parameterReference> can be a value type. In this case <parameterReference>firstArgument</parameterReference> is automatically boxed. Automatic boxing does not occur for any other arguments, as it would in a C# or Visual Basic function call. </para>
+            </alert>
+            <para>If <parameterReference>firstArgument</parameterReference> is a null reference and <parameterReference>method</parameterReference> is an instance method, the result depends on the signatures of the delegate type <parameterReference>type</parameterReference> and of <parameterReference>method</parameterReference>:</para>
+            <list class="bullet">
+              <listItem>
+                <para>If the signature of <parameterReference>type</parameterReference> explicitly includes the hidden first parameter of <parameterReference>method</parameterReference>, the delegate is said to represent an open instance method. When the delegate is invoked, the first argument in the argument list is passed to the hidden instance parameter of <parameterReference>method</parameterReference>.</para>
+              </listItem>
+              <listItem>
+                <para>If the signatures of <parameterReference>method</parameterReference> and <parameterReference>type</parameterReference> match (that is, all parameter types are compatible), then the delegate is said to be closed over a null reference. Invoking the delegate is like calling an instance method on a null instance, which is not a particularly useful thing to do. </para>
+              </listItem>
+            </list>
+            <para>If <parameterReference>firstArgument</parameterReference> is a null reference and <parameterReference>method</parameterReference> is static, the result depends on the signatures of the delegate type <parameterReference>type</parameterReference> and of <parameterReference>method</parameterReference>:</para>
+            <list class="bullet">
+              <listItem>
+                <para>If the signature of <parameterReference>method</parameterReference> and <parameterReference>type</parameterReference> match (that is, all parameter types are compatible), the delegate is said to represent an open static method. This is the most common case for static methods. In this case, you can get slightly better performance by using the <codeEntityReference autoUpgrade="false">M:System.Delegate.CreateDelegate(System.Type,System.Reflection.MethodInfo,System.Boolean)</codeEntityReference> method overload.</para>
+              </listItem>
+              <listItem>
+                <para>If the signature of <parameterReference>type</parameterReference> begins with the second parameter of <parameterReference>method</parameterReference> and the rest of the parameter types are compatible, then the delegate is said to be closed over a null reference. When the delegate is invoked, a null reference is passed to the first parameter of <parameterReference>method</parameterReference>. </para>
+              </listItem>
+            </list>
+          </content>
+          <sections>
+            <section>
+              <title>Compatible Parameter Types and Return Type</title>
+              <content>
+                <para>The parameter types and return type of a delegate must be compatible with the parameter types and return type of the method the delegate represents; the types do not have to match exactly. </para>
+                <alert class="note">
+                  <para>In the .NET Framework version 1.0 and 1.1 the types must match exactly.</para>
+                </alert>
+                <para>A parameter of a delegate is compatible with the corresponding parameter of a method if the type of the delegate parameter is more restrictive than the type of the method parameter, because this guarantees that an argument passed to the delegate can be passed safely to the method.</para>
+                <para>Similarly, the return type of a delegate is compatible with the return type of a method if the return type of the method is more restrictive than the return type of the delegate, because this guarantees that the return value of the method can be cast safely to the return type of the delegate.</para>
+                <para>For example, a delegate with a parameter of type <codeEntityReference autoUpgrade="true">T:System.Collections.Hashtable</codeEntityReference> and a return type of <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference> can represent a method with a parameter of type <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference> and a return value of type <codeEntityReference autoUpgrade="true">T:System.Collections.Hashtable</codeEntityReference>.</para>
+              </content>
+            </section>
+            <section>
+              <title>Determining the Methods a Delegate Can Represent</title>
+              <content>
+                <para>Another useful way to think of the flexibility provided by this overload of <codeEntityReference autoUpgrade="true">Overload:System.Delegate.CreateDelegate</codeEntityReference> is that any given delegate can represent four different combinations of method signature and method kind (static versus instance). Consider a delegate type <codeInline>D</codeInline> with one argument of type <codeInline>C</codeInline>. The following describes the methods <codeInline>D</codeInline> can represent, ignoring the return type since it must match in all cases:</para>
+                <list class="bullet">
+                  <listItem>
+                    <para>
+                      <codeInline>D</codeInline> can represent any instance method that has exactly one argument of type <codeInline>C</codeInline>, regardless of what type the instance method belongs to. When <codeEntityReference autoUpgrade="true">M:System.Delegate.CreateDelegate(System.Type,System.Object,System.Reflection.MethodInfo,System.Boolean)</codeEntityReference> is called, <parameterReference>firstArgument</parameterReference> is an instance of the type <parameterReference>method</parameterReference> belongs to, and the resulting delegate is said to be closed over that instance. (Trivially, <codeInline>D</codeInline> can also be closed over a null reference if <parameterReference>firstArgument</parameterReference> is <languageKeyword>null</languageKeyword>.)</para>
+                  </listItem>
+                  <listItem>
+                    <para>
+                      <codeInline>D</codeInline> can represent an instance method of <codeInline>C</codeInline> that has no arguments. When <codeEntityReference autoUpgrade="true">M:System.Delegate.CreateDelegate(System.Type,System.Object,System.Reflection.MethodInfo,System.Boolean)</codeEntityReference> is called, <parameterReference>firstArgument</parameterReference> is a null reference. The resulting delegate represents an open instance method, and an instance of <codeInline>C</codeInline> must be supplied each time it is invoked. </para>
+                  </listItem>
+                  <listItem>
+                    <para>
+                      <codeInline>D</codeInline> can represent a static method that takes one argument of type <codeInline>C</codeInline>, and that method can belong to any type. When <codeEntityReference autoUpgrade="true">M:System.Delegate.CreateDelegate(System.Type,System.Object,System.Reflection.MethodInfo,System.Boolean)</codeEntityReference> is called, <parameterReference>firstArgument</parameterReference> is a null reference. The resulting delegate represents an open static method, and an instance of <codeInline>C</codeInline> must be supplied each time it is invoked.</para>
+                  </listItem>
+                  <listItem>
+                    <para>
+                      <codeInline>D</codeInline> can represent a static method that belongs to type <codeInline>F</codeInline> and has two arguments, of type <codeInline>F</codeInline> and type <codeInline>C</codeInline>. When <codeEntityReference autoUpgrade="true">M:System.Delegate.CreateDelegate(System.Type,System.Object,System.Reflection.MethodInfo,System.Boolean)</codeEntityReference> is called, <parameterReference>firstArgument</parameterReference> is an instance of <codeInline>F</codeInline>. The resulting delegate represents a static method that is closed over that instance of <codeInline>F</codeInline>. Note that in the case where <codeInline>F</codeInline> and <codeInline>C</codeInline> are the same type, the static method has two arguments of that type. (In this case, <codeInline>D</codeInline> is closed over a null reference if <parameterReference>firstArgument</parameterReference> is <languageKeyword>null</languageKeyword>.)</para>
+                  </listItem>
+                </list>
+              </content>
+            </section>
+          </sections>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>This section contains three code examples. The first example demonstrates the four kinds of delegates that can be created: closed over an instance method, open over an instance method, open over a static method, and closed over a static method.</para>
+                <para>The second code example demonstrates compatible parameter types and return types.</para>
+                <para>The third code example defines a single delegate type, and shows all the methods that delegate type can represent.</para>
+                <para>
+                  <embeddedLabel>Example 1</embeddedLabel>
+                </para>
+                <para>The following code example demonstrates the four ways a delegate can be created using this overload of the <codeEntityReference autoUpgrade="true">Overload:System.Delegate.CreateDelegate</codeEntityReference> method. </para>
+                <alert class="note">
+                  <para>There are two overloads of the <codeEntityReference autoUpgrade="true">Overload:System.Delegate.CreateDelegate</codeEntityReference> method that specify <parameterReference>firstArgument</parameterReference> and a <codeEntityReference autoUpgrade="true">T:System.Reflection.MethodInfo</codeEntityReference>; their functionality is the same except that one allows you to specify whether to throw on failure to bind, and the other always throws. This code example uses both overloads.</para>
+                </alert>
+                <para>The example declares a class <codeInline>C</codeInline> with a static method <codeInline>M2</codeInline> and an instance method <codeInline>M1</codeInline>, and three delegate types: <codeInline>D1</codeInline> takes an instance of <codeInline>C</codeInline> and a string, <codeInline>D2</codeInline> takes a string, and <codeInline>D3</codeInline> has no arguments. </para>
+                <para>A second class named <codeInline>Example</codeInline> contains the code that creates the delegates. </para>
+                <list class="bullet">
+                  <listItem>
+                    <para>A delegate of type <codeInline>D2</codeInline>, closed over an instance of <codeInline>C</codeInline>, is created for the instance method <codeInline>M1</codeInline>. It is invoked with different strings, to show that the bound instance of <codeInline>C</codeInline> is always used.</para>
+                  </listItem>
+                  <listItem>
+                    <para>A delegate of type <codeInline>D1</codeInline>, representing an open instance method, is created for the instance method <codeInline>M1</codeInline>. An instance must be passed when the delegate is invoked.</para>
+                  </listItem>
+                  <listItem>
+                    <para>A delegate of type <codeInline>D2</codeInline>, representing an open static method, is created for the static method <codeInline>M2</codeInline>.</para>
+                  </listItem>
+                  <listItem>
+                    <para>Finally, a delegate of type <codeInline>D3</codeInline>, closed over a string, is created for the static method <codeInline>M2</codeInline>. The method is invoked to show that it uses the bound string.</para>
+                  </listItem>
+                </list>
+                <codeReference>Delegate.CreateDelegateTOM#1</codeReference>
+                <para>
+                  <embeddedLabel>Example 2</embeddedLabel>
+                </para>
+                <para>The following code example demonstrates compatibility of parameter types and return types. </para>
+                <alert class="note">
+                  <para>This code example uses the <codeEntityReference autoUpgrade="false">M:System.Delegate.CreateDelegate(System.Type,System.Reflection.MethodInfo)</codeEntityReference> method overload. The use of other overloads that take <codeEntityReference autoUpgrade="true">T:System.Reflection.MethodInfo</codeEntityReference> is similar.</para>
+                </alert>
+                <para>The code example defines a base class named <codeInline>Base</codeInline> and a class named <codeInline>Derived</codeInline> that derives from <codeInline>Base</codeInline>. The derived class has a <languageKeyword>static</languageKeyword> (<languageKeyword>Shared</languageKeyword> in Visual Basic) method named <codeInline>MyMethod</codeInline> with one parameter of type <codeInline>Base</codeInline> and a return type of <codeInline>Derived</codeInline>. The code example also defines a delegate named <codeInline>Example</codeInline> that has one parameter of type <codeInline>Derived</codeInline> and a return type of <codeInline>Base</codeInline>.</para>
+                <para>The code example demonstrates that the delegate named <codeInline>Example</codeInline> can be used to represent the method <codeInline>MyMethod</codeInline>. The method can be bound to the delegate because:</para>
+                <list class="bullet">
+                  <listItem>
+                    <para>The parameter type of the delegate (<codeInline>Derived</codeInline>) is more restrictive than the parameter type of <codeInline>MyMethod</codeInline> (<codeInline>Base</codeInline>), so that it is always safe to pass the argument of the delegate to <codeInline>MyMethod</codeInline>.</para>
+                  </listItem>
+                  <listItem>
+                    <para>The return type of <codeInline>MyMethod</codeInline> (<codeInline>Derived</codeInline>) is more restrictive than the parameter type of the delegate (<codeInline>Base</codeInline>), so that it is always safe to cast the return type of the method to the return type of the delegate.</para>
+                  </listItem>
+                </list>
+                <para>The code example produces no output.</para>
+                <codeReference>Delegate.CreateDelegate_RelaxedFit#1</codeReference>
+                <para>
+                  <embeddedLabel>Example 3</embeddedLabel>
+                </para>
+                <para>The following code example shows all the methods a single delegate type can represent. </para>
+                <alert class="note">
+                  <para>There are two overloads of the <codeEntityReference autoUpgrade="true">Overload:System.Delegate.CreateDelegate</codeEntityReference> method that specify <parameterReference>firstArgument</parameterReference> and a <codeEntityReference autoUpgrade="true">T:System.Reflection.MethodInfo</codeEntityReference>; their functionality is the same except that one allows you to specify whether to throw on failure to bind, and the other always throws. This code example uses both overloads.</para>
+                </alert>
+                <para>The code example defines two classes, <codeInline>C</codeInline> and <codeInline>F</codeInline>, and a delegate type <codeInline>D</codeInline> with one argument of type <codeInline>C</codeInline>. The classes have matching static and instance methods <codeInline>M1</codeInline>, <codeInline>M3</codeInline>, and <codeInline>M4</codeInline>, and class <codeInline>C</codeInline> also has an instance method <codeInline>M2</codeInline> that has no arguments. </para>
+                <para>A third class named <codeInline>Example</codeInline> contains the code that creates the delegates. </para>
+                <list class="bullet">
+                  <listItem>
+                    <para>Delegates are created for instance method <codeInline>M1</codeInline> of type <codeInline>C</codeInline> and type <codeInline>F</codeInline>; each is closed over an instance of the respective type. Method <codeInline>M1</codeInline> of type <codeInline>C</codeInline> displays the <codeInline>ID</codeInline> properties of the bound instance and of the argument.</para>
+                  </listItem>
+                  <listItem>
+                    <para>A delegate is created for method <codeInline>M2</codeInline> of type <codeInline>C</codeInline>. This is an open instance delegate, in which the argument of the delegate represents the hidden first argument on the instance method. The method has no other arguments. </para>
+                  </listItem>
+                  <listItem>
+                    <para>Delegates are created for static method <codeInline>M3</codeInline> of type <codeInline>C</codeInline> and type <codeInline>F</codeInline>; these are open static delegates.</para>
+                  </listItem>
+                  <listItem>
+                    <para>Finally, delegates are created for static method <codeInline>M4</codeInline> of type <codeInline>C</codeInline> and type <codeInline>F</codeInline>; each method has the declaring type as its first argument, and an instance of the type is supplied, so the delegates are closed over their first arguments. Method <codeInline>M4</codeInline> of type <codeInline>C</codeInline> displays the <codeInline>ID</codeInline> properties of the bound instance and of the argument. </para>
+                  </listItem>
+                </list>
+                <codeReference>Delegate.CreateDelegateTOM_2#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>for access to the method represented by the delegate. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Reflection.MethodInfo</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.CreateDelegate(System.Type,System.Object,System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates a delegate of the specified type that represents the specified instance method to invoke on the specified class instance.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>type</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> of delegate to create. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>target</parameterReference>
+            <content>
+              <para>The class instance on which <parameterReference>method</parameterReference> is invoked. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>method</parameterReference>
+            <content>
+              <para>The name of the instance method that the delegate is to represent. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A delegate of the specified type that represents the specified instance method to invoke on the specified class instance.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>type</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>target</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>method</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>type</parameterReference> does not inherit <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>. </para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>type</parameterReference> is not a <languageKeyword>RuntimeType</languageKeyword>. See <link xlink:href="c1439fb5-cf76-475d-a9d2-fe64ba858858">Runtime Types in Reflection</link>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>method</parameterReference> is not an instance method. </para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>method</parameterReference> cannot be bound, for example because it cannot be found.</para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MissingMethodException</codeEntityReference>
+            <content>
+              <para>The <languageKeyword>Invoke</languageKeyword> method of <parameterReference>type</parameterReference> is not found. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MethodAccessException</codeEntityReference>
+            <content>
+              <para>The caller does not have the permissions necessary to access <parameterReference>method</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This method creates delegates for instance methods only. An instance method is a method that is associated with an instance of a class; a static method is a method that is associated with the class itself.</para>
+            <para>This method overload is equivalent to calling the <codeEntityReference autoUpgrade="false">M:System.Delegate.CreateDelegate(System.Type,System.Object,System.String,System.Boolean,System.Boolean)</codeEntityReference> method overload, specifying <languageKeyword>false</languageKeyword> for <parameterReference>ignoreCase</parameterReference> and <languageKeyword>true</languageKeyword> for <parameterReference>throwOnBindFailure</parameterReference>.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>for access to the method represented by the delegate. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.CreateDelegate(System.Type,System.Object,System.String,System.Boolean)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates a delegate of the specified type that represents the specified instance method to invoke on the specified class instance with the specified case-sensitivity.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>type</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> of delegate to create. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>target</parameterReference>
+            <content>
+              <para>The class instance on which <parameterReference>method</parameterReference> is invoked. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>method</parameterReference>
+            <content>
+              <para>The name of the instance method that the delegate is to represent. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>ignoreCase</parameterReference>
+            <content>
+              <para>A Boolean indicating whether to ignore the case when comparing the name of the method. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A delegate of the specified type that represents the specified instance method to invoke on the specified class instance.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>type</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>target</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>method</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>type</parameterReference> does not inherit <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>type</parameterReference> is not a <languageKeyword>RuntimeType</languageKeyword>. See <link xlink:href="c1439fb5-cf76-475d-a9d2-fe64ba858858">Runtime Types in Reflection</link>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>method</parameterReference> is not an instance method. </para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>method</parameterReference> cannot be bound, for example because it cannot be found.</para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MissingMethodException</codeEntityReference>
+            <content>
+              <para>The <languageKeyword>Invoke</languageKeyword> method of <parameterReference>type</parameterReference> is not found. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MethodAccessException</codeEntityReference>
+            <content>
+              <para>The caller does not have the permissions necessary to access <parameterReference>method</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This method creates delegates for instance methods only. An instance method is a method that is associated with an instance of a class; a static method is a method that is associated with the class itself.</para>
+            <para>This method overload is equivalent to calling the <codeEntityReference autoUpgrade="false">M:System.Delegate.CreateDelegate(System.Type,System.Object,System.String,System.Boolean,System.Boolean)</codeEntityReference> method overload, specifying <languageKeyword>true</languageKeyword> for <parameterReference>throwOnBindFailure</parameterReference>.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>for access to the method represented by the delegate. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.CreateDelegate(System.Type,System.Object,System.String,System.Boolean,System.Boolean)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates a delegate of the specified type that represents the specified instance method to invoke on the specified class instance, with the specified case-sensitivity and the specified behavior on failure to bind.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>type</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> of delegate to create. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>target</parameterReference>
+            <content>
+              <para>The class instance on which <parameterReference>method</parameterReference> is invoked. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>method</parameterReference>
+            <content>
+              <para>The name of the instance method that the delegate is to represent. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>ignoreCase</parameterReference>
+            <content>
+              <para>A Boolean indicating whether to ignore the case when comparing the name of the method. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>throwOnBindFailure</parameterReference>
+            <content>
+              <para>
+                <languageKeyword>true</languageKeyword> to throw an exception if <parameterReference>method</parameterReference> cannot be bound; otherwise, <languageKeyword>false</languageKeyword>.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A delegate of the specified type that represents the specified instance method to invoke on the specified class instance.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>type</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>target</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>method</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>type</parameterReference> does not inherit <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>type</parameterReference> is not a <languageKeyword>RuntimeType</languageKeyword>. See <link xlink:href="c1439fb5-cf76-475d-a9d2-fe64ba858858">Runtime Types in Reflection</link>. </para>
+              <para>-or-  </para>
+              <para>
+                <parameterReference>method</parameterReference> is not an instance method. </para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>method</parameterReference> cannot be bound, for example because it cannot be found, and <parameterReference>throwOnBindFailure</parameterReference> is <languageKeyword>true</languageKeyword>.</para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MissingMethodException</codeEntityReference>
+            <content>
+              <para>The <languageKeyword>Invoke</languageKeyword> method of <parameterReference>type</parameterReference> is not found. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MethodAccessException</codeEntityReference>
+            <content>
+              <para>The caller does not have the permissions necessary to access <parameterReference>method</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This method creates delegates for instance methods only. An instance method is a method that is associated with an instance of a class; a static method is a method that is associated with the class itself.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>for access to the method represented by the delegate. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.CreateDelegate(System.Type,System.Type,System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates a delegate of the specified type that represents the specified static method of the specified class.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>type</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> of delegate to create. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>target</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> representing the class that implements <parameterReference>method</parameterReference>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>method</parameterReference>
+            <content>
+              <para>The name of the static method that the delegate is to represent. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A delegate of the specified type that represents the specified static method of the specified class.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>type</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>target</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>method</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>type</parameterReference> does not inherit <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>type</parameterReference> is not a <languageKeyword>RuntimeType</languageKeyword>. See <link xlink:href="c1439fb5-cf76-475d-a9d2-fe64ba858858">Runtime Types in Reflection</link>. </para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>target</parameterReference> is not a <languageKeyword>RuntimeType</languageKeyword>.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>target</parameterReference> is an open generic type. That is, its <codeEntityReference autoUpgrade="true">P:System.Type.ContainsGenericParameters</codeEntityReference> property is <languageKeyword>true</languageKeyword>.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>method</parameterReference> is not a <languageKeyword>static</languageKeyword> method (<languageKeyword>Shared</languageKeyword> method in Visual Basic). </para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>method</parameterReference> cannot be bound, for example because it cannot be found, and <parameterReference>throwOnBindFailure</parameterReference> is <languageKeyword>true</languageKeyword>.</para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MissingMethodException</codeEntityReference>
+            <content>
+              <para>The <languageKeyword>Invoke</languageKeyword> method of <parameterReference>type</parameterReference> is not found. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MethodAccessException</codeEntityReference>
+            <content>
+              <para>The caller does not have the permissions necessary to access <parameterReference>method</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This method creates delegates for static methods only. An instance method is a method that is associated with an instance of a class; a static method is a method that is associated with the class itself.</para>
+            <para>This method overload is equivalent to calling the <codeEntityReference autoUpgrade="false">M:System.Delegate.CreateDelegate(System.Type,System.Type,System.String,System.Boolean,System.Boolean)</codeEntityReference> method overload, specifying <languageKeyword>false</languageKeyword> for <parameterReference>ignoreCase</parameterReference> and <languageKeyword>true</languageKeyword> for <parameterReference>throwOnBindFailure</parameterReference>.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>for access to the method represented by the delegate. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.CreateDelegate(System.Type,System.Type,System.String,System.Boolean)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates a delegate of the specified type that represents the specified static method of the specified class, with the specified case-sensitivity.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>type</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> of delegate to create. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>target</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> representing the class that implements <parameterReference>method</parameterReference>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>method</parameterReference>
+            <content>
+              <para>The name of the static method that the delegate is to represent. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>ignoreCase</parameterReference>
+            <content>
+              <para>A Boolean indicating whether to ignore the case when comparing the name of the method.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A delegate of the specified type that represents the specified static method of the specified class.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>type</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>target</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>method</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>type</parameterReference> does not inherit <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>type</parameterReference> is not a <languageKeyword>RuntimeType</languageKeyword>. See <link xlink:href="c1439fb5-cf76-475d-a9d2-fe64ba858858">Runtime Types in Reflection</link>. </para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>target</parameterReference> is not a <languageKeyword>RuntimeType</languageKeyword>.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>target</parameterReference> is an open generic type. That is, its <codeEntityReference autoUpgrade="true">P:System.Type.ContainsGenericParameters</codeEntityReference> property is <languageKeyword>true</languageKeyword>.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>method</parameterReference> is not a <languageKeyword>static</languageKeyword> method (<languageKeyword>Shared</languageKeyword> method in Visual Basic). </para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>method</parameterReference> cannot be bound, for example because it cannot be found.</para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MissingMethodException</codeEntityReference>
+            <content>
+              <para>The <languageKeyword>Invoke</languageKeyword> method of <parameterReference>type</parameterReference> is not found. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MethodAccessException</codeEntityReference>
+            <content>
+              <para>The caller does not have the permissions necessary to access <parameterReference>method</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This method creates delegates for static methods only. An instance method is a method that is associated with an instance of a class; a static method is a method that is associated with the class itself.</para>
+            <para>This method overload is equivalent to calling the <codeEntityReference autoUpgrade="false">M:System.Delegate.CreateDelegate(System.Type,System.Type,System.String,System.Boolean,System.Boolean)</codeEntityReference> method overload, specifying <languageKeyword>true</languageKeyword> for <parameterReference>throwOnBindFailure</parameterReference>.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>for access to the method represented by the delegate. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Delegate.CreateDelegate(System.Type,System.Type,System.String,System.Boolean,System.Boolean)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates a delegate of the specified type that represents the specified static method of the specified class, with the specified case-sensitivity and the specified behavior on failure to bind.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>type</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> of delegate to create. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>target</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> representing the class that implements <parameterReference>method</parameterReference>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>method</parameterReference>
+            <content>
+              <para>The name of the static method that the delegate is to represent. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>ignoreCase</parameterReference>
+            <content>
+              <para>A Boolean indicating whether to ignore the case when comparing the name of the method.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>throwOnBindFailure</parameterReference>
+            <content>
+              <para>
+                <languageKeyword>true</languageKeyword> to throw an exception if <parameterReference>method</parameterReference> cannot be bound; otherwise, <languageKeyword>false</languageKeyword>.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A delegate of the specified type that represents the specified static method of the specified class.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>type</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>target</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>method</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>type</parameterReference> does not inherit <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>type</parameterReference> is not a <languageKeyword>RuntimeType</languageKeyword>. See <link xlink:href="c1439fb5-cf76-475d-a9d2-fe64ba858858">Runtime Types in Reflection</link>. </para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>target</parameterReference> is not a <languageKeyword>RuntimeType</languageKeyword>.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>target</parameterReference> is an open generic type. That is, its <codeEntityReference autoUpgrade="true">P:System.Type.ContainsGenericParameters</codeEntityReference> property is <languageKeyword>true</languageKeyword>.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>method</parameterReference> is not a <languageKeyword>static</languageKeyword> method (<languageKeyword>Shared</languageKeyword> method in Visual Basic). </para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>method</parameterReference> cannot be bound, for example because it cannot be found, and <parameterReference>throwOnBindFailure</parameterReference> is <languageKeyword>true</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MissingMethodException</codeEntityReference>
+            <content>
+              <para>The <languageKeyword>Invoke</languageKeyword> method of <parameterReference>type</parameterReference> is not found. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MethodAccessException</codeEntityReference>
+            <content>
+              <para>The caller does not have the permissions necessary to access <parameterReference>method</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This method creates delegates for static methods only. An instance method is a method that is associated with an instance of a class; a static method is a method that is associated with the class itself.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>for access to the method represented by the delegate. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

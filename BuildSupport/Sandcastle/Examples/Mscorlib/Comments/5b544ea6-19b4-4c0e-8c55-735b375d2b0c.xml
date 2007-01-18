@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="5b544ea6-19b4-4c0e-8c55-735b375d2b0c" revisionNumber="11">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.ApplicationIdentity">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides the ability to uniquely identify a manifest-activated application. This class cannot be inherited. </para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.ApplicationIdentity</codeEntityReference> class is used in the activation of manifest-based applications.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.ApplicationIdentity.#ctor(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.ApplicationIdentity</codeEntityReference> class. </para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>applicationIdentityFullName</parameterReference>
+            <content>
+              <para>The full name of the application.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>applicationIdentityFullName</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The format of the <parameterReference>applicationIdentityFullName</parameterReference> parameter is a comma-delimited Unicode string that begins with the name, as follows:</para>
+            <code>
+              <placeholder>applicationURL</placeholder>
+              <codeFeaturedElement>#</codeFeaturedElement>
+              <placeholder>deploymentIdentity</placeholder>
+              <codeFeaturedElement>\</codeFeaturedElement>
+              <placeholder>applicationIdentity</placeholder>
+            </code>
+            <para>Where <placeholder>deploymentIdentity</placeholder> = </para>
+            <code>
+              <placeholder>deploymentManifest</placeholder>
+              <codeFeaturedElement>, Version = </codeFeaturedElement>
+              <placeholder>Major.Minor.Build.Revision</placeholder>
+              <codeFeaturedElement>, Culture = </codeFeaturedElement>
+              <placeholder>CultureInfo</placeholder>
+              <codeFeaturedElement>, PublicKeyToken=</codeFeaturedElement>
+              <placeholder>TokenNumber</placeholder>
+              <codeFeaturedElement>, processorArchitecture=</codeFeaturedElement>
+              <placeholder>processorArchitecture</placeholder>
+            </code>
+            <para>And <placeholder>applicationIdentity</placeholder> =</para>
+            <code>
+              <placeholder>applicationName</placeholder>
+              <codeFeaturedElement>, Version = </codeFeaturedElement>
+              <placeholder>Major.Minor.Build.Revision</placeholder>
+              <codeFeaturedElement>, Culture = </codeFeaturedElement>
+              <placeholder>CultureInfo</placeholder>
+              <codeFeaturedElement>, PublicKeyToken=</codeFeaturedElement>
+              <placeholder>TokenNumber</placeholder>
+              <codeFeaturedElement>, processorArchitecture=</codeFeaturedElement>
+              <placeholder>processorArchitecture</placeholder>
+              <codeFeaturedElement>, type=</codeFeaturedElement>
+              <placeholder>OsType</placeholder>
+            </code>
+            <para>The following is an example of the full name for an application named ActivationContext:</para>
+            <code>http://testserver/ActivationContext/ActivationContext.application
+#ActivationContext.application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ae13aad84c1a3490, processorArchitecture=msil
+\ActivationContext.exe, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ae13aad84c1a3490, processorArchitecture=msil, type=win32</code>
+            <para>The default value for processor architecture is "msil", and the default value for type is "win32".</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.ApplicationIdentity.FullName">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the full name of the application.</para>
+        </summary>
+        <returnValue>
+          <para>The full name of the application, also known as the display name.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>For a description of the format of the <codeEntityReference autoUpgrade="true">P:System.ApplicationIdentity.FullName</codeEntityReference> property, see the <codeEntityReference autoUpgrade="true">M:System.ApplicationIdentity.#ctor(System.String)</codeEntityReference> constructor.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.ApplicationIdentity.CodeBase">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the location of the deployment manifest as a URL.</para>
+        </summary>
+        <returnValue>
+          <para>The URL of the deployment manifest.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The following are two examples of <codeEntityReference autoUpgrade="true">P:System.ApplicationIdentity.CodeBase</codeEntityReference> property values for an application named ActivationContext:</para>
+            <list class="bullet">
+              <listItem>
+                <para>http://testserver/ActivationContext/ActivationContext.application</para>
+              </listItem>
+              <listItem>
+                <para>file://C:/UserFiles/UserName/SolutionName/ActivationContext/publish/ActivationContext.application.</para>
+              </listItem>
+            </list>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.ApplicationIdentity.ToString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Returns the full name of the manifest-activated application.</para>
+        </summary>
+        <returnValue>
+          <para>The full name of the manifest-activated application.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>For a description of the format of a full name for a manifest activated application, see the <codeEntityReference autoUpgrade="true">M:System.ApplicationIdentity.#ctor(System.String)</codeEntityReference> constructor.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.ApplicationIdentity.System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Populates a <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference> object with the data needed to serialize the target object.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>info</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference> to populate with data.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>context</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.StreamingContext</codeEntityReference>) structure for the serialization.</para>
+            </content>
+          </parameter>
+        </parameters>
+      </dduexml>
+    </member>
+  </members>
+</doc>

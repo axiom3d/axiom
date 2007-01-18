@@ -65,7 +65,7 @@ namespace Axiom.Math
         internal Vector3 maxVector = new Vector3( 0.5f, 0.5f, 0.5f );
         private Vector3[] corners = new Vector3[ 8 ];
         private bool isNull = true;
-        private static readonly AxisAlignedBox nullBox = new AxisAlignedBox();
+        //private static readonly AxisAlignedBox nullBox = new AxisAlignedBox(); //[FXCop Optimization : remove unused private fields]
 
         #endregion
 

@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="4e11506d-c9d5-4b7b-b747-a186aac61cc7" revisionNumber="1">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.TimeZone">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents a time zone.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>A time zone is a geographical region in which the same standard time is used.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example references and displays selected <languageKeyword>TimeZone</languageKeyword> class elements.</para>
+                <codeReference>System.TimeZone.Class#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.TimeZone.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.TimeZone</codeEntityReference> class.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="P:System.TimeZone.CurrentTimeZone">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the time zone of the current computer system.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.TimeZone</codeEntityReference> instance representing the current, local time zone.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example references the <languageKeyword>CurrentTimeZone</languageKeyword> property and displays the names for standard time and daylight saving time for the local time zone.</para>
+                <codeReference>System.TimeZone.Class#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.TimeZone.DaylightName">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the daylight saving time zone name.</para>
+        </summary>
+        <returnValue>
+          <para>The daylight saving time zone name.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>If daylight saving time is not used in the time zone, an empty string ("") is returned.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example references and displays the <languageKeyword>DaylightName</languageKeyword> property of the current time zone.</para>
+                <codeReference>System.TimeZone.Class#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.TimeZone.GetDaylightChanges(System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the daylight saving time period for a particular year.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>year</parameterReference>
+            <content>
+              <para>The year to which the daylight saving time period applies. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Globalization.DaylightTime</codeEntityReference> instance containing the start and end date for daylight saving time in <parameterReference>year</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>year</parameterReference> is less than 1 or greater than 9999. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Only one daylight saving time period per year is supported.</para>
+            <para>If daylight saving time is not used in the current time zone, the return value is a <codeEntityReference autoUpgrade="true">T:System.Globalization.DaylightTime</codeEntityReference>, where the value of <codeEntityReference autoUpgrade="true">P:System.Globalization.DaylightTime.Start</codeEntityReference> and <codeEntityReference autoUpgrade="true">P:System.Globalization.DaylightTime.End</codeEntityReference> is <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.DateTime.MinValue</codeEntityReference>, and the value of <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.Globalization.DaylightTime.Delta</codeEntityReference> is a <codeEntityReference autoUpgrade="true">T:System.TimeSpan</codeEntityReference> initialized to 0 ticks.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example uses the <languageKeyword>GetDaylightChanges</languageKeyword> method to return the daylight saving time period and offset for selected years.</para>
+                <codeReference>System.TimeZone.Daylight#2</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.TimeZone.GetUtcOffset(System.DateTime)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the coordinated universal time (UTC) offset for the specified local time.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>time</parameterReference>
+            <content>
+              <para>The local date and time. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The UTC offset from <parameterReference>time</parameterReference>, measured in ticks.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Coordinated universal time (UTC) was previously known as Greenwich Mean Time (GMT). Local time is the date and time on the computer you are using. Offset is the difference between local time and UTC. That is: </para>
+            <para>local time = UTC + offset </para>
+            <para>
+              <parameterReference>time</parameterReference> must be in the Gregorian calendar and the time zone represented by this instance. If <parameterReference>time</parameterReference> is in daylight saving time, this method returns the UTC offset to the daylight saving time zone. This method obtains the daylight saving time rule from the system.</para>
+            <para>For example, in the United States Pacific Standard time zone, which has -8 hours of offset, <codeInline>GetUtcOffset(new DateTime(1999, 1, 1))</codeInline> returns -288000000000.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example uses the <languageKeyword>GetUtcOffset</languageKeyword> method to return the Coordinated Universal Time (UTC) offset for several local times.</para>
+                <codeReference>System.TimeZone.UTC#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.TimeZone.IsDaylightSavingTime(System.DateTime)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a value indicating whether the specified date and time is within a daylight saving time period.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>time</parameterReference>
+            <content>
+              <para>A date and time. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>time</parameterReference> is in a daylight saving time period; <languageKeyword>false</languageKeyword> otherwise, or if <parameterReference>time</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The year to which the daylight saving time period applies is derived from <parameterReference>time</parameterReference>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example uses the <languageKeyword>IsDaylightSavingTime</languageKeyword> method to determine whether selected dates are within daylight saving time for any year.</para>
+                <codeReference>System.TimeZone.Daylight#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>Returns a value indicating whether a specified date and time is within a daylight saving time period.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.TimeZone.IsDaylightSavingTime">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a value indicating whether a specified date and time is within a daylight saving time period.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.TimeZone.IsDaylightSavingTime(System.DateTime,System.Globalization.DaylightTime)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a value indicating whether the specified date and time is within the specified daylight saving time period.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>time</parameterReference>
+            <content>
+              <para>A date and time. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>daylightTimes</parameterReference>
+            <content>
+              <para>A daylight saving time period. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>time</parameterReference> is in <parameterReference>daylightTimes</parameterReference>; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>daylightTimes</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example uses the <languageKeyword>IsDaylightSavingTime</languageKeyword> method to determine whether selected dates are within daylight saving time for a particular year.</para>
+                <codeReference>System.TimeZone.Daylight#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.TimeZone.StandardName">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the standard time zone name.</para>
+        </summary>
+        <returnValue>
+          <para>The standard time zone name.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>Attempted to set this property to <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example references and displays the <languageKeyword>StandardName</languageKeyword> property of the current time zone.</para>
+                <codeReference>System.TimeZone.Class#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.TimeZone.ToLocalTime(System.DateTime)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the local time that corresponds to a specified coordinated universal time (UTC).</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>time</parameterReference>
+            <content>
+              <para>A UTC time. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.DateTime</codeEntityReference> instance whose value is the local time that corresponds to <parameterReference>time</parameterReference>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Coordinated universal time (UTC) was previously known as Greenwich Mean Time (GMT). Local time is the date and time on the computer you are using. Offset is the difference between local time and GMT. That is: </para>
+            <para>local time = UTC + offset </para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example uses the <languageKeyword>ToLocalTime</languageKeyword> method to return the local times that correspond to several Coordinated Universal Times (UTC).</para>
+                <codeReference>System.TimeZone.UTC#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.TimeZone.ToUniversalTime(System.DateTime)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.TimeZone.GetUtcOffset(System.DateTime)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.TimeZone.ToUniversalTime(System.DateTime)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the coordinated universal time (UTC) that corresponds to a specified local time.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>time</parameterReference>
+            <content>
+              <para>The local date and time. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.DateTime</codeEntityReference> instance whose value is the UTC time that corresponds to <parameterReference>time</parameterReference>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Coordinated universal time (UTC) was previously known as Greenwich Mean Time (GMT). Local time is the date and time on the computer you are using. Offset is the difference between local time and UTC. That is: </para>
+            <para>UTC = local time - offset </para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example uses the <languageKeyword>ToUniversalTime</languageKeyword> method to return the Coordinated Universal Times (UTC) that correspond to selected local times.</para>
+                <codeReference>System.TimeZone.Daylight#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.TimeZone.ToLocalTime(System.DateTime)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.TimeZone.GetUtcOffset(System.DateTime)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

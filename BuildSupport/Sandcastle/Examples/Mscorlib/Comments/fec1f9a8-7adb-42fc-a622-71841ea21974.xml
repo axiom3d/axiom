@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="fec1f9a8-7adb-42fc-a622-71841ea21974" revisionNumber="5">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.ConsoleColor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Specifies constants that define foreground and background colors for the console.</para>
+        </summary>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.ConsoleColor</codeEntityReference> enumeration in conjunction with the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.Console.ForegroundColor</codeEntityReference> and <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.Console.BackgroundColor</codeEntityReference> properties, and the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Console.ResetColor</codeEntityReference> method. You must run the example on a console to see the described color effects.</para>
+                <para>Two constants, <codeEntityReference autoUpgrade="true">F:System.ConsoleColor.Black</codeEntityReference> and <codeEntityReference autoUpgrade="true">F:System.ConsoleColor.White</codeEntityReference>, are used directly; then all the constants (<codeEntityReference autoUpgrade="true">F:System.ConsoleColor.Blue</codeEntityReference>, <codeEntityReference autoUpgrade="true">F:System.ConsoleColor.DarkRed</codeEntityReference>, and so on) are used indirectly in a loop. First, the names of the constants are obtained by using the <codeEntityReference autoUpgrade="true">M:System.Enum.GetNames(System.Type)</codeEntityReference> method, which is inherited from the <codeEntityReference autoUpgrade="true">T:System.Enum</codeEntityReference> class. Then the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Enum.Parse(System.Type,System.String)</codeEntityReference> method uses each name to create the corresponding enumerated constant.</para>
+                <codeReference>ConsoleColors.class#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Console</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="F:System.ConsoleColor.Black">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The color black.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.ConsoleColor.Blue">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The color blue.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.ConsoleColor.Cyan">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The color cyan (blue-green).</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.ConsoleColor.DarkBlue">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The color dark blue.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.ConsoleColor.DarkCyan">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The color dark cyan (dark blue-green).</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.ConsoleColor.DarkGray">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The color dark gray.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.ConsoleColor.DarkGreen">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The color dark green.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.ConsoleColor.DarkMagenta">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The color dark magenta (dark purplish-red).</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.ConsoleColor.DarkRed">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The color dark red.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.ConsoleColor.DarkYellow">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The color dark yellow (ochre).</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.ConsoleColor.Gray">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The color gray.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.ConsoleColor.Green">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The color green.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.ConsoleColor.Magenta">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The color magenta (purplish-red).</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.ConsoleColor.Red">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The color red.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.ConsoleColor.White">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The color white.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.ConsoleColor.Yellow">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The color yellow.</para>
+        </summary>
+      </dduexml>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="00339619-454f-477d-a417-ec2cb583963b" revisionNumber="3">
+  <assembly>
+    <name>System</name>
+  </assembly>
+  <members>
+    <member name="T:System.UriTypeConverter">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts a <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> type to a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> type, and vice versa.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.UriTypeConverter.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.UriTypeConverter</codeEntityReference> class.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="Overload:System.UriTypeConverter.CanConvertFrom">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns whether this converter can convert an object of one type to the type of this converter.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.UriTypeConverter.CanConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns whether this converter can convert an object of the given type to the type of this converter.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>context</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.ComponentModel.ITypeDescriptorContext</codeEntityReference>  that provides a format context.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>sourceType</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> that represents the type that you want to convert from.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>sourceType</parameterReference> is a <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> type or a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> type can be assigned from <parameterReference>sourceType</parameterReference>; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>sourceType</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>Returns whether this converter can convert an object of one type to the type of this converter.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.UriTypeConverter.CanConvertTo">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns whether this converter can convert the object to the specified type.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.UriTypeConverter.CanConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns whether this converter can convert the object to the specified type, using the specified context.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>context</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.ComponentModel.ITypeDescriptorContext</codeEntityReference>  that provides a format context.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>destinationType</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> that represents the type that you want to convert to.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>destinationType</parameterReference> is of type <codeEntityReference autoUpgrade="true">T:System.ComponentModel.Design.Serialization.InstanceDescriptor,</codeEntityReference><codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>, or <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference>; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>Returns whether this converter can convert the object to the specified type.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.UriTypeConverter.ConvertFrom">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the given value to the type of this converter.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.UriTypeConverter.ConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the given object to the type of this converter, using the specified context and culture information.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>context</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.ComponentModel.ITypeDescriptorContext</codeEntityReference>  that provides a format context.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>culture</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Globalization.CultureInfo</codeEntityReference> to use as the current culture.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference> to convert.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference> that represents the converted value.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.NotSupportedException</codeEntityReference>
+            <content>
+              <para>The conversion cannot be performed.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>Converts the given value to the type of this converter.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.UriTypeConverter.ConvertTo">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts a given value object to the specified type.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.UriTypeConverter.ConvertTo(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object,System.Type)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts a given value object to the specified type, using the specified context and culture information.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>context</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.ComponentModel.ITypeDescriptorContext</codeEntityReference>  that provides a format context.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>culture</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Globalization.CultureInfo</codeEntityReference>. If <languageKeyword>null</languageKeyword> is passed, the current culture is assumed.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference> to convert.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>destinationType</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> to convert the <parameterReference>value</parameterReference> parameter to.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference> that represents the converted value.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>The <parameterReference>destinationType</parameterReference> parameter is <languageKeyword>null</languageKeyword>.</para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.NotSupportedException</codeEntityReference>
+            <content>
+              <para>The conversion cannot be performed.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>Converts a given value object to the specified type.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.UriTypeConverter.IsValid">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns whether the given value object is valid for this type.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.UriTypeConverter.IsValid(System.ComponentModel.ITypeDescriptorContext,System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns whether the given value object is a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> or a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> can be created from it.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>context</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.ComponentModel.ITypeDescriptorContext</codeEntityReference>  that provides a format context.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference> to test for validity.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>value</parameterReference> is a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> or a <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> from which a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> can be created; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>Returns whether the given value object is valid for this type.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="7d618704-f30a-4ecc-9702-5d986288bcec" revisionNumber="5">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.PlatformID">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Identifies the operating system, or platform, supported by an assembly.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>Use the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.Environment.OSVersion</codeEntityReference> and <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.OperatingSystem.Platform</codeEntityReference> properties to obtain the <codeEntityReference autoUpgrade="true">T:System.PlatformID</codeEntityReference> enumeration for the currently executing operating system. Use the <codeEntityReference autoUpgrade="true">T:System.PlatformID</codeEntityReference> enumeration to help determine whether the current operating system supports your application.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example demonstrates using the <codeEntityReference autoUpgrade="true">T:System.PlatformID</codeEntityReference> class to identify the currently executing operating system.</para>
+                <codeReference>PlatformID.class#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="F:System.PlatformID.Win32NT">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The operating system is Windows NT or later.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.PlatformID.Win32S">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The operating system is Win32s. Win32s is a layer that runs on 16-bit versions of Windows to provide access to 32-bit applications.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.PlatformID.Win32Windows">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The operating system is Windows 95 or later.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.PlatformID.WinCE">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The operating system is Windows CE.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.PlatformID.Unix">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The operating system is Unix.</para>
+        </summary>
+      </dduexml>
+    </member>
+  </members>
+</doc>

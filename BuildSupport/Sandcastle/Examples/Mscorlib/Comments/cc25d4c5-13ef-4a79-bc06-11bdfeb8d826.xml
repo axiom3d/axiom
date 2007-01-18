@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="cc25d4c5-13ef-4a79-bc06-11bdfeb8d826" revisionNumber="12">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.OperatingSystem">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents information about an operating system, such as the version and platform identifier. This class cannot be inherited.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.OperatingSystem</codeEntityReference> class contains information about an operating system. For example, the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.Environment.OSVersion</codeEntityReference> property returns information about the currently executing operating system in an <codeEntityReference autoUpgrade="true">T:System.OperatingSystem</codeEntityReference> object. </para>
+            <para>By design, the <codeEntityReference autoUpgrade="true">T:System.OperatingSystem</codeEntityReference> class is not a general purpose means of describing an operating system, and you cannot derive a more inclusive type from the <codeEntityReference autoUpgrade="true">T:System.OperatingSystem</codeEntityReference> class. If you need a type to contain other information about an operating system, create your own type, then include a field of type <codeEntityReference autoUpgrade="true">T:System.OperatingSystem</codeEntityReference> and any additional fields, properties, or methods you require.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example creates objects of the <codeEntityReference autoUpgrade="true">T:System.OperatingSystem</codeEntityReference> class with selected values for the <codeEntityReference autoUpgrade="true">P:System.OperatingSystem.Platform</codeEntityReference> and <codeEntityReference autoUpgrade="true">P:System.OperatingSystem.Version</codeEntityReference> properties.</para>
+                <codeReference>System.OperatingSystem.Ctor_ToString#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.OperatingSystem.#ctor(System.PlatformID,System.Version)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.OperatingSystem</codeEntityReference> class, using the specified platform identifier value and version object.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>platform</parameterReference>
+            <content>
+              <para>One of the <codeEntityReference autoUpgrade="true">T:System.PlatformID</codeEntityReference> values that indicates the operating system platform. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>version</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Version</codeEntityReference> object that indicates the version of the operating system. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>version</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>platform</parameterReference> is not a <codeEntityReference autoUpgrade="true">T:System.PlatformID</codeEntityReference> enumeration value.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example creates objects of the <codeEntityReference autoUpgrade="true">T:System.OperatingSystem</codeEntityReference> class with selected values for the <codeEntityReference autoUpgrade="true">P:System.OperatingSystem.Platform</codeEntityReference> and <codeEntityReference autoUpgrade="true">P:System.OperatingSystem.Version</codeEntityReference> properties.</para>
+                <codeReference>System.OperatingSystem.Ctor_ToString#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.OperatingSystem.Clone">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates an <codeEntityReference autoUpgrade="true">T:System.OperatingSystem</codeEntityReference> object that is identical to this instance.</para>
+        </summary>
+        <returnValue>
+          <para>An <codeEntityReference autoUpgrade="true">T:System.OperatingSystem</codeEntityReference> object that is a copy of this instance.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example illustrates the use of the <codeEntityReference autoUpgrade="true">M:System.OperatingSystem.Clone</codeEntityReference> method to make a copy of an <codeEntityReference autoUpgrade="true">T:System.OperatingSystem</codeEntityReference> object. The clone is compared with the original object to show that they are not the same object.</para>
+                <codeReference>System.OperatingSystem.Clone#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.OperatingSystem.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Populates a <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference> object with the data necessary to deserialize this instance.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>info</parameterReference>
+            <content>
+              <para>The object to populate with serialization information.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>context</parameterReference>
+            <content>
+              <para>The place to store and retrieve serialized data. Reserved for future use.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>info</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <parameterReference>context</parameterReference> parameter is reserved for future use; it is currently not implemented in the <codeEntityReference autoUpgrade="true">M:System.OperatingSystem.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)</codeEntityReference> method.</para>
+            <para>For more information, see the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Runtime.Serialization.SerializationInfo.AddValue(System.String,System.Object,System.Type)</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.OperatingSystem.ToString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of this <codeEntityReference autoUpgrade="true">T:System.OperatingSystem</codeEntityReference> object to its equivalent string representation.</para>
+        </summary>
+        <returnValue>
+          <para>The string representation of the values returned by the <codeEntityReference autoUpgrade="true">P:System.OperatingSystem.Platform</codeEntityReference>, <codeEntityReference autoUpgrade="true">P:System.OperatingSystem.Version</codeEntityReference>, and <codeEntityReference autoUpgrade="true">P:System.OperatingSystem.ServicePack</codeEntityReference> properties.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example illustrates the use of the <codeEntityReference autoUpgrade="true">M:System.OperatingSystem.ToString</codeEntityReference> method to display <codeEntityReference autoUpgrade="true">T:System.OperatingSystem</codeEntityReference> objects.</para>
+                <codeReference>System.OperatingSystem.Ctor_ToString#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">P:System.OperatingSystem.VersionString</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="P:System.OperatingSystem.Platform">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.PlatformID</codeEntityReference> enumeration value that identifies the operating system platform.</para>
+        </summary>
+        <returnValue>
+          <para>One of the <codeEntityReference autoUpgrade="true">T:System.PlatformID</codeEntityReference> values.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example creates several <codeEntityReference autoUpgrade="true">T:System.OperatingSystem</codeEntityReference> objects and displays the <codeEntityReference autoUpgrade="true">P:System.OperatingSystem.Platform</codeEntityReference> property for each.</para>
+                <codeReference>System.OperatingSystem.Platform_Version#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.OperatingSystem.ServicePack">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the service pack version represented by this <codeEntityReference autoUpgrade="true">T:System.OperatingSystem</codeEntityReference> object.</para>
+        </summary>
+        <returnValue>
+          <para>The service pack version, if service packs are supported and at least one is installed; otherwise, an empty string (""). </para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>A service pack is used to distribute software updates for the operating system on which it is installed. However, not every operating system uses service packs. </para>
+            <para>The service pack version, if available, is already correctly formatted for display.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the <codeEntityReference autoUpgrade="true">P:System.OperatingSystem.ServicePack</codeEntityReference> property.</para>
+                <codeReference>OperatingSystem.ServicePack#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">F:System.String.Empty</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="P:System.OperatingSystem.Version">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Version</codeEntityReference> object that identifies the operating system.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.Version</codeEntityReference> object that describes the major version, minor version, build, and revision numbers for the operating system.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example creates several <codeEntityReference autoUpgrade="true">T:System.OperatingSystem</codeEntityReference> objects and displays the <codeEntityReference autoUpgrade="true">P:System.OperatingSystem.Version</codeEntityReference> property for each.</para>
+                <codeReference>System.OperatingSystem.Platform_Version#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.OperatingSystem.VersionString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the concatenated string representation of the platform identifier, version, and service pack that are currently installed on the operating system. </para>
+        </summary>
+        <returnValue>
+          <para>The string representation of the values returned by the <codeEntityReference autoUpgrade="true">P:System.OperatingSystem.Platform</codeEntityReference>, <codeEntityReference autoUpgrade="true">P:System.OperatingSystem.Version</codeEntityReference>, and <codeEntityReference autoUpgrade="true">P:System.OperatingSystem.ServicePack</codeEntityReference> properties.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>By default, the value returned by <codeEntityReference autoUpgrade="true">P:System.OperatingSystem.VersionString</codeEntityReference> is the same as the value returned by the <codeEntityReference autoUpgrade="true">M:System.OperatingSystem.ToString</codeEntityReference> method. However, an implementation of the .NET Framework for a different platform might return a more appropriate string for that platform.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the <codeEntityReference autoUpgrade="true">P:System.OperatingSystem.VersionString</codeEntityReference> property.</para>
+                <codeReference>OperatingSystem.VersionString#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.OperatingSystem.ToString</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Translations provided by Thierry Huguet and his colleagues -->
+<content xml:space="preserve">
+
+	<!-- control window stuff -->
+	<item id="productTitle">{@HtmlEncHelpTitle}</item>
+
+	<!-- main window stuff -->
+
+	<!-- body -->
+
+
+	<!-- section titles -->
+	<item id="inThisSectionTitle">In questa sezione</item>
+	<item id="relatedSectionsTitle">Sezioni correlate</item>
+	<item id="relatedTopicsTitle">Vedere anche</item>
+
+</content>

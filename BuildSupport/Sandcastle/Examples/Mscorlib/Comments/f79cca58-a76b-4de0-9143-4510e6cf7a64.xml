@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="f79cca58-a76b-4de0-9143-4510e6cf7a64" revisionNumber="1">
+  <assembly>
+    <name>System</name>
+  </assembly>
+  <members>
+    <member name="T:System.NetTcpStyleUriParser">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>A parser based on the NetTcp scheme for the "Indigo" system.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>This parser is for future use with the "Indigo" system.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.NetTcpStyleUriParser.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Create a parser based on the NetTcp scheme for the "Indigo" system.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>Use this constructor as an argument to <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.UriParser.Register(System.UriParser,System.String,System.Int32)</codeEntityReference>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+  </members>
+</doc>

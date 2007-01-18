@@ -1,0 +1,1190 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<reflection>
+  <assemblies>
+    <assembly name="System.Web.RegularExpressions" version="2.0.0.0" culture="" key="002400000480000094000000060200000024000052534131000400000100010007D1FA57C4AED9F0A32E84AA0FAEFD0DE9E8FD6AEC8F87FB03766C834C99921EB23BE79AD9D5DCC1DD9AD236132102900B723CF980957FC4E177108FC607774F29E8320E92EA05ECE4E821C0A5EFE8F1645C4C0C93C1AB99285D622CAA652C1DFAD63D745D6F2DE5F17E5EAF0FC4963D261C8A12436518206DC093344D5AD293" hash="SHA1">
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.InternalsVisibleToAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.Design, PublicKey=002400000480000094000000060200000024000052534131000400000100010007d1fa57c4aed9f0a32e84aa0faefd0de9e8fd6aec8f87fb03766c834c99921eb23be79ad9d5dcc1dd9ad236132102900b723cf980957fc4e177108fc607774f29e8320e92ea05ece4e821c0a5efe8f1645c4c0c93c1ab99285d622caa652c1dfad63d745d6f2de5f17e5eaf0fc4963d261c8a12436518206dc093344d5ad293</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute" ref="true" />
+          <assignment name="WrapNonExceptionThrows">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDefaultAliasAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.Web.RegularExpressions.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.AllowPartiallyTrustedCallersAttribute" ref="true" />
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.NeutralResourcesLanguageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>en-US</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDelaySignAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyProductAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoftr .NET Framework</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyTitleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.Web.RegularExpressions.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCopyrightAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>c Microsoft Corporation.  All rights reserved.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyKeyFileAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>f:\RTM\Tools\devdiv\FinalPublicKey.snk</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyFileVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.50727.12</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCompanyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft Corporation</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.InternalsVisibleToAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.Web, PublicKey=002400000480000094000000060200000024000052534131000400000100010007d1fa57c4aed9f0a32e84aa0faefd0de9e8fd6aec8f87fb03766c834c99921eb23be79ad9d5dcc1dd9ad236132102900b723cf980957fc4e177108fc607774f29e8320e92ea05ece4e821c0a5efe8f1645c4c0c93c1ab99285d622caa652c1dfad63d745d6f2de5f17e5eaf0fc4963d261c8a12436518206dc093344d5ad293</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDescriptionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.Web.RegularExpressions.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.CLSCompliantAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.CompilationRelaxationsAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>8</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.SatelliteContractVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.0.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyInformationalVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.50727.12</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </assembly>
+  </assemblies>
+  <apis>
+    <api id="T:System.Web.RegularExpressions.AspCodeRegex">
+      <apidata name="AspCodeRegex" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Text.RegularExpressions.Regex" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Runtime.Serialization.ISerializable" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Web.RegularExpressions.AspCodeRegex.#ctor" />
+        <element api="F:System.Text.RegularExpressions.Regex.pattern" />
+        <element api="F:System.Text.RegularExpressions.Regex.factory" />
+        <element api="F:System.Text.RegularExpressions.Regex.roptions" />
+        <element api="F:System.Text.RegularExpressions.Regex.caps" />
+        <element api="F:System.Text.RegularExpressions.Regex.capnames" />
+        <element api="F:System.Text.RegularExpressions.Regex.capslist" />
+        <element api="F:System.Text.RegularExpressions.Regex.capsize" />
+        <element api="M:System.Text.RegularExpressions.Regex.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Text.RegularExpressions.Regex.ToString" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNames" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNumbers" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNameFromNumber(System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNumberFromName(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.InitializeReferences" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionC" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionR" />
+        <element api="P:System.Text.RegularExpressions.Regex.Options" />
+        <element api="P:System.Text.RegularExpressions.Regex.RightToLeft" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+      </containers>
+      <file name="10a4f318-78b3-a636-0fc5-5166ba1141b7" />
+    </api>
+    <api id="M:System.Web.RegularExpressions.AspCodeRegex.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+        <type api="T:System.Web.RegularExpressions.AspCodeRegex" ref="true" />
+      </containers>
+      <file name="cc39bb30-ae6c-bbc3-7340-3e67a3b0904f" />
+    </api>
+    <api id="T:System.Web.RegularExpressions.AspExprRegex">
+      <apidata name="AspExprRegex" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Text.RegularExpressions.Regex" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Runtime.Serialization.ISerializable" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Web.RegularExpressions.AspExprRegex.#ctor" />
+        <element api="F:System.Text.RegularExpressions.Regex.pattern" />
+        <element api="F:System.Text.RegularExpressions.Regex.factory" />
+        <element api="F:System.Text.RegularExpressions.Regex.roptions" />
+        <element api="F:System.Text.RegularExpressions.Regex.caps" />
+        <element api="F:System.Text.RegularExpressions.Regex.capnames" />
+        <element api="F:System.Text.RegularExpressions.Regex.capslist" />
+        <element api="F:System.Text.RegularExpressions.Regex.capsize" />
+        <element api="M:System.Text.RegularExpressions.Regex.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Text.RegularExpressions.Regex.ToString" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNames" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNumbers" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNameFromNumber(System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNumberFromName(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.InitializeReferences" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionC" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionR" />
+        <element api="P:System.Text.RegularExpressions.Regex.Options" />
+        <element api="P:System.Text.RegularExpressions.Regex.RightToLeft" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+      </containers>
+      <file name="48c4e18c-5fd8-083e-5a31-429e6600e8ff" />
+    </api>
+    <api id="M:System.Web.RegularExpressions.AspExprRegex.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+        <type api="T:System.Web.RegularExpressions.AspExprRegex" ref="true" />
+      </containers>
+      <file name="36912858-6d03-0499-2241-edcbb5ae15d1" />
+    </api>
+    <api id="T:System.Web.RegularExpressions.CommentRegex">
+      <apidata name="CommentRegex" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Text.RegularExpressions.Regex" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Runtime.Serialization.ISerializable" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Web.RegularExpressions.CommentRegex.#ctor" />
+        <element api="F:System.Text.RegularExpressions.Regex.pattern" />
+        <element api="F:System.Text.RegularExpressions.Regex.factory" />
+        <element api="F:System.Text.RegularExpressions.Regex.roptions" />
+        <element api="F:System.Text.RegularExpressions.Regex.caps" />
+        <element api="F:System.Text.RegularExpressions.Regex.capnames" />
+        <element api="F:System.Text.RegularExpressions.Regex.capslist" />
+        <element api="F:System.Text.RegularExpressions.Regex.capsize" />
+        <element api="M:System.Text.RegularExpressions.Regex.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Text.RegularExpressions.Regex.ToString" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNames" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNumbers" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNameFromNumber(System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNumberFromName(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.InitializeReferences" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionC" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionR" />
+        <element api="P:System.Text.RegularExpressions.Regex.Options" />
+        <element api="P:System.Text.RegularExpressions.Regex.RightToLeft" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+      </containers>
+      <file name="d0cd2586-c2b6-a180-e9ce-0608346ae1ee" />
+    </api>
+    <api id="M:System.Web.RegularExpressions.CommentRegex.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+        <type api="T:System.Web.RegularExpressions.CommentRegex" ref="true" />
+      </containers>
+      <file name="9e6054c5-9d03-a134-c1a7-4ed791b5620f" />
+    </api>
+    <api id="T:System.Web.RegularExpressions.DatabindExprRegex">
+      <apidata name="DatabindExprRegex" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Text.RegularExpressions.Regex" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Runtime.Serialization.ISerializable" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Web.RegularExpressions.DatabindExprRegex.#ctor" />
+        <element api="F:System.Text.RegularExpressions.Regex.pattern" />
+        <element api="F:System.Text.RegularExpressions.Regex.factory" />
+        <element api="F:System.Text.RegularExpressions.Regex.roptions" />
+        <element api="F:System.Text.RegularExpressions.Regex.caps" />
+        <element api="F:System.Text.RegularExpressions.Regex.capnames" />
+        <element api="F:System.Text.RegularExpressions.Regex.capslist" />
+        <element api="F:System.Text.RegularExpressions.Regex.capsize" />
+        <element api="M:System.Text.RegularExpressions.Regex.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Text.RegularExpressions.Regex.ToString" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNames" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNumbers" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNameFromNumber(System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNumberFromName(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.InitializeReferences" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionC" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionR" />
+        <element api="P:System.Text.RegularExpressions.Regex.Options" />
+        <element api="P:System.Text.RegularExpressions.Regex.RightToLeft" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+      </containers>
+      <file name="b0702bfa-749a-0ad5-e766-8ddbd1ffc3bf" />
+    </api>
+    <api id="M:System.Web.RegularExpressions.DatabindExprRegex.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+        <type api="T:System.Web.RegularExpressions.DatabindExprRegex" ref="true" />
+      </containers>
+      <file name="297ddb8a-456c-afa5-3138-39a3b1e4a1c1" />
+    </api>
+    <api id="T:System.Web.RegularExpressions.DataBindRegex">
+      <apidata name="DataBindRegex" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Text.RegularExpressions.Regex" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Runtime.Serialization.ISerializable" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Web.RegularExpressions.DataBindRegex.#ctor" />
+        <element api="F:System.Text.RegularExpressions.Regex.pattern" />
+        <element api="F:System.Text.RegularExpressions.Regex.factory" />
+        <element api="F:System.Text.RegularExpressions.Regex.roptions" />
+        <element api="F:System.Text.RegularExpressions.Regex.caps" />
+        <element api="F:System.Text.RegularExpressions.Regex.capnames" />
+        <element api="F:System.Text.RegularExpressions.Regex.capslist" />
+        <element api="F:System.Text.RegularExpressions.Regex.capsize" />
+        <element api="M:System.Text.RegularExpressions.Regex.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Text.RegularExpressions.Regex.ToString" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNames" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNumbers" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNameFromNumber(System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNumberFromName(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.InitializeReferences" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionC" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionR" />
+        <element api="P:System.Text.RegularExpressions.Regex.Options" />
+        <element api="P:System.Text.RegularExpressions.Regex.RightToLeft" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+      </containers>
+      <file name="0525bd92-bb6a-818e-82ba-90f595c60a79" />
+    </api>
+    <api id="M:System.Web.RegularExpressions.DataBindRegex.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+        <type api="T:System.Web.RegularExpressions.DataBindRegex" ref="true" />
+      </containers>
+      <file name="2732cfb8-237a-ed7a-5ce1-d3b1c8265733" />
+    </api>
+    <api id="T:System.Web.RegularExpressions.DirectiveRegex">
+      <apidata name="DirectiveRegex" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Text.RegularExpressions.Regex" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Runtime.Serialization.ISerializable" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Web.RegularExpressions.DirectiveRegex.#ctor" />
+        <element api="F:System.Text.RegularExpressions.Regex.pattern" />
+        <element api="F:System.Text.RegularExpressions.Regex.factory" />
+        <element api="F:System.Text.RegularExpressions.Regex.roptions" />
+        <element api="F:System.Text.RegularExpressions.Regex.caps" />
+        <element api="F:System.Text.RegularExpressions.Regex.capnames" />
+        <element api="F:System.Text.RegularExpressions.Regex.capslist" />
+        <element api="F:System.Text.RegularExpressions.Regex.capsize" />
+        <element api="M:System.Text.RegularExpressions.Regex.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Text.RegularExpressions.Regex.ToString" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNames" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNumbers" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNameFromNumber(System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNumberFromName(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.InitializeReferences" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionC" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionR" />
+        <element api="P:System.Text.RegularExpressions.Regex.Options" />
+        <element api="P:System.Text.RegularExpressions.Regex.RightToLeft" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+      </containers>
+      <file name="ec868a37-95be-96c8-0d7f-41806eedce97" />
+    </api>
+    <api id="M:System.Web.RegularExpressions.DirectiveRegex.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+        <type api="T:System.Web.RegularExpressions.DirectiveRegex" ref="true" />
+      </containers>
+      <file name="d0a6b863-dbe7-41ca-5dc5-6aad0226933c" />
+    </api>
+    <api id="T:System.Web.RegularExpressions.EndTagRegex">
+      <apidata name="EndTagRegex" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Text.RegularExpressions.Regex" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Runtime.Serialization.ISerializable" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Web.RegularExpressions.EndTagRegex.#ctor" />
+        <element api="F:System.Text.RegularExpressions.Regex.pattern" />
+        <element api="F:System.Text.RegularExpressions.Regex.factory" />
+        <element api="F:System.Text.RegularExpressions.Regex.roptions" />
+        <element api="F:System.Text.RegularExpressions.Regex.caps" />
+        <element api="F:System.Text.RegularExpressions.Regex.capnames" />
+        <element api="F:System.Text.RegularExpressions.Regex.capslist" />
+        <element api="F:System.Text.RegularExpressions.Regex.capsize" />
+        <element api="M:System.Text.RegularExpressions.Regex.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Text.RegularExpressions.Regex.ToString" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNames" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNumbers" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNameFromNumber(System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNumberFromName(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.InitializeReferences" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionC" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionR" />
+        <element api="P:System.Text.RegularExpressions.Regex.Options" />
+        <element api="P:System.Text.RegularExpressions.Regex.RightToLeft" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+      </containers>
+      <file name="ffb838ff-d3ee-33fb-5770-6a1fda77e23e" />
+    </api>
+    <api id="M:System.Web.RegularExpressions.EndTagRegex.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+        <type api="T:System.Web.RegularExpressions.EndTagRegex" ref="true" />
+      </containers>
+      <file name="625583d9-de3c-e91c-0965-90efa7d1c210" />
+    </api>
+    <api id="T:System.Web.RegularExpressions.GTRegex">
+      <apidata name="GTRegex" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Text.RegularExpressions.Regex" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Runtime.Serialization.ISerializable" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Web.RegularExpressions.GTRegex.#ctor" />
+        <element api="F:System.Text.RegularExpressions.Regex.pattern" />
+        <element api="F:System.Text.RegularExpressions.Regex.factory" />
+        <element api="F:System.Text.RegularExpressions.Regex.roptions" />
+        <element api="F:System.Text.RegularExpressions.Regex.caps" />
+        <element api="F:System.Text.RegularExpressions.Regex.capnames" />
+        <element api="F:System.Text.RegularExpressions.Regex.capslist" />
+        <element api="F:System.Text.RegularExpressions.Regex.capsize" />
+        <element api="M:System.Text.RegularExpressions.Regex.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Text.RegularExpressions.Regex.ToString" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNames" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNumbers" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNameFromNumber(System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNumberFromName(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.InitializeReferences" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionC" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionR" />
+        <element api="P:System.Text.RegularExpressions.Regex.Options" />
+        <element api="P:System.Text.RegularExpressions.Regex.RightToLeft" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+      </containers>
+      <file name="7d3d5568-9262-4c4b-67ff-98190a78ea9a" />
+    </api>
+    <api id="M:System.Web.RegularExpressions.GTRegex.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+        <type api="T:System.Web.RegularExpressions.GTRegex" ref="true" />
+      </containers>
+      <file name="a0b932da-8dd9-b9bf-25cf-f8b2d63a7b6e" />
+    </api>
+    <api id="T:System.Web.RegularExpressions.IncludeRegex">
+      <apidata name="IncludeRegex" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Text.RegularExpressions.Regex" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Runtime.Serialization.ISerializable" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Web.RegularExpressions.IncludeRegex.#ctor" />
+        <element api="F:System.Text.RegularExpressions.Regex.pattern" />
+        <element api="F:System.Text.RegularExpressions.Regex.factory" />
+        <element api="F:System.Text.RegularExpressions.Regex.roptions" />
+        <element api="F:System.Text.RegularExpressions.Regex.caps" />
+        <element api="F:System.Text.RegularExpressions.Regex.capnames" />
+        <element api="F:System.Text.RegularExpressions.Regex.capslist" />
+        <element api="F:System.Text.RegularExpressions.Regex.capsize" />
+        <element api="M:System.Text.RegularExpressions.Regex.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Text.RegularExpressions.Regex.ToString" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNames" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNumbers" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNameFromNumber(System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNumberFromName(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.InitializeReferences" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionC" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionR" />
+        <element api="P:System.Text.RegularExpressions.Regex.Options" />
+        <element api="P:System.Text.RegularExpressions.Regex.RightToLeft" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+      </containers>
+      <file name="08650a8f-b985-739c-7f6d-1f75e22c1fce" />
+    </api>
+    <api id="M:System.Web.RegularExpressions.IncludeRegex.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+        <type api="T:System.Web.RegularExpressions.IncludeRegex" ref="true" />
+      </containers>
+      <file name="bd508b3b-5334-b47c-2535-85f845333742" />
+    </api>
+    <api id="T:System.Web.RegularExpressions.LTRegex">
+      <apidata name="LTRegex" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Text.RegularExpressions.Regex" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Runtime.Serialization.ISerializable" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Web.RegularExpressions.LTRegex.#ctor" />
+        <element api="F:System.Text.RegularExpressions.Regex.pattern" />
+        <element api="F:System.Text.RegularExpressions.Regex.factory" />
+        <element api="F:System.Text.RegularExpressions.Regex.roptions" />
+        <element api="F:System.Text.RegularExpressions.Regex.caps" />
+        <element api="F:System.Text.RegularExpressions.Regex.capnames" />
+        <element api="F:System.Text.RegularExpressions.Regex.capslist" />
+        <element api="F:System.Text.RegularExpressions.Regex.capsize" />
+        <element api="M:System.Text.RegularExpressions.Regex.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Text.RegularExpressions.Regex.ToString" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNames" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNumbers" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNameFromNumber(System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNumberFromName(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.InitializeReferences" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionC" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionR" />
+        <element api="P:System.Text.RegularExpressions.Regex.Options" />
+        <element api="P:System.Text.RegularExpressions.Regex.RightToLeft" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+      </containers>
+      <file name="fcb83c1c-3cc9-9078-5b6c-a4711bc91678" />
+    </api>
+    <api id="M:System.Web.RegularExpressions.LTRegex.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+        <type api="T:System.Web.RegularExpressions.LTRegex" ref="true" />
+      </containers>
+      <file name="b21dd695-75ff-a704-42a8-f5f78f1ab009" />
+    </api>
+    <api id="T:System.Web.RegularExpressions.RunatServerRegex">
+      <apidata name="RunatServerRegex" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Text.RegularExpressions.Regex" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Runtime.Serialization.ISerializable" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Web.RegularExpressions.RunatServerRegex.#ctor" />
+        <element api="F:System.Text.RegularExpressions.Regex.pattern" />
+        <element api="F:System.Text.RegularExpressions.Regex.factory" />
+        <element api="F:System.Text.RegularExpressions.Regex.roptions" />
+        <element api="F:System.Text.RegularExpressions.Regex.caps" />
+        <element api="F:System.Text.RegularExpressions.Regex.capnames" />
+        <element api="F:System.Text.RegularExpressions.Regex.capslist" />
+        <element api="F:System.Text.RegularExpressions.Regex.capsize" />
+        <element api="M:System.Text.RegularExpressions.Regex.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Text.RegularExpressions.Regex.ToString" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNames" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNumbers" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNameFromNumber(System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNumberFromName(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.InitializeReferences" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionC" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionR" />
+        <element api="P:System.Text.RegularExpressions.Regex.Options" />
+        <element api="P:System.Text.RegularExpressions.Regex.RightToLeft" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+      </containers>
+      <file name="07401ece-af93-6fc9-c441-ede643bcfb70" />
+    </api>
+    <api id="M:System.Web.RegularExpressions.RunatServerRegex.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+        <type api="T:System.Web.RegularExpressions.RunatServerRegex" ref="true" />
+      </containers>
+      <file name="2ad3c9e3-a447-f54e-9266-60d241a87ae3" />
+    </api>
+    <api id="T:System.Web.RegularExpressions.ServerTagsRegex">
+      <apidata name="ServerTagsRegex" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Text.RegularExpressions.Regex" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Runtime.Serialization.ISerializable" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Web.RegularExpressions.ServerTagsRegex.#ctor" />
+        <element api="F:System.Text.RegularExpressions.Regex.pattern" />
+        <element api="F:System.Text.RegularExpressions.Regex.factory" />
+        <element api="F:System.Text.RegularExpressions.Regex.roptions" />
+        <element api="F:System.Text.RegularExpressions.Regex.caps" />
+        <element api="F:System.Text.RegularExpressions.Regex.capnames" />
+        <element api="F:System.Text.RegularExpressions.Regex.capslist" />
+        <element api="F:System.Text.RegularExpressions.Regex.capsize" />
+        <element api="M:System.Text.RegularExpressions.Regex.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Text.RegularExpressions.Regex.ToString" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNames" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNumbers" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNameFromNumber(System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNumberFromName(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.InitializeReferences" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionC" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionR" />
+        <element api="P:System.Text.RegularExpressions.Regex.Options" />
+        <element api="P:System.Text.RegularExpressions.Regex.RightToLeft" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+      </containers>
+      <file name="4449b7be-1e3b-35f2-fa24-a5c305f947d5" />
+    </api>
+    <api id="M:System.Web.RegularExpressions.ServerTagsRegex.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+        <type api="T:System.Web.RegularExpressions.ServerTagsRegex" ref="true" />
+      </containers>
+      <file name="1a21b7c9-32a3-d31d-8bee-147fb5c0ed18" />
+    </api>
+    <api id="T:System.Web.RegularExpressions.SimpleDirectiveRegex">
+      <apidata name="SimpleDirectiveRegex" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Text.RegularExpressions.Regex" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Runtime.Serialization.ISerializable" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Web.RegularExpressions.SimpleDirectiveRegex.#ctor" />
+        <element api="F:System.Text.RegularExpressions.Regex.pattern" />
+        <element api="F:System.Text.RegularExpressions.Regex.factory" />
+        <element api="F:System.Text.RegularExpressions.Regex.roptions" />
+        <element api="F:System.Text.RegularExpressions.Regex.caps" />
+        <element api="F:System.Text.RegularExpressions.Regex.capnames" />
+        <element api="F:System.Text.RegularExpressions.Regex.capslist" />
+        <element api="F:System.Text.RegularExpressions.Regex.capsize" />
+        <element api="M:System.Text.RegularExpressions.Regex.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Text.RegularExpressions.Regex.ToString" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNames" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNumbers" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNameFromNumber(System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNumberFromName(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.InitializeReferences" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionC" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionR" />
+        <element api="P:System.Text.RegularExpressions.Regex.Options" />
+        <element api="P:System.Text.RegularExpressions.Regex.RightToLeft" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+      </containers>
+      <file name="64ba7b18-ee6a-aa98-4848-6947f62e75e4" />
+    </api>
+    <api id="M:System.Web.RegularExpressions.SimpleDirectiveRegex.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+        <type api="T:System.Web.RegularExpressions.SimpleDirectiveRegex" ref="true" />
+      </containers>
+      <file name="3bd60fba-30c9-f576-9ce1-6815ecf26d20" />
+    </api>
+    <api id="T:System.Web.RegularExpressions.TagRegex">
+      <apidata name="TagRegex" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Text.RegularExpressions.Regex" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Runtime.Serialization.ISerializable" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Web.RegularExpressions.TagRegex.#ctor" />
+        <element api="F:System.Text.RegularExpressions.Regex.pattern" />
+        <element api="F:System.Text.RegularExpressions.Regex.factory" />
+        <element api="F:System.Text.RegularExpressions.Regex.roptions" />
+        <element api="F:System.Text.RegularExpressions.Regex.caps" />
+        <element api="F:System.Text.RegularExpressions.Regex.capnames" />
+        <element api="F:System.Text.RegularExpressions.Regex.capslist" />
+        <element api="F:System.Text.RegularExpressions.Regex.capsize" />
+        <element api="M:System.Text.RegularExpressions.Regex.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Text.RegularExpressions.Regex.ToString" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNames" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNumbers" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNameFromNumber(System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNumberFromName(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.InitializeReferences" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionC" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionR" />
+        <element api="P:System.Text.RegularExpressions.Regex.Options" />
+        <element api="P:System.Text.RegularExpressions.Regex.RightToLeft" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+      </containers>
+      <file name="a049823e-1146-e902-7304-77f26148ecb8" />
+    </api>
+    <api id="M:System.Web.RegularExpressions.TagRegex.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+        <type api="T:System.Web.RegularExpressions.TagRegex" ref="true" />
+      </containers>
+      <file name="f9a0505b-9412-98a7-df14-e20a39eaac25" />
+    </api>
+    <api id="T:System.Web.RegularExpressions.TextRegex">
+      <apidata name="TextRegex" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Text.RegularExpressions.Regex" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Runtime.Serialization.ISerializable" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Web.RegularExpressions.TextRegex.#ctor" />
+        <element api="F:System.Text.RegularExpressions.Regex.pattern" />
+        <element api="F:System.Text.RegularExpressions.Regex.factory" />
+        <element api="F:System.Text.RegularExpressions.Regex.roptions" />
+        <element api="F:System.Text.RegularExpressions.Regex.caps" />
+        <element api="F:System.Text.RegularExpressions.Regex.capnames" />
+        <element api="F:System.Text.RegularExpressions.Regex.capslist" />
+        <element api="F:System.Text.RegularExpressions.Regex.capsize" />
+        <element api="M:System.Text.RegularExpressions.Regex.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Text.RegularExpressions.Regex.ToString" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNames" />
+        <element api="M:System.Text.RegularExpressions.Regex.GetGroupNumbers" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNameFromNumber(System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.GroupNumberFromName(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.Text.RegularExpressions.MatchEvaluator,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32,System.Int32)" />
+        <element api="M:System.Text.RegularExpressions.Regex.InitializeReferences" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionC" />
+        <element api="M:System.Text.RegularExpressions.Regex.UseOptionR" />
+        <element api="P:System.Text.RegularExpressions.Regex.Options" />
+        <element api="P:System.Text.RegularExpressions.Regex.RightToLeft" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+      </containers>
+      <file name="ae6bbf82-faaf-407d-907b-4987c1da4926" />
+    </api>
+    <api id="M:System.Web.RegularExpressions.TextRegex.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Web.RegularExpressions" module="System.Web.RegularExpressions" />
+        <namespace api="N:System.Web.RegularExpressions" />
+        <type api="T:System.Web.RegularExpressions.TextRegex" ref="true" />
+      </containers>
+      <file name="2bb5c4e9-2d5f-567f-a48e-5ace53af10b1" />
+    </api>
+  </apis>
+</reflection>

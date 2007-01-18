@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="9438e0d3-f880-4470-8bf1-a957f8683010" revisionNumber="8">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.STAThreadAttribute">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates that the COM threading model for an application is single-threaded apartment (STA). </para>
+        </summary>
+        <remarks>
+          <content>
+            <para>Apply this attribute to the entry point method (the <codeInline>Main()</codeInline> method in C# and Visual Basic). It has no effect on other methods. To set the apartment state of threads you start in your code, use the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Threading.Thread.SetApartmentState(System.Threading.ApartmentState)</codeEntityReference> method before starting the thread.</para>
+            <alert class="note">
+              <para>In the .NET Framework versions 1.0 and 1.1, set the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.Threading.Thread.ApartmentState</codeEntityReference> property before starting the thread.</para>
+            </alert>
+            <para>COM threading models only pertain to applications that use COM interop. Using this attribute in an application that does not use COM interop has no effect.</para>
+            <para>The COM threading model can be set to single-threaded apartment or multithreaded apartment. The application thread is only initialized for COM interop if the thread actually makes a call to a COM component. If COM interop is not used, then the thread is not initialized.</para>
+            <para>In the .NET Framework versions 1.0 and 1.1, use this attribute on <codeInline>Main()</codeInline> instead of setting the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.Threading.Thread.ApartmentState</codeEntityReference> property on the first line of code, to ensure that the threading model is set before any startup code is executed.</para>
+            <alert class="important">
+              <para>In the .NET Framework version 2.0, new threads are initialized as <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Threading.ApartmentState.MTA</codeEntityReference> if their apartment state has not been set before they are started. The main application thread is initialized to <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Threading.ApartmentState.MTA</codeEntityReference> by default. You can no longer set the main application thread to <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Threading.ApartmentState.STA</codeEntityReference> by setting the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.Threading.Thread.ApartmentState</codeEntityReference> property on the first line of code. Use the <codeEntityReference autoUpgrade="true">T:System.STAThreadAttribute</codeEntityReference> instead.</para>
+            </alert>
+            <para>In the .NET Framework version 2.0, you can also specify the COM threading model for a C++ application using the <link xlink:href="4907e9ef-5031-446c-aecf-0a0b32fae1e8">/CLRTHREADATTRIBUTE (Set CLR Thread Attribute)</link> linker option.</para>
+            <para>ASP.NET applications should set the <languageKeyword>ASPCompat</languageKeyword> attribute of the <link xlink:href="F06CF9E5-22BB-461D-8B8F-549E53FF40A4">[&lt;topic://cpconpage&gt;]</link> directive to <languageKeyword>true</languageKeyword>, to force the page to be serviced by the STA thread pool.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.MTAThreadAttribute</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.STAThreadAttribute.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.STAThreadAttribute</codeEntityReference> class.</para>
+        </summary>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.MTAThreadAttribute</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

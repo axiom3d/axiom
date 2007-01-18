@@ -1,0 +1,595 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="b68133d4-7e27-4933-94a8-17c473d47a58" revisionNumber="10">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.ModuleHandle">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents a runtime handle for a module.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The static <codeEntityReference autoUpgrade="true">M:System.ModuleHandle.ResolveFieldHandle(System.Int32)</codeEntityReference>, <codeEntityReference autoUpgrade="true">M:System.ModuleHandle.ResolveMethodHandle(System.Int32)</codeEntityReference>, and <codeEntityReference autoUpgrade="true">M:System.ModuleHandle.ResolveTypeHandle(System.Int32)</codeEntityReference> methods provide efficient resolution of metadata tokens to runtime handles for fields, methods, and types in the current module.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Reflection.Module</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.ModuleHandle.Equals">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Determines whether a specified <codeEntityReference autoUpgrade="true">T:System.ModuleHandle</codeEntityReference> structure is equal to the current <codeEntityReference autoUpgrade="true">T:System.ModuleHandle</codeEntityReference>.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.ModuleHandle.Equals(System.ModuleHandle)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference> value indicating whether the specified <codeEntityReference autoUpgrade="true">T:System.ModuleHandle</codeEntityReference> structure is equal to the current <codeEntityReference autoUpgrade="true">T:System.ModuleHandle</codeEntityReference>.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>handle</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.ModuleHandle</codeEntityReference> structure to be compared with the current <codeEntityReference autoUpgrade="true">T:System.ModuleHandle</codeEntityReference>.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>handle</parameterReference> is equal to the current <codeEntityReference autoUpgrade="true">T:System.ModuleHandle</codeEntityReference> structure; otherwise <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+      <overload>
+        <summary>
+          <para>Determines whether a specified <codeEntityReference autoUpgrade="true">T:System.ModuleHandle</codeEntityReference> structure is equal to the current <codeEntityReference autoUpgrade="true">T:System.ModuleHandle</codeEntityReference>.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.ModuleHandle.Equals(System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference> value indicating whether the specified object is a <codeEntityReference autoUpgrade="true">T:System.ModuleHandle</codeEntityReference> structure, and equal to the current <codeEntityReference autoUpgrade="true">T:System.ModuleHandle</codeEntityReference>.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>obj</parameterReference>
+            <content>
+              <para>The object to be compared with the current <codeEntityReference autoUpgrade="true">T:System.ModuleHandle</codeEntityReference> structure.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>obj</parameterReference> is a <codeEntityReference autoUpgrade="true">T:System.ModuleHandle</codeEntityReference> structure, and is equal to the current <codeEntityReference autoUpgrade="true">T:System.ModuleHandle</codeEntityReference> structure; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.ModuleHandle.GetHashCode">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <useBase>
+        </useBase>
+        <summary>
+        </summary>
+        <returnValue>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.ModuleHandle.op_Equality(System.ModuleHandle,System.ModuleHandle)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <equivalentCodeEntity>
+          <codeEntityReference>M:System.ModuleHandle.Equals(System.ModuleHandle,System.ModuleHandle)</codeEntityReference>
+          <content>
+          </content>
+        </equivalentCodeEntity>
+        <summary>
+          <para>Tests whether two <codeEntityReference autoUpgrade="true">T:System.ModuleHandle</codeEntityReference> structures are equal.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>left</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.ModuleHandle</codeEntityReference> structure to the left of the equality operator.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>right</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.ModuleHandle</codeEntityReference> structure to the right of the equality operator.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the <codeEntityReference autoUpgrade="true">T:System.ModuleHandle</codeEntityReference> structures are equal; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.ModuleHandle.op_Inequality(System.ModuleHandle,System.ModuleHandle)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <equivalentCodeEntity>
+          <codeEntityReference>M:System.ModuleHandle.Equals(System.ModuleHandle,System.ModuleHandle)</codeEntityReference>
+          <content>
+          </content>
+        </equivalentCodeEntity>
+        <summary>
+          <para>Tests whether two <codeEntityReference autoUpgrade="true">T:System.ModuleHandle</codeEntityReference> structures are unequal.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>left</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.ModuleHandle</codeEntityReference> structure to the left of the inequality operator.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>right</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.ModuleHandle</codeEntityReference> structure to the right of the inequality operator.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the <codeEntityReference autoUpgrade="true">T:System.ModuleHandle</codeEntityReference> structures are unequal; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.ModuleHandle.ResolveFieldHandle(System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a runtime handle for the field identified by the specified metadata token.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>fieldToken</parameterReference>
+            <content>
+              <para>A metadata token that identifies a field in the module.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.RuntimeFieldHandle</codeEntityReference> for the field identified by <parameterReference>fieldToken</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.BadImageFormatException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>metadataToken</parameterReference> is not a valid token in the scope of the current module.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>metadataToken</parameterReference> is not a token for a field in the scope of the current module.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>metadataToken</parameterReference> identifies a field whose parent <languageKeyword>TypeSpec</languageKeyword> has a signature containing element type <languageKeyword>var</languageKeyword> or <languageKeyword>mvar</languageKeyword>.</para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>The method is called on an empty field handle.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>To resolve a metadata token that identifies a field whose parent <languageKeyword>TypeSpec</languageKeyword> has a signature containing element type <languageKeyword>var</languageKeyword> or <languageKeyword>mvar</languageKeyword>, use the <codeEntityReference autoUpgrade="false">M:System.ModuleHandle.ResolveFieldHandle(System.Int32,System.RuntimeTypeHandle[],System.RuntimeTypeHandle[])</codeEntityReference> method overload, which allows you to supply the necessary context. </para>
+            <alert class="note">
+              <para>Information about metadata tokens can be found in the Common Language Infrastructure (CLI) documentation, especially "Partition II: Metadata Definition and Semantics". The documentation is available online at <externalLink><linkText>http://msdn.microsoft.com/net/ecma/</linkText><linkUri>http://msdn.microsoft.com/net/ecma/</linkUri></externalLink> and <externalLink><linkText>http://www.ecma-international.org/publications/standards/Ecma-335.htm</linkText><linkUri>http://www.ecma-international.org/publications/standards/Ecma-335.htm</linkUri></externalLink>.</para>
+            </alert>
+          </content>
+        </remarks>
+      <overload>
+        <summary>
+          <para>Returns a runtime field handle for a field identified by a metadata token.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.ModuleHandle.ResolveTypeHandle(System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a runtime type handle for the type identified by the specified metadata token.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>typeToken</parameterReference>
+            <content>
+              <para>A metadata token that identifies a type in the module.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.RuntimeTypeHandle</codeEntityReference> for the type identified by <parameterReference>typeToken</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.BadImageFormatException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>typeToken</parameterReference> is not a valid metadata token for a type in the current module.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>metadataToken</parameterReference> is not a token for a type in the scope of the current module.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>metadataToken</parameterReference> is a <languageKeyword>TypeSpec</languageKeyword> whose signature contains element type <languageKeyword>var</languageKeyword> or <languageKeyword>mvar</languageKeyword>.</para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>The method is called on an empty type handle.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>To resolve a metadata token for a <languageKeyword>TypeSpec</languageKeyword> whose signature contains element type <languageKeyword>var</languageKeyword> or <languageKeyword>mvar</languageKeyword>, use the <codeEntityReference autoUpgrade="false">M:System.ModuleHandle.ResolveTypeHandle(System.Int32,System.RuntimeTypeHandle[],System.RuntimeTypeHandle[])</codeEntityReference> method overload, which allows you to supply the necessary context. </para>
+            <alert class="note">
+              <para>Information about metadata tokens can be found in the Common Language Infrastructure (CLI) documentation, especially "Partition II: Metadata Definition and Semantics". The documentation is available online at <externalLink><linkText>http://msdn.microsoft.com/net/ecma/</linkText><linkUri>http://msdn.microsoft.com/net/ecma/</linkUri></externalLink> and <externalLink><linkText>http://www.ecma-international.org/publications/standards/Ecma-335.htm</linkText><linkUri>http://www.ecma-international.org/publications/standards/Ecma-335.htm</linkUri></externalLink>.</para>
+            </alert>
+          </content>
+        </remarks>
+      <overload>
+        <summary>
+          <para>Returns a runtime type handle for a type identified by a metadata token.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.ModuleHandle.ResolveMethodHandle(System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a runtime method handle for the method or constructor identified by the specified metadata token.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>methodToken</parameterReference>
+            <content>
+              <para>A metadata token that identifies a method or constructor in the module.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.RuntimeMethodHandle</codeEntityReference> for the method or constructor identified by <parameterReference>methodToken</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.BadImageFormatException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>methodToken</parameterReference> is not a valid metadata token for a method in the current module.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>metadataToken</parameterReference> is not a token for a method or constructor in the scope of the current module.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>metadataToken</parameterReference> is a <languageKeyword>MethodSpec</languageKeyword> whose signature contains element type <languageKeyword>var</languageKeyword> or <languageKeyword>mvar</languageKeyword>.</para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>The method is called on an empty method handle.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>To resolve a metadata token for a <languageKeyword>MethodSpec</languageKeyword> whose signature contains element type <languageKeyword>var</languageKeyword> or <languageKeyword>mvar</languageKeyword>, use the <codeEntityReference autoUpgrade="false">M:System.ModuleHandle.ResolveMethodHandle(System.Int32,System.RuntimeTypeHandle[],System.RuntimeTypeHandle[])</codeEntityReference> method overload, which allows you to supply the necessary context. </para>
+            <alert class="note">
+              <para>Information about metadata tokens can be found in the Common Language Infrastructure (CLI) documentation, especially "Partition II: Metadata Definition and Semantics". The documentation is available online at <externalLink><linkText>http://msdn.microsoft.com/net/ecma/</linkText><linkUri>http://msdn.microsoft.com/net/ecma/</linkUri></externalLink> and <externalLink><linkText>http://www.ecma-international.org/publications/standards/Ecma-335.htm</linkText><linkUri>http://www.ecma-international.org/publications/standards/Ecma-335.htm</linkUri></externalLink>.</para>
+            </alert>
+          </content>
+        </remarks>
+      <overload>
+        <summary>
+          <para>Returns a runtime method handle for a method or constructor identified by a metadata token.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="F:System.ModuleHandle.EmptyHandle">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents an empty module handle.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="Overload:System.ModuleHandle.ResolveFieldHandle">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a runtime field handle for a field identified by a metadata token.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.ModuleHandle.ResolveFieldHandle(System.Int32,System.RuntimeTypeHandle[],System.RuntimeTypeHandle[])">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a runtime field handle for the field identified by the specified metadata token, specifying the generic type arguments of the type and method where the token is in scope.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>fieldToken</parameterReference>
+            <content>
+              <para>A metadata token that identifies a field in the module.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>typeInstantiationContext</parameterReference>
+            <content>
+              <para>An array of <codeEntityReference autoUpgrade="true">T:System.RuntimeTypeHandle</codeEntityReference> structures representing the generic type arguments of the type where the token is in scope, or <languageKeyword>null</languageKeyword> if that type is not generic. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>methodInstantiationContext</parameterReference>
+            <content>
+              <para>An array of <codeEntityReference autoUpgrade="true">T:System.RuntimeTypeHandle</codeEntityReference> structures representing the generic type arguments of the method where the token is in scope, or <languageKeyword>null</languageKeyword> if that method is not generic.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.RuntimeFieldHandle</codeEntityReference> for the field identified by <parameterReference>fieldToken</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.BadImageFormatException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>metadataToken</parameterReference> is not a valid token in the scope of the current module.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>metadataToken</parameterReference> is not a token for a field in the scope of the current module.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>metadataToken</parameterReference> identifies a field whose parent <languageKeyword>TypeSpec</languageKeyword> has a signature containing element type <languageKeyword>var</languageKeyword> or <languageKeyword>mvar</languageKeyword>.</para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>The method is called on an empty field handle.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <alert class="note">
+              <para>Information about metadata tokens can be found in the Common Language Infrastructure (CLI) documentation, especially "Partition II: Metadata Definition and Semantics". The documentation is available online at <externalLink><linkText>http://msdn.microsoft.com/net/ecma/</linkText><linkUri>http://msdn.microsoft.com/net/ecma/</linkUri></externalLink> and <externalLink><linkText>http://www.ecma-international.org/publications/standards/Ecma-335.htm</linkText><linkUri>http://www.ecma-international.org/publications/standards/Ecma-335.htm</linkUri></externalLink>.</para>
+            </alert>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="Overload:System.ModuleHandle.ResolveMethodHandle">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a runtime method handle for a method or constructor identified by a metadata token.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.ModuleHandle.ResolveMethodHandle(System.Int32,System.RuntimeTypeHandle[],System.RuntimeTypeHandle[])">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a runtime method handle for the method or constructor identified by the specified metadata token, specifying the generic type arguments of the type and method where the token is in scope.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>methodToken</parameterReference>
+            <content>
+              <para>A metadata token that identifies a method or constructor in the module.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>typeInstantiationContext</parameterReference>
+            <content>
+              <para>An array of <codeEntityReference autoUpgrade="true">T:System.RuntimeTypeHandle</codeEntityReference> structures representing the generic type arguments of the type where the token is in scope, or <languageKeyword>null</languageKeyword> if that type is not generic. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>methodInstantiationContext</parameterReference>
+            <content>
+              <para>An array of <codeEntityReference autoUpgrade="true">T:System.RuntimeTypeHandle</codeEntityReference> structures representing the generic type arguments of the method where the token is in scope, or <languageKeyword>null</languageKeyword> if that method is not generic.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.RuntimeMethodHandle</codeEntityReference> for the method or constructor identified by <parameterReference>methodToken</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.BadImageFormatException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>methodToken</parameterReference> is not a valid metadata token for a method in the current module.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>metadataToken</parameterReference> is not a token for a method or constructor in the scope of the current module.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>metadataToken</parameterReference> is a <languageKeyword>MethodSpec</languageKeyword> whose signature contains element type <languageKeyword>var</languageKeyword> or <languageKeyword>mvar</languageKeyword>.</para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>The method is called on an empty method handle.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <alert class="note">
+              <para>Information about metadata tokens can be found in the Common Language Infrastructure (CLI) documentation, especially "Partition II: Metadata Definition and Semantics". The documentation is available online at <externalLink><linkText>http://msdn.microsoft.com/net/ecma/</linkText><linkUri>http://msdn.microsoft.com/net/ecma/</linkUri></externalLink> and <externalLink><linkText>http://www.ecma-international.org/publications/standards/Ecma-335.htm</linkText><linkUri>http://www.ecma-international.org/publications/standards/Ecma-335.htm</linkUri></externalLink>.</para>
+            </alert>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="Overload:System.ModuleHandle.ResolveTypeHandle">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a runtime type handle for a type identified by a metadata token.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.ModuleHandle.ResolveTypeHandle(System.Int32,System.RuntimeTypeHandle[],System.RuntimeTypeHandle[])">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a runtime type handle for the type identified by the specified metadata token, specifying the generic type arguments of the type and method where the token is in scope.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>typeToken</parameterReference>
+            <content>
+              <para>A metadata token that identifies a type in the module.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>typeInstantiationContext</parameterReference>
+            <content>
+              <para>An array of <codeEntityReference autoUpgrade="true">T:System.RuntimeTypeHandle</codeEntityReference> structures representing the generic type arguments of the type where the token is in scope, or <languageKeyword>null</languageKeyword> if that type is not generic. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>methodInstantiationContext</parameterReference>
+            <content>
+              <para>An array of <codeEntityReference autoUpgrade="true">T:System.RuntimeTypeHandle</codeEntityReference> structures objects representing the generic type arguments of the method where the token is in scope, or <languageKeyword>null</languageKeyword> if that method is not generic.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.RuntimeTypeHandle</codeEntityReference> for the type identified by <parameterReference>typeToken</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.BadImageFormatException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>typeToken</parameterReference> is not a valid metadata token for a type in the current module.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>metadataToken</parameterReference> is not a token for a type in the scope of the current module.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>metadataToken</parameterReference> is a <languageKeyword>TypeSpec</languageKeyword> whose signature contains element type <languageKeyword>var</languageKeyword> or <languageKeyword>mvar</languageKeyword>.</para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>The method is called on an empty type handle.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <alert class="note">
+              <para>Information about metadata tokens can be found in the Common Language Infrastructure (CLI) documentation, especially "Partition II: Metadata Definition and Semantics". The documentation is available online at <externalLink><linkText>http://msdn.microsoft.com/net/ecma/</linkText><linkUri>http://msdn.microsoft.com/net/ecma/</linkUri></externalLink> and <externalLink><linkText>http://www.ecma-international.org/publications/standards/Ecma-335.htm</linkText><linkUri>http://www.ecma-international.org/publications/standards/Ecma-335.htm</linkUri></externalLink>.</para>
+            </alert>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.ModuleHandle.GetRuntimeTypeHandleFromMetadataToken(System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <obsoleteCodeEntity>
+          <codeEntityReference>Overload:System.ModuleHandle.ResolveTypeHandle</codeEntityReference>
+          <content>
+          </content>
+        </obsoleteCodeEntity>
+        <summary>
+          <para>Returns a runtime type handle for the type identified by the specified metadata token.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>typeToken</parameterReference>
+            <content>
+              <para>A metadata token that identifies a type in the module.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.RuntimeTypeHandle</codeEntityReference> for the type identified by <parameterReference>typeToken</parameterReference>.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.ModuleHandle.GetRuntimeMethodHandleFromMetadataToken(System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <obsoleteCodeEntity>
+          <codeEntityReference>Overload:System.ModuleHandle.ResolveMethodHandle</codeEntityReference>
+          <content>
+          </content>
+        </obsoleteCodeEntity>
+        <summary>
+          <para>Returns a runtime method handle for the method or constructor identified by the specified metadata token.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>methodToken</parameterReference>
+            <content>
+              <para>A metadata token that identifies a method or constructor in the module.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.RuntimeMethodHandle</codeEntityReference> for the method or constructor identified by <parameterReference>methodToken</parameterReference>.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.ModuleHandle.GetRuntimeFieldHandleFromMetadataToken(System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <obsoleteCodeEntity>
+          <codeEntityReference>Overload:System.ModuleHandle.ResolveFieldHandle</codeEntityReference>
+          <content>
+          </content>
+        </obsoleteCodeEntity>
+        <summary>
+          <para>Returns a runtime handle for the field identified by the specified metadata token.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>fieldToken</parameterReference>
+            <content>
+              <para>A metadata token that identifies a field in the module.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.RuntimeFieldHandle</codeEntityReference> for the field identified by <parameterReference>fieldToken</parameterReference>.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="P:System.ModuleHandle.MDStreamVersion">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the metadata stream version.</para>
+        </summary>
+        <returnValue>
+          <para>A 32-bit integer representing the metadata stream version. The high-order two bytes represent the major version number, and the low-order two bytes represent the minor version number.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <alert class="note">
+              <para>For more information on the metadata header, see the Partition II: Metadata Definition and Semantics documentation. The documentation is available online at <externalLink><linkText>http://msdn.microsoft.com/net/ecma/</linkText><linkUri>http://msdn.microsoft.com/net/ecma/</linkUri></externalLink> and <externalLink><linkText>http://www.ecma-international.org/publications/standards/Ecma-335.htm</linkText><linkUri>http://www.ecma-international.org/publications/standards/Ecma-335.htm</linkUri></externalLink>.</para>
+            </alert>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SandcastleBuilderConsole</name>
+    </assembly>
+    <members>
+        <member name="T:SandcastleBuilderConsole.SandcastleBuilderConsole">
+            <summary>
+            This is the console mode version of the Sandcastle Help File Builder.
+            </summary>
+        </member>
+        <member name="M:SandcastleBuilderConsole.SandcastleBuilderConsole.Main(System.String[])">
+            <summary>
+            Main program entry point
+            </summary>
+            <param name="args">The command line arguments.  This should be a
+            list of projects to build and an optional "/v" option to provide
+            verbose output.</param>
+            <returns>Zero on success, non-zero on failure</returns>
+        </member>
+        <member name="M:SandcastleBuilderConsole.SandcastleBuilderConsole.BuildProject(System.String)">
+            <summary>
+            This is called to build a project
+            </summary>
+            <param name="projectFile">The project to build</param>
+            <returns>Returns true if successful, false if not</returns>
+        </member>
+        <member name="M:SandcastleBuilderConsole.SandcastleBuilderConsole.buildProcess_BuildStepChanged(System.Object,SandcastleBuilder.Utils.BuildProgressEventArgs)">
+            <summary>
+            This is called by the build process thread to update the
+            application with the current build step.
+            </summary>
+            <param name="sender">The sender of the event</param>
+            <param name="e">The event arguments</param>
+        </member>
+        <member name="M:SandcastleBuilderConsole.SandcastleBuilderConsole.buildProcess_BuildProgress(System.Object,SandcastleBuilder.Utils.BuildProgressEventArgs)">
+            <summary>
+            This is called by the build process thread to update the
+            application with information about progress.
+            </summary>
+            <param name="sender">The sender of the event</param>
+            <param name="e">The event arguments</param>
+        </member>
+    </members>
+</doc>

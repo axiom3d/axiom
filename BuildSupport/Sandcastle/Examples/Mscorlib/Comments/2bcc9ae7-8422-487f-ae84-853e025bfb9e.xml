@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="2bcc9ae7-8422-487f-ae84-853e025bfb9e" revisionNumber="4">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.ArgIterator">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents a variable-length argument list; that is, the parameters of a function that takes a variable number of arguments.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>Developers who write compilers use the <codeEntityReference autoUpgrade="true">T:System.ArgIterator</codeEntityReference> structure to enumerate the mandatory and optional arguments in an argument list. The <codeEntityReference autoUpgrade="true">T:System.ArgIterator</codeEntityReference> structure is not generally useful for applications other than compilers.</para>
+            <para>The functionality in the <codeEntityReference autoUpgrade="true">T:System.ArgIterator</codeEntityReference> structure is typically hidden in the syntax of a specific programming language. For example, in the C++ programming language you declare a variable-length argument list by specifying an ellipsis ("...") at the end of the argument list.</para>
+          </content>
+        </remarks>
+        <notesForImplementers>
+          <para>The <codeEntityReference autoUpgrade="true">T:System.ArgIterator</codeEntityReference> structure and its member are provided specifically for use with the C/C++ programming language.</para>
+        </notesForImplementers>
+      </dduexml>
+    </member>
+    <member name="Overload:System.ArgIterator.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.ArgIterator</codeEntityReference> structure.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.ArgIterator.#ctor(System.RuntimeArgumentHandle)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.ArgIterator</codeEntityReference> structure using the specified argument list.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>arglist</parameterReference>
+            <content>
+              <para>An argument list consisting of mandatory and optional arguments. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>The new <codeEntityReference autoUpgrade="true">T:System.ArgIterator</codeEntityReference> object enumerates the argument list starting from the first optional argument.</para>
+          </content>
+        </remarks>
+        <notesForImplementers>
+          <para>This constructor is provided specifically for use with the C/C++ programming language.</para>
+        </notesForImplementers>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the <codeEntityReference autoUpgrade="true">Overload:System.ArgIterator.#ctor</codeEntityReference>  constructor. </para>
+                <codeReference>System.ArgIterator#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.ArgIterator</codeEntityReference> structure.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.ArgIterator.#ctor(System.RuntimeArgumentHandle,System.Void*)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.ArgIterator</codeEntityReference> structure using the specified argument list and a pointer to an item in the list.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>arglist</parameterReference>
+            <content>
+              <para>An argument list consisting of mandatory and optional arguments. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>ptr</parameterReference>
+            <content>
+              <para>A pointer to the argument in <parameterReference>arglist</parameterReference> to access first, or the first mandatory argument in <parameterReference>arglist</parameterReference> if <parameterReference>ptr</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>The new <codeEntityReference autoUpgrade="true">T:System.ArgIterator</codeEntityReference> object enumerates the argument list starting from the argument specified by <parameterReference>ptr</parameterReference>, or the first mandatory argument if <parameterReference>ptr</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <notesForImplementers>
+          <para>This constructor is provided specifically for use with the C/C++ programming language.</para>
+        </notesForImplementers>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the <codeEntityReference autoUpgrade="true">Overload:System.ArgIterator.#ctor</codeEntityReference>  constructor. </para>
+                <codeReference>System.ArgIterator#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.ArgIterator.End">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Concludes processing of the variable-length argument list represented by this instance.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>Conceptually, <codeEntityReference autoUpgrade="true">M:System.ArgIterator.End</codeEntityReference> concludes the processing of a variable-length argument list. However, this method has no actual implementation; the <codeEntityReference autoUpgrade="true">M:System.ArgIterator.End</codeEntityReference> method body is empty. You can use this method in your code as a marker to indicate where variable-length argument list processing logically ends.</para>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.ArgIterator.End</codeEntityReference> method corresponds to the <languageKeyword>va_end</languageKeyword> method in the C standard library.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.ArgIterator.Equals(System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>This method is not supported, and always throws <codeEntityReference autoUpgrade="true">T:System.NotSupportedException</codeEntityReference>.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>o</parameterReference>
+            <content>
+              <para>An object to be compared to this instance. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>This comparison is not supported. No value is returned.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.NotSupportedException</codeEntityReference>
+            <content>
+              <para>This method is not supported. </para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.ArgIterator.GetHashCode">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the hash code of this object.</para>
+        </summary>
+        <returnValue>
+          <para>A 32-bit signed integer hash code.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="Overload:System.ArgIterator.GetNextArg">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the next argument in a variable-length argument list.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.ArgIterator.GetNextArg">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the next argument in a variable-length argument list.</para>
+        </summary>
+        <returnValue>
+          <para>The next argument as a <codeEntityReference autoUpgrade="true">T:System.TypedReference</codeEntityReference> object.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>An attempt was made to read beyond the end of the list. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The iterator is automatically advanced to the next argument.</para>
+          </content>
+        </remarks>
+      <overload>
+        <summary>
+          <para>Returns the next argument in a variable-length argument list.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.ArgIterator.GetNextArg(System.RuntimeTypeHandle)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the next argument in a variable-length argument list that has a specified type.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>rth</parameterReference>
+            <content>
+              <para>A runtime type handle that identifies the type of the argument to retrieve. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The next argument as a <codeEntityReference autoUpgrade="true">T:System.TypedReference</codeEntityReference> object.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>An attempt was made to read beyond the end of the list. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The iterator is automatically advanced to the next argument.</para>
+          </content>
+        </remarks>
+        <notesForImplementers>
+          <para>This method is provided specifically for use with the C/C++ programming language.</para>
+        </notesForImplementers>
+      </dduexml>
+    </member>
+    <member name="M:System.ArgIterator.GetNextArgType">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the type of the next argument.</para>
+        </summary>
+        <returnValue>
+          <para>The type of the next argument.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This method does not advance the iterator to the next argument.</para>
+            <para>
+              <codeEntityReference autoUpgrade="true">M:System.ArgIterator.GetNextArgType</codeEntityReference> returns the type of the argument as specified in the calling function. For example, if an argument is type <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>, but the calling function specifies the argument as type <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference>, <codeEntityReference autoUpgrade="true">M:System.ArgIterator.GetNextArgType</codeEntityReference> reports the argument as type <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference>.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.ArgIterator.GetRemainingCount">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the number of arguments remaining in the argument list.</para>
+        </summary>
+        <returnValue>
+          <para>The number of remaining arguments.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="d4e6079c-ac01-45e2-b0db-74f41bf272ab" revisionNumber="16">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.AppDomainManager">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides a managed equivalent of an unmanaged host.</para>
+        </summary>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.Security.SecurityException</codeEntityReference>
+            <content>
+              <para>The caller does not have the correct permissions. See the Requirements section.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Implementing the <codeEntityReference autoUpgrade="true">T:System.AppDomainManager</codeEntityReference> class enables a hosting application to participate in the creation of new application domains. To replace the default <codeEntityReference autoUpgrade="true">T:System.AppDomainManager</codeEntityReference>, identify the assembly and type of the replacement <codeEntityReference autoUpgrade="true">T:System.AppDomainManager</codeEntityReference> in the APPDOMAIN_MANAGER_ASM and APPDOMAIN_MANAGER_TYPE environment variables. The assembly must be fully trusted and be contained in the global assembly cache or the directory of the starting application. The type and assembly names must be fully qualified in the environment variables. For example:</para>
+            <para>
+              <codeInline>set APPDOMAIN_MANAGER_TYPE=MyNamespace.TestAppDomainManager</codeInline>
+            </para>
+            <para>
+              <codeInline>set APPDOMAIN_MANAGER_ASM=customappDomainmanager, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f1368f7b12a08d72</codeInline>
+            </para>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.AppDomainManager</codeEntityReference> is the managed equivalent of the unmanaged host. An <codeEntityReference autoUpgrade="true">T:System.AppDomainManager</codeEntityReference> object participates in the creation of new application domains in a process and can customize the new <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference> before other managed code runs. The <codeEntityReference autoUpgrade="true">T:System.AppDomainManager</codeEntityReference> can also supply host managers that participate in other aspects of common language runtime execution. For example, an <codeEntityReference autoUpgrade="true">T:System.AppDomainManager</codeEntityReference> can identify a <codeEntityReference autoUpgrade="true">T:System.Security.HostSecurityManager</codeEntityReference> object that participates in the security decisions of theapplication domain.</para>
+            <alert class="note">
+              <para>Only assemblies granted <languageKeyword>FullTrust</languageKeyword>, such as assemblies in the global assembly cache or identified as <parameterReference>fullTrustAssemblies</parameterReference> in the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.CreateDomain(System.String,System.Security.Policy.Evidence,System.AppDomainSetup,System.Security.PermissionSet,System.Security.Policy.StrongName[])</codeEntityReference> method can be loaded in the  <codeEntityReference autoUpgrade="true">M:System.AppDomainManager.#ctor</codeEntityReference> constructor and the <codeEntityReference autoUpgrade="true">M:System.AppDomainManager.InitializeNewDomain(System.AppDomainSetup)</codeEntityReference> method.</para>
+            </alert>
+            <alert class="note">
+              <para>This class contains a link demand and an inheritance demand at the class level. A <codeEntityReference autoUpgrade="true">T:System.Security.SecurityException</codeEntityReference> is thrown when either the immediate caller or the derived class does not have infrastructure permission. For details about security demands, see <link xlink:href="a33fd5f9-2de9-4653-a4f0-d9df25082c4d">Link Demands</link> and <link xlink:href="28b9adbb-8f08-4f10-b856-dbf59eb932d9">Inheritance Demands</link>.</para>
+              <para>
+              </para>
+            </alert>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example shows a very simple implementation of <codeEntityReference autoUpgrade="true">T:System.AppDomainManager</codeEntityReference>.</para>
+                <codeReference>System.AppDomainManager#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.SecurityPermission</codeEntityReference>
+            <content>
+              <para>for operating with infrastructure code. Demand value: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.SecurityAction.LinkDemand</codeEntityReference>; Permission value: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.SecurityPermissionFlag.Infrastructure</codeEntityReference></para>
+            </content>
+          </permission>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.SecurityPermission</codeEntityReference>
+            <content>
+              <para>for operating with infrastructure code. Demand value: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.SecurityAction.InheritanceDemand</codeEntityReference>; Permission value: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.SecurityPermissionFlag.Infrastructure</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+      </dduexml>
+    </member>
+    <member name="M:System.AppDomainManager.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.AppDomainManager</codeEntityReference> class. </para>
+        </summary>
+        <remarks>
+          <content>
+            <alert class="note">
+              <para>Only assemblies granted <languageKeyword>FullTrust</languageKeyword>, such as assemblies in the global assembly cache or identified as <parameterReference>fullTrustAssemblies</parameterReference> in the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.CreateDomain(System.String,System.Security.Policy.Evidence,System.AppDomainSetup,System.Security.PermissionSet,System.Security.Policy.StrongName[])</codeEntityReference> method can be loaded in the  <codeEntityReference autoUpgrade="true">M:System.AppDomainManager.#ctor</codeEntityReference> constructor and the <codeEntityReference autoUpgrade="true">M:System.AppDomainManager.InitializeNewDomain(System.AppDomainSetup)</codeEntityReference> method.</para>
+            </alert>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.AppDomainManager.HostExecutionContextManager">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the host execution context manager that manages the flow of the execution context.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.Threading.HostExecutionContextManager</codeEntityReference> object.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This property allows a host to provide a <codeEntityReference autoUpgrade="true">T:System.Threading.HostExecutionContextManager</codeEntityReference> that can participate in the flow of the execution context across asynchronous calls. </para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.AppDomainManager.HostSecurityManager">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the host security manager that participates in security decisions for the application domain.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.Security.HostSecurityManager</codeEntityReference> object.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This property allows a host to provide a <codeEntityReference autoUpgrade="true">T:System.Security.HostSecurityManager</codeEntityReference> to participate in the security decisions for the application domain. </para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code sample shows an override of the <codeEntityReference autoUpgrade="true">P:System.AppDomainManager.HostSecurityManager</codeEntityReference> property for a custom application domain manager. This code example is part of a larger example provided for the <codeEntityReference autoUpgrade="true">T:System.AppDomainManager</codeEntityReference> class.</para>
+                <codeReference>System.AppDomainManager#3</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.AppDomainManager.CreateDomain(System.String,System.Security.Policy.Evidence,System.AppDomainSetup)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns an application domain that can be either a new or existing domain.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>friendlyName</parameterReference>
+            <content>
+              <para>The friendly name of the domain. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>securityInfo</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.Security.Policy.Evidence</codeEntityReference> object that contains evidence mapped through the security policy to establish a top-of-stack permission set.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>appDomainInfo</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.AppDomainSetup</codeEntityReference> object that contains application domain initialization information.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference> object.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The friendly name, specified by the <parameterReference>friendlyName</parameterReference> parameter, can be displayed in user interfaces to identify the domain. For more information, see the <codeEntityReference autoUpgrade="true">P:System.AppDomain.FriendlyName</codeEntityReference> property.</para>
+            <para>The default <codeEntityReference autoUpgrade="true">M:System.AppDomainManager.CreateDomain(System.String,System.Security.Policy.Evidence,System.AppDomainSetup)</codeEntityReference> method calls the protected <codeEntityReference autoUpgrade="true">M:System.AppDomainManager.CreateDomainHelper(System.String,System.Security.Policy.Evidence,System.AppDomainSetup)</codeEntityReference> method to create the <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference>. Overrides of this method do not need to call the <codeEntityReference autoUpgrade="true">M:System.AppDomainManager.CreateDomainHelper(System.String,System.Security.Policy.Evidence,System.AppDomainSetup)</codeEntityReference> method but can return an existing domain.</para>
+          </content>
+        </remarks>
+        <notesForInheritors>
+          <para>When you inherit from the <codeEntityReference autoUpgrade="true">T:System.AppDomainManager</codeEntityReference> class and override the <codeEntityReference autoUpgrade="true">M:System.AppDomainManager.CreateDomain(System.String,System.Security.Policy.Evidence,System.AppDomainSetup)</codeEntityReference> method, you can perform custom application domain initialization activities before calling the <codeEntityReference autoUpgrade="true">M:System.AppDomainManager.CreateDomainHelper(System.String,System.Security.Policy.Evidence,System.AppDomainSetup)</codeEntityReference> method, or not call the helper method at all.  For example, you could modify the evidence passed in as <parameterReference>securityInfo</parameterReference>, update the fields of the associated <codeEntityReference autoUpgrade="true">T:System.AppDomainSetup</codeEntityReference>, or reuse an exiting domain.</para>
+        </notesForInheritors>
+      </dduexml>
+    </member>
+    <member name="M:System.AppDomainManager.CreateDomainHelper(System.String,System.Security.Policy.Evidence,System.AppDomainSetup)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides a helper method to create an application domain.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>friendlyName</parameterReference>
+            <content>
+              <para>The friendly name of the domain. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>securityInfo</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.Security.Policy.Evidence</codeEntityReference> object that contains evidence mapped through the security policy to establish a top-of-stack permission set.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>appDomainInfo</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.AppDomainSetup</codeEntityReference> object that contains application domain initialization information.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A newly created <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference> object.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>friendlyName</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This protected helper method handles the creation of a new application domain. </para>
+            <para>This friendly name, specified by the <parameterReference>friendlyName</parameterReference> parameter, can be displayed in user interfaces to identify the domain. For more information, see the <codeEntityReference autoUpgrade="true">P:System.AppDomain.FriendlyName</codeEntityReference> property.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.SecurityPermission</codeEntityReference>
+            <content>
+              <para>for the ability to create and manipulate an application domain. Demand value: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.SecurityAction.LinkDemand</codeEntityReference>; Permission value: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.SecurityPermissionFlag.ControlAppDomain</codeEntityReference></para>
+            </content>
+          </permission>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.SecurityPermission</codeEntityReference>
+            <content>
+              <para>for the ability to provide evidence. Demand value: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.SecurityAction.Demand</codeEntityReference>; Permission value: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.SecurityPermissionFlag.ControlEvidence</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+      </dduexml>
+    </member>
+    <member name="M:System.AppDomainManager.InitializeNewDomain(System.AppDomainSetup)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes the new application domain.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>appDomainInfo</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.AppDomainSetup</codeEntityReference> object that contains application domain initialization information.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>This method is called immediately after the constructor. The default <codeEntityReference autoUpgrade="true">M:System.AppDomainManager.InitializeNewDomain(System.AppDomainSetup)</codeEntityReference> implementation does nothing.  A custom implementation can set up internal classes and delegates, set up an interface with the unmanaged host interface, or set up event handlers for the new <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference>.</para>
+            <para>Also, for add-in activations, a custom implementation could identify the current <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference> as the target application domain.</para>
+            <alert class="note">
+              <para>Only assemblies granted <languageKeyword>FullTrust</languageKeyword>, such as assemblies in the global assembly cache or identified as <parameterReference>fullTrustAssemblies</parameterReference> in the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.CreateDomain(System.String,System.Security.Policy.Evidence,System.AppDomainSetup,System.Security.PermissionSet,System.Security.Policy.StrongName[])</codeEntityReference> method can be loaded in the  <codeEntityReference autoUpgrade="true">M:System.AppDomainManager.#ctor</codeEntityReference> constructor and the <codeEntityReference autoUpgrade="true">M:System.AppDomainManager.InitializeNewDomain(System.AppDomainSetup)</codeEntityReference> method.</para>
+            </alert>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code sample shows an override of the <codeEntityReference autoUpgrade="true">M:System.AppDomainManager.InitializeNewDomain(System.AppDomainSetup)</codeEntityReference> method for a custom application domain manager. This code example is part of a larger example provided for the <codeEntityReference autoUpgrade="true">T:System.AppDomainManager</codeEntityReference> class.</para>
+                <codeReference>System.AppDomainManager#2</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.AppDomainManager.ApplicationActivator">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the application activator that handles the activation of add-ins and manifest-based applications for the domain.</para>
+        </summary>
+        <returnValue>
+          <para>An <codeEntityReference autoUpgrade="true">T:System.Runtime.Hosting.ApplicationActivator</codeEntityReference> object.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>There is a single designated instance of the <codeEntityReference autoUpgrade="true">T:System.Runtime.Hosting.ApplicationActivator</codeEntityReference> class in each <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference> to which all add-in and manifest-based application activation calls are routed. The <codeEntityReference autoUpgrade="true">T:System.AppDomainManager</codeEntityReference> for the current <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference> can provide its own custom <codeEntityReference autoUpgrade="true">T:System.Runtime.Hosting.ApplicationActivator</codeEntityReference>, or an instance of the default <codeEntityReference autoUpgrade="true">T:System.Runtime.Hosting.ApplicationActivator</codeEntityReference> is created.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.AppDomainManager.InitializationFlags">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the initialization flags for custom application domain managers.</para>
+        </summary>
+        <returnValue>
+          <para>A bitwise combination of the <codeEntityReference autoUpgrade="true">T:System.AppDomainManagerInitializationOptions</codeEntityReference> describing the initialization action to perform. The default is <codeEntityReference autoUpgrade="true">F:System.AppDomainManagerInitializationOptions.None</codeEntityReference>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.AppDomainManager.EntryAssembly">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the entry assembly for an application.</para>
+        </summary>
+        <returnValue>
+          <para>An <codeEntityReference autoUpgrade="true">T:System.Reflection.Assembly</codeEntityReference> object representing the entry assembly for the application.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>If the application is a manifest-activated application, the entry assembly is determined from the application manifest. If the application is not manifest activated, the entry assembly is the process executable in the default application domain. In other application domains, the entry assembly is the first executable that was executed by the <codeEntityReference qualifyHint="true" autoUpgrade="true">Overload:System.AppDomain.ExecuteAssembly</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+  </members>
+</doc>

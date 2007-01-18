@@ -1,0 +1,708 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="ae88e663-5a43-40e8-946c-788935a7e38d" revisionNumber="11">
+  <assembly>
+    <name>System</name>
+  </assembly>
+  <members>
+    <member name="T:System.UriBuilder">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides a custom constructor for uniform resource identifiers (URIs) and modifies URIs for the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> class.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> class provides a convenient way to modify the contents of a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance without creating a new <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance for each modification.</para>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> properties provide read/write access to the read-only <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> properties so that they can be modified.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.UriBuilder.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> class.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The default constructor creates a new instance of the <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> class with its properties initialized as follows.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Initial Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>Fragment </para>
+                </entry>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">F:System.String.Empty</codeEntityReference>
+                  </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>Host </para>
+                </entry>
+                <entry>
+                  <para>"loopback" </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>Password </para>
+                </entry>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">F:System.String.Empty</codeEntityReference>
+                  </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>Path </para>
+                </entry>
+                <entry>
+                  <para>"/" </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>Port </para>
+                </entry>
+                <entry>
+                  <para>-1 </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>Query </para>
+                </entry>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">F:System.String.Empty</codeEntityReference>
+                  </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>Scheme </para>
+                </entry>
+                <entry>
+                  <para>"http" </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>UserName </para>
+                </entry>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">F:System.String.Empty</codeEntityReference>
+                  </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+      <overload>
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> class.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.UriBuilder.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> class.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.UriBuilder.#ctor(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> class with the specified URI.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>uri</parameterReference>
+            <content>
+              <para>A URI string. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>uri</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>uri</parameterReference> is a zero length string or contains only spaces.</para>
+              <para>-or- </para>
+              <para>The parsing routine detected a scheme in an invalid form.</para>
+              <para>-or- </para>
+              <para>The parser detected more than two consecutive slashes in a URI that does not use the "file" scheme.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>uri</parameterReference> is not a valid URI. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This constructor initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> class with the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Fragment</codeEntityReference>, <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Host</codeEntityReference>, <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Path</codeEntityReference>, <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Port</codeEntityReference>, <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Query</codeEntityReference>, <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Scheme</codeEntityReference>, and <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Uri</codeEntityReference> properties set as specified in <parameterReference>uri</parameterReference>.</para>
+            <para>If <parameterReference>uri</parameterReference> does not specify a scheme, the scheme defaults to "http:".</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.UriBuilder.#ctor(System.String,System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> class with the specified scheme and host.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>schemeName</parameterReference>
+            <content>
+              <para>An Internet access protocol. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>hostName</parameterReference>
+            <content>
+              <para>A DNS-style domain name or IP address. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> instance is initialized with the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Scheme</codeEntityReference> property set to <parameterReference>schemeName</parameterReference> and the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Host</codeEntityReference> property set to <parameterReference>hostName</parameterReference>. <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Port</codeEntityReference> is initialized to the value -1 to indicate the default port for the scheme should be used, and the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Path</codeEntityReference> property is set to the slash character (/).</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> instance that contains the URI http://www.contoso.com/.</para>
+                <codeReference>Classic UriBuilder.UriBuilder3 Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.UriBuilder.#ctor(System.String,System.String,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> class with the specified scheme, host, and port.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>scheme</parameterReference>
+            <content>
+              <para>An Internet access protocol. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>host</parameterReference>
+            <content>
+              <para>A DNS-style domain name or IP address. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>portNumber</parameterReference>
+            <content>
+              <para>An IP port number for the service. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>portNumber</parameterReference> is less than 0. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> instance is initialized with the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Scheme</codeEntityReference> property set to <parameterReference>schemeName</parameterReference>, the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Host</codeEntityReference> property set to <parameterReference>hostName</parameterReference>, and the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Port</codeEntityReference> property set to <parameterReference>portNumber</parameterReference>. The <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Path</codeEntityReference> property is set to the slash character (/).</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> instance that contains the URI http://www.contoso.com:8080/.</para>
+                <codeReference>Classic UriBuilder.UriBuilder4 Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.UriBuilder.#ctor(System.String,System.String,System.Int32,System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> class with the specified scheme, host, port number, and path.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>scheme</parameterReference>
+            <content>
+              <para>An Internet access protocol. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>host</parameterReference>
+            <content>
+              <para>A DNS-style domain name or IP address. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>port</parameterReference>
+            <content>
+              <para>An IP port number for the service. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>pathValue</parameterReference>
+            <content>
+              <para>The path to the Internet resource. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>port</parameterReference> is less than 0. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> instance is initialized with the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Scheme</codeEntityReference> property set to <parameterReference>schemeName</parameterReference>, the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Host</codeEntityReference> property set to <parameterReference>hostName</parameterReference>, the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Port</codeEntityReference> property set to <parameterReference>portNumber</parameterReference> and the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Path</codeEntityReference> property set to <parameterReference>pathValue</parameterReference>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> instance that contains the URI http://www.contoso.com:8080/index.htm.</para>
+                <codeReference>Classic UriBuilder.UriBuilder5 Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.UriBuilder.#ctor(System.String,System.String,System.Int32,System.String,System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> class with the specified scheme, host, port number, path and query string or fragment identifier.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>scheme</parameterReference>
+            <content>
+              <para>An Internet access protocol. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>host</parameterReference>
+            <content>
+              <para>A DNS-style domain name or IP address. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>port</parameterReference>
+            <content>
+              <para>An IP port number for the service. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>path</parameterReference>
+            <content>
+              <para>The path to the Internet resource. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>extraValue</parameterReference>
+            <content>
+              <para>A query string or fragment identifier. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>extraValue</parameterReference> is neither <languageKeyword>null</languageKeyword> nor <codeEntityReference autoUpgrade="true">F:System.String.Empty</codeEntityReference>, nor does a valid fragment identifier begin with a number sign (#), nor a valid query string begin with a question mark (?). </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>port</parameterReference> is less than 0. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> instance is initialized with the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Scheme</codeEntityReference> property set to <parameterReference>schemeName</parameterReference>, the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Host</codeEntityReference> property set to <parameterReference>hostName</parameterReference>, the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Port</codeEntityReference> property set to <parameterReference>portNumber</parameterReference>, and the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Path</codeEntityReference> property is set to <parameterReference>pathValue</parameterReference>. If <parameterReference>extraValue</parameterReference> begins with a number sign (#), then <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Fragment</codeEntityReference> is set to <parameterReference>extraValue</parameterReference>. If <parameterReference>extraValue</parameterReference> begins with a question mark (?), then <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Query</codeEntityReference> is set to <parameterReference>extraValue</parameterReference>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> instance that contains the URI http://www.contoso.com:8080/index.htm#top.</para>
+                <codeReference>Classic UriBuilder.UriBuilder6 Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.UriBuilder.#ctor(System.Uri)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> class with the specified <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>uri</parameterReference>
+            <content>
+              <para>An instance of the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> class. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.NullReferenceException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>uri</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This constructor initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> class with the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Fragment</codeEntityReference>, <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Host</codeEntityReference>, <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Path</codeEntityReference>, <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Port</codeEntityReference>, <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Query</codeEntityReference>, <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Scheme</codeEntityReference>, and <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Uri</codeEntityReference> properties set as specified in <parameterReference>uri</parameterReference>.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.UriBuilder.Equals(System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Compares an existing <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance with the contents of the <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> for equality.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>rparam</parameterReference>
+            <content>
+              <para>The object to compare with the current instance. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>rparam</parameterReference> represents the same <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> as the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> constructed by this <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> instance; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.UriBuilder.Equals(System.Object)</codeEntityReference> method compares a specified <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance with the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance built by the <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> instance. If the two are the same, the <codeEntityReference autoUpgrade="true">M:System.UriBuilder.Equals(System.Object)</codeEntityReference> method returns <languageKeyword>true</languageKeyword>.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.UriBuilder.Fragment">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets the fragment portion of the URI.</para>
+        </summary>
+        <returnValue>
+          <para>The fragment portion of the URI. The fragment identifier ("#") is added to the beginning of the fragment.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Fragment</codeEntityReference> property contains any text following a fragment marker (#) in the URI, including the marker itself. When setting the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Fragment</codeEntityReference> property, the fragment marker is added to its value. <embeddedLabel>Note</embeddedLabel>   In version 1.0 and 1.1 of the .NET Framework, setting the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Fragment</codeEntityReference> property to any value, including <languageKeyword>null</languageKeyword>, cleared the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Query</codeEntityReference> property, and setting the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Fragment</codeEntityReference> property to <languageKeyword>null</languageKeyword> or to <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.String.Empty</codeEntityReference> cleared the property. In version 2.0, however, the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Fragment</codeEntityReference> and <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Query</codeEntityReference> properties are independent.</para>
+            <para>
+              <embeddedLabel>Note</embeddedLabel>   Do not append a string directly to this property. If the length of <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Fragment</codeEntityReference> is greater than 1, retrieve the property value as a string, remove the leading pound sign, append the new query string, and set the property with the combined string.</para>
+            <para>
+            </para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates the URI "http://www.contoso.com/index.htm#main".</para>
+                <codeReference>Classic UriBuilder.Fragment Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.UriBuilder.GetHashCode">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the hash code for the URI.</para>
+        </summary>
+        <returnValue>
+          <para>The hash code generated for the URI.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The hash code is generated without including any fragment. The URIs http://www.contoso.com/index.htm#search and http://www.contoso.com/index.htm generate the same hash code.</para>
+            <para>The hash codes for <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> A and B are guaranteed to be the same when A.Equals(B) is <languageKeyword>true</languageKeyword>.</para>
+            <para>This method implements <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Object.GetHashCode</codeEntityReference>.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.UriBuilder.Host">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets the Domain Name System (DNS) host name or IP address of a server.</para>
+        </summary>
+        <returnValue>
+          <para>The DNS host name or IP address of the server.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Host</codeEntityReference> property contains the fully qualified DNS host name or IP address of the server.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.UriBuilder.Password">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets the password associated with the user that accesses the URI.</para>
+        </summary>
+        <returnValue>
+          <para>The password of the user that accesses the URI.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="P:System.UriBuilder.Path">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets the path to the resource referenced by the URI.</para>
+        </summary>
+        <returnValue>
+          <para>The path to the resource referenced by the URI.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Path</codeEntityReference> property contains the path information that the server uses to resolve requests for information. Typically this is the path to the desired information on the server's file system; although it also can indicate the application or script that the server must run to provide the information.</para>
+            <para>The path information does not include the scheme, host name, or query portion of the URI. The <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Path</codeEntityReference> property always returns at least a slash (/).</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.UriBuilder.Port">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets the port number of the URI.</para>
+        </summary>
+        <returnValue>
+          <para>The port number of the URI.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The port number defines the protocol port for contacting the server referenced in the URI. If a port is not specified as part of the URI, the <codeEntityReference autoUpgrade="true">P:System.Uri.Port</codeEntityReference> property returns the value -1 to indicate that the server uses the default value for the protocol.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.UriBuilder.Query">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets any query information included in the URI.</para>
+        </summary>
+        <returnValue>
+          <para>The query information included in the URI.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.Uri.Query</codeEntityReference> property contains any query information included in the URI. Query information is separated from the path information by a question mark (?) and continues to the end of the URI. The query information returned includes the leading question mark.</para>
+            <para>The query information is escaped according to RFC 2396.</para>
+            <para>
+              <embeddedLabel>Note</embeddedLabel>   In version 1.0 and 1.1 of the .NET Framework, setting the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Fragment</codeEntityReference> property to any value, including <languageKeyword>null</languageKeyword>, cleared the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Query</codeEntityReference> property, and setting the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Fragment</codeEntityReference> property to <languageKeyword>null</languageKeyword> or to <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.String.Empty</codeEntityReference> cleared the property. In version 2.0, however, the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Fragment</codeEntityReference> and <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Query</codeEntityReference> properties are independent.</para>
+            <para>
+              <embeddedLabel>Note</embeddedLabel>   Do not append a string directly to this property. If the length of <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Query</codeEntityReference> is greater than 1, retrieve the property value as a string, remove the leading question mark, append the new query string, and set the property with the combined string.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example sets the <codeEntityReference autoUpgrade="true">P:System.Uri.Query</codeEntityReference> property.</para>
+                <codeReference>UriBuilderSample#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.UriBuilder.Scheme">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets the scheme name of the URI.</para>
+        </summary>
+        <returnValue>
+          <para>The scheme of the URI.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The following table lists the valid scheme names for the <codeEntityReference autoUpgrade="true">P:System.Uri.Scheme</codeEntityReference> property.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Scheme </para>
+                  </entry>
+                  <entry>
+                    <para>Description </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>file </para>
+                </entry>
+                <entry>
+                  <para>The resource is a file on the local computer. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>ftp </para>
+                </entry>
+                <entry>
+                  <para>The resource is accessed through FTP. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>gopher </para>
+                </entry>
+                <entry>
+                  <para>The resource is accessed through the Gopher protocol. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>http </para>
+                </entry>
+                <entry>
+                  <para>The resource is accessed through HTTP. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>https </para>
+                </entry>
+                <entry>
+                  <para>The resource is accessed through SSL-encrypted HTTP. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>mailto </para>
+                </entry>
+                <entry>
+                  <para>The resource is an e-mail address and is accessed through SMTP. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>news </para>
+                </entry>
+                <entry>
+                  <para>The resource is accessed through NNTP. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.UriBuilder.ToString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the display string for the specified <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> instance.</para>
+        </summary>
+        <returnValue>
+          <para>The string that contains the unescaped display string of the <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference>.</para>
+          <para>
+          </para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The display string always contains the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Port</codeEntityReference> property value, even if it is the default port for the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Scheme</codeEntityReference>. The string returned by the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Uri.ToString</codeEntityReference> method only contains the port if it is not the default port for the scheme.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.UriBuilder.Uri">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance constructed by the specified <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> instance.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> that contains the URI constructed by the <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference>
+            <content>
+              <para>The URI constructed by the <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> properties is invalid. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Uri</codeEntityReference> property contains the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> created by the <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference>. Any changes made to the <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> properties are reflected in the <codeEntityReference autoUpgrade="true">P:System.UriBuilder.Uri</codeEntityReference> property.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.UriBuilder.UserName">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The user name associated with the user that accesses the URI.</para>
+        </summary>
+        <returnValue>
+          <para>The user name of the user that accesses the URI.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+  </members>
+</doc>

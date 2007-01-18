@@ -97,7 +97,7 @@ namespace Axiom.Fonts
         protected float[] texCoordV2 = new float[ END_CHAR - START_CHAR ];
         protected float[] aspectRatio = new float[ END_CHAR - START_CHAR ];
 
-        protected bool showLines = false;
+        protected bool showLines; //defaults to false
 
         #endregion
 

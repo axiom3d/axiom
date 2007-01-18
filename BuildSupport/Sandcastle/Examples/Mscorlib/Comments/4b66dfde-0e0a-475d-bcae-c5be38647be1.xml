@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="4b66dfde-0e0a-475d-bcae-c5be38647be1" revisionNumber="1">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.DayOfWeek">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Specifies the day of the week.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.DayOfWeek</codeEntityReference> enumeration represents the day of the week in calendars that have seven days per week. This enumeration ranges from zero, indicating Sunday, to six, indicating Saturday.</para>
+            <para>This enumeration is useful when it is desirable to have a strongly typed specification of the day of the week. For example, this enumeration is the type of the property value for the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.DateTime.DayOfWeek</codeEntityReference> property.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example demonstrates the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.DateTime.DayOfWeek</codeEntityReference> property and the <codeEntityReference autoUpgrade="true">T:System.DayOfWeek</codeEntityReference> enumeration.</para>
+                <codeReference>DateTime.DayOfWeek#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="F:System.DayOfWeek.Friday">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates Friday.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.DayOfWeek.Monday">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates Monday.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.DayOfWeek.Saturday">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates Saturday.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.DayOfWeek.Sunday">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates Sunday.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.DayOfWeek.Thursday">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates Thursday.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.DayOfWeek.Tuesday">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates Tuesday.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.DayOfWeek.Wednesday">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates Wednesday.</para>
+        </summary>
+      </dduexml>
+    </member>
+  </members>
+</doc>

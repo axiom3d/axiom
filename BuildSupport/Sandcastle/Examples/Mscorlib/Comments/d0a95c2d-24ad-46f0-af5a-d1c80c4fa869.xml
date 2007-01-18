@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="d0a95c2d-24ad-46f0-af5a-d1c80c4fa869" revisionNumber="3">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.ICustomFormatter">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Defines a method that supports custom, user-defined formatting of the value of an object.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>When this interface is implemented by a reference or value type, the <codeEntityReference autoUpgrade="true">M:System.ICustomFormatter.Format(System.String,System.Object,System.IFormatProvider)</codeEntityReference> method returns a custom-formatted string representation of an object's value.</para>
+            <para>Use this interface, and the <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> interface, to supersede the support supplied in .NET Framework formatting methods that honor an <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> parameter. For example, use this interface to provide custom formatting of the value of an object by the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.String.Format(System.String,System.Object)</codeEntityReference> or <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Int32.ToString</codeEntityReference> methods.</para>
+            <para>Derive a class that implements the <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> interface and its <codeEntityReference autoUpgrade="true">M:System.IFormatProvider.GetFormat(System.Type)</codeEntityReference> method. Specify that derived class for the <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> parameter of the method you want to supersede. Your implementation of the <codeEntityReference autoUpgrade="true">M:System.IFormatProvider.GetFormat(System.Type)</codeEntityReference> method should return a format object that implements the <codeEntityReference autoUpgrade="true">T:System.ICustomFormatter</codeEntityReference> interface. The .NET Framework method will then use your custom formatting instead of its own.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.ICustomFormatter.Format(System.String,System.Object,System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of a specified object to an equivalent string representation using specified format and culture-specific formatting information.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>format</parameterReference>
+            <content>
+              <para>A format string containing formatting specifications. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>arg</parameterReference>
+            <content>
+              <para>An object to format. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>formatProvider</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> object that supplies format information about the current instance. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The string representation of the value of <parameterReference>arg</parameterReference>, formatted as specified by <parameterReference>format</parameterReference> and <parameterReference>formatProvider</parameterReference>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <parameterReference>format</parameterReference> parameter contains a user-defined formatting specification. For more information about standard .NET Framework formatting specifications, see <link xlink:href="0D1364DA-5B30-4D42-8E6B-03378343343F">[&lt;topic://cpConFormattingOverview&gt;]</link>.</para>
+            <para>If <parameterReference>format</parameterReference> is <languageKeyword>null</languageKeyword>, use the default format specification of your choice. If <parameterReference>formatProvider</parameterReference> is <languageKeyword>null</languageKeyword>, ignore that parameter.</para>
+            <para>Your implementation of the <codeEntityReference autoUpgrade="true">M:System.ICustomFormatter.Format(System.String,System.Object,System.IFormatProvider)</codeEntityReference> method must include the following functionality so the .NET Framework can provide formatting you do not support. If your format method does not support a format, determine whether the object being formatted implements the <codeEntityReference autoUpgrade="true">T:System.IFormattable</codeEntityReference> interface. If it does, invoke the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.IFormattable.ToString(System.String,System.IFormatProvider)</codeEntityReference> method of that interface. Otherwise, invoke the default <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Object.ToString</codeEntityReference> method of the underlying object.</para>
+            <para>Here is a fragment of C# code that demonstrates this pattern for object <parameterReference>arg</parameterReference>, format <parameterReference>format</parameterReference>, format provider <parameterReference>formatProvider</parameterReference>, and return value, s.</para>
+            <code>if (arg is IFormattable) s = ((IFormattable)arg).ToString(format, formatProvider);
+else if (arg != null) s = arg.ToString();</code>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.IFormattable</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

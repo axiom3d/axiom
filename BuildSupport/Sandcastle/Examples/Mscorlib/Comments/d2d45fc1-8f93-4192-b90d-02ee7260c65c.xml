@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="d2d45fc1-8f93-4192-b90d-02ee7260c65c" revisionNumber="5">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.IntPtr">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>A platform-specific type that is used to represent a pointer or a handle.</para>
+        </summary>
+        <threadSafety>
+          <para>This type is safe for multithreaded operations.</para>
+        </threadSafety>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> type is designed to be an integer whose size is platform-specific. That is, an instance of this type is expected to be 32-bits on 32-bit hardware and operating systems, and 64-bits on 64-bit hardware and operating systems.</para>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> type can be used by languages that support pointers, and as a common means of referring to data between languages that do and do not support pointers.</para>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> objects can also be used to hold handles. For example, instances of <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> are used extensively in the <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.IO.FileStream</codeEntityReference> class to hold file handles.</para>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> type is CLS-compliant, while the <codeEntityReference autoUpgrade="true">T:System.UIntPtr</codeEntityReference> type is not. Only the <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> type is used in the common language runtime. The <codeEntityReference autoUpgrade="true">T:System.UIntPtr</codeEntityReference> type is provided mostly to maintain architectural symmetry with the <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> type.</para>
+            <para>This type implements the <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.ISerializable</codeEntityReference> interface.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.UIntPtr</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.IntPtr.#ctor(System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> using the specified 32-bit pointer or handle.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>A pointer or handle contained in a 32-bit signed integer. </para>
+            </content>
+          </parameter>
+        </parameters>
+      <overload>
+        <summary>
+          <para>Initializes a new instance of <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference>.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.IntPtr.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference>.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.IntPtr.#ctor(System.Int64)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> using the specified 64-bit pointer.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>A pointer or handle contained in a 64-bit signed integer. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.OverflowException</codeEntityReference>
+            <content>
+              <para>On a 32-bit platform, <parameterReference>value</parameterReference> is too large or too small to represent as an <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>An exception is only thrown if the value of <parameterReference>value</parameterReference> requires more bits than the current platform supports.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.IntPtr.#ctor(System.Void*)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> using the specified pointer to an unspecified type.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>A pointer to an unspecified type. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Void</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.IntPtr.Equals(System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a value indicating whether this instance is equal to a specified object.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>obj</parameterReference>
+            <content>
+              <para>An object to compare with this instance or <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>obj</parameterReference> is an instance of <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> and equals the value of this instance; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.IntPtr.GetHashCode">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the hash code for this instance.</para>
+        </summary>
+        <returnValue>
+          <para>A 32-bit signed integer hash code.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.IntPtr.op_Equality(System.IntPtr,System.IntPtr)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <equivalentCodeEntity>
+          <codeEntityReference>M:System.IntPtr.Equals(System.Object)</codeEntityReference>
+          <content>
+          </content>
+        </equivalentCodeEntity>
+        <summary>
+          <para>Determines whether two specified instances of <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> are equal.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value1</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>value2</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>value1</parameterReference> equals <parameterReference>value2</parameterReference>; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="Overload:System.IntPtr.op_Explicit">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts a specified data type to an <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> value, or an <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> value to a specified data type.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.IntPtr.op_Explicit(System.Int32)~System.IntPtr">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of a 32-bit signed integer to an <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference>.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>A 32-bit signed integer. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A new instance of <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> initialized to <parameterReference>value</parameterReference>.</para>
+        </returnValue>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">Overload:System.IntPtr.#ctor</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Converts a specified data type to an <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> value, or an <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> value to a specified data type.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.IntPtr.op_Explicit(System.Int64)~System.IntPtr">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of a 64-bit signed integer to an <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference>.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>A 64-bit signed integer. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A new instance of <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> initialized to <parameterReference>value</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.OverflowException</codeEntityReference>
+            <content>
+              <para>On a 32-bit platform, <parameterReference>value</parameterReference> is too large to represent as an <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">Overload:System.IntPtr.#ctor</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.IntPtr.op_Explicit(System.IntPtr)~System.Int32">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of the specified <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> to a 32-bit signed integer.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The contents of <parameterReference>value</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.OverflowException</codeEntityReference>
+            <content>
+              <para>On a 64-bit platform, the value of <parameterReference>value</parameterReference> is too large to represent as a 32-bit signed integer. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>An exception is only thrown if the value of <parameterReference>value</parameterReference> requires more bits than the current platform supports.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.IntPtr.ToInt32</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.IntPtr.op_Explicit(System.IntPtr)~System.Int64">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of the specified <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> to a 64-bit signed integer.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The contents of <parameterReference>value</parameterReference>.</para>
+        </returnValue>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.IntPtr.ToInt64</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.IntPtr.op_Explicit(System.IntPtr)~System.Void*">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of the specified <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> to a pointer to an unspecified type.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The contents of <parameterReference>value</parameterReference>.</para>
+        </returnValue>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.IntPtr.ToPointer</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.IntPtr.op_Explicit(System.Void*)~System.IntPtr">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the specified pointer to an unspecified type to an <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference>.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>A pointer to an unspecified type. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A new instance of <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> initialized to <parameterReference>value</parameterReference>.</para>
+        </returnValue>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">Overload:System.IntPtr.#ctor</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.IntPtr.op_Inequality(System.IntPtr,System.IntPtr)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <equivalentCodeEntity>
+          <codeEntityReference>M:System.IntPtr.Equals(System.Object)</codeEntityReference>
+          <content>
+          </content>
+        </equivalentCodeEntity>
+        <summary>
+          <para>Determines whether two specified instances of <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> are not equal.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value1</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>value2</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>value1</parameterReference> does not equal <parameterReference>value2</parameterReference>; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="P:System.IntPtr.Size">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the size of this instance.</para>
+        </summary>
+        <returnValue>
+          <para>The size of a pointer or handle on this platform, measured in bytes. The value of this property is 4 on a 32-bit platform, and 8 on a 64-bit platform.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.IntPtr.ToInt32">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of this instance to a 32-bit signed integer.</para>
+        </summary>
+        <returnValue>
+          <para>A 32-bit signed integer equal to the value of this instance.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.OverflowException</codeEntityReference>
+            <content>
+              <para>On a 64-bit platform, the value of this instance is too large or too small to represent as a 32-bit signed integer. </para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.IntPtr.ToInt64">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of this instance to a 64-bit signed integer.</para>
+        </summary>
+        <returnValue>
+          <para>A 64-bit signed integer equal to the value of this instance.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.IntPtr.ToPointer">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of this instance to a pointer to an unspecified type.</para>
+        </summary>
+        <returnValue>
+          <para>A pointer to <codeEntityReference autoUpgrade="true">T:System.Void</codeEntityReference>; that is, a pointer to memory containing data of an unspecified type.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="Overload:System.IntPtr.ToString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the numeric value of the current <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> object to its equivalent string representation.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.IntPtr.ToString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the numeric value of the current <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> object to its equivalent string representation.</para>
+        </summary>
+        <returnValue>
+          <para>The string representation of the value of this instance.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>If the value of the <codeEntityReference autoUpgrade="true">P:System.IntPtr.Size</codeEntityReference> property for this instance is 4, then this method is equivalent to <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Int32.ToString</codeEntityReference>; otherwise, this method is equivalent to <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Int64.ToString</codeEntityReference>.</para>
+          </content>
+        </remarks>
+      <overload>
+        <summary>
+          <para>Converts the numeric value of the current <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> object to its equivalent string representation.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.IntPtr.ToString(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the numeric value of the current <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> object to its equivalent string representation.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>format</parameterReference>
+            <content>
+              <para>A format specification that governs how the current <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> object is converted. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The string representation of the value of the current <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> object.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>If the <parameterReference>format</parameterReference> parameter is <languageKeyword>null</languageKeyword> or an empty string (""), the return value is formatted with the general format specifier ("G"). For more information about numeric format specifiers, see the <link xlink:href="580e57eb-ac47-4ffd-bccd-3a1637c2f467">Standard Numeric Format Strings</link> topic. </para>
+            <para>The return value is formatted using the invariant culture. </para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">P:System.Globalization.CultureInfo.InvariantCulture</codeEntityReference>
+          <link xlink:href="fb83d6ff-12fd-4837-ad19-16a2515de030">Numeric Format Strings</link>
+          <link xlink:href="0d1364da-5b30-4d42-8e6b-03378343343f">Formatting Overview</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="F:System.IntPtr.Zero">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>A read-only field that represents a pointer or handle that has been initialized to zero.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The value of this field is not equivalent to <languageKeyword>null</languageKeyword>. Use this field to efficiently determine whether an instance of <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> has been set to a value other than zero.</para>
+            <para>For example, assume the variable, ip, is an instance of <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference>. You can determine if it has been set by comparing it to the value returned by a constructor, for example: " <codeInline>if ip != new IntPtr(0)...</codeInline> ". However, invoking a constructor to get an unintialized pointer is inefficient. It is better to code either " <codeInline>if ip != IntPtr.Zero...</codeInline> ", or " <codeInline>if !IntPtr.Zero.Equals(ip)...</codeInline> ".</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.IntPtr.System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Populates a <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference> object with the data needed to serialize the current <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> object.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>info</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference> object to populate with data. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>context</parameterReference>
+            <content>
+              <para>The destination for this serialization. (This parameter is not used; specify <languageKeyword>null</languageKeyword>.)</para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>info </parameterReference>is <languageKeyword>null</languageKeyword>.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.IntPtr.System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)</codeEntityReference> method populates the <parameterReference>info</parameterReference> parameter with the value of the current <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference> object.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+  </members>
+</doc>

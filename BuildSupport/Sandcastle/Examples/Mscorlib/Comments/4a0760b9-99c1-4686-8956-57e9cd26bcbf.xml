@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="4a0760b9-99c1-4686-8956-57e9cd26bcbf" revisionNumber="6">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.AccessViolationException">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The exception that is thrown when there is an attempt to read or write protected memory.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>An access violation occurs in unmanaged or unsafe code when the code attempts to read or write to memory that has not been allocated, or to which it does not have access. This usually occurs because a pointer has a bad value. Not all reads or writes through bad pointers lead to access violations, so an access violation usually indicates that several reads or writes have occurred through bad pointers, and that memory might be corrupted. Thus, access violations almost always indicate serious programming errors. In the .NET Framework version 2.0, an <codeEntityReference autoUpgrade="true">T:System.AccessViolationException</codeEntityReference> clearly identifies these serious errors.</para>
+            <para>In programs consisting entirely of verifiable managed code, all references are either valid or null, and access violations are impossible. An <codeEntityReference autoUpgrade="true">T:System.AccessViolationException</codeEntityReference> occurs only when verifiable managed code interacts with unmanaged code or with unsafe managed code.</para>
+          </content>
+          <sections>
+            <section>
+              <title>Version Information</title>
+              <content>
+                <para>This exception is new in the .NET Framework version 2.0. In earlier versions of the .NET Framework, an access violation in unmanaged code or unsafe managed code is represented by a <codeEntityReference autoUpgrade="true">T:System.NullReferenceException</codeEntityReference> in managed code. A <codeEntityReference autoUpgrade="true">T:System.NullReferenceException</codeEntityReference> is also thrown when a null reference is dereferenced in verifiable managed code, an occurrence that does not involve data corruption, and there is no way to distinguish between the two situations in versions 1.0 or 1.1.</para>
+                <para>Administrators can allow selected applications to revert to the behavior of the .NET Framework version 1.1. Place the following line in the <link xlink:href="1eb2fae3-de4b-45b6-852f-517c39b751bd">&lt;runtime&gt; Element</link> section of the configuration file for the application:</para>
+                <code>&lt;legacyNullReferenceExceptionPolicy enabled = "1"/&gt;</code>
+              </content>
+            </section>
+          </sections>
+        </remarks>
+        <relatedTopics>
+          <link xlink:href="f99a1d29-a2a8-47af-9707-9909f9010735">Handling and Throwing Exceptions</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.AccessViolationException.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.AccessViolationException</codeEntityReference> class.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.AccessViolationException.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.AccessViolationException</codeEntityReference> class with a system-supplied message that describes the error.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>This constructor initializes the <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference> property of the new instance to a system-supplied message that describes the error, such as "Attempted to read or write protected memory. This is often an indication that other memory has been corrupted." This message takes into account the current system culture.</para>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.AccessViolationException</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>
+                    <languageKeyword>null</languageKeyword>. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The localized error message string. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <link xlink:href="f99a1d29-a2a8-47af-9707-9909f9010735">Handling and Throwing Exceptions</link>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.AccessViolationException</codeEntityReference> class.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.AccessViolationException.#ctor(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.AccessViolationException</codeEntityReference> class with a specified message that describes the error.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>message</parameterReference>
+            <content>
+              <para>The message that describes the exception. The caller of this constructor is required to ensure that this string has been localized for the current system culture.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.AccessViolationException</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>
+                    <languageKeyword>null</languageKeyword>. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The error message string specified in <parameterReference>message</parameterReference>. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <link xlink:href="f99a1d29-a2a8-47af-9707-9909f9010735">Handling and Throwing Exceptions</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.AccessViolationException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.AccessViolationException</codeEntityReference> class with serialized data.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>info</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference> that holds the serialized object data. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>context</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.StreamingContext</codeEntityReference> that contains contextual information about the source or destination. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>This constructor is called during deserialization to reconstitute the exception object transmitted over a stream. For more information, see <link xlink:href="832ac524-21bc-419a-a27b-ca8bfc45840f">XML and SOAP Serialization</link>.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <link xlink:href="832ac524-21bc-419a-a27b-ca8bfc45840f">XML and SOAP Serialization</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.AccessViolationException.#ctor(System.String,System.Exception)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.AccessViolationException</codeEntityReference> class with a specified error message and a reference to the inner exception that is the cause of this exception.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>message</parameterReference>
+            <content>
+              <para>The message that describes the exception. The caller of this constructor is required to ensure that this string has been localized for the current system culture. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>innerException</parameterReference>
+            <content>
+              <para>The exception that is the cause of the current exception. If the <parameterReference>innerException</parameterReference> parameter is not <languageKeyword>null</languageKeyword>, the current exception is raised in a <languageKeyword>catch</languageKeyword> block that handles the inner exception. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>An exception that is thrown as a direct result of a previous exception should include a reference to the previous exception in the <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property. The <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property returns the same value that is passed into the constructor, or <languageKeyword>null</languageKeyword> if the <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property does not supply the inner exception value to the constructor.</para>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.AccessViolationException</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>
+                    <languageKeyword>null</languageKeyword>. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The error message string specified in <parameterReference>message</parameterReference>. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <link xlink:href="f99a1d29-a2a8-47af-9707-9909f9010735">Handling and Throwing Exceptions</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>
