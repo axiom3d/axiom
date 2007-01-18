@@ -136,6 +136,38 @@
 
 		<?endif ?>
 
+		<Project name="Axiom.RenderSystems.Xna" type="Library" path="Source/RenderSystems/Xna" language="C#" runtime="Microsoft" >
+			<Configuration name="Debug">
+				<Options>
+					<OutputPath>../../../../../Lib/Managed/XPlatform/Axiom/debug</OutputPath>
+					<XmlDocFile>../../../../../Lib/Managed/XPlatform/Axiom/debug/Axiom.RenderSystems.Xna.xml</XmlDocFile>
+					<AllowUnsafe>true</AllowUnsafe>
+				</Options>
+			</Configuration>
+			<Configuration name="Release">
+				<Options>
+					<OutputPath>../../../../../Lib/Managed/XPlatform/Axiom/release</OutputPath>
+					<XmlDocFile>../../../../../Lib/Managed/XPlatform/Axiom/release/Axiom.RenderSystems.Xna.xml</XmlDocFile>
+					<AllowUnsafe>true</AllowUnsafe>
+				</Options>
+			</Configuration>
+
+
+			<Reference name="System" />
+			<Reference name="System.Data" />
+			<Reference name="System.Drawing" />
+			<Reference name="System.Windows.Forms" />
+			<Reference name="System.Xml" />
+			<Reference name="Microsoft.Xna.Framework" />
+			<Reference name="Axiom" localCopy="true"/>
+
+			<Files>
+				<Match pattern="*.cs" path="." recurse="true"/>
+				<Match pattern="GlobalAssemblyInfo.cs" path="../../" link="true" />
+				<Match pattern="Axiom.RenderSystems.Xna.build" path="" buildAction="None" copyToOutput="Never" />
+			</Files>
+		</Project>
+
 		<Project name="Axiom.Platforms.SDL" type="Library" path="Source/Platforms/SDL" language="C#" runtime="Microsoft" >
 			<Configuration name="Debug">
 				<Options>
