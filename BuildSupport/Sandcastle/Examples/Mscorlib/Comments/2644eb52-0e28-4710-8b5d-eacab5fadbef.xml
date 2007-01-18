@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="2644eb52-0e28-4710-8b5d-eacab5fadbef" revisionNumber="19">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.Nullable`1">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <clsCompliantAlternative>
+          <codeEntityReference>T:System.Nullable</codeEntityReference>
+          <content>
+          </content>
+        </clsCompliantAlternative>
+        <summary>
+          <para>Represents an object whose underlying type is a value type that can also be assigned <languageKeyword>null</languageKeyword> like a reference type.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>A type is said to be nullable if it can be assigned a value or can be assigned <languageKeyword>null</languageKeyword>, which means the type has no value whatsoever. Consequently, a nullable type can express a value, or that no value exists. For example, a reference type such as <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> is nullable, whereas a value type such as <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference> is not. A value type cannot be nullable because it has enough capacity to express only the values appropriate for that type; it does not have the additional capacity required to express a value of null. </para>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> structure supports using only a value type as a nullable type because reference types are nullable by design. </para>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.Nullable</codeEntityReference> class provides complementary support for the <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> structure. The <codeEntityReference autoUpgrade="true">T:System.Nullable</codeEntityReference> class supports obtaining the underlying type of a nullable type, and comparison and equality operations on pairs of nullable types whose underlying value type does not support generic comparison and equality operations.</para>
+          </content>
+          <sections>
+            <section>
+              <title>Scenario</title>
+              <content>
+                <para>Use nullable types to represent things that exist or do not exist depending on the circumstance. For example, an optional attribute of an HTML tag might exist in one tag but not another, or a nullable column of a database table might exist in one row of the table but not another. </para>
+                <para>You can represent the attribute or column as a field in a class and you can define the field as a value type. The field can contain all the valid values for the attribute or column, but cannot accommodate an additional value that means the attribute or column does not exist. In this case, define the field to be a nullable type instead of a value type.</para>
+              </content>
+            </section>
+            <section>
+              <title>Fundamental Properties</title>
+              <content>
+                <para>The two fundamental members of the <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> structure are the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> and <codeEntityReference autoUpgrade="true">P:System.Nullable`1.Value</codeEntityReference> properties. If the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property for a <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object is <languageKeyword>true</languageKeyword>, the value of the object can be accessed with the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.Value</codeEntityReference> property. If the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property is <languageKeyword>false</languageKeyword>, the value of the object is undefined and an attempt to access the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.Value</codeEntityReference> property throws an <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>. </para>
+              </content>
+            </section>
+            <section>
+              <title>Boxing and Unboxing</title>
+              <content>
+                <para>When a nullable type is boxed, the common language runtime automatically boxes the underlying value of the <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object, not the <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object itself. That is, if the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property is <languageKeyword>true</languageKeyword>, the contents of the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.Value</codeEntityReference> property is boxed. If the <languageKeyword>HasValue</languageKeyword> property is <languageKeyword>false</languageKeyword>, <languageKeyword>null</languageKeyword> is boxed. When the underlying value of a nullable type is unboxed, the common language runtime creates a new <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> structure initialized to the underlying value. </para>
+              </content>
+            </section>
+          </sections>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example defines three rows of a table in the Microsoft Pubs sample database. The table contains two columns that are not nullable and two columns that are nullable.</para>
+                <codeReference>system.nullableOfT.class#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Nullable</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Nullable`1.#ctor(`0)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> structure to the specified value. </para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>A value type.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.Nullable`1.#ctor(`0)</codeEntityReference> constructor initializes the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property of the new <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object to <languageKeyword>true</languageKeyword>, and the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.Value</codeEntityReference> property to the value of the <parameterReference>value</parameterReference> parameter.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Nullable`1.Equals">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether a <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> value is equal to another object.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Nullable`1.Equals(System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the current <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object is equal to a specified object.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>other</parameterReference>
+            <content>
+              <para>An object.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the <parameterReference>other</parameterReference> parameter is equal to the current <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object; otherwise, <languageKeyword>false</languageKeyword>. </para>
+          <para>This table describes how equality is defined for the compared values: </para>
+          <table>
+            <tableHeader>
+              <row>
+                <entry>
+                  <para>Return Value</para>
+                </entry>
+                <entry>
+                  <para>Description</para>
+                </entry>
+              </row>
+            </tableHeader>
+            <row>
+              <entry>
+                <para>
+                  <languageKeyword>true</languageKeyword>
+                </para>
+              </entry>
+              <entry>
+                <para>The <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property is <languageKeyword>false</languageKeyword>, and the <parameterReference>other</parameterReference> parameter is <languageKeyword>null</languageKeyword>. That is, two null values are equal by definition.</para>
+                <para>-or-</para>
+                <para>The <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property is <languageKeyword>true</languageKeyword>, and the value returned by the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.Value</codeEntityReference> property is equal to the <parameterReference>other</parameterReference> parameter.</para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>
+                  <languageKeyword>false</languageKeyword>
+                </para>
+              </entry>
+              <entry>
+                <para>The <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property for the current <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> structure is <languageKeyword>true</languageKeyword>, and the <parameterReference>other</parameterReference> parameter is <languageKeyword>null</languageKeyword>.</para>
+                <para>-or-</para>
+                <para>The <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property for the current <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> structure is <languageKeyword>false</languageKeyword>, and the <parameterReference>other</parameterReference> parameter is not <languageKeyword>null</languageKeyword>.</para>
+                <para>-or-</para>
+                <para>The <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property for the current <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> structure is <languageKeyword>true</languageKeyword>, and the value returned by the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.Value</codeEntityReference> property is not equal to the <parameterReference>other</parameterReference> parameter.</para>
+              </entry>
+            </row>
+          </table>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>If the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property of the current <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> structure is <languageKeyword>true</languageKeyword>, equality is determined by passing the <parameterReference>other</parameterReference> parameter to the <languageKeyword>Equals</languageKeyword> method of the underlying value of the current <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> structure.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example determines whether an object and a <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object are equal to the current <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object.</para>
+                <codeReference>system.nullableOfT.Equals#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>Indicates whether a <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> value is equal to another object.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Nullable`1.GetHashCode">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Retrieves the hash code of the object returned by the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.Value</codeEntityReference> property.</para>
+        </summary>
+        <returnValue>
+          <para>The hash code of the object returned by the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.Value</codeEntityReference> property if the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property is <languageKeyword>true</languageKeyword>, or zero if the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property is <languageKeyword>false</languageKeyword>. </para>
+        </returnValue>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Nullable`1.GetValueOrDefault">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Retrieves the value of the current <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object, or a default value.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Nullable`1.GetValueOrDefault">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Retrieves the value of the current <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object, or the object's default value.</para>
+        </summary>
+        <returnValue>
+          <para>The value of the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.Value</codeEntityReference> property if the  <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property is <languageKeyword>true</languageKeyword>; otherwise, the default value of the current <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object. The type of the default value is the type argument of the current <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object, and the value of the default value consists solely of binary zeroes.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">Overload:System.Nullable`1.GetValueOrDefault</codeEntityReference> method returns a value even if the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property is <languageKeyword>false</languageKeyword> (unlike the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.Value</codeEntityReference> property, which throws an exception). </para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example retrieves the value of a <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object if that value is defined; otherwise, it retrieves the default value or a specific default value.</para>
+                <codeReference>system.nullableOfT.GetValueOrDefault#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Nullable`1.GetValueOrDefault(`0)</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Retrieves the value of the current <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object, or a default value.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Nullable`1.GetValueOrDefault(`0)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Retrieves the value of the current <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object, or the specified default value.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>defaultValue</parameterReference>
+            <content>
+              <para>A value to return if the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property is <languageKeyword>false</languageKeyword>.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The value of the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.Value</codeEntityReference> property if the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property is <languageKeyword>true</languageKeyword>; otherwise, the <parameterReference>defaultValue</parameterReference> parameter.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">Overload:System.Nullable`1.GetValueOrDefault</codeEntityReference> method returns a value even if the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property is <languageKeyword>false</languageKeyword> (unlike the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.Value</codeEntityReference> property, which throws an exception). </para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example retrieves the value of a <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object if that value is defined; otherwise, it retrieves the default value or a specific default value.</para>
+                <codeReference>system.nullableOfT.GetValueOrDefault#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Nullable`1.GetValueOrDefault</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Nullable`1.op_Explicit(System.Nullable{`0})~`0">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <equivalentCodeEntity>
+          <codeEntityReference>P:System.Nullable`1.Value</codeEntityReference>
+          <content>
+          </content>
+        </equivalentCodeEntity>
+        <summary>
+          <para>Returns the value of a specified <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> value.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> value.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The value of the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.Value</codeEntityReference> property for the <parameterReference>value</parameterReference> parameter.</para>
+        </returnValue>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Nullable`1.op_Implicit(`0)~System.Nullable{`0}">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <equivalentCodeEntity>
+          <codeEntityReference>M:System.Nullable`1.#ctor(`0)</codeEntityReference>
+          <content>
+          </content>
+        </equivalentCodeEntity>
+        <summary>
+          <para>Creates a new <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object initialized to a specified value. </para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>A value type.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object whose <codeEntityReference autoUpgrade="true">P:System.Nullable`1.Value</codeEntityReference> property is initialized with the <parameterReference>value</parameterReference> parameter.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>If the <parameterReference>value</parameterReference> parameter is not <languageKeyword>null</languageKeyword>, the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.Value</codeEntityReference> property of the new <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> value is initialized to the <parameterReference>value</parameterReference> parameter and the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property is initialized to <languageKeyword>true</languageKeyword>. </para>
+            <para>If the <parameterReference>value</parameterReference> parameter is <languageKeyword>null</languageKeyword>, the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.Value</codeEntityReference> property of the new <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> value is initialized to the default value, which is the value that is all binary zeroes, and the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property is initialized to <languageKeyword>false</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Nullable`1.ToString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the text representation of the value of the current <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object.</para>
+        </summary>
+        <returnValue>
+          <para>The text representation of the value of the current <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object if the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property is <languageKeyword>true</languageKeyword>, or an empty string ("") if the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property is <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.Nullable`1.ToString</codeEntityReference> property returns the string yielded by calling the <languageKeyword>ToString</languageKeyword> property of the object returned by the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.Value</codeEntityReference> property. </para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example displays the value of the current <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object.</para>
+                <codeReference>system.nullableOfT.ToString#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.Nullable`1.HasValue">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a value indicating whether the current <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object has a value.</para>
+        </summary>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the current <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object has a value; <languageKeyword>false</languageKeyword> if the current <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object has no value.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>If the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property is <languageKeyword>true</languageKeyword>, the value of the current <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object can be accessed with the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.Value</codeEntityReference> property.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example returns the value of a <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object if that object has a defined value; otherwise, a default value is returned.</para>
+                <codeReference>system.nullableOfT.ValueHasValue#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.Nullable`1.Value">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the value of the current <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> value.</para>
+        </summary>
+        <returnValue>
+          <para>The value of the current <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object if the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property is <languageKeyword>true</languageKeyword>. An exception is thrown if the <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property is <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">P:System.Nullable`1.HasValue</codeEntityReference> property is <languageKeyword>false</languageKeyword>.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example returns the value of a <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object if that object has a defined value; otherwise, a default value is returned.</para>
+                <codeReference>system.nullableOfT.ValueHasValue#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+  </members>
+</doc>

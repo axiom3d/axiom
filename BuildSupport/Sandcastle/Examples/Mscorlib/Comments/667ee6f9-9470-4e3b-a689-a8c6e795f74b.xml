@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="667ee6f9-9470-4e3b-a689-a8c6e795f74b" revisionNumber="6">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.IEquatable`1">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <clsCompliantAlternative>
+          <codeEntityReference>T:System.IComparable</codeEntityReference>
+          <content>
+          </content>
+        </clsCompliantAlternative>
+        <summary>
+          <para>Defines a generalized method that a value type or class implements to create a type-specific method for determining equality of instances.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>This interface is implemented by types whose values can be equated (for example, the numeric and string classes). A value type or class implements the <codeEntityReference autoUpgrade="true">M:System.IEquatable`1.Equals(`0)</codeEntityReference> method to create a type-specific method suitable for determining equality of instances.</para>
+            <alert class="note">
+              <para>The <codeEntityReference autoUpgrade="true">T:System.IComparable`1</codeEntityReference> interface defines the <codeEntityReference autoUpgrade="true">M:System.IComparable`1.CompareTo(`0)</codeEntityReference> method, which determines the sort order of instances of the implementing type. The <codeEntityReference autoUpgrade="true">T:System.IEquatable`1</codeEntityReference> interface defines the <codeEntityReference autoUpgrade="true">M:System.IEquatable`1.Equals(`0)</codeEntityReference> method, which determines the equality of instances of the implementing type.</para>
+            </alert>
+          </content>
+        </remarks>
+        <notesForImplementers>
+          <para>Replace the type parameter of the <codeEntityReference autoUpgrade="true">T:System.IEquatable`1</codeEntityReference> interface with the type that is implementing this interface.</para>
+        </notesForImplementers>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.IComparable`1</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IComparable</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.IEquatable`1.Equals(`0)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the current object is equal to another object of the same type.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>other</parameterReference>
+            <content>
+              <para>An object to compare with this object.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the current object is equal to the <parameterReference>other</parameterReference> parameter; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>When implementing the <codeEntityReference autoUpgrade="true">M:System.IEquatable`1.Equals(`0)</codeEntityReference> method, define equality appropriately for the type specified by the generic type argument. For example, if the type argument is <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference>, define equality appropriately for the comparison of two 32-bit signed integers.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+  </members>
+</doc>

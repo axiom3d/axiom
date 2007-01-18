@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="8b3790eb-14b8-4642-94a4-bdc9dc1c6bc2" revisionNumber="3">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.Action`1">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents the method that performs an action on the specified object.</para>
+        </summary>
+        <genericParameters>
+          <genericParameter>
+            <parameterReference>T</parameterReference>
+            <content>
+              <para>The type of the object.</para>
+            </content>
+          </genericParameter>
+        </genericParameters>
+        <parameters>
+          <parameter>
+            <parameterReference>obj</parameterReference>
+            <content>
+              <para>The object on which to perform an action.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>This delegate is used by the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Array.ForEach``1(``0[],System.Action{``0})</codeEntityReference> method and the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Collections.Generic.List`1.ForEach(System.Action{`0})</codeEntityReference> method to perform an action on each element of the array or list.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+  </members>
+</doc>

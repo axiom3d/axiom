@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="fa971275-22ae-4537-bdfd-a68a1f9b80f6" revisionNumber="9">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.ConsoleCancelEventHandler">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents the method that will handle the <codeEntityReference autoUpgrade="true">E:System.Console.CancelKeyPress</codeEntityReference> event of a <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Console</codeEntityReference>.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>sender</parameterReference>
+            <content>
+              <para>The source of the event. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>e</parameterReference>
+            <content>
+              <para>A <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.ConsoleCancelEventArgs</codeEntityReference> object that contains the event data. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>When you create a <codeEntityReference autoUpgrade="true">T:System.ConsoleCancelEventHandler</codeEntityReference> delegate, you identify the method that will handle the event. To associate the event with your event handler, add an instance of the delegate to the event. The event handler is called whenever the event occurs, unless you remove the delegate. For more information about event-handler delegates, see <link xlink:href="d98fd58b-fa4f-4598-8378-addf4355a115">Events and Delegates</link>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates how to use the <codeEntityReference autoUpgrade="true">T:System.ConsoleCancelEventHandler</codeEntityReference> class to handle an event.</para>
+                <codeReference>console.cancelkeypress#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+  </members>
+</doc>

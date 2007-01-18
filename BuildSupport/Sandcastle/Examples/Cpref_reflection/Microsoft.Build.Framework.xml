@@ -1,0 +1,3725 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<reflection>
+  <assemblies>
+    <assembly name="Microsoft.Build.Framework" version="2.0.0.0" culture="" key="002400000480000094000000060200000024000052534131000400000100010007D1FA57C4AED9F0A32E84AA0FAEFD0DE9E8FD6AEC8F87FB03766C834C99921EB23BE79AD9D5DCC1DD9AD236132102900B723CF980957FC4E177108FC607774F29E8320E92EA05ECE4E821C0A5EFE8F1645C4C0C93C1AB99285D622CAA652C1DFAD63D745D6F2DE5F17E5EAF0FC4963D261C8A12436518206DC093344D5AD293" hash="SHA1">
+      <attributes>
+        <attribute>
+          <type api="T:System.Resources.SatelliteContractVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.0.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.CompilationRelaxationsAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>8</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute" ref="true" />
+          <assignment name="WrapNonExceptionThrows">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyKeyFileAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>f:\RTM\tools\devdiv\FinalPublicKey.snk</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDelaySignAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.NeutralResourcesLanguageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>en-US</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyInformationalVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.50727.12</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyFileVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.50727.12</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCopyrightAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>c Microsoft Corporation.  All rights reserved.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyProductAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoftr .NET Framework</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCompanyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft Corporation</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDefaultAliasAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft.Build.Framework.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDescriptionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft.Build.Framework.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyTitleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft.Build.Framework.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.CLSCompliantAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>D8A9BA71-4724-481d-9CA7-0DA23A1D615C</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.InternalsVisibleToAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft.Build.Framework.Unittest, PublicKey=002400000480000094000000060200000024000052534131000400000100010007d1fa57c4aed9f0a32e84aa0faefd0de9e8fd6aec8f87fb03766c834c99921eb23be79ad9d5dcc1dd9ad236132102900b723cf980957fc4e177108fc607774f29e8320e92ea05ece4e821c0a5efe8f1645c4c0c93c1ab99285d622caa652c1dfad63d745d6f2de5f17e5eaf0fc4963d261c8a12436518206dc093344d5ad293</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Diagnostics.DebuggableAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Diagnostics.DebuggableAttribute.DebuggingModes" ref="false" />
+            <enumValue>
+              <field name="IgnoreSymbolStoreSequencePoints" />
+            </enumValue>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.SecurityPermissionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="RequestMinimum" />
+            </enumValue>
+          </argument>
+          <assignment name="Flags">
+            <type api="T:System.Security.Permissions.SecurityPermissionFlag" ref="false" />
+            <enumValue>
+              <field name="Execution" />
+            </enumValue>
+          </assignment>
+        </attribute>
+      </attributes>
+    </assembly>
+  </assemblies>
+  <apis>
+    <api id="T:Microsoft.Build.Framework.AnyEventHandler">
+      <apidata name="AnyEventHandler" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <parameters>
+        <parameter name="sender">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+        <parameter name="e">
+          <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="8a17a5b6-e6af-2e88-6eea-9e26c197c87a" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.BuildErrorEventArgs">
+      <apidata name="BuildErrorEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.BuildErrorEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.BuildErrorEventArgs.#ctor(System.String,System.String,System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.String,System.String)" />
+        <element api="P:Microsoft.Build.Framework.BuildErrorEventArgs.Subcategory" />
+        <element api="P:Microsoft.Build.Framework.BuildErrorEventArgs.Code" />
+        <element api="P:Microsoft.Build.Framework.BuildErrorEventArgs.File" />
+        <element api="P:Microsoft.Build.Framework.BuildErrorEventArgs.LineNumber" />
+        <element api="P:Microsoft.Build.Framework.BuildErrorEventArgs.ColumnNumber" />
+        <element api="P:Microsoft.Build.Framework.BuildErrorEventArgs.EndLineNumber" />
+        <element api="P:Microsoft.Build.Framework.BuildErrorEventArgs.EndColumnNumber" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Timestamp" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.ThreadId" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Message" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.HelpKeyword" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.SenderName" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="b9b97367-ec55-10db-c037-a68dfabb7739" />
+    </api>
+    <api id="Overload:Microsoft.Build.Framework.BuildErrorEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildErrorEventArgs" />
+      </containers>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.BuildErrorEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.BuildErrorEventArgs.#ctor(System.String,System.String,System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.String,System.String)" />
+      </elements>
+      <file name="075971fc-8579-cbba-b72b-53e6c1b10037" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.BuildErrorEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildErrorEventArgs" ref="true" />
+      </containers>
+      <file name="cc7bbb08-e4ad-b19a-ef6b-7d7f072e1892" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.BuildErrorEventArgs.#ctor(System.String,System.String,System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.String,System.String)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="subcategory">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="code">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="file">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="lineNumber">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="columnNumber">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="endLineNumber">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="endColumnNumber">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="helpKeyword">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="senderName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildErrorEventArgs" ref="true" />
+      </containers>
+      <file name="9655b57f-fb2e-768e-df75-84c1a2d3e876" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.BuildErrorEventArgs.Code">
+      <apidata name="Code" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildErrorEventArgs" ref="true" />
+      </containers>
+      <file name="bd1995b4-7046-3829-474f-f0a7453c8ab7" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.BuildErrorEventArgs.ColumnNumber">
+      <apidata name="ColumnNumber" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildErrorEventArgs" ref="true" />
+      </containers>
+      <file name="8e72d6d9-fd71-b839-fefc-ed646f20be05" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.BuildErrorEventArgs.EndColumnNumber">
+      <apidata name="EndColumnNumber" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildErrorEventArgs" ref="true" />
+      </containers>
+      <file name="e7e1dc0e-1ae5-f1a7-126e-d84ec53ff504" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.BuildErrorEventArgs.EndLineNumber">
+      <apidata name="EndLineNumber" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildErrorEventArgs" ref="true" />
+      </containers>
+      <file name="d673c85f-627f-6b9c-47c7-4a5fc1666e6f" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.BuildErrorEventArgs.File">
+      <apidata name="File" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildErrorEventArgs" ref="true" />
+      </containers>
+      <file name="12488185-95ea-cc26-2563-d013492e6099" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.BuildErrorEventArgs.LineNumber">
+      <apidata name="LineNumber" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildErrorEventArgs" ref="true" />
+      </containers>
+      <file name="c95f99f3-ab23-0189-df6c-b66a24bb4ec5" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.BuildErrorEventArgs.Subcategory">
+      <apidata name="Subcategory" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildErrorEventArgs" ref="true" />
+      </containers>
+      <file name="7f2b9827-cb61-a3b5-61c9-c733e921869c" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.BuildErrorEventHandler">
+      <apidata name="BuildErrorEventHandler" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <parameters>
+        <parameter name="sender">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+        <parameter name="e">
+          <type api="T:Microsoft.Build.Framework.BuildErrorEventArgs" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="01155915-b91b-3793-10ee-db0ca25e6b45" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.BuildEventArgs">
+      <apidata name="BuildEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.BuildEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.BuildEventArgs.#ctor(System.String,System.String,System.String)" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Timestamp" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.ThreadId" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Message" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.HelpKeyword" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.SenderName" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="06d54fd0-6940-a052-ff2e-8d34300bb8e8" />
+    </api>
+    <api id="Overload:Microsoft.Build.Framework.BuildEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildEventArgs" />
+      </containers>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.BuildEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.BuildEventArgs.#ctor(System.String,System.String,System.String)" />
+      </elements>
+      <file name="ca00e595-2c6a-b5c5-f8be-cd233fcaf446" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.BuildEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+      </containers>
+      <file name="cdb1163a-2f36-0f68-115b-4e24634858ae" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.BuildEventArgs.#ctor(System.String,System.String,System.String)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="helpKeyword">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="senderName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+      </containers>
+      <file name="45398a5f-09c8-6edc-1850-584171c640d6" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.BuildEventArgs.HelpKeyword">
+      <apidata name="HelpKeyword" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+      </containers>
+      <file name="401c24c2-1247-a3fd-2c2b-7ea59fcb7f74" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.BuildEventArgs.Message">
+      <apidata name="Message" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+      </containers>
+      <file name="0bbcdefb-10cf-40da-2c09-ec0add58cf1d" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.BuildEventArgs.SenderName">
+      <apidata name="SenderName" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+      </containers>
+      <file name="84f5d620-90b9-f027-2a40-ee2061e3a15e" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.BuildEventArgs.ThreadId">
+      <apidata name="ThreadId" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+      </containers>
+      <file name="35dbfee7-de2d-cbf2-7277-6110aa56e3db" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.BuildEventArgs.Timestamp">
+      <apidata name="Timestamp" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.DateTime" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+      </containers>
+      <file name="e6501f84-1eef-88e3-faa1-8affa3f27015" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.BuildFinishedEventArgs">
+      <apidata name="BuildFinishedEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.Build.Framework.BuildStatusEventArgs" ref="true" />
+          <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.BuildFinishedEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.BuildFinishedEventArgs.#ctor(System.String,System.String,System.Boolean)" />
+        <element api="P:Microsoft.Build.Framework.BuildFinishedEventArgs.Succeeded" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Timestamp" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.ThreadId" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Message" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.HelpKeyword" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.SenderName" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="671c4511-553a-91f9-65cb-fa0783a2cd87" />
+    </api>
+    <api id="Overload:Microsoft.Build.Framework.BuildFinishedEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildFinishedEventArgs" />
+      </containers>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.BuildFinishedEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.BuildFinishedEventArgs.#ctor(System.String,System.String,System.Boolean)" />
+      </elements>
+      <file name="af926111-7efb-1a4c-a8df-276530fe4b82" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.BuildFinishedEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildFinishedEventArgs" ref="true" />
+      </containers>
+      <file name="ee8dfeee-ed75-aaa3-54b2-f02ebc151bfd" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.BuildFinishedEventArgs.#ctor(System.String,System.String,System.Boolean)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="helpKeyword">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="succeeded">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildFinishedEventArgs" ref="true" />
+      </containers>
+      <file name="b99ebd14-8adc-7f55-906a-21412254bb84" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.BuildFinishedEventArgs.Succeeded">
+      <apidata name="Succeeded" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildFinishedEventArgs" ref="true" />
+      </containers>
+      <file name="6b604191-0a2a-bb49-93d6-34d92dd8bae4" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.BuildFinishedEventHandler">
+      <apidata name="BuildFinishedEventHandler" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <parameters>
+        <parameter name="sender">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+        <parameter name="e">
+          <type api="T:Microsoft.Build.Framework.BuildFinishedEventArgs" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="57772abb-80ac-bf2e-d365-7f18c09578df" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.BuildMessageEventArgs">
+      <apidata name="BuildMessageEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.BuildMessageEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.BuildMessageEventArgs.#ctor(System.String,System.String,System.String,Microsoft.Build.Framework.MessageImportance)" />
+        <element api="P:Microsoft.Build.Framework.BuildMessageEventArgs.Importance" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Timestamp" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.ThreadId" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Message" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.HelpKeyword" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.SenderName" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="1fbb879c-8274-9604-7af8-f63b039ac7f1" />
+    </api>
+    <api id="Overload:Microsoft.Build.Framework.BuildMessageEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildMessageEventArgs" />
+      </containers>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.BuildMessageEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.BuildMessageEventArgs.#ctor(System.String,System.String,System.String,Microsoft.Build.Framework.MessageImportance)" />
+      </elements>
+      <file name="cc9e8940-e697-9720-1479-ac5110c02824" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.BuildMessageEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildMessageEventArgs" ref="true" />
+      </containers>
+      <file name="f3d4c4d1-6437-c653-5377-e64ee3ffb8c2" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.BuildMessageEventArgs.#ctor(System.String,System.String,System.String,Microsoft.Build.Framework.MessageImportance)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="helpKeyword">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="senderName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="importance">
+          <type api="T:Microsoft.Build.Framework.MessageImportance" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildMessageEventArgs" ref="true" />
+      </containers>
+      <file name="8d56bc5e-8807-5869-94a7-0cd7cb4706cd" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.BuildMessageEventArgs.Importance">
+      <apidata name="Importance" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:Microsoft.Build.Framework.MessageImportance" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildMessageEventArgs" ref="true" />
+      </containers>
+      <file name="01b1d04d-a41e-8f56-2b12-4e5fba05c9cb" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.BuildMessageEventHandler">
+      <apidata name="BuildMessageEventHandler" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <parameters>
+        <parameter name="sender">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+        <parameter name="e">
+          <type api="T:Microsoft.Build.Framework.BuildMessageEventArgs" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="8fbb916c-26f8-bbda-feb3-70a30542c604" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.BuildStartedEventArgs">
+      <apidata name="BuildStartedEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.Build.Framework.BuildStatusEventArgs" ref="true" />
+          <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.BuildStartedEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.BuildStartedEventArgs.#ctor(System.String,System.String)" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Timestamp" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.ThreadId" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Message" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.HelpKeyword" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.SenderName" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="62072372-879c-b329-a1cf-add248bf8e91" />
+    </api>
+    <api id="Overload:Microsoft.Build.Framework.BuildStartedEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildStartedEventArgs" />
+      </containers>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.BuildStartedEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.BuildStartedEventArgs.#ctor(System.String,System.String)" />
+      </elements>
+      <file name="564aca10-9438-e8b3-4196-df605d6b9af9" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.BuildStartedEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildStartedEventArgs" ref="true" />
+      </containers>
+      <file name="b54637b4-2869-e869-8fde-ebd2fb3e9bba" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.BuildStartedEventArgs.#ctor(System.String,System.String)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="helpKeyword">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildStartedEventArgs" ref="true" />
+      </containers>
+      <file name="cf7161c2-47db-37f6-1f8a-7772d7aa0cb3" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.BuildStartedEventHandler">
+      <apidata name="BuildStartedEventHandler" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <parameters>
+        <parameter name="sender">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+        <parameter name="e">
+          <type api="T:Microsoft.Build.Framework.BuildStartedEventArgs" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="81ccaa41-4628-a4ce-9246-4812760fa804" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.BuildStatusEventArgs">
+      <apidata name="BuildStatusEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.BuildStatusEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.BuildStatusEventArgs.#ctor(System.String,System.String,System.String)" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Timestamp" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.ThreadId" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Message" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.HelpKeyword" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.SenderName" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="bdc06b3f-9cd9-a905-f2d0-de05417fbd1a" />
+    </api>
+    <api id="Overload:Microsoft.Build.Framework.BuildStatusEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildStatusEventArgs" />
+      </containers>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.BuildStatusEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.BuildStatusEventArgs.#ctor(System.String,System.String,System.String)" />
+      </elements>
+      <file name="203e06a6-0ae7-84be-b76d-93ed78000d26" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.BuildStatusEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildStatusEventArgs" ref="true" />
+      </containers>
+      <file name="91f8a0ee-7e21-2a4b-d513-2cf9bc89ebe5" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.BuildStatusEventArgs.#ctor(System.String,System.String,System.String)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="helpKeyword">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="senderName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildStatusEventArgs" ref="true" />
+      </containers>
+      <file name="03511472-7d3a-8c70-7d98-2d6076e139a5" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.BuildStatusEventHandler">
+      <apidata name="BuildStatusEventHandler" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <parameters>
+        <parameter name="sender">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+        <parameter name="e">
+          <type api="T:Microsoft.Build.Framework.BuildStatusEventArgs" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="1743e558-b47d-b6bc-3f20-4d091c383b26" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.BuildWarningEventArgs">
+      <apidata name="BuildWarningEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.BuildWarningEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.BuildWarningEventArgs.#ctor(System.String,System.String,System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.String,System.String)" />
+        <element api="P:Microsoft.Build.Framework.BuildWarningEventArgs.Subcategory" />
+        <element api="P:Microsoft.Build.Framework.BuildWarningEventArgs.Code" />
+        <element api="P:Microsoft.Build.Framework.BuildWarningEventArgs.File" />
+        <element api="P:Microsoft.Build.Framework.BuildWarningEventArgs.LineNumber" />
+        <element api="P:Microsoft.Build.Framework.BuildWarningEventArgs.ColumnNumber" />
+        <element api="P:Microsoft.Build.Framework.BuildWarningEventArgs.EndLineNumber" />
+        <element api="P:Microsoft.Build.Framework.BuildWarningEventArgs.EndColumnNumber" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Timestamp" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.ThreadId" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Message" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.HelpKeyword" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.SenderName" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="fdd1dbe8-af3b-979f-1600-45371f70993f" />
+    </api>
+    <api id="Overload:Microsoft.Build.Framework.BuildWarningEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildWarningEventArgs" />
+      </containers>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.BuildWarningEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.BuildWarningEventArgs.#ctor(System.String,System.String,System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.String,System.String)" />
+      </elements>
+      <file name="10e36f26-0d2c-5b27-8ae2-c2a974520f6b" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.BuildWarningEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildWarningEventArgs" ref="true" />
+      </containers>
+      <file name="69b118c2-498a-1939-9456-d91a0e8da066" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.BuildWarningEventArgs.#ctor(System.String,System.String,System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.String,System.String)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="subcategory">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="code">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="file">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="lineNumber">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="columnNumber">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="endLineNumber">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="endColumnNumber">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="helpKeyword">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="senderName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildWarningEventArgs" ref="true" />
+      </containers>
+      <file name="3febbc09-7844-a152-dcf0-5bc4a9b630c1" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.BuildWarningEventArgs.Code">
+      <apidata name="Code" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildWarningEventArgs" ref="true" />
+      </containers>
+      <file name="f287804d-99a0-69c0-78a5-6a3d01e00f3f" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.BuildWarningEventArgs.ColumnNumber">
+      <apidata name="ColumnNumber" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildWarningEventArgs" ref="true" />
+      </containers>
+      <file name="03360d4c-eaa1-ec0b-d02a-e73dbd647e8e" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.BuildWarningEventArgs.EndColumnNumber">
+      <apidata name="EndColumnNumber" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildWarningEventArgs" ref="true" />
+      </containers>
+      <file name="4179fc82-de95-4a47-3799-961ccf260c2b" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.BuildWarningEventArgs.EndLineNumber">
+      <apidata name="EndLineNumber" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildWarningEventArgs" ref="true" />
+      </containers>
+      <file name="c03832fe-5a7f-408a-1d0f-bee2d6586a38" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.BuildWarningEventArgs.File">
+      <apidata name="File" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildWarningEventArgs" ref="true" />
+      </containers>
+      <file name="dc7fcfcc-0b72-7745-ef31-d591ab4a0745" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.BuildWarningEventArgs.LineNumber">
+      <apidata name="LineNumber" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildWarningEventArgs" ref="true" />
+      </containers>
+      <file name="7eb99e16-c545-421a-3b6c-0b1bef5f577c" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.BuildWarningEventArgs.Subcategory">
+      <apidata name="Subcategory" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.BuildWarningEventArgs" ref="true" />
+      </containers>
+      <file name="4640feec-c13e-636e-69d4-76b8badaa6e4" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.BuildWarningEventHandler">
+      <apidata name="BuildWarningEventHandler" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <parameters>
+        <parameter name="sender">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+        <parameter name="e">
+          <type api="T:Microsoft.Build.Framework.BuildWarningEventArgs" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="9baba611-a1e8-6334-5495-5461648c641b" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.CustomBuildEventArgs">
+      <apidata name="CustomBuildEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.CustomBuildEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.CustomBuildEventArgs.#ctor(System.String,System.String,System.String)" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Timestamp" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.ThreadId" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Message" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.HelpKeyword" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.SenderName" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="b49d360e-a4f1-1285-8631-bf9a93de4a38" />
+    </api>
+    <api id="Overload:Microsoft.Build.Framework.CustomBuildEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.CustomBuildEventArgs" />
+      </containers>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.CustomBuildEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.CustomBuildEventArgs.#ctor(System.String,System.String,System.String)" />
+      </elements>
+      <file name="1e1ee605-0d3c-fb62-9c32-e060306967ab" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.CustomBuildEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.CustomBuildEventArgs" ref="true" />
+      </containers>
+      <file name="b366ea71-9683-319f-7475-405d9965abdb" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.CustomBuildEventArgs.#ctor(System.String,System.String,System.String)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="helpKeyword">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="senderName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.CustomBuildEventArgs" ref="true" />
+      </containers>
+      <file name="73ba79af-1be9-dd9c-031a-428ba1f33227" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.CustomBuildEventHandler">
+      <apidata name="CustomBuildEventHandler" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <parameters>
+        <parameter name="sender">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+        <parameter name="e">
+          <type api="T:Microsoft.Build.Framework.CustomBuildEventArgs" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="9a30370b-d366-a8a1-64d8-29129410ca53" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.ExternalProjectFinishedEventArgs">
+      <apidata name="ExternalProjectFinishedEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.Build.Framework.CustomBuildEventArgs" ref="true" />
+          <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.ExternalProjectFinishedEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.ExternalProjectFinishedEventArgs.#ctor(System.String,System.String,System.String,System.String,System.Boolean)" />
+        <element api="P:Microsoft.Build.Framework.ExternalProjectFinishedEventArgs.ProjectFile" />
+        <element api="P:Microsoft.Build.Framework.ExternalProjectFinishedEventArgs.Succeeded" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Timestamp" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.ThreadId" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Message" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.HelpKeyword" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.SenderName" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="76fa6e11-482d-ff09-5416-2f2913f6652d" />
+    </api>
+    <api id="Overload:Microsoft.Build.Framework.ExternalProjectFinishedEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ExternalProjectFinishedEventArgs" />
+      </containers>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.ExternalProjectFinishedEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.ExternalProjectFinishedEventArgs.#ctor(System.String,System.String,System.String,System.String,System.Boolean)" />
+      </elements>
+      <file name="e4855ccd-fe67-2e69-92ab-a096f4617226" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.ExternalProjectFinishedEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ExternalProjectFinishedEventArgs" ref="true" />
+      </containers>
+      <file name="e82dec58-6187-6bd6-cfe4-1d95198c9223" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.ExternalProjectFinishedEventArgs.#ctor(System.String,System.String,System.String,System.String,System.Boolean)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="helpKeyword">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="senderName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="projectFile">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="succeeded">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ExternalProjectFinishedEventArgs" ref="true" />
+      </containers>
+      <file name="c4567bed-9970-8082-6e22-a6800b9f972e" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.ExternalProjectFinishedEventArgs.ProjectFile">
+      <apidata name="ProjectFile" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ExternalProjectFinishedEventArgs" ref="true" />
+      </containers>
+      <file name="d39f63a0-069b-c64d-c5da-4fd88bc51087" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.ExternalProjectFinishedEventArgs.Succeeded">
+      <apidata name="Succeeded" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ExternalProjectFinishedEventArgs" ref="true" />
+      </containers>
+      <file name="a5448ad8-4db9-0b8a-1c1a-1273bc3c5889" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.ExternalProjectStartedEventArgs">
+      <apidata name="ExternalProjectStartedEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.Build.Framework.CustomBuildEventArgs" ref="true" />
+          <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.ExternalProjectStartedEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.ExternalProjectStartedEventArgs.#ctor(System.String,System.String,System.String,System.String,System.String)" />
+        <element api="P:Microsoft.Build.Framework.ExternalProjectStartedEventArgs.ProjectFile" />
+        <element api="P:Microsoft.Build.Framework.ExternalProjectStartedEventArgs.TargetNames" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Timestamp" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.ThreadId" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Message" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.HelpKeyword" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.SenderName" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="8780ddba-c7ce-75d4-fe4d-bed72719b4a5" />
+    </api>
+    <api id="Overload:Microsoft.Build.Framework.ExternalProjectStartedEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ExternalProjectStartedEventArgs" />
+      </containers>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.ExternalProjectStartedEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.ExternalProjectStartedEventArgs.#ctor(System.String,System.String,System.String,System.String,System.String)" />
+      </elements>
+      <file name="7b57c46b-b83d-5742-cfd9-c11537fb4a10" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.ExternalProjectStartedEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ExternalProjectStartedEventArgs" ref="true" />
+      </containers>
+      <file name="2ecce8cf-6948-cc7a-9f33-4cff357c6f7f" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.ExternalProjectStartedEventArgs.#ctor(System.String,System.String,System.String,System.String,System.String)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="helpKeyword">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="senderName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="projectFile">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="targetNames">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ExternalProjectStartedEventArgs" ref="true" />
+      </containers>
+      <file name="32de8015-4d7d-6965-dff1-c61599831a6e" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.ExternalProjectStartedEventArgs.ProjectFile">
+      <apidata name="ProjectFile" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ExternalProjectStartedEventArgs" ref="true" />
+      </containers>
+      <file name="42fca6d4-816b-2e91-53ab-08878d7e4636" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.ExternalProjectStartedEventArgs.TargetNames">
+      <apidata name="TargetNames" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ExternalProjectStartedEventArgs" ref="true" />
+      </containers>
+      <file name="499cdd86-e0ee-1216-a590-c819f0132182" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.IBuildEngine">
+      <apidata name="IBuildEngine" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Build.Framework.IBuildEngine.LogErrorEvent(Microsoft.Build.Framework.BuildErrorEventArgs)" />
+        <element api="M:Microsoft.Build.Framework.IBuildEngine.LogWarningEvent(Microsoft.Build.Framework.BuildWarningEventArgs)" />
+        <element api="M:Microsoft.Build.Framework.IBuildEngine.LogMessageEvent(Microsoft.Build.Framework.BuildMessageEventArgs)" />
+        <element api="M:Microsoft.Build.Framework.IBuildEngine.LogCustomEvent(Microsoft.Build.Framework.CustomBuildEventArgs)" />
+        <element api="M:Microsoft.Build.Framework.IBuildEngine.BuildProjectFile(System.String,System.String[],System.Collections.IDictionary,System.Collections.IDictionary)" />
+        <element api="P:Microsoft.Build.Framework.IBuildEngine.ContinueOnError" />
+        <element api="P:Microsoft.Build.Framework.IBuildEngine.LineNumberOfTaskNode" />
+        <element api="P:Microsoft.Build.Framework.IBuildEngine.ColumnNumberOfTaskNode" />
+        <element api="P:Microsoft.Build.Framework.IBuildEngine.ProjectFileOfTaskNode" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="342ff7fa-a59e-c94c-90d6-21c81ba69a7f" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.IBuildEngine.BuildProjectFile(System.String,System.String[],System.Collections.IDictionary,System.Collections.IDictionary)">
+      <apidata name="BuildProjectFile" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="projectFileName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="targetNames">
+          <arrayOf rank="1">
+            <type api="T:System.String" ref="true" />
+          </arrayOf>
+        </parameter>
+        <parameter name="globalProperties">
+          <type api="T:System.Collections.IDictionary" ref="true" />
+        </parameter>
+        <parameter name="targetOutputs">
+          <type api="T:System.Collections.IDictionary" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.IBuildEngine" ref="true" />
+      </containers>
+      <file name="10b556e6-fc4a-4071-d3b8-1906c830be23" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.IBuildEngine.ColumnNumberOfTaskNode">
+      <apidata name="ColumnNumberOfTaskNode" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.IBuildEngine" ref="true" />
+      </containers>
+      <file name="092c8392-250b-b281-d95a-be2e85c31311" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.IBuildEngine.ContinueOnError">
+      <apidata name="ContinueOnError" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.IBuildEngine" ref="true" />
+      </containers>
+      <file name="8f1d5487-4ba9-f1e8-02fd-3a4f60bcb644" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.IBuildEngine.LineNumberOfTaskNode">
+      <apidata name="LineNumberOfTaskNode" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.IBuildEngine" ref="true" />
+      </containers>
+      <file name="c6f326bb-b32f-804e-e414-7a1829860aed" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.IBuildEngine.LogCustomEvent(Microsoft.Build.Framework.CustomBuildEventArgs)">
+      <apidata name="LogCustomEvent" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="e">
+          <type api="T:Microsoft.Build.Framework.CustomBuildEventArgs" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.IBuildEngine" ref="true" />
+      </containers>
+      <file name="83b124c2-38dd-2f3a-16bf-db95e97a04c3" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.IBuildEngine.LogErrorEvent(Microsoft.Build.Framework.BuildErrorEventArgs)">
+      <apidata name="LogErrorEvent" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="e">
+          <type api="T:Microsoft.Build.Framework.BuildErrorEventArgs" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.IBuildEngine" ref="true" />
+      </containers>
+      <file name="697f9ba7-1494-1ad3-ef62-b86fd9ae08d3" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.IBuildEngine.LogMessageEvent(Microsoft.Build.Framework.BuildMessageEventArgs)">
+      <apidata name="LogMessageEvent" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="e">
+          <type api="T:Microsoft.Build.Framework.BuildMessageEventArgs" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.IBuildEngine" ref="true" />
+      </containers>
+      <file name="08cf9c5b-acb4-858d-fc6c-587b2f66f7a1" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.IBuildEngine.LogWarningEvent(Microsoft.Build.Framework.BuildWarningEventArgs)">
+      <apidata name="LogWarningEvent" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="e">
+          <type api="T:Microsoft.Build.Framework.BuildWarningEventArgs" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.IBuildEngine" ref="true" />
+      </containers>
+      <file name="141f9243-f267-a971-201d-c7e4866b8799" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.IBuildEngine.ProjectFileOfTaskNode">
+      <apidata name="ProjectFileOfTaskNode" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.IBuildEngine" ref="true" />
+      </containers>
+      <file name="0413f92c-d5ca-2db8-82e6-e1150ddf962c" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.IEventSource">
+      <apidata name="IEventSource" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="E:Microsoft.Build.Framework.IEventSource.MessageRaised" />
+        <element api="E:Microsoft.Build.Framework.IEventSource.ErrorRaised" />
+        <element api="E:Microsoft.Build.Framework.IEventSource.WarningRaised" />
+        <element api="E:Microsoft.Build.Framework.IEventSource.BuildStarted" />
+        <element api="E:Microsoft.Build.Framework.IEventSource.BuildFinished" />
+        <element api="E:Microsoft.Build.Framework.IEventSource.ProjectStarted" />
+        <element api="E:Microsoft.Build.Framework.IEventSource.ProjectFinished" />
+        <element api="E:Microsoft.Build.Framework.IEventSource.TargetStarted" />
+        <element api="E:Microsoft.Build.Framework.IEventSource.TargetFinished" />
+        <element api="E:Microsoft.Build.Framework.IEventSource.TaskStarted" />
+        <element api="E:Microsoft.Build.Framework.IEventSource.TaskFinished" />
+        <element api="E:Microsoft.Build.Framework.IEventSource.CustomEventRaised" />
+        <element api="E:Microsoft.Build.Framework.IEventSource.StatusEventRaised" />
+        <element api="E:Microsoft.Build.Framework.IEventSource.AnyEventRaised" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="b44eeb7e-c726-f12f-d225-141570333c94" />
+    </api>
+    <api id="E:Microsoft.Build.Framework.IEventSource.AnyEventRaised">
+      <apidata name="AnyEventRaised" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:Microsoft.Build.Framework.AnyEventHandler" ref="true" />
+      </eventhandler>
+      <eventargs>
+        <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.IEventSource" ref="true" />
+      </containers>
+      <file name="76ed5e7d-a7e6-ec33-dcfa-74a2f0e73655" />
+    </api>
+    <api id="E:Microsoft.Build.Framework.IEventSource.BuildFinished">
+      <apidata name="BuildFinished" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:Microsoft.Build.Framework.BuildFinishedEventHandler" ref="true" />
+      </eventhandler>
+      <eventargs>
+        <type api="T:Microsoft.Build.Framework.BuildFinishedEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.IEventSource" ref="true" />
+      </containers>
+      <file name="de9c471d-0424-40c4-09a7-c70f6dac808b" />
+    </api>
+    <api id="E:Microsoft.Build.Framework.IEventSource.BuildStarted">
+      <apidata name="BuildStarted" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:Microsoft.Build.Framework.BuildStartedEventHandler" ref="true" />
+      </eventhandler>
+      <eventargs>
+        <type api="T:Microsoft.Build.Framework.BuildStartedEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.IEventSource" ref="true" />
+      </containers>
+      <file name="a4c2262f-6de5-a7cc-d427-1b1ee624d877" />
+    </api>
+    <api id="E:Microsoft.Build.Framework.IEventSource.CustomEventRaised">
+      <apidata name="CustomEventRaised" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:Microsoft.Build.Framework.CustomBuildEventHandler" ref="true" />
+      </eventhandler>
+      <eventargs>
+        <type api="T:Microsoft.Build.Framework.CustomBuildEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.IEventSource" ref="true" />
+      </containers>
+      <file name="c364391a-3014-1746-a394-836bb9b223a8" />
+    </api>
+    <api id="E:Microsoft.Build.Framework.IEventSource.ErrorRaised">
+      <apidata name="ErrorRaised" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:Microsoft.Build.Framework.BuildErrorEventHandler" ref="true" />
+      </eventhandler>
+      <eventargs>
+        <type api="T:Microsoft.Build.Framework.BuildErrorEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.IEventSource" ref="true" />
+      </containers>
+      <file name="10599160-3a66-d655-84f6-7b2eeb5f8bbd" />
+    </api>
+    <api id="E:Microsoft.Build.Framework.IEventSource.MessageRaised">
+      <apidata name="MessageRaised" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:Microsoft.Build.Framework.BuildMessageEventHandler" ref="true" />
+      </eventhandler>
+      <eventargs>
+        <type api="T:Microsoft.Build.Framework.BuildMessageEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.IEventSource" ref="true" />
+      </containers>
+      <file name="d8e44508-c17e-36b7-e975-c607dc75b988" />
+    </api>
+    <api id="E:Microsoft.Build.Framework.IEventSource.ProjectFinished">
+      <apidata name="ProjectFinished" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:Microsoft.Build.Framework.ProjectFinishedEventHandler" ref="true" />
+      </eventhandler>
+      <eventargs>
+        <type api="T:Microsoft.Build.Framework.ProjectFinishedEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.IEventSource" ref="true" />
+      </containers>
+      <file name="4c5aa5b9-083f-19dd-0c9d-6f231b12298f" />
+    </api>
+    <api id="E:Microsoft.Build.Framework.IEventSource.ProjectStarted">
+      <apidata name="ProjectStarted" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:Microsoft.Build.Framework.ProjectStartedEventHandler" ref="true" />
+      </eventhandler>
+      <eventargs>
+        <type api="T:Microsoft.Build.Framework.ProjectStartedEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.IEventSource" ref="true" />
+      </containers>
+      <file name="9c1e6a7f-2dc8-5551-8850-8cae3b6604bd" />
+    </api>
+    <api id="E:Microsoft.Build.Framework.IEventSource.StatusEventRaised">
+      <apidata name="StatusEventRaised" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:Microsoft.Build.Framework.BuildStatusEventHandler" ref="true" />
+      </eventhandler>
+      <eventargs>
+        <type api="T:Microsoft.Build.Framework.BuildStatusEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.IEventSource" ref="true" />
+      </containers>
+      <file name="1d437209-6dde-e35e-6eab-a661ce91d90c" />
+    </api>
+    <api id="E:Microsoft.Build.Framework.IEventSource.TargetFinished">
+      <apidata name="TargetFinished" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:Microsoft.Build.Framework.TargetFinishedEventHandler" ref="true" />
+      </eventhandler>
+      <eventargs>
+        <type api="T:Microsoft.Build.Framework.TargetFinishedEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.IEventSource" ref="true" />
+      </containers>
+      <file name="39c59d6e-9113-135b-aa6d-a65a0bf86a24" />
+    </api>
+    <api id="E:Microsoft.Build.Framework.IEventSource.TargetStarted">
+      <apidata name="TargetStarted" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:Microsoft.Build.Framework.TargetStartedEventHandler" ref="true" />
+      </eventhandler>
+      <eventargs>
+        <type api="T:Microsoft.Build.Framework.TargetStartedEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.IEventSource" ref="true" />
+      </containers>
+      <file name="552db899-2b6c-ec79-7882-66a037a5053d" />
+    </api>
+    <api id="E:Microsoft.Build.Framework.IEventSource.TaskFinished">
+      <apidata name="TaskFinished" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:Microsoft.Build.Framework.TaskFinishedEventHandler" ref="true" />
+      </eventhandler>
+      <eventargs>
+        <type api="T:Microsoft.Build.Framework.TaskFinishedEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.IEventSource" ref="true" />
+      </containers>
+      <file name="a64f1cea-7cb2-eae0-74b3-2700c90e82c6" />
+    </api>
+    <api id="E:Microsoft.Build.Framework.IEventSource.TaskStarted">
+      <apidata name="TaskStarted" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:Microsoft.Build.Framework.TaskStartedEventHandler" ref="true" />
+      </eventhandler>
+      <eventargs>
+        <type api="T:Microsoft.Build.Framework.TaskStartedEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.IEventSource" ref="true" />
+      </containers>
+      <file name="144adb5b-59c1-e1be-bbff-068cc18ddf94" />
+    </api>
+    <api id="E:Microsoft.Build.Framework.IEventSource.WarningRaised">
+      <apidata name="WarningRaised" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:Microsoft.Build.Framework.BuildWarningEventHandler" ref="true" />
+      </eventhandler>
+      <eventargs>
+        <type api="T:Microsoft.Build.Framework.BuildWarningEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.IEventSource" ref="true" />
+      </containers>
+      <file name="280151be-bba0-d407-6aec-2b051300233f" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.ILogger">
+      <apidata name="ILogger" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Build.Framework.ILogger.Initialize(Microsoft.Build.Framework.IEventSource)" />
+        <element api="M:Microsoft.Build.Framework.ILogger.Shutdown" />
+        <element api="P:Microsoft.Build.Framework.ILogger.Verbosity" />
+        <element api="P:Microsoft.Build.Framework.ILogger.Parameters" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="24cb14fe-7121-e12c-b07e-b4ff0d5ff38d" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.ILogger.Initialize(Microsoft.Build.Framework.IEventSource)">
+      <apidata name="Initialize" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="eventSource">
+          <type api="T:Microsoft.Build.Framework.IEventSource" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ILogger" ref="true" />
+      </containers>
+      <file name="52e911b2-cd07-bea9-42fe-28745439f626" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.ILogger.Parameters">
+      <apidata name="Parameters" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ILogger" ref="true" />
+      </containers>
+      <file name="030980c5-4c79-4634-cc82-770a76581f75" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.ILogger.Shutdown">
+      <apidata name="Shutdown" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ILogger" ref="true" />
+      </containers>
+      <file name="e962f70f-2dc3-d49a-d3e1-819ce0968261" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.ILogger.Verbosity">
+      <apidata name="Verbosity" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:Microsoft.Build.Framework.LoggerVerbosity" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ILogger" ref="true" />
+      </containers>
+      <file name="5b9eb0b7-1f4b-e16f-52f6-871e2d9eb1ee" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.ITask">
+      <apidata name="ITask" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Build.Framework.ITask.Execute" />
+        <element api="P:Microsoft.Build.Framework.ITask.BuildEngine" />
+        <element api="P:Microsoft.Build.Framework.ITask.HostObject" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="b9c03d09-e39a-0726-f4c8-4b59d8845411" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.ITask.BuildEngine">
+      <apidata name="BuildEngine" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:Microsoft.Build.Framework.IBuildEngine" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ITask" ref="true" />
+      </containers>
+      <file name="9871dfab-de4b-f0fd-d31a-2723e367c1c5" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.ITask.Execute">
+      <apidata name="Execute" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ITask" ref="true" />
+      </containers>
+      <file name="3d5ff6d3-3133-fb94-b3ae-892a19e1522d" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.ITask.HostObject">
+      <apidata name="HostObject" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:Microsoft.Build.Framework.ITaskHost" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ITask" ref="true" />
+      </containers>
+      <file name="a3b6a73f-8e97-cfc9-dff4-79ba2a13e12b" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.ITaskHost">
+      <apidata name="ITaskHost" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.InterfaceTypeAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ComInterfaceType" ref="false" />
+            <enumValue>
+              <field name="InterfaceIsIUnknown" />
+            </enumValue>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>9049A481-D0E9-414f-8F92-D4F67A0359A6</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="898688d1-876d-aae6-10d1-b0054356d9f5" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.ITaskItem">
+      <apidata name="ITaskItem" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Build.Framework.ITaskItem.GetMetadata(System.String)" />
+        <element api="M:Microsoft.Build.Framework.ITaskItem.SetMetadata(System.String,System.String)" />
+        <element api="M:Microsoft.Build.Framework.ITaskItem.RemoveMetadata(System.String)" />
+        <element api="M:Microsoft.Build.Framework.ITaskItem.CopyMetadataTo(Microsoft.Build.Framework.ITaskItem)" />
+        <element api="M:Microsoft.Build.Framework.ITaskItem.CloneCustomMetadata" />
+        <element api="P:Microsoft.Build.Framework.ITaskItem.ItemSpec" />
+        <element api="P:Microsoft.Build.Framework.ITaskItem.MetadataNames" />
+        <element api="P:Microsoft.Build.Framework.ITaskItem.MetadataCount" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>8661674F-2148-4F71-A92A-49875511C528</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="0febfd55-1abb-baeb-b465-614c91699c14" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.ITaskItem.CloneCustomMetadata">
+      <apidata name="CloneCustomMetadata" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <returns>
+        <type api="T:System.Collections.IDictionary" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+      </containers>
+      <file name="08ff7584-2ec9-03f3-5b8d-6df19ad39cd9" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.ITaskItem.CopyMetadataTo(Microsoft.Build.Framework.ITaskItem)">
+      <apidata name="CopyMetadataTo" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="destinationItem">
+          <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+      </containers>
+      <file name="c331521a-598d-4729-da15-014355826195" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.ITaskItem.GetMetadata(System.String)">
+      <apidata name="GetMetadata" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="metadataName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+      </containers>
+      <file name="76f341d4-432d-e323-f72a-23c6d003a1ca" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.ITaskItem.ItemSpec">
+      <apidata name="ItemSpec" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+      </containers>
+      <file name="017f600c-76f2-62ec-5d90-a2625d12bb4d" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.ITaskItem.MetadataCount">
+      <apidata name="MetadataCount" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+      </containers>
+      <file name="928296cb-2b3d-5876-2139-83ef263af9c8" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.ITaskItem.MetadataNames">
+      <apidata name="MetadataNames" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Collections.ICollection" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+      </containers>
+      <file name="45fe75a9-7bb9-485f-84bc-fc350529cc27" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.ITaskItem.RemoveMetadata(System.String)">
+      <apidata name="RemoveMetadata" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="metadataName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+      </containers>
+      <file name="4b37f0ee-191b-4be0-e13b-b51bbb686d79" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.ITaskItem.SetMetadata(System.String,System.String)">
+      <apidata name="SetMetadata" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="metadataName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="metadataValue">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+      </containers>
+      <file name="f42803fa-9cb7-edcb-0588-046316ecf695" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.LoadInSeparateAppDomainAttribute">
+      <apidata name="LoadInSeparateAppDomainAttribute" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Attribute" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.LoadInSeparateAppDomainAttribute.#ctor" />
+        <element api="M:System.Attribute.Equals(System.Object)" />
+        <element api="M:System.Attribute.GetHashCode" />
+        <element api="M:System.Attribute.Match(System.Object)" />
+        <element api="M:System.Attribute.IsDefaultAttribute" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetTypeInfoCount(System.UInt32@)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetTypeInfo(System.UInt32,System.UInt32,System.IntPtr)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetIDsOfNames(System.Guid@,System.IntPtr,System.UInt32,System.UInt32,System.IntPtr)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#Invoke(System.UInt32,System.Guid@,System.UInt32,System.Int16,System.IntPtr,System.IntPtr,System.IntPtr,System.IntPtr)" />
+        <element api="P:System.Attribute.TypeId" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.AttributeUsageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.AttributeTargets" ref="false" />
+            <enumValue>
+              <field name="Class" />
+            </enumValue>
+          </argument>
+          <assignment name="AllowMultiple">
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </assignment>
+          <assignment name="Inherited">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="7c900aa2-566f-b685-28b3-57a48508267f" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.LoadInSeparateAppDomainAttribute.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.LoadInSeparateAppDomainAttribute" ref="true" />
+      </containers>
+      <file name="a2aa6a59-38be-e1be-43cd-6f9f1711785a" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.LoggerException">
+      <apidata name="LoggerException" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Exception" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.LoggerException.#ctor" />
+        <element api="M:Microsoft.Build.Framework.LoggerException.#ctor(System.String)" />
+        <element api="M:Microsoft.Build.Framework.LoggerException.#ctor(System.String,System.Exception)" />
+        <element api="M:Microsoft.Build.Framework.LoggerException.#ctor(System.String,System.Exception,System.String,System.String)" />
+        <element api="M:Microsoft.Build.Framework.LoggerException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:Microsoft.Build.Framework.LoggerException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="P:Microsoft.Build.Framework.LoggerException.ErrorCode" />
+        <element api="P:Microsoft.Build.Framework.LoggerException.HelpKeyword" />
+        <element api="M:System.Exception.GetBaseException" />
+        <element api="M:System.Exception.ToString" />
+        <element api="M:System.Exception.GetType" />
+        <element api="P:System.Exception.Message" />
+        <element api="P:System.Exception.Data" />
+        <element api="P:System.Exception.InnerException" />
+        <element api="P:System.Exception.TargetSite" />
+        <element api="P:System.Exception.StackTrace" />
+        <element api="P:System.Exception.HelpLink" />
+        <element api="P:System.Exception.Source" />
+        <element api="P:System.Exception.HResult" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="99bedf81-ab55-97dd-ec01-70570e15cde6" />
+    </api>
+    <api id="Overload:Microsoft.Build.Framework.LoggerException.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.LoggerException" />
+      </containers>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.LoggerException.#ctor" />
+        <element api="M:Microsoft.Build.Framework.LoggerException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:Microsoft.Build.Framework.LoggerException.#ctor(System.String)" />
+        <element api="M:Microsoft.Build.Framework.LoggerException.#ctor(System.String,System.Exception)" />
+        <element api="M:Microsoft.Build.Framework.LoggerException.#ctor(System.String,System.Exception,System.String,System.String)" />
+      </elements>
+      <file name="78ba66df-9b58-1549-abee-dee740904857" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.LoggerException.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.LoggerException" ref="true" />
+      </containers>
+      <file name="0e7b7268-fed3-f6bb-2182-212d8c1ee42c" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.LoggerException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <parameters>
+        <parameter name="info">
+          <type api="T:System.Runtime.Serialization.SerializationInfo" ref="true" />
+        </parameter>
+        <parameter name="context">
+          <type api="T:System.Runtime.Serialization.StreamingContext" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.LoggerException" ref="true" />
+      </containers>
+      <file name="d7bd318f-0ab0-67c4-1d86-686ae18d3da1" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.LoggerException.#ctor(System.String)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.LoggerException" ref="true" />
+      </containers>
+      <file name="1c92abdf-d7d4-f4fe-b61f-2b6ed3f6f216" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.LoggerException.#ctor(System.String,System.Exception)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="innerException">
+          <type api="T:System.Exception" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.LoggerException" ref="true" />
+      </containers>
+      <file name="1382b631-607f-381a-9e48-63478184c82d" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.LoggerException.#ctor(System.String,System.Exception,System.String,System.String)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="innerException">
+          <type api="T:System.Exception" ref="true" />
+        </parameter>
+        <parameter name="errorCode">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="helpKeyword">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.LoggerException" ref="true" />
+      </containers>
+      <file name="d053f512-a2d6-acd0-78fb-3f92a98228cf" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.LoggerException.ErrorCode">
+      <apidata name="ErrorCode" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.LoggerException" ref="true" />
+      </containers>
+      <file name="3d7227b7-f7d7-a921-8998-6197654dc735" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.LoggerException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <apidata name="GetObjectData" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" overrides="M:System.Exception.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+      <parameters>
+        <parameter name="info">
+          <type api="T:System.Runtime.Serialization.SerializationInfo" ref="true" />
+        </parameter>
+        <parameter name="context">
+          <type api="T:System.Runtime.Serialization.StreamingContext" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.LoggerException" ref="true" />
+      </containers>
+      <file name="0c1938ba-9791-2a50-705c-ba23dd030ee3" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.LoggerException.HelpKeyword">
+      <apidata name="HelpKeyword" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.LoggerException" ref="true" />
+      </containers>
+      <file name="9bfdf80d-ab31-b8a5-bff7-7dbe9587b782" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.LoggerVerbosity">
+      <apidata name="LoggerVerbosity" group="type" subgroup="enumeration" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <enumerationbase>
+        <type api="T:System.Int32" ref="false" />
+      </enumerationbase>
+      <elements>
+        <element api="F:Microsoft.Build.Framework.LoggerVerbosity.Quiet" />
+        <element api="F:Microsoft.Build.Framework.LoggerVerbosity.Minimal" />
+        <element api="F:Microsoft.Build.Framework.LoggerVerbosity.Normal" />
+        <element api="F:Microsoft.Build.Framework.LoggerVerbosity.Detailed" />
+        <element api="F:Microsoft.Build.Framework.LoggerVerbosity.Diagnostic" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="f1722548-4018-8230-3b63-4289c232d389" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.MessageImportance">
+      <apidata name="MessageImportance" group="type" subgroup="enumeration" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="true" layout="auto" format="ansi" />
+      <enumerationbase>
+        <type api="T:System.Int32" ref="false" />
+      </enumerationbase>
+      <elements>
+        <element api="F:Microsoft.Build.Framework.MessageImportance.High" />
+        <element api="F:Microsoft.Build.Framework.MessageImportance.Normal" />
+        <element api="F:Microsoft.Build.Framework.MessageImportance.Low" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="db3c19ba-79ed-fef9-3aec-0076fddd0585" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.OutputAttribute">
+      <apidata name="OutputAttribute" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Attribute" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.OutputAttribute.#ctor" />
+        <element api="M:System.Attribute.Equals(System.Object)" />
+        <element api="M:System.Attribute.GetHashCode" />
+        <element api="M:System.Attribute.Match(System.Object)" />
+        <element api="M:System.Attribute.IsDefaultAttribute" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetTypeInfoCount(System.UInt32@)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetTypeInfo(System.UInt32,System.UInt32,System.IntPtr)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetIDsOfNames(System.Guid@,System.IntPtr,System.UInt32,System.UInt32,System.IntPtr)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#Invoke(System.UInt32,System.Guid@,System.UInt32,System.Int16,System.IntPtr,System.IntPtr,System.IntPtr,System.IntPtr)" />
+        <element api="P:System.Attribute.TypeId" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.AttributeUsageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.AttributeTargets" ref="false" />
+            <enumValue>
+              <field name="Property" />
+            </enumValue>
+          </argument>
+          <assignment name="AllowMultiple">
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </assignment>
+          <assignment name="Inherited">
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="2b5989dc-8541-ef08-a989-b68e06508b8f" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.OutputAttribute.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.OutputAttribute" ref="true" />
+      </containers>
+      <file name="520d8d6e-b916-13c7-d2e5-dfbbfea2e3a7" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.ProjectFinishedEventArgs">
+      <apidata name="ProjectFinishedEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.Build.Framework.BuildStatusEventArgs" ref="true" />
+          <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.ProjectFinishedEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.ProjectFinishedEventArgs.#ctor(System.String,System.String,System.String,System.Boolean)" />
+        <element api="P:Microsoft.Build.Framework.ProjectFinishedEventArgs.ProjectFile" />
+        <element api="P:Microsoft.Build.Framework.ProjectFinishedEventArgs.Succeeded" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Timestamp" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.ThreadId" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Message" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.HelpKeyword" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.SenderName" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="a834acdb-5d05-165e-cb86-746598f18434" />
+    </api>
+    <api id="Overload:Microsoft.Build.Framework.ProjectFinishedEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ProjectFinishedEventArgs" />
+      </containers>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.ProjectFinishedEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.ProjectFinishedEventArgs.#ctor(System.String,System.String,System.String,System.Boolean)" />
+      </elements>
+      <file name="da522983-6bc7-84e9-2996-44f88b0036aa" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.ProjectFinishedEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ProjectFinishedEventArgs" ref="true" />
+      </containers>
+      <file name="eefcf86e-0001-e594-f6df-c5e77947aaa3" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.ProjectFinishedEventArgs.#ctor(System.String,System.String,System.String,System.Boolean)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="helpKeyword">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="projectFile">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="succeeded">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ProjectFinishedEventArgs" ref="true" />
+      </containers>
+      <file name="c46385bc-2bec-e876-caad-9a924c7d313b" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.ProjectFinishedEventArgs.ProjectFile">
+      <apidata name="ProjectFile" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ProjectFinishedEventArgs" ref="true" />
+      </containers>
+      <file name="fb94d1f8-4bec-0f8f-9c86-261f7b697c84" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.ProjectFinishedEventArgs.Succeeded">
+      <apidata name="Succeeded" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ProjectFinishedEventArgs" ref="true" />
+      </containers>
+      <file name="467ab9e6-8a3d-6e14-5401-c3c6ba267654" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.ProjectFinishedEventHandler">
+      <apidata name="ProjectFinishedEventHandler" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <parameters>
+        <parameter name="sender">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+        <parameter name="e">
+          <type api="T:Microsoft.Build.Framework.ProjectFinishedEventArgs" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="1cc2794b-67ce-dd0f-e663-019f2b6d73cb" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.ProjectStartedEventArgs">
+      <apidata name="ProjectStartedEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.Build.Framework.BuildStatusEventArgs" ref="true" />
+          <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.ProjectStartedEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.ProjectStartedEventArgs.#ctor(System.String,System.String,System.String,System.String,System.Collections.IEnumerable,System.Collections.IEnumerable)" />
+        <element api="P:Microsoft.Build.Framework.ProjectStartedEventArgs.ProjectFile" />
+        <element api="P:Microsoft.Build.Framework.ProjectStartedEventArgs.TargetNames" />
+        <element api="P:Microsoft.Build.Framework.ProjectStartedEventArgs.Properties" />
+        <element api="P:Microsoft.Build.Framework.ProjectStartedEventArgs.Items" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Timestamp" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.ThreadId" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Message" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.HelpKeyword" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.SenderName" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="5eac598d-c8f1-0b5c-62b3-4189673f9816" />
+    </api>
+    <api id="Overload:Microsoft.Build.Framework.ProjectStartedEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ProjectStartedEventArgs" />
+      </containers>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.ProjectStartedEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.ProjectStartedEventArgs.#ctor(System.String,System.String,System.String,System.String,System.Collections.IEnumerable,System.Collections.IEnumerable)" />
+      </elements>
+      <file name="3588d8d4-3723-ae8e-dee1-16b148b41f3b" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.ProjectStartedEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ProjectStartedEventArgs" ref="true" />
+      </containers>
+      <file name="0d1d40cd-1d0c-307a-5707-51a7b92ea45d" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.ProjectStartedEventArgs.#ctor(System.String,System.String,System.String,System.String,System.Collections.IEnumerable,System.Collections.IEnumerable)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="helpKeyword">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="projectFile">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="targetNames">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="properties">
+          <type api="T:System.Collections.IEnumerable" ref="true" />
+        </parameter>
+        <parameter name="items">
+          <type api="T:System.Collections.IEnumerable" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ProjectStartedEventArgs" ref="true" />
+      </containers>
+      <file name="300e1878-8f77-96b6-876d-ee2d4359e361" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.ProjectStartedEventArgs.Items">
+      <apidata name="Items" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Collections.IEnumerable" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ProjectStartedEventArgs" ref="true" />
+      </containers>
+      <file name="898e702e-d008-2922-cfd9-bc5b87864567" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.ProjectStartedEventArgs.ProjectFile">
+      <apidata name="ProjectFile" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ProjectStartedEventArgs" ref="true" />
+      </containers>
+      <file name="7f6791ed-0763-8bbd-e64a-1c6302e7f5f0" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.ProjectStartedEventArgs.Properties">
+      <apidata name="Properties" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Collections.IEnumerable" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ProjectStartedEventArgs" ref="true" />
+      </containers>
+      <file name="9f220aa5-ddf3-473b-c395-818a24f2627b" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.ProjectStartedEventArgs.TargetNames">
+      <apidata name="TargetNames" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.ProjectStartedEventArgs" ref="true" />
+      </containers>
+      <file name="1394d3f4-948c-d138-6b7a-39ee184c6444" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.ProjectStartedEventHandler">
+      <apidata name="ProjectStartedEventHandler" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <parameters>
+        <parameter name="sender">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+        <parameter name="e">
+          <type api="T:Microsoft.Build.Framework.ProjectStartedEventArgs" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="320be319-5d21-9b74-3b8c-79ac79fa881b" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.RequiredAttribute">
+      <apidata name="RequiredAttribute" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Attribute" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.RequiredAttribute.#ctor" />
+        <element api="M:System.Attribute.Equals(System.Object)" />
+        <element api="M:System.Attribute.GetHashCode" />
+        <element api="M:System.Attribute.Match(System.Object)" />
+        <element api="M:System.Attribute.IsDefaultAttribute" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetTypeInfoCount(System.UInt32@)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetTypeInfo(System.UInt32,System.UInt32,System.IntPtr)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetIDsOfNames(System.Guid@,System.IntPtr,System.UInt32,System.UInt32,System.IntPtr)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#Invoke(System.UInt32,System.Guid@,System.UInt32,System.Int16,System.IntPtr,System.IntPtr,System.IntPtr,System.IntPtr)" />
+        <element api="P:System.Attribute.TypeId" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.AttributeUsageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.AttributeTargets" ref="false" />
+            <enumValue>
+              <field name="Property" />
+            </enumValue>
+          </argument>
+          <assignment name="AllowMultiple">
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </assignment>
+          <assignment name="Inherited">
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="04276085-12f5-5b67-5d5c-703dc24ea8bd" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.RequiredAttribute.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.RequiredAttribute" ref="true" />
+      </containers>
+      <file name="f5ad2812-c099-1ed2-3536-256bdb3a4557" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.TargetFinishedEventArgs">
+      <apidata name="TargetFinishedEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.Build.Framework.BuildStatusEventArgs" ref="true" />
+          <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.TargetFinishedEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.TargetFinishedEventArgs.#ctor(System.String,System.String,System.String,System.String,System.String,System.Boolean)" />
+        <element api="P:Microsoft.Build.Framework.TargetFinishedEventArgs.TargetName" />
+        <element api="P:Microsoft.Build.Framework.TargetFinishedEventArgs.Succeeded" />
+        <element api="P:Microsoft.Build.Framework.TargetFinishedEventArgs.ProjectFile" />
+        <element api="P:Microsoft.Build.Framework.TargetFinishedEventArgs.TargetFile" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Timestamp" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.ThreadId" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Message" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.HelpKeyword" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.SenderName" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="81c4fab4-0b82-44b8-81f4-494342c81861" />
+    </api>
+    <api id="Overload:Microsoft.Build.Framework.TargetFinishedEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TargetFinishedEventArgs" />
+      </containers>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.TargetFinishedEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.TargetFinishedEventArgs.#ctor(System.String,System.String,System.String,System.String,System.String,System.Boolean)" />
+      </elements>
+      <file name="799415d6-5647-7886-b788-bfbabbd237a4" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.TargetFinishedEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TargetFinishedEventArgs" ref="true" />
+      </containers>
+      <file name="413f80dc-f581-bc60-4df7-bb13a2cd4eb5" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.TargetFinishedEventArgs.#ctor(System.String,System.String,System.String,System.String,System.String,System.Boolean)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="helpKeyword">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="targetName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="projectFile">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="targetFile">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="succeeded">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TargetFinishedEventArgs" ref="true" />
+      </containers>
+      <file name="03738605-017a-41a8-f84f-660ad356f828" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.TargetFinishedEventArgs.ProjectFile">
+      <apidata name="ProjectFile" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TargetFinishedEventArgs" ref="true" />
+      </containers>
+      <file name="93e33f1b-dd1a-7c1c-9aaa-f819763116fd" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.TargetFinishedEventArgs.Succeeded">
+      <apidata name="Succeeded" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TargetFinishedEventArgs" ref="true" />
+      </containers>
+      <file name="a54f8442-dccd-5382-131b-6e45f6572a39" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.TargetFinishedEventArgs.TargetFile">
+      <apidata name="TargetFile" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TargetFinishedEventArgs" ref="true" />
+      </containers>
+      <file name="1f3a3010-ca55-b3ba-3b1c-72cc06e819ba" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.TargetFinishedEventArgs.TargetName">
+      <apidata name="TargetName" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TargetFinishedEventArgs" ref="true" />
+      </containers>
+      <file name="b6c8d8b2-4fb0-8f2f-60ec-df94e64d9999" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.TargetFinishedEventHandler">
+      <apidata name="TargetFinishedEventHandler" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <parameters>
+        <parameter name="sender">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+        <parameter name="e">
+          <type api="T:Microsoft.Build.Framework.TargetFinishedEventArgs" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="28d99646-638a-e8c0-58d9-db57de6136cc" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.TargetStartedEventArgs">
+      <apidata name="TargetStartedEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.Build.Framework.BuildStatusEventArgs" ref="true" />
+          <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.TargetStartedEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.TargetStartedEventArgs.#ctor(System.String,System.String,System.String,System.String,System.String)" />
+        <element api="P:Microsoft.Build.Framework.TargetStartedEventArgs.TargetName" />
+        <element api="P:Microsoft.Build.Framework.TargetStartedEventArgs.ProjectFile" />
+        <element api="P:Microsoft.Build.Framework.TargetStartedEventArgs.TargetFile" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Timestamp" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.ThreadId" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Message" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.HelpKeyword" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.SenderName" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="08e6e0b1-9cf1-7131-de15-41ccbe53d058" />
+    </api>
+    <api id="Overload:Microsoft.Build.Framework.TargetStartedEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TargetStartedEventArgs" />
+      </containers>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.TargetStartedEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.TargetStartedEventArgs.#ctor(System.String,System.String,System.String,System.String,System.String)" />
+      </elements>
+      <file name="b1caa97d-6bce-fa42-4e73-9a1bb3aba447" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.TargetStartedEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TargetStartedEventArgs" ref="true" />
+      </containers>
+      <file name="74707f2a-6056-7021-1e2c-3dc979951693" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.TargetStartedEventArgs.#ctor(System.String,System.String,System.String,System.String,System.String)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="helpKeyword">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="targetName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="projectFile">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="targetFile">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TargetStartedEventArgs" ref="true" />
+      </containers>
+      <file name="12df63e8-4863-1a50-26a8-d28a1427e01a" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.TargetStartedEventArgs.ProjectFile">
+      <apidata name="ProjectFile" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TargetStartedEventArgs" ref="true" />
+      </containers>
+      <file name="370d487e-c594-86d7-c7dd-f88a9ac922d2" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.TargetStartedEventArgs.TargetFile">
+      <apidata name="TargetFile" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TargetStartedEventArgs" ref="true" />
+      </containers>
+      <file name="980b6f24-60be-3b83-46f0-7b875b35f06b" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.TargetStartedEventArgs.TargetName">
+      <apidata name="TargetName" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TargetStartedEventArgs" ref="true" />
+      </containers>
+      <file name="fc15217a-2999-a78e-6b0b-8f3fd16b2662" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.TargetStartedEventHandler">
+      <apidata name="TargetStartedEventHandler" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <parameters>
+        <parameter name="sender">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+        <parameter name="e">
+          <type api="T:Microsoft.Build.Framework.TargetStartedEventArgs" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="37d19dc9-dfe5-3bbd-6b56-4389441666e9" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.TaskCommandLineEventArgs">
+      <apidata name="TaskCommandLineEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.Build.Framework.BuildMessageEventArgs" ref="true" />
+          <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.TaskCommandLineEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.TaskCommandLineEventArgs.#ctor(System.String,System.String,Microsoft.Build.Framework.MessageImportance)" />
+        <element api="P:Microsoft.Build.Framework.TaskCommandLineEventArgs.CommandLine" />
+        <element api="P:Microsoft.Build.Framework.TaskCommandLineEventArgs.TaskName" />
+        <element api="P:Microsoft.Build.Framework.BuildMessageEventArgs.Importance" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Timestamp" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.ThreadId" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Message" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.HelpKeyword" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.SenderName" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="79cff3b1-0291-1bbf-a060-0938827fdb02" />
+    </api>
+    <api id="Overload:Microsoft.Build.Framework.TaskCommandLineEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TaskCommandLineEventArgs" />
+      </containers>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.TaskCommandLineEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.TaskCommandLineEventArgs.#ctor(System.String,System.String,Microsoft.Build.Framework.MessageImportance)" />
+      </elements>
+      <file name="e85d08da-3105-771f-3de3-8b32dd33deb6" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.TaskCommandLineEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TaskCommandLineEventArgs" ref="true" />
+      </containers>
+      <file name="bf837444-5382-ae91-fe3c-d9f3dae3a67f" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.TaskCommandLineEventArgs.#ctor(System.String,System.String,Microsoft.Build.Framework.MessageImportance)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="commandLine">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="taskName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="importance">
+          <type api="T:Microsoft.Build.Framework.MessageImportance" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TaskCommandLineEventArgs" ref="true" />
+      </containers>
+      <file name="bfee36dc-4930-ba00-1803-5d51a492a8d3" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.TaskCommandLineEventArgs.CommandLine">
+      <apidata name="CommandLine" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TaskCommandLineEventArgs" ref="true" />
+      </containers>
+      <file name="0af1daf0-d6d9-daab-d33e-c1a119223910" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.TaskCommandLineEventArgs.TaskName">
+      <apidata name="TaskName" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TaskCommandLineEventArgs" ref="true" />
+      </containers>
+      <file name="ccd558aa-d9c2-6061-6996-8901561301c3" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.TaskFinishedEventArgs">
+      <apidata name="TaskFinishedEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.Build.Framework.BuildStatusEventArgs" ref="true" />
+          <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.TaskFinishedEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.TaskFinishedEventArgs.#ctor(System.String,System.String,System.String,System.String,System.String,System.Boolean)" />
+        <element api="P:Microsoft.Build.Framework.TaskFinishedEventArgs.TaskName" />
+        <element api="P:Microsoft.Build.Framework.TaskFinishedEventArgs.Succeeded" />
+        <element api="P:Microsoft.Build.Framework.TaskFinishedEventArgs.ProjectFile" />
+        <element api="P:Microsoft.Build.Framework.TaskFinishedEventArgs.TaskFile" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Timestamp" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.ThreadId" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Message" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.HelpKeyword" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.SenderName" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="07494986-3fce-0723-63cb-f9b471cacb03" />
+    </api>
+    <api id="Overload:Microsoft.Build.Framework.TaskFinishedEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TaskFinishedEventArgs" />
+      </containers>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.TaskFinishedEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.TaskFinishedEventArgs.#ctor(System.String,System.String,System.String,System.String,System.String,System.Boolean)" />
+      </elements>
+      <file name="283b1825-00fc-2fb2-a071-b152a55db21c" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.TaskFinishedEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TaskFinishedEventArgs" ref="true" />
+      </containers>
+      <file name="37460df0-9131-52aa-5e5f-217a23c8029b" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.TaskFinishedEventArgs.#ctor(System.String,System.String,System.String,System.String,System.String,System.Boolean)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="helpKeyword">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="projectFile">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="taskFile">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="taskName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="succeeded">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TaskFinishedEventArgs" ref="true" />
+      </containers>
+      <file name="3f9c898d-451e-64f8-864c-88d6282c7d9b" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.TaskFinishedEventArgs.ProjectFile">
+      <apidata name="ProjectFile" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TaskFinishedEventArgs" ref="true" />
+      </containers>
+      <file name="fe9ec8d4-82bd-6a8f-04a5-043670ee59b4" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.TaskFinishedEventArgs.Succeeded">
+      <apidata name="Succeeded" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TaskFinishedEventArgs" ref="true" />
+      </containers>
+      <file name="d4e5413e-aaf8-c797-a427-45cc3c7ab3ab" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.TaskFinishedEventArgs.TaskFile">
+      <apidata name="TaskFile" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TaskFinishedEventArgs" ref="true" />
+      </containers>
+      <file name="4872ae77-79f2-d332-db88-11abe2457737" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.TaskFinishedEventArgs.TaskName">
+      <apidata name="TaskName" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TaskFinishedEventArgs" ref="true" />
+      </containers>
+      <file name="5176afc6-f67b-44bb-488f-f1fe55107b31" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.TaskFinishedEventHandler">
+      <apidata name="TaskFinishedEventHandler" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <parameters>
+        <parameter name="sender">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+        <parameter name="e">
+          <type api="T:Microsoft.Build.Framework.TaskFinishedEventArgs" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="544ff314-ba7d-3d47-a6f0-f097f8fc0ddc" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.TaskStartedEventArgs">
+      <apidata name="TaskStartedEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.Build.Framework.BuildStatusEventArgs" ref="true" />
+          <type api="T:Microsoft.Build.Framework.BuildEventArgs" ref="true" />
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.TaskStartedEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.TaskStartedEventArgs.#ctor(System.String,System.String,System.String,System.String,System.String)" />
+        <element api="P:Microsoft.Build.Framework.TaskStartedEventArgs.TaskName" />
+        <element api="P:Microsoft.Build.Framework.TaskStartedEventArgs.ProjectFile" />
+        <element api="P:Microsoft.Build.Framework.TaskStartedEventArgs.TaskFile" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Timestamp" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.ThreadId" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.Message" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.HelpKeyword" />
+        <element api="P:Microsoft.Build.Framework.BuildEventArgs.SenderName" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="2c43643e-4e9c-b63a-b812-171a74e53d04" />
+    </api>
+    <api id="Overload:Microsoft.Build.Framework.TaskStartedEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TaskStartedEventArgs" />
+      </containers>
+      <elements>
+        <element api="M:Microsoft.Build.Framework.TaskStartedEventArgs.#ctor" />
+        <element api="M:Microsoft.Build.Framework.TaskStartedEventArgs.#ctor(System.String,System.String,System.String,System.String,System.String)" />
+      </elements>
+      <file name="048f08e9-6dfb-de9e-a66d-9b2103938889" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.TaskStartedEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TaskStartedEventArgs" ref="true" />
+      </containers>
+      <file name="677daa38-7f9d-aa78-21cc-c4736c72253e" />
+    </api>
+    <api id="M:Microsoft.Build.Framework.TaskStartedEventArgs.#ctor(System.String,System.String,System.String,System.String,System.String)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="helpKeyword">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="projectFile">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="taskFile">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="taskName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TaskStartedEventArgs" ref="true" />
+      </containers>
+      <file name="8883f48f-c9ed-dd3e-fa9e-ff07486d9250" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.TaskStartedEventArgs.ProjectFile">
+      <apidata name="ProjectFile" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TaskStartedEventArgs" ref="true" />
+      </containers>
+      <file name="8befc0a0-49dc-ef14-b4ba-510060c60da8" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.TaskStartedEventArgs.TaskFile">
+      <apidata name="TaskFile" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TaskStartedEventArgs" ref="true" />
+      </containers>
+      <file name="9720b1d5-0d0a-207f-bef0-51ad206026fa" />
+    </api>
+    <api id="P:Microsoft.Build.Framework.TaskStartedEventArgs.TaskName">
+      <apidata name="TaskName" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+        <type api="T:Microsoft.Build.Framework.TaskStartedEventArgs" ref="true" />
+      </containers>
+      <file name="2ade7689-cdd7-cc17-7b23-55210f57cd20" />
+    </api>
+    <api id="T:Microsoft.Build.Framework.TaskStartedEventHandler">
+      <apidata name="TaskStartedEventHandler" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <parameters>
+        <parameter name="sender">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+        <parameter name="e">
+          <type api="T:Microsoft.Build.Framework.TaskStartedEventArgs" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.Framework" module="Microsoft.Build.Framework" />
+        <namespace api="N:Microsoft.Build.Framework" />
+      </containers>
+      <file name="f908e925-2798-29c9-7f84-cbd6702836ac" />
+    </api>
+  </apis>
+</reflection>

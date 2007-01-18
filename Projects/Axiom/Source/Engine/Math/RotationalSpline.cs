@@ -68,11 +68,11 @@ namespace Axiom.Math
     public sealed class RotationalSpline
     {
         #region Member variables
-
-        readonly private Matrix4 hermitePoly = new Matrix4( 2, -2, 1, 1,
-            -3, 3, -2, -1,
-            0, 0, 1, 0,
-            1, 0, 0, 0 );
+        //[FXCop Optimization : remove unused private fields]
+        //readonly private Matrix4 hermitePoly = new Matrix4( 2, -2, 1, 1,
+        //    -3, 3, -2, -1,
+        //    0, 0, 1, 0,
+        //    1, 0, 0, 0 );
 
         /// <summary>Collection of control points.</summary>
         private QuaternionCollection pointList;
@@ -95,7 +95,7 @@ namespace Axiom.Math
             tangentList = new QuaternionCollection();
 
             // do not auto calculate tangents by default
-            autoCalculateTangents = false;
+            //autoCalculateTangents = false; //[FXCop Optimization : Do not initialize unnecessarily]
         }
 
         #endregion

@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="e739892d-aa14-4435-abc8-87dbacedc1c9" revisionNumber="8">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.AppDomainUnloadedException">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The exception that is thrown when an attempt is made to access an unloaded application domain. </para>
+        </summary>
+        <remarks>
+          <content>
+            <para>In the .NET Framework version 2.0, an <codeEntityReference autoUpgrade="true">T:System.AppDomainUnloadedException</codeEntityReference> that is not handled in user code has the following effect:</para>
+            <list class="bullet">
+              <listItem>
+                <para>If a thread was started in managed code, it is terminated. The unhandled exception is not allowed to terminate the application. </para>
+              </listItem>
+              <listItem>
+                <para>If a task is executing on a <codeEntityReference autoUpgrade="true">T:System.Threading.ThreadPool</codeEntityReference> thread, it is terminated and the thread is returned to the thread pool. The unhandled exception is not allowed to terminate the application.</para>
+              </listItem>
+              <listItem>
+                <para>If a thread started in unmanaged code, such as the main application thread, it is terminated. The unhandled exception is allowed to proceed, and the operating system terminates the application.</para>
+              </listItem>
+            </list>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.AppDomainUnloadedException</codeEntityReference> uses the HRESULT COR_E_APPDOMAINUNLOADED, which has the value 0x80131014.</para>
+            <para>For a list of initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.AppDomainUnloadedException</codeEntityReference>, see the <codeEntityReference autoUpgrade="true">M:System.AppDomainUnloadedException.#ctor</codeEntityReference> constructors.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>This section contains two code examples. The first example demonstrates the effects of an <codeEntityReference autoUpgrade="true">T:System.AppDomainUnloadedException</codeEntityReference> on various threads, and the second shows elementary application domain unloading.</para>
+                <para>Example 1</para>
+                <para>The following code example defines a <codeInline>TestClass</codeInline> class that can be marshaled across application domain boundaries and an <codeInline>Example</codeInline> class containing a <languageKeyword>static</languageKeyword> (<languageKeyword>Shared</languageKeyword> in Visual Basic) <codeInline>ThreadProc</codeInline> method. The <codeInline>ThreadProc</codeInline> method creates an application domain, creates a <codeInline>TestClass</codeInline> object in the domain, and calls a method of <codeInline>TestClass</codeInline> that unloads the executing domain, causing an <codeEntityReference autoUpgrade="true">T:System.AppDomainUnloadedException</codeEntityReference>. </para>
+                <para>The <codeInline>TestClass</codeInline> method is executed without exception handling from a <codeEntityReference autoUpgrade="true">T:System.Threading.ThreadPool</codeEntityReference> thread and from an ordinary thread, demonstrating that the unhandled exception terminates the task or thread but not the application. It is then executed with and without exception handling from the main application thread, demonstrating that it terminates the application if not handled. </para>
+                <codeReference>AppDomainUnloadedException#1</codeReference>
+                <para>Example 2</para>
+                <para>The following code example creates and unloads an application domain, and demonstrates that an <codeEntityReference autoUpgrade="true">T:System.AppDomainUnloadedException</codeEntityReference> is thrown on a subsequent attempt to access the unloaded domain.</para>
+                <codeReference>ADUnload#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Exception</codeEntityReference>
+          <link xlink:href="F99A1D29-A2A8-47AF-9707-9909F9010735">[&lt;topic://cpconHandlingThrowingExceptions&gt;]</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.AppDomainUnloadedException.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.AppDomainUnloadedException</codeEntityReference> class.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>This constructor initializes the <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference> property of the new instance to a system-supplied message that describes the error, such as "The target application domain has been unloaded." This message takes into account the current system culture.</para>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.AppDomainUnloadedException</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>A null reference (<languageKeyword>Nothing</languageKeyword> in Visual Basic). </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The localized error message string. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+      <overload>
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.AppDomainUnloadedException</codeEntityReference> class.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.AppDomainUnloadedException.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.AppDomainUnloadedException</codeEntityReference> class.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.AppDomainUnloadedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.AppDomainUnloadedException</codeEntityReference> class with serialized data.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>info</parameterReference>
+            <content>
+              <para>The object that holds the serialized object data. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>context</parameterReference>
+            <content>
+              <para>The contextual information about the source or destination. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>This constructor is called during deserialization to reconstitute the exception object transmitted over a stream. For more information, see <link xlink:href="832AC524-21BC-419A-A27B-CA8BFC45840F">[&lt;topic://cpconSerialization&gt;]</link>.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <link xlink:href="832AC524-21BC-419A-A27B-CA8BFC45840F">[&lt;topic://cpconSerialization&gt;]</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.AppDomainUnloadedException.#ctor(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.AppDomainUnloadedException</codeEntityReference> class with a specified error message.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>message</parameterReference>
+            <content>
+              <para>The message that describes the error. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>The content of the <parameterReference>message</parameterReference> parameter is intended to be understood by humans. The caller of this constructor is required to ensure that this string has been localized for the current system culture.</para>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.AppDomainUnloadedException</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>A null reference (<languageKeyword>Nothing</languageKeyword> in Visual Basic). </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The error message string. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.AppDomainUnloadedException.#ctor(System.String,System.Exception)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.AppDomainUnloadedException</codeEntityReference> class with a specified error message and a reference to the inner exception that is the cause of this exception.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>message</parameterReference>
+            <content>
+              <para>The message that describes the error. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>innerException</parameterReference>
+            <content>
+              <para>The exception that is the cause of the current exception. If the <parameterReference>innerException</parameterReference> parameter is not a null reference, the current exception is raised in a <languageKeyword>catch</languageKeyword> block that handles the inner exception. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>The content of the <parameterReference>message</parameterReference> parameter is intended to be understood by humans. The caller of this constructor is required to ensure that this string has been localized for the current system culture.</para>
+            <para>An exception that is thrown as a direct result of a previous exception should include a reference to the previous exception in the <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property. The <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property returns the same value that is passed into the constructor, or a null reference if the <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property does not supply the inner exception value to the constructor.</para>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.AppDomainUnloadedException</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The inner exception reference. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The error message string. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Exception</codeEntityReference>
+          <link xlink:href="F99A1D29-A2A8-47AF-9707-9909F9010735">[&lt;topic://cpconHandlingThrowingExceptions&gt;]</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

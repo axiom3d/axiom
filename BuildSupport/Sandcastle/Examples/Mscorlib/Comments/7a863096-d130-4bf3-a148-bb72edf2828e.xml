@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="7a863096-d130-4bf3-a148-bb72edf2828e" revisionNumber="3">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.Buffer">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Manipulates arrays of primitive types.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.Buffer</codeEntityReference> only affects arrays of primitive types; this class does not apply to objects. Each primitive type is treated as a series of bytes without regard to any behavior or limitation associated with the primitive type.</para>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.Buffer</codeEntityReference> provides methods to copy bytes from one array of primitive types to another array of primitive types, get a byte from an array, set a byte in an array, and obtain the length of an array. This class provides better performance for manipulating primitive types than similar methods in the <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Array</codeEntityReference> class.</para>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.Buffer</codeEntityReference> is applicable to the following primitive types: <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.SByte</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.Int16</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.UInt16</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.UInt32</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.Int64</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.UInt64</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.IntPtr</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.UIntPtr</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.Single</codeEntityReference>, and <codeEntityReference autoUpgrade="true">T:System.Double</codeEntityReference>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example illustrates the use of several <languageKeyword>Buffer</languageKeyword> class methods.</para>
+                <codeReference>System.Buffer.BlockCopy#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Buffer.BlockCopy(System.Array,System.Int32,System.Array,System.Int32,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Copies a specified number of bytes from a source array starting at a particular offset to a destination array starting at a particular offset.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>src</parameterReference>
+            <content>
+              <para>The source buffer. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>srcOffset</parameterReference>
+            <content>
+              <para>The byte offset into <parameterReference>src</parameterReference>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>dst</parameterReference>
+            <content>
+              <para>The destination buffer. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>dstOffset</parameterReference>
+            <content>
+              <para>The byte offset into <parameterReference>dst</parameterReference>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>count</parameterReference>
+            <content>
+              <para>The number of bytes to copy. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>src</parameterReference> or <parameterReference>dst</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>src</parameterReference> or <parameterReference>dst</parameterReference> is an object array, not a value type array.</para>
+              <para>-or- </para>
+              <para>The length of <parameterReference>src</parameterReference> is less than <parameterReference>srcOffset</parameterReference> plus <parameterReference>count</parameterReference>.</para>
+              <para>-or- </para>
+              <para>The length of <parameterReference>dst</parameterReference> is less than <parameterReference>dstOffset</parameterReference> plus <parameterReference>count</parameterReference>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>srcOffset</parameterReference>, <parameterReference>dstOffset</parameterReference>, or <parameterReference>count</parameterReference> is less than 0. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Copies <parameterReference>count</parameterReference> bytes from <parameterReference>src</parameterReference>, beginning at <parameterReference>srcOffset</parameterReference>, to <parameterReference>dst</parameterReference>, beginning at <parameterReference>dstOffset</parameterReference>.</para>
+            <para>Developers should be careful to remember that the <codeEntityReference autoUpgrade="true">M:System.Buffer.BlockCopy(System.Array,System.Int32,System.Array,System.Int32,System.Int32)</codeEntityReference> method accesses the <parameterReference>src</parameterReference> parameter array using offsets, not programming constructs such as indices or upper and lower array bounds. For example, if in the programming language of your application you declare an <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference> array with a zero-based lower bound of -50, then pass the array and an offset of 5 to the <codeEntityReference autoUpgrade="true">M:System.Buffer.BlockCopy(System.Array,System.Int32,System.Array,System.Int32,System.Int32)</codeEntityReference> method, the first array element the method will access is the second element of the array, which is at index -49. Furthermore, which byte of array element -49 is accessed first depends on the endianess of the computer executing your application.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example copies regions of arrays with the <languageKeyword>BlockCopy</languageKeyword> method.</para>
+                <codeReference>System.Buffer.BlockCopy#2</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Buffer.ByteLength(System.Array)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the number of bytes in the specified array.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>array</parameterReference>
+            <content>
+              <para>An array. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The number of bytes in the array.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>array</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>array</parameterReference> is not a primitive. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example illustrates the use of the <languageKeyword>ByteLength</languageKeyword> method to return the number of bytes in an array.</para>
+                <codeReference>System.Buffer.Bytes#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Buffer.GetByte(System.Array,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Retrieves the byte at a specified location in a specified array.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>array</parameterReference>
+            <content>
+              <para>An array. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>index</parameterReference>
+            <content>
+              <para>A location in the array. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>Returns the <parameterReference>index</parameterReference> byte in the array.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>array</parameterReference> is not a primitive. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>array</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>index</parameterReference> is negative or greater than the length of <parameterReference>array</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <languageKeyword>GetByte</languageKeyword> method gets a particular byte out of the array. The array must be an array of primitives.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example displays the byte values at specified locations within arrays using the <languageKeyword>GetByte</languageKeyword> method.</para>
+                <codeReference>System.Buffer.Bytes#3</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Buffer.SetByte(System.Array,System.Int32,System.Byte)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Assigns a specified value to a byte at a particular location in a specified array.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>array</parameterReference>
+            <content>
+              <para>An array. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>index</parameterReference>
+            <content>
+              <para>A location in the array. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>A value to assign. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>array</parameterReference> is not a primitive. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>array</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>index</parameterReference> is negative or greater than the length of <parameterReference>array</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>
+              <parameterReference>array</parameterReference> must be an array of primitives.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example assigns values to bytes at particular locations within arrays using the <languageKeyword>SetByte</languageKeyword> method.</para>
+                <codeReference>System.Buffer.Bytes#2</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+  </members>
+</doc>

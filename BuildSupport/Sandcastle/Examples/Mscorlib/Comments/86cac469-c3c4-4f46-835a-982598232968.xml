@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="86cac469-c3c4-4f46-835a-982598232968" revisionNumber="1">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.AssemblyLoadEventArgs">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides data for the <codeEntityReference autoUpgrade="true">E:System.AppDomain.AssemblyLoad</codeEntityReference> event.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.AssemblyLoadEventArgs.#ctor(System.Reflection.Assembly)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.AssemblyLoadEventArgs</codeEntityReference> class using the specified <codeEntityReference autoUpgrade="true">T:System.Reflection.Assembly</codeEntityReference>.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>loadedAssembly</parameterReference>
+            <content>
+              <para>An instance that represents the currently loaded assembly. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+      </dduexml>
+    </member>
+    <member name="P:System.AssemblyLoadEventArgs.LoadedAssembly">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets an <codeEntityReference autoUpgrade="true">T:System.Reflection.Assembly</codeEntityReference> that represents the currently loaded assembly.</para>
+        </summary>
+        <returnValue>
+          <para>An instance of <codeEntityReference autoUpgrade="true">T:System.Reflection.Assembly</codeEntityReference> that represents the currently loaded assembly.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The value of this property is set by the common language runtime when the <codeEntityReference qualifyHint="true" autoUpgrade="true">E:System.AppDomain.AssemblyLoad</codeEntityReference> event occurs.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+  </members>
+</doc>

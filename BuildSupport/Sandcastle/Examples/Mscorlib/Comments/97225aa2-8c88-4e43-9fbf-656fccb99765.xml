@@ -1,0 +1,634 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="97225aa2-8c88-4e43-9fbf-656fccb99765" revisionNumber="12">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.StringComparer">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents a string comparison operation that uses specific case and culture-based or ordinal comparison rules.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>An object derived from the <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> class embodies string-based comparison, equality, and hash code operations that take into account both case and culture-specific comparison rules. You can use the <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> class to create a type-specific comparison to sort the elements in a generic collection. Classes such as <codeEntityReference autoUpgrade="true">T:System.Collections.Hashtable</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.Collections.Generic.Dictionary`2</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.Collections.SortedList</codeEntityReference>, and <codeEntityReference autoUpgrade="true">T:System.Collections.Generic.SortedList`2</codeEntityReference> use the <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> class for sorting purposes. </para>
+            <para>A comparison operation that is represented by the <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> class is defined to be either case-sensitive or case-insensitive, and use either word (culture-sensitive) or ordinal (culture-insensitive) comparison rules. For more information about word and ordinal comparison rules, see <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Globalization.CompareOptions</codeEntityReference>.</para>
+          </content>
+          <sections>
+            <section>
+              <title>Implemented Properties</title>
+              <content>
+                <para>You might be confused about how to use the <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> class properties because of a seeming contradiction. The <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> class is declared <languageKeyword>abstract</languageKeyword> (<languageKeyword>MustInherit</languageKeyword> in Visual Basic), which means its members can be invoked only on an object of a class derived from the <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> class. The contradiction is that each property of the <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> class is declared <languageKeyword>static</languageKeyword> (<languageKeyword>Shared</languageKeyword> in Visual Basic), which means the property can be invoked without first creating a derived class. </para>
+                <para>You can call a <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> property directly because each property actually returns an instance of an anonymous class that is derived from the <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> class. Consequently, the type of each property value is <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference>, which is the base class of the anonymous class, not the type of the anonymous class itself. Each <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> class property returns a <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> object that supports predefined case and comparison rules.</para>
+              </content>
+            </section>
+          </sections>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the properties and the <codeEntityReference autoUpgrade="true">M:System.StringComparer.Create(System.Globalization.CultureInfo,System.Boolean)</codeEntityReference> method of the <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> class. The example illustrates how different <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> objects sort three versions of the Latin letter I.</para>
+                <codeReference>System.StringComparer#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Globalization.CompareOptions</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.StringComparer.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> class. </para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="Overload:System.StringComparer.Compare">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Compares two objects or strings and returns an indication of their relative sort order.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.StringComparer.Compare(System.Object,System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>When overridden in a derived class, compares two objects and returns an indication of their relative sort order.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>x</parameterReference>
+            <content>
+              <para>An object to compare to <parameterReference>y</parameterReference>.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>y</parameterReference>
+            <content>
+              <para>An object to compare to <parameterReference>x</parameterReference>.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <table>
+            <tableHeader>
+              <row>
+                <entry>
+                  <para>Value</para>
+                </entry>
+                <entry>
+                  <para>Meaning</para>
+                </entry>
+              </row>
+            </tableHeader>
+            <row>
+              <entry>
+                <para>Less than zero</para>
+              </entry>
+              <entry>
+                <para>
+                  <parameterReference>x</parameterReference> is less than <parameterReference>y</parameterReference>. </para>
+                <para>-or-</para>
+                <para>
+                  <parameterReference>x</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Zero</para>
+              </entry>
+              <entry>
+                <para>
+                  <parameterReference>x</parameterReference> is equal to <parameterReference>y</parameterReference>.</para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Greater than zero</para>
+              </entry>
+              <entry>
+                <para>
+                  <parameterReference>x</parameterReference> is greater than <parameterReference>y</parameterReference>.</para>
+                <para>-or-</para>
+                <para>
+                  <parameterReference>y</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+              </entry>
+            </row>
+          </table>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>Neither <parameterReference>x</parameterReference> nor <parameterReference>y</parameterReference> is a <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> object, and neither <parameterReference>x</parameterReference> nor <parameterReference>y</parameterReference> implements the <codeEntityReference autoUpgrade="true">T:System.IComparable</codeEntityReference> interface.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.StringComparer.Compare(System.String,System.String)</codeEntityReference> method is more efficient than the <codeEntityReference autoUpgrade="true">M:System.StringComparer.Compare(System.Object,System.Object)</codeEntityReference> method because the <parameterReference>x</parameterReference> and <parameterReference>y</parameterReference> parameters do not have to be unboxed to perform the comparison.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>Compares two objects or strings and returns an indication of their relative sort order.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.StringComparer.Compare(System.String,System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>When overridden in a derived class, compares two strings and returns an indication of their relative sort order.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>x</parameterReference>
+            <content>
+              <para>A string to compare to <parameterReference>y</parameterReference>.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>y</parameterReference>
+            <content>
+              <para>A string to compare to <parameterReference>x</parameterReference>.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <table>
+            <tableHeader>
+              <row>
+                <entry>
+                  <para>Value</para>
+                </entry>
+                <entry>
+                  <para>Meaning</para>
+                </entry>
+              </row>
+            </tableHeader>
+            <row>
+              <entry>
+                <para>Less than zero</para>
+              </entry>
+              <entry>
+                <para>
+                  <parameterReference>x</parameterReference> is less than <parameterReference>y</parameterReference>.</para>
+                <para>-or-</para>
+                <para>
+                  <parameterReference>x</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Zero</para>
+              </entry>
+              <entry>
+                <para>
+                  <parameterReference>x</parameterReference> is equal to <parameterReference>y</parameterReference>.</para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Greater than zero</para>
+              </entry>
+              <entry>
+                <para>
+                  <parameterReference>x</parameterReference> is greater than <parameterReference>y</parameterReference>.</para>
+                <para>-or-</para>
+                <para>
+                  <parameterReference>y</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+              </entry>
+            </row>
+          </table>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.StringComparer.Compare(System.String,System.String)</codeEntityReference> method is more efficient than the <codeEntityReference autoUpgrade="true">M:System.StringComparer.Compare(System.Object,System.Object)</codeEntityReference> method because the <parameterReference>x</parameterReference> and <parameterReference>y</parameterReference> parameters do not have to be unboxed to perform the comparison.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.StringComparer.Create(System.Globalization.CultureInfo,System.Boolean)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates a <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> object that compares strings according to the rules of a specified culture.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>culture</parameterReference>
+            <content>
+              <para>A culture whose linguistic rules are used to perform a string comparison.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>ignoreCase</parameterReference>
+            <content>
+              <para>
+                <languageKeyword>true</languageKeyword> to specify that comparison operations be case-insensitive; <languageKeyword>false</languageKeyword> to specify that comparison operations be case-sensitive.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A new <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> object that performs string comparisons according to the comparison rules used by the <parameterReference>culture</parameterReference> parameter and the case rule specified by the <parameterReference>ignoreCase</parameterReference> parameter.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>culture</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the properties and the <codeEntityReference autoUpgrade="true">M:System.StringComparer.Create(System.Globalization.CultureInfo,System.Boolean)</codeEntityReference> method of the <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> class. The example illustrates how different <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> objects sort three versions of the Latin letter I.</para>
+                <codeReference>System.StringComparer#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Globalization.CultureInfo</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.StringComparer.Equals">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>When overridden in a derived class, indicates whether two objects or strings are equal.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.StringComparer.Equals(System.Object,System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>When overridden in a derived class, indicates whether two objects are equal.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>x</parameterReference>
+            <content>
+              <para>An object to compare to <parameterReference>y</parameterReference>.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>y</parameterReference>
+            <content>
+              <para>An object to compare to <parameterReference>x</parameterReference>.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>x</parameterReference> and <parameterReference>y</parameterReference> refer to the same object, or <parameterReference>x</parameterReference> and <parameterReference>y</parameterReference> are both the same type of object and those objects are equal; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.StringComparer.Equals(System.String,System.String)</codeEntityReference> method is more efficient than the <codeEntityReference autoUpgrade="true">M:System.StringComparer.Equals(System.Object,System.Object)</codeEntityReference> method because the <parameterReference>x</parameterReference> and <parameterReference>y</parameterReference> parameters do not have to be unboxed to perform the comparison.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>When overridden in a derived class, indicates whether two objects or strings are equal.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.StringComparer.Equals(System.String,System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>When overridden in a derived class, indicates whether two strings are equal.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>x</parameterReference>
+            <content>
+              <para>A string to compare to <parameterReference>y</parameterReference>.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>y</parameterReference>
+            <content>
+              <para>A string to compare to <parameterReference>x</parameterReference>.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>x</parameterReference> and <parameterReference>y</parameterReference> refer to the same object, or <parameterReference>x</parameterReference> and <parameterReference>y</parameterReference> are equal; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.StringComparer.Equals(System.String,System.String)</codeEntityReference> method is more efficient than the <codeEntityReference autoUpgrade="true">M:System.StringComparer.Equals(System.Object,System.Object)</codeEntityReference> method because the <parameterReference>x</parameterReference> and <parameterReference>y</parameterReference> parameters do not have to be unboxed to perform the comparison.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="Overload:System.StringComparer.GetHashCode">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>When overridden in a derived class, gets the hash code for the current <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> object.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.StringComparer.GetHashCode(System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>When overridden in a derived class, gets the hash code for the specified object.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>obj</parameterReference>
+            <content>
+              <para>An object.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A 32-bit signed hash code calculated from the value of the <parameterReference>obj</parameterReference> parameter.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>obj</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.StringComparer.GetHashCode(System.String)</codeEntityReference> method is more efficient than the <codeEntityReference autoUpgrade="true">M:System.StringComparer.GetHashCode(System.Object)</codeEntityReference> method because the <parameterReference>obj</parameterReference> parameter does not have to be unboxed to perform the operation.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>When overridden in a derived class, gets the hash code for the current <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> object.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.StringComparer.GetHashCode(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>When overridden in a derived class, gets the hash code for the specified string.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>obj</parameterReference>
+            <content>
+              <para>A string.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A 32-bit signed hash code calculated from the value of the <parameterReference>obj</parameterReference> parameter.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.StringComparer.GetHashCode(System.String)</codeEntityReference> method is more efficient than the <codeEntityReference autoUpgrade="true">M:System.StringComparer.GetHashCode(System.Object)</codeEntityReference> method because the <parameterReference>obj</parameterReference> parameter does not have to be unboxed to perform the operation.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.StringComparer.CurrentCulture">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> object that performs a case-sensitive string comparison using the word comparison rules of the current culture.</para>
+        </summary>
+        <returnValue>
+          <para>A new <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> object.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The current culture is the <codeEntityReference autoUpgrade="true">T:System.Globalization.CultureInfo</codeEntityReference> object associated with the current thread.</para>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.StringComparer.CurrentCulture</codeEntityReference> property actually returns an instance of an anonymous class derived from the <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> class.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the properties and the <codeEntityReference autoUpgrade="true">M:System.StringComparer.Create(System.Globalization.CultureInfo,System.Boolean)</codeEntityReference> method of the <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> class. The example illustrates how different <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> objects sort three versions of the Latin letter I.</para>
+                <codeReference>System.StringComparer#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.StringComparer.CurrentCultureIgnoreCase">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> object that performs case-insensitive string comparisons using the word comparison rules of the current culture.</para>
+        </summary>
+        <returnValue>
+          <para>A new <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> object.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The current culture is the <codeEntityReference autoUpgrade="true">T:System.Globalization.CultureInfo</codeEntityReference> object associated with the current thread.</para>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.StringComparer.CurrentCultureIgnoreCase</codeEntityReference> property actually returns an instance of an anonymous class derived from the <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> class.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.StringComparer.InvariantCulture">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> object that performs a case-sensitive string comparison using the word comparison rules of the invariant culture.</para>
+        </summary>
+        <returnValue>
+          <para>A new <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> object.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The invariant culture is the <codeEntityReference autoUpgrade="true">T:System.Globalization.CultureInfo</codeEntityReference> object returned by the <codeEntityReference autoUpgrade="true">P:System.Globalization.CultureInfo.InvariantCulture</codeEntityReference> property.</para>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.StringComparer.InvariantCulture</codeEntityReference> property actually returns an instance of an anonymous class derived from the <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> class.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the properties and the <codeEntityReference autoUpgrade="true">M:System.StringComparer.Create(System.Globalization.CultureInfo,System.Boolean)</codeEntityReference> method of the <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> class. The example illustrates how different <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> objects sort three versions of the Latin letter I.</para>
+                <codeReference>System.StringComparer#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.StringComparer.InvariantCultureIgnoreCase">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> object that performs a case-insensitive string comparison using the word comparison rules of the invariant culture.</para>
+        </summary>
+        <returnValue>
+          <para>A new <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> object.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The invariant culture is the <codeEntityReference autoUpgrade="true">T:System.Globalization.CultureInfo</codeEntityReference> object returned by the <codeEntityReference autoUpgrade="true">P:System.Globalization.CultureInfo.InvariantCulture</codeEntityReference> property.</para>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.StringComparer.InvariantCultureIgnoreCase</codeEntityReference> property actually returns an instance of an anonymous class derived from the <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> class.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.StringComparer.Ordinal">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> object that performs a case-sensitive ordinal string comparison.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> object.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.StringComparer.Ordinal</codeEntityReference> property actually returns an instance of an anonymous class derived from the <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> class.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the properties and the <codeEntityReference autoUpgrade="true">M:System.StringComparer.Create(System.Globalization.CultureInfo,System.Boolean)</codeEntityReference> method of the <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> class. The example illustrates how different <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> objects sort three versions of the Latin letter I.</para>
+                <codeReference>System.StringComparer#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.StringComparer.OrdinalIgnoreCase">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> object that performs a case-insensitive ordinal string comparison.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> object.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>A case-insensitive ordinal comparison treats the characters in the strings to compare as if they were converted into uppercase, then compares the Unicode code points of the corresponding characters in each string.</para>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.StringComparer.OrdinalIgnoreCase</codeEntityReference> property actually returns an instance of an anonymous class derived from the <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> class.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the properties and the <codeEntityReference autoUpgrade="true">M:System.StringComparer.Create(System.Globalization.CultureInfo,System.Boolean)</codeEntityReference> method of the <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> class. The example illustrates how different <codeEntityReference autoUpgrade="true">T:System.StringComparer</codeEntityReference> objects sort three versions of the Latin letter I.</para>
+                <codeReference>System.StringComparer#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+  </members>
+</doc>

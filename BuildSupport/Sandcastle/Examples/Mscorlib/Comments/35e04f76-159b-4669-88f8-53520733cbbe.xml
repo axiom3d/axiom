@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="35e04f76-159b-4669-88f8-53520733cbbe" revisionNumber="13">
+  <assembly>
+    <name>Mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.NonSerializedAttribute">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates that a field of a serializable class should not be serialized. This class cannot be inherited.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>When using the <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.Formatters.Binary.BinaryFormatter</codeEntityReference> or <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.Formatters.Soap.SoapFormatter</codeEntityReference> classes to serialize an object, use the <codeEntityReference autoUpgrade="true">T:System.NonSerializedAttribute</codeEntityReference> attribute to prevent a field from being serialized. For example, you can use this attribute to prevent the serialization of sensitive data. </para>
+            <para>The target objects for the <codeEntityReference autoUpgrade="true">T:System.NonSerializedAttribute</codeEntityReference> attribute are public and private fields of a serializable class. By default, classes are not serializable unless they are marked with <codeEntityReference autoUpgrade="true">T:System.SerializableAttribute</codeEntityReference>. During the serialization process all the public and private fields of a class are serialized by default. Fields marked with <codeEntityReference autoUpgrade="true">T:System.NonSerializedAttribute</codeEntityReference> are excluded during serialization. If you are using the <codeEntityReference autoUpgrade="true">T:System.Xml.Serialization.XmlSerializer</codeEntityReference> class to serialize an object, use the <codeEntityReference autoUpgrade="true">T:System.Xml.Serialization.XmlIgnoreAttribute</codeEntityReference> class to get the same functionality. Alternatively, implement the <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.ISerializable</codeEntityReference> interface to explicitly control the serialization process. Note that classes that implement <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.ISerializable</codeEntityReference> must still be marked with <codeEntityReference autoUpgrade="true">T:System.SerializableAttribute</codeEntityReference>. </para>
+            <para>To apply the <codeEntityReference autoUpgrade="true">T:System.NonSerializedAttribute</codeEntityReference> class to an event, set the attribute location to field, as shown in the following C# code.</para>
+            <code>[field:NonSerializedAttribute()] 
+public event ChangedEventHandler Changed;</code>
+            <para>If a field is not serialized, but it still requires a default value that must be supplied after deserialization, you can create a method that supplies the field with a value, then apply the <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.OnDeserializedAttribute</codeEntityReference> to the method.</para>
+            <para>For more information about using attributes, see <link xlink:href="30386922-1E00-4602-9EBF-526B271A8B87">[&lt;topic://cpconExtendingMetadataUsingAttributes&gt;]</link>. </para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example demonstrates serialization of an object marked with the <codeEntityReference autoUpgrade="true">T:System.SerializableAttribute</codeEntityReference> attribute, and the behavior of a field marked with the <codeEntityReference autoUpgrade="true">T:System.NonSerializedAttribute</codeEntityReference> in the serialized object.</para>
+                <codeReference>SerializationAttributes#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.SerializableAttribute</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Attribute</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.ISerializable</codeEntityReference>
+          <link xlink:href="30386922-1E00-4602-9EBF-526B271A8B87">[&lt;topic://cpconExtendingMetadataUsingAttributes&gt;]</link>
+          <link xlink:href="832AC524-21BC-419A-A27B-CA8BFC45840F">[&lt;topic://cpconSerialization&gt;]</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.NonSerializedAttribute.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.NonSerializedAttribute</codeEntityReference> class.</para>
+        </summary>
+      </dduexml>
+    </member>
+  </members>
+</doc>

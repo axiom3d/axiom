@@ -1,0 +1,1424 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="362ecbc8-a925-43ee-ac39-9e01ea671181" revisionNumber="17">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.Byte">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents an 8-bit unsigned integer.</para>
+        </summary>
+        <threadSafety>
+          <para>This type is safe for multithreaded operations.</para>
+        </threadSafety>
+        <remarks>
+          <content>
+            <para>The <languageKeyword>Byte</languageKeyword> value type represents unsigned integers with values ranging from 0 to 255.</para>
+            <para>
+              <languageKeyword>Byte</languageKeyword> provides methods to compare instances of this type, convert the value of an instance to its string representation, and convert the string representation of a number to an instance of this type.</para>
+            <para>For information about how format specification codes control the string representation of value types, see <link xlink:href="0D1364DA-5B30-4D42-8E6B-03378343343F">[&lt;topic://cpConFormattingOverview&gt;]</link>.</para>
+            <para>This type implements interfaces <codeEntityReference autoUpgrade="true">T:System.IComparable</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.IComparable`1</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.IFormattable</codeEntityReference>, and <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference>. Use the <codeEntityReference autoUpgrade="true">T:System.Convert</codeEntityReference> class for conversions instead of this type's explicit interface member implementation of <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference>.</para>
+            <para>This type is thread safe; multiple threads can concurrently read from an instance of this type.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example demonstrates the use of <languageKeyword>Byte</languageKeyword> when converting an array of bytes into a string of hexadecimal values.</para>
+                <codeReference>Convert ByteArray To Hex String Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.SByte</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IComparable</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IFormattable</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Byte.CompareTo">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Compares this instance to a specified object or <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> and returns an indication of their relative values.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.CompareTo(System.Byte)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Compares this instance to a specified 8-bit unsigned integer and returns an indication of their relative values.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>An 8-bit unsigned integer to compare. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A signed integer that indicates the relative order of this instance and <parameterReference>value</parameterReference>.</para>
+          <table>
+            <tableHeader>
+              <row>
+                <entry>
+                  <para>Return Value </para>
+                </entry>
+                <entry>
+                  <para>Description </para>
+                </entry>
+              </row>
+            </tableHeader>
+            <row>
+              <entry>
+                <para>Less than zero </para>
+              </entry>
+              <entry>
+                <para>This instance is less than <parameterReference>value</parameterReference>. </para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Zero </para>
+              </entry>
+              <entry>
+                <para>This instance is equal to <parameterReference>value</parameterReference>. </para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Greater than zero </para>
+              </entry>
+              <entry>
+                <para>This instance is greater than <parameterReference>value</parameterReference>. </para>
+              </entry>
+            </row>
+          </table>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This method implements the <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.IComparable`1</codeEntityReference> interface and performs slightly better than the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Byte.CompareTo(System.Object)</codeEntityReference> method because it does not have to convert the <parameterReference>value</parameterReference> parameter to an object.</para>
+            <para>Depending on your programming language, it might be possible to code a <codeEntityReference autoUpgrade="true">Overload:System.Byte.CompareTo</codeEntityReference> method where the parameter type has fewer bits (is narrower) than the instance type. This is possible because some programming languages perform an implicit widening conversion that represents the parameter as a type with as many bits as the instance.</para>
+            <para>For example, suppose the instance type is <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference> and the parameter type is <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference>. The Microsoft C# compiler generates instructions to represent the value of the parameter as an <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference>, then generates a <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Int32.CompareTo(System.Int32)</codeEntityReference> method that compares the values of the <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference> instance and the <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference> parameter representation.</para>
+            <para>Consult your programming language's documentation to determine whether its compiler performs implicit widening conversions on numeric types.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates generic and non-generic versions of the <languageKeyword>CompareTo</languageKeyword> method for several value and reference types.</para>
+                <codeReference>T.CompareTo#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.IComparable</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Byte.Equals(System.Object)</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Compares this instance to a specified object or <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> and returns an indication of their relative values.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Byte.CompareTo(System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Compares this instance to a specified object and returns an indication of their relative values.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>An object to compare, or <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A signed integer that indicates the relative order of this instance and <parameterReference>value</parameterReference>.</para>
+          <table>
+            <tableHeader>
+              <row>
+                <entry>
+                  <para>Return Value </para>
+                </entry>
+                <entry>
+                  <para>Description </para>
+                </entry>
+              </row>
+            </tableHeader>
+            <row>
+              <entry>
+                <para>Less than zero </para>
+              </entry>
+              <entry>
+                <para>This instance is less than <parameterReference>value</parameterReference>. </para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Zero </para>
+              </entry>
+              <entry>
+                <para>This instance is equal to <parameterReference>value</parameterReference>. </para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Greater than zero </para>
+              </entry>
+              <entry>
+                <para>This instance is greater than <parameterReference>value</parameterReference>.</para>
+                <para>-or- </para>
+                <para>
+                  <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+              </entry>
+            </row>
+          </table>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>value</parameterReference> is not a <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>
+              <parameterReference>value</parameterReference> must be <languageKeyword>null</languageKeyword> or an instance of <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference>; otherwise, an exception is thrown.</para>
+            <para>Any instance of <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference>, regardless of its value, is considered greater than <languageKeyword>null</languageKeyword>.</para>
+            <para>This method is implemented to support the <codeEntityReference autoUpgrade="true">T:System.IComparable</codeEntityReference> interface.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the <codeEntityReference autoUpgrade="true">M:System.Byte.CompareTo(System.Object)</codeEntityReference> method.</para>
+                <codeReference>System.Byte Examples#3</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IComparable</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Byte.Equals(System.Object)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Byte.Equals">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a value indicating whether two instances of <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> represent the same value.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.Equals(System.Byte)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a value indicating whether this instance and a specified <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> object represent the same value.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>obj</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> object to compare to this instance.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>obj</parameterReference> is equal to this instance; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This method implements the <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.IEquatable`1</codeEntityReference> interface, and performs slightly better than <codeEntityReference autoUpgrade="true">M:System.Byte.Equals(System.Object)</codeEntityReference> because it does not have to convert the <parameterReference>obj</parameterReference> parameter to an object.</para>
+            <para>If <parameterReference>obj</parameterReference> has fewer bits (is narrower) than the instance type, some programming languages perform an implicit widening conversion that transforms the value of the parameter into a value with more bits.</para>
+            <para>For example, suppose the instance type is <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference> and the parameter type is <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference>. The Microsoft C# compiler generates instructions to represent the value of the parameter as an <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference>, then generates a <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Int32.CompareTo(System.Int32)</codeEntityReference> method to compare the <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference> instance and parameter representation.</para>
+            <para>Consult your programming language's documentation to determine whether its compiler performs implicit widening conversions on numeric types.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Byte.Equals(System.Object)</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Returns a value indicating whether two instances of <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> represent the same value.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Byte.Equals(System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a value indicating whether this instance is equal to a specified object.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>obj</parameterReference>
+            <content>
+              <para>An object to compare with this instance, or <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>obj</parameterReference> is an instance of <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> and equals the value of this instance; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Byte.CompareTo(System.Object)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.GetHashCode">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the hash code for this instance.</para>
+        </summary>
+        <returnValue>
+          <para>A hash code for the current <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference>.</para>
+        </returnValue>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Object.GetHashCode</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.GetTypeCode">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the <codeEntityReference autoUpgrade="true">T:System.TypeCode</codeEntityReference> for value type <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference>.</para>
+        </summary>
+        <returnValue>
+          <para>The enumerated constant, <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.TypeCode.Byte</codeEntityReference>.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="F:System.Byte.MaxValue">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents the largest possible value of a <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference>. This field is constant.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The value of this constant is 255 (hexadecimal 0xFF).</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <codeReference>System.Byte Examples#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">F:System.Byte.MinValue</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="F:System.Byte.MinValue">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents the smallest possible value of a <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference>. This field is constant.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The value of this constant is 0.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <codeReference>System.Byte Examples#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">F:System.Byte.MaxValue</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.Parse(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the string representation of a number to its <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> equivalent.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A string containing a number to convert. The string is interpreted using the <codeEntityReference autoUpgrade="true">F:System.Globalization.NumberStyles.Integer</codeEntityReference> style. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> value equivalent to the number contained in <parameterReference>s</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.FormatException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is not of the correct format. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.OverflowException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> represents a number less than <codeEntityReference autoUpgrade="true">F:System.Byte.MinValue</codeEntityReference> or greater than <codeEntityReference autoUpgrade="true">F:System.Byte.MaxValue</codeEntityReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <parameterReference>s</parameterReference> parameter is parsed using the formatting information in a <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference> initialized for the current system culture.</para>
+            <para>The <parameterReference>s</parameterReference> parameter contains a number of the form: </para>
+            <para>[ws][sign]digits[ws] </para>
+            <para>Items in square brackets ('[' and ']') are optional, and other items are as follows.</para>
+            <definitionTable>
+              <definedTerm> ws</definedTerm>
+              <definition>
+                <para>Optional white space. </para>
+              </definition>
+              <definedTerm> sign</definedTerm>
+              <definition>
+                <para>An optional positive or negative sign. </para>
+              </definition>
+              <definedTerm> digits</definedTerm>
+              <definition>
+                <para>A sequence of digits ranging from 0 to 9. </para>
+              </definition>
+            </definitionTable>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <codeReference>System.Byte Examples#2</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <link xlink:href="0D1364DA-5B30-4D42-8E6B-03378343343F">[&lt;topic://cpConFormattingOverview&gt;]</link>
+          <codeEntityReference autoUpgrade="true">M:System.Byte.ToString</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">F:System.Byte.MaxValue</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">F:System.Byte.MinValue</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberStyles</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Converts the string representation of a number to its <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> equivalent.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.Byte.Parse">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the string representation of a number to its <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> equivalent.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.Parse(System.String,System.Globalization.NumberStyles)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the string representation of a number in a specified style to its <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> equivalent.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A string containing a number to convert. The string is interpreted using the style specified by <parameterReference>style</parameterReference>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>style</parameterReference>
+            <content>
+              <para>A bitwise combination of <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberStyles</codeEntityReference> values that indicates the permitted format of <parameterReference>s</parameterReference>. A typical value to specify is <codeEntityReference autoUpgrade="true">F:System.Globalization.NumberStyles.Integer</codeEntityReference>.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> value equivalent to the number contained in <parameterReference>s</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.FormatException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is not of the correct format. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.OverflowException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> represents a number less than <codeEntityReference autoUpgrade="true">F:System.Byte.MinValue</codeEntityReference> or greater than <codeEntityReference autoUpgrade="true">F:System.Byte.MaxValue</codeEntityReference>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>style</parameterReference> is not a <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberStyles</codeEntityReference> value. </para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>style</parameterReference> is not a combination of <codeEntityReference autoUpgrade="true">F:System.Globalization.NumberStyles.AllowHexSpecifier</codeEntityReference> and <codeEntityReference autoUpgrade="true">F:System.Globalization.NumberStyles.HexNumber</codeEntityReference> values.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <parameterReference>s</parameterReference> parameter is parsed using the formatting information in a <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference> initialized for the current system culture.</para>
+            <para>The <parameterReference>s</parameterReference> parameter contains a number of the form: </para>
+            <para>[ws][sign]digits[ws] </para>
+            <para>Or, if <parameterReference>style</parameterReference> includes <codeEntityReference autoUpgrade="true">F:System.Globalization.NumberStyles.AllowHexSpecifier</codeEntityReference>:</para>
+            <para>[ws]hexdigits[ws]</para>
+            <para>Items in square brackets ([ and ]) are optional, and other items are as follows.</para>
+            <definitionTable>
+              <definedTerm>ws</definedTerm>
+              <definition>
+                <para>Optional white space if permitted by <parameterReference>style</parameterReference>. </para>
+              </definition>
+              <definedTerm>sign</definedTerm>
+              <definition>
+                <para>An optional sign. </para>
+              </definition>
+              <definedTerm>digits</definedTerm>
+              <definition>
+                <para>A sequence of digits from 0 through 9. </para>
+              </definition>
+              <definedTerm>hexdigits</definedTerm>
+              <definition>
+                <para>A sequence of hexadecimal digits from 0 through f, or 0 through F. </para>
+              </definition>
+            </definitionTable>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example parses string representations of <languageKeyword>Byte</languageKeyword> values with several overloads of the <languageKeyword>Parse</languageKeyword> method.</para>
+                <codeReference>System.Byte.Parse#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <link xlink:href="0D1364DA-5B30-4D42-8E6B-03378343343F">[&lt;topic://cpConFormattingOverview&gt;]</link>
+          <codeEntityReference autoUpgrade="true">M:System.Byte.ToString</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">F:System.Byte.MaxValue</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">F:System.Byte.MinValue</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberStyles</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.Parse(System.String,System.Globalization.NumberStyles,System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the string representation of a number in a specified style and culture-specific format to its <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> equivalent.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A string containing a number to convert. The string is interpreted using the style specified by <parameterReference>style</parameterReference>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>style</parameterReference>
+            <content>
+              <para>A bitwise combination of <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberStyles</codeEntityReference> values that indicates the permitted format of <parameterReference>s</parameterReference>. A typical value to specify is <codeEntityReference autoUpgrade="true">F:System.Globalization.NumberStyles.Integer</codeEntityReference>.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> that supplies culture-specific formatting information about <parameterReference>s</parameterReference>. If <parameterReference>provider</parameterReference> is <languageKeyword>null</languageKeyword>, the current system culture is used. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> value equivalent to the number contained in <parameterReference>s</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.FormatException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is not of the correct format. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.OverflowException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> represents a number less than <codeEntityReference autoUpgrade="true">F:System.Byte.MinValue</codeEntityReference> or greater than <codeEntityReference autoUpgrade="true">F:System.Byte.MaxValue</codeEntityReference>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>style</parameterReference> is not a <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberStyles</codeEntityReference> value. </para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>style</parameterReference> is not a combination of <codeEntityReference autoUpgrade="true">F:System.Globalization.NumberStyles.AllowHexSpecifier</codeEntityReference> and <codeEntityReference autoUpgrade="true">F:System.Globalization.NumberStyles.HexNumber</codeEntityReference> values.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <parameterReference>s</parameterReference> parameter is parsed using the formatting information in a <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference> supplied by <parameterReference>provider</parameterReference>.</para>
+            <para>The <parameterReference>s</parameterReference> parameter contains a number of the form: </para>
+            <para>[ws][sign]digits[ws] </para>
+            <para>Or, if <parameterReference>style</parameterReference> includes <codeEntityReference autoUpgrade="true">F:System.Globalization.NumberStyles.AllowHexSpecifier</codeEntityReference>:</para>
+            <para>[ws]hexdigits[ws]</para>
+            <para>Items in square brackets ([ and ]) are optional, and other items are as follows.</para>
+            <definitionTable>
+              <definedTerm>ws</definedTerm>
+              <definition>
+                <para>Optional white space if permitted by <parameterReference>style</parameterReference>. </para>
+              </definition>
+              <definedTerm>sign</definedTerm>
+              <definition>
+                <para>An optional sign. </para>
+              </definition>
+              <definedTerm>digits</definedTerm>
+              <definition>
+                <para>A sequence of digits from 0 through 9. </para>
+              </definition>
+              <definedTerm>hexdigits</definedTerm>
+              <definition>
+                <para>A sequence of hexadecimal digits from 0 through f, or 0 through F. </para>
+              </definition>
+            </definitionTable>
+            <para>The <parameterReference>provider</parameterReference> parameter is an <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> instance that supplies a <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference> object. The <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference> object provides culture-specific information about the format of <parameterReference>s</parameterReference>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example parses string representations of <languageKeyword>Byte</languageKeyword> values with several overloads of the <languageKeyword>Parse</languageKeyword> method.</para>
+                <codeReference>System.Byte.Parse#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <link xlink:href="0D1364DA-5B30-4D42-8E6B-03378343343F">[&lt;topic://cpConFormattingOverview&gt;]</link>
+          <codeEntityReference autoUpgrade="true">M:System.Byte.ToString</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">F:System.Byte.MaxValue</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">F:System.Byte.MinValue</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberStyles</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.Parse(System.String,System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the string representation of a number in a specified culture-specific format to its <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> equivalent.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A string containing a number to convert. The string is interpreted using the <codeEntityReference autoUpgrade="true">F:System.Globalization.NumberStyles.Integer</codeEntityReference> style. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> that supplies culture-specific formatting information about <parameterReference>s</parameterReference>. If <parameterReference>provider</parameterReference> is <languageKeyword>null</languageKeyword>, the current system culture is used. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> value equivalent to the number contained in <parameterReference>s</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.FormatException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> is not of the correct format. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.OverflowException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>s</parameterReference> represents a number less than <codeEntityReference autoUpgrade="true">F:System.Byte.MinValue</codeEntityReference> or greater than <codeEntityReference autoUpgrade="true">F:System.Byte.MaxValue</codeEntityReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <parameterReference>s</parameterReference> parameter is parsed using the formatting information in a <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference> supplied by <parameterReference>provider</parameterReference>.</para>
+            <para>The <parameterReference>s</parameterReference> parameter contains a number of the form: </para>
+            <para>[ws][sign]digits[ws] </para>
+            <para>Items in square brackets ('[' and ']') are optional, and other items are as follows.</para>
+            <definitionTable>
+              <definedTerm> ws</definedTerm>
+              <definition>
+                <para>Optional white space. </para>
+              </definition>
+              <definedTerm> sign</definedTerm>
+              <definition>
+                <para>An optional positive sign. </para>
+              </definition>
+              <definedTerm> digits</definedTerm>
+              <definition>
+                <para>A sequence of digits ranging from 0 to 9. </para>
+              </definition>
+            </definitionTable>
+            <para>The <parameterReference>provider</parameterReference> parameter is an <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> instance that supplies a <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference> object. The <languageKeyword>NumberFormatInfo</languageKeyword> object provides culture-specific information about the format of <parameterReference>s</parameterReference>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example parses string representations of <languageKeyword>Byte</languageKeyword> values with several overloads of the <languageKeyword>Parse</languageKeyword> method.</para>
+                <codeReference>System.Byte.Parse#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <link xlink:href="0D1364DA-5B30-4D42-8E6B-03378343343F">[&lt;topic://cpConFormattingOverview&gt;]</link>
+          <codeEntityReference autoUpgrade="true">M:System.Byte.ToString</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">F:System.Byte.MaxValue</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">F:System.Byte.MinValue</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberStyles</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.System.IConvertible.ToBoolean(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts this instance of <languageKeyword>Byte</languageKeyword> to a Boolean value.</para>
+        </summary>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the value of this <languageKeyword>Byte</languageKeyword> is non-zero; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.System.IConvertible.ToByte(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Returns the value of this instance of <languageKeyword>Byte</languageKeyword>.</para>
+        </summary>
+        <returnValue>
+          <para>The value of this instance as an unsigned 8-bit integer.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.System.IConvertible.ToChar(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts this instance of <languageKeyword>Byte</languageKeyword> to a Unicode character.</para>
+        </summary>
+        <returnValue>
+          <para>The value of this instance as a Unicode character.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.System.IConvertible.ToDateTime(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>This conversion is not supported. Attempting to do so throws an <languageKeyword>InvalidCastException</languageKeyword>.</para>
+        </summary>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>Unsupported conversion of <languageKeyword>Byte</languageKeyword>. </para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.System.IConvertible.ToDecimal(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts this instance of a Byte to a <codeEntityReference autoUpgrade="true">T:System.Decimal</codeEntityReference> format.</para>
+        </summary>
+        <returnValue>
+          <para>The value of this instance as a <languageKeyword>Decimal</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>is thrown if it doesn't return a byte. </para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.System.IConvertible.ToDouble(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts this instance of a Byte as a <codeEntityReference autoUpgrade="true">T:System.Double</codeEntityReference>.</para>
+        </summary>
+        <returnValue>
+          <para>The value of this instance as a double-precision floating point number.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>is thrown if it doesn't return a byte. </para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.System.IConvertible.ToInt16(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts this instance of a Byte to an <codeEntityReference autoUpgrade="true">T:System.Int16</codeEntityReference>.</para>
+        </summary>
+        <returnValue>
+          <para>The value of this instance as a signed 16-bit integer.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.System.IConvertible.ToInt32(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts this instance of a <languageKeyword>Byte</languageKeyword> value to an <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference>.</para>
+        </summary>
+        <returnValue>
+          <para>The value of this instance as an unsigned 32-bit integer.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.System.IConvertible.ToInt64(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts this instance of a Byte to an <codeEntityReference autoUpgrade="true">T:System.Int64</codeEntityReference>.</para>
+        </summary>
+        <returnValue>
+          <para>The value of this instance as an signed 64-bit integer.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.System.IConvertible.ToSByte(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts this instance of <languageKeyword>Byte</languageKeyword> to an <codeEntityReference autoUpgrade="true">T:System.SByte</codeEntityReference>.</para>
+        </summary>
+        <returnValue>
+          <para>The value of this instance as a signed 8-bit integer.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.System.IConvertible.ToSingle(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts a Byte to a <codeEntityReference autoUpgrade="true">T:System.Single</codeEntityReference>.</para>
+        </summary>
+        <returnValue>
+          <para>The value of this instance as a single-precision floating point number.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>is thrown if it doesn't return a float. </para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.System.IConvertible.ToType(System.Type,System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts this instance of <languageKeyword>Byte</languageKeyword> to an object of the specified <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>type</parameterReference>
+            <content>
+              <para>The type. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An object of the specified type, with a value equivalent to the value of this instance of <languageKeyword>Byte</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>type</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>The requested type conversion is not supported. </para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.System.IConvertible.ToUInt16(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts this instance of <languageKeyword>Byte</languageKeyword> to a <codeEntityReference autoUpgrade="true">T:System.UInt16</codeEntityReference>.</para>
+        </summary>
+        <returnValue>
+          <para>The value of this instance as an unsigned 16-bit integer.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.System.IConvertible.ToUInt32(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts a Byte to a <codeEntityReference autoUpgrade="true">T:System.UInt32</codeEntityReference>.</para>
+        </summary>
+        <returnValue>
+          <para>The value of this instance as an unsigned 32-bit integer.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The ToUInt32method converts a byte value into a <codeEntityReference autoUpgrade="true">T:System.UInt32</codeEntityReference> and returns it.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.System.IConvertible.ToUInt64(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts a Byte to a <codeEntityReference autoUpgrade="true">T:System.UInt64</codeEntityReference>.</para>
+        </summary>
+        <returnValue>
+          <para>The value of this instance as an unsigned 64-bit integer.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.ToString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the numeric value of this instance to its equivalent string.</para>
+        </summary>
+        <returnValue>
+          <para>The value of this instance.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The return value is formatted with the general format specifier ("G") and the <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference> for the current culture.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example formats <languageKeyword>Byte</languageKeyword> values with several overloads of the <languageKeyword>ToString</languageKeyword> method.</para>
+                <codeReference>System.Byte.ToString#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <link xlink:href="0D1364DA-5B30-4D42-8E6B-03378343343F">[&lt;topic://cpConFormattingOverview&gt;]</link>
+          <codeEntityReference autoUpgrade="true">M:System.Byte.Parse(System.String)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Converts the numeric value of this instance to its equivalent string.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.Byte.ToString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the numeric value of this instance to its equivalent string.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.ToString(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the numeric value of this instance to its equivalent string using the specified culture-specific format information.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> that supplies culture-specific formatting information. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The value of this instance, formatted as specified by <parameterReference>provider</parameterReference>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This instance is formatted with the general format specifier ("G").</para>
+            <para>The <parameterReference>provider</parameterReference> parameter is an <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> instance that supplies a <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference> object. The <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference> object provides culture-specific information about this instance. If <parameterReference>provider</parameterReference> is <languageKeyword>null</languageKeyword> or a <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference> cannot be obtained from <parameterReference>provider</parameterReference>, this instance is formatted with the <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference> for the current system culture.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example formats <languageKeyword>Byte</languageKeyword> values with several overloads of the <languageKeyword>ToString</languageKeyword> method.</para>
+                <codeReference>System.Byte.ToString#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <link xlink:href="0D1364DA-5B30-4D42-8E6B-03378343343F">[&lt;topic://cpConFormattingOverview&gt;]</link>
+          <codeEntityReference autoUpgrade="true">M:System.Byte.Parse(System.String)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.ToString(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the numeric value of this instance to its equivalent string using the specified format.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>format</parameterReference>
+            <content>
+              <para>A string that specifies the return format. See <codeEntityReference autoUpgrade="true">M:System.Byte.ToString(System.String,System.IFormatProvider)</codeEntityReference> for a list of valid values. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The value of this instance, formatted as specified by <parameterReference>format</parameterReference>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>If <parameterReference>format</parameterReference> is <languageKeyword>null</languageKeyword> or an empty string (""), the return value of this instance is formatted with the general format specifier ("G").</para>
+            <para>The return value of this instance is formatted with the <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference> for the current culture.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example formats <languageKeyword>Byte</languageKeyword> values with several overloads of the <languageKeyword>ToString</languageKeyword> method.</para>
+                <codeReference>System.Byte.ToString#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <link xlink:href="0D1364DA-5B30-4D42-8E6B-03378343343F">[&lt;topic://cpConFormattingOverview&gt;]</link>
+          <link xlink:href="FB83D6FF-12FD-4837-AD19-16A2515DE030">[&lt;topic://cpConNumericFormatStrings&gt;]</link>
+          <codeEntityReference autoUpgrade="true">M:System.Byte.Parse(System.String)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.ToString(System.String,System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the numeric value of this instance to its equivalent string using the specified format and culture-specific format information.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>format</parameterReference>
+            <content>
+              <para>A string that specifies the return format. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> that supplies culture-specific formatting information. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The value of this instance, formatted as specified by <parameterReference>format</parameterReference> and <parameterReference>provider</parameterReference>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>If <parameterReference>format</parameterReference> is <languageKeyword>null</languageKeyword> or an empty string (""), the return value of this instance is formatted with the general format specifier ("G").</para>
+            <para>The following table lists the format characters that are valid for <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Format Characters </para>
+                  </entry>
+                  <entry>
+                    <para>Description </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>"C", "c" </para>
+                </entry>
+                <entry>
+                  <para>Currency format. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>"D", "d" </para>
+                </entry>
+                <entry>
+                  <para>Decimal format. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>"E", "e" </para>
+                </entry>
+                <entry>
+                  <para>Exponential notation format. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>"F", "f" </para>
+                </entry>
+                <entry>
+                  <para>Fixed-point format. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>"G", "g" </para>
+                </entry>
+                <entry>
+                  <para>General format. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>"N", "n" </para>
+                </entry>
+                <entry>
+                  <para>Number format. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>"P", "p" </para>
+                </entry>
+                <entry>
+                  <para>Percent format. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>"X", "x" </para>
+                </entry>
+                <entry>
+                  <para>Hexadecimal format. </para>
+                </entry>
+              </row>
+            </table>
+            <para>The <parameterReference>provider</parameterReference> parameter is an <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> instance that supplies a <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference> object. The <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference> object provides culture-specific information about this instance. If <parameterReference>provider</parameterReference> is <languageKeyword>null</languageKeyword> or a <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference> cannot be obtained from <parameterReference>provider</parameterReference>, this instance is formatted with the <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference> for the current system culture.</para>
+            <para>For a detailed description of formatting, see the <codeEntityReference autoUpgrade="true">T:System.IFormattable</codeEntityReference> interface. This method is implemented to support the <codeEntityReference autoUpgrade="true">T:System.IFormattable</codeEntityReference> interface.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example formats <languageKeyword>Byte</languageKeyword> values with several overloads of the <languageKeyword>ToString</languageKeyword> method.</para>
+                <codeReference>System.Byte.ToString#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <link xlink:href="0D1364DA-5B30-4D42-8E6B-03378343343F">[&lt;topic://cpConFormattingOverview&gt;]</link>
+          <link xlink:href="FB83D6FF-12FD-4837-AD19-16A2515DE030">[&lt;topic://cpConNumericFormatStrings&gt;]</link>
+          <codeEntityReference autoUpgrade="true">M:System.Byte.Parse(System.String)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IFormattable</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.TryParse(System.String,System.Byte@)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the string representation of a number to its <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> equivalent. A return value indicates whether the conversion succeeded or failed.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A string containing a number to convert. The string is interpreted using the <codeEntityReference autoUpgrade="true">F:System.Globalization.NumberStyles.Integer</codeEntityReference> style. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>result</parameterReference>
+            <content>
+              <para>When this method returns, contains the 8-bit unsigned integer value equivalent to the number contained in <parameterReference>s</parameterReference> if the conversion succeeded, or zero if the conversion failed. The conversion fails if the <parameterReference>s</parameterReference> parameter is <languageKeyword>null</languageKeyword>, is not of the correct format, or represents a number less than <codeEntityReference autoUpgrade="true">F:System.Byte.MinValue</codeEntityReference> or greater than <codeEntityReference autoUpgrade="true">F:System.Byte.MaxValue</codeEntityReference>. This parameter is passed uninitialized. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>s</parameterReference> was converted successfully; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.Byte.TryParse(System.String,System.Byte@)</codeEntityReference> method is like the <codeEntityReference autoUpgrade="true">M:System.Byte.Parse(System.String)</codeEntityReference> method, except the <codeEntityReference autoUpgrade="true">M:System.Byte.TryParse(System.String,System.Byte@)</codeEntityReference> method does not throw an exception if the conversion fails.</para>
+            <para>The <parameterReference>s</parameterReference> parameter is parsed using the formatting information in a <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference> object initialized for the current system culture.</para>
+            <para>The <parameterReference>s</parameterReference> parameter contains a number of the form: </para>
+            <para>[ws][sign]digits[ws] </para>
+            <para>Items in square brackets ('[' and ']') are optional, and other items are as shown in the following table.</para>
+            <definitionTable>
+              <definedTerm>ws</definedTerm>
+              <definition>
+                <para>Optional white space. </para>
+              </definition>
+              <definedTerm>sign</definedTerm>
+              <definition>
+                <para>An optional positive or negative sign. </para>
+              </definition>
+              <definedTerm>digits</definedTerm>
+              <definition>
+                <para>A sequence of digits ranging from 0 to 9. </para>
+              </definition>
+            </definitionTable>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates overloads of the <codeEntityReference autoUpgrade="true">Overload:System.Byte.TryParse</codeEntityReference> method for several base types, and the <codeEntityReference autoUpgrade="true">Overload:System.DateTime.TryParseExact</codeEntityReference> method.</para>
+                <codeReference>T.TryParse#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Byte.Parse(System.String)</codeEntityReference>
+          <link xlink:href="0D1364DA-5B30-4D42-8E6B-03378343343F">[&lt;topic://cpConFormattingOverview&gt;]</link>
+          <codeEntityReference autoUpgrade="true">M:System.Byte.ToString</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">F:System.Byte.MaxValue</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">F:System.Byte.MinValue</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberStyles</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Converts the string representation of a number to its <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> equivalent. A return value indicates whether the conversion succeeded or failed.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.Byte.TryParse">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the string representation of a number to its <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> equivalent. A return value indicates whether the conversion succeeded or failed.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Byte.TryParse(System.String,System.Globalization.NumberStyles,System.IFormatProvider,System.Byte@)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the string representation of a number in a specified style and culture-specific format to its <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> equivalent. A return value indicates whether the conversion succeeded or failed.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>s</parameterReference>
+            <content>
+              <para>A string containing a number to convert. The string is interpreted using the style specified by <parameterReference>style</parameterReference>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>style</parameterReference>
+            <content>
+              <para>A bitwise combination of <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberStyles</codeEntityReference> values that indicates the permitted format of <parameterReference>s</parameterReference>. A typical value to specify is <codeEntityReference autoUpgrade="true">F:System.Globalization.NumberStyles.Integer</codeEntityReference>.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> object that supplies culture-specific formatting information about <parameterReference>s</parameterReference>. If <parameterReference>provider</parameterReference> is <languageKeyword>null</languageKeyword>, the current system culture is used. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>result</parameterReference>
+            <content>
+              <para>When this method returns, contains the 8-bit unsigned integer value equivalent to the number contained in <parameterReference>s</parameterReference> if the conversion succeeded, or zero if the conversion failed. The conversion fails if the <parameterReference>s</parameterReference> parameter is <languageKeyword>null</languageKeyword>, is not of the correct format, or represents a number less than <codeEntityReference autoUpgrade="true">F:System.Byte.MinValue</codeEntityReference> or greater than <codeEntityReference autoUpgrade="true">F:System.Byte.MaxValue</codeEntityReference>. This parameter is passed uninitialized. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>s</parameterReference> was converted successfully; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.Byte.TryParse(System.String,System.Byte@)</codeEntityReference> method is like the <codeEntityReference autoUpgrade="true">M:System.Byte.Parse(System.String)</codeEntityReference> method, except the <codeEntityReference autoUpgrade="true">M:System.Byte.TryParse(System.String,System.Globalization.NumberStyles,System.IFormatProvider,System.Byte@)</codeEntityReference> method does not throw an exception if the conversion fails.</para>
+            <para>The <parameterReference>s</parameterReference> parameter is parsed using the formatting information in a <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference> object supplied by the <parameterReference>provider</parameterReference> parameter.</para>
+            <para>The <parameterReference>s</parameterReference> parameter contains a number of the form: </para>
+            <para>[ws][sign]digits[ws] </para>
+            <para>Or, if the <parameterReference>style</parameterReference> parameter includes <codeEntityReference autoUpgrade="true">F:System.Globalization.NumberStyles.AllowHexSpecifier</codeEntityReference>:</para>
+            <para>[ws]hexdigits[ws]</para>
+            <para>Items in square brackets ([ and ]) are optional, and other items are as follows.</para>
+            <definitionTable>
+              <definedTerm>ws</definedTerm>
+              <definition>
+                <para>Optional white space if permitted by <parameterReference>style</parameterReference>. </para>
+              </definition>
+              <definedTerm>sign</definedTerm>
+              <definition>
+                <para>An optional sign. </para>
+              </definition>
+              <definedTerm>digits</definedTerm>
+              <definition>
+                <para>A sequence of digits from 0 through 9. </para>
+              </definition>
+              <definedTerm>hexdigits</definedTerm>
+              <definition>
+                <para>A sequence of hexadecimal digits from 0 through f, or 0 through F. </para>
+              </definition>
+            </definitionTable>
+            <para>The <parameterReference>provider</parameterReference> parameter is an <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> instance that supplies a <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference> object. The <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference> object provides culture-specific information about the format of <parameterReference>s</parameterReference>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates overloads of the <codeEntityReference autoUpgrade="true">Overload:System.Byte.TryParse</codeEntityReference> method for several base types, and the <codeEntityReference autoUpgrade="true">Overload:System.DateTime.TryParseExact</codeEntityReference> method.</para>
+                <codeReference>T.TryParse#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <link xlink:href="0D1364DA-5B30-4D42-8E6B-03378343343F">[&lt;topic://cpConFormattingOverview&gt;]</link>
+          <codeEntityReference autoUpgrade="true">M:System.Byte.ToString</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">F:System.Byte.MaxValue</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">F:System.Byte.MinValue</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberStyles</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Globalization.NumberFormatInfo</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

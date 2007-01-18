@@ -92,7 +92,8 @@ namespace Axiom.FileSystem
             // loop through all the entries until we find the requested one
             while ( entry != null )
             {
-                if ( entry.Name.ToLower() == fileName.ToLower() )
+                //if ( entry.Name.ToLower() == fileName.ToLower() )
+                if ( String.Compare( entry.Name, fileName, true ) == 0 ) //[FxCop Optimization : AvoidUnnecessaryStringCreation]
                 {
                     break;
                 }

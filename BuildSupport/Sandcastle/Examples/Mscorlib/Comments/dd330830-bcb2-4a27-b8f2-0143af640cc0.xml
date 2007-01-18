@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="dd330830-bcb2-4a27-b8f2-0143af640cc0" revisionNumber="4">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.EnvironmentVariableTarget">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Specifies the location where an environment variable is stored or retrieved in a set or get operation.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.EnvironmentVariableTarget</codeEntityReference> enumeration is used by certain overloads of the <codeEntityReference autoUpgrade="true">Overload:System.Environment.SetEnvironmentVariable</codeEntityReference>, <codeEntityReference autoUpgrade="true">Overload:System.Environment.GetEnvironmentVariable</codeEntityReference>, and <codeEntityReference autoUpgrade="true">Overload:System.Environment.GetEnvironmentVariables</codeEntityReference> methods to specify the location, or target, where the name and value of an environment variable is stored or retrieved. </para>
+            <para>The target can be one of three locations: the environment block associated with the current process, the Windows operating system registry key reserved for environment variables associated with the current user, or the registry key reserved for environment variables associated with all users on the local machine. </para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the <codeEntityReference autoUpgrade="true">T:System.EnvironmentVariableTarget</codeEntityReference> enumeration in methods that create, modify, and delete environment variables.</para>
+                <codeReference>environment.getsetenvar#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="F:System.EnvironmentVariableTarget.Process">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The environment variable is stored or retrieved from the environment block associated with the current process. </para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The user creates the environment variable in a set operation. </para>
+            <para>When the process terminates, the operating system destroys the environment variable in that process.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="F:System.EnvironmentVariableTarget.User">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The environment variable is stored or retrieved from the <languageKeyword>HKEY_CURRENT_USER\Environment</languageKeyword> key in the Windows operating system registry. </para>
+        </summary>
+        <remarks>
+          <content>
+            <para>When the user creates the environment variable in a set operation, the operating system stores the environment variable in the system registry, but not in the current process. If the user starts a new process, the operating system copies the environment variable from the registry to that process. </para>
+            <para>When the process terminates, the operating system destroys the environment variable in that process. However, the environment variable in the registry persists until the user removes it programmatically or by means of an operating system tool.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="F:System.EnvironmentVariableTarget.Machine">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The environment variable is stored or retrieved from the <languageKeyword>HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment</languageKeyword> key in the Windows operating system registry. </para>
+        </summary>
+        <remarks>
+          <content>
+            <para>When a user creates the environment variable in a set operation, the operating system stores the environment variable in the system registry, but not in the current process. If any user on the local machine starts a new process, the operating system copies the environment variable from the registry to that process. </para>
+            <para>When the process terminates, the operating system destroys the environment variable in that process. However, the environment variable in the registry persists until a user removes it programmatically or by means of an operating system tool.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+  </members>
+</doc>

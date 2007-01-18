@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="bb33b275-e4db-49a5-abcd-bf2bdded0a23" revisionNumber="7">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.Comparison`1">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents the method that compares two objects of the same type.</para>
+        </summary>
+        <genericParameters>
+          <genericParameter>
+            <parameterReference>T</parameterReference>
+            <content>
+              <para>The type of the objects to compare.</para>
+            </content>
+          </genericParameter>
+        </genericParameters>
+        <parameters>
+          <parameter>
+            <parameterReference>x</parameterReference>
+            <content>
+              <para>The first object to compare.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>y</parameterReference>
+            <content>
+              <para>The second object to compare.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <table>
+            <tableHeader>
+              <row>
+                <entry>
+                  <para>Value </para>
+                </entry>
+                <entry>
+                  <para>Condition </para>
+                </entry>
+              </row>
+            </tableHeader>
+            <row>
+              <entry>
+                <para>Less than 0 </para>
+              </entry>
+              <entry>
+                <para>
+                  <parameterReference>x</parameterReference> is less than <parameterReference>y</parameterReference>.</para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>0 </para>
+              </entry>
+              <entry>
+                <para>
+                  <parameterReference>x</parameterReference> equals <parameterReference>y</parameterReference>.</para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Greater than 0 </para>
+              </entry>
+              <entry>
+                <para>
+                  <parameterReference>x</parameterReference> is greater than <parameterReference>y</parameterReference>.</para>
+              </entry>
+            </row>
+          </table>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This delegate is used by the <codeEntityReference autoUpgrade="false">M:System.Array.Sort``1(``0[],System.Comparison{``0})</codeEntityReference> method overload of the <codeEntityReference autoUpgrade="true">T:System.Array</codeEntityReference> class and the <codeEntityReference autoUpgrade="false">M:System.Collections.Generic.List`1.Sort(System.Comparison{`0})</codeEntityReference> method overload of the <codeEntityReference autoUpgrade="true">T:System.Collections.Generic.List`1</codeEntityReference> class to sort the elements of an array or list.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the use of the <codeEntityReference autoUpgrade="true">T:System.Comparison`1</codeEntityReference> delegate with the <codeEntityReference autoUpgrade="false">M:System.Collections.Generic.List`1.Sort(System.Comparison{`0})</codeEntityReference> method overload. </para>
+                <para>The code example defines an alternative comparison method for strings, named <codeInline>CompareDinosByLength</codeInline>. This method works as follows: First, the comparands are tested for <languageKeyword>null</languageKeyword>, and a null reference is treated as less than a non-null. Second, the string lengths are compared, and the longer string is deemed to be greater. Third, if the lengths are equal, ordinary string comparison is used.</para>
+                <para>A <codeEntityReference autoUpgrade="true">T:System.Collections.Generic.List`1</codeEntityReference> of strings is created and populated with four strings, in no particular order. The list also includes an empty string and a null reference. The list is displayed, sorted using a <codeEntityReference autoUpgrade="true">T:System.Comparison`1</codeEntityReference> generic delegate representing the <codeInline>CompareDinosByLength</codeInline> method, and displayed again.</para>
+                <codeReference>List`1_SortComparison#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Array.Sort``1(``0[],System.Comparison{``0})</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Collections.Generic.List`1.Sort(System.Comparison{`0})</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

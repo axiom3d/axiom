@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="15e3d920-fd92-4854-a250-328c691f8ee1" revisionNumber="1">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.IComparable">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Defines a generalized comparison method that a value type or class implements to create a type-specific comparison method.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>This interface is implemented by types whose values can be ordered; for example, the numeric and string classes.</para>
+            <para>A value type or class implements the <codeEntityReference autoUpgrade="true">M:System.IComparable.CompareTo(System.Object)</codeEntityReference> method to create a type-specific comparison method suitable for purposes such as sorting.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code sample illustrates the implementation of <codeEntityReference autoUpgrade="true">T:System.IComparable</codeEntityReference> and the requisite <codeEntityReference autoUpgrade="true">M:System.IComparable.CompareTo(System.Object)</codeEntityReference> method.</para>
+                <codeReference>IComparable Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.IComparable.CompareTo(System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Compares the current instance with another object of the same type.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>obj</parameterReference>
+            <content>
+              <para>An object to compare with this instance. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A 32-bit signed integer that indicates the relative order of the objects being compared. The return value has these meanings: </para>
+          <table>
+            <tableHeader>
+              <row>
+                <entry>
+                  <para>Value </para>
+                </entry>
+                <entry>
+                  <para>Meaning </para>
+                </entry>
+              </row>
+            </tableHeader>
+            <row>
+              <entry>
+                <para>Less than zero </para>
+              </entry>
+              <entry>
+                <para>This instance is less than <parameterReference>obj</parameterReference>. </para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Zero </para>
+              </entry>
+              <entry>
+                <para>This instance is equal to <parameterReference>obj</parameterReference>. </para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Greater than zero </para>
+              </entry>
+              <entry>
+                <para>This instance is greater than <parameterReference>obj</parameterReference>. </para>
+              </entry>
+            </row>
+          </table>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>obj</parameterReference> is not the same type as this instance. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This method is only a definition and must be implemented by a specific class or value type to have effect. The meaning of the comparisons, "less than," "equal to," and "greater than," depends on the particular implementation.</para>
+            <para>By definition, any object compares greater than <languageKeyword>null</languageKeyword>, and two null references compare equal to each other.</para>
+            <para>The parameter, <parameterReference>obj</parameterReference>, must be the same type as the class or value type that implements this interface; otherwise, an <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference> is thrown.</para>
+          </content>
+        </remarks>
+        <notesForImplementers>
+          <para>For objects A, B and C, the following must be true: </para>
+          <para>
+            <codeInline>A.CompareTo(A)</codeInline> is required to return zero.</para>
+          <para>If <codeInline>A.CompareTo(B)</codeInline> returns zero, then <codeInline>B.CompareTo(A)</codeInline> is required to return zero.</para>
+          <para>If <codeInline>A.CompareTo(B)</codeInline> returns zero and <codeInline>B.CompareTo(C)</codeInline> returns zero, then <codeInline>A.CompareTo(C)</codeInline> is required to return zero.</para>
+          <para>If <codeInline>A.CompareTo(B)</codeInline> returns a value other than zero, then <codeInline>B.CompareTo(A)</codeInline> is required to return a value of the opposite sign.</para>
+          <para>If <codeInline>A.CompareTo(B)</codeInline> returns a value <parameterReference>x</parameterReference> not equal to zero, and <codeInline>B.CompareTo(C)</codeInline> returns a value <parameterReference>y</parameterReference> of the same sign as <parameterReference>x</parameterReference>, then <codeInline>A.CompareTo(C)</codeInline> is required to return a value of the same sign as <parameterReference>x</parameterReference> and <parameterReference>y</parameterReference>.</para>
+        </notesForImplementers>
+        <notesForCallers>
+          <para>Use the <codeEntityReference autoUpgrade="true">M:System.IComparable.CompareTo(System.Object)</codeEntityReference> method to determine the ordering of instances of a class.</para>
+        </notesForCallers>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code sample illustrates the use of <codeEntityReference autoUpgrade="true">M:System.IComparable.CompareTo(System.Object)</codeEntityReference> to compare a Temperature object implementing <codeEntityReference autoUpgrade="true">T:System.IComparable</codeEntityReference> with another object.</para>
+                <codeReference>IComparable Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

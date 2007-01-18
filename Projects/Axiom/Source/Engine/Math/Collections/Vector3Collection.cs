@@ -129,9 +129,9 @@ namespace Axiom.Math.Collections
 
         #region Implementation (data)
         private Vector3[] m_array;
-        private int m_count = 0;
+        private int m_count; // defaults to 0
         [NonSerialized]
-        private int m_version = 0;
+        private int m_version; // defaults to 0
         #endregion
 
         #region Static Wrappers
@@ -215,7 +215,7 @@ namespace Axiom.Math.Collections
 
         protected Vector3List( Tag t )
         {
-            m_array = null;
+            //m_array = null; //[FXCop Optimization : Do not initialize unnecessarily]
         }
         #endregion
 

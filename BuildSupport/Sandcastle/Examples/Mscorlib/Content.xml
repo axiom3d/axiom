@@ -1,0 +1,6 @@
+<content xml:space="preserve">
+
+	<item id="productTitle">.NET Framework Class Library</item>
+        <item id="rootLink"><referenceLink target="R:mscorlib">Namespaces</referenceLink></item>
+
+</content>

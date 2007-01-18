@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="7bf8ab64-83f5-4cf9-9bd1-b2ccaed6c643" revisionNumber="12">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.ActivationContext">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Identifies the activation context for the current application. This class cannot be inherited. </para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference> class contains an <codeEntityReference autoUpgrade="true">T:System.ApplicationIdentity</codeEntityReference> and provides internal-only access to the application manifest. The activation context is used during manifest-based activation to set up the domain policy and provide an application-based security model. For more information, see the <codeEntityReference autoUpgrade="true">T:System.Security.Policy.ApplicationSecurityManager</codeEntityReference> class.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <link xlink:href="34d8c770-48f2-460c-8d67-4ea5684511df">ClickOnce Deployment for Windows Forms Applications</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="P:System.ActivationContext.Identity">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the application identity for the current application.</para>
+        </summary>
+        <returnValue>
+          <para>An <codeEntityReference autoUpgrade="true">T:System.ApplicationIdentity</codeEntityReference> object that identifies the current application.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>An <codeEntityReference autoUpgrade="true">T:System.ApplicationIdentity</codeEntityReference> uniquely identifies an application by its full name and location.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.ActivationContext.Dispose">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Releases all resources used by the <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference>. </para>
+        </summary>
+        <remarks>
+          <content>
+            <para>Call <codeEntityReference autoUpgrade="true">M:System.ActivationContext.Dispose</codeEntityReference> when you are finished using the <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference>. The <codeEntityReference autoUpgrade="true">M:System.ActivationContext.Dispose</codeEntityReference> method leaves the <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference> in an unusable state. After calling <codeEntityReference autoUpgrade="true">M:System.ActivationContext.Dispose</codeEntityReference>, you must release all references to the <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference> so the garbage collector can reclaim the memory that the <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference> was occupying. For more information, see <link xlink:href="a17b0066-71c2-4ba4-9822-8e19332fc213">Cleaning Up Unmanaged Resources</link> and <link xlink:href="eb4e1af0-3b48-4fbc-ad4e-fc2f64138bf9">Implementing a Dispose Method</link>. </para>
+            <alert class="note">
+              <para>Always call <codeEntityReference autoUpgrade="true">M:System.ActivationContext.Dispose</codeEntityReference> before you release your last reference to the <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference>. Otherwise, the resources it is using will not be freed until the garbage collector calls the <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference> object's <languageKeyword>Finalize</languageKeyword> method.</para>
+            </alert>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="Overload:System.ActivationContext.CreatePartialActivationContext">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference> class. </para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.ActivationContext.CreatePartialActivationContext(System.ApplicationIdentity)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference> class using the specified application identity.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>identity</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.ApplicationIdentity</codeEntityReference> object that identifies an application.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference> object.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>applicationIdentity</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>No deployment or application identity is specified in <parameterReference>applicationIdentity</parameterReference>.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.ActivationContext.CreatePartialActivationContext(System.ApplicationIdentity)</codeEntityReference> method calls an internal constructor to create a new activation context. The implementation of the <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference> class in the .NET Framework version 2.0 is designed for applications that are neither fully installed in a store nor fully contained a folder. This method provides backward compatibility for later releases in which public constructors provide full activation contexts.</para>
+          </content>
+        </remarks>
+      <overload>
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference> class. </para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.ActivationContext.CreatePartialActivationContext(System.ApplicationIdentity,System.String[])">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference> class using the specified application identity and array of manifest paths.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>identity</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.ApplicationIdentity</codeEntityReference> object that identifies an application.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>manifestPaths</parameterReference>
+            <content>
+              <para>A string array of manifest paths for the application.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference> object.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>applicationIdentity</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>manifestPaths</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>No deployment or application identity is specified in <parameterReference>applicationIdentity</parameterReference>.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>applicationIdentity</parameterReference> does not match the identity in the manifests.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>applicationIdentity</parameterReference> does not have the same number of components as the manifest paths.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.ActivationContext.CreatePartialActivationContext(System.ApplicationIdentity,System.String[])</codeEntityReference> method calls an internal constructor to create a new activation context. The implementation of the <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference> class in the .NET Framework version 2.0 is designed for applications that are neither fully installed in a store nor fully contained a folder. This method provides backward compatibility for later releases in which public constructors provide full activation contexts.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.ActivationContext.Form">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the form, or store context, for the current application. </para>
+        </summary>
+        <returnValue>
+          <para>One of the <codeEntityReference autoUpgrade="true">T:System.ActivationContext.ContextForm</codeEntityReference> values. </para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>A manifest-based application might not be installed in the ClickOnce store.  Applications not in the store, such as a manifest-activated application executing in <token>vsprvslong</token>, are classified as <codeEntityReference autoUpgrade="true">F:System.ActivationContext.ContextForm.Loose</codeEntityReference>.  Applications in the store are classified as <codeEntityReference autoUpgrade="true">F:System.ActivationContext.ContextForm.StoreBounded</codeEntityReference>.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.ActivationContext.System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Populates a <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference>  with the data needed to serialize the target object.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>info</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference>  to populate with data.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>context</parameterReference>
+            <content>
+              <para>The  <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.StreamingContext</codeEntityReference> structure for this serialization.</para>
+            </content>
+          </parameter>
+        </parameters>
+      </dduexml>
+    </member>
+  </members>
+</doc>

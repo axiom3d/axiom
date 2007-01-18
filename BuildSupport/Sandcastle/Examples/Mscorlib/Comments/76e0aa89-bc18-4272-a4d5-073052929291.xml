@@ -1,0 +1,1108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="76e0aa89-bc18-4272-a4d5-073052929291" revisionNumber="2">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.BitConverter">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts base data types to an array of bytes, and an array of bytes to base data types.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>This class facilitates manipulating value types in their fundamental form. A byte is defined as an 8-bit unsigned integer.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example illustrates the use of several <languageKeyword>BitConverter</languageKeyword> class methods.</para>
+                <codeReference>System.BitConverter.Class#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="F:System.BitConverter.IsLittleEndian">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates the byte order ("endianess") in which data is stored in this computer architecture.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>This value is <languageKeyword>true</languageKeyword> if the architecture is little-endian; <languageKeyword>false</languageKeyword> if it is big-endian.</para>
+            <para>Different computer architectures store data using different byte orders. "Big-endian" means the most significant byte is on the left end of a word. "Little-endian" means the most significant byte is on the right end of a word.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example illustrates the use of the <languageKeyword>IsLittleEndian</languageKeyword> field.</para>
+                <codeReference>System.BitConverter.Class#2</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.BitConverter.DoubleToInt64Bits(System.Double)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the specified double-precision floating point number to a 64-bit signed integer.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The number to convert. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A 64-bit signed integer whose value is equivalent to <parameterReference>value</parameterReference>.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts the bit patterns of several <codeEntityReference autoUpgrade="true">T:System.Double</codeEntityReference> values to <codeEntityReference autoUpgrade="true">T:System.Int64</codeEntityReference> values with the <languageKeyword>DoubleToInt64Bits</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.DoubleInt64#2</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="Overload:System.BitConverter.GetBytes">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the specified data to an array of bytes.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.BitConverter.GetBytes(System.Boolean)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the specified Boolean value as an array of bytes.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>A Boolean value. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An array of bytes with length 1.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts the bit patterns of <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference> values to <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> arrays with the <languageKeyword>GetBytes</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.GetBytes.Others#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>Converts the specified data to an array of bytes.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.BitConverter.GetBytes(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the specified Unicode character value as an array of bytes.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>A character to convert. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An array of bytes with length 2.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts the bit patterns of <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> values (Unicode characters) to <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> arrays with the <languageKeyword>GetBytes</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.GetBytes.Others#2</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.BitConverter.GetBytes(System.Double)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the specified double-precision floating point value as an array of bytes.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The number to convert. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An array of bytes with length 8.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts the bit patterns of <codeEntityReference autoUpgrade="true">T:System.Double</codeEntityReference> values to <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> arrays with the <languageKeyword>GetBytes</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.GetBytes.Others#4</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.BitConverter.GetBytes(System.Int16)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the specified 16-bit signed integer value as an array of bytes.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The number to convert. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An array of bytes with length 2.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts the bit patterns of <codeEntityReference autoUpgrade="true">T:System.Int16</codeEntityReference> values to <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> arrays with the <languageKeyword>GetBytes</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.GetBytes.SInts#3</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.BitConverter.GetBytes(System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the specified 32-bit signed integer value as an array of bytes.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The number to convert. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An array of bytes with length 4.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts the bit patterns of <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference> values to <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> arrays with the <languageKeyword>GetBytes</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.GetBytes.SInts#2</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.BitConverter.GetBytes(System.Int64)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the specified 64-bit signed integer value as an array of bytes.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The number to convert. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An array of bytes with length 8.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts the bit patterns of <codeEntityReference autoUpgrade="true">T:System.Int64</codeEntityReference> values to <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> arrays with the <languageKeyword>GetBytes</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.GetBytes.SInts#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.BitConverter.GetBytes(System.Single)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the specified single-precision floating point value as an array of bytes.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The number to convert. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An array of bytes with length 4.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts the bit patterns of <codeEntityReference autoUpgrade="true">T:System.Single</codeEntityReference> values to <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> arrays with the <languageKeyword>GetBytes</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.GetBytes.Others#3</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.BitConverter.GetBytes(System.UInt16)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the specified 16-bit unsigned integer value as an array of bytes.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The number to convert. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An array of bytes with length 2.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts the bit patterns of <codeEntityReference autoUpgrade="true">T:System.UInt16</codeEntityReference> values to <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> arrays with the <languageKeyword>GetBytes</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.GetBytes.UInts#3</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.BitConverter.GetBytes(System.UInt32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the specified 32-bit unsigned integer value as an array of bytes.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The number to convert. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An array of bytes with length 4.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts the bit patterns of <codeEntityReference autoUpgrade="true">T:System.UInt32</codeEntityReference> values to <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> arrays with the <languageKeyword>GetBytes</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.GetBytes.UInts#2</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.BitConverter.GetBytes(System.UInt64)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the specified 64-bit unsigned integer value as an array of bytes.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The number to convert. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An array of bytes with length 8.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts the bit patterns of <codeEntityReference autoUpgrade="true">T:System.UInt64</codeEntityReference> values to <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> arrays with the <languageKeyword>GetBytes</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.GetBytes.UInts#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.BitConverter.Int64BitsToDouble(System.Int64)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the specified 64-bit signed integer to a double-precision floating point number.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The number to convert. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A double-precision floating point number whose value is equivalent to <parameterReference>value</parameterReference>.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts the bit patterns of several <codeEntityReference autoUpgrade="true">T:System.Int64</codeEntityReference> values to <codeEntityReference autoUpgrade="true">T:System.Double</codeEntityReference> values with the <languageKeyword>Int64BitsToDouble</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.DoubleInt64#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.BitConverter.ToBoolean(System.Byte[],System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a Boolean value converted from one byte at a specified position in a byte array.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>An array of bytes. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>startIndex</parameterReference>
+            <content>
+              <para>The starting position within <parameterReference>value</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the byte at <parameterReference>startIndex</parameterReference> in <parameterReference>value</parameterReference> is nonzero; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>startIndex</parameterReference> is less than zero or greater than the length of <parameterReference>value</parameterReference> minus 1. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts elements of <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> arrays to <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference> values with the <languageKeyword>ToBoolean</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.ToXXX.Others#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.BitConverter.ToChar(System.Byte[],System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a Unicode character converted from two bytes at a specified position in a byte array.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>An array. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>startIndex</parameterReference>
+            <content>
+              <para>The starting position within <parameterReference>value</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A character formed by two bytes beginning at <parameterReference>startIndex</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>startIndex</parameterReference> is less than zero or greater than the length of <parameterReference>value</parameterReference> minus 2. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts elements of <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> arrays to <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> values (Unicode characters) with the <languageKeyword>ToChar</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.ToXXX.Others#2</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.BitConverter.ToDouble(System.Byte[],System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a double-precision floating point number converted from eight bytes at a specified position in a byte array.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>An array of bytes. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>startIndex</parameterReference>
+            <content>
+              <para>The starting position within <parameterReference>value</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A double precision floating point number formed by eight bytes beginning at <parameterReference>startIndex</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>startIndex</parameterReference> is less than zero or greater than the length of <parameterReference>value</parameterReference> minus 8. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts elements of <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> arrays to <codeEntityReference autoUpgrade="true">T:System.Double</codeEntityReference> values with the <languageKeyword>ToDouble</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.ToXXX.Others#3</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.BitConverter.ToInt16(System.Byte[],System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a 16-bit signed integer converted from two bytes at a specified position in a byte array.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>An array of bytes. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>startIndex</parameterReference>
+            <content>
+              <para>The starting position within <parameterReference>value</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A 16-bit signed integer formed by two bytes beginning at <parameterReference>startIndex</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>startIndex</parameterReference> is less than zero or greater than the length of <parameterReference>value</parameterReference> minus 2. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts elements of <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> arrays to <codeEntityReference autoUpgrade="true">T:System.Int16</codeEntityReference> values with the <languageKeyword>ToInt16</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.ToXXX.SInts#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Int16</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.BitConverter.ToInt32(System.Byte[],System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a 32-bit signed integer converted from four bytes at a specified position in a byte array.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>An array of bytes. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>startIndex</parameterReference>
+            <content>
+              <para>The starting position within <parameterReference>value</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A 32-bit signed integer formed by four bytes beginning at <parameterReference>startIndex</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>startIndex</parameterReference> is less than zero or greater than the length of <parameterReference>value</parameterReference> minus 4. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts elements of <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> arrays to <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference> values with the <languageKeyword>ToInt32</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.ToXXX.SInts#2</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.BitConverter.ToInt64(System.Byte[],System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a 64-bit signed integer converted from eight bytes at a specified position in a byte array.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>An array of bytes. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>startIndex</parameterReference>
+            <content>
+              <para>The starting position within <parameterReference>value</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A 64-bit signed integer formed by eight bytes beginning at <parameterReference>startIndex</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>startIndex</parameterReference> is less than zero or greater than the length of <parameterReference>value</parameterReference> minus 8. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts elements of <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> arrays to <codeEntityReference autoUpgrade="true">T:System.Int64</codeEntityReference> values with the <languageKeyword>ToInt64</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.ToXXX.SInts#3</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Int64</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.BitConverter.ToSingle(System.Byte[],System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a single-precision floating point number converted from four bytes at a specified position in a byte array.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>An array of bytes. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>startIndex</parameterReference>
+            <content>
+              <para>The starting position within <parameterReference>value</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A single-precision floating point number formed by four bytes beginning at <parameterReference>startIndex</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>startIndex</parameterReference> is less than zero or greater than the length of <parameterReference>value</parameterReference> minus 4. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts elements of <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> arrays to <codeEntityReference autoUpgrade="true">T:System.Single</codeEntityReference> values with the <languageKeyword>ToSingle</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.ToXXX.Others#4</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Single</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.BitConverter.ToString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a <languageKeyword>String</languageKeyword> converted from the elements of a byte array.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.BitConverter.ToString(System.Byte[])">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a <languageKeyword>String</languageKeyword> converted from the elements of a byte array.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>An array of bytes. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> of hexadecimal pairs separated by hyphens, where each pair represents the corresponding element in <parameterReference>value</parameterReference>; for example, "7F-2C-4A".</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>All the elements of <parameterReference>value</parameterReference> are converted.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> arrays to <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> objects with the <languageKeyword>ToString</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.ToString#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>Returns a <languageKeyword>String</languageKeyword> converted from the elements of a byte array.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.BitConverter.ToString(System.Byte[],System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a <languageKeyword>String</languageKeyword> converted from the elements of a byte array starting at a specified array position.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>An array of bytes. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>startIndex</parameterReference>
+            <content>
+              <para>The starting position within <parameterReference>value</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> of hexadecimal pairs separated by hyphens, where each pair represents the corresponding element in <parameterReference>value</parameterReference>; for example, "7F-2C-4A".</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>startIndex</parameterReference> is less than zero or greater than the length of <parameterReference>value</parameterReference> minus 1. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The elements from array position <parameterReference>startIndex</parameterReference> to the end of the array are converted.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts the part of a <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> array starting at the specified <parameterReference>startIndex</parameterReference> to a <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> with the <languageKeyword>ToString</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.ToString#2</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.BitConverter.ToString(System.Byte[],System.Int32,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a <languageKeyword>String</languageKeyword> converted from a specified number of bytes at a specified position in a byte array.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>An array of bytes. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>startIndex</parameterReference>
+            <content>
+              <para>The starting position within <parameterReference>value</parameterReference>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>length</parameterReference>
+            <content>
+              <para>The number of bytes to convert. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> of hexadecimal pairs separated by hyphens, where each pair represents the corresponding element in <parameterReference>value</parameterReference>; for example, "7F-2C-4A".</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>startIndex</parameterReference> or <parameterReference>length</parameterReference> is less than zero.</para>
+              <para>-or-</para>
+              <para>
+                <parameterReference>startIndex</parameterReference> is greater than zero and is greater than or equal to the length of <parameterReference>value</parameterReference>.</para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>The combination of <parameterReference>startIndex</parameterReference> and <parameterReference>length</parameterReference> does not specify a position within <parameterReference>value</parameterReference>; that is, the <parameterReference>startIndex</parameterReference> parameter is greater than the length of <parameterReference>value</parameterReference> minus the <parameterReference>length</parameterReference> parameter.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <parameterReference>length</parameterReference> elements from array position <parameterReference>startIndex</parameterReference> are converted.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts the part of a <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> array starting at the specified <parameterReference>startIndex</parameterReference> with the specified <parameterReference>length</parameterReference> to a <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> using the <languageKeyword>ToString</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.ToString#2</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.BitConverter.ToUInt16(System.Byte[],System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a 16-bit unsigned integer converted from two bytes at a specified position in a byte array.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The array of bytes. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>startIndex</parameterReference>
+            <content>
+              <para>The starting position within <parameterReference>value</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A 16-bit unsigned integer formed by two bytes beginning at <parameterReference>startIndex</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>startIndex</parameterReference> is less than zero or greater than the length of <parameterReference>value</parameterReference> minus 2. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts elements of <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> arrays to <codeEntityReference autoUpgrade="true">T:System.UInt16</codeEntityReference> values with the <languageKeyword>ToUInt16</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.ToXXX.UInts#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.UInt16</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.BitConverter.ToUInt32(System.Byte[],System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a 32-bit unsigned integer converted from four bytes at a specified position in a byte array.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>An array of bytes. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>startIndex</parameterReference>
+            <content>
+              <para>The starting position within <parameterReference>value</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A 32-bit unsigned integer formed by four bytes beginning at <parameterReference>startIndex</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>startIndex</parameterReference> is less than zero or greater than the length of <parameterReference>value</parameterReference> minus 4. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts elements of <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> arrays to <codeEntityReference autoUpgrade="true">T:System.UInt32</codeEntityReference> values with the <languageKeyword>ToUInt32</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.ToXXX.UInts#2</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.UInt32</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.BitConverter.ToUInt64(System.Byte[],System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a 64-bit unsigned integer converted from eight bytes at a specified position in a byte array.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>An array of bytes. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>startIndex</parameterReference>
+            <content>
+              <para>The starting position within <parameterReference>value</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A 64-bit unsigned integer formed by the eight bytes beginning at <parameterReference>startIndex</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>startIndex</parameterReference> is less than zero or greater than the length of <parameterReference>value</parameterReference> minus 8. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example converts elements of <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> arrays to <codeEntityReference autoUpgrade="true">T:System.UInt64</codeEntityReference> values with the <languageKeyword>ToUInt64</languageKeyword> method.</para>
+                <codeReference>System.BitConverter.ToXXX.UInts#3</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.UInt64</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

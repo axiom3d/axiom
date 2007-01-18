@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="1127b622-78be-4c1d-a16b-eef1f18ee5b9" revisionNumber="3">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.ContextStaticAttribute">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates that the value of a static field is unique for a particular context.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>A static field marked with <languageKeyword>ContextStaticAttribute</languageKeyword> is not shared between contexts. If the indicated static field is accessed on a different context, it will contain a different value. Use this attribute as it is, and do not derive from it.</para>
+            <para>The following example shows the syntax of this attribute: </para>
+            <para>[ContextStatic] </para>
+            <para>static int f=7; </para>
+            <para>For more information about using attributes, see <link xlink:href="30386922-1E00-4602-9EBF-526B271A8B87">[&lt;topic://cpconExtendingMetadataUsingAttributes&gt;]</link>.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Attribute</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Runtime.Remoting.Contexts.Context</codeEntityReference>
+          <link xlink:href="30386922-1E00-4602-9EBF-526B271A8B87">[&lt;topic://cpconExtendingMetadataUsingAttributes&gt;]</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.ContextStaticAttribute.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.ContextStaticAttribute</codeEntityReference> class.</para>
+        </summary>
+      </dduexml>
+    </member>
+  </members>
+</doc>

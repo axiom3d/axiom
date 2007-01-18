@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="67424df4-e98b-464a-8225-b90f1b0ac003" revisionNumber="3">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.FormatException">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The exception that is thrown when the format of an argument does not meet the parameter specifications of the invoked method.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.FormatException</codeEntityReference> is thrown when the format of an argument in a method invocation does not match the format of the corresponding formal parameter type. For example, if a method specifies a <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> parameter consisting of two digits with an embedded period, passing a corresponding string argument containing only two digits to that method would cause <codeEntityReference autoUpgrade="true">T:System.FormatException</codeEntityReference> to be thrown.</para>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.FormatException</codeEntityReference> uses the HRESULT COR_E_FORMAT, which has the value 0x80131537.</para>
+            <para>For a list of initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.FormatException</codeEntityReference>, see the <codeEntityReference autoUpgrade="true">M:System.FormatException.#ctor</codeEntityReference> constructors.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Exception</codeEntityReference>
+          <link xlink:href="F99A1D29-A2A8-47AF-9707-9909F9010735">[&lt;topic://cpconHandlingThrowingExceptions&gt;]</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.FormatException.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.FormatException</codeEntityReference> class.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>This constructor initializes the <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference> property of the new instance to a system-supplied message that describes the error, such as "Invalid format." This message takes into account the current system culture.</para>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.FormatException</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>A null reference (<languageKeyword>Nothing</languageKeyword> in Visual Basic). </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The localized error message string. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+      <overload>
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.FormatException</codeEntityReference> class.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.FormatException.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.FormatException</codeEntityReference> class.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.FormatException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.FormatException</codeEntityReference> class with serialized data.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>info</parameterReference>
+            <content>
+              <para>The object that holds the serialized object data. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>context</parameterReference>
+            <content>
+              <para>The contextual information about the source or destination. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>This constructor is called during deserialization to reconstitute the exception object transmitted over a stream. For more information, see <link xlink:href="832AC524-21BC-419A-A27B-CA8BFC45840F">[&lt;topic://cpconSerialization&gt;]</link>.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <link xlink:href="832AC524-21BC-419A-A27B-CA8BFC45840F">[&lt;topic://cpconSerialization&gt;]</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.FormatException.#ctor(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.FormatException</codeEntityReference> class with a specified error message.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>message</parameterReference>
+            <content>
+              <para>The message that describes the error. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>This constructor initializes the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.Exception.Message</codeEntityReference> property of the new exception using the <parameterReference>message</parameterReference> parameter. The content of <parameterReference>message</parameterReference> is intended to be understood by humans. The caller of this constructor is required to ensure that this string has been localized for the current system culture.</para>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.FormatException</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>A null reference (<languageKeyword>Nothing</languageKeyword> in Visual Basic). </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The error message string. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.FormatException.#ctor(System.String,System.Exception)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.FormatException</codeEntityReference> class with a specified error message and a reference to the inner exception that is the cause of this exception.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>message</parameterReference>
+            <content>
+              <para>The error message that explains the reason for the exception. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>innerException</parameterReference>
+            <content>
+              <para>The exception that is the cause of the current exception. If the <parameterReference>innerException</parameterReference> parameter is not a null reference (<languageKeyword>Nothing</languageKeyword> in Visual Basic), the current exception is raised in a <languageKeyword>catch</languageKeyword> block that handles the inner exception. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>An exception that is thrown as a direct result of a previous exception should include a reference to the previous exception in the <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property. The <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property returns the same value that is passed into the constructor, or a null reference (<languageKeyword>Nothing</languageKeyword> in Visual Basic) if the <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property does not supply the inner exception value to the constructor.</para>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.FormatException</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The inner exception reference. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The error message string. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Exception</codeEntityReference>
+          <link xlink:href="F99A1D29-A2A8-47AF-9707-9909F9010735">[&lt;topic://cpconHandlingThrowingExceptions&gt;]</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="b24e7e88-a185-485e-b842-5323d571dca7" revisionNumber="6">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.ApplicationId">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Contains information used to uniquely identify an application. This class cannot be inherited.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>An application identity consists of the publisher's public key, the application name, the target processor architecture, the application culture, and the application version. The application identity properties values correspond to information contained in the application manifest.</para>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.ApplicationId</codeEntityReference> is used by the <codeEntityReference autoUpgrade="true">T:System.Security.Policy.ApplicationSecurityInfo</codeEntityReference> class to identify an application.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example displays the <codeEntityReference autoUpgrade="true">T:System.ApplicationId</codeEntityReference> properties by obtaining the <codeEntityReference autoUpgrade="true">T:System.ApplicationId</codeEntityReference> from an <codeEntityReference autoUpgrade="true">T:System.Security.Policy.ApplicationSecurityInfo</codeEntityReference> instance created using the <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference> for the currently executing manifest-based application. </para>
+                <codeReference>System.ApplicationIdentity#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.ApplicationId.#ctor(System.Byte[],System.String,System.Version,System.String,System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.ApplicationId</codeEntityReference> class.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>publicKeyToken</parameterReference>
+            <content>
+              <para>The array of bytes representing the raw public key data. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>name</parameterReference>
+            <content>
+              <para>The name of the application. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>version</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Version</codeEntityReference> object that specifies the version of the application. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>processorArchitecture</parameterReference>
+            <content>
+              <para>The processor architecture of the application. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>culture</parameterReference>
+            <content>
+              <para>The culture of the application. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>The constructor initializes the <codeEntityReference autoUpgrade="true">P:System.ApplicationId.Culture</codeEntityReference>, <codeEntityReference autoUpgrade="true">P:System.ApplicationId.Name</codeEntityReference>, <codeEntityReference autoUpgrade="true">P:System.ApplicationId.ProcessorArchitecture</codeEntityReference>, <codeEntityReference autoUpgrade="true">P:System.ApplicationId.PublicKeyToken</codeEntityReference>, and <codeEntityReference autoUpgrade="true">P:System.ApplicationId.Version</codeEntityReference> properties of the <codeEntityReference autoUpgrade="true">T:System.ApplicationId</codeEntityReference>.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.ApplicationId.Copy">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates and returns an identical copy of the current application identity.</para>
+        </summary>
+        <returnValue>
+          <para>An <codeEntityReference autoUpgrade="true">T:System.ApplicationId</codeEntityReference> object that represents an exact copy of the original.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The copy returned by this method is equal to the original as substantiated by the <codeEntityReference autoUpgrade="true">M:System.ApplicationId.Equals(System.Object)</codeEntityReference> method. The hash codes for the original and the copy are also equal.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.ApplicationId.Culture">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a string representing the culture information for the application.</para>
+        </summary>
+        <returnValue>
+          <para>The culture information for the application.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.ApplicationId.Culture</codeEntityReference> value can include language information, for example, "en-US".</para>
+            <para>For information about culture values, see <codeEntityReference autoUpgrade="true">T:System.Globalization.CultureInfo</codeEntityReference>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example displays the <codeEntityReference autoUpgrade="true">P:System.ApplicationId.Culture</codeEntityReference> property by obtaining the <codeEntityReference autoUpgrade="true">T:System.ApplicationId</codeEntityReference> from an <codeEntityReference autoUpgrade="true">T:System.Security.Policy.ApplicationSecurityInfo</codeEntityReference> instance created using the <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference> for the currently executing manifest-based application.  This code example is part of a larger example provided for the <codeEntityReference autoUpgrade="true">T:System.ApplicationId</codeEntityReference> class.</para>
+                <codeReference>System.ApplicationIdentity#8</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.ApplicationId.Equals(System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Determines whether the specified <codeEntityReference autoUpgrade="true">T:System.ApplicationId</codeEntityReference> object is equivalent to the current <codeEntityReference autoUpgrade="true">T:System.ApplicationId</codeEntityReference>.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>o</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.ApplicationId</codeEntityReference> object to compare to the current <codeEntityReference autoUpgrade="true">T:System.ApplicationId</codeEntityReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the specified <codeEntityReference autoUpgrade="true">T:System.ApplicationId</codeEntityReference> object is equivalent to the current <codeEntityReference autoUpgrade="true">T:System.ApplicationId</codeEntityReference>; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This method overrides the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.Object.Equals(System.Object)</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+      <overload>
+        <summary>
+          <para>Determines whether two objects are equal.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.ApplicationId.GetHashCode">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the hash code for the current application identity.</para>
+        </summary>
+        <returnValue>
+          <para>The hash code for the current application identity.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This method generates the same hash code for two objects that have the same values for their <codeEntityReference autoUpgrade="true">P:System.ApplicationId.Name</codeEntityReference> and <codeEntityReference autoUpgrade="true">P:System.ApplicationId.Version</codeEntityReference> properties.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.ApplicationId.Name">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the name of the application.</para>
+        </summary>
+        <returnValue>
+          <para>The name of the application.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>
+              <codeEntityReference autoUpgrade="true">P:System.ApplicationId.Name</codeEntityReference> is the simple, unencrypted name of the application.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example displays the <codeEntityReference autoUpgrade="true">P:System.ApplicationId.Name</codeEntityReference> property by obtaining the <codeEntityReference autoUpgrade="true">T:System.ApplicationId</codeEntityReference> from an <codeEntityReference autoUpgrade="true">T:System.Security.Policy.ApplicationSecurityInfo</codeEntityReference> instance created using the <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference> for the currently executing manifest-based application. This code example is part of a larger example provided for the <codeEntityReference autoUpgrade="true">T:System.ApplicationId</codeEntityReference> class. </para>
+                <codeReference>System.ApplicationIdentity#7</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.ApplicationId.ProcessorArchitecture">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the target processor architecture for the application.</para>
+        </summary>
+        <returnValue>
+          <para>The processor architecture of the application.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Valid values include "msil", "x86", "ia64", and "amd64". The default is "msil", or Microsoft intermediate language, which means all your assemblies are platform independent, and the common language runtime will compile them when they are needed by your application.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example displays the <codeEntityReference autoUpgrade="true">P:System.ApplicationId.ProcessorArchitecture</codeEntityReference> property by obtaining the <codeEntityReference autoUpgrade="true">T:System.ApplicationId</codeEntityReference> from an <codeEntityReference autoUpgrade="true">T:System.Security.Policy.ApplicationSecurityInfo</codeEntityReference> instance created using the <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference> for the currently executing manifest-based application.  This code example is part of a larger example provided for the <codeEntityReference autoUpgrade="true">T:System.ApplicationId</codeEntityReference> class.</para>
+                <codeReference>System.ApplicationIdentity#9</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.ApplicationId.PublicKeyToken">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the public key token for the application.</para>
+        </summary>
+        <returnValue>
+          <para>A byte array containing the public key token for the application.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The public key token is represented by the last 8 bytes of the SHA-1 hash of the public key under which the application is signed.</para>
+            <para>For more information, see <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Reflection.AssemblyName.GetPublicKeyToken</codeEntityReference>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example displays the <codeEntityReference autoUpgrade="true">P:System.ApplicationId.PublicKeyToken</codeEntityReference> property by obtaining the <codeEntityReference autoUpgrade="true">T:System.ApplicationId</codeEntityReference> from an <codeEntityReference autoUpgrade="true">T:System.Security.Policy.ApplicationSecurityInfo</codeEntityReference> instance created using the <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference> for the currently executing manifest-based application. This code example is part of a larger example provided for the <codeEntityReference autoUpgrade="true">T:System.ApplicationId</codeEntityReference> class. </para>
+                <codeReference>System.ApplicationIdentity#11</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.ApplicationId.ToString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates and returns a string representation of the application identity.</para>
+        </summary>
+        <returnValue>
+          <para>A string representation of the application identity.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This method overrides the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Object.ToString</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.ApplicationId.Version">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the version of the application.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.Version</codeEntityReference> that specifies the version of the application.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>For more information, see <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Version</codeEntityReference>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example displays the <codeEntityReference autoUpgrade="true">P:System.ApplicationId.Version</codeEntityReference> property by obtaining the <codeEntityReference autoUpgrade="true">T:System.ApplicationId</codeEntityReference> from an <codeEntityReference autoUpgrade="true">T:System.Security.Policy.ApplicationSecurityInfo</codeEntityReference> instance created using the <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference> for the currently executing manifest-based application. This code example is part of a larger example provided for the <codeEntityReference autoUpgrade="true">T:System.ApplicationId</codeEntityReference> class. </para>
+                <codeReference>System.ApplicationIdentity#10</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="Overload:System.ApplicationId.Equals">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Determines whether two objects are equal.</para>
+        </summary>
+      </dduexml>
+    </member>
+  </members>
+</doc>

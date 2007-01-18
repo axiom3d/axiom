@@ -1,0 +1,972 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="26ead6df-cc79-4f52-85bd-b7b9ed9daced" revisionNumber="9">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System._AppDomain">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Exposes the public members of the <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.AppDomain</codeEntityReference> class to unmanaged code.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>This interface preserves the vtable order of the <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.AppDomain</codeEntityReference> class members that can be accessed by unmanaged COM objects.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.AppendPrivatePath(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.AppendPrivatePath(System.String)</codeEntityReference> method.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.AppendPrivatePath(System.String)</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="E:System._AppDomain.AssemblyLoad">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">E:System.AppDomain.AssemblyLoad</codeEntityReference> event.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">E:System.AppDomain.AssemblyLoad</codeEntityReference> event.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="E:System._AppDomain.AssemblyResolve">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">E:System.AppDomain.AssemblyResolve</codeEntityReference> event.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">E:System.AppDomain.AssemblyResolve</codeEntityReference> event.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System._AppDomain.BaseDirectory">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.AppDomain.BaseDirectory</codeEntityReference> property.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.AppDomain.BaseDirectory</codeEntityReference> property.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.ClearPrivatePath">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.ClearPrivatePath</codeEntityReference> method.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.ClearPrivatePath</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.ClearShadowCopyPath">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.ClearShadowCopyPath</codeEntityReference> method.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.ClearShadowCopyPath</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.CreateInstance(System.String,System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.CreateInstance(System.String,System.String)</codeEntityReference> method.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.CreateInstance(System.String,System.String)</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+      <overload>
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">Overload:System.AppDomain.CreateInstance</codeEntityReference> method.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System._AppDomain.CreateInstance">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">Overload:System.AppDomain.CreateInstance</codeEntityReference> method.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.CreateInstance(System.String,System.String,System.Boolean,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object[],System.Globalization.CultureInfo,System.Object[],System.Security.Policy.Evidence)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.CreateInstance(System.String,System.String,System.Boolean,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object[],System.Globalization.CultureInfo,System.Object[],System.Security.Policy.Evidence)</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.CreateInstance(System.String,System.String,System.Boolean,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object[],System.Globalization.CultureInfo,System.Object[],System.Security.Policy.Evidence)</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.CreateInstance(System.String,System.String,System.Object[])">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.CreateInstance(System.String,System.String,System.Object[])</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.CreateInstance(System.String,System.String,System.Object[])</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.CreateInstanceFrom(System.String,System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.CreateInstanceFrom(System.String,System.String)</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.CreateInstanceFrom(System.String,System.String)</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      <overload>
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">Overload:System.AppDomain.CreateInstanceFrom</codeEntityReference> method.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System._AppDomain.CreateInstanceFrom">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">Overload:System.AppDomain.CreateInstanceFrom</codeEntityReference> method.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.CreateInstanceFrom(System.String,System.String,System.Boolean,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object[],System.Globalization.CultureInfo,System.Object[],System.Security.Policy.Evidence)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.CreateInstanceFrom(System.String,System.String,System.Boolean,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object[],System.Globalization.CultureInfo,System.Object[],System.Security.Policy.Evidence)</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.CreateInstanceFrom(System.String,System.String,System.Boolean,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object[],System.Globalization.CultureInfo,System.Object[],System.Security.Policy.Evidence)</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.CreateInstanceFrom(System.String,System.String,System.Object[])">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.CreateInstanceFrom(System.String,System.String,System.Object[])</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.CreateInstanceFrom(System.String,System.String,System.Object[])</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess)</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess)</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      <overload>
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">Overload:System.AppDomain.DefineDynamicAssembly</codeEntityReference> method.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System._AppDomain.DefineDynamicAssembly">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">Overload:System.AppDomain.DefineDynamicAssembly</codeEntityReference> method.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.Security.PermissionSet,System.Security.PermissionSet,System.Security.PermissionSet)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.Security.PermissionSet,System.Security.PermissionSet,System.Security.PermissionSet)</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.Security.PermissionSet,System.Security.PermissionSet,System.Security.PermissionSet)</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.Security.Policy.Evidence)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.Security.Policy.Evidence)</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.Security.Policy.Evidence)</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.Security.Policy.Evidence,System.Security.PermissionSet,System.Security.PermissionSet,System.Security.PermissionSet)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.Security.Policy.Evidence,System.Security.PermissionSet,System.Security.PermissionSet,System.Security.PermissionSet)</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.Security.Policy.Evidence,System.Security.PermissionSet,System.Security.PermissionSet,System.Security.PermissionSet)</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.String)</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.String)</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.String,System.Security.PermissionSet,System.Security.PermissionSet,System.Security.PermissionSet)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.String,System.Security.PermissionSet,System.Security.PermissionSet,System.Security.PermissionSet)</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.String,System.Security.PermissionSet,System.Security.PermissionSet,System.Security.PermissionSet)</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.String,System.Security.Policy.Evidence)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.String,System.Security.Policy.Evidence)</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.String,System.Security.Policy.Evidence)</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.String,System.Security.Policy.Evidence,System.Security.PermissionSet,System.Security.PermissionSet,System.Security.PermissionSet)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.String,System.Security.Policy.Evidence,System.Security.PermissionSet,System.Security.PermissionSet,System.Security.PermissionSet)</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.String,System.Security.Policy.Evidence,System.Security.PermissionSet,System.Security.PermissionSet,System.Security.PermissionSet)</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.String,System.Security.Policy.Evidence,System.Security.PermissionSet,System.Security.PermissionSet,System.Security.PermissionSet,System.Boolean)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.String,System.Security.Policy.Evidence,System.Security.PermissionSet,System.Security.PermissionSet,System.Security.PermissionSet,System.Boolean)</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess,System.String,System.Security.Policy.Evidence,System.Security.PermissionSet,System.Security.PermissionSet,System.Security.PermissionSet,System.Boolean)</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.DoCallBack(System.CrossAppDomainDelegate)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.DoCallBack(System.CrossAppDomainDelegate)</codeEntityReference> method.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.DoCallBack(System.CrossAppDomainDelegate)</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="E:System._AppDomain.DomainUnload">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">E:System.AppDomain.DomainUnload</codeEntityReference> event.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">E:System.AppDomain.DomainUnload</codeEntityReference> event.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System._AppDomain.DynamicDirectory">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.AppDomain.DynamicDirectory</codeEntityReference> property.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.AppDomain.DynamicDirectory</codeEntityReference> property.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.Equals(System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the inherited <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Object.Equals(System.Object)</codeEntityReference> method.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Object.Equals(System.Object)</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System._AppDomain.Evidence">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.AppDomain.Evidence</codeEntityReference> property.</para>
+        </summary>
+        <returnValue>
+          <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.AppDomain.Evidence</codeEntityReference> property.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.ExecuteAssembly(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.ExecuteAssembly(System.String)</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.ExecuteAssembly(System.String)</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      <overload>
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">Overload:System.AppDomain.ExecuteAssembly</codeEntityReference> method.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System._AppDomain.ExecuteAssembly(System.String,System.Security.Policy.Evidence)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.ExecuteAssembly(System.String,System.Security.Policy.Evidence)</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.ExecuteAssembly(System.String,System.Security.Policy.Evidence)</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="Overload:System._AppDomain.ExecuteAssembly">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">Overload:System.AppDomain.ExecuteAssembly</codeEntityReference> method.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.ExecuteAssembly(System.String,System.Security.Policy.Evidence,System.String[])">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.ExecuteAssembly(System.String,System.Security.Policy.Evidence,System.String[])</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.ExecuteAssembly(System.String,System.Security.Policy.Evidence,System.String[])</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System._AppDomain.FriendlyName">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.AppDomain.FriendlyName</codeEntityReference> property.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.AppDomain.FriendlyName</codeEntityReference> property.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.GetAssemblies">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.GetAssemblies</codeEntityReference> method.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.GetAssemblies</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.GetData(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.GetData(System.String)</codeEntityReference> method.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.GetData(System.String)</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.GetHashCode">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the inherited <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Object.GetHashCode</codeEntityReference> method.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Object.GetHashCode</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.GetLifetimeService">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the inherited <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.MarshalByRefObject.GetLifetimeService</codeEntityReference> method.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.MarshalByRefObject.GetLifetimeService</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.GetType">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.GetType</codeEntityReference> method.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.GetType</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.InitializeLifetimeService">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.InitializeLifetimeService</codeEntityReference> method.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.InitializeLifetimeService</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.Load(System.Byte[])">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.Load(System.Byte[])</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.Load(System.Byte[])</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      <overload>
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">Overload:System.AppDomain.Load</codeEntityReference> method.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System._AppDomain.Load(System.Byte[],System.Byte[])">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.Load(System.Byte[],System.Byte[])</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.Load(System.Byte[],System.Byte[])</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.Load(System.Byte[],System.Byte[],System.Security.Policy.Evidence)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.Load(System.Byte[],System.Byte[],System.Security.Policy.Evidence)</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.Load(System.Byte[],System.Byte[],System.Security.Policy.Evidence)</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.Load(System.Reflection.AssemblyName)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.Load(System.Reflection.AssemblyName)</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.Load(System.Reflection.AssemblyName)</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="Overload:System._AppDomain.Load">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">Overload:System.AppDomain.Load</codeEntityReference> method.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.Load(System.Reflection.AssemblyName,System.Security.Policy.Evidence)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.Load(System.Reflection.AssemblyName,System.Security.Policy.Evidence)</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.Load(System.Reflection.AssemblyName,System.Security.Policy.Evidence)</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.Load(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.Load(System.String)</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.Load(System.String)</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.Load(System.String,System.Security.Policy.Evidence)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.Load(System.String,System.Security.Policy.Evidence)</codeEntityReference> method overload.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.AppDomain.Load(System.String,System.Security.Policy.Evidence)</codeEntityReference> method overload.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="E:System._AppDomain.ProcessExit">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">E:System.AppDomain.ProcessExit</codeEntityReference> event.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">E:System.AppDomain.ProcessExit</codeEntityReference> event.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System._AppDomain.RelativeSearchPath">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.AppDomain.RelativeSearchPath</codeEntityReference> property.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.AppDomain.RelativeSearchPath</codeEntityReference> property.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="E:System._AppDomain.ResourceResolve">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">E:System.AppDomain.ResourceResolve</codeEntityReference> event.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">E:System.AppDomain.ResourceResolve</codeEntityReference> event.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.SetAppDomainPolicy(System.Security.Policy.PolicyLevel)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.SetAppDomainPolicy(System.Security.Policy.PolicyLevel)</codeEntityReference> method.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.SetAppDomainPolicy(System.Security.Policy.PolicyLevel)</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.SetCachePath(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.SetCachePath(System.String)</codeEntityReference> method.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.SetCachePath(System.String)</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.SetData(System.String,System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.SetData(System.String,System.Object)</codeEntityReference> method.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.SetData(System.String,System.Object)</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.SetPrincipalPolicy(System.Security.Principal.PrincipalPolicy)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.SetPrincipalPolicy(System.Security.Principal.PrincipalPolicy)</codeEntityReference> method.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.SetPrincipalPolicy(System.Security.Principal.PrincipalPolicy)</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.SetShadowCopyPath(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.SetShadowCopyPath(System.String)</codeEntityReference> method.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.SetShadowCopyPath(System.String)</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.SetThreadPrincipal(System.Security.Principal.IPrincipal)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.SetThreadPrincipal(System.Security.Principal.IPrincipal)</codeEntityReference> method.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.SetThreadPrincipal(System.Security.Principal.IPrincipal)</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System._AppDomain.ShadowCopyFiles">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.AppDomain.ShadowCopyFiles</codeEntityReference> property.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.AppDomain.ShadowCopyFiles</codeEntityReference> property.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.ToString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.ToString</codeEntityReference> method.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.ToString</codeEntityReference> method.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="E:System._AppDomain.TypeResolve">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">E:System.AppDomain.TypeResolve</codeEntityReference> event.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.AppDomain.ToString</codeEntityReference> event.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="E:System._AppDomain.UnhandledException">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides COM objects with version-independent access to the <codeEntityReference qualifyHint="true" autoUpgrade="true">E:System.AppDomain.UnhandledException</codeEntityReference> event.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>See the <codeEntityReference qualifyHint="true" autoUpgrade="true">E:System.AppDomain.UnhandledException</codeEntityReference> event.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.GetIDsOfNames(System.Guid@,System.IntPtr,System.UInt32,System.UInt32,System.IntPtr)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Maps a set of names to a corresponding set of dispatch identifiers.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>riid</parameterReference>
+            <content>
+              <para>Reserved for future use. Must be IID_NULL.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>rgszNames</parameterReference>
+            <content>
+              <para>Passed-in array of names to be mapped.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>cNames</parameterReference>
+            <content>
+              <para>Count of the names to be mapped.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>lcid</parameterReference>
+            <content>
+              <para>The locale context in which to interpret the names.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>rgDispId</parameterReference>
+            <content>
+              <para>Caller-allocated array which receives the IDs corresponding to the names.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.NotImplementedException</codeEntityReference>
+            <content>
+              <para>The method is called late-bound using the COM <unmanagedCodeEntityReference>IDispatch</unmanagedCodeEntityReference> interface.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This method is for access to managed classes from unmanaged code, and should not be called from managed code. For more information about <unmanagedCodeEntityReference>IDispatch::GetIDsOfNames</unmanagedCodeEntityReference>, see the MSDN Library.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.GetTypeInfo(System.UInt32,System.UInt32,System.IntPtr)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Retrieves the type information for an object, which can then be used to get the type information for an interface.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>iTInfo</parameterReference>
+            <content>
+              <para>The type information to return.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>lcid</parameterReference>
+            <content>
+              <para>The locale identifier for the type information.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>ppTInfo</parameterReference>
+            <content>
+              <para>Receives a pointer to the requested type information object.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.NotImplementedException</codeEntityReference>
+            <content>
+              <para>The method is called late-bound using the COM <unmanagedCodeEntityReference>IDispatch</unmanagedCodeEntityReference> interface.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This method is for access to managed classes from unmanaged code, and should not be called from managed code. For more information about <unmanagedCodeEntityReference>IDispatch::GetTypeInfo</unmanagedCodeEntityReference>, see the MSDN Library.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.GetTypeInfoCount(System.UInt32@)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Retrieves the number of type information interfaces that an object provides (either 0 or 1).</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>pcTInfo</parameterReference>
+            <content>
+              <para>Points to a location that receives the number of type information interfaces provided by the object.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.NotImplementedException</codeEntityReference>
+            <content>
+              <para>The method is called late-bound using the COM <unmanagedCodeEntityReference>IDispatch</unmanagedCodeEntityReference> interface.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This method is for access to managed classes from unmanaged code, and should not be called from managed code. For more information about <unmanagedCodeEntityReference>IDispatch::GetTypeInfoCount</unmanagedCodeEntityReference>, see the MSDN Library.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System._AppDomain.Invoke(System.UInt32,System.Guid@,System.UInt32,System.Int16,System.IntPtr,System.IntPtr,System.IntPtr,System.IntPtr)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides access to properties and methods exposed by an object.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>dispIdMember</parameterReference>
+            <content>
+              <para>Identifies the member.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>riid</parameterReference>
+            <content>
+              <para>Reserved for future use. Must be IID_NULL.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>lcid</parameterReference>
+            <content>
+              <para>The locale context in which to interpret arguments.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>wFlags</parameterReference>
+            <content>
+              <para>Flags describing the context of the call.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>pDispParams</parameterReference>
+            <content>
+              <para>Pointer to a structure containing an array of arguments, an array of argument DISPIDs for named arguments, and counts for the number of elements in the arrays.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>pVarResult</parameterReference>
+            <content>
+              <para>Pointer to the location where the result is to be stored.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>pExcepInfo</parameterReference>
+            <content>
+              <para>Pointer to a structure that contains exception information.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>puArgErr</parameterReference>
+            <content>
+              <para>The index of the first argument that has an error.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.NotImplementedException</codeEntityReference>
+            <content>
+              <para>The method is called late-bound using the COM <unmanagedCodeEntityReference>IDispatch</unmanagedCodeEntityReference> interface.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This method is for access to managed classes from unmanaged code, and should not be called from managed code. For more information about <unmanagedCodeEntityReference>IDispatch::Invoke</unmanagedCodeEntityReference>, see the MSDN Library.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+  </members>
+</doc>

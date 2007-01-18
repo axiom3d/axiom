@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="f15b7b89-7325-4ef2-8161-8a8841d75fd4" revisionNumber="1">
+  <assembly>
+    <name>System</name>
+  </assembly>
+  <members>
+    <member name="T:System.UriHostNameType">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Defines host name types for the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Uri.CheckHostName(System.String)</codeEntityReference> method.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.UriHostNameType</codeEntityReference> enumeration defines the values that the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Uri.CheckHostName(System.String)</codeEntityReference> method can return.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="F:System.UriHostNameType.Basic">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The host is set, but the type cannot be determined.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.UriHostNameType.Dns">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The host name is a domain name system (DNS) style host name.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.UriHostNameType.IPv4">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The host name is an Internet Protocol (IP) version 4 host address.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.UriHostNameType.IPv6">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The host name is an Internet Protocol (IP) version 6 host address.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.UriHostNameType.Unknown">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The type of the host name is not supplied.</para>
+        </summary>
+      </dduexml>
+    </member>
+  </members>
+</doc>

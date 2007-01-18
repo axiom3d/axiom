@@ -45,10 +45,6 @@ namespace Axiom.Text
     /// </summary>
     public class TextManager
     {
-        static TextManager()
-        {
-        }
-
         /// <summary>
         /// Used to retreive a text resource by passing a key.  
         /// </summary>

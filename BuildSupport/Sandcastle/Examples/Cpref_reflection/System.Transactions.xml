@@ -1,0 +1,3593 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<reflection>
+  <assemblies>
+    <assembly name="System.Transactions" version="2.0.0.0" culture="" key="00000000000000000400000000000000" hash="SHA1">
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComCompatibleVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>1</value>
+          </argument>
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>0</value>
+          </argument>
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>3300</value>
+          </argument>
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute" ref="true" />
+          <assignment name="WrapNonExceptionThrows">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyKeyFileAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>f:\RTM\Tools\devdiv\EcmaPublicKey.snk</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.BestFitMappingAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.CLSCompliantAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.AllowPartiallyTrustedCallersAttribute" ref="true" />
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyTitleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.Transactions.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDescriptionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.Transactions.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDefaultAliasAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>System.Transactions.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCompanyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft Corporation</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyProductAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoftr .NET Framework</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCopyrightAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>c Microsoft Corporation.  All rights reserved.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyFileVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.50727.12</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyInformationalVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.50727.12</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.SatelliteContractVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.0.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.NeutralResourcesLanguageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>en-US</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDelaySignAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.SecurityPermissionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="RequestMinimum" />
+            </enumValue>
+          </argument>
+        </attribute>
+      </attributes>
+    </assembly>
+  </assemblies>
+  <apis>
+    <api id="T:System.Transactions.CommittableTransaction">
+      <apidata name="CommittableTransaction" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Transactions.Transaction" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.IAsyncResult" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Transactions.CommittableTransaction.#ctor" />
+        <element api="M:System.Transactions.CommittableTransaction.#ctor(System.TimeSpan)" />
+        <element api="M:System.Transactions.CommittableTransaction.#ctor(System.Transactions.TransactionOptions)" />
+        <element api="M:System.Transactions.CommittableTransaction.BeginCommit(System.AsyncCallback,System.Object)" />
+        <element api="M:System.Transactions.CommittableTransaction.Commit" />
+        <element api="M:System.Transactions.CommittableTransaction.EndCommit(System.IAsyncResult)" />
+        <element api="P:System.Transactions.CommittableTransaction.System.IAsyncResult.AsyncState" />
+        <element api="P:System.Transactions.CommittableTransaction.System.IAsyncResult.CompletedSynchronously" />
+        <element api="P:System.Transactions.CommittableTransaction.System.IAsyncResult.AsyncWaitHandle" />
+        <element api="P:System.Transactions.CommittableTransaction.System.IAsyncResult.IsCompleted" />
+        <element api="M:System.Transactions.Transaction.GetHashCode" />
+        <element api="M:System.Transactions.Transaction.Equals(System.Object)" />
+        <element api="M:System.Transactions.Transaction.EnlistDurable(System.Guid,System.Transactions.IEnlistmentNotification,System.Transactions.EnlistmentOptions)" />
+        <element api="M:System.Transactions.Transaction.EnlistDurable(System.Guid,System.Transactions.ISinglePhaseNotification,System.Transactions.EnlistmentOptions)" />
+        <element api="M:System.Transactions.Transaction.Rollback" />
+        <element api="M:System.Transactions.Transaction.Rollback(System.Exception)" />
+        <element api="M:System.Transactions.Transaction.EnlistVolatile(System.Transactions.IEnlistmentNotification,System.Transactions.EnlistmentOptions)" />
+        <element api="M:System.Transactions.Transaction.EnlistVolatile(System.Transactions.ISinglePhaseNotification,System.Transactions.EnlistmentOptions)" />
+        <element api="M:System.Transactions.Transaction.Clone" />
+        <element api="M:System.Transactions.Transaction.DependentClone(System.Transactions.DependentCloneOption)" />
+        <element api="M:System.Transactions.Transaction.Dispose" />
+        <element api="M:System.Transactions.Transaction.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Transactions.Transaction.EnlistPromotableSinglePhase(System.Transactions.IPromotableSinglePhaseNotification)" />
+        <element api="P:System.Transactions.Transaction.TransactionInformation" />
+        <element api="P:System.Transactions.Transaction.IsolationLevel" />
+        <element api="E:System.Transactions.Transaction.TransactionCompleted" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="f373fdee-28d0-a484-8029-8088e8ca6afb" />
+    </api>
+    <api id="Overload:System.Transactions.CommittableTransaction.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.CommittableTransaction" />
+      </containers>
+      <elements>
+        <element api="M:System.Transactions.CommittableTransaction.#ctor" />
+        <element api="M:System.Transactions.CommittableTransaction.#ctor(System.TimeSpan)" />
+        <element api="M:System.Transactions.CommittableTransaction.#ctor(System.Transactions.TransactionOptions)" />
+      </elements>
+      <file name="7d7a1fc6-63b2-dc30-a84f-43ae9ef7f32e" />
+    </api>
+    <api id="M:System.Transactions.CommittableTransaction.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.CommittableTransaction" ref="true" />
+      </containers>
+      <file name="2abb4ff2-82a5-9c25-942f-85d10f292573" />
+    </api>
+    <api id="M:System.Transactions.CommittableTransaction.#ctor(System.TimeSpan)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="timeout">
+          <type api="T:System.TimeSpan" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.CommittableTransaction" ref="true" />
+      </containers>
+      <file name="589b654b-9020-a1c3-809d-76c4e91e8579" />
+    </api>
+    <api id="M:System.Transactions.CommittableTransaction.#ctor(System.Transactions.TransactionOptions)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="options">
+          <type api="T:System.Transactions.TransactionOptions" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.CommittableTransaction" ref="true" />
+      </containers>
+      <file name="6c4a93fa-a624-58fe-c5f2-06f6f33f1b3e" />
+    </api>
+    <api id="M:System.Transactions.CommittableTransaction.BeginCommit(System.AsyncCallback,System.Object)">
+      <apidata name="BeginCommit" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="asyncCallback">
+          <type api="T:System.AsyncCallback" ref="true" />
+        </parameter>
+        <parameter name="asyncState">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.IAsyncResult" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.CommittableTransaction" ref="true" />
+      </containers>
+      <file name="886eb101-8f5f-b339-c8f7-bd3bb49678ea" />
+    </api>
+    <api id="M:System.Transactions.CommittableTransaction.Commit">
+      <apidata name="Commit" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.CommittableTransaction" ref="true" />
+      </containers>
+      <file name="4a4800dc-83ab-678f-fed1-9ef9ba7fda92" />
+    </api>
+    <api id="M:System.Transactions.CommittableTransaction.EndCommit(System.IAsyncResult)">
+      <apidata name="EndCommit" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="asyncResult">
+          <type api="T:System.IAsyncResult" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.CommittableTransaction" ref="true" />
+      </containers>
+      <file name="0e0f6bde-62fe-c099-6f07-ea1b9ac88145" />
+    </api>
+    <api id="P:System.Transactions.CommittableTransaction.System.IAsyncResult.AsyncState">
+      <apidata name="System.IAsyncResult.AsyncState" group="member" subgroup="property" />
+      <memberdata visibility="private" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Object" ref="true" />
+      </returns>
+      <implements>
+        <member name="AsyncState" api="P:System.IAsyncResult.AsyncState">
+          <type api="T:System.IAsyncResult" ref="true" />
+        </member>
+      </implements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.CommittableTransaction" ref="true" />
+      </containers>
+      <file name="9ae3a378-2c2d-f74d-ffb5-07981d8253c5" />
+    </api>
+    <api id="P:System.Transactions.CommittableTransaction.System.IAsyncResult.AsyncWaitHandle">
+      <apidata name="System.IAsyncResult.AsyncWaitHandle" group="member" subgroup="property" />
+      <memberdata visibility="private" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Threading.WaitHandle" ref="true" />
+      </returns>
+      <implements>
+        <member name="AsyncWaitHandle" api="P:System.IAsyncResult.AsyncWaitHandle">
+          <type api="T:System.IAsyncResult" ref="true" />
+        </member>
+      </implements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.CommittableTransaction" ref="true" />
+      </containers>
+      <file name="4d091c19-31d2-cba9-30e7-0e2a9d5da8de" />
+    </api>
+    <api id="P:System.Transactions.CommittableTransaction.System.IAsyncResult.CompletedSynchronously">
+      <apidata name="System.IAsyncResult.CompletedSynchronously" group="member" subgroup="property" />
+      <memberdata visibility="private" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <implements>
+        <member name="CompletedSynchronously" api="P:System.IAsyncResult.CompletedSynchronously">
+          <type api="T:System.IAsyncResult" ref="true" />
+        </member>
+      </implements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.CommittableTransaction" ref="true" />
+      </containers>
+      <file name="33c3ae01-811c-f3e6-2536-a4c0a9f9dc37" />
+    </api>
+    <api id="P:System.Transactions.CommittableTransaction.System.IAsyncResult.IsCompleted">
+      <apidata name="System.IAsyncResult.IsCompleted" group="member" subgroup="property" />
+      <memberdata visibility="private" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <implements>
+        <member name="IsCompleted" api="P:System.IAsyncResult.IsCompleted">
+          <type api="T:System.IAsyncResult" ref="true" />
+        </member>
+      </implements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.CommittableTransaction" ref="true" />
+      </containers>
+      <file name="3b189239-a357-35f9-5d54-5c559c571961" />
+    </api>
+    <api id="T:System.Transactions.DependentCloneOption">
+      <apidata name="DependentCloneOption" group="type" subgroup="enumeration" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <enumerationbase>
+        <type api="T:System.Int32" ref="false" />
+      </enumerationbase>
+      <elements>
+        <element api="F:System.Transactions.DependentCloneOption.BlockCommitUntilComplete" />
+        <element api="F:System.Transactions.DependentCloneOption.RollbackIfNotComplete" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="55791e63-05d8-51b4-e6ce-4c289d6f80b2" />
+    </api>
+    <api id="T:System.Transactions.DependentTransaction">
+      <apidata name="DependentTransaction" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Transactions.Transaction" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Transactions.DependentTransaction.Complete" />
+        <element api="M:System.Transactions.Transaction.GetHashCode" />
+        <element api="M:System.Transactions.Transaction.Equals(System.Object)" />
+        <element api="M:System.Transactions.Transaction.EnlistDurable(System.Guid,System.Transactions.IEnlistmentNotification,System.Transactions.EnlistmentOptions)" />
+        <element api="M:System.Transactions.Transaction.EnlistDurable(System.Guid,System.Transactions.ISinglePhaseNotification,System.Transactions.EnlistmentOptions)" />
+        <element api="M:System.Transactions.Transaction.Rollback" />
+        <element api="M:System.Transactions.Transaction.Rollback(System.Exception)" />
+        <element api="M:System.Transactions.Transaction.EnlistVolatile(System.Transactions.IEnlistmentNotification,System.Transactions.EnlistmentOptions)" />
+        <element api="M:System.Transactions.Transaction.EnlistVolatile(System.Transactions.ISinglePhaseNotification,System.Transactions.EnlistmentOptions)" />
+        <element api="M:System.Transactions.Transaction.Clone" />
+        <element api="M:System.Transactions.Transaction.DependentClone(System.Transactions.DependentCloneOption)" />
+        <element api="M:System.Transactions.Transaction.Dispose" />
+        <element api="M:System.Transactions.Transaction.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Transactions.Transaction.EnlistPromotableSinglePhase(System.Transactions.IPromotableSinglePhaseNotification)" />
+        <element api="P:System.Transactions.Transaction.TransactionInformation" />
+        <element api="P:System.Transactions.Transaction.IsolationLevel" />
+        <element api="E:System.Transactions.Transaction.TransactionCompleted" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="2569780e-f00c-31dd-bc0e-cd824c6944a6" />
+    </api>
+    <api id="M:System.Transactions.DependentTransaction.Complete">
+      <apidata name="Complete" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.DependentTransaction" ref="true" />
+      </containers>
+      <file name="0631a76b-96b0-9e50-6a82-c3e2ca02ef15" />
+    </api>
+    <api id="T:System.Transactions.DistributedTransactionPermission">
+      <apidata name="DistributedTransactionPermission" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Security.CodeAccessPermission" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Security.Permissions.IUnrestrictedPermission" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Transactions.DistributedTransactionPermission.#ctor(System.Security.Permissions.PermissionState)" />
+        <element api="M:System.Transactions.DistributedTransactionPermission.IsUnrestricted" />
+        <element api="M:System.Transactions.DistributedTransactionPermission.Copy" />
+        <element api="M:System.Transactions.DistributedTransactionPermission.Intersect(System.Security.IPermission)" />
+        <element api="M:System.Transactions.DistributedTransactionPermission.Union(System.Security.IPermission)" />
+        <element api="M:System.Transactions.DistributedTransactionPermission.IsSubsetOf(System.Security.IPermission)" />
+        <element api="M:System.Transactions.DistributedTransactionPermission.ToXml" />
+        <element api="M:System.Transactions.DistributedTransactionPermission.FromXml(System.Security.SecurityElement)" />
+        <element api="M:System.Security.CodeAccessPermission.Demand" />
+        <element api="M:System.Security.CodeAccessPermission.Assert" />
+        <element api="M:System.Security.CodeAccessPermission.Deny" />
+        <element api="M:System.Security.CodeAccessPermission.PermitOnly" />
+        <element api="M:System.Security.CodeAccessPermission.ToString" />
+        <element api="M:System.Security.CodeAccessPermission.Equals(System.Object)" />
+        <element api="M:System.Security.CodeAccessPermission.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="e4a0d621-caaa-61c4-625f-9c4371a90915" />
+    </api>
+    <api id="M:System.Transactions.DistributedTransactionPermission.#ctor(System.Security.Permissions.PermissionState)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="state">
+          <type api="T:System.Security.Permissions.PermissionState" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.DistributedTransactionPermission" ref="true" />
+      </containers>
+      <file name="941301d1-d241-1c2a-bc3e-b4ce629f69b1" />
+    </api>
+    <api id="M:System.Transactions.DistributedTransactionPermission.Copy">
+      <apidata name="Copy" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" overrides="M:System.Security.CodeAccessPermission.Copy" />
+      <returns>
+        <type api="T:System.Security.IPermission" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.DistributedTransactionPermission" ref="true" />
+      </containers>
+      <file name="99398f02-01ea-2867-23e6-7a8721638e60" />
+    </api>
+    <api id="M:System.Transactions.DistributedTransactionPermission.FromXml(System.Security.SecurityElement)">
+      <apidata name="FromXml" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" overrides="M:System.Security.CodeAccessPermission.FromXml(System.Security.SecurityElement)" />
+      <parameters>
+        <parameter name="securityElement">
+          <type api="T:System.Security.SecurityElement" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.DistributedTransactionPermission" ref="true" />
+      </containers>
+      <file name="8e1d5908-c0f9-f0c8-bf7b-8031283d20c4" />
+    </api>
+    <api id="M:System.Transactions.DistributedTransactionPermission.Intersect(System.Security.IPermission)">
+      <apidata name="Intersect" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" overrides="M:System.Security.CodeAccessPermission.Intersect(System.Security.IPermission)" />
+      <parameters>
+        <parameter name="target">
+          <type api="T:System.Security.IPermission" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Security.IPermission" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.DistributedTransactionPermission" ref="true" />
+      </containers>
+      <file name="11377f18-26a7-9b5e-97ff-f528a946c4c5" />
+    </api>
+    <api id="M:System.Transactions.DistributedTransactionPermission.IsSubsetOf(System.Security.IPermission)">
+      <apidata name="IsSubsetOf" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" overrides="M:System.Security.CodeAccessPermission.IsSubsetOf(System.Security.IPermission)" />
+      <parameters>
+        <parameter name="target">
+          <type api="T:System.Security.IPermission" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.DistributedTransactionPermission" ref="true" />
+      </containers>
+      <file name="bc855327-c343-487c-92f8-c7486fbc4329" />
+    </api>
+    <api id="M:System.Transactions.DistributedTransactionPermission.IsUnrestricted">
+      <apidata name="IsUnrestricted" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.DistributedTransactionPermission" ref="true" />
+      </containers>
+      <file name="ce4f7485-dae8-a357-9c01-eb0f1a318a8f" />
+    </api>
+    <api id="M:System.Transactions.DistributedTransactionPermission.ToXml">
+      <apidata name="ToXml" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" overrides="M:System.Security.CodeAccessPermission.ToXml" />
+      <returns>
+        <type api="T:System.Security.SecurityElement" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.DistributedTransactionPermission" ref="true" />
+      </containers>
+      <file name="023c195c-e40d-b576-121a-da027e8585fb" />
+    </api>
+    <api id="M:System.Transactions.DistributedTransactionPermission.Union(System.Security.IPermission)">
+      <apidata name="Union" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" overrides="M:System.Security.CodeAccessPermission.Union(System.Security.IPermission)" />
+      <parameters>
+        <parameter name="target">
+          <type api="T:System.Security.IPermission" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Security.IPermission" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.DistributedTransactionPermission" ref="true" />
+      </containers>
+      <file name="85675632-97a5-8663-447e-b0b0acf90e93" />
+    </api>
+    <api id="T:System.Transactions.DistributedTransactionPermissionAttribute">
+      <apidata name="DistributedTransactionPermissionAttribute" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Security.Permissions.CodeAccessSecurityAttribute" ref="true" />
+          <type api="T:System.Security.Permissions.SecurityAttribute" ref="true" />
+          <type api="T:System.Attribute" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Transactions.DistributedTransactionPermissionAttribute.#ctor(System.Security.Permissions.SecurityAction)" />
+        <element api="M:System.Transactions.DistributedTransactionPermissionAttribute.CreatePermission" />
+        <element api="P:System.Transactions.DistributedTransactionPermissionAttribute.Unrestricted" />
+        <element api="P:System.Security.Permissions.SecurityAttribute.Action" />
+        <element api="M:System.Attribute.Equals(System.Object)" />
+        <element api="M:System.Attribute.GetHashCode" />
+        <element api="M:System.Attribute.Match(System.Object)" />
+        <element api="M:System.Attribute.IsDefaultAttribute" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetTypeInfoCount(System.UInt32@)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetTypeInfo(System.UInt32,System.UInt32,System.IntPtr)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#GetIDsOfNames(System.Guid@,System.IntPtr,System.UInt32,System.UInt32,System.IntPtr)" />
+        <element api="M:System.Attribute.System#Runtime#InteropServices#_Attribute#Invoke(System.UInt32,System.Guid@,System.UInt32,System.Int16,System.IntPtr,System.IntPtr,System.IntPtr,System.IntPtr)" />
+        <element api="P:System.Attribute.TypeId" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.AttributeUsageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.AttributeTargets" ref="false" />
+            <enumValue>
+              <field name="All" />
+            </enumValue>
+          </argument>
+          <assignment name="AllowMultiple">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="2b00d7af-cf21-61b1-ff97-8aa9600cf76d" />
+    </api>
+    <api id="M:System.Transactions.DistributedTransactionPermissionAttribute.#ctor(System.Security.Permissions.SecurityAction)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="action">
+          <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.DistributedTransactionPermissionAttribute" ref="true" />
+      </containers>
+      <file name="45e49f07-5308-33d3-8777-c00f7a77b5cc" />
+    </api>
+    <api id="M:System.Transactions.DistributedTransactionPermissionAttribute.CreatePermission">
+      <apidata name="CreatePermission" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" overrides="M:System.Security.Permissions.SecurityAttribute.CreatePermission" />
+      <returns>
+        <type api="T:System.Security.IPermission" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.DistributedTransactionPermissionAttribute" ref="true" />
+      </containers>
+      <file name="dca1b789-554a-25ee-1d73-05e13368730c" />
+    </api>
+    <api id="P:System.Transactions.DistributedTransactionPermissionAttribute.Unrestricted">
+      <apidata name="Unrestricted" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" overrides="P:System.Security.Permissions.SecurityAttribute.Unrestricted" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.DistributedTransactionPermissionAttribute" ref="true" />
+      </containers>
+      <file name="932604f7-0ad3-5b60-b93e-9d4381852985" />
+    </api>
+    <api id="T:System.Transactions.Enlistment">
+      <apidata name="Enlistment" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Transactions.Enlistment.Done" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="39420ed6-32e6-5084-8b35-a0a26ab50b6c" />
+    </api>
+    <api id="M:System.Transactions.Enlistment.Done">
+      <apidata name="Done" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.Enlistment" ref="true" />
+      </containers>
+      <file name="7aa8e395-0799-23db-e825-dd6f4d583e4a" />
+    </api>
+    <api id="T:System.Transactions.EnlistmentOptions">
+      <apidata name="EnlistmentOptions" group="type" subgroup="enumeration" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <enumerationbase>
+        <type api="T:System.Int32" ref="false" />
+      </enumerationbase>
+      <elements>
+        <element api="F:System.Transactions.EnlistmentOptions.None" />
+        <element api="F:System.Transactions.EnlistmentOptions.EnlistDuringPrepareRequired" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.FlagsAttribute" ref="true" />
+        </attribute>
+      </attributes>
+      <file name="5c1e56ca-c8c2-6ebe-e1dd-d5efcc7afa24" />
+    </api>
+    <api id="T:System.Transactions.EnterpriseServicesInteropOption">
+      <apidata name="EnterpriseServicesInteropOption" group="type" subgroup="enumeration" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <enumerationbase>
+        <type api="T:System.Int32" ref="false" />
+      </enumerationbase>
+      <elements>
+        <element api="F:System.Transactions.EnterpriseServicesInteropOption.None" />
+        <element api="F:System.Transactions.EnterpriseServicesInteropOption.Automatic" />
+        <element api="F:System.Transactions.EnterpriseServicesInteropOption.Full" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="eb43d412-166d-a81a-eb10-80fadc00edee" />
+    </api>
+    <api id="T:System.Transactions.HostCurrentTransactionCallback">
+      <apidata name="HostCurrentTransactionCallback" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <returns>
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="bffe1026-8691-3722-587e-20ce09a74a57" />
+    </api>
+    <api id="T:System.Transactions.IDtcTransaction">
+      <apidata name="IDtcTransaction" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.Transactions.IDtcTransaction.Commit(System.Int32,System.Int32,System.Int32)" />
+        <element api="M:System.Transactions.IDtcTransaction.Abort(System.IntPtr,System.Int32,System.Int32)" />
+        <element api="M:System.Transactions.IDtcTransaction.GetTransactionInfo(System.IntPtr)" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>0fb15084-af41-11ce-bd2b-204c4f4f5020</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.InterfaceTypeAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ComInterfaceType" ref="false" />
+            <enumValue>
+              <field name="InterfaceIsIUnknown" />
+            </enumValue>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="08e17b67-c4c6-3d5d-42b8-82a2a90f1ec1" />
+    </api>
+    <api id="M:System.Transactions.IDtcTransaction.Abort(System.IntPtr,System.Int32,System.Int32)">
+      <apidata name="Abort" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="reason">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="retaining">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="async">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.IDtcTransaction" ref="true" />
+      </containers>
+      <file name="701d8a08-4a56-7327-72c7-9a5b96362350" />
+    </api>
+    <api id="M:System.Transactions.IDtcTransaction.Commit(System.Int32,System.Int32,System.Int32)">
+      <apidata name="Commit" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="retaining">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="commitType">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="reserved">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.IDtcTransaction" ref="true" />
+      </containers>
+      <file name="d81c5d93-02fe-7c9d-328d-238bbedaac0b" />
+    </api>
+    <api id="M:System.Transactions.IDtcTransaction.GetTransactionInfo(System.IntPtr)">
+      <apidata name="GetTransactionInfo" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="transactionInformation">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.IDtcTransaction" ref="true" />
+      </containers>
+      <file name="7b64e86b-c8c1-8f29-8f61-f7f9d256caaa" />
+    </api>
+    <api id="T:System.Transactions.IEnlistmentNotification">
+      <apidata name="IEnlistmentNotification" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.Transactions.IEnlistmentNotification.Prepare(System.Transactions.PreparingEnlistment)" />
+        <element api="M:System.Transactions.IEnlistmentNotification.Commit(System.Transactions.Enlistment)" />
+        <element api="M:System.Transactions.IEnlistmentNotification.Rollback(System.Transactions.Enlistment)" />
+        <element api="M:System.Transactions.IEnlistmentNotification.InDoubt(System.Transactions.Enlistment)" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="c5ca9d23-506b-ea1a-427b-efadc4cb5a2b" />
+    </api>
+    <api id="M:System.Transactions.IEnlistmentNotification.Commit(System.Transactions.Enlistment)">
+      <apidata name="Commit" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="enlistment">
+          <type api="T:System.Transactions.Enlistment" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.IEnlistmentNotification" ref="true" />
+      </containers>
+      <file name="39bbda92-d578-fe47-0c15-6a98656a6bfb" />
+    </api>
+    <api id="M:System.Transactions.IEnlistmentNotification.InDoubt(System.Transactions.Enlistment)">
+      <apidata name="InDoubt" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="enlistment">
+          <type api="T:System.Transactions.Enlistment" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.IEnlistmentNotification" ref="true" />
+      </containers>
+      <file name="2d537b76-f733-4d87-16b7-9ccf48c73487" />
+    </api>
+    <api id="M:System.Transactions.IEnlistmentNotification.Prepare(System.Transactions.PreparingEnlistment)">
+      <apidata name="Prepare" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="preparingEnlistment">
+          <type api="T:System.Transactions.PreparingEnlistment" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.IEnlistmentNotification" ref="true" />
+      </containers>
+      <file name="d6ee823d-8cff-3a5a-5462-5b6c4158513e" />
+    </api>
+    <api id="M:System.Transactions.IEnlistmentNotification.Rollback(System.Transactions.Enlistment)">
+      <apidata name="Rollback" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="enlistment">
+          <type api="T:System.Transactions.Enlistment" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.IEnlistmentNotification" ref="true" />
+      </containers>
+      <file name="719c37eb-1ec4-c4b6-085e-fed3b8aa026c" />
+    </api>
+    <api id="T:System.Transactions.IPromotableSinglePhaseNotification">
+      <apidata name="IPromotableSinglePhaseNotification" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <implements>
+        <type api="T:System.Transactions.ITransactionPromoter" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Transactions.IPromotableSinglePhaseNotification.Initialize" />
+        <element api="M:System.Transactions.IPromotableSinglePhaseNotification.SinglePhaseCommit(System.Transactions.SinglePhaseEnlistment)" />
+        <element api="M:System.Transactions.IPromotableSinglePhaseNotification.Rollback(System.Transactions.SinglePhaseEnlistment)" />
+        <element api="M:System.Transactions.ITransactionPromoter.Promote" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="399b54f0-ee04-df0f-be87-9ccc60521b26" />
+    </api>
+    <api id="M:System.Transactions.IPromotableSinglePhaseNotification.Initialize">
+      <apidata name="Initialize" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.IPromotableSinglePhaseNotification" ref="true" />
+      </containers>
+      <file name="6c0ec76d-5a48-6cc1-42dc-ac8d9995f187" />
+    </api>
+    <api id="M:System.Transactions.IPromotableSinglePhaseNotification.Rollback(System.Transactions.SinglePhaseEnlistment)">
+      <apidata name="Rollback" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="singlePhaseEnlistment">
+          <type api="T:System.Transactions.SinglePhaseEnlistment" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.IPromotableSinglePhaseNotification" ref="true" />
+      </containers>
+      <file name="5bc2be21-5817-4edf-1800-fc20afcab2b2" />
+    </api>
+    <api id="M:System.Transactions.IPromotableSinglePhaseNotification.SinglePhaseCommit(System.Transactions.SinglePhaseEnlistment)">
+      <apidata name="SinglePhaseCommit" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="singlePhaseEnlistment">
+          <type api="T:System.Transactions.SinglePhaseEnlistment" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.IPromotableSinglePhaseNotification" ref="true" />
+      </containers>
+      <file name="c0f95c35-a6c8-e836-71a1-8caf1fdad5c5" />
+    </api>
+    <api id="T:System.Transactions.ISimpleTransactionSuperior">
+      <apidata name="ISimpleTransactionSuperior" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <implements>
+        <type api="T:System.Transactions.ITransactionPromoter" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Transactions.ISimpleTransactionSuperior.Rollback" />
+        <element api="M:System.Transactions.ITransactionPromoter.Promote" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="ca0752ba-8ee8-4e0b-c92e-88a09e060314" />
+    </api>
+    <api id="M:System.Transactions.ISimpleTransactionSuperior.Rollback">
+      <apidata name="Rollback" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.ISimpleTransactionSuperior" ref="true" />
+      </containers>
+      <file name="21046e21-7fbd-0363-10c9-9aae9f588507" />
+    </api>
+    <api id="T:System.Transactions.ISinglePhaseNotification">
+      <apidata name="ISinglePhaseNotification" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <implements>
+        <type api="T:System.Transactions.IEnlistmentNotification" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Transactions.ISinglePhaseNotification.SinglePhaseCommit(System.Transactions.SinglePhaseEnlistment)" />
+        <element api="M:System.Transactions.IEnlistmentNotification.Prepare(System.Transactions.PreparingEnlistment)" />
+        <element api="M:System.Transactions.IEnlistmentNotification.Commit(System.Transactions.Enlistment)" />
+        <element api="M:System.Transactions.IEnlistmentNotification.Rollback(System.Transactions.Enlistment)" />
+        <element api="M:System.Transactions.IEnlistmentNotification.InDoubt(System.Transactions.Enlistment)" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="dae665c2-5dd5-91f5-e993-5c0649f487ad" />
+    </api>
+    <api id="M:System.Transactions.ISinglePhaseNotification.SinglePhaseCommit(System.Transactions.SinglePhaseEnlistment)">
+      <apidata name="SinglePhaseCommit" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="singlePhaseEnlistment">
+          <type api="T:System.Transactions.SinglePhaseEnlistment" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.ISinglePhaseNotification" ref="true" />
+      </containers>
+      <file name="e9791696-57cf-0108-1dfd-72e225a9389c" />
+    </api>
+    <api id="T:System.Transactions.IsolationLevel">
+      <apidata name="IsolationLevel" group="type" subgroup="enumeration" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <enumerationbase>
+        <type api="T:System.Int32" ref="false" />
+      </enumerationbase>
+      <elements>
+        <element api="F:System.Transactions.IsolationLevel.Serializable" />
+        <element api="F:System.Transactions.IsolationLevel.RepeatableRead" />
+        <element api="F:System.Transactions.IsolationLevel.ReadCommitted" />
+        <element api="F:System.Transactions.IsolationLevel.ReadUncommitted" />
+        <element api="F:System.Transactions.IsolationLevel.Snapshot" />
+        <element api="F:System.Transactions.IsolationLevel.Chaos" />
+        <element api="F:System.Transactions.IsolationLevel.Unspecified" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="64b88c12-4a45-c6ac-ed41-97ed0020786c" />
+    </api>
+    <api id="T:System.Transactions.ITransactionPromoter">
+      <apidata name="ITransactionPromoter" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:System.Transactions.ITransactionPromoter.Promote" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="f3b51a1e-874b-3326-5dc0-74801812a6f9" />
+    </api>
+    <api id="M:System.Transactions.ITransactionPromoter.Promote">
+      <apidata name="Promote" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:System.Byte" ref="false" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.ITransactionPromoter" ref="true" />
+      </containers>
+      <file name="42f47abc-8d89-f788-99b6-26bb20d6f003" />
+    </api>
+    <api id="T:System.Transactions.PreparingEnlistment">
+      <apidata name="PreparingEnlistment" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Transactions.Enlistment" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Transactions.PreparingEnlistment.Prepared" />
+        <element api="M:System.Transactions.PreparingEnlistment.ForceRollback" />
+        <element api="M:System.Transactions.PreparingEnlistment.ForceRollback(System.Exception)" />
+        <element api="M:System.Transactions.PreparingEnlistment.RecoveryInformation" />
+        <element api="M:System.Transactions.Enlistment.Done" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="db6adb74-f9da-c864-9420-96dd3b324bdb" />
+    </api>
+    <api id="Overload:System.Transactions.PreparingEnlistment.ForceRollback">
+      <apidata name="ForceRollback" group="member" subgroup="method" pseudo="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.PreparingEnlistment" />
+      </containers>
+      <elements>
+        <element api="M:System.Transactions.PreparingEnlistment.ForceRollback" />
+        <element api="M:System.Transactions.PreparingEnlistment.ForceRollback(System.Exception)" />
+      </elements>
+      <file name="107b28ec-00a5-7ac2-bbd0-57f7271b039b" />
+    </api>
+    <api id="M:System.Transactions.PreparingEnlistment.ForceRollback">
+      <apidata name="ForceRollback" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" overload="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.PreparingEnlistment" ref="true" />
+      </containers>
+      <file name="5c1fd220-94c6-1dd1-ba9b-ba04fabc43eb" />
+    </api>
+    <api id="M:System.Transactions.PreparingEnlistment.ForceRollback(System.Exception)">
+      <apidata name="ForceRollback" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" overload="true" />
+      <parameters>
+        <parameter name="e">
+          <type api="T:System.Exception" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.PreparingEnlistment" ref="true" />
+      </containers>
+      <file name="72468738-e508-fb59-91b6-8bc55df99d2a" />
+    </api>
+    <api id="M:System.Transactions.PreparingEnlistment.Prepared">
+      <apidata name="Prepared" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.PreparingEnlistment" ref="true" />
+      </containers>
+      <file name="6d97c423-4cd4-eaf6-1e90-693b48207e49" />
+    </api>
+    <api id="M:System.Transactions.PreparingEnlistment.RecoveryInformation">
+      <apidata name="RecoveryInformation" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:System.Byte" ref="false" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.PreparingEnlistment" ref="true" />
+      </containers>
+      <file name="b2d962b7-2455-eae0-1c81-d9b337d44a22" />
+    </api>
+    <api id="T:System.Transactions.SinglePhaseEnlistment">
+      <apidata name="SinglePhaseEnlistment" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Transactions.Enlistment" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Transactions.SinglePhaseEnlistment.Aborted" />
+        <element api="M:System.Transactions.SinglePhaseEnlistment.Aborted(System.Exception)" />
+        <element api="M:System.Transactions.SinglePhaseEnlistment.Committed" />
+        <element api="M:System.Transactions.SinglePhaseEnlistment.InDoubt" />
+        <element api="M:System.Transactions.SinglePhaseEnlistment.InDoubt(System.Exception)" />
+        <element api="M:System.Transactions.Enlistment.Done" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="06369ef9-dedc-b9db-35e4-ada495f1609a" />
+    </api>
+    <api id="Overload:System.Transactions.SinglePhaseEnlistment.Aborted">
+      <apidata name="Aborted" group="member" subgroup="method" pseudo="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.SinglePhaseEnlistment" />
+      </containers>
+      <elements>
+        <element api="M:System.Transactions.SinglePhaseEnlistment.Aborted" />
+        <element api="M:System.Transactions.SinglePhaseEnlistment.Aborted(System.Exception)" />
+      </elements>
+      <file name="b12e21d0-02f0-0a85-2983-d1568f4c917c" />
+    </api>
+    <api id="Overload:System.Transactions.SinglePhaseEnlistment.InDoubt">
+      <apidata name="InDoubt" group="member" subgroup="method" pseudo="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.SinglePhaseEnlistment" />
+      </containers>
+      <elements>
+        <element api="M:System.Transactions.SinglePhaseEnlistment.InDoubt" />
+        <element api="M:System.Transactions.SinglePhaseEnlistment.InDoubt(System.Exception)" />
+      </elements>
+      <file name="a4971b11-194b-1642-ae39-59ec21202eed" />
+    </api>
+    <api id="M:System.Transactions.SinglePhaseEnlistment.Aborted">
+      <apidata name="Aborted" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" overload="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.SinglePhaseEnlistment" ref="true" />
+      </containers>
+      <file name="dbc687a9-ff1c-97f6-835e-0dbe31e94e68" />
+    </api>
+    <api id="M:System.Transactions.SinglePhaseEnlistment.Aborted(System.Exception)">
+      <apidata name="Aborted" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" overload="true" />
+      <parameters>
+        <parameter name="e">
+          <type api="T:System.Exception" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.SinglePhaseEnlistment" ref="true" />
+      </containers>
+      <file name="4d2ccd50-9864-c9eb-97b5-8ab923030cd3" />
+    </api>
+    <api id="M:System.Transactions.SinglePhaseEnlistment.Committed">
+      <apidata name="Committed" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.SinglePhaseEnlistment" ref="true" />
+      </containers>
+      <file name="6bbe8a53-cfdd-460c-5844-10b61517ebe4" />
+    </api>
+    <api id="M:System.Transactions.SinglePhaseEnlistment.InDoubt">
+      <apidata name="InDoubt" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" overload="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.SinglePhaseEnlistment" ref="true" />
+      </containers>
+      <file name="6de42fab-18d7-f3b3-5159-994cfcc60933" />
+    </api>
+    <api id="M:System.Transactions.SinglePhaseEnlistment.InDoubt(System.Exception)">
+      <apidata name="InDoubt" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" overload="true" />
+      <parameters>
+        <parameter name="e">
+          <type api="T:System.Exception" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.SinglePhaseEnlistment" ref="true" />
+      </containers>
+      <file name="26261195-82ce-ceec-2fe5-79e94a92aef8" />
+    </api>
+    <api id="T:System.Transactions.SubordinateTransaction">
+      <apidata name="SubordinateTransaction" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Transactions.Transaction" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Transactions.SubordinateTransaction.#ctor(System.Transactions.IsolationLevel,System.Transactions.ISimpleTransactionSuperior)" />
+        <element api="M:System.Transactions.Transaction.GetHashCode" />
+        <element api="M:System.Transactions.Transaction.Equals(System.Object)" />
+        <element api="M:System.Transactions.Transaction.EnlistDurable(System.Guid,System.Transactions.IEnlistmentNotification,System.Transactions.EnlistmentOptions)" />
+        <element api="M:System.Transactions.Transaction.EnlistDurable(System.Guid,System.Transactions.ISinglePhaseNotification,System.Transactions.EnlistmentOptions)" />
+        <element api="M:System.Transactions.Transaction.Rollback" />
+        <element api="M:System.Transactions.Transaction.Rollback(System.Exception)" />
+        <element api="M:System.Transactions.Transaction.EnlistVolatile(System.Transactions.IEnlistmentNotification,System.Transactions.EnlistmentOptions)" />
+        <element api="M:System.Transactions.Transaction.EnlistVolatile(System.Transactions.ISinglePhaseNotification,System.Transactions.EnlistmentOptions)" />
+        <element api="M:System.Transactions.Transaction.Clone" />
+        <element api="M:System.Transactions.Transaction.DependentClone(System.Transactions.DependentCloneOption)" />
+        <element api="M:System.Transactions.Transaction.Dispose" />
+        <element api="M:System.Transactions.Transaction.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Transactions.Transaction.EnlistPromotableSinglePhase(System.Transactions.IPromotableSinglePhaseNotification)" />
+        <element api="P:System.Transactions.Transaction.TransactionInformation" />
+        <element api="P:System.Transactions.Transaction.IsolationLevel" />
+        <element api="E:System.Transactions.Transaction.TransactionCompleted" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="72480e65-2324-8b7f-3c46-9ce2dba09e2f" />
+    </api>
+    <api id="M:System.Transactions.SubordinateTransaction.#ctor(System.Transactions.IsolationLevel,System.Transactions.ISimpleTransactionSuperior)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="isoLevel">
+          <type api="T:System.Transactions.IsolationLevel" ref="false" />
+        </parameter>
+        <parameter name="superior">
+          <type api="T:System.Transactions.ISimpleTransactionSuperior" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.SubordinateTransaction" ref="true" />
+      </containers>
+      <file name="5ae0ce72-b0ac-3433-0406-5f34b0f99342" />
+    </api>
+    <api id="T:System.Transactions.Transaction">
+      <apidata name="Transaction" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.IDisposable" ref="true" />
+        <type api="T:System.Runtime.Serialization.ISerializable" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Transactions.Transaction.GetHashCode" />
+        <element api="M:System.Transactions.Transaction.Equals(System.Object)" />
+        <element api="M:System.Transactions.Transaction.op_Equality(System.Transactions.Transaction,System.Transactions.Transaction)" />
+        <element api="M:System.Transactions.Transaction.op_Inequality(System.Transactions.Transaction,System.Transactions.Transaction)" />
+        <element api="M:System.Transactions.Transaction.EnlistDurable(System.Guid,System.Transactions.IEnlistmentNotification,System.Transactions.EnlistmentOptions)" />
+        <element api="M:System.Transactions.Transaction.EnlistDurable(System.Guid,System.Transactions.ISinglePhaseNotification,System.Transactions.EnlistmentOptions)" />
+        <element api="M:System.Transactions.Transaction.Rollback" />
+        <element api="M:System.Transactions.Transaction.Rollback(System.Exception)" />
+        <element api="M:System.Transactions.Transaction.EnlistVolatile(System.Transactions.IEnlistmentNotification,System.Transactions.EnlistmentOptions)" />
+        <element api="M:System.Transactions.Transaction.EnlistVolatile(System.Transactions.ISinglePhaseNotification,System.Transactions.EnlistmentOptions)" />
+        <element api="M:System.Transactions.Transaction.Clone" />
+        <element api="M:System.Transactions.Transaction.DependentClone(System.Transactions.DependentCloneOption)" />
+        <element api="M:System.Transactions.Transaction.Dispose" />
+        <element api="M:System.Transactions.Transaction.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Transactions.Transaction.EnlistPromotableSinglePhase(System.Transactions.IPromotableSinglePhaseNotification)" />
+        <element api="P:System.Transactions.Transaction.Current" />
+        <element api="P:System.Transactions.Transaction.TransactionInformation" />
+        <element api="P:System.Transactions.Transaction.IsolationLevel" />
+        <element api="E:System.Transactions.Transaction.TransactionCompleted" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="b1958051-9337-3e80-f3e9-c26893f74248" />
+    </api>
+    <api id="Overload:System.Transactions.Transaction.EnlistDurable">
+      <apidata name="EnlistDurable" group="member" subgroup="method" pseudo="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.Transaction" />
+      </containers>
+      <elements>
+        <element api="M:System.Transactions.Transaction.EnlistDurable(System.Guid,System.Transactions.IEnlistmentNotification,System.Transactions.EnlistmentOptions)" />
+        <element api="M:System.Transactions.Transaction.EnlistDurable(System.Guid,System.Transactions.ISinglePhaseNotification,System.Transactions.EnlistmentOptions)" />
+      </elements>
+      <file name="6e2e8854-5bdd-fb7a-7282-1e19ef31bb15" />
+    </api>
+    <api id="Overload:System.Transactions.Transaction.EnlistVolatile">
+      <apidata name="EnlistVolatile" group="member" subgroup="method" pseudo="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.Transaction" />
+      </containers>
+      <elements>
+        <element api="M:System.Transactions.Transaction.EnlistVolatile(System.Transactions.IEnlistmentNotification,System.Transactions.EnlistmentOptions)" />
+        <element api="M:System.Transactions.Transaction.EnlistVolatile(System.Transactions.ISinglePhaseNotification,System.Transactions.EnlistmentOptions)" />
+      </elements>
+      <file name="341f48ed-53b4-d3c6-a26a-df92207cc91e" />
+    </api>
+    <api id="Overload:System.Transactions.Transaction.Rollback">
+      <apidata name="Rollback" group="member" subgroup="method" pseudo="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.Transaction" />
+      </containers>
+      <elements>
+        <element api="M:System.Transactions.Transaction.Rollback" />
+        <element api="M:System.Transactions.Transaction.Rollback(System.Exception)" />
+      </elements>
+      <file name="571dd2ab-60f0-1231-ea49-7e663d996ef9" />
+    </api>
+    <api id="M:System.Transactions.Transaction.Clone">
+      <apidata name="Clone" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <returns>
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </containers>
+      <file name="979748fc-9655-f1c4-4500-e526951f361d" />
+    </api>
+    <api id="P:System.Transactions.Transaction.Current">
+      <apidata name="Current" group="member" subgroup="property" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </containers>
+      <file name="814dd064-a64c-65c1-f20a-929fc48019ad" />
+    </api>
+    <api id="M:System.Transactions.Transaction.DependentClone(System.Transactions.DependentCloneOption)">
+      <apidata name="DependentClone" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="cloneOption">
+          <type api="T:System.Transactions.DependentCloneOption" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Transactions.DependentTransaction" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </containers>
+      <file name="4f07abbe-c75b-8d53-801a-426833edb847" />
+    </api>
+    <api id="M:System.Transactions.Transaction.Dispose">
+      <apidata name="Dispose" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </containers>
+      <file name="971ca56e-772c-32ab-aa9a-316268986f48" />
+    </api>
+    <api id="M:System.Transactions.Transaction.EnlistDurable(System.Guid,System.Transactions.IEnlistmentNotification,System.Transactions.EnlistmentOptions)">
+      <apidata name="EnlistDurable" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" overload="true" />
+      <parameters>
+        <parameter name="resourceManagerIdentifier">
+          <type api="T:System.Guid" ref="false" />
+        </parameter>
+        <parameter name="enlistmentNotification">
+          <type api="T:System.Transactions.IEnlistmentNotification" ref="true" />
+        </parameter>
+        <parameter name="enlistmentOptions">
+          <type api="T:System.Transactions.EnlistmentOptions" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Transactions.Enlistment" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </containers>
+      <file name="3ca0e5dd-69cd-11c6-e416-3f01212d7f6e" />
+    </api>
+    <api id="M:System.Transactions.Transaction.EnlistDurable(System.Guid,System.Transactions.ISinglePhaseNotification,System.Transactions.EnlistmentOptions)">
+      <apidata name="EnlistDurable" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" overload="true" />
+      <parameters>
+        <parameter name="resourceManagerIdentifier">
+          <type api="T:System.Guid" ref="false" />
+        </parameter>
+        <parameter name="singlePhaseNotification">
+          <type api="T:System.Transactions.ISinglePhaseNotification" ref="true" />
+        </parameter>
+        <parameter name="enlistmentOptions">
+          <type api="T:System.Transactions.EnlistmentOptions" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Transactions.Enlistment" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </containers>
+      <file name="bd54b568-723b-b01c-5de9-909cbfcb688c" />
+    </api>
+    <api id="M:System.Transactions.Transaction.EnlistPromotableSinglePhase(System.Transactions.IPromotableSinglePhaseNotification)">
+      <apidata name="EnlistPromotableSinglePhase" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="promotableSinglePhaseNotification">
+          <type api="T:System.Transactions.IPromotableSinglePhaseNotification" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </containers>
+      <file name="e8049a51-c7c6-aa5e-f8e9-bb9935423996" />
+    </api>
+    <api id="M:System.Transactions.Transaction.EnlistVolatile(System.Transactions.IEnlistmentNotification,System.Transactions.EnlistmentOptions)">
+      <apidata name="EnlistVolatile" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" overload="true" />
+      <parameters>
+        <parameter name="enlistmentNotification">
+          <type api="T:System.Transactions.IEnlistmentNotification" ref="true" />
+        </parameter>
+        <parameter name="enlistmentOptions">
+          <type api="T:System.Transactions.EnlistmentOptions" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Transactions.Enlistment" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </containers>
+      <file name="6ea0944d-0e80-6a47-6879-cb0ae226d88e" />
+    </api>
+    <api id="M:System.Transactions.Transaction.EnlistVolatile(System.Transactions.ISinglePhaseNotification,System.Transactions.EnlistmentOptions)">
+      <apidata name="EnlistVolatile" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" overload="true" />
+      <parameters>
+        <parameter name="singlePhaseNotification">
+          <type api="T:System.Transactions.ISinglePhaseNotification" ref="true" />
+        </parameter>
+        <parameter name="enlistmentOptions">
+          <type api="T:System.Transactions.EnlistmentOptions" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Transactions.Enlistment" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </containers>
+      <file name="12b17c76-8c4c-b7f9-78f1-97c3dab76b5d" />
+    </api>
+    <api id="M:System.Transactions.Transaction.Equals(System.Object)">
+      <apidata name="Equals" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" overrides="M:System.Object.Equals(System.Object)" />
+      <parameters>
+        <parameter name="obj">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </containers>
+      <file name="dc9249b0-da14-e7ed-9eb9-21d066a9c171" />
+    </api>
+    <api id="M:System.Transactions.Transaction.GetHashCode">
+      <apidata name="GetHashCode" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" overrides="M:System.Object.GetHashCode" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </containers>
+      <file name="cd5f1e5d-da08-3041-7412-f785a9921e0c" />
+    </api>
+    <api id="P:System.Transactions.Transaction.IsolationLevel">
+      <apidata name="IsolationLevel" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Transactions.IsolationLevel" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </containers>
+      <file name="8016ff64-393c-1b6f-b9a7-95a03fbd3bc5" />
+    </api>
+    <api id="M:System.Transactions.Transaction.op_Equality(System.Transactions.Transaction,System.Transactions.Transaction)">
+      <apidata name="Equality" group="member" subgroup="method" subsubgroup="operator" />
+      <memberdata visibility="public" static="true" special="true" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="x">
+          <type api="T:System.Transactions.Transaction" ref="true" />
+        </parameter>
+        <parameter name="y">
+          <type api="T:System.Transactions.Transaction" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </containers>
+      <file name="8ee7ba7e-b1d2-2a2a-54af-f8d217a8f6fc" />
+    </api>
+    <api id="M:System.Transactions.Transaction.op_Inequality(System.Transactions.Transaction,System.Transactions.Transaction)">
+      <apidata name="Inequality" group="member" subgroup="method" subsubgroup="operator" />
+      <memberdata visibility="public" static="true" special="true" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="x">
+          <type api="T:System.Transactions.Transaction" ref="true" />
+        </parameter>
+        <parameter name="y">
+          <type api="T:System.Transactions.Transaction" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </containers>
+      <file name="0efaceaa-c395-5ef7-6d5d-eb7db5e05b92" />
+    </api>
+    <api id="M:System.Transactions.Transaction.Rollback">
+      <apidata name="Rollback" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" overload="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </containers>
+      <file name="c05a7ab8-d657-68a5-6b26-665611f36601" />
+    </api>
+    <api id="M:System.Transactions.Transaction.Rollback(System.Exception)">
+      <apidata name="Rollback" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" overload="true" />
+      <parameters>
+        <parameter name="e">
+          <type api="T:System.Exception" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </containers>
+      <file name="08f59105-8d31-c034-472d-88af55607c46" />
+    </api>
+    <api id="M:System.Transactions.Transaction.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <apidata name="System.Runtime.Serialization.ISerializable.GetObjectData" group="member" subgroup="method" />
+      <memberdata visibility="private" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="serializationInfo">
+          <type api="T:System.Runtime.Serialization.SerializationInfo" ref="true" />
+        </parameter>
+        <parameter name="context">
+          <type api="T:System.Runtime.Serialization.StreamingContext" ref="false" />
+        </parameter>
+      </parameters>
+      <implements>
+        <member name="GetObjectData" api="M:System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+          <type api="T:System.Runtime.Serialization.ISerializable" ref="true" />
+        </member>
+      </implements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </containers>
+      <file name="aa72139f-23af-6724-a563-05808b1cc53d" />
+    </api>
+    <api id="E:System.Transactions.Transaction.TransactionCompleted">
+      <apidata name="TransactionCompleted" group="member" subgroup="event" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:System.Transactions.TransactionCompletedEventHandler" ref="true" />
+      </eventhandler>
+      <eventargs>
+        <type api="T:System.Transactions.TransactionEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </containers>
+      <file name="e0dd65ae-4cdd-0811-9367-4828dc14fc09" />
+    </api>
+    <api id="P:System.Transactions.Transaction.TransactionInformation">
+      <apidata name="TransactionInformation" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Transactions.TransactionInformation" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </containers>
+      <file name="053221e2-7546-680c-ce2f-1c129d079339" />
+    </api>
+    <api id="T:System.Transactions.TransactionAbortedException">
+      <apidata name="TransactionAbortedException" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Transactions.TransactionException" ref="true" />
+          <type api="T:System.SystemException" ref="true" />
+          <type api="T:System.Exception" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Transactions.TransactionAbortedException.#ctor" />
+        <element api="M:System.Transactions.TransactionAbortedException.#ctor(System.String)" />
+        <element api="M:System.Transactions.TransactionAbortedException.#ctor(System.String,System.Exception)" />
+        <element api="M:System.Transactions.TransactionAbortedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Exception.GetBaseException" />
+        <element api="M:System.Exception.ToString" />
+        <element api="M:System.Exception.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Exception.GetType" />
+        <element api="P:System.Exception.Message" />
+        <element api="P:System.Exception.Data" />
+        <element api="P:System.Exception.InnerException" />
+        <element api="P:System.Exception.TargetSite" />
+        <element api="P:System.Exception.StackTrace" />
+        <element api="P:System.Exception.HelpLink" />
+        <element api="P:System.Exception.Source" />
+        <element api="P:System.Exception.HResult" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="c7bf9f3a-900e-17ba-3f7d-f2055c8c8205" />
+    </api>
+    <api id="Overload:System.Transactions.TransactionAbortedException.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionAbortedException" />
+      </containers>
+      <elements>
+        <element api="M:System.Transactions.TransactionAbortedException.#ctor" />
+        <element api="M:System.Transactions.TransactionAbortedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Transactions.TransactionAbortedException.#ctor(System.String)" />
+        <element api="M:System.Transactions.TransactionAbortedException.#ctor(System.String,System.Exception)" />
+      </elements>
+      <file name="b0a4888e-8d51-3c1e-7f2f-f9dd1ee0978a" />
+    </api>
+    <api id="M:System.Transactions.TransactionAbortedException.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionAbortedException" ref="true" />
+      </containers>
+      <file name="af6ab1dd-0708-2b16-9c67-40d26c9ec6fa" />
+    </api>
+    <api id="M:System.Transactions.TransactionAbortedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <parameters>
+        <parameter name="info">
+          <type api="T:System.Runtime.Serialization.SerializationInfo" ref="true" />
+        </parameter>
+        <parameter name="context">
+          <type api="T:System.Runtime.Serialization.StreamingContext" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionAbortedException" ref="true" />
+      </containers>
+      <file name="b2371da3-2065-3a19-2697-7c8363c922f8" />
+    </api>
+    <api id="M:System.Transactions.TransactionAbortedException.#ctor(System.String)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionAbortedException" ref="true" />
+      </containers>
+      <file name="95334996-335c-b3a7-0994-dc35bd637084" />
+    </api>
+    <api id="M:System.Transactions.TransactionAbortedException.#ctor(System.String,System.Exception)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="innerException">
+          <type api="T:System.Exception" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionAbortedException" ref="true" />
+      </containers>
+      <file name="1ca760fb-7fc9-478d-c6f1-26e39ffd9b9d" />
+    </api>
+    <api id="T:System.Transactions.TransactionCompletedEventHandler">
+      <apidata name="TransactionCompletedEventHandler" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <parameters>
+        <parameter name="sender">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+        <parameter name="e">
+          <type api="T:System.Transactions.TransactionEventArgs" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="569e3845-3923-47cd-b188-d811e437c49f" />
+    </api>
+    <api id="T:System.Transactions.TransactionEventArgs">
+      <apidata name="TransactionEventArgs" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.EventArgs" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Transactions.TransactionEventArgs.#ctor" />
+        <element api="P:System.Transactions.TransactionEventArgs.Transaction" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="aaeddc4b-265f-abd2-2ad5-b300695118a7" />
+    </api>
+    <api id="M:System.Transactions.TransactionEventArgs.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionEventArgs" ref="true" />
+      </containers>
+      <file name="8031c8ca-0162-e586-c385-e5f6e8a2e2d7" />
+    </api>
+    <api id="P:System.Transactions.TransactionEventArgs.Transaction">
+      <apidata name="Transaction" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionEventArgs" ref="true" />
+      </containers>
+      <file name="8f71cab8-9e61-2817-6b96-e48492e3a27d" />
+    </api>
+    <api id="T:System.Transactions.TransactionException">
+      <apidata name="TransactionException" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.SystemException" ref="true" />
+          <type api="T:System.Exception" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Transactions.TransactionException.#ctor" />
+        <element api="M:System.Transactions.TransactionException.#ctor(System.String)" />
+        <element api="M:System.Transactions.TransactionException.#ctor(System.String,System.Exception)" />
+        <element api="M:System.Transactions.TransactionException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Exception.GetBaseException" />
+        <element api="M:System.Exception.ToString" />
+        <element api="M:System.Exception.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Exception.GetType" />
+        <element api="P:System.Exception.Message" />
+        <element api="P:System.Exception.Data" />
+        <element api="P:System.Exception.InnerException" />
+        <element api="P:System.Exception.TargetSite" />
+        <element api="P:System.Exception.StackTrace" />
+        <element api="P:System.Exception.HelpLink" />
+        <element api="P:System.Exception.Source" />
+        <element api="P:System.Exception.HResult" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="af6a4097-fcc2-bea4-a082-e0298afa7f7b" />
+    </api>
+    <api id="Overload:System.Transactions.TransactionException.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionException" />
+      </containers>
+      <elements>
+        <element api="M:System.Transactions.TransactionException.#ctor" />
+        <element api="M:System.Transactions.TransactionException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Transactions.TransactionException.#ctor(System.String)" />
+        <element api="M:System.Transactions.TransactionException.#ctor(System.String,System.Exception)" />
+      </elements>
+      <file name="3b562483-c722-47fd-90f1-02aa288da70a" />
+    </api>
+    <api id="M:System.Transactions.TransactionException.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionException" ref="true" />
+      </containers>
+      <file name="e6a28801-7fb8-a3d9-069e-1fda8b9b93f9" />
+    </api>
+    <api id="M:System.Transactions.TransactionException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <parameters>
+        <parameter name="info">
+          <type api="T:System.Runtime.Serialization.SerializationInfo" ref="true" />
+        </parameter>
+        <parameter name="context">
+          <type api="T:System.Runtime.Serialization.StreamingContext" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionException" ref="true" />
+      </containers>
+      <file name="f21f2dd0-8f0c-8dd6-eb3e-40c7a6f356b9" />
+    </api>
+    <api id="M:System.Transactions.TransactionException.#ctor(System.String)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionException" ref="true" />
+      </containers>
+      <file name="dce08215-c3ee-e70b-1b2a-0f1398b20400" />
+    </api>
+    <api id="M:System.Transactions.TransactionException.#ctor(System.String,System.Exception)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="innerException">
+          <type api="T:System.Exception" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionException" ref="true" />
+      </containers>
+      <file name="71a79a67-9f65-7121-f253-0e3101a9c2fa" />
+    </api>
+    <api id="T:System.Transactions.TransactionInDoubtException">
+      <apidata name="TransactionInDoubtException" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Transactions.TransactionException" ref="true" />
+          <type api="T:System.SystemException" ref="true" />
+          <type api="T:System.Exception" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Transactions.TransactionInDoubtException.#ctor" />
+        <element api="M:System.Transactions.TransactionInDoubtException.#ctor(System.String)" />
+        <element api="M:System.Transactions.TransactionInDoubtException.#ctor(System.String,System.Exception)" />
+        <element api="M:System.Transactions.TransactionInDoubtException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Exception.GetBaseException" />
+        <element api="M:System.Exception.ToString" />
+        <element api="M:System.Exception.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Exception.GetType" />
+        <element api="P:System.Exception.Message" />
+        <element api="P:System.Exception.Data" />
+        <element api="P:System.Exception.InnerException" />
+        <element api="P:System.Exception.TargetSite" />
+        <element api="P:System.Exception.StackTrace" />
+        <element api="P:System.Exception.HelpLink" />
+        <element api="P:System.Exception.Source" />
+        <element api="P:System.Exception.HResult" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="227081a0-5c88-30bb-458b-ca7dba89d10d" />
+    </api>
+    <api id="Overload:System.Transactions.TransactionInDoubtException.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionInDoubtException" />
+      </containers>
+      <elements>
+        <element api="M:System.Transactions.TransactionInDoubtException.#ctor" />
+        <element api="M:System.Transactions.TransactionInDoubtException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Transactions.TransactionInDoubtException.#ctor(System.String)" />
+        <element api="M:System.Transactions.TransactionInDoubtException.#ctor(System.String,System.Exception)" />
+      </elements>
+      <file name="55a63c70-3e51-ba3d-5a10-08680cd956f1" />
+    </api>
+    <api id="M:System.Transactions.TransactionInDoubtException.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionInDoubtException" ref="true" />
+      </containers>
+      <file name="6d5a1444-3eca-82ca-152b-a88b10935475" />
+    </api>
+    <api id="M:System.Transactions.TransactionInDoubtException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <parameters>
+        <parameter name="info">
+          <type api="T:System.Runtime.Serialization.SerializationInfo" ref="true" />
+        </parameter>
+        <parameter name="context">
+          <type api="T:System.Runtime.Serialization.StreamingContext" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionInDoubtException" ref="true" />
+      </containers>
+      <file name="70a2bb54-2870-3100-fbbd-7ddfa36de6b8" />
+    </api>
+    <api id="M:System.Transactions.TransactionInDoubtException.#ctor(System.String)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionInDoubtException" ref="true" />
+      </containers>
+      <file name="dce5403c-6513-f9eb-129f-60a5293b767f" />
+    </api>
+    <api id="M:System.Transactions.TransactionInDoubtException.#ctor(System.String,System.Exception)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="innerException">
+          <type api="T:System.Exception" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionInDoubtException" ref="true" />
+      </containers>
+      <file name="65b52829-bc47-0725-8f25-387b61b3e2ff" />
+    </api>
+    <api id="T:System.Transactions.TransactionInformation">
+      <apidata name="TransactionInformation" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="P:System.Transactions.TransactionInformation.LocalIdentifier" />
+        <element api="P:System.Transactions.TransactionInformation.DistributedIdentifier" />
+        <element api="P:System.Transactions.TransactionInformation.CreationTime" />
+        <element api="P:System.Transactions.TransactionInformation.Status" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="13652c8a-e4ce-3203-0d18-00e9be2855f7" />
+    </api>
+    <api id="P:System.Transactions.TransactionInformation.CreationTime">
+      <apidata name="CreationTime" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.DateTime" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionInformation" ref="true" />
+      </containers>
+      <file name="675820ed-1296-c861-2520-e62a365991a1" />
+    </api>
+    <api id="P:System.Transactions.TransactionInformation.DistributedIdentifier">
+      <apidata name="DistributedIdentifier" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Guid" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionInformation" ref="true" />
+      </containers>
+      <file name="025f304b-07bf-8ba4-8772-1464909cea6f" />
+    </api>
+    <api id="P:System.Transactions.TransactionInformation.LocalIdentifier">
+      <apidata name="LocalIdentifier" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionInformation" ref="true" />
+      </containers>
+      <file name="efcf2821-40a5-f10d-7ad8-05a164960756" />
+    </api>
+    <api id="P:System.Transactions.TransactionInformation.Status">
+      <apidata name="Status" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Transactions.TransactionStatus" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionInformation" ref="true" />
+      </containers>
+      <file name="5a0b6e23-ee81-a40c-88ed-6d4bef34dfa2" />
+    </api>
+    <api id="T:System.Transactions.TransactionInterop">
+      <apidata name="TransactionInterop" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="true" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Transactions.TransactionInterop.GetExportCookie(System.Transactions.Transaction,System.Byte[])" />
+        <element api="M:System.Transactions.TransactionInterop.GetTransactionFromExportCookie(System.Byte[])" />
+        <element api="M:System.Transactions.TransactionInterop.GetTransmitterPropagationToken(System.Transactions.Transaction)" />
+        <element api="M:System.Transactions.TransactionInterop.GetTransactionFromTransmitterPropagationToken(System.Byte[])" />
+        <element api="M:System.Transactions.TransactionInterop.GetDtcTransaction(System.Transactions.Transaction)" />
+        <element api="M:System.Transactions.TransactionInterop.GetTransactionFromDtcTransaction(System.Transactions.IDtcTransaction)" />
+        <element api="M:System.Transactions.TransactionInterop.GetWhereabouts" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Security.Permissions.PermissionSetAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="LinkDemand" />
+            </enumValue>
+          </argument>
+          <assignment name="Name">
+            <type api="T:System.String" ref="true" />
+            <value>FullTrust</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="c55995ad-6e56-703b-0a44-d8397f2cf8c8" />
+    </api>
+    <api id="M:System.Transactions.TransactionInterop.GetDtcTransaction(System.Transactions.Transaction)">
+      <apidata name="GetDtcTransaction" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="transaction">
+          <type api="T:System.Transactions.Transaction" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Transactions.IDtcTransaction" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionInterop" ref="true" />
+      </containers>
+      <file name="b6531323-a02d-702a-f919-595cb6054857" />
+    </api>
+    <api id="M:System.Transactions.TransactionInterop.GetExportCookie(System.Transactions.Transaction,System.Byte[])">
+      <apidata name="GetExportCookie" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="transaction">
+          <type api="T:System.Transactions.Transaction" ref="true" />
+        </parameter>
+        <parameter name="whereabouts">
+          <arrayOf rank="1">
+            <type api="T:System.Byte" ref="false" />
+          </arrayOf>
+        </parameter>
+      </parameters>
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:System.Byte" ref="false" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionInterop" ref="true" />
+      </containers>
+      <file name="291234d4-5b60-27bd-f48a-e51d11d00a46" />
+    </api>
+    <api id="M:System.Transactions.TransactionInterop.GetTransactionFromDtcTransaction(System.Transactions.IDtcTransaction)">
+      <apidata name="GetTransactionFromDtcTransaction" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="transactionNative">
+          <type api="T:System.Transactions.IDtcTransaction" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionInterop" ref="true" />
+      </containers>
+      <file name="b7aeddb0-8b15-84a2-74d5-d39ebf91de0c" />
+    </api>
+    <api id="M:System.Transactions.TransactionInterop.GetTransactionFromExportCookie(System.Byte[])">
+      <apidata name="GetTransactionFromExportCookie" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="cookie">
+          <arrayOf rank="1">
+            <type api="T:System.Byte" ref="false" />
+          </arrayOf>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionInterop" ref="true" />
+      </containers>
+      <file name="fe3dc2ec-7070-ffa2-2697-0157d48f1a45" />
+    </api>
+    <api id="M:System.Transactions.TransactionInterop.GetTransactionFromTransmitterPropagationToken(System.Byte[])">
+      <apidata name="GetTransactionFromTransmitterPropagationToken" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="propagationToken">
+          <arrayOf rank="1">
+            <type api="T:System.Byte" ref="false" />
+          </arrayOf>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Transactions.Transaction" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionInterop" ref="true" />
+      </containers>
+      <file name="fcf2f088-0dfe-4516-d680-fba8a4a581d7" />
+    </api>
+    <api id="M:System.Transactions.TransactionInterop.GetTransmitterPropagationToken(System.Transactions.Transaction)">
+      <apidata name="GetTransmitterPropagationToken" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="transaction">
+          <type api="T:System.Transactions.Transaction" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:System.Byte" ref="false" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionInterop" ref="true" />
+      </containers>
+      <file name="67ef9128-2f94-6947-b912-6e56db5962fa" />
+    </api>
+    <api id="M:System.Transactions.TransactionInterop.GetWhereabouts">
+      <apidata name="GetWhereabouts" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:System.Byte" ref="false" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionInterop" ref="true" />
+      </containers>
+      <file name="3adca822-5fc8-8a3d-bf4f-8fb2076a8b6c" />
+    </api>
+    <api id="T:System.Transactions.TransactionManager">
+      <apidata name="TransactionManager" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="true" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Transactions.TransactionManager.Reenlist(System.Guid,System.Byte[],System.Transactions.IEnlistmentNotification)" />
+        <element api="M:System.Transactions.TransactionManager.RecoveryComplete(System.Guid)" />
+        <element api="P:System.Transactions.TransactionManager.HostCurrentCallback" />
+        <element api="P:System.Transactions.TransactionManager.DefaultTimeout" />
+        <element api="P:System.Transactions.TransactionManager.MaximumTimeout" />
+        <element api="E:System.Transactions.TransactionManager.DistributedTransactionStarted" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="6bc96a65-4abe-2280-3bd4-d79e79d0f8a1" />
+    </api>
+    <api id="P:System.Transactions.TransactionManager.DefaultTimeout">
+      <apidata name="DefaultTimeout" group="member" subgroup="property" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.TimeSpan" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionManager" ref="true" />
+      </containers>
+      <file name="df0af17a-b74b-2f62-e1df-066f1afd005c" />
+    </api>
+    <api id="E:System.Transactions.TransactionManager.DistributedTransactionStarted">
+      <apidata name="DistributedTransactionStarted" group="member" subgroup="event" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <eventdata add="true" remove="true" />
+      <eventhandler>
+        <type api="T:System.Transactions.TransactionStartedEventHandler" ref="true" />
+      </eventhandler>
+      <eventargs>
+        <type api="T:System.Transactions.TransactionEventArgs" ref="true" />
+      </eventargs>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionManager" ref="true" />
+      </containers>
+      <file name="8f73731e-ab87-5db6-6644-6d8befb7680c" />
+    </api>
+    <api id="P:System.Transactions.TransactionManager.HostCurrentCallback">
+      <apidata name="HostCurrentCallback" group="member" subgroup="property" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.Transactions.HostCurrentTransactionCallback" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionManager" ref="true" />
+      </containers>
+      <file name="8d811453-b7de-9ca6-c0e7-f3a02ccb5792" />
+    </api>
+    <api id="P:System.Transactions.TransactionManager.MaximumTimeout">
+      <apidata name="MaximumTimeout" group="member" subgroup="property" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.TimeSpan" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionManager" ref="true" />
+      </containers>
+      <file name="ce652494-4b83-4d91-6012-a75b6a9036ac" />
+    </api>
+    <api id="M:System.Transactions.TransactionManager.RecoveryComplete(System.Guid)">
+      <apidata name="RecoveryComplete" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="resourceManagerIdentifier">
+          <type api="T:System.Guid" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionManager" ref="true" />
+      </containers>
+      <file name="b9a1a941-d19a-7088-7473-864e7c52dc3c" />
+    </api>
+    <api id="M:System.Transactions.TransactionManager.Reenlist(System.Guid,System.Byte[],System.Transactions.IEnlistmentNotification)">
+      <apidata name="Reenlist" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="resourceManagerIdentifier">
+          <type api="T:System.Guid" ref="false" />
+        </parameter>
+        <parameter name="recoveryInformation">
+          <arrayOf rank="1">
+            <type api="T:System.Byte" ref="false" />
+          </arrayOf>
+        </parameter>
+        <parameter name="enlistmentNotification">
+          <type api="T:System.Transactions.IEnlistmentNotification" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Transactions.Enlistment" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionManager" ref="true" />
+      </containers>
+      <file name="b88332f5-9499-ce8b-e1ba-7cd1ceac00ba" />
+    </api>
+    <api id="T:System.Transactions.TransactionManagerCommunicationException">
+      <apidata name="TransactionManagerCommunicationException" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Transactions.TransactionException" ref="true" />
+          <type api="T:System.SystemException" ref="true" />
+          <type api="T:System.Exception" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Transactions.TransactionManagerCommunicationException.#ctor" />
+        <element api="M:System.Transactions.TransactionManagerCommunicationException.#ctor(System.String)" />
+        <element api="M:System.Transactions.TransactionManagerCommunicationException.#ctor(System.String,System.Exception)" />
+        <element api="M:System.Transactions.TransactionManagerCommunicationException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Exception.GetBaseException" />
+        <element api="M:System.Exception.ToString" />
+        <element api="M:System.Exception.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Exception.GetType" />
+        <element api="P:System.Exception.Message" />
+        <element api="P:System.Exception.Data" />
+        <element api="P:System.Exception.InnerException" />
+        <element api="P:System.Exception.TargetSite" />
+        <element api="P:System.Exception.StackTrace" />
+        <element api="P:System.Exception.HelpLink" />
+        <element api="P:System.Exception.Source" />
+        <element api="P:System.Exception.HResult" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="068da8eb-a1d2-cb9a-8218-d275b1d7c152" />
+    </api>
+    <api id="Overload:System.Transactions.TransactionManagerCommunicationException.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionManagerCommunicationException" />
+      </containers>
+      <elements>
+        <element api="M:System.Transactions.TransactionManagerCommunicationException.#ctor" />
+        <element api="M:System.Transactions.TransactionManagerCommunicationException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Transactions.TransactionManagerCommunicationException.#ctor(System.String)" />
+        <element api="M:System.Transactions.TransactionManagerCommunicationException.#ctor(System.String,System.Exception)" />
+      </elements>
+      <file name="2712ae0c-a259-3967-773e-a7813d4dace2" />
+    </api>
+    <api id="M:System.Transactions.TransactionManagerCommunicationException.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionManagerCommunicationException" ref="true" />
+      </containers>
+      <file name="b753f542-362f-e3ec-08d8-bec67de2a1cf" />
+    </api>
+    <api id="M:System.Transactions.TransactionManagerCommunicationException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <parameters>
+        <parameter name="info">
+          <type api="T:System.Runtime.Serialization.SerializationInfo" ref="true" />
+        </parameter>
+        <parameter name="context">
+          <type api="T:System.Runtime.Serialization.StreamingContext" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionManagerCommunicationException" ref="true" />
+      </containers>
+      <file name="58732486-8cc7-c7dc-7f46-69390fdd517c" />
+    </api>
+    <api id="M:System.Transactions.TransactionManagerCommunicationException.#ctor(System.String)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionManagerCommunicationException" ref="true" />
+      </containers>
+      <file name="7e059346-20f0-5cdc-e74b-a7b03a1f43e6" />
+    </api>
+    <api id="M:System.Transactions.TransactionManagerCommunicationException.#ctor(System.String,System.Exception)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="innerException">
+          <type api="T:System.Exception" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionManagerCommunicationException" ref="true" />
+      </containers>
+      <file name="e4fd4a8d-599d-d18a-4875-d574fdda640e" />
+    </api>
+    <api id="T:System.Transactions.TransactionOptions">
+      <apidata name="TransactionOptions" group="type" subgroup="structure" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="sequential" format="ansi" />
+      <elements>
+        <element api="M:System.Transactions.TransactionOptions.GetHashCode" />
+        <element api="M:System.Transactions.TransactionOptions.Equals(System.Object)" />
+        <element api="M:System.Transactions.TransactionOptions.op_Equality(System.Transactions.TransactionOptions,System.Transactions.TransactionOptions)" />
+        <element api="M:System.Transactions.TransactionOptions.op_Inequality(System.Transactions.TransactionOptions,System.Transactions.TransactionOptions)" />
+        <element api="P:System.Transactions.TransactionOptions.Timeout" />
+        <element api="P:System.Transactions.TransactionOptions.IsolationLevel" />
+        <element api="M:System.ValueType.ToString" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="6cedc59c-b9a5-ed45-d6dc-f760127b0f10" />
+    </api>
+    <api id="M:System.Transactions.TransactionOptions.Equals(System.Object)">
+      <apidata name="Equals" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" overrides="M:System.ValueType.Equals(System.Object)" />
+      <parameters>
+        <parameter name="obj">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionOptions" ref="false" />
+      </containers>
+      <file name="cf633a78-2dc1-a4bb-4b74-879371a7ea11" />
+    </api>
+    <api id="M:System.Transactions.TransactionOptions.GetHashCode">
+      <apidata name="GetHashCode" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" overrides="M:System.ValueType.GetHashCode" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionOptions" ref="false" />
+      </containers>
+      <file name="955a2589-1956-de17-8c87-35b003b41b23" />
+    </api>
+    <api id="P:System.Transactions.TransactionOptions.IsolationLevel">
+      <apidata name="IsolationLevel" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.Transactions.IsolationLevel" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionOptions" ref="false" />
+      </containers>
+      <file name="53a01368-94e8-960e-9432-122b7d4e1a45" />
+    </api>
+    <api id="M:System.Transactions.TransactionOptions.op_Equality(System.Transactions.TransactionOptions,System.Transactions.TransactionOptions)">
+      <apidata name="Equality" group="member" subgroup="method" subsubgroup="operator" />
+      <memberdata visibility="public" static="true" special="true" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="x">
+          <type api="T:System.Transactions.TransactionOptions" ref="false" />
+        </parameter>
+        <parameter name="y">
+          <type api="T:System.Transactions.TransactionOptions" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionOptions" ref="false" />
+      </containers>
+      <file name="0babd7cc-68a2-fb60-2e39-3d6680ad2b2f" />
+    </api>
+    <api id="M:System.Transactions.TransactionOptions.op_Inequality(System.Transactions.TransactionOptions,System.Transactions.TransactionOptions)">
+      <apidata name="Inequality" group="member" subgroup="method" subsubgroup="operator" />
+      <memberdata visibility="public" static="true" special="true" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="x">
+          <type api="T:System.Transactions.TransactionOptions" ref="false" />
+        </parameter>
+        <parameter name="y">
+          <type api="T:System.Transactions.TransactionOptions" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionOptions" ref="false" />
+      </containers>
+      <file name="8246252f-cd19-47ae-f072-243303577e48" />
+    </api>
+    <api id="P:System.Transactions.TransactionOptions.Timeout">
+      <apidata name="Timeout" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.TimeSpan" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionOptions" ref="false" />
+      </containers>
+      <file name="942c2871-e59d-36e0-26a8-2ad89a50a801" />
+    </api>
+    <api id="T:System.Transactions.TransactionPromotionException">
+      <apidata name="TransactionPromotionException" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Transactions.TransactionException" ref="true" />
+          <type api="T:System.SystemException" ref="true" />
+          <type api="T:System.Exception" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Transactions.TransactionPromotionException.#ctor" />
+        <element api="M:System.Transactions.TransactionPromotionException.#ctor(System.String)" />
+        <element api="M:System.Transactions.TransactionPromotionException.#ctor(System.String,System.Exception)" />
+        <element api="M:System.Transactions.TransactionPromotionException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Exception.GetBaseException" />
+        <element api="M:System.Exception.ToString" />
+        <element api="M:System.Exception.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Exception.GetType" />
+        <element api="P:System.Exception.Message" />
+        <element api="P:System.Exception.Data" />
+        <element api="P:System.Exception.InnerException" />
+        <element api="P:System.Exception.TargetSite" />
+        <element api="P:System.Exception.StackTrace" />
+        <element api="P:System.Exception.HelpLink" />
+        <element api="P:System.Exception.Source" />
+        <element api="P:System.Exception.HResult" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="06656179-ca9e-1772-552e-1625334e2b60" />
+    </api>
+    <api id="Overload:System.Transactions.TransactionPromotionException.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionPromotionException" />
+      </containers>
+      <elements>
+        <element api="M:System.Transactions.TransactionPromotionException.#ctor" />
+        <element api="M:System.Transactions.TransactionPromotionException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        <element api="M:System.Transactions.TransactionPromotionException.#ctor(System.String)" />
+        <element api="M:System.Transactions.TransactionPromotionException.#ctor(System.String,System.Exception)" />
+      </elements>
+      <file name="0e392085-20e6-0bc8-1244-bcca6c83e904" />
+    </api>
+    <api id="M:System.Transactions.TransactionPromotionException.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionPromotionException" ref="true" />
+      </containers>
+      <file name="862ad21e-6b21-352f-4b8c-3714d2463dcf" />
+    </api>
+    <api id="M:System.Transactions.TransactionPromotionException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family" static="false" special="true" />
+      <parameters>
+        <parameter name="info">
+          <type api="T:System.Runtime.Serialization.SerializationInfo" ref="true" />
+        </parameter>
+        <parameter name="context">
+          <type api="T:System.Runtime.Serialization.StreamingContext" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionPromotionException" ref="true" />
+      </containers>
+      <file name="98f63855-be04-80de-67c9-b4889a53c830" />
+    </api>
+    <api id="M:System.Transactions.TransactionPromotionException.#ctor(System.String)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionPromotionException" ref="true" />
+      </containers>
+      <file name="14ba2186-b0a8-7e2a-401e-28dd9af156ed" />
+    </api>
+    <api id="M:System.Transactions.TransactionPromotionException.#ctor(System.String,System.Exception)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="message">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="innerException">
+          <type api="T:System.Exception" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionPromotionException" ref="true" />
+      </containers>
+      <file name="dab3af52-16f7-1583-b783-67a06b8532dc" />
+    </api>
+    <api id="T:System.Transactions.TransactionScope">
+      <apidata name="TransactionScope" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.IDisposable" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Transactions.TransactionScope.#ctor" />
+        <element api="M:System.Transactions.TransactionScope.#ctor(System.Transactions.TransactionScopeOption)" />
+        <element api="M:System.Transactions.TransactionScope.#ctor(System.Transactions.TransactionScopeOption,System.TimeSpan)" />
+        <element api="M:System.Transactions.TransactionScope.#ctor(System.Transactions.TransactionScopeOption,System.Transactions.TransactionOptions)" />
+        <element api="M:System.Transactions.TransactionScope.#ctor(System.Transactions.TransactionScopeOption,System.Transactions.TransactionOptions,System.Transactions.EnterpriseServicesInteropOption)" />
+        <element api="M:System.Transactions.TransactionScope.#ctor(System.Transactions.Transaction)" />
+        <element api="M:System.Transactions.TransactionScope.#ctor(System.Transactions.Transaction,System.TimeSpan)" />
+        <element api="M:System.Transactions.TransactionScope.#ctor(System.Transactions.Transaction,System.TimeSpan,System.Transactions.EnterpriseServicesInteropOption)" />
+        <element api="M:System.Transactions.TransactionScope.Dispose" />
+        <element api="M:System.Transactions.TransactionScope.Complete" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="26008b98-7c1b-35e7-3dfb-af2b23101b90" />
+    </api>
+    <api id="Overload:System.Transactions.TransactionScope.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" pseudo="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionScope" />
+      </containers>
+      <elements>
+        <element api="M:System.Transactions.TransactionScope.#ctor" />
+        <element api="M:System.Transactions.TransactionScope.#ctor(System.Transactions.Transaction)" />
+        <element api="M:System.Transactions.TransactionScope.#ctor(System.Transactions.Transaction,System.TimeSpan)" />
+        <element api="M:System.Transactions.TransactionScope.#ctor(System.Transactions.Transaction,System.TimeSpan,System.Transactions.EnterpriseServicesInteropOption)" />
+        <element api="M:System.Transactions.TransactionScope.#ctor(System.Transactions.TransactionScopeOption)" />
+        <element api="M:System.Transactions.TransactionScope.#ctor(System.Transactions.TransactionScopeOption,System.TimeSpan)" />
+        <element api="M:System.Transactions.TransactionScope.#ctor(System.Transactions.TransactionScopeOption,System.Transactions.TransactionOptions)" />
+        <element api="M:System.Transactions.TransactionScope.#ctor(System.Transactions.TransactionScopeOption,System.Transactions.TransactionOptions,System.Transactions.EnterpriseServicesInteropOption)" />
+      </elements>
+      <file name="a2e7311a-f19f-eabd-e9c4-7e8a83b329f9" />
+    </api>
+    <api id="M:System.Transactions.TransactionScope.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionScope" ref="true" />
+      </containers>
+      <file name="09cf2f7a-c109-823d-e75d-da90647f09c3" />
+    </api>
+    <api id="M:System.Transactions.TransactionScope.#ctor(System.Transactions.Transaction)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="transactionToUse">
+          <type api="T:System.Transactions.Transaction" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionScope" ref="true" />
+      </containers>
+      <file name="c70593ce-1114-5a59-19be-11bb0ccab40f" />
+    </api>
+    <api id="M:System.Transactions.TransactionScope.#ctor(System.Transactions.Transaction,System.TimeSpan)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="transactionToUse">
+          <type api="T:System.Transactions.Transaction" ref="true" />
+        </parameter>
+        <parameter name="scopeTimeout">
+          <type api="T:System.TimeSpan" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionScope" ref="true" />
+      </containers>
+      <file name="b993ac9d-6725-4c7b-edd4-d337489bf695" />
+    </api>
+    <api id="M:System.Transactions.TransactionScope.#ctor(System.Transactions.Transaction,System.TimeSpan,System.Transactions.EnterpriseServicesInteropOption)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="transactionToUse">
+          <type api="T:System.Transactions.Transaction" ref="true" />
+        </parameter>
+        <parameter name="scopeTimeout">
+          <type api="T:System.TimeSpan" ref="false" />
+        </parameter>
+        <parameter name="interopOption">
+          <type api="T:System.Transactions.EnterpriseServicesInteropOption" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionScope" ref="true" />
+      </containers>
+      <file name="057fbda6-dc7b-1791-ffb7-dd9d1138168a" />
+    </api>
+    <api id="M:System.Transactions.TransactionScope.#ctor(System.Transactions.TransactionScopeOption)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="scopeOption">
+          <type api="T:System.Transactions.TransactionScopeOption" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionScope" ref="true" />
+      </containers>
+      <file name="d6ee9b63-c48e-b8c7-dc82-b21165fb76b2" />
+    </api>
+    <api id="M:System.Transactions.TransactionScope.#ctor(System.Transactions.TransactionScopeOption,System.TimeSpan)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="scopeOption">
+          <type api="T:System.Transactions.TransactionScopeOption" ref="false" />
+        </parameter>
+        <parameter name="scopeTimeout">
+          <type api="T:System.TimeSpan" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionScope" ref="true" />
+      </containers>
+      <file name="0acd2f62-2ce6-35a5-d384-25fc3e3de5fa" />
+    </api>
+    <api id="M:System.Transactions.TransactionScope.#ctor(System.Transactions.TransactionScopeOption,System.Transactions.TransactionOptions)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="scopeOption">
+          <type api="T:System.Transactions.TransactionScopeOption" ref="false" />
+        </parameter>
+        <parameter name="transactionOptions">
+          <type api="T:System.Transactions.TransactionOptions" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionScope" ref="true" />
+      </containers>
+      <file name="5647c121-afc0-4ebc-5764-3bee6974019e" />
+    </api>
+    <api id="M:System.Transactions.TransactionScope.#ctor(System.Transactions.TransactionScopeOption,System.Transactions.TransactionOptions,System.Transactions.EnterpriseServicesInteropOption)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="scopeOption">
+          <type api="T:System.Transactions.TransactionScopeOption" ref="false" />
+        </parameter>
+        <parameter name="transactionOptions">
+          <type api="T:System.Transactions.TransactionOptions" ref="false" />
+        </parameter>
+        <parameter name="interopOption">
+          <type api="T:System.Transactions.EnterpriseServicesInteropOption" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionScope" ref="true" />
+      </containers>
+      <file name="fad18a60-c35e-4a02-aaad-10a34a1eb78d" />
+    </api>
+    <api id="M:System.Transactions.TransactionScope.Complete">
+      <apidata name="Complete" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionScope" ref="true" />
+      </containers>
+      <file name="31f0102a-f0a7-b6b3-4028-c73ce8030336" />
+    </api>
+    <api id="M:System.Transactions.TransactionScope.Dispose">
+      <apidata name="Dispose" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+        <type api="T:System.Transactions.TransactionScope" ref="true" />
+      </containers>
+      <file name="0ca62a08-f87a-4a20-231f-bc5f4751175b" />
+    </api>
+    <api id="T:System.Transactions.TransactionScopeOption">
+      <apidata name="TransactionScopeOption" group="type" subgroup="enumeration" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <enumerationbase>
+        <type api="T:System.Int32" ref="false" />
+      </enumerationbase>
+      <elements>
+        <element api="F:System.Transactions.TransactionScopeOption.Required" />
+        <element api="F:System.Transactions.TransactionScopeOption.RequiresNew" />
+        <element api="F:System.Transactions.TransactionScopeOption.Suppress" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="de9c924e-c58a-240c-fd04-598e58c32546" />
+    </api>
+    <api id="T:System.Transactions.TransactionStartedEventHandler">
+      <apidata name="TransactionStartedEventHandler" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <parameters>
+        <parameter name="sender">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+        <parameter name="e">
+          <type api="T:System.Transactions.TransactionEventArgs" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="39aa8fb4-ef8f-b616-0fd8-44b31dcd8b64" />
+    </api>
+    <api id="T:System.Transactions.TransactionStatus">
+      <apidata name="TransactionStatus" group="type" subgroup="enumeration" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <enumerationbase>
+        <type api="T:System.Int32" ref="false" />
+      </enumerationbase>
+      <elements>
+        <element api="F:System.Transactions.TransactionStatus.Active" />
+        <element api="F:System.Transactions.TransactionStatus.Committed" />
+        <element api="F:System.Transactions.TransactionStatus.Aborted" />
+        <element api="F:System.Transactions.TransactionStatus.InDoubt" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions" />
+      </containers>
+      <file name="e4cd490d-4cb8-77bc-21ba-65c7792a1146" />
+    </api>
+    <api id="T:System.Transactions.Configuration.DefaultSettingsSection">
+      <apidata name="DefaultSettingsSection" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Configuration.ConfigurationSection" ref="true" />
+          <type api="T:System.Configuration.ConfigurationElement" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Transactions.Configuration.DefaultSettingsSection.#ctor" />
+        <element api="P:System.Transactions.Configuration.DefaultSettingsSection.DistributedTransactionManagerName" />
+        <element api="P:System.Transactions.Configuration.DefaultSettingsSection.Timeout" />
+        <element api="M:System.Configuration.ConfigurationSection.GetRuntimeObject" />
+        <element api="M:System.Configuration.ConfigurationSection.IsModified" />
+        <element api="M:System.Configuration.ConfigurationSection.ResetModified" />
+        <element api="M:System.Configuration.ConfigurationSection.DeserializeSection(System.Xml.XmlReader)" />
+        <element api="M:System.Configuration.ConfigurationSection.SerializeSection(System.Configuration.ConfigurationElement,System.String,System.Configuration.ConfigurationSaveMode)" />
+        <element api="P:System.Configuration.ConfigurationSection.SectionInformation" />
+        <element api="M:System.Configuration.ConfigurationElement.Init" />
+        <element api="M:System.Configuration.ConfigurationElement.IsReadOnly" />
+        <element api="M:System.Configuration.ConfigurationElement.SetReadOnly" />
+        <element api="M:System.Configuration.ConfigurationElement.InitializeDefault" />
+        <element api="M:System.Configuration.ConfigurationElement.Reset(System.Configuration.ConfigurationElement)" />
+        <element api="M:System.Configuration.ConfigurationElement.Equals(System.Object)" />
+        <element api="M:System.Configuration.ConfigurationElement.GetHashCode" />
+        <element api="M:System.Configuration.ConfigurationElement.Unmerge(System.Configuration.ConfigurationElement,System.Configuration.ConfigurationElement,System.Configuration.ConfigurationSaveMode)" />
+        <element api="M:System.Configuration.ConfigurationElement.SerializeToXmlElement(System.Xml.XmlWriter,System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.SerializeElement(System.Xml.XmlWriter,System.Boolean)" />
+        <element api="M:System.Configuration.ConfigurationElement.DeserializeElement(System.Xml.XmlReader,System.Boolean)" />
+        <element api="P:System.Configuration.ConfigurationElement.LockAttributes" />
+        <element api="P:System.Configuration.ConfigurationElement.LockAllAttributesExcept" />
+        <element api="P:System.Configuration.ConfigurationElement.LockElements" />
+        <element api="P:System.Configuration.ConfigurationElement.LockAllElementsExcept" />
+        <element api="P:System.Configuration.ConfigurationElement.LockItem" />
+        <element api="P:System.Configuration.ConfigurationElement.Item(System.Configuration.ConfigurationProperty)" />
+        <element api="P:System.Configuration.ConfigurationElement.Item(System.String)" />
+        <element api="P:System.Configuration.ConfigurationElement.Properties" />
+        <element api="P:System.Configuration.ConfigurationElement.ElementInformation" />
+        <element api="P:System.Configuration.ConfigurationElement.ElementProperty" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions.Configuration" />
+      </containers>
+      <file name="33fe98cd-7b6b-0faf-4e03-c2093af5abfd" />
+    </api>
+    <api id="M:System.Transactions.Configuration.DefaultSettingsSection.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions.Configuration" />
+        <type api="T:System.Transactions.Configuration.DefaultSettingsSection" ref="true" />
+      </containers>
+      <file name="757d6888-fb5c-c1c8-b946-614fecdb7955" />
+    </api>
+    <api id="P:System.Transactions.Configuration.DefaultSettingsSection.DistributedTransactionManagerName">
+      <apidata name="DistributedTransactionManagerName" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions.Configuration" />
+        <type api="T:System.Transactions.Configuration.DefaultSettingsSection" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Configuration.ConfigurationPropertyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>distributedTransactionManagerName</value>
+          </argument>
+          <assignment name="DefaultValue">
+            <type api="T:System.String" ref="true" />
+            <value />
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="b6e22e7a-b8f4-868d-0758-c06119d7d736" />
+    </api>
+    <api id="P:System.Transactions.Configuration.DefaultSettingsSection.Timeout">
+      <apidata name="Timeout" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.TimeSpan" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions.Configuration" />
+        <type api="T:System.Transactions.Configuration.DefaultSettingsSection" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Configuration.ConfigurationPropertyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>timeout</value>
+          </argument>
+          <assignment name="DefaultValue">
+            <type api="T:System.String" ref="true" />
+            <value>00:01:00</value>
+          </assignment>
+        </attribute>
+        <attribute>
+          <type api="T:System.Configuration.TimeSpanValidatorAttribute" ref="true" />
+          <assignment name="MinValueString">
+            <type api="T:System.String" ref="true" />
+            <value>00:00:00</value>
+          </assignment>
+          <assignment name="MaxValueString">
+            <type api="T:System.String" ref="true" />
+            <value>10675199.02:48:05.4775807</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="1b2d601b-d077-e7b1-254f-61cdb9cb5eb9" />
+    </api>
+    <api id="T:System.Transactions.Configuration.MachineSettingsSection">
+      <apidata name="MachineSettingsSection" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Configuration.ConfigurationSection" ref="true" />
+          <type api="T:System.Configuration.ConfigurationElement" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Transactions.Configuration.MachineSettingsSection.#ctor" />
+        <element api="P:System.Transactions.Configuration.MachineSettingsSection.MaxTimeout" />
+        <element api="M:System.Configuration.ConfigurationSection.GetRuntimeObject" />
+        <element api="M:System.Configuration.ConfigurationSection.IsModified" />
+        <element api="M:System.Configuration.ConfigurationSection.ResetModified" />
+        <element api="M:System.Configuration.ConfigurationSection.DeserializeSection(System.Xml.XmlReader)" />
+        <element api="M:System.Configuration.ConfigurationSection.SerializeSection(System.Configuration.ConfigurationElement,System.String,System.Configuration.ConfigurationSaveMode)" />
+        <element api="P:System.Configuration.ConfigurationSection.SectionInformation" />
+        <element api="M:System.Configuration.ConfigurationElement.Init" />
+        <element api="M:System.Configuration.ConfigurationElement.IsReadOnly" />
+        <element api="M:System.Configuration.ConfigurationElement.SetReadOnly" />
+        <element api="M:System.Configuration.ConfigurationElement.InitializeDefault" />
+        <element api="M:System.Configuration.ConfigurationElement.Reset(System.Configuration.ConfigurationElement)" />
+        <element api="M:System.Configuration.ConfigurationElement.Equals(System.Object)" />
+        <element api="M:System.Configuration.ConfigurationElement.GetHashCode" />
+        <element api="M:System.Configuration.ConfigurationElement.Unmerge(System.Configuration.ConfigurationElement,System.Configuration.ConfigurationElement,System.Configuration.ConfigurationSaveMode)" />
+        <element api="M:System.Configuration.ConfigurationElement.SerializeToXmlElement(System.Xml.XmlWriter,System.String)" />
+        <element api="M:System.Configuration.ConfigurationElement.SerializeElement(System.Xml.XmlWriter,System.Boolean)" />
+        <element api="M:System.Configuration.ConfigurationElement.DeserializeElement(System.Xml.XmlReader,System.Boolean)" />
+        <element api="P:System.Configuration.ConfigurationElement.LockAttributes" />
+        <element api="P:System.Configuration.ConfigurationElement.LockAllAttributesExcept" />
+        <element api="P:System.Configuration.ConfigurationElement.LockElements" />
+        <element api="P:System.Configuration.ConfigurationElement.LockAllElementsExcept" />
+        <element api="P:System.Configuration.ConfigurationElement.LockItem" />
+        <element api="P:System.Configuration.ConfigurationElement.Item(System.Configuration.ConfigurationProperty)" />
+        <element api="P:System.Configuration.ConfigurationElement.Item(System.String)" />
+        <element api="P:System.Configuration.ConfigurationElement.Properties" />
+        <element api="P:System.Configuration.ConfigurationElement.ElementInformation" />
+        <element api="P:System.Configuration.ConfigurationElement.ElementProperty" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions.Configuration" />
+      </containers>
+      <file name="f612d356-6b6c-c3bd-a1f9-090184962353" />
+    </api>
+    <api id="M:System.Transactions.Configuration.MachineSettingsSection.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions.Configuration" />
+        <type api="T:System.Transactions.Configuration.MachineSettingsSection" ref="true" />
+      </containers>
+      <file name="c3c002c2-8e5a-6a53-1a84-0c4ef4eec3ef" />
+    </api>
+    <api id="P:System.Transactions.Configuration.MachineSettingsSection.MaxTimeout">
+      <apidata name="MaxTimeout" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.TimeSpan" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions.Configuration" />
+        <type api="T:System.Transactions.Configuration.MachineSettingsSection" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Configuration.ConfigurationPropertyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>maxTimeout</value>
+          </argument>
+          <assignment name="DefaultValue">
+            <type api="T:System.String" ref="true" />
+            <value>00:10:00</value>
+          </assignment>
+        </attribute>
+        <attribute>
+          <type api="T:System.Configuration.TimeSpanValidatorAttribute" ref="true" />
+          <assignment name="MinValueString">
+            <type api="T:System.String" ref="true" />
+            <value>00:00:00</value>
+          </assignment>
+          <assignment name="MaxValueString">
+            <type api="T:System.String" ref="true" />
+            <value>10675199.02:48:05.4775807</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="b4ef6a07-6a3f-dbd0-352c-14d11ef95069" />
+    </api>
+    <api id="T:System.Transactions.Configuration.TransactionsSectionGroup">
+      <apidata name="TransactionsSectionGroup" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Configuration.ConfigurationSectionGroup" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:System.Transactions.Configuration.TransactionsSectionGroup.#ctor" />
+        <element api="M:System.Transactions.Configuration.TransactionsSectionGroup.GetSectionGroup(System.Configuration.Configuration)" />
+        <element api="P:System.Transactions.Configuration.TransactionsSectionGroup.DefaultSettings" />
+        <element api="P:System.Transactions.Configuration.TransactionsSectionGroup.MachineSettings" />
+        <element api="M:System.Configuration.ConfigurationSectionGroup.ForceDeclaration" />
+        <element api="M:System.Configuration.ConfigurationSectionGroup.ForceDeclaration(System.Boolean)" />
+        <element api="P:System.Configuration.ConfigurationSectionGroup.IsDeclared" />
+        <element api="P:System.Configuration.ConfigurationSectionGroup.IsDeclarationRequired" />
+        <element api="P:System.Configuration.ConfigurationSectionGroup.SectionGroupName" />
+        <element api="P:System.Configuration.ConfigurationSectionGroup.Name" />
+        <element api="P:System.Configuration.ConfigurationSectionGroup.Type" />
+        <element api="P:System.Configuration.ConfigurationSectionGroup.Sections" />
+        <element api="P:System.Configuration.ConfigurationSectionGroup.SectionGroups" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions.Configuration" />
+      </containers>
+      <file name="dc5e097f-dbbf-210c-7eba-14d5ae3c88c1" />
+    </api>
+    <api id="M:System.Transactions.Configuration.TransactionsSectionGroup.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions.Configuration" />
+        <type api="T:System.Transactions.Configuration.TransactionsSectionGroup" ref="true" />
+      </containers>
+      <file name="1cca0490-645d-f963-fba9-fe96e92cc618" />
+    </api>
+    <api id="P:System.Transactions.Configuration.TransactionsSectionGroup.DefaultSettings">
+      <apidata name="DefaultSettings" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Transactions.Configuration.DefaultSettingsSection" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions.Configuration" />
+        <type api="T:System.Transactions.Configuration.TransactionsSectionGroup" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Configuration.ConfigurationPropertyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>defaultSettings</value>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="25829fe6-76be-5e4f-e551-5b279772d8c8" />
+    </api>
+    <api id="M:System.Transactions.Configuration.TransactionsSectionGroup.GetSectionGroup(System.Configuration.Configuration)">
+      <apidata name="GetSectionGroup" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="config">
+          <type api="T:System.Configuration.Configuration" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Transactions.Configuration.TransactionsSectionGroup" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions.Configuration" />
+        <type api="T:System.Transactions.Configuration.TransactionsSectionGroup" ref="true" />
+      </containers>
+      <file name="7a1747b4-0b39-96ed-64d2-3d4710fe753e" />
+    </api>
+    <api id="P:System.Transactions.Configuration.TransactionsSectionGroup.MachineSettings">
+      <apidata name="MachineSettings" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Transactions.Configuration.MachineSettingsSection" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="System.Transactions" module="System.Transactions" />
+        <namespace api="N:System.Transactions.Configuration" />
+        <type api="T:System.Transactions.Configuration.TransactionsSectionGroup" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Configuration.ConfigurationPropertyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>machineSettings</value>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="0350f5c7-94ce-a800-867d-f3bab9755146" />
+    </api>
+  </apis>
+</reflection>

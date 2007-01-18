@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="ae107347-14dd-4d0e-a234-07be31f0d8e8" revisionNumber="7">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.Base64FormattingOptions">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Specifies whether relevant <codeEntityReference qualifyHint="true" autoUpgrade="true">Overload:System.Convert.ToBase64CharArray</codeEntityReference> and <codeEntityReference qualifyHint="true" autoUpgrade="true">Overload:System.Convert.ToBase64String</codeEntityReference> methods insert line breaks in their output. </para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">Overload:System.Convert.ToBase64CharArray</codeEntityReference> and <codeEntityReference autoUpgrade="true">Overload:System.Convert.ToBase64String</codeEntityReference> methods convert the value of an array of 8-bit unsigned integers to an equivalent string representation that consists of base 64 digits. The string representation can contain one or more line breaks, where a line break is defined as a carriage return character (U+000D) followed by a line feed character (U+000A).</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates using the <codeEntityReference autoUpgrade="true">T:System.Base64FormattingOptions</codeEntityReference> enumeration to break the output of the <codeEntityReference qualifyHint="true" autoUpgrade="true">Overload:System.Convert.ToBase64String</codeEntityReference> method into separate lines.</para>
+                <codeReference>convert.tobase64string#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="F:System.Base64FormattingOptions.InsertLineBreaks">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Inserts line breaks after every 76 characters in the string representation.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.Base64FormattingOptions.None">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Does not insert line breaks after every 76 characters in the string representation.</para>
+        </summary>
+      </dduexml>
+    </member>
+  </members>
+</doc>

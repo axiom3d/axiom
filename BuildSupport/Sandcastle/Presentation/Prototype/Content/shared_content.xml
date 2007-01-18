@@ -1,0 +1,38 @@
+<content xml:space="preserve">
+
+	<!-- paths -->
+	<item id="iconPath">../icons/{0}</item>
+	<item id="scriptPath">../scripts/{0}</item>
+	<item id="stylePath">../styles/{0}</item>
+	<item id="artPath">../art/{0}</item>
+
+	<!-- locale -->
+	<item id="locale">en-us</item>
+
+	<!-- header -->
+	<item id="header"><div id="header">This is experimental documentation.</div></item>
+
+	<!-- alert titles -->
+	<item id="cautionTitle"><b>Caution:</b></item>
+	<item id="securityTitle"><b>Security Note:</b></item>
+	<item id="noteTitle"><b>Note:</b></item>
+
+	<!-- code labels -->
+	<item id="CSharpLabel">C#</item>
+	<item id="VisualBasicLabel">Visual Basic</item>
+	<item id="ManagedCPlusPlusLabel">Managed C++</item>
+	<item id="JSharpLabel">J#</item>
+	<item id="JScriptLabel">JScript</item>
+  
+  <!-- product labels -->
+  <item id="framework">.NET Framework</item>
+  <item id="compact">.NET Compact Framework</item>
+  <item id="everett">1.1</item>
+  <item id="whidbey">2.0</item>
+
+	<!-- footer -->	
+	<item id="footer"><div id="footer"><include item="copyright"/> <include item="comments"/></div></item>
+	<item id="copyright">(c) Microsoft Corporation. All rights reserved.</item>
+	<item id="comments">Send comments about this topic to Microsoft.</item>
+
+</content>

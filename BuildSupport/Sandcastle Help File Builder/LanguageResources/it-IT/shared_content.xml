@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Translations provided by Thierry Huguet and his colleagues -->
+<content xml:space="preserve">
+
+	<!-- paths -->
+	<item id="artPath">../art/{0}</item>
+	<item id="iconPath">../icons/{0}</item>
+	<item id="scriptPath">../scripts/{0}</item>
+	<item id="stylePath">../styles/{0}</item>
+
+	<!-- locale -->
+	<item id="locale">{@Locale}</item>
+
+	<!-- header -->
+	<item id="header"><div id="header">{@HeaderText} {@Preliminary}</div></item>
+	<item id="preliminary"><p style="color: #dc143c; font-size: 9pt; font-weight: bold;">[Documentazione preliminare soggetta a variazioni.]</p></item>
+
+	<!-- alert titles -->
+	<item id="cautionTitle"><b>Avvertimenti:</b></item>
+	<item id="securityTitle"><b>Note di sicurezza:</b></item>
+	<item id="noteTitle"><b>Note:</b></item>
+
+	<!-- code labels -->
+	<item id="CSharpLabel">C#</item>
+	<item id="VisualBasicLabel">Visual Basic</item>
+	<item id="ManagedCPlusPlusLabel">Managed C++</item>
+	<item id="JSharpLabel">J#</item>
+	<item id="JScriptLabel">JScript</item>
+
+	<!-- product labels -->
+	<item id="framework">.NET Framework</item>
+	<item id="compact">.NET Compact Framework</item>
+	<item id="everett">1.1</item>
+	<item id="whidbey">2.0</item>
+
+	<!-- footer -->
+	<item id="footer"><div id="footer">{@Comments} {@Copyright}</div></item>
+	<item id="comments"><p/>Inviare suggerimenti o segnalare errori relativi a questo argomento a
+    <a href="mailto:{@UrlEncFeedbackEMailAddress}?Subject={@UrlEncHelpTitle}">{@HtmlEncFeedbackEMailAddress}</a></item>
+    <!-- To format the copyright HREF and/or copyright text into a message of
+         your choosing, you can specify @HtmlEncCopyrightHref and/or
+         @HtmlEncCopyrightText in braces -->
+	<item id="copyright">{@HtmlEncCopyrightInfo}</item>
+
+</content>

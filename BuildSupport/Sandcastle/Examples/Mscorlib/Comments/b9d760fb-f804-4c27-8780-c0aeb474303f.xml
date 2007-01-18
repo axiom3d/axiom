@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="b9d760fb-f804-4c27-8780-c0aeb474303f" revisionNumber="4">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.StringComparison">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Specifies the culture, case, and sort rules to be used by certain overloads of the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.String.Compare(System.String,System.String)</codeEntityReference> and <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.String.Equals(System.Object)</codeEntityReference> methods.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.StringComparison</codeEntityReference> enumeration is used to specify whether a string comparison should use the current culture or the invariant culture, word or ordinal sort rules, and be case-sensitive or case-insensitive.</para>
+            <para>An operation that uses word sort rules performs a culture-sensitive comparison wherein certain nonalphanumeric Unicode characters might have special weights assigned to them. Using word sort rules and the conventions of a specific culture, the hyphen ("-") might have a very small weight assigned to it so that "coop" and "co-op" appear next to each other in a sorted list.</para>
+            <para>An operation that uses ordinal sort rules performs a comparison based on the numeric value (Unicode code point) of each <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> in the string. An ordinal comparison is fast, but culture-insensitive. Using ordinal sort rules a string that starts with some Unicode character, U+xxxx, comes before a string that starts with some Unicode character, U+yyyy, if the value of xxxx is numerically less than yyyy.</para>
+            <para>For more information about comparisons, see the <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.String</codeEntityReference> class remarks. For more information about culture, see the <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Globalization.CultureInfo</codeEntityReference> class remarks.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.String.Compare(System.String,System.String)</codeEntityReference>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Globalization.CompareInfo.Compare(System.String,System.String)</codeEntityReference>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.String.CompareOrdinal(System.String,System.String)</codeEntityReference>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.Globalization.CultureInfo.InvariantCulture</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="F:System.StringComparison.CurrentCulture">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Compare strings using culture-sensitive sort rules and the current culture.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.StringComparison.CurrentCultureIgnoreCase">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Compare strings using culture-sensitive sort rules, the current culture, and ignoring the case of the strings being compared.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.StringComparison.InvariantCulture">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Compare strings using culture-sensitive sort rules and the invariant culture.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.StringComparison.InvariantCultureIgnoreCase">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Compare strings using culture-sensitive sort rules, the invariant culture, and ignoring the case of the strings being compared.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.StringComparison.Ordinal">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Compare strings using ordinal sort rules.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.StringComparison.OrdinalIgnoreCase">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Compare strings using ordinal sort rules and ignoring the case of the strings being compared.</para>
+        </summary>
+      </dduexml>
+    </member>
+  </members>
+</doc>

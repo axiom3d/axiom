@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<content xml:space="preserve">
+
+	<!-- control window stuff -->
+	<item id="productTitle">{@HtmlEncHelpTitle}</item>
+
+	<!-- main window stuff -->
+
+	<!-- body -->
+
+
+	<!-- section titles -->
+	<item id="inThisSectionTitle">In This Section</item>
+	<item id="relatedSectionsTitle">Related Sections</item>
+	<item id="relatedTopicsTitle">See Also</item>
+
+</content>

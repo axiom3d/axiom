@@ -1,0 +1,633 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="2303be74-c426-44e8-8237-1df84c9e5669" revisionNumber="15">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.AppDomainSetup">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents assembly binding information that can be added to an instance of <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference>.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>Changing the properties of an <codeEntityReference autoUpgrade="true">T:System.AppDomainSetup</codeEntityReference> instance does not affect any existing <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference>. It can affect only the creation of a new <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference>, when the <codeEntityReference autoUpgrade="true">M:System.AppDomain.CreateDomain(System.String,System.Security.Policy.Evidence)</codeEntityReference> method is called with the <codeEntityReference autoUpgrade="true">T:System.AppDomainSetup</codeEntityReference> instance as a parameter.</para>
+            <para>This class implements the <codeEntityReference autoUpgrade="true">T:System.IAppDomainSetup</codeEntityReference> interface.</para>
+            <alert class="caution">
+              <para>The default value for the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.DisallowCodeDownload</codeEntityReference> property is false. This setting is unsafe for services. To help prevent services from downloading partially trusted code, set this property to true</para>
+            </alert>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="Overload:System.AppDomainSetup.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.AppDomainSetup</codeEntityReference> class.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.AppDomainSetup.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.AppDomainSetup</codeEntityReference> class.</para>
+        </summary>
+      <overload>
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.AppDomainSetup</codeEntityReference> class.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="P:System.AppDomainSetup.AppDomainInitializer">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets the <codeEntityReference autoUpgrade="true">T:System.AppDomainInitializer</codeEntityReference> delegate, which represents a callback method that is invoked when the application domain is initialized.</para>
+        </summary>
+        <returnValue>
+          <para>An <codeEntityReference autoUpgrade="true">T:System.AppDomainInitializer</codeEntityReference> delegate that represents a callback method that is invoked when the application domain is initialized.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>To pass information to the callback method, assign an array of strings to the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.AppDomainInitializerArguments</codeEntityReference> property. The array is passed to the callback method each time an <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference> is initialized.</para>
+            <para>The callback method is executed in the context of the newly created application domain.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example creates a child application domain named <codeInline>ChildDomain</codeInline>, using an <codeEntityReference autoUpgrade="true">T:System.AppDomainSetup</codeEntityReference> object and evidence from the default application domain. The <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.AppDomainInitializer</codeEntityReference> property is set to the callback method <codeInline>AppDomainInit</codeInline>, which is invoked when the child domain is initialized. The arguments for the callback method are placed in an array of strings, which is assigned to the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.AppDomainInitializerArguments</codeEntityReference> property. When the child domain is created, the callback method simply prints the strings.</para>
+                <codeReference>AppDomainInitializer#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.AppDomainInitializer</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.AppDomainInitializerArguments</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="P:System.AppDomainSetup.AppDomainInitializerArguments">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets the arguments passed to the callback method represented by the <codeEntityReference autoUpgrade="true">T:System.AppDomainInitializer</codeEntityReference> delegate. The callback method is invoked when the application domain is initialized.</para>
+        </summary>
+        <returnValue>
+          <para>An array of strings that is passed to the callback method represented by the <codeEntityReference autoUpgrade="true">T:System.AppDomainInitializer</codeEntityReference> delegate, when the callback method is invoked during <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference> initialization.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Use the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.AppDomainInitializer</codeEntityReference> property to specify a callback method that is invoked during <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference> initialization. If the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.AppDomainInitializer</codeEntityReference> property is not set, the array assigned to this property is not used.</para>
+            <para>The callback method is executed in the context of the newly created application domain.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example creates a child application domain named <codeInline>ChildDomain</codeInline>, using an <codeEntityReference autoUpgrade="true">T:System.AppDomainSetup</codeEntityReference> object and evidence from the default application domain. The <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.AppDomainInitializer</codeEntityReference> property is set to the callback method <codeInline>AppDomainInit</codeInline>, which is invoked when the child domain is initialized. The arguments for the callback method are placed in an array of strings, which is assigned to the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.AppDomainInitializerArguments</codeEntityReference> property. When the child domain is created, the callback method simply prints the strings.</para>
+                <codeReference>AppDomainInitializer#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.AppDomainInitializer</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.AppDomainInitializer</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="P:System.AppDomainSetup.ApplicationBase">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets the name of the directory containing the application.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> containing the name of the application base directory.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The application base directory is where the assembly manager begins probing for assemblies.</para>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ApplicationBase</codeEntityReference> property can influence which permissions are granted to an application domain. For example, an application domain originating from the local computer normally receives full trust based on its location of origin. However, if the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ApplicationBase</codeEntityReference> property of that <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference> is set to the full name of an intranet directory, the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ApplicationBase</codeEntityReference> setting restricts the permissions granted to the application domain to a LocalIntranet grant even though the application domain actually originates from the local computer.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <codeReference>ADApplicationBase#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.FileIOPermission</codeEntityReference>
+            <content>
+              <para>for access to the path information. Associated enumeration: <codeEntityReference autoUpgrade="true">F:System.Security.Permissions.FileIOPermissionAccess.PathDiscovery</codeEntityReference>.</para>
+            </content>
+          </permission>
+        </permissions>
+      </dduexml>
+    </member>
+    <member name="P:System.AppDomainSetup.ApplicationName">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets the name of the application.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> that is the name of the application.</para>
+        </returnValue>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <codeReference>ADMultiDomain#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.AppDomainSetup.CachePath">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets the name of an area specific to the application where files are shadow copied. </para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> that is the fully qualified name of the directory path and file name where files are shadow copied.</para>
+        </returnValue>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.FileIOPermission</codeEntityReference>
+            <content>
+              <para>for access to the path information. Associated enumeration: <codeEntityReference autoUpgrade="true">F:System.Security.Permissions.FileIOPermissionAccess.PathDiscovery</codeEntityReference>.</para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ShadowCopyFiles</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ShadowCopyDirectories</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="P:System.AppDomainSetup.ConfigurationFile">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets the name of the configuration file for an application domain.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> that specifies the name of the configuration file.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The configuration file describes the search rules and configuration data for the application domain. The host that creates the application domain is responsible for supplying this data because the meaningful values vary from situation to situation.</para>
+            <para>For example, the configuration data for ASP.NET applications is stored for each application, site, and computer, while the configuration data for an executable is stored for each application, user, and computer. Only the host knows the specifics of the configuration data for a particular circumstance. </para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <codeReference>ADCreateDomain#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.FileIOPermission</codeEntityReference>
+            <content>
+              <para>for access to the path information. Associated enumeration: <codeEntityReference autoUpgrade="true">F:System.Security.Permissions.FileIOPermissionAccess.PathDiscovery</codeEntityReference>.</para>
+            </content>
+          </permission>
+        </permissions>
+      </dduexml>
+    </member>
+    <member name="P:System.AppDomainSetup.DisallowBindingRedirects">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets a value indicating if an application domain allows assembly binding redirection.</para>
+        </summary>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if redirection of assemblies is disallowed; otherwise it is allowed.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.DisallowBindingRedirects</codeEntityReference> property is designed to be used by services and server applications where assembly binding redirection is not part of the application scenario.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.AppDomainSetup.DisallowCodeDownload">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets a value indicating whether HTTP download of assemblies is allowed for an application domain.</para>
+        </summary>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if HTTP download of assemblies is to be disallowed; otherwise, it is allowed.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.DisallowCodeDownload</codeEntityReference> property is designed to be used by services and server applications where downloading code from an intranet or the Internet is not part of the application scenario.</para>
+            <alert class="caution">
+              <para>The default value for the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.DisallowCodeDownload</codeEntityReference> property is false. This setting is unsafe for services. To help prevent services from downloading partially trusted code, set this property to true.</para>
+            </alert>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.AppDomainSetup.DisallowPublisherPolicy">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets a value indicating whether the publisher policy section of the configuration file is applied to an application domain.</para>
+        </summary>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the <languageKeyword>publisherPolicy</languageKeyword> section of the configuration file for an application domain is ignored; otherwise, the declared publisher policy is honored.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.DisallowPublisherPolicy</codeEntityReference> property specifically applies to a Web application that is loaded locally. Use this property to help prevent a malicious attempt to execute an unsafe Web application in safe mode.</para>
+            <para>For more information about bypassing publisher policy, see the <link xlink:href="88fb1a17-6ac9-4b57-8028-193aec1f727c">Redirecting Assembly Versions</link> topic. For more information about safe mode, see the <link xlink:href="04ce6178-9199-400c-8d28-245a1a01803d">Step 1: Examining the Configuration Files</link> topic.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.AppDomainSetup.DynamicBase">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets the base directory where the directory for dynamically generated files is located.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> that specifies the directory where the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.AppDomain.DynamicDirectory</codeEntityReference> is located.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>When an <codeEntityReference autoUpgrade="true">T:System.AppDomain</codeEntityReference> is created, a directory called the Dynamic Directory can be specified to store dynamic assemblies. This directory is logically located under the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ApplicationBase</codeEntityReference>, although it can reside in another part of the directory.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <codeReference>ADDynamicBase#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.FileIOPermission</codeEntityReference>
+            <content>
+              <para>for access to the path information. Associated enumeration: <codeEntityReference autoUpgrade="true">F:System.Security.Permissions.FileIOPermissionAccess.PathDiscovery</codeEntityReference>.</para>
+            </content>
+          </permission>
+        </permissions>
+      </dduexml>
+    </member>
+    <member name="P:System.AppDomainSetup.LicenseFile">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets the location of the license file associated with this domain.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> that specifies the name of the license file.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <codeReference>ADCreateDomain#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.FileIOPermission</codeEntityReference>
+            <content>
+              <para>for access to the path information. Associated enumeration: <codeEntityReference autoUpgrade="true">F:System.Security.Permissions.FileIOPermissionAccess.PathDiscovery</codeEntityReference>.</para>
+            </content>
+          </permission>
+        </permissions>
+      </dduexml>
+    </member>
+    <member name="P:System.AppDomainSetup.LoaderOptimization">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Specifies the optimization policy used to load an executable.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.LoaderOptimization</codeEntityReference> enumerated constant used with the <codeEntityReference autoUpgrade="true">T:System.LoaderOptimizationAttribute</codeEntityReference>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <codeReference>ADDyno#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.AppDomainSetup.PrivateBinPath">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets the list of directories under the application base directory that are probed for private assemblies.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> containing a list of directory names, where the names are separated by semicolons.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Private assemblies are deployed in the same directory structure as the application. If the directories specified for <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.PrivateBinPath</codeEntityReference> are not under <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ApplicationBase</codeEntityReference>, they are ignored.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.AppDomainSetup.PrivateBinPathProbe">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets a string value that includes or excludes <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ApplicationBase</codeEntityReference> from the search path for the application, and searches only <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.PrivateBinPath</codeEntityReference>.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> that is blank if <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ApplicationBase</codeEntityReference> is included in the application search path, or nonblank if it is excluded.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Set this property to any nonblank string to exclude the application directory path — that is, <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ApplicationBase</codeEntityReference> — from the search path for the application, and search only <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.PrivateBinPath</codeEntityReference>. </para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.AppDomainSetup.ShadowCopyDirectories">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets the names of the directories containing assemblies to be shadow copied.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> containing a list of directory names, where each name is separated by a semicolon.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>By default, a shadow copy includes all assemblies found through probing. The <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ShadowCopyDirectories</codeEntityReference> property restricts the shadow copy to the assemblies in the directories specified by <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ShadowCopyDirectories</codeEntityReference>.</para>
+            <para>All directories specified by <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.PrivateBinPath</codeEntityReference>, including the directory specified by <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ApplicationBase</codeEntityReference>, are not shadow copied by default if this property is not set.</para>
+            <para>If an executable file is in use, updates to the executable file are stored in a shadow copy directory. Existing users continue using the original executable file until it terminates, while new users use the shadow copied executable file.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.FileIOPermission</codeEntityReference>
+            <content>
+              <para>for access to the path information. Associated enumeration: <codeEntityReference autoUpgrade="true">F:System.Security.Permissions.FileIOPermissionAccess.PathDiscovery</codeEntityReference>.</para>
+            </content>
+          </permission>
+        </permissions>
+      </dduexml>
+    </member>
+    <member name="P:System.AppDomainSetup.ShadowCopyFiles">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets a string that indicates whether shadow copying is turned on or off.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> containing the string value "true" to indicate that shadow copying is turned on; or "false" to indicate that shadow copying is turned off.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.AppDomainSetup.SetConfigurationBytes(System.Byte[])">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides XML configuration information for the application domain, overriding the application's XML configuration information.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> array containing the XML configuration information to be used for the application domain.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.AppDomainSetup.SetConfigurationBytes(System.Byte[])</codeEntityReference> method provides a way to override the configuration information of an application that creates a new application domain. The configuration file information in <parameterReference>value</parameterReference> overrides the configuration file information for the application. For example, when the Example.exe application creates a new application domain, it can override the configuration information originally obtained from the Example.exe.config file.</para>
+            <para>The XML in <parameterReference>value</parameterReference> is the same as the XML in a normal configuration file, except that it is stored as a <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> array. </para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.AppDomainSetup.GetConfigurationBytes">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the XML configuration information set by the <codeEntityReference autoUpgrade="true">M:System.AppDomainSetup.SetConfigurationBytes(System.Byte[])</codeEntityReference> method, which overrides the application's XML configuration information.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> array containing the XML configuration information that was set by the <codeEntityReference autoUpgrade="true">M:System.AppDomainSetup.SetConfigurationBytes(System.Byte[])</codeEntityReference> method, or <languageKeyword>null</languageKeyword> if the <codeEntityReference autoUpgrade="true">M:System.AppDomainSetup.SetConfigurationBytes(System.Byte[])</codeEntityReference> method has not been called.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.AppDomainSetup.SetConfigurationBytes(System.Byte[])</codeEntityReference> method provides a way to override the configuration information of an application that creates a new application domain. The configuration file information in <parameterReference>value</parameterReference> overrides the configuration file information for the application. For example, when the Example.exe application creates a new application domain, it can override the configuration information originally obtained from Example.exe.config file.</para>
+            <para>The XML in <parameterReference>value</parameterReference> is the same as the XML in a normal configuration file, except that it is stored as a <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference> array. </para>
+            <para>To access the configuration bytes for an application domain, use the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.AppDomain.SetupInformation</codeEntityReference> property to get the <codeEntityReference autoUpgrade="true">T:System.AppDomainSetup</codeEntityReference> object for the application domain, then use the <codeEntityReference autoUpgrade="true">M:System.AppDomainSetup.GetConfigurationBytes</codeEntityReference> method. </para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.AppDomainSetup.DisallowApplicationBaseProbing">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Specifies whether the application base path and private binary path are probed when searching for assemblies to load.</para>
+        </summary>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if probing is not allowed; otherwise <languageKeyword>false</languageKeyword>. The default is <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>If the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.DisallowApplicationBaseProbing</codeEntityReference> property is <languageKeyword>true</languageKeyword>, the value of the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ApplicationBase</codeEntityReference> property is ignored. That is, no assemblies are probed for in the directories specified by the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ApplicationBase</codeEntityReference> property.</para>
+            <para>If the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.DisallowApplicationBaseProbing</codeEntityReference> property is <languageKeyword>true</languageKeyword>, the values of the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.PrivateBinPath</codeEntityReference> property and the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.PrivateBinPathProbe</codeEntityReference> property are ignored. No assemblies are probed for in the directories specified by the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.PrivateBinPath</codeEntityReference> property.</para>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.DisallowApplicationBaseProbing</codeEntityReference> property provides an additional layer of control over the loading process. In the normal assembly loading sequence, the application base is probed before the <codeEntityReference qualifyHint="true" autoUpgrade="true">E:System.AppDomain.AssemblyResolve</codeEntityReference> event is raised. However, some applications might need to load assemblies from an OLE compound file within a document, or from a unique known location that is neither in the global assembly cache nor in the directories specified by the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ApplicationBase</codeEntityReference> and <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.PrivateBinPath</codeEntityReference> properties. Such applications can use the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.DisallowApplicationBaseProbing</codeEntityReference> property to avoid the delay caused by normal probing, and to avoid loading copies of the necessary assembly that might be located in the normal probing paths. </para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.AppDomainSetup.ActivationArguments">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets data about the activation of an application domain.</para>
+        </summary>
+        <returnValue>
+          <para>An <codeEntityReference autoUpgrade="true">T:System.Runtime.Hosting.ActivationArguments</codeEntityReference> object containing data about the activation of an application domain.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>The property is set to an <codeEntityReference autoUpgrade="true">T:System.Runtime.Hosting.ActivationArguments</codeEntityReference> object whose application identity does not match the application identity of the <codeEntityReference autoUpgrade="true">T:System.Security.Policy.ApplicationTrust</codeEntityReference> object returned by the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ApplicationTrust</codeEntityReference> property. No exception is thrown if the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ApplicationTrust</codeEntityReference> property is <languageKeyword>null</languageKeyword>.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>No exception is thrown if this property is set to <languageKeyword>null</languageKeyword>.</para>
+            <para>The information provided by the <codeEntityReference autoUpgrade="true">T:System.Runtime.Hosting.ActivationArguments</codeEntityReference> object supports manifest-based activation. </para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.AppDomainSetup.#ctor(System.ActivationContext)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.AppDomainSetup</codeEntityReference> class with the specified activation context to use for manifest-based activation of an application domain.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>activationContext</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference> object that specifies the activation context to be used for an application domain.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>activationContext</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference> object specified for <parameterReference>activationContext</parameterReference> is used to generate an <codeEntityReference autoUpgrade="true">T:System.Runtime.Hosting.ActivationArguments</codeEntityReference> object containing information required to activate a new application domain. This <codeEntityReference autoUpgrade="true">T:System.Runtime.Hosting.ActivationArguments</codeEntityReference> object can be accessed by using the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ActivationArguments</codeEntityReference> property.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ActivationArguments</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Runtime.Hosting.ActivationArguments</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.ActivationContext</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.AppDomainSetup.#ctor(System.Runtime.Hosting.ActivationArguments)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.AppDomainSetup</codeEntityReference> class with the specified activation arguments required for manifest-based activation of an application domain.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>activationArguments</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.Runtime.Hosting.ActivationArguments</codeEntityReference> object that specifies information required for the manifest-based activation of a new application domain.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>activationArguments</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The object specified for <parameterReference>activationArguments</parameterReference> can be accessed by using the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ActivationArguments</codeEntityReference> property.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.AppDomainSetup.ApplicationTrust">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets an object containing security and trust information.</para>
+        </summary>
+        <returnValue>
+          <para>An <codeEntityReference autoUpgrade="true">T:System.Security.Policy.ApplicationTrust</codeEntityReference> object representing security and trust information. </para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>The property is set to an <codeEntityReference autoUpgrade="true">T:System.Security.Policy.ApplicationTrust</codeEntityReference> object whose application identity does not match the application identity of the <codeEntityReference autoUpgrade="true">T:System.Runtime.Hosting.ActivationArguments</codeEntityReference> object returned by the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ActivationArguments</codeEntityReference> property. No exception is thrown if the <codeEntityReference autoUpgrade="true">P:System.AppDomainSetup.ActivationArguments</codeEntityReference> property is <languageKeyword>null</languageKeyword>.</para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>The property is set to <languageKeyword>null</languageKeyword>.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This property is <languageKeyword>null</languageKeyword> when the <codeEntityReference autoUpgrade="true">T:System.AppDomainSetup</codeEntityReference> is created. Once changed, it cannot be reset to a null reference.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+  </members>
+</doc>

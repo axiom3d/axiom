@@ -1,0 +1,783 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<reflection>
+  <assemblies>
+    <assembly name="IEHost" version="2.0.0.0" culture="" key="002400000480000094000000060200000024000052534131000400000100010007D1FA57C4AED9F0A32E84AA0FAEFD0DE9E8FD6AEC8F87FB03766C834C99921EB23BE79AD9D5DCC1DD9AD236132102900B723CF980957FC4E177108FC607774F29E8320E92EA05ECE4E821C0A5EFE8F1645C4C0C93C1AB99285D622CAA652C1DFAD63D745D6F2DE5F17E5EAF0FC4963D261C8A12436518206DC093344D5AD293" hash="SHA1">
+      <attributes>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyInformationalVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.50727.12</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyFileVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.50727.12</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Diagnostics.DebuggableAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Diagnostics.DebuggableAttribute.DebuggingModes" ref="false" />
+            <enumValue>
+              <field name="IgnoreSymbolStoreSequencePoints" />
+            </enumValue>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.TypeLibVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>1</value>
+          </argument>
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>20</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComCompatibleVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>1</value>
+          </argument>
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>0</value>
+          </argument>
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>3300</value>
+          </argument>
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute" ref="true" />
+          <assignment name="WrapNonExceptionThrows">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyKeyFileAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>f:\RTM\Tools\devdiv\FinalPublicKey.snk</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDelaySignAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.NeutralResourcesLanguageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>en-US</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.SatelliteContractVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.0.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.CompilationRelaxationsAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>8</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCopyrightAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>c Microsoft Corporation.  All rights reserved.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyProductAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoftr .NET Framework</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCompanyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft Corporation</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDefaultAliasAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>IEHost.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDescriptionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>IEHost.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyTitleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>IEHost.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.CLSCompliantAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </assembly>
+  </assemblies>
+  <apis>
+    <api id="T:Microsoft.IE.Manager">
+      <apidata name="Manager" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:Microsoft.IE.IHostEx" ref="true" />
+      </implements>
+      <elements>
+        <element api="F:Microsoft.IE.Manager.INTERNET_MAX_PATH_LENGTH" />
+        <element api="F:Microsoft.IE.Manager.INTERNET_MAX_SCHEME_LENGTH" />
+        <element api="F:Microsoft.IE.Manager.INTERNET_MAX_URL_LENGTH" />
+        <element api="M:Microsoft.IE.Manager.#ctor" />
+        <element api="M:Microsoft.IE.Manager.GetSiteName(System.String)" />
+        <element api="M:Microsoft.IE.Manager.IsValidURL(System.String)" />
+        <element api="M:Microsoft.IE.Manager.CanonizeURL(System.String,Microsoft.IE.Manager.URL_CANONFLAGS)" />
+        <element api="M:Microsoft.IE.Manager.AreTheSame(System.String,System.String)" />
+        <element api="M:Microsoft.IE.Manager.AreOnTheSameSite(System.String,System.String)" />
+        <element api="M:Microsoft.IE.Manager.GetCodeBase(System.String,System.String@,System.String@)" />
+        <element api="M:Microsoft.IE.Manager.GetConfigurationFile(System.String,System.String@,System.String@)" />
+        <element api="M:Microsoft.IE.Manager.MakeFullLink(System.String,System.String,System.String)" />
+        <element api="M:Microsoft.IE.Manager.DecodeDomainId(System.String)" />
+        <element api="M:Microsoft.IE.Manager.GetSecuredClassFactory(System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String)" />
+        <element api="M:Microsoft.IE.Manager.GetClassFactory(System.String,System.String)" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>CA35CB3D-0357-11D3-8729-00C04F79ED0D</value>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="791bbceb-7602-9cf1-5215-6cb5bda9d142" />
+    </api>
+    <api id="M:Microsoft.IE.Manager.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+        <type api="T:Microsoft.IE.Manager" ref="true" />
+      </containers>
+      <file name="929ade7a-ab2e-8c46-325e-246353170462" />
+    </api>
+    <api id="M:Microsoft.IE.Manager.AreOnTheSameSite(System.String,System.String)">
+      <apidata name="AreOnTheSameSite" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="pURL1">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="pURL2">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+        <type api="T:Microsoft.IE.Manager" ref="true" />
+      </containers>
+      <file name="9551e5a8-e275-0cdd-ab92-7a1a9f9c8af7" />
+    </api>
+    <api id="M:Microsoft.IE.Manager.AreTheSame(System.String,System.String)">
+      <apidata name="AreTheSame" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="pURL1">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="pURL2">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+        <type api="T:Microsoft.IE.Manager" ref="true" />
+      </containers>
+      <file name="ac678454-87de-4013-6094-2bf76af21749" />
+    </api>
+    <api id="M:Microsoft.IE.Manager.CanonizeURL(System.String,Microsoft.IE.Manager.URL_CANONFLAGS)">
+      <apidata name="CanonizeURL" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="pURL">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="flags">
+          <type api="T:Microsoft.IE.Manager.URL_CANONFLAGS" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+        <type api="T:Microsoft.IE.Manager" ref="true" />
+      </containers>
+      <file name="6a0ce2c9-9c55-d93b-a78a-eab3d9b3155c" />
+    </api>
+    <api id="M:Microsoft.IE.Manager.DecodeDomainId(System.String)">
+      <apidata name="DecodeDomainId" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="hexString">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:System.Byte" ref="false" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+        <type api="T:Microsoft.IE.Manager" ref="true" />
+      </containers>
+      <file name="a218bf99-ea52-1413-51e5-ecc082494631" />
+    </api>
+    <api id="M:Microsoft.IE.Manager.GetClassFactory(System.String,System.String)">
+      <apidata name="GetClassFactory" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="assemblyName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="className">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:Microsoft.IE.ISecureFactory" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+        <type api="T:Microsoft.IE.Manager" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.CLSCompliantAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="dcc7a56d-5776-89a8-a724-2cb92dc44ab8" />
+    </api>
+    <api id="M:Microsoft.IE.Manager.GetCodeBase(System.String,System.String@,System.String@)">
+      <apidata name="GetCodeBase" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="pURL">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="codeBase" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+        <parameter name="application" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+        <type api="T:Microsoft.IE.Manager" ref="true" />
+      </containers>
+      <file name="8c89e462-c460-f2f6-d19f-8d3ab8ee8912" />
+    </api>
+    <api id="M:Microsoft.IE.Manager.GetConfigurationFile(System.String,System.String@,System.String@)">
+      <apidata name="GetConfigurationFile" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="pURL">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="path" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+        <parameter name="file" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+        <type api="T:Microsoft.IE.Manager" ref="true" />
+      </containers>
+      <file name="cb4fd945-f846-c79d-6661-ec536f41d274" />
+    </api>
+    <api id="M:Microsoft.IE.Manager.GetSecuredClassFactory(System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String)">
+      <apidata name="GetSecuredClassFactory" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="flags">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="zone">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="site">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="uniqueIdString">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="fileHashString">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="assemblyName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="typeName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:Microsoft.IE.ISecureFactory" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+        <type api="T:Microsoft.IE.Manager" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.CLSCompliantAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="21ec88f9-9ada-8361-2358-4b523ecb2ea4" />
+    </api>
+    <api id="M:Microsoft.IE.Manager.GetSiteName(System.String)">
+      <apidata name="GetSiteName" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="pURL">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+        <type api="T:Microsoft.IE.Manager" ref="true" />
+      </containers>
+      <file name="bfae74d2-6f19-eaa5-c2d7-787dd3178525" />
+    </api>
+    <api id="F:Microsoft.IE.Manager.INTERNET_MAX_PATH_LENGTH">
+      <apidata name="INTERNET_MAX_PATH_LENGTH" group="member" subgroup="field" />
+      <memberdata visibility="public" static="true" special="false" />
+      <fielddata literal="false" initonly="true" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+        <type api="T:Microsoft.IE.Manager" ref="true" />
+      </containers>
+      <file name="ac314c22-5ffc-ee66-b535-66afb6f44423" />
+    </api>
+    <api id="F:Microsoft.IE.Manager.INTERNET_MAX_SCHEME_LENGTH">
+      <apidata name="INTERNET_MAX_SCHEME_LENGTH" group="member" subgroup="field" />
+      <memberdata visibility="public" static="true" special="false" />
+      <fielddata literal="false" initonly="true" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+        <type api="T:Microsoft.IE.Manager" ref="true" />
+      </containers>
+      <file name="9d8a081d-2da5-9373-1cc4-0e0a3c19d943" />
+    </api>
+    <api id="F:Microsoft.IE.Manager.INTERNET_MAX_URL_LENGTH">
+      <apidata name="INTERNET_MAX_URL_LENGTH" group="member" subgroup="field" />
+      <memberdata visibility="public" static="true" special="false" />
+      <fielddata literal="false" initonly="true" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+        <type api="T:Microsoft.IE.Manager" ref="true" />
+      </containers>
+      <file name="34bdec7b-1f2d-2c61-dba6-bb4e5fa68092" />
+    </api>
+    <api id="M:Microsoft.IE.Manager.IsValidURL(System.String)">
+      <apidata name="IsValidURL" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="pURL">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+        <type api="T:Microsoft.IE.Manager" ref="true" />
+      </containers>
+      <file name="786804e9-3817-cdb2-c665-85eae42dc794" />
+    </api>
+    <api id="M:Microsoft.IE.Manager.MakeFullLink(System.String,System.String,System.String)">
+      <apidata name="MakeFullLink" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="link">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="CodeBase">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="Application">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+        <type api="T:Microsoft.IE.Manager" ref="true" />
+      </containers>
+      <file name="d2b5420e-1b05-1416-0b63-744146dc9cf6" />
+    </api>
+    <api id="T:Microsoft.IE.Manager.URL_CANONFLAGS">
+      <apidata name="URL_CANONFLAGS" group="type" subgroup="enumeration" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <enumerationbase>
+        <type api="T:System.Int32" ref="false" />
+      </enumerationbase>
+      <elements>
+        <element api="F:Microsoft.IE.Manager.URL_CANONFLAGS.URL_UNESCAPE" />
+        <element api="F:Microsoft.IE.Manager.URL_CANONFLAGS.URL_ESCAPE_UNSAFE" />
+        <element api="F:Microsoft.IE.Manager.URL_CANONFLAGS.URL_PLUGGABLE_PROTOCOL" />
+        <element api="F:Microsoft.IE.Manager.URL_CANONFLAGS.URL_WININET_COMPATIBILITY" />
+        <element api="F:Microsoft.IE.Manager.URL_CANONFLAGS.URL_DONT_ESCAPE_EXTRA_INFO" />
+        <element api="F:Microsoft.IE.Manager.URL_CANONFLAGS.URL_DONT_UNESCAPE_EXTRA_INFO" />
+        <element api="F:Microsoft.IE.Manager.URL_CANONFLAGS.URL_BROWSER_MODE" />
+        <element api="F:Microsoft.IE.Manager.URL_CANONFLAGS.URL_ESCAPE_SPACES_ONLY" />
+        <element api="F:Microsoft.IE.Manager.URL_CANONFLAGS.URL_DONT_SIMPLIFY" />
+        <element api="F:Microsoft.IE.Manager.URL_CANONFLAGS.URL_NO_META" />
+        <element api="F:Microsoft.IE.Manager.URL_CANONFLAGS.URL_UNESCAPE_INPLACE" />
+        <element api="F:Microsoft.IE.Manager.URL_CANONFLAGS.URL_CONVERT_IF_DOSPATH" />
+        <element api="F:Microsoft.IE.Manager.URL_CANONFLAGS.URL_UNESCAPE_HIGH_ANSI_ONLY" />
+        <element api="F:Microsoft.IE.Manager.URL_CANONFLAGS.URL_INTERNAL_PATH" />
+        <element api="F:Microsoft.IE.Manager.URL_CANONFLAGS.URL_FILE_USE_PATHURL" />
+        <element api="F:Microsoft.IE.Manager.URL_CANONFLAGS.URL_ESCAPE_PERCENT" />
+        <element api="F:Microsoft.IE.Manager.URL_CANONFLAGS.URL_ESCAPE_SEGMENT_ONLY" />
+      </elements>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+      </containers>
+      <outer>
+        <type api="T:Microsoft.IE.Manager" ref="true" />
+      </outer>
+      <file name="c3409550-d83c-5b9e-1f1f-633815ce8a26" />
+    </api>
+    <api id="T:Microsoft.IE.Manager.URL_IS">
+      <apidata name="URL_IS" group="type" subgroup="enumeration" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <enumerationbase>
+        <type api="T:System.Int32" ref="false" />
+      </enumerationbase>
+      <elements>
+        <element api="F:Microsoft.IE.Manager.URL_IS.URLIS_URL" />
+        <element api="F:Microsoft.IE.Manager.URL_IS.URLIS_OPAQUE" />
+        <element api="F:Microsoft.IE.Manager.URL_IS.URLIS_NOHISTORY" />
+        <element api="F:Microsoft.IE.Manager.URL_IS.URLIS_FILEURL" />
+        <element api="F:Microsoft.IE.Manager.URL_IS.URLIS_APPLIABLE" />
+        <element api="F:Microsoft.IE.Manager.URL_IS.URLIS_DIRECTORY" />
+        <element api="F:Microsoft.IE.Manager.URL_IS.URLIS_HASQUERY" />
+      </elements>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+      </containers>
+      <outer>
+        <type api="T:Microsoft.IE.Manager" ref="true" />
+      </outer>
+      <file name="e5bc9f82-ec6d-05e4-63b5-9ba17c153509" />
+    </api>
+    <api id="T:Microsoft.IE.Manager.URL_PART">
+      <apidata name="URL_PART" group="type" subgroup="enumeration" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <enumerationbase>
+        <type api="T:System.Int32" ref="false" />
+      </enumerationbase>
+      <elements>
+        <element api="F:Microsoft.IE.Manager.URL_PART.NONE" />
+        <element api="F:Microsoft.IE.Manager.URL_PART.SCHEME" />
+        <element api="F:Microsoft.IE.Manager.URL_PART.HOSTNAME" />
+        <element api="F:Microsoft.IE.Manager.URL_PART.USERNAME" />
+        <element api="F:Microsoft.IE.Manager.URL_PART.PASSWORD" />
+        <element api="F:Microsoft.IE.Manager.URL_PART.PORT" />
+        <element api="F:Microsoft.IE.Manager.URL_PART.QUERY" />
+      </elements>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+      </containers>
+      <outer>
+        <type api="T:Microsoft.IE.Manager" ref="true" />
+      </outer>
+      <file name="c03d724f-c89b-d56c-ac27-f35bfcdfb5e5" />
+    </api>
+    <api id="T:Microsoft.IE.SecureFactory">
+      <apidata name="SecureFactory" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:Microsoft.IE.ISecureFactory" ref="true" />
+      </implements>
+      <elements>
+        <element api="F:Microsoft.IE.SecureFactory.CORIESECURITY_ZONE" />
+        <element api="F:Microsoft.IE.SecureFactory.CORIESECURITY_SITE" />
+        <element api="M:Microsoft.IE.SecureFactory.RemoteCreateInstance(System.Guid,System.Object@)" />
+        <element api="M:Microsoft.IE.SecureFactory.RemoteLockServer(System.Int32)" />
+        <element api="M:Microsoft.IE.SecureFactory.CreateInstanceWithSecurity(System.Int32,System.Int32,System.String,System.String,System.String,System.String)" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+      </containers>
+      <file name="bcff0e01-c39b-d24a-f6ea-7bf9569632d1" />
+    </api>
+    <api id="F:Microsoft.IE.SecureFactory.CORIESECURITY_SITE">
+      <apidata name="CORIESECURITY_SITE" group="member" subgroup="field" />
+      <memberdata visibility="public" static="true" special="false" />
+      <fielddata literal="false" initonly="true" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+        <type api="T:Microsoft.IE.SecureFactory" ref="true" />
+      </containers>
+      <file name="34cbc12c-c435-c64f-396f-53b4b9a3ea9b" />
+    </api>
+    <api id="F:Microsoft.IE.SecureFactory.CORIESECURITY_ZONE">
+      <apidata name="CORIESECURITY_ZONE" group="member" subgroup="field" />
+      <memberdata visibility="public" static="true" special="false" />
+      <fielddata literal="false" initonly="true" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+        <type api="T:Microsoft.IE.SecureFactory" ref="true" />
+      </containers>
+      <file name="05f5dbdf-917f-2936-489a-fe37acc5f9e7" />
+    </api>
+    <api id="M:Microsoft.IE.SecureFactory.CreateInstanceWithSecurity(System.Int32,System.Int32,System.String,System.String,System.String,System.String)">
+      <apidata name="CreateInstanceWithSecurity" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="dwFlag">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="dwZone">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="pURL">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="uniqueIdString">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="link">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="licenses">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Object" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+        <type api="T:Microsoft.IE.SecureFactory" ref="true" />
+      </containers>
+      <file name="7a1ec054-b3a9-7052-1023-1507d0d11141" />
+    </api>
+    <api id="M:Microsoft.IE.SecureFactory.RemoteCreateInstance(System.Guid,System.Object@)">
+      <apidata name="RemoteCreateInstance" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="riid">
+          <type api="T:System.Guid" ref="false" />
+        </parameter>
+        <parameter name="ppvObject" out="true">
+          <referenceTo>
+            <type api="T:System.Object" ref="true" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+        <type api="T:Microsoft.IE.SecureFactory" ref="true" />
+      </containers>
+      <file name="2532a4aa-e012-8704-4dc0-672bb9fe5b82" />
+    </api>
+    <api id="M:Microsoft.IE.SecureFactory.RemoteLockServer(System.Int32)">
+      <apidata name="RemoteLockServer" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="fLock">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+        <type api="T:Microsoft.IE.SecureFactory" ref="true" />
+      </containers>
+      <file name="3fbf9d1d-3a28-ba49-e909-491ececbb6df" />
+    </api>
+    <api id="T:Microsoft.IE.SecureFactory.WININET_CACHE_ENTRY">
+      <apidata name="WININET_CACHE_ENTRY" group="type" subgroup="enumeration" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <enumerationbase>
+        <type api="T:System.Int32" ref="false" />
+      </enumerationbase>
+      <elements>
+        <element api="F:Microsoft.IE.SecureFactory.WININET_CACHE_ENTRY.NORMAL_CACHE_ENTRY" />
+        <element api="F:Microsoft.IE.SecureFactory.WININET_CACHE_ENTRY.COOKIE_CACHE_ENTRY" />
+        <element api="F:Microsoft.IE.SecureFactory.WININET_CACHE_ENTRY.URLHISTORY_CACHE_ENTRY" />
+        <element api="F:Microsoft.IE.SecureFactory.WININET_CACHE_ENTRY.TRACK_OFFLINE_CACHE_ENTRY" />
+        <element api="F:Microsoft.IE.SecureFactory.WININET_CACHE_ENTRY.TRACK_ONLINE_CACHE_ENTRY" />
+        <element api="F:Microsoft.IE.SecureFactory.WININET_CACHE_ENTRY.STICKY_CACHE_ENTRY" />
+        <element api="F:Microsoft.IE.SecureFactory.WININET_CACHE_ENTRY.SPARSE_CACHE_ENTRY" />
+      </elements>
+      <containers>
+        <library assembly="IEHost" module="IEHost" />
+        <namespace api="N:Microsoft.IE" />
+      </containers>
+      <outer>
+        <type api="T:Microsoft.IE.SecureFactory" ref="true" />
+      </outer>
+      <file name="c321001f-5bee-b7f0-78a8-b35ea682096a" />
+    </api>
+  </apis>
+</reflection>

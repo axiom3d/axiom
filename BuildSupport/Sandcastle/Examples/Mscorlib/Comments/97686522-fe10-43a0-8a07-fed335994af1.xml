@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="97686522-fe10-43a0-8a07-fed335994af1" revisionNumber="12">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.IComparable`1">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <clsCompliantAlternative>
+          <codeEntityReference>T:System.IComparable</codeEntityReference>
+          <content>
+          </content>
+        </clsCompliantAlternative>
+        <summary>
+          <para>Defines a generalized comparison method that a value type or class implements to create a type-specific comparison method for ordering instances.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>This interface is implemented by types whose values can be ordered; for example, the numeric and string classes. A value type or class implements the <codeEntityReference autoUpgrade="true">M:System.IComparable`1.CompareTo(`0)</codeEntityReference> method to create a type-specific comparison method suitable for purposes such as sorting.</para>
+            <alert class="note">
+              <para>The <codeEntityReference autoUpgrade="true">T:System.IComparable`1</codeEntityReference> interface defines the <codeEntityReference autoUpgrade="true">M:System.IComparable`1.CompareTo(`0)</codeEntityReference> method, which determines the sort order of instances of the implementing type. The <codeEntityReference autoUpgrade="true">T:System.IEquatable`1</codeEntityReference> interface defines the <codeEntityReference autoUpgrade="true">M:System.IEquatable`1.Equals(`0)</codeEntityReference> method, which determines the equality of instances of the implementing type.</para>
+            </alert>
+          </content>
+        </remarks>
+        <notesForImplementers>
+          <para>Replace the type parameter of the <codeEntityReference autoUpgrade="true">T:System.IComparable`1</codeEntityReference> interface with the type that is implementing this interface.</para>
+        </notesForImplementers>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example illustrates the implementation of <codeEntityReference autoUpgrade="true">T:System.IComparable</codeEntityReference> for a simple <codeInline>Temperature</codeInline> object. The example creates a <codeEntityReference autoUpgrade="true">T:System.Collections.Generic.SortedList`2</codeEntityReference> collection of strings with <codeInline>Temperature</codeInline> object keys, and adds several pairs of temperatures and strings to the list out of sequence. The <codeEntityReference autoUpgrade="true">T:System.Collections.Generic.SortedList`2</codeEntityReference> collection uses the <codeEntityReference autoUpgrade="true">T:System.IComparable`1</codeEntityReference> implementation to sort the list entries, which are then displayed in order of increasing temperature. </para>
+                <codeReference>IComparable`1 Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.IComparable</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IEquatable`1</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.IComparable`1.CompareTo(`0)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Compares the current object with another object of the same type.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>other</parameterReference>
+            <content>
+              <para>An object to compare with this object.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A 32-bit signed integer that indicates the relative order of the objects being compared. The return value has the following meanings: </para>
+          <table>
+            <tableHeader>
+              <row>
+                <entry>
+                  <para>Value </para>
+                </entry>
+                <entry>
+                  <para>Meaning </para>
+                </entry>
+              </row>
+            </tableHeader>
+            <row>
+              <entry>
+                <para>Less than zero </para>
+              </entry>
+              <entry>
+                <para>This object is less than the <parameterReference>other</parameterReference> parameter.</para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Zero </para>
+              </entry>
+              <entry>
+                <para>This object is equal to <parameterReference>other</parameterReference>. </para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Greater than zero </para>
+              </entry>
+              <entry>
+                <para>This object is greater than <parameterReference>other</parameterReference>. </para>
+              </entry>
+            </row>
+          </table>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This method is only a definition and must be implemented by a specific class or value type to have effect. The meaning of the comparisons, "less than," "equal to," and "greater than," depends on the particular implementation.</para>
+            <para>By definition, any object compares greater than <languageKeyword>null</languageKeyword>, and two null references compare equal to each other.</para>
+          </content>
+        </remarks>
+        <notesForImplementers>
+          <para>For objects A, B, and C, the following must be true: </para>
+          <para>
+            <codeInline>A.CompareTo(A)</codeInline> is required to return zero.</para>
+          <para>If <codeInline>A.CompareTo(B)</codeInline> returns zero, then <codeInline>B.CompareTo(A)</codeInline> is required to return zero.</para>
+          <para>If <codeInline>A.CompareTo(B)</codeInline> returns zero and <codeInline>B.CompareTo(C)</codeInline> returns zero, then <codeInline>A.CompareTo(C)</codeInline> is required to return zero.</para>
+          <para>If <codeInline>A.CompareTo(B)</codeInline> returns a value other than zero, then <codeInline>B.CompareTo(A)</codeInline> is required to return a value of the opposite sign.</para>
+          <para>If <codeInline>A.CompareTo(B)</codeInline> returns a value <parameterReference>x</parameterReference> that is not equal to zero, and <codeInline>B.CompareTo(C)</codeInline> returns a value <parameterReference>y</parameterReference> of the same sign as <parameterReference>x</parameterReference>, then <codeInline>A.CompareTo(C)</codeInline> is required to return a value of the same sign as <parameterReference>x</parameterReference> and <parameterReference>y</parameterReference>.</para>
+        </notesForImplementers>
+        <notesForCallers>
+          <para>Use the <codeEntityReference autoUpgrade="true">M:System.IComparable`1.CompareTo(`0)</codeEntityReference> method to determine the ordering of instances of a class.</para>
+        </notesForCallers>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example illustrates the implementation of <codeEntityReference autoUpgrade="true">T:System.IComparable</codeEntityReference> for a simple <codeInline>Temperature</codeInline> object. The example creates a <codeEntityReference autoUpgrade="true">T:System.Collections.Generic.SortedList`2</codeEntityReference> collection of strings with <codeInline>Temperature</codeInline> object keys, and adds several pairs of temperatures and strings to the list out of sequence. The <codeEntityReference autoUpgrade="true">T:System.Collections.Generic.SortedList`2</codeEntityReference> collection uses the <codeEntityReference autoUpgrade="true">T:System.IComparable`1</codeEntityReference> implementation to sort the list entries, which are then displayed in order of increasing temperature. </para>
+                <codeReference>IComparable`1 Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.IComparable</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

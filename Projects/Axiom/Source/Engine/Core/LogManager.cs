@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using System.Text;
 
 #endregion Namespace Declarations
 
@@ -253,17 +254,17 @@ namespace Axiom.Core
 
         public static string BuildExceptionString( Exception exception )
         {
-            string errMessage = string.Empty;
+            StringBuilder errMessage = new StringBuilder();
 
-            errMessage += exception.Message + Environment.NewLine + exception.StackTrace;
+            errMessage.Append( exception.Message + Environment.NewLine + exception.StackTrace );
 
             while ( exception.InnerException != null )
             {
-                errMessage += BuildInnerExceptionString( exception.InnerException );
+                errMessage.Append( BuildInnerExceptionString( exception.InnerException ) );
                 exception = exception.InnerException;
             }
 
-            return errMessage;
+            return errMessage.ToString();
         }
 
         private static string BuildInnerExceptionString( Exception innerException )

@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="34d2a426-17eb-45ac-a827-5f9a59f33d32" revisionNumber="4">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.SystemException">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Defines the base class for predefined exceptions in the <codeEntityReference autoUpgrade="true">N:System</codeEntityReference> namespace.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>This class is provided as a means to differentiate between exceptions defined by the system versus exceptions defined by applications.</para>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.SystemException</codeEntityReference> does not provide information as to the cause of the <codeEntityReference autoUpgrade="true">T:System.Exception</codeEntityReference>. In most scenarios, instances of this class should not be thrown. In cases where this class is instantiated, a human-readable message describing the error should be passed to the constructor.</para>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.SystemException</codeEntityReference> is thrown by the common language runtime when errors occur that are nonfatal and recoverable by user programs. These errors result from failed runtime check (such as an array out-of-bound error), and can occur during the execution of any method. <codeEntityReference autoUpgrade="true">T:System.SystemException</codeEntityReference> adds no new functionality to <codeEntityReference autoUpgrade="true">T:System.Exception</codeEntityReference>.</para>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.SystemException</codeEntityReference> uses the HRESULT COR_E_SYSTEM, that has the value 0x80131501.</para>
+            <para>For a list of initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.SystemException</codeEntityReference>, see the <codeEntityReference autoUpgrade="true">M:System.SystemException.#ctor</codeEntityReference> constructors.</para>
+            <para>For more information on exceptions defined by applications, see <codeEntityReference autoUpgrade="true">T:System.ApplicationException</codeEntityReference>.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Exception</codeEntityReference>
+          <link xlink:href="F99A1D29-A2A8-47AF-9707-9909F9010735">[&lt;topic://cpconHandlingThrowingExceptions&gt;]</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.SystemException.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.SystemException</codeEntityReference> class.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>This constructor initializes the <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference> property of the new instance to a system-supplied message that describes the error, such as "A system error has occurred." This message takes into account the current system culture.</para>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.SystemException</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>A null reference (<languageKeyword>Nothing</languageKeyword> in Visual Basic). </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The localized error message string. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+      <overload>
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.SystemException</codeEntityReference> class.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.SystemException.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.SystemException</codeEntityReference> class.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.SystemException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.SystemException</codeEntityReference> class with serialized data.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>info</parameterReference>
+            <content>
+              <para>The object that holds the serialized object data. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>context</parameterReference>
+            <content>
+              <para>The contextual information about the source or destination. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>This constructor is called during deserialization to reconstitute the exception object transmitted over a stream. For more information, see <link xlink:href="832AC524-21BC-419A-A27B-CA8BFC45840F">[&lt;topic://cpconSerialization&gt;]</link>.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <link xlink:href="832AC524-21BC-419A-A27B-CA8BFC45840F">[&lt;topic://cpconSerialization&gt;]</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.SystemException.#ctor(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.SystemException</codeEntityReference> class with a specified error message.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>message</parameterReference>
+            <content>
+              <para>The message that describes the error. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>The content of the <parameterReference>message</parameterReference> parameter should be understandable to the user. The caller of this constructor is required to ensure that this string has been localized for the current system culture.</para>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.SystemException</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>A null reference (<languageKeyword>Nothing</languageKeyword> in Visual Basic). </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The error message string. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.SystemException.#ctor(System.String,System.Exception)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.SystemException</codeEntityReference> class with a specified error message and a reference to the inner exception that is the cause of this exception.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>message</parameterReference>
+            <content>
+              <para>The error message that explains the reason for the exception. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>innerException</parameterReference>
+            <content>
+              <para>The exception that is the cause of the current exception. If the <parameterReference>innerException</parameterReference> parameter is not a null reference (<languageKeyword>Nothing</languageKeyword> in Visual Basic), the current exception is raised in a <languageKeyword>catch</languageKeyword> block that handles the inner exception. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>An exception that is thrown as a direct result of a previous exception can include a reference to the previous exception in the <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property. The <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property returns the same value that is passed into the constructor, or a null reference (<languageKeyword>Nothing</languageKeyword> in Visual Basic) if the <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property does not supply the inner exception value to the constructor.</para>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.SystemException</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The inner exception reference. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The error message string. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Exception</codeEntityReference>
+          <link xlink:href="F99A1D29-A2A8-47AF-9707-9909F9010735">[&lt;topic://cpconHandlingThrowingExceptions&gt;]</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="b4a1914f-4e0a-458f-8f36-f8089e44941f" revisionNumber="3">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.PlatformNotSupportedException">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The exception that is thrown when a feature does not run on a particular platform.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>
+              <languageKeyword>PlatformNotSupportedException</languageKeyword> uses the HRESULT COR_E_PLATFORMNOTSUPPORTED, which has the value 0x80131539.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Exception</codeEntityReference>
+          <link xlink:href="F99A1D29-A2A8-47AF-9707-9909F9010735">[&lt;topic://cpconHandlingThrowingExceptions&gt;]</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.PlatformNotSupportedException.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.PlatformNotSupportedException</codeEntityReference> class with default properties.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>When an instance of the <codeEntityReference autoUpgrade="true">T:System.PlatformNotSupportedException</codeEntityReference> class is created by a call to this constructor, the following properties are initialized to the specified values: </para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>
+                    <languageKeyword>null</languageKeyword>. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The empty string. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+      <overload>
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.PlatformNotSupportedException</codeEntityReference> class.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.PlatformNotSupportedException.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.PlatformNotSupportedException</codeEntityReference> class.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.PlatformNotSupportedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.PlatformNotSupportedException</codeEntityReference> class with serialized data.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>info</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference> that holds the serialized object data about the exception being thrown. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>context</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.StreamingContext</codeEntityReference> that contains contextual information about the source or destination. </para>
+            </content>
+          </parameter>
+        </parameters>
+      </dduexml>
+    </member>
+    <member name="M:System.PlatformNotSupportedException.#ctor(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.PlatformNotSupportedException</codeEntityReference> class with a specified error message.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>message</parameterReference>
+            <content>
+              <para>The text message that explains the reason for the exception. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>When an instance of the <codeEntityReference autoUpgrade="true">T:System.PlatformNotSupportedException</codeEntityReference> class is created by a call to this constructor, the following properties are initialized to the specified values: </para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>
+                    <languageKeyword>null</languageKeyword>. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The error message string. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.PlatformNotSupportedException.#ctor(System.String,System.Exception)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.PlatformNotSupportedException</codeEntityReference> class with a specified error message and a reference to the inner exception that is the cause of this exception.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>message</parameterReference>
+            <content>
+              <para>The error message that explains the reason for the exception. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>inner</parameterReference>
+            <content>
+              <para>The exception that is the cause of the current exception. If the <parameterReference>inner</parameterReference> parameter is not <languageKeyword>null</languageKeyword>, the current exception is raised in a <languageKeyword>catch</languageKeyword> block that handles the inner exception. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>An exception that is thrown as a direct result of a previous exception should include a reference to the previous exception in the <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property. The <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property returns the same value that is passed into the constructor, or <languageKeyword>null</languageKeyword> if the <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property does not supply the inner exception value to the constructor.</para>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.PlatformNotSupportedException</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The inner exception reference. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The error message string. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="ebfbc53a-2f3b-48b1-8a1e-ce3aeccb7008" revisionNumber="9">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.MarshalByRefObject">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Enables access to objects across application domain boundaries in applications that support remoting.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>An application domain is a partition in an operating system process where one or more applications reside. Objects in the same application domain communicate directly. Objects in different application domains communicate either by transporting copies of objects across application domain boundaries, or by using a proxy to exchange messages.</para>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.MarshalByRefObject</codeEntityReference> is the base class for objects that communicate across application domain boundaries by exchanging messages using a proxy. Objects that do not inherit from <codeEntityReference autoUpgrade="true">T:System.MarshalByRefObject</codeEntityReference> are implicitly marshal by value. When a remote application references a marshal by value object, a copy of the object is passed across application domain boundaries.</para>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.MarshalByRefObject</codeEntityReference> objects are accessed directly within the boundaries of the local application domain. The first time an application in a remote application domain accesses a <codeEntityReference autoUpgrade="true">T:System.MarshalByRefObject</codeEntityReference>, a proxy is passed to the remote application. Subsequent calls on the proxy are marshaled back to the object residing in the local application domain.</para>
+            <para>Types must inherit from <codeEntityReference autoUpgrade="true">T:System.MarshalByRefObject</codeEntityReference> when the type is used across application domain boundaries, and the state of the object must not be copied because the members of the object are not usable outside the application domain where they were created.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following sample demonstrates a class derived from <codeEntityReference autoUpgrade="true">T:System.MarshalByRefObject</codeEntityReference> that is used later in remoting.</para>
+                <codeReference>RemotingServices.SetObjectUriForMarshal#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.MarshalByRefObject.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.MarshalByRefObject</codeEntityReference> class. </para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.MarshalByRefObject.CreateObjRef(System.Type)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates an object that contains all the relevant information required to generate a proxy used to communicate with a remote object.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>requestedType</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> of the object that the new <codeEntityReference autoUpgrade="true">T:System.Runtime.Remoting.ObjRef</codeEntityReference> will reference. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>Information required to generate a proxy.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.Runtime.Remoting.RemotingException</codeEntityReference>
+            <content>
+              <para>This instance is not a valid remoting object. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.Security.SecurityException</codeEntityReference>
+            <content>
+              <para>The immediate caller does not have infrastructure permission. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.SecurityPermission</codeEntityReference>
+            <content>
+              <para>for operating with infrastructure code. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.SecurityPermissionFlag.Infrastructure</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+      </dduexml>
+    </member>
+    <member name="M:System.MarshalByRefObject.GetLifetimeService">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Retrieves the current lifetime service object that controls the lifetime policy for this instance.</para>
+        </summary>
+        <returnValue>
+          <para>An object of type <codeEntityReference autoUpgrade="true">T:System.Runtime.Remoting.Lifetime.ILease</codeEntityReference> used to control the lifetime policy for this instance.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.Security.SecurityException</codeEntityReference>
+            <content>
+              <para>The immediate caller does not have infrastructure permission. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>For more information about lifetime services, see the <codeEntityReference autoUpgrade="true">T:System.Runtime.Remoting.Lifetime.LifetimeServices</codeEntityReference> class.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.SecurityPermission</codeEntityReference>
+            <content>
+              <para>for operating with infrastructure code. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.SecurityPermissionFlag.Infrastructure</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+      </dduexml>
+    </member>
+    <member name="M:System.MarshalByRefObject.InitializeLifetimeService">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Obtains a lifetime service object to control the lifetime policy for this instance.</para>
+        </summary>
+        <returnValue>
+          <para>An object of type <codeEntityReference autoUpgrade="true">T:System.Runtime.Remoting.Lifetime.ILease</codeEntityReference> used to control the lifetime policy for this instance. This is the current lifetime service object for this instance if one exists; otherwise, a new lifetime service object initialized to the value of the <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.Runtime.Remoting.Lifetime.LifetimeServices.LeaseManagerPollTime</codeEntityReference> property.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.Security.SecurityException</codeEntityReference>
+            <content>
+              <para>The immediate caller does not have infrastructure permission. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>For more information about lifetime services, see the <codeEntityReference autoUpgrade="true">T:System.Runtime.Remoting.Lifetime.LifetimeServices</codeEntityReference> class.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates creating a lease.</para>
+                <codeReference>Classic MarshalByRefObject.InitializeLifetimeService Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.SecurityPermission</codeEntityReference>
+            <content>
+              <para>for operating with infrastructure code. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.SecurityPermissionFlag.Infrastructure</codeEntityReference></para>
+            </content>
+          </permission>
+        </permissions>
+      </dduexml>
+    </member>
+    <member name="M:System.MarshalByRefObject.MemberwiseClone">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates a shallow copy of the current <codeEntityReference autoUpgrade="true">T:System.MarshalByRefObject</codeEntityReference> object.</para>
+        </summary>
+        <returnValue>
+          <para>A shallow copy of the current <codeEntityReference autoUpgrade="true">T:System.MarshalByRefObject</codeEntityReference> object.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.MarshalByRefObject.MemberwiseClone</codeEntityReference> method creates a shallow copy by creating a new <codeEntityReference autoUpgrade="true">T:System.MarshalByRefObject</codeEntityReference> object, and then copying the nonstatic fields of the current <codeEntityReference autoUpgrade="true">T:System.MarshalByRefObject</codeEntityReference> object to the new object. If a field is a value type, a bit-by-bit copy of the field is performed. If a field is a reference type, the reference is copied but the referred object is not; therefore, the original object and its clone refer to the same object. </para>
+            <para>For example, consider a <codeEntityReference autoUpgrade="true">T:System.MarshalByRefObject</codeEntityReference> object called X that references objects A and B. Object B, in turn, references object C. A shallow copy of X creates new object X2 that also references objects A and B. In contrast, a deep copy of X creates a new object X2 that references the new objects A2 and B2, which are copies of A and B. B2, in turn, references the new object C2, which is a copy C. Use a class that implements the <codeEntityReference autoUpgrade="true">T:System.ICloneable</codeEntityReference> interface to perform a deep or shallow copy of an object. </para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.MarshalByRefObject.MemberwiseClone(System.Boolean)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates a shallow copy of the current <codeEntityReference autoUpgrade="true">T:System.MarshalByRefObject</codeEntityReference> object.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>cloneIdentity</parameterReference>
+            <content>
+              <para>
+                <languageKeyword>false</languageKeyword> to delete the current <codeEntityReference autoUpgrade="true">T:System.MarshalByRefObject</codeEntityReference> object's identity, which will cause the object to be assigned a new identity when it is marshaled across a remoting boundary. A value of <languageKeyword>false</languageKeyword> is usually appropriate. <languageKeyword>true</languageKeyword> to copy the current <codeEntityReference autoUpgrade="true">T:System.MarshalByRefObject</codeEntityReference> object's identity to its clone, which will cause remoting client calls to be routed to the remote server object. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A shallow copy of the current <codeEntityReference autoUpgrade="true">T:System.MarshalByRefObject</codeEntityReference> object.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.MarshalByRefObject.MemberwiseClone</codeEntityReference> method creates a shallow copy by creating a new <codeEntityReference autoUpgrade="true">T:System.MarshalByRefObject</codeEntityReference> object, and then copying the nonstatic fields of the current <codeEntityReference autoUpgrade="true">T:System.MarshalByRefObject</codeEntityReference> object to the new object. If a field is a value type, a bit-by-bit copy of the field is performed. If a field is a reference type, the reference is copied but the referred object is not; therefore, the original object and its clone refer to the same object. </para>
+            <para>For example, consider a <codeEntityReference autoUpgrade="true">T:System.MarshalByRefObject</codeEntityReference> object called X that references objects A and B. Object B, in turn, references object C. A shallow copy of X creates new object X2 that also references objects A and B. In contrast, a deep copy of X creates a new object X2 that references the new objects A2 and B2, which are copies of A and B. B2, in turn, references the new object C2, which is a copy C. Use a class that implements the <codeEntityReference autoUpgrade="true">T:System.ICloneable</codeEntityReference> interface to perform a deep or shallow copy of an object. </para>
+            <para>The identity of a <codeEntityReference autoUpgrade="true">T:System.MarshalByRefObject</codeEntityReference> object is defined as the remote server object that is the target of a remoting client call. By default, the memberwise clone of a <codeEntityReference autoUpgrade="true">T:System.MarshalByRefObject</codeEntityReference> object has the same identity as the original object, which is typically not the correct behavior for clones of server-side objects that are marshaled across a remoting boundary to the client side. Specify <languageKeyword>false</languageKeyword>, which is usually appropriate, to delete the identity of the clone and cause a new identity to be assigned when the clone is marshaled across a remoting boundary, or <languageKeyword>true</languageKeyword> to cause the clone to retain the identity of the original <codeEntityReference autoUpgrade="true">T:System.MarshalByRefObject</codeEntityReference> object. The <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.MarshalByRefObject.MemberwiseClone(System.Boolean)</codeEntityReference> method is intended to be used by developers implementing remote server objects.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+  </members>
+</doc>

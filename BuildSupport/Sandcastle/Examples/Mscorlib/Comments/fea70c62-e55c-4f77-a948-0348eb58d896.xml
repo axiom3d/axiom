@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="fea70c62-e55c-4f77-a948-0348eb58d896" revisionNumber="4">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.ObsoleteAttribute">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Marks the program elements that are no longer in use. This class cannot be inherited.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.ObsoleteAttribute</codeEntityReference> is applicable to all program elements except assemblies, modules, parameters or return values. Marking an element as obsolete informs the users that the element will be removed in future versions of the product.</para>
+            <para>For more information about using attributes, see <link xlink:href="30386922-1E00-4602-9EBF-526B271A8B87">[&lt;topic://cpconExtendingMetadataUsingAttributes&gt;]</link>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example defines a class that contains a method marked with the <codeEntityReference autoUpgrade="true">T:System.ObsoleteAttribute</codeEntityReference>. Any code that attempts to call the method will cause the compiler to issue a warning.</para>
+                <codeReference>ObsoleteAttribute#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Attribute</codeEntityReference>
+          <link xlink:href="30386922-1E00-4602-9EBF-526B271A8B87">[&lt;topic://cpconExtendingMetadataUsingAttributes&gt;]</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.ObsoleteAttribute.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.ObsoleteAttribute</codeEntityReference> class with default properties.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.ObsoleteAttribute</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.ObsoleteAttribute.IsError</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>
+                    <languageKeyword>false</languageKeyword>
+                  </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.ObsoleteAttribute.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>
+                    <languageKeyword>null</languageKeyword>
+                  </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <codeReference>ObsoleteAttribute_Constructor1#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.ObsoleteAttribute</codeEntityReference> class.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.ObsoleteAttribute.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.ObsoleteAttribute</codeEntityReference> class.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.ObsoleteAttribute.#ctor(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.ObsoleteAttribute</codeEntityReference> class with a specified workaround message.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>message</parameterReference>
+            <content>
+              <para>The text string that describes alternative workarounds. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.ObsoleteAttribute</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.ObsoleteAttribute.IsError</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>
+                    <languageKeyword>false</languageKeyword>. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.ObsoleteAttribute.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The workaround message. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <codeReference>ObsoleteAttribute_Constructor2#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.ObsoleteAttribute.#ctor(System.String,System.Boolean)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.ObsoleteAttribute</codeEntityReference> class with a workaround message and a Boolean value indicating whether the obsolete element usage is considered an error.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>message</parameterReference>
+            <content>
+              <para>The text string that describes alternative workarounds. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>error</parameterReference>
+            <content>
+              <para>The Boolean value that indicates whether the obsolete element usage is considered an error. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.ObsoleteAttribute</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.ObsoleteAttribute.IsError</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The <parameterReference>error</parameterReference> value. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.ObsoleteAttribute.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The workaround message. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <codeReference>ObsoleteAttribute_Constructor3#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.ObsoleteAttribute.IsError">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a Boolean value indicating whether the compiler will treat usage of the obsolete program element as an error.</para>
+        </summary>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the obsolete element usage is considered an error; otherwise, <languageKeyword>false</languageKeyword>. The default is <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <codeReference>ObsoleteAttribute_Message#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.ObsoleteAttribute.Message">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the workaround message, including a description of the alternative program elements.</para>
+        </summary>
+        <returnValue>
+          <para>The workaround text string.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <codeReference>ObsoleteAttribute_Message#2</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+  </members>
+</doc>

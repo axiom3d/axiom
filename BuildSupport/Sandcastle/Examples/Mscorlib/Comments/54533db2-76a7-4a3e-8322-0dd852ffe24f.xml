@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="54533db2-76a7-4a3e-8322-0dd852ffe24f" revisionNumber="10">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.ConsoleKeyInfo">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Describes the console key that was pressed, including the character represented by the console key and the state of the SHIFT, ALT, and CTRL modifier keys.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> type is not intended to be created by users. Instead, it is returned to the user in response to calling the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Console.ReadKey</codeEntityReference> method.</para>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object describes the <codeEntityReference autoUpgrade="true">T:System.ConsoleKey</codeEntityReference> constant and Unicode character, if any, that correspond to the pressed console key. The <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object also describes, in a bitwise combination of <codeEntityReference autoUpgrade="true">T:System.ConsoleModifiers</codeEntityReference> values, whether one or more SHIFT, ALT, or CTRL modifier keys was pressed simultaneously with the console key.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates using a <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object in a read operation.</para>
+                <codeReference>console.readkey1#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.ConsoleModifiers</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.ConsoleKey</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.ConsoleKeyInfo.#ctor(System.Char,System.ConsoleKey,System.Boolean,System.Boolean,System.Boolean)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> structure using the specified character, console key, and modifier keys.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>keyChar</parameterReference>
+            <content>
+              <para>The Unicode character that corresponds to the <parameterReference>key</parameterReference> parameter. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>key</parameterReference>
+            <content>
+              <para>The console key that corresponds to the <parameterReference>keyChar</parameterReference> parameter. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>shift</parameterReference>
+            <content>
+              <para>
+                <languageKeyword>true</languageKeyword> to indicate that a SHIFT key was pressed; otherwise, <languageKeyword>false</languageKeyword>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>alt</parameterReference>
+            <content>
+              <para>
+                <languageKeyword>true</languageKeyword> to indicate that an ALT key was pressed; otherwise, <languageKeyword>false</languageKeyword>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>control</parameterReference>
+            <content>
+              <para>
+                <languageKeyword>true</languageKeyword> to indicate that a CTRL key was pressed; otherwise, <languageKeyword>false</languageKeyword>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>The numeric value of the <parameterReference>key</parameterReference> parameter is less than 0 or greater than 255.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This type is not intended to be created by users. Instead, it is returned to the user in response to calling the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Console.ReadKey</codeEntityReference> method.</para>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> type does not specify whether the left or right SHIFT, ALT, or CTRL modifier key was pressed.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="Overload:System.ConsoleKeyInfo.Equals">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a value indicating whether an object or specified <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object is equal to the current <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.ConsoleKeyInfo.Equals(System.ConsoleKeyInfo)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a value indicating whether the specified <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object is equal to the current <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>obj</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object to compare to the current <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>obj</parameterReference> is equal to the current <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Two <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> objects are equal if their corresponding <codeEntityReference autoUpgrade="true">P:System.ConsoleKeyInfo.KeyChar</codeEntityReference>, <codeEntityReference autoUpgrade="true">P:System.ConsoleKeyInfo.Key</codeEntityReference>, and <codeEntityReference autoUpgrade="true">P:System.ConsoleKeyInfo.Modifiers</codeEntityReference> properties are equal.</para>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.ConsoleKeyInfo.Equals(System.ConsoleKeyInfo)</codeEntityReference> method performs slightly better than the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.ConsoleKeyInfo.Equals(System.Object)</codeEntityReference> method because it does not have to convert <parameterReference>obj</parameterReference> to an object.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>Gets a value indicating whether an object or specified <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object is equal to the current <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.ConsoleKeyInfo.Equals(System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a value indicating whether the specified object is equal to the current <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>An object to compare to the current <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>value</parameterReference> is a <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object and is equal to the current <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Two <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> objects are equal if their corresponding <codeEntityReference autoUpgrade="true">P:System.ConsoleKeyInfo.KeyChar</codeEntityReference>, <codeEntityReference autoUpgrade="true">P:System.ConsoleKeyInfo.Key</codeEntityReference>, and <codeEntityReference autoUpgrade="true">P:System.ConsoleKeyInfo.Modifiers</codeEntityReference> properties are equal.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the <codeEntityReference autoUpgrade="true">M:System.ConsoleKeyInfo.Equals(System.Object)</codeEntityReference> method.</para>
+                <codeReference>system.ConsoleKeyInfo.Equals#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.ConsoleKeyInfo.GetHashCode">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the hash code for the current <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object.</para>
+        </summary>
+        <returnValue>
+          <para>A 32-bit signed integer hash code.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The value returned by the <codeEntityReference autoUpgrade="true">M:System.ConsoleKeyInfo.GetHashCode</codeEntityReference> method is not suitable for distinguishing one <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object from another. If your application needs a unique hash code, override the <codeEntityReference autoUpgrade="true">M:System.ConsoleKeyInfo.GetHashCode</codeEntityReference> method with your own method.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the <codeEntityReference autoUpgrade="true">M:System.ConsoleKeyInfo.GetHashCode</codeEntityReference> method.</para>
+                <codeReference>System.ConsoleKeyInfo.GetHashCode#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.ConsoleKeyInfo.op_Equality(System.ConsoleKeyInfo,System.ConsoleKeyInfo)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <equivalentCodeEntity>
+          <codeEntityReference>M:System.ConsoleKeyInfo.Equals(System.ConsoleKeyInfo,System.ConsoleKeyInfo)</codeEntityReference>
+          <content>
+          </content>
+        </equivalentCodeEntity>
+        <summary>
+          <para>Indicates whether the specified <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> objects are equal.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>a</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>b</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>a</parameterReference> is equal to <parameterReference>b</parameterReference>; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Two <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> objects are equal if their corresponding <codeEntityReference autoUpgrade="true">P:System.ConsoleKeyInfo.KeyChar</codeEntityReference>, <codeEntityReference autoUpgrade="true">P:System.ConsoleKeyInfo.Key</codeEntityReference>, and <codeEntityReference autoUpgrade="true">P:System.ConsoleKeyInfo.Modifiers</codeEntityReference> properties are equal.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.ConsoleKeyInfo.op_Inequality(System.ConsoleKeyInfo,System.ConsoleKeyInfo)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <equivalentCodeEntity>
+          <codeEntityReference>M:System.ConsoleKeyInfo.Compare(System.ConsoleKeyInfo,System.ConsoleKeyInfo)</codeEntityReference>
+          <content>
+          </content>
+        </equivalentCodeEntity>
+        <summary>
+          <para>Indicates whether the specified <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> objects are not equal.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>a</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>b</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>a</parameterReference> is not equal to <parameterReference>b</parameterReference>; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Two <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> objects are equal if their corresponding <codeEntityReference autoUpgrade="true">P:System.ConsoleKeyInfo.KeyChar</codeEntityReference>, <codeEntityReference autoUpgrade="true">P:System.ConsoleKeyInfo.Key</codeEntityReference>, and <codeEntityReference autoUpgrade="true">P:System.ConsoleKeyInfo.Modifiers</codeEntityReference> properties are equal.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.ConsoleKeyInfo.Key">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the console key represented by the current <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.ConsoleKey</codeEntityReference> value that identifies the console key that was pressed.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates using a <codeEntityReference autoUpgrade="true">P:System.ConsoleKeyInfo.Key</codeEntityReference> property in a read operation.</para>
+                <codeReference>console.readkey1#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.ConsoleKeyInfo.KeyChar">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the Unicode character represented by the current <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Char</codeEntityReference> object that corresponds to the console key represented by the current <codeEntityReference autoUpgrade="true">T:System.ConsoleKeyInfo</codeEntityReference> object.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates using a <codeEntityReference autoUpgrade="true">P:System.ConsoleKeyInfo.KeyChar</codeEntityReference> property in a read operation.</para>
+                <codeReference>console.readkey1#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.ConsoleKeyInfo.Modifiers">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a bitwise combination of <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.ConsoleModifiers</codeEntityReference> values that specifies one or more modifier keys pressed simultaneously with the console key.</para>
+        </summary>
+        <returnValue>
+          <para>A bitwise combination of <codeEntityReference autoUpgrade="true">T:System.ConsoleModifiers</codeEntityReference> values. There is no default value.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates using a <codeEntityReference autoUpgrade="true">P:System.ConsoleKeyInfo.Modifiers</codeEntityReference> property in a read operation.</para>
+                <codeReference>console.readkey1#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+  </members>
+</doc>

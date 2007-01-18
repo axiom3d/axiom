@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="9db4535a-6540-47bb-a0be-65a75f0c07f9" revisionNumber="3">
+  <assembly>
+    <name>System</name>
+  </assembly>
+  <members>
+    <member name="T:System.UriFormatException">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The exception that is thrown when an invalid Uniform Resource Identifier (URI) is detected.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference> is thrown by the Uri class constructor if the supplied URI could not be correctly parsed. The format for a valid URI is defined in RFC 2396.</para>
+            <para>The text of the <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference> property indicates the reason that the exception was thrown.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.UriFormatException.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference> class.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The default constructor initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference> class with all fields set to <languageKeyword>null</languageKeyword>.</para>
+          </content>
+        </remarks>
+      <overload>
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference> class.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.UriFormatException.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference> class.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.UriFormatException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference> class from the specified <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference> and <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.StreamingContext</codeEntityReference> instances.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>serializationInfo</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference> that contains the information that is required to serialize the new <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>streamingContext</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.StreamingContext</codeEntityReference> that contains the source of the serialized stream that is associated with the new <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>This constructor implements the <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.ISerializable</codeEntityReference> interface for the <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference> class.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.ISerializable</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.UriFormatException.#ctor(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference> class with the specified message.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>textString</parameterReference>
+            <content>
+              <para>The error message string. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>The UriFormatException constructor initializes the <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference> instance with the <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference> property set to the value of <parameterReference>textString</parameterReference>.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.UriFormatException.System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Populates a <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference> instance with the data that is needed to serialize the <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference>.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>serializationInfo</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference> that will hold the serialized data for the <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference>.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>streamingContext</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.StreamingContext</codeEntityReference> that contains the destination of the serialized stream that is associated with the new <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.ISerializable</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

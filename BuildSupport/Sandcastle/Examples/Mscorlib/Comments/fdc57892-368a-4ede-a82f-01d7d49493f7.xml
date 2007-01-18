@@ -1,0 +1,3371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="fdc57892-368a-4ede-a82f-01d7d49493f7" revisionNumber="55">
+  <assembly>
+    <name>System</name>
+  </assembly>
+  <members>
+    <member name="T:System.Uri">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Provides an object representation of a uniform resource identifier (URI) and easy access to the parts of the URI.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>A URI is a compact representation of a resource available to your application on the intranet or Internet. The <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> class defines the properties and methods for handling URIs, including parsing, comparing, and combining. The <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> class properties are read-only; to create a modifiable object, use the <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference> class.</para>
+            <para>Relative URIs (for example, "/new/index.htm") must be expanded with respect to a base URI so that they are absolute. The <codeEntityReference autoUpgrade="true">M:System.Uri.MakeRelative(System.Uri)</codeEntityReference> method is provided to convert absolute URIs to relative URIs when necessary.</para>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> constructors do not escape URI strings if the string is a well-formed URI including a scheme identifier.</para>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> properties return a canonical data representation in escaped encoding, with all characters with Unicode values greater than 127 replaced with their hexadecimal equivalents. To put the URI in canonical form, the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> constructor performs the following steps: </para>
+            <list class="bullet">
+              <listItem>
+                <para>Converts the URI scheme to lowercase.</para>
+              </listItem>
+              <listItem>
+                <para>Converts the host name to lowercase.</para>
+              </listItem>
+              <listItem>
+                <para>If the host name is an IPv6 address, the canonical IPv6 address is used. ScopeId and other optional IPv6 data are removed.</para>
+              </listItem>
+              <listItem>
+                <para>Removes default and empty port numbers.</para>
+              </listItem>
+              <listItem>
+                <para>Canonicalizes the path for hierarchical URIs by compacting sequences such as /./, /../, //, including escaped representations.</para>
+              </listItem>
+              <listItem>
+                <para>For hierarchical URIs, if the host is not terminated with a forward slash (/), one is added.</para>
+              </listItem>
+              <listItem>
+                <para>Any reserved characters in the URI are escaped in accordance with RFC 2396.</para>
+              </listItem>
+            </list>
+            <para>You can transform the contents of the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> class from an escape encoded URI reference to a readable URI reference by using the <codeEntityReference autoUpgrade="true">M:System.Uri.ToString</codeEntityReference> method. Note that some reserved characters might still be escaped in the output of the <codeEntityReference autoUpgrade="true">M:System.Uri.ToString</codeEntityReference> method. This is to support unambiguous reconstruction of a URI from the value returned by <codeEntityReference autoUpgrade="true">M:System.Uri.ToString</codeEntityReference>.</para>
+            <para>Some URIs include a fragment identifier or a query or both. A fragment identifier is any text that follows a number sign (#), not including the number sign; the fragment text is stored in the <codeEntityReference autoUpgrade="true">P:System.Uri.Fragment</codeEntityReference> property. Query information is any text that follows a question mark (?) in the URI; the query text is stored in the <codeEntityReference autoUpgrade="true">P:System.Uri.Query</codeEntityReference> property.</para>
+            <para>In the .NET Framework version 1.1, if the string specified to a constructor contains an unknown scheme and "c:\", the Uri class inserts "//" after the colon. For example, the URI <codeInline>xyz:c:\abc</codeInline> is converted to <codeInline>xyz://c:/abc</codeInline>. In the .NET Framework version 2.0, this behavior has been removed, and the example string is converted to <codeInline>xyz:c:/abc</codeInline>.</para>
+            <alert class="note">
+              <para>The URI class supports the use of IP addresses in both quad-notation for IPv4 protocol and colon-hexadecimal for IPv6 protocol. Remember to enclose the IPv6 address in square brackets, as in http://[::1].</para>
+            </alert>
+          </content>
+          <sections>
+            <section>
+              <title>Performance Considerations</title>
+              <content>
+                <para>If you use a Web.config file that contains URIs to initialize your application, additional time is required to process the URIs if their scheme identifiers are nonstandard. In such a case, initialize the affected parts of your application when the URIs are needed, not at start time.</para>
+              </content>
+            </section>
+          </sections>
+        </remarks>
+        <notesForCallers>
+          <para>Because of security concerns, your application should use caution when accepting <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instances from untrusted sources and with <parameterReference>dontEscape</parameterReference> set to <languageKeyword>true</languageKeyword>.You can check a URI string for validity by calling the <codeEntityReference autoUpgrade="true">M:System.Uri.IsWellFormedOriginalString</codeEntityReference> method.</para>
+        </notesForCallers>
+        <platformNotes>
+          <platformNote>
+            <platforms>
+              <platform>NETCF</platform>
+            </platforms>
+            <content>
+              <para>The .NET Compact Framework does not differentiate between relative and absolute paths. Also, the .NET Compact Framework processes URI strings prefixed by the file:// scheme differently from the full .NET Framework. A relative file://myfile specification resolves as \\myfile. Using file:///myfile (three slashes) resolves as \myfile in the root directory. To ensure successful operations, specify absolute path information.</para>
+            </content>
+          </platformNote>
+        </platformNotes>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates an instance of the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> class and uses it to create a <codeEntityReference autoUpgrade="true">T:System.Net.WebRequest</codeEntityReference> instance.</para>
+                <codeReference>Classic Uri Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.UriBuilder</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> class from the specified instances of the <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference> and <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.StreamingContext</codeEntityReference> classes.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>serializationInfo</parameterReference>
+            <content>
+              <para>An instance of the <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference> class containing the information required to serialize the new <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>streamingContext</parameterReference>
+            <content>
+              <para>An instance of the <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.StreamingContext</codeEntityReference> class containing the source of the serialized stream associated with the new <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>This constructor implements the <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.ISerializable</codeEntityReference> interface for the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> class.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <link xlink:href="832AC524-21BC-419A-A27B-CA8BFC45840F">XML and SOAP Serialization</link>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> class.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Uri.#ctor(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> class with the specified URI.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>uriString</parameterReference>
+            <content>
+              <para>A URI. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>uriString</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>uriString</parameterReference> is empty.</para>
+              <para>-or- </para>
+              <para>The scheme specified in <parameterReference>uriString</parameterReference> is not correctly formed. See <codeEntityReference autoUpgrade="true">M:System.Uri.CheckSchemeName(System.String)</codeEntityReference>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>uriString</parameterReference> contains too many slashes.</para>
+              <para>-or- </para>
+              <para>The password specified in <parameterReference>uriString</parameterReference> is not valid.</para>
+              <para>-or- </para>
+              <para>The host name specified in <parameterReference>uriString</parameterReference> is not valid.</para>
+              <para>-or- </para>
+              <para>The file name specified in <parameterReference>uriString</parameterReference> is not valid. </para>
+              <para>-or- </para>
+              <para>The user name specified in <parameterReference>uriString</parameterReference> is not valid.</para>
+              <para>-or- </para>
+              <para>The host or authority name specified in <parameterReference>uriString</parameterReference> cannot be terminated by backslashes.</para>
+              <para>-or- </para>
+              <para>The port number specified in <parameterReference>uriString</parameterReference> is not valid or cannot be parsed.</para>
+              <para>-or- </para>
+              <para>The length of <parameterReference>uriString</parameterReference> exceeds 65534 characters.</para>
+              <para>-or- </para>
+              <para>The length of the scheme specified in <parameterReference>uriString</parameterReference> exceeds 1023 characters.</para>
+              <para>-or- </para>
+              <para>There is an invalid character sequence in <parameterReference>uriString</parameterReference>.</para>
+              <para>-or- </para>
+              <para>The MS-DOS path specified in <parameterReference>uriString</parameterReference> must start with c:\\.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This constructor creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance from a URI string. It parses the URI, puts it in canonical format, and makes any required escape encodings.</para>
+            <para>This constructor does not ensure that the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> refers to an accessible resource.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance with the URI "http://www.contoso.com/".</para>
+                <codeReference>Classic Uri.Uri Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Uri.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> class.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.#ctor(System.String,System.Boolean)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> class with the specified URI, with explicit control of character escaping.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>uriString</parameterReference>
+            <content>
+              <para>The URI. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>dontEscape</parameterReference>
+            <content>
+              <para>
+                <languageKeyword>true</languageKeyword> if <parameterReference>uriString</parameterReference> is completely escaped; otherwise, <languageKeyword>false</languageKeyword>. See Remarks. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>uriString</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>uriString</parameterReference> is empty or contains only spaces.</para>
+              <para>-or- </para>
+              <para>The scheme specified in <parameterReference>uriString</parameterReference> is not valid.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>uriString</parameterReference> contains too many slashes.</para>
+              <para>-or- </para>
+              <para>The password specified in <parameterReference>uriString</parameterReference> is not valid.</para>
+              <para>-or- </para>
+              <para>The host name specified in <parameterReference>uriString</parameterReference> is not valid.</para>
+              <para>-or- </para>
+              <para>The file name specified in <parameterReference>uriString</parameterReference> is not valid. </para>
+              <para>-or- </para>
+              <para>The user name specified in <parameterReference>uriString</parameterReference> is not valid.</para>
+              <para>-or- </para>
+              <para>The host or authority name specified in <parameterReference>uriString</parameterReference> cannot be terminated by backslashes.</para>
+              <para>-or- </para>
+              <para>The port number specified in <parameterReference>uriString</parameterReference> is not valid or cannot be parsed.</para>
+              <para>-or- </para>
+              <para>The length of <parameterReference>uriString</parameterReference> exceeds 65534 characters.</para>
+              <para>-or- </para>
+              <para>The length of the scheme specified in <parameterReference>uriString</parameterReference> exceeds 1023 characters.</para>
+              <para>-or- </para>
+              <para>There is an invalid character sequence in <parameterReference>uriString</parameterReference>.</para>
+              <para>-or- </para>
+              <para>The MS-DOS path specified in <parameterReference>uriString</parameterReference> must start with c:\\.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This constructor creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance from a URI string. It parses the URI and puts it in canonical format.</para>
+            <para>The <parameterReference>dontEscape</parameterReference> parameter controls whether reserved characters are translated into escape sequences. This parameter should be set to <languageKeyword>true</languageKeyword> only if you are certain that all reserved characters in the URI have been escaped. Setting the value to <languageKeyword>true</languageKeyword> for a URI that has not been completely escaped can cause unexpected behavior. It is strongly recommended that you always set this parameter to <languageKeyword>false</languageKeyword>.</para>
+            <para>If <parameterReference>dontEscape</parameterReference> is set to <languageKeyword>false</languageKeyword>, the constructor escapes any reserved characters by checking that all occurrences of percent (%) are followed by a valid escape sequence. If the character sequence following a percent is not valid, the percent is replaced by %25.</para>
+            <para>This constructor does not ensure that the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> refers to an accessible resource.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance for the URI http://www.contoso.com/Hello%20World.htm. Because the contained URI is completely escaped and is in canonical form, the <parameterReference>dontEscape</parameterReference> parameter can be set to <languageKeyword>true</languageKeyword>.</para>
+                <codeReference>Classic Uri.Uri1 Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.#ctor(System.Uri,System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> class based on the specified base URI and relative URI string.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>baseUri</parameterReference>
+            <content>
+              <para>The base URI. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>relativeUri</parameterReference>
+            <content>
+              <para>The relative URI to add to the base URI. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>uriString</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference>
+            <content>
+              <para>The URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> is empty or contains only spaces.</para>
+              <para>-or- </para>
+              <para>The scheme specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> is not valid.</para>
+              <para>-or- </para>
+              <para>The URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> contains too many slashes.</para>
+              <para>-or- </para>
+              <para>The password specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> is not valid.</para>
+              <para>-or- </para>
+              <para>The host name specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> is not valid.</para>
+              <para>-or- </para>
+              <para>The file name specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> is not valid. </para>
+              <para>-or- </para>
+              <para>The user name specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> is not valid.</para>
+              <para>-or- </para>
+              <para>The host or authority name specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> cannot be terminated by backslashes.</para>
+              <para>-or- </para>
+              <para>The port number specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> is not valid or cannot be parsed.</para>
+              <para>-or- </para>
+              <para>The length of the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> exceeds 65534 characters.</para>
+              <para>-or- </para>
+              <para>The length of the scheme specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> exceeds 1023 characters.</para>
+              <para>-or- </para>
+              <para>There is an invalid character sequence in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference>.</para>
+              <para>-or- </para>
+              <para>The MS-DOS path specified in <parameterReference>uriString</parameterReference> must start with c:\\.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This constructor creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance by combining the <parameterReference>baseUri</parameterReference> and the <parameterReference>relativeUri</parameterReference>. If <parameterReference>relativeUri</parameterReference> is an absolute URI (containing a scheme, host name, and optionally a port number), the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance is created using only <parameterReference>relativeUri</parameterReference>.</para>
+            <para>This constructor does not ensure that the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> refers to an accessible resource.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a new instance of the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> class by combining the relative URIs http://www.contoso.com and catalog/showew.htm to form the absolute URI http://www.contoso.com/catalog/shownew.htm.</para>
+                <codeReference>Classic Uri.Uri3 Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.#ctor(System.Uri,System.String,System.Boolean)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> class based on the specified base and relative URIs, with explicit control of character escaping.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>baseUri</parameterReference>
+            <content>
+              <para>The base URI. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>relativeUri</parameterReference>
+            <content>
+              <para>The relative URI to add to the base URI. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>dontEscape</parameterReference>
+            <content>
+              <para>
+                <languageKeyword>true</languageKeyword> if <parameterReference>uriString</parameterReference> is completely escaped; otherwise, <languageKeyword>false</languageKeyword>. See Remarks. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>uriString</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference>
+            <content>
+              <para>The URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> is empty or contains only spaces.</para>
+              <para>-or- </para>
+              <para>The scheme specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> is not valid.</para>
+              <para>-or- </para>
+              <para>The URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> contains too many slashes.</para>
+              <para>-or- </para>
+              <para>The password specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> is not valid.</para>
+              <para>-or- </para>
+              <para>The host name specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> is not valid.</para>
+              <para>-or- </para>
+              <para>The file name specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> is not valid. </para>
+              <para>-or- </para>
+              <para>The user name specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> is not valid.</para>
+              <para>-or- </para>
+              <para>The host or authority name specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> cannot be terminated by backslashes.</para>
+              <para>-or- </para>
+              <para>The port number specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> is not valid or cannot be parsed.</para>
+              <para>-or- </para>
+              <para>The length of the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> exceeds 65534 characters.</para>
+              <para>-or- </para>
+              <para>The length of the scheme specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> exceeds 1023 characters.</para>
+              <para>-or- </para>
+              <para>There is an invalid character sequence in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference>.</para>
+              <para>-or- </para>
+              <para>The MS-DOS path specified in <parameterReference>uriString</parameterReference> must start with c:\\.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This constructor creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference>. If the URI passed in <parameterReference>relativeUri</parameterReference> is an absolute URI (containing a scheme, host name, and optionally a port number), the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance is created using only <parameterReference>relativeUri</parameterReference>.</para>
+            <para>The <parameterReference>dontEscape</parameterReference> parameter controls whether reserved characters are translated into escape sequences. This parameter should be set to <languageKeyword>true</languageKeyword> only if you are certain that all reserved characters in the URI have been escaped. Setting the value to <languageKeyword>true</languageKeyword> for a URI that has not been completely escaped can cause unexpected behavior. It is strongly recommended that you always set this parameter to <languageKeyword>false</languageKeyword>. If <parameterReference>dontEscape</parameterReference> is set to <languageKeyword>false</languageKeyword>, the constructor escapes any reserved characters by checking that all occurrences of percent (%) are followed by a valid escape sequence. If the character sequence following a percent is not valid, the percent is replaced by %25.</para>
+            <para>This constructor does not ensure that the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> refers to an accessible resource.</para>
+          </content>
+        </remarks>
+        <notesForCallers>
+          <para>Because of security concerns, your application should not call this constructor with URI strings from untrusted sources and with <parameterReference>dontEscape</parameterReference> set to <languageKeyword>true</languageKeyword>. Alternately, you can check a URI string for validity by calling the <codeEntityReference autoUpgrade="true">M:System.Uri.IsWellFormedOriginalString</codeEntityReference> method prior to calling this constructor.</para>
+        </notesForCallers>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a new instance of the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> class by combining the relative URIs http://www.contoso.com and Hello%20World.htm to form an absolute URI.</para>
+                <codeReference>Classic Uri.Uri4 Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.#ctor(System.Uri,System.Uri)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> class based on the combination of a specified base <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance and a relative <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>baseUri</parameterReference>
+            <content>
+              <para>An absolute <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> that is the base for the new <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>relativeUri</parameterReference>
+            <content>
+              <para>A relative <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance that is combined with <parameterReference>baseUri.</parameterReference></para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>baseUri</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+              <para>-or- </para>
+              <para>
+                <parameterReference>baseUri</parameterReference> is not an absolute <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference>
+            <content>
+              <para>The URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> is empty or contains only spaces.</para>
+              <para>-or- </para>
+              <para>The scheme specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> is not valid.</para>
+              <para>-or- </para>
+              <para>The URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> contains too many slashes.</para>
+              <para>-or- </para>
+              <para>The password specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> is not valid.</para>
+              <para>-or- </para>
+              <para>The host name specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> is not valid.</para>
+              <para>-or- </para>
+              <para>The file name specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> is not valid. </para>
+              <para>-or- </para>
+              <para>The user name specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> is not valid.</para>
+              <para>-or- </para>
+              <para>The host or authority name specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> cannot be terminated by backslashes.</para>
+              <para>-or- </para>
+              <para>The port number specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> is not valid or cannot be parsed.</para>
+              <para>-or- </para>
+              <para>The length of the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> exceeds 65534 characters.</para>
+              <para>-or- </para>
+              <para>The length of the scheme specified in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference> exceeds 1023 characters.</para>
+              <para>-or- </para>
+              <para>There is an invalid character sequence in the URI formed by combining <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference>.</para>
+              <para>-or- </para>
+              <para>The MS-DOS path specified in <parameterReference>uriString</parameterReference> must start with c:\\.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This constructor creates a new <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance by combining an absolute <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance, <parameterReference>baseUri</parameterReference>, with a relative <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance, <parameterReference>relativeUri</parameterReference>. If <parameterReference>relativeUri</parameterReference> is an absolute <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance (containing a scheme, host name, and optionally a port number), the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance is created using only <parameterReference>relativeUri</parameterReference>.</para>
+            <para>This constructor does not ensure that the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> refers to an accessible resource.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>This example creates an absolute <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance, <codeInline>absoluteUri</codeInline>, and a relative <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance, <codeInline>relativeUri</codeInline>. A new <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance, <codeInline>combinedUri</codeInline>, is then created from these two instances.</para>
+                <codeReference>NCLUriEnhancements#2</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.Uri.AbsolutePath">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the absolute path of the URI.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> containing the absolute path to the resource.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.Uri.AbsolutePath</codeEntityReference> property contains the path information that the server uses to resolve requests for information. Typically this is the path to the desired information on the server's file system, although it also can indicate the application or script the server must run to provide the information.</para>
+            <para>The path information does not include the scheme, host name, or query portion of the URI.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example writes the path /catalog/shownew.htm to the console.</para>
+                <codeReference>Classic Uri.AbsolutePath Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.Uri.AbsoluteUri">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the absolute URI.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> containing the entire URI.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.Uri.AbsoluteUri</codeEntityReference> property includes the entire URI stored in the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance, including all fragments and query strings.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example writes the complete contents of the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance to the console. In the example shown, http://www.contoso.com/catalog/shownew.htm?date=today is written to the console.</para>
+                <codeReference>Classic Uri.AbsoluteUri Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.Uri.Authority">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the Domain Name System (DNS) host name or IP address and the port number for a server.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> containing the authority component of the URI represented by this instance.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.Uri.Authority</codeEntityReference> property is typically a server DNS host name or IP address. This property might include the service port number if it differs from the default port for the URI. If the <codeEntityReference autoUpgrade="true">P:System.Uri.Authority</codeEntityReference> component contains reserved characters, these are escaped in the string value returned by this property.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example writes the host name (www.contoso.com) and port number (8080) of the server to the console.</para>
+                <codeReference>Classic Uri.Authority Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.Canonicalize">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts the internally stored URI to canonical form.</para>
+        </summary>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>This instance represents a relative URI, and this method is valid only for absolute URIs. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference>
+            <content>
+              <para>The URI is incorrectly formed.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Stores the canonical version of the URI internally.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.CheckHostName(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Determines whether the specified host name is a valid DNS name.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>name</parameterReference>
+            <content>
+              <para>The host name to validate. This can be an IPv4 or IPv6 address or an Internet host name. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.UriHostNameType</codeEntityReference> that indicates the type of the host name. If the type of the host name cannot be determined or if the host name is <languageKeyword>null</languageKeyword> or a zero-length string, this method returns <codeEntityReference autoUpgrade="true">F:System.UriHostNameType.Unknown</codeEntityReference>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.Uri.CheckHostName(System.String)</codeEntityReference> method checks that the host name provided meets the requirements for a valid Internet host name. It does not, however, perform a host-name lookup to verify the existence of the host.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example checks whether the host name is valid.</para>
+                <codeReference>Classic Uri.CheckHostName Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.CheckSchemeName(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Determines whether the specified scheme name is valid.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>schemeName</parameterReference>
+            <content>
+              <para>The scheme name to validate. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the scheme name is valid; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This method checks the scheme name for validity according to RFC 2396. The scheme name must begin with a letter and must contain only letters, digits, and the characters ".", "+", or "-".</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance and checks whether the scheme name is valid.</para>
+                <codeReference>NCLUriExamples#9</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.CheckSecurity">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Calling this method has no effect.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="P:System.Uri.DnsSafeHost">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets an unescaped host name that is safe to use for DNS resolution.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> that contains the unescaped host part of the URI that is suitable for DNS resolution; or the original unescaped host string, if it is already suitable for resolution.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>This instance represents a relative URI, and this property is valid only for absolute URIs. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>For IPv6 addresses, the brackets ([]) are removed and the <codeEntityReference autoUpgrade="true">P:System.Net.IPAddress.ScopeId</codeEntityReference> property is set, if one was specified when this instance was constructed.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance from a string. It illustrates the difference between the value returned from <codeEntityReference autoUpgrade="true">P:System.Uri.Host</codeEntityReference>, which returns the host name or address specified in the URI, and the value returned from <codeEntityReference autoUpgrade="true">P:System.Uri.DnsSafeHost</codeEntityReference>, which returns an address that is safe to use in DNS resolution.</para>
+                <codeReference>NCLUriEnhancements#4</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.Equals(System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Compares two <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instances for equality.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>comparand</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance or a URI identifier to compare with the current instance. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the two instances represent the same URI; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.Uri.Equals(System.Object)</codeEntityReference> method compares the two instances without regard to user information (<codeEntityReference autoUpgrade="true">P:System.Uri.UserInfo</codeEntityReference>) and fragment (<codeEntityReference autoUpgrade="true">P:System.Uri.Fragment</codeEntityReference>) parts that they might contain. For example, given the URIs http://www.contoso.com/index.htm#search and http://user:password@www.contoso.com/index.htm, the <codeEntityReference autoUpgrade="true">M:System.Uri.Equals(System.Object)</codeEntityReference> method would return <languageKeyword>true</languageKeyword>.</para>
+            <alert class="note">
+              <para>In the .NET Framework versions 1.0 and 1.1, the <codeEntityReference autoUpgrade="true">P:System.Uri.Query</codeEntityReference> is also ignored.</para>
+            </alert>
+            <alert class="note">
+              <para>The <codeEntityReference autoUpgrade="true">M:System.Uri.Equals</codeEntityReference> method can be overridden in a derived class; use caution as a malicious entity could modify the method. You should not use this method to perform security checks unless you know that this instance came from a trusted source.</para>
+            </alert>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>This example creates two <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instances from strings and compares them to determine whether they represent the same value. <codeInline>address1</codeInline> and <codeInline>address2</codeInline> are the same because the <codeEntityReference autoUpgrade="true">P:System.Uri.Fragment</codeEntityReference> portion is ignored for this comparison. The outcome is written to the console.</para>
+                <codeReference>NCLUriExamples#8</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.SecurityPermission</codeEntityReference>
+            <content>
+              <para>to prevent partially trusted code from deriving from <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference>. Associated enumeration: <codeEntityReference autoUpgrade="true">F:System.Security.Permissions.SecurityPermissionFlag.Infrastructure</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+      <overload>
+        <summary>
+          <para>Compares two <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instances for equality.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Uri.Escape">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts any unsafe or reserved characters in the path component to their hexadecimal character representations.</para>
+        </summary>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference>
+            <content>
+              <para>The URI passed from the constructor is invalid. This exception can occur if a URI has too many characters or the URI is relative.</para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.EscapeString(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts a string to its escaped representation.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>str</parameterReference>
+            <content>
+              <para>The string to transform to its escaped representation. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The escaped representation of the string.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.Uri.EscapeString(System.String)</codeEntityReference> method converts RFC 2396 reserved characters and all characters with a character value greater than 127 to hexadecimal representation. All Unicode characters are converted to UTF-8 format before being escaped.</para>
+            <para>The string is escaped according to RFC 2396.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.Uri.Fragment">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the escaped fragment.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> containing any URI fragment information.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.Uri.Fragment</codeEntityReference> property gets any text following a fragment marker (#) in the URI, including the fragment marker itself. Given the URI http://www.contoso.com/index.htm#main, the fragment property would get #main.</para>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.Uri.Fragment</codeEntityReference> property is not considered in any <codeEntityReference autoUpgrade="true">M:System.Uri.Equals(System.Object)</codeEntityReference> comparison.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance and writes the fragment information to the console.</para>
+                <codeReference>NCLUriExamples#4</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.FromHex(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the decimal value of a hexadecimal digit.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>digit</parameterReference>
+            <content>
+              <para>The hexadecimal digit (0-9, a-f, A-F) to convert. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A number from 0 to 15 that corresponds to the specified hexadecimal digit.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>digit</parameterReference> is not a valid hexadecimal digit (0-9, a-f, A-F). </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.Uri.FromHex(System.Char)</codeEntityReference> method converts a character representing a hexadecimal digit (0-9, a-f, A-F) to its decimal value (0 to 15). If <parameterReference>digit</parameterReference> is not a valid hexadecimal digit, an <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference> exception is thrown.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example determines whether a character is a hexadecimal character and, if it is, writes the corresponding decimal value to the console.</para>
+                <codeReference>NCLUriExamples#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.GetHashCode">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the hash code for the URI.</para>
+        </summary>
+        <returnValue>
+          <para>An <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference> containing the hash value generated for this URI.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance and writes the hash code to the console.</para>
+                <codeReference>NCLUriExamples#4</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.GetLeftPart(System.UriPartial)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the specified portion of a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>part</parameterReference>
+            <content>
+              <para>One of the <codeEntityReference autoUpgrade="true">T:System.UriPartial</codeEntityReference> values that specifies the end of the URI portion to return. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> that contains the specified portion of the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>The current <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance is not an absolute instance. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>The specified <parameterReference>part</parameterReference> is not valid. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.Uri.GetLeftPart(System.UriPartial)</codeEntityReference> method returns a string containing the leftmost portion of the URI string, ending with the portion specified by <parameterReference>part</parameterReference>.</para>
+            <para>
+              <codeEntityReference autoUpgrade="true">M:System.Uri.GetLeftPart(System.UriPartial)</codeEntityReference> includes delimiters in the following cases: </para>
+            <list class="bullet">
+              <listItem>
+                <para>
+                  <codeEntityReference autoUpgrade="true">F:System.UriPartial.Scheme</codeEntityReference> includes the scheme delimiter.</para>
+              </listItem>
+              <listItem>
+                <para>
+                  <codeEntityReference autoUpgrade="true">F:System.UriPartial.Authority</codeEntityReference> does not include the path delimiter.</para>
+              </listItem>
+              <listItem>
+                <para>
+                  <codeEntityReference autoUpgrade="true">F:System.UriPartial.Path</codeEntityReference> includes any delimiters in the original URI up to the query or fragment delimiter.</para>
+              </listItem>
+              <listItem>
+                <para>
+                  <codeEntityReference autoUpgrade="true">F:System.UriPartial.Query</codeEntityReference> includes the <codeEntityReference autoUpgrade="true">F:System.UriPartial.Path</codeEntityReference>, plus the query and its delimiter.</para>
+              </listItem>
+            </list>
+            <para>The following examples show a URI and the results of calling <codeEntityReference autoUpgrade="true">M:System.Uri.GetLeftPart(System.UriPartial)</codeEntityReference> with <codeEntityReference autoUpgrade="true">F:System.UriPartial.Scheme</codeEntityReference>, <codeEntityReference autoUpgrade="true">F:System.UriPartial.Authority</codeEntityReference>, <codeEntityReference autoUpgrade="true">F:System.UriPartial.Path</codeEntityReference>, or <codeEntityReference autoUpgrade="true">F:System.UriPartial.Query</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>URI </para>
+                  </entry>
+                  <entry>
+                    <para>Scheme </para>
+                  </entry>
+                  <entry>
+                    <para>Authority </para>
+                  </entry>
+                  <entry>
+                    <para>Path </para>
+                  </entry>
+                  <entry>
+                    <para>Query </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>http://www.contoso.com/index.htm?date=today </para>
+                </entry>
+                <entry>
+                  <para>http:// </para>
+                </entry>
+                <entry>
+                  <para>http://www.contoso.com </para>
+                </entry>
+                <entry>
+                  <para>http://www.contoso.com/index.htm </para>
+                </entry>
+                <entry>
+                  <para>http://www.contoso.com/index.htm?date=today </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>http://www.contoso.com/index.htm#main </para>
+                </entry>
+                <entry>
+                  <para>http:// </para>
+                </entry>
+                <entry>
+                  <para>http://www.contoso.com </para>
+                </entry>
+                <entry>
+                  <para>http://www.contoso.com/index.htm </para>
+                </entry>
+                <entry>
+                  <para>http://www.contoso.com/index.htm </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>mailto:user@contoso.com?subject=uri </para>
+                </entry>
+                <entry>
+                  <para>mailto: </para>
+                </entry>
+                <entry>
+                  <para>mailto:user@contoso.com </para>
+                </entry>
+                <entry>
+                  <para>mailto:user@contoso.com?subject=uri </para>
+                </entry>
+                <entry>
+                  <para>&lt;none&gt;</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>nntp://news.contoso.com/123456@contoso.com </para>
+                </entry>
+                <entry>
+                  <para>nntp:// </para>
+                </entry>
+                <entry>
+                  <para>nntp://news.contoso.com </para>
+                </entry>
+                <entry>
+                  <para>nntp://news.contoso.com/123456@contoso.com </para>
+                </entry>
+                <entry>
+                  <para>nntp://news.contoso.com/123456@contoso.com </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>news:123456@contoso.com </para>
+                </entry>
+                <entry>
+                  <para>news: </para>
+                </entry>
+                <entry>
+                  <para>news:123456@contoso.com </para>
+                </entry>
+                <entry>
+                  <para>news:123456@contoso.com </para>
+                </entry>
+                <entry>
+                  <para>&lt;none&gt;</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>file://server/filename.ext </para>
+                </entry>
+                <entry>
+                  <para>file:// </para>
+                </entry>
+                <entry>
+                  <para>file://server </para>
+                </entry>
+                <entry>
+                  <para>file://server/filename.ext </para>
+                </entry>
+                <entry>
+                  <para>file://server/filename.ext </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance and writes the path to the console.</para>
+                <codeReference>NCLUriExamples#4</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.HexEscape(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts a specified character into its hexadecimal equivalent.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>character</parameterReference>
+            <content>
+              <para>The character to convert to hexadecimal representation. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The hexadecimal representation of the specified character.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>character</parameterReference> is greater than 255. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example converts a character to its hexadecimal equivalent and writes it to the console.</para>
+                <codeReference>NCLUriExamples#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.HexUnescape(System.String,System.Int32@)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts a specified hexadecimal representation of a character to the character.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>pattern</parameterReference>
+            <content>
+              <para>The hexadecimal representation of a character. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>index</parameterReference>
+            <content>
+              <para>The location in <parameterReference>pattern</parameterReference> where the hexadecimal representation of a character begins. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The character represented by the hexadecimal encoding at position <parameterReference>index</parameterReference>. If the character at <parameterReference>index</parameterReference> is not hexadecimal encoded, the character at <parameterReference>index</parameterReference> is returned. The value of <parameterReference>index</parameterReference> is incremented to point to the character following the one returned.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>index</parameterReference> is less than 0 or greater than or equal to the number of characters in <parameterReference>pattern</parameterReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The following code example determines whether a character is hexadecimal encoded and, if so, writes the equivalent character to the console.</para>
+            <codeReference>NCLUriExamples#2</codeReference>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="P:System.Uri.Host">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the host component of this instance.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> containing the host name. This is usually the DNS host name or IP address of the server.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Unlike the <codeEntityReference autoUpgrade="true">P:System.Uri.Authority</codeEntityReference> property, this property value does not include the port number.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example writes the host name (www.contoso.com) of the server to the console.</para>
+                <codeReference>Classic Uri.Host Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.Uri.HostNameType">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the type of the host name specified in the URI.</para>
+        </summary>
+        <returnValue>
+          <para>A member of the <codeEntityReference autoUpgrade="true">T:System.UriHostNameType</codeEntityReference> enumeration.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance and writes the <codeEntityReference autoUpgrade="true">P:System.Uri.HostNameType</codeEntityReference> to the console.</para>
+                <codeReference>NCLUriExamples#9</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.Uri.IsAbsoluteUri">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference> value that indicates whether the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance is absolute.</para>
+        </summary>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance is absolute; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This property is <languageKeyword>true</languageKeyword> if the string or <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance that was passed into the constructor can be parsed as an absolute <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance, which contains a scheme, an authority, and a path. Otherwise, the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance is treated as relative and might omit the scheme or other URI components.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.IsBadFileSystemCharacter(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Returns a <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference> value that indicates whether a character is invalid in a file system name.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>character</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> to test. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the specified character is invalid; otherwise <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The character is analyzed according to the rules for the NTFS file system.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.IsBaseOf(System.Uri)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Determines whether the current <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance is a base of the specified <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>uri</parameterReference>
+            <content>
+              <para>The specified <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance to test. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the current <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance is a base of <parameterReference>uri</parameterReference>; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>
+              <codeEntityReference autoUpgrade="true">M:System.Uri.IsBaseOf(System.Uri)</codeEntityReference> is used to compare the current <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance to a specified <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> to determine whether this URI is a base for the specified <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference>. When comparing two <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> objects to determine a base relationship, the user information (<codeEntityReference autoUpgrade="true">P:System.Uri.UserInfo</codeEntityReference>) is not evaluated. When comparing two URIs (uri1 and uri2), uri1 is the base of uri2 if, when you ignore everything in uri2 after the last slash (/), the two URIs are identical. Using http://host/path/path/file?query as the base URI, the following table shows whether it is a base for other URIs.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>URI </para>
+                  </entry>
+                  <entry>
+                    <para>http://host/path/path/file?query is base of </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>http://host/path/path/file/ </para>
+                </entry>
+                <entry>
+                  <para>yes </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>http://host/path/path/#fragment </para>
+                </entry>
+                <entry>
+                  <para>yes </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>http://host/path/path/MoreDir/" </para>
+                </entry>
+                <entry>
+                  <para>yes </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>http://host/path/path/OtherFile?Query </para>
+                </entry>
+                <entry>
+                  <para>yes </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>http://host/path/path/ </para>
+                </entry>
+                <entry>
+                  <para>yes </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>http://host/path/path/file </para>
+                </entry>
+                <entry>
+                  <para>yes </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>http://host/path/path </para>
+                </entry>
+                <entry>
+                  <para>no </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>http://host/path/path?query </para>
+                </entry>
+                <entry>
+                  <para>no </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>http://host/path/path#Fragment </para>
+                </entry>
+                <entry>
+                  <para>no </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>http://host/path/path2/ </para>
+                </entry>
+                <entry>
+                  <para>no </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>http://host/path/path2/MoreDir </para>
+                </entry>
+                <entry>
+                  <para>no </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>http://host/path/File </para>
+                </entry>
+                <entry>
+                  <para>no </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>This example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance that represents a base <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance. It then creates a second <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance from a string. It calls <codeEntityReference autoUpgrade="true">M:System.Uri.IsBaseOf(System.Uri)</codeEntityReference> to determine whether the base instance is the base of the second instance. The outcome is written to the console.</para>
+                <codeReference>NCLUriEnhancements#6</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.Uri.IsDefaultPort">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a value indicating whether the port value of the URI is the default for this scheme.</para>
+        </summary>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the value in the <codeEntityReference autoUpgrade="true">P:System.Uri.Port</codeEntityReference> property is the default port for this scheme; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance and checks whether it uses the default port.</para>
+                <codeReference>NCLUriExamples#4</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.IsExcludedCharacter(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Returns a <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference> that indicates whether the specified character should be escaped.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>character</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> to test. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the specified character should be escaped; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="P:System.Uri.IsFile">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a value indicating whether the specified <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> is a file URI.</para>
+        </summary>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> is a file URI; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.Uri.IsFile</codeEntityReference> property is <languageKeyword>true</languageKeyword> when the <codeEntityReference autoUpgrade="true">P:System.Uri.Scheme</codeEntityReference> property equals <codeEntityReference autoUpgrade="true">F:System.Uri.UriSchemeFile</codeEntityReference>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance and determines whether it is a file URI.</para>
+                <codeReference>NCLUriExamples#6</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.IsHexDigit(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Determines whether a specified character is a valid hexadecimal digit.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>character</parameterReference>
+            <content>
+              <para>The character to validate. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the character is a valid hexadecimal digit; otherwise <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>Hexadecimal digits are the digits 0 to 9 and the letters A-F or a-f.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example determines whether a character is a hexadecimal character and, if it is, writes the corresponding decimal value to the console.</para>
+                <codeReference>NCLUriExamples#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.IsHexEncoding(System.String,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Determines whether a character in a string is hexadecimal encoded.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>pattern</parameterReference>
+            <content>
+              <para>The string to check. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>index</parameterReference>
+            <content>
+              <para>The location in <parameterReference>pattern</parameterReference> to check for hexadecimal encoding. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>pattern</parameterReference> is hexadecimal encoded at the specified location; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.Uri.IsHexEncoding(System.String,System.Int32)</codeEntityReference> method checks for hexadecimal encoding that follows the pattern "%hexhex" in a string, where "hex" is a digit from 0 to 9 or a letter from A-F (case-insensitive).</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example determines whether a character is hexadecimal encoded and, if so, writes the equivalent character to the console.</para>
+                <codeReference>NCLUriExamples#2</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.Uri.IsLoopback">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference> value indicating whether the specified <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> references the local host.</para>
+        </summary>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if this <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> references the local host; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>This instance represents a relative URI, and this property is valid only for absolute URIs. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>
+              <codeEntityReference autoUpgrade="true">P:System.Uri.IsLoopback</codeEntityReference> returns <languageKeyword>true</languageKeyword> if the URI specified when this instance was created was 127.0.0.1, loopback, or localhost, or if the URI did not specify host information (for example, file:///c:Dir/file.txt). All other URIs return <languageKeyword>false</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance and determines whether it references a local host.</para>
+                <codeReference>NCLUriExamples#6</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.IsReservedCharacter(System.Char)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Returns a <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference> that indicates whether the specified character is a reserved character.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>character</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Char</codeEntityReference> to test. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the specified character is a reserved character otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="P:System.Uri.IsUnc">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference> value indicating whether the specified <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> is a universal naming convention (UNC) path.</para>
+        </summary>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> is a UNC path; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>This instance represents a relative URI, and this property is valid only for absolute URIs. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.Uri.IsUnc</codeEntityReference> property is <languageKeyword>true</languageKeyword> if the specified <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance is a UNC path (such as \\server\folder or file://server/folder). This property always returns <languageKeyword>true</languageKeyword> if the URI has the file:// scheme and specifies a host component.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance and determines whether it is a UNC path.</para>
+                <codeReference>NCLUriExamples#6</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.Uri.LocalPath">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a local operating-system representation of a file name.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> containing the local operating-system representation of a file name.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>This instance represents a relative URI, and this property is valid only for absolute URIs. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The value returned by this property is unescaped. If the path is recognized as a Windows file path, all forward slashes (/) are replaced by backward slashes (\). </para>
+            <para>For the URI <codeInline>file://computer/file.ext</codeInline>, the absolute path is <codeInline>/file.ext</codeInline> and the local path is<codeInline> \\computer\file.ext</codeInline>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance and writes the local path to the console.</para>
+                <codeReference>NCLUriExamples#6</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.MakeRelative(System.Uri)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Determines the difference between two <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instances.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>toUri</parameterReference>
+            <content>
+              <para>The URI to compare to the current URI. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>If the hostname and scheme of this URI instance and <parameterReference>toUri</parameterReference> are the same, then this method returns a relative URI that, when appended to the current URI instance, yields <parameterReference>toUri</parameterReference>.</para>
+          <para>If the hostname or scheme is different, then this method returns <parameterReference>toUri</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>This instance represents a relative URI, and this property is valid only for absolute URIs. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The following table shows the URI instance, <parameterReference>toUri</parameterReference>, and the results of calling <codeEntityReference autoUpgrade="true">M:System.Uri.MakeRelative(System.Uri)</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Current URI instance</para>
+                  </entry>
+                  <entry>
+                    <para>
+                      <parameterReference>toUri</parameterReference>
+                    </para>
+                  </entry>
+                  <entry>
+                    <para>Return value</para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <externalLink>
+                      <linkText>http://www.contoso.com</linkText>
+                      <linkUri>http://www.contoso.com</linkUri>
+                    </externalLink>/</para>
+                </entry>
+                <entry>
+                  <para>http://www.contoso.com/test/test.htm</para>
+                </entry>
+                <entry>
+                  <para>test/test.htm</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>http://www.contoso.com/test1/</para>
+                </entry>
+                <entry>
+                  <para>http://www.contoso.com/</para>
+                </entry>
+                <entry>
+                  <para>../</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>http://www.contoso.com:8000/</para>
+                </entry>
+                <entry>
+                  <para>http://www.contoso.com/test/test.htm</para>
+                </entry>
+                <entry>
+                  <para>http://www.contoso.com/test/test.htm</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>http://username@www.contoso.com/</para>
+                </entry>
+                <entry>
+                  <para>http://www.contoso.com/test1/test1.txt</para>
+                </entry>
+                <entry>
+                  <para>test1/test1.txt</para>
+                </entry>
+              </row>
+            </table>
+            <para>User information, if present in the URI, is ignored.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates 2 <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instances. The difference in the path information is written to the console.</para>
+                <codeReference>NCLUriExamples#3</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.op_Equality(System.Uri,System.Uri)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Determines whether two <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instances have the same value.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>uri1</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance to compare with <parameterReference>uri2</parameterReference>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>uri2</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance to compare with <parameterReference>uri1</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instances are equivalent; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This overload uses the <codeEntityReference autoUpgrade="true">M:System.Uri.Equals(System.Object)</codeEntityReference> method to determine whether the two <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instances are equivalent. <codeEntityReference autoUpgrade="true">P:System.Uri.UserInfo</codeEntityReference> and <codeEntityReference autoUpgrade="true">P:System.Uri.Fragment</codeEntityReference> content is ignored when making this comparison.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>This example creates three <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instances from strings and compares them to determine whether they represent the same value. <codeInline>Address1</codeInline> and <codeInline>Address2</codeInline> are the same because the <codeEntityReference autoUpgrade="true">P:System.Uri.Fragment</codeEntityReference> portion is ignored for this comparison. The outcome is written to the console.</para>
+                <codeReference>NCLUriEnhancements#5</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.op_Inequality(System.Uri,System.Uri)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Determines whether two <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instances do not have the same value.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>uri1</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance to compare with <parameterReference>uri2</parameterReference>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>uri2</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance to compare with <parameterReference>uri1</parameterReference>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the two <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instances are not equal; otherwise, <languageKeyword>false</languageKeyword>. If either parameter is <languageKeyword>null</languageKeyword>, this method returns <languageKeyword>true</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This overload uses the <codeEntityReference autoUpgrade="true">M:System.Uri.Equals(System.Object)</codeEntityReference> method to determine whether the two <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instances are not equivalent. <codeEntityReference autoUpgrade="true">P:System.Uri.UserInfo</codeEntityReference> and <codeEntityReference autoUpgrade="true">P:System.Uri.Fragment</codeEntityReference> content is ignored when making this comparison.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>This example creates three <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instances from strings and compares them to determine whether they represent the same value. <codeInline>Address2</codeInline> and <codeInline>Address3</codeInline> are not the same because <codeInline>Address3</codeInline> contains a <codeEntityReference autoUpgrade="true">P:System.Uri.Query</codeEntityReference> that is not found in <codeInline>Address2</codeInline>. The outcome is written to the console.</para>
+                <codeReference>NCLUriEnhancements#5</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.Uri.OriginalString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the original URI string that was passed to the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> constructor.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> containing the exact URI specified when this instance was constructed; otherwise, <codeEntityReference autoUpgrade="true">F:System.String.Empty</codeEntityReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>This instance represents a relative URI, and this property is valid only for absolute URIs. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>If the URI specified to the constructor contained leading or trailing spaces, these spaces are preserved.</para>
+            <para>The value returned by this property differs from <codeEntityReference autoUpgrade="true">M:System.Uri.ToString</codeEntityReference> and <codeEntityReference autoUpgrade="true">P:System.Uri.AbsoluteUri</codeEntityReference>. <codeEntityReference autoUpgrade="true">M:System.Uri.ToString</codeEntityReference> returns the canonically unescaped form of the URI. <codeEntityReference autoUpgrade="true">P:System.Uri.AbsoluteUri</codeEntityReference> returns the canonically escaped form of the URI.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a new <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance from a string. It illustrates the difference between the value returned from <codeEntityReference autoUpgrade="true">P:System.Uri.OriginalString</codeEntityReference>, which returns the string that was passed to the constructor, and from a call to <codeEntityReference autoUpgrade="true">M:System.Uri.ToString</codeEntityReference>, which returns the canonical form of the string.</para>
+                <codeReference>NCLUriEnhancements#3</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.Parse">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Parses the URI of the current instance to ensure it contains all the parts required for a valid URI.</para>
+        </summary>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference>
+            <content>
+              <para>The Uri passed from the constructor is invalid. </para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="P:System.Uri.PathAndQuery">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the <codeEntityReference autoUpgrade="true">P:System.Uri.AbsolutePath</codeEntityReference> and <codeEntityReference autoUpgrade="true">P:System.Uri.Query</codeEntityReference> properties separated by a question mark (?).</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> that contains the <codeEntityReference autoUpgrade="true">P:System.Uri.AbsolutePath</codeEntityReference> and <codeEntityReference autoUpgrade="true">P:System.Uri.Query</codeEntityReference> properties separated by a question mark (?).</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.Uri.PathAndQuery</codeEntityReference> property contains the absolute path on the server and the query information sent with the request. It is identical to concatenating the <codeEntityReference autoUpgrade="true">P:System.Uri.AbsolutePath</codeEntityReference> and <codeEntityReference autoUpgrade="true">P:System.Uri.Query</codeEntityReference> properties.</para>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.Uri.PathAndQuery</codeEntityReference> property is escaped according to RFC 2396.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example writes the URI path (/catalog/shownew.htm) and query (date= today) information to the console.</para>
+                <codeReference>Classic Uri.PathAndQuery Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.Uri.Port">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the port number of this URI.</para>
+        </summary>
+        <returnValue>
+          <para>An <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference> value containing the port number for this URI.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>This instance represents a relative URI, and this property is valid only for absolute URIs. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The port number defines the protocol port used for contacting the server referenced in the URI. If a port is not specified as part of the URI, the <codeEntityReference autoUpgrade="true">P:System.Uri.Port</codeEntityReference> property returns the default value for the protocol. If there is no default port number, this property returns -1.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example writes the URI port number to the console. In this case, the value is the default port number for HTTP, port 80.</para>
+                <codeReference>Classic Uri.Port Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.Uri.Query">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets any query information included in the specified URI.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> containing any query information included in the specified URI.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.Uri.Query</codeEntityReference> property contains any query information included in the URI. Query information is separated from the path information by a question mark (?) and continues to the end of the URI. The query information returned includes the leading question mark.</para>
+            <para>The query information is escaped according to RFC 2396.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example writes the query ?date= today to the console.</para>
+                <codeReference>Classic Uri.PathAndQuery Example#2</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.Uri.Scheme">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the scheme name for this URI.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> containing the scheme for this URI, converted to lowercase.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>This instance represents a relative URI, and this property is valid only for absolute URIs. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The following table shows examples of the values returned by the <codeEntityReference autoUpgrade="true">P:System.Uri.Scheme</codeEntityReference> property.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Scheme </para>
+                  </entry>
+                  <entry>
+                    <para>Description </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>file </para>
+                </entry>
+                <entry>
+                  <para>The resource is a file on the local computer. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>ftp </para>
+                </entry>
+                <entry>
+                  <para>The resource is accessed through FTP. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>gopher </para>
+                </entry>
+                <entry>
+                  <para>The resource is accessed through the Gopher protocol. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>http </para>
+                </entry>
+                <entry>
+                  <para>The resource is accessed through HTTP. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>https </para>
+                </entry>
+                <entry>
+                  <para>The resource is accessed through SSL-encrypted HTTP. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>mailto </para>
+                </entry>
+                <entry>
+                  <para>The resource is an e-mail address and accessed through SMTP. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>nntp </para>
+                </entry>
+                <entry>
+                  <para>The resource is accessed through NNTP. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example writes the scheme name (http) to the console for the http://www.contoso.com/ URI.</para>
+                <codeReference>Classic Uri.Scheme Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="F:System.Uri.SchemeDelimiter">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Specifies the characters that separate the communication protocol scheme from the address portion of the URI. This field is read-only.</para>
+        </summary>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a string from <codeEntityReference autoUpgrade="true">F:System.Uri.UriSchemeHttp</codeEntityReference>, <codeEntityReference autoUpgrade="true">F:System.Uri.SchemeDelimiter</codeEntityReference>, and an address. A <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance is then created from the string.</para>
+                <codeReference>NCLUriExamples#17</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.Uri.Segments">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets an array containing the path segments that make up the specified URI.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> array containing the path segments that make up the specified URI.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.Uri.Segments</codeEntityReference> property returns an array of strings containing the "segments" (substrings) that form the URI's absolute path. The first segment is obtained by parsing the absolute path from its first character until you reach a slash (/) or the end of the path. Each additional segment begins at the first character after the preceding segment, and terminates with the next slash or the end of the path. (A URI's absolute path contains everything after the host and port and before the query and fragment.) </para>
+            <para>The following example shows the absolute path and segments for two URIs. The second example illustrates that the fragment and query are not part of the absolute path and therefore are not segments.</para>
+            <definitionTable>
+              <definedTerm>Absolute URI </definedTerm>
+              <definition>
+                <para>http://www.contoso.com/Chapters/Chapter1/Sections/Section1.htm</para>
+              </definition>
+              <definedTerm>Absolute path </definedTerm>
+              <definition>
+                <para>/Chapters/Chapter1/Sections/Section1.htm</para>
+              </definition>
+              <definedTerm>Segments</definedTerm>
+              <definition>
+                <para>/Chapters/Chapter1/Sections/Section1.htm</para>
+              </definition>
+            </definitionTable>
+            <definitionTable>
+              <definedTerm>Absolute URI </definedTerm>
+              <definition>
+                <para>http://www.contoso.com/Chapters/Chapter1/Sections/Section1.htm#page1?answer=NO</para>
+              </definition>
+              <definedTerm>Absolute path </definedTerm>
+              <definition>
+                <para>/Chapters/Chapter1/Sections/Section1.htm</para>
+              </definition>
+              <definedTerm>Segments</definedTerm>
+              <definition>
+                <para>/Chapters/Chapter1/Sections/Section1.htm</para>
+              </definition>
+            </definitionTable>
+            <para>Note that because the absolute path starts with a '/', the first segment contains it and nothing else.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance with 3 segments and displays the segments on the screen.</para>
+                <codeReference>NCLUriExamples#5</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.ToString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a canonical string representation for the specified <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> instance that contains the unescaped canonical representation of the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance. All characters are unescaped except #, ?, and %.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The string returned by this method does not contain port information when the port is the default port for the scheme.</para>
+            <alert class="note">
+              <para>The string returned by the <codeEntityReference autoUpgrade="true">M:System.Uri.ToString</codeEntityReference> method may contain control characters, which can corrupt the state of a console application. You can use the <codeEntityReference autoUpgrade="true">M:System.Uri.GetComponents(System.UriComponents,System.UriFormat)</codeEntityReference> method with the <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.UriFormat.SafeUnescaped</codeEntityReference> format to remove control characters from the returned string.</para>
+            </alert>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a new <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance from a string. It illustrates the difference between the value returned from <codeEntityReference autoUpgrade="true">P:System.Uri.OriginalString</codeEntityReference>, which returns the string that was passed to the constructor, and from a call to <codeEntityReference autoUpgrade="true">M:System.Uri.ToString</codeEntityReference>, which returns the canonical form of the string.</para>
+                <codeReference>NCLUriExamples#7</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.SecurityPermission</codeEntityReference>
+            <content>
+              <para>to prevent partially trusted code from deriving from <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference>. Associated enumeration: <codeEntityReference autoUpgrade="true">F:System.Security.Permissions.SecurityPermissionFlag.Infrastructure</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.Unescape(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts the specified string by replacing any escape sequences with their unescaped representation.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>path</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> to convert. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> containing the unescaped value of the <parameterReference>path</parameterReference> parameter.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="F:System.Uri.UriSchemeFile">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Specifies that the URI is a pointer to a file. This field is read-only.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>In .NET Framework version 1.1, a "<externalLink><linkText>file:///path</linkText><linkUri>../../../../path</linkUri></externalLink>" uri was translated to "file:/path". This has been corrected for version 2.0.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance and determines whether the scheme is <codeEntityReference autoUpgrade="true">F:System.Uri.UriSchemeFile</codeEntityReference>.</para>
+                <codeReference>NCLUriExamples#10</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="F:System.Uri.UriSchemeFtp">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Specifies that the URI is accessed through the File Transfer Protocol (FTP). This field is read-only.</para>
+        </summary>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance and determines whether the scheme is <codeEntityReference autoUpgrade="true">F:System.Uri.UriSchemeFtp</codeEntityReference>.</para>
+                <codeReference>NCLUriExamples#15</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="F:System.Uri.UriSchemeGopher">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Specifies that the URI is accessed through the Gopher protocol. This field is read-only.</para>
+        </summary>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance and determines whether the scheme is <codeEntityReference autoUpgrade="true">F:System.Uri.UriSchemeGopher</codeEntityReference>.</para>
+                <codeReference>NCLUriExamples#14</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="F:System.Uri.UriSchemeHttp">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Specifies that the URI is accessed through the Hypertext Transfer Protocol (HTTP). This field is read-only.</para>
+        </summary>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance and determines whether the scheme is <codeEntityReference autoUpgrade="true">F:System.Uri.UriSchemeHttp</codeEntityReference>.</para>
+                <codeReference>NCLUriExamples#9</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="F:System.Uri.UriSchemeHttps">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Specifies that the URI is accessed through the Secure Hypertext Transfer Protocol (HTTPS). This field is read-only.</para>
+        </summary>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance and determines whether the scheme is <codeEntityReference autoUpgrade="true">F:System.Uri.UriSchemeHttps</codeEntityReference>.</para>
+                <codeReference>NCLUriExamples#16</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="F:System.Uri.UriSchemeMailto">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Specifies that the URI is an e-mail address and is accessed through the Simple Mail Transport Protocol (SMTP). This field is read-only.</para>
+        </summary>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance and determines whether the scheme is <codeEntityReference autoUpgrade="true">F:System.Uri.UriSchemeMailto</codeEntityReference>.</para>
+                <codeReference>NCLUriExamples#11</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="F:System.Uri.UriSchemeNews">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Specifies that the URI is an Internet news group and is accessed through the Network News Transport Protocol (NNTP). This field is read-only.</para>
+        </summary>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance and determines whether the scheme is <codeEntityReference autoUpgrade="true">F:System.Uri.UriSchemeNews</codeEntityReference>.</para>
+                <codeReference>NCLUriExamples#12</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="F:System.Uri.UriSchemeNntp">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Specifies that the URI is an Internet news group and is accessed through the Network News Transport Protocol (NNTP). This field is read-only.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The NNTP <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> parsing errors in .NET Framework version 1.1 have been corrected.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance and determines whether the scheme is <codeEntityReference autoUpgrade="true">F:System.Uri.UriSchemeNntp</codeEntityReference>.</para>
+                <codeReference>NCLUriExamples#13</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.Uri.UserEscaped">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates that the URI string was completely escaped before the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance was created.</para>
+        </summary>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the <parameterReference>dontEscape</parameterReference> parameter was set to <languageKeyword>true</languageKeyword> when the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance was created; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.Uri.UserEscaped</codeEntityReference> property is set to <languageKeyword>true</languageKeyword> to indicate that the string used to create the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance was completely escaped before it was passed to the constructor; that is, the <parameterReference>dontEscape</parameterReference> parameter of the constructor call was set to <languageKeyword>true</languageKeyword>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance and determines whether it was fully escaped when it was created.</para>
+                <codeReference>NCLUriExamples#18</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="P:System.Uri.UserInfo">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the user name, password, or other user-specific information associated with the specified URI.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> containing the user information associated with the URI. The returned value does not include the '@' character reserved for delimiting the user information part of the URI.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The value returned by this property is usually in the format "userName:password".</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance and writes the user information to the console.</para>
+                <codeReference>NCLUriExamples#18</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.Compare(System.Uri,System.Uri,System.UriComponents,System.UriFormat,System.StringComparison)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Compares the specified parts of two URIs using the specified comparison rules.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>uri1</parameterReference>
+            <content>
+              <para>The first <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference>.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>uri2</parameterReference>
+            <content>
+              <para>The second <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference>.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>partsToCompare</parameterReference>
+            <content>
+              <para>A bitwise combination of the <codeEntityReference autoUpgrade="true">T:System.UriComponents</codeEntityReference> values that specifies the parts of <parameterReference>uri1</parameterReference> and <parameterReference>uri2</parameterReference> to compare.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>compareFormat</parameterReference>
+            <content>
+              <para>One of the <codeEntityReference autoUpgrade="true">T:System.UriFormat</codeEntityReference> values that specifies the character escaping used when the URI components are compared.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>comparisonType</parameterReference>
+            <content>
+              <para>One of the <codeEntityReference autoUpgrade="true">T:System.StringComparison</codeEntityReference> values.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A 32-bit signed integer indicating the lexical relationship between the compared <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> components.</para>
+          <table>
+            <tableHeader>
+              <row>
+                <entry>
+                  <para>Value</para>
+                </entry>
+                <entry>
+                  <para>Meaning</para>
+                </entry>
+              </row>
+            </tableHeader>
+            <row>
+              <entry>
+                <para>Less than zero</para>
+              </entry>
+              <entry>
+                <para>
+                  <parameterReference>uri1</parameterReference> is less than <parameterReference>uri2</parameterReference>.</para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Zero</para>
+              </entry>
+              <entry>
+                <para>
+                  <parameterReference>uri1</parameterReference> equals <parameterReference>uri2</parameterReference>.</para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Greater than zero</para>
+              </entry>
+              <entry>
+                <para>
+                  <parameterReference>uri1</parameterReference> is greater than <parameterReference>uri2</parameterReference>.</para>
+              </entry>
+            </row>
+          </table>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>comparisonType</parameterReference> is not a valid <codeEntityReference autoUpgrade="true">T:System.StringComparison</codeEntityReference> value.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>If both <parameterReference>uri1</parameterReference> and <parameterReference>uri2</parameterReference> are <languageKeyword>null</languageKeyword>, this method returns0. When comparing URI values, a relative URI is always less than an absolute URI, and a non-null URI is always greater than a null URI. For cases where both <parameterReference>uri1</parameterReference> and <parameterReference>uri2</parameterReference> are not <languageKeyword>null</languageKeyword> and are both relative URIs or both absolute URIs, the <codeEntityReference qualifyHint="true" autoUpgrade="false">M:System.String.Compare(System.String,System.String,System.StringComparison)</codeEntityReference> method performs the comparison.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.GetComponents(System.UriComponents,System.UriFormat)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the specified components of the current instance using the specified escaping for special characters.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>components</parameterReference>
+            <content>
+              <para>A bitwise combination of the <codeEntityReference autoUpgrade="true">T:System.UriComponents</codeEntityReference> values that specifies which parts of the current instance to return to the caller.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>format</parameterReference>
+            <content>
+              <para>One of the <codeEntityReference autoUpgrade="true">T:System.UriFormat</codeEntityReference> values that controls how special characters are escaped. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A string containing the components.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>uriComponents</parameterReference> is not a combination of valid <codeEntityReference autoUpgrade="true">T:System.UriComponents</codeEntityReference> values.</para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>The current <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> is not an absolute URI. Relative URIs cannot be used with this method.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>When <codeEntityReference autoUpgrade="true">F:System.UriComponents.Query</codeEntityReference> or <codeEntityReference autoUpgrade="true">F:System.UriComponents.Fragment</codeEntityReference> is specified alone, the return value includes the delimiter. The <codeEntityReference autoUpgrade="true">F:System.UriComponents.Scheme</codeEntityReference>, <codeEntityReference autoUpgrade="true">F:System.UriComponents.UserInfo</codeEntityReference>, <codeEntityReference autoUpgrade="true">F:System.UriComponents.Host</codeEntityReference>, <codeEntityReference autoUpgrade="true">F:System.UriComponents.Port</codeEntityReference>, and <codeEntityReference autoUpgrade="true">F:System.UriComponents.Path</codeEntityReference> components do not include the delimiter. For all other <codeEntityReference autoUpgrade="true">T:System.UriComponents</codeEntityReference> values, and combinations of values, the delimiters are included in the returned value.</para>
+            <para>The components are returned in the order that they appear in the URI. For example, if <codeEntityReference autoUpgrade="true">F:System.UriComponents.Scheme</codeEntityReference> is specified, it appears first.</para>
+            <alert class="note">
+              <para>If the <codeEntityReference autoUpgrade="true">M:System.Uri.GetComponents(System.UriComponents,System.UriFormat)</codeEntityReference> method is called with <parameterReference>format</parameterReference> set to <codeEntityReference autoUpgrade="true">F:System.UriFormat.Unescaped</codeEntityReference> , you cannot use the return value as an argument to a a <codeEntityReference autoUpgrade="true">Overload:System.Uri.#ctor</codeEntityReference> constructor to create an equivalent <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference>.</para>
+            </alert>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the data needed to serialize the current instance.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>serializationInfo</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference> object containing the information required to serialize the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference>.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>streamingContext</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.StreamingContext</codeEntityReference> object containing the source and destination of the serialized stream associated with the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference>.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.SecurityPermission</codeEntityReference>
+            <content>
+              <para>to use serialization methods. Associated enumeration: <codeEntityReference autoUpgrade="true">F:System.Security.Permissions.SecurityPermissionFlag.SerializationFormatter</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the data needed to serialize the current instance.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>serializationInfo</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference> object containing the information required to serialize the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference>.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>streamingContext</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.StreamingContext</codeEntityReference> object containing the source and destination of the serialized stream associated with the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference>.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.SecurityPermission</codeEntityReference>
+            <content>
+              <para>to use serialization methods. Associated enumeration: <codeEntityReference autoUpgrade="true">F:System.Security.Permissions.SecurityPermissionFlag.SerializationFormatter</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Uri.TryCreate">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates a new <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference>. Does not throw an exception if the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> cannot be created.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.TryCreate(System.Uri,System.Uri,System.Uri@)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates a new <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> using the specified base and relative <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instances.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>baseUri</parameterReference>
+            <content>
+              <para>The base <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>relativeUri</parameterReference>
+            <content>
+              <para>The relative <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> to add to the base <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference>. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>result</parameterReference>
+            <content>
+              <para>When this method returns, contains a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> constructed from <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference>. This parameter is passed uninitialized.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> was successfully created; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>If this method returns <languageKeyword>true</languageKeyword>, the new <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> is in <parameterReference>result</parameterReference>.</para>
+            <para>This method constructs the URI, puts it in canonical form, and validates it. If an unhandled exception occurs, this method catches it. If you want to create a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> and get exceptions use one of the <codeEntityReference autoUpgrade="true">Overload:System.Uri.#ctor</codeEntityReference> constructors. </para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>Creates a new <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference>. Does not throw an exception if the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> cannot be created.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Uri.IsWellFormedOriginalString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the string used to construct this <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> was well-formed.</para>
+        </summary>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the string was well-formed in accordance with RFC 2396 and RFC 2732; else <languageKeyword>false</languageKeyword>. </para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The string is considered poorly formed if one or more of the following are true:</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Error</para>
+                  </entry>
+                  <entry>
+                    <para>Example</para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>The string is not correctly escaped.</para>
+                </entry>
+                <entry>
+                  <para>
+                    <externalLink>
+                      <linkText>http://www.contoso.com/path???/file</linkText>
+                      <linkUri>http://www.contoso.com/path???/file</linkUri>
+                    </externalLink> name</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>The string is an absolute <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> that represents an implicit file <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference>.</para>
+                </entry>
+                <entry>
+                  <para>c:\\directory\filename</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>The string is an absolute Uri that is missing a slash before the path.</para>
+                </entry>
+                <entry>
+                  <para>file://c:/directory/filename</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>The string contains unescaped backslashes even if they are treated as forward slashes.</para>
+                </entry>
+                <entry>
+                  <para>http:\\host/path/file</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>The string represents a hierarchical absolute <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> and does not contain "://".</para>
+                </entry>
+                <entry>
+                  <para>www.contoso.com/path/file</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>The parser for the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference><codeEntityReference autoUpgrade="true">P:System.Uri.Scheme</codeEntityReference> indicates that the original string was not well-formed.</para>
+                </entry>
+                <entry>
+                  <para>The example depends on the scheme of the URI.</para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <externalLink>
+            <linkText>http://www.ietf.org</linkText>
+            <linkUri>http://www.ietf.org/</linkUri>
+          </externalLink>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.IsWellFormedUriString(System.String,System.UriKind)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether the string is well-formed by attempting to construct a URI with the string.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>uriString</parameterReference>
+            <content>
+              <para>A URI.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>uriKind</parameterReference>
+            <content>
+              <para>The type of the URI in <parameterReference>uriString</parameterReference>.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the string was well-formed in accordance with RFC 2396 and RFC 2732; else <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The string is considered poorly formed if one or more of the following are true:</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Error</para>
+                  </entry>
+                  <entry>
+                    <para>Example</para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>The string is not correctly escaped.</para>
+                </entry>
+                <entry>
+                  <para>
+                    <externalLink>
+                      <linkText>http://www.contoso.com/path???/file</linkText>
+                      <linkUri>http://www.contoso.com/path???/file</linkUri>
+                    </externalLink> name</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>The string is an absolute <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> that represents an implicit file <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference>.</para>
+                </entry>
+                <entry>
+                  <para>c:\\directory\filename</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>The string is an absolute Uri that is missing a slash before the path.</para>
+                </entry>
+                <entry>
+                  <para>file://c:/directory/filename</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>The string contains unescaped backslashes even if they will be treated as forward slashes</para>
+                </entry>
+                <entry>
+                  <para>http:\\host/path/file</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>The string represents a hierarchical absolute <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> and does not contain "://"</para>
+                </entry>
+                <entry>
+                  <para>www.contoso.com/path/file</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>The parser for the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference><codeEntityReference autoUpgrade="true">P:System.Uri.Scheme</codeEntityReference> indicates that the original string was not well-formed.</para>
+                </entry>
+                <entry>
+                  <para>The example depends on the scheme of the URI.</para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <externalLink>
+            <linkText>http://www.ietf.org</linkText>
+            <linkUri>http://www.ietf.org/</linkUri>
+          </externalLink>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.EscapeDataString(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts a string to its escaped representation.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>stringToEscape</parameterReference>
+            <content>
+              <para>The string to escape.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The escaped representation of <parameterReference>stringToEscape</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>stringToEscape</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference>
+            <content>
+              <para>The length of <parameterReference>stringToEscape</parameterReference> exceeds 32766 characters.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.Uri.EscapeUriString(System.String)</codeEntityReference> method converts RFC 2396 reserved characters and all characters with a character value greater than 127 to their hexadecimal representation. All Unicode characters are converted to UTF-8 format before being escaped. </para>
+            <para>This method assumes that <parameterReference>stringToEscape</parameterReference> has no escape sequences in it.</para>
+            <para>The string is escaped according to RFC 2396. See this RFC for a definition of reserved and unreserved characters.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.EscapeUriString(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts a URI string to its escaped representation.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>stringToEscape</parameterReference>
+            <content>
+              <para>The string to escape.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The escaped representation of <parameterReference>stringToEscape</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>stringToEscape</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference>
+            <content>
+              <para>The length of <parameterReference>stringToEscape</parameterReference> exceeds 32766 characters.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.Uri.EscapeUriString(System.String)</codeEntityReference> method converts all characters, except RFC 2396 reserved and unreserved characters, to their hexadecimal representation. All Unicode characters are converted to UTF-8 format before being escaped. </para>
+            <para>This method assumes that <parameterReference>stringToEscape</parameterReference> has no escape sequences in it.</para>
+            <para>The string is escaped according to RFC 2396. See this RFC for a definition of reserved and unreserved characters.</para>
+            <para>Use the <codeEntityReference autoUpgrade="true">M:System.Uri.EscapeUriString(System.String)</codeEntityReference> method to prepare an unescaped URI string to be a parameter to the <codeEntityReference autoUpgrade="true">M:System.Uri.#ctor(System.String,System.UriKind)</codeEntityReference> constructor.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.UnescapeDataString(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts a string to its unescaped representation.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>stringToUnescape</parameterReference>
+            <content>
+              <para>The string to unescape.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>The unescaped representation of <parameterReference>stringToUnescape. </parameterReference></para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>stringToUnescape</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>You should use this method with care. Unescaping a string that has been previously unescaped can lead to ambiguities and errors.</para>
+            <para>Many Web browsers escape spaces inside of URIs into plus ("+") characters; however, the UnescapeDataString method does not convert plus characters into spaces because this behavior is not standard across all URI schemes. </para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example unescapes a URI, and then converts any plus characters ("+") into spaces.</para>
+                <codeReference>NCLUriExamples#19</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Uri.EscapeDataString(System.String)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Uri.EscapeUriString(System.String)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.#ctor(System.String,System.UriKind)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> class with the specified URI. This constructor allows you to specify if the URI string is a relative URI, absolute URI, or is indeterminate.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>uriString</parameterReference>
+            <content>
+              <para>A string that identifies the resource to be represented by the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instance.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>uriKind</parameterReference>
+            <content>
+              <para>Specifies whether the URI string is a relative URI, absolute URI, or is indeterminate.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.UriFormatException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>uriString</parameterReference> contains a relative URI and <parameterReference>uriKind</parameterReference> is <codeEntityReference autoUpgrade="true">F:System.UriKind.Absolute</codeEntityReference>.</para>
+              <para>or</para>
+              <para>
+                <parameterReference>uriString</parameterReference> contains an absolute URI and <parameterReference>uriKind</parameterReference> is <codeEntityReference autoUpgrade="true">F:System.UriKind.Relative</codeEntityReference>.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Relative and absolute URIs have different restrictions on their format. For example, a relative URI does not require a scheme or an authority. The value you specify in <parameterReference>uriKind</parameterReference> must match the type of URI passed in <parameterReference>uriString</parameterReference>. However, if <codeEntityReference autoUpgrade="true">F:System.UriKind.RelativeOrAbsolute</codeEntityReference> is specified, the URI string can be relative or absolute.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.MakeRelativeUri(System.Uri)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Determines the difference between two <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instances.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>uri</parameterReference>
+            <content>
+              <para>The URI to compare to the current URI.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>If the hostname and scheme of this URI instance and <parameterReference>toUri</parameterReference> are the same, then this method returns a relative URI that, when appended to the current URI instance, yields <parameterReference>toUri</parameterReference>.</para>
+          <para>If the hostname or scheme is different, then this method returns <parameterReference>toUri</parameterReference>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>This instance represents a relative URI, and this property is valid only for absolute URIs. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The following table shows the URI instance, <parameterReference>toUri</parameterReference>, and the results of calling <codeEntityReference autoUpgrade="true">M:System.Uri.MakeRelativeUri(System.Uri)</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Current URI instance</para>
+                  </entry>
+                  <entry>
+                    <para>
+                      <parameterReference>toUri</parameterReference>
+                    </para>
+                  </entry>
+                  <entry>
+                    <para>Return value</para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <externalLink>
+                      <linkText>http://www.contoso.com</linkText>
+                      <linkUri>http://www.contoso.com</linkUri>
+                    </externalLink>/</para>
+                </entry>
+                <entry>
+                  <para>http://www.contoso.com/test/test.htm</para>
+                </entry>
+                <entry>
+                  <para>test/test.htm</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>http://www.contoso.com/test1/</para>
+                </entry>
+                <entry>
+                  <para>http://www.contoso.com/</para>
+                </entry>
+                <entry>
+                  <para>../</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>http://www.contoso.com:8000/</para>
+                </entry>
+                <entry>
+                  <para>http://www.contoso.com/test/test.htm</para>
+                </entry>
+                <entry>
+                  <para>http://www.contoso.com/test/test.htm</para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>http://username@www.contoso.com/</para>
+                </entry>
+                <entry>
+                  <para>http://www.contoso.com/test1/test1.txt</para>
+                </entry>
+                <entry>
+                  <para>test1/test1.txt</para>
+                </entry>
+              </row>
+            </table>
+            <para>User information, if present in the URI, is ignored.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example creates 2 <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instances. The difference in the path information is written to the console.</para>
+                <codeReference>NCLUriExamples#3</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.TryCreate(System.String,System.UriKind,System.Uri@)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates a new <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> using the specified <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> instance and a <codeEntityReference autoUpgrade="true">T:System.UriKind</codeEntityReference>.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>uriString</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> representing the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference>.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>uriKind</parameterReference>
+            <content>
+              <para>The type of the Uri.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>result</parameterReference>
+            <content>
+              <para>When this method returns, contains the constructed <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference>.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> was successfully created; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>If this method returns <languageKeyword>true</languageKeyword>, the new <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> is in <parameterReference>result</parameterReference>.</para>
+          </content>
+        </remarks>
+        <platformNotes>
+          <platformNote>
+            <platforms>
+              <platform>NETCF</platform>
+            </platforms>
+            <content>
+              <para>The .NET Compact Framework does not differentiate between relative and absolute paths. The <parameterReference>uriKind</parameterReference> parameter is not evaluated.</para>
+            </content>
+          </platformNote>
+        </platformNotes>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.Uri.TryCreate(System.Uri,System.String,System.Uri@)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Creates a new <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> using the specified base and relative <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> instances.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>baseUri</parameterReference>
+            <content>
+              <para>The base <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference>.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>relativeUri</parameterReference>
+            <content>
+              <para>The relative <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference>, represented as a <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>, to add to the base <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference>.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>result</parameterReference>
+            <content>
+              <para>When this method returns, contains a <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> constructed from <parameterReference>baseUri</parameterReference> and <parameterReference>relativeUri</parameterReference>. This parameter is passed uninitialized.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> was successfully created; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>If this method returns <languageKeyword>true</languageKeyword>, the new <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> is in <parameterReference>result</parameterReference>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="F:System.Uri.UriSchemeNetPipe">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Specifies that the URI is accessed through the NetPipe scheme of the "Indigo" system. This field is read-only.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="F:System.Uri.UriSchemeNetTcp">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Specifies that the URI is accessed through the NetTcp scheme of the "Indigo" system. This field is read-only.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Uri.Equals">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Compares two <codeEntityReference autoUpgrade="true">T:System.Uri</codeEntityReference> instances for equality.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+  </members>
+</doc>

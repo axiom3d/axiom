@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="80f74a83-216e-4adb-a654-4abb435160e0" revisionNumber="3">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.AttributeUsageAttribute">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Specifies the usage of another attribute class. This class cannot be inherited.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>When you are defining your own attribute class, you can control the manner in which it is used by placing an <codeEntityReference autoUpgrade="true">T:System.AttributeUsageAttribute</codeEntityReference> on your attribute class. The indicated attribute class must derive from <codeEntityReference autoUpgrade="true">T:System.Attribute</codeEntityReference>, either directly or indirectly.</para>
+            <para>Attribute classes have positional and named parameters. Each public constructor for an attribute class defines a valid sequence of positional parameters for that class. Named parameters are defined by the non-static, public, and read-write fields or properties of the attribute class.</para>
+            <para>The three properties of <codeEntityReference autoUpgrade="true">T:System.AttributeUsageAttribute</codeEntityReference> are set by defining the following parameters: </para>
+            <list class="bullet">
+              <listItem>
+                <para>
+                  <codeEntityReference autoUpgrade="true">P:System.AttributeUsageAttribute.ValidOn</codeEntityReference>
+                </para>
+              </listItem>
+            </list>
+            <para>This positional parameter specifies the program elements that the indicated attribute can be placed on. The set of all possible elements that you can place an attribute on is listed in the <codeEntityReference autoUpgrade="true">T:System.AttributeTargets</codeEntityReference> enumerator. You can combine several <codeEntityReference autoUpgrade="true">T:System.AttributeTargets</codeEntityReference> values using a bitwise OR operation to get the desired combination of valid program elements.</para>
+            <list class="bullet">
+              <listItem>
+                <para>
+                  <codeEntityReference autoUpgrade="true">P:System.AttributeUsageAttribute.AllowMultiple</codeEntityReference>
+                </para>
+              </listItem>
+            </list>
+            <para>This named parameter specifies whether the indicated attribute can be specified more than once for a given program element.</para>
+            <list class="bullet">
+              <listItem>
+                <para>
+                  <codeEntityReference autoUpgrade="true">P:System.AttributeUsageAttribute.Inherited</codeEntityReference>
+                </para>
+              </listItem>
+            </list>
+            <para>This named parameter specifies whether the indicated attribute can be inherited by derived classes and overriding members.</para>
+            <para>For more information about using attributes, see <codeEntityReference autoUpgrade="true">T:System.Attribute</codeEntityReference> and <link xlink:href="30386922-1E00-4602-9EBF-526B271A8B87">[&lt;topic://cpconExtendingMetadataUsingAttributes&gt;]</link>.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Attribute</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.AttributeTargets</codeEntityReference>
+          <link xlink:href="30386922-1E00-4602-9EBF-526B271A8B87">[&lt;topic://cpconExtendingMetadataUsingAttributes&gt;]</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.AttributeUsageAttribute.#ctor(System.AttributeTargets)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.AttributeUsageAttribute</codeEntityReference> class with the specified list of <codeEntityReference autoUpgrade="true">T:System.AttributeTargets</codeEntityReference>, the <codeEntityReference autoUpgrade="true">P:System.AttributeUsageAttribute.AllowMultiple</codeEntityReference> value, and the <codeEntityReference autoUpgrade="true">P:System.AttributeUsageAttribute.Inherited</codeEntityReference> value.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>validOn</parameterReference>
+            <content>
+              <para>The set of values combined using a bitwise OR operation to indicate which program elements are valid. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>You can combine several <codeEntityReference autoUpgrade="true">T:System.AttributeTargets</codeEntityReference> values using a bitwise OR operation to get the desired combination of valid program elements.</para>
+            <para>For default property values, see the <codeEntityReference autoUpgrade="true">P:System.AttributeUsageAttribute.ValidOn</codeEntityReference>, <codeEntityReference autoUpgrade="true">P:System.AttributeUsageAttribute.AllowMultiple</codeEntityReference>, and <codeEntityReference autoUpgrade="true">P:System.AttributeUsageAttribute.Inherited</codeEntityReference> properties.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The definition of the DispId attribute illustrates the use of a bitwise OR operation to combine several <codeEntityReference autoUpgrade="true">T:System.AttributeTargets</codeEntityReference> values.</para>
+                <codeReference>Classic AttributeUsageAttribute.AttributeUsageAttribute Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.AttributeTargets</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="P:System.AttributeUsageAttribute.AllowMultiple">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets a Boolean value indicating whether more than one instance of the indicated attribute can be specified for a single program element.</para>
+        </summary>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if more than one instance is allowed to be specified; otherwise, <languageKeyword>false</languageKeyword>. The default is <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>An attribute that can be specified more than once for a program element is called a multi-use attribute. An attribute that can be specified only once is called a single-use attribute.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Attribute</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="P:System.AttributeUsageAttribute.Inherited">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets or sets a Boolean value indicating whether the indicated attribute can be inherited by derived classes and overriding members.</para>
+        </summary>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the attribute can be inherited by derived classes and overriding members; otherwise, <languageKeyword>false</languageKeyword>. The default is <languageKeyword>true</languageKeyword>.</para>
+        </returnValue>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Attribute</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="P:System.AttributeUsageAttribute.ValidOn">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets a set of values identifying which program elements that the indicated attribute can be applied to.</para>
+        </summary>
+        <returnValue>
+          <para>One or several <codeEntityReference autoUpgrade="true">T:System.AttributeTargets</codeEntityReference> values. The default is <languageKeyword>All</languageKeyword>.</para>
+        </returnValue>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.AttributeTargets</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

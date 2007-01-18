@@ -90,7 +90,7 @@ namespace Axiom.Math
             tangentList = new Vector3List();
 
             // do not auto calculate tangents by default
-            autoCalculateTangents = false;
+            //autoCalculateTangents = false; //[FXCop Optimization : Do not initialize unnecessarily]
         }
 
         #endregion

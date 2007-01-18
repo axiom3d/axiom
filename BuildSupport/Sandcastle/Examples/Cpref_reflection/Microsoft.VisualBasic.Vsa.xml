@@ -1,0 +1,1790 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<reflection>
+  <assemblies>
+    <assembly name="Microsoft.VisualBasic.Vsa" version="8.0.0.0" culture="" key="002400000480000094000000060200000024000052534131000400000100010007D1FA57C4AED9F0A32E84AA0FAEFD0DE9E8FD6AEC8F87FB03766C834C99921EB23BE79AD9D5DCC1DD9AD236132102900B723CF980957FC4E177108FC607774F29E8320E92EA05ECE4E821C0A5EFE8F1645C4C0C93C1AB99285D622CAA652C1DFAD63D745D6F2DE5F17E5EAF0FC4963D261C8A12436518206DC093344D5AD293" hash="SHA1">
+      <attributes>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDelaySignAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.NeutralResourcesLanguageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>en-US</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.CompilationRelaxationsAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>8</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.TypeLibVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>7</value>
+          </argument>
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>1</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComCompatibleVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>1</value>
+          </argument>
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>0</value>
+          </argument>
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>3300</value>
+          </argument>
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute" ref="true" />
+          <assignment name="WrapNonExceptionThrows">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyKeyFileAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>f:\RTM\Tools\devdiv\FinalPublicKey.snk</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCompanyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft Corporation</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Diagnostics.DebuggableAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Diagnostics.DebuggableAttribute.DebuggingModes" ref="false" />
+            <enumValue>
+              <field name="IgnoreSymbolStoreSequencePoints" />
+            </enumValue>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyInformationalVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>8.0.50727.12</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyFileVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>8.0.50727.12</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCopyrightAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>c Microsoft Corporation. All rights reserved.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyProductAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft (R) Visual Studio (R) 2005</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.SatelliteContractVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>8.0.0.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDefaultAliasAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft.VisualBasic.Vsa.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDescriptionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft.VisualBasic.Vsa.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyTitleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft.VisualBasic.Vsa.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.CLSCompliantAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </assembly>
+  </assemblies>
+  <apis>
+    <api id="T:Microsoft.VisualBasic.Vsa.VsaCodeItem">
+      <apidata name="VsaCodeItem" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.VisualBasic.Vsa.VsaItem" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:Microsoft.Vsa.IVsaCodeItem" ref="true" />
+        <type api="T:Microsoft.Vsa.IVsaItem" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaCodeItem.#ctor(Microsoft.Vsa.IVsaCodeItem)" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaCodeItem.AppendSourceText(System.String)" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaCodeItem.AddEventSource(System.String,System.String)" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaCodeItem.RemoveEventSource(System.String)" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaCodeItem.SourceText" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaCodeItem.CodeDOM" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaItem.GetOption(System.String)" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaItem.SetOption(System.String,System.Object)" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaItem._item" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaItem.Name" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaItem.ItemType" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaItem.IsDirty" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.ObsoleteAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Use of this type is not recommended because it is being deprecated in Visual Studio 2005; there will be no replacement for this feature. Please see the ICodeCompiler documentation for additional help.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.PermissionSetAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="Demand" />
+            </enumValue>
+          </argument>
+          <assignment name="Name">
+            <type api="T:System.String" ref="true" />
+            <value>FullTrust</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="b52c9ba9-962b-37fc-77e2-339ba6164e9e" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaCodeItem.#ctor(Microsoft.Vsa.IVsaCodeItem)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family or assembly" static="false" special="true" />
+      <parameters>
+        <parameter name="item">
+          <type api="T:Microsoft.Vsa.IVsaCodeItem" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaCodeItem" ref="true" />
+      </containers>
+      <file name="934ca8e6-757c-cb6b-cad9-2753227c618b" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaCodeItem.AddEventSource(System.String,System.String)">
+      <apidata name="AddEventSource" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="EventSourceName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="EventSourceType">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaCodeItem" ref="true" />
+      </containers>
+      <file name="c8788a68-2722-9eb3-5a94-b6a47edb77a2" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaCodeItem.AppendSourceText(System.String)">
+      <apidata name="AppendSourceText" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="Text">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaCodeItem" ref="true" />
+      </containers>
+      <file name="d32c4906-6f19-4a68-1d81-296754448f8a" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaCodeItem.CodeDOM">
+      <apidata name="CodeDOM" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.CodeDom.CodeObject" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaCodeItem" ref="true" />
+      </containers>
+      <file name="1705b373-e597-37f0-6f4e-542962d2681d" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaCodeItem.RemoveEventSource(System.String)">
+      <apidata name="RemoveEventSource" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="EventSourceName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaCodeItem" ref="true" />
+      </containers>
+      <file name="3ddd14c4-1576-72dd-97b5-c37d1a146b9a" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaCodeItem.SourceText">
+      <apidata name="SourceText" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaCodeItem" ref="true" />
+      </containers>
+      <file name="9b64b2e0-9790-c617-ca4b-49cb247a01b6" />
+    </api>
+    <api id="T:Microsoft.VisualBasic.Vsa.VsaCompilerError">
+      <apidata name="VsaCompilerError" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:Microsoft.Vsa.IVsaError" ref="true" />
+      </implements>
+      <elements>
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaCompilerError.Line" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaCompilerError.Severity" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaCompilerError.Description" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaCompilerError.LineText" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaCompilerError.SourceItem" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaCompilerError.EndColumn" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaCompilerError.StartColumn" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaCompilerError.Number" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaCompilerError.SourceMoniker" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.ObsoleteAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Use of this type is not recommended because it is being deprecated in Visual Studio 2005; there will be no replacement for this feature. Please see the ICodeCompiler documentation for additional help.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.PermissionSetAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="Demand" />
+            </enumValue>
+          </argument>
+          <assignment name="Name">
+            <type api="T:System.String" ref="true" />
+            <value>FullTrust</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="4201dc50-628f-f56c-a02c-a10d5a9033c4" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaCompilerError.Description">
+      <apidata name="Description" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaCompilerError" ref="true" />
+      </containers>
+      <file name="9c7c6d8e-b254-c6b5-5943-6a1ecff531d6" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaCompilerError.EndColumn">
+      <apidata name="EndColumn" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaCompilerError" ref="true" />
+      </containers>
+      <file name="352909c0-65a8-0492-9857-230dee29c38a" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaCompilerError.Line">
+      <apidata name="Line" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaCompilerError" ref="true" />
+      </containers>
+      <file name="115e9c24-3551-3de0-060a-ef3a7be9ab57" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaCompilerError.LineText">
+      <apidata name="LineText" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaCompilerError" ref="true" />
+      </containers>
+      <file name="d024378e-3c47-1820-60cf-bd2c4f17fae4" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaCompilerError.Number">
+      <apidata name="Number" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaCompilerError" ref="true" />
+      </containers>
+      <file name="d3f3014d-40f7-7103-22d0-398deb6e39bc" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaCompilerError.Severity">
+      <apidata name="Severity" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaCompilerError" ref="true" />
+      </containers>
+      <file name="1c9b67fd-af61-24f5-ffc2-5a7a8d285371" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaCompilerError.SourceItem">
+      <apidata name="SourceItem" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:Microsoft.Vsa.IVsaItem" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaCompilerError" ref="true" />
+      </containers>
+      <file name="63279e9f-2167-9640-46ff-363c51afd833" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaCompilerError.SourceMoniker">
+      <apidata name="SourceMoniker" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaCompilerError" ref="true" />
+      </containers>
+      <file name="4771d6ef-d565-791a-d5c3-0116b5ade1a6" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaCompilerError.StartColumn">
+      <apidata name="StartColumn" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaCompilerError" ref="true" />
+      </containers>
+      <file name="98a55983-bd2f-66d7-2120-581a2c4196d4" />
+    </api>
+    <api id="T:Microsoft.VisualBasic.Vsa.VsaEngine">
+      <apidata name="VsaEngine" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:Microsoft.Vsa.IVsaEngine" ref="true" />
+      </implements>
+      <elements>
+        <element api="F:Microsoft.VisualBasic.Vsa.VsaEngine._baseEngine" />
+        <element api="F:Microsoft.VisualBasic.Vsa.VsaEngine.m_Items" />
+        <element api="F:Microsoft.VisualBasic.Vsa.VsaEngine._engineClosed" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaEngine.#ctor" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaEngine.Finalize" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaEngine.CreateEngine" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaEngine.CheckEngine" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaEngine.Compile" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaEngine.Run" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaEngine.Reset" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaEngine.Close" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaEngine.Dispose(System.Boolean)" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaEngine.SaveSourceState(Microsoft.Vsa.IVsaPersistSite)" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaEngine.LoadSourceState(Microsoft.Vsa.IVsaPersistSite)" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaEngine.SaveCompiledState(System.Byte[]@,System.Byte[]@)" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaEngine.RevokeCache" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaEngine.GetOption(System.String)" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaEngine.SetOption(System.String,System.Object)" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaEngine.InitNew" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaEngine.IsValidIdentifier(System.String)" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaEngine.GetExceptionToThrow(System.Exception)" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaEngine.Site" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaEngine.Name" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaEngine.RootMoniker" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaEngine.GenerateDebugInfo" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaEngine.IsRunning" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaEngine.IsCompiled" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaEngine.Items" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaEngine.RootNamespace" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaEngine.IsDirty" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaEngine.Language" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaEngine.Version" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaEngine.Assembly" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaEngine.LCID" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaEngine.Evidence" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.ObsoleteAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Use of this type is not recommended because it is being deprecated in Visual Studio 2005; there will be no replacement for this feature. Please see the ICodeCompiler documentation for additional help.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.PermissionSetAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="Demand" />
+            </enumValue>
+          </argument>
+          <assignment name="Name">
+            <type api="T:System.String" ref="true" />
+            <value>FullTrust</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="4287a409-c9e0-fa7a-24ed-6d634e534531" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaEngine.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="4bc4faa1-a469-7176-8945-85bb0fad011c" />
+    </api>
+    <api id="F:Microsoft.VisualBasic.Vsa.VsaEngine._baseEngine">
+      <apidata name="_baseEngine" group="member" subgroup="field" />
+      <memberdata visibility="family" static="false" special="false" />
+      <fielddata literal="false" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:Microsoft.Vsa.IVsaEngine" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="11a9727f-762e-b40a-546c-b627d4512211" />
+    </api>
+    <api id="F:Microsoft.VisualBasic.Vsa.VsaEngine._engineClosed">
+      <apidata name="_engineClosed" group="member" subgroup="field" />
+      <memberdata visibility="family" static="false" special="false" />
+      <fielddata literal="false" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="ce626006-5248-9afb-c548-1d127b0e0930" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaEngine.Assembly">
+      <apidata name="Assembly" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Reflection.Assembly" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="eb0a0b43-cc90-0ee2-f9b4-22f5be9a0434" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaEngine.CheckEngine">
+      <apidata name="CheckEngine" group="member" subgroup="method" />
+      <memberdata visibility="family" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="58f2424e-1ef6-c877-9b52-8d5462d874ef" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaEngine.Close">
+      <apidata name="Close" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="52a5503f-0740-d155-c6d4-05a084c189dc" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaEngine.Compile">
+      <apidata name="Compile" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="9260ee08-439d-8b77-ede5-a3fbf83e26cb" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaEngine.CreateEngine">
+      <apidata name="CreateEngine" group="member" subgroup="method" />
+      <memberdata visibility="family" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="7223aa3d-6a0c-7f30-ea7a-1f7deaa578b6" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaEngine.Dispose(System.Boolean)">
+      <apidata name="Dispose" group="member" subgroup="method" />
+      <memberdata visibility="family" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="disposing">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="1a76534d-ac7a-495e-c81e-a887ed26845c" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaEngine.Evidence">
+      <apidata name="Evidence" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.Security.Policy.Evidence" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="aab67637-c7ac-02d9-0f32-b49e94a476b2" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaEngine.Finalize">
+      <apidata name="Finalize" group="member" subgroup="method" />
+      <memberdata visibility="family" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" overrides="M:System.Object.Finalize" />
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="c92e1417-fb2e-fa24-fa39-44f7e57dd37a" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaEngine.GenerateDebugInfo">
+      <apidata name="GenerateDebugInfo" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="9124371d-005d-b094-86aa-784b946b7c40" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaEngine.GetExceptionToThrow(System.Exception)">
+      <apidata name="GetExceptionToThrow" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="e">
+          <type api="T:System.Exception" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Exception" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="beed42d4-2b72-df22-1b83-1acf43dc3f4f" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaEngine.GetOption(System.String)">
+      <apidata name="GetOption" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="Name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Object" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="31de574e-5e27-9b6b-1724-45432e0417ad" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaEngine.InitNew">
+      <apidata name="InitNew" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="ac9662ac-e650-4e1a-da1c-9a3677bd713e" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaEngine.IsCompiled">
+      <apidata name="IsCompiled" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="0daa1819-91c5-fb34-7879-c26f414c37fc" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaEngine.IsDirty">
+      <apidata name="IsDirty" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="df996eb2-b1e5-08ca-813b-5f9fa6f8690f" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaEngine.IsRunning">
+      <apidata name="IsRunning" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="9e4492bd-314b-f425-bf1a-114866b76af7" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaEngine.IsValidIdentifier(System.String)">
+      <apidata name="IsValidIdentifier" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="identifier">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="cd661342-2ad9-366d-12f5-14ca38ab7e7d" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaEngine.Items">
+      <apidata name="Items" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:Microsoft.Vsa.IVsaItems" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="dc283b62-471a-7130-86b2-d32e1572d28e" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaEngine.Language">
+      <apidata name="Language" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="a05a5ddd-d536-50aa-e7ed-985ece8da1fa" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaEngine.LCID">
+      <apidata name="LCID" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="99fe9bc6-a5c9-042e-c583-922cd62900b2" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaEngine.LoadSourceState(Microsoft.Vsa.IVsaPersistSite)">
+      <apidata name="LoadSourceState" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="Site">
+          <type api="T:Microsoft.Vsa.IVsaPersistSite" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="c4270bd6-68d6-d591-e8c7-ca81356b1530" />
+    </api>
+    <api id="F:Microsoft.VisualBasic.Vsa.VsaEngine.m_Items">
+      <apidata name="m_Items" group="member" subgroup="field" />
+      <memberdata visibility="family" static="false" special="false" />
+      <fielddata literal="false" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:Microsoft.Vsa.IVsaItems" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="e0dcf1fd-82c6-457d-8602-40baff80d8c4" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaEngine.Name">
+      <apidata name="Name" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="7612fc05-36b4-3f1b-d792-e6496f91f189" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaEngine.Reset">
+      <apidata name="Reset" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="673ca328-8033-80a0-bf28-b62821993d14" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaEngine.RevokeCache">
+      <apidata name="RevokeCache" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="17145ed9-6ccf-6426-406f-4bf53983c1fd" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaEngine.RootMoniker">
+      <apidata name="RootMoniker" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="822d8122-b8ba-f8ea-9118-f878d8a02667" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaEngine.RootNamespace">
+      <apidata name="RootNamespace" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="4c2ac474-0dc1-4b28-32df-5f8fa0500981" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaEngine.Run">
+      <apidata name="Run" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="48c3afd4-0c78-4002-65fc-42a9dd03ef11" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaEngine.SaveCompiledState(System.Byte[]@,System.Byte[]@)">
+      <apidata name="SaveCompiledState" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="PE" out="true">
+          <referenceTo>
+            <arrayOf rank="1">
+              <type api="T:System.Byte" ref="false" />
+            </arrayOf>
+          </referenceTo>
+        </parameter>
+        <parameter name="PDB" out="true">
+          <referenceTo>
+            <arrayOf rank="1">
+              <type api="T:System.Byte" ref="false" />
+            </arrayOf>
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="d6c1a172-66bd-0e56-1c07-9cd5ba198c3d" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaEngine.SaveSourceState(Microsoft.Vsa.IVsaPersistSite)">
+      <apidata name="SaveSourceState" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="Site">
+          <type api="T:Microsoft.Vsa.IVsaPersistSite" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="b360d021-31d5-8d36-9477-0f4974b27f68" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaEngine.SetOption(System.String,System.Object)">
+      <apidata name="SetOption" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="Name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="value">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="bf86bd3e-2346-5962-6dfb-88780a8b139a" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaEngine.Site">
+      <apidata name="Site" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:Microsoft.Vsa.IVsaSite" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="357712ea-7b59-4fde-0e2a-4570b0ef9ea7" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaEngine.Version">
+      <apidata name="Version" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaEngine" ref="true" />
+      </containers>
+      <file name="3fc31010-7ac2-78cd-ea09-aa639069a885" />
+    </api>
+    <api id="T:Microsoft.VisualBasic.Vsa.VsaGlobalItem">
+      <apidata name="VsaGlobalItem" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.VisualBasic.Vsa.VsaItem" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:Microsoft.Vsa.IVsaGlobalItem" ref="true" />
+        <type api="T:Microsoft.Vsa.IVsaItem" ref="true" />
+      </implements>
+      <elements>
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaGlobalItem.TypeString" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaGlobalItem.ExposeMembers" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaItem.GetOption(System.String)" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaItem.SetOption(System.String,System.Object)" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaItem._item" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaItem.Name" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaItem.ItemType" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaItem.IsDirty" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.ObsoleteAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Use of this type is not recommended because it is being deprecated in Visual Studio 2005; there will be no replacement for this feature. Please see the ICodeCompiler documentation for additional help.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.PermissionSetAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="Demand" />
+            </enumValue>
+          </argument>
+          <assignment name="Name">
+            <type api="T:System.String" ref="true" />
+            <value>FullTrust</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="8dbd54f1-21f2-78cd-1c33-0556192de419" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaGlobalItem.ExposeMembers">
+      <apidata name="ExposeMembers" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaGlobalItem" ref="true" />
+      </containers>
+      <file name="c436f658-92b4-6321-1b59-a4fe9e032124" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaGlobalItem.TypeString">
+      <apidata name="TypeString" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata set="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaGlobalItem" ref="true" />
+      </containers>
+      <file name="219496b9-4eeb-8347-5978-ecc3f656167c" />
+    </api>
+    <api id="T:Microsoft.VisualBasic.Vsa.VsaItem">
+      <apidata name="VsaItem" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:Microsoft.Vsa.IVsaItem" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaItem.GetOption(System.String)" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaItem.SetOption(System.String,System.Object)" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaItem._item" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaItem.Name" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaItem.ItemType" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaItem.IsDirty" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.ObsoleteAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Use of this type is not recommended because it is being deprecated in Visual Studio 2005; there will be no replacement for this feature. Please see the ICodeCompiler documentation for additional help.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.PermissionSetAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="Demand" />
+            </enumValue>
+          </argument>
+          <assignment name="Name">
+            <type api="T:System.String" ref="true" />
+            <value>FullTrust</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="eb6904e2-ef5a-5ec2-59a4-e951b7900e6a" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaItem._item">
+      <apidata name="_item" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:Microsoft.Vsa.IVsaItem" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaItem" ref="true" />
+      </containers>
+      <file name="48234e08-a283-482a-3c7f-99b7e937308a" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaItem.GetOption(System.String)">
+      <apidata name="GetOption" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="Name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Object" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaItem" ref="true" />
+      </containers>
+      <file name="d08dec7a-16f7-491c-8491-158ec4ba8ef2" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaItem.IsDirty">
+      <apidata name="IsDirty" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaItem" ref="true" />
+      </containers>
+      <file name="ee27f9fe-a2e4-bcfb-4985-ef1befe83a5c" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaItem.ItemType">
+      <apidata name="ItemType" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:Microsoft.Vsa.VsaItemType" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaItem" ref="true" />
+      </containers>
+      <file name="a712e8dc-0a5a-a4c1-b468-71eceea99faa" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaItem.Name">
+      <apidata name="Name" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaItem" ref="true" />
+      </containers>
+      <file name="407e72fc-d3d2-f981-691a-c8082d14c9e6" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaItem.SetOption(System.String,System.Object)">
+      <apidata name="SetOption" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="Name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="value">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaItem" ref="true" />
+      </containers>
+      <file name="bde3381a-d05a-c35a-3cf0-73b1aa48c84f" />
+    </api>
+    <api id="T:Microsoft.VisualBasic.Vsa.VsaItems">
+      <apidata name="VsaItems" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:Microsoft.Vsa.IVsaItems" ref="true" />
+        <type api="T:System.Collections.IEnumerable" ref="true" />
+      </implements>
+      <elements>
+        <element api="F:Microsoft.VisualBasic.Vsa.VsaItems.m_ItemCollection" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaItems.#ctor(Microsoft.Vsa.IVsaItems)" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaItems.GetItemWrapper(Microsoft.Vsa.IVsaItem)" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaItems.AddCodeItemWrapper(Microsoft.Vsa.IVsaItem)" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaItems.Remove(System.String)" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaItems.Remove(System.Int32)" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaItems.GetEnumerator" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaItems.CreateItem(System.String,Microsoft.Vsa.VsaItemType,Microsoft.Vsa.VsaItemFlag)" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaItems.Count" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaItems.Item(System.String)" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaItems.Item(System.Int32)" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.ObsoleteAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Use of this type is not recommended because it is being deprecated in Visual Studio 2005; there will be no replacement for this feature. Please see the ICodeCompiler documentation for additional help.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.DefaultMemberAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Item</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.PermissionSetAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="Demand" />
+            </enumValue>
+          </argument>
+          <assignment name="Name">
+            <type api="T:System.String" ref="true" />
+            <value>FullTrust</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="66f1ad64-1d8d-19a6-6b14-e96ade01e907" />
+    </api>
+    <api id="Overload:Microsoft.VisualBasic.Vsa.VsaItems.Item">
+      <apidata name="Item" group="member" subgroup="property" pseudo="true" />
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaItems" />
+      </containers>
+      <elements>
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaItems.Item(System.Int32)" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaItems.Item(System.String)" />
+      </elements>
+      <file name="cf426818-ebb7-2979-2695-5eb478587dc1" />
+    </api>
+    <api id="Overload:Microsoft.VisualBasic.Vsa.VsaItems.Remove">
+      <apidata name="Remove" group="member" subgroup="method" pseudo="true" />
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaItems" />
+      </containers>
+      <elements>
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaItems.Remove(System.Int32)" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaItems.Remove(System.String)" />
+      </elements>
+      <file name="5a831518-5ab1-f26e-bf5c-e441a7c860cc" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaItems.#ctor(Microsoft.Vsa.IVsaItems)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="family or assembly" static="false" special="true" />
+      <parameters>
+        <parameter name="items">
+          <type api="T:Microsoft.Vsa.IVsaItems" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaItems" ref="true" />
+      </containers>
+      <file name="16e8101b-6195-5c0f-3a65-d02f2a886e8d" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaItems.AddCodeItemWrapper(Microsoft.Vsa.IVsaItem)">
+      <apidata name="AddCodeItemWrapper" group="member" subgroup="method" />
+      <memberdata visibility="family" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="item">
+          <type api="T:Microsoft.Vsa.IVsaItem" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaItem" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaItems" ref="true" />
+      </containers>
+      <file name="91a750d2-97e8-0909-f27e-5b40274fdac3" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaItems.Count">
+      <apidata name="Count" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaItems" ref="true" />
+      </containers>
+      <file name="d78b56a5-868c-793a-4a6f-7fc794cf28ee" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaItems.CreateItem(System.String,Microsoft.Vsa.VsaItemType,Microsoft.Vsa.VsaItemFlag)">
+      <apidata name="CreateItem" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="Name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="ItemType">
+          <type api="T:Microsoft.Vsa.VsaItemType" ref="false" />
+        </parameter>
+        <parameter name="ItemFlag">
+          <type api="T:Microsoft.Vsa.VsaItemFlag" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:Microsoft.Vsa.IVsaItem" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaItems" ref="true" />
+      </containers>
+      <file name="8999ebd9-50d0-d07b-aa73-0a73da4b22ea" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaItems.GetEnumerator">
+      <apidata name="GetEnumerator" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <returns>
+        <type api="T:System.Collections.IEnumerator" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaItems" ref="true" />
+      </containers>
+      <file name="cede134b-b10d-3f0b-2646-82dcf2551ec1" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaItems.GetItemWrapper(Microsoft.Vsa.IVsaItem)">
+      <apidata name="GetItemWrapper" group="member" subgroup="method" />
+      <memberdata visibility="family or assembly" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="item">
+          <type api="T:Microsoft.Vsa.IVsaItem" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:Microsoft.Vsa.IVsaItem" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaItems" ref="true" />
+      </containers>
+      <file name="9296c853-905e-e294-3da7-2b8426aef8f3" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaItems.Item(System.Int32)">
+      <apidata name="Item" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <parameters>
+        <parameter name="index">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:Microsoft.Vsa.IVsaItem" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaItems" ref="true" />
+      </containers>
+      <file name="ea965f97-3e86-5fec-92b0-cd55a4525888" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaItems.Item(System.String)">
+      <apidata name="Item" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <parameters>
+        <parameter name="Name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:Microsoft.Vsa.IVsaItem" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaItems" ref="true" />
+      </containers>
+      <file name="ab386c1d-696c-2829-8f8b-e338dbc15d1a" />
+    </api>
+    <api id="F:Microsoft.VisualBasic.Vsa.VsaItems.m_ItemCollection">
+      <apidata name="m_ItemCollection" group="member" subgroup="field" />
+      <memberdata visibility="family" static="false" special="false" />
+      <fielddata literal="false" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.Collections.Hashtable" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaItems" ref="true" />
+      </containers>
+      <file name="bd564d4a-2d0d-dd16-477e-f27cc4c7a8d4" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaItems.Remove(System.Int32)">
+      <apidata name="Remove" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" overload="true" />
+      <parameters>
+        <parameter name="index">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaItems" ref="true" />
+      </containers>
+      <file name="c12a6940-250f-993b-009f-3a78f9462543" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaItems.Remove(System.String)">
+      <apidata name="Remove" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" overload="true" />
+      <parameters>
+        <parameter name="Name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaItems" ref="true" />
+      </containers>
+      <file name="e476c161-a59d-846f-83b9-47bab8d826e7" />
+    </api>
+    <api id="T:Microsoft.VisualBasic.Vsa.VsaItemsEnumerator">
+      <apidata name="VsaItemsEnumerator" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Collections.IEnumerator" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaItemsEnumerator.MoveNext" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaItemsEnumerator.Reset" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaItemsEnumerator.Current" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.ObsoleteAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Use of this type is not recommended because it is being deprecated in Visual Studio 2005; there will be no replacement for this feature. Please see the ICodeCompiler documentation for additional help.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.PermissionSetAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="Demand" />
+            </enumValue>
+          </argument>
+          <assignment name="Name">
+            <type api="T:System.String" ref="true" />
+            <value>FullTrust</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="cf765c9d-2adf-ed1e-f13d-73b17ba5f342" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaItemsEnumerator.Current">
+      <apidata name="Current" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Object" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaItemsEnumerator" ref="true" />
+      </containers>
+      <file name="c8c0bcf1-f464-c3cd-3a05-aa4732194b97" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaItemsEnumerator.MoveNext">
+      <apidata name="MoveNext" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaItemsEnumerator" ref="true" />
+      </containers>
+      <file name="c53050bf-1170-f119-039a-aeacb62fc4f4" />
+    </api>
+    <api id="M:Microsoft.VisualBasic.Vsa.VsaItemsEnumerator.Reset">
+      <apidata name="Reset" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaItemsEnumerator" ref="true" />
+      </containers>
+      <file name="275f7eea-81a6-48c5-5cae-56924ff2750b" />
+    </api>
+    <api id="T:Microsoft.VisualBasic.Vsa.VsaReferenceItem">
+      <apidata name="VsaReferenceItem" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.VisualBasic.Vsa.VsaItem" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:Microsoft.Vsa.IVsaReferenceItem" ref="true" />
+        <type api="T:Microsoft.Vsa.IVsaItem" ref="true" />
+      </implements>
+      <elements>
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaReferenceItem.AssemblyName" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaItem.GetOption(System.String)" />
+        <element api="M:Microsoft.VisualBasic.Vsa.VsaItem.SetOption(System.String,System.Object)" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaItem._item" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaItem.Name" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaItem.ItemType" />
+        <element api="P:Microsoft.VisualBasic.Vsa.VsaItem.IsDirty" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+        <element api="M:System.Object.Finalize" />
+        <element api="M:System.Object.MemberwiseClone" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.ObsoleteAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Use of this type is not recommended because it is being deprecated in Visual Studio 2005; there will be no replacement for this feature. Please see the ICodeCompiler documentation for additional help.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.PermissionSetAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="Demand" />
+            </enumValue>
+          </argument>
+          <assignment name="Name">
+            <type api="T:System.String" ref="true" />
+            <value>FullTrust</value>
+          </assignment>
+        </attribute>
+      </attributes>
+      <file name="be77374d-c681-e3fb-6d45-a20adb2cb96d" />
+    </api>
+    <api id="P:Microsoft.VisualBasic.Vsa.VsaReferenceItem.AssemblyName">
+      <apidata name="AssemblyName" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.VisualBasic.Vsa" module="Microsoft.VisualBasic.Vsa" />
+        <namespace api="N:Microsoft.VisualBasic.Vsa" />
+        <type api="T:Microsoft.VisualBasic.Vsa.VsaReferenceItem" ref="true" />
+      </containers>
+      <file name="6ef462fd-4111-24ca-6870-781e5cfc9af3" />
+    </api>
+  </apis>
+</reflection>

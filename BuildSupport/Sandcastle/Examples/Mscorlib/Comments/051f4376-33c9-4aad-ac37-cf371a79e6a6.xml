@@ -1,0 +1,736 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="051f4376-33c9-4aad-ac37-cf371a79e6a6" revisionNumber="13">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.Boolean">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents a Boolean value.</para>
+        </summary>
+        <threadSafety>
+          <para>This type is safe for multithreaded operations.</para>
+        </threadSafety>
+        <remarks>
+          <content>
+            <para>Instances of this type have values of either <languageKeyword>true</languageKeyword> or <languageKeyword>false</languageKeyword>.</para>
+            <para>This value type implements interfaces <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference>, <codeEntityReference autoUpgrade="true">T:System.IComparable</codeEntityReference>, and <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.IComparable`1</codeEntityReference>. Use the <codeEntityReference autoUpgrade="true">T:System.Convert</codeEntityReference> class for conversions instead of this type's explicit interface member implementation of <codeEntityReference autoUpgrade="true">T:System.IConvertible</codeEntityReference>.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Boolean.CompareTo">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Compares this instance to a specified object or <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference> and returns an indication of their relative values.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Boolean.CompareTo(System.Boolean)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Compares this instance to a specified <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference> object and returns an indication of their relative values.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference> object to compare to this instance. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A signed integer that indicates the relative values of this instance and <parameterReference>value</parameterReference>.</para>
+          <table>
+            <tableHeader>
+              <row>
+                <entry>
+                  <para>Return Value </para>
+                </entry>
+                <entry>
+                  <para>Condition </para>
+                </entry>
+              </row>
+            </tableHeader>
+            <row>
+              <entry>
+                <para>Less than zero </para>
+              </entry>
+              <entry>
+                <para>This instance is <languageKeyword>false</languageKeyword> and <parameterReference>value</parameterReference> is <languageKeyword>true</languageKeyword>. </para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Zero </para>
+              </entry>
+              <entry>
+                <para>This instance and <parameterReference>value</parameterReference> are equal (either both are <languageKeyword>true</languageKeyword> or both are <languageKeyword>false</languageKeyword>). </para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Greater than zero </para>
+              </entry>
+              <entry>
+                <para>This instance is <languageKeyword>true</languageKeyword> and <parameterReference>value</parameterReference> is <languageKeyword>false</languageKeyword>. </para>
+              </entry>
+            </row>
+          </table>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This method implements the <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.IComparable`1</codeEntityReference> interface and performs slightly better than the <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Boolean.CompareTo(System.Object)</codeEntityReference> method because it does not have to convert the <parameterReference>value</parameterReference> parameter to an object.</para>
+            <para>If <parameterReference>value</parameterReference> has fewer bits (is narrower) than the instance type, some programming languages perform an implicit widening conversion that transforms the value of the parameter into a value with more bits.</para>
+            <para>For example, suppose the instance type is <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference> and the parameter type is <codeEntityReference autoUpgrade="true">T:System.Byte</codeEntityReference>. The Microsoft C# compiler generates instructions to represent the value of the parameter as an <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference> object, then generates a <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Int32.CompareTo(System.Int32)</codeEntityReference> method to compare the <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference> instance and parameter representation.</para>
+            <para>Consult your programming language's documentation to determine whether its compiler performs implicit widening conversions on numeric types.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates generic and nongeneric versions of the <codeEntityReference autoUpgrade="true">Overload:System.Boolean.CompareTo</codeEntityReference> method for several value and reference types.</para>
+                <codeReference>T.CompareTo#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Boolean.CompareTo(System.Object)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">Overload:System.Boolean.Equals</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Compares this instance to a specified object or <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference> and returns an indication of their relative values.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Boolean.CompareTo(System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Compares this instance to a specified object and returns an indication of their relative values.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>obj</parameterReference>
+            <content>
+              <para>An object to compare to this instance, or <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A signed integer that indicates the relative order of this instance and <parameterReference>obj</parameterReference>.</para>
+          <table>
+            <tableHeader>
+              <row>
+                <entry>
+                  <para>Return Value </para>
+                </entry>
+                <entry>
+                  <para>Condition </para>
+                </entry>
+              </row>
+            </tableHeader>
+            <row>
+              <entry>
+                <para>Less than zero </para>
+              </entry>
+              <entry>
+                <para>This instance is <languageKeyword>false</languageKeyword> and <parameterReference>obj</parameterReference> is <languageKeyword>true</languageKeyword>. </para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Zero </para>
+              </entry>
+              <entry>
+                <para>This instance and <parameterReference>obj</parameterReference> are equal (either both are <languageKeyword>true</languageKeyword> or both are <languageKeyword>false</languageKeyword>). </para>
+              </entry>
+            </row>
+            <row>
+              <entry>
+                <para>Greater than zero </para>
+              </entry>
+              <entry>
+                <para>This instance is <languageKeyword>true</languageKeyword> and <parameterReference>obj</parameterReference> is <languageKeyword>false</languageKeyword>.</para>
+                <para>-or- </para>
+                <para>
+                  <parameterReference>obj</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+              </entry>
+            </row>
+          </table>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>obj</parameterReference> is not a <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>
+              <parameterReference>obj</parameterReference> must be <languageKeyword>null</languageKeyword> or an instance of <languageKeyword>Boolean</languageKeyword>; otherwise, an exception is thrown.</para>
+            <para>This method implements the <codeEntityReference autoUpgrade="true">T:System.IComparable</codeEntityReference> interface.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Boolean.CompareTo(System.Boolean)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">Overload:System.Boolean.Equals</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.Boolean.Equals">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a value indicating whether this instance is equal to a specified object or <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Boolean.Equals(System.Boolean)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a value indicating whether this instance is equal to a specified <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference> object.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>obj</parameterReference>
+            <content>
+              <para>A <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference> value to compare to this instance.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>obj</parameterReference> has the same value as this instance; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This method implements the <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.IEquatable`1</codeEntityReference> interface, and performs slightly better than <codeEntityReference autoUpgrade="true">M:System.Boolean.Equals(System.Object)</codeEntityReference> because it does not have to convert the <parameterReference>obj</parameterReference> parameter to an object.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Boolean.Equals(System.Object)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">Overload:System.Boolean.CompareTo</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Returns a value indicating whether this instance is equal to a specified object or <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.Boolean.Equals(System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a value indicating whether this instance is equal to a specified object.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>obj</parameterReference>
+            <content>
+              <para>An object to compare to this instance. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>obj</parameterReference> is a <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference> and has the same value as this instance; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>This method overrides <codeEntityReference autoUpgrade="true">M:System.Object.Equals(System.Object)</codeEntityReference>.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Boolean.Equals(System.Boolean)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">Overload:System.Boolean.CompareTo</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="F:System.Boolean.FalseString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents the Boolean value <languageKeyword>false</languageKeyword> as a string. This field is read-only.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>This field is equal to the string "False".</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">F:System.Boolean.TrueString</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Boolean.GetHashCode">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the hash code for this instance.</para>
+        </summary>
+        <returnValue>
+          <para>A hash code for the current <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference> class implements <languageKeyword>true</languageKeyword> as the integer, one, and <languageKeyword>false</languageKeyword> as the integer, zero. However, a particular programming language might represent <languageKeyword>true</languageKeyword> and <languageKeyword>false</languageKeyword> with other values.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Object.GetHashCode</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Boolean.GetTypeCode">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the <codeEntityReference autoUpgrade="true">T:System.TypeCode</codeEntityReference> for value type <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference>.</para>
+        </summary>
+        <returnValue>
+          <para>The enumerated constant, <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.TypeCode.Boolean</codeEntityReference>.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.Boolean.Parse(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the specified string representation of a logical value to its <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference> equivalent.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>A string containing the value to convert. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>value</parameterReference> is equivalent to <codeEntityReference autoUpgrade="true">F:System.Boolean.TrueString</codeEntityReference>; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.FormatException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>value</parameterReference> is not equivalent to <codeEntityReference autoUpgrade="true">F:System.Boolean.TrueString</codeEntityReference> or <codeEntityReference autoUpgrade="true">F:System.Boolean.FalseString</codeEntityReference>. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The <parameterReference>value</parameterReference> parameter, optionally preceded or trailed by white space, must contain either <codeEntityReference autoUpgrade="true">F:System.Boolean.TrueString</codeEntityReference> or <codeEntityReference autoUpgrade="true">F:System.Boolean.FalseString</codeEntityReference>; otherwise, an exception is thrown. The comparison is case-insensitive.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example illustrates the use of <codeEntityReference autoUpgrade="true">M:System.Boolean.Parse(System.String)</codeEntityReference> method.</para>
+                <codeReference>System.Boolean#2</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.FormatException</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">F:System.Boolean.TrueString</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">F:System.Boolean.FalseString</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Boolean.System.IConvertible.ToBoolean(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Returns the value of this instance of <languageKeyword>Boolean</languageKeyword>.</para>
+        </summary>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> or <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.Boolean.System.IConvertible.ToByte(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Returns a byte with a value equivalent to either <languageKeyword>true</languageKeyword> or <languageKeyword>false</languageKeyword>, depending on the value of this instance of <languageKeyword>Boolean</languageKeyword>.</para>
+        </summary>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword>, coerced to byte, if the value of this instance is non-zero; otherwise, <languageKeyword>false</languageKeyword>, coerced to byte.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>A byte is defined as an 8-bit unsigned integer.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Convert.ToByte(System.Object)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Boolean.System.IConvertible.ToChar(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>
+            <embeddedLabel>Note</embeddedLabel>   <languageKeyword>Boolean</languageKeyword> objects cannot be converted to char. This method always throws <languageKeyword>InvalidCastException</languageKeyword>.</para>
+        </summary>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>Attempting to convert Boolean to Char. </para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Boolean.System.IConvertible.ToDateTime(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>
+            <embeddedLabel>Note</embeddedLabel>   This conversion is not supported. Attempting to do so throws an <languageKeyword>InvalidCastException</languageKeyword>.</para>
+        </summary>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>Unsupported conversion of <languageKeyword>Boolean</languageKeyword>. </para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Boolean.System.IConvertible.ToDecimal(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>
+            <embeddedLabel>Note</embeddedLabel>   This conversion is not supported. Attempting to do so throws an <languageKeyword>InvalidCastException</languageKeyword>.</para>
+        </summary>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>Unsupported conversion of <languageKeyword>Boolean</languageKeyword>. </para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Boolean.System.IConvertible.ToDouble(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>
+            <embeddedLabel>Note</embeddedLabel>   This conversion is not supported. Attempting to do so throws an <languageKeyword>InvalidCastException</languageKeyword>.</para>
+        </summary>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>Unsupported conversion of <languageKeyword>Boolean</languageKeyword>. </para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Boolean.System.IConvertible.ToInt16(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts this instance of <languageKeyword>Boolean</languageKeyword> to an <codeEntityReference autoUpgrade="true">T:System.Int16</codeEntityReference>.</para>
+        </summary>
+        <returnValue>
+          <para>Returns 1 if this instance is non-zero (that is, <languageKeyword>true</languageKeyword>); returns 0 otherwise (that is, the instance is <languageKeyword>false</languageKeyword>).</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.Boolean.System.IConvertible.ToInt32(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts this instance of <languageKeyword>Boolean</languageKeyword> to an <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference>.</para>
+        </summary>
+        <returnValue>
+          <para>Returns 1 if this instance is non-zero (that is, <languageKeyword>true</languageKeyword>); returns 0 otherwise (that is, the instance is <languageKeyword>false</languageKeyword>).</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.Boolean.System.IConvertible.ToInt64(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts this instance of <languageKeyword>Boolean</languageKeyword> to <codeEntityReference autoUpgrade="true">T:System.Int64</codeEntityReference>.</para>
+        </summary>
+        <returnValue>
+          <para>Returns 1 if this instance is non-zero (that is, <languageKeyword>true</languageKeyword>); returns 0 otherwise (that is, the instance is <languageKeyword>false</languageKeyword>).</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.Boolean.System.IConvertible.ToSByte(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts this instance of <languageKeyword>Boolean</languageKeyword> to <codeEntityReference autoUpgrade="true">T:System.SByte</codeEntityReference>.</para>
+        </summary>
+        <returnValue>
+          <para>Returns 1 if this instance is non-zero (that is, <languageKeyword>true</languageKeyword>); returns 0 otherwise (that is, the instance is <languageKeyword>false</languageKeyword>).</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.Boolean.System.IConvertible.ToSingle(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>
+            <embeddedLabel>Note</embeddedLabel>   This conversion is not supported. Attempting to do so throws an <languageKeyword>InvalidCastException</languageKeyword>.</para>
+        </summary>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>Unsupported conversion of <languageKeyword>Boolean</languageKeyword>. </para>
+            </content>
+          </exception>
+        </exceptions>
+      </dduexml>
+    </member>
+    <member name="M:System.Boolean.System.IConvertible.ToType(System.Type,System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Converts this instance of <languageKeyword>Boolean</languageKeyword> to an object of the specified <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference>.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>type</parameterReference>
+            <content>
+              <para>The desired type. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An object of the specified type, with a value equivalent to the value of this <languageKeyword>Boolean</languageKeyword> object.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>type</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidCastException</codeEntityReference>
+            <content>
+              <para>The requested type conversion is not supported. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Convert</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Boolean.System.IConvertible.ToUInt16(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Returns a 16-bit unsigned integer representing the value of this instance of <languageKeyword>Boolean</languageKeyword>.</para>
+        </summary>
+        <returnValue>
+          <para>Returns a value of one if this <languageKeyword>Boolean</languageKeyword> object is <languageKeyword>true</languageKeyword>, or zero if this object is <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.UInt16</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Convert.ToUInt16(System.Object)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Boolean.System.IConvertible.ToUInt32(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Returns a 32-bit unsigned integer representing the value of this instance of <languageKeyword>Boolean</languageKeyword>.</para>
+        </summary>
+        <returnValue>
+          <para>Returns a value of one if this <languageKeyword>Boolean</languageKeyword> object is <languageKeyword>true</languageKeyword>, or zero if this object is <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.UInt32</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Convert.ToUInt32(System.Object)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Boolean.System.IConvertible.ToUInt64(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <internalOnly>
+        </internalOnly>
+        <summary>
+          <para>Returns a 64-bit unsigned integer representing the value of this instance of <languageKeyword>Boolean</languageKeyword>.</para>
+        </summary>
+        <returnValue>
+          <para>Returns a value of one if this <languageKeyword>Boolean</languageKeyword> object is <languageKeyword>true</languageKeyword>, or zero if this object is <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.UInt64</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">M:System.Convert.ToUInt64(System.Object)</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Boolean.ToString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of this instance to its equivalent string representation.</para>
+        </summary>
+        <returnValue>
+          <para>
+            <codeEntityReference autoUpgrade="true">F:System.Boolean.TrueString</codeEntityReference> if the value of this instance is <languageKeyword>true</languageKeyword>, or <codeEntityReference autoUpgrade="true">F:System.Boolean.FalseString</codeEntityReference> if the value of this instance is <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code sample illustrates the use of <languageKeyword>ToString</languageKeyword> in the context of <languageKeyword>Boolean</languageKeyword> : </para>
+                <codeReference>System.Boolean#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      <overload>
+        <summary>
+          <para>Converts the value of this instance to its equivalent string representation.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.Boolean.ToString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of this instance to its equivalent string representation.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.Boolean.ToString(System.IFormatProvider)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the value of this instance to its equivalent string representation.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>provider</parameterReference>
+            <content>
+              <para>(Reserved) An <codeEntityReference autoUpgrade="true">T:System.IFormatProvider</codeEntityReference> object. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <codeEntityReference autoUpgrade="true">F:System.Boolean.TrueString</codeEntityReference> if the value of this instance is <languageKeyword>true</languageKeyword>, or <codeEntityReference autoUpgrade="true">F:System.Boolean.FalseString</codeEntityReference> if the value of this instance is <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <parameterReference>provider</parameterReference> parameter is reserved. It does not participate in the execution of this method.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="F:System.Boolean.TrueString">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents the Boolean value <languageKeyword>true</languageKeyword> as a string. This field is read-only.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>This field is equal to the string "True".</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">F:System.Boolean.FalseString</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.Boolean.TryParse(System.String,System.Boolean@)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Converts the specified string representation of a logical value to its <codeEntityReference autoUpgrade="true">T:System.Boolean</codeEntityReference> equivalent. A return value indicates whether the conversion succeeded or failed.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>A string containing the value to convert. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>result</parameterReference>
+            <content>
+              <para>When this method returns, if the conversion succeeded, contains <languageKeyword>true</languageKeyword> if <parameterReference>value</parameterReference> is equivalent to <codeEntityReference autoUpgrade="true">F:System.Boolean.TrueString</codeEntityReference> or <languageKeyword>false</languageKeyword> if <parameterReference>value</parameterReference> is equivalent to <codeEntityReference autoUpgrade="true">F:System.Boolean.FalseString</codeEntityReference>. If the conversion failed, contains <languageKeyword>false</languageKeyword>. The conversion fails if <parameterReference>value</parameterReference> is <languageKeyword>null</languageKeyword> or is not equivalent to either <codeEntityReference autoUpgrade="true">F:System.Boolean.TrueString</codeEntityReference> or <codeEntityReference autoUpgrade="true">F:System.Boolean.FalseString</codeEntityReference>. This parameter is passed uninitialized. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>value</parameterReference> was converted successfully; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.Boolean.TryParse(System.String,System.Boolean@)</codeEntityReference> method is like the <codeEntityReference autoUpgrade="true">M:System.Boolean.Parse(System.String)</codeEntityReference> method, except the <codeEntityReference autoUpgrade="true">M:System.Boolean.TryParse(System.String,System.Boolean@)</codeEntityReference>  method does not throw an exception if the conversion fails.</para>
+            <para>The <parameterReference>value</parameterReference> parameter can be preceded or followed by white space. The comparison is case-insensitive.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates overloads of the <codeEntityReference autoUpgrade="true">M:System.Boolean.TryParse(System.String,System.Boolean@)</codeEntityReference> method for several base types, and the <codeEntityReference autoUpgrade="true">Overload:System.DateTime.TryParseExact</codeEntityReference> method.</para>
+                <codeReference>T.TryParse#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">M:System.Boolean.Parse(System.String)</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">F:System.Boolean.TrueString</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">F:System.Boolean.FalseString</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

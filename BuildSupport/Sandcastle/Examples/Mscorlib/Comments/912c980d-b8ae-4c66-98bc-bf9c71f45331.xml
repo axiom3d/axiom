@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="912c980d-b8ae-4c66-98bc-bf9c71f45331" revisionNumber="8">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.EventHandler">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents the method that will handle an event that has no event data.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>sender</parameterReference>
+            <content>
+              <para>The source of the event. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>e</parameterReference>
+            <content>
+              <para>An <codeEntityReference autoUpgrade="true">T:System.EventArgs</codeEntityReference> that contains no event data. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>The event model in the .NET Framework is based on having an event delegate that connects an event with its handler. To raise an event, two elements are needed: </para>
+            <list class="bullet">
+              <listItem>
+                <para>A delegate that identifies the method that provides the response to the event. </para>
+              </listItem>
+              <listItem>
+                <para>A class that holds the event data. </para>
+              </listItem>
+            </list>
+            <para>The delegate is a type that defines a signature, that is, the return value type and parameter list types for a method. You can use the delegate type to declare a variable that can refer to any method with the same signature as the delegate. </para>
+            <para>The standard signature of an event handler delegate defines a method that does not return a value, whose first parameter is of type <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference> and refers to the instance that raises the event, and whose second parameter is derived from type <codeEntityReference autoUpgrade="true">T:System.EventArgs</codeEntityReference> and holds the event data. If the event does not generate event data, the second parameter is simply an instance of <codeEntityReference autoUpgrade="true">T:System.EventArgs</codeEntityReference>. Otherwise, the second parameter is a custom type derived from <codeEntityReference autoUpgrade="true">T:System.EventArgs</codeEntityReference> and supplies any fields or properties needed to hold the event data.</para>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.EventHandler</codeEntityReference> is a predefined delegate that specifically represents an event handler method for an event that does not generate data. If your event does generate data, you must supply your own custom event data type and either create a delegate where the type of the second parameter is your custom type, or use the generic <codeEntityReference autoUpgrade="true">T:System.EventHandler`1</codeEntityReference> delegate class and substitute your custom type for the generic type parameter.</para>
+            <para>To associate the event with the method that will handle the event, add an instance of the delegate to the event. The event handler is called whenever the event occurs, unless you remove the delegate. </para>
+            <para>For more information about event handler delegates, see <link xlink:href="d98fd58b-fa4f-4598-8378-addf4355a115">Events and Delegates (.NET Framework Guide)</link>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the declaration of an event handler delegate that does not use event data. The <codeEntityReference autoUpgrade="true">T:System.EventHandler</codeEntityReference> class is the type of the event delegate, <parameterReference>sender</parameterReference> is the object that raises the event, and <parameterReference>e</parameterReference> is an event data object that contains no data. The second line of code in the example defines the event member in your class for an event that has no data.</para>
+                <codeReference>Classic EventHandler Example#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.EventHandler`1</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.EventArgs</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Delegate</codeEntityReference>
+          <link xlink:href="d98fd58b-fa4f-4598-8378-addf4355a115">Events and Delegates (.NET Framework Guide)</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

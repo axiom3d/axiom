@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="eb0eb30b-edc2-44e8-93e3-fcf5323bed26" revisionNumber="2">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.CrossAppDomainDelegate">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Used by <codeEntityReference autoUpgrade="true">M:System.AppDomain.DoCallBack(System.CrossAppDomainDelegate)</codeEntityReference> for cross-application domain calls.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>Every derived class of <codeEntityReference autoUpgrade="true">T:System.Delegate</codeEntityReference> and <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference> has a constructor and an <languageKeyword>Invoke</languageKeyword> method. See the C++ code example given in the description for <codeEntityReference autoUpgrade="true">T:System.Delegate</codeEntityReference>.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+  </members>
+</doc>

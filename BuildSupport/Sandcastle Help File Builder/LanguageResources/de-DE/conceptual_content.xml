@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- Translations provided by Olaf Rittig -->
+<content xml:space="preserve">
+
+	<!-- control window stuff -->
+	<item id="productTitle">{@HtmlEncHelpTitle}</item>
+
+	<!-- main window stuff -->
+
+	<!-- body -->
+
+
+	<!-- section titles -->
+	<item id="inThisSectionTitle">In dieser Sektion</item>
+	<item id="relatedSectionsTitle">Referenz</item>
+	<item id="relatedTopicsTitle">Siehe auch</item>
+
+</content>

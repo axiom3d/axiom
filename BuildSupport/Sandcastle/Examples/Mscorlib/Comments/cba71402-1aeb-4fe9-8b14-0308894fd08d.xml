@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="cba71402-1aeb-4fe9-8b14-0308894fd08d" revisionNumber="6">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.ArraySegment`1">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Delimits a section of a one-dimensional array.</para>
+        </summary>
+        <genericParameters>
+          <genericParameter>
+            <parameterReference>T</parameterReference>
+            <content>
+              <para>The type of the elements in the array segment.</para>
+            </content>
+          </genericParameter>
+        </genericParameters>
+        <remarks>
+          <content>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> is a wrapper around an array that delimits a range of elements in that array. Multiple <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> instances can refer to the same original array and can overlap.</para>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.ArraySegment`1.Array</codeEntityReference> property returns the entire original array, not a copy of the array; therefore, changes made to the array returned by the <codeEntityReference autoUpgrade="true">P:System.ArraySegment`1.Array</codeEntityReference> property are made to the original array.</para>
+            <para>The original array must be one-dimensional and must have zero-based indexing.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example passes an <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> structure to a method.</para>
+                <codeReference>System.ArraySegment#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Array</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.ArraySegment`1.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> class.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.ArraySegment`1.#ctor(`0[])">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> class that delimits all the elements in the specified array.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>array</parameterReference>
+            <content>
+              <para>The array to wrap.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>array</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This constructor creates an <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> that delimits all the elements of <parameterReference>array</parameterReference>. That is, the <codeEntityReference autoUpgrade="true">P:System.ArraySegment`1.Offset</codeEntityReference> property of the <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> is 0 and its <codeEntityReference autoUpgrade="true">P:System.ArraySegment`1.Count</codeEntityReference> property is the length of <parameterReference>array</parameterReference>. To create an <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> that delimits only part of an array, use the <codeEntityReference autoUpgrade="false">M:System.ArraySegment`1.#ctor(`0[],System.Int32,System.Int32)</codeEntityReference> constructor.</para>
+            <para>The original array must be one-dimensional and must have zero-based indexing.</para>
+            <para>Multiple <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> instances can refer to the same original array and can overlap.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example passes an <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> structure to a method.</para>
+                <codeReference>System.ArraySegment#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Array</codeEntityReference>
+        </relatedTopics>
+      <overload>
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> class.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.ArraySegment`1.#ctor(`0[],System.Int32,System.Int32)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> class that delimits the specified range of the elements in the specified array.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>array</parameterReference>
+            <content>
+              <para>The array containing the range of elements to delimit.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>offset</parameterReference>
+            <content>
+              <para>The zero-based index of the first element in the range.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>count</parameterReference>
+            <content>
+              <para>The number of elements in the range.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>array</parameterReference> is <languageKeyword>null</languageKeyword>.</para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentOutOfRangeException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>offset</parameterReference> or <parameterReference>count</parameterReference> is less than 0.</para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>offset</parameterReference> and <parameterReference>count</parameterReference> do not specify a valid range in <parameterReference>array</parameterReference>.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The original array must be one-dimensional and must have zero-based indexing.</para>
+            <para>Multiple <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> instances can refer to the same original array and can overlap.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example passes an <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> structure to a method.</para>
+                <codeReference>System.ArraySegment#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Array</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="P:System.ArraySegment`1.Array">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the original array containing the range of elements that the array segment delimits.</para>
+        </summary>
+        <returnValue>
+          <para>The original array that was passed to the constructor, and that contains the range delimited by the <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>The <codeEntityReference autoUpgrade="true">P:System.ArraySegment`1.Array</codeEntityReference> property returns the original array, not a copy of the array; therefore, changes made through the property are made directly to the original array. </para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example passes an <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> to a method.</para>
+                <codeReference>System.ArraySegment#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Array</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="P:System.ArraySegment`1.Count">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the number of elements in the range delimited by the array segment.</para>
+        </summary>
+        <returnValue>
+          <para>The number of elements in the range delimited by the <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference>.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example passes an <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> structure to a method.</para>
+                <codeReference>System.ArraySegment#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Array</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">P:System.ArraySegment`1.Offset</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="P:System.ArraySegment`1.Offset">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the position of the first element in the range delimited by the array segment, relative to the start of the original array.</para>
+        </summary>
+        <returnValue>
+          <para>The position of the first element in the range delimited by the <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference>, relative to the start of the original array.</para>
+        </returnValue>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example passes an <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> structure to a method.</para>
+                <codeReference>System.ArraySegment#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.Array</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">P:System.ArraySegment`1.Count</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.ArraySegment`1.Equals">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Determines whether two objects are equal.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.ArraySegment`1.Equals(System.ArraySegment{`0})">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Determines whether the specified <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> structure is equal to the current instance.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>obj</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> structure to be compared with the current instance.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the specified <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> structure is equal to the current instance; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+      <overload>
+        <summary>
+          <para>Determines whether two objects are equal.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.ArraySegment`1.Equals(System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Determines whether the specified object is equal to the current instance.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>obj</parameterReference>
+            <content>
+              <para>The object to be compared with the current instance.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the specified object is a <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> structure and is equal to the current instance; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.ArraySegment`1.GetHashCode">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the hash code for the current instance.</para>
+        </summary>
+        <returnValue>
+          <para>A 32-bit signed integer hash code.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.ArraySegment`1.op_Equality(System.ArraySegment{`0},System.ArraySegment{`0})">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <equivalentCodeEntity>
+          <codeEntityReference>M:System.ArraySegment`1.Equals(System.ArraySegment{`0},System.ArraySegment{`0})</codeEntityReference>
+          <content>
+          </content>
+        </equivalentCodeEntity>
+        <summary>
+          <para>Indicates whether two <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> structures are equal.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>a</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> structure on the left side of the equality operator.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>b</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> structure on the right side of the equality operator.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>a</parameterReference> is equal to <parameterReference>b</parameterReference>; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+    <member name="M:System.ArraySegment`1.op_Inequality(System.ArraySegment{`0},System.ArraySegment{`0})">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <equivalentCodeEntity>
+          <codeEntityReference>M:System.ArraySegment`1.Equals(System.ArraySegment{`0},System.ArraySegment{`0})</codeEntityReference>
+          <content>
+          </content>
+        </equivalentCodeEntity>
+        <summary>
+          <para>Indicates whether two <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> structures are unequal.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>a</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> structure on the left side of the inequality operator.</para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>b</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.ArraySegment`1</codeEntityReference> structure on the right side of the inequality operator.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>a</parameterReference> is not equal to <parameterReference>b</parameterReference>; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+      </dduexml>
+    </member>
+  </members>
+</doc>

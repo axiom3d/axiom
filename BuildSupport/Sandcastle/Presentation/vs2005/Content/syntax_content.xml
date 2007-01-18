@@ -1,0 +1,10 @@
+<content xml:space="preserve">
+
+	<item id="UnsupportedUnsafe_VisualBasic">Visual Basic does not support APIs that consume or return unsafe types.</item>
+
+	<item id="UnsupportedUnsafe_JSharp">J# does not support APIs that consume or return unsafe types.</item>
+	<item id="UnsupportedGeneric_JSharp">J# supports the use of generic APIs, but not the declaration of new ones.</item>
+	<item id="UnsupportedOperator_JSharp">J# does not support overloaded operators.</item>
+	<item id="UnsupportedStaticConstructor_JSharp">J# does not support static constructors.</item>
+
+</content>

@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="c0556e55-a398-498a-9cb5-f3ac98280b66" revisionNumber="10">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.TimeoutException">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The exception that is thrown when the time allotted for a process or operation has expired.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.TimeoutException</codeEntityReference> uses the HRESULT, COR_E_TIMEOUT, which has the value 0x80131505.</para>
+            <para>For a list of initial property values for an instance of  <codeEntityReference autoUpgrade="true">T:System.TimeoutException</codeEntityReference>, see the <codeEntityReference autoUpgrade="true">Overload:System.TimeoutException.#ctor</codeEntityReference> constructors.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following code example demonstrates the use of <codeEntityReference autoUpgrade="true">T:System.TimeoutException</codeEntityReference> in conjunction with members of the <codeEntityReference qualifyHint="true" autoUpgrade="true">T:System.IO.Ports.SerialPort</codeEntityReference> class.</para>
+                <codeReference>TimeoutException.Class#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Exception</codeEntityReference>
+          <link xlink:href="f99a1d29-a2a8-47af-9707-9909f9010735">Handling and Throwing Exceptions</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="Overload:System.TimeoutException.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.TimeoutException</codeEntityReference> class.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.TimeoutException.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.TimeoutException</codeEntityReference> class.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>This constructor initializes the inherited <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.Exception.Message</codeEntityReference> property of the new instance with a system-supplied error message. This message takes into account the current system culture.</para>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.TimeoutException</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>A null reference (<languageKeyword>Nothing</languageKeyword> in Visual Basic). </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The localized error message string. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+      <overload>
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.TimeoutException</codeEntityReference> class.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.TimeoutException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.TimeoutException</codeEntityReference> class with serialized data.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>info</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference> object that contains serialized object data about the exception being thrown. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>context</parameterReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.StreamingContext</codeEntityReference> object that contains contextual information about the source or destination. The <parameterReference>context</parameterReference> parameter is reserved for future use, and can be specified as <languageKeyword>null</languageKeyword>.</para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>The <parameterReference>info</parameterReference> parameter is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationException</codeEntityReference>
+            <content>
+              <para>The class name is <languageKeyword>null</languageKeyword>, or <codeEntityReference autoUpgrade="true">P:System.Exception.HResult</codeEntityReference> is zero (0). </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This constructor is called during deserialization to reconstitute the exception object transmitted over a stream. For more information, see <link xlink:href="2b1ea3be-1152-4032-b2b3-07794054c405">Binary Serialization</link>.</para>
+          </content>
+        </remarks>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.StreamingContext</codeEntityReference>
+          <link xlink:href="2b1ea3be-1152-4032-b2b3-07794054c405">Binary Serialization</link>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.TimeoutException.#ctor(System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.TimeoutException</codeEntityReference> class with the specified error message.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>message</parameterReference>
+            <content>
+              <para>The message that describes the error. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>This constructor initializes the inherited <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.Exception.Message</codeEntityReference> property of the new instance using the value of the <parameterReference>message</parameterReference> parameter.</para>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.TimeoutException</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>A null reference (<languageKeyword>Nothing</languageKeyword> in Visual Basic). </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The error message string. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="M:System.TimeoutException.#ctor(System.String,System.Exception)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.TimeoutException</codeEntityReference> class with the specified error message and inner exception.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>message</parameterReference>
+            <content>
+              <para>The message that describes the error. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>innerException</parameterReference>
+            <content>
+              <para>The exception that is the cause of the current exception. If the <parameterReference>innerException</parameterReference> parameter is not <languageKeyword>null</languageKeyword>, the current exception is raised in a <languageKeyword>catch</languageKeyword> block that handles the inner exception. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <remarks>
+          <content>
+            <para>This constructor initializes the inherited <codeEntityReference qualifyHint="true" autoUpgrade="true">P:System.Exception.Message</codeEntityReference> property of the new instance using the value of the <parameterReference>message</parameterReference> parameter.</para>
+            <para>An exception that is thrown as a direct result of a previous exception should include a reference to the previous exception in the <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property. The <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property returns the same value that is passed to the constructor, or <languageKeyword>null</languageKeyword> if the <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference> property does not supply the inner exception value to the constructor.</para>
+            <para>The following table shows the initial property values for an instance of <codeEntityReference autoUpgrade="true">T:System.TimeoutException</codeEntityReference>.</para>
+            <table>
+              <tableHeader>
+                <row>
+                  <entry>
+                    <para>Property </para>
+                  </entry>
+                  <entry>
+                    <para>Value </para>
+                  </entry>
+                </row>
+              </tableHeader>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.Message</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The error message string. </para>
+                </entry>
+              </row>
+              <row>
+                <entry>
+                  <para>
+                    <codeEntityReference autoUpgrade="true">P:System.Exception.InnerException</codeEntityReference>
+                  </para>
+                </entry>
+                <entry>
+                  <para>The inner exception reference. </para>
+                </entry>
+              </row>
+            </table>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+  </members>
+</doc>

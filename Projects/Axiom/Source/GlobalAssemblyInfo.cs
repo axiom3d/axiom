@@ -40,6 +40,9 @@ using System.Security.Permissions;
 
 #endregion Namespace Declarations
 
+[assembly: ComVisible( false ) ]
+[assembly: CLSCompliant( true ) ]
+
 #if DEBUG
 [assembly: AssemblyConfiguration( "Debug" )]
 #else

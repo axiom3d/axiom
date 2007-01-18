@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="767903b4-14f2-4468-a4de-6517fce8ceb4" revisionNumber="4">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.Environment.SpecialFolder">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Specifies enumerated constants used to retrieve directory paths to system special folders.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The system special folders are folders such as Program Files, Programs, System, or Startup, which contain common information. Special folders are set by default by the system, or explicitly by the user, when installing a version of Windows.</para>
+            <para>The <codeEntityReference autoUpgrade="true">M:System.Environment.GetFolderPath(System.Environment.SpecialFolder)</codeEntityReference> method uses these enumerated constants to designate the special folder path to retrieve.</para>
+            <para>For more information about special folders, see the CSIDL Values topic at http://msdn.microsoft.com/library/en-us/shellcc/platform/Shell/reference/enums/csidl.asp.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="F:System.Environment.SpecialFolder.ApplicationData">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The directory that serves as a common repository for application-specific data for the current roaming user.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>A roaming user works on more than one computer on a network. A roaming user's profile is kept on a server on the network and is loaded onto a system when the user logs on.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="F:System.Environment.SpecialFolder.CommonApplicationData">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The directory that serves as a common repository for application-specific data that is used by all users.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.Environment.SpecialFolder.CommonProgramFiles">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The directory for components that are shared across applications.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.Environment.SpecialFolder.Cookies">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The directory that serves as a common repository for Internet cookies.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.Environment.SpecialFolder.Desktop">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The logical Desktop rather than the physical file system location.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.Environment.SpecialFolder.DesktopDirectory">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The directory used to physically store file objects on the desktop.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>Do not confuse this directory with the desktop folder itself, which is a virtual folder.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="F:System.Environment.SpecialFolder.Favorites">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The directory that serves as a common repository for the user's favorite items.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.Environment.SpecialFolder.History">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The directory that serves as a common repository for Internet history items.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.Environment.SpecialFolder.InternetCache">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The directory that serves as a common repository for temporary Internet files.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.Environment.SpecialFolder.LocalApplicationData">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The directory that serves as a common repository for application-specific data that is used by the current, non-roaming user.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.Environment.SpecialFolder.MyComputer">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The "My Computer" folder. </para>
+        </summary>
+        <remarks>
+          <content>
+            <alert class="note">
+              <para>The <codeEntityReference autoUpgrade="true">F:System.Environment.SpecialFolder.MyComputer</codeEntityReference> constant always yields the empty string ("") because no path is defined for the My Computer folder.</para>
+            </alert>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="F:System.Environment.SpecialFolder.MyDocuments">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The "My Documents" folder.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.Environment.SpecialFolder.MyMusic">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The "My Music" folder.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.Environment.SpecialFolder.MyPictures">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The "My Pictures" folder.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.Environment.SpecialFolder.Personal">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The directory that serves as a common repository for documents.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.Environment.SpecialFolder.ProgramFiles">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The program files directory.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.Environment.SpecialFolder.Programs">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The directory that contains the user's program groups.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.Environment.SpecialFolder.Recent">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The directory that contains the user's most recently used documents.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.Environment.SpecialFolder.SendTo">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The directory that contains the Send To menu items.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.Environment.SpecialFolder.StartMenu">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The directory that contains the Start menu items.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.Environment.SpecialFolder.Startup">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The directory that corresponds to the user's Startup program group.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>The system starts these programs whenever a user logs on or starts Windows NT or later, or starts Windows 98.</para>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="F:System.Environment.SpecialFolder.System">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The System directory.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="F:System.Environment.SpecialFolder.Templates">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>The directory that serves as a common repository for document templates.</para>
+        </summary>
+      </dduexml>
+    </member>
+  </members>
+</doc>

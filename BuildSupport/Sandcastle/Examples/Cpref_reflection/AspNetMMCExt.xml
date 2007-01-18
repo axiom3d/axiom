@@ -1,0 +1,1808 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<reflection>
+  <assemblies>
+    <assembly name="AspNetMMCExt" version="2.0.0.0" culture="" key="002400000480000094000000060200000024000052534131000400000100010007D1FA57C4AED9F0A32E84AA0FAEFD0DE9E8FD6AEC8F87FB03766C834C99921EB23BE79AD9D5DCC1DD9AD236132102900B723CF980957FC4E177108FC607774F29E8320E92EA05ECE4E821C0A5EFE8F1645C4C0C93C1AB99285D622CAA652C1DFAD63D745D6F2DE5F17E5EAF0FC4963D261C8A12436518206DC093344D5AD293" hash="SHA1">
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Diagnostics.DebuggableAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Diagnostics.DebuggableAttribute.DebuggingModes" ref="false" />
+            <enumValue>
+              <field name="IgnoreSymbolStoreSequencePoints" />
+            </enumValue>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.CompilationRelaxationsAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>8</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.CLSCompliantAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.SatelliteContractVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.0.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyInformationalVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.50727.12</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyTitleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>AspNetMMCExt.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComCompatibleVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>1</value>
+          </argument>
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>0</value>
+          </argument>
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>3300</value>
+          </argument>
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyKeyFileAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>f:\RTM\Tools\devdiv\FinalPublicKey.snk</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDelaySignAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.NeutralResourcesLanguageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>en-US</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute" ref="true" />
+          <assignment name="WrapNonExceptionThrows">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyFileVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.50727.12</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCopyrightAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>c Microsoft Corporation.  All rights reserved.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyProductAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoftr .NET Framework</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCompanyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft Corporation</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDefaultAliasAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>AspNetMMCExt.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDescriptionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>AspNetMMCExt.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.SecurityPermissionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="RequestMinimum" />
+            </enumValue>
+          </argument>
+          <assignment name="SkipVerification">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+    </assembly>
+  </assemblies>
+  <apis>
+    <api id="T:Microsoft.Aspnet.Snapin.AspNetManagementUtility">
+      <apidata name="AspNetManagementUtility" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:Microsoft.Aspnet.Snapin.IAspNetManagementUtility" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.MessageBox(System.IntPtr,System.String,System.String,System.Int32)" />
+        <element api="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.GetActiveWindow" />
+        <element api="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.DisplayAspNetConfigSettings(System.String,System.String,System.String,System.String,System.String,System.Int32,System.String@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.AcquireVersionList(System.String@,System.Int32)" />
+        <element api="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.ReadFileDates(System.String,System.String@,System.String@,System.String@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.IsRemoteConfigured(System.Int32@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.PathIsDirectory(System.String,System.Int32@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.ChangeScriptMap(System.String,System.String,System.Int32)" />
+        <element api="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.RegisterAsnetMmcAssembly(System.Int32,System.String,System.String,System.IntPtr@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.#ctor" />
+        <element api="M:System.Object.ToString" />
+        <element api="M:System.Object.Equals(System.Object)" />
+        <element api="M:System.Object.GetHashCode" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ProgIdAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft.Aspnet.Snapin.AspNetManagementUtility.2</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ClassInterfaceAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ClassInterfaceType" ref="false" />
+            <enumValue>
+              <field name="AutoDual" />
+            </enumValue>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>FD5CD8B1-6FE0-44F3-BBFB-65E3655B096E</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="c4d69251-7c19-c130-0d65-6841de2a7ab3" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.AspNetManagementUtility" ref="true" />
+      </containers>
+      <file name="538bc26a-652f-4dfd-7319-275333acd1e7" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.AcquireVersionList(System.String@,System.Int32)">
+      <apidata name="AcquireVersionList" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="versionList" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+        <parameter name="versionFirst">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.AspNetManagementUtility" ref="true" />
+      </containers>
+      <file name="40ffd08c-92cf-7cbb-50c0-4bab8c9264e8" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.ChangeScriptMap(System.String,System.String,System.Int32)">
+      <apidata name="ChangeScriptMap" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="keyPath">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="dllInstall">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="flags">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.AspNetManagementUtility" ref="true" />
+      </containers>
+      <file name="f2277554-1ccd-3360-8502-ee4212d25d18" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.DisplayAspNetConfigSettings(System.String,System.String,System.String,System.String,System.String,System.Int32,System.String@)">
+      <apidata name="DisplayAspNetConfigSettings" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="machineName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="site">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="virtualDirectory">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="siteName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="location">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="processID">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="exception" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.AspNetManagementUtility" ref="true" />
+      </containers>
+      <file name="bf96e2f6-da9a-8464-d5f0-173d43e3b5e9" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.GetActiveWindow">
+      <apidata name="GetActiveWindow" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <returns>
+        <type api="T:System.IntPtr" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.AspNetManagementUtility" ref="true" />
+      </containers>
+      <file name="e7ec0809-eb7b-58d7-e918-748ed72d8270" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.IsRemoteConfigured(System.Int32@)">
+      <apidata name="IsRemoteConfigured" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="isRemoteConfigured" out="true">
+          <referenceTo>
+            <type api="T:System.Int32" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.AspNetManagementUtility" ref="true" />
+      </containers>
+      <file name="cf86b8d0-5a2a-a0e1-a47f-2d3a06a6338e" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.MessageBox(System.IntPtr,System.String,System.String,System.Int32)">
+      <apidata name="MessageBox" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="hWnd">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="text">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="caption">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="type">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.AspNetManagementUtility" ref="true" />
+      </containers>
+      <file name="a68ec07c-f783-18f6-5697-2119d0a4797d" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.PathIsDirectory(System.String,System.Int32@)">
+      <apidata name="PathIsDirectory" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="filename" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="result" out="true">
+          <referenceTo>
+            <type api="T:System.Int32" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.AspNetManagementUtility" ref="true" />
+      </containers>
+      <file name="ac223395-074d-81d1-17ad-a474af9da680" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.ReadFileDates(System.String,System.String@,System.String@,System.String@)">
+      <apidata name="ReadFileDates" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="filename">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="creationDate" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+        <parameter name="modifiedDate" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+        <parameter name="lastAccessDate" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.AspNetManagementUtility" ref="true" />
+      </containers>
+      <file name="d8b480a1-058f-d2c4-1409-40f09044122a" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.RegisterAsnetMmcAssembly(System.Int32,System.String,System.String,System.IntPtr@)">
+      <apidata name="RegisterAsnetMmcAssembly" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="doReg">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="typeName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="binaryDirectory">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="exception" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.AspNetManagementUtility" ref="true" />
+      </containers>
+      <file name="60c51017-950a-6771-c249-29840ee4a46c" />
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.CLSID">
+      <apidata name="CLSID" group="type" subgroup="structure" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="sequential" format="ansi" />
+      <elements>
+        <element api="M:System.ValueType.Equals(System.Object)" />
+        <element api="M:System.ValueType.GetHashCode" />
+        <element api="M:System.ValueType.ToString" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <file name="afc6491e-124a-c0f8-86cc-aa47e6cb0a18" />
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.CONTEXTMENUITEM">
+      <apidata name="CONTEXTMENUITEM" group="type" subgroup="structure" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="sequential" format="ansi" />
+      <elements>
+        <element api="M:System.ValueType.Equals(System.Object)" />
+        <element api="M:System.ValueType.GetHashCode" />
+        <element api="M:System.ValueType.ToString" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <file name="a83430e9-9744-c493-e65f-5d38badef757" />
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.DialogProc">
+      <apidata name="DialogProc" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <parameters>
+        <parameter name="hwndDlg">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="uMsg">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="wParam">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="lParam">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <file name="d78ca285-5d2d-9728-e996-5c90b231d087" />
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.FORMATETC">
+      <apidata name="FORMATETC" group="type" subgroup="structure" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="sequential" format="ansi" />
+      <elements>
+        <element api="M:System.ValueType.Equals(System.Object)" />
+        <element api="M:System.ValueType.GetHashCode" />
+        <element api="M:System.ValueType.ToString" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <file name="b7c895a2-93f0-6e28-5009-e9370a2293da" />
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.IAspNetManagementUtility">
+      <apidata name="IAspNetManagementUtility" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.DisplayAspNetConfigSettings(System.String,System.String,System.String,System.String,System.String,System.Int32,System.String@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.AcquireVersionList(System.String@,System.Int32)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.IsRemoteConfigured(System.Int32@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.ReadFileDates(System.String,System.String@,System.String@,System.String@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.PathIsDirectory(System.String,System.Int32@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.ChangeScriptMap(System.String,System.String,System.Int32)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.RegisterAsnetMmcAssembly(System.Int32,System.String,System.String,System.IntPtr@)" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>ED068D9D-F021-4B07-A43E-3E0CB470172D</value>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="2629eec9-9b31-c77f-ab80-4afe9e23ac6f" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.AcquireVersionList(System.String@,System.Int32)">
+      <apidata name="AcquireVersionList" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="versionList" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+        <parameter name="versionFirst">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IAspNetManagementUtility" ref="true" />
+      </containers>
+      <file name="f0d826e0-6d2f-449c-bffc-b05803fae329" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.ChangeScriptMap(System.String,System.String,System.Int32)">
+      <apidata name="ChangeScriptMap" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="keyPath" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="dllInstall" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="flags">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IAspNetManagementUtility" ref="true" />
+      </containers>
+      <file name="a5edf4db-46c0-3a15-bf15-473bcd47e8ba" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.DisplayAspNetConfigSettings(System.String,System.String,System.String,System.String,System.String,System.Int32,System.String@)">
+      <apidata name="DisplayAspNetConfigSettings" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="machineName" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="site" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="virtualDirectory" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="siteName" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="location" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="processID">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="exception" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IAspNetManagementUtility" ref="true" />
+      </containers>
+      <file name="89b18f66-0d88-6b3a-f123-affddf255cf4" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.IsRemoteConfigured(System.Int32@)">
+      <apidata name="IsRemoteConfigured" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="isRemoteConfigured" out="true">
+          <referenceTo>
+            <type api="T:System.Int32" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IAspNetManagementUtility" ref="true" />
+      </containers>
+      <file name="f8235e94-b519-c013-92b3-8c244c2e0096" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.PathIsDirectory(System.String,System.Int32@)">
+      <apidata name="PathIsDirectory" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="filename" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="result" out="true">
+          <referenceTo>
+            <type api="T:System.Int32" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IAspNetManagementUtility" ref="true" />
+      </containers>
+      <file name="d63f058b-e6bb-b22e-27ec-2df54b35d078" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.ReadFileDates(System.String,System.String@,System.String@,System.String@)">
+      <apidata name="ReadFileDates" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="filename" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="creationDate" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+        <parameter name="modifiedDate" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+        <parameter name="lastAccessDate" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IAspNetManagementUtility" ref="true" />
+      </containers>
+      <file name="44c0ce44-16fb-0a4a-58c0-b20976100db9" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.RegisterAsnetMmcAssembly(System.Int32,System.String,System.String,System.IntPtr@)">
+      <apidata name="RegisterAsnetMmcAssembly" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="doReg">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="assemblyName" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="binaryDirectory" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="exception" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IAspNetManagementUtility" ref="true" />
+      </containers>
+      <file name="591d6a08-43e2-e33d-3a99-e3547cbbe713" />
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.IContextMenuCallback">
+      <apidata name="IContextMenuCallback" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Aspnet.Snapin.IContextMenuCallback.AddItem(Microsoft.Aspnet.Snapin.CONTEXTMENUITEM@)" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>43136EB7-D36C-11CF-ADBC-00AA00A80033</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.InterfaceTypeAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ComInterfaceType" ref="false" />
+            <enumValue>
+              <field name="InterfaceIsIUnknown" />
+            </enumValue>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="a2a186f8-2cd5-c928-becd-2d5c2728d36a" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IContextMenuCallback.AddItem(Microsoft.Aspnet.Snapin.CONTEXTMENUITEM@)">
+      <apidata name="AddItem" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="pItem">
+          <referenceTo>
+            <type api="T:Microsoft.Aspnet.Snapin.CONTEXTMENUITEM" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IContextMenuCallback" ref="true" />
+      </containers>
+      <file name="11ad869f-a1f3-93a2-9216-93bfe98864e5" />
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.IDataObject">
+      <apidata name="IDataObject" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Aspnet.Snapin.IDataObject.GetData(Microsoft.Aspnet.Snapin.FORMATETC@,Microsoft.Aspnet.Snapin.STGMEDIUM@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IDataObject.GetDataHere(Microsoft.Aspnet.Snapin.FORMATETC@,Microsoft.Aspnet.Snapin.STGMEDIUM@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IDataObject.QueryGetData(Microsoft.Aspnet.Snapin.FORMATETC)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IDataObject.GetCanonicalFormatEtc(System.IntPtr,System.IntPtr)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IDataObject.SetData(System.IntPtr,System.IntPtr,System.Int32)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IDataObject.EnumFormatEtc(System.Int32,System.IntPtr)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IDataObject.DAdvise(System.IntPtr,System.Int32,System.IntPtr,System.Int32@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IDataObject.DUnadvise(System.Int32)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IDataObject.EnumDAdvise(System.IntPtr)" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>0000010e-0000-0000-C000-000000000046</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.InterfaceTypeAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ComInterfaceType" ref="false" />
+            <enumValue>
+              <field name="InterfaceIsIUnknown" />
+            </enumValue>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="1699e4ba-0622-4b3d-a188-becea04420ab" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IDataObject.DAdvise(System.IntPtr,System.Int32,System.IntPtr,System.Int32@)">
+      <apidata name="DAdvise" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="a">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="b">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="c">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="d">
+          <referenceTo>
+            <type api="T:System.Int32" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+      </containers>
+      <file name="0c3ddb4d-7c8b-3800-ede6-5fc560bd6597" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IDataObject.DUnadvise(System.Int32)">
+      <apidata name="DUnadvise" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="a">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+      </containers>
+      <file name="ab040aa6-5fa8-94f8-dea0-6b8357b1aff1" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IDataObject.EnumDAdvise(System.IntPtr)">
+      <apidata name="EnumDAdvise" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="a">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+      </containers>
+      <file name="89f6bcc5-52e1-6362-450f-8e207bd3a319" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IDataObject.EnumFormatEtc(System.Int32,System.IntPtr)">
+      <apidata name="EnumFormatEtc" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="a">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="b">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+      </containers>
+      <file name="40262fc2-cf01-9c60-07a2-a7a3862fda18" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IDataObject.GetCanonicalFormatEtc(System.IntPtr,System.IntPtr)">
+      <apidata name="GetCanonicalFormatEtc" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="a">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="b">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+      </containers>
+      <file name="a6632039-4413-d77d-099d-eedcee7df656" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IDataObject.GetData(Microsoft.Aspnet.Snapin.FORMATETC@,Microsoft.Aspnet.Snapin.STGMEDIUM@)">
+      <apidata name="GetData" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="pFormatEtc">
+          <referenceTo>
+            <type api="T:Microsoft.Aspnet.Snapin.FORMATETC" ref="false" />
+          </referenceTo>
+        </parameter>
+        <parameter name="b">
+          <referenceTo>
+            <type api="T:Microsoft.Aspnet.Snapin.STGMEDIUM" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+      </containers>
+      <file name="cde9f599-2033-89b4-b144-8da1b6287076" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IDataObject.GetDataHere(Microsoft.Aspnet.Snapin.FORMATETC@,Microsoft.Aspnet.Snapin.STGMEDIUM@)">
+      <apidata name="GetDataHere" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="pFormatEtc">
+          <referenceTo>
+            <type api="T:Microsoft.Aspnet.Snapin.FORMATETC" ref="false" />
+          </referenceTo>
+        </parameter>
+        <parameter name="b">
+          <referenceTo>
+            <type api="T:Microsoft.Aspnet.Snapin.STGMEDIUM" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+      </containers>
+      <file name="4d9909e4-1b8e-4a45-aa44-4f19398274fa" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IDataObject.QueryGetData(Microsoft.Aspnet.Snapin.FORMATETC)">
+      <apidata name="QueryGetData" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="a">
+          <type api="T:Microsoft.Aspnet.Snapin.FORMATETC" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+      </containers>
+      <file name="c5493e77-10bd-92ad-48a1-ef17fe851833" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IDataObject.SetData(System.IntPtr,System.IntPtr,System.Int32)">
+      <apidata name="SetData" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="a">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="b">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="c">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+      </containers>
+      <file name="2d360317-8517-7394-223a-d1d48e50a430" />
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.IEnumFORMATETC">
+      <apidata name="IEnumFORMATETC" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>00000103-0000-0000-C000-000000000046</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.InterfaceTypeAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ComInterfaceType" ref="false" />
+            <enumValue>
+              <field name="InterfaceIsIUnknown" />
+            </enumValue>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="93338c21-36cf-790e-4efe-cf32ed07f1ac" />
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.IExtendContextMenu">
+      <apidata name="IExtendContextMenu" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Aspnet.Snapin.IExtendContextMenu.AddMenuItems(Microsoft.Aspnet.Snapin.IDataObject,Microsoft.Aspnet.Snapin.IContextMenuCallback,System.Int32@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IExtendContextMenu.Command(System.Int32,Microsoft.Aspnet.Snapin.IDataObject)" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4F3B7A4F-CFAC-11CF-B8E3-00C04FD8D5B0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.InterfaceTypeAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ComInterfaceType" ref="false" />
+            <enumValue>
+              <field name="InterfaceIsIUnknown" />
+            </enumValue>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="00379136-5e24-b457-859b-2fdadbc35c7d" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IExtendContextMenu.AddMenuItems(Microsoft.Aspnet.Snapin.IDataObject,Microsoft.Aspnet.Snapin.IContextMenuCallback,System.Int32@)">
+      <apidata name="AddMenuItems" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="piDataObject">
+          <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+        </parameter>
+        <parameter name="piCallback">
+          <type api="T:Microsoft.Aspnet.Snapin.IContextMenuCallback" ref="true" />
+        </parameter>
+        <parameter name="pInsertionAllowed">
+          <referenceTo>
+            <type api="T:System.Int32" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IExtendContextMenu" ref="true" />
+      </containers>
+      <file name="3d5e707f-5a10-86d0-b6f9-1c69dfb7faf8" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IExtendContextMenu.Command(System.Int32,Microsoft.Aspnet.Snapin.IDataObject)">
+      <apidata name="Command" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="lCommandID">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="piDataObject">
+          <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IExtendContextMenu" ref="true" />
+      </containers>
+      <file name="ce5e29e1-2920-e146-21a1-da7d59018f5c" />
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.IExtendPropertySheet">
+      <apidata name="IExtendPropertySheet" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Aspnet.Snapin.IExtendPropertySheet.CreatePropertyPages(Microsoft.Aspnet.Snapin.IPropertySheetCallback,System.IntPtr,Microsoft.Aspnet.Snapin.IDataObject)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IExtendPropertySheet.QueryPagesFor(Microsoft.Aspnet.Snapin.IDataObject)" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>85DE64DC-EF21-11cf-A285-00C04FD8DBE6</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.InterfaceTypeAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ComInterfaceType" ref="false" />
+            <enumValue>
+              <field name="InterfaceIsIUnknown" />
+            </enumValue>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="6469935e-27b5-e060-ede6-0cec2803d169" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IExtendPropertySheet.CreatePropertyPages(Microsoft.Aspnet.Snapin.IPropertySheetCallback,System.IntPtr,Microsoft.Aspnet.Snapin.IDataObject)">
+      <apidata name="CreatePropertyPages" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="lpProvider">
+          <type api="T:Microsoft.Aspnet.Snapin.IPropertySheetCallback" ref="true" />
+        </parameter>
+        <parameter name="handle">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="lpIDataObject">
+          <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IExtendPropertySheet" ref="true" />
+      </containers>
+      <file name="323ff8db-2d5c-28f4-426a-1ee031b1863a" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IExtendPropertySheet.QueryPagesFor(Microsoft.Aspnet.Snapin.IDataObject)">
+      <apidata name="QueryPagesFor" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="lpDataObject">
+          <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IExtendPropertySheet" ref="true" />
+      </containers>
+      <file name="62f705a6-87b3-4c10-c85a-b3868ff2dcc9" />
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.IExtendPropertySheet2">
+      <apidata name="IExtendPropertySheet2" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Aspnet.Snapin.IExtendPropertySheet2.CreatePropertyPages(Microsoft.Aspnet.Snapin.IPropertySheetCallback,System.IntPtr,Microsoft.Aspnet.Snapin.IDataObject)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IExtendPropertySheet2.QueryPagesFor(Microsoft.Aspnet.Snapin.IDataObject)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IExtendPropertySheet2.GetWatermarks(Microsoft.Aspnet.Snapin.IDataObject,System.IntPtr@,System.IntPtr@,System.IntPtr@,System.Int32@)" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.InterfaceTypeAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ComInterfaceType" ref="false" />
+            <enumValue>
+              <field name="InterfaceIsIUnknown" />
+            </enumValue>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>B7A87232-4A51-11D1-A7EA-00C04FD909DD</value>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="bef8908d-2175-5cc7-b898-ed7b727c362b" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IExtendPropertySheet2.CreatePropertyPages(Microsoft.Aspnet.Snapin.IPropertySheetCallback,System.IntPtr,Microsoft.Aspnet.Snapin.IDataObject)">
+      <apidata name="CreatePropertyPages" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="lpProvider">
+          <type api="T:Microsoft.Aspnet.Snapin.IPropertySheetCallback" ref="true" />
+        </parameter>
+        <parameter name="handle">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="lpIDataObject">
+          <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IExtendPropertySheet2" ref="true" />
+      </containers>
+      <file name="1d7fa988-980f-8443-e079-86518c5601ad" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IExtendPropertySheet2.GetWatermarks(Microsoft.Aspnet.Snapin.IDataObject,System.IntPtr@,System.IntPtr@,System.IntPtr@,System.Int32@)">
+      <apidata name="GetWatermarks" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="lpIDataObject">
+          <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+        </parameter>
+        <parameter name="lphWatermark" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+        <parameter name="lphHeader" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+        <parameter name="lphPalette" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+        <parameter name="bStretch" out="true">
+          <referenceTo>
+            <type api="T:System.Int32" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IExtendPropertySheet2" ref="true" />
+      </containers>
+      <file name="09680ba9-d2e0-b7ce-77e1-32d2588c3858" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IExtendPropertySheet2.QueryPagesFor(Microsoft.Aspnet.Snapin.IDataObject)">
+      <apidata name="QueryPagesFor" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="lpDataObject">
+          <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IExtendPropertySheet2" ref="true" />
+      </containers>
+      <file name="40c0900f-9f75-0cb0-bda8-bc06f74c1e88" />
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.IPropertySheetCallback">
+      <apidata name="IPropertySheetCallback" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Aspnet.Snapin.IPropertySheetCallback.AddPage(System.IntPtr)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IPropertySheetCallback.RemovePage(System.IntPtr)" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>85DE64DD-EF21-11cf-A285-00C04FD8DBE6</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.InterfaceTypeAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ComInterfaceType" ref="false" />
+            <enumValue>
+              <field name="InterfaceIsIUnknown" />
+            </enumValue>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="f89d860e-bc16-973b-0cda-13c36a3ad4ce" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IPropertySheetCallback.AddPage(System.IntPtr)">
+      <apidata name="AddPage" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="hPage">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IPropertySheetCallback" ref="true" />
+      </containers>
+      <file name="fa5c0589-6b67-c2a6-62f3-d96c8efe2063" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IPropertySheetCallback.RemovePage(System.IntPtr)">
+      <apidata name="RemovePage" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="hPage">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IPropertySheetCallback" ref="true" />
+      </containers>
+      <file name="e99d47ce-4d2c-9f29-1c18-2e1510cf00fc" />
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.ISnapinAbout">
+      <apidata name="ISnapinAbout" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Aspnet.Snapin.ISnapinAbout.GetSnapinDescription(System.IntPtr@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.ISnapinAbout.GetProvider(System.IntPtr@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.ISnapinAbout.GetSnapinVersion(System.IntPtr@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.ISnapinAbout.GetSnapinImage(System.IntPtr@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.ISnapinAbout.GetStaticFolderImage(System.IntPtr@,System.IntPtr@,System.IntPtr@,System.Int32@)" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.InterfaceTypeAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ComInterfaceType" ref="false" />
+            <enumValue>
+              <field name="InterfaceIsIUnknown" />
+            </enumValue>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>1245208C-A151-11D0-A7D7-00C04FD909DD</value>
+          </argument>
+        </attribute>
+      </attributes>
+      <file name="4f2c0e11-f7de-2d60-7a83-c2d263395168" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.ISnapinAbout.GetProvider(System.IntPtr@)">
+      <apidata name="GetProvider" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="pName" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.ISnapinAbout" ref="true" />
+      </containers>
+      <file name="667b0e98-10db-cc2f-e462-5c0e07390493" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.ISnapinAbout.GetSnapinDescription(System.IntPtr@)">
+      <apidata name="GetSnapinDescription" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="lpDescription" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.ISnapinAbout" ref="true" />
+      </containers>
+      <file name="343505b9-9521-8b1b-8220-5a03f2fa8f69" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.ISnapinAbout.GetSnapinImage(System.IntPtr@)">
+      <apidata name="GetSnapinImage" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="hAppIcon" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.ISnapinAbout" ref="true" />
+      </containers>
+      <file name="68ba4f7c-4445-68f8-d6db-a064dbef7183" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.ISnapinAbout.GetSnapinVersion(System.IntPtr@)">
+      <apidata name="GetSnapinVersion" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="lpVersion" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.ISnapinAbout" ref="true" />
+      </containers>
+      <file name="3fc87532-e77e-3bda-8a63-df7c2f5ae27b" />
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.ISnapinAbout.GetStaticFolderImage(System.IntPtr@,System.IntPtr@,System.IntPtr@,System.Int32@)">
+      <apidata name="GetStaticFolderImage" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="hSmallImage" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+        <parameter name="hSmallImageOpen" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+        <parameter name="hLargeImage" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+        <parameter name="cMask" out="true">
+          <referenceTo>
+            <type api="T:System.Int32" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.ISnapinAbout" ref="true" />
+      </containers>
+      <file name="5f08777d-f7cb-8ab6-67d1-df2cf3fed7dd" />
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.MMC_CONTROL_TYPE">
+      <apidata name="MMC_CONTROL_TYPE" group="type" subgroup="enumeration" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <enumerationbase>
+        <type api="T:System.Int32" ref="false" />
+      </enumerationbase>
+      <elements>
+        <element api="F:Microsoft.Aspnet.Snapin.MMC_CONTROL_TYPE.TOOLBAR" />
+        <element api="F:Microsoft.Aspnet.Snapin.MMC_CONTROL_TYPE.MENUBUTTON" />
+        <element api="F:Microsoft.Aspnet.Snapin.MMC_CONTROL_TYPE.COMBOBOXBAR" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <file name="41331275-f6f4-e319-7fbe-3cde08d5c7d3" />
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.MMC_LISTPAD_INFO">
+      <apidata name="MMC_LISTPAD_INFO" group="type" subgroup="structure" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="sequential" format="ansi" />
+      <elements>
+        <element api="M:System.ValueType.Equals(System.Object)" />
+        <element api="M:System.ValueType.GetHashCode" />
+        <element api="M:System.ValueType.ToString" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <file name="eb2e9b8a-e1e6-ced3-5775-35bc1cd83137" />
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.MMC_TASK">
+      <apidata name="MMC_TASK" group="type" subgroup="structure" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="sequential" format="ansi" />
+      <elements>
+        <element api="M:System.ValueType.Equals(System.Object)" />
+        <element api="M:System.ValueType.GetHashCode" />
+        <element api="M:System.ValueType.ToString" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <file name="6f1837d3-484a-30a3-92c5-b6d6331a84c5" />
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.MMC_TASK_DISPLAY_OBJECT">
+      <apidata name="MMC_TASK_DISPLAY_OBJECT" group="type" subgroup="structure" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="sequential" format="ansi" />
+      <elements>
+        <element api="M:System.ValueType.Equals(System.Object)" />
+        <element api="M:System.ValueType.GetHashCode" />
+        <element api="M:System.ValueType.ToString" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <file name="6a21be0f-807d-9c61-d57c-73fb1c28c6b4" />
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.MMCBUTTON">
+      <apidata name="MMCBUTTON" group="type" subgroup="structure" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="sequential" format="ansi" />
+      <elements>
+        <element api="M:System.ValueType.Equals(System.Object)" />
+        <element api="M:System.ValueType.GetHashCode" />
+        <element api="M:System.ValueType.ToString" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <file name="b466b0b1-c55d-c545-8b32-47023b9b0459" />
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.PropSheetPageProc">
+      <apidata name="PropSheetPageProc" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <parameters>
+        <parameter name="hwnd">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="uMsg">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="lParam">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <file name="e68b0375-007c-acf6-e8d4-80425bdfd7fb" />
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.RESULTDATAITEM">
+      <apidata name="RESULTDATAITEM" group="type" subgroup="structure" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="sequential" format="ansi" />
+      <elements>
+        <element api="M:System.ValueType.Equals(System.Object)" />
+        <element api="M:System.ValueType.GetHashCode" />
+        <element api="M:System.ValueType.ToString" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <file name="65f189d4-f60b-9ee1-075f-4d6e01f90ada" />
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.SCOPEDATAITEM">
+      <apidata name="SCOPEDATAITEM" group="type" subgroup="structure" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="sequential" format="ansi" />
+      <elements>
+        <element api="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.mask" />
+        <element api="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.displayname" />
+        <element api="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.nImage" />
+        <element api="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.nOpenImage" />
+        <element api="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.nState" />
+        <element api="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.cChildren" />
+        <element api="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.lParam" />
+        <element api="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.relativeID" />
+        <element api="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.ID" />
+        <element api="M:System.ValueType.Equals(System.Object)" />
+        <element api="M:System.ValueType.GetHashCode" />
+        <element api="M:System.ValueType.ToString" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <file name="b2447c1f-79a5-175e-65d2-4742535f13f3" />
+    </api>
+    <api id="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.cChildren">
+      <apidata name="cChildren" group="member" subgroup="field" />
+      <memberdata visibility="public" static="false" special="false" />
+      <fielddata literal="false" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.SCOPEDATAITEM" ref="false" />
+      </containers>
+      <file name="8af859b5-2292-ffbd-e3f6-3a4d767913da" />
+    </api>
+    <api id="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.displayname">
+      <apidata name="displayname" group="member" subgroup="field" />
+      <memberdata visibility="public" static="false" special="false" />
+      <fielddata literal="false" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.IntPtr" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.SCOPEDATAITEM" ref="false" />
+      </containers>
+      <file name="ce7d7d4a-ad7a-d8a9-a4f1-679a4ea16e6c" />
+    </api>
+    <api id="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.ID">
+      <apidata name="ID" group="member" subgroup="field" />
+      <memberdata visibility="public" static="false" special="false" />
+      <fielddata literal="false" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.SCOPEDATAITEM" ref="false" />
+      </containers>
+      <file name="098a6388-309d-7c5f-fc57-fd708d13de41" />
+    </api>
+    <api id="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.lParam">
+      <apidata name="lParam" group="member" subgroup="field" />
+      <memberdata visibility="public" static="false" special="false" />
+      <fielddata literal="false" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.SCOPEDATAITEM" ref="false" />
+      </containers>
+      <file name="5fa543ea-be28-417d-41e2-2725aaeac982" />
+    </api>
+    <api id="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.mask">
+      <apidata name="mask" group="member" subgroup="field" />
+      <memberdata visibility="public" static="false" special="false" />
+      <fielddata literal="false" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.SCOPEDATAITEM" ref="false" />
+      </containers>
+      <file name="d7e2e298-0d64-6d18-d5a1-8f3ea6e67748" />
+    </api>
+    <api id="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.nImage">
+      <apidata name="nImage" group="member" subgroup="field" />
+      <memberdata visibility="public" static="false" special="false" />
+      <fielddata literal="false" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.SCOPEDATAITEM" ref="false" />
+      </containers>
+      <file name="60242609-83c5-70d2-af80-06e47c68c772" />
+    </api>
+    <api id="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.nOpenImage">
+      <apidata name="nOpenImage" group="member" subgroup="field" />
+      <memberdata visibility="public" static="false" special="false" />
+      <fielddata literal="false" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.SCOPEDATAITEM" ref="false" />
+      </containers>
+      <file name="ebe87ffb-8340-e825-72f4-c1ccd60cccbe" />
+    </api>
+    <api id="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.nState">
+      <apidata name="nState" group="member" subgroup="field" />
+      <memberdata visibility="public" static="false" special="false" />
+      <fielddata literal="false" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.SCOPEDATAITEM" ref="false" />
+      </containers>
+      <file name="aca05565-e283-af92-e86d-e9843d3b8050" />
+    </api>
+    <api id="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.relativeID">
+      <apidata name="relativeID" group="member" subgroup="field" />
+      <memberdata visibility="public" static="false" special="false" />
+      <fielddata literal="false" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.SCOPEDATAITEM" ref="false" />
+      </containers>
+      <file name="e5c179b0-8660-b3bf-2c2a-c2d2f78b90ad" />
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.STGMEDIUM">
+      <apidata name="STGMEDIUM" group="type" subgroup="structure" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="sequential" format="ansi" />
+      <elements>
+        <element api="M:System.ValueType.Equals(System.Object)" />
+        <element api="M:System.ValueType.GetHashCode" />
+        <element api="M:System.ValueType.ToString" />
+        <element api="M:System.Object.GetType" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <file name="5ed7fa98-7a44-f6eb-ea67-8c21e3b72a85" />
+    </api>
+  </apis>
+</reflection>

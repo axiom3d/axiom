@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="3ac51df3-4e38-4acb-aecf-f222bed0525f" revisionNumber="7">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.INullableValue">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Defines the fundamental value and existence properties for nullable types.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>A type is said to be nullable if it can be assigned a value or can be assigned <languageKeyword>null</languageKeyword>, which means the type has no value whatsoever. Consequently, a nullable type can express either a value or that no value exists. For example, a reference type such as <codeEntityReference autoUpgrade="true">T:System.String</codeEntityReference> is nullable, whereas a value type such as <codeEntityReference autoUpgrade="true">T:System.Int32</codeEntityReference> is not. A value type cannot be nullable because it has enough capacity to express only the values appropriate for that type; it does not have the additional capacity required to express a value of null. </para>
+            <para>Use nullable types to represent things that exist or do not exist, depending on circumstance. For example, an optional attribute of an HTML tag might exist in one tag but not another, or a nullable column of a database table might exist in one row of the table but not another. You can define a type that represents an HTML tag or a database row, and define a field in the type that represents an optional attribute or a nullable column. If you define the field as a reference type you can assign the field a value or you can assign <languageKeyword>null</languageKeyword>, which means the optional attribute is absent or the nullable column does not exist. However, if you define the field as a value type, you can assign a value but not null. </para>
+            <para>The solution to the problem is to define the field as a <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> value type with a suitable value type as the generic type parameter. The <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object can be assigned values appropriate to the generic type parameter as well as <languageKeyword>null</languageKeyword>.</para>
+            <para>The <codeEntityReference autoUpgrade="true">T:System.INullableValue</codeEntityReference> interface, the generic <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> class, and the nongeneric <codeEntityReference autoUpgrade="true">T:System.Nullable</codeEntityReference> class collectively support using a value type as a nullable type. Only value types can implement the <codeEntityReference autoUpgrade="true">T:System.INullableValue</codeEntityReference> interface.</para>
+          </content>
+          <sections>
+            <section>
+              <title>Determining Whether a Type is Nullable</title>
+              <content>
+                <para>It is often necessary for an application to determine whether a type is a <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object. For example, your application might need to determine whether a method parameter passed anonymously as an <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference> type is actually a <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object. </para>
+                <para>A <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object is derived directly from the <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference> class, and consequently class inheritance cannot be used to determine if an anonymous type is a <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object. However, you can determine whether an anonymous type is a <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference> object by testing whether the type implements the <codeEntityReference autoUpgrade="true">T:System.INullableValue</codeEntityReference> interface. </para>
+              </content>
+            </section>
+            <section>
+              <title>Fundamental Properties</title>
+              <content>
+                <para>The two fundamental members of the <codeEntityReference autoUpgrade="true">T:System.INullableValue</codeEntityReference> interface are the <codeEntityReference autoUpgrade="true">P:System.INullableValue.HasValue</codeEntityReference> and <codeEntityReference autoUpgrade="true">P:System.INullableValue.Value</codeEntityReference> properties. If the <codeEntityReference autoUpgrade="true">P:System.INullableValue.HasValue</codeEntityReference> property for a particular generic value type is <languageKeyword>true</languageKeyword>, the value of the type can be accessed with the <codeEntityReference autoUpgrade="true">P:System.INullableValue.Value</codeEntityReference> property. If the <codeEntityReference autoUpgrade="true">P:System.INullableValue.HasValue</codeEntityReference> property is <languageKeyword>false</languageKeyword>, the value of the structure is undefined and an attempt to access the <codeEntityReference autoUpgrade="true">P:System.INullableValue.Value</codeEntityReference> property throws an <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>. </para>
+              </content>
+            </section>
+          </sections>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Nullable`1</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Nullable</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="P:System.INullableValue.HasValue">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Indicates whether a nullable type has a defined value.</para>
+        </summary>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if the value of nullable type is defined; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>If the <codeEntityReference autoUpgrade="true">P:System.INullableValue.HasValue</codeEntityReference> property is <languageKeyword>true</languageKeyword>, the value of the nullable type can be accessed with the <codeEntityReference autoUpgrade="true">P:System.INullableValue.Value</codeEntityReference> property. If the <codeEntityReference autoUpgrade="true">P:System.INullableValue.HasValue</codeEntityReference> property is <languageKeyword>false</languageKeyword>, accessing the <codeEntityReference autoUpgrade="true">P:System.INullableValue.Value</codeEntityReference> property throws <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">P:System.INullableValue.Value</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="P:System.INullableValue.Value">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Gets the value of the nullable type.</para>
+        </summary>
+        <returnValue>
+          <para>The value of the nullable type if the <codeEntityReference autoUpgrade="true">P:System.INullableValue.HasValue</codeEntityReference> property is <languageKeyword>true</languageKeyword>; otherwise, <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference> is thrown.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.InvalidOperationException</codeEntityReference>
+            <content>
+              <para>The <codeEntityReference autoUpgrade="true">P:System.INullableValue.HasValue</codeEntityReference> property is <languageKeyword>false</languageKeyword>.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>If the <codeEntityReference autoUpgrade="true">P:System.INullableValue.HasValue</codeEntityReference> property is <languageKeyword>true</languageKeyword>, the value of the nullable type is defined and therefore usable; otherwise, the value is undefined and unusable.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">P:System.INullableValue.HasValue</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+  </members>
+</doc>

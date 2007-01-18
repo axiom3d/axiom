@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:dev="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" fileAssetGuid="69a3cd84-ed74-4d0b-8353-fd148a99d6d0" revisionNumber="4">
+  <assembly>
+    <name>mscorlib</name>
+  </assembly>
+  <members>
+    <member name="T:System.MulticastDelegate">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Represents a multicast delegate; that is, a delegate that can have more than one element in its invocation list.</para>
+        </summary>
+        <remarks>
+          <content>
+            <para>
+              <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference> is a special class. Compilers and other tools can derive from this class, but you cannot derive from it explicitly. The same is true of the <codeEntityReference autoUpgrade="true">T:System.Delegate</codeEntityReference> class.</para>
+            <para>A <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference> has a linked list of delegates, called an invocation list, consisting of one or more elements. When a multicast delegate is invoked, the delegates in the invocation list are called synchronously in the order in which they appear. If an error occurs during execution of the list then an exception is thrown.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+                <para>The following example demonstrates the use of a class that is derived from <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>.</para>
+                <codeReference>Multicast Delegate Introduction#1</codeReference>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="M:System.MulticastDelegate.#ctor(System.Object,System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference> class.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>target</parameterReference>
+            <content>
+              <para>The object on which <parameterReference>method</parameterReference> is defined. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>method</parameterReference>
+            <content>
+              <para>The name of the method for which a delegate is created. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MemberAccessException</codeEntityReference>
+            <content>
+              <para>Cannot create an instance of an abstract class or this member was invoked with a late-binding mechanism. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This constructor is called from the class produced by the compiler-generated code.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+      <overload>
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference> class.</para>
+        </summary>
+      </overload>
+</dduexml>
+    </member>
+    <member name="Overload:System.MulticastDelegate.#ctor">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference> class.</para>
+        </summary>
+      </dduexml>
+    </member>
+    <member name="M:System.MulticastDelegate.#ctor(System.Type,System.String)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Initializes a new instance of the <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference> class.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>target</parameterReference>
+            <content>
+              <para>The type of object on which <parameterReference>method</parameterReference> is defined. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>method</parameterReference>
+            <content>
+              <para>The name of the static method for which a delegate is created. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MemberAccessException</codeEntityReference>
+            <content>
+              <para>Cannot create an instance of an abstract class or this member was invoked with a late-binding mechanism. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This constructor is called from a class to generate a delegate based on a static method name and the <codeEntityReference autoUpgrade="true">T:System.Type</codeEntityReference> of the class that defines the method.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+      </dduexml>
+    </member>
+    <member name="M:System.MulticastDelegate.CombineImpl(System.Delegate)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Combines this <codeEntityReference autoUpgrade="true">T:System.Delegate</codeEntityReference> with the specified <codeEntityReference autoUpgrade="true">T:System.Delegate</codeEntityReference> to form a new delegate.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>follow</parameterReference>
+            <content>
+              <para>The delegate to combine with this delegate. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.Delegate</codeEntityReference> that is the new root of the <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference> invocation list.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MemberAccessException</codeEntityReference>
+            <content>
+              <para>Cannot create an instance of an abstract class or this member was invoked with a late-binding mechanism. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+      </dduexml>
+    </member>
+    <member name="M:System.MulticastDelegate.DynamicInvokeImpl(System.Object[])">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Processes the full invocation list.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>args</parameterReference>
+            <content>
+              <para>The arguments to pass to the encapsulated method. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>An array of type <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference> that contains the return value of the encapsulated method.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MemberAccessException</codeEntityReference>
+            <content>
+              <para>Cannot create an instance of an abstract class or this member was invoked with a late-binding mechanism.</para>
+              <para>-or- </para>
+              <para>There is an attempt to invoke a method to which the caller does not have access (that is, a private method). </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentException</codeEntityReference>
+            <content>
+              <para>The number, order, or type of parameters is invalid. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.Reflection.TargetException</codeEntityReference>
+            <content>
+              <para>An encapsulated method is not static, and the target object is null.</para>
+              <para>-or- </para>
+              <para>There is an attempt to invoke a method on an object or class that does not support the method. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.Reflection.TargetInvocationException</codeEntityReference>
+            <content>
+              <para>One of the encapsulated methods throws an exception. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+      </dduexml>
+    </member>
+    <member name="M:System.MulticastDelegate.Equals(System.Object)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Determines whether this multicast delegate and the specified object are equal.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>obj</parameterReference>
+            <content>
+              <para>The object to compare with this instance. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>obj</parameterReference> and this instance have the same invocation lists; otherwise, <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MemberAccessException</codeEntityReference>
+            <content>
+              <para>Cannot create an instance of an abstract class or this member was invoked with a late-binding mechanism. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Two delegates are equal if they are not <languageKeyword>null</languageKeyword> and are of exactly the same type, their invocation lists contain the same number of elements, and every element in the invocation list of the first delegate is equal to the corresponding element in the invocation list of the second delegate.</para>
+            <para>Two invocation list elements are equal if they invoke the same instance method on the same target instance, or they invoke the same static method.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+      <overload>
+        <summary>
+          <para>Determines whether this multicast delegate and a specified object are equal.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.MulticastDelegate.GetHashCode">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the hash code for this instance.</para>
+        </summary>
+        <returnValue>
+          <para>A 32-bit signed integer hash code.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MemberAccessException</codeEntityReference>
+            <content>
+              <para>Cannot create an instance of an abstract class or this member was invoked with a late-binding mechanism. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+      </dduexml>
+    </member>
+    <member name="M:System.MulticastDelegate.GetInvocationList">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns the invocation list of this multicast delegate, in invocation order.</para>
+        </summary>
+        <returnValue>
+          <para>An array of delegates whose invocation lists collectively match the invocation list of this instance.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MemberAccessException</codeEntityReference>
+            <content>
+              <para>Cannot create an instance of an abstract class or this member was invoked with a late-binding mechanism. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>The array contains a set of delegates, each with an invocation list of one entry. Invoking these delegates sequentially, in the order they appear in the array, produces the same results as invoking the current instance.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+      </dduexml>
+    </member>
+    <member name="M:System.MulticastDelegate.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Populates a <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference> object with all the data needed to serialize this instance.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>info</parameterReference>
+            <content>
+              <para>An object that holds all the data needed to serialize or deserialize this instance. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>context</parameterReference>
+            <content>
+              <para>(Reserved) The location where serialized data is stored and retrieved. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.ArgumentNullException</codeEntityReference>
+            <content>
+              <para>
+                <parameterReference>info</parameterReference> is <languageKeyword>null</languageKeyword>. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MemberAccessException</codeEntityReference>
+            <content>
+              <para>Cannot create an instance of an abstract class or this member was invoked with a late-binding mechanism. </para>
+            </content>
+          </exception>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationException</codeEntityReference>
+            <content>
+              <para>A serialization error occurred.</para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>This method stores all the information in <parameterReference>info</parameterReference> necessary to serialize this instance.</para>
+            <para>The <parameterReference>context</parameterReference> parameter is reserved and is not currently used in the execution of this method.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+        <relatedTopics>
+          <codeEntityReference autoUpgrade="true">T:System.Object</codeEntityReference>
+          <codeEntityReference autoUpgrade="true">T:System.Runtime.Serialization.SerializationInfo</codeEntityReference>
+        </relatedTopics>
+      </dduexml>
+    </member>
+    <member name="M:System.MulticastDelegate.op_Equality(System.MulticastDelegate,System.MulticastDelegate)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <equivalentCodeEntity>
+          <codeEntityReference>M:System.MulticastDelegate.Equals(System.Object)</codeEntityReference>
+          <content>
+          </content>
+        </equivalentCodeEntity>
+        <summary>
+          <para>Determines whether two <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference> objects are equal.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>d1</parameterReference>
+            <content>
+              <para>The left operand. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>d2</parameterReference>
+            <content>
+              <para>The right operand. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>d1</parameterReference> and <parameterReference>d2</parameterReference> have the same invocation lists; otherwise <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MemberAccessException</codeEntityReference>
+            <content>
+              <para>Cannot create an instance of an abstract class or this member was invoked with a late-binding mechanism. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Two delegates are equal if they are not <languageKeyword>null</languageKeyword> and are of exactly the same type, their invocation lists contain the same number of elements, and every element in the invocation list of the first delegate is equal to the corresponding element in the invocation list of the second delegate.</para>
+            <para>Two invocation list elements are equal if they invoke the same instance method on the same target instance, or they invoke the same static method.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+      <overload>
+        <summary>
+          <para>Determines whether two objects are equal.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.MulticastDelegate.op_Inequality(System.MulticastDelegate,System.MulticastDelegate)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <equivalentCodeEntity>
+          <codeEntityReference>M:System.MulticastDelegate.Equals(System.Object)</codeEntityReference>
+          <content>
+          </content>
+        </equivalentCodeEntity>
+        <summary>
+          <para>Determines whether two <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference> objects are not equal.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>d1</parameterReference>
+            <content>
+              <para>The left operand. </para>
+            </content>
+          </parameter>
+          <parameter>
+            <parameterReference>d2</parameterReference>
+            <content>
+              <para>The right operand. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>
+            <languageKeyword>true</languageKeyword> if <parameterReference>d1</parameterReference> and <parameterReference>d2</parameterReference> do not have the same invocation lists; otherwise <languageKeyword>false</languageKeyword>.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MemberAccessException</codeEntityReference>
+            <content>
+              <para>Cannot create an instance of an abstract class or this member was invoked with a late-binding mechanism. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <remarks>
+          <content>
+            <para>Two delegates are equal if they are not <languageKeyword>null</languageKeyword> and are of exactly the same type, their invocation lists contain the same number of elements, and every element in the invocation list of the first delegate is equal to the corresponding element in the invocation list of the second delegate.</para>
+            <para>Two invocation list elements are equal if they invoke the same instance method on the same target instance, or they invoke the same static method.</para>
+          </content>
+        </remarks>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+      <overload>
+        <summary>
+          <para>Determines whether two objects are not equal.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </overload>
+</dduexml>
+    </member>
+    <member name="M:System.MulticastDelegate.RemoveImpl(System.Delegate)">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Removes an element from the invocation list of this <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference> that is equal to the specified delegate.</para>
+        </summary>
+        <parameters>
+          <parameter>
+            <parameterReference>value</parameterReference>
+            <content>
+              <para>The delegate to search for in the invocation list. </para>
+            </content>
+          </parameter>
+        </parameters>
+        <returnValue>
+          <para>If <parameterReference>value</parameterReference> is found in the invocation list for this instance, then a new <codeEntityReference autoUpgrade="true">T:System.Delegate</codeEntityReference> without <parameterReference>value</parameterReference> in its invocation list; otherwise, this instance with its original invocation list.</para>
+        </returnValue>
+        <exceptions>
+          <exception>
+            <codeEntityReference autoUpgrade="true">T:System.MemberAccessException</codeEntityReference>
+            <content>
+              <para>Cannot create an instance of an abstract class or this member was invoked with a late-binding mechanism. </para>
+            </content>
+          </exception>
+        </exceptions>
+        <permissions>
+          <permission>
+            <codeEntityReference autoUpgrade="true">T:System.Security.Permissions.ReflectionPermission</codeEntityReference>
+            <content>
+              <para>when invoked late-bound through mechanisms such as <codeEntityReference qualifyHint="true" autoUpgrade="true">M:System.Type.InvokeMember(System.String,System.Reflection.BindingFlags,System.Reflection.Binder,System.Object,System.Object[],System.Reflection.ParameterModifier[],System.Globalization.CultureInfo,System.String[])</codeEntityReference>. Associated enumeration: <codeEntityReference qualifyHint="true" autoUpgrade="true">F:System.Security.Permissions.ReflectionPermissionFlag.MemberAccess</codeEntityReference>. </para>
+            </content>
+          </permission>
+        </permissions>
+      </dduexml>
+    </member>
+    <member name="M:System.MulticastDelegate.GetMethodImpl">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Returns a static method represented by the current <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>.</para>
+        </summary>
+        <returnValue>
+          <para>A <codeEntityReference autoUpgrade="true">T:System.Reflection.MethodInfo</codeEntityReference> describing a static method represented by the current <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference>.</para>
+        </returnValue>
+        <remarks>
+          <content>
+            <para>If the <codeEntityReference autoUpgrade="true">T:System.MulticastDelegate</codeEntityReference> represents multiple methods, only one method is returned.</para>
+          </content>
+        </remarks>
+        <codeExamples>
+          <codeExample>
+            <legacy>
+              <content>
+              </content>
+            </legacy>
+          </codeExample>
+        </codeExamples>
+      </dduexml>
+    </member>
+    <member name="Overload:System.MulticastDelegate.Equals">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Determines whether this multicast delegate and a specified object are equal.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="Overload:System.MulticastDelegate.op_Equality">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Determines whether two objects are equal.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+    <member name="Overload:System.MulticastDelegate.op_Inequality">
+      <dduexml xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5">
+        <summary>
+          <para>Determines whether two objects are not equal.</para>
+        </summary>
+        <remarks>
+          <content>
+          </content>
+        </remarks>
+      </dduexml>
+    </member>
+  </members>
+</doc>
