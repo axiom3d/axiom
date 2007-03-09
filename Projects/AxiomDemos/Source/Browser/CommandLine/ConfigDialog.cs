@@ -93,7 +93,7 @@ namespace Axiom.Demos.Browser.CommandLine
             int index = 0;
             foreach( object opt in _menuItems )
             {
-                System.Console.WriteLine( "{0}      | {1}", index++, opt.ToString() );
+                System.Console.WriteLine( "{0:D2}      | {1}", index++, opt.ToString() );
             }
 
             if ( _currentOption.Name == null )
@@ -105,24 +105,41 @@ namespace Axiom.Demos.Browser.CommandLine
             Console.Write( "\nSelect option : " );
         }
 
-        private ConsoleKey GetInput()
+        private int GetInput()
         {
-            ConsoleKeyInfo key = Console.ReadKey();
-            return key.Key;
+            int number = 0;
+            int keyCount = 2;
+
+            while ( keyCount > 0 )
+            {
+                ConsoleKeyInfo key = Console.ReadKey();
+
+                if ( key.Key == ConsoleKey.Escape )
+                    return -1;
+                if ( key.Key == ConsoleKey.Enter )
+                    return -2;
+
+                if ( key.Key.ToString().Substring( 1 ).Length == 1 && key.Key.ToString().Substring( 1 ).ToCharArray()[ 0 ] >= '0' && key.Key.ToString().Substring( 1 ).ToCharArray()[ 0 ] <= '9' )
+                {
+                    number += Int32.Parse( key.Key.ToString().Substring( 1 ) ) * ( (int)System.Math.Pow( 10, keyCount - 1 ) );
+                    keyCount--;
+                }
+            }
+            return number;
         }
 
-        private bool ProcessKey( ConsoleKey key )
+        private bool ProcessKey( int key )
         {
             int index;
 
             if ( _currentOption.Name == null )
             {
-                if ( key == ConsoleKey.Escape )
+                if ( key == -1 ) //ESCAPE
                 {
                     _result = DialogResult.Cancel;
                     return false;
                 }
-                if ( key == ConsoleKey.Enter )
+                if ( key == -2 )
                 {
                     Root.Instance.RenderSystem = _currentSystem;
 
@@ -136,27 +153,27 @@ namespace Axiom.Demos.Browser.CommandLine
                     return false;
                 }
 
-                if ( key.ToString().Substring( 1 ).Length == 1 && key.ToString().Substring( 1 ).ToCharArray()[ 0 ] >= '0' && key.ToString().Substring( 1 ).ToCharArray()[ 0 ] <= '9' )
-                {
-                    index = Int32.Parse( key.ToString().Substring( 1 ) );
+                //if ( key.ToString().Substring( 1 ).Length == 1 && key.ToString().Substring( 1 ).ToCharArray()[ 0 ] >= '0' && key.ToString().Substring( 1 ).ToCharArray()[ 0 ] <= '9' )
+                //{
+                //    index = Int32.Parse( key.ToString().Substring( 1 ) );
 
-                    if ( index < _menuItems.Count )
+                    if ( key < _menuItems.Count )
                     {
-                        _currentOption = (ConfigOption)_menuItems[ index ];
+                        _currentOption = (ConfigOption)_menuItems[ key ];
                     }
-                }
+                //}
             }
             else
             {
 
-                if ( key.ToString().Substring( 1 ).Length == 1 && key.ToString().Substring( 1 ).ToCharArray()[ 0 ] >= '0' && key.ToString().Substring( 1 ).ToCharArray()[ 0 ] <= '9' )
-                {
-                    index = Int32.Parse( key.ToString().Substring( 1 ) );
-                    _currentOption.Value = _currentOption.PossibleValues[ index ].ToString();
+                //if ( key.ToString().Substring( 1 ).Length == 1 && key.ToString().Substring( 1 ).ToCharArray()[ 0 ] >= '0' && key.ToString().Substring( 1 ).ToCharArray()[ 0 ] <= '9' )
+                //{
+                    //index = Int32.Parse( key.ToString().Substring( 1 ) );
+                    _currentOption.Value = _currentOption.PossibleValues[ key ].ToString();
 
                     if ( _currentOption.Name == "Render System" ) // About to change Renderers
                     {
-                        _currentSystem = (RenderSystem)_currentOption.PossibleValues[ index ];
+                        //currentSystem = (RenderSystem)_currentOption.PossibleValues[ key ];
                         _renderSystems = _currentOption;
                         BuildOptions();
                         _currentOption.Name = null;
@@ -172,7 +189,7 @@ namespace Axiom.Demos.Browser.CommandLine
                             _options[ index ] = _currentOption; 
                         }
                     }
-                }
+                //}
                 _currentOption.Name = null;
             }
             return true;
@@ -185,7 +202,7 @@ namespace Axiom.Demos.Browser.CommandLine
             {
                 BuildMenu();
                 DisplayOptions();
-                ConsoleKey value = GetInput();
+                int value = GetInput();
                 _continue = ProcessKey( value );
             } while ( _continue );
             Console.Clear();
