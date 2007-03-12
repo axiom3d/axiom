@@ -158,8 +158,6 @@ namespace Axiom.Graphics
         /// </summary>
         public virtual VertexElementList FindElementBySource( ushort source )
         {
-            VertexElementList elements = new VertexElementList();
-
             for ( int i = 0; i < elements.Count; i++ )
             {
                 VertexElement element = (VertexElement)elements[ i ];
