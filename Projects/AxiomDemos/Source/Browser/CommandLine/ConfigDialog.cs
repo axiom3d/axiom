@@ -10,7 +10,7 @@ using Axiom.Collections;
 using System.Collections;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.Demos.Browser.CommandLine
 {
     public enum DialogResult
@@ -34,7 +34,7 @@ namespace Axiom.Demos.Browser.CommandLine
             _renderSystems = new ConfigOption( "Render System", _currentSystem.Name, false );
             foreach ( RenderSystem rs in Root.Instance.RenderSystems )
             {
-                _renderSystems.PossibleValues.Add( rs );
+                _renderSystems.PossibleValues.Add( rs.ToString() );
             }
             BuildOptions();
         }
@@ -56,7 +56,7 @@ namespace Axiom.Demos.Browser.CommandLine
         private void BuildMenu()
         {
             _menuItems.Clear();
-            if ( _currentOption.Name == null )
+            if ( _currentOption == null )
                 BuildMainMenu();
             else
                 BuildOptionMenu();
@@ -64,7 +64,7 @@ namespace Axiom.Demos.Browser.CommandLine
 
         private void BuildMainMenu()
         {
-            for( int index =0 ; index < _options.Count; index++ )
+            for ( int index = 0; index < _options.Count; index++ )
             {
                 _menuItems.Add( _options[ index ] );
             }
@@ -85,18 +85,18 @@ namespace Axiom.Demos.Browser.CommandLine
             Console.WriteLine( "Axiom Engine Configuration" );
             Console.WriteLine( "==========================" );
 
-            if ( _currentOption.Name != null )
+            if ( _currentOption != null )
             {
                 Console.WriteLine( "Available settings for {0}.\n", _currentOption.Name );
             }
             // Load Render Subsystem Options
             int index = 0;
-            foreach( object opt in _menuItems )
+            foreach ( object opt in _menuItems )
             {
-                System.Console.WriteLine( "{0}      | {1}", index++, opt.ToString() );
+                System.Console.WriteLine( "{0:D2}      | {1}", index++, opt.ToString() );
             }
 
-            if ( _currentOption.Name == null )
+            if ( _currentOption == null )
             {
                 Console.WriteLine();
                 Console.WriteLine( "Enter  | Saves changes." );
@@ -105,75 +105,74 @@ namespace Axiom.Demos.Browser.CommandLine
             Console.Write( "\nSelect option : " );
         }
 
-        private ConsoleKey GetInput()
+        private int GetInput()
         {
-            ConsoleKeyInfo key = Console.ReadKey();
-            return key.Key;
+            int number = 0;
+            int keyCount = 2;
+
+            while ( keyCount > 0 )
+            {
+                ConsoleKeyInfo key = Console.ReadKey();
+
+                if ( key.Key == ConsoleKey.Escape )
+                    return -1;
+                if ( key.Key == ConsoleKey.Enter )
+                    return -2;
+
+                if ( key.Key.ToString().Substring( 1 ).Length == 1 && key.Key.ToString().Substring( 1 ).ToCharArray()[ 0 ] >= '0' && key.Key.ToString().Substring( 1 ).ToCharArray()[ 0 ] <= '9' )
+                {
+                    number += Int32.Parse( key.Key.ToString().Substring( 1 ) ) * ( (int)System.Math.Pow( 10, keyCount - 1 ) );
+                    keyCount--;
+                }
+            }
+            return number;
         }
 
-        private bool ProcessKey( ConsoleKey key )
+        private bool ProcessKey( int key )
         {
             int index;
 
-            if ( _currentOption.Name == null )
+            if ( _currentOption == null )
             {
-                if ( key == ConsoleKey.Escape )
+                if ( key == -1 ) //ESCAPE
                 {
                     _result = DialogResult.Cancel;
                     return false;
                 }
-                if ( key == ConsoleKey.Enter )
+                if ( key == -2 )
                 {
                     Root.Instance.RenderSystem = _currentSystem;
 
-                    for ( index = 0; index < _options.Count; index++ )
-                    {
-                        ConfigOption opt = (ConfigOption)_options[ index ];
-                        _currentSystem.ConfigOptions[ opt.Name ] = opt;
-                    }
+                    //for ( index = 0; index < _options.Count; index++ )
+                    //{
+                    //    ConfigOption opt = (ConfigOption)_options[ index ];
+                    //    _currentSystem.ConfigOptions[ opt.Name ] = opt;
+                    //}
 
                     _result = DialogResult.Ok;
                     return false;
                 }
 
-                if ( key.ToString().Substring( 1 ).Length == 1 && key.ToString().Substring( 1 ).ToCharArray()[ 0 ] >= '0' && key.ToString().Substring( 1 ).ToCharArray()[ 0 ] <= '9' )
+                if ( key < _menuItems.Count )
                 {
-                    index = Int32.Parse( key.ToString().Substring( 1 ) );
-
-                    if ( index < _menuItems.Count )
-                    {
-                        _currentOption = (ConfigOption)_menuItems[ index ];
-                    }
+                    _currentOption = (ConfigOption)_menuItems[ key ];
                 }
             }
             else
             {
+                _currentOption.Value = _currentOption.PossibleValues[ key ].ToString();
 
-                if ( key.ToString().Substring( 1 ).Length == 1 && key.ToString().Substring( 1 ).ToCharArray()[ 0 ] >= '0' && key.ToString().Substring( 1 ).ToCharArray()[ 0 ] <= '9' )
+                if ( _currentOption.Name == "Render System" ) // About to change Renderers
                 {
-                    index = Int32.Parse( key.ToString().Substring( 1 ) );
-                    _currentOption.Value = _currentOption.PossibleValues[ index ].ToString();
+                    _renderSystems = _currentOption;
+					_currentSystem = Root.Instance.RenderSystems[ key ];
+					BuildOptions();
+                    _currentOption = null;
 
-                    if ( _currentOption.Name == "Render System" ) // About to change Renderers
-                    {
-                        _currentSystem = (RenderSystem)_currentOption.PossibleValues[ index ];
-                        _renderSystems = _currentOption;
-                        BuildOptions();
-                        _currentOption.Name = null;
-
-                        return true;
-                    }
-
-
-                    for ( index = 0; index < _options.Count; index++ )
-                    {
-                        if ( ( (ConfigOption)_options[ index ] ).Name == _currentOption.Name )
-                        {
-                            _options[ index ] = _currentOption; 
-                        }
-                    }
+                    return true;
                 }
-                _currentOption.Name = null;
+
+                _currentOption = null;
             }
             return true;
         }
@@ -185,7 +184,7 @@ namespace Axiom.Demos.Browser.CommandLine
             {
                 BuildMenu();
                 DisplayOptions();
-                ConsoleKey value = GetInput();
+                int value = GetInput();
                 _continue = ProcessKey( value );
             } while ( _continue );
             Console.Clear();

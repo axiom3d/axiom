@@ -420,7 +420,6 @@ namespace Axiom.Core
         /// <summary>
         /// 
         /// </summary>
-        /// DOC
         public int MeshLodIndex
         {
             get

@@ -34,8 +34,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Text;
+
+using Axiom.Graphics;
 
 #endregion Namespace Declarations
 			
@@ -45,20 +47,101 @@ namespace Axiom.Configuration
     /// Packages the details of a configuration option.
     /// </summary>
     /// <remarks>Used for RenderSystem::getConfigOptions. If immutable is true, this option must be disabled for modifying.</remarks>
-    public struct ConfigOption
+    public class ConfigOption
     {
-        public string Name;
-        public string Value;
-        public ArrayList PossibleValues;
-        public bool Immutable;
+        RenderSystem _parent;
 
-        public ConfigOption(string name, string value, bool immutable)
+        #region Name Property
+
+        private string _name;
+        /// <summary>
+        /// The name for the Configuration Option
+        /// </summary>
+        public string Name
         {
-            this.PossibleValues = new ArrayList();
-            this.Name = name;
-            this.Value = value;
-            this.Immutable = immutable;
+            get
+            {
+                return _name;
+            }
         }
+
+        #endregion Name Property
+
+        #region Value Property
+
+        private string _value;
+        /// <summary>
+        /// The value of the Configuration Option
+        /// </summary>
+        public string Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                if ( _immutable != true )
+                {
+                    _value = value;
+                    OnValueChanged( _name, _value );
+                }
+            }
+        }
+
+        #endregion Value Property
+
+        #region PossibleValues Property
+
+		private List<String> _possibleValues = new List<String>();
+        /// <summary>
+        /// A list of the possible values for this Configuration Option
+        /// </summary>
+        public List<String> PossibleValues
+        {
+            get
+            {
+                return _possibleValues;
+            }
+        }
+
+	    #endregion PossibleValues Property
+
+        #region Immutable Property
+
+        private bool _immutable;
+        /// <summary>
+        /// Indicates if this option can be modified.
+        /// </summary>
+        public bool Immutable
+        {
+            get
+            {
+                return _immutable;
+            }
+        }
+
+        #endregion Immutable Property
+
+        public ConfigOption( string name, string value, bool immutable)
+        {
+            _name = name;
+            _value = value;
+            _immutable = immutable;
+        }
+
+        #region Events
+
+        public delegate void ValueChanged( string name, string value );
+        public event ValueChanged ConfigValueChanged;
+
+        private void OnValueChanged( string name, string value )
+        {
+            if ( ConfigValueChanged != null )
+                ConfigValueChanged( name, Value );
+        }
+
+        #endregion Events
 
         public override string ToString()
         {
