@@ -1,0 +1,59 @@
+
+vertex_program Examples/SimpleShaderVP hlsl
+{
+	source SimpleShaderVP.hlsl
+	entry_point main
+	target vs_1_1
+
+	default_params
+	{
+		param_named_auto uModelViewProjection worldviewproj_matrix
+	}
+}
+
+// Bump map with parallax fragment program 
+fragment_program Examples/SimpleShaderFP hlsl
+{ 
+   source SimpleShaderFP.hlsl
+   entry_point main
+   target ps_1_1
+} 
+
+vertex_program Examples/SimpleVP hlsl
+{
+	source Triangle.hlsl
+	entry_point vs
+	target vs_1_1
+	default_params
+	{
+		param_named_auto uModelViewProjection worldviewproj_matrix
+	}
+}
+
+// Bump map with parallax fragment program 
+fragment_program Examples/SimpleFP hlsl
+{ 
+   source Triangle.hlsl
+   entry_point ps
+   target ps_1_1
+} 
+
+vertex_program Examples/OverlayVP hlsl
+{
+	source overlay.hlsl
+	entry_point vs
+	target vs_1_1
+
+	default_params
+	{
+		param_named_auto uModelViewProjection projection_matrix
+	}
+}
+
+// Bump map with parallax fragment program 
+fragment_program Examples/OverlayFP hlsl
+{ 
+   source overlay.hlsl
+   entry_point ps
+   target ps_1_1
+} 

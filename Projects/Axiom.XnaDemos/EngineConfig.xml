@@ -1,6 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <EngineConfig>
-    <FilePath type="Folder" src="../../../Media" />
-    <FilePath type="Folder" src="../../../../hobbiton/Media/Overlays" />
-    <FilePath type="Folder" src="../../../../hobbiton/Media/Materials" />
+    <FilePath type="Folder" src="../../../../../Media" />
 </EngineConfig>

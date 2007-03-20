@@ -1,0 +1,118 @@
+
+material Core/NodeMaterial
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_check off
+			depth_write off
+			cull_hardware none
+
+			vertex_program_ref Examples/SimpleVP 
+			{
+			}
+
+ 			fragment_program_ref Examples/SimpleFP
+ 			{
+ 			} 
+		}
+	}
+}
+
+material Core/AxiomLogo
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture AxiomLogo.png
+			}
+
+		}
+	}
+}
+
+material Core/XnaLogo
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture XnaLogo.jpg
+			}
+
+		}
+	}
+}
+
+material Core/StatsBlockBorder
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture Border.png
+			}
+
+ 		}
+	}
+}
+
+material Core/StatsBlockCenter
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture Border_Center.png
+			}
+
+		}
+	}
+}
+
+material Core/StatsBreak
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture Border_Break.png
+			}
+
+		}
+	}
+}
