@@ -1,0 +1,1872 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Axiom.RenderSystems.OpenGL.Win32</name>
+    </assembly>
+    <members>
+        <member name="T:Axiom.RenderSystems.OpenGL.GLSL.GLSLProgramFactory">
+            <summary>
+            	Factory class for GLSL programs.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLSL.GLSLProgramFactory.languageName">
+            <summary>
+                Language string.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLSL.GLSLProgramFactory.glslLinkProgramMgr">
+            <summary>
+                Reference to the link program manager we create.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLProgramFactory.#ctor">
+            <summary>
+                Default constructor.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLProgramFactory.Create(System.String,Axiom.Graphics.GpuProgramType)">
+            <summary>
+            	Creates and returns a new GLSL program object.
+            </summary>
+            <param name="name">Name of the object.</param>
+            <param name="type">Type of the object.</param>
+            <returns>A newly created GLSL program object.</returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLProgramFactory.Dispose">
+            <summary>
+                Called when the engine is shutting down.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLSL.GLSLProgramFactory.Language">
+            <summary>
+            	Returns the language code for this high level program manager.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.GLSL.GLSLProgram">
+            <summary>
+            	Specialisation of HighLevelGpuProgram to provide support for OpenGL 
+            	Shader Language (GLSL).
+            </summary>
+            <remarks>
+            	GLSL has no target assembler or entry point specification like DirectX 9 HLSL.
+            	Vertex and Fragment shaders only have one entry point called "main".  
+            	When a shader is compiled, microcode is generated but can not be accessed by
+            	the application.
+            	GLSL also does not provide assembler low level output after compiling.  The GL Render
+            	system assumes that the Gpu program is a GL Gpu program so GLSLProgram will create a 
+            	GLSLGpuProgram that is subclassed from GLGpuProgram for the low level implementation.
+            	The GLSLProgram class will create a shader object and compile the source but will
+            	not create a program object.  It's up to GLSLGpuProgram class to request a program object
+            	to link the shader object to.
+            	<p/>
+            	GLSL supports multiple modular shader objects that can be attached to one program
+            	object to form a single shader.  This is supported through the "attach" material script
+            	command.  All the modules to be attached are listed on the same line as the attach command
+            	seperated by white space.
+            </remarks>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLSL.GLSLProgram.glHandle">
+            <summary>
+            	The GL id for the program object.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLSL.GLSLProgram.isCompiled">
+            <summary>
+            	Flag indicating if shader object successfully compiled.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLSL.GLSLProgram.attachedShaderNames">
+            <summary>
+            	Names of shaders attached to this program.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLSL.GLSLProgram.attachedGLSLPrograms">
+            <summary>
+            	Holds programs attached to this object.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLProgram.#ctor(System.String,Axiom.Graphics.GpuProgramType,System.String)">
+            <summary>
+            	Constructor.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLProgram.AttachChildShader(System.String)">
+            <summary>
+            	Attach another GLSL Shader to this one.
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLProgram.AttachToProgramObject(System.Int32)">
+            <summary>
+            	
+            </summary>
+            <param name="programObject"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLProgram.Compile">
+            <summary>
+            	
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLProgram.Compile(System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="checkErrors"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLProgram.LoadFromSource">
+            <summary>
+            	
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLProgram.PopulateParameterNames(Axiom.Graphics.GpuProgramParameters)">
+            <summary>
+            	
+            </summary>
+            <param name="parms"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLProgram.SetParam(System.String,System.String)">
+            <summary>
+            	Set a custom param for this high level gpu program.
+            </summary>
+            <param name="name"></param>
+            <param name="val"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLProgram.UnloadImpl">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLSL.GLSLProgram.GLHandle">
+            <summary>
+            	Gets the GL id for the program object.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.GLTextureManager">
+            <summary>
+            Summary description for GLTextureManager.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLTextureManager.CreateManual(System.String,Axiom.Graphics.TextureType,System.Int32,System.Int32,System.Int32,Axiom.Media.PixelFormat,Axiom.Graphics.TextureUsage)">
+            <summary>
+               Creates a GL texture manually.
+            </summary>
+            <param name="name"></param>
+            <param name="type"></param>
+            <param name="width"></param>
+            <param name="height"></param>
+            <param name="numMipMaps"></param>
+            <param name="format"></param>
+            <param name="usage"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.GLRenderSystem">
+            <summary>
+            Summary description for OpenGLRenderer.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLRenderSystem.glSupport">
+            <summary>
+            	GLSupport class providing platform specific implementation.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLRenderSystem.isGLInitialized">
+            <summary>
+            	Flag that remembers if GL has been initialized yet.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLRenderSystem.viewMatrix">
+            <summary>Internal view matrix.</summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLRenderSystem.worldMatrix">
+            <summary>Internal world matrix.</summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLRenderSystem.textureMatrix">
+            <summary>Internal texture matrix.</summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLRenderSystem.minFilter">
+            <summary>
+               Last min filtering option.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLRenderSystem.mipFilter">
+            <summary>
+               Last mip filtering option.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.#ctor">
+            <summary>
+            	Default constructor.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.CreateHardwareOcclusionQuery">
+            <summary>
+            	Returns an OpenGL implementation of a hardware occlusion query.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.MakeProjectionMatrix(System.Single,System.Single,System.Single,System.Single,System.Boolean)">
+            <summary>
+            	Creates a projection matrix specific to OpenGL based on the given params.
+            	Note: forGpuProgram is ignored because GL uses the same handed projection matrix
+            	normally and for GPU programs.
+            </summary>
+            <param name="fov"></param>
+            <param name="aspectRatio"></param>
+            <param name="near"></param>
+            <param name="far"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.BeginFrame">
+            <summary>
+            	Executes right before each frame is rendered.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.EndFrame">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.SetViewport(Axiom.Core.Viewport)">
+            <summary>
+            
+            </summary>
+            <param name="viewport"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.SetSurfaceParams(Axiom.Core.ColorEx,Axiom.Core.ColorEx,Axiom.Core.ColorEx,Axiom.Core.ColorEx,System.Single)">
+            <summary>
+            
+            </summary>
+            <param name="ambient"></param>
+            <param name="diffuse"></param>
+            <param name="specular"></param>
+            <param name="emissive"></param>
+            <param name="shininess"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.SetTextureAddressingMode(System.Int32,Axiom.Graphics.TextureAddressing)">
+            <summary>
+            
+            </summary>
+            <param name="stage"></param>
+            <param name="texAddressingMode"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.SetTextureLayerAnisotropy(System.Int32,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="stage"></param>
+            <param name="maxAnisotropy"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.SetTextureBlendMode(System.Int32,Axiom.Graphics.LayerBlendModeEx)">
+            <summary>
+            
+            </summary>
+            <param name="stage"></param>
+            <param name="blendMode"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.SetTextureUnitFiltering(System.Int32,Axiom.Graphics.FilterType,Axiom.Graphics.FilterOptions)">
+            <summary>
+            
+            </summary>
+            <param name="unit"></param>
+            <param name="type"></param>
+            <param name="filter"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.SetTextureCoordSet(System.Int32,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="stage"></param>
+            <param name="index"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.SetTextureCoordCalculation(System.Int32,Axiom.Graphics.TexCoordCalcMethod,Axiom.Core.Frustum)">
+            <summary>
+            
+            </summary>
+            <param name="stage"></param>
+            <param name="method"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.SetTextureMatrix(System.Int32,Axiom.Math.Matrix4)">
+            <summary>
+            
+            </summary>
+            <param name="stage"></param>
+            <param name="xform"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.Initialize(System.Boolean,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="autoCreateWindow"></param>
+            <param name="windowTitle">Title of the window to create.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.Shutdown">
+            <summary>
+            	Shutdown the render system.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.SetTexture(System.Int32,System.Boolean,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="stage"></param>
+            <param name="enabled"></param>
+            <param name="textureName"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.SetFog(Axiom.Graphics.FogMode,Axiom.Core.ColorEx,System.Single,System.Single,System.Single)">
+            <summary>
+            
+            </summary>
+            <param name="mode"></param>
+            <param name="color"></param>
+            <param name="density"></param>
+            <param name="start"></param>
+            <param name="end"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.Render(Axiom.Graphics.RenderOperation)">
+            <summary>
+            
+            </summary>
+            <param name="op"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.UseLights(Axiom.Collections.LightList,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="lightList"></param>
+            <param name="limit"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.ConvertColor(Axiom.Core.ColorEx)">
+            <summary>
+            
+            </summary>
+            <param name="color"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.SetSceneBlending(Axiom.Graphics.SceneBlendFactor,Axiom.Graphics.SceneBlendFactor)">
+            <summary>
+            
+            </summary>
+            <param name="src"></param>
+            <param name="dest"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.BindGpuProgram(Axiom.Graphics.GpuProgram)">
+            <summary>
+               Binds the specified GpuProgram to the future rendering operations.
+            </summary>
+            <param name="program"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.BindGpuProgramParameters(Axiom.Graphics.GpuProgramType,Axiom.Graphics.GpuProgramParameters)">
+            <summary>
+               Binds the supplied parameters to programs of the specified type for future rendering operations.
+            </summary>
+            <param name="type"></param>
+            <param name="parms"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.UnbindGpuProgram(Axiom.Graphics.GpuProgramType)">
+            <summary>
+               Unbinds programs of the specified type.
+            </summary>
+            <param name="type"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.ConvertBlendFactor(Axiom.Graphics.SceneBlendFactor)">
+            <summary>
+            	Private method to convert our blend factors to that of Open GL
+            </summary>
+            <param name="factor"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.MakeGLMatrix(Axiom.Math.Matrix4@,System.Single[])">
+            <summary>
+            	Converts a Matrix4 object to a float[16] that contains the matrix
+            	in top to bottom, left to right order.
+            	i.e.	glMatrix[0] = matrix[0,0]
+            			glMatrix[1] = matrix[1,0]
+            			etc...
+            </summary>
+            <param name="matrix"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.SetGLLight(System.Int32,Axiom.Core.Light)">
+            <summary>
+            	Helper method for setting all the options for a single light.
+            </summary>
+            <param name="index">Light index.</param>
+            <param name="light">Light object.</param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.SetGLLightPositionDirection(Axiom.Core.Light,System.Int32)">
+            <summary>
+            	Helper method for resetting the position and direction of a light.
+            </summary>
+            <param name="light">Light to use.</param>
+            <param name="index">Index of the light.</param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.SetLights">
+            <summary>
+            	Private helper method for setting all lights.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.InitConfigOptions">
+            <summary>
+            	Called in constructor to init configuration.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.CheckCaps">
+            <summary>
+            	Helper method to go through and interrogate hardware capabilities.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.GetCombinedMinMipFilter">
+            <summary>
+               
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderSystem.BUFFER_OFFSET(System.Int32)">
+            <summary>
+            	Convenience method for VBOs
+            </summary>
+            <param name="i"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLRenderSystem.LightingEnabled">
+            <summary>
+            	Gets/Sets the global lighting setting.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLRenderSystem.NormalizeNormals">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLRenderSystem.RasterizationMode">
+            <summary>
+            	Sets the mode to use for rendering
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLRenderSystem.StencilCheckEnabled">
+            <summary>
+            	Specifies whether stencil check should be enabled or not.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLRenderSystem.ProjectionMatrix">
+            <summary>
+            	
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLRenderSystem.ViewMatrix">
+            <summary>
+            	
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLRenderSystem.WorldMatrix">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLRenderSystem.DepthBias">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLRenderSystem.DepthCheck">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLRenderSystem.DepthFunction">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLRenderSystem.DepthWrite">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLRenderSystem.HorizontalTexelOffset">
+            <summary>
+            	
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLRenderSystem.VerticalTexelOffset">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.Plugin">
+            <summary>
+            Summary description for Plugin.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.Plugin.factory">
+            <summary>
+                Reference to a GLSL program factory.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.Plugin.renderSystem">
+            <summary>
+                Reference to the render system instance.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.GLHelper">
+            <summary>
+            Summary description for GLHelper.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLHelper.ConvertEnum(Axiom.Graphics.BufferUsage)">
+            <summary>
+            
+            </summary>
+            <param name="usage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLHelper.ConvertEnum(Axiom.Graphics.VertexElementType)">
+            <summary>
+            
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLHelper.ConvertEnum(Axiom.Graphics.CompareFunction)">
+            <summary>
+            	Find the GL int value for the CompareFunction enum.
+            </summary>
+            <param name="func"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLHelper.ConvertEnum(Axiom.Graphics.StencilOperation,System.Boolean)">
+            <summary>
+            	Find the GL int value for the StencilOperation enum.
+            </summary>
+            <param name="op"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.DefaultForm.DefaultForm_Deactivate(System.Object,System.EventArgs)">
+            <summary>
+            
+            </summary>
+            <param name="source"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.DefaultForm.DefaultForm_Activated(System.Object,System.EventArgs)">
+            <summary>
+            
+            </summary>
+            <param name="source"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.DefaultForm.DefaultForm_Close(System.Object,System.ComponentModel.CancelEventArgs)">
+            <summary>
+            
+            </summary>
+            <param name="source"></param>
+            <param name="e"></param>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.DefaultForm.RenderWindow">
+            <summary>
+            	Get/Set the RenderWindow associated with this form.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.GLSL.GLSLGpuProgram">
+            <summary>
+            	GLSL low level compiled shader object - this class is used to get at the linked program object 
+            	and provide an interface for GLRenderSystem calls.  GLSL does not provide access to the
+            	low level code of the shader so this class is really just a dummy place holder.
+            	GLSL uses a program object to represent the active vertex and fragment programs used
+            	but Axiom materials maintain seperate instances of the active vertex and fragment programs
+            	which creates a small problem for GLSL integration.  The GLSLGpuProgram class provides the
+            	interface between the GLSLLinkProgramManager , GLRenderSystem, and the active GLSLProgram
+            	instances.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.GLGpuProgram">
+            <summary>
+            	Specialization of vertex/fragment programs for OpenGL.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLGpuProgram.programId">
+            <summary>
+               Internal OpenGL id assigned to this program.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLGpuProgram.programType">
+            <summary>
+               Type of this program (vertex or fragment).
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLGpuProgram.tempProgramFloats">
+            <summary>
+                For use internally to store temp values for passing constants, etc.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLGpuProgram.#ctor(System.String,Axiom.Graphics.GpuProgramType,System.String)">
+            <summary>
+                Constructor.
+            </summary>
+            <param name="name">Name of the program.</param>
+            <param name="type">Type of program (vertex or fragment).</param>
+            <param name="syntaxCode">Syntax code (i.e. arbvp1, etc).</param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLGpuProgram.Bind">
+            <summary>
+                Called when a program needs to be bound.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLGpuProgram.Unbind">
+            <summary>
+                Called when a program needs to be unbound.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLGpuProgram.LoadFromSource">
+            <summary>
+                Called to create the program from source.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLGpuProgram.BindParameters(Axiom.Graphics.GpuProgramParameters)">
+            <summary>
+                Called when a program needs to bind the supplied parameters.
+            </summary>
+            <param name="parms"></param>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLGpuProgram.ProgramID">
+            <summary>
+               Access to the internal program id.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLGpuProgram.GLProgramType">
+            <summary>
+               Gets the program type (GL_VERTEX_PROGRAM_ARB, GL_FRAGMENT_PROGRAM_ARB, etc);
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLSL.GLSLGpuProgram.glslProgram">
+            <summary>
+            	GL Handle for the shader object.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLSL.GLSLGpuProgram.vertexShaderCount">
+            <summary>
+            	Keep track of the number of vertex shaders created.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLSL.GLSLGpuProgram.fragmentShaderCount">
+            <summary>
+            	Keep track of the number of fragment shaders created.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLGpuProgram.LoadFromSource">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLSL.GLSLGpuProgram.GLSLProgram">
+            <summary>
+            	Gets the GLSLProgram for the shader object.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.ATI.TokenRule">
+            <summary>
+                Structure used to build rule paths.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.ATI.SymbolDef">
+            <summary>
+                Structure used to build Symbol Type library.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.SymbolDef.ID">
+            <summary>
+                Token ID which is the index into the Token Type library.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.SymbolDef.pass2Data">
+            <summary>
+                Data used by pass 2 to build native instructions.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.SymbolDef.contextKey">
+            <summary>
+                Context key to fit the Active Context.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.SymbolDef.contextPatternSet">
+            <summary>
+                New pattern to set for Active Context bits.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.SymbolDef.contextPatternClear">
+            <summary>
+                Contexts bits to clear Active Context bits.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.SymbolDef.defTextID">
+            <summary>
+                Index into text table for default name : set at runtime.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.SymbolDef.ruleID">
+            <summary>
+                Index into Rule database for non-terminal toke rulepath.
+                Note: If RuleID is zero the token is terminal.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.ATI.TokenInstruction">
+            <summary>
+                Structure for Token instructions.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.TokenInstruction.NTTRuleID">
+            <summary>
+                Non-Terminal Token Rule ID that generated Token.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.TokenInstruction.ID">
+            <summary>
+                Token ID.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.TokenInstruction.line">
+            <summary>
+                Line number in source code where Token was found
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.TokenInstruction.pos">
+            <summary>
+                Character position in source where Token was found
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.ATI.OpParam">
+            <summary>
+                Structure used to keep track of arguments and instruction parameters.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgram">
+            <summary>
+            	Encapsulation of GLSL Program Object.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgram.uniformReferences">
+            <summary>
+            	Container of uniform references that are active in the program object.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgram.uniformRefsBuilt">
+            <summary>
+            	Flag to indicate that uniform references have already been built.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgram.glHandle">
+            <summary>
+            	GL handle for the program object.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgram.linked">
+            <summary>
+            	Flag indicating that the program object has been successfully linked
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgram.#ctor">
+            <summary>
+            	Default constructor.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgram.Activate">
+            <summary>
+            	Makes a program object active by making sure it is linked and then putting it in use.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgram.BuildUniformReferences">
+            <summary>
+            	Build uniform references from active named uniforms.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgram.UpdateUniforms(Axiom.Graphics.GpuProgramParameters)">
+            <summary>
+            	Updates program object uniforms using data from GpuProgramParameters.
+            	normally called by GLSLGpuProgram.BindParameters() just before rendering occurs.
+            </summary>
+            <param name="parameters">GPU Parameters to use to update the uniforms params.</param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgram.Dispose">
+            <summary>
+                Called to destroy the program used by this link program.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgram.GLHandle">
+            <summary>
+            	Gets the GL Handle for the program object.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgram.UniformReference">
+            <summary>
+            	 Structure used to keep track of named uniforms in the linked program object.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.Nvidia.NV3xGpuProgram">
+            <summary>
+                Base class for handling nVidia specific extensions for supporting
+                GeForceFX level gpu programs
+            </summary>
+            <remarks>
+                Subclasses must implement BindParameters since there are differences
+                in how parameters are passed to NV vertex and fragment programs.
+            </remarks>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.Nvidia.NV3xGpuProgram.LoadFromSource">
+            <summary>
+                Loads NV3x level assembler programs into the hardware.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.Nvidia.NV3xGpuProgram.Unload">
+            <summary>
+                Overridden to delete the NV program.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.Nvidia.NV3xGpuProgram.Bind">
+            <summary>
+                Binds an NV program.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.Nvidia.NV3xGpuProgram.Unbind">
+            <summary>
+                Unbinds an NV program.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.Nvidia.VP30GpuProgram">
+            <summary>
+                GeForceFX class vertex program.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.Nvidia.VP30GpuProgram.BindParameters(Axiom.Graphics.GpuProgramParameters)">
+            <summary>
+                Binds params by index to the vp30 program.
+            </summary>
+            <param name="parms"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.Nvidia.VP30GpuProgram.CreateParameters">
+            <summary>
+                Overriden to return parms set to transpose matrices.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.Nvidia.FP30GpuProgram">
+            <summary>
+                GeForceFX class fragment program.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.Nvidia.FP30GpuProgram.BindParameters(Axiom.Graphics.GpuProgramParameters)">
+            <summary>
+                Binds named parameters to fp30 programs.
+            </summary>
+            <param name="parms"></param>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.Nvidia.NV3xGpuProgramFactory">
+            <summary>
+                Factory class that handles requested for GeForceFX program implementations.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.IOpenGLGpuProgramFactory">
+            <summary>
+                Interface that can be implemented by a class that is intended to
+                handle creation of low level gpu program in OpenGL for a particular
+                syntax code.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.IOpenGLGpuProgramFactory.Create(System.String,Axiom.Graphics.GpuProgramType,System.String)">
+            <summary>
+                Creates a gpu program for the specified syntax code (i.e. arbfp1, fp30, etc).
+            </summary>
+            <param name="name"></param>
+            <param name="type"></param>
+            <param name="syntaxCode"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.GLHardwareBufferManager">
+            <summary>
+            	Summary description for GLHardwareBufferManager.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLHardwareBufferManager.CreateIndexBuffer(Axiom.Graphics.IndexType,System.Int32,Axiom.Graphics.BufferUsage)">
+            <summary>
+            
+            </summary>
+            <param name="type"></param>
+            <param name="numIndices"></param>
+            <param name="usage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLHardwareBufferManager.CreateIndexBuffer(Axiom.Graphics.IndexType,System.Int32,Axiom.Graphics.BufferUsage,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="type"></param>
+            <param name="numIndices"></param>
+            <param name="usage"></param>
+            <param name="useShadowBuffer"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLHardwareBufferManager.CreateVertexBuffer(System.Int32,System.Int32,Axiom.Graphics.BufferUsage)">
+            <summary>
+            
+            </summary>
+            <param name="vertexSize"></param>
+            <param name="numVerts"></param>
+            <param name="usage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLHardwareBufferManager.CreateVertexBuffer(System.Int32,System.Int32,Axiom.Graphics.BufferUsage,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="vertexSize"></param>
+            <param name="numVerts"></param>
+            <param name="usage"></param>
+            <param name="useShadowBuffer"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.GLHardwareIndexBuffer">
+            <summary>
+            	Summary description for GLHardwareIndexBuffer.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLHardwareIndexBuffer.bufferID">
+            <summary>
+                Saves the GL buffer ID for this buffer.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLHardwareIndexBuffer.#ctor(Axiom.Graphics.IndexType,System.Int32,Axiom.Graphics.BufferUsage,System.Boolean)">
+            <summary>
+                Constructor.
+            </summary>
+            <param name="type">Index type (16 or 32 bit).</param>
+            <param name="numIndices">Number of indices in the buffer.</param>
+            <param name="usage">Usage flags.</param>
+            <param name="useShadowBuffer">Should this buffer be backed by a software shadow buffer?</param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLHardwareIndexBuffer.LockImpl(System.Int32,System.Int32,Axiom.Graphics.BufferLocking)">
+            <summary>
+            
+            </summary>
+            <param name="offset"></param>
+            <param name="length"></param>
+            <param name="locking"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLHardwareIndexBuffer.UnlockImpl">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLHardwareIndexBuffer.WriteData(System.Int32,System.Int32,System.IntPtr,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="offset"></param>
+            <param name="length"></param>
+            <param name="src"></param>
+            <param name="discardWholeBuffer"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLHardwareIndexBuffer.ReadData(System.Int32,System.Int32,System.IntPtr)">
+            <summary>
+            
+            </summary>
+            <param name="offset"></param>
+            <param name="length"></param>
+            <param name="dest"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLHardwareIndexBuffer.Dispose">
+            <summary>
+                Called to destroy this buffer.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLHardwareIndexBuffer.GLBufferID">
+            <summary>
+            	Gets the GL buffer ID for this buffer.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgramManager">
+            <summary>
+            	Axiom assumes that there are seperate vertex and fragment programs to deal with but
+            	GLSL has one program object that represents the active vertex and fragment shader objects
+            	during a rendering state.  GLSL Vertex and fragment 
+            	shader objects are compiled seperately and then attached to a program object and then the
+            	program object is linked.  Since Ogre can only handle one vertex program and one fragment
+            	program being active in a pass, the GLSL Link Program Manager does the same.  The GLSL Link
+            	program manager acts as a state machine and activates a program object based on the active
+            	vertex and fragment program.  Previously created program objects are stored along with a unique
+            	key in a hash_map for quick retrieval the next time the program object is required.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgramManager.instance">
+            <summary>
+                Singleton instance of this class.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgramManager.#ctor">
+            <summary>
+                Internal constructor.  This class cannot be instantiated externally.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgramManager.linkPrograms">
+            <summary>
+            	List holding previously created program objects.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgramManager.activeVertexProgram">
+            <summary>
+            	Currently active vertex GPU program.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgramManager.activeFragmentProgram">
+            <summary>
+            	Currently active fragment GPU program.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgramManager.activeLinkProgram">
+            <summary>
+            	Currently active link program.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgramManager.SetActiveFragmentShader(Axiom.RenderSystems.OpenGL.GLSL.GLSLGpuProgram)">
+            <summary>
+            	Set the active fragment shader for the next rendering state.
+            </summary>
+            <remarks>
+            	The active program object will be cleared.
+            	Normally called from the GLSLGpuProgram.BindProgram and UnbindProgram methods
+            </remarks>
+            <param name="fragmentProgram"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgramManager.SetActiveVertexShader(Axiom.RenderSystems.OpenGL.GLSL.GLSLGpuProgram)">
+            <summary>
+            	Set the active vertex shader for the next rendering state.
+            </summary>
+            <remarks>
+            	The active program object will be cleared.
+            	Normally called from the GLSLGpuProgram.BindProgram and UnbindProgram methods
+            </remarks>
+            <param name="vertexProgram"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgramManager.Dispose">
+            <summary>
+                Called when the engine is shutting down.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgramManager.Instance">
+            <summary>
+                Gets the singleton instance of this class.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLSL.GLSLLinkProgramManager.ActiveLinkProgram">
+            <summary>
+            	Get the program object that links the two active shader objects together
+            	if a program object was not already created and linked a new one is created and linked.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass">
+            <summary>
+                Compiler2Pass is a generic compiler/assembler.
+            </summary>
+            <remarks>
+                Provides a tokenizer in pass 1 and relies on the subclass to provide the virtual method for pass 2 
+                
+                PASS 1 - tokenize source: this is a simple brute force lexical scanner/analyzer that also parses
+                the formed token for proper semantics and context in one pass
+                it uses Look Ahead Left-Right (LALR) ruling based on Backus - Naur From notation for semantic
+                checking and also performs context checking allowing for language dialects.
+                
+                PASS 2 - generate application specific instructions ie native instructions
+                <p/>
+                This class must be subclassed with the subclass providing implementation for Pass 2.  The subclass
+                is responsible for setting up the token libraries along with defining the language syntax.
+            </remarks>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.tokenInstructions">
+            <summary>
+                Container for tokens extracted from source.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.source">
+            <summary>
+                Source to be compiled.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.symbolTypeLib">
+            <summary>
+                Reference to the Text and Token type libraries set up by subclass.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.rootRulePath">
+            <summary>
+                Reference to the root rule path - has to be set by subclass constructor.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.valueID">
+            <summary>
+                Needs to be initialized by the subclass before compiling occurs
+                it defines the token ID used in the symbol type library.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.constants">
+            <summary>
+                Storage container for constants defined in source.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.activeContexts">
+            <summary>
+                Active Contexts pattern used in pass 1 to determine which tokens are valid for a certain context.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.currentLine">
+            <summary>
+                Current line in the source string.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.charPos">
+            <summary>
+                Current position in the source string.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.#ctor">
+            <summary>
+                Default constructor.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.DoPass1">
+            <summary>
+                perform pass 1 of compile process
+            </summary>
+            <remarks>
+                Scans source for symbols that can be tokenized and then
+                performs general semantic and context verification on each symbol before it is tokenized.
+                A tokenized instruction list is built to be used by Pass 2.
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.DoPass2">
+            <summary>
+                Abstract method that must be set up by subclass to perform Pass 2 of compile process
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.GetTypeDefText(Axiom.RenderSystems.OpenGL.ATI.Symbol)">
+            <summary>
+                Get the text symbol for this token.
+            </summary>
+            <remarks>
+                Mainly used for debugging and in test routines.
+            </remarks>
+            <param name="symbol">Token ID.</param>
+            <returns>String text.</returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.IsFloatValue(System.Single@,System.Int32@)">
+            <summary>
+                Check to see if the text at the present position in the source is a numerical constant.
+            </summary>
+            <param name="val">Receives the float value that is in the source.</param>
+            <param name="length">Receives number of characters that make of the value in the source.</param>
+            <returns>True if the characters form a valid float, false otherwise.</returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.IsSymbol(System.String,System.Int32@)">
+            <summary>
+                Check to see if the text is in the symbol text library.
+            </summary>
+            <param name="symbol"></param>
+            <param name="symbolSize"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.PositionToNextSymbol">
+            <summary>
+                Position to the next possible valid symbol.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.ProcessRulePath(System.Int32)">
+            <summary>
+                Process input source text using rulepath to determine allowed tokens.
+            </summary>
+            <remarks>
+                The method is reentrant and recursive.
+                if a non-terminal token is encountered in the current rule path then the method is
+                called using the new rule path referenced by the non-terminal token
+                Tokens can have the following operation states which effects the flow path of the rule
+                <list type="">
+                <item>Rule: defines a rule path for the non-terminal token.</item>
+                <item>And: the token is required for the rule to pass.</item>
+                <item>Or: if the previous tokens failed then try these ones.</item>
+                <item>Optional: the token is optional and does not cause the rule to fail if the token is not found.</item>
+                <item>Repeat: the token is required but there can be more than one in a sequence.</item>
+                <item>End: end of the rule path - the method returns the success of the rule.</item>
+                </list>
+            </remarks>
+            <param name="rulePathIdx">Index into to array of Token Rules that define a rule path to be processed.</param>
+            <returns>True if rule passed - all required tokens found.  False otherwise.</returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.SetActiveContexts(System.UInt32)">
+            <summary>
+                Setup ActiveContexts - should be called by subclass to setup initial language contexts.
+            </summary>
+            <param name="contexts"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.SkipComments">
+            <summary>
+                Skips all comment specifiers.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.SkipEndOfLine">
+            <summary>
+                Find the end of line marker and move past it.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.SkipWhitespace">
+            <summary>
+                Skip all the whitespace which includes spaces and tabs.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.ValidateToken(System.Int32,Axiom.RenderSystems.OpenGL.ATI.Symbol)">
+            <summary>
+                Check if current position in source has the symbol text equivalent to the TokenID.
+            </summary>
+            <param name="rulePathIdx">Index into rule path database of token to validate.</param>
+            <param name="activeRuleID">Index of non-terminal rule that generated the token.</param>
+            <returns>
+                True if token was found.
+                False if token symbol text does not match the source text.
+                If token is non-terminal, then ProcessRulePath is called.
+            </returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.InitSymbolTypeLib">
+            <summary>
+                Initialize the type library with matching symbol text found in symbol text library.
+                Find a default text for all Symbol Types in library.
+                Scan through all the rules and initialize TypeLib with index to text and index to rules for non-terminal tokens.
+                Must be called by subclass after libraries and rule database setup.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ATI.Compiler2Pass.Compile(System.String)">
+            <summary>
+                Compile the source - performs 2 passes:
+                First pass is to tokinize, check semantics and context.
+                Second pass is performed by subclass and converts tokens to application specific instructions.
+            </summary>
+            <param name="source">Source to be compiled.</param>
+            <returns>
+                True if Pass 1 and Pass 2 are successful.
+                False if any errors occur in Pass 1 or Pass 2
+            </returns>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.ATI.PixelShader">
+            <summary>
+                Subclasses Compiler2Pass to provide a ps_1_x compiler that takes DirectX pixel shader assembly
+                and converts it to a form that can be used by ATI_fragment_shader OpenGL API.
+            </summary>
+            <remarks>
+                All ps_1_1, ps_1_2, ps_1_3, ps_1_4 assembly instructions are recognized but not all are passed
+                on to ATI_fragment_shader.	ATI_fragment_shader does not have an equivelant directive for
+                texkill or texdepth instructions.
+                <p/>
+                The user must provide the GL binding interfaces.
+                <p/>
+                A Test method is provided to verify the basic operation of the compiler which outputs the test
+                results to a file.
+            </remarks>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.PixelShader.texreg2ar">
+            <summary>
+                Macro token expansion for ps_1_2 instruction: texreg2ar
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.PixelShader.texreg2gb">
+            <summary>
+                Macro token expansion for ps_1_2 instruction: texreg2gb
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.PixelShader.texdp3">
+            <summary>
+                Macro token expansion for ps_1_1 instruction: texdp3
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.PixelShader.texdp3tex">
+            <summary>
+                Macro token expansion for ps_1_1 instruction: texdp3
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.PixelShader.texm3x2tex">
+            <summary>
+                Macro token expansion for ps_1_1 instruction: texm3x2tex
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.PixelShader.texm3x3pad">
+            <summary>
+                Macro token expansion for ps_1_1 instruction: texm3x3tex
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.PixelShader.texm3x3tex">
+            <summary>
+                Macro token expansion for ps_1_1 instruction: texm3x3pad
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.PixelShader.texm3x3spec">
+            <summary>
+                Macro token expansion for ps_1_1 instruction: texm3x3spec
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.PixelShader.phase1TEX_mi">
+            <summary>
+                Machine instructions for phase one texture section.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.PixelShader.phase1ALU_mi">
+            <summary>
+                Machine instructions for phase one ALU section.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.PixelShader.phase2TEX_mi">
+            <summary>
+                Machine instructions for phase two texture section.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.PixelShader.phase2ALU_mi">
+            <summary>
+                Machine instructions for phase two ALU section.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.ATI.PixelShader.Phase_RegisterUsage">
+            keeps track of which registers are written to in each phase
+            if a register is read from but has not been written to in phase 2
+            then if it was written to in phase 1 perform a register pass function
+            at the begining of phase2 so that the register has something worthwhile in it
+            NB: check ALU and TEX section of phase 1 and phase 2
+            there are 6 temp registers r0 to r5 to keep track off
+            checks are performed in pass 2 when building machine instructions
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ATI.PixelShader.BuildMachineInst">
+            attempt to build a machine instruction using current tokens
+                        determines what phase machine insturction should be in and if an Alpha Op is required
+                        calls expandMachineInstruction() to expand the token into machine instructions
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ATI.PixelShader.Optimize">
+            optimizes machine instructions depending on pixel shader context
+                        only applies to ps.1.1 ps.1.2 and ps.1.3 since they use CISC instructions
+                        that must be transformed into RISC instructions
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ATI.PixelShader.BindMachineInstInPassToFragmentShader(Axiom.Core.IntList)">
+            
+            Build a machine instruction from token and ready it for expansion
+                        will expand CISC tokens using macro database
+            
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ATI.PixelShader.ExpandMacro(Axiom.RenderSystems.OpenGL.ATI.MacroRegModify)">
+            Expand CISC tokens into PS1_4 token equivalents
+            
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ATI.PixelShader.ExpandMachineInstruction">
+            Expand Machine instruction into operation type and arguments and put into proper machine
+                        instruction container
+                        also expands scaler alpha machine instructions if required
+            
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ATI.PixelShader.BindAllMachineInstToFragmentShader">
+            <summary>
+                Binds machine instructions generated in Pass 2 to the ATI GL fragment shader.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ATI.PixelShader.DoPass2">
+            <summary>
+                Pass 1 is completed so now take tokens generated and build machine instructions.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.ATI.ATIFragmentShaderGpuProgram">
+            <summary>
+            Summary description for ATIFragmentShaderGpuProgram.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.ATI.ATIFragmentShaderFactory">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.GLGpuProgramManager">
+            <summary>
+            	Summary description for GLGpuProgramManager.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLGpuProgramManager.Create(System.String,Axiom.Graphics.GpuProgramType,System.String)">
+            <summary>
+               Create the specified type of GpuProgram.
+            </summary>
+            <param name="name"></param>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLGpuProgramManager.CreateParameters">
+            <summary>
+               Returns a specialized version of GpuProgramParameters.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLGpuProgramManager.RegisterProgramFactory(System.String,Axiom.RenderSystems.OpenGL.IOpenGLGpuProgramFactory)">
+            <summary>
+                Registers a factory to handles requests for the creation of low level
+                gpu porgrams based on the syntax code.
+            </summary>
+            <param name="factory"></param>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.GLRenderTexture">
+            <summary>
+            Summary description for GLRenderTexture.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLRenderTexture.CopyToTexture">
+            <summary>
+                
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLRenderTexture.RequiresTextureFlipping">
+            <summary>
+                OpenGL requires render textures to be flipped.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.GLHardwareOcclusionQuery">
+            <summary>
+            Summary description for GLHardwareOcclusionQuery.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLHardwareOcclusionQuery.lastFragmentCount">
+            <summary>
+            	Number of fragments returned from the last query.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLHardwareOcclusionQuery.isSupported">
+            <summary>
+            	Flag that indicates whether hardware queries are supported
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLHardwareOcclusionQuery.skipRate">
+            <summary>
+            	Rate at which queries are skipped (in frames).
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLHardwareOcclusionQuery.skipCounter">
+            <summary>
+            	Current count of number of skipped frames since query last ran.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLHardwareOcclusionQuery.id">
+            <summary>
+            	Id of the GL query.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.Nvidia.NvparseFragmentProgram">
+            <summary>
+                Specialization of GpuProgram that accepts source for DX8 level
+                gpu programs and allows them to run on nVidia cards that support
+                register and texture combiners.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.Nvidia.NvparseFragmentProgram.LoadFromSource">
+            <summary>
+                Loads the raw ASM source and runs Nvparse to send the appropriate
+                texture/register combiner instructions to the card.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.Nvidia.NvparseFragmentProgram.Bind">
+            <summary>
+                Binds the Nvparse program to the current context.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.Nvidia.NvparseFragmentProgram.Unbind">
+            <summary>
+                Unbinds the Nvparse program from the current context.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.Nvidia.NvparseFragmentProgram.BindParameters(Axiom.Graphics.GpuProgramParameters)">
+            <summary>
+                Called to pass parameters to the Nvparse program.
+            </summary>
+            <param name="parms"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.Nvidia.NvparseFragmentProgram.nvparse_get_errors">
+            <summary>
+                
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.Nvidia.NvparseProgramFactory">
+            <summary>
+                Factory class which handles requests for DX8 level functionality in 
+                OpenGL on GeForce3/4 hardware.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.GLTexture">
+            <summary>
+               OpenGL specialization of texture handling.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLTexture.glTextureID">
+            <summary>
+               OpenGL texture ID.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLTexture.#ctor(System.String,Axiom.Graphics.TextureType)">
+            <summary>
+            Constructor, called from GLTextureManager.
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLTexture.#ctor(System.String,Axiom.Graphics.TextureType,System.Int32,System.Int32,System.Int32,Axiom.Media.PixelFormat,Axiom.Graphics.TextureUsage)">
+            <summary>
+               Constructor used when creating a manual texture.
+            </summary>
+            <param name="name"></param>
+            <param name="type"></param>
+            <param name="width"></param>
+            <param name="height"></param>
+            <param name="numMipMaps"></param>
+            <param name="format"></param>
+            <param name="usage"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLTexture.LoadImage(Axiom.Media.Image)">
+            <summary>
+            
+            </summary>
+            <param name="image"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLTexture.LoadImages(Axiom.Collections.ImageList)">
+            <summary>
+            
+            </summary>
+            <param name="images"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLTexture.Unload">
+            <summary>
+               Deletes the texture memory.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLTexture.CreateRenderTexture">
+            <summary>
+               Used to generate a texture capable of serving as a rendering target.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLTexture.MostSignificantBitSet(System.Int32)">
+            <summary>
+            	Helper method for getting the next highest power of 2 value from the specified value.
+            </summary>
+            <remarks>Example: Input: 3 Result: 4, Input: 96 Output: 128</remarks>
+            <param name="val">Integer value.</param>
+            <returns></returns>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLTexture.TextureID">
+            <summary>
+            	OpenGL texture ID.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLTexture.GLFormat">
+            <summary>
+               OpenGL texture format enum value.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLTexture.GLTextureType">
+            <summary>
+                Type of texture this represents, i.e. 2d, cube, etc.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.ARB.ARBGpuProgram">
+            <summary>
+            Summary description for ARBGpuProgram.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ARB.ARBGpuProgram.LoadFromSource">
+            <summary>
+                Load Assembler gpu program source.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.ARB.ARBGpuProgram.Unload">
+            <summary>
+                Unload GL gpu programs.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.ARB.ARBGpuProgramFactory">
+            <summary>
+                Creates a new ARB gpu program.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.Win32Window">
+            <summary>
+            Summary description for GLWindow.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.Win32Window.hWnd">
+            <summary>Window handle.</summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.Win32Window.hDC">
+            <summary>GDI Device Context</summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.Win32Window.hRC">
+            <summary>Rendering context.</summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.Win32Window.intialScreenSettings">
+            <summary>Retains initial screen settings.</summary>        
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.Win32Window.#ctor">
+            <summary>
+            	Constructor.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.Win32Window.Save(System.IO.Stream)">
+            <summary>
+            	Saves RenderWindow contents to a stream.
+            </summary>
+            <param name="stream">Target stream to save the window contents to.</param>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.GLSL.GLSLHelper">
+            <summary>
+            Summary description for GLSLHelper.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLHelper.CheckForGLSLError(System.String,System.Int32)">
+            <summary>
+            	Check for GL errors and report them in the Axiom Log.
+            </summary>
+            <param name="error"></param>
+            <param name="handle"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLHelper.CheckForGLSLError(System.String,System.Int32,System.Boolean,System.Boolean)">
+            <summary>
+            	Check for GL errors and report them in the Axiom Log.
+            </summary>
+            <param name="error"></param>
+            <param name="handle"></param>
+            <param name="forceException"></param>
+            <param name="forceInfoLog"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSL.GLSLHelper.LogObjectInfo(System.String,System.Int32)">
+            <summary>
+            	If there is a message in GL info log then post it in the Ogre Log
+            </summary>
+            <param name="message">The info log message string is appended to this string.</param>
+            <param name="handle">The GL object handle that is used to retrieve the info log</param>
+            <returns></returns>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.GLSupport">
+            <summary>
+            Summary description for GLSupport.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.BaseGLSupport">
+            <summary>
+            Summary description for GLHelper.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.BaseGLSupport.extensionList">
+            <summary>
+            	Collection of extensions supported by the current hardware.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.BaseGLSupport.glVersion">
+            <summary>
+            	OpenGL version string.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.BaseGLSupport.vendor">
+            <summary>
+            	Vendor of the current hardware.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.BaseGLSupport.videoCard">
+            <summary>
+            	Name of the video card in use.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.BaseGLSupport.engineConfig">
+            <summary>
+            	Config options.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.BaseGLSupport.CheckMinVersion(System.String)">
+            <summary>
+            	Handy check to see if the current GL version is at least what is supplied.
+            </summary>
+            <param name="version">What you want to check for, i.e. "1.3" </param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.BaseGLSupport.CheckExtension(System.String)">
+            <summary>
+            	
+            </summary>
+            <param name="extention"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.BaseGLSupport.InitializeExtensions">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.BaseGLSupport.AddConfig">
+            <summary>
+            	Add any special config values to the system.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.BaseGLSupport.CreateWindow(System.Boolean,Axiom.RenderSystems.OpenGL.GLRenderSystem,System.String)">
+            <summary>
+            	
+            </summary>
+            <param name="autoCreateWindow"></param>
+            <param name="renderSystem"></param>
+            <param name="windowTitle"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.BaseGLSupport.GetProcAddress(System.String)">
+            <summary>
+            	Subclasses need to implement a means to return the pointer to the extension function
+            	for OpenGL calls.
+            </summary>
+            <param name="extension">Name of the extension to retreive the pointer for.</param>
+            <returns>Pointer to the location of the function in the OpenGL driver modules.</returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.BaseGLSupport.NewWindow(System.String,System.Int32,System.Int32,System.Boolean,Axiom.Collections.NamedParameterList)">
+            <summary>
+            	Creates a specific instance of a render window.
+            </summary>
+            <param name="name"></param>
+            <param name="width"></param>
+            <param name="height"></param>
+            <param name="colorDepth"></param>
+            <param name="fullScreen"></param>
+            <param name="left"></param>
+            <param name="top"></param>
+            <param name="depthBuffer"></param>
+            <param name="parent"></param>
+            <param name="vsync"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.BaseGLSupport.ConfigOptions">
+            <summary>
+            	Gets the options currently set by the current GL implementation.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.BaseGLSupport.Extensions">
+            <summary>
+            	Gets a collection of strings listing all the available extensions.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.BaseGLSupport.Vendor">
+            <summary>
+            	Name of the vendor for the current video hardware.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.BaseGLSupport.VideoCard">
+            <summary>
+            	Name/brand of the current video hardware.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.BaseGLSupport.Version">
+            <summary>
+            	Version string for the current OpenGL driver.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSupport.GetProcAddress(System.String)">
+            <summary>
+            	Uses Wgl to return the procedure address for an extension function.
+            </summary>
+            <param name="extension"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSupport.AddConfig">
+            <summary>
+            	Query the display modes and deal with any other config options.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLSupport.CreateDefaultForm(System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            	Creates a default form to use for a rendering target.
+            </summary>
+            <remarks>
+            	This is used internally whenever <see cref="!:Initialize"/> is called and autoCreateWindow is set to true.
+            </remarks>
+            <param name="windowTitle">Title of the window.</param>
+            <param name="top">Top position of the window.</param>
+            <param name="left">Left position of the window.</param>
+            <param name="width">Width of the window.</param>
+            <param name="height">Height of the window</param>
+            <param name="fullScreen">Prepare the form for fullscreen mode?</param>
+            <returns>A form suitable for using as a rendering target.</returns>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.ATI.RuleSymbol">
+            <summary>
+               Rule symbol group types for ASM Pixel Shader 1.x instructions.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.ATI.Bits">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.ATI.ContextKeyPattern">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.ATI.OperationType">
+            <summary>
+                BNF operation types.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.ATI.PhaseType">
+            <summary>
+               There are 2 phases with 2 subphases each.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.OpenGL.GLHardwareVertexBuffer">
+            <summary>
+            	Summary description for GLHardwareVertexBuffer.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.OpenGL.GLHardwareVertexBuffer.bufferID">
+            <summary>Saves the GL buffer ID for this buffer.</summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLHardwareVertexBuffer.LockImpl(System.Int32,System.Int32,Axiom.Graphics.BufferLocking)">
+            <summary>
+            
+            </summary>
+            <param name="offset"></param>
+            <param name="length"></param>
+            <param name="locking"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLHardwareVertexBuffer.UnlockImpl">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLHardwareVertexBuffer.WriteData(System.Int32,System.Int32,System.IntPtr,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="offset"></param>
+            <param name="length"></param>
+            <param name="src"></param>
+            <param name="discardWholeBuffer"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLHardwareVertexBuffer.ReadData(System.Int32,System.Int32,System.IntPtr)">
+            <summary>
+            
+            </summary>
+            <param name="offset"></param>
+            <param name="length"></param>
+            <param name="dest"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.OpenGL.GLHardwareVertexBuffer.Dispose">
+            <summary>
+                Called to destroy this buffer.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.OpenGL.GLHardwareVertexBuffer.GLBufferID">
+            <summary>
+            	Gets the GL buffer ID for this buffer.
+            </summary>
+        </member>
+    </members>
+</doc>

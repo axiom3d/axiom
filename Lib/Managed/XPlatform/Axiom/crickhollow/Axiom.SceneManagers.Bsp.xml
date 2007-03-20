@@ -1,0 +1,980 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Axiom.SceneManagers.Bsp</name>
+    </assembly>
+    <members>
+        <member name="T:Axiom.SceneManagers.Bsp.SpotlightFrustum">
+            <summary>
+            	Frustum used for spotlights. It is not supposed to be part of the scene, and
+            	will not be rendered. The ViewMatrix and ProjectionMatrix properties, used
+            	for projecting texturing, are updated only when a spotlight is assigned 
+            	at the Light property.
+            </summary>
+        </member>
+        <member name="P:Axiom.SceneManagers.Bsp.SpotlightFrustum.ProjectionMatrix">
+            <summary>
+            Gets the projection matrix for this frustum.
+            </summary>
+        </member>
+        <member name="P:Axiom.SceneManagers.Bsp.SpotlightFrustum.ViewMatrix">
+            <summary>
+                Gets the view matrix for this frustum.
+            </summary>
+        </member>
+        <member name="T:Axiom.SceneManagers.Bsp.TextureLight">
+            <summary>
+            Summary description for TextureLight.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.TextureLight.#ctor(Axiom.SceneManagers.Bsp.BspSceneManager)">
+            <summary>
+            	Default constructor.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.TextureLight.#ctor(System.String,Axiom.SceneManagers.Bsp.BspSceneManager)">
+            <summary>
+            	Normal constructor. Should not be called directly, but rather the SceneManager.CreateLight method should be used.
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="T:Axiom.SceneManagers.Bsp.TextureLightMap">
+            <summary>
+            	Parameters for texture lighting.
+            </summary>
+            <remarks>
+            	The diffuse color and textureLightMap components are held separately from
+            	the other vertex components (position, normal, etc) so that dynamic vertex
+            	buffers can be used to change their values.
+            </remarks>
+        </member>
+        <member name="T:Axiom.SceneManagers.Bsp.LightIntensity">
+            <summary>
+            	Determines how bright the texture light can be
+            </summary>
+        </member>
+        <member name="T:Axiom.SceneManagers.Bsp.BspNode">
+            <summary>
+               Encapsulates a node in a BSP tree.
+            </summary>
+            <remarks>
+               A BSP tree represents space partitioned by planes . The space which is
+               partitioned is either the world (in the case of the root node) or the space derived
+               from their parent node. Each node can have elements which are in front or behind it, which are
+               it's children and these elements can either be further subdivided by planes,
+               or they can be undivided spaces or 'leaf nodes' - these are the nodes which actually contain
+               objects and world geometry.The leaves of the tree are the stopping point of any tree walking algorithm,
+               both for rendering and collision detection etc.<p/>
+               We choose not to represent splitting nodes and leaves as separate structures, but to merge the two for simplicity
+               of the walking algorithm. If a node is a leaf, the IsLeaf property returns true and both GetFront() and
+               GetBack() return null references. If the node is a partitioning plane IsLeaf returns false and GetFront()
+               and GetBack() will return the corresponding BspNode objects.
+            </remarks>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.BspNode.visCluster">
+            <summary>
+            	The cluster number of this leaf.
+            </summary>
+            <remarks>
+            	Leaf nodes are assigned to 'clusters' of nodes, which are used to group nodes together for
+            	visibility testing. There is a lookup table which is used to determine if one cluster of leaves
+            	is visible from another cluster. Whilst it would be possible to expand all this out so that
+            	each node had a list of pointers to other visible nodes, this would be very expensive in terms
+            	of storage (using the cluster method there is a table which is 1-bit squared per cluster, rounded
+            	up to the nearest byte obviously, which uses far less space than 4-bytes per linked node per source
+            	node). Of course the limitation here is that you have to each leaf in turn to determine if it is visible
+            	rather than just following a list, but since this is only done once per frame this is not such a big
+            	overhead.
+            </remarks>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspNode.#ctor(Axiom.SceneManagers.Bsp.BspLevel,System.Boolean)">
+            <summary>
+            	Constructor, only to be used by BspLevel.
+            </summary>
+            <param name="owner"></param>
+            <param name="isLeaf"></param>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspNode.GetSide(Axiom.Math.Vector3)">
+            <summary>
+            	Determines which side of the splitting plane a worldspace point is.
+            </summary>
+            <remarks>
+            	This method should only be called on a splitting node, i.e. where <see cref="!:Plugin_BSPSceneManager.BspSceneNode"/> returns false. 
+            	Calling this method on a leaf node will throw an exception.
+            </remarks>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspNode.GetNextNode(Axiom.Math.Vector3)">
+            <summary>
+            	Gets the next node down in the tree, with the intention of locating the leaf containing the given point.
+            </summary>
+            <remarks>
+            	This method should only be called on a splitting node, i.e. where <see cref="!:Plugin_BSPSceneManager.BspSceneNode"/> returns false. 
+            	Calling this method on a leaf node will throw an exception.
+            </remarks>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspNode.IsLeafVisible(Axiom.SceneManagers.Bsp.BspNode)">
+            <summary>
+            	Determines if the passed in node (must also be a leaf) is visible from this leaf.
+            </summary>
+            <remarks>
+            	Must only be called on a leaf node, and the parameter must also be a leaf node. If
+            	this method returns true, then the leaf passed in is visible from this leaf.
+            	Note that internally this uses the Potentially Visible Set (PVS) which is precalculated
+            	and stored with the BSP level.
+            </remarks>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspNode.AddObject(Axiom.Core.MovableObject)">
+            <summary>
+            	Internal method for telling the node that a movable intersects it.
+            </summary>
+            <param name="?"></param>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspNode.RemoveObject(Axiom.Core.MovableObject)">
+            <summary>
+            	Internal method for telling the node that a movable no longer intersects it.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspNode.GetDistance(Axiom.Math.Vector3)">
+            <summary>
+            	Gets the signed distance to the dividing plane.
+            </summary>
+            <param name="pos"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Axiom.SceneManagers.Bsp.BspNode.IsLeaf">
+            <summary>
+            	Returns true if this node is a leaf (i.e. contains geometry) or false if it is a splitting plane.
+            </summary>
+            <remarks>
+            	A BspNode can either be a splitting plane (the typical representation of a BSP node) or an undivided
+            	region contining geometry (a leaf node). Ogre represents both using the same class for simplicity
+            	of tree walking. However it is important that you use this method to determine which type you are dealing
+            	with, since certain methods are only supported with one of the subtypes. Details are given in the individual methods.
+            	Note that I could have represented splitting / leaf nodes as a class hierarchy but the
+            	virtual methods / run-time type identification would have a performance hit, and it would not make the
+            	code much (any?) simpler anyway. I think this is a fair trade-off in this case.
+            </remarks>
+        </member>
+        <member name="P:Axiom.SceneManagers.Bsp.BspNode.FrontNode">
+            <summary>
+            	Gets a reference to a <see cref="!:Plugin_BSPSceneManager.BspSceneNode"/> containing the subspace on the 
+            	positive side of the splitting plane.
+            </summary>
+            <remarks>
+            	This method should only be called on a splitting node, i.e. where <see cref="!:Plugin_BSPSceneManager.BspSceneNode"/> returns false. 
+            	Calling this method on a leaf node will throw an AxiomException.
+            </remarks>
+        </member>
+        <member name="P:Axiom.SceneManagers.Bsp.BspNode.BackNode">
+            <summary>
+            	Returns a pointer to a BspNode containing the subspace on the negative side of the splitting plane.
+            </summary>
+            <remarks>
+            	This method should only be called on a splitting node, i.e. where <see cref="!:Plugin_BSPSceneManager.BspSceneNode"/> returns false. 
+            	Calling this method on a leaf node will throw an AxiomException.
+            </remarks>
+        </member>
+        <member name="P:Axiom.SceneManagers.Bsp.BspNode.SplittingPlane">
+            <summary>
+            	Returns details of the plane which is used to subdivide the space of his node's children.
+            </summary>
+            <remarks>
+            	This method should only be called on a splitting node, i.e. where <see cref="!:Plugin_BSPSceneManager.BspSceneNode"/> returns false. 
+            	Calling this method on a leaf node will throw an AxiomException.
+            </remarks>
+        </member>
+        <member name="P:Axiom.SceneManagers.Bsp.BspNode.BoundingBox">
+            <summary>
+            	Returns the axis-aligned box which contains this node if it is a leaf.
+            </summary>
+            <remarks>
+            	This method should only be called on a leaf node. It returns a box which can be used in calls like
+            	<see cref="!:Camera.IsVisible"/> to determine if the leaf node is visible in the view.
+            </remarks>
+        </member>
+        <member name="P:Axiom.SceneManagers.Bsp.BspNode.NumFaceGroups">
+            <summary>
+            	Returns the number of faces contained in this leaf node.
+            </summary>
+            <remarks>
+            	Should only be called on a leaf node.
+            </remarks>
+        </member>
+        <member name="P:Axiom.SceneManagers.Bsp.BspNode.FaceGroupStart">
+            <summary>
+            	Returns the index to the face group index list for this leaf node.
+            </summary>
+            <remarks>
+            	The contents of this buffer is a list of indexes which point to the
+            	actual face groups held in a central buffer in the BspLevel class (in
+            	actual fact for efficency the indexes themselves are also held in a single
+            	buffer in BspLevel too). The reason for this indirection is that the buffer
+            	of indexes to face groups is organised in chunks relative to nodes, whilst the
+            	main buffer of face groups may not be.
+            	Should only be called on a leaf node.
+            </remarks>
+        </member>
+        <member name="P:Axiom.SceneManagers.Bsp.BspNode.SolidBrushes">
+            <summary>
+            	Get the list of solid Brushes for this node.	
+            </summary>
+            <remarks>
+            	Only applicable for leaf nodes. 
+            </remarks>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:Axiom.SceneManagers.Bsp.Quake3ShaderManager" -->
+        <!-- Badly formed XML comment ignored for member "T:Axiom.SceneManagers.Bsp.Quake3Level" -->
+        <member name="M:Axiom.SceneManagers.Bsp.Quake3Level.Initialize">
+            <summary>
+            	Utility function read the header.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.Quake3Level.LoadFromStream(System.IO.Stream)">
+            <summary>
+            	Reads Quake3 bsp data from a chunk of memory as read from the file.
+            </summary>
+            <remarks>
+            	Since ResourceManagers generally locate data in a variety of
+            	places they typically manipulate them as a chunk of data, rather than
+            	a file pointer since this is unsupported through compressed archives.
+            	<p/>
+            	Quake3 files are made up of a header (which contains version info and
+            	a table of the contents) and 17 'lumps' i.e. sections of data,
+            	the offsets to which are kept in the table of contents. The 17 types
+            	are predefined.
+            </remarks>
+            <param name="chunk">Input stream containing Quake3 data.</param>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.Quake3Level.ExtractLightmaps">
+            <summary>
+            	Extracts the embedded lightmap texture data and loads them as textures.
+            </summary>
+            <remarks>
+            	Calling this method makes the lightmap texture data embedded in
+            	the .bsp file available to the renderer. Lightmaps are extracted
+            	and loaded as Texture objects (subclass specific to RenderSystem
+            	subclass) and are named "@lightmap1", "@lightmap2" etc.
+            </remarks>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.Quake3Level.DumpContents">
+            <summary>
+            	Debug method.
+            </summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.ContentFlags.Solid">
+            <summary>An eye is never valid in a solid.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.ContentFlags.Teleporter">
+            <summary>Bot specific.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.ContentFlags.JumpPad">
+            <summary>Bot specific.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.ContentFlags.ClusterPortal">
+            <summary>Bot specific.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.ContentFlags.DoNotEnter">
+            <summary>Bot specific.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.ContentFlags.Origin">
+            <summary>Removed before bsping an entity.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.ContentFlags.Body">
+            <summary>Should never be on a brush, only in game.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.ContentFlags.Detail">
+            <summary>Brushes not used for the bsp.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.ContentFlags.Structural">
+            <summary>Brushes used for the bsp.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.ContentFlags.Translucent">
+            <summary>Don't consume surface fragments inside.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.ContentFlags.NoDrop">
+            <summary>Don't leave bodies or items (death fog, lava).</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.SurfaceFlags.NoDamage">
+            <summary>Never give falling damage.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.SurfaceFlags.Slick">
+            <summary>Effects game physics.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.SurfaceFlags.Sky">
+            <summary>Lighting from environment map.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.SurfaceFlags.NoImpact">
+            <summary>Don't make missile explosions.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.SurfaceFlags.NoMarks">
+            <summary>Don't leave missile marks.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.SurfaceFlags.Flesh">
+            <summary>Make flesh sounds and effects.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.SurfaceFlags.NoDraw">
+            <summary>Don't generate a drawsurface at all.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.SurfaceFlags.Hint">
+            <summary>Make a primary bsp splitter.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.SurfaceFlags.Skip">
+            <summary>Completely ignore, allowing non-closed brushes.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.SurfaceFlags.NoLightmap">
+            <summary>Surface doesn't need a lightmap.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.SurfaceFlags.PointLight">
+            <summary>Generate lighting info at vertexes.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.SurfaceFlags.MetalSteps">
+            <summary>Clanking footsteps.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.SurfaceFlags.NoSteps">
+            <summary>No footstep sounds.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.SurfaceFlags.NonSolid">
+            <summary>Don't collide against curves with this set.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.SurfaceFlags.LightFilter">
+            <summary>Act as a light filter during q3map -light.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.SurfaceFlags.AlphaShadow">
+            <summary>Do per-pixel light shadow casting in q3map.</summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.SurfaceFlags.NoDLight">
+            <summary>Don't dlight even if solid (solid lava, skies).</summary>
+        </member>
+        <member name="T:Axiom.SceneManagers.Bsp.Quake3Shader">
+            <summary>
+            	Class for recording Quake3 shaders.
+            </summary>
+            <remarks>
+            	This is a temporary holding area since shaders are actually converted into
+            	Material objects for use in the engine proper. However, because we have to read
+            	in shader definitions en masse (because they are stored in shared .shader files)
+            	without knowing which will actually be used, we store their definitions here
+            	temporarily since their instantiations as Materials would use precious resources
+            	because of the automatic loading of textures etc.
+            </remarks>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.Quake3Shader.#ctor(System.String)">
+            <summary>
+            	Default constructor - used by <see cref="T:Axiom.SceneManagers.Bsp.Quake3ShaderManager"/> (do not call directly)
+            </summary>
+            <param name="name">Shader name.</param>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.Quake3Shader.CreateAsMaterial(Axiom.Core.SceneManager,System.Int32)">
+            <summary>
+            	Creates this shader as an OGRE material.
+            </summary>
+            <remarks>
+            	Creates a new material based on this shaders settings and registers it with the
+            	SceneManager passed in. 
+            	Material name is in the format of: shader#lightmap.
+            </remarks>
+            <param name="sm">SceneManager to register the material with.</param>
+            <param name="lightmapNumber">Lightmap number</param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:Axiom.SceneManagers.Bsp.BspResourceManager" -->
+        <member name="M:Axiom.SceneManagers.Bsp.BspResourceManager.Load(System.String)">
+            <summary>
+            	Loads a BSP-based level from the named file.  Currently only supports loading of Quake3 .bsp files.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspResourceManager.Load(System.String,System.Int32)">
+            <summary>
+            	Loads a BSP-based level from the named file.  Currently only supports loading of Quake3 .bsp files.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspResourceManager.Create(System.String)">
+            <summary>
+            	Creates a BspLevel resource - mainly used internally.
+            </summary>
+        </member>
+        <member name="T:Axiom.SceneManagers.Bsp.Collections.ShaderPassCollection">
+            <summary>
+            Summary description for AnimationCollection.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.Collections.ShaderPassCollection.#ctor">
+            <summary>
+            	Default constructor.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.Collections.ShaderPassCollection.Add(Axiom.SceneManagers.Bsp.ShaderPass)">
+            <summary>
+            	Adds an object to the collection.
+            </summary>
+            <param name="item"></param>
+        </member>
+        <member name="P:Axiom.SceneManagers.Bsp.Collections.ShaderPassCollection.Item(System.Int32)">
+            <summary>
+            	Get/Set indexer that allows access to the collection by index.
+            </summary>
+        </member>
+        <member name="P:Axiom.SceneManagers.Bsp.Collections.ShaderPassCollection.Item(System.String)">
+            <summary>
+            	Get/Set indexer that allows access to the collection by key value.
+            </summary>
+        </member>
+        <member name="T:Axiom.SceneManagers.Bsp.Collections.Map">
+            <summary>
+            	Map class, a little different from the Axiom.Collections.Map class
+            </summary>
+            <remarks>
+                A map allows multiple values per key, unlike the Hashtable which only allows
+                unique keys and only a single value per key.  Multiple values assigned to the same
+                key are placed in a "bucket", which in this case is an ArrayList.
+                <p/>
+                An example of values in a map would look like this:
+                Key     Value
+                "a"     "Alan"
+                "a"     "Adam"
+                "b"     "Brien"
+                "c"     "Chris"
+                "c"     "Carl"
+                etc
+                <p/>
+                Currently, enumeration is the only way to iterate through the values, which is
+                more pratical in terms of how the Map works internally anyway.  Intial testing showed
+                that inserting and iterating through 100,000 items, the Inserts took ~260ms and a full
+                enumeration of them all (with unboxing of the value type stored in the map) took between 16-30ms.
+            </remarks>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.Collections.Map.count">
+            <summary>
+                Number of total items currently in this map.
+            </summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.Collections.Map.buckets">
+            <summary>
+                A list of buckets.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.Collections.Map.#ctor">
+            <summary>
+                Default constructor.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.Collections.Map.Clear">
+            <summary>
+                Clears this map of all contained objects.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.Collections.Map.Clear(System.Object)">
+            <summary>
+                Clears the bucket with given key.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.Collections.Map.Find(System.Object)">
+            <summary>
+                Given a key, Find will return an IEnumerator that allows
+                you to iterate over all items in the bucket associated
+                with the key.
+            </summary>
+            <param name="key">Key for look for.</param>
+            <returns>IEnumerator to go through the items assigned to the key.</returns>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.Collections.Map.FindFirst(System.Object)">
+            <summary>
+                Given a key, FindFirst will return the first item in the bucket
+                associated with the key.
+            </summary>
+            <param name="key">Key to look for.</param>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.Collections.Map.Count(System.Object)">
+            <summary>
+                Gets the count of objects mapped to the specified key.
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.Collections.Map.Insert(System.Object,System.Object)">
+            <summary>
+                Inserts a value into a bucket that is specified by the
+                key.
+            </summary>
+            <param name="key"></param>
+            <param name="val"></param>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.Collections.Map.GetBucketEnumerator">
+            <summary>
+                Gets an appropriate enumerator for the map, customized to go
+                through each key in the map and return a Pair of the key and
+                an ArrayList of the values associated with it.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Axiom.SceneManagers.Bsp.Collections.Map.TotalCount">
+            <summary>
+                Gets the total count of all items contained within the map.
+            </summary>
+        </member>
+        <member name="T:Axiom.SceneManagers.Bsp.BspStaticFaceGroup">
+            <summary>
+            Summary description for BspStaticFaceGroup.
+            </summary>
+        </member>
+        <member name="T:Axiom.SceneManagers.Bsp.BspSceneManager">
+            <summary>
+            	Specialisation of the SceneManager class to deal with indoor scenes based on a BSP tree.
+            </summary>
+            <remarks>
+            	This class refines the behaviour of the default SceneManager to manage
+            	a scene whose bulk of geometry is made up of an indoor environment which
+            	is organised by a Binary Space Partition (BSP) tree. 
+            	<p/>
+            	A BSP tree progressively subdivides the space using planes which are the nodes of the tree.
+            	At some point we stop subdividing and everything in the remaining space is part of a 'leaf' which
+            	contains a number of polygons. Typically we traverse the tree to locate the leaf in which a
+            	point in space is (say the camera origin) and work from there. A second structure, the
+            	Potentially Visible Set, tells us which other leaves can been seen from this
+            	leaf, and we test their bounding boxes against the camera frustum to see which
+            	we need to draw. Leaves are also a good place to start for collision detection since
+            	they divide the level into discrete areas for testing.
+            	<p/>
+            	This BSP and PVS technique has been made famous by engines such as Quake and Unreal. Ogre
+            	provides support for loading Quake3 level files to populate your world through this class,
+            	by calling the BspSceneManager.LoadWorldGeometry. Note that this interface is made
+            	available at the top level of the SceneManager class so you don't have to write your code
+            	specifically for this class - just call Root::getSceneManager passing a SceneType of ST_INDOOR
+            	and in the current implementation you will get a BspSceneManager silently disguised as a
+            	standard SceneManager.
+            </remarks>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspSceneManager.LoadWorldGeometry(System.String)">
+            <summary>
+            	Specialised from SceneManager to support Quake3 bsp files.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspSceneManager.GetSuggestedViewpoint(System.Boolean)">
+            <summary>
+            	Specialised to suggest viewpoints.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspSceneManager.FindVisibleObjects(Axiom.Core.Camera,System.Boolean)">
+            <summary>
+            	Overriden from SceneManager.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspSceneManager.PopulateLightList(Axiom.Math.Vector3,System.Single,Axiom.Collections.LightList)">
+            <summary>
+            	Overriden from SceneManager.
+            </summary>
+            <param name="position">The position at which to evaluate the list of lights</param>
+            <param name="radius">The bounding radius to test</param>
+            <param name="destList">List to be populated with ordered set of lights; will be cleared by this method before population.</param>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspSceneManager.FindLightsAffectingFrustum(Axiom.Core.Camera)">
+            <summary>
+            	Overriden from SceneManager.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspSceneManager.CreateSceneNode">
+            <summary>
+            	Creates a specialized <see cref="!:Plugin_BSPSceneManager.BspSceneNode"/>.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspSceneManager.CreateSceneNode(System.String)">
+            <summary>
+            	Creates a specialized <see cref="!:Plugin_BSPSceneManager.BspSceneNode"/>.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspSceneManager.CreateLight(System.String)">
+            <summary>
+            	Creates a specialised texture light.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Axiom.SceneManagers.Bsp.BspSceneManager.NotifyObjectMoved(Axiom.Core.MovableObject,Axiom.Math.Vector3)" -->
+        <member name="M:Axiom.SceneManagers.Bsp.BspSceneManager.NotifyObjectDetached(Axiom.Core.MovableObject)">
+            <summary>
+            	Internal method for notifying the level that an object has been detached from a node.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspSceneManager.CreateSphereRegionQuery(Axiom.Math.Sphere,System.UInt64)">
+            <summary>
+            	Creates a SphereSceneQuery for this scene manager. 
+            </summary>
+            <remarks>
+            	This method creates a new instance of a query object for this scene manager, 
+            	for a spherical region. See SceneQuery and SphereSceneQuery 
+            	for full details.
+            </remarks>
+            <param name="sphere">Details of the sphere which describes the region for this query.</param>
+            <param name="mask">The query mask to apply to this query; can be used to filter out	certain objects; see SceneQuery for details.</param>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspSceneManager.CreateRayQuery(Axiom.Math.Ray,System.UInt64)">
+            <summary>
+            	Creates a RaySceneQuery for this scene manager. 
+            </summary>
+            <remarks>
+            	This method creates a new instance of a query object for this scene manager, 
+            	looking for objects which fall along a ray. See SceneQuery and RaySceneQuery 
+            	for full details.
+            </remarks>
+            <param name="ray">Details of the ray which describes the region for this query.</param>
+            <param name="mask">The query mask to apply to this query; can be used to filter out certain objects; see SceneQuery for details.</param>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspSceneManager.CreateIntersectionQuery(System.UInt64)">
+            <summary>
+            	Creates an IntersectionSceneQuery for this scene manager. 
+            </summary>
+            <remarks>
+            	This method creates a new instance of a query object for locating
+            	intersecting objects. See SceneQuery and IntersectionSceneQuery
+            	for full details.
+            </remarks>
+            <param name="mask">The query mask to apply to this query; can be used to filter out certain objects; see SceneQuery for details.</param>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspSceneManager.WalkTree(Axiom.Core.Camera,System.Boolean)">
+            <summary>
+            	Walks the BSP tree looking for the node which the camera is in, and tags any geometry 
+            	which is in a visible leaf for later processing.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspSceneManager.ProcessVisibleLeaf(Axiom.SceneManagers.Bsp.BspNode,Axiom.Core.Camera,System.Boolean)">
+            <summary>
+            	Tags geometry in the leaf specified for later rendering.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspSceneManager.CacheGeometry(System.IntPtr,Axiom.SceneManagers.Bsp.BspStaticFaceGroup)">
+            <summary>
+            	Caches a face group for imminent rendering.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspSceneManager.CacheLightGeometry(Axiom.SceneManagers.Bsp.TextureLight,System.UInt32*,Axiom.SceneManagers.Bsp.TextureLightMap*,Axiom.SceneManagers.Bsp.BspVertex*,Axiom.SceneManagers.Bsp.BspStaticFaceGroup)">
+            <summary>
+            	Caches a face group and calculates texture lighting coordinates.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspSceneManager.AddBoundingBox(Axiom.Math.AxisAlignedBox,System.Boolean)">
+            <summary>
+            	Adds a bounding box to draw if turned on.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspSceneManager.RenderStaticGeometry">
+            <summary>
+            	Renders the static level geometry tagged in <see cref="!:Plugin_BSPSceneManager.BspSceneManager.WalkTree"/>.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspSceneManager.RenderTextureLighting(System.Int32)">
+            <summary>
+            	Renders the texture lighting tagged in a light with index lightIndex.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspSceneManager.RenderTextureShadowOnGeometry">
+            <summary>
+            	Renders texture shadow on tagged in level geometry.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspSceneManager.RenderSingleObject(Axiom.Graphics.IRenderable,Axiom.Graphics.Pass,System.Boolean,Axiom.Collections.LightList)">
+            <summary>
+            	Overriden from SceneManager.
+            </summary>
+        </member>
+        <member name="T:Axiom.SceneManagers.Bsp.BspIntersectionSceneQuery">
+            <summary>
+            	BSP specialisation of IntersectionSceneQuery.
+            </summary>
+        </member>
+        <member name="T:Axiom.SceneManagers.Bsp.BspRaySceneQuery">
+            <summary>
+            	BSP specialisation of RaySceneQuery.
+            </summary>
+        </member>
+        <member name="T:Axiom.SceneManagers.Bsp.BspSphereRegionSceneQuery">
+            <summary>
+            	BSP specialisation of SphereRegionSceneQuery.
+            </summary>
+        </member>
+        <member name="T:Axiom.SceneManagers.Bsp.BspGeometry">
+            <summary>
+            	Represents the bsp geometry. This is added to the RenderQueue so that i can
+            	determine at RenderSingleObject when the geometry needs to be rendered
+            	and with what lights.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspGeometry.GetRenderOperation(Axiom.Graphics.RenderOperation)">
+            <summary>
+               Gets the render operation required to send this object to the frame buffer.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspGeometry.GetWorldTransforms(Axiom.Math.Matrix4[])">
+            <summary>
+               Gets the world transform matrix / matrices for this renderable object.
+            </summary>
+            <remarks>
+               If the object has any derived transforms, these are expected to be up to date as long as
+               all the SceneNode structures have been updated before this is called.
+             <p/>
+               This method will populate xform with 1 matrix if it does not use vertex blending. If it
+               does use vertex blending it will fill the passed in pointer with an array of matrices,
+               the length being the value returned from getNumWorldTransforms.
+            </remarks>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspGeometry.GetSquaredViewDepth(Axiom.Core.Camera)">
+            <summary>
+            	Returns the camera-relative squared depth of this renderable.
+            </summary>
+            <remarks>
+            	Used to sort transparent objects. Squared depth is used rather than
+            	actual depth to avoid having to perform a square root on the result.	
+            </remarks>
+            <param name="camera"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspGeometry.GetCustomParameter(System.Int32)">
+            <summary>
+            	Gets the custom value associated with this Renderable at the given index. 
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspGeometry.SetCustomParameter(System.Int32,Axiom.Math.Vector4)">
+            <summary>
+            	Sets a custom parameter for this Renderable, which may be used to 
+            	drive calculations for this specific Renderable, like GPU program parameters.
+            </summary>
+            <remarks>
+            	Calling this method simply associates a numeric index with a 4-dimensional
+            	value for this specific Renderable. This is most useful if the material
+            	which this Renderable uses a vertex or fragment program, and has an 
+            	AutoConstant.Custom parameter entry. This parameter entry can refer to the
+            	index you specify as part of this call, thereby mapping a custom
+            	parameter for this renderable to a program parameter.
+            </remarks>
+            <param name="index">
+            	The index with which to associate the value. Note that this
+            	does not have to start at 0, and can include gaps. It also has no direct
+            	correlation with a GPU program parameter index - the mapping between the
+            	two is performed by the AutoConstant.Custom entry, if that is used.
+            </param>
+            <param name="val">The value to associate.</param>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspGeometry.UpdateCustomGpuParameter(Axiom.Graphics.GpuProgramParameters.AutoConstantEntry,Axiom.Graphics.GpuProgramParameters)">
+            <summary>
+            	Update a custom GpuProgramParameters constant which is derived from 
+            	information only this Renderable knows.
+            </summary>
+            <remarks>
+            	This method allows a Renderable to map in a custom GPU program parameter
+            	based on it's own data. This is represented by a GPU auto parameter
+            	of AutoConstants.Custom, and to allow there to be more than one of these per
+            	Renderable, the 'data' field on the auto parameter will identify
+            	which parameter is being updated. The implementation of this method
+            	must identify the parameter being updated, and call a 'SetConstant' 
+            	method on the passed in <see cref="T:Axiom.Graphics.GpuProgramParameters"/> object, using the details
+            	provided in the incoming auto constant setting to identify the index
+            	at which to set the parameter.
+            </remarks>
+            <param name="constant">The auto constant entry referring to the parameter being updated.</param>
+            <param name="parameters">The parameters object which this method should call to set the updated parameters.</param>
+        </member>
+        <member name="P:Axiom.SceneManagers.Bsp.BspGeometry.CastsShadows">
+            <summary>
+            	Gets whether this renderable would normally cast a shadow. 
+            </summary>
+        </member>
+        <member name="P:Axiom.SceneManagers.Bsp.BspGeometry.Material">
+            <summary>
+               Get the material associated with this renderable object.
+            </summary>
+        </member>
+        <member name="P:Axiom.SceneManagers.Bsp.BspGeometry.Technique">
+            <summary>
+               Technique being used to render this object according to the current hardware.
+            </summary>
+            <remarks>
+               This is to allow Renderables to use a chosen Technique if they wish, otherwise
+               they will use the best Technique available for the Material they are using.
+            </remarks>
+        </member>
+        <member name="P:Axiom.SceneManagers.Bsp.BspGeometry.Lights">
+            <summary>
+               Gets a list of lights, ordered relative to how close they are to this renderable.
+            </summary>
+            <remarks>
+               Directional lights, which have no position, will always be first on this list.
+            </remarks>
+        </member>
+        <member name="P:Axiom.SceneManagers.Bsp.BspGeometry.NormalizeNormals">
+            <summary>
+               Returns whether or not this Renderable wishes the hardware to normalize normals.
+            </summary>
+        </member>
+        <member name="P:Axiom.SceneManagers.Bsp.BspGeometry.NumWorldTransforms">
+            <summary>
+               Gets the number of world transformations that will be used for this object.
+            </summary>
+            <remarks>
+               When a renderable uses vertex blending, it uses multiple world matrices instead of a single
+               one. Each vertex sent to the pipeline can reference one or more matrices in this list
+               with given weights.
+               If a renderable does not use vertex blending this method returns 1, which is the default for 
+               simplicity.
+            </remarks>
+        </member>
+        <member name="P:Axiom.SceneManagers.Bsp.BspGeometry.UseIdentityProjection">
+            <summary>
+               Returns whether or not to use an 'identity' projection.
+            </summary>
+            <remarks>
+               Usually IRenderable objects will use a projection matrix as determined
+               by the active camera. However, if they want they can cancel this out
+               and use an identity projection, which effectively projects in 2D using
+               a {-1, 1} view space. Useful for overlay rendering. Normal renderables need
+               not override this.
+            </remarks>
+        </member>
+        <member name="P:Axiom.SceneManagers.Bsp.BspGeometry.UseIdentityView">
+            <summary>
+               Returns whether or not to use an 'identity' projection.
+            </summary>
+            <remarks>
+               Usually IRenderable objects will use a view matrix as determined
+               by the active camera. However, if they want they can cancel this out
+               and use an identity matrix, which means all geometry is assumed
+               to be relative to camera space already. Useful for overlay rendering. 
+               Normal renderables need not override this.
+            </remarks>
+        </member>
+        <member name="P:Axiom.SceneManagers.Bsp.BspGeometry.RenderDetail">
+            <summary>
+            	Will allow for setting per renderable scene detail levels.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:Axiom.SceneManagers.Bsp.BspGeometry.WorldOrientation" -->
+        <!-- Badly formed XML comment ignored for member "P:Axiom.SceneManagers.Bsp.BspGeometry.WorldPosition" -->
+        <!-- Badly formed XML comment ignored for member "T:Axiom.SceneManagers.Bsp.BspLevel" -->
+        <member name="F:Axiom.SceneManagers.Bsp.BspLevel.vertexData">
+            <summary>
+            	Vertex data holding all the data for the level, but able to render parts of it/
+            </summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.BspLevel.leafFaceGroups">
+            <summary>
+            	Array of indexes into the faceGroups array. This buffer is organised
+            	by leaf node so leaves can just use contiguous chunks of it and
+            	get repointed to the actual entries in faceGroups.
+            </summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.BspLevel.faceGroups">
+            <summary>
+            	Array of face groups, indexed into by contents of mLeafFaceGroups.
+            </summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.BspLevel.patches">
+            <summary>
+            	Storage of patches 
+            </summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.BspLevel.patchVertexCount">
+            <summary>
+            	Total number of vertices required for all patches.
+            </summary> 
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.BspLevel.patchIndexCount">
+            <summary>
+            	Total number of indexes required for all patches.
+            </summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Bsp.BspLevel.numIndexes">
+            <summary>
+            	Indexes for the whole level, will be copied to the real indexdata per frame.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspLevel.#ctor(System.String)">
+            <summary>
+            	Default constructor - used by BspResourceManager (do not call directly).
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspLevel.IsLeafVisible(Axiom.SceneManagers.Bsp.BspNode,Axiom.SceneManagers.Bsp.BspNode)">
+            <summary>
+            	Determines if one leaf node is visible from another.
+            </summary>
+            <param name="?"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspLevel.FindLeaf(Axiom.Math.Vector3)">
+            <summary>
+            	Walks the entire BSP tree and returns the leaf which contains the given point.
+            </summary>r
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspLevel.NotifyObjectMoved(Axiom.Core.MovableObject,Axiom.Math.Vector3)">
+            <summary>
+            	Ensures that the <see cref="!:Axiom.Core.SceneObject"/> is attached to the right leaves of the BSP tree.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspLevel.NotifyObjectDetached(Axiom.Core.MovableObject)">
+            <summary>
+            	Internal method, makes sure an object is removed from the leaves when detached from a node.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspLevel.LoadQuake3Level(Axiom.SceneManagers.Bsp.Quake3Level)">
+            <summary>
+            	/** Internal utility function for loading data from Quake3.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspLevel.LoadEntities(Axiom.SceneManagers.Bsp.Quake3Level)">
+            <summary>
+            	Internal method for parsing chosen entities.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspLevel.Load">
+            <summary>
+            	Generic load - called by <see cref="!:Plugin_BSPSceneManager.BspResourceManager"/>.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Bsp.BspLevel.Unload">
+            <summary>
+            	Generic unload - called by <see cref="T:Axiom.SceneManagers.Bsp.BspResourceManager"/>.
+            </summary>
+        </member>
+        <member name="T:Axiom.SceneManagers.Bsp.BspLevel.VisData">
+            <summary>
+            	Internal lookup table to determine visibility between leaves.
+            </summary>
+            <remarks> 
+            	Leaf nodes are assigned to 'clusters' of nodes, which are used to group nodes together for
+            	visibility testing. This data holds a lookup table which is used to determine if one cluster of leaves
+            	is visible from another cluster. Whilst it would be possible to expand all this out so that
+            	each node had a list of pointers to other visible nodes, this would be very expensive in terms
+            	of storage (using the cluster method there is a table which is 1-bit squared per cluster, rounded
+            	up to the nearest byte obviously, which uses far less space than 4-bytes per linked node per source
+            	node). Of course the limitation here is that you have to each leaf in turn to determine if it is visible
+            	rather than just following a list, but since this is only done once per frame this is not such a big
+            	overhead.
+            	<p/>
+            	Each row in the table is a 'from' cluster, with each bit in the row corresponding to a 'to' cluster,
+            	both ordered based on cluster index. A 0 in the bit indicates the 'to' cluster is not visible from the
+            	'from' cluster, whilst a 1 indicates it is.
+            	<p/>
+            	As many will notice, this is lifted directly from the Quake implementation of PVS.
+            </remarks>
+        </member>
+        <member name="T:Axiom.SceneManagers.Bsp.BspVertex">
+            <summary>
+            	Vertex format for fixed geometry.
+            </summary>
+            <remarks>
+            	Note that in this case vertex components (position, normal, texture coords etc)
+            	are held interleaved in the same buffer. However, the format here is different from 
+            	the format used by Quake because older Direct3d drivers like the vertex elements
+            	to be in a particular order within the buffer. See VertexDeclaration for full
+            	details of this marvellous(not) feature.
+            </remarks>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:Axiom.SceneManagers.Bsp.BspSceneNode" -->
+        <member name="M:Axiom.SceneManagers.Bsp.BspSceneNode.DetachObject(System.Int32)">
+            <summary>
+            	Detaches the indexed object from this scene node.
+            </summary>
+            <remarks>
+            	Detaches by index, see the alternate version to detach by name. Object indexes
+            	may change as other objects are added / removed.
+            </remarks>
+        </member>
+    </members>
+</doc>

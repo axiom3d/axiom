@@ -1,0 +1,157 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Axiom.Plugins.CgProgramManager</name>
+    </assembly>
+    <members>
+        <member name="T:Axiom.CgPrograms.CgProgramFactory">
+            <summary>
+            	Summary description for CgProgramFactory.
+            </summary>
+        </member>
+        <member name="F:Axiom.CgPrograms.CgProgramFactory.cgContext">
+            <summary>
+               ID of the active Cg context.
+            </summary>
+        </member>
+        <member name="M:Axiom.CgPrograms.CgProgramFactory.#ctor">
+            <summary>
+               Internal constructor.
+            </summary>
+        </member>
+        <member name="M:Axiom.CgPrograms.CgProgramFactory.Create(System.String,Axiom.Graphics.GpuProgramType)">
+            <summary>
+               Creates and returns a specialized CgProgram instance.
+            </summary>
+            <param name="name">Name of the program to create.</param>
+            <param name="type">Type of program to create, vertex or fragment.</param>
+            <returns>A new CgProgram instance within the current Cg Context.</returns>
+        </member>
+        <member name="M:Axiom.CgPrograms.CgProgramFactory.Dispose">
+            <summary>
+               Destroys the Cg context upon being disposed.
+            </summary>
+        </member>
+        <member name="P:Axiom.CgPrograms.CgProgramFactory.Language">
+            <summary>
+               Returns 'cg' to identify this factory.
+            </summary>
+        </member>
+        <member name="T:Axiom.CgPrograms.CgHelper">
+            <summary>
+            	Helper class with common methods for use in the Cg plugin.
+            </summary>
+        </member>
+        <member name="M:Axiom.CgPrograms.CgHelper.CheckCgError(System.String,System.IntPtr)">
+            <summary>
+               Used to check for a recent Cg error and handle it accordingly.
+            </summary>
+            <param name="potentialError">Message to use if an error has indeed occurred.</param>
+            <param name="context">Current Cg context.</param>
+        </member>
+        <member name="T:Axiom.CgPrograms.CgProgram">
+            <summary>
+            	Specialization of HighLevelGpuProgram to provide support for nVidia's Cg language.
+            </summary>
+            <remarks>
+               Cg can be used to compile common, high-level, C-like code down to assembler
+               language for both GL and Direct3D, for multiple graphics cards. You must
+               supply a list of profiles which your program must support using
+               SetProfiles() before the program is loaded in order for this to work. The
+               program will then negotiate with the renderer to compile the appropriate program
+               for the API and graphics card capabilities.
+            </remarks>
+        </member>
+        <member name="F:Axiom.CgPrograms.CgProgram.cgContext">
+            <summary>
+               Current Cg context id.
+            </summary>
+        </member>
+        <member name="F:Axiom.CgPrograms.CgProgram.cgProgram">
+            <summary>
+               Current Cg program id.
+            </summary>
+        </member>
+        <member name="F:Axiom.CgPrograms.CgProgram.entry">
+            <summary>
+               Entry point of the Cg program.
+            </summary>
+        </member>
+        <member name="F:Axiom.CgPrograms.CgProgram.profiles">
+            <summary>
+               List of requested profiles for this program.
+            </summary>
+        </member>
+        <member name="F:Axiom.CgPrograms.CgProgram.selectedProfile">
+            <summary>
+               Chosen profile for this program.
+            </summary>
+        </member>
+        <member name="M:Axiom.CgPrograms.CgProgram.#ctor(System.String,Axiom.Graphics.GpuProgramType,System.String,System.IntPtr)">
+            <summary>
+               Constructor.
+            </summary>
+            <param name="name">Name of this program.</param>
+            <param name="type">Type of this program, vertex or fragment program.</param>
+            <param name="language">HLSL language of this program.</param>
+            <param name="context">CG context id.</param>
+        </member>
+        <member name="M:Axiom.CgPrograms.CgProgram.LoadFromSource">
+            <summary>
+               
+            </summary>
+        </member>
+        <member name="M:Axiom.CgPrograms.CgProgram.CreateLowLevelImpl">
+            <summary>
+               Create as assembler program from the compiled source supplied by the Cg compiler.
+            </summary>
+        </member>
+        <member name="M:Axiom.CgPrograms.CgProgram.PopulateParameterNames(Axiom.Graphics.GpuProgramParameters)">
+            <summary>
+               
+            </summary>
+            <param name="parms"></param>
+        </member>
+        <member name="M:Axiom.CgPrograms.CgProgram.UnloadImpl">
+            <summary>
+               Unloads the Cg program.
+            </summary>
+        </member>
+        <member name="M:Axiom.CgPrograms.CgProgram.Touch">
+            <summary>
+            	Only bother with supported programs.
+            </summary>
+        </member>
+        <member name="M:Axiom.CgPrograms.CgProgram.SetParam(System.String,System.String)">
+            <summary>
+               Method for passing parameters into the CgProgram.
+            </summary>
+            <param name="name">
+               Param name.
+            </param>
+            <param name="val">
+               Param value.
+            </param>
+        </member>
+        <member name="P:Axiom.CgPrograms.CgProgram.IsSupported">
+            <summary>
+               Returns whether or not this high level gpu program is supported on the current hardware.
+            </summary>
+        </member>
+        <member name="T:Axiom.CgPrograms.CgPlugin">
+            <summary>
+               Main plugin class.
+            </summary>
+        </member>
+        <member name="M:Axiom.CgPrograms.CgPlugin.Start">
+            <summary>
+               Called when the plugin is started.
+            </summary>
+        </member>
+        <member name="M:Axiom.CgPrograms.CgPlugin.Stop">
+            <summary>
+               Called when the plugin is stopped.
+            </summary>
+        </member>
+    </members>
+</doc>
