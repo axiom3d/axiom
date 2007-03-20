@@ -1,0 +1,238 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Axiom.SceneManagers.Octree</name>
+    </assembly>
+    <members>
+        <member name="T:Axiom.SceneManagers.Octree.Tile">
+            <summary>
+                Direction of a tile in reference to another tile.
+            </summary>
+        </member>
+        <member name="T:Axiom.SceneManagers.Octree.Neighbor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Axiom.SceneManagers.Octree.OctreeSceneManager">
+            <summary>
+            Summary description for OctreeSceneManager.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Octree.OctreeSceneManager.AlertVisibleObjects">
+            Alerts each unculled object, notifying it that it will be drawn.
+            Useful for doing calculations only on nodes that will be drawn, prior
+            to drawing them...
+        </member>
+        <member name="M:Axiom.SceneManagers.Octree.OctreeSceneManager.WalkOctree(Axiom.SceneManagers.Octree.OctreeCamera,Axiom.Graphics.RenderQueue,Axiom.SceneManagers.Octree.Octree,System.Boolean)">
+            Walks through the octree, adding any visible objects to the render queue.
+                    @remarks
+                    If any octant in the octree if completely within the the view frustum,
+                    all subchildren are automatically added with no visibility tests.
+        </member>
+        <member name="M:Axiom.SceneManagers.Octree.OctreeSceneManager.UpdateOctreeNode(Axiom.SceneManagers.Octree.OctreeNode)">
+            Checks the given OctreeNode, and determines if it needs to be moved
+            to a different octant.
+        </member>
+        <member name="M:Axiom.SceneManagers.Octree.OctreeSceneManager.RemoveOctreeNode(Axiom.SceneManagers.Octree.OctreeNode)">
+            Only removes the node from the octree.  It leaves the octree, even if it's empty.
+        </member>
+        <member name="M:Axiom.SceneManagers.Octree.OctreeSceneManager.Resize(Axiom.Math.AxisAlignedBox)">
+            Resizes the octree to the given size 
+        </member>
+        <member name="T:Axiom.SceneManagers.Octree.OctreeCamera">
+             <summary>
+            ** Specialized viewpoint from which an Octree can be rendered.
+            @remarks
+            This class contains several speciliazations of the Ogre::Camera class. It
+            implements the getRenderOperation method inorder to return displayable geometry
+            for debuggin purposes. It also implements a visibility function that is more granular
+            than the default.
+             </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Octree.OctreeCamera.GetVisibility(Axiom.Math.AxisAlignedBox)">
+            <summary>
+                Returns the visiblity of the box.
+            </summary>
+            <param name="bound"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.SceneManagers.Octree.OctreeCamera.GetCorner(Axiom.Core.FrustumPlane,Axiom.Core.FrustumPlane,Axiom.Core.FrustumPlane)">
+            <summary>
+            
+            </summary>
+            <param name="pp1"></param>
+            <param name="pp2"></param>
+            <param name="pp3"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Axiom.SceneManagers.Octree.Octree">
+            <summary>
+            Summary description for Octree.
+            </summary>
+        </member>
+        <member name="F:Axiom.SceneManagers.Octree.Octree.numNodes">
+            Returns the number of scene nodes attached to this octree
+        </member>
+        <member name="F:Axiom.SceneManagers.Octree.Octree.nodeList">
+            Public list of SceneNodes attached to this particular octree
+        </member>
+        <member name="F:Axiom.SceneManagers.Octree.Octree.box">
+            The bounding box of the octree
+                    @remarks
+                    This is used for octant index determination and rendering, but not culling
+        </member>
+        <member name="F:Axiom.SceneManagers.Octree.Octree.wireBoundingBox">
+            Creates the wire frame bounding box for this octant
+        </member>
+        <member name="F:Axiom.SceneManagers.Octree.Octree.halfSize">
+            Vector containing the dimensions of this octree / 2
+        </member>
+        <member name="F:Axiom.SceneManagers.Octree.Octree.Children">
+            3D array of children of this octree.
+                    @remarks
+                    Children are dynamically created as needed when nodes are inserted in the Octree.
+                    If, later, the all the nodes are removed from the child, it is still kept arround.
+        </member>
+        <member name="M:Axiom.SceneManagers.Octree.Octree.IsTwiceSize(Axiom.Math.AxisAlignedBox)">
+             <summary>
+              Determines if this octree is twice as big as the given box.
+            @remarks
+            	This method is used by the OctreeSceneManager to determine if the given
+            	box will fit into a child of this octree.
+             </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Octree.Octree.GetChildIndexes(Axiom.Math.AxisAlignedBox,System.Int32@,System.Int32@,System.Int32@)">
+             <summary>
+             Returns the appropriate indexes for the child of this octree into which the box will fit.
+            @remarks
+            	This is used by the OCtreeSceneManager to determine which child to traverse next when
+            finding the appropriate octree to insert the box.  Since it is a loose octree, only the
+            center of the box is checked to determine the octant.
+             </summary>
+        </member>
+        <member name="P:Axiom.SceneManagers.Octree.Octree.CullBounds">
+            <summary>
+             Creates the AxisAlignedBox used for culling this octree.
+            </summary>
+            <remarks>
+                Since it's a loose octree, the culling bounds can be different than the actual bounds of the octree.
+            </remarks>
+        </member>
+        <member name="T:Axiom.SceneManagers.Octree.TerrainSceneManager">
+            <summary>
+            Summary description for TerrainSceneManager.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Octree.TerrainSceneManager.UpdateSceneGraph(Axiom.Core.Camera)">
+            <summary>
+                Updates all the TerrainRenderables LOD.
+            </summary>
+            <param name="camera"></param>
+        </member>
+        <member name="M:Axiom.SceneManagers.Octree.TerrainSceneManager.RenderVisibleObjects">
+            <summary>
+                Aligns TerrainRenderable neighbors, and renders them.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Octree.TerrainSceneManager.FindVisibleObjects(Axiom.Core.Camera,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="camera"></param>
+        </member>
+        <member name="M:Axiom.SceneManagers.Octree.TerrainSceneManager.GetHeightAt(Axiom.Math.Vector3,System.Single)">
+            <summary>
+            Get the height of a a point on the terrain under/over a givin 3d point. This is
+            very useful terrain collision testing, since you can simply select 
+            a few locations you would like to test and see if the y value matches the one returned
+            by this function.
+            
+            Just to clarify this does not return the altitude of a generic xyz point, 
+            rather it returns the y value (height) of a point with the same x and z values 
+            as thoes passed in, that is on the surface of the terrain. 
+            To get the Altitude you would do something like 
+            float altitude = thePoint.y - GetHeightAt(thePoint, 0);
+            
+            This has code merged into it from GetTerrainTile() b/c it gives us about 60 fps 
+            when testing 1000+ points, to inline it here rather than going through the extra function calls
+            </summary>
+            <param name="point">The point you would like to know the y value of the terrain at</param>
+            <param name="defaultheight">value to return if the point is not over/under the terrain</param>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Axiom.SceneManagers.Octree.TerrainSceneManager.GetTerrainTile(Axiom.Math.Vector3)" -->
+        <member name="T:Axiom.SceneManagers.Octree.TerrainRenderable">
+            <summary>
+            Summary description for TerrainRenderable.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Octree.TerrainRenderable.#ctor">
+            <summary>
+                Default constructor.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Octree.TerrainRenderable.GetVertex(System.Int32,System.Int32,System.Int32)">
+            <summary>
+                Returns the vertex coord for the given coordinates.
+            </summary>
+            <param name="x"></param>
+            <param name="z"></param>
+            <param name="n"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Axiom.SceneManagers.Octree.OctreeNode">
+            <summary>
+            Summary description for OctreeNode.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Octree.OctreeNode.RemoveNodeAndChildren">
+            <summary>
+                Remove all the children nodes as well from the octree.
+            </summary>
+        </member>
+        <member name="M:Axiom.SceneManagers.Octree.OctreeNode.RemoveChild(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.SceneManagers.Octree.OctreeNode.RemoveChild(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.SceneManagers.Octree.OctreeNode.IsInBox(Axiom.Math.AxisAlignedBox)">
+            <summary>
+                Determines if the center of this node is within the given box.
+            </summary>
+            <param name="box"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.SceneManagers.Octree.OctreeNode.AddToRenderQueue(Axiom.Core.Camera,Axiom.Graphics.RenderQueue)">
+            <summary>
+                Adds all the attached scenenodes to the render queue.
+            </summary>
+            <param name="cam"></param>
+            <param name="queue"></param>
+        </member>
+        <member name="M:Axiom.SceneManagers.Octree.OctreeNode.UpdateBounds">
+            <summary>
+                Same as SceneNode, only it doesn't care about children...
+            </summary>
+        </member>
+        <member name="P:Axiom.SceneManagers.Octree.OctreeNode.LocalAABB">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Axiom.SceneManagers.Octree.OctreeNode.Octant">
+            <summary>
+            
+            </summary>
+        </member>
+    </members>
+</doc>

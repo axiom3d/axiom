@@ -1,0 +1,278 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Axiom.Plugins.ParticleFX</name>
+    </assembly>
+    <members>
+        <member name="T:Axiom.ParticleFX.EllipsoidEmitter">
+            <summary>
+            Summary description for EllipsoidEmitter.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.AreaEmitter">
+            <summary>
+            Summary description for AreaEmitter.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.EllipsoidEmitter.WidthCommand">
+            <summary>
+               
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.EllipsoidEmitter.HeightCommand">
+            <summary>
+               
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.EllipsoidEmitter.DepthCommand">
+            <summary>
+               
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.Factories.ColorFaderAffectorFactory">
+            <summary>
+            Summary description for ColorFaderAffectorFactory.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.Factories.ColorFaderAffector2Factory">
+            <summary>
+            Summary description for ColorFaderAffector2Factory.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.LinearForceAffector">
+            <summary>
+            Summary description for LinearForceAffector.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.ColorImageAffector">
+            <summary>
+            Summary description for ColorFaderAffector.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.DrawEmitter">
+            <summary>
+            	Summary description for DrawEmitter.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.Factories.ColorInterpolatorAffectorFactory">
+            <summary>
+            Summary description for ColorFaderAffectorFactory.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.Factories.BoxEmitterFactory">
+            <summary>
+            Summary description for BoxEmitterFactory.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.Factories.EllipsoidEmitterFactory">
+            <summary>
+            Summary description for EllipsoidEmitterFactory.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.ParticleFX">
+            <summary>
+            Summary description for ParticleFX.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.BoxEmitter">
+            <summary>
+            Summary description for BoxEmitter.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.BoxEmitter.WidthCommand">
+            <summary>
+               
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.BoxEmitter.HeightCommand">
+            <summary>
+               
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.BoxEmitter.DepthCommand">
+            <summary>
+               
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.Factories.LinearForceAffectorFactory">
+            <summary>
+            Summary description for LinearForceAffectorFactory.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.ColorInterpolatorAffector">
+            <summary>
+            Summary description for ColorFaderAffector.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.HollowEllipsoidEmitter">
+            <summary>
+            Summary description for HollowEllipsidEmitter.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.HollowEllipsoidEmitter.WidthCommand">
+            <summary>
+               
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.HollowEllipsoidEmitter.HeightCommand">
+            <summary>
+               
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.HollowEllipsoidEmitter.DepthCommand">
+            <summary>
+               
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.HollowEllipsoidEmitter.InnerWidthCommand">
+            <summary>
+               
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.HollowEllipsoidEmitter.InnerHeightCommand">
+            <summary>
+               
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.HollowEllipsoidEmitter.InnerDepthCommand">
+            <summary>
+               
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.Factories.DrawEmitterFactory">
+            <summary>
+            	Summary description for DrawEmitterFactory.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.Factories.ColorImageAffectorFactory">
+            <summary>
+            Summary description for ColorFaderAffectorFactory.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.RotationAffector">
+            <summary>
+            Summary description for ScaleAffector.
+            </summary>
+        </member>
+        <member name="F:Axiom.ParticleFX.RotationAffector.rotationSpeedRangeStart">
+            <summary>
+            	Initial rotation speed of particles (range start).
+            </summary>
+        </member>
+        <member name="F:Axiom.ParticleFX.RotationAffector.rotationSpeedRangeEnd">
+            <summary>
+            	Initial rotation speed of particles (range end).
+            </summary>
+        </member>
+        <member name="F:Axiom.ParticleFX.RotationAffector.rotationRangeStart">
+            <summary>
+            	Initial rotation angle of particles (range start).
+            </summary>
+        </member>
+        <member name="F:Axiom.ParticleFX.RotationAffector.rotationRangeEnd">
+            <summary>
+            	Initial rotation angle of particles (range end)
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.Factories.RingEmitterFactory">
+            <summary>
+            Summary description for RingEmitterFactory.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.Factories.HollowEllipsoidEmitterFactory">
+            <summary>
+            Summary description for HollowEllipsoidEmitterFactory.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.ScaleAffector">
+            <summary>
+            Summary description for ScaleAffector.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.RingEmitter">
+            <summary>
+            Summary description for RingEmitter.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.RingEmitter.WidthCommand">
+            <summary>
+               
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.RingEmitter.HeightCommand">
+            <summary>
+               
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.RingEmitter.DepthCommand">
+            <summary>
+               
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.RingEmitter.InnerWidthCommand">
+            <summary>
+               
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.RingEmitter.InnerHeightCommand">
+            <summary>
+               
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.CylinderEmitter">
+            <summary>
+            Summary description for CylinderEmitter.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.CylinderEmitter.WidthCommand">
+            <summary>
+               
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.CylinderEmitter.HeightCommand">
+            <summary>
+               
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.CylinderEmitter.DepthCommand">
+            <summary>
+               
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.ColorFaderAffector">
+            <summary>
+            Summary description for ColorFaderAffector.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.PointEmitter">
+            <summary>
+            	Summary description for PointEmitter.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.Factories.RotationAffectorFactory">
+            <summary>
+            Summary description for ColorFaderAffectorFactory.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.Factories.CylinderEmitterFactory">
+            <summary>
+            Summary description for CylinderEmitterFactory.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.ColorFaderAffector2">
+            <summary>
+            Summary description for ColorFaderAffector.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.Factories.ScaleAffectorFactory">
+            <summary>
+            Summary description for ColorFaderAffectorFactory.
+            </summary>
+        </member>
+        <member name="T:Axiom.ParticleFX.Factories.PointEmitterFactory">
+            <summary>
+            	Summary description for PointEmitterFactory.
+            </summary>
+        </member>
+    </members>
+</doc>

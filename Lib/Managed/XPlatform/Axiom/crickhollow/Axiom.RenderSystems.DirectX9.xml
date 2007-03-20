@@ -1,0 +1,1150 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Axiom.RenderSystems.DirectX9</name>
+    </assembly>
+    <members>
+        <!-- Badly formed XML comment ignored for member "T:Axiom.RenderSystems.DirectX9.D3DGpuProgram" -->
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DGpuProgram.device">
+            <summary>
+               Reference to the current D3D device object.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DGpuProgram.externalMicrocode">
+            <summary>
+                Microsode set externally, most likely from the HLSL compiler.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DGpuProgram.Load">
+            <summary>
+                Overridden to allow for loading microcode from external sources.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DGpuProgram.LoadFromSource">
+            <summary>
+                Loads a D3D shader from the assembler source.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DGpuProgram.LoadFromMicrocode(Microsoft.DirectX.GraphicsStream)">
+            <summary>
+                Loads a shader object from the supplied microcode.
+            </summary>
+            <param name="microcode">
+                GraphicsStream that contains the assembler instructions for the program.
+            </param>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.D3DGpuProgram.ExternalMicrocode">
+            <summary>
+                Gets/Sets a prepared chunk of microcode to use during Load
+                rather than loading from file or a string.
+            </summary>
+            <remarks>
+                This is used by the HLSL compiler once it compiles down to low
+                level microcode, which can then be loaded into a low level GPU
+                program.
+            </remarks>
+        </member>
+        <member name="T:Axiom.RenderSystems.DirectX9.D3DVertexProgram">
+            <summary>
+               Direct3D implementation of low-level vertex programs.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DVertexProgram.vertexShader">
+            <summary>
+               Reference to the current D3D VertexShader object.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DVertexProgram.Unload">
+            <summary>
+                Unloads the VertexShader object.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.D3DVertexProgram.VertexShader">
+            <summary>
+               Used internally by the D3DRenderSystem to get a reference to the underlying
+               VertexShader object.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.DirectX9.D3DFragmentProgram">
+            <summary>
+               Direct3D implementation of low-level vertex programs.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DFragmentProgram.pixelShader">
+            <summary>
+               Reference to the current D3D PixelShader object.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DFragmentProgram.Unload">
+            <summary>
+                Unloads the PixelShader object.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.D3DFragmentProgram.PixelShader">
+            <summary>
+               Used internally by the D3DRenderSystem to get a reference to the underlying
+               PixelShader object.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.DirectX9.Plugin">
+            <summary>
+            Summary description for Plugin.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.Plugin.factory">
+            <summary>
+                Factory for HLSL programs.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.Plugin.renderSystem">
+            <summary>
+                Reference to the render system instance.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.DirectX9.VideoMode">
+            <summary>
+            Summary description for D3DVideoMode.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.VideoMode.#ctor">
+            <summary>
+            	Default constructor.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.VideoMode.#ctor(Axiom.RenderSystems.DirectX9.VideoMode)">
+            <summary>
+            	Accepts a existing D3DVideoMode object.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.VideoMode.#ctor(Microsoft.DirectX.Direct3D.DisplayMode)">
+            <summary>
+            	Accepts a existing Direct3D.DisplayMode object.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.VideoMode.Finalize">
+            <summary>
+            	Destructor.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.VideoMode.ToString">
+            <summary>
+            	Returns a string representation of this video mode.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.VideoMode.Width">
+            <summary>
+            	Width of this video mode.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.VideoMode.Height">
+            <summary>
+            	Height of this video mode.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.VideoMode.Format">
+            <summary>
+            	Format of this video mode.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.VideoMode.RefreshRate">
+            <summary>
+            	Refresh rate of this video mode.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.VideoMode.ColorDepth">
+            <summary>
+            	Color depth of this video mode.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.VideoMode.DisplayMode">
+            <summary>
+            	Gets the Direct3D.DisplayMode object associated with this video mode.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.DirectX9.DriverCollection">
+            <summary>
+            Summary description for DriverCollection.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.DirectX9.D3DGpuProgramManager">
+            <summary>
+            	Summary description for D3DGpuProgramManager.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DGpuProgramManager.Create(System.String,Axiom.Graphics.GpuProgramType,System.String)">
+            <summary>
+               Create the specified type of GpuProgram.
+            </summary>
+            <param name="name"></param>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DGpuProgramManager.CreateParameters">
+            <summary>
+               Returns a specialized version of GpuProgramParameters.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Axiom.RenderSystems.DirectX9.D3DVertexDeclaration">
+            <summary>
+            	Summary description for D3DVertexDeclaration.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.D3DVertexDeclaration.D3DVertexDecl">
+            <summary>
+            
+            </summary>
+            DOC
+        </member>
+        <member name="T:Axiom.RenderSystems.DirectX9.D3DTextureManager">
+            <summary>
+                Summary description for D3DTextureManager.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DTextureManager.device">
+            <summary>Reference to the D3D device.</summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DTextureManager.CreateManual(System.String,Axiom.Graphics.TextureType,System.Int32,System.Int32,System.Int32,Axiom.Media.PixelFormat,Axiom.Graphics.TextureUsage)">
+            <summary>
+               Used to create a blank D3D texture.
+            </summary>
+            <param name="name"></param>
+            <param name="type"></param>
+            <param name="width"></param>
+            <param name="height"></param>
+            <param name="numMipMaps"></param>
+            <param name="format"></param>
+            <param name="usage"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Axiom.RenderSystems.DirectX9.D3DTexture">
+            <summary>
+            Summary description for D3DTexture.
+            </summary>
+            <remarks>When loading a cubic texture, the image with the texture base name plus the "_rt", "_lf", "_up", "_dn", "_fr", "_bk" suffixes will automaticaly be loaded to construct it.</remarks>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DTexture.device">
+            <summary>
+                Direct3D device reference.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DTexture.texture">
+            <summary>
+                Actual texture reference.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DTexture.normTexture">
+            <summary>
+                1D/2D normal texture.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DTexture.cubeTexture">
+            <summary>
+                Cubic texture reference.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DTexture.tempNormTexture">
+            <summary>
+                Temporary 1D/2D normal texture.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DTexture.tempCubeTexture">
+            <summary>
+                Temporary cubic texture reference.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DTexture.volumeTexture">
+            <summary>
+                3D volume texture.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DTexture.depthBuffer">
+            <summary>
+                Render surface depth/stencil buffer. 
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DTexture.bbPixelFormat">
+            <summary>
+                Back buffer pixel format.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DTexture.devParms">
+            <summary>
+                Direct3D device creation parameters.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DTexture.devCaps">
+            <summary>
+                Direct3D device capability structure.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DTexture.cubeFaceNames">
+            <summary>
+                Array to hold texture names used for loading cube textures.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DTexture.Dispose">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DTexture.ConstructCubeFaceNames(System.String)">
+            <summary>
+               
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DTexture.LoadNormalTexture">
+            <summary>
+               
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DTexture.LoadCubeTexture">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DTexture.LoadVolumeTexture">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DTexture.CreateCubeTexture">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DTexture.CreateDepthStencil">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DTexture.BlitImagesToCubeTex">
+            <summary>
+                
+            </summary>
+            <param name="images"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DTexture.CanAutoGenMipMaps(Microsoft.DirectX.Direct3D.Usage,Microsoft.DirectX.Direct3D.ResourceType,Microsoft.DirectX.Direct3D.Format)">
+            <summary>
+            
+            </summary>
+            <param name="usage"></param>
+            <param name="type"></param>
+            <param name="format"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DTexture.CreateTexture">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DTexture.ConvertFormat(Microsoft.DirectX.Direct3D.Format)">
+            <summary>
+            
+            </summary>
+            <param name="format"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DTexture.ConvertFormat(Axiom.Media.PixelFormat)">
+            <summary>
+            
+            </summary>
+            <param name="format"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DTexture.SetSrcAttributes(System.Int32,System.Int32,System.Int32,Axiom.Media.PixelFormat)">
+            <summary>
+            
+            </summary>
+            <param name="width"></param>
+            <param name="height"></param>
+            <param name="depth"></param>
+            <param name="format"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DTexture.SetFinalAttributes(System.Int32,System.Int32,System.Int32,Axiom.Media.PixelFormat)">
+            <summary>
+            
+            </summary>
+            <param name="width"></param>
+            <param name="height"></param>
+            <param name="depth"></param>
+            <param name="format"></param>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.D3DTexture.DXTexture">
+            <summary>
+            	Gets the D3D Texture that is contained withing this Texture.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.DirectX9.HLSL.HLSLProgramFactory">
+            <summary>
+            Summary description for HLSLProgramFactory.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.HLSL.HLSLProgramFactory.Language">
+            <summary>
+                Gets the high level language that this factory handles requests for.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.DirectX9.D3DHardwareIndexBuffer">
+            <summary>
+            	Summary description for D3DHardwareIndexBuffer.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DHardwareIndexBuffer.LockImpl(System.Int32,System.Int32,Axiom.Graphics.BufferLocking)">
+            <summary>
+            
+            </summary>
+            <param name="offset"></param>
+            <param name="length"></param>
+            <param name="locking"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DHardwareIndexBuffer.UnlockImpl">
+            <summary>
+            
+            </summary>
+            DOC
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DHardwareIndexBuffer.ReadData(System.Int32,System.Int32,System.IntPtr)">
+            <summary>
+            
+            </summary>
+            <param name="offset"></param>
+            <param name="length"></param>
+            <param name="dest"></param>
+            DOC
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DHardwareIndexBuffer.WriteData(System.Int32,System.Int32,System.IntPtr,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="offset"></param>
+            <param name="length"></param>
+            <param name="src"></param>
+            <param name="discardWholeBuffer"></param>
+            DOC
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.D3DHardwareIndexBuffer.D3DIndexBuffer">
+            <summary>
+            	Gets the underlying D3D Vertex Buffer object.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.DirectX9.D3D9RenderSystem">
+            <summary>
+            DirectX9 Render System implementation.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.device">
+            <summary>
+               Reference to the Direct3D device.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3D9RenderSystem._primaryWindow">
+            <summary>
+            The one used to crfeate the device.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.d3dCaps">
+            <summary>
+               Direct3D capability structure.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.isFirstFrame">
+            <summary>
+               Signifies whether the current frame being rendered is the first.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.useWBuffer">
+            <summary>
+            	Should we use the W buffer? (16 bit color only).
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.numLastStreams">
+            <summary>
+               Number of streams used last frame, used to unbind any buffers not used during the current operation.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.viewMatrix">
+            Saved last view matrix
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.tempVec">
+            <summary>
+            	Temp D3D vector to avoid constant allocations.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.SetVertexBufferBinding(Axiom.Graphics.VertexBufferBinding)">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.SetVertexDeclaration(Axiom.Graphics.VertexDeclaration)">
+            <summary>
+            	Helper method for setting the current vertex declaration.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.ClearFrameBuffer(Axiom.Graphics.FrameBuffer,Axiom.Core.ColorEx,System.Single,System.Int32)">
+            <summary>
+            	
+            </summary>
+            <param name="buffers"></param>
+            <param name="color"></param>
+            <param name="depth"></param>
+            <param name="stencil"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.CreateRenderTexture(System.String,System.Int32,System.Int32)">
+            <summary>
+                Create a D3D specific render texture.
+            </summary>
+            <param name="name"></param>
+            <param name="width"></param>
+            <param name="height"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.CreateHardwareOcclusionQuery">
+            <summary>
+            	Returns a Direct3D implementation of a hardware occlusion query.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.SetAlphaRejectSettings(System.Int32,Axiom.Graphics.CompareFunction,System.Byte)">
+            <summary>
+            
+            </summary>
+            <param name="stage"></param>
+            <param name="func"></param>
+            <param name="val"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.SetFog(Axiom.Graphics.FogMode,Axiom.Core.ColorEx,System.Single,System.Single,System.Single)">
+            <summary>
+            
+            </summary>
+            <param name="mode"></param>
+            <param name="color"></param>
+            <param name="density"></param>
+            <param name="start"></param>
+            <param name="end"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.MakeOrthoMatrix(System.Single,System.Single,System.Single,System.Single,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="fov"></param>
+            <param name="aspectRatio"></param>
+            <param name="near"></param>
+            <param name="far"></param>
+            <param name="forGpuPrograms"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.MakeProjectionMatrix(System.Single,System.Single,System.Single,System.Single,System.Boolean)">
+            <summary>
+            	
+            </summary>
+            <param name="fov"></param>
+            <param name="aspectRatio"></param>
+            <param name="near"></param>
+            <param name="far"></param>
+            <param name="forGpuProgram"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.BeginFrame">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.EndFrame">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.SetViewport(Axiom.Core.Viewport)">
+            <summary>
+            
+            </summary>
+            <param name="viewport"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.Render(Axiom.Graphics.RenderOperation)">
+            <summary>
+            	Renders the current render operation in D3D's own special way.
+            </summary>
+            <param name="op"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.SetTexture(System.Int32,System.Boolean,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="stage"></param>
+            <param name="enabled"></param>
+            <param name="textureName"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.SetTextureLayerAnisotropy(System.Int32,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="stage"></param>
+            <param name="maxAnisotropy"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.SetTextureCoordCalculation(System.Int32,Axiom.Graphics.TexCoordCalcMethod,Axiom.Core.Frustum)">
+            <summary>
+            
+            </summary>
+            <param name="stage"></param>
+            <param name="method"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.UseLights(Axiom.Collections.LightList,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="lightList"></param>
+            <param name="limit"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.SetD3DLight(System.Int32,Axiom.Core.Light)">
+            <summary>
+            	Sets up a light in D3D.
+            </summary>
+            <param name="index"></param>
+            <param name="light"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.InitConfigOptions">
+            <summary>
+            	Called in constructor to init configuration.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.CompareVertexDecls(Microsoft.DirectX.Direct3D.VertexElement[],Microsoft.DirectX.Direct3D.VertexElement[])">
+            <summary>
+            	Helper method to compare 2 vertex element arrays for equality.
+            </summary>
+            <param name="a"></param>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.SetSurfaceParams(Axiom.Core.ColorEx,Axiom.Core.ColorEx,Axiom.Core.ColorEx,Axiom.Core.ColorEx,System.Single)">
+            <summary>
+            
+            </summary>
+            <param name="ambient"></param>
+            <param name="diffuse"></param>
+            <param name="specular"></param>
+            <param name="emissive"></param>
+            <param name="shininess"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.SetTextureAddressingMode(System.Int32,Axiom.Graphics.TextureAddressing)">
+            <summary>
+            
+            </summary>
+            <param name="stage"></param>
+            <param name="texAddressingMode"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.SetTextureCoordSet(System.Int32,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="stage"></param>
+            <param name="index"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.SetTextureUnitFiltering(System.Int32,Axiom.Graphics.FilterType,Axiom.Graphics.FilterOptions)">
+            <summary>
+            
+            </summary>
+            <param name="unit"></param>
+            <param name="type"></param>
+            <param name="filter"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.SetTextureMatrix(System.Int32,Axiom.Math.Matrix4)">
+            <summary>
+            
+            </summary>
+            <param name="stage"></param>
+            <param name="xform"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.CheckCaps(Microsoft.DirectX.Direct3D.Device)">
+            <summary>
+            	Helper method to go through and interrogate hardware capabilities.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.ConvertD3DMatrix(Microsoft.DirectX.Matrix@)">
+            <summary>
+            	Helper method that converts a DX Matrix to our Matrix4.
+            </summary>
+            <param name="d3dMat"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.NormalizeNormals">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.RasterizationMode">
+            <summary>
+            	Sets the rasterization mode to use during rendering.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.CullingMode">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.DepthBias">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.DepthCheck">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.DepthFunction">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.DepthWrite">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.HorizontalTexelOffset">
+            <summary>
+            	
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.D3D9RenderSystem.VerticalTexelOffset">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.DirectX9.D3DTextureStageDesc">
+            <summary>
+            	Structure holding texture unit settings for every stage
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DTextureStageDesc.texType">
+            the type of the texture
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DTextureStageDesc.coordIndex">
+            wich texCoordIndex to use
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DTextureStageDesc.autoTexCoordType">
+            type of auto tex. calc. used
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DTextureStageDesc.frustum">
+            Frustum, used if the above is projection
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DTextureStageDesc.tex">
+            texture 
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DTextureStageDesc.vertexTex">
+            vertex texture 
+        </member>
+        <member name="T:Axiom.RenderSystems.DirectX9.D3DTexType">
+            <summary>
+            	D3D texture types
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.DirectX9.HLSL.HLSLProgram">
+            <summary>
+            Summary description for HLSLProgram.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.HLSL.HLSLProgram.target">
+            <summary>
+                Shader profile to target for the compile (i.e. vs1.1, etc).
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.HLSL.HLSLProgram.entry">
+            <summary>
+                Entry point to compile from the program.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.HLSL.HLSLProgram.microcode">
+            <summary>
+                Holds the low level program instructions after the compile.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.HLSL.HLSLProgram.constantTable">
+            <summary>
+                Holds information about shader constants.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.HLSL.HLSLProgram.CreateLowLevelImpl">
+            <summary>
+                Creates a low level implementation based on the results of the
+                high level shader compilation.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.HLSL.HLSLProgram.LoadFromSource">
+            <summary>
+                Compiles the high level shader source to low level microcode.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.HLSL.HLSLProgram.PopulateParameterNames(Axiom.Graphics.GpuProgramParameters)">
+            <summary>
+                Dervices parameter names from the constant table.
+            </summary>
+            <param name="parms"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.HLSL.HLSLProgram.UnloadImpl">
+            <summary>
+                Unloads data that is no longer needed.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.HLSL.HLSLProgram.ProcessParamElement(Microsoft.DirectX.Direct3D.EffectHandle,System.String,System.Int32,Axiom.Graphics.GpuProgramParameters)">
+            <summary>
+            
+            </summary>
+            <param name="parent"></param>
+            <param name="prefix"></param>
+            <param name="index"></param>
+            <param name="parms"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.HLSL.HLSLProgram.SetParam(System.String,System.String)">
+            <summary>
+                Sets a param for this HLSL program.
+            </summary>
+            <param name="name"></param>
+            <param name="val"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Axiom.RenderSystems.DirectX9.D3DHelper">
+            <summary>
+            	Helper class for Direct3D that includes conversion functions and things that are
+            	specific to D3D.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DHelper.GetDriverInfo">
+            <summary>
+            	Enumerates driver information and their supported display modes.
+            </summary>
+            <summary>
+            	Enumerates driver information and their supported display modes.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DHelper.ConvertEnum(Axiom.Graphics.FilterType,Axiom.Graphics.FilterOptions,Microsoft.DirectX.Direct3D.Caps,Axiom.RenderSystems.DirectX9.D3DTexType)">
+            <summary>
+            
+            </summary>
+            <param name="type"></param>
+            <param name="options"></param>
+            <param name="caps"></param>
+            <param name="texType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DHelper.ConvertEnum(Axiom.Graphics.LayerBlendOperationEx)">
+            <summary>
+            	Static method for converting LayerBlendOperationEx enum values to the Direct3D 
+            	TextureOperation enum.
+            </summary>
+            <param name="blendop"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DHelper.ConvertEnum(Axiom.Graphics.SceneBlendFactor)">
+            <summary>
+            	Helper method to convert Axiom scene blend factors to D3D
+            </summary>
+            <param name="factor"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DHelper.ConvertEnum(Axiom.Graphics.FogMode)">
+            <summary>
+            
+            </summary>
+            <param name="mode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DHelper.ConvertEnum(Axiom.Graphics.CompareFunction)">
+            <summary>
+               Converts our CompareFunction enum to the D3D.Compare equivalent.
+            </summary>
+            <param name="func"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DHelper.ConvertEnum(Axiom.Graphics.Shading)">
+            <summary>
+               Converts our Shading enum to the D3D ShadingMode equivalent.
+            </summary>
+            <param name="shading"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DHelper.ConvertEnum(Microsoft.DirectX.Direct3D.ShadeMode)">
+            <summary>
+               Converts the D3D ShadingMode to our Shading enum equivalent.
+            </summary>
+            <param name="shading"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DHelper.ConvertEnum(Axiom.Graphics.StencilOperation,System.Boolean)">
+            <summary>
+               Converts our StencilOperation enum to the D3D StencilOperation equivalent.
+            </summary>
+            <param name="op"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DHelper.IsIdentity(Microsoft.DirectX.Matrix@)">
+            <summary>
+               Checks D3D matrix to see if it an identity matrix.
+            </summary>
+            <remarks>
+               For whatever reason, the equality operator overloads for the D3D Matrix
+               struct are extremely slow....
+            </remarks>
+            <param name="matrix"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Axiom.RenderSystems.DirectX9.D3DHardwareOcclusionQuery">
+            <summary>
+            	Direct3D implementation of a hardware occlusion query.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DHardwareOcclusionQuery.device">
+            <summary>
+            	Reference to the current Direct3D device object.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DHardwareOcclusionQuery.query">
+            <summary>
+            	Reference to the query object being used.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DHardwareOcclusionQuery.lastFragmentCount">
+            <summary>
+            	Number of fragments returned from the last query.
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DHardwareOcclusionQuery.isSupported">
+            <summary>
+            	Flag that indicates whether hardware queries are supported
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DHardwareOcclusionQuery.skipRate">
+            <summary>
+            	Rate at which queries are skipped (in frames).
+            </summary>
+        </member>
+        <member name="F:Axiom.RenderSystems.DirectX9.D3DHardwareOcclusionQuery.skipCounter">
+            <summary>
+            	Current count of number of skipped frames since query last ran.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DHardwareOcclusionQuery.#ctor(Microsoft.DirectX.Direct3D.Device)">
+            <summary>
+            	Default constructor.
+            </summary>
+            <param name="device">Reference to a Direct3D device.</param>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.D3DHardwareOcclusionQuery.SkipRate">
+            <summary>
+            	Rate (in frames) at which queries are skipped.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.D3DHardwareOcclusionQuery.LastFragmentCount">
+            <summary>
+            	Gets the number of fragments returned from the last execution of this query.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.DirectX9.D3DHardwareVertexBuffer">
+            <summary>
+            	Summary description for D3DHardwareVertexBuffer.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DHardwareVertexBuffer.LockImpl(System.Int32,System.Int32,Axiom.Graphics.BufferLocking)">
+            <summary>
+            
+            </summary>
+            <param name="offset"></param>
+            <param name="length"></param>
+            <param name="locking"></param>
+            <returns></returns>
+            DOC
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DHardwareVertexBuffer.UnlockImpl">
+            <summary>
+            
+            </summary>
+            DOC
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DHardwareVertexBuffer.ReadData(System.Int32,System.Int32,System.IntPtr)">
+            <summary>
+            
+            </summary>
+            <param name="offset"></param>
+            <param name="length"></param>
+            <param name="dest"></param>
+            DOC
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DHardwareVertexBuffer.WriteData(System.Int32,System.Int32,System.IntPtr,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="offset"></param>
+            <param name="length"></param>
+            <param name="src"></param>
+            <param name="discardWholeBuffer"></param>
+            DOC
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.D3DHardwareVertexBuffer.D3DVertexBuffer">
+            <summary>
+            	Gets the underlying D3D Vertex Buffer object.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.DirectX9.D3DRenderTexture">
+            <summary>
+                Summary description for D3DRenderTexture.
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.DirectX9.D3DHardwareBufferManager">
+            <summary>
+            	Summary description for D3DHardwareBufferManager.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DHardwareBufferManager.#ctor(Microsoft.DirectX.Direct3D.Device)">
+            <summary>
+            	
+            </summary>
+            <param name="device"></param>
+        </member>
+        <member name="T:Axiom.RenderSystems.DirectX9.Driver">
+            <summary>
+            	Helper class for dealing with D3D Devices.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.Driver.#ctor(Microsoft.DirectX.Direct3D.AdapterInformation)">
+            <summary>
+            	Default constructor.
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.Driver.Name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.Driver.Description">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.Driver.AdapterNumber">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.Driver.AdapterIdentifier">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.Driver.DesktopMode">
+            <summary>
+            	
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.Driver.VideoModes">
+            <summary>
+            	
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.Driver.D3DDevice">
+            <summary>
+            	
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.DirectX9.D3DRenderWindow">
+            <summary>
+            The Direct3D implementation of the RenderWindow class.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DRenderWindow.#ctor(Axiom.RenderSystems.DirectX9.Driver)">
+            <summary>
+            
+            </summary>
+            <param name="driver">The root driver</param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DRenderWindow.#ctor(Axiom.RenderSystems.DirectX9.Driver,Microsoft.DirectX.Direct3D.Device)">
+            <summary>
+            
+            </summary>
+            <param name="driver">The root driver</param>
+            <param name="deviceIfSwapChain">The existing D3D device to create an additional swap chain from, if this is not	the first window.</param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DRenderWindow.Create(System.String,System.Int32,System.Int32,System.Boolean,Axiom.Collections.NamedParameterList)">
+            <summary>
+            
+            </summary>
+            <param name="name"></param>
+            <param name="width"></param>
+            <param name="height"></param>
+            <param name="colorDepth"></param>
+            <param name="isFullScreen"></param>
+            <param name="left"></param>
+            <param name="top"></param>
+            <param name="depthBuffer"></param>height
+            <param name="miscParams"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DRenderWindow.Resize(System.Int32,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="width"></param>
+            <param name="height"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DRenderWindow.SwapBuffers(System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="waitForVSync"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.D3DRenderWindow.Save(System.IO.Stream)">
+            <summary>
+                Saves the window contents to a stream.
+            </summary>
+            <param name="stream">Stream to write the window contents to.</param>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.D3DRenderWindow.Driver">
+            <summary>
+            Get the current Driver
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.D3DRenderWindow.D3DDevice">
+            <summary>
+            Gets the active DirectX Device
+            </summary>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.D3DRenderWindow.IsFullScreen">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Axiom.RenderSystems.DirectX9.VideoModeCollection">
+            <summary>
+            Summary description for VideoModeCollection.
+            </summary>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.DefaultForm.DefaultForm_Deactivate(System.Object,System.EventArgs)">
+            <summary>
+            
+            </summary>
+            <param name="source"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.DefaultForm.DefaultForm_Activated(System.Object,System.EventArgs)">
+            <summary>
+            
+            </summary>
+            <param name="source"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Axiom.RenderSystems.DirectX9.DefaultForm.DefaultForm_Close(System.Object,System.ComponentModel.CancelEventArgs)">
+            <summary>
+            
+            </summary>
+            <param name="source"></param>
+            <param name="e"></param>
+        </member>
+        <member name="P:Axiom.RenderSystems.DirectX9.DefaultForm.RenderWindow">
+            <summary>
+            	Get/Set the RenderWindow associated with this form.
+            </summary>
+        </member>
+    </members>
+</doc>
