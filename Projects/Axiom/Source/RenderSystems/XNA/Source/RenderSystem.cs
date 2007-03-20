@@ -89,6 +89,11 @@ namespace Axiom.RenderSystems.Xna
         private int _primCount;
         private int _renderCount = 0;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		private int _lightCount;
+
         private XnaGpuProgramManager _gpuProgramMgr;
 
         public RenderSystem()
@@ -653,24 +658,6 @@ namespace Axiom.RenderSystems.Xna
         private XNA.Matrix _makeXnaMatrix( Axiom.Math.Matrix4 matrix )
         {
             XNA.Matrix xna = new XNA.Matrix();
-
-            // set it to a transposed matrix since Xna uses row vectors
-            //xna.M11 = matrix.m00;
-            //xna.M12 = matrix.m10;
-            //xna.M13 = matrix.m20;
-            //xna.M14 = matrix.m30;
-            //xna.M21 = matrix.m01;
-            //xna.M22 = matrix.m11;
-            //xna.M23 = matrix.m21;
-            //xna.M24 = matrix.m31;
-            //xna.M31 = matrix.m02;
-            //xna.M32 = matrix.m12;
-            //xna.M33 = matrix.m22;
-            //xna.M34 = matrix.m32;
-            //xna.M41 = matrix.m03;
-            //xna.M42 = matrix.m13;
-            //xna.M43 = matrix.m23;
-            //xna.M44 = matrix.m33;
 
             xna.M11 = matrix.m00;
             xna.M12 = matrix.m01;
@@ -1340,7 +1327,7 @@ namespace Axiom.RenderSystems.Xna
 
         public override void SetSurfaceParams( Axiom.Core.ColorEx ambient, Axiom.Core.ColorEx diffuse, Axiom.Core.ColorEx specular, Axiom.Core.ColorEx emissive, float shininess )
         {
-            throw new NotImplementedException();
+			LogManager.Instance.Write( "XNA : XNARenderSystem.SetSurfaceParams( {0}, {1}, {2}, {3}, {4}, {5} );", ambient, diffuse, specular, emissive, shininess );
         }
 
         public override void SetTexture( int stage, bool enabled, string textureName )
@@ -1722,8 +1709,8 @@ namespace Axiom.RenderSystems.Xna
 
         public override void UseLights( Axiom.Collections.LightList lightList, int limit )
         {
-            throw new NotImplementedException();
-        }
+			_lightCount = (int)Utility.Min( limit, lightList.Count );
+		}
 
         #endregion Methods
 

@@ -70,6 +70,8 @@ namespace Axiom.RenderSystems.Xna.HLSL
         /// </summary>
         protected XFG.ShaderConstantTable constantTable;
 
+		private HLSLIncludeHandler _includeHandler = new HLSLIncludeHandler();
+
         #endregion Fields
 
         #region Constructor
@@ -115,7 +117,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
             string errors = null;
             // compile the high level shader to low level microcode
             // note, we need to pack matrices in row-major format for HLSL
-            microcode = XFG.ShaderCompiler.CompileFromSource( source, null, null, XFG.CompilerOptions.PackMatrixRowMajor, entry, _convertTarget( target ), XNA.TargetPlatform.Windows );
+            microcode = XFG.ShaderCompiler.CompileFromSource( source, null, _includeHandler, XFG.CompilerOptions.PackMatrixRowMajor, entry, _convertTarget( target ), XNA.TargetPlatform.Windows );
             if ( microcode.Success )
             {
                 constantTable = new XFG.ShaderConstantTable( microcode.GetShaderCode() );
