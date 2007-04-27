@@ -67,7 +67,10 @@ namespace Axiom.Core
         #region Member variables
 
         protected bool hasOwnDimensions;
-        protected float width, height;
+		internal float width, height;
+		protected bool useTexcoordRect;
+		protected short texcoordIndex;
+		protected RectangleF texcoordRect;
 
         // Intentional public access, since having a property for these for 1,000s of billboards
         // could be too costly
@@ -155,7 +158,7 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        ///		Sepcifies whether or not this billboard has different dimensions than the rest in the set.
+		///		Specifies whether or not this billboard has different dimensions than the rest in the set.
         /// </summary>
         public bool HasOwnDimensions
         {
@@ -163,6 +166,10 @@ namespace Axiom.Core
             {
                 return hasOwnDimensions;
             }
+			set
+			{
+				hasOwnDimensions = value;
+			}
         }
 
         #endregion
@@ -206,19 +213,53 @@ namespace Axiom.Core
         {
             get
             {
-                return rotationInRadians * Utility.DEGREES_PER_RADIAN;
+				return rotationInRadians * Utility.DEGREES_PER_RADIAN;
             }
             set
             {
-                rotationInRadians = value * Utility.RADIANS_PER_DEGREE;
-                // Hmmm, we don't have a NotifyBillboardTextureCoordsModified?
+				rotationInRadians = value * Utility.RADIANS_PER_DEGREE;
                 if ( rotationInRadians != 0 )
+					ParentSet.NotifyBillboardRotated();
+			}
+		}
+
+		public RectangleF TexcoordRect
+		{
+			get
+			{
+				return texcoordRect;
+			}
+			set
+			{
+				texcoordRect = value;
+				useTexcoordRect = true;
+			}
+		}
+
+		public bool UseTexcoordRect
+		{
+			get
                 {
-                    ParentSet.NotifyBillboardTextureCoordsModified();
+				return useTexcoordRect;
                 }
+			set
+			{
+				useTexcoordRect = value;
             }
         }
 
+		public short TexcoordIndex
+		{
+			get
+			{
+				return texcoordIndex;
+			}
+			set
+			{
+				texcoordIndex = value;
+				useTexcoordRect = false;
+			}
+		}
         #endregion
     }
 }

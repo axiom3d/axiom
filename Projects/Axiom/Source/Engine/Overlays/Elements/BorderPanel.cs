@@ -677,7 +677,6 @@ namespace Axiom.Overlays.Elements
         {
             get
             {
-
                 if ( metricsMode == MetricsMode.Pixels )
                 {
                     return pixelBottomBorderSize;
@@ -958,12 +957,12 @@ namespace Axiom.Overlays.Elements
                 op.operationType = parent.renderOp2.operationType;
             }
 
-            public void GetWorldTransforms( Matrix4[] matrices )
+			public void GetWorldTransforms( Matrix4[] matrices )
             {
                 parent.GetWorldTransforms( matrices );
             }
 
-            public SceneDetailLevel RenderDetail
+			public SceneDetailLevel RenderDetail
             {
                 get
                 {

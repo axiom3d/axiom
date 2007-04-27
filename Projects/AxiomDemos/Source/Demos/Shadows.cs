@@ -105,29 +105,29 @@ namespace Axiom.Demos
             // spline it for nice curves
             anim.InterpolationMode = InterpolationMode.Spline;
             // create a track to animate the camera's node
-            AnimationTrack track = anim.CreateTrack( 0, lightNode );
+            AnimationTrack track = anim.CreateNodeTrack( 0, lightNode );
             // setup keyframes
-            KeyFrame key = track.CreateKeyFrame( 0 );
+            TransformKeyFrame key = (TransformKeyFrame)track.CreateKeyFrame( 0 );
             key.Translate = new Vector3( 300, 250, -300 );
-            key = track.CreateKeyFrame( 2 );
+			key = (TransformKeyFrame)track.CreateKeyFrame( 2 );
             key.Translate = new Vector3( 150, 300, -250 );
-            key = track.CreateKeyFrame( 4 );
+			key = (TransformKeyFrame)track.CreateKeyFrame( 4 );
             key.Translate = new Vector3( -150, 350, -100 );
-            key = track.CreateKeyFrame( 6 );
+			key = (TransformKeyFrame)track.CreateKeyFrame( 6 );
             key.Translate = new Vector3( -400, 200, -200 );
-            key = track.CreateKeyFrame( 8 );
+			key = (TransformKeyFrame)track.CreateKeyFrame( 8 );
             key.Translate = new Vector3( -200, 200, -400 );
-            key = track.CreateKeyFrame( 10 );
+			key = (TransformKeyFrame)track.CreateKeyFrame( 10 );
             key.Translate = new Vector3( -100, 150, -200 );
-            key = track.CreateKeyFrame( 12 );
+			key = (TransformKeyFrame)track.CreateKeyFrame( 12 );
             key.Translate = new Vector3( -100, 75, 180 );
-            key = track.CreateKeyFrame( 14 );
+			key = (TransformKeyFrame)track.CreateKeyFrame( 14 );
             key.Translate = new Vector3( 0, 250, 300 );
-            key = track.CreateKeyFrame( 16 );
+			key = (TransformKeyFrame)track.CreateKeyFrame( 16 );
             key.Translate = new Vector3( 100, 350, 100 );
-            key = track.CreateKeyFrame( 18 );
+			key = (TransformKeyFrame)track.CreateKeyFrame( 18 );
             key.Translate = new Vector3( 250, 300, 0 );
-            key = track.CreateKeyFrame( 20 );
+			key = (TransformKeyFrame)track.CreateKeyFrame( 20 );
             key.Translate = new Vector3( 300, 250, -300 );
 
             // create a new animation state to track this
@@ -283,7 +283,7 @@ namespace Axiom.Demos
     /// <summary>
     ///		This class 'wibbles' the light and billboard.
     /// </summary>
-    public class LightWibbler : IControllerValue
+    public class LightWibbler : IControllerValue<float>
     {
         #region Fields
 

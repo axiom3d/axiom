@@ -1,0 +1,42 @@
+fragment_program Ogre/Compositor/SharpenEdgesFP cg
+{
+	source SharpenEdgesFP.cg
+    entry_point sharpenEdges_fp
+	profiles ps_2_x ps_2_0 arbfp1
+}
+
+material Ogre/Compositor/SharpenEdges
+{
+    technique
+    {
+
+		pass
+		{
+			cull_hardware none
+			cull_software none
+			depth_func always_pass
+
+			//DirectX 9.0 HLSL Vertex Shader vs_1_1
+			//vertex_program_ref PostFilters/SharpenEdgesVP
+			//{
+			//}
+
+			vertex_program_ref Ogre/Compositor/StdQuad_Tex2a_vp
+			{
+			}
+
+			//DirectX 9.0 HLSL Pixel Shader ps_2_0
+			fragment_program_ref Ogre/Compositor/SharpenEdgesFP
+			{
+			}
+
+			texture_unit
+			{
+                tex_coord_set 0
+				tex_address_mode clamp
+				filtering trilinear
+			}
+
+		}
+	}
+}

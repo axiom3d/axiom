@@ -180,7 +180,7 @@ namespace Axiom.Demos
                 }
 
                 patch.SetSubdivision( factor );
-                window.DebugText = "Bezier subdivision factor: " + factor;
+                debugText = "Bezier subdivision factor: " + factor;
                 timeLapse = 0.0f;
             }
 

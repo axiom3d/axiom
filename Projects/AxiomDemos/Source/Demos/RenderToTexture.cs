@@ -83,15 +83,17 @@ namespace Axiom.Demos
             rootNode.CreateChildSceneNode( "Head" ).AttachObject( head );
 
             // create a render texture
-            RenderTexture rttTex = Root.Instance.RenderSystem.CreateRenderTexture( "RttTex", 512, 512 );
-            reflectCam = scene.CreateCamera( "ReflectCam" );
+			Texture texture = TextureManager.Instance.CreateManual( "RttTex",TextureType.TwoD, 512, 512, 0, Axiom.Media.PixelFormat.R8G8B8, TextureUsage.RenderTarget);
+			RenderTarget rttTex = texture.GetBuffer().GetRenderTarget();
+
+			reflectCam = scene.CreateCamera( "ReflectCam" );
             reflectCam.Near = camera.Near;
             reflectCam.Far = camera.Far;
             reflectCam.AspectRatio = (float)window.GetViewport( 0 ).ActualWidth / (float)window.GetViewport( 0 ).ActualHeight;
 
             Viewport viewport = rttTex.AddViewport( reflectCam );
-            viewport.ClearEveryFrame = true;
-            viewport.OverlaysEnabled = false;
+			viewport.ClearEveryFrame = true;
+            viewport.ShowOverlays = false;
             viewport.BackgroundColor = ColorEx.Black;
 
             Material mat = scene.CreateMaterial( "RttMat" );

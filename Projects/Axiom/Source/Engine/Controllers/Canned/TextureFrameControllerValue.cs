@@ -45,7 +45,7 @@ namespace Axiom.Controllers.Canned
     /// <summary>
     ///     Predefined controller value for getting/setting the frame number of a texture unit.
     /// </summary>
-    public class TextureFrameControllerValue : IControllerValue
+	public class TextureFrameControllerValue : IControllerValue<float>
     {
         #region Fields
 

@@ -40,21 +40,74 @@ using Axiom.Scripting;
 
 namespace Axiom.Core
 {
+
+	/// <summary>
+	///     The level of detail in which the log will go into.
+	/// </summary>
+	public enum LoggingLevel
+	{
+		Low = 1,
+		Normal,
+		Verbose
+	}
+
+	/// <summary>
+	///     The importance of a logged message.
+	/// </summary>
+	public enum LogMessageLevel
+	{
+		Trivial = 1,
+		Normal,
+		Critical
+	}
+
+	/// <summary>
+	///    The different types of scenes types that can be handled by the engine.  The various types can
+	///    be altered by plugin functionality (i.e. BSP for interior, Octree for Exterior, etc).
+	/// </summary>
+	public enum SceneType
+	{
+		Generic,
+		ExteriorClose,
+		ExteriorFar,
+		Interior,
+		Overhead
+	}
+
     /// <summary>
     ///		Covers what a billboards position means.
     /// </summary>
     public enum BillboardOrigin
     {
+		[ScriptEnum( "top_left" )]
         TopLeft,
+		[ScriptEnum( "top_center" )]
         TopCenter,
+		[ScriptEnum( "top_right" )]
         TopRight,
+		[ScriptEnum( "center_left" )]
         CenterLeft,
+		[ScriptEnum( "center" )]
         Center,
+		[ScriptEnum( "center_right" )]
         CenterRight,
+		[ScriptEnum( "bottom_left" )]
         BottomLeft,
+		[ScriptEnum( "bottom_center" )]
         BottomCenter,
+		[ScriptEnum( "bottom_right" )]
         BottomRight
     }
+
+	public enum BillboardRotationType
+	{
+		/// <summary>Rotate the billboard's vertices around their facing direction</summary>
+		[ScriptEnum( "vertex" )]
+		Vertex,
+		/// <summary>Rotate the billboard's texture coordinates</summary>
+		[ScriptEnum( "texcoord" )]
+		Texcoord
+	}
 
     /// <summary>
     ///		Type of billboard to use for a BillboardSet.
@@ -69,7 +122,13 @@ namespace Axiom.Core
         OrientedCommon,
         /// <summary>Billboards are oriented around their own direction vector (their own Y axis) and only rotate around this to face the camera</summary>
         [ScriptEnum( "oriented_self" )]
-        OrientedSelf
+		OrientedSelf,
+		/// <summary>Billboards are oriented perpendicular to a shared direction vector</summary>
+		[ScriptEnum( "perpendicular_common" )]
+		PerpendicularCommon,
+		/// <summary>Billboards are oriented perpendicular to their own direction vector</summary>
+		[ScriptEnum( "perpendicular_self" )]
+		PerpendicularSelf
     }
 
     /// <summary>
@@ -98,26 +157,6 @@ namespace Axiom.Core
         Bottom,
         /// <summary>Used for methods that require returning a value of this type but cannot return null.</summary>
         None
-    }
-
-    /// <summary>
-    ///     The level of detail in which the log will go into.
-    /// </summary>
-    public enum LoggingLevel
-    {
-        Low = 1,
-        Normal,
-        BoreMe
-    }
-
-    /// <summary>
-    ///     The importance of a logged message.
-    /// </summary>
-    public enum LogMessageLevel
-    {
-        Trivial = 1,
-        Normal,
-        Critical
     }
 
     /// <summary>
@@ -173,20 +212,11 @@ namespace Axiom.Core
         /// <summary>
         ///		Use this queue for objects which must be rendered last e.g. overlays.
         ///	</summary>
-        Overlay = 100
-    }
-
-    /// <summary>
-    ///    The different types of scenes types that can be handled by the engine.  The various types can
-    ///    be altered by plugin functionality (i.e. BSP for interior, Octree for Exterior, etc).
-    /// </summary>
-    public enum SceneType
-    {
-        Generic,
-        ExteriorClose,
-        ExteriorFar,
-        Interior,
-        Overhead
+        Overlay = 100,
+        /// <summary>
+        ///		A count of the set of all render queues
+        ///	</summary>
+		Count = 101
     }
 
     /// <summary>
@@ -239,4 +269,13 @@ namespace Axiom.Core
         /// </summary>
         RenderOperation = 0x10
     }
+
+	public enum TrackVertexColor
+	{
+		None = 0,
+		Ambient = 1,
+		Diffuse = 2,
+		Specular = 4,
+		Emissive = 8
+	}
 }

@@ -63,11 +63,11 @@ namespace Axiom.Demos
 
             if ( p.HasVertexProgram && p.VertexProgram.IsSkeletalAnimationIncluded )
             {
-                window.DebugText = "Hardware skinning is enabled.";
+                debugText = "Hardware skinning is enabled.";
             }
             else
             {
-                window.DebugText = "Software skinning is enabled.";
+                debugText = "Software skinning is enabled.";
             }
         }
 

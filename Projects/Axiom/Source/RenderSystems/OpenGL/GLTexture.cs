@@ -83,7 +83,7 @@ namespace Axiom.RenderSystems.OpenGL
         /// <param name="type"></param>
         /// <param name="width"></param>
         /// <param name="height"></param>
-        /// <param name="numMipMaps"></param>
+        /// <param name="numMipmaps"></param>
         /// <param name="format"></param>
         /// <param name="usage"></param>
         public GLTexture( string name, TextureType type, int width, int height, int numMipMaps, PixelFormat format, TextureUsage usage )
@@ -95,10 +95,10 @@ namespace Axiom.RenderSystems.OpenGL
             this.width = srcWidth;
             this.height = srcHeight;
             this.depth = 1;
-            this.numMipMaps = numMipMaps;
+            this.numMipmaps = numMipMaps;
             this.usage = usage;
             this.format = format;
-            this.srcBpp = Image.GetNumElemBits( format );
+            this.srcBpp = PixelUtil.GetNumElemBits( format );
 
             Enable32Bit( false );
         }
@@ -215,9 +215,9 @@ namespace Axiom.RenderSystems.OpenGL
             Gl.glBindTexture( this.GLTextureType, glTextureID );
 
             // log a quick message
-            LogManager.Instance.Write( "GLTexture: Loading {0} with {1} mipmaps from an Image.", name, numMipMaps );
+            LogManager.Instance.Write( "GLTexture: Loading {0} with {1} mipmaps from an Image.", name, numMipmaps );
 
-            if ( numMipMaps > 0 && Root.Instance.RenderSystem.Caps.CheckCap( Capabilities.HardwareMipMaps ) )
+            if ( numMipmaps > 0 && Root.Instance.RenderSystem.Caps.CheckCap( Capabilities.HardwareMipMaps ) )
             {
                 Gl.glTexParameteri( this.GLTextureType, Gl.GL_GENERATE_MIPMAP, Gl.GL_TRUE );
                 useSoftwareMipMaps = false;
@@ -230,7 +230,7 @@ namespace Axiom.RenderSystems.OpenGL
                 // get the images pixel format
                 format = image.Format;
 
-                srcBpp = Image.GetNumElemBits( format );
+                srcBpp = PixelUtil.GetNumElemBits( format );
                 hasAlpha = image.HasAlpha;
 
                 // get dimensions
@@ -245,11 +245,11 @@ namespace Axiom.RenderSystems.OpenGL
                 // only oiverride global mipmap setting if the image itself has at least 1 already
                 if ( image.NumMipMaps > 0 )
                 {
-                    numMipMaps = image.NumMipMaps;
+					numMipmaps = image.NumMipMaps;
                 }
 
                 // set the max number of mipmap levels
-                Gl.glTexParameteri( this.GLTextureType, Gl.GL_TEXTURE_MAX_LEVEL, numMipMaps );
+                Gl.glTexParameteri( this.GLTextureType, Gl.GL_TEXTURE_MAX_LEVEL, numMipmaps );
 
                 // Rescale to Power of 2 (also applies gamma correction)
                 byte[] data = RescaleNPower2( image );
@@ -375,7 +375,7 @@ namespace Axiom.RenderSystems.OpenGL
             // are dealing with here
             int type = ( textureType == TextureType.CubeMap ) ? Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_X + faceNum : this.GLTextureType;
 
-            if ( useSoftware && numMipMaps > 0 )
+            if ( useSoftware && numMipmaps > 0 )
             {
                 if ( textureType == TextureType.OneD )
                 {
@@ -495,7 +495,7 @@ namespace Axiom.RenderSystems.OpenGL
                 (byte[])null );
 
             // This needs to be set otherwise the texture doesn't get rendered
-            Gl.glTexParameteri( this.GLTextureType, Gl.GL_TEXTURE_MAX_LEVEL, numMipMaps );
+            Gl.glTexParameteri( this.GLTextureType, Gl.GL_TEXTURE_MAX_LEVEL, numMipmaps );
         }
 
         private byte[] RescaleNPower2( Image src )
@@ -565,5 +565,18 @@ namespace Axiom.RenderSystems.OpenGL
         }
 
         #endregion
-    }
+
+		protected override void CreateInternalResourcesImpl()
+		{
+		}
+
+		protected override void FreeInternalResourcesImpl()
+		{
+		}
+
+		public override HardwarePixelBuffer GetBuffer( int face, int mipmap )
+		{
+			return null;
+		}
+	}
 }

@@ -43,85 +43,85 @@ using Axiom.Core;
 
 namespace Axiom.FileSystem
 {
-    /// <summary>
-    /// Represents a file system folder.
-    /// </summary>
-    public class Folder : Archive
-    {
+	/// <summary>
+	/// Represents a file system folder.
+	/// </summary>
+	public class Folder : Archive
+	{
 
-        internal Folder( string archiveName )
-            : base( archiveName )
-        {
-            // So that the substring will work out right, we definitely want this string
-            // to end with the directory separator char.
-            //if (!name.EndsWith(Path.DirectorySeparatorChar.ToString())) {
-            //    name += Path.DirectorySeparatorChar;
-            ///}
-        }
+		internal Folder( string archiveName )
+			: base( archiveName )
+		{
+			// So that the substring will work out right, we definitely want this string
+			// to end with the directory separator char.
+			//if (!name.EndsWith(Path.DirectorySeparatorChar.ToString())) {
+			//    name += Path.DirectorySeparatorChar;
+			///}
+		}
 
-        public override void Load()
-        {
-            LogManager.Instance.Write( "FileSystem codec for {0} created.", name );
+		public override void Load()
+		{
+			LogManager.Instance.Write( "FileSystem codec for {0} created.", name );
 
-            isLoaded = true;
-        }
+			isLoaded = true;
+		}
 
-        public override Stream ReadFile( string fileName )
-        {
-            FileStream file = File.OpenRead( name + Path.DirectorySeparatorChar + fileName );
+		public override Stream ReadFile( string fileName )
+		{
+			FileStream file = File.OpenRead( name + Path.DirectorySeparatorChar + fileName );
 
-            return file;
-        }
+			return file;
+		}
 
-        public override string[] GetFileNamesLike( string startPath, string pattern )
-        {
-            // replace with wildcard if empty
-            if ( pattern.Length == 0 )
-            {
-                pattern = "*.*";
-            }
-            // otherwise prefix with a star as a wildcard
-            else if ( pattern.IndexOf( "*" ) == -1 )
-            {
-                pattern = "*" + pattern;
-            }
+		public override string[] GetFileNamesLike( string startPath, string pattern )
+		{
+			// replace with wildcard if empty
+			if ( pattern.Length == 0 )
+			{
+				pattern = "*.*";
+			}
+			// otherwise prefix with a star as a wildcard
+			else if ( pattern.IndexOf( "*" ) == -1 )
+			{
+				pattern = "*" + pattern;
+			}
 
-            // Append the start path if there is one
-            string path = Path.Combine( name, startPath );
+			// Append the start path if there is one
+			string path = Path.Combine( name, startPath );
 
-            // Get the list of files, recursively, into an ArrayList
-            ArrayList files = new ArrayList();
-            GetFilesRecursive( path, pattern, files );
+			// Get the list of files, recursively, into an ArrayList
+			ArrayList files = new ArrayList();
+			GetFilesRecursive( path, pattern, files );
 
-            // Copy the ArrayList into a string[] array suitable for returning.
-            string[] retval = new string[ files.Count ];
+			// Copy the ArrayList into a string[] array suitable for returning.
+			string[] retval = new string[ files.Count ];
 
-            for ( int i = 0; i < files.Count; i++ )
-            {
-                retval[ i ] = ( (string)files[ i ] ).Replace( '\\', '/' );
-            }
+			for ( int i = 0; i < files.Count; i++ )
+			{
+				retval[ i ] = ( (string)files[ i ] ).Replace( '\\', '/' );
+			}
 
-            return retval;
-        }
+			return retval;
+		}
 
-        private void GetFilesRecursive( string path, string pattern, ArrayList files )
-        {
-            string[] newFiles = Directory.GetFiles( path, pattern );
+		private void GetFilesRecursive( string path, string pattern, ArrayList files )
+		{
+			string[] newFiles = Directory.GetFiles( path, pattern );
 
-            foreach ( string newFile in newFiles )
-            {
-                if ( !newFile.StartsWith( name ) )
-                {
-                    throw new AxiomException( "Directory {0} unexpectedly does not start from path {1}", newFile, name );
-                }
+			foreach ( string newFile in newFiles )
+			{
+				if ( !newFile.StartsWith( name ) )
+				{
+					throw new AxiomException( "Directory {0} unexpectedly does not start from path {1}", newFile, name );
+				}
 
-                files.Add( newFile.Substring( name.Length + 1 ) );
-            }
+				files.Add( newFile.Substring( name.Length + 1 ) );
+			}
 
-            foreach ( string directory in Directory.GetDirectories( path ) )
-            {
-                GetFilesRecursive( directory, pattern, files );
-            }
-        }
-    }
+			foreach ( string directory in Directory.GetDirectories( path ) )
+			{
+				GetFilesRecursive( directory, pattern, files );
+			}
+		}
+	}
 }

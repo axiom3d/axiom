@@ -32,34 +32,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #endregion SVN Version Information
 
 #region Namespace Declarations
+
 using System;
-using T = Axiom.ParticleSystems.ParticleSystemRenderer;
+
+using Axiom.Core;
+
 #endregion Namespace Declarations
 
 namespace Axiom.ParticleSystems
 {
-    public class ParticleSystemRendererFactory
-    {
-        /// <summary>
-        /// Creates a new object.
-        /// </summary>
-        /// <param name="name">Name of the object to create</param>
-        /// <returns>
-        /// An object created by the factory. The type of the object depends on the factory.
-        /// </returns>
-        public T CreateInstance( string name )
-        {
-            return new T( name );
-        }
-
-        /// <summary>
-        /// Destroys an object which was created by this factory.
-        /// </summary>
-        /// <param name="instance">Pointer to the object to destroy</param>
-        public void DestroyInstance( T instance )
-        {
-            //instance.Dispose();
-            instance = null;
-        }
-    }
+	// Contents moved to ParticleSystemRenderer.cs
 }

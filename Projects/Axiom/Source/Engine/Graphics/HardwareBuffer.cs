@@ -142,7 +142,14 @@ namespace Axiom.Graphics
             this.usage = usage;
             this.useSystemMemory = useSystemMemory;
             this.useShadowBuffer = useShadowBuffer;
+			this.shadowBuffer = null;
+			this.shadowUpdated = false;
+			this.suppressHardwareUpdate = false;
             ID = nextID++;
+			if ( useShadowBuffer && usage == BufferUsage.Dynamic )
+				usage = BufferUsage.DynamicWriteOnly;
+			else if ( useShadowBuffer && usage == BufferUsage.Static )
+				usage = BufferUsage.StaticWriteOnly;
         }
 
         #endregion
@@ -239,7 +246,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///     Abstract implementation of <see cref="Unlock"/>.
         /// </summary>
-        public abstract void UnlockImpl();
+        protected abstract void UnlockImpl();
 
         /// <summary>
         ///     Updates the real buffer from the shadow buffer, if required.
@@ -316,9 +323,11 @@ namespace Axiom.Graphics
         /// </param>
         public void WriteData( int offset, int length, System.Array data )
         {
-            IntPtr dataPtr = Marshal.UnsafeAddrOfPinnedArrayElement( data, 0 );
-
+			GCHandle handle = GCHandle.Alloc( data, GCHandleType.Pinned );
+			IntPtr dataPtr = handle.AddrOfPinnedObject();
+			// IntPtr dataPtr = Marshal.UnsafeAddrOfPinnedArrayElement(data, 0);
             WriteData( offset, length, dataPtr );
+			handle.Free();
         }
 
         /// <summary>
@@ -337,9 +346,11 @@ namespace Axiom.Graphics
         /// </param>
         public void WriteData( int offset, int length, System.Array data, bool discardWholeBuffer )
         {
-            IntPtr dataPtr = Marshal.UnsafeAddrOfPinnedArrayElement( data, 0 );
-
+			GCHandle handle = GCHandle.Alloc( data, GCHandleType.Pinned );
+			IntPtr dataPtr = handle.AddrOfPinnedObject();
+			// IntPtr dataPtr = Marshal.UnsafeAddrOfPinnedArrayElement(data, 0);
             WriteData( offset, length, dataPtr, discardWholeBuffer );
+			handle.Free();
         }
 
         /// <summary>
@@ -454,11 +465,72 @@ namespace Axiom.Graphics
 
         #region IDisposable Implementation
 
-        /// <summary>
-        ///     Called to destroy resources used by this hardware buffer.
-        /// </summary>
-        public abstract void Dispose();
 
-        #endregion IDisposable Implementation
+		#region isDisposed Property
+
+		private bool _disposed = false;
+		/// <summary>
+		/// Determines if this instance has been disposed of already.
+		/// </summary>
+		protected bool isDisposed
+		{
+			get
+			{
+				return _disposed;
+			}
+			set
+			{
+				_disposed = value;
+			}
+		}
+
+		#endregion isDisposed Property
+
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		/// <remarks>
+		/// When implementing this method in an inherited class the following template should be used;
+		/// protected override void dispose( bool disposeManagedResources )
+		/// {
+		/// 	if ( !isDisposed )
+		/// 	{
+		/// 		if ( disposeManagedResources )
+		/// 		{
+		/// 			// Dispose managed resources.
+		/// 		}
+		/// 
+		/// 		// There are no unmanaged resources to release, but
+		/// 		// if we add them, they need to be released here.
+		/// 	}
+		/// 	isDisposed = true;
+		///
+		/// 	// If it is available, make the call to the
+		/// 	// base class's Dispose(Boolean) method
+		/// 	base._dispose( disposeManagedResources );
+		/// }
+		/// </remarks>
+		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+		protected virtual void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					// Dispose managed resources.
+				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
+			isDisposed = true;
+		}
+
+		public void Dispose()
+		{
+			dispose( true );
+			GC.SuppressFinalize( this );
+		}
+		#endregion IDisposable Implementation
     }
 }

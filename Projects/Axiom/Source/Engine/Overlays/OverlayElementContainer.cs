@@ -246,8 +246,6 @@ namespace Axiom.Overlays
             }
         }
 
-
-
         public override void UpdateRenderQueue( RenderQueue queue )
         {
             if ( isVisible )

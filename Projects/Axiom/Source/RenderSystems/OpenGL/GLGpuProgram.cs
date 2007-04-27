@@ -145,5 +145,13 @@ namespace Axiom.RenderSystems.OpenGL
         }
 
         #endregion Properties
-    }
+
+		public override int SamplerCount
+		{
+			get
+			{
+				throw new Exception( "The method or operation is not implemented." );
+			}
+		}
+	}
 }

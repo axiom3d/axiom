@@ -131,6 +131,7 @@ namespace Axiom.CgPrograms
 
             string[] args = null;
 
+			// This option causes an error with the CG 1.3 compiler
             if ( selectedCgProfile == Cg.CG_PROFILE_VS_1_1 )
             {
                 args = new string[] { "-profileopts", "dcls", null };
@@ -296,6 +297,34 @@ namespace Axiom.CgPrograms
             }
         }
 
+		public override int SamplerCount
+		{
+			get
+			{
+				switch ( selectedProfile )
+				{
+					case "ps_1_1":
+					case "ps_1_2":
+					case "ps_1_3":
+					case "fp20":
+						return 4;
+					case "ps_1_4":
+						return 6;
+					case "ps_2_0":
+					case "ps_2_x":
+					case "ps_3_0":
+					case "ps_3_x":
+					case "arbfp1":
+					case "fp30":
+					case "fp40":
+						return 16;
+					default:
+						throw new AxiomException( "Attempted to query sample count for unknown shader profile({0}).", selectedProfile );
+				}
+
+				return 0;
+			}
+		}
 
         #endregion
 
@@ -334,5 +363,5 @@ namespace Axiom.CgPrograms
         }
 
         #endregion IConfigurable Members
-    }
+	}
 }

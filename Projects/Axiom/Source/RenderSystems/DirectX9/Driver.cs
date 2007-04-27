@@ -42,95 +42,133 @@ using D3D = Microsoft.DirectX.Direct3D;
 
 namespace Axiom.RenderSystems.DirectX9
 {
-    /// <summary>
-    ///		Helper class for dealing with D3D Drivers.
-    /// </summary>
-    public class Driver
-    {
-        #region Member variables
+	/// <summary>
+	///		Helper class for dealing with D3D Devices.
+	/// </summary>
+	public class Driver
+	{
+		#region Constructors
 
-        private int adapterNum;
-        private D3D.DisplayMode desktopMode;
-        private VideoModeCollection videoModeList;
-        private string name;
-        private string description;
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
+		public Driver( D3D.AdapterInformation adapterInfo )
+		{
+			this._desktopMode = adapterInfo.CurrentDisplayMode;
+			this._name = adapterInfo.Information.DriverName;
+			this._description = adapterInfo.Information.Description;
+			this._adapterNum = adapterInfo.Adapter;
+			this._adapterIdentifier = adapterInfo.Information.DeviceIdentifier;
 
-        #endregion
+			_videoModeList = new VideoModeCollection();
+		}
 
-        #region Constructors
+		#endregion Constructors
 
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        public Driver( D3D.AdapterInformation adapterInfo )
-        {
-            this.desktopMode = adapterInfo.CurrentDisplayMode;
-            this.name = adapterInfo.Information.DriverName;
-            this.description = adapterInfo.Information.Description;
-            this.adapterNum = adapterInfo.Adapter;
+		#region Properties
 
-            videoModeList = new VideoModeCollection();
-        }
+		#region Name Property
+		private string _name;
+		/// <summary>
+		/// 
+		/// </summary>
+		public string Name
+		{
+			get
+			{
+				return _name;
+			}
+		}
+		#endregion Name Property
 
-        #endregion
+		#region Description Property
+		private string _description;
+		/// <summary>
+		/// 
+		/// </summary>
+		public string Description
+		{
+			get
+			{
+				return _description;
+			}
+		}
+		#endregion Description Property
 
-        #region Properties
+		#region AdapterNumber Property
+		private int _adapterNum;
+		/// <summary>
+		/// 
+		/// </summary>
+		public int AdapterNumber
+		{
+			get
+			{
+				return _adapterNum;
+			}
+		}
+		#endregion AdapterNumber Property
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Name
-        {
-            get
-            {
-                return name;
-            }
-        }
+		#region AdapterIdentifier Property
+		private Guid _adapterIdentifier;
+		/// <summary>
+		/// 
+		/// </summary>
+		public Guid AdapterIdentifier
+		{
+			get
+			{
+				return _adapterIdentifier;
+			}
+		}
+		#endregion AdapterIdentifier Property
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Description
-        {
-            get
-            {
-                return description;
-            }
-        }
+		#region DesktopMode Property
+		private D3D.DisplayMode _desktopMode;
+		/// <summary>
+		///		
+		/// </summary>
+		public D3D.DisplayMode DesktopMode
+		{
+			get
+			{
+				return _desktopMode;
+			}
+		}
+		#endregion DesktopMode Property
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public int AdapterNumber
-        {
-            get
-            {
-                return adapterNum;
-            }
-        }
+		#region VideoModes Property
+		private VideoModeCollection _videoModeList;
+		/// <summary>
+		///		
+		/// </summary>
+		public VideoModeCollection VideoModes
+		{
+			get
+			{
+				return _videoModeList;
+			}
+		}
+		#endregion VideoModes Property
 
-        /// <summary>
-        ///		
-        /// </summary>
-        public D3D.DisplayMode DesktopMode
-        {
-            get
-            {
-                return desktopMode;
-            }
-        }
+		#region D3DDevice Property
+		private D3D.Device _device;
+		/// <summary>
+		///		
+		/// </summary>
+		public D3D.Device D3DDevice
+		{
+			get
+			{
+				return _device;
+			}
+			set
+			{
+				_device = value;
+			}
+		}
+		#endregion D3DDevice Property
 
-        /// <summary>
-        ///		
-        /// </summary>
-        public VideoModeCollection VideoModes
-        {
-            get
-            {
-                return videoModeList;
-            }
-        }
-
-        #endregion
-    }
+		#endregion Properties
+	}
 }

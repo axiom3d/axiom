@@ -92,9 +92,10 @@ namespace Axiom.Animating
         /// </summary>
         /// <param name="handle">Handle to use.</param>
         /// <param name="creator">Skeleton who created this tagpoint.</param>
-        public TagPoint(ushort handle, Skeleton creator)
-            : base(handle, creator)
+		public TagPoint( ushort handle, Skeleton creator )
+			: base( handle, creator )
         {
+			suppressUpdateEvent = true;
         }
 
         #endregion Constructor
@@ -103,15 +104,7 @@ namespace Axiom.Animating
 
         #endregion
 
-
         #region Properties
-        public override LightList Lights
-        {
-            get
-            {
-                return null;               // parentEntity.ParentNode.FindLights( parentEntity.BoundingRadius );
-            }
-        }
         /// <summary>
         ///		Gets/Sets the object attached to this tagpoint.
         /// </summary>
@@ -164,21 +157,45 @@ namespace Axiom.Animating
             }
         }
 
+		/// <summary>
+		///	   Pass on any requests for the lights list to
+		///	   to the parent entity
+		/// </summary>
+		public override LightList Lights
+		{
+			get
+			{
+				return parentEntity.ParentNode.Lights;
+			}
+		}
+
         #endregion Properties
 
         #region Bone Members
 
         /// <summary>
+		///		Gets the transform of this node including the parent entity and skeleton.
+		/// </summary>
+		public override Matrix4 FullTransform
+		{
+			get
+			{
+				return base.FullTransform;
+			}
+		}
+
+		/// <summary>
         ///		Overridden to update parent entity.
         /// </summary>
         public override void NeedUpdate()
         {
+			needParentUpdate = true;
             // // We need to tell parent entities node
-            if (parentEntity != null)
+			if ( parentEntity != null )
             {
                 Node n = parentEntity.ParentNode;
 
-                if (n != null)
+				if ( n != null )
                 {
                     n.NeedUpdate();
                 }
@@ -190,13 +207,13 @@ namespace Axiom.Animating
             base.UpdateFromParent();
 
             // Save transform for local skeleton
-            MakeTransform(derivedPosition, derivedScale, derivedOrientation, ref fullLocalTransform);
+			MakeTransform( derivedPosition, derivedScale, derivedOrientation, ref fullLocalTransform );
 
             // Include Entity transform
-            if (parentEntity != null)
+			if ( parentEntity != null )
             {
                 Node entityParentNode = parentEntity.ParentNode;
-                if (entityParentNode != null)
+				if ( entityParentNode != null )
                 {
                     Quaternion parentQ = entityParentNode.DerivedOrientation;
                     derivedOrientation = parentQ * derivedOrientation;
@@ -206,6 +223,8 @@ namespace Axiom.Animating
 
                     // Add altered position vector to parents
                     derivedPosition += entityParentNode.DerivedPosition;
+
+					OnUpdatedFromParent();
                 }
             }
         }
@@ -213,4 +232,5 @@ namespace Axiom.Animating
 
         #endregion Bone Members
     }
+
 }

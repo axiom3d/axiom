@@ -189,7 +189,7 @@ namespace Axiom.Graphics
             UnlockImpl();
         }
 
-        public override void UnlockImpl()
+        protected override void UnlockImpl()
         {
 
             handle.Free();
@@ -222,11 +222,22 @@ namespace Axiom.Graphics
             return handle.AddrOfPinnedObject();
         }
 
-        public override void Dispose()
-        {
-            if ( isLocked )
-                Unlock();
-            data = null;
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( isLocked )
+					Unlock();
+				if ( disposeManagedResources )
+				{
+					data = null;
+				}
+			}
+			isDisposed = true;
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
         }
         #endregion
     }
@@ -313,7 +324,7 @@ namespace Axiom.Graphics
             UnlockImpl();
         }
 
-        public override void UnlockImpl()
+        protected override void UnlockImpl()
         {
 
             handle.Free();
@@ -346,12 +357,23 @@ namespace Axiom.Graphics
             return handle.AddrOfPinnedObject();
         }
 
-        public override void Dispose()
-        {
-            if ( isLocked )
-                Unlock();
-            data = null;
-        }
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( isLocked )
+					Unlock();
+				if ( disposeManagedResources )
+				{
+					data = null;
+				}
+			}
+			isDisposed = true;
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+		}
 
         #endregion
     }

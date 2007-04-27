@@ -35,8 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-
-using Axiom.Collections;
+using System.Collections.Generic;
 using Axiom.Core;
 using Axiom.Controllers.Canned;
 using Axiom.Graphics;
@@ -86,12 +85,16 @@ namespace Axiom.Controllers
         /// <summary>
         ///		List of references to controllers in a scene.
         /// </summary>
-        private ControllerList controllers = new ControllerList();
+		private List<Controller<float>> controllers = new List<Controller<float>>();
 
         /// <summary>
         ///		Local instance of a FrameTimeControllerValue to be used for time based controllers.
         /// </summary>
-        private FrameTimeControllerValue frameTimeController = new FrameTimeControllerValue();
+		private IControllerValue<float> frameTimeController = new FrameTimeControllerValue();
+
+		private IControllerFunction<float> passthroughFunction = new PassthroughControllerFunction();
+		private ulong lastFrameNumber = 0;
+
 
         #endregion
 
@@ -104,7 +107,7 @@ namespace Axiom.Controllers
         /// <param name="destination">Controller value to use as the destination.</param>
         /// <param name="function">Controller funcion that will use the source value to set the destination.</param>
         /// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-        public Controller CreateController( IControllerValue destination, IControllerFunction function )
+		public Controller<float> CreateController( IControllerValue<float> destination, IControllerFunction<float> function )
         {
             // call the overloaded method passing in our precreated frame time controller value as the source
             return CreateController( frameTimeController, destination, function );
@@ -117,16 +120,32 @@ namespace Axiom.Controllers
         /// <param name="destination">Controller value to use as the destination.</param>
         /// <param name="function">Controller funcion that will use the source value to set the destination.</param>
         /// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-        public Controller CreateController( IControllerValue source, IControllerValue destination, IControllerFunction function )
+		public Controller<float> CreateController( IControllerValue<float> source, IControllerValue<float> destination, IControllerFunction<float> function )
         {
             // create a new controller object
-            Controller controller = new Controller( source, destination, function );
+			Controller<float> controller = new Controller<float>( source, destination, function );
 
             // add the new controller to our list
             controllers.Add( controller );
 
             return controller;
         }
+
+		public void DestroyController( Controller<float> controller )
+		{
+			controllers.Remove( controller );
+		}
+
+		public Controller<float> CreateFrameTimePassthroughController( IControllerValue<float> dest )
+		{
+			return CreateController( frameTimeController, dest, passthroughFunction );
+		}
+
+		public float GetElapsedTime()
+		{
+			return ( (FrameTimeControllerValue)frameTimeController ).ElapsedTime;
+		}
+
 
         /// <summary>
         ///     Creates a texture layer animator controller.
@@ -138,10 +157,10 @@ namespace Axiom.Controllers
         /// <param name="texUnit">The texture unit to animate.</param>
         /// <param name="sequenceTime">Length of the animation (in seconds).</param>
         /// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-        public Controller CreateTextureAnimator( TextureUnitState texUnit, float sequenceTime )
+		public Controller<float> CreateTextureAnimator( TextureUnitState texUnit, float sequenceTime )
         {
-            IControllerValue val = new TextureFrameControllerValue( texUnit );
-            IControllerFunction func = new AnimationControllerFunction( sequenceTime );
+			IControllerValue<float> val = new TextureFrameControllerValue( texUnit );
+			IControllerFunction<float> func = new AnimationControllerFunction( sequenceTime );
 
             return CreateController( val, func );
         }
@@ -157,10 +176,10 @@ namespace Axiom.Controllers
         /// <param name="layer">The texture unit to animate.</param>
         /// <param name="speed">Speed of the rotation, in counter-clockwise revolutions per second.</param>
         /// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-        public Controller CreateTextureRotator( TextureUnitState layer, float speed )
+		public Controller<float> CreateTextureRotator( TextureUnitState layer, float speed )
         {
-            IControllerValue val = new TexCoordModifierControllerValue( layer, false, false, false, false, true );
-            IControllerFunction func = new MultipyControllerFunction( -speed, true );
+			IControllerValue<float> val = new TexCoordModifierControllerValue( layer, false, false, false, false, true );
+			IControllerFunction<float> func = new MultipyControllerFunction( -speed, true );
 
             return CreateController( val, func );
         }
@@ -179,10 +198,10 @@ namespace Axiom.Controllers
         /// <param name="index"></param>
         /// <param name="timeFactor"></param>
         /// <returns></returns>
-        public Controller CreateGpuProgramTimerParam( GpuProgramParameters parms, int index, float timeFactor )
+		public Controller<float> CreateGpuProgramTimerParam( GpuProgramParameters parms, int index, float timeFactor )
         {
-            IControllerValue val = new FloatGpuParamControllerValue( parms, index );
-            IControllerFunction func = new MultipyControllerFunction( timeFactor, true );
+			IControllerValue<float> val = new FloatGpuParamControllerValue( parms, index );
+			IControllerFunction<float> func = new MultipyControllerFunction( timeFactor, true );
 
             return CreateController( val, func );
         }
@@ -199,11 +218,11 @@ namespace Axiom.Controllers
         /// <param name="speedU">Horizontal speed, in wraps per second.</param>
         /// <param name="speedV">Vertical speed, in wraps per second.</param>
         /// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-        public Controller CreateTextureScroller( TextureUnitState layer, float speedU, float speedV )
+		public Controller<float> CreateTextureScroller( TextureUnitState layer, float speedU, float speedV )
         {
-            IControllerValue val = null;
-            IControllerFunction func = null;
-            Controller controller = null;
+			IControllerValue<float> val = null;
+			IControllerFunction<float> func = null;
+			Controller<float> controller = null;
 
             // if both u and v speeds are the same, we can use a single controller for it
             if ( speedU != 0 && ( speedU == speedV ) )
@@ -256,11 +275,11 @@ namespace Axiom.Controllers
         /// <param name="phase">The offset of the start of the wave, e.g. 0.5 to start half-way through the wave.</param>
         /// <param name="amplitude">Scales the output so that instead of lying within 0..1 it lies within 0..(1 * amplitude) for exaggerated effects</param>
         /// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-        public Controller CreateTextureWaveTransformer( TextureUnitState layer, TextureTransform type, WaveformType waveType,
+		public Controller<float> CreateTextureWaveTransformer( TextureUnitState layer, TextureTransform type, WaveformType waveType,
             float baseVal, float frequency, float phase, float amplitude )
         {
-            IControllerValue val = null;
-            IControllerFunction function = null;
+			IControllerValue<float> val = null;
+			IControllerFunction<float> function = null;
 
             // determine which type of controller value this layer needs
             switch ( type )
@@ -299,12 +318,17 @@ namespace Axiom.Controllers
         /// </summary>
         public void UpdateAll()
         {
+			ulong thisFrameNumber = Root.Instance.CurrentFrameCount;
+			if ( thisFrameNumber != lastFrameNumber )
+			{
             // loop through each controller and tell it to update
             for ( int i = 0; i < controllers.Count; i++ )
             {
-                Controller controller = (Controller)controllers[ i ];
+					Controller<float> controller = controllers[ i ];
                 controller.Update();
             }
+				lastFrameNumber = thisFrameNumber;
+			}
         }
 
         #endregion

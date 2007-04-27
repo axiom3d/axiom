@@ -45,139 +45,188 @@ using D3D = Microsoft.DirectX.Direct3D;
 
 namespace Axiom.RenderSystems.DirectX9
 {
-    /// <summary>
-    /// 	Summary description for D3DHardwareIndexBuffer.
-    /// </summary>
-    public class D3DHardwareIndexBuffer : HardwareIndexBuffer
-    {
-        #region Member variables
+	/// <summary>
+	/// 	Summary description for D3DHardwareIndexBuffer.
+	/// </summary>
+	public class D3DHardwareIndexBuffer : HardwareIndexBuffer
+	{
+		#region Member variables
 
-        protected D3D.Device device;
-        protected D3D.IndexBuffer d3dBuffer;
-        protected System.Array data;
+		protected D3D.IndexBuffer d3dBuffer;
+		protected D3D.Pool d3dPool;
 
-        #endregion
+		#endregion
 
-        #region Constructors
+		#region Constructors
 
-        public D3DHardwareIndexBuffer( IndexType type, int numIndices, BufferUsage usage,
-            D3D.Device device, bool useSystemMemory, bool useShadowBuffer )
-            : base( type, numIndices, usage, useSystemMemory, useShadowBuffer )
-        {
+		public D3DHardwareIndexBuffer( IndexType type, int numIndices, BufferUsage usage,
+			D3D.Device device, bool useSystemMemory, bool useShadowBuffer )
+			: base( type, numIndices, usage, useSystemMemory, useShadowBuffer )
+		{
+#if !NO_OGRE_D3D_MANAGE_BUFFERS
+			d3dPool = useSystemMemory ? D3D.Pool.SystemMemory :
+				// If not system mem, use managed pool UNLESS buffer is discardable
+				// if discardable, keeping the software backing is expensive
+				( ( usage & BufferUsage.Discardable ) != 0 ) ? D3D.Pool.Default : D3D.Pool.Managed;
+#else
+            d3dPool = useSystemMemory ? Pool.SystemMemory : Pool.Default;
+#endif
 
-            Type bufferType = ( type == IndexType.Size16 ) ? typeof( short ) : typeof( int );
+			Type bufferType = ( type == IndexType.Size16 ) ? typeof( short ) : typeof( int );
 
-            // create the buffer
-            d3dBuffer = new D3D.IndexBuffer(
-                bufferType,
-                sizeInBytes,
-                device,
-                D3DHelper.ConvertEnum( usage ),
-                useSystemMemory ? D3D.Pool.SystemMemory : D3D.Pool.Default );
-        }
+			// create the buffer
+			d3dBuffer = new D3D.IndexBuffer(
+				bufferType,
+				sizeInBytes,
+				device,
+				D3DHelper.ConvertEnum( usage ),
+				d3dPool );
+		}
 
-        #endregion
+		~D3DHardwareIndexBuffer()
+		{
+			if ( d3dBuffer != null )
+			{
+				d3dBuffer.Dispose();
+			}
+		}
 
-        #region Methods
+		#endregion
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        /// <param name="locking"></param>
-        /// <returns></returns>
-        protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
-        {
-            D3D.LockFlags d3dLocking = 0;
+		#region Methods
 
-            if ( ( usage & BufferUsage.Dynamic ) == 0 &&
-                //usage != BufferUsage.DynamicWriteOnly &&
-                ( locking == BufferLocking.Discard ) )
-            {
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="offset"></param>
+		/// <param name="length"></param>
+		/// <param name="locking"></param>
+		/// <returns></returns>
+		protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
+		{
+			D3D.LockFlags d3dLocking = D3DHelper.ConvertEnum( locking, usage );
+			Microsoft.DirectX.GraphicsStream s = d3dBuffer.Lock( offset, length, d3dLocking );
+			return s.InternalData;
+		}
 
-                // lock flags already 0 by default
-            }
-            else
-            {
-                // D3D doesnt like disard or no overrwrite on non dynamic buffers
-                d3dLocking = D3DHelper.ConvertEnum( locking );
-            }
+		/// <summary>
+		/// 
+		/// </summary>
+		protected override void UnlockImpl()
+		{
+			// unlock the buffer
+			d3dBuffer.Unlock();
+		}
 
-            Microsoft.DirectX.GraphicsStream s = d3dBuffer.Lock( offset, length, d3dLocking );
-            return s.InternalData;
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="offset"></param>
+		/// <param name="length"></param>
+		/// <param name="dest"></param>
+		public override void ReadData( int offset, int length, IntPtr dest )
+		{
+			// lock the buffer for reading
+			IntPtr src = this.Lock( offset, length, BufferLocking.ReadOnly );
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// DOC
-        public override void UnlockImpl()
-        {
-            // unlock the buffer
-            d3dBuffer.Unlock();
-        }
+			// copy that data in there
+			Memory.Copy( src, dest, length );
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        /// <param name="dest"></param>
-        /// DOC
-        public override void ReadData( int offset, int length, IntPtr dest )
-        {
-            // lock the buffer for reading
-            IntPtr src = this.Lock( offset, length, BufferLocking.ReadOnly );
+			// unlock the buffer
+			this.Unlock();
+		}
 
-            // copy that data in there
-            Memory.Copy( src, dest, length );
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="offset"></param>
+		/// <param name="length"></param>
+		/// <param name="src"></param>
+		/// <param name="discardWholeBuffer"></param>
+		public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
+		{
+			// lock the buffer real quick
+			IntPtr dest = this.Lock( offset, length,
+				discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
 
-            // unlock the buffer
-            this.Unlock();
-        }
+			// copy that data in there
+			Memory.Copy( src, dest, length );
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        /// <param name="src"></param>
-        /// <param name="discardWholeBuffer"></param>
-        /// DOC
-        public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
-        {
-            // lock the buffer real quick
-            IntPtr dest = this.Lock( offset, length,
-                discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
+			// unlock the buffer
+			this.Unlock();
+		}
 
-            // copy that data in there
-            Memory.Copy( src, dest, length );
+		public bool ReleaseIfDefaultPool()
+		{
+			if ( d3dPool == D3D.Pool.Default )
+			{
+				if ( d3dBuffer != null )
+				{
+					d3dBuffer.Dispose();
+					d3dBuffer = null;
+				}
+				return true;
+			}
+			return false;
+		}
 
-            // unlock the buffer
-            this.Unlock();
-        }
+		//---------------------------------------------------------------------
+		public bool RecreateIfDefaultPool( D3D.Device device )
+		{
+			if ( d3dPool == D3D.Pool.Default )
+			{
+				Type bufferType = ( type == IndexType.Size16 ) ? typeof( short ) : typeof( int );
+				// Create the Index buffer
+				d3dBuffer = new D3D.IndexBuffer(
+					bufferType,
+					sizeInBytes,
+					device,
+					D3DHelper.ConvertEnum( usage ),
+					d3dPool );
 
-        public override void Dispose()
-        {
-            d3dBuffer.Dispose();
-        }
+				return true;
+			}
+			return false;
+		}
 
-        #endregion
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+				}
 
-        #region Properties
+				if ( d3dBuffer != null )
+				{
+					d3dBuffer.Dispose();
+					d3dBuffer = null;
+				}
 
-        /// <summary>
-        ///		Gets the underlying D3D Vertex Buffer object.
-        /// </summary>
-        public D3D.IndexBuffer D3DIndexBuffer
-        {
-            get
-            {
-                return d3dBuffer;
-            }
-        }
+			}
+			isDisposed = true;
 
-        #endregion
-    }
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+		}
+
+
+		#endregion
+
+		#region Properties
+
+		/// <summary>
+		///		Gets the underlying D3D Vertex Buffer object.
+		/// </summary>
+		public D3D.IndexBuffer D3DIndexBuffer
+		{
+			get
+			{
+				return d3dBuffer;
+			}
+		}
+
+		#endregion
+	}
 }

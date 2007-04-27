@@ -599,7 +599,8 @@ namespace Axiom.SceneManagers.Bsp
 
         protected void InitTextureLighting()
         {
-            Trace.WriteLineIf( targetRenderSystem.Caps.TextureUnitCount < 2, "--WARNING--At least 2 available texture units are required for BSP dynamic lighting!" );
+			if ( targetRenderSystem.Caps.TextureUnitCount < 2 )
+				LogManager.Instance.Write( "--WARNING--At least 2 available texture units are required for BSP dynamic lighting!" );
 
             Texture texLight = TextureLight.CreateTexture();
 
@@ -949,8 +950,8 @@ namespace Axiom.SceneManagers.Bsp
             targetRenderSystem.WorldMatrix = Matrix4.Identity;
 
             // Set view / proj
-            targetRenderSystem.ViewMatrix = camInProgress.ViewMatrix;
-            targetRenderSystem.ProjectionMatrix = camInProgress.ProjectionMatrix;
+            targetRenderSystem.ViewMatrix = cameraInProgress.ViewMatrix;
+            targetRenderSystem.ProjectionMatrix = cameraInProgress.ProjectionMatrix;
 
             ColorEx bspAmbient = null;
 
@@ -1073,8 +1074,8 @@ namespace Axiom.SceneManagers.Bsp
             targetRenderSystem.WorldMatrix = Matrix4.Identity;
 
             // Set view / proj
-            targetRenderSystem.ViewMatrix = camInProgress.ViewMatrix;
-            targetRenderSystem.ProjectionMatrix = camInProgress.ProjectionMatrix;
+            targetRenderSystem.ViewMatrix = cameraInProgress.ViewMatrix;
+            targetRenderSystem.ProjectionMatrix = cameraInProgress.ProjectionMatrix;
 
             TextureUnitState lightTex = textureLightPass.GetTextureUnitState( 0 );
             TextureUnitState normalTex = textureLightPass.GetTextureUnitState( 1 );
@@ -1196,8 +1197,8 @@ namespace Axiom.SceneManagers.Bsp
             targetRenderSystem.WorldMatrix = Matrix4.Identity;
 
             // Set view / proj
-            targetRenderSystem.ViewMatrix = camInProgress.ViewMatrix;
-            targetRenderSystem.ProjectionMatrix = camInProgress.ProjectionMatrix;
+            targetRenderSystem.ViewMatrix = cameraInProgress.ViewMatrix;
+            targetRenderSystem.ProjectionMatrix = cameraInProgress.ProjectionMatrix;
 
             Camera shadowCam = null;
             Vector3 camPos = Vector3.Zero, camDir = Vector3.Zero;

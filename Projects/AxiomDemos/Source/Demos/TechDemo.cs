@@ -37,6 +37,7 @@ namespace Axiom.Demos
         protected bool showDebugOverlay = true;
         protected float statDelay = 0.0f;
         protected float debugTextDelay = 0.0f;
+		protected string debugText = "";
         protected float toggleDelay = 0.0f;
         protected Vector3 camVelocity = Vector3.Zero;
         protected Vector3 camAccel = Vector3.Zero;
@@ -130,8 +131,8 @@ namespace Axiom.Demos
             engine = Root.Instance;
 
             // add event handlers for frame events
-            engine.FrameStarted += new FrameEvent( OnFrameStarted );
-            engine.FrameEnded += new FrameEvent( OnFrameEnded );
+			engine.FrameStarted += new FrameEvent( OnFrameStarted );
+			engine.FrameEnded += new FrameEvent( OnFrameEnded );
 
             // allow for setting up resource gathering
             //SetupResources();
@@ -286,7 +287,7 @@ namespace Axiom.Demos
                 camAccel.z = 1.0f;
             }
 
-            camAccel.y += (float)( input.RelativeMouseZ * 0.1f );
+            //camAccel.y += (float)( input.RelativeMouseZ * 0.1f );
 
             if ( input.IsKeyPressed( KeyCodes.Left ) )
             {
@@ -368,7 +369,7 @@ namespace Axiom.Demos
                 TakeScreenshot( fileName );
 
                 // show briefly on the screen
-                window.DebugText = string.Format( "Wrote screenshot '{0}'.", fileName );
+                debugText = string.Format( "Wrote screenshot '{0}'.", fileName );
 
                 // show for 2 seconds
                 debugTextDelay = 2.0f;
@@ -382,21 +383,21 @@ namespace Axiom.Demos
             if ( input.IsKeyPressed( KeyCodes.F ) )
             {
                 // hide all overlays, includes ones besides the debug overlay
-                viewport.OverlaysEnabled = !viewport.OverlaysEnabled;
+                viewport.ShowOverlays = !viewport.ShowOverlays;
             }
 
-            if ( !input.IsMousePressed( MouseButtons.Left ) )
-            {
-                float cameraYaw = -input.RelativeMouseX * .13f;
-                float cameraPitch = -input.RelativeMouseY * .13f;
+			//if ( !input.IsMousePressed( MouseButtons.Left ) )
+			//{
+			//    float cameraYaw = -input.RelativeMouseX * .13f;
+			//    float cameraPitch = -input.RelativeMouseY * .13f;
 
-                camera.Yaw( cameraYaw );
-                camera.Pitch( cameraPitch );
-            }
-            else
-            {
-                cameraVector.x += input.RelativeMouseX * 0.13f;
-            }
+			//    camera.Yaw( cameraYaw );
+			//    camera.Pitch( cameraPitch );
+			//}
+			//else
+			//{
+			//    cameraVector.x += input.RelativeMouseX * 0.13f;
+			//}
 
             camVelocity += ( camAccel * scaleMove * camSpeed );
 
@@ -424,7 +425,7 @@ namespace Axiom.Demos
             if ( debugTextDelay < 0.0f )
             {
                 debugTextDelay = 0.0f;
-                window.DebugText = "";
+                debugText = "";
             }
             else if ( debugTextDelay > 0.0f )
             {
@@ -432,7 +433,7 @@ namespace Axiom.Demos
             }
 
             OverlayElement element = OverlayElementManager.Instance.GetElement( "Core/DebugText" );
-            element.Text = window.DebugText;
+            element.Text = debugText;
         }
 
         protected void UpdateStats()
@@ -452,7 +453,6 @@ namespace Axiom.Demos
 
             element = OverlayElementManager.Instance.GetElement( "Core/NumTris" );
             element.Text = string.Format( "Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered );
-            LogManager.Instance.Write( "Engine Statistics: Count: {5}  FPS <C,B,W,A>: {0:#.00} {1:#.00} {2:#.00} {3:#.00}  Trias: {4} ", Root.Instance.CurrentFPS, Root.Instance.BestFPS, Root.Instance.WorstFPS, Root.Instance.AverageFPS, scene.TargetRenderSystem.FacesRendered, Root.Instance.CurrentFrameCount );
         }
 
         #endregion Event Handlers

@@ -370,7 +370,7 @@ namespace Axiom.SceneManagers.Bsp
                 Image.ApplyGamma( buffer, 4, buffer.Length, 24 );
                 MemoryStream stream = new MemoryStream( buffer );
                 Image img = Image.FromRawStream( stream, 128, 128, PixelFormat.R8G8B8 );
-                TextureManager.Instance.LoadImage( name, img, TextureType.TwoD, -1, 1, 1 );
+                TextureManager.Instance.LoadImage( name, img, TextureType.TwoD );
             }
         }
 

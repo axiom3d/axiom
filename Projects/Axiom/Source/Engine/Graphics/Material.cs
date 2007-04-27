@@ -168,6 +168,16 @@ namespace Axiom.Graphics
         #endregion
 
         #region Properties
+		/// <summary>
+		///   What techniques are supported
+		/// </summary>
+		public TechniqueList SupportedTechniques
+		{
+			get
+			{
+				return supportedTechniques;
+			}
+		}
 
         /// <summary>
         /// 
@@ -200,6 +210,32 @@ namespace Axiom.Graphics
         /// <summary>
         /// 
         /// </summary>
+		public ColorEx Specular
+		{
+			set
+			{
+				for ( int i = 0; i < techniques.Count; i++ )
+				{
+					( (Technique)techniques[ i ] ).Specular = value;
+				}
+			}
+		}
+		/// <summary>
+		/// 
+		/// </summary>
+		public ColorEx Emissive
+		{
+			set
+			{
+				for ( int i = 0; i < techniques.Count; i++ )
+				{
+					( (Technique)techniques[ i ] ).Emissive = value;
+				}
+			}
+		}
+		/// <summary>
+		/// 
+		/// </summary>
         public bool DepthCheck
         {
             set
@@ -515,6 +551,8 @@ namespace Axiom.Graphics
         ///    <p/>
         ///    This process is automatically done when the Material is loaded, but may be
         ///    repeated if you make some procedural changes.
+		///    <p/>
+		///    This method should be safe for use on threads other than the main render thread.
         /// </remarks>
         /// <param name="autoManageTextureUnits">
         ///    If true, when a fixed function pass has too many TextureUnitState
@@ -605,6 +643,9 @@ namespace Axiom.Graphics
         /// </summary>
         public Technique GetBestTechnique( int lodIndex )
         {
+			if ( supportedTechniques.Count > 0 && lodIndex < 0 )
+				return (Technique)supportedTechniques[ 0 ];
+
             if ( supportedTechniques.Count > 0 )
             {
                 if ( bestTechniqueList[ lodIndex ] == null )
@@ -799,6 +840,7 @@ namespace Axiom.Graphics
             target.size = size;
             target.lastAccessed = lastAccessed;
             target.receiveShadows = receiveShadows;
+			target.transparencyCastsShadows = transparencyCastsShadows;
 
             target.RemoveAllTechniques();
 

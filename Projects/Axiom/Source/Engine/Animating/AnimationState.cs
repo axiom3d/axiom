@@ -49,212 +49,283 @@ using Axiom.Collections;
 
 namespace Axiom.Animating
 {
-    /// <summary>
-    ///		Represents the state of an animation and the weight of it's influence. 
-    /// </summary>
-    /// <remarks>
-    ///		Other classes can hold instances of this class to store the state of any animations
-    ///		they are using.
-    ///		This class implements the IControllerValue interface to enable automatic update of
-    ///		animation state through controllers.
-    /// </remarks>
-    public class AnimationState : IControllerValue, IComparable {
-        #region Member variables
+	/// <summary>
+	///		Represents the state of an animation and the weight of it's influence. 
+	/// </summary>
+	/// <remarks>
+	///		Other classes can hold instances of this class to store the state of any animations
+	///		they are using.
+	///		This class implements the IControllerValue interface to enable automatic update of
+	///		animation state through controllers.
+	/// </remarks>
+	public class AnimationState : IControllerValue<float>, IComparable
+	{
+		#region Member variables
 
-        /// <summary>Name of this animation track.</summary>
-        protected string animationName;
-        /// <summary></summary>
-        protected float time;
-        /// <summary></summary>
-        protected float length;
-        /// <summary></summary>
-        protected float inverseLength;
-        /// <summary></summary>
-        protected float weight;
-        /// <summary></summary>
-        protected bool isEnabled;
-		protected bool lookAt = false;
+		/// <summary>Name of this animation track.</summary>
+		protected string animationName;
+		/// <summary></summary>
+		protected float time;
+		/// <summary></summary>
+		protected float length;
+		/// <summary></summary>
+		protected float inverseLength;
+		/// <summary></summary>
+		protected float weight;
+		/// <summary></summary>
+		protected bool isEnabled;
+		/// <summary></summary>
+		protected AnimationStateSet parent;
+
 		protected bool loop;
 
-        #endregion
+		#endregion
 
-        #region Constructors
+		#region Constructors
 
-        /// <summary>
-        ///		
-        /// </summary>
-        /// <param name="animationName"></param>
-        /// <param name="time"></param>
-        /// <param name="length"></param>
-        /// <param name="weight"></param>
-        /// <param name="isEnabled"></param>
-        internal AnimationState(string animationName, float time, float length, float weight, bool isEnabled) {
-            this.animationName = animationName;
-            this.time = time;
-            this.weight = weight;
-            this.isEnabled = isEnabled;
+		/// <summary>
+		///		
+		/// </summary>
+		/// <param name="animationName"></param>
+		/// <param name="parent">The animation state set parent</param>
+		/// <param name="time"></param>
+		/// <param name="length"></param>
+		/// <param name="weight"></param>
+		/// <param name="isEnabled"></param>
+		public AnimationState( string animationName, AnimationStateSet parent, float time, float length, float weight, bool isEnabled )
+		{
+			this.animationName = animationName;
+			this.parent = parent;
+			this.time = time;
+			this.weight = weight;
+			this.isEnabled = isEnabled;
 
-            // set using the Length property
-            this.Length = length;
+			// set using the Length property
+			this.Length = length;
 			this.loop = true;
-        }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="animationName"></param>
-        /// <param name="time"></param>
-        /// <param name="length"></param>
-        internal AnimationState(string animationName, float time, float length) {
-            this.animationName = animationName;
-            this.time = time;
-            this.Length = length;
-            this.weight = 1.0f;
-            this.isEnabled = false;
+			parent.NotifyDirty();
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="animationName"></param>
+		/// <param name="parent">The animation state set parent</param>
+		/// <param name="time"></param>
+		/// <param name="length"></param>
+		public AnimationState( string animationName, AnimationStateSet animationStates, float time, float length )
+		{
+			this.animationName = animationName;
+			this.parent = animationStates;
+			this.time = time;
+			this.Length = length;
+			this.weight = 1.0f;
+			this.isEnabled = false;
 			this.loop = true;
-        }
 
-        #endregion
+			parent.NotifyDirty();
+		}
+		/// <summary>
+		///     The moral equivalent of a copy constructor
+		/// </summary>
+		/// <param name="parent">The animation state set parent</param>
+		/// <param name="source">An animation state to copy from</param>
+		public AnimationState( AnimationStateSet parent, AnimationState source )
+		{
+			this.parent = parent;
+			this.CopyFrom( source );
 
-        #region Properties
+			parent.NotifyDirty();
+		}
 
-		public bool FaceDirectionOfMotion { get { return lookAt; } set { lookAt = value; } }
+		#endregion
 
-        /// <summary>
-        ///		Gets the name of the animation to which this state applies
-        /// </summary>
-        public string Name {
-            get { return animationName; }
-            set { animationName = value; }
-        }
+		#region Properties
 
-        /// <summary>
-        ///		Gets/Sets the time position for this animation.
-        /// </summary>
-        public float Time {
-            get { return time; }
-            set 
-			{ 
+		/// <summary>
+		///		Gets the name of the animation to which this state applies
+		/// </summary>
+		public string Name
+		{
+			get
+			{
+				return animationName;
+			}
+			set
+			{
+				animationName = value;
+			}
+		}
+
+		/// <summary>
+		///		Gets/Sets the time position for this animation.
+		/// </summary>
+		public float Time
+		{
+			get
+			{
+				return time;
+			}
+			set
+			{
 				time = value;
-				if (loop)
+				if ( loop )
 				{
 					// Wrap
 					//time = time%length;
-					time = (float)System.Math.IEEERemainder(time,length);
-					if(time < 0)
-						time += length;     
+					time = (float)System.Math.IEEERemainder( time, length );
+					if ( time < 0 )
+						time += length;
 				}
 				else
 				{
 					// Clamp
-					if(time < 0)
+					if ( time < 0 )
 						time = 0;
-					else if (time > length)
+					else if ( time > length )
 						time = length;
 				}
 			}
-        }
-
-        /// <summary>
-        ///		Gets/Sets the total length of this animation (may be shorter than whole animation)
-        /// </summary>
-        public float Length {
-            get { return length; }
-            set { 
-                length = value; 
-
-                // update the inverse length of the animation
-                if(length != 0)
-                    inverseLength = 1.0f / length;
-                else
-                    inverseLength = 0.0f;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the weight (influence) of this animation
-        /// </summary>
-        public float Weight {
-            get { return weight; }
-            set { weight = value; }
-        }
-
-        /// <summary>
-        ///		Gets/Sets whether this animation is enabled or not.
-        /// </summary>
-        public bool IsEnabled {
-            get { return isEnabled; }
-            set { isEnabled = value; }
-        }
-		public bool Loop 
-		{
-			get { return loop; }
-			set { loop = value; }
-		}
-        #endregion
-
-        #region Public methods
-
-        /// <summary>
-        ///		Modifies the time position, adjusting for animation length.
-        /// </summary>
-        /// <param name="offset">Offset from the current time position.</param>
-        public void AddTime(float offset) {
-			this.Time = (time += offset);
-        }
-
-        /// <summary>
-        ///     Clones this instance of AnimationState.
-        /// </summary>
-        /// <returns>A copy of this AnimationState object.</returns>
-//        public AnimationState Clone() {
-//            AnimationState newState = new AnimationState();
-//            CopyTo(newState);
-//            return newState;
-//        }
-
-        /// <summary>
-        ///     Copies the details of this AnimationState instance to another instance.
-        /// </summary>
-        /// <param name="target">Target instance to copy our details to.</param>
-        public void CopyTo(AnimationState target) {
-            target.time = time;
-            target.inverseLength = inverseLength;
-            target.length = length;
-            target.isEnabled = isEnabled;
-            target.weight = weight;
-			target.loop = loop;
-        }
-
-		public void CopyStateFrom(AnimationState animState) 
-		{
-			time = animState.time;
-			inverseLength = animState.inverseLength;
-			length = animState.length;
-			isEnabled = animState.isEnabled;
-			weight = animState.weight;
-			loop = animState.loop;
 		}
 
+		/// <summary>
+		///		Gets/Sets the total length of this animation (may be shorter than whole animation)
+		/// </summary>
+		public float Length
+		{
+			get
+			{
+				return length;
+			}
+			set
+			{
+				length = value;
 
+				// update the inverse length of the animation
+				if ( length != 0 )
+					inverseLength = 1.0f / length;
+				else
+					inverseLength = 0.0f;
+			}
+		}
 
-        #endregion
+		/// <summary>
+		/// Gets/Sets the weight (influence) of this animation
+		/// </summary>
+		public float Weight
+		{
+			get
+			{
+				return weight;
+			}
+			set
+			{
+				weight = value;
+			}
+		}
 
-        #region Implementation of IControllerValue
+		/// <summary>
+		///		Gets/Sets whether this animation is enabled or not.
+		/// </summary>
+		public bool IsEnabled
+		{
+			get
+			{
+				return isEnabled;
+			}
+			set
+			{
+				isEnabled = value;
+				parent.NotifyAnimationStateEnabled( this, isEnabled );
+			}
+		}
+		public bool Loop
+		{
+			get
+			{
+				return loop;
+			}
+			set
+			{
+				loop = value;
+			}
+		}
 
-        /// <summary>
-        ///		Gets/Sets the value to be used in a ControllerFunction.
-        /// </summary>
-        public float Value {
-            get { return time * inverseLength;	}
-            set {	time = value * length; }
-        }
-        #endregion
+		/// <summary>
+		///		Gets/Sets the animation state set owning this animation
+		/// </summary>
+		public AnimationStateSet Parent
+		{
+			get
+			{
+				return parent;
+			}
+			set
+			{
+				parent = value;
+			}
+		}
 
-        #region Object overloads
+		#endregion
+
+		#region Public methods
+
+		/// <summary>
+		///		Modifies the time position, adjusting for animation length.
+		/// </summary>
+		/// <param name="offset">Offset from the current time position.</param>
+		public void AddTime( float offset )
+		{
+			// TODO: Add MathUtil function for this?
+			time = (float)System.Math.IEEERemainder( time + offset, length );
+
+			if ( time < 0 )
+			{
+				time += length;
+			}
+		}
+
+		/// <summary>
+		/// Copies the states from another animation state, preserving the animation name
+		/// (unlike CopyTo) but copying everything else.
+		/// </summary>
+		/// <param name="source">animation state which will use as source.</param>
+		public void CopyFrom( AnimationState source )
+		{
+			source.isEnabled = isEnabled;
+			source.inverseLength = inverseLength;
+			source.length = length;
+			source.time = time;
+			source.weight = weight;
+			source.loop = loop;
+			parent.NotifyDirty();
+		}
+
+		#endregion
+
+		#region Implementation of IControllerValue
+
+		/// <summary>
+		///		Gets/Sets the value to be used in a ControllerFunction.
+		/// </summary>
+		public float Value
+		{
+			get
+			{
+				return time * inverseLength;
+			}
+			set
+			{
+				time = value * length;
+			}
+		}
+		#endregion
+
+		#region Object overloads
 		public static bool operator !=( AnimationState left, AnimationState right )
 		{
-			return !(left == right);
+			return !( left == right );
 		}
 		public override bool Equals( object obj )
 		{
@@ -266,12 +337,12 @@ namespace Axiom.Animating
 				return true;
 			if ( object.ReferenceEquals( left, null ) || object.ReferenceEquals( right, null ) )
 				return false;
-			if (left.animationName == right.animationName &&
+			if ( left.animationName == right.animationName &&
 				left.isEnabled == right.isEnabled &&
 				left.time == right.time &&
 				left.weight == right.weight &&
-				left.length == right.length && 
-				left.loop == right.loop)
+				left.length == right.length &&
+				left.loop == right.loop )
 			{
 				return true;
 			}
@@ -280,61 +351,46 @@ namespace Axiom.Animating
 				return false;
 			}
 		}
-        /// <summary>
-        ///    Override GetHashCode.
-        /// </summary>
-        /// <remarks>
-        ///    Done mainly to quash warnings, no real need for it.
-        /// </remarks>
-        /// <returns></returns>
-        public override int GetHashCode() {
-            return animationName.GetHashCode();
-        }
-
-        #endregion Object overloads
-
-        #region IComparable Members
-
-        /// <summary>
-        ///    
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns>0 if they are the same, -1 otherwise.</returns>
-        public int CompareTo(object obj) {
-            AnimationState other = obj as AnimationState;
-
-            if (animationName == other.animationName &&
-                isEnabled == other.isEnabled &&
-                time == other.time &&
-                weight == other.weight &&
-                length == other.length) {
-
-                return 0;
-            }
-            else {
-                return -1;
-            }
-        }
-
-
-		public static void CopyAnimationStateSubset(AnimationStateCollection target,  AnimationStateCollection source)
+		/// <summary>
+		///    Override GetHashCode.
+		/// </summary>
+		/// <remarks>
+		///    Done mainly to quash warnings, no real need for it.
+		/// </remarks>
+		/// <returns></returns>
+		public override int GetHashCode()
 		{
-
-			for ( int i = 0; i < target.Count; i++ )
-			{
-				AnimationState state = target[i];
-				if (!source.ContainsKey(state.Name))
-				{
-					throw new Exception("No animation entry found named " + state.Name + " CopyAnimationStateSubset");
-				}
-				else
-				{
-					state.CopyStateFrom(source[state.Name]);
-				}
-
-			}
-
+			return animationName.GetHashCode();
 		}
-        #endregion
-    }
+
+		#endregion Object overloads
+
+		#region IComparable Members
+
+		/// <summary>
+		///    
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <returns>0 if they are the same, -1 otherwise.</returns>
+		public int CompareTo( object obj )
+		{
+			AnimationState other = obj as AnimationState;
+
+			if ( animationName == other.animationName &&
+				isEnabled == other.isEnabled &&
+				time == other.time &&
+				weight == other.weight &&
+				length == other.length )
+			{
+
+				return 0;
+			}
+			else
+			{
+				return -1;
+			}
+		}
+
+		#endregion
+	}
 }

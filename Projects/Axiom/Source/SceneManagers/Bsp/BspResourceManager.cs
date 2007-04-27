@@ -105,10 +105,14 @@ namespace Axiom.SceneManagers.Bsp
         /// <summary>
         ///		Creates a BspLevel resource - mainly used internally.
         /// </summary>
-        public override Resource Create( string name )
-        {
-            return new BspLevel( name );
-        }
+		//public override Resource Create( string name )
+		//{
+		//    return new BspLevel( name );
+		//}
+		public override Resource Create( string name, bool isManual )
+		{
+			return new BspLevel( name );
+		}
         #endregion
     }
 }

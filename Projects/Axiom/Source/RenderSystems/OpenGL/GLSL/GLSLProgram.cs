@@ -298,5 +298,13 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
         }
 
         #endregion HighLevelGpuProgram Implementation
-    }
+
+		public override int SamplerCount
+		{
+			get
+			{
+				throw new Exception( "The method or operation is not implemented." );
+			}
+		}
+	}
 }

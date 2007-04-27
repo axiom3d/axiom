@@ -225,7 +225,7 @@ namespace Axiom.Overlays
             }
             // update elements
             if ( isTransformUpdated )
-            {
+                {
                 Matrix4[] xform = new Matrix4[ 256 ];
                 GetWorldTransforms( xform );
                 for ( int i = 0; i < elementList.Count; i++ )
@@ -245,15 +245,10 @@ namespace Axiom.Overlays
 
                 // set up the default queue group for the objects about to be added
                 RenderQueueGroupID oldGroupID = queue.DefaultRenderGroup;
-                //ushort oldPriority = queue.DefaultRenderablePriority;
                 queue.DefaultRenderGroup = RenderQueueGroupID.Overlay;
-                //queue.DefaultRenderablePriority = (ushort)( ( zOrder * 100 ) - 1 );
-
                 rootNode.FindVisibleObjects( camera, queue, true, false );
                 // reset the group
                 queue.DefaultRenderGroup = oldGroupID;
-                //queue.DefaultRenderablePriority = (oldPriority);
-
 
                 // add 2d elements
                 for ( int i = 0; i < elementList.Count; i++ )
@@ -413,7 +408,7 @@ namespace Axiom.Overlays
             {
                 Initialize();
             }
-        }
+            }
         protected void Initialize()
         {
 
@@ -593,9 +588,10 @@ namespace Axiom.Overlays
 
         #region Implementation of Resource
 
-        /// <summary>
-        ///		
-        /// </summary>
+
+		/// <summary>
+		///		
+		/// </summary>
         public override void Load()
         {
             // do nothing

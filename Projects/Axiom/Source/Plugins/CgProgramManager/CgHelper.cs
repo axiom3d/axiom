@@ -56,13 +56,13 @@ namespace Axiom.CgPrograms
         /// <param name="context">Current Cg context.</param>
         internal static void CheckCgError( string potentialError, IntPtr context )
         {
-            StringBuilder sb = new StringBuilder();
 
             // check for a Cg error
             int error = Cg.cgGetError();
 
             if ( error != Cg.CG_NO_ERROR )
             {
+				StringBuilder sb = new StringBuilder();
                 sb.Append( Environment.NewLine );
                 sb.Append( potentialError );
                 sb.Append( Environment.NewLine );

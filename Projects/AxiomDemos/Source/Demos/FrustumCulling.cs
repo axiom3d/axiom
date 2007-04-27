@@ -83,7 +83,7 @@ namespace Axiom.Demos
             base.CreateViewports();
 
             viewport2 = window.AddViewport( camera2, 0.6f, 0, 0.4f, 0.4f, 102 );
-            viewport2.OverlaysEnabled = false;
+            viewport2.ShowOverlays = false;
             viewport2.BackgroundColor = ColorEx.Blue;
         }
 
@@ -162,7 +162,7 @@ namespace Axiom.Demos
             }
 
             // report the number of objects within the frustum
-            window.DebugText = string.Format( "Objects visible: {0}", objectsVisible );
+            debugText = string.Format( "Objects visible: {0}", objectsVisible );
         }
 
     }

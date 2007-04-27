@@ -40,175 +40,175 @@ using System.IO;
 
 namespace Axiom.Core
 {
-    /// <summary>
-    ///		Abstract class reprensenting a loadable resource (e.g. textures, sounds etc)
-    /// </summary>
-    /// <remarks>
-    ///		Resources are generally passive constructs, handled through the
-    ///		ResourceManager abstract class for the appropriate subclass.
-    ///		The main thing is that Resources can be loaded or unloaded by the
-    ///		ResourceManager to stay within a defined memory budget. Therefore,
-    ///		all Resources must be able to load, unload (whilst retainin enough
-    ///		info about themselves to be reloaded later), and state how big they are.
-    ///
-    ///		Subclasses must implement:
-    ///		1. A constructor, with at least a mandatory name param.
-    ///			This constructor must set name and optionally size.
-    ///		2. The Load() and Unload() methods - size must be set after Load()
-    ///			Each must check & update the isLoaded flag.
-    /// </remarks>
-    public abstract class Resource : IDisposable
-    {
-        #region Fields
+	/// <summary>
+	///		Abstract class reprensenting a loadable resource (e.g. textures, sounds etc)
+	/// </summary>
+	/// <remarks>
+	///		Resources are generally passive constructs, handled through the
+	///		ResourceManager abstract class for the appropriate subclass.
+	///		The main thing is that Resources can be loaded or unloaded by the
+	///		ResourceManager to stay within a defined memory budget. Therefore,
+	///		all Resources must be able to load, unload (whilst retainin enough
+	///		info about themselves to be reloaded later), and state how big they are.
+	///
+	///		Subclasses must implement:
+	///		1. A constructor, with at least a mandatory name param.
+	///			This constructor must set name and optionally size.
+	///		2. The Load() and Unload() methods - size must be set after Load()
+	///			Each must check & update the isLoaded flag.
+	/// </remarks>
+	public abstract class Resource : IDisposable
+	{
+		#region Fields
 
-        /// <summary>
-        ///		Name of this resource.
-        /// </summary>
-        protected string name;
-        /// <summary>
-        ///		Has this resource been loaded yet?
-        /// </summary>
-        protected bool isLoaded;
-        /// <summary>
-        ///		 Size (in bytes) that this resource takes up in memory.
-        /// </summary>
-        protected long size;
-        /// <summary>
-        ///		Timestamp of the last time this resource was accessed.
-        /// </summary>
-        protected long lastAccessed;
-        /// <summary>
-        ///		Unique handle of this resource.
-        /// </summary>
-        protected int handle;
+		/// <summary>
+		///		Name of this resource.
+		/// </summary>
+		protected string name;
+		/// <summary>
+		///		Has this resource been loaded yet?
+		/// </summary>
+		protected bool isLoaded;
+		/// <summary>
+		///		 Size (in bytes) that this resource takes up in memory.
+		/// </summary>
+		protected long size;
+		/// <summary>
+		///		Timestamp of the last time this resource was accessed.
+		/// </summary>
+		protected long lastAccessed;
+		/// <summary>
+		///		Unique handle of this resource.
+		/// </summary>
+		protected int handle;
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Constructors
+		#region Constructors
 
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        /// <remarks>Subclasses must initialize name and size.</remarks>
-        public Resource()
-        {
-            isLoaded = false;
-            size = 0;
-        }
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
+		/// <remarks>Subclasses must initialize name and size.</remarks>
+		public Resource()
+		{
+			isLoaded = false;
+			size = 0;
+		}
 
-        #endregion
+		#endregion
 
-        #region Virtual/Abstract methods
+		#region Virtual/Abstract methods
 
-        /// <summary>
-        ///		Loads the resource, if not loaded already.
-        /// </summary>
-        public abstract void Load();
+		/// <summary>
+		///		Loads the resource, if not loaded already.
+		/// </summary>
+		public abstract void Load();
 
-        /// <summary>
-        ///		Unloads the resource data, but retains enough info. to be able to recreate it
-        ///		on demand.
-        /// </summary>
-        public virtual void Unload()
-        {
-        }
+		/// <summary>
+		///		Unloads the resource data, but retains enough info. to be able to recreate it
+		///		on demand.
+		/// </summary>
+		public virtual void Unload()
+		{
+		}
 
-        #endregion
+		#endregion
 
-        #region Properties
+		#region Properties
 
-        /// <summary>
-        ///		Size of this resource.
-        /// </summary>
-        public long Size
-        {
-            get
-            {
-                return size;
-            }
-        }
+		/// <summary>
+		///		Size of this resource.
+		/// </summary>
+		public long Size
+		{
+			get
+			{
+				return size;
+			}
+		}
 
-        /// <summary>
-        ///		Name of this resource.
-        /// </summary>
-        public string Name
-        {
-            get
-            {
-                return name;
-            }
-        }
+		/// <summary>
+		///		Name of this resource.
+		/// </summary>
+		public string Name
+		{
+			get
+			{
+				return name;
+			}
+		}
 
-        /// <summary>
-        ///		Is this resource loaded?
-        /// </summary>
-        public bool IsLoaded
-        {
-            get
-            {
-                return isLoaded;
-            }
-        }
+		/// <summary>
+		///		Is this resource loaded?
+		/// </summary>
+		public bool IsLoaded
+		{
+			get
+			{
+				return isLoaded;
+			}
+		}
 
-        /// <summary>
-        ///		The time the resource was last touched.
-        /// </summary>
-        public long LastAccessed
-        {
-            get
-            {
-                return lastAccessed;
-            }
-        }
+		/// <summary>
+		///		The time the resource was last touched.
+		/// </summary>
+		public long LastAccessed
+		{
+			get
+			{
+				return lastAccessed;
+			}
+		}
 
-        /// <summary>
-        ///		Gets/Sets the unique handle of this resource.
-        /// </summary>
-        public int Handle
-        {
-            get
-            {
-                return handle;
-            }
-            set
-            {
-                handle = value;
-            }
-        }
+		/// <summary>
+		///		Gets/Sets the unique handle of this resource.
+		/// </summary>
+		public int Handle
+		{
+			get
+			{
+				return handle;
+			}
+			set
+			{
+				handle = value;
+			}
+		}
 
-        #endregion
+		#endregion
 
-        #region Public methods
+		#region Public methods
 
-        /// <summary>
-        ///		Indicates this resource has been used.
-        /// </summary>
-        public virtual void Touch()
-        {
-            lastAccessed = Root.Instance.Timer.Milliseconds;
+		/// <summary>
+		///		Indicates this resource has been used.
+		/// </summary>
+		public virtual void Touch()
+		{
+			lastAccessed = Root.Instance.Timer.Milliseconds;
 
-            if ( !isLoaded )
-            {
-                Load();
-            }
-        }
+			if ( !isLoaded )
+			{
+				Load();
+			}
+		}
 
-        #endregion
+		#endregion
 
-        #region Implementation of IDisposable
+		#region Implementation of IDisposable
 
-        /// <summary>
-        ///		Dispose method.  Made virtual to allow subclasses to destroy resources their own way.
-        /// </summary>
-        public virtual void Dispose()
-        {
-            if ( isLoaded )
-            {
-                // unload this resource
-                Unload();
-            }
-        }
+		/// <summary>
+		///		Dispose method.  Made virtual to allow subclasses to destroy resources their own way.
+		/// </summary>
+		public virtual void Dispose()
+		{
+			if ( isLoaded )
+			{
+				// unload this resource
+				Unload();
+			}
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

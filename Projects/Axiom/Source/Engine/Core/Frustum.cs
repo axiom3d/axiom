@@ -160,7 +160,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Reference of a reflection plane (automatically updated).
         /// </summary>
-        protected MovablePlane linkedReflectionPlane;
+		protected IDerivedPlaneProvider linkedReflectionPlane;
         /// <summary>
         ///		Record of the last world-space reflection plane info used.
         /// </summary>
@@ -176,7 +176,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Reference to oblique projection plane (automatically updated).
         /// </summary>
-        protected MovablePlane linkedObliqueProjPlane;
+		protected IDerivedPlaneProvider linkedObliqueProjPlane;
         /// <summary>
         ///		Record of the last world-space oblique depth projection plane info used.
         /// </summary>
@@ -505,6 +505,9 @@ namespace Axiom.Core
         ///    range may still vary between render systems since D3D uses [0,1] and 
         ///    GL uses [-1,1], and the range must be kept the same between programmable
         ///    and fixed-function pipelines.
+		///    <para/>
+		///    This corresponds to the Ogre mProjMatrixRSDepth and
+		///    getProjectionMatrixWithRSDepth
         /// </remarks>
         public virtual Matrix4 StandardProjectionMatrix
         {
@@ -567,7 +570,7 @@ namespace Axiom.Core
         ///		<p>This technique only works for perspective projection.</p>
         /// </remarks>
         /// <param name="plane">The plane to link to to perform the clipping.</param>
-        public virtual void EnableCustomNearClipPlane( MovablePlane plane )
+		public virtual void EnableCustomNearClipPlane( IDerivedPlaneProvider plane )
         {
             useObliqueDepthProjection = true;
             linkedObliqueProjPlane = plane;
@@ -634,13 +637,13 @@ namespace Axiom.Core
         /// </summary>
         /// <remarks>This is obviously useful for performing planar reflections.</remarks>
         /// <param name="plane"></param>
-        public virtual void EnableReflection( MovablePlane plane )
+		public virtual void EnableReflection( IDerivedPlaneProvider plane )
         {
             isReflected = true;
             linkedReflectionPlane = plane;
             reflectionPlane = linkedReflectionPlane.DerivedPlane;
             reflectionMatrix = Utility.BuildReflectionMatrix( reflectionPlane );
-            lastLinkedReflectionPlane = linkedReflectionPlane.DerivedPlane;
+            lastLinkedReflectionPlane = reflectionPlane;
             InvalidateView();
         }
 

@@ -80,18 +80,34 @@ namespace Axiom.Collections
 
         #endregion
 
-        /// <summary>
-        ///		
-        /// </summary>
-        public object this[ int index ]
+		/// <summary>
+		///		
+		/// </summary>
+		public object this[ int index ]
+		{
+			get
+			{
+				return objectList.GetByIndex( index );
+			}
+			set
+			{
+				objectList.SetByIndex( index, value );
+			}
+		}
+
+		public ICollection Values
+		{
+			get
+			{
+				return objectList.Values;
+			}
+		}
+
+		public ICollection Keys
         {
             get
             {
-                return objectList.GetByIndex( index );
-            }
-            set
-            {
-                objectList.SetByIndex( index, value );
+				return objectList.Keys;
             }
         }
 
@@ -141,13 +157,27 @@ namespace Axiom.Collections
         ///		Removes the item from the collection.
         /// </summary>
         /// <param name="item"></param>
-        public void Remove( object item )
+		public virtual void Remove( object item )
         {
             int index = objectList.IndexOfValue( item );
 
             if ( index != -1 )
                 objectList.RemoveAt( index );
         }
+
+
+		/// <summary>
+		///		Removes the item from the collection.
+		/// </summary>
+		/// <param name="item"></param>
+		public virtual void RemoveByKey( object item )
+		{
+			int index = objectList.IndexOfKey( item );
+
+			if ( index != -1 )
+				objectList.RemoveAt( index );
+		}
+
 
         /// <summary>
         ///		Removes an item at the specified index.
@@ -205,7 +235,7 @@ namespace Axiom.Collections
 
         public System.Collections.IEnumerator GetEnumerator()
         {
-            return new Enumerator( this );
+			return objectList.Values.GetEnumerator();
         }
 
         #endregion

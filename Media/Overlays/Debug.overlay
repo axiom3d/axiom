@@ -60,7 +60,7 @@ Core/DebugOverlay
             width 90
             height 30
             font_name Garamond
-            char_height 16
+            char_height 14
             caption AVERAGE FPS:
             colour_top 0.8 0.8 0.8
             colour_bottom 0.2 0.2 0.4
@@ -75,7 +75,7 @@ Core/DebugOverlay
             width 90
             height 30
             font_name Garamond
-            char_height 16
+            char_height 14
             caption WORST FPS:
             colour_top 0.8 0.8 0.8
             colour_bottom 0.2 0.2 0.4
@@ -90,7 +90,7 @@ Core/DebugOverlay
             width 90
             height 30
             font_name Garamond
-            char_height 16
+            char_height 14
             caption BEST FPS:
             colour_top 0.8 0.8 0.8
             colour_bottom 0.2 0.2 0.4
@@ -105,7 +105,7 @@ Core/DebugOverlay
             width 90
             height 30
             font_name Garamond
-            char_height 16
+            char_height 14
             caption Triangle Count:
             colour_top 0.8 0.8 0.8
             colour_bottom 0.2 0.2 0.4
@@ -121,7 +121,7 @@ Core/DebugOverlay
             width 200
             height 30
             font_name Garamond
-            char_height 16
+            char_height 14
             colour_top 0.8 0.8 0.8
             colour_bottom 0.2 0.2 0.4
         }

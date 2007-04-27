@@ -82,7 +82,7 @@ namespace Axiom.Demos
             // place the camera in an optimal position
             camera.Position = new Vector3( 30, 30, 220 );
 
-            window.DebugText = "Spinning triangle - Using custom built geometry";
+            debugText = "Spinning triangle - Using custom built geometry";
         }
 
         #endregion

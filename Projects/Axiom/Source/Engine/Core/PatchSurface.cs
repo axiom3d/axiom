@@ -56,7 +56,6 @@ namespace Axiom.Core
     /// </remarks>
     public class PatchSurface
     {
-        // -------------------------------------------
         #region Fields
 
         /// <summary>
@@ -118,7 +117,7 @@ namespace Axiom.Core
         /// <summary>
         ///     List of control points.
         /// </summary>
-        protected Vector3List controlPoints = new Vector3List();
+		protected Vector3List controlPoints = new Vector3List();
 
         protected HardwareVertexBuffer vertexBuffer;
         protected HardwareIndexBuffer indexBuffer;
@@ -137,9 +136,6 @@ namespace Axiom.Core
         const int AUTO_LEVEL = -1;
 
         #endregion Fields
-        // -------------------------------------------
-
-        // -------------------------------------------
         #region Constructor
 
         /// <summary>
@@ -151,9 +147,6 @@ namespace Axiom.Core
         }
 
         #endregion Constructor
-        // -------------------------------------------
-
-        // -------------------------------------------
         #region Methods
 
         /// <summary>
@@ -890,9 +883,7 @@ namespace Axiom.Core
         }
 
         #endregion Methods
-        // -------------------------------------------
 
-        // -------------------------------------------
         #region Properties
 
         /// <summary>
@@ -1019,7 +1010,6 @@ namespace Axiom.Core
         }
 
         #endregion Properties
-        // -------------------------------------------
     }
 
     /// <summary>

@@ -77,20 +77,24 @@ namespace Axiom.Demos
             Material mat = MaterialManager.Instance.GetByName( "Examples/FresnelReflectionRefraction" );
 
             // Refraction texture
-            RenderTexture rttTex = Root.Instance.RenderSystem.CreateRenderTexture( "Refraction", 512, 512 );
+			Texture mTexture = TextureManager.Instance.CreateManual( "Refraction", TextureType.TwoD, 512, 512, 0, Axiom.Media.PixelFormat.R8G8B8, TextureUsage.RenderTarget );
+			RenderTarget rttTex = mTexture.GetBuffer().GetRenderTarget();
+            //RenderTexture rttTex = Root.Instance.RenderSystem.CreateRenderTexture( "Refraction", 512, 512 );
             {
                 Viewport vp = rttTex.AddViewport( camera, 0, 0, 1.0f, 1.0f, 0 );
-                vp.OverlaysEnabled = false;
+				vp.ShowOverlays = false;
                 mat.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 2 ).SetTextureName( "Refraction" );
                 rttTex.BeforeUpdate += new RenderTargetUpdateEventHandler( Refraction_BeforeUpdate );
                 rttTex.AfterUpdate += new RenderTargetUpdateEventHandler( Refraction_AfterUpdate );
             }
 
             // Reflection texture
-            rttTex = Root.Instance.RenderSystem.CreateRenderTexture( "Reflection", 512, 512 );
+			mTexture = TextureManager.Instance.CreateManual( "Reflection", TextureType.TwoD, 512, 512, 0, Axiom.Media.PixelFormat.R8G8B8, TextureUsage.RenderTarget );
+			rttTex = mTexture.GetBuffer().GetRenderTarget();
+			//rttTex = Root.Instance.RenderSystem.CreateRenderTexture( "Reflection", 512, 512 );
             {
                 Viewport vp = rttTex.AddViewport( camera, 0, 0, 1.0f, 1.0f, 0 );
-                vp.OverlaysEnabled = false;
+				vp.ShowOverlays = false;
                 mat.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 1 ).SetTextureName( "Reflection" );
                 rttTex.BeforeUpdate += new RenderTargetUpdateEventHandler( Reflection_BeforeUpdate );
                 rttTex.AfterUpdate += new RenderTargetUpdateEventHandler( Reflection_AfterUpdate );
