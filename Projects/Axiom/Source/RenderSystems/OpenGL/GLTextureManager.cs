@@ -52,14 +52,19 @@ namespace Axiom.RenderSystems.OpenGL
             is32Bit = true;
         }
 
-        public override Texture Create( string name, TextureType type )
-        {
-            GLTexture texture = new GLTexture( name, type );
+		public override Resource Create( string name, bool isManual )
+		{
+			throw new Exception( "The method or operation is not implemented." );
+		}
 
-            texture.Enable32Bit( is32Bit );
+		//public override Texture Create( string name, TextureType type )
+		//{
+		//    GLTexture texture = new GLTexture( name, type );
 
-            return texture;
-        }
+		//    texture.Enable32Bit( is32Bit );
+
+		//    return texture;
+		//}
 
         /// <summary>
         ///    Creates a GL texture manually.
@@ -72,12 +77,12 @@ namespace Axiom.RenderSystems.OpenGL
         /// <param name="format"></param>
         /// <param name="usage"></param>
         /// <returns></returns>
-        public override Texture CreateManual( string name, TextureType type, int width, int height, int numMipMaps, Axiom.Media.PixelFormat format, TextureUsage usage )
-        {
-            GLTexture texture = new GLTexture( name, type, width, height, numMipMaps, format, usage );
-            texture.Enable32Bit( is32Bit );
-            return texture;
-        }
+		//public override Texture CreateManual( string name, TextureType type, int width, int height, int numMipMaps, Axiom.Media.PixelFormat format, TextureUsage usage )
+		//{
+		//    GLTexture texture = new GLTexture( name, type, width, height, numMipMaps, format, usage );
+		//    texture.Enable32Bit( is32Bit );
+		//    return texture;
+		//}
 
         // TODO: Finish
         public override void UnloadAndDestroyAll()

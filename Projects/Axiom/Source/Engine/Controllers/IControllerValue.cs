@@ -43,9 +43,9 @@ namespace Axiom.Controllers
     ///		Classes that will be controlled by any type of Controller should implement
     ///		this interface to define how the controller will modifiy it's local data.
     /// </summary>
-    public interface IControllerValue
+	public interface IControllerValue<T>
     {
-        float Value
+		T Value
         {
             get;
             set;

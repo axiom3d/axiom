@@ -443,7 +443,7 @@ namespace Axiom.SceneManagers.Bsp
         #endregion
 
         #region ResourceManager implementation
-        public override Resource Create( string name )
+		public override Resource Create( string name, bool isManual )
         {
             Quake3Shader s = new Quake3Shader( name );
             Load( s, 1 );

@@ -51,7 +51,7 @@ namespace Axiom.Core
     ///		Instances of this class are discrete, relatively small, movable objects
     ///		which are attached to SceneNode objects to define their position.						  
     /// </remarks>
-    public abstract class MovableObject : ShadowCaster
+	public abstract class MovableObject : ShadowCaster, IAnimableObject
     {
         #region Fields
 
@@ -116,7 +116,18 @@ namespace Axiom.Core
         public MovableObject()
         {
             isVisible = true;
+			// set default RenderQueueGroupID for this movable object
+			renderQueueID = RenderQueueGroupID.Main;
+			queryFlags = unchecked( 0xffffffff );
+			worldAABB = AxisAlignedBox.Null;
+			castShadows = true;
+		}
 
+		public MovableObject( string name )
+		{
+			this.Name = name;
+
+			isVisible = true;
             // set default RenderQueueGroupID for this movable object
             renderQueueID = RenderQueueGroupID.Main;
 
@@ -219,7 +230,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Name of this SceneObject.
         /// </summary>
-        public string Name
+		public virtual string Name
         {
             get
             {
@@ -467,7 +478,34 @@ namespace Axiom.Core
             }
         }
 
-        #endregion ShadowCast Members
+		#endregion ShadowCaster Members
+
+		#region IAnimable methods
+
+		/// <summary>
+		///     Part of the IAnimableObject interface.
+		///		The implementation of this property just returns null; descendents
+		///     are free to override this.
+		/// </summary>
+		public virtual string[] AnimableValueNames
+		{
+			get
+			{
+				return null;
+			}
+		}
+
+		/// <summary>
+		///     Part of the IAnimableObject interface.
+		///		Create an AnimableValue for the attribute with the given name, or 
+		///     throws an exception if this object doesn't support creating them.
+		/// </summary>
+		public virtual AnimableValue CreateAnimableValue( string valueName )
+		{
+			throw new Exception( "This object has no AnimableValue attributes" );
+		}
+
+		#endregion IAnimable methods
 
         #region Internal engine methods
 

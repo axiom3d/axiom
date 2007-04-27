@@ -40,6 +40,7 @@ using Axiom.Configuration;
 using Axiom.Graphics;
 
 using Tao.Platform.Windows;
+using Axiom.Collections;
 
 #endregion Namespace Declarations
 
@@ -77,7 +78,7 @@ namespace Axiom.RenderSystems.OpenGL
             ConfigOption option;
 
             // Full Screen
-            option = new ConfigOption( "Full Screen", "Yes", false );
+            option = new ConfigOption( "Full Screen", "No", false );
             option.PossibleValues.Add( "Yes" );
             option.PossibleValues.Add( "No" );
             ConfigOptions.Add( option );
@@ -86,7 +87,7 @@ namespace Axiom.RenderSystems.OpenGL
             // get the available OpenGL resolutions
             bool more = User.EnumDisplaySettings( null, i++, out setting );
 
-            option = new ConfigOption( "Video Mode", "", false );
+			option = new ConfigOption( "Video Mode", "800 x 600 @ 32-bit colour", false );
             // add the resolutions to the config
             while ( more )
             {
@@ -123,7 +124,7 @@ namespace Axiom.RenderSystems.OpenGL
             ConfigOptions.Add( option );
         }
 
-        public override Axiom.Graphics.RenderWindow CreateWindow( bool autoCreateWindow, GLRenderSystem renderSystem, string windowTitle )
+        public override RenderWindow CreateWindow( bool autoCreateWindow, GLRenderSystem renderSystem, string windowTitle )
         {
             RenderWindow autoWindow = null;
 
@@ -142,30 +143,45 @@ namespace Axiom.RenderSystems.OpenGL
 
                 fullscreen = ( ConfigOptions[ "Full Screen" ].Value == "Yes" );
 
+				NamedParameterList miscParams = new NamedParameterList();
+				ConfigOption opt;
+
+				opt = ConfigOptions[ "Color Depth" ];
+				if ( opt != null )
+					miscParams.Add( "colorDepth", opt.Value );
+
+				opt = ConfigOptions[ "VSync" ];
+				if ( opt != null )
+				{
+					miscParams.Add( "vsync", opt.Value );
+					//TODO : renderSystem.WaitForVerticalBlank = (bool)opt.Value;
+				}
+
+				opt = ConfigOptions[ "FSAA" ];
+				if ( opt != null )
+					miscParams.Add( "fsaa", opt.Value );
 
                 // create a default form to use for a rendering target
-                DefaultForm form = CreateDefaultForm( windowTitle, 0, 0, width, height, fullscreen );
+                //DefaultForm form = CreateDefaultForm( windowTitle, 0, 0, width, height, fullscreen );
 
                 // create the window with the default form as the target
-                autoWindow = renderSystem.CreateRenderWindow( windowTitle, width, height, bpp, fullscreen, 0, 0, true, false, form.Target );
+                autoWindow = renderSystem.CreateRenderWindow( windowTitle, width, height, fullscreen, miscParams );
 
                 // set the default form's renderwindow so it can access it internally
-                form.RenderWindow = autoWindow;
+                //form.RenderWindow = autoWindow;
 
                 // show the window
-                form.Show();
+                //form.Show();
             }
 
             return autoWindow;
         }
 
-        public override Axiom.Graphics.RenderWindow NewWindow( string name, int width, int height, int colorDepth, bool fullScreen, int left, int top, bool depthBuffer, bool vsync, object target )
+        public override RenderWindow NewWindow( string name, int width, int height, bool fullScreen, NamedParameterList miscParams )
         {
             Win32Window window = new Win32Window();
 
-            window.Handle = target;
-
-            window.Create( name, width, height, colorDepth, fullScreen, left, top, depthBuffer, vsync );
+            window.Create( name, width, height, fullScreen, miscParams );
 
             return window;
         }

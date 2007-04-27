@@ -301,7 +301,7 @@ namespace Axiom.Platforms.Win32
             this.window = window;
 
             // for Windows, this should be a S.W.F.Control
-            control = window.Handle as System.Windows.Forms.Control;
+			control = window.GetCustomAttribute( "WINDOW" ) as System.Windows.Forms.Control;
 
             if ( control is System.Windows.Forms.Form )
             {
@@ -312,7 +312,7 @@ namespace Axiom.Platforms.Win32
                 // if the control is a picturebox, we need to grab its parent form
                 while ( !( control is System.Windows.Forms.Form ) && control != null )
                 {
-                    control = control.Parent;
+                    control = control.TopLevelControl;
                 }
             }
             else

@@ -72,21 +72,21 @@ namespace Axiom.Demos
             animation.InterpolationMode = InterpolationMode.Spline;
 
             // create the main animation track
-            AnimationTrack track = animation.CreateTrack( 0, cameraNode );
+            AnimationTrack track = animation.CreateNodeTrack( 0, cameraNode );
 
             // create a few keyframes to move the camera around
-            KeyFrame frame = track.CreateKeyFrame( 0.0f );
+			TransformKeyFrame frame = (TransformKeyFrame)track.CreateKeyFrame( 0.0f );
 
-            frame = track.CreateKeyFrame( 2.5f );
+            frame = (TransformKeyFrame)track.CreateKeyFrame( 2.5f );
             frame.Translate = new Vector3( 500, 500, -1000 );
 
-            frame = track.CreateKeyFrame( 5.0f );
+			frame = (TransformKeyFrame)track.CreateKeyFrame( 5.0f );
             frame.Translate = new Vector3( -1500, 1000, -600 );
 
-            frame = track.CreateKeyFrame( 7.5f );
+			frame = (TransformKeyFrame)track.CreateKeyFrame( 7.5f );
             frame.Translate = new Vector3( 0, -100, 0 );
 
-            frame = track.CreateKeyFrame( 10.0f );
+			frame = (TransformKeyFrame)track.CreateKeyFrame( 10.0f );
             frame.Translate = Vector3.Zero;
 
             // create a new animation state to control the animation

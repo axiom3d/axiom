@@ -34,128 +34,300 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Diagnostics;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
-    /// <summary>
-    ///     Records the use of temporary blend buffers.
-    /// </summary>
-    public class TempBlendedBufferInfo : IHardwareBufferLicensee
-    {
-        #region Fields
+	/// <summary>
+	///     Records the use of temporary blend buffers.
+	/// </summary>
+	public class TempBlendedBufferInfo : IHardwareBufferLicensee
+	{
+		#region Fields
 
-        /// <summary>
-        ///     Pre-blended position buffer.
-        /// </summary>
-        public HardwareVertexBuffer srcPositionBuffer;
-        /// <summary>
-        ///     Pre-blended normal buffer.
-        /// </summary>
-        public HardwareVertexBuffer srcNormalBuffer;
-        /// <summary>
-        ///     Post-blended position buffer.
-        /// </summary>
-        public HardwareVertexBuffer destPositionBuffer;
-        /// <summary>
-        ///     Post-blended normal buffer.
-        /// </summary>
-        public HardwareVertexBuffer destNormalBuffer;
-        /// <summary>
-        ///    Both positions and normals are contained in the same buffer. 
-        /// </summary>
-        public bool posNormalShareBuffer;
-        /// <summary>
-        ///     Index at which the positions are bound in the buffer.
-        /// </summary>
-        public short posBindIndex;
-        /// <summary>
-        ///     Index at which the normals are bound in the buffer.
-        /// </summary>
-        public short normBindIndex;
-        /// <summary>
-        ///		
-        /// </summary>
-        public bool bindPositions;
-        /// <summary>
-        ///		
-        /// </summary>
-        public bool bindNormals;
+		/// <summary>
+		///     Pre-blended position buffer.
+		/// </summary>
+		public HardwareVertexBuffer srcPositionBuffer;
+		/// <summary>
+		///     Pre-blended normal buffer.
+		/// </summary>
+		public HardwareVertexBuffer srcNormalBuffer;
+		/// <summary>
+		///     Pre-blended tangent buffer.
+		/// </summary>
+		public HardwareVertexBuffer srcTangentBuffer;
+		/// <summary>
+		///     Pre-blended binormal buffer.
+		/// </summary>
+		public HardwareVertexBuffer srcBinormalBuffer;
+		/// <summary>
+		///     Post-blended position buffer.
+		/// </summary>
+		public HardwareVertexBuffer destPositionBuffer;
+		/// <summary>
+		///     Post-blended normal buffer.
+		/// </summary>
+		public HardwareVertexBuffer destNormalBuffer;
+		/// <summary>
+		///     Post-blended tangent buffer.
+		/// </summary>
+		public HardwareVertexBuffer destTangentBuffer;
+		/// <summary>
+		///     Post-blended binormal buffer.
+		/// </summary>
+		public HardwareVertexBuffer destBinormalBuffer;
+		/// <summary>
+		///     Both positions and normals are contained in the same buffer
+		/// </summary>
+		public bool posNormalShareBuffer;
+		/// <summary>
+		///     Index at which the positions are bound in the buffer.
+		/// </summary>
+		public ushort posBindIndex;
+		/// <summary>
+		///     Index at which the normals are bound in the buffer.
+		/// </summary>
+		public ushort normBindIndex;
+		/// <summary>
+		///     Index at which the tangents are bound in the buffer.
+		/// </summary>
+		public ushort tanBindIndex;
+		/// <summary>
+		///     Index at which the binormals are bound in the buffer.
+		/// </summary>
+		public ushort binormBindIndex;
+		/// <summary>
+		///		Should we bind the position buffer
+		/// </summary>
+		public bool bindPositions;
+		/// <summary>
+		///		Should we bind the normals buffer
+		/// </summary>
+		public bool bindNormals;
+		/// <summary>
+		///		Should we bind the tangents buffer
+		/// </summary>
+		public bool bindTangents;
+		/// <summary>
+		///		Should we bind the binormals buffer
+		/// </summary>
+		public bool bindBinormals;
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Methods
+		#region Methods
 
-        /// <summary>
-        ///     Utility method, checks out temporary copies of src into dest.
-        /// </summary>
-        public void CheckoutTempCopies( bool positions, bool normals )
-        {
-            bindPositions = positions;
-            bindNormals = normals;
 
-            if ( bindPositions )
-            {
-                destPositionBuffer =
-                    HardwareBufferManager.Instance.AllocateVertexBufferCopy(
-                    srcPositionBuffer,
-                    BufferLicenseRelease.Automatic,
-                    this );
-            }
+		/// <summary>
+		///		Utility method, extract info from the given VertexData
+		/// </summary>
+		public void ExtractFrom( VertexData sourceData )
+		{
+			// Release old buffer copies first
+			HardwareBufferManager mgr = HardwareBufferManager.Instance;
+			if ( destPositionBuffer != null )
+			{
+				mgr.ReleaseVertexBufferCopy( destPositionBuffer );
+				Debug.Assert( destPositionBuffer == null );
+			}
+			if ( destNormalBuffer != null )
+			{
+				mgr.ReleaseVertexBufferCopy( destNormalBuffer );
+				Debug.Assert( destNormalBuffer == null );
+			}
 
-            if ( bindNormals && srcNormalBuffer != null && !posNormalShareBuffer )
-            {
-                destNormalBuffer =
-                    HardwareBufferManager.Instance.AllocateVertexBufferCopy(
-                    srcNormalBuffer,
-                    BufferLicenseRelease.Automatic,
-                    this );
-            }
-        }
+			VertexDeclaration decl = sourceData.vertexDeclaration;
+			VertexBufferBinding bind = sourceData.vertexBufferBinding;
+			VertexElement posElem = decl.FindElementBySemantic( VertexElementSemantic.Position );
+			VertexElement normElem = decl.FindElementBySemantic( VertexElementSemantic.Normal );
+			VertexElement tanElem = decl.FindElementBySemantic( VertexElementSemantic.Tangent );
+			VertexElement binormElem = decl.FindElementBySemantic( VertexElementSemantic.Binormal );
 
-        public void CheckoutTempCopies()
-        {
-            CheckoutTempCopies( true, true );
-        }
+			Debug.Assert( posElem != null, "Positions are required" );
 
-        /// <summary>
-        ///     Utility method, binds dest copies into a given VertexData.
-        /// </summary>
-        /// <param name="targetData">VertexData object to bind the temp buffers into.</param>
-        /// <param name="suppressHardwareUpload"></param>
-        public void BindTempCopies( VertexData targetData, bool suppressHardwareUpload )
-        {
-            destPositionBuffer.SuppressHardwareUpdate( suppressHardwareUpload );
-            targetData.vertexBufferBinding.SetBinding( posBindIndex, destPositionBuffer );
+			posBindIndex = posElem.Source;
+			srcPositionBuffer = bind.GetBuffer( posBindIndex );
 
-            if ( bindNormals && !posNormalShareBuffer )
-            {
-                destNormalBuffer.SuppressHardwareUpdate( suppressHardwareUpload );
-                targetData.vertexBufferBinding.SetBinding( normBindIndex, destNormalBuffer );
-            }
-        }
+			if ( normElem == null )
+			{
+				posNormalShareBuffer = false;
+				srcNormalBuffer = null;
+			}
+			else
+			{
+				normBindIndex = normElem.Source;
+				if ( normBindIndex == posBindIndex )
+				{
+					posNormalShareBuffer = true;
+					srcNormalBuffer = null;
+				}
+				else
+				{
+					posNormalShareBuffer = false;
+					srcNormalBuffer = bind.GetBuffer( normBindIndex );
+				}
+			}
+			if ( tanElem == null )
+				srcTangentBuffer = null;
+			else
+			{
+				tanBindIndex = tanElem.Source;
+				srcTangentBuffer = bind.GetBuffer( tanBindIndex );
+			}
 
-        #endregion Methods
+			if ( binormElem == null )
+				srcBinormalBuffer = null;
+			else
+			{
+				binormBindIndex = binormElem.Source;
+				srcBinormalBuffer = bind.GetBuffer( binormBindIndex );
+			}
+		}
 
-        #region IHardwareBufferLicensee Members
+		/// <summary>
+		///     Utility method, checks out temporary copies of src into dest.
+		/// </summary>
+		public void CheckoutTempCopies( bool positions, bool normals, bool tangents, bool binormals )
+		{
+			bindPositions = positions;
+			bindNormals = normals;
+			bindTangents = tangents;
+			bindBinormals = binormals;
 
-        /// <summary>
-        ///     Implementation of LicenseExpired.
-        /// </summary>
-        /// <param name="buffer"></param>
-        public void LicenseExpired( HardwareBuffer buffer )
-        {
-            if ( buffer == destPositionBuffer )
-            {
-                destPositionBuffer = null;
-            }
-            if ( buffer == destNormalBuffer )
-            {
-                destNormalBuffer = null;
-            }
-        }
+			if ( bindPositions && destPositionBuffer == null )
+			{
+				destPositionBuffer =
+					HardwareBufferManager.Instance.AllocateVertexBufferCopy(
+					srcPositionBuffer,
+					BufferLicenseRelease.Automatic,
+					this );
+			}
 
-        #endregion
-    }
+			if ( bindNormals && !posNormalShareBuffer &&
+				srcNormalBuffer != null && destNormalBuffer == null )
+			{
+				destNormalBuffer =
+					HardwareBufferManager.Instance.AllocateVertexBufferCopy(
+					srcNormalBuffer,
+					BufferLicenseRelease.Automatic,
+					this );
+			}
+
+			if ( bindTangents && srcTangentBuffer != null )
+			{
+				if ( this.tanBindIndex != this.posBindIndex &&
+					this.tanBindIndex != this.normBindIndex )
+				{
+					destTangentBuffer =
+						   HardwareBufferManager.Instance.AllocateVertexBufferCopy(
+						   srcTangentBuffer,
+						   BufferLicenseRelease.Automatic,
+						   this );
+				}
+			}
+
+			if ( bindNormals && srcBinormalBuffer != null )
+			{
+				if ( this.binormBindIndex != this.posBindIndex &&
+					this.binormBindIndex != this.normBindIndex &&
+					this.binormBindIndex != this.tanBindIndex )
+				{
+					destBinormalBuffer =
+						HardwareBufferManager.Instance.AllocateVertexBufferCopy(
+						srcBinormalBuffer,
+						BufferLicenseRelease.Automatic,
+						this );
+				}
+			}
+		}
+
+		public void CheckoutTempCopies()
+		{
+			CheckoutTempCopies( true, true, true, true );
+		}
+
+		/// <summary>
+		///     Detect currently have buffer copies checked out and touch it
+		/// </summary>
+		public bool BuffersCheckedOut( bool positions, bool normals )
+		{
+			if ( positions || ( normals && posNormalShareBuffer ) )
+			{
+				if ( destPositionBuffer == null )
+					return false;
+				HardwareBufferManager.Instance.TouchVertexBufferCopy( destPositionBuffer );
+			}
+			if ( normals && !posNormalShareBuffer )
+			{
+				if ( destNormalBuffer == null )
+					return false;
+				HardwareBufferManager.Instance.TouchVertexBufferCopy( destNormalBuffer );
+			}
+			return true;
+		}
+
+		/// <summary>
+		///     Utility method, binds dest copies into a given VertexData.
+		/// </summary>
+		/// <param name="targetData">VertexData object to bind the temp buffers into.</param>
+		/// <param name="suppressHardwareUpload"></param>
+		public void BindTempCopies( VertexData targetData, bool suppressHardwareUpload )
+		{
+			destPositionBuffer.SuppressHardwareUpdate( suppressHardwareUpload );
+			targetData.vertexBufferBinding.SetBinding( posBindIndex, destPositionBuffer );
+
+			if ( bindNormals && destNormalBuffer != null )
+			{
+				if ( normBindIndex != posBindIndex )
+			{
+				destNormalBuffer.SuppressHardwareUpdate( suppressHardwareUpload );
+				targetData.vertexBufferBinding.SetBinding( normBindIndex, destNormalBuffer );
+				}
+			}
+			if ( bindTangents && destTangentBuffer != null )
+			{
+				if ( tanBindIndex != posBindIndex &&
+					tanBindIndex != normBindIndex )
+				{
+					destTangentBuffer.SuppressHardwareUpdate( suppressHardwareUpload );
+					targetData.vertexBufferBinding.SetBinding( tanBindIndex, destTangentBuffer );
+				}
+			}
+			if ( bindBinormals && destBinormalBuffer != null )
+			{
+				if ( binormBindIndex != posBindIndex &&
+					binormBindIndex != normBindIndex &&
+					binormBindIndex != tanBindIndex )
+				{
+					destBinormalBuffer.SuppressHardwareUpdate( suppressHardwareUpload );
+					targetData.vertexBufferBinding.SetBinding( binormBindIndex, destBinormalBuffer );
+				}
+			}
+		}
+
+		#endregion Methods
+
+		#region IHardwareBufferLicensee Members
+
+		/// <summary>
+		///     Implementation of LicenseExpired.
+		/// </summary>
+		/// <param name="buffer"></param>
+		public void LicenseExpired( HardwareBuffer buffer )
+		{
+			if ( buffer == destPositionBuffer )
+			{
+				destPositionBuffer = null;
+			}
+			if ( buffer == destNormalBuffer )
+			{
+				destNormalBuffer = null;
+			}
+		}
+
+		#endregion
+	}
 }

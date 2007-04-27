@@ -41,90 +41,90 @@ using Axiom.Core;
 
 namespace Axiom.Animating
 {
-    /// <summary>
-    /// Summary description for SkeletonManager.
-    /// </summary>
-    public sealed class SkeletonManager : ResourceManager
-    {
-        #region Singleton implementation
+	/// <summary>
+	/// Summary description for SkeletonManager.
+	/// </summary>
+	public sealed class SkeletonManager : ResourceManager
+	{
+		#region Singleton implementation
 
-        /// <summary>
-        ///     Singleton instance of this class.
-        /// </summary>
-        private static SkeletonManager instance;
+		/// <summary>
+		///     Singleton instance of this class.
+		/// </summary>
+		private static SkeletonManager instance;
 
-        /// <summary>
-        ///     Internal constructor.  This class cannot be instantiated externally.
-        /// </summary>
-        internal SkeletonManager()
-        {
-            if (instance == null)
-            {
-                instance = this;
-            }
-        }
+		/// <summary>
+		///     Internal constructor.  This class cannot be instantiated externally.
+		/// </summary>
+		internal SkeletonManager()
+		{
+			if ( instance == null )
+			{
+				instance = this;
+			}
+		}
 
-        /// <summary>
-        ///     Gets the singleton instance of this class.
-        /// </summary>
-        public static SkeletonManager Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
+		/// <summary>
+		///     Gets the singleton instance of this class.
+		/// </summary>
+		public static SkeletonManager Instance
+		{
+			get
+			{
+				return instance;
+			}
+		}
 
-        #endregion Singleton implementation
+		#endregion Singleton implementation
 
-        #region ResourceManager Implementation
+		#region ResourceManager Implementation
 
-        /// <summary>
-        ///    Creates a new skeleton object.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public override Resource Create(string name)
-        {
-            return new Skeleton(name);
-        }
+		/// <summary>
+		///    Creates a new skeleton object.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		public override Resource Create( string name, bool isManual )
+		{
+			return new Skeleton( name );
+		}
 
-        /// <summary>
-        ///    Overloaded method.  Call overload with default of priority 1.
-        /// </summary>
-        /// <param name="fileName">Name of the skeleton file to load.</param>
-        public Skeleton Load(string fileName)
-        {
-            return Load(fileName, 1);
-        }
+		/// <summary>
+		///    Overloaded method.  Call overload with default of priority 1.
+		/// </summary>
+		/// <param name="fileName">Name of the skeleton file to load.</param>
+		public Skeleton Load( string fileName )
+		{
+			return Load( fileName, 1 );
+		}
 
-        /// <summary>
-        ///    Load a skeleton.  Creates one if it doesn't exists, else return the cached version.
-        /// </summary>
-        /// <remarks>
-        ///    Creates one if it doesn't exists, else return the cached version.
-        /// </remarks>
-        /// <param name="fileName"></param>
-        /// <param name="priority"></param>
-        public Skeleton Load(string fileName, int priority)
-        {
-            Skeleton skeleton = GetByName(fileName);
+		/// <summary>
+		///    Load a skeleton.  Creates one if it doesn't exists, else return the cached version.
+		/// </summary>
+		/// <remarks>
+		///    Creates one if it doesn't exists, else return the cached version.
+		/// </remarks>
+		/// <param name="fileName"></param>
+		/// <param name="priority"></param>
+		public Skeleton Load( string fileName, int priority )
+		{
+			Skeleton skeleton = GetByName( fileName );
 
-            if (skeleton == null)
-            {
-                // create and load the skeleton
-                skeleton = (Skeleton)Create(fileName);
-                base.Load(skeleton, priority);
-            }
+			if ( skeleton == null )
+			{
+				// create and load the skeleton
+				skeleton = (Skeleton)Create( fileName );
+				base.Load( skeleton, priority );
+			}
 
-            return skeleton;
-        }
+			return skeleton;
+		}
 
-        public new Skeleton GetByName(string name)
-        {
-            return (Skeleton)base.GetByName(name);
-        }
+		public new Skeleton GetByName( string name )
+		{
+			return (Skeleton)base.GetByName( name );
+		}
 
-        #endregion ResourceManager Implementation
-    }
+		#endregion ResourceManager Implementation
+	}
 }

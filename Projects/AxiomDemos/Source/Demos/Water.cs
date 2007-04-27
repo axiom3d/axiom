@@ -120,7 +120,7 @@ namespace Axiom.Demos
             particleSystem.FastForward( 20 ); // Fastforward rain to make it look natural
 
             // It can't be set in .particle file, and we need it ;)
-            particleSystem.BillboardOrigin = BillboardOrigin.BottomCenter;
+            //particleSystem.Origin = BillboardOrigin.BottomCenter;
 
             // Set Lighting
             lightNode = scene.RootSceneNode.CreateChildSceneNode();
@@ -138,11 +138,11 @@ namespace Axiom.Demos
 
             // set up spline animation of light node.  Create random Spline
             Animation anim = scene.CreateAnimation( "WaterLight", 20 );
-            AnimationTrack track = anim.CreateTrack( 0, this.lightNode );
-            KeyFrame key = track.CreateKeyFrame( 0 );
+            AnimationTrack track = anim.CreateNodeTrack( 0, this.lightNode );
+            TransformKeyFrame key = (TransformKeyFrame)track.CreateKeyFrame( 0 );
             for ( int ff = 1; ff <= 19; ff++ )
             {
-                key = track.CreateKeyFrame( ff );
+				key = (TransformKeyFrame)track.CreateKeyFrame( ff );
                 Random rand = new Random( 0 );
                 Vector3 lpos = new Vector3(
                     (float)rand.NextDouble() % (int)PLANE_SIZE, //- PLANE_SIZE/2,
@@ -150,7 +150,7 @@ namespace Axiom.Demos
                     (float)rand.NextDouble() % (int)PLANE_SIZE ); //- PLANE_SIZE/2
                 key.Translate = lpos;
             }
-            key = track.CreateKeyFrame( 20 );
+			key = (TransformKeyFrame)track.CreateKeyFrame( 20 );
             #endregion STUBBED LIGHT ANIMATION
 
             // Initialize the Materials/Demo
@@ -498,8 +498,8 @@ namespace Axiom.Demos
             }
             if ( input.IsKeyPressed( KeyCodes.F ) )
             {
-                viewport.OverlaysEnabled = !viewport.OverlaysEnabled;
-                HandleUserModeInput( string.Format( "Show Overlays = {0}.", viewport.OverlaysEnabled ) );
+				viewport.ShowOverlays = !viewport.ShowOverlays;
+				HandleUserModeInput( string.Format( "Show Overlays = {0}.", viewport.ShowOverlays ) );
             }
 
             // 'P' Captures Screenshot (like 'Print' command)
@@ -717,7 +717,7 @@ namespace Axiom.Demos
         /// <summary>Prints output to screen/log, and resets Input Timer to avoid rapid flicker.</summary>
         protected void HandleUserModeInput( string logText )
         {
-            window.DebugText = logText;
+            debugText = logText;
             UpdateStats();
             LogManager.Instance.Write( logText );
             modeTimer = 0f;
@@ -731,7 +731,7 @@ namespace Axiom.Demos
             OverlayElementManager.Instance.GetElement( "Core/WorstFps" ).Text = string.Format( "Worst FPS: {0}", Root.Instance.WorstFPS );
             OverlayElementManager.Instance.GetElement( "Core/AverageFps" ).Text = string.Format( "Average FPS: {0}", Root.Instance.AverageFPS );
             OverlayElementManager.Instance.GetElement( "Core/NumTris" ).Text = string.Format( "Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered );
-            OverlayElementManager.Instance.GetElement( "Core/DebugText" ).Text = window.DebugText;
+            OverlayElementManager.Instance.GetElement( "Core/DebugText" ).Text = debugText;
         }
 
         #endregion Water Class EVENT HANDLERS

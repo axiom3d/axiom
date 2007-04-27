@@ -46,7 +46,7 @@ namespace Axiom.Controllers.Canned
     /// <summary>
     /// Summary description for TexCoordModifierControllerValue.
     /// </summary>
-    public class TexCoordModifierControllerValue : IControllerValue
+	public class TexCoordModifierControllerValue : IControllerValue<float>
     {
         #region Member variables
 

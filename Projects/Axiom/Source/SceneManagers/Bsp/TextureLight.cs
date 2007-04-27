@@ -301,7 +301,7 @@ namespace Axiom.SceneManagers.Bsp
 
                 System.IO.MemoryStream stream = new System.IO.MemoryStream( fotbuf );
                 Axiom.Media.Image img = Axiom.Media.Image.FromRawStream( stream, 128, 128, Axiom.Media.PixelFormat.A8R8G8B8 );
-                TextureManager.Instance.LoadImage( "Axiom/LightingTexture", img, TextureType.TwoD, 0, 1, 1 );
+                TextureManager.Instance.LoadImage( "Axiom/LightingTexture", img, TextureType.TwoD, 0, 1, false);
 
                 tex = TextureManager.Instance.GetByName( "Axiom/LightingTexture" );
             }

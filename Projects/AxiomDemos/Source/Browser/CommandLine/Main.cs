@@ -11,6 +11,7 @@ using Axiom.Graphics;
 using Axiom.Configuration;
 using System.Reflection;
 using System.Collections;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -70,7 +71,7 @@ namespace Axiom.Demos.Browser.CommandLine
 
         public void Run( )
         {
-            ArrayList demoList = new ArrayList();
+			SortedList<string, string> demoList = new SortedList<string, string>();
             try
             {
                 if ( _configure( ) )
@@ -84,7 +85,7 @@ namespace Axiom.Demos.Browser.CommandLine
                     {
                         if ( demoType.IsSubclassOf( techDemo ) )
                         {
-                            demoList.Add( demoType.Name );
+                            demoList.Add(demoType.Name, demoType.Name );
                         }
                     }
 
@@ -94,9 +95,9 @@ namespace Axiom.Demos.Browser.CommandLine
                     //while ( next != "exit" )
                     //{
                         int i = 1;
-                        foreach ( string typeName in demoList)
+                        foreach ( KeyValuePair<string, string> typeName in demoList)
                         {
-                            Console.WriteLine( "{0}) {1}", i++,  typeName );
+                            Console.WriteLine( "{0}) {1}", i++,  typeName.Key );
                         }
                         Console.WriteLine( "Enter the number of the demo that you want to run and press enter." );
                         while ( true )
@@ -109,11 +110,11 @@ namespace Axiom.Demos.Browser.CommandLine
                             }
                             if ( number < 1 || number > demoList.Count )
                                 Console.WriteLine( "The number of the demo game must be between 1 and {0}, the number of demos games available.", demoList.Count );
-                            else
-                            {
-                                next = (string)demoList[ number - 1 ];
-                                break;
-                            }
+							else
+							{
+							    next = (string)demoList.Keys[ number - 1 ];
+							    break;
+							}
                         }
 
                         Type type = demos.GetType( "Axiom.Demos." + next );

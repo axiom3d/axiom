@@ -42,65 +42,61 @@ using Axiom.Media;
 
 namespace Axiom.Graphics
 {
-    /// <summary>
-    ///    Custom RenderTarget that allows for rendering a scene to a texture.
-    /// </summary>
-    public abstract class RenderTexture : RenderTarget
-    {
-        #region Fields
+	/// <summary>
+	///    Custom RenderTarget that allows for rendering a scene to a texture.
+	/// </summary>
+	public abstract class RenderTexture : RenderTarget
+	{
+		#region Fields
 
-        /// <summary>
-        ///    The texture object that will be accessed by the rest of the API.
-        /// </summary>
-        protected Texture texture;
+		protected HardwarePixelBuffer pixelBuffer;
+		protected int zOffset = 0;
 
-        #endregion Fields
+		public PixelFormat Format
+		{
+			get
+			{
+				return pixelBuffer.Format;
+			}
+		}
 
-        #region Constructors
+		#endregion Fields
 
-        public RenderTexture( string name, int width, int height )
-            :
-            this( name, width, height, TextureType.TwoD )
-        {
-        }
+		#region Constructors
 
-        public RenderTexture( string name, int width, int height, TextureType type )
-        {
-            this.name = name;
-            this.width = width;
-            this.height = height;
-            // render textures are high priority
-            this.priority = RenderTargetPriority.High;
-            texture = TextureManager.Instance.CreateManual( name, type, width, height, 0, PixelFormat.R8G8B8, TextureUsage.RenderTarget );
-            TextureManager.Instance.Load( texture, 1 );
-        }
+		public RenderTexture( HardwarePixelBuffer buffer, int zOffset )
+		{
+			pixelBuffer = buffer;
+			this.zOffset = zOffset;
+			Priority = RenderTargetPriority.High;
+			Width = buffer.Width;
+			Height = buffer.Height;
+			ColorDepth = PixelUtil.GetNumElemBits( buffer.Format );
+		}
 
-        #endregion Constructors
+		#endregion Constructors
 
-        #region Methods
+		#region Methods
+		
+		/// <summary>
+		/// Ensures texture is destroyed.
+		/// </summary>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					pixelBuffer.ClearSliceRTT( 0 );
+				}
+			}
+			isDisposed = true;
 
-        protected override void OnAfterUpdate()
-        {
-            base.OnAfterUpdate();
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+		}
 
-            CopyToTexture();
-        }
-
-        /// <summary>
-        ///    
-        /// </summary>
-        protected abstract void CopyToTexture();
-
-        /// <summary>
-        ///    Ensures texture is destroyed.
-        /// </summary>
-        public override void Dispose()
-        {
-            base.Dispose();
-
-            TextureManager.Instance.Unload( texture );
-        }
-
-        #endregion Methods
-    }
+		#endregion Methods
+	}
 }

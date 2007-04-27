@@ -334,7 +334,7 @@ namespace Axiom.Demos
             {
                 VertexElement element = orgData.vertexDeclaration.GetElement( i );
                 VertexElementSemantic ves = element.Semantic;
-                short source = element.Source;
+                ushort source = element.Source;
                 HardwareVertexBuffer orgBuffer = orgData.vertexBufferBinding.GetBuffer( source );
 
                 // check usage for the new buffer
@@ -361,7 +361,7 @@ namespace Axiom.Demos
                     newBuffer.CopyData( orgBuffer, 0, 0, orgBuffer.Size, true );
                     if ( newBinding.BindingCount > 0 && newBinding.GetBuffer( source ) != null )
                     {
-                        source = (short)newBinding.BindingCount;
+                        source = (ushort)newBinding.BindingCount;
                     }
                     newBinding.SetBinding( source, newBuffer );
                 }
@@ -370,7 +370,7 @@ namespace Axiom.Demos
                     // use the existing buffer
                     if ( newBinding.BindingCount > 0 && newBinding.GetBuffer( source ) != null )
                     {
-                        source = (short)newBinding.BindingCount;
+                        source = (ushort)newBinding.BindingCount;
                     }
                     newBinding.SetBinding( source, orgBuffer );
                 }
@@ -604,7 +604,7 @@ namespace Axiom.Demos
             }
 
             // set the current entity material to the new cubemap texture
-            material.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 ).SetCubicTexture( cubeMapName, true );
+            material.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 ).SetCubicTextureName( cubeMapName, true );
 
             // get the current skybox cubemap and change it to the new one
             Material skyBoxMat = MaterialManager.Instance.GetByName( SKYBOX_MATERIAL );
@@ -618,7 +618,7 @@ namespace Axiom.Demos
             }
 
             // set the new cube texture for the skybox
-            skyBoxMat.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 ).SetCubicTexture( cubeMapName, false );
+            skyBoxMat.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 ).SetCubicTextureName( cubeMapName, false );
 
             // reset the entity based on the new cubemap
             PrepareEntity( meshes[ currentMeshIndex ] );

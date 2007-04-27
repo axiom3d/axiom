@@ -53,7 +53,7 @@ namespace Axiom.SceneManagers.Octree
         #region Member Variables
         protected static long green = 0xFFFFFFFF;
 
-        protected ushort[] Indexes = { 0, 1, 1, 2, 2, 3, 3, 0, 0, 6, 6, 5, 5, 1, 3, 7, 7, 4, 4, 2, 6, 7, 5, 4 };
+        protected short[] Indexes = { 0, 1, 1, 2, 2, 3, 3, 0, 0, 6, 6, 5, 5, 1, 3, 7, 7, 4, 4, 2, 6, 7, 5, 4 };
         protected long[] Colors = { green, green, green, green, green, green, green, green };
         protected Octree octant = null;
         //protected SceneManager scene;

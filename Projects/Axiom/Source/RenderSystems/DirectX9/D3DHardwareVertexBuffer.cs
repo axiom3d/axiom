@@ -53,7 +53,9 @@ namespace Axiom.RenderSystems.DirectX9
         #region Member variables
 
         protected D3D.VertexBuffer d3dBuffer;
-        protected System.Array data;
+		protected D3D.Pool d3dPool;
+
+		TimingMeter vbufferLockTimer = MeterManager.GetMeter( "Buffer Lock", "Axiom.RenderSystems.DirectX9" );
 
         #endregion
 
@@ -63,14 +65,28 @@ namespace Axiom.RenderSystems.DirectX9
             D3D.Device device, bool useSystemMemory, bool useShadowBuffer )
             : base( vertexSize, numVertices, usage, useSystemMemory, useShadowBuffer )
         {
+#if !NO_OGRE_D3D_MANAGE_BUFFERS
+			d3dPool = useSystemMemory ? D3D.Pool.SystemMemory :
+				// If not system mem, use managed pool UNLESS buffer is discardable
+				// if discardable, keeping the software backing is expensive
+				( ( usage & BufferUsage.Discardable ) != 0 ) ? D3D.Pool.Default : D3D.Pool.Managed;
+#else
+            d3dPool = useSystemMemory ? Pool.SystemMemory : Pool.Default;
+#endif
             // Create the d3d vertex buffer
-            d3dBuffer = new D3D.VertexBuffer(
-                typeof( byte ),
+			d3dBuffer = new D3D.VertexBuffer( device,
                 sizeInBytes,
-                device,
                 D3DHelper.ConvertEnum( usage ),
-                0,
-                useSystemMemory ? D3D.Pool.SystemMemory : D3D.Pool.Default );
+				D3D.VertexFormats.None,
+				d3dPool );
+		}
+
+		~D3DHardwareVertexBuffer()
+		{
+			if ( d3dBuffer != null )
+			{
+				d3dBuffer.Dispose();
+			}
         }
 
         #endregion
@@ -84,24 +100,9 @@ namespace Axiom.RenderSystems.DirectX9
         /// <param name="length"></param>
         /// <param name="locking"></param>
         /// <returns></returns>
-        /// DOC
         protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
         {
-            D3D.LockFlags d3dLocking = 0;
-
-            if ( ( usage != BufferUsage.Dynamic &&
-                usage != BufferUsage.DynamicWriteOnly ) &&
-                ( locking == BufferLocking.Discard || locking == BufferLocking.NoOverwrite ) )
-            {
-
-                // lock flags already 0 by default
-            }
-            else
-            {
-                // D3D doesnt like discard or no overrwrite on non dynamic buffers
-                d3dLocking = D3DHelper.ConvertEnum( locking );
-            }
-
+			D3D.LockFlags d3dLocking = D3DHelper.ConvertEnum( locking, usage );
             Microsoft.DirectX.GraphicsStream s = d3dBuffer.Lock( offset, length, d3dLocking );
             return s.InternalData;
         }
@@ -109,8 +110,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// <summary>
         /// 
         /// </summary>
-        /// DOC
-        public override void UnlockImpl()
+        protected override void UnlockImpl()
         {
             // unlock the buffer
             d3dBuffer.Unlock();
@@ -122,7 +122,6 @@ namespace Axiom.RenderSystems.DirectX9
         /// <param name="offset"></param>
         /// <param name="length"></param>
         /// <param name="dest"></param>
-        /// DOC
         public override void ReadData( int offset, int length, IntPtr dest )
         {
             // lock the buffer for reading
@@ -142,13 +141,13 @@ namespace Axiom.RenderSystems.DirectX9
         /// <param name="length"></param>
         /// <param name="src"></param>
         /// <param name="discardWholeBuffer"></param>
-        /// DOC
         public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
         {
+			vbufferLockTimer.Enter();
             // lock the buffer real quick
             IntPtr dest = this.Lock( offset, length,
                 discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
-
+			vbufferLockTimer.Exit();
             // copy that data in there
             Memory.Copy( src, dest, length );
 
@@ -156,10 +155,60 @@ namespace Axiom.RenderSystems.DirectX9
             this.Unlock();
         }
 
-        public override void Dispose()
-        {
-            d3dBuffer.Dispose();
-        }
+		//---------------------------------------------------------------------
+		public bool ReleaseIfDefaultPool()
+		{
+			if ( d3dPool == D3D.Pool.Default )
+			{
+				if ( d3dBuffer != null )
+				{
+					d3dBuffer.Dispose();
+					d3dBuffer = null;
+				}
+				return true;
+			}
+			return false;
+		}
+
+		//---------------------------------------------------------------------
+		public bool RecreateIfDefaultPool( D3D.Device device )
+		{
+			if ( d3dPool == D3D.Pool.Default )
+			{
+				// Create the d3d vertex buffer
+				d3dBuffer = new D3D.VertexBuffer(
+					typeof( byte ),
+					sizeInBytes,
+					device,
+					D3DHelper.ConvertEnum( usage ),
+					D3D.VertexFormats.None,
+					d3dPool );
+				return true;
+			}
+			return false;
+		}
+
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+				}
+
+				if ( d3dBuffer != null )
+				{
+					d3dBuffer.Dispose();
+					d3dBuffer = null;
+				}
+
+			}
+			isDisposed = true;
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+		}
 
         #endregion
 
@@ -177,6 +226,5 @@ namespace Axiom.RenderSystems.DirectX9
         }
 
         #endregion
-
     }
 }

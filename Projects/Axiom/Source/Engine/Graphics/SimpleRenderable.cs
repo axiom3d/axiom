@@ -128,7 +128,7 @@ namespace Axiom.Graphics
         {
             get
             {
-                return false;
+				return CastShadows;
             }
         }
 

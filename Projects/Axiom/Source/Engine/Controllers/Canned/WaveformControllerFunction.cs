@@ -42,8 +42,10 @@ using Axiom.Math;
 namespace Axiom.Controllers.Canned
 {
     /// <summary>
-    /// 	Summary description for WaveformControllerFunction.
+	/// A Controller representing a periodic waveform function ranging from Sine to InverseSawtooth
     /// </summary>
+	/// <remarks>Function take to form of BaseValue + Amplitude * ( F(time * freq) / 2 + .5 )
+	/// such as Base + A * ( Sin(t freq 2 pi) + .5) </remarks>
     public class WaveformControllerFunction : BaseControllerFunction
     {
         #region Member variables
@@ -114,8 +116,7 @@ namespace Axiom.Controllers.Canned
 
         public override float Execute( float sourceValue )
         {
-            // factor down to ensure [0,1] 
-            float input = AdjustInput( sourceValue * frequency ) % 1.0f;
+			float input = AdjustInput( sourceValue * frequency ) % 1f;
             float output = 0.0f;
 
             // first, get output in range [-1,1] (typical for waveforms)

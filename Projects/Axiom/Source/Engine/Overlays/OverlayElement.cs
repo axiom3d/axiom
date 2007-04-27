@@ -36,7 +36,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-using System.Drawing;
 using System.Reflection;
 
 using Axiom.Collections;
@@ -44,6 +43,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Scripting;
+using System.Drawing;
 
 #endregion Namespace Declarations
 
@@ -143,7 +143,6 @@ namespace Axiom.Overlays
             this.name = name;
             width = 1.0f;
             height = 1.0f;
-
             isVisible = true;
             isDerivedOutOfDate = true;
             isCloneable = true;
@@ -182,7 +181,7 @@ namespace Axiom.Overlays
                 // if the prop is not settable, then skip
                 if ( !prop.CanWrite || !prop.CanRead )
                 {
-                    Console.WriteLine( prop.Name );
+					LogManager.Instance.Write( prop.Name );
                     continue;
                 }
 
@@ -437,7 +436,7 @@ namespace Axiom.Overlays
 
                 case MetricsMode.Relative_Aspect_Adjusted:
                     if ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate )
-                    {
+            {
                         float vpWidth, vpHeight;
                         OverlayManager oMgr = OverlayManager.Instance;
                         vpWidth = (float)( oMgr.ViewportWidth );
@@ -456,10 +455,10 @@ namespace Axiom.Overlays
                     break;
             }
 
+			// container subclasses will update children too
             UpdateFromParent();
-            // NB container subclasses will update children too
 
-            // Tell self to update own position geometry
+			// update our own position geometry
             if ( isGeomPositionsOutOfDate && isInitialised )
             {
                 UpdatePositionGeometry();
@@ -472,7 +471,7 @@ namespace Axiom.Overlays
                 UpdateTextureGeometry();
                 isGeomPositionsOutOfDate = false;
             }
-        }
+       }
 
         /// <summary>
         /// Internal method which is triggered when the UVs of the element get updated,
@@ -1016,7 +1015,7 @@ namespace Axiom.Overlays
                             pixelScaleY = 1.0f / 10000.0f;
 
                             if ( metricsMode == MetricsMode.Relative )
-                            {
+                        {
                                 pixelLeft = left;
                                 pixelTop = top;
                                 pixelWidth = width;
@@ -1259,7 +1258,7 @@ namespace Axiom.Overlays
         /// 
         /// </summary>
         /// <param name="matrices"></param>
-        public void GetWorldTransforms( Matrix4[] matrices )
+		public void GetWorldTransforms( Matrix4[] matrices )
         {
             overlay.GetWorldTransforms( matrices );
         }

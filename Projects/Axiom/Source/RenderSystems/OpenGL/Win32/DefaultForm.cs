@@ -46,7 +46,6 @@ namespace Axiom.RenderSystems.OpenGL
 
     public class DefaultForm : System.Windows.Forms.Form
     {
-        private System.Windows.Forms.PictureBox pictureBox1;
         private RenderWindow renderWindow;
 
         public DefaultForm()
@@ -86,27 +85,13 @@ namespace Axiom.RenderSystems.OpenGL
 
         private void InitializeComponent()
         {
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.SuspendLayout();
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom )
-                | System.Windows.Forms.AnchorStyles.Left )
-                | System.Windows.Forms.AnchorStyles.Right ) ) );
-            this.pictureBox1.BackColor = System.Drawing.Color.Black;
-            this.pictureBox1.Location = new System.Drawing.Point( 0, 0 );
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size( 292, 266 );
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
             // 
             // DefaultForm
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size( 5, 13 );
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size( 292, 266 );
-            this.Controls.Add( this.pictureBox1 );
             this.Name = "DefaultForm";
             this.Load += new System.EventHandler( this.DefaultForm_Load );
             this.ResumeLayout( false );
@@ -148,15 +133,5 @@ namespace Axiom.RenderSystems.OpenGL
             }
         }
 
-        /// <summary>
-        ///		
-        /// </summary>
-        public PictureBox Target
-        {
-            get
-            {
-                return pictureBox1;
-            }
-        }
     }
 }

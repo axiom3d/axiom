@@ -45,8 +45,7 @@ namespace Axiom.RenderSystems.DirectX9
 {
 
     public class DefaultForm : System.Windows.Forms.Form
-    {
-        private System.Windows.Forms.PictureBox pictureBox1;
+	{
         private RenderWindow renderWindow;
 
         public DefaultForm()
@@ -56,6 +55,7 @@ namespace Axiom.RenderSystems.DirectX9
             this.Deactivate += new System.EventHandler( this.DefaultForm_Deactivate );
             this.Activated += new System.EventHandler( this.DefaultForm_Activated );
             this.Closing += new System.ComponentModel.CancelEventHandler( this.DefaultForm_Close );
+			this.Resize += new System.EventHandler( this.DefaultForm_Resize );
         }
 
         /// <summary>
@@ -86,30 +86,16 @@ namespace Axiom.RenderSystems.DirectX9
 
         private void InitializeComponent()
         {
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.SuspendLayout();
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom )
-                | System.Windows.Forms.AnchorStyles.Left )
-                | System.Windows.Forms.AnchorStyles.Right ) ) );
-            this.pictureBox1.BackColor = System.Drawing.Color.Black;
-            this.pictureBox1.Location = new System.Drawing.Point( 0, 0 );
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size( 292, 266 );
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
-            // 
-            // DefaultForm
-            // 
-            this.AutoScaleBaseSize = new System.Drawing.Size( 5, 13 );
-            this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size( 292, 266 );
-            this.Controls.Add( this.pictureBox1 );
-            this.Name = "DefaultForm";
-            this.Load += new System.EventHandler( this.DefaultForm_Load );
-            this.ResumeLayout( false );
+			this.SuspendLayout();
+			// 
+			// DefaultForm
+			// 
+			this.AutoScaleBaseSize = new System.Drawing.Size( 5, 13 );
+			this.BackColor = System.Drawing.Color.Black;
+			this.ClientSize = new System.Drawing.Size( 640, 480 );
+			this.Name = "DefaultForm";
+			this.Load += new System.EventHandler( this.DefaultForm_Load );
+			this.ResumeLayout( false );
 
         }
 
@@ -121,7 +107,10 @@ namespace Axiom.RenderSystems.DirectX9
         public void DefaultForm_Close( object source, System.ComponentModel.CancelEventArgs e )
         {
             // set the window to inactive
-            //window.IsActive = false;
+			if ( renderWindow != null )
+			{
+				renderWindow.IsActive = false;
+			}
 
             // remove it from the list of render windows, which will halt the rendering loop
             // since there should now be 0 windows left
@@ -135,6 +124,11 @@ namespace Axiom.RenderSystems.DirectX9
             {
                 this.Icon = new System.Drawing.Icon( strm );
             }
+		}
+
+		private void DefaultForm_Resize( object sender, System.EventArgs e )
+		{
+			Root.Instance.SuspendRendering = this.WindowState == FormWindowState.Minimized;
         }
 
         /// <summary>
@@ -149,17 +143,6 @@ namespace Axiom.RenderSystems.DirectX9
             set
             {
                 renderWindow = value;
-            }
-        }
-
-        /// <summary>
-        ///		
-        /// </summary>
-        public PictureBox Target
-        {
-            get
-            {
-                return pictureBox1;
             }
         }
     }

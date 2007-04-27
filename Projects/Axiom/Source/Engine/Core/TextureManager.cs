@@ -41,261 +41,299 @@ using Axiom.Media;
 
 namespace Axiom.Core
 {
-    /// <summary>
-    ///    Class for loading & managing textures.
-    /// </summary>
-    /// <remarks>
-    ///    Texture manager serves as an abstract singleton for all API specific texture managers.
-    ///		When a class inherits from this and is created, a instance of that class (i.e. GLTextureManager)
-    ///		is stored in the global singleton instance of the TextureManager.  
-    ///		Note: This will not take place until the RenderSystem is initialized and at least one RenderWindow
-    ///		has been created.
-    /// </remarks>
-    public abstract class TextureManager : ResourceManager
-    {
-        #region Singleton implementation
+	/// <summary>
+	///    Class for loading & managing textures.
+	/// </summary>
+	/// <remarks>
+	///    Texture manager serves as an abstract singleton for all API specific texture managers.
+	///		When a class inherits from this and is created, a instance of that class (i.e. GLTextureManager)
+	///		is stored in the global singleton instance of the TextureManager.  
+	///		Note: This will not take place until the RenderSystem is initialized and at least one RenderWindow
+	///		has been created.
+	/// </remarks>
+	public abstract class TextureManager : ResourceManager
+	{
+		#region Singleton implementation
 
-        /// <summary>
-        ///     Singleton instance of this class.
-        /// </summary>
-        private static TextureManager instance;
+		/// <summary>
+		///     Singleton instance of this class.
+		/// </summary>
+		private static TextureManager instance;
 
-        /// <summary>
-        ///     Internal constructor.  This class cannot be instantiated externally.
-        /// </summary>
-        /// <remarks>
-        ///     Protected internal because this singleton will actually hold the instance of a subclass
-        ///     created by a render system plugin.
-        /// </remarks>
-        protected internal TextureManager()
-        {
-            if ( instance == null )
-            {
-                instance = this;
-            }
-        }
+		/// <summary>
+		///     Internal constructor.  This class cannot be instantiated externally.
+		/// </summary>
+		/// <remarks>
+		///     Protected internal because this singleton will actually hold the instance of a subclass
+		///     created by a render system plugin.
+		/// </remarks>
+		protected internal TextureManager()
+		{
+			if ( instance == null )
+			{
+				instance = this;
+			}
+		}
 
-        /// <summary>
-        ///     Gets the singleton instance of this class.
-        /// </summary>
-        public static TextureManager Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
+		/// <summary>
+		///     Gets the singleton instance of this class.
+		/// </summary>
+		public static TextureManager Instance
+		{
+			get
+			{
+				return instance;
+			}
+		}
 
-        #endregion Singleton implementation
+		#endregion Singleton implementation
 
-        #region Fields
+		#region Fields
 
-        /// <summary>
-        ///    Flag that indicates whether 32-bit texture are being used.
-        /// </summary>
-        protected bool is32Bit;
+		/// <summary>
+		///    Flag that indicates whether 32-bit texture are being used.
+		/// </summary>
+		protected bool is32Bit;
 
-        /// <summary>
-        ///    Default number of mipmaps to be used for loaded textures.
-        /// </summary>
-        protected int defaultNumMipMaps = 5;
+		/// <summary>
+		///    Default number of mipmaps to be used for loaded textures.
+		/// </summary>
+		protected int defaultNumMipMaps = 5;
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Properties
+		#region Properties
 
-        /// <summary>
-        ///    Gets/Sets the default number of mipmaps to be used for loaded textures.
-        /// </summary>
-        public int DefaultNumMipMaps
-        {
-            get
-            {
-                return defaultNumMipMaps;
-            }
-            set
-            {
-                defaultNumMipMaps = value;
-            }
-        }
+		/// <summary>
+		///    Gets/Sets the default number of mipmaps to be used for loaded textures.
+		/// </summary>
+		public int DefaultNumMipMaps
+		{
+			get
+			{
+				return defaultNumMipMaps;
+			}
+			set
+			{
+				defaultNumMipMaps = value;
+			}
+		}
 
-        #endregion Properties
+		public bool Is32Bit
+		{
+			get
+		{
+				return is32Bit;
+			}
+		}
 
-        #region Methods
+		#endregion Properties
 
-        /// <summary>
-        ///     Creates a new texture.
-        /// </summary>
-        /// <param name="name">Name of the texture to create, which is the filename.</param>
-        /// <returns>A newly created texture object, API dependent.</returns>
-        public override Resource Create( string name )
-        {
-            return Create( name, TextureType.TwoD );
-        }
+		#region Methods
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public abstract Texture Create( string name, TextureType type );
+		/// <summary>
+		///    Method for creating a new blank texture.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="texType"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="numMipMaps"></param>
+		/// <param name="format"></param>
+		/// <param name="usage"></param>
+		/// <returns></returns>
+		public Texture CreateManual( string name, TextureType texType, int width, int height, int depth, int numMipmaps, PixelFormat format, TextureUsage usage )
+		{
+			Texture ret = (Texture)Create( name, true );
+			ret.TextureType = texType;
+			ret.Width = width;
+			ret.Height = height;
+			ret.Depth = depth;
+			ret.NumMipMaps = ( numMipmaps == -1 ) ? defaultNumMipMaps : numMipmaps;
+			ret.Format = format;
+			ret.Usage = usage;
+			ret.Enable32Bit( is32Bit );
+			ret.CreateInternalResources();
+			return ret;
+		}
 
-        /// <summary>
-        ///    Method for creating a new blank texture.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="type"></param>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="numMipMaps"></param>
-        /// <param name="format"></param>
-        /// <param name="usage"></param>
-        /// <returns></returns>
-        public abstract Texture CreateManual( string name, TextureType type, int width, int height, int numMipMaps, PixelFormat format, TextureUsage usage );
+		public Texture CreateManual( string name, TextureType type, int width, int height, int numMipmaps, PixelFormat format, TextureUsage usage )
+		{
+			return CreateManual( name, type, width, height, 1, numMipmaps, format, usage );
+		}
 
-        /// <summary>
-        ///    Loads a texture with the specified name.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public Texture Load( string name )
-        {
-            return Load( name, TextureType.TwoD );
-        }
+		/// <summary>
+		///    Loads a texture with the specified name.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		public Texture Load( string name )
+		{
+			return Load( name, TextureType.TwoD );
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public Texture Load( string name, TextureType type )
-        {
-            // load the texture by default with -1 mipmaps (uses default), gamma of 1, priority of 1
-            return Load( name, type, -1, 1.0f, 1 );
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		public Texture Load( string name, TextureType type )
+		{
+			// load the texture by default with -1 mipmaps (uses default), gamma of 1, isAlpha of false
+			return Load( name, type, -1, 1.0f, false );
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="numMipMaps"></param>
-        /// <param name="gamma"></param>
-        /// <param name="priority"></param>
-        /// <returns></returns>
-        public Texture Load( string name, TextureType type, int numMipMaps, float gamma, int priority )
-        {
-            // does this texture exist already?
-            Texture texture = GetByName( name );
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="numMipMaps"></param>
+		/// <param name="gamma"></param>
+		/// <param name="priority"></param>
+		/// <returns></returns>
+		public Texture Load( string name, TextureType type, int numMipMaps, float gamma, bool isAlpha )
+		{
+			// does this texture exist already?
+			Texture texture = GetByName( name );
 
-            if ( texture == null )
-            {
-                // create a new texture
-                texture = (Texture)Create( name, type );
+			if ( texture == null )
+			{
+				// create a new texture
+				texture = (Texture)Create( name );
+				texture.TextureType = type;
+				if ( numMipMaps == -1 )
+					texture.NumMipMaps = defaultNumMipMaps;
+				else
+					texture.NumMipMaps = numMipMaps;
 
-                if ( numMipMaps == -1 )
-                {
-                    texture.NumMipMaps = defaultNumMipMaps;
-                }
-                else
-                {
-                    texture.NumMipMaps = numMipMaps;
-                }
+				// set bit depth and gamma
+				texture.Gamma = gamma;
+				if ( isAlpha )
+					texture.Format = PixelFormat.A8;
+				texture.Enable32Bit( is32Bit );
 
-                // set bit depth and gamma
-                texture.Gamma = gamma;
-                texture.Enable32Bit( is32Bit );
+				// call the base class load method
+				base.Load( texture, 1 );
+			}
 
-                // call the base class load method
-                base.Load( texture, priority );
-            }
+			return texture;
+		}
 
-            return texture;
-        }
+		/// <summary>
+		///		Overloaded method.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="image"></param>
+		/// <returns></returns>
+		//public Texture LoadImage(string name, Image image) 
+		//{
+		//    return LoadImage(name, image, TextureType.TwoD, -1, 1.0f, 1);
+		//}
 
-        /// <summary>
-        ///		Overloaded method.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="image"></param>
-        /// <returns></returns>
-        public Texture LoadImage( string name, Image image )
-        {
-            return LoadImage( name, image, TextureType.TwoD, -1, 1.0f, 1 );
-        }
+		/// <summary>
+		///		Overloaded method.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="image"></param>
+		/// <param name="texType"></param>
+		/// <returns></returns>
+		//public Texture LoadImage(string name, Image image, TextureType texType) 
+		//{
+		//    return LoadImage(name, image, texType, -1, 1.0f, 1);
+		//}
 
-        /// <summary>
-        ///		Overloaded method.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="image"></param>
-        /// <param name="texType"></param>
-        /// <returns></returns>
-        public Texture LoadImage( string name, Image image, TextureType texType )
-        {
-            return LoadImage( name, image, texType, -1, 1.0f, 1 );
-        }
+		public Texture LoadImage( string name, Image image )
+		{
+			return LoadImage( name, image, TextureType.TwoD );
+		}
+		public Texture LoadImage( string name, Image image, TextureType texType )
+		{
+			return LoadImage( name, image, texType, -1, 1.0f, false );
+		}
 
-        /// <summary>
-        ///		Loads a pre-existing image into the texture.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="image"></param>
-        /// <param name="numMipMaps"></param>
-        /// <param name="gamma"></param>
-        /// <param name="priority"></param>
-        /// <returns></returns>
-        public Texture LoadImage( string name, Image image, TextureType texType, int numMipMaps, float gamma, int priority )
-        {
-            // create a new texture
-            Texture texture = (Texture)Create( name, texType );
+		/// <summary>
+		///		Loads a pre-existing image into the texture.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="image"></param>
+		/// <param name="numMipMaps"></param>
+		/// <param name="gamma"></param>
+		/// <param name="priority"></param>
+		/// <returns></returns>
+		public Texture LoadImage( string name, Image image, TextureType texType, int numMipMaps, float gamma, bool isAlpha )
+		{
+			// create a new texture
+			Texture texture = (Texture)Create( name, true );
 
-            // set the number of mipmaps to use for this texture
-            if ( numMipMaps == -1 )
-            {
-                texture.NumMipMaps = defaultNumMipMaps;
-            }
-            else
-            {
-                texture.NumMipMaps = numMipMaps;
-            }
+			texture.TextureType = texType;
+			// set the number of mipmaps to use for this texture
+			if ( numMipMaps == -1 )
+				texture.NumMipMaps = defaultNumMipMaps;
+			else
+				texture.NumMipMaps = numMipMaps;
 
-            // set bit depth and gamma
-            texture.Gamma = gamma;
-            texture.Enable32Bit( is32Bit );
+			// set bit depth and gamma
+			texture.Gamma = gamma;
+			if ( isAlpha )
+				texture.Format = PixelFormat.A8;
+			texture.Enable32Bit( is32Bit );
 
-            // load image data
-            texture.LoadImage( image );
+			// load image data
+			texture.LoadImage( image );
 
-            // add the texture to the resource list
-            resourceList[ texture.Name ] = texture;
+			return texture;
+		}
 
-            return texture;
-        }
+		/// <summary>
+		///    Returns an instance of Texture that has the supplied name.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		public new Texture GetByName( string name )
+		{
+			return (Texture)base.GetByName( name );
+		}
 
-        /// <summary>
-        ///    Returns an instance of Texture that has the supplied name.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public new Texture GetByName( string name )
-        {
-            return (Texture)base.GetByName( name );
-        }
+		/// <summary>
+		///     Called when the engine is shutting down.    
+		/// </summary>
+		public override void Dispose()
+		{
+			base.Dispose();
 
-        /// <summary>
-        ///     Called when the engine is shutting down.    
-        /// </summary>
-        public override void Dispose()
-        {
-            base.Dispose();
+			if ( this == instance )
+			{
+				instance = null;
+			}
+		}
 
-            if ( this == instance )
-            {
-                instance = null;
-            }
-        }
+		public virtual PixelFormat GetNativeFormat( TextureType ttype, PixelFormat format,
+												   TextureUsage usage )
+		{
+			// Just throw an error, for non-overriders
+			throw new NotImplementedException();
+		}
 
-        #endregion Methods
-    }
+		public bool IsFormatSupported( TextureType ttype, PixelFormat format, TextureUsage usage )
+		{
+			return GetNativeFormat( ttype, format, usage ) == format;
+		}
+
+		public bool IsEquivalentFormatSupported( TextureType ttype, PixelFormat format, TextureUsage usage )
+		{
+			PixelFormat supportedFormat = GetNativeFormat( ttype, format, usage );
+			// Assume that same or greater number of bits means quality not degraded
+			return PixelUtil.GetNumElemBits( supportedFormat ) >= PixelUtil.GetNumElemBits( format );
+		}
+
+		public virtual int AvailableTextureMemory
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		#endregion Methods
+	}
 }

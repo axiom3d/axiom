@@ -54,6 +54,7 @@ namespace Axiom.Graphics
 
         protected int numVertices;
         protected int vertexSize;
+		protected int useCount;
 
         #endregion
 
@@ -73,6 +74,8 @@ namespace Axiom.Graphics
             {
                 shadowBuffer = new SoftwareVertexBuffer( vertexSize, numVertices, BufferUsage.Dynamic );
             }
+
+			useCount = 0;
         }
 
         #endregion
@@ -98,6 +101,14 @@ namespace Axiom.Graphics
                 return numVertices;
             }
         }
+
+		public int UseCount
+		{
+			get
+			{
+				return useCount;
+			}
+		}
 
         #endregion
     }

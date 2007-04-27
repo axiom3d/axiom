@@ -96,6 +96,14 @@ namespace Axiom.Graphics
         ///    Maximum number of lights that can be active in the scene at any given time.
         /// </summary>
         private int maxLights;
+		/// <summary>
+		/// name of the adapter
+		/// </summary>
+		private string deviceName = "";
+		/// <summary>
+		/// version number of the driver
+		/// </summary>
+		private string driverVersion = "";
 
         #endregion
 
@@ -114,6 +122,35 @@ namespace Axiom.Graphics
         #region Properties
 
         /// <summary>
+		/// Name of the display adapter
+		/// </summary>
+		public string DeviceName
+		{
+			get
+			{
+				return deviceName;
+			}
+			set
+			{
+				deviceName = value;
+			}
+		}
+		/// <summary>
+		/// The driver version string
+		/// </summary>
+		public string DriverVersion
+		{
+			get
+			{
+				return driverVersion;
+			}
+			set
+			{
+				driverVersion = value;
+			}
+		}
+
+		/// <summary>
         ///    Max number of floating point constants supported by the hardware for fragment programs.
         /// </summary>
         public int FragmentProgramConstantFloatCount
@@ -294,6 +331,8 @@ namespace Axiom.Graphics
             LogManager logMgr = LogManager.Instance;
 
             logMgr.Write( "---RenderSystem capabilities---" );
+			logMgr.Write( "\t-Adapter Name: {0}", deviceName );
+			logMgr.Write( "\t-Driver Version: {0}", driverVersion );
             logMgr.Write( "\t-Available texture units: {0}", this.TextureUnitCount );
             logMgr.Write( "\t-Maximum lights available: {0}", this.MaxLights );
             logMgr.Write( "\t-Hardware generation of mip-maps: {0}", ConvertBool( CheckCap( Capabilities.HardwareMipMaps ) ) );
@@ -340,6 +379,7 @@ namespace Axiom.Graphics
             logMgr.Write( "\t-User clip planes: {0}", ConvertBool( CheckCap( Capabilities.UserClipPlanes ) ) );
             logMgr.Write( "\t-VertexElementType.UBYTE4: {0}", ConvertBool( CheckCap( Capabilities.VertexFormatUByte4 ) ) );
             logMgr.Write( "\t-Infinite far plane projection: {0}", ConvertBool( CheckCap( Capabilities.InfiniteFarPlane ) ) );
+			// TODO: Add the rest
         }
 
         /// <summary>

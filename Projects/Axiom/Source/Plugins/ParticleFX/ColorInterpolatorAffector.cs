@@ -51,7 +51,7 @@ namespace Axiom.ParticleFX
     {
         protected const int MAX_STAGES = 6;
 
-        internal Axiom.Core.ColorEx[] colorAdj = new Axiom.Core.ColorEx[ MAX_STAGES ];
+		internal ColorEx[] colorAdj = new ColorEx[ MAX_STAGES ];
         internal float[] timeAdj = new float[ MAX_STAGES ];
 
         public ColorInterpolatorAffector()
@@ -60,7 +60,7 @@ namespace Axiom.ParticleFX
 
             for ( int i = 0; i < MAX_STAGES; ++i )
             {
-                colorAdj[ i ] = new Axiom.Core.ColorEx( 0.5f, 0.5f, 0.5f, 0.0f );
+				colorAdj[ i ] = new ColorEx( 0.5f, 0.5f, 0.5f, 0.0f );
                 timeAdj[ i ] = 1.0f;
             }
         }

@@ -64,21 +64,21 @@ namespace Axiom.RenderSystems.OpenGL
         /// <summary>
         ///     
         /// </summary>
-        protected override void CopyToTexture()
-        {
-            int textureID = ( (GLTexture)texture ).TextureID;
+		//protected override void CopyToTexture()
+		//{
+		//    int textureID = ( (GLTexture)texture ).TextureID;
 
-            // bind our texture as active
-            Gl.glBindTexture( Gl.GL_TEXTURE_2D, textureID );
+		//    // bind our texture as active
+		//    Gl.glBindTexture( Gl.GL_TEXTURE_2D, textureID );
 
-            // copy the color buffer to the active texture
-            Gl.glCopyTexSubImage2D(
-                Gl.GL_TEXTURE_2D,
-                texture.NumMipMaps,
-                0, 0,
-                0, 0,
-                width, height );
-        }
+		//    // copy the color buffer to the active texture
+		//    Gl.glCopyTexSubImage2D(
+		//        Gl.GL_TEXTURE_2D,
+		//        texture.NumMipMaps,
+		//        0, 0,
+		//        0, 0,
+		//        Width, Height );
+		//}
 
         /// <summary>
         ///     OpenGL requires render textures to be flipped.

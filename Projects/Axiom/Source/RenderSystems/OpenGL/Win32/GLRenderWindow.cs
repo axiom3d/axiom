@@ -39,11 +39,13 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 using Axiom.Core;
+using Axiom.Collections;
 using Axiom.Graphics;
 using Axiom.Media;
 
 using Tao.OpenGl;
 using Tao.Platform.Windows;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -57,13 +59,39 @@ namespace Axiom.RenderSystems.OpenGL
         #region Fields
 
         /// <summary>Window handle.</summary>
-        private static IntPtr hWnd = IntPtr.Zero;
+        private static IntPtr _hWindow = IntPtr.Zero;
         /// <summary>GDI Device Context</summary>
-        private IntPtr hDC = IntPtr.Zero;
+        private IntPtr _hDeviceContext = IntPtr.Zero;
         /// <summary>Rendering context.</summary>
-        private IntPtr hRC = IntPtr.Zero;
+        private IntPtr _hRenderingContext = IntPtr.Zero;
         /// <summary>Retains initial screen settings.</summary>        
-        private Gdi.DEVMODE intialScreenSettings;
+        private Gdi.DEVMODE _intialScreenSettings;
+
+		private bool _isExternal;
+		private bool _isExternalGLControl;
+		private bool _isSizing;
+		private bool _isClosed;
+		public override bool IsClosed
+		{
+			get
+			{
+				return _isClosed;
+			}
+		}
+
+		public override bool IsVisible
+		{
+			get
+			{
+				return base.IsVisible;
+			}
+			set
+			{
+				base.IsVisible = value;
+			}
+		}
+
+		private int _displayFrequency;      // fullscreen only, to restore display
 
         #endregion Fields
 
@@ -80,13 +108,164 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region Implementation of RenderWindow
 
-        public override void Create( string name, int width, int height, int colorDepth, bool isFullScreen, int left, int top, bool depthBuffer, params object[] miscParams )
+		public override object GetCustomAttribute( string attribute )
+		{
+			switch ( attribute.ToLower() )
+			{
+				case "glcontext":
+					//TODO : return _glContext;
+					return null;
+				case "window":
+					System.Windows.Forms.Control ctrl = System.Windows.Forms.Control.FromChildHandle( _hWindow );
+					return ctrl;
+					break;
+				default:
+					return base.GetCustomAttribute( attribute );
+			}
+
+		}
+
+		public override void Create( string name, int width, int height, bool isFullScreen, NamedParameterList miscParams )
         {
+			if ( _hWindow != IntPtr.Zero)
+				dispose( true );
+
+			_hWindow = IntPtr.Zero;
+			this.Name = name;
+			this.IsFullScreen = isFullScreen;
+			this._isClosed = false;
+
+			// load window defaults
+			this.left = this.top = -1; // centered
+			this.Width = width;
+			this.Height = height;
+			this._displayFrequency = 0;
+			this.isDepthBuffered = true;
+			this.ColorDepth = IsFullScreen ? 32 : 16; //TODO : GetDeviceCaps( GetDC( 0 ), BITSPIXEL );
+
+			IntPtr parentHwnd = IntPtr.Zero;
+			string title = name;
+			bool vsync = false;
+			int fsaa = 0;
+			string border;
+			bool outerSize = false;
+
+
+			if ( miscParams != null )
+			{
+				foreach ( KeyValuePair<string, object> entry in miscParams )
+				{
+					switch ( entry.Key )
+					{
+						case "title":
+							title = entry.Value.ToString();
+							break;
+						case "left":
+							left = Int32.Parse( entry.Value.ToString() );
+							break;
+						case "top":
+							top = Int32.Parse( entry.Value.ToString() );
+							break;
+						case "depthBuffer":
+							isDepthBuffered = bool.Parse( entry.Value.ToString() );
+							break;
+						case "vsync":
+							vsync = bool.Parse( entry.Value.ToString() );
+							break;
+						case "FSAA":
+							fsaa = Int32.Parse( entry.Value.ToString() );
+							break;
+						case "externalWindowHandle":
+							_hWindow = (IntPtr)entry.Value;
+							if ( _hWindow != IntPtr.Zero )
+							{
+								_isExternal = true;
+								IsFullScreen = false;
+							}
+							break;
+						case "externalGLControl":
+							break;
+						case "border":
+							break;
+						case "outerDimensions":
+							break;
+						case "displayFrequency":
+							if ( IsFullScreen )
+								_displayFrequency = Int32.Parse( entry.Value.ToString() );
+							break;
+						case "colorDepth":
+							if ( IsFullScreen )
+								ColorDepth = Int32.Parse( entry.Value.ToString() );
+							break;
+						case "parentWindowHandle":
+							if ( !IsFullScreen )
+								parentHwnd = (IntPtr)entry.Value;
+							break;
+						default:
+							break;
+					}
+				}
+			}
+			
+			if ( !_isExternal )
+			{
+				DefaultForm form = new DefaultForm();
+
+				form.ClientSize = new System.Drawing.Size( width, height );
+				form.MaximizeBox = false;
+				form.MinimizeBox = false;
+				form.StartPosition = FormStartPosition.CenterScreen;
+
+				if ( IsFullScreen )
+				{
+					form.Top = 0;
+					form.Left = 0;
+					form.FormBorderStyle = FormBorderStyle.None;
+					form.WindowState = FormWindowState.Maximized;
+					form.TopMost = true;
+					form.TopLevel = true;
+				}
+				else
+				{
+					form.Top = top;
+					form.Left = left;
+					form.FormBorderStyle = FormBorderStyle.FixedSingle;
+					form.WindowState = FormWindowState.Normal;
+					form.Text = title;
+				}
+
+				form.Show();
+				_hWindow = form.Handle;
+			}
+
+			IntPtr old_hdc = Wgl.wglGetCurrentDC();
+			IntPtr old_context = Wgl.wglGetCurrentContext();
+
+			RECT rc;
+			// top and left represent outer window position
+			GetWindowRect( mHWnd, &rc );
+			mTop = rc.top;
+			mLeft = rc.left;
+			// width and height represent drawable area only
+			GetClientRect( mHWnd, &rc );
+			mWidth = rc.right;
+			mHeight = rc.bottom;
+
+			_hDeviceContext = User.GetDC( mHWnd );
+
+
+			/*
+			// Do not change vsync if the external window has the OpenGL control
+			if ( !_isExternalGLControl )
+			{
+			}
+			*/
+
             // see if a OpenGLContext has been created yet
-            if ( hDC == IntPtr.Zero )
+            if ( _hDeviceContext == IntPtr.Zero )
             {
                 // grab the current display settings
-                User.EnumDisplaySettings( null, User.ENUM_CURRENT_SETTINGS, out intialScreenSettings );
+                User.EnumDisplaySettings( null, User.ENUM_CURRENT_SETTINGS, out _intialScreenSettings );
 
                 if ( isFullScreen )
                 {
@@ -94,7 +273,7 @@ namespace Axiom.RenderSystems.OpenGL
                     screenSettings.dmSize = (short)Marshal.SizeOf( screenSettings );
                     screenSettings.dmPelsWidth = width;                         // Selected Screen Width
                     screenSettings.dmPelsHeight = height;                       // Selected Screen Height
-                    screenSettings.dmBitsPerPel = colorDepth;                         // Selected Bits Per Pixel
+                    screenSettings.dmBitsPerPel = ColorDepth;                         // Selected Bits Per Pixel
                     screenSettings.dmFields = Gdi.DM_BITSPERPEL | Gdi.DM_PELSWIDTH | Gdi.DM_PELSHEIGHT;
 
                     // Try To Set Selected Mode And Get Results.  NOTE: CDS_FULLSCREEN Gets Rid Of Start Bar.
@@ -106,9 +285,6 @@ namespace Axiom.RenderSystems.OpenGL
                     }
                 }
 
-                // grab the HWND from the supplied target control
-                hWnd = (IntPtr)( (Control)this.Handle ).Handle;
-
                 Gdi.PIXELFORMATDESCRIPTOR pfd = new Gdi.PIXELFORMATDESCRIPTOR();
                 pfd.nSize = (short)Marshal.SizeOf( pfd );
                 pfd.nVersion = 1;
@@ -116,42 +292,42 @@ namespace Axiom.RenderSystems.OpenGL
                     Gdi.PFD_SUPPORT_OPENGL |
                     Gdi.PFD_DOUBLEBUFFER;
                 pfd.iPixelType = (byte)Gdi.PFD_TYPE_RGBA;
-                pfd.cColorBits = (byte)colorDepth;
+                pfd.cColorBits = (byte)ColorDepth;
                 pfd.cDepthBits = 32;
                 // TODO: Find the best setting and use that
                 pfd.cStencilBits = 8;
                 pfd.iLayerType = (byte)Gdi.PFD_MAIN_PLANE;
 
                 // get the device context
-                hDC = User.GetDC( hWnd );
+                _hDeviceContext = User.GetDC( _hWindow );
 
-                if ( hDC == IntPtr.Zero )
+                if ( _hDeviceContext == IntPtr.Zero )
                 {
                     throw new Exception( "Cannot create a GL device context." );
                 }
 
                 // attempt to find an appropriate pixel format
-                int pixelFormat = Gdi.ChoosePixelFormat( hDC, ref pfd );
+                int pixelFormat = Gdi.ChoosePixelFormat( _hDeviceContext, ref pfd );
 
                 if ( pixelFormat == 0 )
                 {
                     throw new System.ComponentModel.Win32Exception( Marshal.GetLastWin32Error(), "Unable to find a suitable pixel format." );
                 }
 
-                if ( !Gdi.SetPixelFormat( hDC, pixelFormat, ref pfd ) )
+                if ( !Gdi.SetPixelFormat( _hDeviceContext, pixelFormat, ref pfd ) )
                 {
                     throw new System.ComponentModel.Win32Exception( Marshal.GetLastWin32Error(), "Unable to set the pixel format." );
                 }
 
                 // attempt to get the rendering context
-                hRC = Wgl.wglCreateContext( hDC );
+                _hRenderingContext = Wgl.wglCreateContext( _hDeviceContext );
 
-                if ( hRC == IntPtr.Zero )
+                if ( _hRenderingContext == IntPtr.Zero )
                 {
                     throw new System.ComponentModel.Win32Exception( Marshal.GetLastWin32Error(), "Unable to create a GL rendering context." );
                 }
 
-                if ( !Wgl.wglMakeCurrent( hDC, hRC ) )
+                if ( !Wgl.wglMakeCurrent( _hDeviceContext, _hRenderingContext ) )
                 {
                     throw new System.ComponentModel.Win32Exception( Marshal.GetLastWin32Error(), "Unable to activate the GL rendering context." );
                 }
@@ -165,59 +341,42 @@ namespace Axiom.RenderSystems.OpenGL
                 Gl.glHint( Gl.GL_PERSPECTIVE_CORRECTION_HINT, Gl.GL_NICEST );	// Really Nice Perspective Calculations
             }
 
-            // set the params of the window
-            // TODO: deal with depth buffer
-            this.Name = name;
-            this.colorDepth = colorDepth;
-            this.width = width;
-            this.height = height;
-            this.isFullScreen = isFullScreen;
-            this.top = top;
-            this.left = left;
-
             // make this window active
-            this.isActive = true;
+            this.IsActive = true;
         }
 
-        public override void Dispose()
+		protected override void dispose( bool disposeManagedResources )
         {
-            base.Dispose();
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					if ( _hRenderingContext != IntPtr.Zero )
+					{                                        // Do We Not Have A Rendering Context?
+						if ( !Wgl.wglMakeCurrent( IntPtr.Zero, IntPtr.Zero ) )
+						{         // Are We Able To Release The DC And RC Contexts?
+							MessageBox.Show( "Release Of DC And RC Failed.", "SHUTDOWN ERROR", MessageBoxButtons.OK, MessageBoxIcon.Information );
+						}
 
-            if ( hRC != IntPtr.Zero )
-            {                                        // Do We Not Have A Rendering Context?
-                if ( !Wgl.wglMakeCurrent( IntPtr.Zero, IntPtr.Zero ) )
-                {         // Are We Able To Release The DC And RC Contexts?
-                    MessageBox.Show( "Release Of DC And RC Failed.", "SHUTDOWN ERROR", MessageBoxButtons.OK, MessageBoxIcon.Information );
-                }
+						if ( !Wgl.wglDeleteContext( _hRenderingContext ) )
+						{                            // Are We Not Able To Delete The RC?
+							MessageBox.Show( "Release Rendering Context Failed.", "SHUTDOWN ERROR", MessageBoxButtons.OK, MessageBoxIcon.Information );
+						}
+						_hRenderingContext = IntPtr.Zero;                                          // Set RC To NULL
+					}
+				}
 
-                if ( !Wgl.wglDeleteContext( hRC ) )
-                {                            // Are We Not Able To Delete The RC?
-                    MessageBox.Show( "Release Rendering Context Failed.", "SHUTDOWN ERROR", MessageBoxButtons.OK, MessageBoxIcon.Information );
-                }
-                hRC = IntPtr.Zero;                                          // Set RC To NULL
-            }
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
+			isDisposed = true;
 
-            //            if(hDC != IntPtr.Zero && !User.ReleaseDC(control.Handle, hDC)) {          // Are We Not Able To Release The DC
-            //                MessageBox.Show("Release Device Context Failed.", "SHUTDOWN ERROR", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //                hDC = IntPtr.Zero;                                          // Set DC To NULL
-            //            }
-
-            //            // if the control is a form, then close it
-            //            if(control is System.Windows.Forms.Form) {
-            //                form = control as System.Windows.Forms.Form;
-            //                form.Close();
-            //            }
-            //            else {
-            //                if(control.Parent != null) {
-            //                    form = (Form)control.Parent;
-            //                    form.Close();
-            //                }
-            //            }
-
-            //form.Dispose();
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
 
             // make sure this window is no longer active
-            this.isActive = false;
+            this.IsActive = false;
         }
 
         public override void Reposition( int left, int right )
@@ -233,22 +392,10 @@ namespace Axiom.RenderSystems.OpenGL
         public override void SwapBuffers( bool waitForVSync )
         {
             //int sync = waitForVSync ? 1: 0;
-            //Gl.wglSwapIntervalEXT((uint)sync);
+            Wgl.wglSwapIntervalEXT((uint)sync);
 
             // swap buffers
-            Gdi.SwapBuffersFast( hDC );
-        }
-
-        public override bool IsActive
-        {
-            get
-            {
-                return isActive;
-            }
-            set
-            {
-                isActive = value;
-            }
+            Gdi.SwapBuffersFast( _hDeviceContext );
         }
 
         /// <summary>
@@ -258,10 +405,10 @@ namespace Axiom.RenderSystems.OpenGL
         public override void Save( Stream stream )
         {
             // create a RGB buffer
-            byte[] buffer = new byte[ width * height * 3 ];
+            byte[] buffer = new byte[ Width * Height * 3 ];
 
             // read the pixels from the GL buffer
-            Gl.glReadPixels( 0, 0, width - 1, height - 1, Gl.GL_RGB, Gl.GL_UNSIGNED_BYTE, buffer );
+            Gl.glReadPixels( 0, 0, Width - 1, Height - 1, Gl.GL_RGB, Gl.GL_UNSIGNED_BYTE, buffer );
 
             stream.Write( buffer, 0, buffer.Length );
         }

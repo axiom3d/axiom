@@ -428,3 +428,141 @@ material Examples/Flare
 		}
 	}
 }
+
+material Examples/Aureola
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_write off
+			cull_hardware none
+
+			texture_unit
+			{
+				texture aureola.png 2d
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material Examples/MorningSkyBox
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+
+			texture_unit
+			{
+				cubic_texture morning.jpg separateUV
+				tex_address_mode clamp
+			}
+		}
+	}
+
+	// HDR technique (fake)
+	technique
+	{
+		scheme HDR
+
+		pass
+		{
+			lighting off
+			depth_write off
+
+			vertex_program_ref Ogre/BasicVertexPrograms/AmbientOneTexture
+			{
+				param_named_auto worldViewProj worldviewproj_matrix
+				param_named ambient float4 1 1 1 1
+			}
+			fragment_program_ref Examples/MorningSkyBoxHDRfp
+			{
+			}
+
+			texture_unit
+			{
+				cubic_texture morning.jpg separateUV
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material Examples/MorningCubeMap
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+
+			texture_unit
+			{
+				cubic_texture morning.jpg combinedUVW
+				tex_address_mode clamp
+				env_map cubic_reflection
+			}
+		}
+	}
+	// HDR technique (fake)
+	technique
+	{
+		scheme HDR
+
+		pass
+		{
+			lighting off
+
+			fragment_program_ref Examples/MorningCubeMapHDRfp
+			{
+			}
+			texture_unit
+			{
+				cubic_texture morning.jpg combinedUVW
+				tex_address_mode clamp
+				env_map cubic_reflection
+			}
+		}
+	}
+}
+
+material Examples/LightRibbonTrail
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture ribbonband.png 1d
+				tex_address_mode clamp
+				filtering none
+			}
+		}
+	}
+}
+
+material Examples/TudorHouse
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture fw12b.jpg
+				tex_address_mode clamp
+			}
+		}
+	}
+}

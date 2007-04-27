@@ -183,6 +183,8 @@ namespace Axiom.Core
                 defaultLog = newLog;
             }
 
+			if ( name == null )
+				name = string.Empty;
             logList.Add( name, newLog );
 
             return newLog;

@@ -35,11 +35,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using Axiom.Graphics;
 using Axiom.Core;
+using System.Collections.Generic;
 #endregion Namespace Declarations
 
 namespace Axiom.ParticleSystems
 {
-    public class ParticleSystemRenderer
+
+	/// <summary>
+	///     Particle system renderer attribute method definition.
+	/// </summary>
+	/// <param name="values">Attribute values.</param>
+	/// <param name="renderer">Target particle system renderer.</param>
+	delegate void ParticleSystemRendererAttributeParser( string[] values, ParticleSystemRenderer renderer );
+
+    public abstract class ParticleSystemRenderer
     {
         /// Constructor
         public ParticleSystemRenderer() {}
@@ -48,12 +57,20 @@ namespace Axiom.ParticleSystems
         }
 
 		/// <summary>
+		/// Gets the type of this renderer - must be implemented by subclasses
+		/// </summary>
+		public abstract string Type
+		{
+			get;
+		}
+
+		/// <summary>
 		///  Delegated to by ParticleSystem::UpdateRenderQueue
 		/// </summary>
         /// <remarks>
         /// The subclass must update the render queue using whichever Renderable instance(s) it wishes.
         /// </remarks>
-        public virtual void UpdateRenderQueue( RenderQueue queue, ParticleList currentParticles, bool cullIndividually )
+        public virtual void UpdateRenderQueue( RenderQueue queue, List<Particle> currentParticles, bool cullIndividually )
         {
         }
 
@@ -156,6 +173,17 @@ namespace Axiom.ParticleSystems
             {
             }
         }
+		public abstract void CopyParametersTo( ParticleSystemRenderer other );
+		
+		public abstract bool SetParameter( string attr, string val );
 
+		/** Setting carried over from ParticleSystem.
+		*/
+		public abstract void SetKeepParticlesInLocalSpace( bool keepLocal );
     }
-}
+
+	public abstract class ParticleSystemRendererFactory : AbstractFactory<ParticleSystemRenderer>
+	{
+	}
+
+}	

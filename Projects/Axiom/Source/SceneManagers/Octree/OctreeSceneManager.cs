@@ -58,7 +58,7 @@ namespace Axiom.SceneManagers.Octree
         protected System.Collections.ArrayList visible = new ArrayList();
         public System.Collections.Hashtable options = new Hashtable();
         protected static long white = 0xFFFFFFFF;
-        protected ushort[] indexes = { 0, 1, 1, 2, 2, 3, 3, 0, 0, 6, 6, 5, 5, 1, 3, 7, 7, 4, 4, 2, 6, 7, 5, 4 };
+        protected short[] indexes = { 0, 1, 1, 2, 2, 3, 3, 0, 0, 6, 6, 5, 5, 1, 3, 7, 7, 4, 4, 2, 6, 7, 5, 4 };
         protected long[] colors = { white, white, white, white, white, white, white, white };
         protected float[] corners;
         protected Matrix4 scaleFactor;
@@ -251,7 +251,7 @@ namespace Axiom.SceneManagers.Octree
 
                 if ( c != null )
                 {
-                    camInProgress = cameraList[ "CullCamera" ];
+                    cameraInProgress = cameraList[ "CullCamera" ];
                 }
             }
 

@@ -43,270 +43,319 @@ using Axiom.Core;
 
 namespace Axiom.Graphics
 {
-    /// <summary>
-    /// 	Defines a program which runs on the GPU such as a vertex or fragment program.
-    /// </summary>
-    public abstract class GpuProgram : Resource
-    {
-        #region Fields
+	/// <summary>
+	/// 	Defines a program which runs on the GPU such as a vertex or fragment program.
+	/// </summary>
+	public abstract class GpuProgram : Resource
+	{
+		#region Fields
 
-        /// <summary>
-        ///    The name of the file to load from source (may be blank).
-        /// </summary>
-        protected string fileName;
-        /// <summary>
-        ///    The assembler source of this program.
-        /// </summary>
-        protected string source;
-        /// <summary>
-        ///    Whether this source is being loaded from file or not.
-        /// </summary>
-        protected bool loadFromFile;
-        /// <summary>
-        ///    Syntax code (i.e. arbvp1, vs_2_0, etc.)
-        /// </summary>
-        protected string syntaxCode;
-        /// <summary>
-        ///    Type of program this represents (vertex or fragment).
-        /// </summary>
-        protected GpuProgramType type;
-        /// <summary>
-        ///		Flag indicating whether this program is being used for hardware skinning.
-        /// </summary>
-        protected bool isSkeletalAnimationSupported;
+		/// <summary>
+		///    The name of the file to load from source (may be blank).
+		/// </summary>
+		protected string fileName;
+		/// <summary>
+		///    The assembler source of this program.
+		/// </summary>
+		protected string source;
+		/// <summary>
+		///    Whether this source is being loaded from file or not.
+		/// </summary>
+		protected bool loadFromFile;
+		/// <summary>
+		///    Syntax code (i.e. arbvp1, vs_2_0, etc.)
+		/// </summary>
+		protected string syntaxCode;
+		/// <summary>
+		///    Type of program this represents (vertex or fragment).
+		/// </summary>
+		protected GpuProgramType type;
+		/// <summary>
+		///		Flag indicating whether this program is being used for hardware skinning.
+		/// </summary>
+		protected bool isSkeletalAnimationSupported;
+		/// <summary>
+		///		Does this (vertex) program include morph animation?
+		/// </summary>
+		protected bool isMorphAnimationSupported;
+		/// <summary>
+		///		Does this (vertex) program include morph animation?
+		/// </summary>
+		protected ushort poseAnimationCount;
 
-        /// <summary>
-        ///		List of default parameters, as gathered from the program definition.
-        /// </summary>
-        protected GpuProgramParameters defaultParams;
-        /// <summary>
-        ///		Does this program want light states passed through fixed pipeline?
-        /// </summary>
-        protected bool passSurfaceAndLightStates;
+		/// <summary>
+		///		List of default parameters, as gathered from the program definition.
+		/// </summary>
+		protected GpuProgramParameters defaultParams;
+		/// <summary>
+		///		Does this program want light states passed through fixed pipeline?
+		/// </summary>
+		protected bool passSurfaceAndLightStates;
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Constructors
+		#region Constructors
 
-        /// <summary>
-        ///    Constructor for creating
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="type"></param>
-        public GpuProgram( string name, GpuProgramType type, string syntaxCode )
-        {
-            this.type = type;
-            this.name = name;
-            this.syntaxCode = syntaxCode;
-            this.loadFromFile = true;
-        }
+		/// <summary>
+		///    Constructor for creating
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="type"></param>
+		public GpuProgram( string name, GpuProgramType type, string syntaxCode )
+		{
+			this.type = type;
+			this.name = name;
+			this.syntaxCode = syntaxCode;
+			this.loadFromFile = true;
+		}
 
-        #endregion Constructors
+		#endregion Constructors
 
-        #region Methods
+		#region Methods
 
-        /// <summary>
-        ///    Creates a new parameters object compatible with this program definition.
-        /// </summary>
-        /// <remarks>
-        ///    It is recommended that you use this method of creating parameters objects
-        ///    rather than going direct to GpuProgramManager, because this method will
-        ///    populate any implementation-specific extras (like named parameters) where
-        ///    they are appropriate.
-        /// </remarks>
-        /// <returns></returns>
-        public virtual GpuProgramParameters CreateParameters()
-        {
-            GpuProgramParameters newParams = GpuProgramManager.Instance.CreateParameters();
+		/// <summary>
+		///    Creates a new parameters object compatible with this program definition.
+		/// </summary>
+		/// <remarks>
+		///    It is recommended that you use this method of creating parameters objects
+		///    rather than going direct to GpuProgramManager, because this method will
+		///    populate any implementation-specific extras (like named parameters) where
+		///    they are appropriate.
+		/// </remarks>
+		/// <returns></returns>
+		public virtual GpuProgramParameters CreateParameters()
+		{
+			GpuProgramParameters newParams = GpuProgramManager.Instance.CreateParameters();
 
-            // copy the default parameters if they exist
-            if ( defaultParams != null )
-            {
-                newParams.CopyConstantsFrom( defaultParams );
-            }
+			// copy the default parameters if they exist
+			if ( defaultParams != null )
+			{
+				newParams.CopyConstantsFrom( defaultParams );
+			}
 
-            return newParams;
-        }
+			return newParams;
+		}
 
-        /// <summary>
-        ///    Loads this Gpu Program.
-        /// </summary>
-        public override void Load()
-        {
-            if ( isLoaded )
-            {
-                Unload();
-            }
+		/// <summary>
+		///    Loads this Gpu Program.
+		/// </summary>
+		public override void Load()
+		{
+			if ( isLoaded )
+			{
+				Unload();
+			}
 
-            // load from file and get the source string from it
-            if ( loadFromFile )
-            {
-                Stream stream = GpuProgramManager.Instance.FindResourceData( fileName );
-                StreamReader reader = new StreamReader( stream, System.Text.Encoding.ASCII );
-                source = reader.ReadToEnd();
-            }
+			// load from file and get the source string from it
+			if ( loadFromFile )
+			{
+				Stream stream = GpuProgramManager.Instance.FindResourceData( fileName );
+				StreamReader reader = new StreamReader( stream, System.Text.Encoding.ASCII );
+				source = reader.ReadToEnd();
+			}
 
-            // call polymorphic load to read source
-            LoadFromSource();
+			// call polymorphic load to read source
+			LoadFromSource();
 
-            isLoaded = true;
-        }
+			isLoaded = true;
+		}
 
-        /// <summary>
-        ///    Method which must be implemented by subclasses, loads the program from source.
-        /// </summary>
-        protected abstract void LoadFromSource();
+		/// <summary>
+		///    Method which must be implemented by subclasses, loads the program from source.
+		/// </summary>
+		protected abstract void LoadFromSource();
 
-        #endregion
+		#endregion
 
-        #region Properties
+		#region Properties
 
-        /// <summary>
-        ///    Returns the GpuProgram which should be bound to the pipeline.
-        /// </summary>
-        /// <remarks>
-        ///    This method is simply to allow some subclasses of GpuProgram to delegate
-        ///    the program which is bound to the pipeline to a delegate, if required.
-        /// </remarks>
-        public virtual GpuProgram BindingDelegate
-        {
-            get
-            {
-                return this;
-            }
-        }
+		/// <summary>
+		///    Returns the GpuProgram which should be bound to the pipeline.
+		/// </summary>
+		/// <remarks>
+		///    This method is simply to allow some subclasses of GpuProgram to delegate
+		///    the program which is bound to the pipeline to a delegate, if required.
+		/// </remarks>
+		public virtual GpuProgram BindingDelegate
+		{
+			get
+			{
+				return this;
+			}
+		}
 
-        public GpuProgramParameters DefaultParameters
-        {
-            get
-            {
-                if ( defaultParams == null )
-                {
-                    defaultParams = this.CreateParameters();
-                }
-                return defaultParams;
-            }
-        }
+		public virtual GpuProgramParameters DefaultParameters
+		{
+			get
+			{
+				if ( defaultParams == null )
+				{
+					defaultParams = this.CreateParameters();
+				}
+				return defaultParams;
+			}
+		}
 
-        /// <summary>
-        ///		Gets/Sets whether a vertex program includes the required instructions
-        ///		to perform skeletal animation. 
-        /// </summary>
-        public virtual bool IsSkeletalAnimationIncluded
-        {
-            get
-            {
-                return isSkeletalAnimationSupported;
-            }
-            set
-            {
-                isSkeletalAnimationSupported = value;
-            }
-        }
+		/// <summary>
+		///		Gets/Sets whether a vertex program includes the required instructions
+		///		to perform skeletal animation. 
+		/// </summary>
+		public virtual bool IsSkeletalAnimationIncluded
+		{
+			get
+			{
+				return isSkeletalAnimationSupported;
+			}
+			set
+			{
+				isSkeletalAnimationSupported = value;
+			}
+		}
 
-        /// <summary>
-        ///    Returns whether this program can be supported on the current renderer and hardware.
-        /// </summary>
-        public virtual bool IsSupported
-        {
-            get
-            {
-                // If skeletal animation is being done, we need support for UBYTE4
-                if ( this.IsSkeletalAnimationIncluded &&
-                    !Root.Instance.RenderSystem.Caps.CheckCap( Capabilities.VertexFormatUByte4 ) )
-                {
+		/// <summary>
+		///		Gets/Sets whether a vertex program includes the required instructions
+		///		to perform morph animation. 
+		/// </summary>
+		public virtual bool IsMorphAnimationIncluded
+		{
+			get
+			{
+				return isMorphAnimationSupported;
+			}
+			set
+			{
+				isMorphAnimationSupported = value;
+			}
+		}
 
-                    return false;
-                }
+		/// <summary>
+		///		Gets/Sets whether a vertex program includes the required instructions
+		///		to perform pose animation. 
+		/// </summary>
+		public virtual ushort PoseAnimationCount
+		{
+			get
+			{
+				return poseAnimationCount;
+			}
+			set
+			{
+				poseAnimationCount = value;
+			}
+		}
 
-                return GpuProgramManager.Instance.IsSyntaxSupported( syntaxCode );
-            }
-        }
+		/// <summary>
+		///    Returns whether this program can be supported on the current renderer and hardware.
+		/// </summary>
+		public virtual bool IsSupported
+		{
+			get
+			{
+				// If skeletal animation is being done, we need support for UBYTE4
+				if ( this.IsSkeletalAnimationIncluded &&
+					!Root.Instance.RenderSystem.Caps.CheckCap( Capabilities.VertexFormatUByte4 ) )
+				{
 
-        /// <summary>
-        ///		Sets whether a vertex program requires light and material states to be passed
-        ///		to through fixed pipeline low level API rendering calls.
-        /// </summary>
-        /// <remarks>
-        ///		If this is set to true, Axiom will pass all active light states to the fixed function
-        ///		pipeline.  This is useful for high level shaders like GLSL that can read the OpenGL
-        ///		light and material states.  This way the user does not have to use autoparameters to 
-        ///		pass light position, color etc.
-        /// </remarks>
-        public bool PassSurfaceAndLightStates
-        {
-            get
-            {
-                return passSurfaceAndLightStates;
-            }
-            set
-            {
-                passSurfaceAndLightStates = value;
-            }
-        }
+					return false;
+				}
 
-        /// <summary>
-        ///    Gets/Sets the source assembler code for this program.
-        /// </summary>
-        /// <remarks>
-        ///    Setting this will have no effect until you (re)load the program.
-        /// </remarks>
-        public string Source
-        {
-            get
-            {
-                return source;
-            }
-            set
-            {
-                source = value;
-                fileName = "";
-                loadFromFile = false;
-            }
-        }
+				return GpuProgramManager.Instance.IsSyntaxSupported( syntaxCode );
+			}
+		}
 
-        /// <summary>
-        ///    Gets/Sets the source file for this program.
-        /// </summary>
-        /// <remarks>
-        ///    Setting this will have no effect until you (re)load the program.
-        /// </remarks>
-        public string SourceFile
-        {
-            get
-            {
-                return fileName;
-            }
-            set
-            {
-                fileName = value;
-                source = "";
-                loadFromFile = true;
-            }
-        }
+		/// <summary>
+		///		Sets whether a vertex program requires light and material states to be passed
+		///		to through fixed pipeline low level API rendering calls.
+		/// </summary>
+		/// <remarks>
+		///		If this is set to true, Axiom will pass all active light states to the fixed function
+		///		pipeline.  This is useful for high level shaders like GLSL that can read the OpenGL
+		///		light and material states.  This way the user does not have to use autoparameters to 
+		///		pass light position, color etc.
+		/// </remarks>
+		public virtual bool PassSurfaceAndLightStates
+		{
+			get
+			{
+				return passSurfaceAndLightStates;
+			}
+			set
+			{
+				passSurfaceAndLightStates = value;
+			}
+		}
 
-        /// <summary>
-        ///    Gets the syntax code of this program (i.e. arbvp1, vs_1_1, etc).
-        /// </summary>
-        public string SyntaxCode
-        {
-            get
-            {
-                return syntaxCode;
-            }
-        }
+		/// <summary>
+		///    Gets/Sets the source assembler code for this program.
+		/// </summary>
+		/// <remarks>
+		///    Setting this will have no effect until you (re)load the program.
+		/// </remarks>
+		public string Source
+		{
+			get
+			{
+				return source;
+			}
+			set
+			{
+				source = value;
+				fileName = "";
+				loadFromFile = false;
+			}
+		}
 
-        /// <summary>
-        ///    Gets the type of GPU program this represents (vertex or fragment).
-        /// </summary>
-        public GpuProgramType Type
-        {
-            get
-            {
-                return type;
-            }
-        }
+		/// <summary>
+		///    Gets/Sets the source file for this program.
+		/// </summary>
+		/// <remarks>
+		///    Setting this will have no effect until you (re)load the program.
+		/// </remarks>
+		public string SourceFile
+		{
+			get
+			{
+				return fileName;
+			}
+			set
+			{
+				fileName = value;
+				source = "";
+				loadFromFile = true;
+			}
+		}
 
-        #endregion
-    }
+		/// <summary>
+		///    Gets the syntax code of this program (i.e. arbvp1, vs_1_1, etc).
+		/// </summary>
+		public string SyntaxCode
+		{
+			get
+			{
+				return syntaxCode;
+			}
+		}
+
+		/// <summary>
+		///    Gets the type of GPU program this represents (vertex or fragment).
+		/// </summary>
+		public GpuProgramType Type
+		{
+			get
+			{
+				return type;
+			}
+		}
+
+		/// <summary>
+		/// Returns the maximum number of samplers that this fragment program has access
+		/// to, based on the fragment program profile it uses.
+		/// </summary>
+		public abstract int SamplerCount
+		{
+			get;
+		}
+
+		#endregion
+	}
 }

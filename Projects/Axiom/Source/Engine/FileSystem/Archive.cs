@@ -42,22 +42,22 @@ using Axiom.Core;
 
 namespace Axiom.FileSystem
 {
-    /// <summary>
-    ///    Summary description for Archive.
-    /// </summary>
-    public abstract class Archive : Resource
-    {
-        public Archive( string archiveName )
-        {
-            this.name = archiveName;
-        }
+	/// <summary>
+	///    Summary description for Archive.
+	/// </summary>
+	public abstract class Archive : Resource
+	{
+		public Archive( string archiveName )
+		{
+			this.name = archiveName;
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        public abstract Stream ReadFile( string fileName );
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="name"></param>
+		public abstract Stream ReadFile( string fileName );
 
-        public abstract string[] GetFileNamesLike( string startPath, string pattern );
-    }
+		public abstract string[] GetFileNamesLike( string startPath, string pattern );
+	}
 }

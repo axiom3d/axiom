@@ -99,6 +99,10 @@ namespace Axiom.ParticleSystems
         /// </summary>
         protected float angle;
         /// <summary>
+		///    Fixed speed of particles.
+		/// </summary>
+		protected float fixedSpeed;
+		/// <summary>
         ///    Min speed of particles.
         /// </summary>
         protected float minSpeed;
@@ -107,6 +111,10 @@ namespace Axiom.ParticleSystems
         /// </summary>
         protected float maxSpeed;
         /// <summary>
+		///    Initial time-to-live of particles (fixed).
+		/// </summary>
+		protected float fixedTTL;
+		/// <summary>
         ///    Initial time-to-live of particles (min).
         /// </summary>
         protected float minTTL;
@@ -115,6 +123,10 @@ namespace Axiom.ParticleSystems
         /// </summary>
         protected float maxTTL;
         /// <summary>
+		///    Initial color of particles (fixed).
+		/// </summary>
+		protected ColorEx colorFixed;
+		/// <summary>
         ///    Initial color of particles (range start).
         /// </summary>
         protected ColorEx colorRangeStart;
@@ -131,6 +143,10 @@ namespace Axiom.ParticleSystems
         /// </summary>
         protected float startTime;
         /// <summary>
+		///    Length of time emitter will run for (0 = forever).
+		/// </summary>
+		protected float durationFixed;
+		/// <summary>
         ///    Minimum length of time emitter will run for (0 = forever).
         /// </summary>
         protected float durationMin;
@@ -143,6 +159,10 @@ namespace Axiom.ParticleSystems
         /// </summary>
         protected float durationRemain;
         /// <summary>
+		///    Fixed time between each repeat.
+		/// </summary>
+		protected float repeatDelayFixed;
+		/// <summary>
         ///    Minimum time between each repeat.
         /// </summary>
         protected float repeatDelayMin;
@@ -172,12 +192,18 @@ namespace Axiom.ParticleSystems
             angle = 0.0f;
             this.Direction = Vector3.UnitX;
             emissionRate = 10;
-            maxSpeed = minSpeed = 1;
-            maxTTL = minTTL = 5;
+			fixedSpeed = 1;
+			minSpeed = float.NaN;
+			fixedTTL = 5;
+			minTTL = float.NaN;
             position = Vector3.Zero;
-            colorRangeStart = ColorEx.White;
-            colorRangeEnd = ColorEx.White;
+			colorFixed = ColorEx.White;
+			colorRangeStart = null;
             isEnabled = true;
+			durationFixed = 0;
+			durationMin = float.NaN;
+			repeatDelayFixed = 0;
+			repeatDelayMin = float.NaN;
 
             RegisterCommands();
         }
@@ -261,11 +287,11 @@ namespace Axiom.ParticleSystems
         {
             get
             {
-                return minSpeed;
+				return float.IsNaN( minSpeed ) ? fixedSpeed : float.NaN;
             }
             set
             {
-                minSpeed = maxSpeed = value;
+				fixedSpeed = value;
             }
         }
 
@@ -335,11 +361,11 @@ namespace Axiom.ParticleSystems
         {
             get
             {
-                return minTTL;
+				return float.IsNaN( minTTL ) ? fixedTTL : float.NaN;
             }
             set
             {
-                minTTL = maxTTL = value;
+				fixedTTL = value;
             }
         }
 
@@ -385,11 +411,11 @@ namespace Axiom.ParticleSystems
         {
             get
             {
-                return colorRangeStart;
+				return ( colorRangeStart == null ) ? colorFixed : null;
             }
             set
             {
-                colorRangeStart = colorRangeEnd = value;
+				colorFixed = value;
             }
         }
 
@@ -494,11 +520,12 @@ namespace Axiom.ParticleSystems
         {
             get
             {
-                return durationMin;
+				return float.IsNaN( durationMin ) ? durationFixed : float.NaN;
             }
             set
             {
-                SetDuration( value, value );
+				durationFixed = value;
+				InitDurationRepeat();
             }
         }
 
@@ -573,11 +600,11 @@ namespace Axiom.ParticleSystems
         {
             get
             {
-                return repeatDelayMin;
+				return float.IsNaN( repeatDelayMin ) ? repeatDelayFixed : float.NaN;
             }
             set
             {
-                repeatDelayMin = repeatDelayMax = value;
+				repeatDelayFixed = value;
                 InitDurationRepeat();
             }
         }
@@ -585,6 +612,16 @@ namespace Axiom.ParticleSystems
         #endregion
 
         #region Methods
+
+		public void Move( float x, float y, float z )
+		{
+			this.Position += new Vector3( x, y, z );
+		}
+
+		public void MoveTo( float x, float y, float z )
+		{
+			this.Position = new Vector3( x, y, z );
+		}
 
         /// <summary>
         ///		Gets the number of particles which this emitter would like to emit based on the time elapsed.
@@ -602,7 +639,7 @@ namespace Axiom.ParticleSystems
         ///	 </remarks>
         /// <param name="timeElapsed"></param>
         /// <returns></returns>
-        public abstract ushort GetEmissionCount( float timeElapsed );
+		public abstract ushort GetEmissionCount( float timeElapsed );
 
         /// <summary>
         ///		Initializes a particle based on the emitter's approach and parameters.
@@ -645,13 +682,13 @@ namespace Axiom.ParticleSystems
         {
             float scalar;
 
-            if ( minSpeed != maxSpeed )
+			if ( !float.IsNaN( minSpeed ) )
             {
-                scalar = minSpeed + ( Utility.UnitRandom() * ( maxSpeed - minSpeed ) );
+				scalar = minSpeed + ( Utility.UnitRandom() * ( maxSpeed - minSpeed ) );
             }
             else
             {
-                scalar = minSpeed;
+				scalar = fixedSpeed;
             }
 
             dest *= scalar;
@@ -663,13 +700,13 @@ namespace Axiom.ParticleSystems
         /// <returns></returns>
         protected virtual float GenerateEmissionTTL()
         {
-            if ( maxTTL != minTTL )
+			if ( !float.IsNaN( minTTL ) )
             {
-                return minTTL + ( Utility.UnitRandom() * ( maxTTL - minTTL ) );
+				return minTTL + ( Utility.UnitRandom() * ( maxTTL - minTTL ) );
             }
             else
             {
-                return minTTL;
+				return fixedTTL;
             }
         }
 
@@ -678,20 +715,21 @@ namespace Axiom.ParticleSystems
         /// </summary>
         /// <param name="timeElapsed"></param>
         /// <returns></returns>
-        public virtual ushort GenerateConstantEmissionCount( float timeElapsed )
+		public virtual ushort GenerateConstantEmissionCount( float timeElapsed )
         {
-
-            ushort intRequest;
+			ushort intRequest;
+			float durMax = float.IsNaN( durationMin ) ? durationFixed : durationMax;
+			float repDelMax = float.IsNaN( repeatDelayMin ) ? repeatDelayFixed : repeatDelayMax;
 
             if ( isEnabled )
             {
                 // Keep fractions, otherwise a high frame rate will result in zero emissions!
                 remainder += emissionRate * timeElapsed;
-                intRequest = (ushort)remainder;
+				intRequest = (ushort)remainder;
                 remainder -= intRequest;
 
                 // Check duration
-                if ( durationMax > 0.0f )
+				if ( durMax > 0.0f )
                 {
                     durationRemain -= timeElapsed;
                     if ( durationRemain <= 0.0f )
@@ -705,7 +743,7 @@ namespace Axiom.ParticleSystems
             else
             {
                 // Check repeat
-                if ( repeatDelayMax > 0.0f )
+				if ( repDelMax > 0.0f )
                 {
                     repeatDelayRemain -= timeElapsed;
                     if ( repeatDelayRemain <= 0.0f )
@@ -737,7 +775,7 @@ namespace Axiom.ParticleSystems
         /// </param>
         protected virtual void GenerateEmissionColor( ColorEx color )
         {
-            if ( colorRangeStart.CompareTo( colorRangeEnd ) != 0 )
+			if ( colorRangeStart != null )
             {
                 color.r = colorRangeStart.r + Utility.UnitRandom() * ( colorRangeEnd.r - colorRangeStart.r );
                 color.g = colorRangeStart.g + Utility.UnitRandom() * ( colorRangeEnd.g - colorRangeStart.g );
@@ -746,10 +784,10 @@ namespace Axiom.ParticleSystems
             }
             else
             {
-                color.r = colorRangeStart.r;
-                color.g = colorRangeStart.g;
-                color.b = colorRangeStart.b;
-                color.a = colorRangeStart.a;
+				color.r = colorFixed.r;
+				color.g = colorFixed.g;
+				color.b = colorFixed.b;
+				color.a = colorFixed.a;
             }
         }
 
@@ -760,9 +798,9 @@ namespace Axiom.ParticleSystems
         {
             if ( isEnabled )
             {
-                if ( durationMin == durationMax )
+				if ( float.IsNaN( durationMin ) )
                 {
-                    durationRemain = durationMin;
+					durationRemain = durationFixed;
                 }
                 else
                 {
@@ -772,9 +810,9 @@ namespace Axiom.ParticleSystems
             else
             {
                 // reset repeat
-                if ( repeatDelayMin == repeatDelayMax )
+				if ( float.IsNaN( repeatDelayMin ) )
                 {
-                    repeatDelayRemain = repeatDelayMin;
+					repeatDelayRemain = repeatDelayFixed;
                 }
                 else
                 {
@@ -813,6 +851,15 @@ namespace Axiom.ParticleSystems
                 emitter.SetParam( name, val );
             }
         }
+
+		/// <summary>
+		///		Scales the velocity of the emitters by the float argument
+		/// </summary>
+		public void ScaleVelocity( float velocityMultiplier )
+		{
+			minSpeed *= velocityMultiplier;
+			maxSpeed *= velocityMultiplier;
+		}
 
         #endregion
 
@@ -1173,18 +1220,36 @@ namespace Axiom.ParticleSystems
         /// <summary>
         /// 
         /// </summary>
+		[Command( "colour", "Color.", typeof( ParticleEmitter ) )]
+		class ColorCommand : ICommand
+		{
+			public void Set( object target, string val )
+			{
+				ParticleEmitter emitter = target as ParticleEmitter;
+				emitter.Color = ( val == null ) ? null : StringConverter.ParseColor( val );
+			}
+			public string Get( object target )
+			{
+				ParticleEmitter emitter = target as ParticleEmitter;
+				return ( emitter.Color == null ) ? null : StringConverter.ToString( emitter.Color );
+			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
         [Command( "colour_range_start", "Color range start.", typeof( ParticleEmitter ) )]
         class ColorRangeStartCommand : ICommand
         {
             public void Set( object target, string val )
             {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.ColorRangeStart = StringConverter.ParseColor( val );
+				emitter.ColorRangeStart = ( val == null ) ? null : StringConverter.ParseColor( val );
             }
             public string Get( object target )
             {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                return StringConverter.ToString( emitter.ColorRangeStart );
+				return ( emitter.ColorRangeStart == null ) ? null : StringConverter.ToString( emitter.ColorRangeStart );
             }
         }
 
@@ -1198,12 +1263,12 @@ namespace Axiom.ParticleSystems
             public void Set( object target, string val )
             {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                emitter.ColorRangeEnd = StringConverter.ParseColor( val );
+				emitter.ColorRangeEnd = ( val == null ) ? null : StringConverter.ParseColor( val );
             }
             public string Get( object target )
             {
                 ParticleEmitter emitter = target as ParticleEmitter;
-                return StringConverter.ToString( emitter.ColorRangeEnd );
+				return ( emitter.ColorRangeEnd == null ) ? null : StringConverter.ToString( emitter.ColorRangeEnd );
             }
         }
 

@@ -181,6 +181,7 @@ namespace Axiom.Overlays.Elements
                 // positions
                 decl.AddElement( POSITION_TEXCOORD, offset, VertexElementType.Float3, VertexElementSemantic.Position );
                 offset += VertexElement.GetTypeSize( VertexElementType.Float3 );
+
                 // texcoords
                 decl.AddElement( POSITION_TEXCOORD, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
                 offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
@@ -279,7 +280,6 @@ namespace Axiom.Overlays.Elements
             // get pos/tex buffer
             HardwareVertexBuffer buffer = renderOp.vertexData.vertexBufferBinding.GetBuffer( POSITION_TEXCOORD );
             IntPtr data = buffer.Lock( BufferLocking.Discard );
-
             float largestWidth = 0.0f;
             float left = this.DerivedLeft * 2.0f - 1.0f;
             float top = -( ( this.DerivedTop * 2.0f ) - 1.0f );
@@ -589,6 +589,7 @@ namespace Axiom.Overlays.Elements
                 float vpHeight = OverlayManager.Instance.ViewportHeight;
                 viewportAspectCoef = vpHeight / vpWidth;
                 base.MetricsMode = value;
+
                 // configure pixel variables based on current viewport
                 if ( metricsMode != MetricsMode.Relative )
                 {

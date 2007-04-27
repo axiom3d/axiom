@@ -57,7 +57,7 @@ namespace Axiom.Controllers.Canned
     ///     supported, therefore do not use this controller value as a source,
     ///     only as a target.
     /// </remarks>
-    public class FloatGpuParamControllerValue : IControllerValue
+	public class FloatGpuParamControllerValue : IControllerValue<float>
     {
         #region Fields
 
@@ -94,13 +94,13 @@ namespace Axiom.Controllers.Canned
         #region IControllerValue Members
 
         /// <summary>
-        ///     Sets the value of the gpu param.  Get is not currently supported.
+		/// Gets or Sets the value of the GPU parameter
         /// </summary>
         public float Value
         {
             get
             {
-                return parms.GetFloatConstant( index ).val[0];
+				return parms.GetFloatConstant( index ).val[ 0 ];
             }
             set
             {

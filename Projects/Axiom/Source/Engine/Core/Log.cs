@@ -92,11 +92,16 @@ namespace Axiom.Core
             this.debugOutput = debugOutput;
             logLevel = LoggingLevel.Normal;
 
+			if ( fileName != null )
+			{
             // create the log file, or ope
             log = File.Open( fileName, FileMode.Create );
 
             // get a stream writer using the file stream
             writer = new StreamWriter( log );
+				writer.AutoFlush = true;	//always flush after write
+			}
+
         }
 
         #endregion Constructors
@@ -168,8 +173,11 @@ namespace Axiom.Core
         /// </param>
         public void Write( LogMessageLevel level, bool maskDebug, string message, params object[] substitutions )
         {
-            if ( writer.BaseStream != null && ( ( (int)logLevel + (int)level ) >= LogThreshold ) )
-            {
+			if ( message == null )
+				throw new ArgumentNullException( "The log message cannot be null" );
+			if ( ( (int)logLevel + (int)level ) > LogThreshold )
+				return;	//too verbose a message to write
+
                 // construct the log message
                 if ( substitutions != null && substitutions.Length > 0 )
                 {
@@ -181,13 +189,15 @@ namespace Axiom.Core
                 {
                     System.Diagnostics.Debug.WriteLine( message );
                 }
+			if ( writer.BaseStream != null )
+			{
 
                 // prepend the current time to the message
                 message = string.Format( "[{0}] {1}", DateTime.Now.ToString( "hh:mm:ss" ), message );
 
                 // write the message and flush the buffer
                 writer.WriteLine( message );
-                writer.Flush();
+				//writer auto-flushes
             }
         }
 
@@ -203,7 +213,9 @@ namespace Axiom.Core
         /// </remarks>
         public void Dispose()
         {
+			if ( writer != null )
             writer.Close();
+			if ( log != null )
             log.Close();
         }
 

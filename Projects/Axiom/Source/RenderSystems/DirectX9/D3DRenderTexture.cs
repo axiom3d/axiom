@@ -44,66 +44,79 @@ using Axiom.Media;
 
 namespace Axiom.RenderSystems.DirectX9
 {
-    /// <summary>
-    ///     Summary description for D3DRenderTexture.
-    /// </summary>
-    public class D3DRenderTexture : RenderTexture
-    {
+	/// <summary>
+	///     Summary description for D3DRenderTexture.
+	/// </summary>
+	public class D3DRenderTexture : RenderTexture
+	{
 
-        private D3DTexture privateTex;
+		public D3DRenderTexture( string name, HardwarePixelBuffer buffer )
+			: base( buffer, 0 )
+		{
+			this.Name = name;
+		}
 
-        public D3DRenderTexture( string name, int width, int height )
-            : this( name, width, height, TextureType.TwoD )
-        {
-        }
+		public void Rebind( D3DHardwarePixelBuffer buffer )
+		{
+			pixelBuffer = buffer;
+			Width = pixelBuffer.Width;
+			Height = pixelBuffer.Height;
+			ColorDepth = PixelUtil.GetNumElemBits( buffer.Format );
+		}
 
-        public D3DRenderTexture( string name, int width, int height, TextureType type )
-            : base( name, width, height )
-        {
+		public override void Update()
+		{
+			D3D9RenderSystem rs = (D3D9RenderSystem)Root.Instance.RenderSystem;
+			if ( rs.DeviceLost )
+				return;
 
-            privateTex = (D3DTexture)TextureManager.Instance.CreateManual( name + "_PRIVATE##", type, width, height, 0, PixelFormat.R8G8B8, TextureUsage.RenderTarget );
+			base.Update();
+		}
 
-        }
+		public override object GetCustomAttribute( string attribute )
+		{
+			switch ( attribute )
+			{
+				case "D3DBACKBUFFER":
+					return ( (D3DHardwarePixelBuffer)pixelBuffer ).Surface;
+				case "HWND":
+					return null;
+				case "BUFFER":
+					return pixelBuffer;
+			}
+			return null;
+			// return new NotSupportedException("There is no D3D RenderWindow custom attribute named " + attribute);
+		}
 
-        protected override void CopyToTexture()
-        {
-            privateTex.CopyToTexture( texture );
-        }
+		public override bool RequiresTextureFlipping
+		{
+			get
+			{
+				return false;
+			}
+		}
 
-        public override object GetCustomAttribute( string attribute )
-        {
-            switch ( attribute )
-            {
-                case "D3DZBUFFER":
-                    return privateTex.DepthStencil;
-                case "D3DBACKBUFFER":
-                    return privateTex.NormalTexture.GetSurfaceLevel( 0 );
-            }
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					// Dispose managed resources.
+				}
+			}
+			isDisposed = true;
 
-            return new NotSupportedException( "There is no D3D RenderWindow custom attribute named " + attribute );
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+		}
 
-        }
+		public override void Save( System.IO.Stream stream )
+		{
+			// TODO: Implement me
+			throw new NotImplementedException( "Saving RenderTextures is not yet implemented." );
+		}
 
-        public override bool RequiresTextureFlipping
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-
-            privateTex.Dispose();
-        }
-
-        public override void Save( System.IO.Stream stream )
-        {
-            // TODO: Implement me
-            throw new NotImplementedException( "Saving RenderTextures is not yet implemented." );
-        }
-
-    }
+	}
 }

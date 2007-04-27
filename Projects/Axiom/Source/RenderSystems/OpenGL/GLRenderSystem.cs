@@ -110,7 +110,7 @@ namespace Axiom.RenderSystems.OpenGL
         protected LayerBlendOperationEx[] lastAlphaOp = new LayerBlendOperationEx[ Config.MaxTextureLayers ];
         protected LayerBlendType lastBlendType;
         protected TextureAddressing[] lastAddressingMode = new TextureAddressing[ Config.MaxTextureLayers ];
-        protected int lastDepthBias;
+        protected float lastDepthBias;
         protected bool lastDepthCheck, lastDepthWrite;
         protected CompareFunction lastDepthFunc;
 
@@ -231,12 +231,12 @@ namespace Axiom.RenderSystems.OpenGL
         }
 
 
-        public override RenderTexture CreateRenderTexture( string name, int width, int height )
-        {
-            GLRenderTexture renderTexture = new GLRenderTexture( name, width, height );
-            AttachRenderTarget( renderTexture );
-            return renderTexture;
-        }
+		//public override RenderTexture CreateRenderTexture( string name, int width, int height )
+		//{
+		//    GLRenderTexture renderTexture = new GLRenderTexture( name, width, height );
+		//    AttachRenderTarget( renderTexture );
+		//    return renderTexture;
+		//}
 
         /// <summary>
         ///		Returns an OpenGL implementation of a hardware occlusion query.
@@ -247,13 +247,12 @@ namespace Axiom.RenderSystems.OpenGL
             return new GLHardwareOcclusionQuery();
         }
 
-        public override RenderWindow CreateRenderWindow( string name, int width, int height, int colorDepth,
-            bool isFullscreen, int left, int top, bool depthBuffer, bool vsync, object target )
+        public override RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullscreen, NamedParameterList miscParams )
         {
 
             // TODO: Check for dupe windows
 
-            RenderWindow window = glSupport.NewWindow( name, width, height, colorDepth, isFullscreen, left, top, depthBuffer, vsync, target );
+			RenderWindow window = glSupport.NewWindow( name, width, height, isFullscreen, miscParams );
 
             if ( !isGLInitialized )
             {
@@ -301,7 +300,7 @@ namespace Axiom.RenderSystems.OpenGL
             }
 
             // by creating our texture manager, singleton TextureManager will hold our implementation
-            textureMgr = new GLTextureManager();
+            textureManager = new GLTextureManager();
 
             isGLInitialized = true;
         }
@@ -570,12 +569,12 @@ namespace Axiom.RenderSystems.OpenGL
             Debug.Assert( activeViewport != null, "BeginFrame cannot run without an active viewport." );
 
             // clear the viewport if required
-            if ( activeViewport.ClearEveryFrame )
+            if ( activeViewport.ClearEveryFrame == true )
             {
                 // active viewport clipping
                 Gl.glEnable( Gl.GL_SCISSOR_TEST );
 
-                ClearFrameBuffer( FrameBuffer.Color | FrameBuffer.Depth, activeViewport.BackgroundColor );
+				ClearFrameBuffer( activeViewport.ClearBuffers, activeViewport.BackgroundColor );
             }
         }
 
@@ -675,8 +674,8 @@ namespace Axiom.RenderSystems.OpenGL
         /// <param name="specular"></param>
         /// <param name="emissive"></param>
         /// <param name="shininess"></param>
-        public override void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess )
-        {
+		public override void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess, TrackVertexColor tracking )
+		{
             float[] vals = tempColorVals;
 
             // ambient
@@ -1365,9 +1364,9 @@ namespace Axiom.RenderSystems.OpenGL
             {
                 hardwareBufferManager.Dispose();
             }
-            if ( textureMgr != null )
+            if ( textureManager != null )
             {
-                textureMgr.Dispose();
+                textureManager.Dispose();
             }
         }
 
@@ -1880,6 +1879,53 @@ namespace Axiom.RenderSystems.OpenGL
             return color.ToABGR();
         }
 
+		public override ColorEx ConvertColor( int color )
+		{
+			ColorEx colorEx = new ColorEx();
+			colorEx.a = (float)( ( color >> 24 ) % 256 ) / 255;
+			colorEx.r = (float)( ( color >> 16 ) % 256 ) / 255;
+			colorEx.g = (float)( ( color >> 8 ) % 256 ) / 255;
+			colorEx.b = (float)( ( color ) % 256 ) / 255;
+			return colorEx;
+		}
+
+		public override void SetConfigOption( string name, string value )
+		{
+			if ( ConfigOptions.ContainsKey( name ) )
+				ConfigOptions[ name ].Value = value;
+
+		}
+
+		public override void SetTextureBorderColor( int stage, ColorEx borderColor )
+		{
+			throw new Exception( "The method or operation is not implemented." );
+		}
+
+		public override Matrix4 ConvertProjectionMatrix( Matrix4 matrix, bool forGpuProgram )
+		{
+			Matrix4 dest = new Matrix4( matrix.m00, matrix.m01, matrix.m02, matrix.m03,
+									   matrix.m10, matrix.m11, matrix.m12, matrix.m13,
+									   matrix.m20, matrix.m21, matrix.m22, matrix.m23,
+									   matrix.m30, matrix.m31, matrix.m32, matrix.m33 );
+
+			// Convert depth range from [-1,+1] to [0,1]
+			dest.m20 = ( dest.m20 + dest.m30 ) / 2;
+			dest.m21 = ( dest.m21 + dest.m31 ) / 2;
+			dest.m22 = ( dest.m22 + dest.m32 ) / 2;
+			dest.m23 = ( dest.m23 + dest.m33 ) / 2;
+
+			if ( !forGpuProgram )
+			{
+				// Convert right-handed to left-handed
+				dest.m02 = -dest.m02;
+				dest.m12 = -dest.m12;
+				dest.m22 = -dest.m22;
+				dest.m32 = -dest.m32;
+			}
+
+			return dest;
+		}
+		
         public override CullingMode CullingMode
         {
             get
@@ -1960,7 +2006,7 @@ namespace Axiom.RenderSystems.OpenGL
         /// <summary>
         /// 
         /// </summary>
-        public override int DepthBias
+        public override float DepthBias
         {
             get
             {

@@ -68,7 +68,7 @@ namespace Axiom.Serialization
         /// <summary>
         ///		Current version string.
         /// </summary>
-        private static string currentVersion = "[MeshSerializer_v1.30]";
+        private static string currentVersion = "[MeshSerializer_v1.40]";
 
         #endregion Fields
 
@@ -82,7 +82,8 @@ namespace Axiom.Serialization
             // add the supported .mesh versions
             implementations.Add( "[MeshSerializer_v1.10]", new MeshSerializerImplv11() );
             implementations.Add( "[MeshSerializer_v1.20]", new MeshSerializerImplv12() );
-            implementations.Add( currentVersion, new MeshSerializerImpl() );
+			implementations.Add( "[MeshSerializer_v1.30]", new MeshSerializerImplv13() );
+			implementations.Add( currentVersion, new MeshSerializerImpl() );
         }
 
         #endregion Constructor
@@ -96,7 +97,9 @@ namespace Axiom.Serialization
         /// <param name="fileName">The destination filename.</param>
         public void ExportMesh( Mesh mesh, string fileName )
         {
-            throw new NotImplementedException( "Mesh exporting is currently not implemented." );
+			// call implementation
+			MeshSerializerImpl serializer = (MeshSerializerImpl)implementations[ currentVersion ];
+			serializer.ExportMesh( mesh, fileName );
         }
 
         /// <summary>
@@ -109,9 +112,9 @@ namespace Axiom.Serialization
             BinaryReader reader = new BinaryReader( stream );
 
             // read the header ID
-            ushort headerID = ReadUShort( reader );
+			ushort headerID = ReadUShort( reader );
 
-            if ( headerID != (ushort)MeshChunkID.Header )
+			if ( headerID != (ushort)MeshChunkID.Header )
             {
                 throw new AxiomException( "File header not found." );
             }
@@ -140,6 +143,44 @@ namespace Axiom.Serialization
                 LogManager.Instance.Write( "WARNING: {0} is an older format ({1}); you should upgrade it as soon as possible using the OgreMeshUpdate tool.", mesh.Name, fileVersion );
             }
         }
+
+		public DependencyInfo GetDependencyInfo( Stream stream, Mesh mesh )
+		{
+			BinaryReader reader = new BinaryReader( stream );
+
+			// read the header ID
+			ushort headerID = ReadUShort( reader );
+
+			if ( headerID != (ushort)MeshChunkID.Header )
+			{
+				throw new AxiomException( "File header not found." );
+			}
+
+			// read version
+			string fileVersion = ReadString( reader );
+
+			// set jump back to the start of the reader
+			Seek( reader, 0, SeekOrigin.Begin );
+
+			// barf if there specified version is not supported
+			if ( !implementations.ContainsKey( fileVersion ) )
+			{
+				throw new AxiomException( "Cannot find serializer implementation for version '{0}'.", fileVersion );
+			}
+
+			LogManager.Instance.Write( "Mesh: Fetching dependency info '{0}'...", mesh.Name );
+
+			// call implementation
+			MeshSerializerImpl serializer = (MeshSerializerImpl)implementations[ fileVersion ];
+			DependencyInfo rv = serializer.GetDependencyInfo( stream, mesh );
+
+			// warn on old version of mesh
+			if ( fileVersion != currentVersion )
+			{
+				LogManager.Instance.Write( "WARNING: {0} is an older format ({1}); you should upgrade it as soon as possible using the OgreMeshUpdate tool.", mesh.Name, fileVersion );
+			}
+			return rv;
+		}
 
         #endregion Methods
     }
