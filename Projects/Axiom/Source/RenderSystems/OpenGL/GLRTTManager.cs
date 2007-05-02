@@ -122,16 +122,16 @@ namespace Axiom.RenderSystems.OpenGL
 			PixelComponentType pct = PixelUtil.GetComponentType( format );
 			switch ( pct )
 			{
-				case PixelComponentType.BYTE:
+				case PixelComponentType.Byte:
 					format = PixelFormat.A8R8G8B8;
 					break;
-				case PixelComponentType.SHORT:
+				case PixelComponentType.Short:
 					format = PixelFormat.SHORT_RGBA;
 					break;
-				case PixelComponentType.FLOAT16:
+				case PixelComponentType.Float16:
 					format = PixelFormat.FLOAT16_RGBA;
 					break;
-				case PixelComponentType.FLOAT32:
+				case PixelComponentType.Float32:
 					format = PixelFormat.FLOAT32_RGBA;
 					break;
 			}
