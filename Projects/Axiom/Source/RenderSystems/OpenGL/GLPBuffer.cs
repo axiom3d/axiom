@@ -44,34 +44,66 @@ using Axiom.Media;
 			
 namespace Axiom.RenderSystems.OpenGL
 {
-	abstract class GLPBuffer
+	/// <summary>
+	/// An off-screen rendering context. These contexts are always RGBA for simplicity, speed and
+	/// convenience, but the component format is configurable.
+	/// </summary>
+	internal abstract class GLPBuffer
 	{
-		protected PixelComponentType _format;
+		#region Fields and Properties
+
+		#region Format Property
+
+		private PixelComponentType _format;
 		public PixelComponentType Format
 		{
 			get
 			{
 				return _format;
 			}
+			protected set
+			{
+				_format = value;
+			}
 		}
 
-		protected int _width;
+		#endregion Format Property
+
+		#region Width Property
+
+		private int _width;
 		public int Width
 		{
 			get
 			{
 				return _width;
 			}
+			protected set
+			{
+				_width = value;
+			}
 		}
 
-		protected int _height;
+		#endregion Width Property
+
+		#region Height Property
+
+		private int _height;
 		public int Height
 		{
 			get
 			{
 				return _height;
 			}
+			protected set
+			{
+				_height = value;
+			}
 		}
+
+		#endregion Height Property
+
+		#region GLContext Property
 
 		/// <summary>
 		/// Get the GL context that needs to be active to render to this PBuffer.
@@ -82,14 +114,11 @@ namespace Axiom.RenderSystems.OpenGL
 			get;
 		}
 
-		/// <summary>
-		/// Get PBuffer component format for an OGRE pixel format.
-		/// </summary>
-		/// <param name="fmt"></param>
-		/// <returns></returns>
-		public static PixelComponentType GetPixelComponentType( PixelFormat fmt )
-		{
-		}
+		#endregion GLContext Property
+			
+		#endregion Fields and Properties
+
+		#region Construction and Destruction
 
 		/// <summary>
 		/// 
@@ -101,5 +130,21 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 		}
 
+		#endregion Construction and Destruction
+
+		#region Methods
+
+		/// <summary>
+		/// Get PBuffer component format for an OGRE pixel format.
+		/// </summary>
+		/// <param name="fmt"></param>
+		/// <returns></returns>
+		public static PixelComponentType GetPixelComponentType( PixelFormat fmt )
+		{
+			return PixelUtil.GetComponentType( fmt );
+		}
+
+		#endregion Methods
+			
 	}
 }
