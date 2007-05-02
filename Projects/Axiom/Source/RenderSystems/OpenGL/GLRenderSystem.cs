@@ -44,6 +44,7 @@ using Axiom.Math;
 using Axiom.Graphics;
 
 using Tao.OpenGl;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -57,6 +58,21 @@ namespace Axiom.RenderSystems.OpenGL
     public class GLRenderSystem : RenderSystem
     {
         #region Fields
+
+		/// <summary>
+		/// Rendering loop control
+		/// </summary>
+		private bool _stopRendering;
+
+		/// <summary>
+		/// Clip Planes
+		/// </summary>
+		private List<Vector4> _clipPlanes = new List<Vector4>();
+
+		/// <summary>
+		/// Fixed function Texture Units
+		/// </summary>
+		private short _fixedFunctionTextureUnits;
 
         /// <summary>
         ///		GLSupport class providing platform specific implementation.
@@ -78,7 +94,7 @@ namespace Axiom.RenderSystems.OpenGL
         // used for manual texture matrix calculations, for things like env mapping
         protected bool useAutoTextureMatrix;
         protected float[] autoTextureMatrix = new float[ 16 ];
-        protected int[] texCoordIndex = new int[ Config.MaxTextureLayers ];
+        protected int[] texCoordIndex = new int[ Config.MaxTextureCoordSets ];
 
         // keeps track of type for each stage (2d, 3d, cube, etc)
         protected int[] textureTypes = new int[ Config.MaxTextureLayers ];
@@ -141,6 +157,11 @@ namespace Axiom.RenderSystems.OpenGL
         /// </summary>
         public GLRenderSystem()
         {
+			LogManager.Instance.Write( "{0} created.", this.Name );
+
+			// create 
+			glSupport = new GLSupport();
+
             viewMatrix = Matrix4.Identity;
             worldMatrix = Matrix4.Identity;
             textureMatrix = Matrix4.Identity;
@@ -153,11 +174,13 @@ namespace Axiom.RenderSystems.OpenGL
 
             colorWrite[ 0 ] = colorWrite[ 1 ] = colorWrite[ 2 ] = colorWrite[ 3 ] = 1;
 
+			for ( int i = 0; i < Config.MaxTextureCoordSets; i++ )
+			{
+				texCoordIndex[ i ] = 99;
+			}
+
             minFilter = FilterOptions.Linear;
             mipFilter = FilterOptions.Point;
-
-            // create 
-            glSupport = new GLSupport();
 
             InitConfigOptions();
         }
