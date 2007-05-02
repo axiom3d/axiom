@@ -36,15 +36,76 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using Axiom.Graphics;
 using Axiom.Media;
+
+using Tao.OpenGl;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGL
 {
+	/// <summary>
+	/// Renderbuffer surface.  Needs FBO extension.
+	/// </summary>
 	class GLRenderBuffer : GLHardwarePixelBuffer
 	{
+		#region Fields and Properties
+
+		/// <summary>
+		/// In case this is a  render buffer
+		/// </summary>
+		private int _renderBufferId;
+
+		#endregion Fields and Properties
+
+		#region Construction and Destruction
+
+		public GLRenderBuffer( int format, int width, int height )
+			: base( width, height, 1, GLPixelUtil.GetClosestPixelFormat( format ), BufferUsage.WriteOnly )
+		{
+			this.GLInternalFormat = format;
+			/// Generate renderbuffer
+			Gl.glGenRenderbuffersEXT( 1, _renderBufferId );
+			/// Bind it to FBO
+			Gl.glBindRenderbufferEXT( GL_RENDERBUFFER_EXT, _renderBufferId );
+
+			/// Allocate storage for depth buffer
+			Gl.glRenderbufferStorageEXT( GL_RENDERBUFFER_EXT, format, width, height );
+		}
+
+		#endregion Construction and Destruction
+
+		#region GLHardwarePixelBuffer Implementation
+
+		public override void BindToFramebuffer( int attachment, int zOffset )
+		{
+			Debug.Assert( zoffset < Depth );
+			Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, attachment, Gl.GL_RENDERBUFFER_EXT, _renderBufferId );
+		}
+
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					// Dispose managed resources.
+				}
+
+				Gl.glDeleteRenderbuffersEXT( 1, _renderBufferId );
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
+			isDisposed = true;
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+		}
+
+		#endregion GLHardwarePixelBuffer Implementation
 	}
 }
