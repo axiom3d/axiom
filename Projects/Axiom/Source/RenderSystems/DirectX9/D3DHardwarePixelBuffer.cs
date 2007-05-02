@@ -149,14 +149,14 @@ namespace Axiom.RenderSystems.DirectX9
 			this.surface = surface;
 
 			D3D.SurfaceDescription desc = surface.Description;
-			width = desc.Width;
-			height = desc.Height;
-			depth = 1;
-			format = D3DHelper.ConvertEnum( desc.Format );
+			Width = desc.Width;
+			Height = desc.Height;
+			Depth = 1;
+			Format = D3DHelper.ConvertEnum( desc.Format );
 			// Default
-			rowPitch = width;
-			slicePitch = height * width;
-			sizeInBytes = PixelUtil.GetMemorySize( width, height, depth, format );
+			RowPitch = Width;
+			SlicePitch = Height * Width;
+			sizeInBytes = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 
 			if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
 				CreateRenderTextures( update );
@@ -171,14 +171,14 @@ namespace Axiom.RenderSystems.DirectX9
 			this.volume = volume;
 
 			D3D.VolumeDescription desc = volume.Description;
-			width = desc.Width;
-			height = desc.Height;
-			depth = desc.Depth;
-			format = D3DHelper.ConvertEnum( desc.Format );
+			Width = desc.Width;
+			Height = desc.Height;
+			Depth = desc.Depth;
+			Format = D3DHelper.ConvertEnum( desc.Format );
 			// Default
-			rowPitch = width;
-			slicePitch = height * width;
-			sizeInBytes = PixelUtil.GetMemorySize( width, height, depth, format );
+			RowPitch = Width;
+			SlicePitch = Height * Width;
+			sizeInBytes = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 
 			if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
 				CreateRenderTextures( update );
@@ -275,7 +275,7 @@ namespace Axiom.RenderSystems.DirectX9
 				throw new Exception( "DirectX does not allow locking of or directly writing to RenderTargets. Use BlitFromMemory if you need the contents; " +
 									"in D3D9HardwarePixelBuffer.LockImpl" );
 			// Set extents and format
-			PixelBox rval = new PixelBox( lockBox, format );
+			PixelBox rval = new PixelBox( lockBox, Format );
 			// Set locking flags according to options
 			D3D.LockFlags flags = D3D.LockFlags.None;
 			switch ( options )
@@ -299,7 +299,7 @@ namespace Axiom.RenderSystems.DirectX9
 				DX.GraphicsStream data = null;
 				int pitch;
 				if ( lockBox.Left == 0 && lockBox.Top == 0 &&
-					lockBox.Right == width && lockBox.Bottom == height )
+					lockBox.Right == Width && lockBox.Bottom == Height )
 				{
 					// Lock whole surface
 					data = surface.LockRectangle( flags, out pitch );
@@ -349,7 +349,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			if ( update )
 			{
-				Debug.Assert( sliceTRT.Count == depth );
+				Debug.Assert( sliceTRT.Count == Depth );
 				foreach ( D3DRenderTexture trt in sliceTRT )
 					trt.Rebind( this );
 				return;
@@ -361,8 +361,8 @@ namespace Axiom.RenderSystems.DirectX9
 									"D3D9HardwarePixelBuffer.CreateRenderTexture" );
 			// Create render target for each slice
 			sliceTRT.Clear();
-			Debug.Assert( depth == 1 );
-			for ( int zoffset = 0; zoffset < depth; ++zoffset )
+			Debug.Assert( Depth == 1 );
+			for ( int zoffset = 0; zoffset < Depth; ++zoffset )
 			{
 				string name = "rtt/" + this.ID;
 				RenderTexture trt = new D3DRenderTexture( name, this );
@@ -437,10 +437,10 @@ namespace Axiom.RenderSystems.DirectX9
 			// convert to pixelbuffer's native format if necessary
 			if ( D3DHelper.ConvertEnum( src.Format ) == D3D.Format.Unknown )
 			{
-				int bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, format );
+				int bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, Format );
 				byte[] newBuffer = new byte[ bufSize ];
 				bufGCHandle = GCHandle.Alloc( newBuffer, GCHandleType.Pinned );
-				converted = new PixelBox( src.Width, src.Height, src.Depth, format, bufGCHandle.AddrOfPinnedObject() );
+				converted = new PixelBox( src.Width, src.Height, src.Depth, Format, bufGCHandle.AddrOfPinnedObject() );
 				PixelConverter.BulkPixelConversion( src, converted );
 			}
 
@@ -503,7 +503,7 @@ namespace Axiom.RenderSystems.DirectX9
 		public override void BlitToMemory( BasicBox srcBox, PixelBox dst )
 		{
 			// Decide on pixel format of temp surface
-			PixelFormat tmpFormat = format;
+			PixelFormat tmpFormat = Format;
 			if ( D3DHelper.ConvertEnum( dst.Format ) == D3D.Format.Unknown )
 				tmpFormat = dst.Format;
 			if ( surface != null )
@@ -596,7 +596,7 @@ namespace Axiom.RenderSystems.DirectX9
 		public override RenderTexture GetRenderTarget( int zoffset )
 		{
 			Debug.Assert( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 );
-			Debug.Assert( zoffset < depth );
+			Debug.Assert( zoffset < Depth );
 			return sliceTRT[ zoffset ];
 		}
 

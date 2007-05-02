@@ -55,32 +55,118 @@ namespace Axiom.Graphics
 	public abstract class HardwarePixelBuffer : HardwareBuffer
 	{
 
-		#region Fields
+		#region Fields and Properties
 
 		///<summary>
 		///    Extents
 		///</summary>
-		protected int width;
-		protected int height;
-		protected int depth;
+		private int _width;
+		public int Width
+		{
+			get
+			{
+				return _width;
+			}
+			protected set
+			{
+				_width = value;
+			}
+		}
+
+		private int _height;
+		public int Height
+		{
+			get
+			{
+				return _height;
+			}
+			protected set
+			{
+				_height = value;
+			}
+		}
+
+		private int _depth;
+		public int Depth
+		{
+			get
+			{
+				return _depth;
+			}
+			protected set
+			{
+				_depth = value;
+			}
+		}
+
 
 		///<summary>
 		///    Pitches (offsets between rows and slices)
 		///</summary>
-		protected int rowPitch;
-		protected int slicePitch;
+		private int _rowPitch;
+		public int RowPitch
+		{
+			get
+			{
+				return _rowPitch;
+			}
+			protected set
+			{
+				_rowPitch = value;
+			}
+		}
+
+		private int _slicePitch;
+		public int SlicePitch
+		{
+			get
+			{
+				return _slicePitch;
+			}
+			protected set
+			{
+				_slicePitch = value;
+			}
+		}
 
 		///<summary>
 		///    Internal format
 		///</summary>
-		protected Axiom.Media.PixelFormat format;
+		private Axiom.Media.PixelFormat _format;
+		public Axiom.Media.PixelFormat Format
+		{
+			get
+			{
+				return _format;
+			}
+			protected set
+			{
+				_format = value;
+			}
+		}
 
 		///<summary>
 		///    Currently locked region
 		///</summary>
-		protected PixelBox currentLock;
+		private PixelBox _currentLock;
+		///<summary>
+		///    Get the current locked region. This is the same value as returned
+		///    by Lock(BasicBox, BufferLocking)
+		///<returns>PixelBox containing the locked region</returns>
+		public PixelBox CurrentLock
+		{
+			get
+			{
+				Debug.Assert( IsLocked, "Cannot get current lock: buffer not locked" );
+				return _currentLock;
+			}
+			protected set
+			{
+				_currentLock = value;
+			}
+		}
 
-		#endregion Fields
+		#endregion Fields and Properties
 
 		#region Constructors
 
@@ -93,13 +179,13 @@ namespace Axiom.Graphics
 			:
 			base( usage, useSystemMemory, useShadowBuffer )
 		{
-			this.width = width;
-			this.height = height;
-			this.depth = depth;
-			this.format = format;
+			this._width = width;
+			this._height = height;
+			this._depth = depth;
+			this._format = format;
 			// Default
-			rowPitch = width;
-			slicePitch = height * width;
+			_rowPitch = width;
+			_slicePitch = height * width;
 			sizeInBytes = height * width * depth * PixelUtil.GetNumElemBytes( format );
 		}
 
@@ -107,66 +193,6 @@ namespace Axiom.Graphics
 
 		#region Properties
 
-		public int Width
-		{
-			get
-			{
-				return width;
-			}
-		}
-
-		public int Height
-		{
-			get
-			{
-				return height;
-			}
-		}
-
-		public int Depth
-		{
-			get
-			{
-				return depth;
-			}
-		}
-
-		public int RowPitch
-		{
-			get
-			{
-				return rowPitch;
-			}
-		}
-
-		public int SlicePitch
-		{
-			get
-			{
-				return slicePitch;
-			}
-		}
-
-		public Axiom.Media.PixelFormat Format
-		{
-			get
-			{
-				return format;
-			}
-		}
-
-		///<summary>
-		///    Get the current locked region. This is the same value as returned
-		///    by Lock(BasicBox, BufferLocking)
-		///<returns>PixelBox containing the locked region</returns>
-		public PixelBox CurrentLock
-		{
-			get
-			{
-				Debug.Assert( IsLocked, "Cannot get current lock: buffer not locked" );
-				return currentLock;
-			}
-		}
 
 		#endregion Properties
 
@@ -224,16 +250,16 @@ namespace Axiom.Graphics
 					// we have to assume a read / write lock so we use the shadow buffer
 					// and tag for sync on unlock()
 					shadowUpdated = true;
-				currentLock = ( (HardwarePixelBuffer)shadowBuffer ).Lock( lockBox, options );
+				_currentLock = ( (HardwarePixelBuffer)shadowBuffer ).Lock( lockBox, options );
 			}
 			else
 			{
 				Debug.Assert( !isLocked );
 				// Lock the real buffer if there is no shadow buffer 
-				currentLock = LockImpl( lockBox, options );
+				_currentLock = LockImpl( lockBox, options );
 				isLocked = true;
 			}
-			return currentLock;
+			return _currentLock;
 		}
 
 		///<summary>
@@ -281,8 +307,8 @@ namespace Axiom.Graphics
 
 			BufferLocking method = BufferLocking.Normal;
 			if ( dstBox.Left == 0 && dstBox.Top == 0 && dstBox.Front == 0 &&
-			   dstBox.Right == width && dstBox.Bottom == height &&
-			   dstBox.Back == depth )
+			   dstBox.Right == _width && dstBox.Bottom == _height &&
+			   dstBox.Back == _depth )
 				// Entire buffer -- we can discard the previous contents
 				method = BufferLocking.Discard;
 
@@ -339,7 +365,7 @@ namespace Axiom.Graphics
 		{
 			Blit( src,
 				 new BasicBox( 0, 0, 0, src.Width, src.Height, src.Depth ),
-				 new BasicBox( 0, 0, 0, width, height, depth ) );
+				 new BasicBox( 0, 0, 0, _width, _height, _depth ) );
 		}
 
 		///<summary>
@@ -352,7 +378,7 @@ namespace Axiom.Graphics
 		///</remarks>
 		public void BlitFromMemory( PixelBox src )
 		{
-			BlitFromMemory( src, new BasicBox( 0, 0, 0, width, height, depth ) );
+			BlitFromMemory( src, new BasicBox( 0, 0, 0, _width, _height, _depth ) );
 		}
 
 
@@ -366,7 +392,7 @@ namespace Axiom.Graphics
 		///</remarks>
 		public void BlitToMemory( PixelBox dst )
 		{
-			BlitToMemory( new BasicBox( 0, 0, 0, width, height, depth ), dst );
+			BlitToMemory( new BasicBox( 0, 0, 0, _width, _height, _depth ), dst );
 		}
 
 		///<summary>

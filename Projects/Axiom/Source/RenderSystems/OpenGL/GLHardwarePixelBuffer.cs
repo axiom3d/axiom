@@ -79,6 +79,11 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				return _glInternalFormat;
 			}
+
+			protected set
+			{
+				_glInternalFormat = value;
+			}
 		}
 
 		#endregion GLInternalFormat Property
@@ -87,8 +92,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Construction and Destruction
 
-		public GLHardwarePixelBuffer( int width, int height, int depth, PixelFormat format, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
-			: base( width, height, depth, format, usage, useSystemMemory, useShadowBuffer )
+		public GLHardwarePixelBuffer( int width, int height, int depth, PixelFormat format, BufferUsage usage )
+			: base( width, height, depth, format, usage, false, false )
 		{
 			buffer = new PixelBox( width, height, depth, format );
 			GLInternalFormat = Gl.GL_NONE;
@@ -126,12 +131,12 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-		protected void download( PixelBox box )
+		protected virtual void download( PixelBox box )
 		{
 			throw new NotSupportedException( "Download not possible for this pixelbuffer type." );
 		}
 
-		protected void upload( PixelBox box )
+		protected virtual void upload( PixelBox box )
 		{
 			throw new NotSupportedException( "Upload not possible for this pixelbuffer type." );
 		}

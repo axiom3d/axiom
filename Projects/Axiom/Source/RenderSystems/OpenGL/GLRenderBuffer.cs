@@ -68,12 +68,12 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			this.GLInternalFormat = format;
 			/// Generate renderbuffer
-			Gl.glGenRenderbuffersEXT( 1, _renderBufferId );
+			Gl.glGenRenderbuffersEXT( 1, out _renderBufferId );
 			/// Bind it to FBO
-			Gl.glBindRenderbufferEXT( GL_RENDERBUFFER_EXT, _renderBufferId );
+			Gl.glBindRenderbufferEXT( Gl.GL_RENDERBUFFER_EXT, _renderBufferId );
 
 			/// Allocate storage for depth buffer
-			Gl.glRenderbufferStorageEXT( GL_RENDERBUFFER_EXT, format, width, height );
+			Gl.glRenderbufferStorageEXT( Gl.GL_RENDERBUFFER_EXT, format, width, height );
 		}
 
 		#endregion Construction and Destruction
@@ -82,7 +82,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void BindToFramebuffer( int attachment, int zOffset )
 		{
-			Debug.Assert( zoffset < Depth );
+			Debug.Assert( zOffset < Depth );
 			Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, attachment, Gl.GL_RENDERBUFFER_EXT, _renderBufferId );
 		}
 
@@ -95,7 +95,7 @@ namespace Axiom.RenderSystems.OpenGL
 					// Dispose managed resources.
 				}
 
-				Gl.glDeleteRenderbuffersEXT( 1, _renderBufferId );
+				Gl.glDeleteRenderbuffersEXT( 1, ref _renderBufferId );
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
