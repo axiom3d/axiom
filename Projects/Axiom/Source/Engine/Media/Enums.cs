@@ -234,7 +234,7 @@ namespace Axiom.Media
 	}
 
 	/// <summary>
-	///    Pixel component format */
+	///    Pixel component format
 	/// </summary>
 	public enum PixelComponentType
 	{

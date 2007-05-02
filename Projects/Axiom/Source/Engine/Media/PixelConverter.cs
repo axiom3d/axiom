@@ -1172,6 +1172,11 @@ namespace Axiom.Media
 		{
 			return PixelConverter.GetDescriptionFor( format ).name;
 		}
+
+		public static PixelComponentType GetComponentType( PixelFormat format )
+		{
+			return PixelConverter.GetDescriptionFor( format ).componentType;
+		}
 	}
 }
 
