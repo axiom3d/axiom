@@ -44,7 +44,7 @@ namespace Axiom.Graphics
     /// <summary>
     /// 	Summary description for SoftwareBufferManager.
     /// </summary>
-    // TODO: Switch go using GCHandle for array pointer after resolving stack overflow in TerrainSceneManager.
+    // TODO: Switch to using GCHandle for array pointer after resolving stack overflow in TerrainSceneManager.
     public class SoftwareBufferManager : HardwareBufferManager
     {
         #region Methods
@@ -121,7 +121,7 @@ namespace Axiom.Graphics
         ///     Holds the buffer data.
         /// </summary>
         protected byte[] data;
-        protected GCHandle handle;
+        //protected GCHandle handle;
 
         #endregion Fields
 
@@ -160,9 +160,9 @@ namespace Axiom.Graphics
         {
 
             // return the offset into the array as a pointer
-            //return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
-            handle = GCHandle.Alloc( data, GCHandleType.Pinned );
-            return handle.AddrOfPinnedObject();
+            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+            //handle = GCHandle.Alloc( data, GCHandleType.Pinned );
+            //return handle.AddrOfPinnedObject();
         }
 
         public override void ReadData( int offset, int length, IntPtr dest )
@@ -192,7 +192,7 @@ namespace Axiom.Graphics
         protected override void UnlockImpl()
         {
 
-            handle.Free();
+            //handle.Free();
         }
 
         public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
@@ -218,8 +218,8 @@ namespace Axiom.Graphics
         /// </summary>
         public IntPtr GetDataPointer( int offset )
         {
-            //return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
-            return handle.AddrOfPinnedObject();
+            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+            //return handle.AddrOfPinnedObject();
         }
 
 		protected override void dispose( bool disposeManagedResources )
@@ -253,7 +253,7 @@ namespace Axiom.Graphics
         ///     Holds the buffer data.
         /// </summary>
         protected byte[] data;
-        protected GCHandle handle;
+        //protected GCHandle handle;
 
         #endregion
 
@@ -294,10 +294,9 @@ namespace Axiom.Graphics
             //isLocked = true;
 
             // return the offset into the array as a pointer
-            //return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
-
-            handle = GCHandle.Alloc( data, GCHandleType.Pinned );
-            return handle.AddrOfPinnedObject();
+            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+            //handle = GCHandle.Alloc( data, GCHandleType.Pinned );
+            //return handle.AddrOfPinnedObject();
         }
 
         public override void ReadData( int offset, int length, IntPtr dest )
@@ -327,7 +326,7 @@ namespace Axiom.Graphics
         protected override void UnlockImpl()
         {
 
-            handle.Free();
+            //handle.Free();
         }
 
         public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
@@ -353,8 +352,8 @@ namespace Axiom.Graphics
         /// </summary>
         public IntPtr GetDataPointer( int offset )
         {
-            //return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
-            return handle.AddrOfPinnedObject();
+            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+            //return handle.AddrOfPinnedObject();
         }
 
 		protected override void dispose( bool disposeManagedResources )
