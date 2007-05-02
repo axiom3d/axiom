@@ -36,10 +36,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 using Axiom.Graphics;
 using Axiom.Media;
-using System.Runtime.InteropServices;
+
+using Tao.OpenGl;
 
 #endregion Namespace Declarations
 
@@ -50,6 +52,8 @@ namespace Axiom.RenderSystems.OpenGL
 		#region Fields and Properties
 
 		private BufferLocking _currentLockOptions;
+
+		#region buffer Property
 
 		private PixelBox _buffer;
 		protected PixelBox buffer
@@ -64,8 +68,12 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-		private uint _glInternalFormat;
-		public uint GLInternalFormat
+		#endregion buffer Property
+
+		#region GLInternalFormat Property
+
+		private int _glInternalFormat;
+		public int GLInternalFormat
 		{
 			get
 			{
@@ -73,6 +81,8 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
+		#endregion GLInternalFormat Property
+			
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
@@ -80,7 +90,8 @@ namespace Axiom.RenderSystems.OpenGL
 		public GLHardwarePixelBuffer( int width, int height, int depth, PixelFormat format, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
 			: base( width, height, depth, format, usage, useSystemMemory, useShadowBuffer )
 		{
-			buffer.Data = IntPtr.Zero;
+			buffer = new PixelBox( width, height, depth, format );
+			GLInternalFormat = Gl.GL_NONE;
 		}
 
 		#endregion Construction and Destruction
@@ -90,17 +101,21 @@ namespace Axiom.RenderSystems.OpenGL
 		///<summary>
 		/// Bind surface to frame buffer. Needs FBO extension.
 		///</summary>
-		public virtual void BindToFramebuffer( uint attachment, int zOffset )
+		public virtual void BindToFramebuffer( int attachment, int zOffset )
 		{
+			throw new NotSupportedException( "Framebuffer bind not possible for this pixelbuffer type." );
 		}
 
 		protected void allocateBuffer()
 		{
+
 			if ( buffer.Data != IntPtr.Zero )
+				// Already allocated
 				return;
 			byte[] newBuffer = new byte[ this.sizeInBytes ];
 			GCHandle bufGCHandle = GCHandle.Alloc( newBuffer, GCHandleType.Pinned );
 			buffer.Data = bufGCHandle.AddrOfPinnedObject();
+			// TODO: use PBO if we're HBU_DYNAMIC
 		}
 
 		protected void freeBuffer()
@@ -113,10 +128,12 @@ namespace Axiom.RenderSystems.OpenGL
 
 		protected void download( PixelBox box )
 		{
+			throw new NotSupportedException( "Download not possible for this pixelbuffer type." );
 		}
 
 		protected void upload( PixelBox box )
 		{
+			throw new NotSupportedException( "Upload not possible for this pixelbuffer type." );
 		}
 
 		#endregion Methods
@@ -253,6 +270,7 @@ namespace Axiom.RenderSystems.OpenGL
 			// base class's Dispose(Boolean) method
 			base.dispose( disposeManagedResources );
 		}
+
 		#endregion HardwarePixelBuffer Implementation
 	}
 }
