@@ -77,7 +77,13 @@ namespace Axiom.Graphics
 		#endregion Constructors
 
 		#region Methods
-		
+
+		public override void Save( System.IO.Stream stream )
+		{
+			// TODO Implement RenderTexture.Save( System.IO.Stream )
+			throw new Exception( "The method or operation is not implemented." );
+		}
+
 		/// <summary>
 		/// Ensures texture is destroyed.
 		/// </summary>
