@@ -214,8 +214,8 @@ namespace Axiom.Graphics
         /// </summary>
         public IntPtr GetDataPointer( int offset )
         {
-            //return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
-            return handle.AddrOfPinnedObject();
+            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+            //return handle.AddrOfPinnedObject();
         }
 
         public override void Dispose()
