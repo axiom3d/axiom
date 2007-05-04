@@ -194,7 +194,7 @@ namespace YAT
                 TakeScreenshot( fileName );
 
                 // show briefly on the screen
-                window.DebugText = string.Format( "Wrote screenshot '{0}'.", fileName );
+                DebugText = string.Format( "Wrote screenshot '{0}'.", fileName );
 
                 // show for 2 seconds
                 debugTextDelay = 2.0f;
@@ -212,7 +212,7 @@ namespace YAT
             if ( input.IsKeyPressed( Axiom.Input.KeyCodes.F ) )
             {
 
-                viewport.OverlaysEnabled = !viewport.OverlaysEnabled;
+				viewport.ShowOverlays = !viewport.ShowOverlays;
             }
             #endregion
 
@@ -238,7 +238,7 @@ namespace YAT
             if ( debugTextDelay < 0.0f )
             {
                 debugTextDelay = 0.0f;
-                window.DebugText = "";
+                DebugText = "";
             }
             else if ( debugTextDelay > 0.0f )
             {
@@ -389,7 +389,7 @@ namespace YAT
             // Create game object
             game = new Game( camera, levelRoot, nextPieceRoot );
 
-            window.DebugText = "Yet Another Tetris in Axiom";
+            DebugText = "Yet Another Tetris in Axiom";
         }
 
         public void setMenuOverlay( Overlay menuOverlay )

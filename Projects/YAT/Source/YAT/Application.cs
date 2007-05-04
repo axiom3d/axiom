@@ -71,6 +71,7 @@ namespace YAT
         protected string configTitle = ConfigDialog.DefaultTitle;
         protected string configImage = ConfigDialog.DefaultImage;
         protected string renderWindowTitle = "Axiom Render Window";
+		protected string DebugText = "";
 
         #endregion Protected Fields
 
@@ -430,7 +431,7 @@ namespace YAT
                 TakeScreenshot( fileName );
 
                 // show briefly on the screen
-                window.DebugText = string.Format( "Wrote screenshot '{0}'.", fileName );
+                DebugText = string.Format( "Wrote screenshot '{0}'.", fileName );
 
                 // show for 2 seconds
                 debugTextDelay = 2.0f;
@@ -444,7 +445,7 @@ namespace YAT
             if ( input.IsKeyPressed( KeyCodes.F ) )
             {
                 // hide all overlays, includes ones besides the debug overlay
-                viewport.OverlaysEnabled = !viewport.OverlaysEnabled;
+				viewport.ShowOverlays = !viewport.ShowOverlays;
             }
 
             if ( !input.IsMousePressed( MouseButtons.Right ) )
@@ -486,7 +487,7 @@ namespace YAT
             if ( debugTextDelay < 0.0f )
             {
                 debugTextDelay = 0.0f;
-                window.DebugText = "";
+                DebugText = "";
             }
             else if ( debugTextDelay > 0.0f )
             {
@@ -494,7 +495,7 @@ namespace YAT
             }
 
             OverlayElement element = OverlayElementManager.Instance.GetElement( "Core/DebugText" );
-            element.Text = window.DebugText;
+            element.Text = DebugText;
         }
 
         public virtual void UpdateStats()
