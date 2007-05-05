@@ -610,7 +610,7 @@ namespace Axiom.Serialization
 
 			WriteUInt( writer, (uint)vertexData.vertexCount );
 			WriteGeometryVertexDeclaration( writer, vertexData.vertexDeclaration );
-			for ( ushort i = 0; i < vertexData.vertexBufferBinding.BindingCount; ++i )
+			for ( short i = 0; i < vertexData.vertexBufferBinding.BindingCount; ++i )
 				WriteGeometryVertexBuffer( writer, i, vertexData.vertexBufferBinding.GetBuffer( i ) );
 
 			long end_offset = writer.Seek( 0, SeekOrigin.Current );
@@ -650,13 +650,13 @@ namespace Axiom.Serialization
 			writer.Seek( (int)end_offset, SeekOrigin.Begin );
 		}
 
-		protected void WriteGeometryVertexBuffer( BinaryWriter writer, ushort bindIndex, HardwareVertexBuffer vertexBuffer )
+		protected void WriteGeometryVertexBuffer( BinaryWriter writer, short bindIndex, HardwareVertexBuffer vertexBuffer )
 		{
 			long start_offset = writer.Seek( 0, SeekOrigin.Current );
 			WriteChunk( writer, MeshChunkID.GeometryVertexBuffer, 0 );
 
-			WriteUShort( writer, bindIndex );
-			WriteUShort( writer, (ushort)vertexBuffer.VertexSize );
+			WriteShort( writer, bindIndex );
+			WriteShort( writer, (short)vertexBuffer.VertexSize );
 			IntPtr buf = vertexBuffer.Lock( BufferLocking.Discard );
 			try
 			{
@@ -1205,11 +1205,11 @@ namespace Axiom.Serialization
 
 		protected virtual void ReadGeometryVertexElement( BinaryReader reader, VertexData data )
 		{
-			ushort source = ReadUShort( reader );
+			short source = ReadShort( reader );
 			VertexElementType type = (VertexElementType)ReadUShort( reader );
 			VertexElementSemantic semantic = (VertexElementSemantic)ReadUShort( reader );
-			ushort offset = ReadUShort( reader );
-			ushort index = ReadUShort( reader );
+			short offset = ReadShort( reader );
+			short index = ReadShort( reader );
 
 			// add the element to the declaration for the current vertex data
 			data.vertexDeclaration.AddElement( source, offset, type, semantic, index );
@@ -1225,10 +1225,10 @@ namespace Axiom.Serialization
 		protected virtual void ReadGeometryVertexBuffer( BinaryReader reader, VertexData data )
 		{
 			// Index to bind this buffer to
-			ushort bindIdx = ReadUShort( reader );
+			short bindIdx = ReadShort( reader );
 
 			// Per-vertex size, must agree with declaration at this index
-			ushort vertexSize = ReadUShort( reader );
+			short vertexSize = ReadShort( reader );
 
 			// check for vertex data header
 			MeshChunkID chunkID = ReadChunk( reader );
@@ -1957,9 +1957,9 @@ namespace Axiom.Serialization
 
 		protected override void ReadGeometry( BinaryReader reader, VertexData data )
 		{
-			ushort texCoordSet = 0;
+			short texCoordSet = 0;
 
-			ushort bindIdx = 0;
+			short bindIdx = 0;
 
 			data.vertexStart = 0;
 			data.vertexCount = ReadInt( reader );
@@ -2010,7 +2010,7 @@ namespace Axiom.Serialization
 			}
 		}
 
-		protected virtual void ReadGeometryPositions( ushort bindIdx, BinaryReader reader, VertexData data )
+		protected virtual void ReadGeometryPositions( short bindIdx, BinaryReader reader, VertexData data )
 		{
 			data.vertexDeclaration.AddElement( bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 
@@ -2031,7 +2031,7 @@ namespace Axiom.Serialization
 			data.vertexBufferBinding.SetBinding( bindIdx, vBuffer );
 		}
 
-		protected virtual void ReadGeometryNormals( ushort bindIdx, BinaryReader reader, VertexData data )
+		protected virtual void ReadGeometryNormals( short bindIdx, BinaryReader reader, VertexData data )
 		{
 			// add an element for normals
 			data.vertexDeclaration.AddElement( bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Normal );
@@ -2054,7 +2054,7 @@ namespace Axiom.Serialization
 			// bind this buffer
 			data.vertexBufferBinding.SetBinding( bindIdx, vBuffer );
 		}
-		protected virtual void ReadGeometryTangents( ushort bindIdx, BinaryReader reader, VertexData data )
+		protected virtual void ReadGeometryTangents( short bindIdx, BinaryReader reader, VertexData data )
 		{
 			// add an element for normals
 			data.vertexDeclaration.AddElement( bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Tangent );
@@ -2077,7 +2077,7 @@ namespace Axiom.Serialization
 			// bind this buffer
 			data.vertexBufferBinding.SetBinding( bindIdx, vBuffer );
 		}
-		protected virtual void ReadGeometryBinormals( ushort bindIdx, BinaryReader reader, VertexData data )
+		protected virtual void ReadGeometryBinormals( short bindIdx, BinaryReader reader, VertexData data )
 		{
 			// add an element for normals
 			data.vertexDeclaration.AddElement( bindIdx, 0, VertexElementType.Float3, VertexElementSemantic.Binormal );
@@ -2101,7 +2101,7 @@ namespace Axiom.Serialization
 			data.vertexBufferBinding.SetBinding( bindIdx, vBuffer );
 		}
 
-		protected virtual void ReadGeometryColors( ushort bindIdx, BinaryReader reader, VertexData data )
+		protected virtual void ReadGeometryColors( short bindIdx, BinaryReader reader, VertexData data )
 		{
 			// add an element for normals
 			data.vertexDeclaration.AddElement( bindIdx, 0, VertexElementType.Color, VertexElementSemantic.Diffuse );
@@ -2125,7 +2125,7 @@ namespace Axiom.Serialization
 			data.vertexBufferBinding.SetBinding( bindIdx, vBuffer );
 		}
 
-		protected virtual void ReadGeometryTexCoords( ushort bindIdx, BinaryReader reader, VertexData data, int coordSet )
+		protected virtual void ReadGeometryTexCoords( short bindIdx, BinaryReader reader, VertexData data, int coordSet )
 		{
 			// get the number of texture dimensions (1D, 2D, 3D, etc)
 			short dim = ReadShort( reader );
@@ -2176,7 +2176,7 @@ namespace Axiom.Serialization
 
 		#region Methods
 
-		protected override void ReadGeometryTexCoords( ushort bindIdx, BinaryReader reader, VertexData data, int coordSet )
+		protected override void ReadGeometryTexCoords( short bindIdx, BinaryReader reader, VertexData data, int coordSet )
 		{
 			// get the number of texture dimensions (1D, 2D, 3D, etc)
 			ushort dim = ReadUShort( reader );

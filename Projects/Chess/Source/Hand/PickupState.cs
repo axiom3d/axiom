@@ -48,33 +48,33 @@ namespace Chess
 
 			// Create a track to animate the hand
 			AnimationTrack track;
-			short handle = 0;
-			if (anim.Tracks.ContainsKey(handle))
+			ushort handle = 0;
+			if (anim.NodeTracks.ContainsKey(handle))
 			{
-				track = anim.Tracks[handle];
+				track = anim.NodeTracks[handle];
 				track.RemoveAllKeyFrames();
 				//anim.Tracks[handle] = null;
 				//track = anim.CreateTrack(0, handSceneNode);
 			}
 			else
 			{
-				track = anim.CreateTrack(0, handSceneNode);
+				track = anim.CreateNodeTrack(0, handSceneNode);
 			}
 
 			// Setup keyframes
-			KeyFrame key = track.CreateKeyFrame(0f); // startposition
+			TransformKeyFrame key = (TransformKeyFrame)track.CreateKeyFrame( 0f ); // startposition
 			key.Translate = (handSceneNode.Position);
-			key.Rotation =(handSceneNode.Orientation);  
-  
-			key = track.CreateKeyFrame(stateDuration * 0.25f);
+			key.Rotation =(handSceneNode.Orientation);
+
+			key = (TransformKeyFrame)track.CreateKeyFrame( stateDuration * 0.25f );
 			key.Translate = new Vector3(targetPositionVector.x - (movementVector.x * 0.85f), targetPositionVector.y + 25, targetPositionVector.z - (movementVector.z * 0.85f));
-			key.Rotation =(handSceneNode.Orientation);  
+			key.Rotation =(handSceneNode.Orientation);
 
-			key = track.CreateKeyFrame(stateDuration * 0.75f);
+			key = (TransformKeyFrame)track.CreateKeyFrame( stateDuration * 0.75f );
 			key.Translate = new Vector3(targetPositionVector.x - (movementVector.x * 0.15f), targetPositionVector.y + 35, targetPositionVector.z - (movementVector.z * 0.15f));
-			key.Rotation =(handSceneNode.Orientation);    
+			key.Rotation =(handSceneNode.Orientation);
 
-			key = track.CreateKeyFrame(stateDuration);
+			key = (TransformKeyFrame)track.CreateKeyFrame( stateDuration );
 			key.Translate =(targetPositionVector);  
 			key.Rotation =(handSceneNode.Orientation); 
 		}

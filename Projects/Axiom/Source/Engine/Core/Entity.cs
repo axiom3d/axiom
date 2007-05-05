@@ -706,34 +706,53 @@ namespace Axiom.Core
 			sceneObject.NotifyAttached( tagPoint, true );
 		}
 
-		public void DetachObjectFromBone( string boneName, TagPoint tagPoint )
+		public MovableObject DetachObjectFromBone( string name )
 		{
-			MovableObject sceneObject = tagPoint.ChildObject;
 
-			if ( !sceneObject.IsAttached )
+			MovableObject obj = childObjectList[ name ];
+			if ( obj == null )
 			{
-				throw new AxiomException( "SceneObject '{0}' is not already attached", sceneObject.Name );
+				throw new AxiomException( "Child object named '{0}' not found.  Entity.DetachObjectFromBone", name );
 			}
 
-			DetachNodeFromBone( boneName, tagPoint );
-			DetachObjectImpl( sceneObject );
+			DetachObjectImpl( obj );
+			childObjectList.Remove( obj );
+
+			return obj;
 		}
 
-		public void DetachNodeFromBone( string boneName, TagPoint tagPoint )
+		/** Detaches an object by pointer.
+		@remarks
+		Use this method to destroy a MovableObject which is attached to a bone of belonging this entity.
+		But sometimes the object may be not in the child object list because it is a lod entity,
+		this method can safely detect and ignore in this case and won't raise an exception.
+		*/
+
+		public void DetachObjectFromBone( MovableObject obj )
 		{
-			if ( !this.HasSkeleton )
+			for ( int i = 0; i < childObjectList.Count; i++ )
 			{
-				throw new AxiomException( "Entity '{0}' has no skeleton to attach an object to.", this.name );
-			}
+				MovableObject child = childObjectList[ i ];
+				if ( child == obj )
+				{
+					DetachObjectImpl( obj );
+					childObjectList.Remove( obj );
 
-			Bone bone = skeletonInstance.GetBone( boneName );
-
-			if ( bone == null )
-			{
-				throw new AxiomException( "Entity '{0}' does not have a skeleton with a bone named '{1}'.",
-										 this.name, boneName );
+					// Trigger update of bounding box if necessary
+					if ( this.parentNode != null )
+						parentNode.NeedUpdate();
+					break;
+				}
 			}
-			skeletonInstance.RemoveTagPointFromBone( bone, tagPoint );
+		}
+
+		public void DetachAllObjectsFromBone()
+		{
+			DetachAllObjectsImpl();
+
+			// Trigger update of bounding box if necessary
+			if ( this.parentNode != null )
+				parentNode.NeedUpdate();
 		}
 
 
@@ -742,12 +761,27 @@ namespace Axiom.Core
 		///		clearing the assignment of the parent node to the child entity.
 		/// </summary>
 		/// <param name="sceneObject">Object to detach.</param>
-		protected void DetachObjectImpl( MovableObject sceneObject )
+		protected void DetachObjectImpl( MovableObject pObject )
 		{
-			sceneObject.NotifyAttached( null, false );
-			childObjectList.Remove( sceneObject );
+			TagPoint tagPoint = (TagPoint)pObject.ParentNode;
+
+
+			// free the TagPoint so we can reuse it later
+			//TODO: NO idea what this does!
+			skeletonInstance.FreeTagPoint( tagPoint );
+
+			pObject.NotifyAttached( tagPoint, true );
 		}
 
+		protected void DetachAllObjectsImpl()
+		{
+			for ( int i = 0; i < childObjectList.Count; i++ )
+			{
+				MovableObject child = childObjectList[ i ];
+				DetachObjectImpl( child );
+			}
+			childObjectList.Clear();
+		}
 
 		protected void AddSoftwareAnimationRequest( bool normalsAlso )
 		{
@@ -2132,7 +2166,7 @@ namespace Axiom.Core
 			/// <summary>
 			///		Original position buffer source binding.
 			/// </summary>
-			protected ushort originalPosBufferBinding;
+			protected short originalPosBufferBinding;
 			/// <summary>
 			///		Link to SubEntity, only present if SubEntity has it's own geometry.
 			/// </summary>

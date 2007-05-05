@@ -94,7 +94,7 @@ namespace Axiom.Graphics
 		/// <param name="offset">The offset in bytes where this element is located in the buffer.</param>
 		/// <param name="type">The data format of the element (3 floats, a color etc).</param>
 		/// <param name="semantic">The meaning of the data (position, normal, diffuse color etc).</param>
-		public VertexElement AddElement( ushort source, int offset, VertexElementType type, VertexElementSemantic semantic )
+		public VertexElement AddElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic )
 		{
 			return AddElement( source, offset, type, semantic, 0 );
 		}
@@ -114,7 +114,7 @@ namespace Axiom.Graphics
 		/// <param name="type">The data format of the element (3 floats, a color etc).</param>
 		/// <param name="semantic">The meaning of the data (position, normal, diffuse color etc).</param>
 		/// <param name="index">Optional index for multi-input elements like texture coordinates.</param>
-		public virtual VertexElement AddElement( ushort source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+		public virtual VertexElement AddElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
 		{
 			VertexElement element = new VertexElement( source, offset, type, semantic, index );
 			elements.Add( element );
@@ -158,7 +158,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Gets a list of elements which use a given source.
 		/// </summary>
-		public virtual List<VertexElement> FindElementBySource( ushort source )
+		public virtual List<VertexElement> FindElementBySource( short source )
 		{
 			List<VertexElement> rv = new List<VertexElement>();
 
@@ -191,7 +191,7 @@ namespace Axiom.Graphics
 		///     Gets the vertex size defined by this declaration for a given source.
 		/// </summary>
 		/// <param name="source">The buffer binding index for which to get the vertex size.</param>
-		public virtual int GetVertexSize( ushort source )
+		public virtual int GetVertexSize( short source )
 		{
 			int size = 0;
 
@@ -222,7 +222,7 @@ namespace Axiom.Graphics
 		/// <param name="type">The data format of the element (3 floats, a color, etc).</param>
 		/// <param name="semantic">The meaning of the data (position, normal, diffuse color etc).</param>
 		/// <returns>A reference to the newly created element.</returns>
-		public VertexElement InsertElement( int position, ushort source, int offset, VertexElementType type, VertexElementSemantic semantic )
+		public VertexElement InsertElement( int position, short source, int offset, VertexElementType type, VertexElementSemantic semantic )
 		{
 			return InsertElement( position, source, offset, type, semantic, 0 );
 		}
@@ -242,7 +242,7 @@ namespace Axiom.Graphics
 		/// <param name="semantic">The meaning of the data (position, normal, diffuse color etc).</param>
 		/// <param name="index">Optional index for multi-input elements like texture coordinates.</param>
 		/// <returns>A reference to the newly created element.</returns>
-		public virtual VertexElement InsertElement( int position, ushort source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+		public virtual VertexElement InsertElement( int position, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
 		{
 			if ( position >= elements.Count )
 			{
@@ -285,7 +285,7 @@ namespace Axiom.Graphics
 		/// <param name="offset">Offset of the element.</param>
 		/// <param name="type">Type of the element.</param>
 		/// <param name="semantic">Semantic of the element.</param>
-		public void ModifyElement( int elemIndex, ushort source, int offset, VertexElementType type, VertexElementSemantic semantic )
+		public void ModifyElement( int elemIndex, short source, int offset, VertexElementType type, VertexElementSemantic semantic )
 		{
 			ModifyElement( elemIndex, source, offset, type, semantic, 0 );
 		}
@@ -299,7 +299,7 @@ namespace Axiom.Graphics
 		/// <param name="type">Type of the element.</param>
 		/// <param name="semantic">Semantic of the element.</param>
 		/// <param name="index">Usage index of the element.</param>
-		public virtual void ModifyElement( int elemIndex, ushort source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+		public virtual void ModifyElement( int elemIndex, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
 		{
 			elements[ elemIndex ] = new VertexElement( source, offset, type, semantic, index );
 		}

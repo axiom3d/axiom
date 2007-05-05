@@ -47,14 +47,17 @@ namespace Axiom.RenderSystems.OpenGL
     /// </summary>
     public class GLTextureManager : TextureManager
     {
-        public GLTextureManager()
+        public GLTextureManager( BaseGLSupport glSupport)
         {
+			//_glSupprt = glSupport;
             is32Bit = true;
         }
 
 		public override Resource Create( string name, bool isManual )
 		{
-			throw new Exception( "The method or operation is not implemented." );
+			Resource rv = new GLTexture( name, TextureType.TwoD );
+			Add( rv );
+			return rv;
 		}
 
 		//public override Texture Create( string name, TextureType type )

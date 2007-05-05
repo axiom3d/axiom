@@ -45,6 +45,7 @@ using Axiom.Graphics;
 
 using Tao.OpenGl;
 using System.Collections.Generic;
+using System.Text;
 
 #endregion Namespace Declarations
 
@@ -77,12 +78,15 @@ namespace Axiom.RenderSystems.OpenGL
         /// <summary>
         ///		GLSupport class providing platform specific implementation.
         /// </summary>
-        private BaseGLSupport glSupport;
+        private BaseGLSupport _glSupport;
 
         /// <summary>
         ///		Flag that remembers if GL has been initialized yet.
         /// </summary>
-        private bool isGLInitialized;
+        private bool _isGLInitialized;
+
+		private GLContext _mainContext;
+		private GLContext _currentContext;
 
         /// <summary>Internal view matrix.</summary>
         protected Matrix4 viewMatrix;
@@ -160,11 +164,13 @@ namespace Axiom.RenderSystems.OpenGL
 			LogManager.Instance.Write( "{0} created.", this.Name );
 
 			// create 
-			glSupport = new GLSupport();
+			_glSupport = new GLSupport();
 
             viewMatrix = Matrix4.Identity;
             worldMatrix = Matrix4.Identity;
             textureMatrix = Matrix4.Identity;
+
+            InitConfigOptions();
 
             // init the stored stencil buffer params
             stencilFail = stencilZFail = stencilPass = Gl.GL_KEEP;
@@ -182,7 +188,6 @@ namespace Axiom.RenderSystems.OpenGL
             minFilter = FilterOptions.Linear;
             mipFilter = FilterOptions.Point;
 
-            InitConfigOptions();
         }
 
         #endregion Constructors
@@ -193,7 +198,7 @@ namespace Axiom.RenderSystems.OpenGL
         {
             get
             {
-                return glSupport.ConfigOptions;
+                return _glSupport.ConfigOptions;
             }
         }
 
@@ -272,35 +277,65 @@ namespace Axiom.RenderSystems.OpenGL
 
         public override RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullscreen, NamedParameterList miscParams )
         {
+			if ( renderTargets.ContainsKey( name ) )
+			{
+				throw new Exception( String.Format( "Window with the name '{0}' already exists.", name ) );
+			}
 
-            // TODO: Check for dupe windows
+			// Log a message
+			StringBuilder msg = new StringBuilder();
+			msg.AppendFormat( "GLRenderSystem.CreateRenderWindow \"{0}\", {1}x{2} {3} ", name, width, height, isFullscreen ? "fullscreen" : "windowed" );
+			if ( miscParams != null )
+			{
+				msg.Append( "miscParams: " );
+				foreach ( KeyValuePair<string, object> param in miscParams )
+				{
+					msg.AppendFormat( " {0} = {1} ", param.Key, param.Value.ToString() );
+				}
+				LogManager.Instance.Write( msg.ToString() );
+			}
+			msg = null;
 
-			RenderWindow window = glSupport.NewWindow( name, width, height, isFullscreen, miscParams );
-
-            if ( !isGLInitialized )
-            {
-                InitGL();
-            }
+			// create the window
+			RenderWindow window = _glSupport.NewWindow( name, width, height, isFullscreen, miscParams );
 
             // add the new render target
             AttachRenderTarget( window );
 
+            if ( !_isGLInitialized )
+            {
+                InitGL( window );
+
+				// Initialise the main context
+				_oneTimeContextInitialization();
+				if ( _currentContext != null )
+					_currentContext.Initialized = true;
+            }
+
             return window;
         }
 
-        protected void InitGL()
+        protected void InitGL(RenderTarget primary )
         {
-            // intialize GL extensions and check capabilites
-            glSupport.InitializeExtensions();
+			// Set main and current context
+			_mainContext = (GLContext)primary.GetCustomAttribute( "GLCONTEXT" );		
+			_currentContext = _mainContext;
+
+			// Set primary context as active
+			if ( _currentContext != null)
+				_currentContext.SetCurrent();
+
+			// intialize GL extensions and check capabilites
+            _glSupport.InitializeExtensions();
 
             // log hardware info
-            LogManager.Instance.Write( "Vendor: {0}", glSupport.Vendor );
-            LogManager.Instance.Write( "Video Board: {0}", glSupport.VideoCard );
-            LogManager.Instance.Write( "Version: {0}", glSupport.Version );
+            LogManager.Instance.Write( "Vendor: {0}", _glSupport.Vendor );
+            LogManager.Instance.Write( "Video Board: {0}", _glSupport.VideoCard );
+            LogManager.Instance.Write( "Version: {0}", _glSupport.Version );
 
             LogManager.Instance.Write( "Extensions supported:" );
 
-            foreach ( string ext in glSupport.Extensions )
+            foreach ( string ext in _glSupport.Extensions )
             {
                 LogManager.Instance.Write( ext );
             }
@@ -323,12 +358,34 @@ namespace Axiom.RenderSystems.OpenGL
             }
 
             // by creating our texture manager, singleton TextureManager will hold our implementation
-            textureManager = new GLTextureManager();
+            textureManager = new GLTextureManager( _glSupport );
 
-            isGLInitialized = true;
+            _isGLInitialized = true;
         }
 
-        public override ColorEx AmbientLight
+		private void _oneTimeContextInitialization()
+		{
+			// Set nicer lighting model -- d3d9 has this by default
+			Gl.glLightModeli(Gl.GL_LIGHT_MODEL_COLOR_CONTROL, Gl.GL_SEPARATE_SPECULAR_COLOR);
+			Gl.glLightModeli( Gl.GL_LIGHT_MODEL_LOCAL_VIEWER, 1);        
+			Gl.glEnable(Gl.GL_COLOR_SUM);
+			Gl.glDisable(Gl.GL_DITHER);
+
+			// Check for FSAA
+			// Enable the extension if it was enabled by the GLSupport
+			if (_glSupport.CheckExtension("GL_ARB_multisample"))
+			{
+				int fsaa_active = 0; // Default to false
+				Gl.glGetIntegerv(Gl.GL_SAMPLE_BUFFERS_ARB, out fsaa_active);
+				if(fsaa_active == 1)
+				{
+					Gl.glEnable(Gl.GL_MULTISAMPLE_ARB);
+					LogManager.Instance.Write("Using FSAA from GL_ARB_multisample extension.");
+				}            
+			}
+		}
+
+		public override ColorEx AmbientLight
         {
             get
             {
@@ -1216,7 +1273,7 @@ namespace Axiom.RenderSystems.OpenGL
 
                 case TexCoordCalcMethod.EnvironmentMapPlanar:
                     // XXX This doesn't seem right?!
-                    if ( glSupport.CheckMinVersion( "1.3" ) )
+                    if ( _glSupport.CheckMinVersion( "1.3" ) )
                     {
                         Gl.glTexGeni( Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_REFLECTION_MAP );
                         Gl.glTexGeni( Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_REFLECTION_MAP );
@@ -1364,7 +1421,9 @@ namespace Axiom.RenderSystems.OpenGL
         /// <returns></returns>
         public override RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
         {
-            RenderWindow autoWindow = glSupport.CreateWindow( autoCreateWindow, this, windowTitle );
+			//todo _glSupport.Start();
+
+            RenderWindow autoWindow = _glSupport.CreateWindow( autoCreateWindow, this, windowTitle );
 
             this.CullingMode = this.cullingMode;
 
@@ -1921,7 +1980,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void SetTextureBorderColor( int stage, ColorEx borderColor )
 		{
-			throw new Exception( "The method or operation is not implemented." );
+			//TODO throw new Exception( "The method or operation is not implemented." );
 		}
 
 		public override Matrix4 ConvertProjectionMatrix( Matrix4 matrix, bool forGpuProgram )
@@ -1957,31 +2016,30 @@ namespace Axiom.RenderSystems.OpenGL
             }
             set
             {
-                // ignore dupe render state
-                if ( value == cullingMode )
-                {
-                    //return;
-                }
+				// NB: Because two-sided stencil API dependence of the front face, we must
+				// use the same 'winding' for the front face everywhere. As the OGRE default
+				// culling mode is clockwise, we also treat anticlockwise winding as front
+				// face for consistently. On the assumption that, we can't change the front
+				// face by glFrontFace anywhere.
 
-                cullingMode = value;
-
-                int cullMode = Gl.GL_CW;
+				int cullMode;
 
                 switch ( value )
                 {
                     case CullingMode.None:
                         Gl.glDisable( Gl.GL_CULL_FACE );
                         return;
+
+					default:
                     case CullingMode.Clockwise:
                         if ( activeRenderTarget != null
                             && ( activeRenderTarget.RequiresTextureFlipping ^ invertVertexWinding ) )
                         {
-
-                            cullMode = Gl.GL_CW;
+                            cullMode = Gl.GL_FRONT;
                         }
                         else
                         {
-                            cullMode = Gl.GL_CCW;
+                            cullMode = Gl.GL_BACK;
                         }
                         break;
                     case CullingMode.CounterClockwise:
@@ -1989,17 +2047,17 @@ namespace Axiom.RenderSystems.OpenGL
                             && ( activeRenderTarget.RequiresTextureFlipping ^ invertVertexWinding ) )
                         {
 
-                            cullMode = Gl.GL_CCW;
+                            cullMode = Gl.GL_BACK;
                         }
                         else
                         {
-                            cullMode = Gl.GL_CW;
+                            cullMode = Gl.GL_FRONT;
                         }
                         break;
                 }
 
                 Gl.glEnable( Gl.GL_CULL_FACE );
-                Gl.glFrontFace( cullMode );
+                Gl.glCullFace( cullMode );
             }
         }
 
@@ -2403,7 +2461,7 @@ namespace Axiom.RenderSystems.OpenGL
         /// </summary>
         private void InitConfigOptions()
         {
-            glSupport.AddConfig();
+            _glSupport.AddConfig();
         }
 
         /// <summary>
@@ -2422,38 +2480,38 @@ namespace Axiom.RenderSystems.OpenGL
             caps.TextureUnitCount = numTextureUnits;
 
             // check multitexturing
-            if ( glSupport.CheckExtension( "GL_ARB_multitexture" ) )
+            if ( _glSupport.CheckExtension( "GL_ARB_multitexture" ) )
             {
                 caps.SetCap( Capabilities.MultiTexturing );
             }
 
             // check texture blending
-            if ( glSupport.CheckExtension( "GL_EXT_texture_env_combine" ) ||
-                glSupport.CheckExtension( "GL_ARB_texture_env_combine" ) )
+            if ( _glSupport.CheckExtension( "GL_EXT_texture_env_combine" ) ||
+                _glSupport.CheckExtension( "GL_ARB_texture_env_combine" ) )
             {
                 caps.SetCap( Capabilities.TextureBlending );
             }
 
             // anisotropic filtering
-            if ( glSupport.CheckExtension( "GL_EXT_texture_filter_anisotropic" ) )
+            if ( _glSupport.CheckExtension( "GL_EXT_texture_filter_anisotropic" ) )
             {
                 caps.SetCap( Capabilities.AnisotropicFiltering );
             }
 
             // check dot3 support
-            if ( glSupport.CheckExtension( "GL_ARB_texture_env_dot3" ) )
+            if ( _glSupport.CheckExtension( "GL_ARB_texture_env_dot3" ) )
             {
                 caps.SetCap( Capabilities.Dot3 );
             }
 
             // check support for vertex buffers in hardware
-            if ( glSupport.CheckExtension( "GL_ARB_vertex_buffer_object" ) )
+            if ( _glSupport.CheckExtension( "GL_ARB_vertex_buffer_object" ) )
             {
                 caps.SetCap( Capabilities.VertexBuffer );
             }
 
-            if ( glSupport.CheckExtension( "GL_ARB_texture_cube_map" )
-                || glSupport.CheckExtension( "GL_EXT_texture_cube_map" ) )
+            if ( _glSupport.CheckExtension( "GL_ARB_texture_cube_map" )
+                || _glSupport.CheckExtension( "GL_EXT_texture_cube_map" ) )
             {
                 caps.SetCap( Capabilities.CubeMapping );
             }
@@ -2464,30 +2522,30 @@ namespace Axiom.RenderSystems.OpenGL
             //    caps.SetCap(Capabilities.VertexBlending);
 
             // check if the hardware supports anisotropic filtering
-            if ( glSupport.CheckExtension( "GL_EXT_texture_filter_anisotropic" ) )
+            if ( _glSupport.CheckExtension( "GL_EXT_texture_filter_anisotropic" ) )
             {
                 caps.SetCap( Capabilities.AnisotropicFiltering );
             }
 
             // check hardware mip mapping
-            if ( glSupport.CheckExtension( "GL_SGIS_generate_mipmap" ) )
+            if ( _glSupport.CheckExtension( "GL_SGIS_generate_mipmap" ) )
             {
                 caps.SetCap( Capabilities.HardwareMipMaps );
             }
 
             // Texture Compression
-            if ( glSupport.CheckExtension( "GL_ARB_texture_compression" ) )
+            if ( _glSupport.CheckExtension( "GL_ARB_texture_compression" ) )
             {
                 caps.SetCap( Capabilities.TextureCompression );
 
                 // DXT compression
-                if ( glSupport.CheckExtension( "GL_EXT_texture_compression_s3tc" ) )
+                if ( _glSupport.CheckExtension( "GL_EXT_texture_compression_s3tc" ) )
                 {
                     caps.SetCap( Capabilities.TextureCompressionDXT );
                 }
 
                 // VTC compression
-                if ( glSupport.CheckExtension( "GL_NV_texture_compression_vtc" ) )
+                if ( _glSupport.CheckExtension( "GL_NV_texture_compression_vtc" ) )
                 {
                     caps.SetCap( Capabilities.TextureCompressionVTC );
                 }
@@ -2505,19 +2563,19 @@ namespace Axiom.RenderSystems.OpenGL
             }
 
             // 2 sided stencil
-            if ( glSupport.CheckExtension( "GL_EXT_stencil_two_side" ) )
+            if ( _glSupport.CheckExtension( "GL_EXT_stencil_two_side" ) )
             {
                 caps.SetCap( Capabilities.TwoSidedStencil );
             }
 
             // stencil wrapping
-            if ( glSupport.CheckExtension( "GL_EXT_stencil_wrap" ) )
+            if ( _glSupport.CheckExtension( "GL_EXT_stencil_wrap" ) )
             {
                 caps.SetCap( Capabilities.StencilWrap );
             }
 
             // Check for hardware occlusion support
-            if ( glSupport.CheckExtension( "GL_NV_occlusion_query" ) )
+            if ( _glSupport.CheckExtension( "GL_NV_occlusion_query" ) )
             {
                 caps.SetCap( Capabilities.HardwareOcculusion );
             }
@@ -2532,13 +2590,13 @@ namespace Axiom.RenderSystems.OpenGL
             caps.SetCap( Capabilities.InfiniteFarPlane );
 
             // Hardware occlusion queries
-            if ( glSupport.CheckExtension( "GL_NV_occlusion_query" ) )
+            if ( _glSupport.CheckExtension( "GL_NV_occlusion_query" ) )
             {
                 caps.SetCap( Capabilities.HardwareOcculusion );
             }
 
             // ARB Vertex Programs
-            if ( glSupport.CheckExtension( "GL_ARB_vertex_program" ) )
+            if ( _glSupport.CheckExtension( "GL_ARB_vertex_program" ) )
             {
                 caps.SetCap( Capabilities.VertexPrograms );
                 caps.MaxVertexProgramVersion = "arbvp1";
@@ -2554,7 +2612,7 @@ namespace Axiom.RenderSystems.OpenGL
             }
 
             // ARB Fragment Programs
-            if ( glSupport.CheckExtension( "GL_ARB_fragment_program" ) )
+            if ( _glSupport.CheckExtension( "GL_ARB_fragment_program" ) )
             {
                 caps.SetCap( Capabilities.FragmentPrograms );
                 caps.MaxFragmentProgramVersion = "arbfp1";
@@ -2570,7 +2628,7 @@ namespace Axiom.RenderSystems.OpenGL
             }
 
             // ATI Fragment Programs (supported via conversion from DX ps1.1 - ps1.4 shaders)
-            if ( glSupport.CheckExtension( "GL_ATI_fragment_shader" ) )
+            if ( _glSupport.CheckExtension( "GL_ATI_fragment_shader" ) )
             {
                 caps.SetCap( Capabilities.FragmentPrograms );
                 caps.MaxFragmentProgramVersion = "ps_1_4";
@@ -2592,8 +2650,8 @@ namespace Axiom.RenderSystems.OpenGL
             }
 
             // GeForce3/4 Register Combiners/Texture Shaders
-            if ( glSupport.CheckExtension( "GL_NV_register_combiners2" ) &&
-                glSupport.CheckExtension( "GL_NV_texture_shader" ) )
+            if ( _glSupport.CheckExtension( "GL_NV_register_combiners2" ) &&
+                _glSupport.CheckExtension( "GL_NV_texture_shader" ) )
             {
 
                 caps.SetCap( Capabilities.FragmentPrograms );
@@ -2604,7 +2662,7 @@ namespace Axiom.RenderSystems.OpenGL
             }
 
             // GeForceFX vp30 Vertex Programs
-            if ( glSupport.CheckExtension( "GL_NV_vertex_program2" ) )
+            if ( _glSupport.CheckExtension( "GL_NV_vertex_program2" ) )
             {
                 caps.SetCap( Capabilities.VertexPrograms );
                 caps.MaxVertexProgramVersion = "vp30";
@@ -2614,7 +2672,7 @@ namespace Axiom.RenderSystems.OpenGL
             }
 
             // GeForceFX fp30 Fragment Programs
-            if ( glSupport.CheckExtension( "GL_NV_fragment_program" ) )
+            if ( _glSupport.CheckExtension( "GL_NV_fragment_program" ) )
             {
                 caps.SetCap( Capabilities.FragmentPrograms );
                 caps.MaxFragmentProgramVersion = "fp30";
@@ -2624,10 +2682,10 @@ namespace Axiom.RenderSystems.OpenGL
             }
 
             // GLSL support
-            if ( glSupport.CheckExtension( "GL_ARB_shading_language_100" ) &&
-                glSupport.CheckExtension( "GL_ARB_shader_objects" ) &&
-                glSupport.CheckExtension( "GL_ARB_fragment_shader" ) &&
-                glSupport.CheckExtension( "GL_ARB_vertex_shader" ) )
+            if ( _glSupport.CheckExtension( "GL_ARB_shading_language_100" ) &&
+                _glSupport.CheckExtension( "GL_ARB_shader_objects" ) &&
+                _glSupport.CheckExtension( "GL_ARB_fragment_shader" ) &&
+                _glSupport.CheckExtension( "GL_ARB_vertex_shader" ) )
             {
 
                 gpuProgramMgr.PushSyntaxCode( "glsl" );

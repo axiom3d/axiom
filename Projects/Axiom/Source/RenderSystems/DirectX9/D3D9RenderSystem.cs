@@ -258,10 +258,10 @@ namespace Axiom.RenderSystems.DirectX9
 		/// </summary>
 		protected void SetVertexBufferBinding( VertexBufferBinding binding )
 		{
-			Dictionary<ushort, HardwareVertexBuffer> bindings = binding.Bindings;
+			Dictionary<short, HardwareVertexBuffer> bindings = binding.Bindings;
 
 			// TODO: Optimize to remove enumeration if possible, although with so few iterations it may never make a difference
-			foreach ( ushort stream in bindings.Keys )
+			foreach ( short stream in bindings.Keys )
 			{
 				D3DHardwareVertexBuffer buffer = (D3DHardwareVertexBuffer)bindings[ stream ];
 				device.SetStreamSource( stream, buffer.D3DVertexBuffer, 0, buffer.VertexSize );
@@ -355,7 +355,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			// Make sure we don't already have a render target of the 
 			// same name as the one supplied
-			foreach ( RenderTarget target in renderTargets )
+			foreach ( RenderTarget target in prioritizedRenderTargets )
 			{
 				if ( target.Name == name )
 					throw new Exception( String.Format( "A render target of the same name '{0}' already exists." +

@@ -507,7 +507,7 @@ namespace Axiom.Graphics
 		///
 		/// 	// If it is available, make the call to the
 		/// 	// base class's Dispose(Boolean) method
-		/// 	base._dispose( disposeManagedResources );
+		/// 	base.dispose( disposeManagedResources );
 		/// }
 		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>

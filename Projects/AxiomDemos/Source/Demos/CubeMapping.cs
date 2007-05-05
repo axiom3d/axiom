@@ -334,7 +334,7 @@ namespace Axiom.Demos
             {
                 VertexElement element = orgData.vertexDeclaration.GetElement( i );
                 VertexElementSemantic ves = element.Semantic;
-                ushort source = element.Source;
+                short source = element.Source;
                 HardwareVertexBuffer orgBuffer = orgData.vertexBufferBinding.GetBuffer( source );
 
                 // check usage for the new buffer
@@ -361,7 +361,7 @@ namespace Axiom.Demos
                     newBuffer.CopyData( orgBuffer, 0, 0, orgBuffer.Size, true );
                     if ( newBinding.BindingCount > 0 && newBinding.GetBuffer( source ) != null )
                     {
-                        source = (ushort)newBinding.BindingCount;
+                        source = (short)newBinding.BindingCount;
                     }
                     newBinding.SetBinding( source, newBuffer );
                 }
@@ -370,7 +370,7 @@ namespace Axiom.Demos
                     // use the existing buffer
                     if ( newBinding.BindingCount > 0 && newBinding.GetBuffer( source ) != null )
                     {
-                        source = (ushort)newBinding.BindingCount;
+                        source = (short)newBinding.BindingCount;
                     }
                     newBinding.SetBinding( source, orgBuffer );
                 }

@@ -68,7 +68,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region Methods
 
-		public override Axiom.Graphics.VertexElement AddElement( ushort source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+		public override Axiom.Graphics.VertexElement AddElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
 		{
 			Axiom.Graphics.VertexElement element = base.AddElement( source, offset, type, semantic, index );
 
@@ -77,7 +77,7 @@ namespace Axiom.RenderSystems.DirectX9
 			return element;
 		}
 
-		public override Axiom.Graphics.VertexElement InsertElement( int position, ushort source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+		public override Axiom.Graphics.VertexElement InsertElement( int position, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
 		{
 			Axiom.Graphics.VertexElement element = base.InsertElement( position, source, offset, type, semantic, index );
 
@@ -86,7 +86,7 @@ namespace Axiom.RenderSystems.DirectX9
 			return element;
 		}
 
-		public override void ModifyElement( int elemIndex, ushort source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+		public override void ModifyElement( int elemIndex, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
 		{
 			base.ModifyElement( elemIndex, source, offset, type, semantic, index );
 

@@ -48,8 +48,9 @@ namespace Axiom.RenderSystems.OpenGL
 	/// This object can also be used to cache renderstate if we decide to do so
 	/// in the future.
 	/// </summary>
-	abstract class GLContext
+	internal abstract class GLContext : IDisposable
 	{
+		#region Fields and Properties
 
 		#region Initialized Property
 		private bool _initialized;
@@ -68,21 +69,36 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 		#endregion Initialized Property
-			
+
+		#endregion Fields and Properties
+
+		#region Construction and Destruction
+
 		public GLContext()
 		{
 		}
 
+		~GLContext()
+		{
+			dispose( true );
+		}
+
+		#endregion Construction and Destruction
+
+		#region Methods
+
 		/// <summary>
 		/// Enable the context. All subsequent rendering commands will go here.
 		/// </summary>
-        public abstract void setCurrent();
+        public abstract void SetCurrent();
 
 		/// <summary>
 		/// This is called before another context is made current. By default,
 		/// nothing is done here.
 		/// </summary>
-		public abstract void endCurrent();
+		public virtual void EndCurrent()
+		{
+		}
 
         /// <summary>
         /// Create a new context based on the same window/pbuffer as this
@@ -92,6 +108,79 @@ namespace Axiom.RenderSystems.OpenGL
 		///	The caller is responsible for deleting the returned context.
 		/// </remarks>
         /// <returns></returns>
-		public abstract GLContext clone();
+		public abstract GLContext Clone();
+
+		#endregion Methods
+
+		#region IDisposable Implementation
+
+		#region isDisposed Property
+
+		private bool _disposed = false;
+		/// <summary>
+		/// Determines if this instance has been disposed of already.
+		/// </summary>
+		protected bool isDisposed
+		{
+			get
+			{
+				return _disposed;
+			}
+			set
+			{
+				_disposed = value;
+			}
+		}
+
+		#endregion isDisposed Property
+
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		/// <remarks>
+		/// When implementing this method in an inherited class the following template should be used;
+		/// protected override void dispose( bool disposeManagedResources )
+		/// {
+		/// 	if ( !isDisposed )
+		/// 	{
+		/// 		if ( disposeManagedResources )
+		/// 		{
+		/// 			// Dispose managed resources.
+		/// 		}
+		/// 
+		/// 		// There are no unmanaged resources to release, but
+		/// 		// if we add them, they need to be released here.
+		/// 	}
+		/// 	isDisposed = true;
+		///
+		/// 	// If it is available, make the call to the
+		/// 	// base class's Dispose(Boolean) method
+		/// 	base.dispose( disposeManagedResources );
+		/// }
+		/// </remarks>
+		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+		protected virtual void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					// Dispose managed resources.
+				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
+			isDisposed = true;
+		}
+
+		public void Dispose()
+		{
+			dispose( true );
+			GC.SuppressFinalize( this );
+		}
+
+		#endregion IDisposable Implementation
+
 	}
 }

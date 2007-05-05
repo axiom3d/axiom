@@ -81,9 +81,13 @@ namespace Axiom.Graphics
 		#region Fields
 
 		/// <summary>
+		///		List of current render targets (i.e. a <see cref="RenderWindow"/>, or a<see cref="RenderTexture"/>) by priority
+		/// </summary>
+		protected List<RenderTarget> prioritizedRenderTargets = new List<RenderTarget>();
+		/// <summary>
 		///		List of current render targets (i.e. a <see cref="RenderWindow"/>, or a<see cref="RenderTexture"/>)
 		/// </summary>
-		protected RenderTargetList renderTargets = new RenderTargetList();
+		protected Dictionary<string, RenderTarget> renderTargets = new Dictionary<string, RenderTarget>();
 		/// <summary>
 		///		A reference to the texture management class specific to this implementation.
 		/// </summary>
@@ -269,7 +273,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return renderTargets.Count;
+				return prioritizedRenderTargets.Count;
 			}
 		}
 
@@ -291,18 +295,18 @@ namespace Axiom.Graphics
 		/// <param name="target">Reference to the render target to attach to this render system.</param>
 		public virtual void AttachRenderTarget( RenderTarget target )
 		{
+			renderTargets.Add( target.Name, target );
+
 			if ( target.Priority == RenderTargetPriority.High )
 			{
 				// insert at the front of the list
-				renderTargets.Insert( 0, target );
+				prioritizedRenderTargets.Insert( 0, target );
 			}
 			else
 			{
 				// add to the end
-				renderTargets.Add( target );
+				prioritizedRenderTargets.Add( target );
 			}
-			// FIXME: Investigate
-			// Ogre maintains a renderTargets and a prioritizedRenderTargets list.
 		}
 
 		/// <summary>
@@ -322,9 +326,9 @@ namespace Axiom.Graphics
 		{
 			RenderTarget target = null;
 
-			for ( int i = 0; i < renderTargets.Count; i++ )
+			for ( int i = 0; i < prioritizedRenderTargets.Count; i++ )
 			{
-				RenderTarget tmp = renderTargets[ i ];
+				RenderTarget tmp = prioritizedRenderTargets[ i ];
 
 				if ( tmp.Name == name )
 				{
@@ -354,7 +358,7 @@ namespace Axiom.Graphics
 		public virtual RenderTarget DetachRenderTarget( RenderTarget target )
 		{
 			// TODO: Remove prioritized render targets
-			renderTargets.Remove( target );
+			prioritizedRenderTargets.Remove( target );
 			return target;
 		}
 
@@ -383,7 +387,7 @@ namespace Axiom.Graphics
 		public virtual void InitRenderTargets()
 		{
 			// init stats for each render target
-			foreach ( RenderTarget target in renderTargets )
+			foreach ( RenderTarget target in prioritizedRenderTargets )
 			{
 				target.ResetStatistics();
 			}
@@ -396,9 +400,9 @@ namespace Axiom.Graphics
 		/// <param name="camera">Camera being removed.</param>
 		internal virtual void NotifyCameraRemoved( Camera camera )
 		{
-			for ( int i = 0; i < renderTargets.Count; i++ )
+			for ( int i = 0; i < prioritizedRenderTargets.Count; i++ )
 			{
-				RenderTarget target = renderTargets[ i ];
+				RenderTarget target = prioritizedRenderTargets[ i ];
 				target.NotifyCameraRemoved( camera );
 			}
 		}
@@ -598,9 +602,9 @@ namespace Axiom.Graphics
 		public virtual void RemoveRenderTargets()
 		{
 			// destroy each render window
-			while ( renderTargets.Count > 0 )
+			while ( prioritizedRenderTargets.Count > 0 )
 			{
-				RenderTarget target = renderTargets[ 0 ];
+				RenderTarget target = prioritizedRenderTargets[ 0 ];
 				DetachRenderTarget( target );
 				target.Dispose();
 			}
@@ -624,9 +628,9 @@ namespace Axiom.Graphics
 		{
 			// Update all in order of priority
 			// This ensures render-to-texture targets get updated before render windows
-			for ( int i = 0; i < renderTargets.Count; i++ )
+			for ( int i = 0; i < prioritizedRenderTargets.Count; i++ )
 			{
-				RenderTarget target = renderTargets[ i ];
+				RenderTarget target = prioritizedRenderTargets[ i ];
 
 				// only update if it is active
 				if ( target.IsActive && target.IsAutoUpdated )

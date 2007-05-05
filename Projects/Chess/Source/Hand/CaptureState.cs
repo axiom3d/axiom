@@ -60,22 +60,22 @@ namespace Chess
 				anim.InterpolationMode = InterpolationMode.Spline;
 
 				// Create a track to animate the hand
-				AnimationTrack track = anim.CreateTrack(0, handSceneNode);
+				AnimationTrack track = anim.CreateNodeTrack(0, handSceneNode);
 
 				// Setup keyframes
-				KeyFrame key = track.CreateKeyFrame(0); // startposition
+				TransformKeyFrame key = (TransformKeyFrame)track.CreateKeyFrame( 0 ); // startposition
 				key.Translate = (handSceneNode.Position);
-				key.Rotation =(handSceneNode.Orientation); 
+				key.Rotation =(handSceneNode.Orientation);
 
-				key = track.CreateKeyFrame(stateDuration * 0.4f);
+				key = (TransformKeyFrame)track.CreateKeyFrame( stateDuration * 0.4f );
 				key.Translate = new Vector3(targetPositionVector.x - (movementVector.x * 0.1f), targetPositionVector.y + 35, targetPositionVector.z - (movementVector.z * 0.1f));
 				key.Rotation =(handSceneNode.Orientation);
-			    
-				key = track.CreateKeyFrame(stateDuration * 0.6f);
-				key.Translate = new Vector3(targetPositionVector.x, targetPositionVector.y + 25, targetPositionVector.z);
-				key.Rotation =(handSceneNode.Orientation);    
 
-				key = track.CreateKeyFrame(stateDuration); 
+				key = (TransformKeyFrame)track.CreateKeyFrame( stateDuration * 0.6f );
+				key.Translate = new Vector3(targetPositionVector.x, targetPositionVector.y + 25, targetPositionVector.z);
+				key.Rotation =(handSceneNode.Orientation);
+
+				key = (TransformKeyFrame)track.CreateKeyFrame( stateDuration ); 
 				key.Translate =new Vector3(targetPositionVector.x - (offsetVector.x * 0.78f), targetPositionVector.y, targetPositionVector.z + (offsetVector.z * 0.38f)); // tweaked 'til it looks good
 				key.Rotation =(handSceneNode.Orientation); 
 

@@ -64,12 +64,12 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Defines the vertex buffer bindings used as source for vertex declarations.
 		/// </summary>
-		protected Dictionary<ushort, HardwareVertexBuffer> bindingMap =
-			new Dictionary<ushort, HardwareVertexBuffer>();
+		protected Dictionary<short, HardwareVertexBuffer> bindingMap =
+			new Dictionary<short, HardwareVertexBuffer>();
 		/// <summary>
 		///		The highest index in use for this binding.
 		/// </summary>
-		protected ushort highIndex;
+		protected short highIndex;
 
 		#endregion Fields
 
@@ -87,17 +87,17 @@ namespace Axiom.Graphics
 		/// </remarks>
 		/// <param name="index">Index at which to bind the buffer.</param>
 		/// <param name="buffer">Vertex buffer to bind.</param>
-		public virtual void SetBinding( ushort index, HardwareVertexBuffer buffer )
+		public virtual void SetBinding( short index, HardwareVertexBuffer buffer )
 		{
 			bindingMap[ index ] = buffer;
-			highIndex = (ushort)Utility.Max( highIndex, index + 1 );
+			highIndex = (short)Utility.Max( highIndex, index + 1 );
 		}
 
 		/// <summary>
 		///		Removes an existing binding.
 		/// </summary>
 		/// <param name="index">Index of the buffer binding to remove.</param>
-		public virtual void UnsetBinding( ushort index )
+		public virtual void UnsetBinding( short index )
 		{
 			Debug.Assert( bindingMap.ContainsKey( index ), "Cannot find buffer for index" + index );
 
@@ -117,7 +117,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="index">Index of the binding to retreive the buffer for.</param>
 		/// <returns>Buffer at the specified index.</returns>
-		public virtual HardwareVertexBuffer GetBuffer( ushort index )
+		public virtual HardwareVertexBuffer GetBuffer( short index )
 		{
 			Debug.Assert( bindingMap.ContainsKey( index ), "No buffer is bound to index " + index );
 
@@ -134,7 +134,7 @@ namespace Axiom.Graphics
 		///		Gets an enumerator to iterate through the buffer bindings.
 		/// </summary>
 		/// TODO: Change this to strongly typed later on
-		public virtual Dictionary<ushort, HardwareVertexBuffer> Bindings
+		public virtual Dictionary<short, HardwareVertexBuffer> Bindings
 		{
 			get
 			{
@@ -160,7 +160,7 @@ namespace Axiom.Graphics
 		///		This is to assist in binding the vertex buffers such that there are
 		///		not gaps in the list.
 		/// </remarks>
-		public virtual ushort NextIndex
+		public virtual short NextIndex
 		{
 			get
 			{

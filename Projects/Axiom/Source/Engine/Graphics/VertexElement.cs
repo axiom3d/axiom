@@ -51,7 +51,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     The source vertex buffer, as bound to an index using <see cref="VertexBufferBinding"/>.
 		/// </summary>
-		protected ushort source;
+		protected short source;
 		/// <summary>
 		///     The offset in the buffer that this element starts at.
 		/// </summary>
@@ -80,7 +80,7 @@ namespace Axiom.Graphics
 		/// <param name="offset">The offset in the buffer that this element starts at.</param>
 		/// <param name="type">The type of element.</param>
 		/// <param name="semantic">The meaning of the element.</param>
-		public VertexElement( ushort source, int offset, VertexElementType type, VertexElementSemantic semantic )
+		public VertexElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic )
 			: this( source, offset, type, semantic, 0 )
 		{
 		}
@@ -93,7 +93,7 @@ namespace Axiom.Graphics
 		/// <param name="type">The type of element.</param>
 		/// <param name="semantic">The meaning of the element.</param>
 		/// <param name="index">Index of the item, only applicable for some elements like texture coords.</param>
-		public VertexElement( ushort source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+		public VertexElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
 		{
 			this.source = source;
 			this.offset = offset;
@@ -248,7 +248,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// 
 		/// </summary>
-		public ushort Source
+		public short Source
 		{
 			get
 			{

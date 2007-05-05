@@ -42,7 +42,7 @@ using Axiom.Media;
 namespace Axiom.Core
 {
 	/// <summary>
-	///    Class for loading & managing textures.
+	///    Class for loading &amp; managing textures.
 	/// </summary>
 	/// <remarks>
 	///    Texture manager serves as an abstract singleton for all API specific texture managers.
@@ -191,6 +191,11 @@ namespace Axiom.Core
 		/// <param name="gamma"></param>
 		/// <param name="priority"></param>
 		/// <returns></returns>
+		public Texture Load( string name, TextureType type, int numMipMaps, float gamma, int isAlpha )
+		{
+			return Load( name, type, numMipMaps, gamma, false );
+		}
+
 		public Texture Load( string name, TextureType type, int numMipMaps, float gamma, bool isAlpha )
 		{
 			// does this texture exist already?
