@@ -169,9 +169,9 @@ namespace Axiom.Graphics
 			VertexData dest = new VertexData();
 
 			// Copy vertex buffers in turn
-			Dictionary<ushort, HardwareVertexBuffer> bindings = vertexBufferBinding.Bindings;
+			Dictionary<short, HardwareVertexBuffer> bindings = vertexBufferBinding.Bindings;
 
-			foreach ( ushort source in bindings.Keys )
+			foreach ( short source in bindings.Keys )
 			{
 
 				HardwareVertexBuffer srcbuf = bindings[ source ];
@@ -293,7 +293,7 @@ namespace Axiom.Graphics
 
 			if ( posElem != null )
 			{
-				ushort posOldSource = posElem.Source;
+				short posOldSource = posElem.Source;
 
 				HardwareVertexBuffer vbuf = vertexBufferBinding.GetBuffer( posOldSource );
 
@@ -443,7 +443,7 @@ namespace Axiom.Graphics
 					hardwareShadowVolWBuffer.Unlock();
 				} // if vertexPrograms
 
-				ushort newPosBufferSource = 0;
+				short newPosBufferSource = 0;
 
 				if ( wasSharedBuffer )
 				{

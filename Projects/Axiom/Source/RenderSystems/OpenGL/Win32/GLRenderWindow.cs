@@ -64,6 +64,8 @@ namespace Axiom.RenderSystems.OpenGL
         private IntPtr _hDeviceContext = IntPtr.Zero;
         /// <summary>Rendering context.</summary>
         private IntPtr _hRenderingContext = IntPtr.Zero;
+		/// <summary>Win32Context.</summary>
+		private Win32Context _context;
         /// <summary>Retains initial screen settings.</summary>        
         private Gdi.DEVMODE _intialScreenSettings;
 
@@ -150,7 +152,7 @@ namespace Axiom.RenderSystems.OpenGL
 			string border;
 			bool outerSize = false;
 
-
+			#region Parameter Handling
 			if ( miscParams != null )
 			{
 				foreach ( KeyValuePair<string, object> entry in miscParams )
@@ -172,7 +174,7 @@ namespace Axiom.RenderSystems.OpenGL
 						case "vsync":
 							vsync = bool.Parse( entry.Value.ToString() );
 							break;
-						case "FSAA":
+						case "fsaa":
 							fsaa = Int32.Parse( entry.Value.ToString() );
 							break;
 						case "externalWindowHandle":
@@ -206,7 +208,8 @@ namespace Axiom.RenderSystems.OpenGL
 					}
 				}
 			}
-			
+			#endregion Parameter Handling
+
 			if ( !_isExternal )
 			{
 				DefaultForm form = new DefaultForm();
@@ -227,6 +230,15 @@ namespace Axiom.RenderSystems.OpenGL
 				}
 				else
 				{
+					if ( parentHwnd != IntPtr.Zero )
+					{
+						form.Owner = (Form)Control.FromHandle( parentHwnd );
+					}
+					else
+					{
+						//TODO : Implement "border" and "fixed" window options.
+					}
+
 					form.Top = top;
 					form.Left = left;
 					form.FormBorderStyle = FormBorderStyle.FixedSingle;
@@ -236,32 +248,36 @@ namespace Axiom.RenderSystems.OpenGL
 
 				form.Show();
 				_hWindow = form.Handle;
+
 			}
 
 			IntPtr old_hdc = Wgl.wglGetCurrentDC();
 			IntPtr old_context = Wgl.wglGetCurrentContext();
 
-			RECT rc;
-			// top and left represent outer window position
-			GetWindowRect( mHWnd, &rc );
-			mTop = rc.top;
-			mLeft = rc.left;
-			// width and height represent drawable area only
-			GetClientRect( mHWnd, &rc );
-			mWidth = rc.right;
-			mHeight = rc.bottom;
+			Control ctrl = Form.FromHandle( _hWindow );
+			Form frm = (Form)ctrl.TopLevelControl;
+			this.top = frm.Top;
+			this.left = frm.Left;
+			this.Width = frm.ClientRectangle.Width;
+			this.Height = frm.ClientRectangle.Height;
 
-			_hDeviceContext = User.GetDC( mHWnd );
+			//_hDeviceContext = User.GetDC( _hWindow );
 
-
-			/*
 			// Do not change vsync if the external window has the OpenGL control
-			if ( !_isExternalGLControl )
-			{
-			}
-			*/
+			//if ( !_isExternalGLControl )
+			//{
+			//    if ( !GLSupport.SelectPixelFormat( _hDeviceContext, ColorDepth, fsaa ) )
+			//    {
+			//        if ( fsaa == 0 )
+			//            throw new Exception( "selectPixelFormat failed" );
 
-            // see if a OpenGLContext has been created yet
+			//        LogManager.Instance.Write( "FSAA level not supported, falling back" );
+			//        if ( !GLSupport.SelectPixelFormat( _hDeviceContext, ColorDepth, 0 ) )
+			//            throw new Exception( "selectPixelFormat failed" );
+			//    }
+			//}
+
+			// see if a OpenGLContext has been created yet
             if ( _hDeviceContext == IntPtr.Zero )
             {
                 // grab the current display settings
@@ -341,6 +357,9 @@ namespace Axiom.RenderSystems.OpenGL
                 Gl.glHint( Gl.GL_PERSPECTIVE_CORRECTION_HINT, Gl.GL_NICEST );	// Really Nice Perspective Calculations
             }
 
+			// Create RenderSystem context
+			_context = new Win32Context( _hDeviceContext, _hRenderingContext );
+
             // make this window active
             this.IsActive = true;
         }
@@ -351,6 +370,7 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				if ( disposeManagedResources )
 				{
+
 					if ( _hRenderingContext != IntPtr.Zero )
 					{                                        // Do We Not Have A Rendering Context?
 						if ( !Wgl.wglMakeCurrent( IntPtr.Zero, IntPtr.Zero ) )
@@ -392,10 +412,12 @@ namespace Axiom.RenderSystems.OpenGL
         public override void SwapBuffers( bool waitForVSync )
         {
             //int sync = waitForVSync ? 1: 0;
-            Wgl.wglSwapIntervalEXT((uint)sync);
-
-            // swap buffers
-            Gdi.SwapBuffersFast( _hDeviceContext );
+            //Wgl.wglSwapIntervalEXT((uint)sync);
+			if ( !_isExternalGLControl )
+			{
+				// swap buffers
+				Gdi.SwapBuffersFast( _hDeviceContext );
+			}
         }
 
         /// <summary>

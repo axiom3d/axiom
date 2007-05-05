@@ -187,7 +187,7 @@ namespace Axiom.Core
 				Debug.Assert( blendIndices.Source == blendWeights.Source,
 							 "Blend indices and weights should be in the same buffer" );
 				// Get the source
-				ushort source = blendIndices.Source;
+				short source = blendIndices.Source;
 				Debug.Assert( blendIndices.Size + blendWeights.Size ==
 					vertexData.vertexBufferBinding.GetBuffer( source ).VertexSize,
 					"Blend indices and blend buffers should have buffer to themselves!" );
@@ -252,8 +252,8 @@ namespace Axiom.Core
 			IntPtr indexBufferIntPtr = indexData.indexBuffer.Lock( BufferLocking.Discard );
 
 			// create all vertex buffers, and lock
-			ushort b;
-			ushort posBufferIdx = dcl.FindElementBySemantic( VertexElementSemantic.Position ).Source;
+			short b;
+			short posBufferIdx = dcl.FindElementBySemantic( VertexElementSemantic.Position ).Source;
 
 			List<List<VertexElement>> bufferElements = new List<List<VertexElement>>();
 			unsafe
@@ -535,7 +535,7 @@ namespace Axiom.Core
 		{
 			indexData.indexBuffer.Dispose();
 			VertexBufferBinding bindings = vertexData.vertexBufferBinding;
-			for ( ushort b = 0; b < bindings.BindingCount; ++b )
+			for ( short b = 0; b < bindings.BindingCount; ++b )
 				bindings.GetBuffer( b ).Dispose();
 		}
 

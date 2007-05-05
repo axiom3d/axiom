@@ -73,17 +73,15 @@ namespace Chess.Main
 		}
 		public void Init (string animation, bool loop)
 		{
-			AnimationStateCollection animationStateSet = entity.GetAllAnimationStates(); 
-
-			for (int x=0;x< animationStateSet.Count;x++)
+			AnimationStateSet animationStateSet = entity.GetAllAnimationStates();
+			foreach ( AnimationState anim in animationStateSet.Values )
 			{
-				AnimationState anim = animationStateSet[x];
-				anim.IsEnabled = (false); 
-				anim.Weight =(0); 
-				anim.Time=(0); 
+				anim.IsEnabled = false; 
+				anim.Weight = 0; 
+				anim.Time = 0; 
 			}
 
-			if (animationStateSet.ContainsKey(animation))
+			if (animationStateSet.AllAnimationStates.ContainsKey(animation))
 			{
 				sourceAnimationState = entity.GetAnimationState( animation ); 
 				sourceAnimationState.IsEnabled = (true); 

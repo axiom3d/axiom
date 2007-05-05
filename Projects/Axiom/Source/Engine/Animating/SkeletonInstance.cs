@@ -174,10 +174,15 @@ namespace Axiom.Animating
 			return tagPoint;
 		}
 
-		public void RemoveTagPointFromBone( Bone bone, TagPoint tagPoint )
+		public void FreeTagPoint( TagPoint tagPoint )
 		{
-			bone.RemoveChild( tagPoint );
-			tagPointList.Remove( tagPoint );
+			if  ( tagPointList.ContainsValue( tagPoint ) )
+			{
+				if ( tagPoint.Parent != null )
+				{
+					tagPoint.Parent.RemoveChild( tagPoint );
+				}
+			}
 		}
 
 		#endregion Methods

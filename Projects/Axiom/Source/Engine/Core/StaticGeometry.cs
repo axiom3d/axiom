@@ -651,7 +651,7 @@ namespace Axiom.Core
 
 			int numvbufs = vd.vertexBufferBinding.BindingCount;
 			// Copy buffers from old to new
-			for ( ushort b = 0; b < numvbufs; ++b )
+			for ( short b = 0; b < numvbufs; ++b )
 			{
 				// Lock old buffer
 				HardwareVertexBuffer oldBuf = vd.vertexBufferBinding.GetBuffer( b );

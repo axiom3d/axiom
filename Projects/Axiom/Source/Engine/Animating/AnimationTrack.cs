@@ -196,7 +196,7 @@ namespace Axiom.Animating
 		///    value is, e.g. 0.0 for exactly at 1, 0.25 for a quarter etc. By definition the range of this 
 		///    value is:  0.0 &lt;= returnValue &lt; 1.0 .
 		///</returns>
-		public float GetKeyFramesAtTime( float time, out KeyFrame keyFrame1, out KeyFrame keyFrame2, out ushort firstKeyIndex )
+		public float GetKeyFramesAtTime( float time, out KeyFrame keyFrame1, out KeyFrame keyFrame2, out short firstKeyIndex )
 		{
 			short firstIndex = -1;
 			float totalLength = parent.Length;
@@ -232,7 +232,7 @@ namespace Axiom.Animating
 			}
 
 			// fill index of the first key
-			firstKeyIndex = (ushort)firstIndex;
+			firstKeyIndex = firstIndex;
 
 			// parametric time
 			// t1 = time of previous keyframe
@@ -439,7 +439,7 @@ namespace Axiom.Animating
 			// Keyframe pointers
 			KeyFrame kBase1, kBase2;
 			NumericKeyFrame k1, k2;
-			ushort firstKeyIndex;
+			short firstKeyIndex;
 
 			float t = GetKeyFramesAtTime( timeIndex, out kBase1, out kBase2, out firstKeyIndex );
 			k1 = (NumericKeyFrame)kBase1;
@@ -603,7 +603,7 @@ namespace Axiom.Animating
 			// Keyframe pointers
 			KeyFrame kBase1, kBase2;
 			TransformKeyFrame k1, k2;
-			ushort firstKeyIndex;
+			short firstKeyIndex;
 
 			float t = GetKeyFramesAtTime( time, out kBase1, out kBase2, out firstKeyIndex );
 			k1 = (TransformKeyFrame)kBase1;
@@ -1000,7 +1000,7 @@ namespace Axiom.Animating
 
 			// Get keyframes
 			KeyFrame kf1, kf2;
-			ushort firstKeyIndex;
+			short firstKeyIndex;
 			float t = GetKeyFramesAtTime( time, out kf1, out kf2, out firstKeyIndex );
 
 			if ( animationType == VertexAnimationType.Morph )

@@ -86,19 +86,19 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Index at which the positions are bound in the buffer.
 		/// </summary>
-		public ushort posBindIndex;
+		public short posBindIndex;
 		/// <summary>
 		///     Index at which the normals are bound in the buffer.
 		/// </summary>
-		public ushort normBindIndex;
+		public short normBindIndex;
 		/// <summary>
 		///     Index at which the tangents are bound in the buffer.
 		/// </summary>
-		public ushort tanBindIndex;
+		public short tanBindIndex;
 		/// <summary>
 		///     Index at which the binormals are bound in the buffer.
 		/// </summary>
-		public ushort binormBindIndex;
+		public short binormBindIndex;
 		/// <summary>
 		///		Should we bind the position buffer
 		/// </summary>

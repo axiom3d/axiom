@@ -1016,7 +1016,7 @@ namespace Axiom.Core
 			// Weights are more specific though since they are Reals
 			VertexDeclaration decl = targetVertexData.vertexDeclaration;
 			VertexBufferBinding bind = targetVertexData.vertexBufferBinding;
-			ushort bindIndex;
+			short bindIndex;
 
 			VertexElement testElem = decl.FindElementBySemantic( VertexElementSemantic.BlendIndices );
 
