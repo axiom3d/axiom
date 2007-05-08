@@ -66,7 +66,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		public override void Update()
 		{
-			D3D9RenderSystem rs = (D3D9RenderSystem)Root.Instance.RenderSystem;
+			D3DRenderSystem rs = (D3DRenderSystem)Root.Instance.RenderSystem;
 			if ( rs.DeviceLost )
 				return;
 

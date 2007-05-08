@@ -258,14 +258,6 @@ namespace Axiom.RenderSystems.OpenGL
             }
         }
 
-
-		//public override RenderTexture CreateRenderTexture( string name, int width, int height )
-		//{
-		//    GLRenderTexture renderTexture = new GLRenderTexture( name, width, height );
-		//    AttachRenderTarget( renderTexture );
-		//    return renderTexture;
-		//}
-
         /// <summary>
         ///		Returns an OpenGL implementation of a hardware occlusion query.
         /// </summary>

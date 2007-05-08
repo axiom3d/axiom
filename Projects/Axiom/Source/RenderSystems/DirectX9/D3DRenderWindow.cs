@@ -817,7 +817,7 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				_d3dpp.BackBufferWidth = Width = width;
 				_d3dpp.BackBufferHeight = Height = height;
-				( (D3D9RenderSystem)( Root.Instance.RenderSystem ) ).notifyDeviceLost();
+				( (D3DRenderSystem)( Root.Instance.RenderSystem ) ).notifyDeviceLost();
 			}
 
 			// Notify viewports of resize
@@ -869,7 +869,7 @@ namespace Axiom.RenderSystems.DirectX9
 				catch ( D3D.DeviceLostException dlx )
 				{
 					_renderSurface.Dispose();
-					( (D3D9RenderSystem)( Root.Instance.RenderSystem ) ).notifyDeviceLost();
+					( (D3DRenderSystem)( Root.Instance.RenderSystem ) ).notifyDeviceLost();
 				}
 				catch ( D3D.DeviceNotResetException dnrx )
 				{
@@ -1007,7 +1007,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		public override void Update( bool swapBuffers )
 		{
-			D3D9RenderSystem rs = (D3D9RenderSystem)Root.Instance.RenderSystem;
+			D3DRenderSystem rs = (D3DRenderSystem)Root.Instance.RenderSystem;
 
 			// access device through driver
 			D3D.Device device = _driver.D3DDevice;

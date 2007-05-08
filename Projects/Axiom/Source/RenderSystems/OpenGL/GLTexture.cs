@@ -576,6 +576,16 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override HardwarePixelBuffer GetBuffer( int face, int mipmap )
 		{
+			// TODO
+			/*
+			if ( face >= getNumFaces() )
+				throw new IndexOutOfRangeException( "Face index out of range" );
+			if ( mipmap > mNumMipmaps )
+				throw new IndexOutOfRangeException( "MipMap index out of range" );
+			int idx = face * ( mNumMipmaps + 1 ) + mipmap;
+			assert( idx < mSurfaceList.size() );
+			return mSurfaceList[ idx ];
+			 */
 			return null;
 		}
 	}
