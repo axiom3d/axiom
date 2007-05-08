@@ -59,7 +59,7 @@ namespace Axiom.RenderSystems.DirectX9
 	/// <summary>
 	/// DirectX9 Render System implementation.
 	/// </summary>
-	public class D3D9RenderSystem : RenderSystem
+	public class D3DRenderSystem : RenderSystem
 	{
 
 		public static readonly Matrix4 ProjectionClipSpace2DToImageSpacePerspective = new Matrix4(
@@ -159,7 +159,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// </summary>
 		private Microsoft.DirectX.Vector4 tempVec = new Microsoft.DirectX.Vector4();
 
-		public D3D9RenderSystem()
+		public D3DRenderSystem()
 		{
 			LogManager.Instance.Write( "D3D9 : Direct3D9 Rendering Subsystem created." );
 

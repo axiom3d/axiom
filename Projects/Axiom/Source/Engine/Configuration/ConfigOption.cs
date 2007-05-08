@@ -43,11 +43,19 @@ using Axiom.Graphics;
 			
 namespace Axiom.Configuration
 {
+	public class ConfigOption : ConfigOption<string>
+	{
+		public ConfigOption( string name, string value, bool immutable )
+			: base( name, value, immutable )
+		{
+		}
+	}
+
     /// <summary>
     /// Packages the details of a configuration option.
     /// </summary>
     /// <remarks>Used for RenderSystem::getConfigOptions. If immutable is true, this option must be disabled for modifying.</remarks>
-    public class ConfigOption
+    public class ConfigOption<T>
     {
         RenderSystem _parent;
 
@@ -69,11 +77,11 @@ namespace Axiom.Configuration
 
         #region Value Property
 
-        private string _value;
+        private T _value;
         /// <summary>
         /// The value of the Configuration Option
         /// </summary>
-        public string Value
+        public T Value
         {
             get
             {
@@ -93,11 +101,11 @@ namespace Axiom.Configuration
 
         #region PossibleValues Property
 
-		private List<String> _possibleValues = new List<String>();
+		private List<T> _possibleValues = new List<T>();
         /// <summary>
         /// A list of the possible values for this Configuration Option
         /// </summary>
-        public List<String> PossibleValues
+        public List<T> PossibleValues
         {
             get
             {
@@ -123,7 +131,7 @@ namespace Axiom.Configuration
 
         #endregion Immutable Property
 
-        public ConfigOption( string name, string value, bool immutable)
+        public ConfigOption( string name, T value, bool immutable)
         {
             _name = name;
             _value = value;
@@ -135,10 +143,10 @@ namespace Axiom.Configuration
         public delegate void ValueChanged( string name, string value );
         public event ValueChanged ConfigValueChanged;
 
-        private void OnValueChanged( string name, string value )
+        private void OnValueChanged( string name, T value )
         {
             if ( ConfigValueChanged != null )
-                ConfigValueChanged( name, Value );
+                ConfigValueChanged( name, Value.ToString() );
         }
 
         #endregion Events

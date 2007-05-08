@@ -55,7 +55,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// <summary>
         ///     Reference to the render system instance.
         /// </summary>
-        private RenderSystem renderSystem = new D3D9RenderSystem();
+        private RenderSystem renderSystem = new D3DRenderSystem();
 
         #endregion Fields
 
