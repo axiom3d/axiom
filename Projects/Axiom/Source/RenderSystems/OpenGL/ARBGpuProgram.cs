@@ -44,7 +44,7 @@ using Tao.OpenGl;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.OpenGL.ARB
+namespace Axiom.RenderSystems.OpenGL
 {
     /// <summary>
     /// Summary description for ARBGpuProgram.

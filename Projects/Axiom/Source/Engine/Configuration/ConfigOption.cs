@@ -123,6 +123,10 @@ namespace Axiom.Configuration
         /// </summary>
         public bool Immutable
         {
+			set
+			{
+				Immutable = value;
+			}
             get
             {
                 return _immutable;

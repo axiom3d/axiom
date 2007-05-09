@@ -49,6 +49,7 @@ namespace Axiom.Configuration
         public const int MaxTextureLayers = 8;
         public const int MaxBlendWeights = 4;
         public const int MaxSimultaneousLights = 8;
+		public const int MaxMultipleRenderTargets = 8;
 
         public Config()
         {

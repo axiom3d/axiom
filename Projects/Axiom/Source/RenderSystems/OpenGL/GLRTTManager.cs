@@ -49,20 +49,38 @@ namespace Axiom.RenderSystems.OpenGL
 	/// <summary>
 	/// Manager/factory for RenderTextures.
 	/// </summary>
-	internal abstract class GLRTTManager
+	internal abstract class GLRTTManager : IDisposable
 	{
 		#region Singleton Implementation
 
+		/// <summary>
+		///     Singleton instance of this class.
+		/// </summary>
 		private static GLRTTManager _instance;
+
+		/// <summary>
+		///     Internal constructor.  This class cannot be instantiated externally.
+		/// </summary>
+		/// <remarks>
+		///     Protected internal because this singleton will actually hold the instance of a subclass
+		///     created by a render system plugin.
+		/// </remarks>
+		protected internal GLRTTManager()
+		{
+			if ( _instance == null )
+			{
+				_instance = this;
+			}
+		}
+
+		/// <summary>
+		///     Gets the singleton instance of this class.
+		/// </summary>
 		public static GLRTTManager Instance
 		{
 			get
 			{
 				return _instance;
-			}
-			protected set
-			{
-				_instance = value;
 			}
 		}
 
@@ -144,5 +162,79 @@ namespace Axiom.RenderSystems.OpenGL
 		}
 
 		#endregion Methods
+
+		#region IDisposable Implementation
+
+
+		#region isDisposed Property
+
+		private bool _disposed = false;
+		/// <summary>
+		/// Determines if this instance has been disposed of already.
+		/// </summary>
+		protected bool isDisposed
+		{
+			get
+			{
+				return _disposed;
+			}
+			set
+			{
+				_disposed = value;
+			}
+		}
+
+		#endregion isDisposed Property
+
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		/// <remarks>
+		/// When implementing this method in an inherited class the following template should be used;
+		/// protected override void dispose( bool disposeManagedResources )
+		/// {
+		/// 	if ( !isDisposed )
+		/// 	{
+		/// 		if ( disposeManagedResources )
+		/// 		{
+		/// 			// Dispose managed resources.
+		/// 		}
+		/// 
+		/// 		// There are no unmanaged resources to release, but
+		/// 		// if we add them, they need to be released here.
+		/// 	}
+		/// 	isDisposed = true;
+		///
+		/// 	// If it is available, make the call to the
+		/// 	// base class's Dispose(Boolean) method
+		/// 	base.dispose( disposeManagedResources );
+		/// }
+		/// </remarks>
+		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+		protected virtual void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					// Dispose managed resources.
+					if ( this == GLRTTManager.Instance )
+						_instance = null;
+				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
+			isDisposed = true;
+		}
+
+		public void Dispose()
+		{
+			dispose( true );
+			GC.SuppressFinalize( this );
+		}
+
+		#endregion IDisposable Implementation
+
 	}
 }

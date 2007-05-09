@@ -37,11 +37,12 @@ using System;
 using System.Runtime.InteropServices;
 using System.Collections.Specialized;
 
+using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Graphics;
+using Axiom.Media;
 
 using Tao.OpenGl;
-using Axiom.Collections;
 
 #endregion Namespace Declarations
 
@@ -50,93 +51,106 @@ namespace Axiom.RenderSystems.OpenGL
     /// <summary>
     /// Summary description for GLHelper.
     /// </summary>
-    public abstract class BaseGLSupport
+    internal abstract class BaseGLSupport
     {
-        #region Fields
+        #region Fields and Properties
 
-        /// <summary>
-        ///		Collection of extensions supported by the current hardware.
-        /// </summary>
-        private static StringCollection extensionList;
-        /// <summary>
-        ///		OpenGL version string.
-        /// </summary>
-        private static string glVersion;
-        /// <summary>
-        ///		Vendor of the current hardware.
-        /// </summary>
-        private static string vendor;
-        /// <summary>
-        ///		Name of the video card in use.
-        /// </summary>
-        private static string videoCard;
-        /// <summary>
-        ///		Config options.
-        /// </summary>
-        protected ConfigOptionCollection engineConfig = new ConfigOptionCollection();
+		#region Extensions Property
 
-        #endregion Fields
+		/// <summary>
+		///		Collection of extensions supported by the current hardware.
+		/// </summary>
+		private static StringCollection _extensionList;
+		/// <summary>
+		///		Gets a collection of strings listing all the available extensions.
+		/// </summary>
+		public StringCollection Extensions
+		{
+			get
+			{
+				return _extensionList;
+			}
+		}
 
-        #region Base Members
+		#endregion Extensions Property
 
-        #region Properties
+		#region Version Property
 
-        /// <summary>
-        ///		Gets the options currently set by the current GL implementation.
-        /// </summary>
-        public ConfigOptionCollection ConfigOptions
-        {
-            get
-            {
-                return engineConfig;
-            }
-        }
+		/// <summary>
+		///		OpenGL version string.
+		/// </summary>
+		private static string _glVersion;
+		/// <summary>
+		///		Version string for the current OpenGL driver.
+		/// </summary>
+		public string Version
+		{
+			get
+			{
+				return _glVersion;
+			}
+		}
 
-        /// <summary>
-        ///		Gets a collection of strings listing all the available extensions.
-        /// </summary>
-        public StringCollection Extensions
-        {
-            get
-            {
-                return extensionList;
-            }
-        }
+		#endregion Version Property
 
-        /// <summary>
-        ///		Name of the vendor for the current video hardware.
-        /// </summary>
-        public string Vendor
-        {
-            get
-            {
-                return vendor;
-            }
-        }
+		#region Vendor Property
 
-        /// <summary>
-        ///		Name/brand of the current video hardware.
-        /// </summary>
-        public string VideoCard
-        {
-            get
-            {
-                return videoCard;
-            }
-        }
+		/// <summary>
+		///		Vendor of the current hardware.
+		/// </summary>
+		private static string _vendor;
+		/// <summary>
+		///		Name of the vendor for the current video hardware.
+		/// </summary>
+		public string Vendor
+		{
+			get
+			{
+				return _vendor;
+			}
+		}
 
-        /// <summary>
-        ///		Version string for the current OpenGL driver.
-        /// </summary>
-        public string Version
-        {
-            get
-            {
-                return glVersion;
-            }
-        }
+		#endregion Vendor Property
 
-        #endregion Properties
+		#region VideoCard Property
+
+		/// <summary>
+		///		Name of the video card in use.
+		/// </summary>
+		private static string _videoCard;
+		/// <summary>
+		///		Name/brand of the current video hardware.
+		/// </summary>
+		public string VideoCard
+		{
+			get
+			{
+				return _videoCard;
+			}
+		}
+
+		#endregion VideoCard Property
+			
+		#region ConfigOptions Property
+
+		/// <summary>
+		///		Config options.
+		/// </summary>
+		protected ConfigOptionCollection _engineConfig = new ConfigOptionCollection();
+		/// <summary>
+		///		Gets the options currently set by the current GL implementation.
+		/// </summary>
+		public ConfigOptionCollection ConfigOptions
+		{
+			get
+			{
+				return _engineConfig;
+			}
+		}
+		
+		#endregion ConfigOptions Property
+			
+        #endregion Fields and Properties
 
         #region Methods
 
@@ -147,7 +161,7 @@ namespace Axiom.RenderSystems.OpenGL
         /// <returns></returns>
         public bool CheckMinVersion( string version )
         {
-            return glVersion.StartsWith( version );
+			return float.Parse( version ) <= float.Parse( _glVersion.Substring( 0, version.Length ) );
         }
 
         /// <summary>
@@ -158,7 +172,7 @@ namespace Axiom.RenderSystems.OpenGL
         public bool CheckExtension( string extention )
         {
             // check if the extension is supported
-            return extensionList.Contains( extention );
+            return _extensionList.Contains( extention );
         }
 
         /// <summary>
@@ -166,23 +180,23 @@ namespace Axiom.RenderSystems.OpenGL
         /// </summary>
         public void InitializeExtensions()
         {
-            if ( extensionList == null )
+            if ( _extensionList == null )
             {
                 GlExtensionLoader.LoadAllExtensions();
 
                 // get the OpenGL version string and vendor name
-                glVersion = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_VERSION ) );
-                videoCard = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_RENDERER ) );
-                vendor = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_VENDOR ) );
+                _glVersion = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_VERSION ) );
+                _videoCard = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_RENDERER ) );
+                _vendor = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_VENDOR ) );
 
                 // parse out the first piece of the vendor string if there are spaces in it
-                if ( vendor.IndexOf( " " ) != -1 )
+                if ( _vendor.IndexOf( " " ) != -1 )
                 {
-                    vendor = vendor.Substring( 0, vendor.IndexOf( " " ) );
+                    _vendor = _vendor.Substring( 0, _vendor.IndexOf( " " ) );
                 }
 
                 // create a new extension list
-                extensionList = new StringCollection();
+                _extensionList = new StringCollection();
 
                 string allExt = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_EXTENSIONS ) );
                 string[] splitExt = allExt.Split( Char.Parse( " " ) );
@@ -190,16 +204,37 @@ namespace Axiom.RenderSystems.OpenGL
                 // store the parsed extension list
                 for ( int i = 0; i < splitExt.Length; i++ )
                 {
-                    extensionList.Add( splitExt[ i ] );
+                    _extensionList.Add( splitExt[ i ] );
                 }
             }
         }
 
-        #endregion Methods
+		public virtual bool SupportsPBuffers
+		{
+			get
+			{
+				return CheckExtension( "GL_ARB_pixel_buffer_object" ) || CheckExtension( "GL_EXT_pixel_buffer_object" );
+			}
+		}
 
-        #endregion Base Members
+		public virtual GLPBuffer CreatePBuffer(PixelComponentType format, int width, int height)
+		{
+			return null;
+		}
+
+		#endregion Methods
 
         #region Abstract Members
+
+		/// <summary>
+		/// Start anything speciual
+		/// </summary>
+		public abstract void Start();
+
+		/// <summary>
+		/// Stop anything special
+		/// </summary>
+		public abstract void Stop();
 
         /// <summary>
         ///		Add any special config values to the system.
@@ -240,5 +275,6 @@ namespace Axiom.RenderSystems.OpenGL
         public abstract RenderWindow NewWindow( string name, int width, int height, bool fullScreen, NamedParameterList miscParams);
 
         #endregion Abstract Members
-    }
+
+	}
 }
