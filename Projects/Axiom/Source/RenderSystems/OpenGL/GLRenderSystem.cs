@@ -73,7 +73,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		/// Fixed function Texture Units
 		/// </summary>
-		private short _fixedFunctionTextureUnits;
+		private int _fixedFunctionTextureUnits;
 
         /// <summary>
         ///		GLSupport class providing platform specific implementation.
@@ -87,6 +87,15 @@ namespace Axiom.RenderSystems.OpenGL
 
 		private GLContext _mainContext;
 		private GLContext _currentContext;
+
+		
+		/// <summary>
+		/// Manager object for creating render textures.
+		/// Direct render to texture via GL_EXT_framebuffer_object is preferable 
+		/// to pbuffers, which depend on the GL support used and are generally 
+		/// unwieldy and slow. However, FBO support for stencil buffers is poor.
+		/// </summary>
+		GLRTTManager rttManager;
 
         /// <summary>Internal view matrix.</summary>
         protected Matrix4 viewMatrix;
@@ -320,23 +329,27 @@ namespace Axiom.RenderSystems.OpenGL
 			// intialize GL extensions and check capabilites
             _glSupport.InitializeExtensions();
 
+			LogManager.Instance.Write("***************************");
+			LogManager.Instance.Write("*** GL Renderer Started ***");
+			LogManager.Instance.Write( "***************************" );
+
             // log hardware info
             LogManager.Instance.Write( "Vendor: {0}", _glSupport.Vendor );
             LogManager.Instance.Write( "Video Board: {0}", _glSupport.VideoCard );
             LogManager.Instance.Write( "Version: {0}", _glSupport.Version );
 
-            LogManager.Instance.Write( "Extensions supported:" );
+            LogManager.Instance.Write( "Extensions supported: " );
 
-            foreach ( string ext in _glSupport.Extensions )
-            {
-                LogManager.Instance.Write( ext );
-            }
+			foreach ( string ext in _glSupport.Extensions )
+			{
+			    LogManager.Instance.Write( ext );
+			}
 
             // create our special program manager
             gpuProgramMgr = new GLGpuProgramManager();
 
             // query hardware capabilites
-            CheckCaps();
+            CheckCaps( primary );
 
             // create a specialized instance, which registers itself as the singleton instance of HardwareBufferManager
             // use software buffers as a fallback, which operate as regular vertex arrays
@@ -1413,7 +1426,7 @@ namespace Axiom.RenderSystems.OpenGL
         /// <returns></returns>
         public override RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
         {
-			//todo _glSupport.Start();
+			_glSupport.Start();
 
             RenderWindow autoWindow = _glSupport.CreateWindow( autoCreateWindow, this, windowTitle );
 
@@ -1434,14 +1447,30 @@ namespace Axiom.RenderSystems.OpenGL
             {
                 gpuProgramMgr.Dispose();
             }
+
             if ( hardwareBufferManager != null )
             {
                 hardwareBufferManager.Dispose();
             }
-            if ( textureManager != null )
+
+			if ( rttManager != null )
+			{
+				rttManager.Dispose();
+			}
+
+			_glSupport.Stop();
+			_stopRendering = true;
+
+			if ( textureManager != null )
             {
                 textureManager.Dispose();
             }
+
+			// There will be a new initial window and so forth, thus any call to test
+			//  some params will access an invalid pointer, so it is best to reset
+			//  the whole state.
+			_isGLInitialized = false;
+
         }
 
         /// <summary>
@@ -2459,42 +2488,96 @@ namespace Axiom.RenderSystems.OpenGL
         /// <summary>
         ///		Helper method to go through and interrogate hardware capabilities.
         /// </summary>
-        private void CheckCaps()
+        private void CheckCaps( RenderTarget primary )
         {
-            // find out how many lights we have to play with, then create a light array to keep locally
-            int maxLights;
-            Gl.glGetIntegerv( Gl.GL_MAX_LIGHTS, out maxLights );
-            caps.MaxLights = maxLights;
 
-            // check the number of texture units available
-            int numTextureUnits = 0;
-            Gl.glGetIntegerv( Gl.GL_MAX_TEXTURE_UNITS, out numTextureUnits );
-            caps.TextureUnitCount = numTextureUnits;
+			// check hardware mip mapping
+			if ( _glSupport.CheckMinVersion( "1.4" ) ||
+				 _glSupport.CheckExtension( "GL_SGIS_generate_mipmap" ) )
+			{
+				caps.SetCap( Capabilities.HardwareMipMaps );
+			}
+
+			// check texture blending
+			if ( _glSupport.CheckMinVersion( "1.3" ) ||
+				 _glSupport.CheckExtension( "GL_EXT_texture_env_combine" ) ||
+				 _glSupport.CheckExtension( "GL_ARB_texture_env_combine" ) )
+			{
+				caps.SetCap( Capabilities.TextureBlending );
+			}
 
             // check multitexturing
-            if ( _glSupport.CheckExtension( "GL_ARB_multitexture" ) )
-            {
-                caps.SetCap( Capabilities.MultiTexturing );
-            }
+			if ( _glSupport.CheckMinVersion( "1.3" ) ||
+				 _glSupport.CheckExtension( "GL_ARB_multitexture" ) )
+			{
+				// check the number of texture units available
+				int numTextureUnits = 0;
+				Gl.glGetIntegerv( Gl.GL_MAX_TEXTURE_UNITS, out numTextureUnits );
+				_fixedFunctionTextureUnits = numTextureUnits;
 
-            // check texture blending
-            if ( _glSupport.CheckExtension( "GL_EXT_texture_env_combine" ) ||
-                _glSupport.CheckExtension( "GL_ARB_texture_env_combine" ) )
-            {
-                caps.SetCap( Capabilities.TextureBlending );
-            }
+				if ( _glSupport.CheckExtension( "GL_ARB_fragment_program" ) )
+				{
+					// Also check GL_MAX_TEXTURE_IMAGE_UNITS_ARB since NV at least
+					// only increased this on the FX/6x00 series
+					int arbUnits = 0;
+					Gl.glGetIntegerv( Gl.GL_MAX_TEXTURE_IMAGE_UNITS_ARB, out arbUnits );
+					if ( arbUnits > numTextureUnits )
+						numTextureUnits = arbUnits;
+				}
 
-            // anisotropic filtering
-            if ( _glSupport.CheckExtension( "GL_EXT_texture_filter_anisotropic" ) )
-            {
-                caps.SetCap( Capabilities.AnisotropicFiltering );
-            }
+				caps.TextureUnitCount = numTextureUnits;
 
-            // check dot3 support
-            if ( _glSupport.CheckExtension( "GL_ARB_texture_env_dot3" ) )
-            {
-                caps.SetCap( Capabilities.Dot3 );
-            }
+				caps.SetCap( Capabilities.MultiTexturing );
+			}
+			else
+			{
+				// If no multitexture support then set one texture unit
+				caps.TextureUnitCount = 1;
+			}
+
+			// anisotropic filtering
+			if ( _glSupport.CheckExtension( "GL_EXT_texture_filter_anisotropic" ) )
+			{
+				caps.SetCap( Capabilities.AnisotropicFiltering );
+			}
+
+			// check dot3 support
+			if ( _glSupport.CheckMinVersion( "1.3" ) ||
+				 _glSupport.CheckExtension( "GL_ARB_texture_env_dot3" ) )
+			{
+				caps.SetCap( Capabilities.Dot3 );
+			}
+
+			// check support for cube mapping
+			if ( _glSupport.CheckMinVersion( "1.3" ) ||
+				 _glSupport.CheckExtension( "GL_ARB_texture_cube_map" ) ||
+				 _glSupport.CheckExtension( "GL_EXT_texture_cube_map" ) )
+			{
+				caps.SetCap( Capabilities.CubeMapping );
+			}
+
+			// check for point sprite support
+			if ( _glSupport.CheckMinVersion( "1.2" ) ||
+				 _glSupport.CheckExtension( "GL_ARB_point_sprite" ) )
+			{
+				caps.SetCap( Capabilities.PointSprites );
+			}
+			// check support for point parameters
+			if ( _glSupport.CheckMinVersion( "1.4" ) ||
+				 _glSupport.CheckExtension( "GL_ARB_point_parameters" ) ||
+				 _glSupport.CheckExtension( "GL_EXT_point_parameters" ) )
+			{
+				caps.SetCap( Capabilities.PointExtendedParameters );
+			}
+
+			// Check for hardware stencil support and set bit depth
+			int stencilBits;
+			Gl.glGetIntegerv( Gl.GL_STENCIL_BITS, out stencilBits );
+			if ( stencilBits > 0 )
+			{
+				caps.StencilBufferBits = stencilBits;
+				caps.SetCap( Capabilities.StencilBuffer );
+			}
 
             // check support for vertex buffers in hardware
             if ( _glSupport.CheckExtension( "GL_ARB_vertex_buffer_object" ) )
@@ -2502,11 +2585,275 @@ namespace Axiom.RenderSystems.OpenGL
                 caps.SetCap( Capabilities.VertexBuffer );
             }
 
-            if ( _glSupport.CheckExtension( "GL_ARB_texture_cube_map" )
-                || _glSupport.CheckExtension( "GL_EXT_texture_cube_map" ) )
-            {
-                caps.SetCap( Capabilities.CubeMapping );
-            }
+			// ARB Vertex Programs
+			if ( _glSupport.CheckExtension( "GL_ARB_vertex_program" ) )
+			{
+				caps.SetCap( Capabilities.VertexPrograms );
+				caps.MaxVertexProgramVersion = "arbvp1";
+				caps.VertexProgramConstantBoolCount = 0;
+				caps.VertexProgramConstantIntCount = 0;
+
+				int maxFloats;
+				Gl.glGetProgramivARB(Gl.GL_VERTEX_PROGRAM_ARB, Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats );
+				caps.VertexProgramConstantFloatCount = maxFloats;
+
+				// register support for arbvp1
+				gpuProgramMgr.PushSyntaxCode( "arbvp1" );
+				gpuProgramMgr.RegisterProgramFactory( "arbvp1", new ARBGpuProgramFactory() );
+
+				// GeForceFX vp30 Vertex Programs
+				if ( _glSupport.CheckExtension( "GL_NV_vertex_program2_option" ) )
+				{
+					caps.SetCap( Capabilities.VertexPrograms );
+					caps.MaxVertexProgramVersion = "vp30";
+
+					gpuProgramMgr.PushSyntaxCode( "vp30" );
+					gpuProgramMgr.RegisterProgramFactory( "vp30", new ARBGpuProgramFactory() );
+				}
+
+				if ( _glSupport.CheckExtension( "GL_NV_vertex_program3" ) )
+				{
+					caps.SetCap( Capabilities.VertexPrograms );
+					caps.MaxVertexProgramVersion = "vp40";
+
+					gpuProgramMgr.PushSyntaxCode( "vp40" );
+					gpuProgramMgr.RegisterProgramFactory( "vp40", new ARBGpuProgramFactory() );
+				}
+			}
+
+			// GeForce3/4 Register Combiners/Texture Shaders
+			if ( _glSupport.CheckExtension( "GL_NV_register_combiners2" ) &&
+				 _glSupport.CheckExtension( "GL_NV_texture_shader" ) )
+			{
+				caps.SetCap( Capabilities.FragmentPrograms );
+				caps.MaxFragmentProgramVersion = "fp20";
+
+				gpuProgramMgr.PushSyntaxCode( "fp20" );
+				gpuProgramMgr.RegisterProgramFactory( "fp20", new Nvidia.NvparseProgramFactory() );
+			}
+
+			// ATI Fragment Programs (supported via conversion from DX ps1.1 - ps1.4 shaders)
+			if ( _glSupport.CheckExtension( "GL_ATI_fragment_shader" ) )
+			{
+				caps.SetCap( Capabilities.FragmentPrograms );
+				caps.MaxFragmentProgramVersion = "ps_1_4";
+				// no boolean params allowed
+				caps.FragmentProgramConstantBoolCount = 0;
+				// no int params allowed
+				caps.FragmentProgramConstantIntCount = 0;
+				// only 8 vector4 constant floats supported
+				caps.FragmentProgramConstantFloatCount = 8;
+
+				// register support for ps1.1 - ps1.4
+				gpuProgramMgr.PushSyntaxCode( "ps_1_1" );
+				gpuProgramMgr.PushSyntaxCode( "ps_1_2" );
+				gpuProgramMgr.PushSyntaxCode( "ps_1_3" );
+				gpuProgramMgr.PushSyntaxCode( "ps_1_4" );
+				gpuProgramMgr.RegisterProgramFactory( "ps_1_1", new ATI.ATIFragmentShaderFactory() );
+				gpuProgramMgr.RegisterProgramFactory( "ps_1_2", new ATI.ATIFragmentShaderFactory() );
+				gpuProgramMgr.RegisterProgramFactory( "ps_1_3", new ATI.ATIFragmentShaderFactory() );
+				gpuProgramMgr.RegisterProgramFactory( "ps_1_4", new ATI.ATIFragmentShaderFactory() );
+			}
+
+			// ARB Fragment Programs
+			if ( _glSupport.CheckExtension( "GL_ARB_fragment_program" ) )
+			{
+				caps.SetCap( Capabilities.FragmentPrograms );
+
+				caps.MaxFragmentProgramVersion = "arbfp1";
+				caps.FragmentProgramConstantBoolCount = 0;
+				caps.FragmentProgramConstantIntCount = 0;
+
+				int maxFloats;
+				Gl.glGetProgramivARB( Gl.GL_FRAGMENT_PROGRAM_ARB, Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats );
+				caps.FragmentProgramConstantFloatCount = maxFloats;
+
+				// register support for arbfp1
+				gpuProgramMgr.PushSyntaxCode( "arbfp1" );
+				gpuProgramMgr.RegisterProgramFactory( "arbfp1", new ARBGpuProgramFactory() );
+
+				// GeForceFX fp30 Fragment Programs
+				if ( _glSupport.CheckExtension( "GL_NV_fragment_program_option" ) )
+				{
+					caps.MaxFragmentProgramVersion = "fp30";
+					gpuProgramMgr.PushSyntaxCode( "fp30" );
+					gpuProgramMgr.RegisterProgramFactory( "fp30", new Nvidia.NV3xGpuProgramFactory() );
+				}
+
+				if ( _glSupport.CheckExtension( "GL_NV_fragment_program2" ) )
+				{
+					caps.MaxFragmentProgramVersion = "fp40";
+					gpuProgramMgr.PushSyntaxCode( "fp40" );
+					gpuProgramMgr.RegisterProgramFactory( "fp40", new ARBGpuProgramFactory() );
+				}
+			}
+
+			// GLSL support
+			if ( _glSupport.CheckMinVersion( "1.2") ||
+				 _glSupport.CheckExtension( "GL_ARB_shading_language_100" ) &&
+				 _glSupport.CheckExtension( "GL_ARB_shader_objects" ) &&
+				 _glSupport.CheckExtension( "GL_ARB_fragment_shader" ) &&
+				 _glSupport.CheckExtension( "GL_ARB_vertex_shader" ) )
+			{
+				gpuProgramMgr.PushSyntaxCode( "glsl" );
+				LogManager.Instance.Write("GLSL support detected");
+			}
+
+			// Texture Compression
+			if ( _glSupport.CheckMinVersion( "1.3" ) ||  
+				 _glSupport.CheckExtension( "GL_ARB_texture_compression" ) )
+			{
+				caps.SetCap( Capabilities.TextureCompression );
+
+				// DXT compression
+				if ( _glSupport.CheckExtension( "GL_EXT_texture_compression_s3tc" ) )
+				{
+					caps.SetCap( Capabilities.TextureCompressionDXT );
+				}
+
+				// VTC compression
+				if ( _glSupport.CheckExtension( "GL_NV_texture_compression_vtc" ) )
+				{
+					caps.SetCap( Capabilities.TextureCompressionVTC );
+				}
+			}
+
+			// scissor test is standard in GL 1.2 and above
+			caps.SetCap( Capabilities.ScissorTest );
+
+			// as are user clip planes
+			caps.SetCap( Capabilities.UserClipPlanes );
+
+			// 2 sided stencil
+			if ( _glSupport.CheckExtension( "GL_EXT_stencil_two_side" ) )
+			{
+				caps.SetCap( Capabilities.TwoSidedStencil );
+			}
+
+			// stencil wrapping
+			if ( _glSupport.CheckExtension( "GL_EXT_stencil_wrap" ) )
+			{
+				caps.SetCap( Capabilities.StencilWrap );
+			}
+
+			// Check for hardware occlusion support
+			if ( _glSupport.CheckExtension( "GL_NV_occlusion_query" ) )
+			{
+				caps.SetCap( Capabilities.HardwareOcculusion );
+			}
+
+			// UBYTE4 is always supported in GL
+			caps.SetCap( Capabilities.VertexFormatUByte4 );
+
+			// Infinit far plane always supported
+			caps.SetCap( Capabilities.InfiniteFarPlane );
+
+			if ( _glSupport.CheckExtension( "GL_ARB_texture_non_power_of_two" ) )
+			{
+				caps.SetCap( Capabilities.NonPowerOf2Textures );
+			}
+
+			// Check for Float textures
+			if ( _glSupport.CheckExtension( "GL_ATI_texture_float" ) ||
+				 _glSupport.CheckExtension( "GL_ARB_texture_float" ) )
+			{
+				caps.SetCap( Capabilities.TextureFloat );
+			}
+
+			// 3D textures should be supported by GL 1.2, which is our minimum version
+			caps.SetCap( Capabilities.Texture3D );
+
+			/// Do this after extension function pointers are initialised as the extension
+			/// is used to probe further capabilities.
+			int rttMode = 0;
+			if ( ConfigOptions.ContainsKey( "RTT Preferred Mode" ) )
+			{
+				ConfigOption opt = ConfigOptions[ "RTT Preferred Mode" ];
+				// RTT Mode: 0 use whatever available, 1 use PBuffers, 2 force use copying
+				if ( opt.Value == "PBuffer" )
+				{
+					rttMode = 1;
+				}
+				else if (opt.Value == "Copy" )
+				{
+					rttMode = 2;
+				}
+			}
+
+			 // Check for framebuffer object extension
+			if ( _glSupport.CheckExtension( "GL_EXT_framebuffer_object" ) && ( rttMode < 1 ) )
+			{
+				// Probe number of draw buffers
+				// Only makes sense with FBO support, so probe here
+				if ( _glSupport.CheckMinVersion( "2.0" ) ||
+					_glSupport.CheckExtension( "GL_ARB_draw_buffers" ) ||
+					_glSupport.CheckExtension( "GL_ATI_draw_buffers" ) )
+				{
+					int buffers;
+					Gl.glGetIntegerv( Gl.GL_MAX_DRAW_BUFFERS_ARB, out buffers );
+					caps.NumMultiRenderTargets = (int)Utility.Min( buffers, Config.MaxMultipleRenderTargets );
+					if ( !_glSupport.CheckMinVersion( "2.0" ) )
+					{
+						//TODO: Before GL version 2.0, we need to get one of the extensions
+						//if ( _glSupport.CheckExtension( "GL_ARB_draw_buffers" ) )
+						//    Gl.glDrawBuffers = Gl.glDrawBuffersARB;
+						//else if ( _glSupport.CheckExtension( "GL_ATI_draw_buffers" ) )
+						//    Gl.glDrawBuffers = Gl.glDrawBuffersATI;
+					}
+				}
+				// Create FBO manager
+				LogManager.Instance.Write( "GL: Using GL_EXT_framebuffer_object for rendering to textures (best)" );
+				//mRTTManager = new GLFBOManager(mGLSupport->getGLVendor() == "ATI");
+				rttManager = new GLFBORTTManager( false );
+				caps.SetCap( Capabilities.HardwareRenderToTexture );
+			}
+			else
+			{
+				// Check GLSupport for PBuffer support
+				if ( _glSupport.SupportsPBuffers && rttMode < 2 )
+				{
+					// Use PBuffers
+					rttManager = new GLPBRTTManager( _glSupport, primary  );
+					LogManager.Instance.Write( "GL: Using PBuffers for rendering to textures" );
+					caps.SetCap( Capabilities.HardwareRenderToTexture );
+				}
+				else
+				{
+					// No pbuffer support either -- fallback to simplest copying from framebuffer
+					rttManager = new GLCopyingRTTManager();
+					LogManager.Instance.Write( "GL: Using framebuffer copy for rendering to textures (worst)" );
+					LogManager.Instance.Write( "GL: Warning: RenderTexture size is restricted to size of framebuffer. If you are on Linux, consider using GLX instead of SDL." );
+				}
+			}
+
+			// Point size
+			float ps;
+			Gl.glGetFloatv( Gl.GL_POINT_SIZE_MAX, out ps );
+			caps.MaxPointSize = ps;
+
+			// Vertex texture fetching
+			int vUnits;
+			Gl.glGetIntegerv( Gl.GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS_ARB, out vUnits );
+			caps.NumVertexTextureUnits = vUnits;
+			if ( vUnits > 0 )
+			{
+				caps.SetCap( Capabilities.VertexTextureFetch );
+			}
+			// GL always shares vertex and fragment texture units (for now?)
+			caps.VertexTextureUnitsShared = true ;
+
+			// Mipmap LOD biasing?
+			if ( _glSupport.CheckMinVersion( "1.4") || 
+				 _glSupport.CheckExtension( "GL_EXT_texture_lod_bias" ) )
+			{
+				caps.SetCap( Capabilities.MipmapLODBias );
+			}
+
+			// find out how many lights we have to play with, then create a light array to keep locally
+            int maxLights;
+            Gl.glGetIntegerv( Gl.GL_MAX_LIGHTS, out maxLights );
+            caps.MaxLights = maxLights;
+
 
             // check support for hardware vertex blending
             // TODO: Dont check this cap yet, wait for vertex shader support so that software blending is always used
@@ -2519,169 +2866,6 @@ namespace Axiom.RenderSystems.OpenGL
                 caps.SetCap( Capabilities.AnisotropicFiltering );
             }
 
-            // check hardware mip mapping
-            if ( _glSupport.CheckExtension( "GL_SGIS_generate_mipmap" ) )
-            {
-                caps.SetCap( Capabilities.HardwareMipMaps );
-            }
-
-            // Texture Compression
-            if ( _glSupport.CheckExtension( "GL_ARB_texture_compression" ) )
-            {
-                caps.SetCap( Capabilities.TextureCompression );
-
-                // DXT compression
-                if ( _glSupport.CheckExtension( "GL_EXT_texture_compression_s3tc" ) )
-                {
-                    caps.SetCap( Capabilities.TextureCompressionDXT );
-                }
-
-                // VTC compression
-                if ( _glSupport.CheckExtension( "GL_NV_texture_compression_vtc" ) )
-                {
-                    caps.SetCap( Capabilities.TextureCompressionVTC );
-                }
-            }
-
-            // check stencil buffer depth availability
-            int stencilBits;
-            Gl.glGetIntegerv( Gl.GL_STENCIL_BITS, out stencilBits );
-            caps.StencilBufferBits = stencilBits;
-
-            // if stencil bits are available, enable stencil buffering
-            if ( stencilBits > 0 )
-            {
-                caps.SetCap( Capabilities.StencilBuffer );
-            }
-
-            // 2 sided stencil
-            if ( _glSupport.CheckExtension( "GL_EXT_stencil_two_side" ) )
-            {
-                caps.SetCap( Capabilities.TwoSidedStencil );
-            }
-
-            // stencil wrapping
-            if ( _glSupport.CheckExtension( "GL_EXT_stencil_wrap" ) )
-            {
-                caps.SetCap( Capabilities.StencilWrap );
-            }
-
-            // Check for hardware occlusion support
-            if ( _glSupport.CheckExtension( "GL_NV_occlusion_query" ) )
-            {
-                caps.SetCap( Capabilities.HardwareOcculusion );
-            }
-
-            // scissor test is standard in GL 1.2 and above
-            caps.SetCap( Capabilities.ScissorTest );
-
-            // UBYTE4 is always supported in GL
-            caps.SetCap( Capabilities.VertexFormatUByte4 );
-
-            // Infinit far plane always supported
-            caps.SetCap( Capabilities.InfiniteFarPlane );
-
-            // Hardware occlusion queries
-            if ( _glSupport.CheckExtension( "GL_NV_occlusion_query" ) )
-            {
-                caps.SetCap( Capabilities.HardwareOcculusion );
-            }
-
-            // ARB Vertex Programs
-            if ( _glSupport.CheckExtension( "GL_ARB_vertex_program" ) )
-            {
-                caps.SetCap( Capabilities.VertexPrograms );
-                caps.MaxVertexProgramVersion = "arbvp1";
-                caps.VertexProgramConstantIntCount = 0;
-                // TODO: Fix constant float count calcs, glGetIntegerv doesn't work
-                //int maxFloats;
-                //Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats);
-                //caps.VertexProgramConstantFloatCount = maxFloats;
-
-                // register support for arbvp1
-                gpuProgramMgr.PushSyntaxCode( "arbvp1" );
-                gpuProgramMgr.RegisterProgramFactory( "arbvp1", new ARB.ARBGpuProgramFactory() );
-            }
-
-            // ARB Fragment Programs
-            if ( _glSupport.CheckExtension( "GL_ARB_fragment_program" ) )
-            {
-                caps.SetCap( Capabilities.FragmentPrograms );
-                caps.MaxFragmentProgramVersion = "arbfp1";
-                caps.FragmentProgramConstantIntCount = 0;
-                // TODO: Fix constant float count calcs, glGetIntegerv doesn't work
-                //int maxFloats;
-                //Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats);
-                //caps.FragmentProgramConstantFloatCount = maxFloats;
-
-                // register support for arbfp1
-                gpuProgramMgr.PushSyntaxCode( "arbfp1" );
-                gpuProgramMgr.RegisterProgramFactory( "arbfp1", new ARB.ARBGpuProgramFactory() );
-            }
-
-            // ATI Fragment Programs (supported via conversion from DX ps1.1 - ps1.4 shaders)
-            if ( _glSupport.CheckExtension( "GL_ATI_fragment_shader" ) )
-            {
-                caps.SetCap( Capabilities.FragmentPrograms );
-                caps.MaxFragmentProgramVersion = "ps_1_4";
-                caps.FragmentProgramConstantIntCount = 0;
-                // TODO: Fix constant float count calcs, glGetIntegerv doesn't work
-                //int maxFloats;
-                //Gl.glGetIntegerv(Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats);
-                //caps.FragmentProgramConstantFloatCount = maxFloats;
-
-                // register support for ps1.1 - ps1.4
-                gpuProgramMgr.PushSyntaxCode( "ps_1_1" );
-                gpuProgramMgr.PushSyntaxCode( "ps_1_2" );
-                gpuProgramMgr.PushSyntaxCode( "ps_1_3" );
-                gpuProgramMgr.PushSyntaxCode( "ps_1_4" );
-                gpuProgramMgr.RegisterProgramFactory( "ps_1_1", new ATI.ATIFragmentShaderFactory() );
-                gpuProgramMgr.RegisterProgramFactory( "ps_1_2", new ATI.ATIFragmentShaderFactory() );
-                gpuProgramMgr.RegisterProgramFactory( "ps_1_3", new ATI.ATIFragmentShaderFactory() );
-                gpuProgramMgr.RegisterProgramFactory( "ps_1_4", new ATI.ATIFragmentShaderFactory() );
-            }
-
-            // GeForce3/4 Register Combiners/Texture Shaders
-            if ( _glSupport.CheckExtension( "GL_NV_register_combiners2" ) &&
-                _glSupport.CheckExtension( "GL_NV_texture_shader" ) )
-            {
-
-                caps.SetCap( Capabilities.FragmentPrograms );
-                caps.MaxFragmentProgramVersion = "fp20";
-
-                gpuProgramMgr.PushSyntaxCode( "fp20" );
-                gpuProgramMgr.RegisterProgramFactory( "fp20", new Nvidia.NvparseProgramFactory() );
-            }
-
-            // GeForceFX vp30 Vertex Programs
-            if ( _glSupport.CheckExtension( "GL_NV_vertex_program2" ) )
-            {
-                caps.SetCap( Capabilities.VertexPrograms );
-                caps.MaxVertexProgramVersion = "vp30";
-
-                gpuProgramMgr.PushSyntaxCode( "vp30" );
-                gpuProgramMgr.RegisterProgramFactory( "vp30", new Nvidia.NV3xGpuProgramFactory() );
-            }
-
-            // GeForceFX fp30 Fragment Programs
-            if ( _glSupport.CheckExtension( "GL_NV_fragment_program" ) )
-            {
-                caps.SetCap( Capabilities.FragmentPrograms );
-                caps.MaxFragmentProgramVersion = "fp30";
-
-                gpuProgramMgr.PushSyntaxCode( "fp30" );
-                gpuProgramMgr.RegisterProgramFactory( "fp30", new Nvidia.NV3xGpuProgramFactory() );
-            }
-
-            // GLSL support
-            if ( _glSupport.CheckExtension( "GL_ARB_shading_language_100" ) &&
-                _glSupport.CheckExtension( "GL_ARB_shader_objects" ) &&
-                _glSupport.CheckExtension( "GL_ARB_fragment_shader" ) &&
-                _glSupport.CheckExtension( "GL_ARB_vertex_shader" ) )
-            {
-
-                gpuProgramMgr.PushSyntaxCode( "glsl" );
-            }
 
             // write info to logs
             caps.Log();

@@ -47,7 +47,7 @@ namespace Axiom.RenderSystems.OpenGL
     /// </summary>
     public class GLTextureManager : TextureManager
     {
-        public GLTextureManager( BaseGLSupport glSupport)
+        internal GLTextureManager( BaseGLSupport glSupport)
         {
 			//_glSupprt = glSupport;
             is32Bit = true;

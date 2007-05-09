@@ -52,15 +52,20 @@ namespace Axiom.RenderSystems.OpenGL
     /// <summary>
     /// Summary description for GLSupport.
     /// </summary>
-    public class GLSupport : BaseGLSupport
-    {
+    internal class GLSupport : BaseGLSupport
+	{
+		#region Fields and Properties
+
 		private List<Gdi.DEVMODE> _deviceModes = new List<Gdi.DEVMODE>();
 		private List<int> _fsaaLevels = new List<int>();
 		IntPtr _wglChoosePixelFormatARB;
 		bool _hasPixelFormatARB;
 		bool _hasMultisample;
+		Win32Window _initialWindow;
 
-        public GLSupport()
+		#endregion Fields and Properties
+
+		public GLSupport()
             : base()
         {
 			_initializeWgl();
@@ -167,21 +172,136 @@ namespace Axiom.RenderSystems.OpenGL
 			frm = null;
 		}
 
-		/// <summary>
-        ///		Uses Wgl to return the procedure address for an extension function.
-        /// </summary>
-        /// <param name="extension"></param>
-        /// <returns></returns>
-        public override IntPtr GetProcAddress( string extension )
-        {
-            return Wgl.wglGetProcAddress( extension );
-        }
+		private void _configOptionChanged( string name, string value )
+		{
+			LogManager.Instance.Write( "OpenGL : RenderSystem Option: {0} = {1}", name, value );
 
-        /// <summary>
-        ///		Query the display modes and deal with any other config options.
-        /// </summary>
-        public override void AddConfig()
-        {
+			if ( name == "Video Mode" )
+				_refreshConfig();
+
+			if ( name == "Full Screen" )
+			{
+				ConfigOption opt = ConfigOptions[ "Display Frequency" ];
+				if ( value == "No" )
+				{
+					opt.Value = "N/A";
+					opt.Immutable = true;
+				}
+				else
+				{
+					opt.Value = opt.PossibleValues[ 0 ];
+					opt.Immutable = false;
+				}
+			}
+		}
+
+		private void _refreshConfig()
+		{
+			ConfigOption optVideoMode = ConfigOptions[ "Video Mode" ];
+			ConfigOption optColorDepth = ConfigOptions[ "Color Depth" ];
+			ConfigOption optDisplayFrequency = ConfigOptions[ "Display Frequency" ];
+
+			string val = optVideoMode.Value;
+
+			int pos = val.IndexOf( 'x' );
+			if ( pos == -1 )
+				throw new Exception( "Invalid Video Mode provided" );
+			int width = Int32.Parse( val.Substring( 0, pos ) );
+			int height = Int32.Parse( val.Substring( pos + 1 ) );
+
+			foreach ( Gdi.DEVMODE devMode in _deviceModes )
+			{
+				if ( devMode.dmPelsWidth != width || devMode.dmPelsHeight != height )
+					continue;
+				if ( !optColorDepth.PossibleValues.Contains( devMode.dmBitsPerPel.ToString() ) )
+					optColorDepth.PossibleValues.Add( devMode.dmBitsPerPel.ToString() );
+				if ( !optDisplayFrequency.PossibleValues.Contains( devMode.dmDisplayFrequency.ToString() ) )
+					optDisplayFrequency.PossibleValues.Add( devMode.dmDisplayFrequency.ToString() );
+			}
+			optColorDepth.Value = optColorDepth.PossibleValues[0];
+			if ( optDisplayFrequency.Value != "N/A" )
+				optDisplayFrequency.Value = optDisplayFrequency.PossibleValues[0];
+		}
+
+		public bool SelectPixelFormat(IntPtr hdc, int colorDepth, int multisample)
+		{
+			Gdi.PIXELFORMATDESCRIPTOR pfd = new Gdi.PIXELFORMATDESCRIPTOR();
+			pfd.nSize = (short)Marshal.SizeOf(pfd);
+			pfd.nVersion = 1;
+			pfd.dwFlags = Gdi.PFD_DRAW_TO_WINDOW | Gdi.PFD_SUPPORT_OPENGL | Gdi.PFD_DOUBLEBUFFER;
+			pfd.iPixelType = (byte)Gdi.PFD_TYPE_RGBA;
+			pfd.cColorBits = (byte)colorDepth;
+			//pfd.cColorBits = (byte)((colorDepth > 16)? 24 : colorDepth);
+			//pfd.cAlphaBits = (byte)((colorDepth > 16)? 8 : 0);
+			pfd.cDepthBits = 24;
+			pfd.cStencilBits = 8;
+
+			int[] format = new int[1];
+
+			if ( multisample != 0 )
+			{
+				// only available with driver support
+				if ( !_hasMultisample || !_hasPixelFormatARB )
+					return false;
+
+				int[] iattr = {
+					Wgl.WGL_DRAW_TO_WINDOW_ARB, 1,
+					Wgl.WGL_SUPPORT_OPENGL_ARB, 1,
+					Wgl.WGL_DOUBLE_BUFFER_ARB, 1,
+					Wgl.WGL_SAMPLE_BUFFERS_ARB, 1,
+					Wgl.WGL_ACCELERATION_ARB, Wgl.WGL_FULL_ACCELERATION_ARB,
+					//Wgl.WGL_COLOR_BITS_ARB, pfd.cColorBits,
+					//Wgl.WGL_ALPHA_BITS_ARB, pfd.cAlphaBits,
+					//Wgl.WGL_DEPTH_BITS_ARB, pfd.cDepthBits,
+					//Wgl.WGL_STENCIL_BITS_ARB, pfd.cStencilBits,
+					Wgl.WGL_SAMPLES_ARB, multisample,
+					0
+				};
+
+				int nformats;
+				//assert(_wglChoosePixelFormatARB && "failed to get proc address for ChoosePixelFormatARB");
+				// ChoosePixelFormatARB proc address was obtained when setting up a dummy GL context in initialiseWGL()
+				// since glew hasn't been initialized yet, we have to cheat and use the previously obtained address
+				int result = Wgl.wglChoosePixelFormatARB( _wglChoosePixelFormatARB, hdc, iattr, null, 1, format, out nformats );
+				if ( result == 0 || nformats <= 0 )
+					return false;
+			}
+			else
+			{
+				format[0] = Gdi.ChoosePixelFormat( hdc, ref pfd );
+			}
+
+			return ( format[0] != 0 && Gdi.SetPixelFormat( hdc, format[0], ref pfd ) );
+		}
+
+		#region BaseGLSupport Implementation
+
+		public override void Start()
+		{
+			LogManager.Instance.Write("*** Starting Win32GL Subsystem ***");
+		}
+
+		public override void Stop()
+		{
+			LogManager.Instance.Write( "*** Stopping Win32GL Subsystem ***" );
+			_initialWindow = null; // Since there is no removeWindow, although there should be...
+		}
+
+		/// <summary>
+		///		Uses Wgl to return the procedure address for an extension function.
+		/// </summary>
+		/// <param name="extension"></param>
+		/// <returns></returns>
+		public override IntPtr GetProcAddress( string extension )
+		{
+			return Wgl.wglGetProcAddress( extension );
+		}
+
+		/// <summary>
+		///		Query the display modes and deal with any other config options.
+		/// </summary>
+		public override void AddConfig()
+		{
 			ConfigOption optFullScreen = new ConfigOption( "Full Screen", "No", false );
 			ConfigOption optVideoMode = new ConfigOption( "Video Mode", "800 x 600 @ 32-bit colour", false );
 			ConfigOption optDisplayFrequency = new ConfigOption( "Display Frequency", "", false );
@@ -264,61 +384,28 @@ namespace Axiom.RenderSystems.OpenGL
 
 			_refreshConfig();
 
-        }
-
-		private void _configOptionChanged( string name, string value )
-		{
-			LogManager.Instance.Write( "OpenGL : RenderSystem Option: {0} = {1}", name, value );
 		}
 
-		private void _refreshConfig()
+		public override RenderWindow CreateWindow( bool autoCreateWindow, GLRenderSystem renderSystem, string windowTitle )
 		{
-			ConfigOption optVideoMode = ConfigOptions[ "Video Mode" ];
-			ConfigOption optColorDepth = ConfigOptions[ "Color Depth" ];
-			ConfigOption optDisplayFrequency = ConfigOptions[ "Display Frequency" ];
+			RenderWindow autoWindow = null;
 
-			string val = optVideoMode.Value;
-
-			int pos = val.IndexOf( 'x' );
-			if ( pos == -1 )
-				throw new Exception( "Invalid Video Mode provided" );
-			int width = Int32.Parse( val.Substring( 0, pos ) );
-			int height = Int32.Parse( val.Substring( pos + 1 ) );
-
-			foreach ( Gdi.DEVMODE devMode in _deviceModes )
+			if ( autoCreateWindow )
 			{
-				if ( devMode.dmPelsWidth != width || devMode.dmPelsHeight != height )
-					continue;
-				if ( !optColorDepth.PossibleValues.Contains( devMode.dmBitsPerPel.ToString() ) )
-					optColorDepth.PossibleValues.Add( devMode.dmBitsPerPel.ToString() );
-				if ( !optDisplayFrequency.PossibleValues.Contains( devMode.dmDisplayFrequency.ToString() ) )
-					optDisplayFrequency.PossibleValues.Add( devMode.dmDisplayFrequency.ToString() );
-			}
-			optColorDepth.Value = optColorDepth.PossibleValues[0];
-			if ( optDisplayFrequency.Value != "N/A" )
-				optDisplayFrequency.Value = optDisplayFrequency.PossibleValues[0];
-		}
+				int width = 640;
+				int height = 480;
+				int bpp = 32;
+				bool fullscreen = false;
 
-        public override RenderWindow CreateWindow( bool autoCreateWindow, GLRenderSystem renderSystem, string windowTitle )
-        {
-            RenderWindow autoWindow = null;
-
-            if ( autoCreateWindow )
-            {
-                int width = 640;
-                int height = 480;
-                int bpp = 32;
-                bool fullscreen = false;
-
-                ConfigOption optVM = ConfigOptions[ "Video Mode" ];
-                string vm = optVM.Value;
+				ConfigOption optVM = ConfigOptions[ "Video Mode" ];
+				string vm = optVM.Value;
 				int pos = vm.IndexOf( 'x' );
 				if ( pos == -1 )
 					throw new Exception( "Invalid Video Mode provided" );
-                width = int.Parse( vm.Substring( 0, vm.IndexOf( "x" ) ) );
-                height = int.Parse( vm.Substring( vm.IndexOf( "x" ) + 1 ) );
+				width = int.Parse( vm.Substring( 0, vm.IndexOf( "x" ) ) );
+				height = int.Parse( vm.Substring( vm.IndexOf( "x" ) + 1 ) );
 
-                fullscreen = ( ConfigOptions[ "Full Screen" ].Value == "Yes" );
+				fullscreen = ( ConfigOptions[ "Full Screen" ].Value == "Yes" );
 
 				NamedParameterList miscParams = new NamedParameterList();
 				ConfigOption opt;
@@ -338,122 +425,32 @@ namespace Axiom.RenderSystems.OpenGL
 				if ( opt != null )
 					miscParams.Add( "fsaa", opt.Value );
 
-                // create a default form to use for a rendering target
-                //DefaultForm form = CreateDefaultForm( windowTitle, 0, 0, width, height, fullscreen );
+				// create a default form to use for a rendering target
+				//DefaultForm form = CreateDefaultForm( windowTitle, 0, 0, width, height, fullscreen );
 
-                // create the window with the default form as the target
-                autoWindow = renderSystem.CreateRenderWindow( windowTitle, width, height, fullscreen, miscParams );
+				// create the window with the default form as the target
+				autoWindow = renderSystem.CreateRenderWindow( windowTitle, width, height, fullscreen, miscParams );
 
-                // set the default form's renderwindow so it can access it internally
-                //form.RenderWindow = autoWindow;
+				// set the default form's renderwindow so it can access it internally
+				//form.RenderWindow = autoWindow;
 
-                // show the window
-                //form.Show();
-            }
-
-            return autoWindow;
-        }
-
-        public override RenderWindow NewWindow( string name, int width, int height, bool fullScreen, NamedParameterList miscParams )
-        {
-            Win32Window window = new Win32Window( this );
-
-            window.Create( name, width, height, fullScreen, miscParams );
-
-            return window;
-        }
-
-		public bool SelectPixelFormat(IntPtr hdc, int colorDepth, int multisample)
-		{
-			Gdi.PIXELFORMATDESCRIPTOR pfd = new Gdi.PIXELFORMATDESCRIPTOR();
-			pfd.nSize = (short)Marshal.SizeOf(pfd);
-			pfd.nVersion = 1;
-			pfd.dwFlags = Gdi.PFD_DRAW_TO_WINDOW | Gdi.PFD_SUPPORT_OPENGL | Gdi.PFD_DOUBLEBUFFER;
-			pfd.iPixelType = (byte)Gdi.PFD_TYPE_RGBA;
-			pfd.cColorBits = (byte)colorDepth;
-			//pfd.cColorBits = (byte)((colorDepth > 16)? 24 : colorDepth);
-			//pfd.cAlphaBits = (byte)((colorDepth > 16)? 8 : 0);
-			pfd.cDepthBits = 24;
-			pfd.cStencilBits = 8;
-
-			int[] format = new int[1];
-
-			if ( multisample != 0 )
-			{
-				// only available with driver support
-				if ( !_hasMultisample || !_hasPixelFormatARB )
-					return false;
-
-				int[] iattr = {
-					Wgl.WGL_DRAW_TO_WINDOW_ARB, 1,
-					Wgl.WGL_SUPPORT_OPENGL_ARB, 1,
-					Wgl.WGL_DOUBLE_BUFFER_ARB, 1,
-					Wgl.WGL_SAMPLE_BUFFERS_ARB, 1,
-					Wgl.WGL_ACCELERATION_ARB, Wgl.WGL_FULL_ACCELERATION_ARB,
-					//Wgl.WGL_COLOR_BITS_ARB, pfd.cColorBits,
-					//Wgl.WGL_ALPHA_BITS_ARB, pfd.cAlphaBits,
-					//Wgl.WGL_DEPTH_BITS_ARB, pfd.cDepthBits,
-					//Wgl.WGL_STENCIL_BITS_ARB, pfd.cStencilBits,
-					Wgl.WGL_SAMPLES_ARB, multisample,
-					0
-				};
-
-				int nformats;
-				//assert(_wglChoosePixelFormatARB && "failed to get proc address for ChoosePixelFormatARB");
-				// ChoosePixelFormatARB proc address was obtained when setting up a dummy GL context in initialiseWGL()
-				// since glew hasn't been initialized yet, we have to cheat and use the previously obtained address
-				int result = Wgl.wglChoosePixelFormatARB( _wglChoosePixelFormatARB, hdc, iattr, null, 1, format, out nformats );
-				if ( result == 0 || nformats <= 0 )
-					return false;
-			}
-			else
-			{
-				format[0] = Gdi.ChoosePixelFormat( hdc, ref pfd );
+				// show the window
+				//form.Show();
 			}
 
-			return ( format[0] != 0 && Gdi.SetPixelFormat( hdc, format[0], ref pfd ) );
+			return autoWindow;
 		}
-        /// <summary>
-        ///		Creates a default form to use for a rendering target.
-        /// </summary>
-        /// <remarks>
-        ///		This is used internally whenever <see cref="Initialize"/> is called and autoCreateWindow is set to true.
-        /// </remarks>
-        /// <param name="windowTitle">Title of the window.</param>
-        /// <param name="top">Top position of the window.</param>
-        /// <param name="left">Left position of the window.</param>
-        /// <param name="width">Width of the window.</param>
-        /// <param name="height">Height of the window</param>
-        /// <param name="fullScreen">Prepare the form for fullscreen mode?</param>
-        /// <returns>A form suitable for using as a rendering target.</returns>
-        private DefaultForm CreateDefaultForm( string windowTitle, int top, int left, int width, int height, bool fullScreen )
-        {
-            DefaultForm form = new DefaultForm();
 
-            form.ClientSize = new System.Drawing.Size( width, height );
-            form.MaximizeBox = false;
-            form.MinimizeBox = false;
-            form.StartPosition = SWF.FormStartPosition.CenterScreen;
+		public override RenderWindow NewWindow( string name, int width, int height, bool fullScreen, NamedParameterList miscParams )
+		{
+			Win32Window window = new Win32Window( this );
 
-            if ( fullScreen )
-            {
-                form.Top = 0;
-                form.Left = 0;
-				form.FormBorderStyle = SWF.FormBorderStyle.None;
-				form.WindowState = SWF.FormWindowState.Maximized;
-                form.TopMost = true;
-                form.TopLevel = true;
-            }
-            else
-            {
-                form.Top = top;
-                form.Left = left;
-				form.FormBorderStyle = SWF.FormBorderStyle.FixedSingle;
-				form.WindowState = SWF.FormWindowState.Normal;
-                form.Text = windowTitle;
-            }
+			window.Create( name, width, height, fullScreen, miscParams );
 
-            return form;
-        }
-    }
+			return window;
+		}
+
+		#endregion BaseGLSupport Implementation
+
+	}
 }

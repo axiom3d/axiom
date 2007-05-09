@@ -370,7 +370,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Supports generating mipmaps in hardware.
 		/// </summary>
-		HardwareMipMaps = 0x00000080,
+		HardwareMipMaps = 0x00000080, //RSC_AUTOMIPMAP
 		/// <summary>
 		///		Supports cube mapping.
 		/// </summary>
@@ -446,7 +446,15 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Supports extra point parameters (minsize, maxsize, attenuation)
 		/// </summary>
-		PointExtendedParameters = 0x04000000
+		PointExtendedParameters = 0x04000000,
+		/// <summary>
+		///		Supports vertex texture fetch
+		/// </summary>
+		VertexTextureFetch = 0x08000000,
+		/// <summary>
+		///		Supports mipmap LOD biasing
+		/// </summary>
+		MipmapLODBias = 0x10000000 
 	}
 
 	/// <summary>

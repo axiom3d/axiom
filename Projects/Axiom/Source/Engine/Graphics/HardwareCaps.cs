@@ -80,7 +80,11 @@ namespace Axiom.Graphics
         ///    The number of integer constants the current hardware supports for vertex programs.
         /// </summary>
         private int vertexProgramConstantIntCount;
-        /// <summary>
+		/// <summary>
+		///    The number of boolean constants the current hardware supports for vertex programs.
+		/// </summary>
+		private int vertexProgramConstantBoolCount;
+		/// <summary>
         ///    The number of floating point constants the current hardware supports for fragment programs.
         /// </summary>
         private int fragmentProgramConstantFloatCount;
@@ -88,7 +92,11 @@ namespace Axiom.Graphics
         ///    The number of integer constants the current hardware supports for fragment programs.
         /// </summary>
         private int fragmentProgramConstantIntCount;
-        /// <summary>
+		/// <summary>
+		///    The number of boolean constants the current hardware supports for fragment programs.
+		/// </summary>
+		private int fragmentProgramConstantBoolCount;
+		/// <summary>
         ///    Stencil buffer bits available.
         /// </summary>
         private int stencilBufferBits;
@@ -104,6 +112,26 @@ namespace Axiom.Graphics
 		/// version number of the driver
 		/// </summary>
 		private string driverVersion = "";
+		/// <summary>
+		/// The number of simultaneous render targets supported
+		/// </summary>
+		private int numMultiRenderTargets;
+		/// <summary>
+		/// The maximum point size
+		/// </summary>
+		private float maxPointSize;
+		/// <summary>
+		/// Are non-POW2 textures feature-limited?
+		/// </summary>
+		private bool nonPOW2TexturesLimited;
+		/// <summary>
+		/// The number of vertex texture units supported
+		/// </summary>
+		private int numVertexTextureUnits;
+		/// <summary>
+		/// Are vertex texture units shared with fragment processor?
+		/// </summary>
+		private bool vertexTextureUnitsShared;
 
         #endregion
 
@@ -180,7 +208,22 @@ namespace Axiom.Graphics
             }
         }
 
-        /// <summary>
+		/// <summary>
+		///    Max number of boolean constants supported by the hardware for fragment programs.
+		/// </summary>
+		public int FragmentProgramConstantBoolCount
+		{
+			get
+			{
+				return fragmentProgramConstantBoolCount;
+			}
+			set
+			{
+				fragmentProgramConstantBoolCount = value;
+			}
+		}
+
+		/// <summary>
         ///    Best fragment program version supported by the hardware.
         /// </summary>
         public string MaxFragmentProgramVersion
@@ -300,7 +343,97 @@ namespace Axiom.Graphics
             }
         }
 
-        #endregion
+		/// <summary>
+		///    Max number of boolean constants supported by the hardware for vertex programs.
+		/// </summary>
+		public int VertexProgramConstantBoolCount
+		{
+			get
+			{
+				return vertexProgramConstantBoolCount;
+			}
+			set
+			{
+				vertexProgramConstantBoolCount = value;
+			}
+		}
+
+		/// <summary>
+		/// The number of simultaneous render targets supported
+		/// </summary>
+		public int NumMultiRenderTargets
+		{
+			get
+			{
+				return numMultiRenderTargets;
+			}
+			set
+			{
+				numMultiRenderTargets = value;
+			}
+		}
+
+		/// <summary>
+		/// The maximum point size
+		/// </summary>
+		public float MaxPointSize
+		{
+			get
+			{
+				return maxPointSize;
+			}
+			set
+			{
+				maxPointSize = value;
+			}
+		}
+
+		/// <summary>
+		/// Are non-POW2 textures feature-limited?
+		/// </summary>
+		public bool NonPOW2TexturesLimited
+		{
+			get
+			{
+				return nonPOW2TexturesLimited;
+			}
+			set
+			{
+				nonPOW2TexturesLimited = value;
+			}
+		}
+
+		/// <summary>
+		/// The number of vertex texture units supported
+		/// </summary>
+		public int NumVertexTextureUnits
+		{
+			get
+			{
+				return numTextureUnits;
+			}
+			set
+			{
+				numTextureUnits = value;
+			}
+		}
+
+		/// <summary>
+		/// Are vertex texture units shared with fragment processor?
+		/// </summary>
+		public bool VertexTextureUnitsShared
+		{
+			get
+			{
+				return vertexTextureUnitsShared;
+			}
+			set
+			{
+				vertexTextureUnitsShared = value;
+			}
+		}
+
+		#endregion
 
         #region Methods
 
@@ -379,7 +512,15 @@ namespace Axiom.Graphics
             logMgr.Write( "\t-User clip planes: {0}", ConvertBool( CheckCap( Capabilities.UserClipPlanes ) ) );
             logMgr.Write( "\t-VertexElementType.UBYTE4: {0}", ConvertBool( CheckCap( Capabilities.VertexFormatUByte4 ) ) );
             logMgr.Write( "\t-Infinite far plane projection: {0}", ConvertBool( CheckCap( Capabilities.InfiniteFarPlane ) ) );
-			// TODO: Add the rest
+
+			logMgr.Write( "\t-Max Point Size: {0} ", MaxPointSize );
+			logMgr.Write( "\t-Vertex texture fetch: {0} ", ConvertBool( CheckCap( Capabilities.VertexTextureFetch ) ) );
+			if (CheckCap( Capabilities.VertexTextureFetch ))
+			{
+				logMgr.Write( "\t\t-Max vertex textures: {0}", NumVertexTextureUnits);
+				logMgr.Write( "\t\t-Vertex textures shared: {0}", ConvertBool( VertexTextureUnitsShared ) );
+			}
+
         }
 
         /// <summary>

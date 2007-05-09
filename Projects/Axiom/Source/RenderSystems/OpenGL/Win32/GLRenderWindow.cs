@@ -104,7 +104,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		///		Constructor.
 		/// </summary>
-		public Win32Window( GLSupport glSupport )
+		internal Win32Window( GLSupport glSupport )
 			: base()
 		{
 			_glSupport = glSupport;
