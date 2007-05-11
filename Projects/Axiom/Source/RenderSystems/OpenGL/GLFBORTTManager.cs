@@ -146,7 +146,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-		private struct RBRef
+		private class RBRef
 		{
 			public RBRef( GLRenderBuffer buffer )
 			{
@@ -349,7 +349,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 			RBFormat key = new RBFormat( surface.Buffer.GLFormat, surface.Buffer.Width, surface.Buffer.Height );
 			RBRef value;
-			Debug.Assert( _renderBufferMap.TryGetValue( key, out value ) );
+            bool result = _renderBufferMap.TryGetValue(key, out value);
+			Debug.Assert( result );
 			{
 				Debug.Assert(value.Buffer == surface.Buffer);
 				// Increase refcount
