@@ -832,25 +832,34 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Custom attributes that can be assigned to this target.
 		/// </summary>
-		protected Hashtable customAttributes = new Hashtable();
+		protected SortedDictionary<string, object> customAttributes = new SortedDictionary<string, object>();
 
 		/// <summary>
 		/// Gets a custom (maybe platform-specific) attribute.
 		/// </summary>
 		/// <remarks>
 		/// This is a nasty way of satisfying any API's need to see platform-specific details.
-		/// It horrid, but D3D needs this kind of info. At least it's abstracted.
+		/// Its horrid, but D3D needs this kind of info. At least it's abstracted.
 		/// </remarks>
 		/// <param name="attribute">The name of the attribute.</param>
 		/// <returns></returns>
-		public virtual object GetCustomAttribute( string attribute )
+		[Obsolete( "The GetCustomAttribute function has been deprecated in favor of an indexer property. Use object[\"attribute\"] to get custom attributes." )]
+		public object GetCustomAttribute( string attribute )
 		{
-			if ( !customAttributes.ContainsKey( attribute ) )
-			{
-				throw new Exception( String.Format( "Attribute [{0}] not found.", attribute ) );
-			}
+			return this[ attribute ];
+		}
 
-			return customAttributes[ attribute ];
+		public virtual object this[ string attribute ]
+		{
+			get
+			{
+				if ( !customAttributes.ContainsKey( attribute ) )
+				{
+					throw new Exception( String.Format( "Attribute [{0}] not found.", attribute ) );
+				}
+
+				return customAttributes[ attribute ];
+			}
 		}
 
 		#endregion Custom Attributes

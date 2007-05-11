@@ -650,6 +650,66 @@ namespace Axiom.Media
 				32, 0, 0, 0,
 				/* Masks and shifts */
 				0, 0, 0, 0, 0, 0, 0, 0 
+ 			    ),
+			//-----------------------------------------------------------------------
+			new PixelFormatDescription(
+				"PF_SHORT_GR",
+				PixelFormat.SHORT_GR,
+				/* Bytes per element */ 
+				4,  
+				/* Flags */
+				PixelFormatFlags.NativeEndian,  
+				/* Component type and count */
+				PixelComponentType.Short, 2,
+				/* rbits, gbits, bbits, abits */
+				16, 16, 0, 0,
+				/* Masks and shifts */
+				0x0000FFFF, 0xFFFF0000, 0, 0, 0, 16, 0, 0 
+ 			    ),
+			//-----------------------------------------------------------------------
+			new PixelFormatDescription(
+				"PF_FLOAT16_GR",
+				PixelFormat.FLOAT16_GR,
+				/* Bytes per element */ 
+				4,  
+				/* Flags */
+				PixelFormatFlags.Float,  
+				/* Component type and count */
+				PixelComponentType.Float16, 2,
+				/* rbits, gbits, bbits, abits */
+				16, 16, 0, 0,
+				/* Masks and shifts */
+				0, 0, 0, 0, 0, 0, 0, 0 
+ 			    ),
+			//-----------------------------------------------------------------------
+			new PixelFormatDescription(
+				"PF_FLOAT32_GR",
+				PixelFormat.FLOAT32_GR,
+				/* Bytes per element */ 
+				4,  
+				/* Flags */
+				PixelFormatFlags.Float,  
+				/* Component type and count */
+				PixelComponentType.Float32, 2,
+				/* rbits, gbits, bbits, abits */
+				32, 32, 0, 0,
+				/* Masks and shifts */
+				0, 0, 0, 0, 0, 0, 0, 0 
+ 			    ),
+			//-----------------------------------------------------------------------
+			new PixelFormatDescription(
+				"PF_SHORT_RGB",
+				PixelFormat.SHORT_RGB,
+				/* Bytes per element */ 
+				6,  
+				/* Flags */
+				PixelFormatFlags.None,  
+				/* Component type and count */
+				PixelComponentType.Short, 3,
+				/* rbits, gbits, bbits, abits */
+				16, 16, 16, 0,
+				/* Masks and shifts */
+				0, 0, 0, 0, 0, 0, 0, 0 
  			    )
  		};
 
@@ -1117,6 +1177,16 @@ namespace Axiom.Media
 		public static int GetNumElemBits( PixelFormat format )
 		{
 			return GetNumElemBytes( format ) * 8;
+		}
+
+		public static int[] GetBitDepths( PixelFormat format )
+		{
+			int[] rgba = new int[ 4 ];
+			rgba[ 0 ] = PixelConverter.GetDescriptionFor( format ).rbits;
+			rgba[ 1 ] = PixelConverter.GetDescriptionFor( format ).gbits;
+			rgba[ 2 ] = PixelConverter.GetDescriptionFor( format ).bbits;
+			rgba[ 3 ] = PixelConverter.GetDescriptionFor( format ).abits;
+			return rgba;
 		}
 
 		///<summary>

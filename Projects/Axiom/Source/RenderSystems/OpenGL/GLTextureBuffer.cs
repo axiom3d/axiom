@@ -102,7 +102,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// Get format
 			Gl.glGetTexLevelParameteriv( _faceTarget, _level, Gl.GL_TEXTURE_INTERNAL_FORMAT, out value );
-			GLInternalFormat = value;
+			GLFormat = value;
 			Format = GLPixelUtil.GetClosestPixelFormat( value );
 
 			// Default

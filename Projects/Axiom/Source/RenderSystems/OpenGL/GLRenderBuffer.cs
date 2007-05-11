@@ -66,7 +66,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public GLRenderBuffer( int format, int width, int height )
 			: base( width, height, 1, GLPixelUtil.GetClosestPixelFormat( format ), BufferUsage.WriteOnly )
 		{
-			this.GLInternalFormat = format;
+			this.GLFormat = format;
 			/// Generate renderbuffer
 			Gl.glGenRenderbuffersEXT( 1, out _renderBufferId );
 			/// Bind it to FBO

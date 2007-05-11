@@ -46,40 +46,49 @@ using Axiom.Graphics;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	internal class GLPBRTTManager : GLRTTManager
+	class GLFBORenderTexture : GLRenderTexture
 	{
+
+		#region Fields and Properties
+
+        private GLFrameBufferObject _fbo;
+
+		#endregion Fields and Properties
+
 		#region Construction and Destruction
 
-		internal GLPBRTTManager( BaseGLSupport glSupport, RenderTarget target ) 
-			: base( glSupport )
+		public GLFBORenderTexture( GLFBORTTManager manager, string name, GLSurfaceDesc target )
+			: base( name, target )
 		{
+			_fbo = new GLFrameBufferObject( manager );
+
+			// Bind target to surface 0 and initialise
+			_fbo.BindSurface( 0, target );
+
+			// Get attributes
+			Width = _fbo.Width;
+			Height = _fbo.Height;
 		}
 
 		#endregion Construction and Destruction
 
-		#region GLRTTManager Implementation
+		#region GLRenderTexture Implementation
 
-		public override RenderTexture CreateRenderTexture( string name, GLSurfaceDesc target )
+		public override object this[ string attribute]
 		{
-			throw new Exception( "The method or operation is not implemented." );
+			get
+			{
+				switch ( attribute.ToLower() )
+				{
+					case "fbo":
+						return _fbo;
+					default:
+						return base[ attribute ];
+				}
+			}
 		}
 
-		public override bool CheckFormat( PixelFormat format )
-		{
-			throw new Exception( "The method or operation is not implemented." );
-		}
-
-		public override void Bind( RenderTarget target )
-		{
-			throw new Exception( "The method or operation is not implemented." );
-		}
-
-		public override void Unbind( RenderTarget target )
-		{
-			throw new Exception( "The method or operation is not implemented." );
-		}
-
-		#endregion GLRTTManager Implementation
+		#endregion GLRenderTexture Implementation
 
 	}
 }

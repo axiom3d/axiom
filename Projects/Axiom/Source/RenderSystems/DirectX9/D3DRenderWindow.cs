@@ -655,29 +655,32 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		public override object GetCustomAttribute( string attribute )
+		public override object this[ string attribute ]
 		{
-			switch ( attribute.ToUpper() )
+			get
 			{
-				case "D3DDEVICE":
-					return _driver.D3DDevice;
+				switch ( attribute.ToUpper() )
+				{
+					case "D3DDEVICE":
+						return _driver.D3DDevice;
 
-				case "WINDOW":
-					return this._window;
+					case "WINDOW":
+						return this._window;
 
-				case "ISTEXTURE":
-					return false;
+					case "ISTEXTURE":
+						return false;
 
-				case "D3DZBUFFER":
-					return _renderZBuffer;
+					case "D3DZBUFFER":
+						return _renderZBuffer;
 
-				case "D3DBACKBUFFER":
-					return _renderSurface;
+					case "D3DBACKBUFFER":
+						return _renderSurface;
 
-				case "D3DFRONTBUFFER":
-					return _renderSurface;
+					case "D3DFRONTBUFFER":
+						return _renderSurface;
+				}
+				return new NotSupportedException( "There is no D3D RenderWindow custom attribute named " + attribute );
 			}
-			return new NotSupportedException( "There is no D3D RenderWindow custom attribute named " + attribute );
 		}
 
 		public void DisposeD3DResources()

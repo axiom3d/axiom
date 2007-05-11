@@ -47,7 +47,7 @@ using Tao.OpenGl;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	public class GLHardwarePixelBuffer : HardwarePixelBuffer
+	internal class GLHardwarePixelBuffer : HardwarePixelBuffer
 	{
 		#region Fields and Properties
 
@@ -73,7 +73,7 @@ namespace Axiom.RenderSystems.OpenGL
 		#region GLInternalFormat Property
 
 		private int _glInternalFormat;
-		public int GLInternalFormat
+		public int GLFormat
 		{
 			get
 			{
@@ -96,7 +96,7 @@ namespace Axiom.RenderSystems.OpenGL
 			: base( width, height, depth, format, usage, false, false )
 		{
 			buffer = new PixelBox( width, height, depth, format );
-			GLInternalFormat = Gl.GL_NONE;
+			GLFormat = Gl.GL_NONE;
 		}
 
 		#endregion Construction and Destruction

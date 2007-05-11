@@ -53,160 +53,228 @@ namespace Axiom.Media
 	/// <summary>
 	///    The pixel format used for images.
 	/// </summary>
+	// These have been orangized in the source in ascending order of the size,
+	// However the values are important for GL. This need to change in the future
+	// so that GL values are mapped to these.
 	public enum PixelFormat
 	{
 		/// <summary>
 		///    Unknown pixel format.
 		/// </summary>
-		Unknown,
+		Unknown = 0,
 		/// <summary>
 		///    8-bit pixel format, all bits luminance.
 		/// </summary>
-		L8,
+		L8 = 1,
+		BYTE_L = L8,
+
 		/// <summary>
 		///    8-bit pixel format, all bits alpha.
 		/// </summary>
-		A8,
+		A8 = 3,
+
 		/// <summary>
 		///    8-bit pixel format, 4 bits alpha, 4 bits luminance.
 		/// </summary>
-		A4L4,
+		A4L4 = 4,
+
 		/// <summary>
 		///    8-bit pixel format, 4 bits luminace, 4 bits alpha.
 		/// </summary>
-		L4A4,
+		//L4A4 = 5,
+
 		/// <summary>
 		///   8-bit pixel format, 3 bits red, 3 bits green, 2 bits blue.
 		/// </summary>
-		R3G3B2,
+		R3G3B2 = 31,
+
 		/// <summary>
 		///    16-bit pixel format, 5 bits red, 6 bits green, 5 bits blue.
 		/// </summary>
-		R5G6B5,
+		R5G6B5 = 6,
+
 		/// <summary>
 		///    16-bit pixel format, 5 bits blue, 6 bits green, 5 bits red.
 		/// </summary>
-		B5G6R5,
+		B5G6R5 = 7,
+
 		/// <summary>
 		///    16-bit pixel format, 4 bits for alpha, red, green and blue.
 		/// </summary>
-		A4R4G4B4,
+		A4R4G4B4 = 8,
+
 		/// <summary>
 		///    16-bit pixel format, 4 bits for blue, green, red and alpha.
 		/// </summary>
 		B4G4R4A4,
+
 		/// <summary>
 		///    16-bit pixel format, 8 bits for alpha, 8 bits for luminance.
 		/// </summary>
-		A8L8,
+		A8L8 = 5,
+		BYTE_LA = A8L8,
+
 		/// <summary>
 		///    16-bit pixel format, all bits luminance.
 		/// </summary>
-		L16,
+		L16 = 2,
+		SHORT_L = L16,
+
 		/// <summary>
 		///    16-bit pixel format, 1 bit for alpha, 5 bits for blue, green and red.
 		/// </summary>
-		A1R5G5B5,
+		A1R5G5B5 = 9,
+
 		/// <summary>
 		///    24-bit pixel format, 8 bits for red, green and blue.
 		/// </summary>
-		R8G8B8,
+		R8G8B8 = 10,
+		BYTE_BGR = R8G8B8,
+
 		/// <summary>
 		///    24-bit pixel format, 8 bits for blue, green and red.
 		/// </summary>
-		B8G8R8,
+		B8G8R8 = 11,
+		BYTE_RGB = B8G8R8,
+
 		/// <summary>
 		///    24-bit pixel format, all bits luminance.
 		/// </summary>
-		L24,
+		//L24,
+
 		/// <summary>
 		///    32-bit pixel format, 8 bits for alpha, red, green and blue.
 		/// </summary>
-		A8R8G8B8,
+		A8R8G8B8 = 12,
+
 		/// <summary>
 		///    32-bit pixel format, 8 bits for alpha, blue, green and red`.
 		/// </summary>
-		A8B8G8R8,
+		A8B8G8R8 = 13,
+
 		/// <summary>
 		///    32-bit pixel format, 8 bits for blue, green, red and alpha.
 		/// </summary>
-		B8G8R8A8,
+		B8G8R8A8 = 14,
+		BYTE_BGRA = B8G8R8A8,
+
 		/// <summary>
 		///    32-bit pixel format, 8 bits for red, green, blue and alpha.
 		/// </summary>
-		R8G8B8A8,
+		R8G8B8A8 = 28,
+		BYTE_RGBA = R8G8B8A8,
+
 		/// <summary>
 		///    32-bit pixel format, 8 bits for red, green and blue.
+		///    like PF_A8R8G8B8, but alpha will get discarded
 		/// </summary>
-		X8R8G8B8,
+		X8R8G8B8 = 26,
+
 		/// <summary>
 		///    32-bit pixel format, 8 bits for blue, green and red.
+		///		like PF_A8R8G8B8, but alpha will get discarded
 		/// </summary>
-		X8B8G8R8,
+		X8B8G8R8 = 27,
+
 		/// <summary>
 		///    32-bit pixel format, 2 bits for alpha, 10 bits for red, green and blue.
 		/// </summary>
-		A2R10G10B10,
+		A2R10G10B10 = 15,
+
 		/// <summary>
 		///    32-bit pixel format, 10 bits for blue, green and red, 2 bits for alpha.
 		/// </summary>
-		A2B10G10R10,
+		A2B10G10R10 = 16,
+
 		/// <summary>
 		///    DDS (DirectDraw Surface) DXT1 format.
 		/// </summary>
-		DXT1,
+		DXT1 = 17,
+
 		/// <summary>
 		///    DDS (DirectDraw Surface) DXT2 format.
 		/// </summary>
-		DXT2,
+		DXT2 = 18,
+
 		/// <summary>
 		///    DDS (DirectDraw Surface) DXT3 format.
 		/// </summary>
-		DXT3,
+		DXT3 = 19,
+
 		/// <summary>
 		///    DDS (DirectDraw Surface) DXT4 format.
 		/// </summary>
-		DXT4,
+		DXT4 = 20,
+
 		/// <summary>
 		///    DDS (DirectDraw Surface) DXT5 format.
 		/// </summary>
-		DXT5,
+		DXT5 = 21,
+
 		/// <summary>
 		///		Depth texture format
 		/// </summary>
-		DEPTH,
+		DEPTH = 29,
+
 		/// <summary>
 		///   64 bit pixel format, 16 bits for red, 16 bits for green, 16 bits for blue, 16 bits for alpha
 		/// </summary>
-		SHORT_RGBA,
+		SHORT_RGBA = 30,
+
 		/// <summary>
 		///    16 bit floating point with a single channel (red)
 		/// </summary>
-		FLOAT16_R,
+		FLOAT16_R = 32,
+
 		/// <summary>
 		///    48-bit pixel format, 16 bits (float) for red, 16 bits (float) for green, 16 bits (float) for blue
 		/// </summary>
-		FLOAT16_RGB,
+		FLOAT16_RGB = 22,
+
 		/// <summary>
 		///    64-bit pixel format, 16 bits (float) for red, 16 bits (float) for green, 16 bits (float) for blue, 16 bits (float) for alpha
 		/// </summary>
-		FLOAT16_RGBA,
+		FLOAT16_RGBA = 23,
+
 		/// <summary>
-		///    32 bit floating point with a single channel (red)
+		///		32 bit floating point with a single channel (red)
 		/// </summary>
-		FLOAT32_R,
+		FLOAT32_R = 33,
+
 		/// <summary>
 		///    96-bit pixel format, 32 bits (float) for red, 32 bits (float) for green, 32 bits (float) for blue
 		/// </summary>
-		FLOAT32_RGB,
+		FLOAT32_RGB = 24,
+
 		/// <summary>
 		///    128-bit pixel format, 32 bits (float) for red, 32 bits (float) for green, 32 bits (float) for blue, 32 bits (float) for alpha
 		/// </summary>
-		FLOAT32_RGBA,
+		FLOAT32_RGBA = 25,
+
+		/// <summary>
+		///		32-bit pixel format, 2-channel floating point pixel format, 16 bits (float) for green, 16 bits (float) for red
+		/// </summary>
+ 		FLOAT16_GR = 35,
+
+		/// <summary>
+		///		64-bit pixel format, 2-channel floating point pixel format, 32 bits (float) for green, 32 bits (float) for red
+		/// </summary>
+		FLOAT32_GR = 36,
+
+		/// <summary>
+		/// 32-bit pixel format, 16-bit green, 16-bit red
+		/// </summary>
+		SHORT_GR = 34,
+
+		/// <summary>
+		/// 48-bit pixel format, 16 bits for red, green and blue
+		/// </summary>
+		SHORT_RGB = 37,
+
 		/// <summary>
 		///    The last one, used to size arrays of PixelFormat.  Don't add anything after this one!
 		/// </summary>
-		Count
+		Count = 38
 	}
 
 	/// <summary>

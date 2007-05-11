@@ -73,19 +73,21 @@ namespace Axiom.RenderSystems.DirectX9
 			base.Update();
 		}
 
-		public override object GetCustomAttribute( string attribute )
+		public override object this[ string attribute ]
 		{
-			switch ( attribute )
+			get
 			{
-				case "D3DBACKBUFFER":
-					return ( (D3DHardwarePixelBuffer)pixelBuffer ).Surface;
-				case "HWND":
-					return null;
-				case "BUFFER":
-					return pixelBuffer;
+				switch ( attribute )
+				{
+					case "D3DBACKBUFFER":
+						return ( (D3DHardwarePixelBuffer)pixelBuffer ).Surface;
+					case "HWND":
+						return null;
+					case "BUFFER":
+						return pixelBuffer;
+				}
+				return new NotSupportedException("There is no D3D RenderWindow custom attribute named " + attribute);
 			}
-			return null;
-			// return new NotSupportedException("There is no D3D RenderWindow custom attribute named " + attribute);
 		}
 
 		public override bool RequiresTextureFlipping
