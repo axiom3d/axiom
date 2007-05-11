@@ -374,7 +374,7 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( _primaryWindow == null )
 			{
 				_primaryWindow = (D3DRenderWindow)window;
-				device = (D3D.Device)window.GetCustomAttribute( "D3DDEVICE" );
+				device = (D3D.Device)window[ "D3DDEVICE" ];
 
 				// Create the texture manager for use by others
 				textureManager = new D3DTextureManager( device );
@@ -798,11 +798,11 @@ namespace Axiom.RenderSystems.DirectX9
 				RenderTarget target = viewport.Target;
 				// TODO: FIXME: Looks like these methods should be able to return multiple buffers
 				// get the back buffer surface for this viewport
-				D3D.Surface back = (D3D.Surface)activeRenderTarget.GetCustomAttribute( "D3DBACKBUFFER" );
+				D3D.Surface back = (D3D.Surface)activeRenderTarget[ "D3DBACKBUFFER" ];
 				if ( back == null )
 					return;
 
-				D3D.Surface depth = (D3D.Surface)activeRenderTarget.GetCustomAttribute( "D3DZBUFFER" );
+				D3D.Surface depth = (D3D.Surface)activeRenderTarget[ "D3DZBUFFER" ];
 				if ( depth == null )
 				{
 					/// No depth buffer provided, use our own

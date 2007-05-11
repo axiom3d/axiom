@@ -319,7 +319,7 @@ namespace Axiom.RenderSystems.OpenGL
         protected void InitGL(RenderTarget primary )
         {
 			// Set main and current context
-			_mainContext = (GLContext)primary.GetCustomAttribute( "GLCONTEXT" );		
+			_mainContext = (GLContext)primary[ "GLCONTEXT" ];		
 			_currentContext = _mainContext;
 
 			// Set primary context as active
@@ -2795,6 +2795,7 @@ namespace Axiom.RenderSystems.OpenGL
 					if ( !_glSupport.CheckMinVersion( "2.0" ) )
 					{
 						//TODO: Before GL version 2.0, we need to get one of the extensions
+						// borrillis - This check moved inside GLFrameBufferObject where Gl.glDrawBuffers is called
 						//if ( _glSupport.CheckExtension( "GL_ARB_draw_buffers" ) )
 						//    Gl.glDrawBuffers = Gl.glDrawBuffersARB;
 						//else if ( _glSupport.CheckExtension( "GL_ATI_draw_buffers" ) )
@@ -2803,8 +2804,8 @@ namespace Axiom.RenderSystems.OpenGL
 				}
 				// Create FBO manager
 				LogManager.Instance.Write( "GL: Using GL_EXT_framebuffer_object for rendering to textures (best)" );
-				//mRTTManager = new GLFBOManager(mGLSupport->getGLVendor() == "ATI");
-				rttManager = new GLFBORTTManager( false );
+				//rttManager = new GLFBORTTManager(_glSupport, _glSupport.Vendor == "ATI");
+				rttManager = new GLFBORTTManager( _glSupport, false );
 				caps.SetCap( Capabilities.HardwareRenderToTexture );
 			}
 			else
@@ -2820,7 +2821,7 @@ namespace Axiom.RenderSystems.OpenGL
 				else
 				{
 					// No pbuffer support either -- fallback to simplest copying from framebuffer
-					rttManager = new GLCopyingRTTManager();
+					rttManager = new GLCopyingRTTManager( _glSupport );
 					LogManager.Instance.Write( "GL: Using framebuffer copy for rendering to textures (worst)" );
 					LogManager.Instance.Write( "GL: Warning: RenderTexture size is restricted to size of framebuffer. If you are on Linux, consider using GLX instead of SDL." );
 				}

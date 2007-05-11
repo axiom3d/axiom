@@ -51,6 +51,15 @@ namespace Axiom.RenderSystems.OpenGL
 	/// </summary>
 	internal abstract class GLRTTManager : IDisposable
 	{
+		private BaseGLSupport _glSupport;
+		public BaseGLSupport GLSupport
+		{
+			get
+			{
+				return _glSupport;
+			}
+		}
+
 		#region Singleton Implementation
 
 		/// <summary>
@@ -65,11 +74,12 @@ namespace Axiom.RenderSystems.OpenGL
 		///     Protected internal because this singleton will actually hold the instance of a subclass
 		///     created by a render system plugin.
 		/// </remarks>
-		protected internal GLRTTManager()
+		protected internal GLRTTManager( BaseGLSupport glSupport )
 		{
 			if ( _instance == null )
 			{
 				_instance = this;
+				_glSupport = glSupport;
 			}
 		}
 

@@ -65,7 +65,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>Rendering context.</summary>
 		private IntPtr _hRenderingContext = IntPtr.Zero;
 		/// <summary>Win32Context.</summary>
-		private Win32Context _context;
+		private Win32Context _glContext;
 		/// <summary>Retains initial screen settings.</summary>        
 		private Gdi.DEVMODE _intialScreenSettings;
 
@@ -80,18 +80,6 @@ namespace Axiom.RenderSystems.OpenGL
 			get
 			{
 				return _isClosed;
-			}
-		}
-
-		public override bool IsVisible
-		{
-			get
-			{
-				return base.IsVisible;
-			}
-			set
-			{
-				base.IsVisible = value;
 			}
 		}
 
@@ -114,21 +102,21 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Implementation of RenderWindow
 
-		public override object GetCustomAttribute( string attribute )
+		public override object this[ string attribute ]		
 		{
-			switch ( attribute.ToLower() )
+			get
 			{
-				case "glcontext":
-					//TODO : return _glContext;
-					return null;
-				case "window":
-					System.Windows.Forms.Control ctrl = System.Windows.Forms.Control.FromChildHandle( _hWindow );
-					return ctrl;
-					break;
-				default:
-					return base.GetCustomAttribute( attribute );
+				switch ( attribute.ToLower() )
+				{
+					case "glcontext":
+						return _glContext;
+					case "window":
+						System.Windows.Forms.Control ctrl = System.Windows.Forms.Control.FromChildHandle( _hWindow );
+						return ctrl;
+					default:
+						return base[ attribute ];
+				}
 			}
-
 		}
 
 		public override void Create( string name, int width, int height, bool isFullScreen, NamedParameterList miscParams )
@@ -333,7 +321,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// Create RenderSystem context
-			_context = new Win32Context( _hDeviceContext, _hRenderingContext );
+			_glContext = new Win32Context( _hDeviceContext, _hRenderingContext );
 
 			// make this window active
 			this.IsActive = true;

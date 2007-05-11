@@ -68,8 +68,8 @@ namespace Axiom.RenderSystems.OpenGL
 					return Gl.GL_LUMINANCE;
 				case PixelFormat.L16:
 					return Gl.GL_LUMINANCE;
-				case PixelFormat.L4A4:
-					return Gl.GL_LUMINANCE_ALPHA;
+				//case PixelFormat.L4A4:
+				//    return Gl.GL_LUMINANCE_ALPHA;
 				case PixelFormat.R3G3B2:
 					return Gl.GL_RGB;
 				case PixelFormat.A1R5G5B5:
@@ -117,8 +117,8 @@ namespace Axiom.RenderSystems.OpenGL
 					return Gl.GL_RGBA;
 				case PixelFormat.FLOAT32_R:
 					return Gl.GL_LUMINANCE;
-				//case PixelFormat.FLOAT32_GR:
-				//    return Gl.GL_LUMINANCE_ALPHA;
+				case PixelFormat.FLOAT32_GR:
+					return Gl.GL_LUMINANCE_ALPHA;
 				case PixelFormat.FLOAT32_RGB:
 					return Gl.GL_RGB;
 				case PixelFormat.FLOAT32_RGBA:
@@ -127,8 +127,8 @@ namespace Axiom.RenderSystems.OpenGL
 					return Gl.GL_RGBA;
 				//case PixelFormat.SHORT_RGB:
 				//    return Gl.GL_RGB;
-				//case PixelFormat.SHORT_GR:
-				//    return Gl.GL_LUMINANCE_ALPHA;
+				case PixelFormat.SHORT_GR:
+					return Gl.GL_LUMINANCE_ALPHA;
 				case PixelFormat.DXT1:
 					return Gl.GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
 				case PixelFormat.DXT3:
@@ -234,8 +234,8 @@ namespace Axiom.RenderSystems.OpenGL
 					return Gl.GL_ALPHA8;
 				case PixelFormat.A4L4:
 					return Gl.GL_LUMINANCE4_ALPHA4;
-				//case PixelFormat.BYTE_LA:
-				//    return Gl.GL_LUMINANCE8_ALPHA8;
+				case PixelFormat.BYTE_LA:
+					return Gl.GL_LUMINANCE8_ALPHA8;
 				case PixelFormat.R3G3B2:
 					return Gl.GL_R3_G3_B2;
 				case PixelFormat.A1R5G5B5:
@@ -260,24 +260,24 @@ namespace Axiom.RenderSystems.OpenGL
 					return Gl.GL_LUMINANCE16F_ARB;
 				case PixelFormat.FLOAT16_RGB:
 					return Gl.GL_RGB16F_ARB;
-				//case PixelFormat.FLOAT16_GR:
-				//    return Gl.GL_LUMINANCE_ALPHA16F_ARB;
+				case PixelFormat.FLOAT16_GR:
+					return Gl.GL_LUMINANCE_ALPHA16F_ARB;
 				case PixelFormat.FLOAT16_RGBA:
 					return Gl.GL_RGBA16F_ARB;
 				case PixelFormat.FLOAT32_R:
 					return Gl.GL_LUMINANCE32F_ARB;
-				//case PixelFormat.FLOAT32_GR:
-				//    return Gl.GL_LUMINANCE_ALPHA32F_ARB;
+				case PixelFormat.FLOAT32_GR:
+					return Gl.GL_LUMINANCE_ALPHA32F_ARB;
 				case PixelFormat.FLOAT32_RGB:
 					return Gl.GL_RGB32F_ARB;
 				case PixelFormat.FLOAT32_RGBA:
 					return Gl.GL_RGBA32F_ARB;
 				case PixelFormat.SHORT_RGBA:
 					return Gl.GL_RGBA16;
-				//case PixelFormat.SHORT_RGB:
-				//    return Gl.GL_RGB16;
-				//case PixelFormat.SHORT_GR:
-				//    return Gl.GL_LUMINANCE16_ALPHA16;
+				case PixelFormat.SHORT_RGB:
+					return Gl.GL_RGB16;
+				case PixelFormat.SHORT_GR:
+					return Gl.GL_LUMINANCE16_ALPHA16;
 				case PixelFormat.DXT1:
 					return Gl.GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
 				case PixelFormat.DXT3:
