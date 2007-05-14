@@ -749,12 +749,12 @@ namespace Axiom.Media
 		///<param name="color">The color</param>
 		///<param name="format">Pixel format in which to write the color</param>
 		///<param name="dest">Destination memory location</param>
-		public static void PackColor( System.Drawing.Color color, PixelFormat format, IntPtr dest )
+		public static void PackColor( ColorEx color, PixelFormat format, IntPtr dest )
 		{
 
 			unsafe
 			{
-				PixelConverter.PackColor( color.R, color.G, color.B, color.A, format, (byte*)( dest.ToPointer() ) );
+				PixelConverter.PackColor( (uint)color.r, (uint)color.g, (uint)color.b, (uint)color.a, format, (byte*)( dest.ToPointer() ) );
 			}
 		}
 

@@ -36,7 +36,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-using System.Drawing;
 
 using Axiom.Collections;
 using Axiom.Graphics;
@@ -418,9 +417,9 @@ namespace Axiom.Core
 				for ( uint u = 0; u < slices; ++u )
 				{
 					RectangleF r = new RectangleF();
-					r.X = (float)u / (float)slices;
-					r.Y = top;
-					r.Width = ( (float)u + 1 ) / (float)slices - r.X;
+					r.Left = (float)u / (float)slices;
+					r.Top = top;
+					r.Width = ( (float)u + 1 ) / (float)slices - r.Left;
 					r.Height = bottom - top;
 					textureCoords[ coordIndex ] = r;
 					++coordIndex;

@@ -39,6 +39,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 
 using Tao.OpenGl;
+using System.Diagnostics;
 
 #endregion Namespace Declarations
 
@@ -144,7 +145,6 @@ namespace Axiom.RenderSystems.OpenGL
             }
         }
 
-        #endregion Properties
 
 		public override int SamplerCount
 		{
@@ -153,5 +153,56 @@ namespace Axiom.RenderSystems.OpenGL
 				throw new Exception( "The method or operation is not implemented." );
 			}
 		}
+
+        #endregion Properties
+
+		internal bool IsAttributeValid( VertexElementSemantic semantic )
+		{
+			switch ( semantic )
+			{
+				case VertexElementSemantic.Diffuse:
+				case VertexElementSemantic.Normal:
+				case VertexElementSemantic.Position:
+				case VertexElementSemantic.Specular:
+				case VertexElementSemantic.TexCoords:
+				default:
+					Debug.Assert( false, "Shouldn't be calling this for normal attributes" );
+					break;
+				case VertexElementSemantic.Binormal:
+				case VertexElementSemantic.BlendIndices:
+				case VertexElementSemantic.BlendWeights:
+				case VertexElementSemantic.Tangent:
+					return true;
+
+			}
+			return false; // keeps compiler happy
+
+		}
+
+		internal int AttributeIndex( VertexElementSemantic semantic )
+		{
+			switch ( semantic )
+			{
+				case VertexElementSemantic.Diffuse:
+				case VertexElementSemantic.Normal:
+				case VertexElementSemantic.Position:
+				case VertexElementSemantic.Specular:
+				case VertexElementSemantic.TexCoords:
+				default:
+					Debug.Assert( false, "Shouldn't be calling this for normal attributes" );
+					break;
+				case VertexElementSemantic.Binormal:
+					return 7;
+				case VertexElementSemantic.BlendIndices:
+					return 1;
+				case VertexElementSemantic.BlendWeights:
+					return 14;
+				case VertexElementSemantic.Tangent:
+					return 15;
+
+			}
+			return 0; // keeps compiler happy
+		}
+
 	}
 }

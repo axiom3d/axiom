@@ -44,7 +44,6 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using System.Drawing;
 
 using Axiom.Core;
 using Axiom.Configuration;

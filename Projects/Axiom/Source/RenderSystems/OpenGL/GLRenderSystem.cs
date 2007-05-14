@@ -157,10 +157,6 @@ namespace Axiom.RenderSystems.OpenGL
         protected GLGpuProgram currentVertexProgram;
         protected GLGpuProgram currentFragmentProgram;
 
-        // constants for gl vertex attributes
-        const int BLEND_INDICES = 7;
-        const int BLEND_WEIGHTS = 1;
-
         #endregion Fields
 
         #region Constructors
@@ -1729,31 +1725,24 @@ namespace Axiom.RenderSystems.OpenGL
                         break;
 
                     case VertexElementSemantic.BlendIndices:
-                        Debug.Assert( _hwCapabilities.HasCapability( Capabilities.VertexPrograms ) );
+					case VertexElementSemantic.BlendWeights:
+					case VertexElementSemantic.Tangent:
+					case VertexElementSemantic.Binormal:
 
-                        Gl.glVertexAttribPointerARB(
-                            BLEND_INDICES, // matrix indices are vertex attribute 7
-                            VertexElement.GetTypeCount( element.Type ),
-                            GLHelper.ConvertEnum( element.Type ),
-                            Gl.GL_FALSE, // normalisation disabled
-                            vertexBuffer.VertexSize,
-                            bufferData );
+						Debug.Assert( _hwCapabilities.HasCapability( Capabilities.VertexPrograms ) );
+						if ( currentVertexProgram != null )
+						{
+							int attrib = currentVertexProgram.AttributeIndex( element.Semantic );
+							Gl.glVertexAttribPointerARB(
+								(uint)attrib, // matrix indices are vertex attribute 7
+								VertexElement.GetTypeCount( element.Type ),
+								GLHelper.ConvertEnum( element.Type ),
+								Gl.GL_FALSE, // normalisation disabled
+								vertexBuffer.VertexSize,
+								bufferData );
 
-                        Gl.glEnableVertexAttribArrayARB( BLEND_INDICES );
-                        break;
-
-                    case VertexElementSemantic.BlendWeights:
-                        Debug.Assert( _hwCapabilities.HasCapability( Capabilities.VertexPrograms ) );
-
-                        Gl.glVertexAttribPointerARB(
-                            BLEND_WEIGHTS, // weights are vertex attribute 1
-                            VertexElement.GetTypeCount( element.Type ),
-                            GLHelper.ConvertEnum( element.Type ),
-                            Gl.GL_FALSE, // normalisation disabled
-                            vertexBuffer.VertexSize,
-                            bufferData );
-
-                        Gl.glEnableVertexAttribArrayARB( BLEND_WEIGHTS );
+							Gl.glEnableVertexAttribArrayARB( attrib );
+						}
                         break;
 
                     default:
@@ -1845,12 +1834,16 @@ namespace Axiom.RenderSystems.OpenGL
             Gl.glDisableClientState( Gl.GL_COLOR_ARRAY );
             Gl.glDisableClientState( Gl.GL_SECONDARY_COLOR_ARRAY );
 
-            if ( _hwCapabilities.HasCapability( Capabilities.VertexPrograms ) )
+            if ( currentVertexProgram != null )
             {
-                Gl.glDisableVertexAttribArrayARB( BLEND_INDICES ); // disable indices
-                Gl.glDisableVertexAttribArrayARB( BLEND_WEIGHTS ); // disable weights
-				//Gl.glDisableVertexAttribArrayARB( BLEND_TANGENT ); // disable tangent
-				//Gl.glDisableVertexAttribArrayARB( BLEND_BINORMAL ); // disable binormal
+				if ( currentVertexProgram.IsAttributeValid( VertexElementSemantic.BlendIndices ) )
+					Gl.glDisableVertexAttribArrayARB( currentVertexProgram.AttributeIndex( VertexElementSemantic.BlendIndices ) ); // disable indices
+				if ( currentVertexProgram.IsAttributeValid( VertexElementSemantic.BlendWeights ) )
+					Gl.glDisableVertexAttribArrayARB( currentVertexProgram.AttributeIndex( VertexElementSemantic.BlendWeights ) ); // disable weights
+				if ( currentVertexProgram.IsAttributeValid( VertexElementSemantic.Tangent ) )
+					Gl.glDisableVertexAttribArrayARB( currentVertexProgram.AttributeIndex( VertexElementSemantic.Tangent ) ); // disable tangent
+				if ( currentVertexProgram.IsAttributeValid( VertexElementSemantic.Normal ) )
+					Gl.glDisableVertexAttribArrayARB( currentVertexProgram.AttributeIndex( VertexElementSemantic.Binormal ) ); // disable binormal
 			}
 
             Gl.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
