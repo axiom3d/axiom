@@ -138,10 +138,10 @@ namespace Axiom.Core
 		///		Converts this instance to a <see cref="System.Drawing.Color"/> structure.
 		/// </summary>
 		/// <returns></returns>
-		public System.Drawing.Color ToColor()
-		{
-			return System.Drawing.Color.FromArgb( (int)( a * 255.0f ), (int)( r * 255.0f ), (int)( g * 255.0f ), (int)( b * 255.0f ) );
-		}
+		//public System.Drawing.Color ToColor()
+		//{
+		//    return System.Drawing.Color.FromArgb( (int)( a * 255.0f ), (int)( r * 255.0f ), (int)( g * 255.0f ), (int)( b * 255.0f ) );
+		//}
 
 		/// <summary>
 		///		Converts this color value to packed ABGR format.
@@ -196,10 +196,10 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="color">.Net color structure to use as a basis.</param>
 		/// <returns>A new <code>ColorEx instance.</code></returns>
-		public static ColorEx FromColor( System.Drawing.Color color )
-		{
-			return new ColorEx( (float)color.A / 255.0f, (float)color.R / 255.0f, (float)color.G / 255.0f, (float)color.B / 255.0f );
-		}
+		//public static ColorEx FromColor( System.Drawing.Color color )
+		//{
+		//    return new ColorEx( (float)color.A / 255.0f, (float)color.R / 255.0f, (float)color.G / 255.0f, (float)color.B / 255.0f );
+		//}
 
 		#endregion
 

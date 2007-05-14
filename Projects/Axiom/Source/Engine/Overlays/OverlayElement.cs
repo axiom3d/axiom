@@ -43,7 +43,6 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Scripting;
-using System.Drawing;
 
 #endregion Namespace Declarations
 
@@ -594,7 +593,7 @@ namespace Axiom.Overlays
 
                 parentRect = parent.ClippingRegion;
 
-                Rectangle childRect = new Rectangle( (int)derivedLeft, (int)derivedTop, (int)width, (int)height );
+                Rectangle childRect = new Rectangle( (long)derivedLeft, (long)derivedTop, (long)width, (long)height );
                 //				child.Left   = derivedLeft;
                 //				child.Top    = derivedTop;
                 //				child.Right  = derivedLeft + width;
@@ -604,7 +603,7 @@ namespace Axiom.Overlays
             }
             else
             {
-                clippingRegion = new Rectangle( (int)derivedLeft, (int)derivedTop, (int)width, (int)height );
+                clippingRegion = new Rectangle( (long)derivedLeft, (long)derivedTop, (long)width, (long)height );
                 //				clippingRegion.Left   = derivedLeft;
                 //				clippingRegion.Top    = derivedTop;
                 //				clippingRegion.Right  = derivedLeft + width;

@@ -210,10 +210,10 @@ namespace Axiom.RenderSystems.DirectX9
 		///<summary>
 		///    Convert Ogre integer Box to D3D rectangle
 		///</summary>
-		protected static Rectangle ToD3DRectangle( BasicBox lockBox )
+		protected static System.Drawing.Rectangle ToD3DRectangle( BasicBox lockBox )
 		{
 			Debug.Assert( lockBox.Depth == 1 );
-			Rectangle r = new Rectangle();
+			System.Drawing.Rectangle r = new System.Drawing.Rectangle();
 			r.X = lockBox.Left;
 			r.Width = lockBox.Width;
 			r.Y = lockBox.Top;
@@ -239,10 +239,10 @@ namespace Axiom.RenderSystems.DirectX9
 		///<summary>
 		///    Convert Axiom PixelBox extent to D3D rectangle
 		///</summary>
-		protected static Rectangle ToD3DRectangleExtent( PixelBox lockBox )
+		protected static System.Drawing.Rectangle ToD3DRectangleExtent( PixelBox lockBox )
 		{
 			Debug.Assert( lockBox.Depth == 1 );
-			Rectangle r = new Rectangle();
+			System.Drawing.Rectangle r = new System.Drawing.Rectangle();
 			r.X = 0;
 			r.Width = lockBox.Width;
 			r.X = 0;
@@ -306,7 +306,7 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 				else
 				{
-					Rectangle prect = ToD3DRectangle( lockBox ); // specify range to lock
+					System.Drawing.Rectangle prect = ToD3DRectangle( lockBox ); // specify range to lock
 					data = surface.LockRectangle( prect, flags, out pitch );
 				}
 				if ( data == null )
@@ -397,8 +397,8 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( surface != null && src.surface != null )
 			{
 				// Surface-to-surface
-				Rectangle dsrcRect = ToD3DRectangle( srcBox );
-				Rectangle ddestRect = ToD3DRectangle( dstBox );
+				System.Drawing.Rectangle dsrcRect = ToD3DRectangle( srcBox );
+				System.Drawing.Rectangle ddestRect = ToD3DRectangle( dstBox );
 				// D3DXLoadSurfaceFromSurface
 				D3D.SurfaceLoader.FromSurface( surface, ddestRect, src.surface, dsrcRect, D3D.Filter.None, 0 );
 			}
@@ -470,8 +470,8 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( surface != null )
 			{
 				// I'm trying to write to surface using the data in converted
-				Rectangle srcRect = ToD3DRectangleExtent( converted );
-				Rectangle destRect = ToD3DRectangle( dstBox );
+				System.Drawing.Rectangle srcRect = ToD3DRectangleExtent( converted );
+				System.Drawing.Rectangle destRect = ToD3DRectangle( dstBox );
 				D3D.SurfaceLoader.FromSurface( surface, destRect, tmpSurface, srcRect, D3D.Filter.None, 0 );
 			}
 			else
@@ -517,7 +517,7 @@ namespace Axiom.RenderSystems.DirectX9
 									D3D.Pool.Scratch );
 				D3D.Surface subSurface = tmp.GetSurfaceLevel( 0 );
 				// Copy texture to this temp surface
-				Rectangle destRect, srcRect;
+				System.Drawing.Rectangle destRect, srcRect;
 				srcRect = ToD3DRectangle( srcBox );
 				destRect = ToD3DRectangleExtent( dst );
 
