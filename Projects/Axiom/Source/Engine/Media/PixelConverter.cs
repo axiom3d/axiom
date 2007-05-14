@@ -119,9 +119,10 @@ namespace Axiom.Media
 				this.gshift = gshift;
 				this.bshift = bshift;
 			}
-		}
 
 			#endregion Constructor
+		}
+
 
 		///<summary>
 		///    Pixel format database
@@ -742,15 +743,20 @@ namespace Axiom.Media
 		///*************************************************************************
 
 
-		//           ///<summary>
-		//           ///    Pack a color value to memory
-		//           ///</summary>
-		//           ///<param name="color">The color</param>
-		//           ///<param name="format">Pixel format in which to write the color</param>
-		//           ///<param name="dest">Destination memory location</param>
-		//   		public static void PackColor(System.Drawing.Color color, PixelFormat format,  IntPtr dest) {
-		//   			PackColor(color.r, color.g, color.b, color.a, format, dest);
-		//   		}
+		///<summary>
+		///    Pack a color value to memory
+		///</summary>
+		///<param name="color">The color</param>
+		///<param name="format">Pixel format in which to write the color</param>
+		///<param name="dest">Destination memory location</param>
+		public static void PackColor( System.Drawing.Color color, PixelFormat format, IntPtr dest )
+		{
+
+			unsafe
+			{
+				PixelConverter.PackColor( color.R, color.G, color.B, color.A, format, (byte*)( dest.ToPointer() ) );
+			}
+		}
 
 		///<summary>
 		///    Pack a color value to memory
@@ -758,7 +764,7 @@ namespace Axiom.Media
 		///<param name="r,g,b,a">The four color components, range 0x00 to 0xFF</param>
 		///<param name="format">Pixelformat in which to write the color</param>
 		///<param name="dest">Destination memory location</param>
-		unsafe public void PackColor( uint r, uint g, uint b, uint a, PixelFormat format, byte* dest )
+		unsafe public static void PackColor( uint r, uint g, uint b, uint a, PixelFormat format, byte* dest )
 		{
 			PixelFormatDescription des = GetDescriptionFor( format );
 			if ( ( des.flags & PixelFormatFlags.NativeEndian ) != 0 )
@@ -1231,6 +1237,11 @@ namespace Axiom.Media
 		public static bool IsCompressed( PixelFormat format )
 		{
 			return ( PixelConverter.GetDescriptionFor( format ).flags & PixelFormatFlags.Compressed ) > 0;
+		}
+
+		public static bool IsFloatingPoint( PixelFormat format )
+		{
+			return ( PixelConverter.GetDescriptionFor( format ).flags & PixelFormatFlags.Float ) > 0;
 		}
 
 		public static bool HasAlpha( PixelFormat format )

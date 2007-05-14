@@ -44,6 +44,7 @@ using Axiom.Graphics;
 using Axiom.Media;
 
 using Tao.OpenGl;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -59,7 +60,9 @@ namespace Axiom.RenderSystems.OpenGL
         /// <summary>
         ///    OpenGL texture ID.
         /// </summary>
-        private int glTextureID;
+        private int _glTextureID;
+
+		private List<HardwarePixelBuffer> _surfaceList = new List<HardwarePixelBuffer>();
 
         #endregion
 
@@ -114,7 +117,7 @@ namespace Axiom.RenderSystems.OpenGL
         {
             get
             {
-                return glTextureID;
+                return _glTextureID;
             }
         }
 
@@ -209,15 +212,15 @@ namespace Axiom.RenderSystems.OpenGL
             }
 
             // generate the texture
-            Gl.glGenTextures( 1, out glTextureID );
+            Gl.glGenTextures( 1, out _glTextureID );
 
             // bind the texture
-            Gl.glBindTexture( this.GLTextureType, glTextureID );
+            Gl.glBindTexture( this.GLTextureType, _glTextureID );
 
             // log a quick message
             LogManager.Instance.Write( "GLTexture: Loading {0} with {1} mipmaps from an Image.", name, numMipmaps );
 
-            if ( numMipmaps > 0 && Root.Instance.RenderSystem.Caps.CheckCap( Capabilities.HardwareMipMaps ) )
+            if ( numMipmaps > 0 && Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.HardwareMipMaps ) )
             {
                 Gl.glTexParameteri( this.GLTextureType, Gl.GL_GENERATE_MIPMAP, Gl.GL_TRUE );
                 useSoftwareMipMaps = false;
@@ -364,7 +367,7 @@ namespace Axiom.RenderSystems.OpenGL
         {
             if ( isLoaded )
             {
-                Gl.glDeleteTextures( 1, ref glTextureID );
+                Gl.glDeleteTextures( 1, ref _glTextureID );
                 isLoaded = false;
             }
         }
@@ -437,7 +440,7 @@ namespace Axiom.RenderSystems.OpenGL
                 }
                 else
                 {
-                    if ( isCompressed && Root.Instance.RenderSystem.Caps.CheckCap( Capabilities.TextureCompressionDXT ) )
+                    if ( isCompressed && Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.TextureCompressionDXT ) )
                     {
                         int blockSize = ( format == PixelFormat.DXT1 ) ? 8 : 16;
                         int size = ( ( width + 3 ) / 4 ) * ( ( height + 3 ) / 4 ) * blockSize;
@@ -478,8 +481,8 @@ namespace Axiom.RenderSystems.OpenGL
             }
 
             // create and bind the texture
-            Gl.glGenTextures( 1, out glTextureID );
-            Gl.glBindTexture( this.GLTextureType, glTextureID );
+            Gl.glGenTextures( 1, out _glTextureID );
+            Gl.glBindTexture( this.GLTextureType, _glTextureID );
 
             // generate an image without data by default to use for rendering to
             // Note: null is casted to byte[] in order to remove compiler confusion over ambiguous overloads
@@ -566,27 +569,129 @@ namespace Axiom.RenderSystems.OpenGL
 
         #endregion
 
+		private void _createSurfaceList()
+		{
+			_surfaceList.Clear();
+			
+			// For all faces and mipmaps, store surfaces as HardwarePixelBufferSharedPtr
+			bool wantGeneratedMips = (Usage & TextureUsage.AutoMipMap)!=0;
+			
+			// Do mipmapping in software? (uses GLU) For some cards, this is still needed. Of course,
+			// only when mipmap generation is desired.
+			bool doSoftware = wantGeneratedMips && !mipmapsHardwareGenerated && numMipmaps != 0; 
+			
+			for(int face=0; face<NumFaces; face++)
+			{
+				for(int mip=0; mip<=numMipmaps; mip++)
+				{
+					GLHardwarePixelBuffer buf = new GLTextureBuffer(Name, GLTextureType, _glTextureID, face, mip, (BufferUsage)Usage, doSoftware && mip==0);
+					_surfaceList.Add(buf);
+	                
+					/// Check for error
+					if(buf.Width==0 || buf.Height==0 || buf.Depth==0)
+					{
+						throw new Exception( String.Format("Zero sized texture surface on texture {0} face {1} mipmap {2}. Probably, the GL driver refused to create the texture.",Name, face, mip) );
+					}
+				}
+			}
+		}
+
 		protected override void CreateInternalResourcesImpl()
 		{
+			// Convert to nearest power-of-two size if required
+			Width = GLPixelUtil.OptionalPO2(Width);      
+			Height = GLPixelUtil.OptionalPO2(Height);
+			Depth = GLPixelUtil.OptionalPO2(Depth);
+			
+
+			// Adjust format if required
+			Format = TextureManager.Instance.GetNativeFormat(TextureType, Format, Usage);
+			
+			// Check requested number of mipmaps
+			int maxMips = GLPixelUtil.GetMaxMipmaps(Width, Height, Depth, Format);
+			numMipmaps = numRequestedMipmaps;
+			if(numMipmaps>maxMips)
+				numMipmaps = maxMips;
+			
+			// Generate texture name
+			Gl.glGenTextures( 1, out _glTextureID );
+			
+			// Set texture type
+			Gl.glBindTexture( GLTextureType, _glTextureID );
+	        
+			// This needs to be set otherwise the texture doesn't get rendered
+			Gl.glTexParameteri( GLTextureType, Gl.GL_TEXTURE_MAX_LEVEL, numMipmaps );
+	        
+			// Set some misc default parameters so NVidia won't complain, these can of course be changed later
+			Gl.glTexParameteri( GLTextureType, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_NEAREST );
+			Gl.glTexParameteri( GLTextureType, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_NEAREST );
+			Gl.glTexParameteri( GLTextureType, Gl.GL_TEXTURE_WRAP_S, Gl.GL_CLAMP_TO_EDGE );
+			Gl.glTexParameteri( GLTextureType, Gl.GL_TEXTURE_WRAP_T, Gl.GL_CLAMP_TO_EDGE );
+			
+			// If we can do automip generation and the user desires this, do so
+			mipmapsHardwareGenerated = Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.HardwareMipMaps );
+			if(((Usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap)  &&
+				numRequestedMipmaps != 0 && mipmapsHardwareGenerated)
+			{
+				Gl.glTexParameteri( GLTextureType, Gl.GL_GENERATE_MIPMAP, Gl.GL_TRUE );
+			}
+			
+			// Allocate internal buffer so that glTexSubImageXD can be used
+			// Internal format
+			int format = GLPixelUtil.GetClosestGLInternalFormat(Format);
+			int width = Width;
+			int height = Height;
+			int depth = Depth;
+
+			{
+				// Run through this process to pregenerate mipmap piramid
+				for(int mip=0; mip<=numMipmaps; mip++)
+				{
+					// Normal formats
+					switch(TextureType)
+					{
+						case TextureType.OneD:
+							Gl.glTexImage1D( Gl.GL_TEXTURE_1D, mip, format,	width, 0, Gl.GL_RGBA, Gl.GL_UNSIGNED_BYTE, IntPtr.Zero );
+		
+							break;
+						case TextureType.TwoD:
+							Gl.glTexImage2D( Gl.GL_TEXTURE_2D, mip, format, width, height, 0, Gl.GL_RGBA, Gl.GL_UNSIGNED_BYTE, IntPtr.Zero );
+							break;
+						case TextureType.ThreeD:
+							Gl.glTexImage3D( Gl.GL_TEXTURE_3D, mip, format, width, height, depth, 0, Gl.GL_RGBA, Gl.GL_UNSIGNED_BYTE, IntPtr.Zero );
+							break;
+						case TextureType.CubeMap:
+							for ( int face = 0; face < 6; face++ )
+							{
+								Gl.glTexImage2D( Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, mip, format, width, height, 0, Gl.GL_RGBA, Gl.GL_UNSIGNED_BYTE, IntPtr.Zero );
+							}
+							break;
+					};
+					if(width>1)		width = width/2;
+					if(height>1)	height = height/2;
+					if(depth>1)		depth = depth/2;
+				}
+			}
+			_createSurfaceList();
+			// Get final internal format
+			Format = GetBuffer(0,0).Format;
 		}
 
 		protected override void FreeInternalResourcesImpl()
 		{
+			_surfaceList.Clear();
+			Gl.glDeleteTextures( 1, ref _glTextureID );
 		}
 
 		public override HardwarePixelBuffer GetBuffer( int face, int mipmap )
 		{
-			// TODO
-			/*
-			if ( face >= getNumFaces() )
+			if ( face >= this.NumFaces )
 				throw new IndexOutOfRangeException( "Face index out of range" );
-			if ( mipmap > mNumMipmaps )
+			if ( mipmap > numMipmaps )
 				throw new IndexOutOfRangeException( "MipMap index out of range" );
-			int idx = face * ( mNumMipmaps + 1 ) + mipmap;
-			assert( idx < mSurfaceList.size() );
-			return mSurfaceList[ idx ];
-			 */
-			return null;
+			int idx = face * ( numMipmaps + 1 ) + mipmap;
+			Debug.Assert( idx < _surfaceList.Count );
+			return _surfaceList[ idx ];
 		}
 	}
 }

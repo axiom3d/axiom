@@ -48,7 +48,7 @@ namespace Axiom.Graphics
     /// 	users hardware configuration.  A RenderSystem should create and initialize an instance
     /// 	of this class during startup so that it will be available for use ASAP for checking caps.
     /// </summary>
-    public class HardwareCaps
+    public class HardwareCapabilities
     {
         #region Member variables
 
@@ -140,7 +140,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///    Default constructor.
         /// </summary>
-        public HardwareCaps()
+        public HardwareCapabilities()
         {
             caps = 0;
         }
@@ -442,7 +442,7 @@ namespace Axiom.Graphics
         /// </summary>
         /// <param name="cap">Feature to query (i.e. Dot3 bump mapping)</param>
         /// <returns></returns>
-        public bool CheckCap( Capabilities cap )
+        public bool HasCapability( Capabilities cap )
         {
             return ( caps & cap ) > 0;
         }
@@ -451,7 +451,7 @@ namespace Axiom.Graphics
         ///    Sets a flag stating the specified feature is supported.
         /// </summary>
         /// <param name="cap"></param>
-        public void SetCap( Capabilities cap )
+        public void SetCapability( Capabilities cap )
         {
             caps |= cap;
         }
@@ -468,54 +468,54 @@ namespace Axiom.Graphics
 			logMgr.Write( "\t-Driver Version: {0}", driverVersion );
             logMgr.Write( "\t-Available texture units: {0}", this.TextureUnitCount );
             logMgr.Write( "\t-Maximum lights available: {0}", this.MaxLights );
-            logMgr.Write( "\t-Hardware generation of mip-maps: {0}", ConvertBool( CheckCap( Capabilities.HardwareMipMaps ) ) );
-            logMgr.Write( "\t-Texture blending: {0}", ConvertBool( CheckCap( Capabilities.TextureBlending ) ) );
-            logMgr.Write( "\t-Anisotropic texture filtering: {0}", ConvertBool( CheckCap( Capabilities.AnisotropicFiltering ) ) );
-            logMgr.Write( "\t-Dot product texture operation: {0}", ConvertBool( CheckCap( Capabilities.Dot3 ) ) );
-            logMgr.Write( "\t-Cube Mapping: {0}", ConvertBool( CheckCap( Capabilities.CubeMapping ) ) );
+            logMgr.Write( "\t-Hardware generation of mip-maps: {0}", ConvertBool( HasCapability( Capabilities.HardwareMipMaps ) ) );
+            logMgr.Write( "\t-Texture blending: {0}", ConvertBool( HasCapability( Capabilities.TextureBlending ) ) );
+            logMgr.Write( "\t-Anisotropic texture filtering: {0}", ConvertBool( HasCapability( Capabilities.AnisotropicFiltering ) ) );
+            logMgr.Write( "\t-Dot product texture operation: {0}", ConvertBool( HasCapability( Capabilities.Dot3 ) ) );
+            logMgr.Write( "\t-Cube Mapping: {0}", ConvertBool( HasCapability( Capabilities.CubeMapping ) ) );
 
-            logMgr.Write( "\t-Hardware stencil buffer: {0}", ConvertBool( CheckCap( Capabilities.StencilBuffer ) ) );
+            logMgr.Write( "\t-Hardware stencil buffer: {0}", ConvertBool( HasCapability( Capabilities.StencilBuffer ) ) );
 
-            if ( CheckCap( Capabilities.StencilBuffer ) )
+            if ( HasCapability( Capabilities.StencilBuffer ) )
             {
                 logMgr.Write( "\t\t-Stencil depth: {0} bits", stencilBufferBits );
-                logMgr.Write( "\t\t-Two sided stencil support: {0}", ConvertBool( CheckCap( Capabilities.TwoSidedStencil ) ) );
-                logMgr.Write( "\t\t-Wrap stencil values: {0}", ConvertBool( CheckCap( Capabilities.StencilWrap ) ) );
+                logMgr.Write( "\t\t-Two sided stencil support: {0}", ConvertBool( HasCapability( Capabilities.TwoSidedStencil ) ) );
+                logMgr.Write( "\t\t-Wrap stencil values: {0}", ConvertBool( HasCapability( Capabilities.StencilWrap ) ) );
             }
 
-            logMgr.Write( "\t-Hardware vertex/index buffers: {0}", ConvertBool( CheckCap( Capabilities.VertexBuffer ) ) );
+            logMgr.Write( "\t-Hardware vertex/index buffers: {0}", ConvertBool( HasCapability( Capabilities.VertexBuffer ) ) );
 
-            logMgr.Write( "\t-Vertex programs: {0}", ConvertBool( CheckCap( Capabilities.VertexPrograms ) ) );
+            logMgr.Write( "\t-Vertex programs: {0}", ConvertBool( HasCapability( Capabilities.VertexPrograms ) ) );
 
-            if ( CheckCap( Capabilities.VertexPrograms ) )
+            if ( HasCapability( Capabilities.VertexPrograms ) )
             {
                 logMgr.Write( "\t\t-Max vertex program version: {0}", this.MaxVertexProgramVersion );
             }
 
-            logMgr.Write( "\t-Fragment programs: {0}", ConvertBool( CheckCap( Capabilities.FragmentPrograms ) ) );
+            logMgr.Write( "\t-Fragment programs: {0}", ConvertBool( HasCapability( Capabilities.FragmentPrograms ) ) );
 
-            if ( CheckCap( Capabilities.FragmentPrograms ) )
+            if ( HasCapability( Capabilities.FragmentPrograms ) )
             {
                 logMgr.Write( "\t\t-Max fragment program version: {0}", this.MaxFragmentProgramVersion );
             }
 
-            logMgr.Write( "\t-Texture compression: {0}", ConvertBool( CheckCap( Capabilities.TextureCompression ) ) );
+            logMgr.Write( "\t-Texture compression: {0}", ConvertBool( HasCapability( Capabilities.TextureCompression ) ) );
 
-            if ( CheckCap( Capabilities.TextureCompression ) )
+            if ( HasCapability( Capabilities.TextureCompression ) )
             {
-                logMgr.Write( "\t\t-DXT: {0}", ConvertBool( CheckCap( Capabilities.TextureCompressionDXT ) ) );
-                logMgr.Write( "\t\t-VTC: {0}", ConvertBool( CheckCap( Capabilities.TextureCompressionVTC ) ) );
+                logMgr.Write( "\t\t-DXT: {0}", ConvertBool( HasCapability( Capabilities.TextureCompressionDXT ) ) );
+                logMgr.Write( "\t\t-VTC: {0}", ConvertBool( HasCapability( Capabilities.TextureCompressionVTC ) ) );
             }
 
-            logMgr.Write( "\t-Scissor rectangle: {0}", ConvertBool( CheckCap( Capabilities.ScissorTest ) ) );
-            logMgr.Write( "\t-Hardware Occlusion Query: {0}", ConvertBool( CheckCap( Capabilities.HardwareOcculusion ) ) );
-            logMgr.Write( "\t-User clip planes: {0}", ConvertBool( CheckCap( Capabilities.UserClipPlanes ) ) );
-            logMgr.Write( "\t-VertexElementType.UBYTE4: {0}", ConvertBool( CheckCap( Capabilities.VertexFormatUByte4 ) ) );
-            logMgr.Write( "\t-Infinite far plane projection: {0}", ConvertBool( CheckCap( Capabilities.InfiniteFarPlane ) ) );
+            logMgr.Write( "\t-Scissor rectangle: {0}", ConvertBool( HasCapability( Capabilities.ScissorTest ) ) );
+            logMgr.Write( "\t-Hardware Occlusion Query: {0}", ConvertBool( HasCapability( Capabilities.HardwareOcculusion ) ) );
+            logMgr.Write( "\t-User clip planes: {0}", ConvertBool( HasCapability( Capabilities.UserClipPlanes ) ) );
+            logMgr.Write( "\t-VertexElementType.UBYTE4: {0}", ConvertBool( HasCapability( Capabilities.VertexFormatUByte4 ) ) );
+            logMgr.Write( "\t-Infinite far plane projection: {0}", ConvertBool( HasCapability( Capabilities.InfiniteFarPlane ) ) );
 
 			logMgr.Write( "\t-Max Point Size: {0} ", MaxPointSize );
-			logMgr.Write( "\t-Vertex texture fetch: {0} ", ConvertBool( CheckCap( Capabilities.VertexTextureFetch ) ) );
-			if (CheckCap( Capabilities.VertexTextureFetch ))
+			logMgr.Write( "\t-Vertex texture fetch: {0} ", ConvertBool( HasCapability( Capabilities.VertexTextureFetch ) ) );
+			if (HasCapability( Capabilities.VertexTextureFetch ))
 			{
 				logMgr.Write( "\t\t-Max vertex textures: {0}", NumVertexTextureUnits);
 				logMgr.Write( "\t\t-Vertex textures shared: {0}", ConvertBool( VertexTextureUnitsShared ) );

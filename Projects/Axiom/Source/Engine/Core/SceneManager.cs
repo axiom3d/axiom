@@ -1649,7 +1649,7 @@ namespace Axiom.Core
 
 				shadowDebugPass.CullMode = CullingMode.None;
 
-				if ( targetRenderSystem.Caps.CheckCap( Capabilities.VertexPrograms ) )
+				if ( targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
 				{
 					ShadowVolumeExtrudeProgram.Initialize();
 
@@ -1680,7 +1680,7 @@ namespace Axiom.Core
 				matStencil = (Material)MaterialManager.Instance.Create( STENCIL_SHADOW_VOLUMES_MATERIAL );
 				shadowStencilPass = matStencil.GetTechnique( 0 ).GetPass( 0 );
 
-				if ( targetRenderSystem.Caps.CheckCap( Capabilities.VertexPrograms ) )
+				if ( targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
 				{
 					// Enable the finite point light extruder for now, just to get some params
 					shadowStencilPass.SetVertexProgram(
@@ -1969,7 +1969,7 @@ namespace Axiom.Core
 			// Set up scissor test (point & spot lights only)
 			bool scissored = false;
 			if ( light.Type != LightType.Directional &&
-				targetRenderSystem.Caps.CheckCap( Capabilities.ScissorTest ) )
+				targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.ScissorTest ) )
 			{
 				// Project the sphere onto the camera
 				float left, right, top, bottom;
@@ -1996,8 +1996,8 @@ namespace Axiom.Core
 			// Can we do a 2-sided stencil?
 			bool stencil2sided = false;
 
-			if ( targetRenderSystem.Caps.CheckCap( Capabilities.TwoSidedStencil ) &&
-				targetRenderSystem.Caps.CheckCap( Capabilities.StencilWrap ) )
+			if ( targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.TwoSidedStencil ) &&
+				targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.StencilWrap ) )
 			{
 				// enable
 				stencil2sided = true;
@@ -2007,9 +2007,9 @@ namespace Axiom.Core
 			bool extrudeInSoftware = true;
 
 			bool finiteExtrude = !shadowUseInfiniteFarPlane ||
-				!targetRenderSystem.Caps.CheckCap( Capabilities.InfiniteFarPlane );
+				!targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.InfiniteFarPlane );
 
-			if ( targetRenderSystem.Caps.CheckCap( Capabilities.VertexPrograms ) )
+			if ( targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
 			{
 				extrudeInSoftware = false;
 				EnableHardwareShadowExtrusion( light, finiteExtrude );
@@ -2403,7 +2403,7 @@ namespace Axiom.Core
 				}
 				else
 				{
-					numTextureUnits = targetRenderSystem.Caps.TextureUnitCount;
+					numTextureUnits = targetRenderSystem.HardwareCapabilities.TextureUnitCount;
 				}
 				
 				for ( int i = 0; i < numTextureUnits; i++ )
@@ -3696,7 +3696,7 @@ namespace Axiom.Core
 				{
 
 					// Firstly check that we have a stencil. Otherwise, forget it!
-					if ( !targetRenderSystem.Caps.CheckCap( Capabilities.StencilBuffer ) )
+					if ( !targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.StencilBuffer ) )
 					{
 						LogManager.Instance.Write( "WARNING: Stencil shadows were requested, but the current hardware does not support them.  Disabling." );
 
@@ -4191,7 +4191,7 @@ namespace Axiom.Core
 			// to prevent dark caps getting clipped
 			if ( IsShadowTechniqueStencilBased &&
 				camera.Far != 0 &&
-				targetRenderSystem.Caps.CheckCap( Capabilities.InfiniteFarPlane ) &&
+				targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.InfiniteFarPlane ) &&
 				shadowUseInfiniteFarPlane )
 			{
 
@@ -4285,7 +4285,7 @@ namespace Axiom.Core
 			// autoParamDataSource.Time = ((float)Root.Instance.Timer.Milliseconds) / 1000f;
 
 			// Set camera window clipping planes (if any)
-			if ( targetRenderSystem.Caps.CheckCap( Capabilities.UserClipPlanes ) )
+			if ( targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.UserClipPlanes ) )
 			{
 				// TODO: Add ClipPlanes to RenderSystem.cs
 				/*

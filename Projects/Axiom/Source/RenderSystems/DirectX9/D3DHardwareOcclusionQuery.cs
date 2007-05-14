@@ -91,7 +91,7 @@ namespace Axiom.RenderSystems.DirectX9
             this.device = device;
 
             // check if queries are supported
-            isSupported = Root.Instance.RenderSystem.Caps.CheckCap( Capabilities.HardwareOcculusion );
+            isSupported = Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.HardwareOcculusion );
 
             if ( isSupported )
             {

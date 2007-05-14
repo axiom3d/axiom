@@ -342,7 +342,7 @@ namespace Axiom.Core
 
 					// Also set up hardware W buffer if appropriate
 					RenderSystem rend = Root.Instance.RenderSystem;
-					if ( null != rend && rend.Caps.CheckCap( Capabilities.VertexPrograms ) )
+					if ( null != rend && rend.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
 					{
 						buf = HardwareBufferManager.Instance.CreateVertexBuffer( sizeof( float ), vertexData.vertexCount * 2, BufferUsage.StaticWriteOnly, false );
 						// Fill the first half with 1.0, second half with 0.0

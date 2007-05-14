@@ -1941,7 +1941,7 @@ namespace Axiom.Core
 			{
 				bool enabled = value;
 				// Override point rendering if not supported
-				if ( enabled && !Root.Instance.RenderSystem.Caps.CheckCap( Capabilities.PointSprites ) )
+				if ( enabled && !Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.PointSprites ) )
 				{
 					enabled = false;
             }

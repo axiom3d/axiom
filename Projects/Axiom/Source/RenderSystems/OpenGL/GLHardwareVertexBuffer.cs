@@ -80,7 +80,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#endregion
 
-		#region GLHardwareVertexBuffer Implementation
+		#region HardwareVertexBuffer Implementation
 
 		/// <summary>
 		/// 

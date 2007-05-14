@@ -297,7 +297,7 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				// Surface
 				DX.GraphicsStream data = null;
-				int pitch;
+				int pitch = 0;
 				if ( lockBox.Left == 0 && lockBox.Top == 0 &&
 					lockBox.Right == Width && lockBox.Bottom == Height )
 				{

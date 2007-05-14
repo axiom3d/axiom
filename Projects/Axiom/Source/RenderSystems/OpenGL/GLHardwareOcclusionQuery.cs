@@ -72,7 +72,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         public GLHardwareOcclusionQuery()
         {
-            isSupported = Root.Instance.RenderSystem.Caps.CheckCap( Capabilities.HardwareOcculusion );
+            isSupported = Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.HardwareOcculusion );
 
             if ( isSupported )
             {

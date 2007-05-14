@@ -309,7 +309,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 			// Only try to clear the stencil buffer if supported
 			if ( ( buffers & FrameBuffer.Stencil ) > 0
-				&& caps.CheckCap( Capabilities.StencilBuffer ) )
+				&& _hwCapabilities.HasCapability( Capabilities.StencilBuffer ) )
 			{
 
 				flags |= D3D.ClearFlags.Stencil;
@@ -1041,7 +1041,7 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 
 				// TODO: Why is this check here? Do we need it?
-				if ( stage < caps.TextureUnitCount )
+				if ( stage < _hwCapabilities.TextureUnitCount )
 				{
 					device.TextureState[ stage ].ColorOperation = D3D.TextureOperation.Disable;
 				}
@@ -1774,7 +1774,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// 2 sided operation?
 			if ( twoSidedOperation )
 			{
-				if ( !caps.CheckCap( Capabilities.TwoSidedStencil ) )
+				if ( !_hwCapabilities.HasCapability( Capabilities.TwoSidedStencil ) )
 				{
 					throw new AxiomException( "2-sided stencils are not supported on this hardware!" );
 				}
@@ -2175,10 +2175,10 @@ namespace Axiom.RenderSystems.DirectX9
 			d3dCaps = device.DeviceCaps;
 
 			// get the number of possible texture units
-			caps.TextureUnitCount = d3dCaps.MaxSimultaneousTextures;
+			_hwCapabilities.TextureUnitCount = d3dCaps.MaxSimultaneousTextures;
 
 			// max active lights
-			caps.MaxLights = d3dCaps.MaxActiveLights;
+			_hwCapabilities.MaxLights = d3dCaps.MaxActiveLights;
 
 			D3D.Surface surface = device.DepthStencilSurface;
 			D3D.SurfaceDescription surfaceDesc = surface.Description;
@@ -2186,69 +2186,69 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( surfaceDesc.Format == D3D.Format.D24S8 || surfaceDesc.Format == D3D.Format.D24X8 )
 			{
-				caps.SetCap( Capabilities.StencilBuffer );
+				_hwCapabilities.SetCapability( Capabilities.StencilBuffer );
 				// always 8 here
-				caps.StencilBufferBits = 8;
+				_hwCapabilities.StencilBufferBits = 8;
 			}
 
 			// some cards, oddly enough, do not support this
 			if ( d3dCaps.DeclTypes.SupportsUByte4 )
 			{
-				caps.SetCap( Capabilities.VertexFormatUByte4 );
+				_hwCapabilities.SetCapability( Capabilities.VertexFormatUByte4 );
 			}
 
 			// Anisotropy?
 			if ( d3dCaps.MaxAnisotropy > 1 )
 			{
-				caps.SetCap( Capabilities.AnisotropicFiltering );
+				_hwCapabilities.SetCapability( Capabilities.AnisotropicFiltering );
 			}
 
 			// Hardware mipmapping?
 			if ( d3dCaps.DriverCaps.CanAutoGenerateMipMap )
 			{
-				caps.SetCap( Capabilities.HardwareMipMaps );
+				_hwCapabilities.SetCapability( Capabilities.HardwareMipMaps );
 			}
 
 			// blending between stages is definately supported
-			caps.SetCap( Capabilities.TextureBlending );
-			caps.SetCap( Capabilities.MultiTexturing );
+			_hwCapabilities.SetCapability( Capabilities.TextureBlending );
+			_hwCapabilities.SetCapability( Capabilities.MultiTexturing );
 
 			// Dot3 bump mapping?
 			if ( d3dCaps.TextureOperationCaps.SupportsDotProduct3 )
 			{
-				caps.SetCap( Capabilities.Dot3 );
+				_hwCapabilities.SetCapability( Capabilities.Dot3 );
 			}
 
 			// Cube mapping?
 			if ( d3dCaps.TextureCaps.SupportsCubeMap )
 			{
-				caps.SetCap( Capabilities.CubeMapping );
+				_hwCapabilities.SetCapability( Capabilities.CubeMapping );
 			}
 
 			// Texture Compression
 			// We always support compression, D3DX will decompress if device does not support
-			caps.SetCap( Capabilities.TextureCompression );
-			caps.SetCap( Capabilities.TextureCompressionDXT );
+			_hwCapabilities.SetCapability( Capabilities.TextureCompression );
+			_hwCapabilities.SetCapability( Capabilities.TextureCompressionDXT );
 
 			// D3D uses vertex buffers for everything
-			caps.SetCap( Capabilities.VertexBuffer );
+			_hwCapabilities.SetCapability( Capabilities.VertexBuffer );
 
 			// Scissor test
 			if ( d3dCaps.RasterCaps.SupportsScissorTest )
 			{
-				caps.SetCap( Capabilities.ScissorTest );
+				_hwCapabilities.SetCapability( Capabilities.ScissorTest );
 			}
 
 			// 2 sided stencil
 			if ( d3dCaps.StencilCaps.SupportsTwoSided )
 			{
-				caps.SetCap( Capabilities.TwoSidedStencil );
+				_hwCapabilities.SetCapability( Capabilities.TwoSidedStencil );
 			}
 
 			// stencil wrap
 			if ( d3dCaps.StencilCaps.SupportsIncrement && d3dCaps.StencilCaps.SupportsDecrement )
 			{
-				caps.SetCap( Capabilities.StencilWrap );
+				_hwCapabilities.SetCapability( Capabilities.StencilWrap );
 			}
 
 			// Hardware Occlusion
@@ -2257,7 +2257,7 @@ namespace Axiom.RenderSystems.DirectX9
 				D3D.Query test = new D3D.Query( device, D3D.QueryType.Occlusion );
 
 				// if we made it this far, it is supported
-				caps.SetCap( Capabilities.HardwareOcculusion );
+				_hwCapabilities.SetCapability( Capabilities.HardwareOcculusion );
 
 				test.Dispose();
 			}
@@ -2269,7 +2269,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( d3dCaps.MaxUserClipPlanes > 0 )
 			{
-				caps.SetCap( Capabilities.UserClipPlanes );
+				_hwCapabilities.SetCapability( Capabilities.UserClipPlanes );
 			}
 
 			int vpMajor = d3dCaps.VertexShaderVersion.Major;
@@ -2281,47 +2281,47 @@ namespace Axiom.RenderSystems.DirectX9
 			switch ( vpMajor )
 			{
 				case 1:
-					caps.MaxVertexProgramVersion = "vs_1_1";
+					_hwCapabilities.MaxVertexProgramVersion = "vs_1_1";
 					// 4d float vectors
-					caps.VertexProgramConstantFloatCount = d3dCaps.MaxVertexShaderConst;
+					_hwCapabilities.VertexProgramConstantFloatCount = d3dCaps.MaxVertexShaderConst;
 					// no int params supports
-					caps.VertexProgramConstantIntCount = 0;
+					_hwCapabilities.VertexProgramConstantIntCount = 0;
 					break;
 				case 2:
 					if ( vpMinor > 0 )
 					{
-						caps.MaxVertexProgramVersion = "vs_2_x";
+						_hwCapabilities.MaxVertexProgramVersion = "vs_2_x";
 					}
 					else
 					{
-						caps.MaxVertexProgramVersion = "vs_2_0";
+						_hwCapabilities.MaxVertexProgramVersion = "vs_2_0";
 					}
 
 					// 16 ints
-					caps.VertexProgramConstantIntCount = 16 * 4;
+					_hwCapabilities.VertexProgramConstantIntCount = 16 * 4;
 					// 4d float vectors
-					caps.VertexProgramConstantFloatCount = d3dCaps.MaxVertexShaderConst;
+					_hwCapabilities.VertexProgramConstantFloatCount = d3dCaps.MaxVertexShaderConst;
 
 					break;
 				case 3:
-					caps.MaxVertexProgramVersion = "vs_3_0";
+					_hwCapabilities.MaxVertexProgramVersion = "vs_3_0";
 
 					// 16 ints
-					caps.VertexProgramConstantIntCount = 16 * 4;
+					_hwCapabilities.VertexProgramConstantIntCount = 16 * 4;
 					// 4d float vectors
-					caps.VertexProgramConstantFloatCount = d3dCaps.MaxVertexShaderConst;
+					_hwCapabilities.VertexProgramConstantFloatCount = d3dCaps.MaxVertexShaderConst;
 
 					break;
 				default:
 					// not gonna happen
-					caps.MaxVertexProgramVersion = "";
+					_hwCapabilities.MaxVertexProgramVersion = "";
 					break;
 			}
 
 			// check for supported vertex program syntax codes
 			if ( vpMajor >= 1 )
 			{
-				caps.SetCap( Capabilities.VertexPrograms );
+				_hwCapabilities.SetCapability( Capabilities.VertexPrograms );
 				gpuProgramMgr.PushSyntaxCode( "vs_1_1" );
 			}
 			if ( vpMajor >= 2 )
@@ -2341,29 +2341,29 @@ namespace Axiom.RenderSystems.DirectX9
 			switch ( fpMajor )
 			{
 				case 1:
-					caps.MaxFragmentProgramVersion = string.Format( "ps_1_{0}", fpMinor );
+					_hwCapabilities.MaxFragmentProgramVersion = string.Format( "ps_1_{0}", fpMinor );
 
-					caps.FragmentProgramConstantIntCount = 0;
+					_hwCapabilities.FragmentProgramConstantIntCount = 0;
 					// 8 4d float values, entered as floats but stored as fixed
-					caps.FragmentProgramConstantFloatCount = 8;
+					_hwCapabilities.FragmentProgramConstantFloatCount = 8;
 					break;
 
 				case 2:
 					if ( fpMinor > 0 )
 					{
-						caps.MaxFragmentProgramVersion = "ps_2_x";
+						_hwCapabilities.MaxFragmentProgramVersion = "ps_2_x";
 						//16 integer params allowed
-						caps.FragmentProgramConstantIntCount = 16 * 4;
+						_hwCapabilities.FragmentProgramConstantIntCount = 16 * 4;
 						// 4d float params
-						caps.FragmentProgramConstantFloatCount = 224;
+						_hwCapabilities.FragmentProgramConstantFloatCount = 224;
 					}
 					else
 					{
-						caps.MaxFragmentProgramVersion = "ps_2_0";
+						_hwCapabilities.MaxFragmentProgramVersion = "ps_2_0";
 						// no integer params allowed
-						caps.FragmentProgramConstantIntCount = 0;
+						_hwCapabilities.FragmentProgramConstantIntCount = 0;
 						// 4d float params
-						caps.FragmentProgramConstantFloatCount = 32;
+						_hwCapabilities.FragmentProgramConstantFloatCount = 32;
 					}
 
 					break;
@@ -2371,28 +2371,28 @@ namespace Axiom.RenderSystems.DirectX9
 				case 3:
 					if ( fpMinor > 0 )
 					{
-						caps.MaxFragmentProgramVersion = "ps_3_x";
+						_hwCapabilities.MaxFragmentProgramVersion = "ps_3_x";
 					}
 					else
 					{
-						caps.MaxFragmentProgramVersion = "ps_3_0";
+						_hwCapabilities.MaxFragmentProgramVersion = "ps_3_0";
 					}
 
 					// 16 integer params allowed
-					caps.FragmentProgramConstantIntCount = 16;
-					caps.FragmentProgramConstantFloatCount = 224;
+					_hwCapabilities.FragmentProgramConstantIntCount = 16;
+					_hwCapabilities.FragmentProgramConstantFloatCount = 224;
 					break;
 
 				default:
 					// doh, SOL
-					caps.MaxFragmentProgramVersion = "";
+					_hwCapabilities.MaxFragmentProgramVersion = "";
 					break;
 			}
 
 			// Fragment Program syntax code checks
 			if ( fpMajor >= 1 )
 			{
-				caps.SetCap( Capabilities.FragmentPrograms );
+				_hwCapabilities.SetCapability( Capabilities.FragmentPrograms );
 				gpuProgramMgr.PushSyntaxCode( "ps_1_1" );
 
 				if ( fpMajor > 1 || fpMinor >= 2 )
@@ -2433,7 +2433,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// We have no capability for this, so we have to base this on our
 			// experience and reports from users
 			// Non-vertex program capable hardware does not appear to support it
-			if ( caps.CheckCap( Capabilities.VertexPrograms ) )
+			if ( _hwCapabilities.HasCapability( Capabilities.VertexPrograms ) )
 			{
 				// GeForce4 Ti (and presumably GeForce3) does not
 				// render infinite projection properly, even though it does in GL
@@ -2446,12 +2446,12 @@ namespace Axiom.RenderSystems.DirectX9
 				// not nVidia or GeForceFX and above
 				if ( details.VendorId != 0x10DE || details.DeviceId >= 0x0301 )
 				{
-					caps.SetCap( Capabilities.InfiniteFarPlane );
+					_hwCapabilities.SetCapability( Capabilities.InfiniteFarPlane );
 				}
 			}
 
 			// write hardware capabilities to registered log listeners
-			caps.Log();
+			_hwCapabilities.Log();
 		}
 
 		/// <summary>

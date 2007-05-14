@@ -166,7 +166,7 @@ namespace Axiom.Graphics
 			isSupported = false;
 
 			// grab a ref to the current hardware caps
-			HardwareCaps caps = Root.Instance.RenderSystem.Caps;
+			HardwareCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
 			int numAvailTexUnits = caps.TextureUnitCount;
 
 			// check requirements for each pass
@@ -202,13 +202,13 @@ namespace Axiom.Graphics
 						TextureUnitState texUnit = pass.GetTextureUnitState( j );
 
 						// check to make sure we have some cube mapping support
-						if ( texUnit.Is3D && !caps.CheckCap( Capabilities.CubeMapping ) )
+						if ( texUnit.Is3D && !caps.HasCapability( Capabilities.CubeMapping ) )
 						{
 							return;
 						}
 
 						// if this is a Dot3 blending layer, make sure we can support it
-						if ( texUnit.ColorBlendMode.operation == LayerBlendOperationEx.DotProduct && !caps.CheckCap( Capabilities.Dot3 ) )
+						if ( texUnit.ColorBlendMode.operation == LayerBlendOperationEx.DotProduct && !caps.HasCapability( Capabilities.Dot3 ) )
 						{
 							return;
 						}

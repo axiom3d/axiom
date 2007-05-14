@@ -37,6 +37,7 @@ using System;
 
 using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Media;
 
 #endregion Namespace Declarations
 
@@ -58,6 +59,37 @@ namespace Axiom.RenderSystems.OpenGL
 			Resource rv = new GLTexture( name, TextureType.TwoD );
 			Add( rv );
 			return rv;
+		}
+
+		public override Axiom.Media.PixelFormat GetNativeFormat( TextureType ttype, Axiom.Media.PixelFormat format, TextureUsage usage )
+		{
+			// Adjust requested parameters to capabilities
+			HardwareCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
+
+			// Check compressed texture support
+			// if a compressed format not supported, revert to PF_A8R8G8B8
+			if(PixelUtil.IsCompressed(format) &&
+				!caps.HasCapability( Capabilities.TextureCompressionDXT ))
+			{
+				return PixelFormat.A8R8G8B8;
+			}
+			// if floating point textures not supported, revert to PF_A8R8G8B8
+			if(PixelUtil.IsFloatingPoint(format) &&
+				!caps.HasCapability( Capabilities.TextureFloat ))
+			{
+				return PixelFormat.A8R8G8B8;
+			}
+	        
+			// Check if this is a valid rendertarget format
+			if( (usage & TextureUsage.RenderTarget) != 0 )
+			{
+				/// Get closest supported alternative
+				/// If mFormat is supported it's returned
+				return GLRTTManager.Instance.GetSupportedAlternative(format);
+			}
+
+			// Supported
+			return format;
 		}
 
 		//public override Texture Create( string name, TextureType type )
