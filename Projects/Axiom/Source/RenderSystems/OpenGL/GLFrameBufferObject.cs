@@ -369,7 +369,14 @@ namespace Axiom.RenderSystems.OpenGL
 				}
 
 				/// Delete framebuffer object
-				Gl.glDeleteFramebuffersEXT( 1, ref _frameBuffer );
+				try
+				{
+					Gl.glDeleteFramebuffersEXT( 1, ref _frameBuffer );
+				}
+				catch ( AccessViolationException ave )
+				{
+					LogManager.Instance.Write( "Error Deleting Framebuffer[{0}].", _frameBuffer );
+				}
 			}
 			isDisposed = true;
 		}

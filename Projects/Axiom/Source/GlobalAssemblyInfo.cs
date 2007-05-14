@@ -76,7 +76,6 @@ using System.Security.Permissions;
 [assembly: AssemblyFileVersion( "0.7.2.0" )]
 
 [assembly: SecurityPermission( SecurityAction.RequestMinimum )]
-[assembly: CLSCompliant( true )]
 [assembly: ComVisible( false )]
 
 [assembly: AssemblyDelaySign( false )]

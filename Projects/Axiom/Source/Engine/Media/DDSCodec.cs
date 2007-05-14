@@ -104,7 +104,7 @@ namespace Axiom.Media
             }
 
             if ( dxtFormat != Il.IL_DXT_NO_COMP
-                && Root.Instance.RenderSystem.Caps.CheckCap( Capabilities.TextureCompressionDXT ) )
+                && Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.TextureCompressionDXT ) )
             {
 
                 // call first with null which returns the size (odd...)

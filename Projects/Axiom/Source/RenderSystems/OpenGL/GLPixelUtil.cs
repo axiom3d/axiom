@@ -417,8 +417,8 @@ namespace Axiom.RenderSystems.OpenGL
         /// <returns></returns>
 		public static int OptionalPO2( int value )
 		{
-			HardwareCaps caps = Root.Instance.RenderSystem.Caps;
-			if ( caps.CheckCap( Capabilities.NonPowerOf2Textures ) )
+			HardwareCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
+			if ( caps.HasCapability( Capabilities.NonPowerOf2Textures ) )
 				return value;
 			else
 				return (int)Bitwise.FirstPO2From( (uint)value );

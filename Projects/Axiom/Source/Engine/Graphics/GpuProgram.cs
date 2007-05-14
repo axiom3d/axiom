@@ -253,7 +253,7 @@ namespace Axiom.Graphics
 			{
 				// If skeletal animation is being done, we need support for UBYTE4
 				if ( this.IsSkeletalAnimationIncluded &&
-					!Root.Instance.RenderSystem.Caps.CheckCap( Capabilities.VertexFormatUByte4 ) )
+					!Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexFormatUByte4 ) )
 				{
 
 					return false;

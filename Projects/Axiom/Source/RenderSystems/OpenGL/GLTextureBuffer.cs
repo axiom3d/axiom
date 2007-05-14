@@ -52,13 +52,13 @@ namespace Axiom.RenderSystems.OpenGL
 
         // In case this is a texture level
 		private int _target;
-		private int _faceTarget; // same as mTarget in case of GL_TEXTURE_xD, but cubemap face for cubemaps
+		private int _faceTarget; // same as _target in case of Gl.GL_TEXTURE_xD, but cubemap face for cubemaps
 		private int _textureId;
 		private int _face;
 		private int _level;
 		private bool _softwareMipmap;		// Use GLU for mip mapping
         
-        private List<RenderTexture> _sliceTRT;
+        private List<RenderTexture> _sliceTRT = new List<RenderTexture>();
 
 		#endregion Fields and Properties
 
@@ -175,7 +175,128 @@ namespace Axiom.RenderSystems.OpenGL
 
 		protected override void upload( PixelBox box )
 		{
-			base.upload( box );
+			Gl.glBindTexture( _target, _textureId );
+			if ( PixelUtil.IsCompressed( box.Format ) )
+			{
+				if ( box.Format != Format || !box.Consecutive )
+					throw new ArgumentException( "Compressed images must be consecutive, in the source format" );
+
+				int format = GLPixelUtil.GetClosestGLInternalFormat( Format );
+				// Data must be consecutive and at beginning of buffer as PixelStorei not allowed
+				// for compressed formats
+				switch ( _target )
+				{
+					case Gl.GL_TEXTURE_1D:
+						Gl.glCompressedTexSubImage1DARB( Gl.GL_TEXTURE_1D, _level,
+							box.Left,
+							box.Width,
+							format, box.ConsecutiveSize,
+							box.Data );
+						break;
+					case Gl.GL_TEXTURE_2D:
+					case Gl.GL_TEXTURE_CUBE_MAP:
+						Gl.glCompressedTexSubImage2DARB( _faceTarget, _level,
+							box.Left, box.Top,
+							box.Width, box.Height,
+							format, box.ConsecutiveSize,
+							box.Data );
+						break;
+					case Gl.GL_TEXTURE_3D:
+						Gl.glCompressedTexSubImage3DARB( Gl.GL_TEXTURE_3D, _level,
+							box.Left, box.Top, box.Front,
+							box.Width, box.Height, box.Depth,
+							format, box.ConsecutiveSize,
+							box.Data );
+						break;
+				}
+
+			}
+			else if ( _softwareMipmap )
+			{
+				int internalFormat;
+				Gl.glGetTexLevelParameteriv( _target, _level, Gl.GL_TEXTURE_INTERNAL_FORMAT, out internalFormat );
+				if ( box.Width != box.RowPitch )
+					Gl.glPixelStorei( Gl.GL_UNPACK_ROW_LENGTH, box.RowPitch );
+				if ( box.Height * box.Width != box.SlicePitch )
+					Gl.glPixelStorei( Gl.GL_UNPACK_IMAGE_HEIGHT, ( box.SlicePitch / box.Width ) );
+				Gl.glPixelStorei( Gl.GL_UNPACK_ALIGNMENT, 1 );
+
+				switch ( _target )
+				{
+					case Gl.GL_TEXTURE_1D:
+						Glu.gluBuild1DMipmaps(
+							Gl.GL_TEXTURE_1D, internalFormat,
+							box.Width,
+							GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
+							box.Data );
+						break;
+					case Gl.GL_TEXTURE_2D:
+					case Gl.GL_TEXTURE_CUBE_MAP:
+						Glu.gluBuild2DMipmaps(
+							_faceTarget,
+							internalFormat, box.Width, box.Height,
+							GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
+							box.Data );
+						break;
+					case Gl.GL_TEXTURE_3D:
+						/* Requires GLU 1.3 which is harder to come by than cards doing hardware mipmapping
+							Most 3D textures don't need mipmaps?
+						Gl.gluBuild3DMipmaps(
+							Gl.GL_TEXTURE_3D, internalFormat, 
+							box.getWidth(), box.getHeight(), box.getDepth(),
+							GLPixelUtil.getGLOriginFormat(box.format), GLPixelUtil.getGLOriginDataType(box.format),
+							box.box);
+						*/
+						Gl.glTexImage3D(
+							Gl.GL_TEXTURE_3D, 0, internalFormat,
+							box.Width, box.Height, box.Depth, 0,
+							GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
+							box.Data );
+						break;
+				}
+			}
+			else
+			{
+				if ( box.Width != box.RowPitch )
+					Gl.glPixelStorei( Gl.GL_UNPACK_ROW_LENGTH, box.RowPitch );
+				if ( box.Height * box.Width != box.SlicePitch )
+					Gl.glPixelStorei( Gl.GL_UNPACK_IMAGE_HEIGHT, ( box.SlicePitch / box.Width ) );
+				if ( ( ( box.Width * PixelUtil.GetNumElemBytes( box.Format ) ) & 3 ) != 0)
+				{
+					// Standard alignment of 4 is not right
+					Gl.glPixelStorei( Gl.GL_UNPACK_ALIGNMENT, 1 );
+				}
+				switch ( _target )
+				{
+					case Gl.GL_TEXTURE_1D:
+						Gl.glTexSubImage1D( Gl.GL_TEXTURE_1D, _level,
+							box.Left,
+							box.Width,
+							GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
+							box.Data );
+						break;
+					case Gl.GL_TEXTURE_2D:
+					case Gl.GL_TEXTURE_CUBE_MAP:
+						Gl.glTexSubImage2D( _faceTarget, _level,
+							box.Left, box.Top,
+							box.Width, box.Height,
+							GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
+							box.Data );
+						break;
+					case Gl.GL_TEXTURE_3D:
+						Gl.glTexSubImage3D(
+							Gl.GL_TEXTURE_3D, _level,
+							box.Left, box.Top, box.Front,
+							box.Width, box.Height, box.Depth,
+							GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
+							box.Data );
+						break;
+				}
+			}
+			// Restore defaults
+			Gl.glPixelStorei( Gl.GL_UNPACK_ROW_LENGTH, 0 );
+			Gl.glPixelStorei( Gl.GL_UNPACK_IMAGE_HEIGHT, 0 );
+			Gl.glPixelStorei( Gl.GL_UNPACK_ALIGNMENT, 4 );
 		}
 
 		public override void ClearSliceRTT( int zOffset )

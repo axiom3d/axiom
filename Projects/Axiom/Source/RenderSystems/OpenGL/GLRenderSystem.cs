@@ -353,7 +353,7 @@ namespace Axiom.RenderSystems.OpenGL
 
             // create a specialized instance, which registers itself as the singleton instance of HardwareBufferManager
             // use software buffers as a fallback, which operate as regular vertex arrays
-            if ( caps.CheckCap( Capabilities.VertexBuffer ) )
+            if ( this._hwCapabilities.HasCapability( Capabilities.VertexBuffer ) )
             {
                 hardwareBufferManager = new GLHardwareBufferManager();
             }
@@ -716,7 +716,7 @@ namespace Axiom.RenderSystems.OpenGL
         {
             if ( twoSidedOperation )
             {
-                if ( !caps.CheckCap( Capabilities.TwoSidedStencil ) )
+                if ( !_hwCapabilities.HasCapability( Capabilities.TwoSidedStencil ) )
                 {
                     throw new AxiomException( "2-sided stencils are not supported on this hardware!" );
                 }
@@ -859,7 +859,7 @@ namespace Axiom.RenderSystems.OpenGL
         /// <param name="maxAnisotropy"></param>
         public override void SetTextureLayerAnisotropy( int stage, int maxAnisotropy )
         {
-            if ( !caps.CheckCap( Capabilities.AnisotropicFiltering ) )
+            if ( !_hwCapabilities.HasCapability( Capabilities.AnisotropicFiltering ) )
             {
                 return;
             }
@@ -891,7 +891,7 @@ namespace Axiom.RenderSystems.OpenGL
         /// <param name="blendMode"></param>
         public override void SetTextureBlendMode( int stage, LayerBlendModeEx blendMode )
         {
-            if ( !caps.CheckCap( Capabilities.TextureBlending ) )
+            if ( !_hwCapabilities.HasCapability( Capabilities.TextureBlending ) )
             {
                 return;
             }
@@ -1029,7 +1029,7 @@ namespace Axiom.RenderSystems.OpenGL
 
                 case LayerBlendOperationEx.DotProduct:
                     // Check for Dot3 support
-                    cmd = caps.CheckCap( Capabilities.Dot3 ) ? Gl.GL_DOT3_RGB : Gl.GL_MODULATE;
+                    cmd = _hwCapabilities.HasCapability( Capabilities.Dot3 ) ? Gl.GL_DOT3_RGB : Gl.GL_MODULATE;
                     break;
 
                 default:
@@ -1613,7 +1613,7 @@ namespace Axiom.RenderSystems.OpenGL
             // call base class method first
             base.Render( op );
 
-            // will be used to alia either the buffer offset (VBO's) or array data if VBO's are
+            // will be used to alias either the buffer offset (VBO's) or array data if VBO's are
             // not available
             IntPtr bufferData = IntPtr.Zero;
 
@@ -1625,10 +1625,14 @@ namespace Axiom.RenderSystems.OpenGL
                 // get a reference to the current object in the collection
                 VertexElement element = decl.GetElement( i );
 
+				//TODO: Implement VertexBufferBinding.IsBufferBound()
+				//if ( !op.vertexData.vertexBufferBinding.IsBufferBound( element.Source ) )
+				//	continue; // skip unbound elements
+
                 // get the current vertex buffer
                 HardwareVertexBuffer vertexBuffer = op.vertexData.vertexBufferBinding.GetBuffer( element.Source );
 
-                if ( caps.CheckCap( Capabilities.VertexBuffer ) )
+                if ( _hwCapabilities.HasCapability( Capabilities.VertexBuffer ) )
                 {
                     // get the buffer id
                     int bufferId = ( (GLHardwareVertexBuffer)vertexBuffer ).GLBufferID;
@@ -1703,7 +1707,7 @@ namespace Axiom.RenderSystems.OpenGL
                     case VertexElementSemantic.TexCoords:
                         // this ignores vertex element index and sets tex array for each available texture unit
                         // this allows for multitexturing on entities whose mesh only has a single set of tex coords
-                        for ( int j = 0; j < caps.TextureUnitCount; j++ )
+                        for ( int j = 0; j < _hwCapabilities.TextureUnitCount; j++ )
                         {
                             // only set if this textures index if it is supposed to
                             if ( texCoordIndex[ j ] == element.Index )
@@ -1725,7 +1729,7 @@ namespace Axiom.RenderSystems.OpenGL
                         break;
 
                     case VertexElementSemantic.BlendIndices:
-                        Debug.Assert( caps.CheckCap( Capabilities.VertexPrograms ) );
+                        Debug.Assert( _hwCapabilities.HasCapability( Capabilities.VertexPrograms ) );
 
                         Gl.glVertexAttribPointerARB(
                             BLEND_INDICES, // matrix indices are vertex attribute 7
@@ -1739,7 +1743,7 @@ namespace Axiom.RenderSystems.OpenGL
                         break;
 
                     case VertexElementSemantic.BlendWeights:
-                        Debug.Assert( caps.CheckCap( Capabilities.VertexPrograms ) );
+                        Debug.Assert( _hwCapabilities.HasCapability( Capabilities.VertexPrograms ) );
 
                         Gl.glVertexAttribPointerARB(
                             BLEND_WEIGHTS, // weights are vertex attribute 1
@@ -1791,7 +1795,7 @@ namespace Axiom.RenderSystems.OpenGL
                 IntPtr indexPtr = IntPtr.Zero;
 
                 // if hardware is supported, expect it is a hardware buffer.  else, fallback to software
-                if ( caps.CheckCap( Capabilities.VertexBuffer ) )
+                if ( _hwCapabilities.HasCapability( Capabilities.VertexBuffer ) )
                 {
                     // get the index buffer id
                     int idxBufferID = ( (GLHardwareIndexBuffer)op.indexData.indexBuffer ).GLBufferID;
@@ -1830,7 +1834,7 @@ namespace Axiom.RenderSystems.OpenGL
             Gl.glDisableClientState( Gl.GL_VERTEX_ARRAY );
 
             // disable all texture units
-            for ( int i = 0; i < caps.TextureUnitCount; i++ )
+            for ( int i = 0; i < _hwCapabilities.TextureUnitCount; i++ )
             {
                 Gl.glClientActiveTextureARB( Gl.GL_TEXTURE0 + i );
                 Gl.glDisableClientState( Gl.GL_TEXTURE_COORD_ARRAY );
@@ -1841,11 +1845,13 @@ namespace Axiom.RenderSystems.OpenGL
             Gl.glDisableClientState( Gl.GL_COLOR_ARRAY );
             Gl.glDisableClientState( Gl.GL_SECONDARY_COLOR_ARRAY );
 
-            if ( caps.CheckCap( Capabilities.VertexPrograms ) )
+            if ( _hwCapabilities.HasCapability( Capabilities.VertexPrograms ) )
             {
                 Gl.glDisableVertexAttribArrayARB( BLEND_INDICES ); // disable indices
                 Gl.glDisableVertexAttribArrayARB( BLEND_WEIGHTS ); // disable weights
-            }
+				//Gl.glDisableVertexAttribArrayARB( BLEND_TANGENT ); // disable tangent
+				//Gl.glDisableVertexAttribArrayARB( BLEND_BINORMAL ); // disable binormal
+			}
 
             Gl.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
         }
@@ -2094,13 +2100,20 @@ namespace Axiom.RenderSystems.OpenGL
                 return;
             }
 
-            int srcFactor = ConvertBlendFactor( src );
-            int destFactor = ConvertBlendFactor( dest );
+			int srcFactor = ConvertBlendFactor( src );
+			int destFactor = ConvertBlendFactor( dest );
 
-            // enable blending and set the blend function
-            Gl.glEnable( Gl.GL_BLEND );
-            Gl.glBlendFunc( srcFactor, destFactor );
+			if ( src == SceneBlendFactor.One && dest == SceneBlendFactor.Zero )
+			{
+				Gl.glDisable( Gl.GL_BLEND );
+			}
+			else
+			{
 
+				// enable blending and set the blend function
+				Gl.glEnable( Gl.GL_BLEND );
+				Gl.glBlendFunc( srcFactor, destFactor );
+			}
             lastBlendSrc = src;
             lastBlendDest = dest;
         }
@@ -2326,7 +2339,7 @@ namespace Axiom.RenderSystems.OpenGL
         /// <returns></returns>
         private int ConvertBlendFactor( SceneBlendFactor factor )
         {
-            int glFactor = 0;
+            int glFactor = Gl.GL_ONE;
 
             switch ( factor )
             {
@@ -2495,7 +2508,7 @@ namespace Axiom.RenderSystems.OpenGL
 			if ( _glSupport.CheckMinVersion( "1.4" ) ||
 				 _glSupport.CheckExtension( "GL_SGIS_generate_mipmap" ) )
 			{
-				caps.SetCap( Capabilities.HardwareMipMaps );
+				_hwCapabilities.SetCapability( Capabilities.HardwareMipMaps );
 			}
 
 			// check texture blending
@@ -2503,7 +2516,7 @@ namespace Axiom.RenderSystems.OpenGL
 				 _glSupport.CheckExtension( "GL_EXT_texture_env_combine" ) ||
 				 _glSupport.CheckExtension( "GL_ARB_texture_env_combine" ) )
 			{
-				caps.SetCap( Capabilities.TextureBlending );
+				_hwCapabilities.SetCapability( Capabilities.TextureBlending );
 			}
 
             // check multitexturing
@@ -2525,27 +2538,27 @@ namespace Axiom.RenderSystems.OpenGL
 						numTextureUnits = arbUnits;
 				}
 
-				caps.TextureUnitCount = numTextureUnits;
+				_hwCapabilities.TextureUnitCount = numTextureUnits;
 
-				caps.SetCap( Capabilities.MultiTexturing );
+				_hwCapabilities.SetCapability( Capabilities.MultiTexturing );
 			}
 			else
 			{
 				// If no multitexture support then set one texture unit
-				caps.TextureUnitCount = 1;
+				_hwCapabilities.TextureUnitCount = 1;
 			}
 
 			// anisotropic filtering
 			if ( _glSupport.CheckExtension( "GL_EXT_texture_filter_anisotropic" ) )
 			{
-				caps.SetCap( Capabilities.AnisotropicFiltering );
+				_hwCapabilities.SetCapability( Capabilities.AnisotropicFiltering );
 			}
 
 			// check dot3 support
 			if ( _glSupport.CheckMinVersion( "1.3" ) ||
 				 _glSupport.CheckExtension( "GL_ARB_texture_env_dot3" ) )
 			{
-				caps.SetCap( Capabilities.Dot3 );
+				_hwCapabilities.SetCapability( Capabilities.Dot3 );
 			}
 
 			// check support for cube mapping
@@ -2553,21 +2566,21 @@ namespace Axiom.RenderSystems.OpenGL
 				 _glSupport.CheckExtension( "GL_ARB_texture_cube_map" ) ||
 				 _glSupport.CheckExtension( "GL_EXT_texture_cube_map" ) )
 			{
-				caps.SetCap( Capabilities.CubeMapping );
+				_hwCapabilities.SetCapability( Capabilities.CubeMapping );
 			}
 
 			// check for point sprite support
 			if ( _glSupport.CheckMinVersion( "1.2" ) ||
 				 _glSupport.CheckExtension( "GL_ARB_point_sprite" ) )
 			{
-				caps.SetCap( Capabilities.PointSprites );
+				_hwCapabilities.SetCapability( Capabilities.PointSprites );
 			}
 			// check support for point parameters
 			if ( _glSupport.CheckMinVersion( "1.4" ) ||
 				 _glSupport.CheckExtension( "GL_ARB_point_parameters" ) ||
 				 _glSupport.CheckExtension( "GL_EXT_point_parameters" ) )
 			{
-				caps.SetCap( Capabilities.PointExtendedParameters );
+				_hwCapabilities.SetCapability( Capabilities.PointExtendedParameters );
 			}
 
 			// Check for hardware stencil support and set bit depth
@@ -2575,27 +2588,27 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glGetIntegerv( Gl.GL_STENCIL_BITS, out stencilBits );
 			if ( stencilBits > 0 )
 			{
-				caps.StencilBufferBits = stencilBits;
-				caps.SetCap( Capabilities.StencilBuffer );
+				_hwCapabilities.StencilBufferBits = stencilBits;
+				_hwCapabilities.SetCapability( Capabilities.StencilBuffer );
 			}
 
             // check support for vertex buffers in hardware
             if ( _glSupport.CheckExtension( "GL_ARB_vertex_buffer_object" ) )
             {
-                caps.SetCap( Capabilities.VertexBuffer );
+                _hwCapabilities.SetCapability( Capabilities.VertexBuffer );
             }
 
 			// ARB Vertex Programs
 			if ( _glSupport.CheckExtension( "GL_ARB_vertex_program" ) )
 			{
-				caps.SetCap( Capabilities.VertexPrograms );
-				caps.MaxVertexProgramVersion = "arbvp1";
-				caps.VertexProgramConstantBoolCount = 0;
-				caps.VertexProgramConstantIntCount = 0;
+				_hwCapabilities.SetCapability( Capabilities.VertexPrograms );
+				_hwCapabilities.MaxVertexProgramVersion = "arbvp1";
+				_hwCapabilities.VertexProgramConstantBoolCount = 0;
+				_hwCapabilities.VertexProgramConstantIntCount = 0;
 
 				int maxFloats;
 				Gl.glGetProgramivARB(Gl.GL_VERTEX_PROGRAM_ARB, Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats );
-				caps.VertexProgramConstantFloatCount = maxFloats;
+				_hwCapabilities.VertexProgramConstantFloatCount = maxFloats;
 
 				// register support for arbvp1
 				gpuProgramMgr.PushSyntaxCode( "arbvp1" );
@@ -2604,8 +2617,8 @@ namespace Axiom.RenderSystems.OpenGL
 				// GeForceFX vp30 Vertex Programs
 				if ( _glSupport.CheckExtension( "GL_NV_vertex_program2_option" ) )
 				{
-					caps.SetCap( Capabilities.VertexPrograms );
-					caps.MaxVertexProgramVersion = "vp30";
+					_hwCapabilities.SetCapability( Capabilities.VertexPrograms );
+					_hwCapabilities.MaxVertexProgramVersion = "vp30";
 
 					gpuProgramMgr.PushSyntaxCode( "vp30" );
 					gpuProgramMgr.RegisterProgramFactory( "vp30", new ARBGpuProgramFactory() );
@@ -2613,8 +2626,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 				if ( _glSupport.CheckExtension( "GL_NV_vertex_program3" ) )
 				{
-					caps.SetCap( Capabilities.VertexPrograms );
-					caps.MaxVertexProgramVersion = "vp40";
+					_hwCapabilities.SetCapability( Capabilities.VertexPrograms );
+					_hwCapabilities.MaxVertexProgramVersion = "vp40";
 
 					gpuProgramMgr.PushSyntaxCode( "vp40" );
 					gpuProgramMgr.RegisterProgramFactory( "vp40", new ARBGpuProgramFactory() );
@@ -2625,8 +2638,8 @@ namespace Axiom.RenderSystems.OpenGL
 			if ( _glSupport.CheckExtension( "GL_NV_register_combiners2" ) &&
 				 _glSupport.CheckExtension( "GL_NV_texture_shader" ) )
 			{
-				caps.SetCap( Capabilities.FragmentPrograms );
-				caps.MaxFragmentProgramVersion = "fp20";
+				_hwCapabilities.SetCapability( Capabilities.FragmentPrograms );
+				_hwCapabilities.MaxFragmentProgramVersion = "fp20";
 
 				gpuProgramMgr.PushSyntaxCode( "fp20" );
 				gpuProgramMgr.RegisterProgramFactory( "fp20", new Nvidia.NvparseProgramFactory() );
@@ -2635,14 +2648,14 @@ namespace Axiom.RenderSystems.OpenGL
 			// ATI Fragment Programs (supported via conversion from DX ps1.1 - ps1.4 shaders)
 			if ( _glSupport.CheckExtension( "GL_ATI_fragment_shader" ) )
 			{
-				caps.SetCap( Capabilities.FragmentPrograms );
-				caps.MaxFragmentProgramVersion = "ps_1_4";
+				_hwCapabilities.SetCapability( Capabilities.FragmentPrograms );
+				_hwCapabilities.MaxFragmentProgramVersion = "ps_1_4";
 				// no boolean params allowed
-				caps.FragmentProgramConstantBoolCount = 0;
+				_hwCapabilities.FragmentProgramConstantBoolCount = 0;
 				// no int params allowed
-				caps.FragmentProgramConstantIntCount = 0;
+				_hwCapabilities.FragmentProgramConstantIntCount = 0;
 				// only 8 vector4 constant floats supported
-				caps.FragmentProgramConstantFloatCount = 8;
+				_hwCapabilities.FragmentProgramConstantFloatCount = 8;
 
 				// register support for ps1.1 - ps1.4
 				gpuProgramMgr.PushSyntaxCode( "ps_1_1" );
@@ -2658,15 +2671,15 @@ namespace Axiom.RenderSystems.OpenGL
 			// ARB Fragment Programs
 			if ( _glSupport.CheckExtension( "GL_ARB_fragment_program" ) )
 			{
-				caps.SetCap( Capabilities.FragmentPrograms );
+				_hwCapabilities.SetCapability( Capabilities.FragmentPrograms );
 
-				caps.MaxFragmentProgramVersion = "arbfp1";
-				caps.FragmentProgramConstantBoolCount = 0;
-				caps.FragmentProgramConstantIntCount = 0;
+				_hwCapabilities.MaxFragmentProgramVersion = "arbfp1";
+				_hwCapabilities.FragmentProgramConstantBoolCount = 0;
+				_hwCapabilities.FragmentProgramConstantIntCount = 0;
 
 				int maxFloats;
 				Gl.glGetProgramivARB( Gl.GL_FRAGMENT_PROGRAM_ARB, Gl.GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, out maxFloats );
-				caps.FragmentProgramConstantFloatCount = maxFloats;
+				_hwCapabilities.FragmentProgramConstantFloatCount = maxFloats;
 
 				// register support for arbfp1
 				gpuProgramMgr.PushSyntaxCode( "arbfp1" );
@@ -2675,14 +2688,14 @@ namespace Axiom.RenderSystems.OpenGL
 				// GeForceFX fp30 Fragment Programs
 				if ( _glSupport.CheckExtension( "GL_NV_fragment_program_option" ) )
 				{
-					caps.MaxFragmentProgramVersion = "fp30";
+					_hwCapabilities.MaxFragmentProgramVersion = "fp30";
 					gpuProgramMgr.PushSyntaxCode( "fp30" );
 					gpuProgramMgr.RegisterProgramFactory( "fp30", new Nvidia.NV3xGpuProgramFactory() );
 				}
 
 				if ( _glSupport.CheckExtension( "GL_NV_fragment_program2" ) )
 				{
-					caps.MaxFragmentProgramVersion = "fp40";
+					_hwCapabilities.MaxFragmentProgramVersion = "fp40";
 					gpuProgramMgr.PushSyntaxCode( "fp40" );
 					gpuProgramMgr.RegisterProgramFactory( "fp40", new ARBGpuProgramFactory() );
 				}
@@ -2703,65 +2716,65 @@ namespace Axiom.RenderSystems.OpenGL
 			if ( _glSupport.CheckMinVersion( "1.3" ) ||  
 				 _glSupport.CheckExtension( "GL_ARB_texture_compression" ) )
 			{
-				caps.SetCap( Capabilities.TextureCompression );
+				_hwCapabilities.SetCapability( Capabilities.TextureCompression );
 
 				// DXT compression
 				if ( _glSupport.CheckExtension( "GL_EXT_texture_compression_s3tc" ) )
 				{
-					caps.SetCap( Capabilities.TextureCompressionDXT );
+					_hwCapabilities.SetCapability( Capabilities.TextureCompressionDXT );
 				}
 
 				// VTC compression
 				if ( _glSupport.CheckExtension( "GL_NV_texture_compression_vtc" ) )
 				{
-					caps.SetCap( Capabilities.TextureCompressionVTC );
+					_hwCapabilities.SetCapability( Capabilities.TextureCompressionVTC );
 				}
 			}
 
 			// scissor test is standard in GL 1.2 and above
-			caps.SetCap( Capabilities.ScissorTest );
+			_hwCapabilities.SetCapability( Capabilities.ScissorTest );
 
 			// as are user clip planes
-			caps.SetCap( Capabilities.UserClipPlanes );
+			_hwCapabilities.SetCapability( Capabilities.UserClipPlanes );
 
 			// 2 sided stencil
 			if ( _glSupport.CheckExtension( "GL_EXT_stencil_two_side" ) )
 			{
-				caps.SetCap( Capabilities.TwoSidedStencil );
+				_hwCapabilities.SetCapability( Capabilities.TwoSidedStencil );
 			}
 
 			// stencil wrapping
 			if ( _glSupport.CheckExtension( "GL_EXT_stencil_wrap" ) )
 			{
-				caps.SetCap( Capabilities.StencilWrap );
+				_hwCapabilities.SetCapability( Capabilities.StencilWrap );
 			}
 
 			// Check for hardware occlusion support
 			if ( _glSupport.CheckExtension( "GL_NV_occlusion_query" ) )
 			{
-				caps.SetCap( Capabilities.HardwareOcculusion );
+				_hwCapabilities.SetCapability( Capabilities.HardwareOcculusion );
 			}
 
 			// UBYTE4 is always supported in GL
-			caps.SetCap( Capabilities.VertexFormatUByte4 );
+			_hwCapabilities.SetCapability( Capabilities.VertexFormatUByte4 );
 
 			// Infinit far plane always supported
-			caps.SetCap( Capabilities.InfiniteFarPlane );
+			_hwCapabilities.SetCapability( Capabilities.InfiniteFarPlane );
 
 			if ( _glSupport.CheckExtension( "GL_ARB_texture_non_power_of_two" ) )
 			{
-				caps.SetCap( Capabilities.NonPowerOf2Textures );
+				_hwCapabilities.SetCapability( Capabilities.NonPowerOf2Textures );
 			}
 
 			// Check for Float textures
 			if ( _glSupport.CheckExtension( "GL_ATI_texture_float" ) ||
 				 _glSupport.CheckExtension( "GL_ARB_texture_float" ) )
 			{
-				caps.SetCap( Capabilities.TextureFloat );
+				_hwCapabilities.SetCapability( Capabilities.TextureFloat );
 			}
 
 			// 3D textures should be supported by GL 1.2, which is our minimum version
-			caps.SetCap( Capabilities.Texture3D );
+			_hwCapabilities.SetCapability( Capabilities.Texture3D );
 
 			/// Do this after extension function pointers are initialised as the extension
 			/// is used to probe further capabilities.
@@ -2791,7 +2804,7 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					int buffers;
 					Gl.glGetIntegerv( Gl.GL_MAX_DRAW_BUFFERS_ARB, out buffers );
-					caps.NumMultiRenderTargets = (int)Utility.Min( buffers, Config.MaxMultipleRenderTargets );
+					_hwCapabilities.NumMultiRenderTargets = (int)Utility.Min( buffers, Config.MaxMultipleRenderTargets );
 					if ( !_glSupport.CheckMinVersion( "2.0" ) )
 					{
 						//TODO: Before GL version 2.0, we need to get one of the extensions
@@ -2806,7 +2819,7 @@ namespace Axiom.RenderSystems.OpenGL
 				LogManager.Instance.Write( "GL: Using GL_EXT_framebuffer_object for rendering to textures (best)" );
 				//rttManager = new GLFBORTTManager(_glSupport, _glSupport.Vendor == "ATI");
 				rttManager = new GLFBORTTManager( _glSupport, false );
-				caps.SetCap( Capabilities.HardwareRenderToTexture );
+				_hwCapabilities.SetCapability( Capabilities.HardwareRenderToTexture );
 			}
 			else
 			{
@@ -2816,7 +2829,7 @@ namespace Axiom.RenderSystems.OpenGL
 					// Use PBuffers
 					rttManager = new GLPBRTTManager( _glSupport, primary  );
 					LogManager.Instance.Write( "GL: Using PBuffers for rendering to textures" );
-					caps.SetCap( Capabilities.HardwareRenderToTexture );
+					_hwCapabilities.SetCapability( Capabilities.HardwareRenderToTexture );
 				}
 				else
 				{
@@ -2830,30 +2843,30 @@ namespace Axiom.RenderSystems.OpenGL
 			// Point size
 			float ps;
 			Gl.glGetFloatv( Gl.GL_POINT_SIZE_MAX, out ps );
-			caps.MaxPointSize = ps;
+			_hwCapabilities.MaxPointSize = ps;
 
 			// Vertex texture fetching
 			int vUnits;
 			Gl.glGetIntegerv( Gl.GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS_ARB, out vUnits );
-			caps.NumVertexTextureUnits = vUnits;
+			_hwCapabilities.NumVertexTextureUnits = vUnits;
 			if ( vUnits > 0 )
 			{
-				caps.SetCap( Capabilities.VertexTextureFetch );
+				_hwCapabilities.SetCapability( Capabilities.VertexTextureFetch );
 			}
 			// GL always shares vertex and fragment texture units (for now?)
-			caps.VertexTextureUnitsShared = true ;
+			_hwCapabilities.VertexTextureUnitsShared = true ;
 
 			// Mipmap LOD biasing?
 			if ( _glSupport.CheckMinVersion( "1.4") || 
 				 _glSupport.CheckExtension( "GL_EXT_texture_lod_bias" ) )
 			{
-				caps.SetCap( Capabilities.MipmapLODBias );
+				_hwCapabilities.SetCapability( Capabilities.MipmapLODBias );
 			}
 
 			// find out how many lights we have to play with, then create a light array to keep locally
             int maxLights;
             Gl.glGetIntegerv( Gl.GL_MAX_LIGHTS, out maxLights );
-            caps.MaxLights = maxLights;
+            _hwCapabilities.MaxLights = maxLights;
 
 
             // check support for hardware vertex blending
@@ -2864,12 +2877,12 @@ namespace Axiom.RenderSystems.OpenGL
             // check if the hardware supports anisotropic filtering
             if ( _glSupport.CheckExtension( "GL_EXT_texture_filter_anisotropic" ) )
             {
-                caps.SetCap( Capabilities.AnisotropicFiltering );
+                _hwCapabilities.SetCapability( Capabilities.AnisotropicFiltering );
             }
 
 
             // write info to logs
-            caps.Log();
+            _hwCapabilities.Log();
         }
 
         /// <summary>

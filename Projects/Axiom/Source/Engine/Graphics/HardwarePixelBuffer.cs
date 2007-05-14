@@ -191,11 +191,6 @@ namespace Axiom.Graphics
 
 		#endregion Constructors
 
-		#region Properties
-
-
-		#endregion Properties
-
 		#region Abstract Methods
 
 		///<summary>
@@ -265,12 +260,13 @@ namespace Axiom.Graphics
 		///<summary>
 		///    @copydoc HardwareBuffer.Lock
 		///</summary>
-		//public virtual IntPtr Lock(int offset, int length, BasicBox lockBox, BufferLocking options) {
-		//    Debug.Assert(!IsLocked, "Cannot lock this buffer, it is already locked!");
-		//    Debug.Assert(offset == 0 && length == sizeInBytes, "Cannot lock memory region, must lock box or entire buffer");
+		//public virtual IntPtr Lock( int offset, int length, BasicBox lockBox, BufferLocking options )
+		//{
+		//    Debug.Assert( !IsLocked, "Cannot lock this buffer, it is already locked!" );
+		//    Debug.Assert( offset == 0 && length == sizeInBytes, "Cannot lock memory region, must lock box or entire buffer" );
 
-		//    BasicBox myBox = new BasicBox(0, 0, 0, width, height, depth);
-		//    PixelBox rv = Lock(myBox, options);
+		//    BasicBox myBox = new BasicBox( 0, 0, 0, Width, Height, Depth );
+		//    PixelBox rv = Lock( myBox, options );
 		//    return rv.Data;
 		//}
 
@@ -280,7 +276,12 @@ namespace Axiom.Graphics
 		///</summary>
 		protected override IntPtr LockImpl( int offset, int length, BufferLocking options )
 		{
-			throw new NotImplementedException( "HardwarePixelBuffer does not support this variant of LockImpl" );
+			Debug.Assert( !IsLocked, "Cannot lock this buffer, it is already locked!" );
+			Debug.Assert( offset == 0 && length == sizeInBytes, "Cannot lock memory region, must lock box or entire buffer" );
+
+			BasicBox myBox = new BasicBox( 0, 0, 0, Width, Height, Depth );
+			PixelBox rv = Lock( myBox, options );
+			return rv.Data;
 		}
 
 		///<summary>
@@ -316,7 +317,7 @@ namespace Axiom.Graphics
 			if ( dstlock.Width != srclock.Width || dstlock.Height != srclock.Height || dstlock.Depth != srclock.Depth )
 				// Scaling desired
 				throw new Exception( "Image scaling not yet implemented; in HardwarePixelBuffer.Blit" );
-			// Image.Scale(srclock, dstlock);
+				//Image.Scale(srclock, dstlock);
 			else
 				// No scaling needed
 				PixelConverter.BulkPixelConversion( srclock, dstlock );
