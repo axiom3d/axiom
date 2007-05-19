@@ -38,190 +38,297 @@ using System.Globalization;
 using System.Text;
 
 using Axiom.Math;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
-    /// <summary>
-    ///     Helper class for going back and forth between strings and various types.
-    /// </summary>
-    public sealed class StringConverter
-    {
-        #region Fields
+	/// <summary>
+	///     Helper class for going back and forth between strings and various types.
+	/// </summary>
+	public sealed class StringConverter
+	{
+		#region Fields
 
-        /// <summary>
-        ///		Culture info to use for parsing numeric data.
-        /// </summary>
-        private static CultureInfo englishCulture = new CultureInfo( "en-US" );
+		/// <summary>
+		///		Culture info to use for parsing numeric data.
+		/// </summary>
+		private static CultureInfo englishCulture = new CultureInfo( "en-US" );
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Constructor
+		#region Constructor
 
-        /// <summary>
-        ///     Private constructor so no instances can be created.
-        /// </summary>
-        private StringConverter()
-        {
-        }
+		/// <summary>
+		///     Private constructor so no instances can be created.
+		/// </summary>
+		private StringConverter()
+		{
+		}
 
-        #endregion Constructor
+		#endregion Constructor
 
-        #region Static Methods
+		#region Static Methods
 
-        /// <summary>
-        ///		Parses a boolean type value 
-        /// </summary>
-        /// <param name="val"></param>
-        /// <returns></returns>
-        public static bool ParseBool( string val )
-        {
-            switch ( val )
-            {
-                case "true":
-                case "on":
-                    return true;
-                case "false":
-                case "off":
-                    return false;
-            }
+		#region String.Split() replacements
 
-            // make the compiler happy
-            return false;
-        }
+		public static string[] Split( string s, char[] separators )
+		{
+			return Split( s, separators, -1, StringSplitOptions.None );
+		}
 
-        /// <summary>
-        ///		Parses an array of params and returns a color from it.
-        /// </summary>
-        /// <param name="val"></param>
-        public static ColorEx ParseColor( string[] values )
-        {
-            ColorEx color = new ColorEx();
-            color.r = ParseFloat( values[ 0 ] );
-            color.g = ParseFloat( values[ 1 ] );
-            color.b = ParseFloat( values[ 2 ] );
-            color.a = ( values.Length > 3 ) ? ParseFloat( values[ 3 ] ) : 1.0f;
+		public static string[] Split( string s, char[] separators, int count )
+		{
+			return Split( s, separators, count, StringSplitOptions.None );
+		}
 
-            return color;
-        }
+		public static string[] Split( string s, char[] separators, StringSplitOptions options )
+		{
+			return Split( s, separators, -1, options );
+		}
 
-        /// <summary>
-        ///		Parses an array of params and returns a color from it.
-        /// </summary>
-        /// <param name="val"></param>
-        public static ColorEx ParseColor( string val )
-        {
-            ColorEx color = new ColorEx();
-            string[] vals = val.Split( ' ' );
+#if !XBOX360
+		public static string[] Split( string s, char[] separators, int count, StringSplitOptions options )
+		{
+			return s.Split( separators, count, options );
+		}
+#else
 
-            color.r = ParseFloat( vals[ 0 ] );
-            color.g = ParseFloat( vals[ 1 ] );
-            color.b = ParseFloat( vals[ 2 ] );
-            color.a = ( vals.Length == 4 ) ? ParseFloat( vals[ 3 ] ) : 1.0f;
+		public static string[] Split( string s, char[] separators, int count, StringSplitOptions options )
+		{
+			List<string> _result;
+			string[] _strings;
+			bool _removeEmptyEntries;
 
-            return color;
-        }
+			//special cases 
+			//Debug.Assert( s != null, "String instance not set." );
 
-        /// <summary>
-        ///		Parses an array of params and returns a color from it.
-        /// </summary>
-        /// <param name="val"></param>
-        public static Vector3 ParseVector3( string[] values )
-        {
-            Vector3 vec = new Vector3();
-            vec.x = ParseFloat( values[ 0 ] );
-            vec.y = ParseFloat( values[ 1 ] );
-            vec.z = ParseFloat( values[ 2 ] );
+			if ( count == 0 )
+			{
+				_strings = new string[] { };
+				return _strings;
+			}
 
-            return vec;
-        }
+			_removeEmptyEntries = ( options & StringSplitOptions.RemoveEmptyEntries ) == StringSplitOptions.RemoveEmptyEntries;
+			if ( s == String.Empty )
+			{
+				_strings = _removeEmptyEntries ? new string[] { } : new string[ 1 ] { s }; //keep same instance 
+				return _strings;
+			}
 
-        /// <summary>
-        ///		Parses an array of params and returns a color from it.
-        /// </summary>
-        /// <param name="val"></param>
-        public static Vector3 ParseVector3( string val )
-        {
-            string[] values = val.Split( ' ' );
+			//init 
+			StringBuilder str = new StringBuilder( s.Length );
+			_result = new List<string>( s.Length > 10 ? 10 : s.Length );
 
-            Vector3 vec = new Vector3();
-            vec.x = ParseFloat( values[ 0 ] );
-            vec.y = ParseFloat( values[ 1 ] );
-            vec.z = ParseFloat( values[ 2 ] );
+			if ( separators == null || separators.Length == 0 )
+				separators = new char[] { ' ' };
 
-            return vec;
-        }
+			//parse 
+			//TODO: how to handle \n chars? see MSDN examples of String.Split() 
+			for ( int i = 0; i < s.Length; ++i )
+			{
+				bool separatorFound = false;
 
-        /// <summary>
-        ///		Parses an array of params and returns a color from it.
-        /// </summary>
-        /// <param name="val"></param>
-        public static Vector4 ParseVector4( string[] values )
-        {
-            Vector4 vec = new Vector4();
-            vec.x = ParseFloat( values[ 0 ] );
-            vec.y = ParseFloat( values[ 1 ] );
-            vec.z = ParseFloat( values[ 2 ] );
-            vec.w = ParseFloat( values[ 3 ] );
+				for ( int j = 0; j < separators.Length; ++j )
+				{
+					if ( count >= 0 && _result.Count == count - 1 )
+						break; //limit reached 
 
-            return vec;
-        }
+					if ( s[ i ] == separators[ j ] )
+					{
+						separatorFound = true;
 
-        /// <summary>
-        ///		Parse a float value from a string.
-        /// </summary>
-        /// <remarks>
-        ///		Since our file formats assume the 'en-US' style format for numbers, we need to
-        ///		let the framework know that where numbers are being parsed.
-        /// </remarks>
-        /// <param name="val">String value holding the float.</param>
-        /// <returns>A float representation of the string value.</returns>
-        public static float ParseFloat( string val )
-        {
-            return float.Parse( val, englishCulture );
-        }
+						if ( !( _removeEmptyEntries && str.Length == 0 ) )
+						{
+							_result.Add( str.ToString() );
+						}
+						str.Length = 0;
+						break;
+					}
+				}
 
-        /// <summary>
-        ///     
-        /// </summary>
-        /// <param name="color"></param>
-        /// <returns></returns>
-        public static string ToString( ColorEx color )
-        {
-            return string.Format( englishCulture, "{0} {1} {2} {3}", color.r, color.g, color.b, color.a );
-        }
+				if ( !separatorFound )
+				{
+					str.Append( s[ i ] );
+				}
+			}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="vec"></param>
-        /// <returns></returns>
-        public static string ToString( Vector4 vec )
-        {
-            return string.Format( englishCulture, "{0} {1} {2} {3}", vec.x, vec.y, vec.z, vec.w );
-        }
+			if ( !( count >= 0 && _result.Count == count ) )
+			{
+				if ( !( _removeEmptyEntries && str.Length == 0 ) )
+				{
+					_result.Add( str.ToString() );
+				}
+			}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="vec"></param>
-        /// <returns></returns>
-        public static string ToString( Vector3 vec )
-        {
-            return string.Format( englishCulture, "{0} {1} {2}", vec.x, vec.y, vec.z );
-        }
+			//result 
+			if ( _result.Count == 0 )
+			{
+				_strings = new string[ 1 ] { s }; //keep same instance, see MSDN 
+			}
+			else
+			{
+				_strings = _result.ToArray();
+			}
 
-        /// <summary>
-        ///     Converts a 
-        /// </summary>
-        /// <param name="val"></param>
-        /// <returns></returns>
-        public static string ToString( float val )
-        {
-            return val.ToString( englishCulture );
-        }
+			return _strings;
+		}
 
-        #endregion Static Methods
-    }
+#endif
+		#endregion
+		/// <summary>
+		///		Parses a boolean type value 
+		/// </summary>
+		/// <param name="val"></param>
+		/// <returns></returns>
+		public static bool ParseBool( string val )
+		{
+			switch ( val )
+			{
+				case "true":
+				case "on":
+					return true;
+				case "false":
+				case "off":
+					return false;
+			}
+
+			// make the compiler happy
+			return false;
+		}
+
+		/// <summary>
+		///		Parses an array of params and returns a color from it.
+		/// </summary>
+		/// <param name="val"></param>
+		public static ColorEx ParseColor( string[] values )
+		{
+			ColorEx color = new ColorEx();
+			color.r = ParseFloat( values[ 0 ] );
+			color.g = ParseFloat( values[ 1 ] );
+			color.b = ParseFloat( values[ 2 ] );
+			color.a = ( values.Length > 3 ) ? ParseFloat( values[ 3 ] ) : 1.0f;
+
+			return color;
+		}
+
+		/// <summary>
+		///		Parses an array of params and returns a color from it.
+		/// </summary>
+		/// <param name="val"></param>
+		public static ColorEx ParseColor( string val )
+		{
+			ColorEx color = new ColorEx();
+			string[] vals = val.Split( ' ' );
+
+			color.r = ParseFloat( vals[ 0 ] );
+			color.g = ParseFloat( vals[ 1 ] );
+			color.b = ParseFloat( vals[ 2 ] );
+			color.a = ( vals.Length == 4 ) ? ParseFloat( vals[ 3 ] ) : 1.0f;
+
+			return color;
+		}
+
+		/// <summary>
+		///		Parses an array of params and returns a color from it.
+		/// </summary>
+		/// <param name="val"></param>
+		public static Vector3 ParseVector3( string[] values )
+		{
+			Vector3 vec = new Vector3();
+			vec.x = ParseFloat( values[ 0 ] );
+			vec.y = ParseFloat( values[ 1 ] );
+			vec.z = ParseFloat( values[ 2 ] );
+
+			return vec;
+		}
+
+		/// <summary>
+		///		Parses an array of params and returns a color from it.
+		/// </summary>
+		/// <param name="val"></param>
+		public static Vector3 ParseVector3( string val )
+		{
+			string[] values = val.Split( ' ' );
+
+			Vector3 vec = new Vector3();
+			vec.x = ParseFloat( values[ 0 ] );
+			vec.y = ParseFloat( values[ 1 ] );
+			vec.z = ParseFloat( values[ 2 ] );
+
+			return vec;
+		}
+
+		/// <summary>
+		///		Parses an array of params and returns a color from it.
+		/// </summary>
+		/// <param name="val"></param>
+		public static Vector4 ParseVector4( string[] values )
+		{
+			Vector4 vec = new Vector4();
+			vec.x = ParseFloat( values[ 0 ] );
+			vec.y = ParseFloat( values[ 1 ] );
+			vec.z = ParseFloat( values[ 2 ] );
+			vec.w = ParseFloat( values[ 3 ] );
+
+			return vec;
+		}
+
+		/// <summary>
+		///		Parse a float value from a string.
+		/// </summary>
+		/// <remarks>
+		///		Since our file formats assume the 'en-US' style format for numbers, we need to
+		///		let the framework know that where numbers are being parsed.
+		/// </remarks>
+		/// <param name="val">String value holding the float.</param>
+		/// <returns>A float representation of the string value.</returns>
+		public static float ParseFloat( string val )
+		{
+			return float.Parse( val, englishCulture );
+		}
+
+		/// <summary>
+		///     
+		/// </summary>
+		/// <param name="color"></param>
+		/// <returns></returns>
+		public static string ToString( ColorEx color )
+		{
+			return string.Format( englishCulture, "{0} {1} {2} {3}", color.r, color.g, color.b, color.a );
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="vec"></param>
+		/// <returns></returns>
+		public static string ToString( Vector4 vec )
+		{
+			return string.Format( englishCulture, "{0} {1} {2} {3}", vec.x, vec.y, vec.z, vec.w );
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="vec"></param>
+		/// <returns></returns>
+		public static string ToString( Vector3 vec )
+		{
+			return string.Format( englishCulture, "{0} {1} {2}", vec.x, vec.y, vec.z );
+		}
+
+		/// <summary>
+		///     Converts a 
+		/// </summary>
+		/// <param name="val"></param>
+		/// <returns></returns>
+		public static string ToString( float val )
+		{
+			return val.ToString( englishCulture );
+		}
+
+		#endregion Static Methods
+	}
 }
