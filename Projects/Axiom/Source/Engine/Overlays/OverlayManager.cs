@@ -43,6 +43,7 @@ using Axiom.Core;
 using Axiom.FileSystem;
 using Axiom.Scripting;
 using Axiom.Graphics;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -97,7 +98,7 @@ namespace Axiom.Overlays
 		private int lastViewportWidth;
 		private int lastViewportHeight;
 		private bool viewportDimensionsChanged;
-		private StringCollection loadedOverlays = new StringCollection();
+		private List<string> loadedOverlays = new List<string>();
 
 		#endregion Fields
 

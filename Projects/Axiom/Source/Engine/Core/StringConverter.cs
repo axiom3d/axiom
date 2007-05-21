@@ -73,6 +73,7 @@ namespace Axiom.Core
 
 		#region String.Split() replacements
 
+#if !XBOX360
 		public static string[] Split( string s, char[] separators )
 		{
 			return Split( s, separators, -1, StringSplitOptions.None );
@@ -88,14 +89,13 @@ namespace Axiom.Core
 			return Split( s, separators, -1, options );
 		}
 
-#if !XBOX360
 		public static string[] Split( string s, char[] separators, int count, StringSplitOptions options )
 		{
 			return s.Split( separators, count, options );
 		}
 #else
 
-		public static string[] Split( string s, char[] separators, int count, StringSplitOptions options )
+		public static string[] Split( string s, char[] separators, int count) //, StringSplitOptions options )
 		{
 			List<string> _result;
 			string[] _strings;
@@ -110,7 +110,7 @@ namespace Axiom.Core
 				return _strings;
 			}
 
-			_removeEmptyEntries = ( options & StringSplitOptions.RemoveEmptyEntries ) == StringSplitOptions.RemoveEmptyEntries;
+            _removeEmptyEntries = false; // ( options & StringSplitOptions.RemoveEmptyEntries ) == StringSplitOptions.RemoveEmptyEntries;
 			if ( s == String.Empty )
 			{
 				_strings = _removeEmptyEntries ? new string[] { } : new string[ 1 ] { s }; //keep same instance 

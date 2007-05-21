@@ -41,6 +41,7 @@ using System.IO;
 using ICSharpCode.SharpZipLib.Zip;
 
 using Axiom.Core;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -141,7 +142,7 @@ namespace Axiom.FileSystem
             fs.Position = 0;
             ZipInputStream s = new ZipInputStream( fs );
             ZipEntry entry;
-            StringCollection fileList = new StringCollection();
+            List<string> fileList = new List<string>();
 
             entry = s.GetNextEntry();
 
