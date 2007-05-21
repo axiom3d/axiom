@@ -832,7 +832,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Custom attributes that can be assigned to this target.
 		/// </summary>
-		protected SortedDictionary<string, object> customAttributes = new SortedDictionary<string, object>();
+		protected SortedList<string, object> customAttributes = new SortedList<string, object>();
 
 		/// <summary>
 		/// Gets a custom (maybe platform-specific) attribute.

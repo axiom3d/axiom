@@ -165,7 +165,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		private void ParseAllSources()
 		{
-			StringCollection compositingFiles = ResourceManager.GetAllCommonNamesLike( "", ".compositor" );
+			IEnumerable<string> compositingFiles = ResourceManager.GetAllCommonNamesLike( "", ".compositor" );
 
 			foreach ( string file in compositingFiles )
 			{
@@ -228,7 +228,7 @@ namespace Axiom.Graphics
 
 		protected string[] SplitByWhitespace( string line, int count )
 		{
-			return line.Split( new char[] { ' ', '\t' }, count );
+            return StringConverter.Split( line, new char[] { ' ', '\t' }, count );
 		}
 
 		protected string[] SplitArgs( string args )

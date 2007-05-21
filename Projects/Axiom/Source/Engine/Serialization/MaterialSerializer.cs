@@ -131,7 +131,7 @@ namespace Axiom.Serialization
 		/// <returns></returns>
 		protected bool InvokeParser( string line, Hashtable parsers )
 		{
-			string[] splitCmd = line.Split( new char[] { ' ', '\t' }, 2 );
+            string[] splitCmd = StringConverter.Split( line, new char[] { ' ', '\t' }, 2 );
 
 			// find attribute parser
 			if ( parsers.ContainsKey( splitCmd[ 0 ] ) )
@@ -240,7 +240,7 @@ namespace Axiom.Serialization
 					// do this manually because we want to call a custom
 					// routine when the parser is not found
 					// First, split line on first divisor only
-					string[] splitCmd = scriptContext.defaultParamLines[ i ].Split( new char[] { ' ', '\t' }, 2 );
+					string[] splitCmd = StringConverter.Split( scriptContext.defaultParamLines[ i ], new char[] { ' ', '\t' }, 2 );
 
 					// find attribute parser
 					if ( programDefaultParamAttribParsers.ContainsKey( splitCmd[ 0 ] ) )
@@ -418,7 +418,7 @@ namespace Axiom.Serialization
 						// do this manually because we want to call a custom
 						// routine when the parser is not found
 						// First, split line on first divisor only
-						string[] splitCmd = line.Split( new char[] { ' ', '\t' }, 2 );
+                        string[] splitCmd = StringConverter.Split( line, new char[] { ' ', '\t' }, 2 );
 
 						// find attribute parser
 						if ( programAttribParsers.ContainsKey( splitCmd[ 0 ] ) )
@@ -542,7 +542,7 @@ namespace Axiom.Serialization
 			// This params object does not have the command stripped
 			// Lower case the command, but not the value incase it's relevant
 			// Split only up to first delimiter, program deals with the rest
-			string[] values = parameters.Split( new char[] { ' ', '\t' }, 2 );
+            string[] values = StringConverter.Split( line, new char[] { ' ', '\t' }, 2 );
 
 			if ( values.Length != 2 )
 			{
@@ -2504,7 +2504,7 @@ namespace Axiom.Serialization
 		public int techLev;	//Keep track of what tech, pass, and state level we are in
 		public int passLev;
 		public int stateLev;
-		public StringCollection defaultParamLines = new StringCollection();
+		public List<string> defaultParamLines = new List<string>();
 
 		// Error reporting state
 		public int lineNo;

@@ -130,7 +130,9 @@ namespace Axiom.Math.Collections
         #region Implementation (data)
         private Vector3[] m_array;
         private int m_count = 0;
+#if !XBOX360
         [NonSerialized]
+#endif
         private int m_version = 0;
         #endregion
 

@@ -42,6 +42,7 @@ using Axiom.Core;
 using Axiom.FileSystem;
 using Axiom.Scripting;
 using Axiom.Math;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -92,9 +93,9 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Collection of syntax codes that this program manager supports.
 		/// </summary>
-		protected StringCollection syntaxCodes = new StringCollection();
+		protected List<string> syntaxCodes = new List<string>();
 
-		public StringCollection SupportedSyntaxes
+		public ICollection<string> SupportedSyntaxes
 		{
 			get
 			{

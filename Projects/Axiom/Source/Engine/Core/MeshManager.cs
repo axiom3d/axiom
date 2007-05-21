@@ -38,6 +38,7 @@ using System.Collections.Specialized;
 
 using Axiom.Math;
 using Axiom.Graphics;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -94,7 +95,7 @@ namespace Axiom.Core
 		/// <summary>
 		/// Gets the names of all meshes that have been created
 		/// </summary>
-		public StringCollection MeshNames
+        public IEnumerable<string> MeshNames
 		{
 			get
 			{

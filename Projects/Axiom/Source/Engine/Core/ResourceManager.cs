@@ -41,6 +41,7 @@ using System.IO;
 
 using Axiom.Configuration;
 using Axiom.FileSystem;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -69,7 +70,8 @@ namespace Axiom.Core
 		/// <summary>
 		///		A cached list of all resources in memory.
 		///	</summary>
-		protected Hashtable resourceList = CollectionsUtil.CreateCaseInsensitiveHashtable();
+		//protected Hashtable resourceList = CollectionsUtil.CreateCaseInsensitiveHashtable();
+        protected Dictionary<string, string> resourceList = new Dictionary<string,string>();
 		protected Hashtable resourceHandleMap = new Hashtable();
 		/// <summary>
 		///		A lookup table used to find a common archive associated with a filename.
@@ -313,9 +315,9 @@ namespace Axiom.Core
 			AddCommonArchive( path, "Folder" );
 		}
 
-		public static StringCollection GetAllCommonNamesLike( string startPath, string extension )
+		public static IEnumerable<string> GetAllCommonNamesLike( string startPath, string extension )
 		{
-			StringCollection allFiles = new StringCollection();
+			List<string> allFiles = new List<string>();
 
 			for ( int i = 0; i < commonArchives.Count; i++ )
 			{
@@ -514,9 +516,9 @@ namespace Axiom.Core
 			throw new AxiomException( string.Format( "Resource '{0}' could not be found.  Be sure it is located in a known directory "
 				+ "or that it is not qualified by a directory name unless that directory is located inside a zip archive.", fileName ) );
 		}
-		public StringCollection GetResourceNamesWithExtension( string fileExtension )
+		public IEnumerable<string> GetResourceNamesWithExtension( string fileExtension )
 		{
-			StringCollection list = new StringCollection();
+			List<string> list = new List<string>();
 			foreach ( string name in filePaths.Keys )
 			{
 				if ( name.EndsWith( fileExtension ) )
@@ -529,9 +531,9 @@ namespace Axiom.Core
 			}
 			return list;
 		}
-		public StringCollection GetResourceNamesWithExtension( params string[] fileExtensions )
+		public IEnumerable<string> GetResourceNamesWithExtension( params string[] fileExtensions )
 		{
-			StringCollection list = new StringCollection();
+			List<string> list = new List<string>();
 			foreach ( string name in filePaths.Keys )
 			{
 				foreach ( string fileExtension in fileExtensions )
