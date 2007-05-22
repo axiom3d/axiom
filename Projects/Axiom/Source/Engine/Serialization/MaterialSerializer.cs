@@ -542,7 +542,7 @@ namespace Axiom.Serialization
 			// This params object does not have the command stripped
 			// Lower case the command, but not the value incase it's relevant
 			// Split only up to first delimiter, program deals with the rest
-            string[] values = StringConverter.Split( line, new char[] { ' ', '\t' }, 2 );
+			string[] values = StringConverter.Split( parameters, new char[] { ' ', '\t' }, 2 );
 
 			if ( values.Length != 2 )
 			{
