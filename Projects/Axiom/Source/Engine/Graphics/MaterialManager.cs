@@ -438,14 +438,12 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public override Resource Create( string name, bool isManual )
 		{
-			if ( resourceList[ name ] != null )
+			Material material = (Material)base.GetByName( name );
+			if ( material == null )
 			{
-				return (Material)resourceList[ name ];
-				//throw new AxiomException( string.Format( "Cannot create a duplicate material named '{0}'.", name ) );
+				// create a material
+				material = new Material( name );
 			}
-
-			// create a material
-			Material material = new Material( name );
 
 			Add( material );
 

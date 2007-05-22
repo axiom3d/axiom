@@ -63,6 +63,23 @@ namespace Axiom.Core
 	/// </remarks>
 	public abstract class ResourceManager : IDisposable
 	{
+		private class CaseInsenstiveStringComparer : IEqualityComparer<string>
+		{
+			#region IEqualityComparer<string> Members
+
+			public bool Equals( string x, string y )
+			{
+				return x.ToLower() == y.ToLower();
+			}
+
+			public int GetHashCode( string obj )
+			{
+				return obj.ToLower().GetHashCode();
+			}
+
+			#endregion
+		}
+
 		#region Fields
 
 		protected long memoryBudget;
@@ -71,12 +88,12 @@ namespace Axiom.Core
 		///		A cached list of all resources in memory.
 		///	</summary>
 		//protected Hashtable resourceList = CollectionsUtil.CreateCaseInsensitiveHashtable();
-        protected Dictionary<string, string> resourceList = new Dictionary<string,string>();
-		protected Hashtable resourceHandleMap = new Hashtable();
+		protected Dictionary<string, Resource> resourceList = new Dictionary<string, Resource>( new CaseInsenstiveStringComparer() );
+		protected Dictionary<int, Resource> resourceHandleMap = new Dictionary<int, Resource>();
 		/// <summary>
 		///		A lookup table used to find a common archive associated with a filename.
 		///	</summary>
-		protected Hashtable filePaths = CollectionsUtil.CreateCaseInsensitiveHashtable();
+		protected Dictionary<string, Archive> filePaths = new Dictionary<string, Archive>( new CaseInsenstiveStringComparer() );
 		/// <summary>
 		///		A cached list of archives specific to a resource type.
 		///	</summary>
@@ -84,7 +101,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		A lookup table used to find a archive associated with a filename.
 		///	</summary>
-		static protected Hashtable commonFilePaths = CollectionsUtil.CreateCaseInsensitiveHashtable();
+		static protected Dictionary<string, Archive> commonFilePaths = new Dictionary<string, Archive>( new CaseInsenstiveStringComparer() );
 		/// <summary>
 		///		A cached list of archives common to all resource types.
 		///	</summary>
@@ -420,7 +437,7 @@ namespace Axiom.Core
 			Resource resource = null;
 
 			// find the resource in the Hashtable and return it
-			if ( resourceHandleMap[ handle ] != null )
+			if ( resourceHandleMap.ContainsKey( handle ) )
 			{
 				resource = (Resource)resourceHandleMap[ handle ];
 				resource.Touch();
@@ -433,7 +450,7 @@ namespace Axiom.Core
 		///    Gets a reference to the specified named resource.
 		/// </summary>
 		/// <param name="name">Name of the resource to retreive.</param>
-		/// <returns></returns>
+		/// <returns>null if resource name is not found.</returns>
 		public virtual Resource GetByName( string name )
 		{
 			Debug.Assert( resourceList != null, "A resource was being retreived, but the list of Resources is null.", "" );
@@ -441,7 +458,7 @@ namespace Axiom.Core
 			Resource resource = null;
 
 			// find the resource in the Hashtable and return it
-			if ( resourceList[ name ] != null )
+			if ( resourceList.ContainsKey( name ) )
 			{
 				resource = (Resource)resourceList[ name ];
 			}
