@@ -344,7 +344,7 @@ namespace Axiom.Graphics
         ///     If true, this allows the driver to discard the entire buffer when writing,
         ///     such that DMA stalls can be avoided; use if you can.
         /// </param>
-        public void WriteData( int offset, int length, System.Array data, bool discardWholeBuffer )
+        public virtual void WriteData( int offset, int length, System.Array data, bool discardWholeBuffer )
         {
 			GCHandle handle = GCHandle.Alloc( data, GCHandleType.Pinned );
 			IntPtr dataPtr = handle.AddrOfPinnedObject();

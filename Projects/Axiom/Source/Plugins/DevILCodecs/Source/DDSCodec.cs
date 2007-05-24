@@ -37,12 +37,13 @@ using System;
 
 using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Media;
 
 using Tao.DevIl;
 
 #endregion Namespace Declarations
 
-namespace Axiom.Media
+namespace Axiom.Plugins.DevILCodecs
 {
     /// <summary>
     ///    Microsoft's DDS file format codec.

@@ -71,7 +71,7 @@ namespace Axiom.Core
         /// <remarks>
         ///     As defined in <see cref="MeshManager.CreateBezierPatch" />.
         /// </remarks>
-        public PatchMesh( string name, System.Array controlPointBuffer, VertexDeclaration declaration,
+        public PatchMesh( string name, IntPtr controlPointBuffer, VertexDeclaration declaration,
             int width, int height, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide,
             BufferUsage vbUsage, BufferUsage ibUsage, bool vbUseShadow, bool ibUseShadow )
             : base( name )

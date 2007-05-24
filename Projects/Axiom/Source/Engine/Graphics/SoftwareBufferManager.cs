@@ -160,7 +160,14 @@ namespace Axiom.Graphics
         {
 
             // return the offset into the array as a pointer
-            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+            unsafe
+            {
+                fixed (void* pData = &data[offset])
+                {
+                    return new IntPtr(pData);
+                }
+            }
+            //return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
             //handle = GCHandle.Alloc( data, GCHandleType.Pinned );
             //return handle.AddrOfPinnedObject();
         }
@@ -218,7 +225,14 @@ namespace Axiom.Graphics
         /// </summary>
         public IntPtr GetDataPointer( int offset )
         {
-            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+            unsafe
+            {
+                fixed (void* pData = &data[offset])
+                {
+                    return new IntPtr(pData);
+                }
+            }
+            //return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
             //return handle.AddrOfPinnedObject();
         }
 
@@ -294,7 +308,14 @@ namespace Axiom.Graphics
             //isLocked = true;
 
             // return the offset into the array as a pointer
-            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+            unsafe
+            {
+                fixed (void* pData = &data[offset])
+                {
+                    return new IntPtr(pData);
+                }
+            }
+            //return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
             //handle = GCHandle.Alloc( data, GCHandleType.Pinned );
             //return handle.AddrOfPinnedObject();
         }
@@ -352,7 +373,14 @@ namespace Axiom.Graphics
         /// </summary>
         public IntPtr GetDataPointer( int offset )
         {
-            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+            unsafe
+            {
+                fixed (void* pData = &data[offset])
+                {
+                    return new IntPtr(pData);
+                }
+            }
+            //return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
             //return handle.AddrOfPinnedObject();
         }
 

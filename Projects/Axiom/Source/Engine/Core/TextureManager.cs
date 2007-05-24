@@ -296,7 +296,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public new Texture GetByName( string name )
 		{
-			return (Texture)base.GetByName( name );
+			return (Texture)base.GetByName( name.ToLower() );
 		}
 
 		/// <summary>

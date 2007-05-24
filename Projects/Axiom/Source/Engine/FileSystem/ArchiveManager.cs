@@ -38,6 +38,7 @@ using System.Collections;
 using System.Collections.Specialized;
 
 using Axiom.Core;
+using System.Collections.Generic;
 
 #endregion NAmespace Declarations
 
@@ -88,7 +89,7 @@ namespace Axiom.FileSystem
 		/// <summary>
 		/// The list of factories
 		/// </summary>
-		private Hashtable factories = System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
+        private Dictionary<string, IArchiveFactory> factories = new Dictionary<string, IArchiveFactory>( new CaseInsensitiveStringComparer() );
 
 		#endregion
 
@@ -101,7 +102,7 @@ namespace Axiom.FileSystem
 		/// <param name="factory">The factory itself</param>
 		public void AddArchiveFactory( IArchiveFactory factory )
 		{
-			if ( factories[ factory.Type ] != null )
+			if ( factories.ContainsKey( factory.Type ) )
 			{
 				throw new AxiomException( "Attempted to add the {0} factory to ArchiveManager more than once.", factory.Type );
 			}

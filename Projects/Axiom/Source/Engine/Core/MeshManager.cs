@@ -369,11 +369,11 @@ namespace Axiom.Core
 		/// <param name="vbUseShadow"></param>
 		/// <param name="ibUseShadow"></param>
 		/// <returns></returns>
-		public PatchMesh CreateBezierPatch( string name, System.Array controlPointBuffer, VertexDeclaration declaration,
+		public PatchMesh CreateBezierPatch( string name, IntPtr controlPointBuffer, VertexDeclaration declaration,
 			int width, int height, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide,
 			BufferUsage vbUsage, BufferUsage ibUsage, bool vbUseShadow, bool ibUseShadow )
 		{
-
+			
 			PatchMesh mesh = (PatchMesh)GetByName( name );
 
 			if ( mesh != null )

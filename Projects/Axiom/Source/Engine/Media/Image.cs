@@ -486,8 +486,15 @@ namespace Axiom.Media
 			faceSize = PixelUtil.GetMemorySize( width, height, depth, this.Format );
 			offset += faceSize * face;
 			// Return subface as pixelbox
-			IntPtr newBufPtr = Marshal.UnsafeAddrOfPinnedArrayElement( buffer, offset );
-			return new PixelBox( width, height, depth, this.Format, newBufPtr );
+			//IntPtr newBufPtr = Marshal.UnsafeAddrOfPinnedArrayElement( buffer, offset );
+            unsafe
+            {
+                fixed (void* pBuffer = &buffer[0])
+                {
+                    return new PixelBox(width, height, depth, this.Format, new IntPtr(pBuffer));
+                }
+            }
+			
 		}
 
 		/// <summary>

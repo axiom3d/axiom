@@ -328,7 +328,8 @@ namespace Axiom.Overlays
                 {
                     AttributeParserAttribute parserAtt = parserAtts[ j ];
 
-                    attribParsers.Add( parserAtt.Name, Delegate.CreateDelegate( typeof( AttributeParserMethod ), method ) );
+                    //attribParsers.Add( parserAtt.Name, Delegate.CreateDelegate( typeof( AttributeParserMethod ), method. ) );
+                    attribParsers.Add(parserAtt.Name, method);
                 } // for
             } // for
         }
@@ -368,12 +369,12 @@ namespace Axiom.Overlays
                 return false;
             }
 
-            AttributeParserMethod parser = (AttributeParserMethod)attribParsers[ param ];
-
+            //AttributeParserMethod parser = (AttributeParserMethod)attribParsers[ param ];
+            MethodInfo parser = (MethodInfo)attribParsers[param];
             // call the parser method, passing in an array of the split val param, and this element for the optional object
             // MONO: As of 1.0.5, complains if the second param is not explicitly passed as an object array
-            parser( val.Split( ' ' ), new object[] { this } );
-
+            //parser( val.Split( ' ' ), new object[] { this } );
+            parser.Invoke(null, new object[] { val.Split(' '), new object[] { this } });
             return true;
         }
 

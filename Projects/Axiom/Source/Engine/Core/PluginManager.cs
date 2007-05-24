@@ -130,7 +130,13 @@ namespace Axiom.Core
 						foreach ( Type type in assembly.GetTypes() )
 						{
 							//there may be other interfaces named IPlugin used for other assemblies, so check the full type
-							if ( type.GetInterface( "IPlugin" ) == typeof( IPlugin ) )
+							bool ipluginFound = false;
+							for ( int i = 0; i < type.GetInterfaces().GetLength( 0 ); i++ )
+							{
+								ipluginFound = ( type.GetInterfaces()[ i ] == typeof( IPlugin ) );
+							}
+
+							if ( ipluginFound )
 							{
 								try
 								{

@@ -39,7 +39,7 @@ using Tao.DevIl;
 
 #endregion Namespace Declarations
 
-namespace Axiom.Media
+namespace Axiom.Plugins.DevILCodecs
 {
     /// <summary>
     ///    PNG image file codec.

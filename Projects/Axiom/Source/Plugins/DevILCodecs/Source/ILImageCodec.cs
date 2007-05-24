@@ -38,12 +38,13 @@ using System.IO;
 
 using Axiom.Core;
 using Axiom.Math.Collections;
+using Axiom.Media;
 
 using Tao.DevIl;
 
 #endregion Namespace Declarations
 
-namespace Axiom.Media
+namespace Axiom.Plugins.DevILCodecs
 {
     /// <summary>
     ///    Base DevIL (OpenIL) implementation for loading images.

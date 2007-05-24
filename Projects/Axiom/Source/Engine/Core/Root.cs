@@ -90,11 +90,11 @@ namespace Axiom.Core
 				StringBuilder info = new StringBuilder();
 
 				// write the initial info at the top of the log
-				info.AppendFormat( "*********Axiom 3D Engine Log *************{0}", Environment.NewLine );
-				info.AppendFormat( "Copyright {0}{1}", this.Copyright, Environment.NewLine );
-				info.AppendFormat( "Version: {0}{1}", this.Version, Environment.NewLine );
-				info.AppendFormat( "Operating System: {0}{1}", Environment.OSVersion.ToString(), Environment.NewLine );
-				info.AppendFormat( ".Net Framework: {0}{1}", Environment.Version.ToString(), Environment.NewLine );
+				info.AppendFormat( "*********Axiom 3D Engine Log *************\n" );
+				info.AppendFormat( "Copyright {0}\n", this.Copyright );
+				info.AppendFormat( "Version: {0}\n", this.Version );
+				info.AppendFormat( "Operating System: {0}\n", Environment.OSVersion.ToString() );
+				info.AppendFormat( ".Net Framework: {0}\n", Environment.Version.ToString() );
 
 				// Initializes the Log Manager singleton
 				LogManager logMgr = new LogManager();
@@ -113,11 +113,12 @@ namespace Axiom.Core
 				new MeshManager();
 				new SkeletonManager();
 				new ParticleSystemManager();
+#if !XBOX360
 				new PlatformManager();
-
+#endif
 				// create a new timer
 				//timer = new Timer();
-				timer = PlatformManager.Instance.CreateTimer();
+                timer = new Timer(); //PlatformManager.Instance.CreateTimer();
 
 				new OverlayManager();
 				new OverlayElementManager();
@@ -681,7 +682,7 @@ namespace Axiom.Core
 				// allow OS events to process (if the platform requires it
 				frameMeter.Enter();
 				eventMeter.Enter();
-				PlatformManager.Instance.DoEvents();
+				//PlatformManager.Instance.DoEvents();
 				eventMeter.Exit();
 
 				if ( suspendRendering )
