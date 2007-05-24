@@ -257,7 +257,7 @@ namespace Axiom.Core
         {
             string errMessage = string.Empty;
 
-            errMessage += exception.Message + Environment.NewLine + exception.StackTrace;
+            errMessage += exception.Message + "\n" + exception.StackTrace;
 
             while ( exception.InnerException != null )
             {
@@ -272,8 +272,8 @@ namespace Axiom.Core
         {
             string errMessage = string.Empty;
 
-            errMessage += Environment.NewLine + " InnerException ";
-            errMessage += Environment.NewLine + innerException.Message + Environment.NewLine + innerException.StackTrace;
+            errMessage += "\n" + " InnerException ";
+            errMessage += "\n" + innerException.Message + "\n" + innerException.StackTrace;
 
             return errMessage;
         }

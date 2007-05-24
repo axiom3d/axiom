@@ -262,22 +262,31 @@ namespace Axiom.Core
 					{
 						// Apply gamma correction
 						// Do not overwrite original image but do gamma correction in temporary buffer
-						IntPtr buffer = Marshal.AllocHGlobal( PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, src.Format ) );
-						try
-						{
-							PixelBox corrected = new PixelBox( src.Width, src.Height, src.Depth, src.Format, buffer );
-							PixelConverter.BulkPixelConversion( src, corrected );
+                        int bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, src.Format );
+                        byte[] buff = new byte[bufSize];
+                        unsafe
+                        {
+                            fixed (void* pBuf = &buff[0])
+                            {
+                                IntPtr buffer = new IntPtr(pBuf);
 
-							Image.ApplyGamma( corrected.Data, gamma, corrected.ConsecutiveSize, PixelUtil.GetNumElemBits( src.Format ) );
+                                try
+                                {
+                                    PixelBox corrected = new PixelBox(src.Width, src.Height, src.Depth, src.Format, buffer);
+                                    PixelConverter.BulkPixelConversion(src, corrected);
 
-							// Destination: entire texture. BlitFromMemory does the scaling to
-							// a power of two for us when needed
-							GetBuffer( i, mip ).BlitFromMemory( corrected );
-						}
-						finally
-						{
-							Marshal.FreeHGlobal( buffer );
-						}
+                                    Image.ApplyGamma(corrected.Data, gamma, corrected.ConsecutiveSize, PixelUtil.GetNumElemBits(src.Format));
+
+                                    // Destination: entire texture. BlitFromMemory does the scaling to
+                                    // a power of two for us when needed
+                                    GetBuffer(i, mip).BlitFromMemory(corrected);
+                                }
+                                finally
+                                {
+                                    //Marshal.FreeHGlobal( buffer );
+                                }
+                            }
+                        }
 					}
 					else
 					{

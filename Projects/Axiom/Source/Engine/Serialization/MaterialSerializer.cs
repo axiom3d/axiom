@@ -143,12 +143,14 @@ namespace Axiom.Serialization
 					cmd = splitCmd[ 1 ];
 				}
 
-				MaterialAttributeParserHandler handler = (MaterialAttributeParserHandler)parsers[ splitCmd[ 0 ] ];
+				//MaterialAttributeParserHandler handler = (MaterialAttributeParserHandler)parsers[ splitCmd[ 0 ] ];
+                MethodInfo handler = (MethodInfo)parsers[splitCmd[0]];
 
 				// Use parser, make sure we have 2 params before using splitCmd[1]
 				// MONO: Does not like mangling the above and below lines into a single line (frankly, i don't blame it, but csc takes it).
 				// i.e. (((MaterialAttributeParserHandler)parsers[splitCmd[0]]))(cmd, scriptContext);
-				return handler( cmd, scriptContext );
+				//return handler( cmd, scriptContext );
+                return (bool)handler.Invoke(null, new object[] { cmd, scriptContext });
 			}
 			else
 			{
@@ -247,10 +249,11 @@ namespace Axiom.Serialization
 					{
 						string cmd = splitCmd.Length >= 2 ? splitCmd[ 1 ] : string.Empty;
 
-						MaterialAttributeParserHandler handler = (MaterialAttributeParserHandler)programDefaultParamAttribParsers[ splitCmd[ 0 ] ];
-
+						//MaterialAttributeParserHandler handler = (MaterialAttributeParserHandler)programDefaultParamAttribParsers[ splitCmd[ 0 ] ];
+                        MethodInfo handler = (MethodInfo)programDefaultParamAttribParsers[splitCmd[0]];
 						// Use parser, make sure we have 2 params before using splitCmd[1]
-						handler( cmd, scriptContext );
+                        handler.Invoke(null, new object[] { cmd, scriptContext });
+						//handler( cmd, scriptContext );
 					}
 				}
 
@@ -426,9 +429,10 @@ namespace Axiom.Serialization
 							// Use parser, make sure we have 2 params before using splitCmd[1]
 							string cmd = splitCmd.Length >= 2 ? splitCmd[ 1 ] : string.Empty;
 
-							MaterialAttributeParserHandler handler = (MaterialAttributeParserHandler)programAttribParsers[ splitCmd[ 0 ] ];
-
-							return handler( cmd, scriptContext );
+							//MaterialAttributeParserHandler handler = (MaterialAttributeParserHandler)programAttribParsers[ splitCmd[ 0 ] ];
+                            MethodInfo handler = (MethodInfo)programAttribParsers[splitCmd[0]];
+                            return (bool)handler.Invoke(null, new object[] { cmd, scriptContext });
+							//return handler( cmd, scriptContext );
 						}
 						else
 						{
@@ -521,7 +525,8 @@ namespace Axiom.Serialization
 
 					if ( parserList != null )
 					{
-						parserList.Add( parserAtt.Name, Delegate.CreateDelegate( typeof( MaterialAttributeParserHandler ), method ) );
+						//parserList.Add( parserAtt.Name, Delegate.CreateDelegate( typeof( MaterialAttributeParserHandler ), method ) );
+                        parserList.Add(parserAtt.Name, method);
 					}
 				} // for
 			} // for

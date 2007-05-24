@@ -65,7 +65,7 @@ namespace Axiom.Core
         /// <summary>
         ///     Buffer containing the system-memory control points.
         /// </summary>
-        protected System.Array controlPointBuffer;
+        protected IntPtr controlPointBuffer;
         /// <summary>
         ///     Type of surface.
         /// </summary>
@@ -181,7 +181,7 @@ namespace Axiom.Core
         ///     do it here, otherwise let the system decide.
         /// </param>
         /// <param name="side">Determines which side of the patch (or both) triangles are generated for.</param>
-        public unsafe void DefineSurface( System.Array controlPointBuffer, VertexDeclaration declaration, int width, int height,
+        public void DefineSurface( IntPtr controlPointBuffer, VertexDeclaration declaration, int width, int height,
             PatchSurfaceType type, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide )
         {
 
@@ -201,16 +201,17 @@ namespace Axiom.Core
             controlPoints.Clear();
             VertexElement elem = declaration.FindElementBySemantic( VertexElementSemantic.Position );
             int vertSize = declaration.GetVertexSize( 0 );
-            byte* pVert = (byte*)Marshal.UnsafeAddrOfPinnedArrayElement( controlPointBuffer, 0 );
-            float* pReal = null;
 
-            for ( int i = 0; i < controlCount; i++ )
-            {
-                pReal = (float*)( pVert + elem.Offset );
-                controlPoints.Add( new Vector3( pReal[ 0 ], pReal[ 1 ], pReal[ 2 ] ) );
-                pVert += vertSize;
-            }
-
+			unsafe
+			{
+				byte* pVert = (byte*)controlPointBuffer.ToPointer();
+				float* pReal = null;
+				for ( int i = 0; i < controlCount; i++ )
+				{
+					pReal = (float*)( pVert + ( i * vertSize ) + elem.Offset );
+					controlPoints.Add( new Vector3( pReal[ 0 ], pReal[ 1 ], pReal[ 2 ] ) );
+				}
+			}
             this.side = visibleSide;
 
             // Determine max level
@@ -304,7 +305,7 @@ namespace Axiom.Core
         ///     do it here, otherwise let the system decide.
         /// </param>
         /// <param name="side">Determines which side of the patch (or both) triangles are generated for.</param>
-        public void DefineSurface( System.Array controlPoints, VertexDeclaration decl, int width, int height )
+        public void DefineSurface( IntPtr controlPoints, VertexDeclaration decl, int width, int height )
         {
             DefineSurface( controlPoints, decl, width, height, PatchSurfaceType.Bezier, AUTO_LEVEL, AUTO_LEVEL, VisibleSide.Front );
         }
@@ -415,83 +416,83 @@ namespace Axiom.Core
         /// 
         /// </summary>
         /// <param name="lockedBuffer"></param>
-        protected unsafe void DistributeControlPoints( IntPtr lockedBuffer )
-        {
-            // Insert original control points into expanded mesh
-            int uStep = 1 << uLevel;
-            int vStep = 1 << vLevel;
+		protected unsafe void DistributeControlPoints( IntPtr lockedBuffer )
+		{
+			// Insert original control points into expanded mesh
+			int uStep = 1 << uLevel;
+			int vStep = 1 << vLevel;
 
-            void* pSrc = Marshal.UnsafeAddrOfPinnedArrayElement( controlPointBuffer, 0 ).ToPointer();
-            void* pDest;
-            int vertexSize = declaration.GetVertexSize( 0 );
-            float* pSrcReal, pDestReal;
-            int* pSrcRGBA, pDestRGBA;
+			void* pSrc = controlPointBuffer.ToPointer();
+			void* pDest;
+			int vertexSize = declaration.GetVertexSize( 0 );
+			float* pSrcReal, pDestReal;
+			int* pSrcRGBA, pDestRGBA;
 
-            VertexElement elemPos = declaration.FindElementBySemantic( VertexElementSemantic.Position );
-            VertexElement elemNorm = declaration.FindElementBySemantic( VertexElementSemantic.Normal );
-            VertexElement elemTex0 = declaration.FindElementBySemantic( VertexElementSemantic.TexCoords, 0 );
-            VertexElement elemTex1 = declaration.FindElementBySemantic( VertexElementSemantic.TexCoords, 1 );
-            VertexElement elemDiffuse = declaration.FindElementBySemantic( VertexElementSemantic.Diffuse );
+			VertexElement elemPos = declaration.FindElementBySemantic( VertexElementSemantic.Position );
+			VertexElement elemNorm = declaration.FindElementBySemantic( VertexElementSemantic.Normal );
+			VertexElement elemTex0 = declaration.FindElementBySemantic( VertexElementSemantic.TexCoords, 0 );
+			VertexElement elemTex1 = declaration.FindElementBySemantic( VertexElementSemantic.TexCoords, 1 );
+			VertexElement elemDiffuse = declaration.FindElementBySemantic( VertexElementSemantic.Diffuse );
 
-            for ( int v = 0; v < meshHeight; v += vStep )
-            {
-                // set dest by v from base
-                pDest = (void*)( (byte*)( lockedBuffer.ToPointer() ) + ( vertexSize * meshWidth * v ) );
+			for ( int v = 0; v < meshHeight; v += vStep )
+			{
+				// set dest by v from base
+				pDest = (void*)( (byte*)( lockedBuffer.ToPointer() ) + ( vertexSize * meshWidth * v ) );
 
-                for ( int u = 0; u < meshWidth; u += uStep )
-                {
-                    // Copy Position
-                    pSrcReal = (float*)( (byte*)pSrc + elemPos.Offset );
-                    pDestReal = (float*)( (byte*)pDest + elemPos.Offset );
-                    *pDestReal++ = *pSrcReal++;
-                    *pDestReal++ = *pSrcReal++;
-                    *pDestReal++ = *pSrcReal++;
+				for ( int u = 0; u < meshWidth; u += uStep )
+				{
+					// Copy Position
+					pSrcReal = (float*)( (byte*)pSrc + elemPos.Offset );
+					pDestReal = (float*)( (byte*)pDest + elemPos.Offset );
+					*pDestReal++ = *pSrcReal++;
+					*pDestReal++ = *pSrcReal++;
+					*pDestReal++ = *pSrcReal++;
 
-                    // Copy Normals
-                    if ( elemNorm != null )
-                    {
-                        pSrcReal = (float*)( (byte*)pSrc + elemNorm.Offset );
-                        pDestReal = (float*)( (byte*)pDest + elemNorm.Offset );
-                        *pDestReal++ = *pSrcReal++;
-                        *pDestReal++ = *pSrcReal++;
-                        *pDestReal++ = *pSrcReal++;
-                    }
+					// Copy Normals
+					if ( elemNorm != null )
+					{
+						pSrcReal = (float*)( (byte*)pSrc + elemNorm.Offset );
+						pDestReal = (float*)( (byte*)pDest + elemNorm.Offset );
+						*pDestReal++ = *pSrcReal++;
+						*pDestReal++ = *pSrcReal++;
+						*pDestReal++ = *pSrcReal++;
+					}
 
-                    // Copy Diffuse
-                    if ( elemDiffuse != null )
-                    {
-                        pSrcRGBA = (int*)( (byte*)pSrc + elemDiffuse.Offset );
-                        pDestRGBA = (int*)( (byte*)pDest + elemDiffuse.Offset );
-                        *pDestRGBA++ = *pSrcRGBA++;
-                    }
+					// Copy Diffuse
+					if ( elemDiffuse != null )
+					{
+						pSrcRGBA = (int*)( (byte*)pSrc + elemDiffuse.Offset );
+						pDestRGBA = (int*)( (byte*)pDest + elemDiffuse.Offset );
+						*pDestRGBA++ = *pSrcRGBA++;
+					}
 
-                    // Copy texture coords
-                    if ( elemTex0 != null )
-                    {
-                        pSrcReal = (float*)( (byte*)pSrc + elemTex0.Offset );
-                        pDestReal = (float*)( (byte*)pDest + elemTex0.Offset );
-                        for ( int dim = 0; dim < VertexElement.GetTypeCount( elemTex0.Type ); dim++ )
-                        {
-                            *pDestReal++ = *pSrcReal++;
-                        }
-                    }
-                    if ( elemTex1 != null )
-                    {
-                        pSrcReal = (float*)( (byte*)pSrc + elemTex1.Offset );
-                        pDestReal = (float*)( (byte*)pDest + elemTex1.Offset );
-                        for ( int dim = 0; dim < VertexElement.GetTypeCount( elemTex1.Type ); dim++ )
-                        {
-                            *pDestReal++ = *pSrcReal++;
-                        }
-                    }
+					// Copy texture coords
+					if ( elemTex0 != null )
+					{
+						pSrcReal = (float*)( (byte*)pSrc + elemTex0.Offset );
+						pDestReal = (float*)( (byte*)pDest + elemTex0.Offset );
+						for ( int dim = 0; dim < VertexElement.GetTypeCount( elemTex0.Type ); dim++ )
+						{
+							*pDestReal++ = *pSrcReal++;
+						}
+					}
+					if ( elemTex1 != null )
+					{
+						pSrcReal = (float*)( (byte*)pSrc + elemTex1.Offset );
+						pDestReal = (float*)( (byte*)pDest + elemTex1.Offset );
+						for ( int dim = 0; dim < VertexElement.GetTypeCount( elemTex1.Type ); dim++ )
+						{
+							*pDestReal++ = *pSrcReal++;
+						}
+					}
 
-                    // Increment source by one vertex
-                    pSrc = (void*)( (byte*)( pSrc ) + vertexSize );
-                    // Increment dest by 1 vertex * uStep
-                    pDest = (void*)( (byte*)( pDest ) + ( vertexSize * uStep ) );
-                } // u
-            } // v
-        }
+					// Increment source by one vertex
+					pSrc = (void*)( (byte*)( pSrc ) + vertexSize );
+					// Increment dest by 1 vertex * uStep
+					pDest = (void*)( (byte*)( pDest ) + ( vertexSize * uStep ) );
+				} // u
+			} // v
+		}
 
         /// <summary>
         /// 
@@ -1001,7 +1002,7 @@ namespace Axiom.Core
         /// <summary>
         ///     Gets the control point buffer being used for this patch surface.
         /// </summary>
-        public System.Array ControlPointBuffer
+        public IntPtr ControlPointBuffer
         {
             get
             {

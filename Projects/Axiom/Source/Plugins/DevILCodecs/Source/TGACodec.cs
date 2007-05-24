@@ -41,7 +41,7 @@ using Tao.DevIl;
 
 #endregion Namespace Declarations
 
-namespace Axiom.Media
+namespace Axiom.Plugins.DevILCodecs
 {
     /// <summary>
     ///    TGA image file codec.

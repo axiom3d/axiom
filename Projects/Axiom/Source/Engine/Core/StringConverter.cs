@@ -45,6 +45,24 @@ using System.Diagnostics;
 
 namespace Axiom.Core
 {
+	internal class CaseInsensitiveStringComparer : IEqualityComparer<string>
+	{
+		#region IEqualityComparer<string> Members
+
+		public bool Equals( string x, string y )
+		{
+			return x.ToLower() == y.ToLower();
+		}
+
+		public int GetHashCode( string obj )
+		{
+			return obj.ToLower().GetHashCode();
+		}
+
+		#endregion
+	}
+
+
 	/// <summary>
 	///     Helper class for going back and forth between strings and various types.
 	/// </summary>

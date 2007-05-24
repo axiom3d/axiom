@@ -921,9 +921,10 @@ namespace Axiom.SceneManagers.Bsp
                     for ( int v = 0; v < src.vertCount; v++ )
                         QuakeVertexToBspVertex( q3lvl.Vertices[ src.vertStart + v ], out controlPoints[ v ], out texLightMap );
 
+					IntPtr ptr = Marshal.UnsafeAddrOfPinnedArrayElement( controlPoints, 0 );
                     // Define the surface, but don't build it yet (no vertex / index buffer)
                     ps.DefineSurface(
-                        controlPoints,
+                        ptr,
                         decl,
                         src.meshCtrl[ 0 ],
                         src.meshCtrl[ 1 ]

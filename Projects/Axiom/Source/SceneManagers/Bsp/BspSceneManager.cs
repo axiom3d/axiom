@@ -457,9 +457,11 @@ namespace Axiom.SceneManagers.Bsp
 
         public override void RemoveAllLights()
         {
-            for ( int i = 0; i < lightList.Count; i++ )
-                NotifyObjectDetached( lightList[ i ] );
-
+			if ( lightList != null )
+			{
+				for ( int i = 0; i < lightList.Count; i++ )
+					NotifyObjectDetached( lightList[ i ] );
+			}
             base.RemoveAllLights();
         }
 
@@ -480,9 +482,11 @@ namespace Axiom.SceneManagers.Bsp
 
         public override void RemoveAllEntities()
         {
-            for ( int i = 0; i < entityList.Count; i++ )
-                NotifyObjectDetached( entityList[ i ] );
-
+			if ( entityList != null )
+			{
+				for ( int i = 0; i < entityList.Count; i++ )
+					NotifyObjectDetached( entityList[ i ] );
+			}
             base.RemoveAllEntities();
         }
 

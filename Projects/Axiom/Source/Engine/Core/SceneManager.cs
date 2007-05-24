@@ -160,7 +160,7 @@ namespace Axiom.Core
 		///    A list of the Regions.
 		///    TODO: Is there any point to having this region list?
 		/// </summary>
-		protected List<Region> regionList;
+		protected List<StaticGeometry.Region> regionList;
 
 		protected Matrix4[] xform = new Matrix4[ 256 ];
 
@@ -533,7 +533,7 @@ namespace Axiom.Core
 			ribbonTrailList = new SortedList<string, RibbonTrail>();
 			animationList = new AnimationCollection();
 			animationStateList = new AnimationStateSet();
-			regionList = new List<Region>();
+			regionList = new List<StaticGeometry.Region>();
 
 			// create the root scene node
 			rootSceneNode = new SceneNode( this, "Root" );
@@ -888,11 +888,17 @@ namespace Axiom.Core
 		public virtual void ClearScene()
 		{
 			// Delete all SceneNodes, except root that is
-			sceneNodeList.Clear();
-			autoTrackingSceneNodes.Clear();
+			if ( sceneNodeList != null )
+				sceneNodeList.Clear();
 
-			rootSceneNode.RemoveAllChildren();
-			rootSceneNode.DetachAllObjects();
+			if ( autoTrackingSceneNodes != null )
+				autoTrackingSceneNodes.Clear();
+
+			if ( rootSceneNode != null )
+			{
+				rootSceneNode.RemoveAllChildren();
+				rootSceneNode.DetachAllObjects();
+			}
 
 			RemoveAllEntities();
 			RemoveAllBillboardSets();
@@ -1002,7 +1008,8 @@ namespace Axiom.Core
 		{
 			// Destroy all states too, since they cannot reference destroyed animations
 			DestroyAllAnimationStates();
-			animationList.Clear();
+			if ( animationList != null )
+				animationList.Clear();
 		}
 
 		/// <summary>
@@ -1010,7 +1017,8 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual void DestroyAllAnimationStates()
 		{
-			animationStateList.RemoveAllAnimationStates();
+			if ( animationStateList != null )
+				animationStateList.RemoveAllAnimationStates();
 		}
 
 		/// <summary>
@@ -2932,14 +2940,17 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual void RemoveAllCameras()
 		{
-			// notify the render system of each camera being removed
-			for ( int i = 0; i < cameraList.Count; i++ )
+			if ( cameraList != null )
 			{
-				targetRenderSystem.NotifyCameraRemoved( cameraList[ i ] );
-			}
+				// notify the render system of each camera being removed
+				for ( int i = 0; i < cameraList.Count; i++ )
+				{
+					targetRenderSystem.NotifyCameraRemoved( cameraList[ i ] );
+				}
 
-			// clear the list
-			cameraList.Clear();
+				// clear the list
+				cameraList.Clear();
+			}
 		}
 
 		/// <summary>
@@ -2948,7 +2959,8 @@ namespace Axiom.Core
 		public virtual void RemoveAllLights()
 		{
 			// clear the list
-			lightList.Clear();
+			if ( lightList != null )
+				lightList.Clear();
 		}
 
 		/// <summary>
@@ -2957,7 +2969,8 @@ namespace Axiom.Core
 		public virtual void RemoveAllEntities()
 		{
 			// clear the list
-			entityList.Clear();
+			if ( entityList != null )
+				entityList.Clear();
 		}
 
 		/// <summary>
@@ -2966,7 +2979,8 @@ namespace Axiom.Core
 		public virtual void RemoveAllBillboardSets()
 		{
 			// clear the list
-			billboardSetList.Clear();
+			if ( billboardSetList != null )
+				billboardSetList.Clear();
 		}
 
 		/// <summary>
@@ -4141,7 +4155,7 @@ namespace Axiom.Core
 		///		Get the regions in use
 		///     TODO: Is there any point to having this region list?
 		/// </summary>
-		public List<Region> RegionList
+		public List<StaticGeometry.Region> RegionList
 		{
 			get
 			{
@@ -4555,10 +4569,10 @@ namespace Axiom.Core
 						   shadowTex.Height != size ||
 						   shadowTex.Format != format )
 				{
-					Trace.TraceWarning( "Warning: shadow texture #{0} is shared " +
-									   "between scene managers but the sizes / formats " +
-									   "do not agree. Consider rationalising your scene manager " +
-									   "shadow texture settings.", t );
+					LogManager.Instance.Write( "Warning: shadow texture #{0} is shared " +
+									           "between scene managers but the sizes / formats " +
+									           "do not agree. Consider rationalising your scene manager " +
+									           "shadow texture settings.", t );
 				}
 				shadowTex.Load();
 

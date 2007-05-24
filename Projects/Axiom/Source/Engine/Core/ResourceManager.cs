@@ -63,23 +63,6 @@ namespace Axiom.Core
 	/// </remarks>
 	public abstract class ResourceManager : IDisposable
 	{
-		private class CaseInsenstiveStringComparer : IEqualityComparer<string>
-		{
-			#region IEqualityComparer<string> Members
-
-			public bool Equals( string x, string y )
-			{
-				return x.ToLower() == y.ToLower();
-			}
-
-			public int GetHashCode( string obj )
-			{
-				return obj.ToLower().GetHashCode();
-			}
-
-			#endregion
-		}
-
 		#region Fields
 
 		protected long memoryBudget;
@@ -88,12 +71,12 @@ namespace Axiom.Core
 		///		A cached list of all resources in memory.
 		///	</summary>
 		//protected Hashtable resourceList = CollectionsUtil.CreateCaseInsensitiveHashtable();
-		protected Dictionary<string, Resource> resourceList = new Dictionary<string, Resource>( new CaseInsenstiveStringComparer() );
+		protected Dictionary<string, Resource> resourceList = new Dictionary<string, Resource>( new CaseInsensitiveStringComparer() );
 		protected Dictionary<int, Resource> resourceHandleMap = new Dictionary<int, Resource>();
 		/// <summary>
 		///		A lookup table used to find a common archive associated with a filename.
 		///	</summary>
-		protected Dictionary<string, Archive> filePaths = new Dictionary<string, Archive>( new CaseInsenstiveStringComparer() );
+		protected Dictionary<string, Archive> filePaths = new Dictionary<string, Archive>( new CaseInsensitiveStringComparer() );
 		/// <summary>
 		///		A cached list of archives specific to a resource type.
 		///	</summary>
@@ -101,7 +84,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		A lookup table used to find a archive associated with a filename.
 		///	</summary>
-		static protected Dictionary<string, Archive> commonFilePaths = new Dictionary<string, Archive>( new CaseInsenstiveStringComparer() );
+		static protected Dictionary<string, Archive> commonFilePaths = new Dictionary<string, Archive>( new CaseInsensitiveStringComparer() );
 		/// <summary>
 		///		A cached list of archives common to all resource types.
 		///	</summary>

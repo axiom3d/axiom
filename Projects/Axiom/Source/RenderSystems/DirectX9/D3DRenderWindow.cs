@@ -208,6 +208,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			_isSwapChain = ( deviceIfSwapChain != null );
 		}
+		
 
 		#endregion Constructors
 

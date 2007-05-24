@@ -50,76 +50,6 @@ using Axiom.Collections;
 namespace Axiom.Core
 {
 
-	#region Structs
-
-	///<summary>
-	///    Struct holding geometry optimised per SubMesh / LOD level, ready
-	///    for copying to instances. 
-	///</summary>
-	///<remarks>
-	///    Since we're going to be duplicating geometry lots of times, it's
-	///    far more important that we don't have redundant vertex data. If a 
-	///    SubMesh uses shared geometry, or we're looking at a lower LOD, not
-	///    all the vertices are being referenced by faces on that submesh.
-	///    Therefore to duplicate them, potentially hundreds or even thousands
-	///    of times, would be extremely wasteful. Therefore, if a SubMesh at
-	///    a given LOD has wastage, we create an optimised version of it's
-	///    geometry which is ready for copying with no wastage.
-	/// 
-	///    The hierarchy is: 
-	///        StaticGeometry
-	///        Region
-	///        LODBucket
-	///        MaterialBucket
-	///        GeometryBucket
-	///
-	///    GeometryBucket is the layer at which different meshes that
-	///    share the same material are combined.
-	///</remarks>
-	public class OptimisedSubMeshGeometry
-	{
-		public VertexData vertexData;
-		public IndexData indexData;
-	}
-
-	///<summary>
-	///    Saved link between SubMesh at a LOD and vertex/index data
-	///    May point to original or optimised geometry
-	///</summary>
-	public class SubMeshLodGeometryLink
-	{
-		public VertexData vertexData;
-		public IndexData indexData;
-	}
-
-	///<summary>
-	///    Structure recording a queued submesh for the build
-	///</summary>
-	public class QueuedSubMesh
-	{
-		public SubMesh submesh;
-		/// Link to LOD list of geometry, potentially optimised
-		public List<SubMeshLodGeometryLink> geometryLodList;
-		public string materialName;
-		public Vector3 position;
-		public Quaternion orientation;
-		public Vector3 scale;
-		// Pre-transformed world AABB 
-		public AxisAlignedBox worldBounds;
-	}
-
-	///<summary>
-	///    Structure recording a queued geometry for low level builds
-	///</summary>
-	public struct QueuedGeometry
-	{
-		public SubMeshLodGeometryLink geometry;
-		public Vector3 position;
-		public Quaternion orientation;
-		public Vector3 scale;
-	}
-
-	#endregion
 
 	/// <summary>
 	///     Pre-transforms and batches up meshes for efficient use as static geometry in a scene.
@@ -199,8 +129,79 @@ namespace Axiom.Core
 	/// Port started by jwace81
 	/// OGRE Source File: http://cvs.sourceforge.net/viewcvs.py/ogre/ogrenew/OgreMain/src/OgreStaticGeometry.cpp?rev=1.22&view=auto
 	/// OGRE Header File: http://cvs.sourceforge.net/viewcvs.py/ogre/ogrenew/OgreMain/include/OgreStaticGeometry.h?rev=1.14&view=auto
-	public class StaticGeometry
+	public partial class StaticGeometry
 	{
+		#region Structs
+
+		///<summary>
+		///    Struct holding geometry optimised per SubMesh / LOD level, ready
+		///    for copying to instances. 
+		///</summary>
+		///<remarks>
+		///    Since we're going to be duplicating geometry lots of times, it's
+		///    far more important that we don't have redundant vertex data. If a 
+		///    SubMesh uses shared geometry, or we're looking at a lower LOD, not
+		///    all the vertices are being referenced by faces on that submesh.
+		///    Therefore to duplicate them, potentially hundreds or even thousands
+		///    of times, would be extremely wasteful. Therefore, if a SubMesh at
+		///    a given LOD has wastage, we create an optimised version of it's
+		///    geometry which is ready for copying with no wastage.
+		/// 
+		///    The hierarchy is: 
+		///        StaticGeometry
+		///        Region
+		///        LODBucket
+		///        MaterialBucket
+		///        GeometryBucket
+		///
+		///    GeometryBucket is the layer at which different meshes that
+		///    share the same material are combined.
+		///</remarks>
+		public class OptimisedSubMeshGeometry
+		{
+			public VertexData vertexData;
+			public IndexData indexData;
+		}
+
+		///<summary>
+		///    Saved link between SubMesh at a LOD and vertex/index data
+		///    May point to original or optimised geometry
+		///</summary>
+		public class SubMeshLodGeometryLink
+		{
+			public VertexData vertexData;
+			public IndexData indexData;
+		}
+
+		///<summary>
+		///    Structure recording a queued submesh for the build
+		///</summary>
+		public class QueuedSubMesh
+		{
+			public SubMesh submesh;
+			/// Link to LOD list of geometry, potentially optimised
+			public List<SubMeshLodGeometryLink> geometryLodList;
+			public string materialName;
+			public Vector3 position;
+			public Quaternion orientation;
+			public Vector3 scale;
+			// Pre-transformed world AABB 
+			public AxisAlignedBox worldBounds;
+		}
+
+		///<summary>
+		///    Structure recording a queued geometry for low level builds
+		///</summary>
+		public struct QueuedGeometry
+		{
+			public SubMeshLodGeometryLink geometry;
+			public Vector3 position;
+			public Quaternion orientation;
+			public Vector3 scale;
+		}
+
+		#endregion
+
 		#region Fields and Properties
 
 		protected SceneManager owner;
@@ -473,6 +474,7 @@ namespace Axiom.Core
 				region = new Region( this, str, owner, index, center );
 				// TODO: Is putting this region in the list of
 				// SceneManager regions necessary?
+				// Need to genericize to MovalbeObject
 				owner.RegionList.Add( region );
 				region.IsVisible = visible;
 				region.CastShadows = castShadows;

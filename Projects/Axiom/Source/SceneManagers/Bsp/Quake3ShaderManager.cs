@@ -137,15 +137,23 @@ namespace Axiom.SceneManagers.Bsp
         public void ParseAllSources( string extension )
         {
             Stream chunk;
-            StringCollection shaderFiles = ResourceManager.GetAllCommonNamesLike( "", extension );
+			foreach ( string shaderFile in ResourceManager.GetAllCommonNamesLike( "", extension ) )
+			{
+				if ( ( chunk = ResourceManager.FindCommonResourceData( shaderFile ) ) == null )
+					continue;
 
-            for ( int i = 0; i < shaderFiles.Count; i++ )
-            {
-                if ( ( chunk = ResourceManager.FindCommonResourceData( shaderFiles[ i ] ) ) == null )
-                    continue;
+				ParseShaderFile( chunk );
+				
+			}
 
-                ParseShaderFile( chunk );
-            }
+			//StringCollection shaderFiles = ResourceManager.GetAllCommonNamesLike( "", extension );
+			//for ( int i = 0; i < shaderFiles.Count; i++ )
+			//{
+			//    if ( ( chunk = ResourceManager.FindCommonResourceData( shaderFiles[ i ] ) ) == null )
+			//        continue;
+
+			//    ParseShaderFile( chunk );
+			//}
         }
 
         protected void ParseNewShaderPass( StreamReader stream, Quake3Shader shader )
