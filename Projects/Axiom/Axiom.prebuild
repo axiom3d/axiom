@@ -285,7 +285,7 @@
         <Files>
           <Match pattern="*.cs" path="Source" />
           <Match pattern="*.cs" path="Configuration" />
-          <Match pattern="Configuration/GlobalAssemblyInfo.cs" path="../../" link="true" />
+          <Match pattern="GlobalAssemblyInfo.cs" path="../../" link="true" linkPath="Configuration/" />
         </Files>
       </Project>
 

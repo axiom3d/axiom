@@ -107,7 +107,7 @@
 	<fileset id="axiom.rendersystems.opengl.buildfile">
 		<include name="Source/RenderSystems/OpenGL/Axiom.RenderSystems.OpenGL.build" />
 	</fileset>
-  <fileset id="axiom.scenemanagers.bsp.buildfile">
+        <fileset id="axiom.scenemanagers.bsp.buildfile">
 		<include name="Source/SceneManagers/Bsp/Axiom.SceneManagers.Bsp.build"/>
 	</fileset>
 	<fileset id="axiom.scenemanagers.octree.buildfile">
