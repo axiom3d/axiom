@@ -92,6 +92,9 @@
 	<fileset id="axiom.platforms.sdl.buildfile">
 		<include name="Source/Platforms/SDL/Axiom.Platforms.SDL.build" />
 	</fileset>
+	<fileset id="axiom.plugins.devilcodecs.buildfile">
+		<include name="Source/Plugins/DevILCodecs/Axiom.Plugins.DevILCodecs.build" />
+	</fileset>
 	<fileset id="axiom.plugins.cgprogrammanager.buildfile">
 		<include name="Source/Plugins/CgProgramManager/Axiom.Plugins.CgProgramManager.build" />
 	</fileset>
@@ -104,7 +107,7 @@
 	<fileset id="axiom.rendersystems.opengl.buildfile">
 		<include name="Source/RenderSystems/OpenGL/Axiom.RenderSystems.OpenGL.build" />
 	</fileset>
-	<fileset id="axiom.scenemanagers.bsp.buildfile">
+  <fileset id="axiom.scenemanagers.bsp.buildfile">
 		<include name="Source/SceneManagers/Bsp/Axiom.SceneManagers.Bsp.build"/>
 	</fileset>
 	<fileset id="axiom.scenemanagers.octree.buildfile">
@@ -195,11 +198,12 @@
 		<call target="build.axiom.engine" />
 		<call target="build.axiom.platforms.win32" if="${platform::is-win32()}" />
 		<call target="build.axiom.platforms.sdl" />
-		<call target="build.axiom.plugins.cgprogrammanager" />
+    <call target="build.axiom.plugins.devilcodecs" />
+    <call target="build.axiom.plugins.cgprogrammanager" />
 		<call target="build.axiom.plugins.particlefx" />
 		<call target="build.axiom.rendersystems.directx9" if="${platform::is-win32()}" />
 		<call target="build.axiom.rendersystems.opengl" />
-		<call target="build.axiom.scenemanagers.bsp" />
+    <call target="build.axiom.scenemanagers.bsp" />
 		<call target="build.axiom.scenemanagers.octree" />
 
 	</target>
@@ -223,7 +227,13 @@
 		</nant>
 	</target>
 
-	<target name="build.axiom.plugins.cgprogrammanager" description="Build Axiom.Plugins.CgProgramManager assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.plugins.cgprogrammanager')}">
+  <target name="build.axiom.plugins.devilcodecs" description="Build Axiom.Plugins.DevILCodec assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.plugins.devilcodecs')}">
+    <nant target="build">
+      <buildfiles refid="axiom.plugins.devilcodecs.buildfile"/>
+    </nant>
+  </target>
+
+  <target name="build.axiom.plugins.cgprogrammanager" description="Build Axiom.Plugins.CgProgramManager assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.plugins.cgprogrammanager')}">
 		<nant target="build">
 			<buildfiles refid="axiom.plugins.cgprogrammanager.buildfile"/>
 		</nant>
@@ -241,13 +251,13 @@
 		</nant>
 	</target>
 
-	<target name="build.axiom.rendersystems.opengl" description="Build Axiom.RenderSystems.OpenGL assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.rendersystems.opengl')}">
+	<target name="build.axiom.rendersystems.opengl" description="Build Axiom.RenderSystems.OpenGL assemblies" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.rendersystems.opengl')}">
 		<nant target="build">
 			<buildfiles refid="axiom.rendersystems.opengl.buildfile"/>
 		</nant>
 	</target>
 
-	<target name="build.axiom.scenemanagers.bsp" description="Build Axiom.SceneManagers.Bsp assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.scenemanagers.bsp')}">
+  <target name="build.axiom.scenemanagers.bsp" description="Build Axiom.SceneManagers.Bsp assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.scenemanagers.bsp')}">
 		<nant target="build">
 			<buildfiles refid="axiom.scenemanagers.bsp.buildfile"/>
 		</nant>
@@ -293,13 +303,14 @@
 
 	<!-- BEGIN: Packaging targets -->
 
-	<zipfileset id="fileset.axiom.source" basedir="../.." prefix="Axiom"> 
-		<include name="Source/Axiom3D/**/*.cs" />
-		<include name="Source/Axiom3D/**/*.build" />
-		<include name="Source/Axiom3D/**/*.cmd" />
-		<include name="Source/Axiom3D/**/*.txt" />
-		<include name="Source/Axiom3D/**/*.xml" />			
-	</zipfileset>
+	<zipfileset id="fileset.axiom.source" basedir="../.." prefix="Axiom">
+    <include name="Projects/Axiom/**/*.cs" />
+    <include name="Projects/Axiom/**/*.build" />
+    <include name="Projects/Axiom/**/*.prebuild" />
+    <include name="Projects/Axiom/**/*.cmd" />
+    <include name="Projects/Axiom/**/*.txt" />
+    <include name="Projects/Axiom/**/*.xml" />
+  </zipfileset>
 	
 	<zipfileset id="fileset.axiom.buildtools" basedir="../.." prefix="Axiom">
 		<include name="BuildSupport/**" />

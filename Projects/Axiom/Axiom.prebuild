@@ -47,7 +47,6 @@
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
-			<Reference name="System.Drawing" />
 			<Reference name="System.Xml" />
 			<Reference name="Tao.DevIl" localCopy="true" />
 			<Reference name="ICSharpCode.SharpZipLib" localCopy="true" />
@@ -168,59 +167,129 @@
 			</Files>
 		</Project>
 
-		<Project name="Axiom.RenderSystems.OpenGL" type="Library" path="Source/RenderSystems/OpenGL" language="C#" runtime="Microsoft" >
-			<Configuration name="Debug">
-				<Options>
-					<OutputPath>../../../../../Lib/Managed/XPlatform/Axiom/debug</OutputPath>
-					<XmlDocFile>../../../../../Lib/Managed/XPlatform/Axiom/debug/Axiom.RenderSystems.OpenGL.xml</XmlDocFile>
-					<AllowUnsafe>true</AllowUnsafe>
-				</Options>
-			</Configuration>
-			<Configuration name="Release">
-				<Options>
-					<OutputPath>../../../../../Lib/Managed/XPlatform/Axiom/release</OutputPath>
-					<XmlDocFile>../../../../../Lib/Managed/XPlatform/Axiom/release/Axiom.RenderSystems.OpenGL.xml</XmlDocFile>
-					<AllowUnsafe>true</AllowUnsafe>
-				</Options>
-			</Configuration>
+      <Project name="Axiom.RenderSystems.OpenGL.Sdl" type="Library" path="Source/RenderSystems/OpenGL" language="C#" runtime="Microsoft" >
+        <Configuration name="Debug">
+          <Options>
+            <OutputPath>../../../../../Lib/Managed/XPlatform/Axiom/debug</OutputPath>
+            <XmlDocFile>../../../../../Lib/Managed/XPlatform/Axiom/debug/Axiom.RenderSystems.OpenGL.xml</XmlDocFile>
+            <AllowUnsafe>true</AllowUnsafe>
+          </Options>
+        </Configuration>
+        <Configuration name="Release">
+          <Options>
+            <OutputPath>../../../../../Lib/Managed/XPlatform/Axiom/release</OutputPath>
+            <XmlDocFile>../../../../../Lib/Managed/XPlatform/Axiom/release/Axiom.RenderSystems.OpenGL.xml</XmlDocFile>
+            <AllowUnsafe>true</AllowUnsafe>
+          </Options>
+        </Configuration>
 
 
-			<ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
+        <ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
 
-			<Reference name="System" />
-			<Reference name="System.Data" />
-			<Reference name="System.Drawing" />
-			<Reference name="System.Windows.Forms" />
-			<Reference name="System.Xml" />
-			<Reference name="Axiom" localCopy="true"/>
-			<Reference name="Tao.OpenGl" localCopy="true" />
-			<Reference name="Tao.OpenGl.Glu" localCopy="true" />
-			<Reference name="Tao.OpenGl.ExtensionLoader" localCopy="true" />
+        <Reference name="System" />
+        <Reference name="System.Data" />
+        <Reference name="System.Drawing" />
+        <Reference name="System.Windows.Forms" />
+        <Reference name="System.Xml" />
+        <Reference name="Axiom" localCopy="true"/>
+        <Reference name="Tao.OpenGl" localCopy="true" />
+        <Reference name="Tao.OpenGl.Glu" localCopy="true" />
+        <Reference name="Tao.OpenGl.ExtensionLoader" localCopy="true" />
 
-			<?if OS = "Win32" ?>
-			<Reference name="Tao.Platform.Windows" localCopy="true" />
-			<?else ?>
-			<Reference name="Tao.Sdl" localCopy="true" />
-			<?endif ?>
+        <Reference name="Tao.Sdl" localCopy="true" />
 
-			<Files>
-				<Match pattern="GlobalAssemblyInfo.cs" path="../../" link="true" />
-				<Match pattern="Axiom.RenderSystems.OpenGL.build" path="" buildAction="None" copyToOutput="Never" />
-				<Match pattern="*.cs" path="." />
-				<Match pattern="*.cs" path="./ATI" />
-				<Match pattern="*.cs" path="./Nvidia" />
-				<Match pattern="*.cs" path="./GLSL" />
-				
-				<?if OS = "Win32" ?>
-				<Match pattern="*.cs" path="./Win32" />
-				<?else ?>
-				<Match pattern="*.cs" path="./SDL" />
-				<?endif ?>
-				
-			</Files>
-		</Project>
+        <Files>
+          <Match pattern="GlobalAssemblyInfo.cs" path="../../" link="true" />
+          <Match pattern="Axiom.RenderSystems.OpenGL.build" path="" buildAction="None" copyToOutput="Never" />
+          <Match pattern="*.cs" path="." />
+          <Match pattern="*.cs" path="./ATI" />
+          <Match pattern="*.cs" path="./Nvidia" />
+          <Match pattern="*.cs" path="./GLSL" />
 
-		<Project name="Axiom.Plugins.CgProgramManager" type="Library" path="Source/Plugins/CgProgramManager" language="C#" runtime="Microsoft" >		
+          <Match pattern="*.cs" path="./SDL" />
+
+        </Files>
+      </Project>
+
+      <?if OS = "Win32" ?>
+
+      <Project name="Axiom.RenderSystems.OpenGL.Win32" type="Library" path="Source/RenderSystems/OpenGL" language="C#" runtime="Microsoft" >
+        <Configuration name="Debug">
+          <Options>
+            <OutputPath>../../../../../Lib/Managed/XPlatform/Axiom/debug</OutputPath>
+            <XmlDocFile>../../../../../Lib/Managed/XPlatform/Axiom/debug/Axiom.RenderSystems.OpenGL.xml</XmlDocFile>
+            <AllowUnsafe>true</AllowUnsafe>
+          </Options>
+        </Configuration>
+        <Configuration name="Release">
+          <Options>
+            <OutputPath>../../../../../Lib/Managed/XPlatform/Axiom/release</OutputPath>
+            <XmlDocFile>../../../../../Lib/Managed/XPlatform/Axiom/release/Axiom.RenderSystems.OpenGL.xml</XmlDocFile>
+            <AllowUnsafe>true</AllowUnsafe>
+          </Options>
+        </Configuration>
+
+
+        <ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
+
+        <Reference name="System" />
+        <Reference name="System.Data" />
+        <Reference name="System.Drawing" />
+        <Reference name="System.Windows.Forms" />
+        <Reference name="System.Xml" />
+        <Reference name="Axiom" localCopy="true"/>
+        <Reference name="Tao.OpenGl" localCopy="true" />
+        <Reference name="Tao.OpenGl.Glu" localCopy="true" />
+        <Reference name="Tao.OpenGl.ExtensionLoader" localCopy="true" />
+
+        <Reference name="Tao.Platform.Windows" localCopy="true" />
+
+        <Files>
+          <Match pattern="GlobalAssemblyInfo.cs" path="../../" link="true" />
+          <Match pattern="Axiom.RenderSystems.OpenGL.build" path="" buildAction="None" copyToOutput="Never" />
+          <Match pattern="*.cs" path="." />
+          <Match pattern="*.cs" path="./ATI" />
+          <Match pattern="*.cs" path="./Nvidia" />
+          <Match pattern="*.cs" path="./GLSL" />
+
+          <Match pattern="*.cs" path="./Win32" />
+
+        </Files>
+      </Project>
+
+      <?endif ?>
+
+      <Project name="Axiom.Plugins.DevILCodecs" type="Library" path="Source/Plugins/DevILCodecs" language="C#" runtime="Microsoft" >
+        <Configuration name="Debug">
+          <Options>
+            <OutputPath>../../../../../Lib/Managed/XPlatform/Axiom/debug</OutputPath>
+            <XmlDocFile>../../../../../Lib/Managed/XPlatform/Axiom/debug/Axiom.Plugins.DevILCodecs.xml</XmlDocFile>
+            <AllowUnsafe>true</AllowUnsafe>
+          </Options>
+        </Configuration>
+        <Configuration name="Release">
+          <Options>
+            <OutputPath>../../../../../Lib/Managed/XPlatform/Axiom/release</OutputPath>
+            <XmlDocFile>../../../../../Lib/Managed/XPlatform/Axiom/release/Axiom.Plugins.DevILCodecs.xml</XmlDocFile>
+            <AllowUnsafe>true</AllowUnsafe>
+          </Options>
+        </Configuration>
+
+        <ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
+
+        <Reference name="System" />
+        <Reference name="System.Xml" />
+        <Reference name="Axiom" localCopy="true"/>
+        <Reference name="Tao.DevIL" localCopy="true" />
+
+        <Files>
+          <Match pattern="*.cs" path="Source" />
+          <Match pattern="*.cs" path="Configuration" />
+          <Match pattern="Configuration/GlobalAssemblyInfo.cs" path="../../" link="true" />
+        </Files>
+      </Project>
+
+      <Project name="Axiom.Plugins.CgProgramManager" type="Library" path="Source/Plugins/CgProgramManager" language="C#" runtime="Microsoft" >		
 			<Configuration name="Debug">
 				<Options>
 					<OutputPath>../../../../../Lib/Managed/XPlatform/Axiom/debug</OutputPath>
@@ -239,7 +308,6 @@
 			<ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
 
 			<Reference name="System" />
-			<Reference name="System.Data" />
 			<Reference name="System.Xml" />
 			<Reference name="Axiom" localCopy="true"/>
 			<Reference name="Tao.Cg" localCopy="true" />
@@ -267,8 +335,6 @@
 			</Configuration>
 
 			<Reference name="System" />
-			<Reference name="System.Data" />
-			<Reference name="System.Xml" />
 			<Reference name="Axiom" localCopy="true"/>
 
 			<Files>
@@ -294,8 +360,6 @@
 			</Configuration>
 
 			<Reference name="System" />
-			<Reference name="System.Data" />
-			<Reference name="System.Xml" />
 			<Reference name="Axiom" localCopy="true"/>
 
 			<Files>
@@ -321,8 +385,6 @@
 			</Configuration>
 
 			<Reference name="System" />
-			<Reference name="System.Data" />
-			<Reference name="System.Xml" />
 			<Reference name="Axiom" localCopy="true"/>
 
 			<Files>
