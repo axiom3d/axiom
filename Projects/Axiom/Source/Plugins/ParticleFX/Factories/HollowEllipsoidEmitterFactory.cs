@@ -61,9 +61,9 @@ namespace Axiom.ParticleFX.Factories
             }
         }
 
-        public override ParticleEmitter Create()
+		public override ParticleEmitter Create( ParticleSystem ps )
         {
-            ParticleEmitter emitter = new HollowEllipsoidEmitter();
+            ParticleEmitter emitter = new HollowEllipsoidEmitter(ps);
             emitterList.Add( emitter );
             return emitter;
         }

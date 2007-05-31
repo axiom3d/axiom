@@ -56,7 +56,6 @@ namespace Axiom.Graphics
         /// <param name="numIndices"></param>
         /// <param name="usage"></param>
         /// <returns></returns>
-        /// DOC
         public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
         {
             return new SoftwareIndexBuffer( type, numIndices, usage );
@@ -70,7 +69,6 @@ namespace Axiom.Graphics
         /// <param name="usage"></param>
         /// <param name="useShadowBuffer"></param>
         /// <returns></returns>
-        /// DOC
         public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
         {
             return new SoftwareIndexBuffer( type, numIndices, usage );
@@ -83,7 +81,6 @@ namespace Axiom.Graphics
         /// <param name="numVerts"></param>
         /// <param name="usage"></param>
         /// <returns></returns>
-        /// DOC
         public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage )
         {
             return new SoftwareVertexBuffer( vertexSize, numVerts, usage );
@@ -97,7 +94,6 @@ namespace Axiom.Graphics
         /// <param name="usage"></param>
         /// <param name="useShadowBuffer"></param>
         /// <returns></returns>
-        /// DOC
         public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer )
         {
             return new SoftwareVertexBuffer( vertexSize, numVerts, usage );
@@ -162,12 +158,12 @@ namespace Axiom.Graphics
             // return the offset into the array as a pointer
             unsafe
             {
-                fixed (void* pData = &data[offset])
+				fixed ( void* pData = &data[ offset ] )
                 {
-                    return new IntPtr(pData);
+					return new IntPtr( pData );
                 }
             }
-            //return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+			//return Marshal.UnsafeAddrOfPinnedArrayElement( data, offset );
             //handle = GCHandle.Alloc( data, GCHandleType.Pinned );
             //return handle.AddrOfPinnedObject();
         }
@@ -227,12 +223,12 @@ namespace Axiom.Graphics
         {
             unsafe
             {
-                fixed (void* pData = &data[offset])
+				fixed ( void* pData = &data[ offset ] )
                 {
-                    return new IntPtr(pData);
+					return new IntPtr( pData );
                 }
             }
-            //return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+			//return Marshal.UnsafeAddrOfPinnedArrayElement( data, offset );
             //return handle.AddrOfPinnedObject();
         }
 
@@ -310,12 +306,12 @@ namespace Axiom.Graphics
             // return the offset into the array as a pointer
             unsafe
             {
-                fixed (void* pData = &data[offset])
+				fixed ( void* pData = &data[ offset ] )
                 {
-                    return new IntPtr(pData);
+					return new IntPtr( pData );
                 }
             }
-            //return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+			//return Marshal.UnsafeAddrOfPinnedArrayElement( data, offset );
             //handle = GCHandle.Alloc( data, GCHandleType.Pinned );
             //return handle.AddrOfPinnedObject();
         }
@@ -375,12 +371,12 @@ namespace Axiom.Graphics
         {
             unsafe
             {
-                fixed (void* pData = &data[offset])
+				fixed ( void* pData = &data[ offset ] )
                 {
-                    return new IntPtr(pData);
+					return new IntPtr( pData );
                 }
             }
-            //return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
+			//return Marshal.UnsafeAddrOfPinnedArrayElement( data, offset );
             //return handle.AddrOfPinnedObject();
         }
 

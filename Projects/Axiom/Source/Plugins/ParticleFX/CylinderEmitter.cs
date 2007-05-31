@@ -49,8 +49,8 @@ namespace Axiom.ParticleFX
     /// </summary>
     public class CylinderEmitter : AreaEmitter
     {
-        public CylinderEmitter()
-            : base()
+		public CylinderEmitter( ParticleSystem ps )
+            : base(ps)
         {
             InitDefaults( "Cylinder" );
         }

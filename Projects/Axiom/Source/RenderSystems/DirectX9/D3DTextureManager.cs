@@ -146,7 +146,7 @@ namespace Axiom.RenderSystems.DirectX9
 				if ( tex.ReleaseIfDefaultPool() )
 					count++;
 			}
-			LogManager.Instance.Write( "D3DTextureManager released: {0} unmanaged textures", count );
+			LogManager.Instance.Write( "D3DTextureManager released: \n\t{0} unmanaged textures.", count );
 		}
 
 		public void RecreateDefaultPoolResources()
@@ -157,7 +157,7 @@ namespace Axiom.RenderSystems.DirectX9
 				if ( tex.RecreateIfDefaultPool( device ) )
 					count++;
 			}
-			LogManager.Instance.Write( "D3DTextureManager recreated: {0} unmanaged textures", count );
+			LogManager.Instance.Write( "D3DTextureManager recreated: \n\t{0} unmanaged textures.", count );
 		}
 
 

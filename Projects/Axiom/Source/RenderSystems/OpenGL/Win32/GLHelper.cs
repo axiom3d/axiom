@@ -49,10 +49,10 @@ using System.Runtime.InteropServices;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-    /// <summary>
-    /// Summary description for GLSupport.
-    /// </summary>
-    internal class GLSupport : BaseGLSupport
+	/// <summary>
+	/// Summary description for GLSupport.
+	/// </summary>
+	internal class GLSupport : BaseGLSupport
 	{
 		#region Fields and Properties
 
@@ -66,10 +66,10 @@ namespace Axiom.RenderSystems.OpenGL
 		#endregion Fields and Properties
 
 		public GLSupport()
-            : base()
-        {
+			: base()
+		{
 			_initializeWgl();
-        }
+		}
 
 		private void _initializeWgl()
 		{
@@ -96,7 +96,8 @@ namespace Axiom.RenderSystems.OpenGL
 			IntPtr hdc = User.GetDC( hwnd );
 
 			// assign a simple OpenGL pixel format that everyone supports
-			Gdi.PIXELFORMATDESCRIPTOR pfd = new Gdi.PIXELFORMATDESCRIPTOR();;
+			Gdi.PIXELFORMATDESCRIPTOR pfd = new Gdi.PIXELFORMATDESCRIPTOR();
+			;
 			pfd.nSize = (short)Marshal.SizeOf( pfd );
 			pfd.nVersion = 1;
 			pfd.cColorBits = 16;
@@ -125,10 +126,10 @@ namespace Axiom.RenderSystems.OpenGL
 					_hasMultisample = exts.Contains( "WGL_ARB_multisample" );
 				}
 
-				if (_hasPixelFormatARB && _hasMultisample)
+				if ( _hasPixelFormatARB && _hasMultisample )
 				{
-				    // enumerate all formats w/ multisampling
-				    int[] iattr = {
+					// enumerate all formats w/ multisampling
+					int[] iattr = {
 				        Wgl.WGL_DRAW_TO_WINDOW_ARB, 1,
 				        Wgl.WGL_SUPPORT_OPENGL_ARB, 1,
 				        Wgl.WGL_DOUBLE_BUFFER_ARB, 1,
@@ -143,24 +144,25 @@ namespace Axiom.RenderSystems.OpenGL
 				        Wgl.WGL_SAMPLES_ARB, 2,
 				        0
 				    };
-				    int[] formats = new int[256];
-				    uint count;
-				    // cheating here.  wglChoosePixelFormatARB procc address needed later on
-				    // when a valid GL context does not exist and glew is not initialized yet.
-				    _wglChoosePixelFormatARB = Wgl.wglGetProcAddress("wglChoosePixelFormatARB");
-				    if ( Wgl.wglChoosePixelFormatARB( _wglChoosePixelFormatARB, hdc, iattr, null, 256, formats, out count) != 0)
-				    {
-				        // determine what multisampling levels are offered
-				        int query = Wgl.WGL_SAMPLES_ARB, samples;
-				        for (int i = 0; i < count; ++i)
-				        {
-				            IntPtr wglGetPixelFormatAttribivARB = Wgl.wglGetProcAddress("wglGetPixelFormatAttribivARB");
+					int[] formats = new int[ 256 ];
+					uint count;
+					// cheating here.  wglChoosePixelFormatARB procc address needed later on
+					// when a valid GL context does not exist and glew is not initialized yet.
+					_wglChoosePixelFormatARB = Wgl.wglGetProcAddress( "wglChoosePixelFormatARB" );
+					if ( Wgl.wglChoosePixelFormatARB( _wglChoosePixelFormatARB, hdc, iattr, null, 256, formats, out count ) != 0 )
+					{
+						// determine what multisampling levels are offered
+						int query = Wgl.WGL_SAMPLES_ARB, samples;
+						for ( int i = 0; i < count; ++i )
+						{
+							IntPtr wglGetPixelFormatAttribivARB = Wgl.wglGetProcAddress( "wglGetPixelFormatAttribivARB" );
 							if ( Wgl.wglGetPixelFormatAttribivARB( wglGetPixelFormatAttribivARB, hdc, formats[ i ], 0, 1, ref query, out samples ) != 0 )
-				            {
-								if ( !_fsaaLevels.Contains ( samples ) ) _fsaaLevels.Add(samples);
-				            }
-				        }
-				    }
+							{
+								if ( !_fsaaLevels.Contains( samples ) )
+									_fsaaLevels.Add( samples );
+							}
+						}
+					}
 				}
 
 				Wgl.wglMakeCurrent( IntPtr.Zero, IntPtr.Zero );
@@ -197,6 +199,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		private void _refreshConfig()
 		{
+
 			ConfigOption optVideoMode = ConfigOptions[ "Video Mode" ];
 			ConfigOption optColorDepth = ConfigOptions[ "Color Depth" ];
 			ConfigOption optDisplayFrequency = ConfigOptions[ "Display Frequency" ];
@@ -213,20 +216,21 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				if ( devMode.dmPelsWidth != width || devMode.dmPelsHeight != height )
 					continue;
-				if ( !optColorDepth.PossibleValues.Contains( devMode.dmBitsPerPel.ToString() ) )
-					optColorDepth.PossibleValues.Add( devMode.dmBitsPerPel.ToString() );
-				if ( !optDisplayFrequency.PossibleValues.Contains( devMode.dmDisplayFrequency.ToString() ) )
-					optDisplayFrequency.PossibleValues.Add( devMode.dmDisplayFrequency.ToString() );
+				if ( !optColorDepth.PossibleValues.Keys.Contains( devMode.dmBitsPerPel ) )
+					optColorDepth.PossibleValues.Add( devMode.dmBitsPerPel, devMode.dmBitsPerPel.ToString() );
+				if ( !optDisplayFrequency.PossibleValues.Keys.Contains( devMode.dmDisplayFrequency ) )
+					optDisplayFrequency.PossibleValues.Add( devMode.dmDisplayFrequency, devMode.dmDisplayFrequency.ToString() );
 			}
-			optColorDepth.Value = optColorDepth.PossibleValues[0];
+
+			optColorDepth.Value = optColorDepth.PossibleValues.Values[ optColorDepth.PossibleValues.Values.Count - 1 ];
 			if ( optDisplayFrequency.Value != "N/A" )
-				optDisplayFrequency.Value = optDisplayFrequency.PossibleValues[0];
+				optDisplayFrequency.Value = optDisplayFrequency.PossibleValues.Values[ optDisplayFrequency.PossibleValues.Count - 1 ];
 		}
 
-		public bool SelectPixelFormat(IntPtr hdc, int colorDepth, int multisample)
+		public bool SelectPixelFormat( IntPtr hdc, int colorDepth, int multisample )
 		{
 			Gdi.PIXELFORMATDESCRIPTOR pfd = new Gdi.PIXELFORMATDESCRIPTOR();
-			pfd.nSize = (short)Marshal.SizeOf(pfd);
+			pfd.nSize = (short)Marshal.SizeOf( pfd );
 			pfd.nVersion = 1;
 			pfd.dwFlags = Gdi.PFD_DRAW_TO_WINDOW | Gdi.PFD_SUPPORT_OPENGL | Gdi.PFD_DOUBLEBUFFER;
 			pfd.iPixelType = (byte)Gdi.PFD_TYPE_RGBA;
@@ -236,7 +240,7 @@ namespace Axiom.RenderSystems.OpenGL
 			pfd.cDepthBits = 24;
 			pfd.cStencilBits = 8;
 
-			int[] format = new int[1];
+			int[] format = new int[ 1 ];
 
 			if ( multisample != 0 )
 			{
@@ -268,17 +272,17 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 			else
 			{
-				format[0] = Gdi.ChoosePixelFormat( hdc, ref pfd );
+				format[ 0 ] = Gdi.ChoosePixelFormat( hdc, ref pfd );
 			}
 
-			return ( format[0] != 0 && Gdi.SetPixelFormat( hdc, format[0], ref pfd ) );
+			return ( format[ 0 ] != 0 && Gdi.SetPixelFormat( hdc, format[ 0 ], ref pfd ) );
 		}
 
 		#region BaseGLSupport Implementation
 
 		public override void Start()
 		{
-			LogManager.Instance.Write("*** Starting Win32GL Subsystem ***");
+			LogManager.Instance.Write( "*** Starting Win32GL Subsystem ***" );
 		}
 
 		public override void Stop()
@@ -303,7 +307,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public override void AddConfig()
 		{
 			ConfigOption optFullScreen = new ConfigOption( "Full Screen", "No", false );
-			ConfigOption optVideoMode = new ConfigOption( "Video Mode", "800 x 600 @ 32-bit colour", false );
+			ConfigOption optVideoMode = new ConfigOption( "Video Mode", "800 x 600", false );
 			ConfigOption optDisplayFrequency = new ConfigOption( "Display Frequency", "", false );
 			ConfigOption optColorDepth = new ConfigOption( "Color Depth", "", false );
 			ConfigOption optFSAA = new ConfigOption( "FSAA", "0", false );
@@ -311,8 +315,8 @@ namespace Axiom.RenderSystems.OpenGL
 			ConfigOption optRTTMode = new ConfigOption( "RTT Mode", "FBO", false );
 
 			// Full Screen
-			optFullScreen.PossibleValues.Add( "Yes" );
-			optFullScreen.PossibleValues.Add( "No" );
+			optFullScreen.PossibleValues.Add( 0, "Yes" );
+			optFullScreen.PossibleValues.Add( 1, "No" );
 
 			// Video Mode
 			#region Video Mode
@@ -336,15 +340,15 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					string query = string.Format( "{0} x {1}", width, height );
 
-					if ( !optVideoMode.PossibleValues.Contains( query ) )
+					if ( !optVideoMode.PossibleValues.Values.Contains( query ) )
 					{
 						// add a new row to the display settings table
-						optVideoMode.PossibleValues.Add( query );
+						optVideoMode.PossibleValues.Add( i, query );
 					}
-					if ( optVideoMode.PossibleValues.Count == 1 )
-					{
-						optVideoMode.Value = query;
-					}
+					//if ( optVideoMode.PossibleValues.Count == 1 )
+					//{
+					//    optVideoMode.Value = query;
+					//}
 				}
 				// grab the current display settings
 				more = User.EnumDisplaySettings( null, i++, out setting );
@@ -354,17 +358,17 @@ namespace Axiom.RenderSystems.OpenGL
 			// FSAA
 			foreach ( int level in _fsaaLevels )
 			{
-				optFSAA.PossibleValues.Add( level.ToString() );
+				optFSAA.PossibleValues.Add( level, level.ToString() );
 			}
 
 			// VSync
-			optVSync.PossibleValues.Add( "Yes" );
-			optVSync.PossibleValues.Add( "No" );
+			optVSync.PossibleValues.Add( 0, "Yes" );
+			optVSync.PossibleValues.Add( 1, "No" );
 
 			// RTTMode
-			optRTTMode.PossibleValues.Add( "FBO" );
-			optRTTMode.PossibleValues.Add( "PBuffer" );
-			optRTTMode.PossibleValues.Add( "Copy" );
+			optRTTMode.PossibleValues.Add( 0, "FBO" );
+			optRTTMode.PossibleValues.Add( 1, "PBuffer" );
+			optRTTMode.PossibleValues.Add( 2, "Copy" );
 
 			optFullScreen.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
 			optVideoMode.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );

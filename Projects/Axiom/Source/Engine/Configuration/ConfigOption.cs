@@ -101,11 +101,11 @@ namespace Axiom.Configuration
 
         #region PossibleValues Property
 
-		private List<T> _possibleValues = new List<T>();
+		private SortedList<int,T> _possibleValues = new SortedList<int,T>();
         /// <summary>
         /// A list of the possible values for this Configuration Option
         /// </summary>
-        public List<T> PossibleValues
+		public SortedList<int, T> PossibleValues
         {
             get
             {

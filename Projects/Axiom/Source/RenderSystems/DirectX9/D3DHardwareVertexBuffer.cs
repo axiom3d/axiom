@@ -145,8 +145,7 @@ namespace Axiom.RenderSystems.DirectX9
         {
 			vbufferLockTimer.Enter();
             // lock the buffer real quick
-            IntPtr dest = this.Lock( offset, length,
-                discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
+            IntPtr dest = this.Lock( offset, length, discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
 			vbufferLockTimer.Exit();
             // copy that data in there
             Memory.Copy( src, dest, length );

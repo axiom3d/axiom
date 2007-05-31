@@ -51,7 +51,7 @@ namespace Axiom.ParticleFX
     {
         #region Constructors
 
-        public PointEmitter()
+		public PointEmitter( ParticleSystem ps ) : base (ps)
         {
             this.Type = "Point";
         }

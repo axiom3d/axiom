@@ -87,8 +87,8 @@ namespace Axiom.ParticleFX
 
         #endregion Properties
 
-        public RingEmitter()
-            : base()
+		public RingEmitter( ParticleSystem ps )
+            : base(ps)
         {
             InitDefaults( "Ring" );
             innerX = 0.5f;

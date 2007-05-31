@@ -357,7 +357,7 @@ namespace Axiom.ParticleSystems
 		///		which calls this method to create an instance.
 		/// </remarks>
 		/// <param name="emitterType">string name of the emitter type to be created. A factory of this type must have been registered.</param>
-		internal ParticleEmitter CreateEmitter( string emitterType )
+		internal ParticleEmitter CreateEmitter( string emitterType, ParticleSystem ps )
 		{
 			ParticleEmitterFactory factory = emitterFactoryList[ emitterType ];
 
@@ -366,7 +366,7 @@ namespace Axiom.ParticleSystems
 				throw new AxiomException( "Cannot find requested emitter '{0}'.", emitterType );
 			}
 
-			return factory.Create();
+			return factory.Create(ps);
 		}
 
 		/// <summary>

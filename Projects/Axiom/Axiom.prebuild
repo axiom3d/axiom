@@ -47,6 +47,7 @@
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
+      <Reference name="System.Windows.Forms" />
 			<Reference name="System.Xml" />
 			<Reference name="Tao.DevIl" localCopy="true" />
 			<Reference name="ICSharpCode.SharpZipLib" localCopy="true" />
@@ -360,11 +361,13 @@
 			</Configuration>
 
 			<Reference name="System" />
-			<Reference name="Axiom" localCopy="true"/>
+      <Reference name="System.Data" />
+      <Reference name="System.Xml" />
+      <Reference name="Axiom" localCopy="true"/>
 
 			<Files>
-			<Match pattern="*.cs" path="." recurse="true"/>
-			<Match pattern="GlobalAssemblyInfo.cs" path="../../" link="true" />
+			  <Match pattern="*.cs" path="." recurse="true"/>
+			  <Match pattern="GlobalAssemblyInfo.cs" path="../../" link="true" />
 			</Files>
 		</Project>
 
@@ -385,8 +388,9 @@
 			</Configuration>
 
 			<Reference name="System" />
-			<Reference name="Axiom" localCopy="true"/>
-
+      <Reference name="System.Data" />
+      <Reference name="System.Xml" />
+      <Reference name="Axiom" localCopy="true"/>
 			<Files>
 				<Match pattern="*.cs" path="." recurse="true"/>
 				<Match pattern="GlobalAssemblyInfo.cs" path="../../" link="true" />

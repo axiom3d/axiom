@@ -55,9 +55,9 @@ namespace Axiom.ParticleFX.Factories
     {
         #region Methods
 
-        public override ParticleEmitter Create()
+		public override ParticleEmitter Create( ParticleSystem ps )
         {
-            PointEmitter emitter = new PointEmitter();
+            PointEmitter emitter = new PointEmitter(ps);
             emitterList.Add( emitter );
             return emitter;
         }
