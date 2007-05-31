@@ -408,6 +408,7 @@ namespace Axiom.RenderSystems.DirectX9
 				newWin.Left = left;
 
 				_window = newWin;
+				WindowMonitor.Instance.RegisterWindow( this );
 				_window.Show();
 			}
 			else
@@ -573,7 +574,7 @@ namespace Axiom.RenderSystems.DirectX9
 				if ( device == null ) // We haven't created the device yet, this must be the first time
 				{
 					// Turn off default event handlers, since Managed DirectX seems confused.
-					D3D.Device.IsUsingEventHandlers = false; 
+					D3D.Device.IsUsingEventHandlers = true;
 
 					// Do we want to preserve the FPU mode? Might be useful for scientific apps
 					D3D.CreateFlags extraFlags = 0;
@@ -646,12 +647,7 @@ namespace Axiom.RenderSystems.DirectX9
 				_renderSurface = device.GetRenderTarget( 0 );
 				_renderZBuffer = device.DepthStencilSurface;
 				// release immediately so we don't hog them
-				//_renderZBuffer.Dispose();
-				//_renderZBuffer = null;
-
-				// Capture DeviceReset Event;
-				//device.DeviceReset += new EventHandler( OnResetDevice );
-				//this.OnResetDevice( device, null );
+				_renderZBuffer.ReleaseGraphics();
 
 			}
 		}
@@ -712,7 +708,9 @@ namespace Axiom.RenderSystems.DirectX9
 					// Dispose Other resources
 					if ( _window != null && !_isExternal )
 					{
+						WindowMonitor.Instance.UnregisterWindow( this );
 						( (SWF.Form)_window ).Close();
+
 					}
 				}
 
@@ -755,7 +753,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		public override void WindowMovedOrResized()
 		{
-			if ( GetForm( _window ) == null || GetForm( _window ).WindowState != SWF.FormWindowState.Minimized )
+			if ( GetForm( _window ) == null || GetForm( _window ).WindowState == SWF.FormWindowState.Minimized )
 				return;
 
 			// top and left represent outer window position
@@ -767,7 +765,7 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( Width == width && Height == height )
 				return;
 
-			_renderSurface.Dispose();
+			_renderSurface.ReleaseGraphics();
 
 			if ( _isSwapChain )
 			{
@@ -856,10 +854,10 @@ namespace Axiom.RenderSystems.DirectX9
 			D3D.Device device = _driver.D3DDevice;
 			if ( device != null )
 			{
-				try
+				int result;
+				// tests coop level to make sure we are ok to render
+				if ( device.CheckCooperativeLevel( out result ) )
 				{
-					// tests coop level to make sure we are ok to render
-					device.TestCooperativeLevel();
 
 					if ( _isSwapChain )
 					{
@@ -870,19 +868,18 @@ namespace Axiom.RenderSystems.DirectX9
 						device.Present();
 					}
 				}
-				catch ( D3D.DeviceLostException dlx )
+				else
 				{
-					_renderSurface.Dispose();
+					switch ( (D3D.ResultCode)result )
+					{
+						case D3D.ResultCode.DeviceLost:
+							_renderSurface.ReleaseGraphics();
 					( (D3DRenderSystem)( Root.Instance.RenderSystem ) ).notifyDeviceLost();
-				}
-				catch ( D3D.DeviceNotResetException dnrx )
-				{
-					LogManager.Instance.Write( dnrx.ToString() );
+							break;
+						case D3D.ResultCode.DeviceNotReset:
 					device.Reset( device.PresentationParameters );
+							break;
 				}
-				catch ( Exception ex )
-				{
-					throw new Exception( "Error Presenting surfaces", ex );
 				}
 			}
 		}
@@ -1018,29 +1015,27 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( rs.IsDeviceLost )
 			{
-				try
+				int result;
+				// Test the cooperative mode first
+				if ( device.CheckCooperativeLevel( out result ) )
 				{
-					// Test the cooperative mode first
-					device.TestCooperativeLevel();
-
-				}
-				catch ( D3D.DeviceLostException dlx )
+					switch( (D3D.ResultCode)result )
 				{
+						case D3D.ResultCode.DeviceLost:
 					// device lost, and we can't reset
 					// can't do anything about it here, wait until we get 
 					// D3DERR_DEVICENOTRESET; rendering calls will silently fail until 
 					// then (except Present, but we ignore device lost there too)
-					_renderSurface.Dispose();
+							_renderSurface.ReleaseGraphics();
 					// need to release if swap chain
 					if ( !_isSwapChain )
 						_renderZBuffer = null;
 					else
-						_renderZBuffer.Dispose();
+								_renderZBuffer.ReleaseGraphics();
 					System.Threading.Thread.Sleep( 50 );
 					return;
-				}
-				catch ( D3D.DeviceNotResetException dnr )
-				{
+
+						default:
 					// device lost, and we can reset
 					rs.RestoreLostDevice();
 
@@ -1052,13 +1047,13 @@ namespace Axiom.RenderSystems.DirectX9
 						return;
 					}
 
-					if ( _isSwapChain )
+							if ( !_isSwapChain )
 					{
 						// re-qeuery buffers
 						_renderSurface = device.GetRenderTarget( 0 );
 						_renderZBuffer = device.DepthStencilSurface;
 						// release immediately so we don't hog them
-						_renderZBuffer.Dispose();
+								_renderZBuffer.ReleaseGraphics();
 					}
 					else
 					{
@@ -1071,9 +1066,11 @@ namespace Axiom.RenderSystems.DirectX9
 						// D3D9RenderSystem::restoreLostDevice when it calls
 						// createD3DResources for each secondary window
 					}
+							break;
 				}
 			}
 
+			}
 			base.Update( swapBuffers );
 		}
 		#endregion

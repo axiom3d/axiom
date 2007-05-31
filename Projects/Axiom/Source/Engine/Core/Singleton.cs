@@ -41,34 +41,6 @@ using System.Reflection;
 			
 namespace Axiom.Core
 {
-    //public abstract class Singleton<T> where T : new()
-    //{
-    //    public Singleton()
-    //    {
-    //        if ( !IntPtr.ReferenceEquals( this, SingletonFactory.instance ) )
-    //            throw new Exception( String.Format( "Cannot create instances of the {0} class. Use the static Instance property instead.", this.GetType().Name ) );
-    //    }
-
-    //    public abstract bool Initialize();
-
-    //    public static T Instance
-    //    {
-    //        get
-    //        {
-    //            return SingletonFactory.instance;
-    //        }
-    //    }
-
-    //    class SingletonFactory
-    //    {
-    //        static SingletonFactory()
-    //        {
-
-    //        }
-
-    //        internal static readonly T instance = new T();
-    //    }
-    //}
 
     /// <summary>
     /// A generic singleton
@@ -94,7 +66,14 @@ namespace Axiom.Core
         {
             get
             {
-                return SingletonFactory.instance;
+				try
+				{
+					return SingletonFactory.instance;
+				}
+				catch ( TypeInitializationException )
+				{
+					throw new Exception( "Singleton<T> sublasses must implement a private parameterless constructor." );
+				}
             }
         }
 

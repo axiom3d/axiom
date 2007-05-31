@@ -124,8 +124,8 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			LogManager.Instance.Write( "D3DHardwareBufferManager released:" );
-			LogManager.Instance.Write( "{0} unmanaged vertex buffers", vCount );
-			LogManager.Instance.Write( "{0} unmanaged index buffers", iCount );
+			LogManager.Instance.Write( "\t{0} unmanaged vertex buffers.", vCount );
+			LogManager.Instance.Write( "\t{0} unmanaged index buffers.", iCount );
 		}
 
 		//-----------------------------------------------------------------------
@@ -147,8 +147,8 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			LogManager.Instance.Write( "D3DHardwareBufferManager recreated:" );
-			LogManager.Instance.Write( "{0} unmanaged vertex buffers", vCount );
-			LogManager.Instance.Write( "{0} unmanaged index buffers", iCount );
+			LogManager.Instance.Write( "\t{0} unmanaged vertex buffers.", vCount );
+			LogManager.Instance.Write( "\t{0} unmanaged index buffers.", iCount );
 		}
 
 		// TODO: Disposal

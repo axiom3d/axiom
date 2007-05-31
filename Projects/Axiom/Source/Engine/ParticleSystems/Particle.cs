@@ -42,6 +42,12 @@ using Axiom.Math;
 
 namespace Axiom.ParticleSystems
 {
+	public enum ParticleType
+	{
+		Emitter,
+		Visual
+	}
+
     /// <summary>
 	///		Class representing a single particle instance.
     /// </summary>
@@ -79,6 +85,7 @@ namespace Axiom.ParticleSystems
 		/// Additional visual data you might want to associate with the Particle
 		protected ParticleVisualData visual;
 
+		protected ParticleType particleType = ParticleType.Visual;
 
         #endregion
 
@@ -96,6 +103,17 @@ namespace Axiom.ParticleSystems
             }
         }
 
+		public ParticleType ParticleType
+		{
+			get
+			{
+				return particleType;
+			}
+			set
+			{
+				particleType = value;
+			}
+		}
         #endregion
 
         /// <summary>

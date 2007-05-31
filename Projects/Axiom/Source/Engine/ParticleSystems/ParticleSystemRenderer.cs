@@ -112,7 +112,14 @@ namespace Axiom.ParticleSystems
         public virtual void NotifyParticleRotated()
         {
         }
-        
+
+		/// <summary>
+		/// Optional callback notified when particles are emitted
+		/// </summary>
+		public virtual void NotifyParticleEmitted( Particle particle )
+		{
+		}
+
         /// <summary>
         /// Optional callback notified when particles are resized individually
         /// </summary>
@@ -127,6 +134,22 @@ namespace Axiom.ParticleSystems
         public virtual void NotifyParticleQuota( int quota )
         {
         }
+
+		/// <summary>
+		/// Optional callback notified when particles are moved
+		/// </summary>
+		/// <param name="activeParticles"></param>
+		public virtual void NotifyParticleMoved( List<Particle> activeParticles )
+		{
+		}
+
+		/// <summary>
+		/// Optional callback notified when particles are moved
+		/// </summary>
+		/// <param name="activeParticles"></param>
+		public virtual void NotifyParticleExpired( Particle particle )
+		{
+		}
 
         /// <summary>
         /// Tells the renderer that the particle default size has changed

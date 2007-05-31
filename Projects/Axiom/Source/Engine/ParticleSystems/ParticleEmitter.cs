@@ -69,7 +69,7 @@ namespace Axiom.ParticleSystems
     ///		with literally infinite combinations of emitter and affector types, and parameters within those
     ///		types.
     /// </remarks>
-    public abstract class ParticleEmitter : IConfigurable
+    public abstract class ParticleEmitter : Particle, IConfigurable
     {
         #region Fields
 
@@ -81,6 +81,15 @@ namespace Axiom.ParticleSystems
         ///    Rate in particles per second at which this emitter wishes to emit particles.
         /// </summary>
         protected float emissionRate;
+		/// <summary>
+		/// The name of the emitter to be emitted (optional)
+		/// </summary>
+		protected string emittedEmitter = string.Empty;
+		/// <summary>
+		/// If 'true', this emitter is emitted by another emitter.
+		/// NB. That doesn´t imply that the emitter itself emits other emitters (that could or could not be the case)
+		/// </summary>
+		protected bool emitted;
         /// <summary>
         ///    Name of the type of emitter, MUST be initialized by subclasses.
         /// </summary>
@@ -174,6 +183,19 @@ namespace Axiom.ParticleSystems
         /// </summary>
         protected float repeatDelayRemain;
 
+		private string _name = string.Empty;
+		public string Name
+		{
+			get
+			{
+				return _name;
+			}
+			set
+			{
+				_name = value;
+			}
+		}
+
         protected float remainder = 0;
 
         protected Hashtable commandTable = new Hashtable();
@@ -185,9 +207,10 @@ namespace Axiom.ParticleSystems
         /// <summary>
         ///		Default constructor.
         /// </summary>
-        public ParticleEmitter()
+        public ParticleEmitter( ParticleSystem ps )
         {
             // set defaults
+			parentSystem = ps;
             angle = 0.0f;
             this.Direction = Vector3.UnitX;
             emissionRate = 10;
@@ -344,6 +367,37 @@ namespace Axiom.ParticleSystems
                 emissionRate = value;
             }
         }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public virtual string EmittedEmitter
+		{
+			get
+			{
+				return emittedEmitter;
+			}
+			set
+			{
+				emittedEmitter = value;
+			}
+		}
+
+		/// <summary>
+		/// If 'true', this emitter is emitted by another emitter.
+		/// NB. That doesn´t imply that the emitter itself emits other emitters (that could or could not be the case)
+		/// </summary>
+		public virtual bool IsEmitted
+		{
+			get
+			{
+				return emitted;
+			}
+			set
+			{
+				emitted = value;
+			}
+		}
 
         /// <summary>
         ///		Gets/Sets the lifetime of all particles emitted.
@@ -982,6 +1036,21 @@ namespace Axiom.ParticleSystems
             }
         }
 
+		[Command( "emit_emitter", "If set, this emitter will emit other emitters instead of visual particles.", typeof( ParticleEmitter ) )]
+		class EmitEmitterCommand : ICommand
+		{
+			public void Set( object target, string val )
+			{
+				ParticleEmitter emitter = target as ParticleEmitter;
+				emitter.EmittedEmitter =  val;
+			}
+			public string Get( object target )
+			{
+				ParticleEmitter emitter = target as ParticleEmitter;
+				return emitter.EmittedEmitter;
+			}
+		}
+
         /// <summary>
         ///    
         /// </summary>
@@ -1270,6 +1339,25 @@ namespace Axiom.ParticleSystems
 				return ( emitter.ColorRangeEnd == null ) ? null : StringConverter.ToString( emitter.ColorRangeEnd );
             }
         }
+
+		/// <summary>
+		///    
+		/// </summary>
+		[Command( "name", "particle emmitter name.", typeof( ParticleEmitter ) )]
+		class NameCommand : ICommand
+		{
+			public void Set( object target, string val )
+			{
+				ParticleEmitter emitter = target as ParticleEmitter;
+				emitter.Name = val;
+			}
+			public string Get( object target )
+			{
+				ParticleEmitter emitter = target as ParticleEmitter;
+				return emitter.Name;
+			}
+		}
+
 
         #endregion Command definitions
     }

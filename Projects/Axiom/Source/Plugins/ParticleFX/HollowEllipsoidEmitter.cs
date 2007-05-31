@@ -101,8 +101,8 @@ namespace Axiom.ParticleFX
 
         #endregion Properties
 
-        public HollowEllipsoidEmitter()
-            : base()
+		public HollowEllipsoidEmitter( ParticleSystem ps )
+            : base(ps)
         {
             InitDefaults( "HollowEllipsoid" );
             innerX = 0.5f;

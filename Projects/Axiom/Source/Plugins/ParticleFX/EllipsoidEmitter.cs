@@ -49,8 +49,8 @@ namespace Axiom.ParticleFX
     /// </summary>
     public class EllipsoidEmitter : AreaEmitter
     {
-        public EllipsoidEmitter()
-            : base()
+        public EllipsoidEmitter( ParticleSystem ps)
+            : base(ps)
         {
             InitDefaults( "Ellipsoid" );
         }

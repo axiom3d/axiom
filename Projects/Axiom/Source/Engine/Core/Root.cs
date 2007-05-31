@@ -117,17 +117,13 @@ namespace Axiom.Core
 				new PlatformManager();
 #endif
 				// create a new timer
-				//timer = new Timer();
-                timer = new Timer(); //PlatformManager.Instance.CreateTimer();
+                timer = new Timer(); 
 
 				new OverlayManager();
 				new OverlayElementManager();
 				new FontManager();
 				new ZipArchiveFactory();
 				new CodecManager();
-
-				// register all build in codecs
-				CodecManager.Instance.RegisterCodecs();
 
 				new HighLevelGpuProgramManager();
 				new CompositorManager();
@@ -682,7 +678,7 @@ namespace Axiom.Core
 				// allow OS events to process (if the platform requires it
 				frameMeter.Enter();
 				eventMeter.Enter();
-				//PlatformManager.Instance.DoEvents();
+				PlatformManager.Instance.DoEvents();
 				eventMeter.Exit();
 
 				if ( suspendRendering )

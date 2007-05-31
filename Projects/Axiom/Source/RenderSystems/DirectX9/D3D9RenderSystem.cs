@@ -1582,24 +1582,24 @@ namespace Axiom.RenderSystems.DirectX9
 			DriverCollection driverList = D3DHelper.GetDriverInfo();
 			foreach ( Driver driver in driverList )
 			{
-				optDevice.PossibleValues.Add( driver.Description );
+				optDevice.PossibleValues.Add( driver.AdapterNumber, driver.Description );
 			}
 			optDevice.Value = driverList[ 0 ].Description;
 
-			optFullScreen.PossibleValues.Add( "Yes" );
-			optFullScreen.PossibleValues.Add( "No" );
+			optFullScreen.PossibleValues.Add( 0, "Yes" );
+			optFullScreen.PossibleValues.Add( 1, "No" );
 
-			optVSync.PossibleValues.Add( "Yes" );
-			optVSync.PossibleValues.Add( "No" );
+			optVSync.PossibleValues.Add( 0, "Yes" );
+			optVSync.PossibleValues.Add( 1, "No" );
 
-			optAA.PossibleValues.Add( "None" );
+			optAA.PossibleValues.Add( 0, "None" );
 
 			optFPUMode.PossibleValues.Clear();
-			optFPUMode.PossibleValues.Add( "Fastest" );
-			optFPUMode.PossibleValues.Add( "Consistent" );
+			optFPUMode.PossibleValues.Add( 0, "Fastest" );
+			optFPUMode.PossibleValues.Add( 1, "Consistent" );
 
-			optNVPerfHUD.PossibleValues.Add( "Yes" );
-			optNVPerfHUD.PossibleValues.Add( "No" );
+			optNVPerfHUD.PossibleValues.Add( 0, "Yes" );
+			optNVPerfHUD.PossibleValues.Add( 1, "No" );
 
 			optFPUMode.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
 			optAA.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
@@ -1638,12 +1638,12 @@ namespace Axiom.RenderSystems.DirectX9
 				// Get Video Modes for current device;
 				foreach ( VideoMode videoMode in driver.VideoModes )
 				{
-					optVideoMode.PossibleValues.Add( videoMode.ToString() );
+					optVideoMode.PossibleValues.Add( optVideoMode.PossibleValues.Count, videoMode.ToString() );
 				}
 
 				// Reset video mode to default if previous doesn't avail in new possible values
 
-				if ( optVideoMode.PossibleValues.Contains( curMode ) == false )
+				if ( optVideoMode.PossibleValues.Values.Contains( curMode ) == false )
 				{
 					optVideoMode.Value = "800 x 600 @ 32-bit colour";
 				}
@@ -1659,7 +1659,7 @@ namespace Axiom.RenderSystems.DirectX9
 			ConfigOption optFSAA = ConfigOptions[ "Anti aliasing" ];
 			string curFSAA = optFSAA.Value;
 			optFSAA.PossibleValues.Clear();
-			optFSAA.PossibleValues.Add( "None" );
+			optFSAA.PossibleValues.Add(0, "None" );
 
 			ConfigOption optFullScreen = ConfigOptions[ "Full Screen" ];
 			bool windowed = optFullScreen.Value != "Yes";
@@ -1680,7 +1680,7 @@ namespace Axiom.RenderSystems.DirectX9
 					D3D.Manager.CheckDeviceMultiSampleType( driver.AdapterNumber, D3D.DeviceType.Hardware, videoMode.Format, windowed, Microsoft.DirectX.Direct3D.MultiSampleType.NonMaskable, out result, out numLevels );
 					for ( int n = 0; n < numLevels; n++ )
 					{
-						optFSAA.PossibleValues.Add( String.Format( "NonMaskable {0}", n ) );
+						optFSAA.PossibleValues.Add( optFSAA.PossibleValues.Count, String.Format( "NonMaskable {0}", n ) );
 					}
 
 					// get maskable levels supported for this VMODE
@@ -1688,14 +1688,14 @@ namespace Axiom.RenderSystems.DirectX9
 					{
 						if ( D3D.Manager.CheckDeviceMultiSampleType( driver.AdapterNumber, D3D.DeviceType.Hardware, videoMode.Format, windowed, (D3D.MultiSampleType)n ) )
 						{
-							optFSAA.PossibleValues.Add( String.Format( "Level {0}", n ) );
+							optFSAA.PossibleValues.Add( optFSAA.PossibleValues.Count, String.Format( "Level {0}", n ) );
 						}
 					}
 				}
 			}
 
 			// Reset FSAA to none if previous doesn't avail in new possible values
-			if ( optFSAA.PossibleValues.Contains( curFSAA ) == false )
+			if ( optFSAA.PossibleValues.Values.Contains( curFSAA ) == false )
 			{
 				optFSAA.Value = "None";
 			}
@@ -2534,7 +2534,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// Reset the device, using the primary window presentation params
 			try
 			{
-				device.Reset((D3D.PresentParameters) _primaryWindow.PresentationParameters.Clone() );
+				device.Reset( _primaryWindow.PresentationParameters );
 			}
 			catch ( D3D.DeviceLostException )
 			{

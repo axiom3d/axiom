@@ -49,8 +49,8 @@ namespace Axiom.ParticleFX
     /// </summary>
     public class BoxEmitter : AreaEmitter
     {
-        public BoxEmitter()
-            : base()
+		public BoxEmitter( ParticleSystem ps )
+            : base(ps)
         {
             InitDefaults( "Box" );
         }

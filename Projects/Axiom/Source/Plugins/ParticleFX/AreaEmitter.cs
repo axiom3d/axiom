@@ -58,7 +58,7 @@ namespace Axiom.ParticleFX
 
         #endregion Fields
 
-        public AreaEmitter() : base()
+        public AreaEmitter( ParticleSystem ps ) : base( ps)
         {
         }
 
