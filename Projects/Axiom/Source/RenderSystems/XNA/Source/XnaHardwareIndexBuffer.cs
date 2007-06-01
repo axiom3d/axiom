@@ -85,8 +85,6 @@ namespace Axiom.RenderSystems.Xna
             _buffer = new Byte[ length ];
             xnaBuffer.GetData<Byte>( _buffer );
             return Marshal.UnsafeAddrOfPinnedArrayElement( _buffer, 0 );
-            //_gcHandle = GCHandle.Alloc( xnaBuffer, GCHandleType.Weak );
-            //return GCHandle.ToIntPtr( _gcHandle );
         }
 
         /// <summary>
@@ -95,12 +93,8 @@ namespace Axiom.RenderSystems.Xna
         /// DOC
         public override void UnlockImpl()
         {
-            //if ( this.isLocked &&  _gcHandle.IsAllocated )
-            //{
                 xnaBuffer.SetData<Byte>( _buffer );
-                //_gcHandle.Free();
                 _buffer = null;
-            //}
         }
 
         /// <summary>
