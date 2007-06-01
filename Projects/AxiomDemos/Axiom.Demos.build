@@ -89,6 +89,9 @@
 	<fileset id="axiom.demos.browser.commandline.buildfile">
 		<include name="Source/Browser/CommandLine/Axiom.Demos.Browser.CommandLine.build" />
 	</fileset>
+	<fileset id="axiom.demos.browser.winform.buildfile">
+		<include name="Source/Browser/WinForm/Axiom.Demos.Browser.WinForm.build" />
+	</fileset>
 
 	<!-- BEGIN: General build tasks -->
 	<target name="init" description="Initializes build properties" unless="${target::has-executed('init')}">
@@ -168,6 +171,7 @@
 		<!-- Call required targets in order -->
 		<call target="build.axiom.demos.base" />
 		<call target="build.axiom.demos.browser.commandline" />
+		<call target="build.axiom.demos.browser.winform" />
 	</target>
 
 	<target name="build.axiom.demos.base" description="Build the Axiom Demos" depends="build.axiom.demos.setup" unless="${target::has-executed('build.axiom.demos.base')}">
@@ -179,6 +183,12 @@
 	<target name="build.axiom.demos.browser.commandline" description="Build the Axiom Demos CommandLine Browser" depends="build.axiom.demos.base" unless="${target::has-executed('build.axiom.demos.browser.commandline')}">
 		<nant target="build">
 			<buildfiles refid="axiom.demos.browser.commandline.buildfile"/>
+		</nant>
+	</target>
+
+	<target name="build.axiom.demos.browser.winform" description="Build the Axiom Demos WinForm Browser" depends="build.axiom.demos.base" unless="${target::has-executed('build.axiom.demos.browser.winform')}">
+		<nant target="build">
+			<buildfiles refid="axiom.demos.browser.winform.buildfile"/>
 		</nant>
 	</target>
 

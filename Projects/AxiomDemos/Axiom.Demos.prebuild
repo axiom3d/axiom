@@ -84,16 +84,8 @@
 			<Reference name="Axiom.Demos" localCopy="true" />
 			<Reference name="Axiom.Plugins.ParticleFX" localCopy="true"/>
 			<Reference name="Axiom.Plugins.CgProgramManager" localCopy="true"/>
-			<Reference name="Axiom.RenderSystems.OpenGL" localCopy="true"/>
 			<Reference name="Axiom.SceneManagers.Bsp" localCopy="true"/>
 			<Reference name="Axiom.SceneManagers.Octree" localCopy="true"/>
-
-			<?if OS = "Win32" ?>
-				<Reference name="Axiom.Platforms.Win32" localCopy="true"/>
-				<Reference name="Axiom.RenderSystems.DirectX9" localCopy="true"/>
-			<?else ?>
-				<Reference name="Axiom.Platforms.SDL" localCopy="true"/>
-			<?endif ?>
 
 			<Files>
 				<Match pattern="*.cs" path="."/>
@@ -107,6 +99,59 @@
 					<Exclude pattern="Thumbs.db" />
 				</Match>
 			</Files>
-		</Project>	
+		</Project>
+		
+		<Project name="Axiom.Demos.Browser.WinForm" path="Source/Browser/WinForm" language="C#" type="WinExe">
+			<Configuration name="Debug">
+			<Options>
+				<AllowUnsafe>true</AllowUnsafe>
+				<OutputPath>../../../build/debug</OutputPath>
+			</Options>
+			</Configuration>
+			<Configuration name="Release">
+			<Options>
+				<AllowUnsafe>true</AllowUnsafe>
+				<OutputPath>../../../build/release</OutputPath>
+			</Options>
+			</Configuration>
+
+			<ReferencePath>../../../../../Lib/Managed/XPlatform/Axiom/debug</ReferencePath>
+			<ReferencePath>../../../../../Lib/Managed/XPlatform/ICSharpCode.SharpZipLib/0.84.0.0</ReferencePath>
+			<ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
+
+			<Reference name="System" />
+			<Reference name="System.Data" />
+			<Reference name="System.Drawing" />
+			<Reference name="System.Windows.Forms" />
+			<Reference name="System.Xml" />
+			<Reference name="Axiom" localCopy="true"/>
+			<Reference name="Axiom.Demos" localCopy="true" />
+			<Reference name="Axiom.Plugins.ParticleFX" localCopy="true"/>
+			<Reference name="Axiom.Plugins.CgProgramManager" localCopy="true"/>
+			<Reference name="Axiom.SceneManagers.Bsp" localCopy="true"/>
+			<Reference name="Axiom.SceneManagers.Octree" localCopy="true"/>
+
+			<?if OS = "Win32" ?>
+				<Reference name="Axiom.Platforms.Win32" localCopy="true"/>
+				<Reference name="Axiom.RenderSystems.DirectX9" localCopy="true"/>
+				<Reference name="Axiom.RenderSystems.OpenGL.Win32" localCopy="true"/>
+			<?else ?>
+				<Reference name="Axiom.Platforms.SDL" localCopy="true"/>
+				<Reference name="Axiom.RenderSystems.OpenGL.Sdl" localCopy="true"/>
+			<?endif ?>
+
+			<Files>
+				<Match pattern="*.cs" path="."/>
+				<Match pattern="Axiom.Demos.Browser.WinForm.build" path="" buildAction="None" copyToOutput="Never" />
+				<Match pattern="EngineConfig.xml" path="" buildAction="None" copyToOutput="Always" />
+				<Match pattern="Terrain.xml" path="" buildAction="None" copyToOutput="Always" />
+				<Match pattern="devil.dll" path="../../../../../Lib/Native/" buildAction="None" link="true" recurse="true" copyToOutput="PreserveNewest" />
+				<Match pattern="cg.dll" path="../../../../../Lib/Native/" buildAction="None" link="true" recurse="true" copyToOutput="PreserveNewest" />
+				<Match pattern="*.*" path="../../../../../Media" buildAction="None" copyToOutput="PreserveNewest" recurse="true" link="true" preservePath="true">
+					<Exclude pattern=".svn" />
+					<Exclude pattern="Thumbs.db" />
+				</Match>
+			</Files>
+		</Project>		
     </Solution>
 </Prebuild>
