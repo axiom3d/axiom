@@ -86,7 +86,8 @@ namespace Axiom.RenderSystems.Xna
         /// <param name="top"></param>
         /// <param name="depthBuffer"></param>height
         /// <param name="miscParams"></param>
-        public override void Create( string name, int width, int height, int colorDepth, bool isFullScreen, int left, int top, bool depthBuffer, params object[] miscParams )
+        //public override void Create( string name, int width, int height, int colorDepth, bool isFullScreen, int left, int top, bool depthBuffer, params object[] miscParams )
+		public override void Create( string name, int width, int height, bool fullScreen, Axiom.Collections.NamedParameterList miscParams )
         {
             // mMiscParams[0] = System.Windows.Forms.Control
             // mMiscParams[1] = Microsoft.Xna.Framework.Graphics.GraphicsDevice
@@ -157,6 +158,14 @@ namespace Axiom.RenderSystems.Xna
             this.isActive = true;
         }
 
+		public override bool IsClosed
+		{
+			get
+			{
+				// TODO : 
+				return false;
+			}
+		}
         /// <summary>
         /// Specifies the custom attribute by converting this to a string and passing to GetCustomAttribute()
         /// </summary>
@@ -188,32 +197,45 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         /// 
         /// </summary>
-        public override void Dispose()
-        {
-            base.Dispose();
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					// Dispose managed resources.
+					// if the control is a form, then close it
+					if ( targetHandle is System.Windows.Forms.Form )
+					{
+						SWF.Form form = targetHandle as SWF.Form;
+						form.Close();
+					}
 
-            // if the control is a form, then close it
-            if ( targetHandle is System.Windows.Forms.Form )
-            {
-                SWF.Form form = targetHandle as SWF.Form;
-                form.Close();
-            }
+					// dispopse of our back buffer if need be
+					if ( _backBuffer != null && !_backBuffer.IsDisposed )
+					{
+						_backBuffer.Dispose();
+					}
 
-            // dispopse of our back buffer if need be
-            if ( _backBuffer != null && !_backBuffer.IsDisposed )
-            {
-                _backBuffer.Dispose();
-            }
+					// dispose of our stencil buffer if need be
+					if ( _stencilBuffer != null && !_stencilBuffer.IsDisposed )
+					{
+						_stencilBuffer.Dispose();
+					}
 
-            // dispose of our stencil buffer if need be
-            if ( _stencilBuffer != null && !_stencilBuffer.IsDisposed )
-            {
-                _stencilBuffer.Dispose();
-            }
+					// make sure this window is no longer active
+					isActive = false;
+				}
 
-            // make sure this window is no longer active
-            isActive = false;
-        }
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
+			isDisposed = true;
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base._dispose( disposeManagedResources );
+		}
 
         public override void Reposition( int left, int right )
         {

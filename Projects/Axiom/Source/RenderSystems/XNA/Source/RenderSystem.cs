@@ -47,6 +47,7 @@ using Axiom.Math;
 
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
+using Axiom.Collections;
 
 #endregion Namespace Declarations
 
@@ -928,8 +929,16 @@ namespace Axiom.RenderSystems.Xna
                 // create a default form window
                 DefaultForm newWindow = _createDefaultForm( windowTitle, 0, 0, width, height, fullScreen );
 
-                // create the render window
-                renderWindow = CreateRenderWindow( "Main Window", width, height, bpp, fullScreen, 0, 0, true, false, newWindow );
+				NamedParameterList miscParams = new NamedParameterList();
+				miscParams.Add( "title", windowTitle );
+				miscParams.Add( "colorDepth", bpp );
+				//miscParams.Add( "FSAA", _fsaaType );
+				//miscParams.Add( "FSAAQuality", _fsaaQuality );
+				//miscParams.Add( "vsync", _vSync );
+				//miscParams.Add( "useNVPerfHUD", _useNVPerfHUD );
+
+				// create the render window
+				renderWindow = CreateRenderWindow( "Main Window", width, height, fullScreen, miscParams );
 
                 newWindow.Target.Visible = false;
 
@@ -952,7 +961,7 @@ namespace Axiom.RenderSystems.Xna
             Debug.Assert( activeViewport != null, "BeginFrame cannot run without an active viewport." );
 
             // clear the device if need be
-            if ( activeViewport.ClearEveryFrame )
+            if ( activeViewport.GetClearEveryFrame() )
             {
                 ClearFrameBuffer( FrameBuffer.Color | FrameBuffer.Depth, activeViewport.BackgroundColor );
             }
@@ -1172,8 +1181,9 @@ namespace Axiom.RenderSystems.Xna
             throw new NotImplementedException();
         }
 
-        public override Axiom.Graphics.RenderWindow CreateRenderWindow( string name, int width, int height, int colorDepth, bool isFullscreen, int left, int top, bool depthBuffer, bool vsync, object target )
-        {
+        //public override Axiom.Graphics.RenderWindow CreateRenderWindow( string name, int width, int height, int colorDepth, bool isFullscreen, int left, int top, bool depthBuffer, bool vsync, object target )
+		public override RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullscreen, Axiom.Collections.NamedParameterList miscParams )
+		{
             if ( _device == null )
             {
                 _device = _initDevice( isFullscreen, depthBuffer, width, height, colorDepth, (SWF.Control)target );
