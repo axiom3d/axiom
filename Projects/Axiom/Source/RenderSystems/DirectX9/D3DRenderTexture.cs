@@ -86,7 +86,7 @@ namespace Axiom.RenderSystems.DirectX9
 					case "BUFFER":
 						return pixelBuffer;
 				}
-				return new NotSupportedException("There is no D3D RenderWindow custom attribute named " + attribute);
+				return null;
 			}
 		}
 
