@@ -126,6 +126,12 @@ namespace Axiom.RenderSystems.DirectX9
             }
 		}
 
+		protected override void WndProc( ref Message m )
+		{
+			//WindowMonitor.WndProc( ref m );
+			base.WndProc( ref m );
+		}
+
 		private void DefaultForm_Resize( object sender, System.EventArgs e )
 		{
 			Root.Instance.SuspendRendering = this.WindowState == FormWindowState.Minimized;

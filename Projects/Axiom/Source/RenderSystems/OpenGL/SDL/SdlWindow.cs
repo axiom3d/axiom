@@ -40,6 +40,7 @@ using Axiom.Graphics;
 
 using Tao.OpenGl;
 using Tao.Sdl;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -53,6 +54,8 @@ namespace Axiom.RenderSystems.OpenGL
         #region Fields
 
         private Sdl.SDL_Surface surface;
+		private IntPtr _window;
+		private SdlContext _glContext;
 
         #endregion Fields
 
@@ -60,7 +63,24 @@ namespace Axiom.RenderSystems.OpenGL
         {
         }
 
-        #region RenderWindow Members
+        #region RenderWindow Implementation
+
+		public override object this[ string attribute ]
+		{
+			get
+			{
+				switch ( attribute.ToLower() )
+				{
+					case "glcontext":
+						return _glContext;
+					case "window":
+						System.Windows.Forms.Control ctrl = System.Windows.Forms.Control.FromChildHandle( _hWindow );
+						return ctrl;
+					default:
+						return base[ attribute ];
+				}
+			}
+		}
 
         /// <summary>
         /// 
@@ -74,14 +94,64 @@ namespace Axiom.RenderSystems.OpenGL
         /// <param name="top"></param>
         /// <param name="depthBuffer"></param>
         /// <param name="miscParams"></param>
-        public override void Create( string name, int width, int height, int colorDepth, bool fullScreen, int left, int top, bool depthBuffer, params object[] miscParams )
-        {
-            this.name = name;
-            this.width = width;
-            this.height = height;
-            this.colorDepth = colorDepth;
+		public override void Create( string name, int width, int height, bool fullScreen, Axiom.Collections.NamedParameterList miscParams )
+		{
+			string title = name;
+			int fsaa;
 
-            int flags = Sdl.SDL_OPENGL | Sdl.SDL_HWPALETTE;
+			
+			this.Name = name;
+            this.Width = width;
+            this.Height = height;
+            this.ColorDepth = 32;
+
+			#region Parameter Handling
+			if ( miscParams != null )
+			{
+				foreach ( KeyValuePair<string, object> entry in miscParams )
+				{
+					switch ( entry.Key )
+					{
+						case "title":
+							title = entry.Value.ToString();
+							break;
+						case "left":
+							left = Int32.Parse( entry.Value.ToString() );
+							break;
+						case "top":
+							top = Int32.Parse( entry.Value.ToString() );
+							break;
+						case "fsaa":
+							fsaa = Int32.Parse( entry.Value.ToString() );
+							if ( fsaa > 1 )
+							{
+								// If FSAA is enabled in the parameters, enable the MULTISAMPLEBUFFERS
+								// and set the number of samples before the render window is created.
+								Sdl.SDL_GL_SetAttribute( Sdl.SDL_GL_MULTISAMPLEBUFFERS, 1 );
+								Sdl.SDL_GL_SetAttribute( Sdl.SDL_GL_MULTISAMPLESAMPLES, fsaa );
+							}
+							break;
+						case "colourDepth":
+						case "colorDepth":
+							ColorDepth = Int32.Parse( entry.Value.ToString() );
+							break;
+						default:
+							break;
+					}
+				}
+			}
+			#endregion Parameter Handling
+
+            int flags = Sdl.SDL_OPENGL | Sdl.SDL_HWPALETTE | Sdl.SDL_RESIZABLE;
+
+            // we want double buffering
+            Sdl.SDL_GL_SetAttribute( Sdl.SDL_GL_DOUBLEBUFFER, 1 );
+
+            // request good stencil size if 32-bit color
+            if ( ColorDepth == 32 && isDepthBuffered )
+            {
+                Sdl.SDL_GL_SetAttribute( Sdl.SDL_GL_STENCIL_SIZE, 8 );
+            }
 
             // full screen?
             if ( fullScreen )
@@ -89,21 +159,13 @@ namespace Axiom.RenderSystems.OpenGL
                 flags |= Sdl.SDL_FULLSCREEN;
             }
 
-            // we want double buffering
-            Sdl.SDL_GL_SetAttribute( Sdl.SDL_GL_DOUBLEBUFFER, 1 );
-
-            // request good stencil size if 32-bit color
-            if ( colorDepth == 32 && depthBuffer )
-            {
-                Sdl.SDL_GL_SetAttribute( Sdl.SDL_GL_STENCIL_SIZE, 8 );
-            }
 
             // set the video mode (and create the surface)
             // TODO: Grab return val once changed to the right type
-            Sdl.SDL_SetVideoMode( width, height, colorDepth, flags );
+            _window = Sdl.SDL_SetVideoMode( width, height, ColorDepth, flags );
 
-            // lets get active!
-            isActive = true;
+			// lets get active!
+            IsActive = true;
 
             // set the window text for windowed mode
             if ( !fullScreen )
@@ -112,6 +174,13 @@ namespace Axiom.RenderSystems.OpenGL
             }
         }
 
+		public override bool IsClosed
+		{
+			get
+			{
+				return false;
+			}
+		}
         public void Destroy()
         {
             //Sdl.SDL_FreeSurface(
@@ -151,6 +220,6 @@ namespace Axiom.RenderSystems.OpenGL
 
 
 
-        #endregion RenderWindow Members
+        #endregion RenderWindow Implementation
     }
 }

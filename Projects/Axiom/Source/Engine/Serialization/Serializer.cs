@@ -572,7 +572,16 @@ namespace Axiom.Serialization
 
 		protected bool IsEOF( BinaryReader reader )
 		{
-			return reader.PeekChar() == -1;
+			// [BUG:1710556]
+			// The following commented line would usually work. However, due the fact that we are using PeekChar()
+			// Mono and .Net are respecting the encoding type of the file (usually utf-8 ) which is causing this overflow.
+			// To avoid this the EOF check is done by comparing the current Position to the Length of the file.
+			// return reader.PeekChar() == -1;
+			// References : 
+			//		.Net : http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=127647&SiteID=1
+			//		Mono : http://bugzilla.ximian.com/show_bug.cgi?id=76374
+			//			  (google cache ) http://209.85.165.104/search?q=cache:ggELZnLcXpAJ:bugzilla.ximian.com/show_bug.cgi%3Fid%3D76374+An+error+ocurred+in+BinaryReader.PeekChar+()+method+when+execute+the+next&hl=en&ct=clnk&cd=1&gl=us
+			return ( reader.BaseStream.Position == reader.BaseStream.Length );
 		}
 
 		#endregion Methods

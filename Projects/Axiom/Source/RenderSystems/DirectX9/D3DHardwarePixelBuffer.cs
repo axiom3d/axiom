@@ -273,7 +273,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// Check for misuse
 			if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
 				throw new Exception( "DirectX does not allow locking of or directly writing to RenderTargets. Use BlitFromMemory if you need the contents; " +
-									"in D3D9HardwarePixelBuffer.LockImpl" );
+									"in D3DHardwarePixelBuffer.LockImpl" );
 			// Set extents and format
 			PixelBox rval = new PixelBox( lockBox, Format );
 			// Set locking flags according to options
@@ -310,7 +310,7 @@ namespace Axiom.RenderSystems.DirectX9
 					data = surface.LockRectangle( prect, flags, out pitch );
 				}
 				if ( data == null )
-					throw new Exception( "Surface locking failed; in D3D9HardwarePixelBuffer.LockImpl" );
+					throw new Exception( "Surface locking failed; in D3DHardwarePixelBuffer.LockImpl" );
 				FromD3DLock( rval, pitch, data );
 			}
 			else
@@ -358,7 +358,7 @@ namespace Axiom.RenderSystems.DirectX9
 			DestroyRenderTextures();
 			if ( surface == null )
 				throw new Exception( "Rendering to 3D slices not supported yet for Direct3D; in " +
-									"D3D9HardwarePixelBuffer.CreateRenderTexture" );
+									"D3DHardwarePixelBuffer.CreateRenderTexture" );
 			// Create render target for each slice
 			sliceTRT.Clear();
 			Debug.Assert( Depth == 1 );

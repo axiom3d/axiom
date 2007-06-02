@@ -82,7 +82,7 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		#endregion PresentationParameters Property
-			
+
 		private D3D.Surface _renderZBuffer;
 		private D3D.MultiSampleType _fsaaType;
 		private int _fsaaQuality;
@@ -208,7 +208,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			_isSwapChain = ( deviceIfSwapChain != null );
 		}
-		
+
 
 		#endregion Constructors
 
@@ -874,12 +874,12 @@ namespace Axiom.RenderSystems.DirectX9
 					{
 						case D3D.ResultCode.DeviceLost:
 							_renderSurface.ReleaseGraphics();
-					( (D3DRenderSystem)( Root.Instance.RenderSystem ) ).notifyDeviceLost();
+							( (D3DRenderSystem)( Root.Instance.RenderSystem ) ).notifyDeviceLost();
 							break;
 						case D3D.ResultCode.DeviceNotReset:
-					device.Reset( device.PresentationParameters );
+							device.Reset( device.PresentationParameters );
 							break;
-				}
+					}
 				}
 			}
 		}
@@ -1019,56 +1019,56 @@ namespace Axiom.RenderSystems.DirectX9
 				// Test the cooperative mode first
 				if ( device.CheckCooperativeLevel( out result ) )
 				{
-					switch( (D3D.ResultCode)result )
-				{
+					switch ( (D3D.ResultCode)result )
+					{
 						case D3D.ResultCode.DeviceLost:
-					// device lost, and we can't reset
-					// can't do anything about it here, wait until we get 
-					// D3DERR_DEVICENOTRESET; rendering calls will silently fail until 
-					// then (except Present, but we ignore device lost there too)
+							// device lost, and we can't reset
+							// can't do anything about it here, wait until we get 
+							// D3DERR_DEVICENOTRESET; rendering calls will silently fail until 
+							// then (except Present, but we ignore device lost there too)
 							_renderSurface.ReleaseGraphics();
-					// need to release if swap chain
-					if ( !_isSwapChain )
-						_renderZBuffer = null;
-					else
+							// need to release if swap chain
+							if ( !_isSwapChain )
+								_renderZBuffer = null;
+							else
 								_renderZBuffer.ReleaseGraphics();
-					System.Threading.Thread.Sleep( 50 );
-					return;
+							System.Threading.Thread.Sleep( 50 );
+							return;
 
 						default:
-					// device lost, and we can reset
-					rs.RestoreLostDevice();
+							// device lost, and we can reset
+							rs.RestoreLostDevice();
 
-					// Still lost?
-					if ( rs.IsDeviceLost )
-					{
-						// Wait a while
-						System.Threading.Thread.Sleep( 50 );
-						return;
-					}
+							// Still lost?
+							if ( rs.IsDeviceLost )
+							{
+								// Wait a while
+								System.Threading.Thread.Sleep( 50 );
+								return;
+							}
 
 							if ( !_isSwapChain )
-					{
-						// re-qeuery buffers
-						_renderSurface = device.GetRenderTarget( 0 );
-						_renderZBuffer = device.DepthStencilSurface;
-						// release immediately so we don't hog them
+							{
+								// re-qeuery buffers
+								_renderSurface = device.GetRenderTarget( 0 );
+								_renderZBuffer = device.DepthStencilSurface;
+								// release immediately so we don't hog them
 								_renderZBuffer.ReleaseGraphics();
-					}
-					else
-					{
-						// Update dimensions incase changed
-						foreach ( KeyValuePair<int, Viewport> entry in this.viewportList )
-						{
-							entry.Value.UpdateDimensions();
-						}
-						// Actual restoration of surfaces will happen in 
-						// D3D9RenderSystem::restoreLostDevice when it calls
-						// createD3DResources for each secondary window
-					}
+							}
+							else
+							{
+								// Update dimensions incase changed
+								foreach ( KeyValuePair<int, Viewport> entry in this.viewportList )
+								{
+									entry.Value.UpdateDimensions();
+								}
+								// Actual restoration of surfaces will happen in 
+								// D3D9RenderSystem::restoreLostDevice when it calls
+								// createD3DResources for each secondary window
+							}
 							break;
+					}
 				}
-			}
 
 			}
 			base.Update( swapBuffers );

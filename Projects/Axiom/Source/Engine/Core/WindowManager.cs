@@ -139,6 +139,18 @@ namespace Axiom.Core
 			_detachEventHandlers( window );
 		}
 
+		/// <summary>
+		/// Internal winProc (RenderWindow's use this when creating the Win32 Window)
+		/// </summary>
+		/// <param name="m"></param>
+		//public void WinProc( ref Message m )
+		//{
+		//}
+
+		public void MessagePump()
+		{
+		}
+
 		private void _attachEventHandlers( RenderWindow window )
 		{
 			System.Windows.Forms.Control ctrl = (System.Windows.Forms.Control)window[ "WINDOW" ];
