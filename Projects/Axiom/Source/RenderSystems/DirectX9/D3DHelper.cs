@@ -391,6 +391,8 @@ namespace Axiom.RenderSystems.DirectX9
 			// we only need to worry about a few types with D3D
 			switch ( type )
 			{
+				case VertexElementType.Color_ABGR:
+				case VertexElementType.Color_ARGB:
 				case VertexElementType.Color:
 					return D3D.DeclarationType.Color;
 
