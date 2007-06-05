@@ -2291,10 +2291,12 @@ namespace Axiom.Core
 					// Derive a special shadow caster pass from this one
 					pass = DeriveShadowCasterPass( pass );
 				}
-				else if ( illuminationStage == IlluminationRenderStage.RenderModulativePass )
+				else if ( illuminationStage == IlluminationRenderStage.RenderReceiverPass )
 				{
 					pass = DeriveShadowReceiverPass( pass );
 				}
+
+                //TODO :autoParamDataSource.SetPass( pass );
 
 				bool passSurfaceAndLightParams = true;
 
@@ -2326,8 +2328,8 @@ namespace Axiom.Core
 															pass.Emissive,
 															pass.Shininess,
 															pass.VertexColorTracking );
-						// #if NOT
 					}
+// #if NOT_IN_OGRE
 					else
 					{
 						// even with lighting off, we need ambient set to white
@@ -2337,9 +2339,9 @@ namespace Axiom.Core
 															ColorEx.Black,
 															0,
 															TrackVertexColor.None );
-						// #endif
 					}
-					// Dynamic lighting enabled?
+// #endif
+                    // Dynamic lighting enabled?
 					targetRenderSystem.LightingEnabled = pass.LightingEnabled;
 				}
 
@@ -2359,8 +2361,12 @@ namespace Axiom.Core
 				}
 				// Set fixed-function fragment settings
 
-				// Fog (assumes we want pixel fog which is the usual)
-				// New fog params can either be from scene or from material
+                //We need to set fog properties always. In D3D, it applies to shaders prior
+                //to version vs_3_0 and ps_3_0. And in OGL, it applies to "ARB_fog_XXX" in
+                //fragment program, and in other ways, they maybe accessed by gpu program via
+                //"state.fog.XXX".
+                
+                // New fog params can either be from scene or from material
 
 				// jsw - set the fog for both fixed function and fragment programs
 				ColorEx newFogColor;
@@ -2392,16 +2398,37 @@ namespace Axiom.Core
 				if ( newFogMode == FogMode.None )
 					fogScale = 0f;
 
-				autoParamDataSource.FogParams = new Vector4( newFogStart, newFogEnd, fogScale, 0 );
-
 				// set fog using the render system
 				targetRenderSystem.SetFog( newFogMode, newFogColor, newFogDensity, newFogStart, newFogEnd );
 
+                // Tell params about ORIGINAL fog
+		        // Need to be able to override fixed function fog, but still have
+		        // original fog parameters available to a shader that chooses to use
+                // TODO : autoParamDataSource.SetFog( fogMode, fogColor, fogDensity, fogStart, fogEnd );
 
 				// The rest of the settings are the same no matter whether we use programs or not
 
 				// Set scene blending
 				targetRenderSystem.SetSceneBlending( pass.SourceBlendFactor, pass.DestBlendFactor );
+
+                // TODO : Set point parameters
+                //targetRenderSystem.SetPointParameters(
+                //                                        pass.PointSize,
+                //                                        pass.IsPointAttenuationEnabled,
+                //                                        pass.PointAttenuationConstant,
+                //                                        pass.PointAttenuationLinear,
+                //                                        pass.PointAttenuationQuadratic,
+                //                                        pass.PointMinSize,
+                //                                        pass.PointMaxSize 
+                //                                        );
+
+                //targetRenderSystem.PointSpritesEnabled = pass.PointSpritesEnabled;
+
+                // TODO : Reset the shadow texture index for each pass           
+                //foreach ( TextureUnitState textureUnit in pass.TextureUnitStates )
+                //{
+                    
+                //}
 
 				// set all required texture units for this pass, and disable ones not being used
 				int numTextureUnits;
@@ -2424,8 +2451,7 @@ namespace Axiom.Core
 					else
 					{
 						// disable this unit
-						if ( !pass.HasFragmentProgram )
-							targetRenderSystem.DisableTextureUnit( i );
+						if ( !pass.HasFragmentProgram )	targetRenderSystem.DisableTextureUnit( i );
 					}
 				}
 
@@ -5408,7 +5434,7 @@ namespace Axiom.Core
 			// doing it during the render to texture
 			if ( illuminationStage == IlluminationRenderStage.None )
 			{
-				illuminationStage = IlluminationRenderStage.RenderModulativePass;
+				illuminationStage = IlluminationRenderStage.RenderReceiverPass;
 
 				for ( int i = 0, sti = 0;
 					i < lightsAffectingFrustum.Count && sti < shadowTextures.Count; i++ )
@@ -5553,7 +5579,7 @@ namespace Axiom.Core
 							targetPass.Load();
 							// increment shadow texture since used
 							++sti;
-							illuminationStage = IlluminationRenderStage.RenderModulativePass;
+							illuminationStage = IlluminationRenderStage.RenderReceiverPass;
 						}
 						else
 						{
@@ -5625,7 +5651,7 @@ namespace Axiom.Core
 			// Bypass if we're doing a texture shadow render and 
 			// this pass is after the first (only 1 pass needed for shadow texture)
 			if ( !suppressShadows && currentViewport.ShowShadows &&
-				( ( IsShadowTechniqueModulative && illuminationStage == IlluminationRenderStage.RenderModulativePass ) ||
+				( ( IsShadowTechniqueModulative && illuminationStage == IlluminationRenderStage.RenderReceiverPass ) ||
 				 illuminationStage == IlluminationRenderStage.RenderToTexture || suppressRenderStateChanges ) &&
 				pass.Index > 0 )
 			{
@@ -5649,11 +5675,11 @@ namespace Axiom.Core
 			// and we're doing the render receivers pass
 			if ( !suppressShadows && currentViewport.ShowShadows && IsShadowTechniqueTextureBased )
 			{
-				if ( illuminationStage == IlluminationRenderStage.RenderModulativePass &&
+				if ( illuminationStage == IlluminationRenderStage.RenderReceiverPass &&
 					renderable.CastsShadows && !shadowTextureSelfShadow )
 					return false;
 				// Some duplication here with validatePassForRendering, for transparents
-				if ( ( ( IsShadowTechniqueModulative && illuminationStage == IlluminationRenderStage.RenderModulativePass )
+				if ( ( ( IsShadowTechniqueModulative && illuminationStage == IlluminationRenderStage.RenderReceiverPass )
 					 || illuminationStage == IlluminationRenderStage.RenderToTexture || suppressRenderStateChanges ) &&
 					pass.Index > 0 )
 					return false;

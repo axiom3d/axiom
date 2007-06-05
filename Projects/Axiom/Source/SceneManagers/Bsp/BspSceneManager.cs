@@ -1319,7 +1319,7 @@ namespace Axiom.SceneManagers.Bsp
                 {
                     if ( manualLightList.Count == 0 )
                     {
-                        if ( illuminationStage == IlluminationRenderStage.RenderModulativePass )
+                        if ( illuminationStage == IlluminationRenderStage.RenderReceiverPass )
                         {
                             // texture shadows
                             RenderTextureShadowOnGeometry();

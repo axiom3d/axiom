@@ -410,11 +410,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return numTextureUnits;
+				return numVertexTextureUnits;
 			}
 			set
 			{
-				numTextureUnits = value;
+				numVertexTextureUnits = value;
 			}
 		}
 
