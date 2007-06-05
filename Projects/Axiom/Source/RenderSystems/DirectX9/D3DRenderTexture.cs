@@ -77,14 +77,16 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				switch ( attribute )
+				switch ( attribute.ToUpper() )
 				{
 					case "D3DBACKBUFFER":
 						return ( (D3DHardwarePixelBuffer)pixelBuffer ).Surface;
 					case "HWND":
 						return null;
 					case "BUFFER":
-						return pixelBuffer;
+						return (HardwarePixelBuffer)pixelBuffer;
+                    default:
+                        return null;
 				}
 				return null;
 			}

@@ -281,17 +281,39 @@ namespace Axiom.RenderSystems.DirectX9
 				// parentWindowHandle		-> parentHWnd
 				if ( miscParams.ContainsKey( "parentWindowHandle" ) )
 				{
-					parentHWnd = (SWF.Control)miscParams[ "parentWindowHandle" ];
+                    object handle = miscParams[ "parentWindowHandle" ];
+                    IntPtr ptr = IntPtr.Zero;
+                    if ( handle.GetType() == typeof( IntPtr ) )
+                    {
+                        ptr = (IntPtr)handle;
+                    }
+                    else if ( handle.GetType() == typeof( System.Int32 ) )
+                    {
+                        ptr = new IntPtr( (int)handle );
+                    }
+                    parentHWnd = SWF.Control.FromHandle( ptr );
+                    //parentHWnd = (SWF.Control)miscParams[ "parentWindowHandle" ];
 				}
 
 				// externalWindowHandle		-> externalHWnd
 				if ( miscParams.ContainsKey( "externalWindowHandle" ) )
 				{
-					externalHWnd = (SWF.Control)miscParams[ "externalWindowHandle" ];
-					if ( !( externalHWnd is SWF.Form ) && !( externalHWnd is SWF.PictureBox ) )
-					{
-						throw new Exception( "externalWindowHandle must be either a Form or a PictureBox control." );
-					}
+                    object handle = miscParams[ "externalWindowHandle" ];
+                    IntPtr ptr = IntPtr.Zero;
+                    if ( handle.GetType() == typeof( IntPtr ) )
+                    {
+                        ptr = (IntPtr)handle;
+                    }
+                    else if ( handle.GetType() == typeof( System.Int32 ) )
+                    {
+                        ptr = new IntPtr( (int)handle );
+                    }
+                    externalHWnd = SWF.Control.FromHandle( ptr );
+                    //externalHWnd = (SWF.Control)miscParams["externalWindowHandle"];
+                    //if ( !( externalHWnd is SWF.Form ) && !( externalHWnd is SWF.PictureBox ) )
+                    //{
+                    //    throw new Exception( "externalWindowHandle must be either a Form or a PictureBox control." );
+                    //}
 				}
 
 				// vsync	[parseBool]

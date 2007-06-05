@@ -697,9 +697,9 @@ namespace Axiom.Graphics
 		/// </summary>
 		RenderToTexture,
 		/// <summary>
-		///		Modulative render from shadow texture stage.
+        ///		Render from shadow texture to receivers stage.
 		/// </summary>
-		RenderModulativePass
+		RenderReceiverPass
 	}
 
 	/// <summary>
