@@ -61,7 +61,7 @@ namespace Axiom.Graphics
 			List<TriangleVertices> triangles = new List<TriangleVertices>();
 
 			//Iterate index sets
-			for ( int indexSet = 0; indexSet < indexDataList.Count;	indexSet++ )
+			for ( int indexSet = 0; indexSet < indexDataList.Count; indexSet++ )
 			{
 				IndexData indexData = indexDataList[ indexSet ];
 				VertexData vertexData =
@@ -90,7 +90,7 @@ namespace Axiom.Graphics
 
 				//Get the vertex buffer
 				VertexElement posElement = vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
-				HardwareVertexBuffer vertexBuffer =	vertexData.vertexBufferBinding.GetBuffer( posElement.Source );
+				HardwareVertexBuffer vertexBuffer = vertexData.vertexBufferBinding.GetBuffer( posElement.Source );
 
 				//Lock buffers
 				IntPtr vxPtr = vertexBuffer.Lock( BufferLocking.ReadOnly );
@@ -176,8 +176,8 @@ namespace Axiom.Graphics
 									v[ 2 ] = tmp;
 								}
 
-								Debug.Assert( ( ( v[ 0 ].x - v[ 2 ].x ) * ( v[ 1 ].y - v[ 2 ].y ) - 
-									            ( v[ 1 ].x - v[ 2 ].x ) * ( v[ 0 ].y - v[ 2 ].y ) ) >= 0, 
+								Debug.Assert( ( ( v[ 0 ].x - v[ 2 ].x ) * ( v[ 1 ].y - v[ 2 ].y ) -
+												( v[ 1 ].x - v[ 2 ].x ) * ( v[ 0 ].y - v[ 2 ].y ) ) >= 0,
 												"Failed to arrange triangle points counter-clockwise." );
 
 								// Add to the list of triangles
@@ -223,22 +223,27 @@ namespace Axiom.Graphics
 
 	public class TriangleIntersector
 	{
+		//changes:
+		// instead of 'Vector3 modelBase' utilizes Matrix4 specifying
+		// transforms that need to be applied to each triangle before testing for
+		// intersection.
+
 		#region Fields
 
-		List<TriangleVertices> triangles;
+		protected List<TriangleVertices> triangles;
 
 		#endregion Fields
 
 		#region Contructor
 
-		public TriangleIntersector( List<TriangleVertices> triangles )
+		public TriangleIntersector( IEnumerable<TriangleVertices> triangles )
 		{
-			this.triangles = triangles;
+			this.triangles = new List<TriangleVertices>(triangles);
 		}
 
 		#endregion Constructor
 
-		#region Public Methods
+		#region Methods
 
 		public bool ClosestRayIntersection( Ray ray, Vector3 modelBase, float ignoreDistance, out Vector3 intersection )
 		{
@@ -247,14 +252,16 @@ namespace Axiom.Graphics
 			float minDistSquared = float.MaxValue;
 			float ignoreDistanceSquared = ignoreDistance * ignoreDistance;
 			Vector3 where = Vector3.Zero;
+
 			// Iterate over the triangles
 			for ( int i = 0; i < triangles.Count; i++ )
 			{
 				TriangleVertices t = triangles[ i ];
-				if ( RayIntersectsTriangle( ray, t.Vertices, modelBase, ref where ) )
+				if ( RayIntersectsTriangle( ray, t.Vertices, ref modelBase, ref where ) )
 				{
 					float distSquared = ( where - ray.Origin ).LengthSquared;
-					if ( distSquared > ignoreDistanceSquared && distSquared < minDistSquared )
+					if ( distSquared > ignoreDistanceSquared && 
+						 distSquared < minDistSquared )
 					{
 						minDistSquared = distSquared;
 						intersection = where;
@@ -265,14 +272,36 @@ namespace Axiom.Graphics
 			return intersects;
 		}
 
-		#endregion Public Methods
+		public bool ClosestRayIntersection( Ray ray, Matrix4 transform,	float ignoreDistance, out Vector3 intersection )
+		{
+			bool intersects = false;
+			intersection = Vector3.Zero;
+			float minDistSquared = float.MaxValue;
+			float ignoreDistanceSquared = ignoreDistance * ignoreDistance;
+			Vector3 where = Vector3.Zero;
 
-		#region Protected Methods
+			// Iterate over the triangles
+			for ( int i = 0; i < triangles.Count; i++ )
+			{
+				TriangleVertices t = triangles[ i ];
+				if ( RayIntersectsTriangle( ray, t.Vertices, ref transform,	ref where ) )
+				{
+					float distSquared = ( where - ray.Origin ).LengthSquared;
+					if ( distSquared > ignoreDistanceSquared && 
+						distSquared	< minDistSquared )
+					{
+						minDistSquared = distSquared;
+						intersection = where;
+						intersects = true;
+					}
+				}
+			}
+			return intersects;
+		}
 
 		// Given line pq and ccw triangle abc, return whether line pierces triangle. If
 		// so, also return the barycentric coordinates (u,v,w) of the intersection point
-		bool RayIntersectsTriangle( Ray ray, Vector3[] Vertices,
-								   Vector3 modelBase, ref Vector3 where )
+		protected bool RayIntersectsTriangle( Ray ray, Vector3[] Vertices, ref Vector3 modelBase, ref Vector3 where )
 		{
 			// Place the end beyond any conceivable triangle, 1000 meters away
 			Vector3 a = modelBase + Vertices[ 0 ];
@@ -302,9 +331,40 @@ namespace Axiom.Graphics
 			return true;
 		}
 
+		// Given line pq and ccw triangle abc, return whether line pierces triangle. If
+		// so, also return the barycentric coordinates (u,v,w) of the intersection point
+		protected bool RayIntersectsTriangle( Ray ray, Vector3[] Vertices, ref Matrix4 transform, ref Vector3 where )
+		{
+			// Place the end beyond any conceivable triangle, 1000 meters away
+			Vector3 a = transform * Vertices[ 0 ];
+			Vector3 b = transform * Vertices[ 1 ];
+			Vector3 c = transform * Vertices[ 2 ];
+			Vector3 start = ray.Origin;
+			Vector3 end = start + ray.Direction * 1000000f;
+			Vector3 pq = end - start;
+			Vector3 pa = a - start;
+			Vector3 pb = b - start;
+			Vector3 pc = c - start;
+			// Test if pq is inside the edges bc, ca and ab. Done by testing
+			// that the signed tetrahedral volumes, computed using scalar triple
+			// products, are all positive
+			float u = pq.Cross( pc ).Dot( pb );
+			if ( u < 0.0f )
+				return false;
+			float v = pq.Cross( pa ).Dot( pc );
+			if ( v < 0.0f )
+				return false;
+			float w = pq.Cross( pb ).Dot( pa );
+			if ( w < 0.0f )
+				return false;
+			float denom = 1.0f / ( u + v + w );
+			// Finally fill in the intersection point
+			where = ( u * a + v * b + w * c ) * denom;
+			return true;
+		}
+
 		#endregion Protected Methods
 
 	}
-
 }
 

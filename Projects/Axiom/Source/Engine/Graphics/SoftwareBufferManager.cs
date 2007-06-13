@@ -1,28 +1,3 @@
-#region LGPL License
-/*
-Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
-
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
-Many thanks to the OGRE team for maintaining such a high quality project.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-#endregion
 
 #region SVN Version Information
 // <file>
@@ -44,7 +19,6 @@ namespace Axiom.Graphics
     /// <summary>
     /// 	Summary description for SoftwareBufferManager.
     /// </summary>
-    // TODO: Switch to using GCHandle for array pointer after resolving stack overflow in TerrainSceneManager.
     public class SoftwareBufferManager : HardwareBufferManager
     {
         #region Methods
@@ -117,7 +91,7 @@ namespace Axiom.Graphics
         ///     Holds the buffer data.
         /// </summary>
         protected byte[] data;
-        //protected GCHandle handle;
+        protected GCHandle handle;
 
         #endregion Fields
 
@@ -132,7 +106,6 @@ namespace Axiom.Graphics
         /// <param name="vertexSize"></param>
         /// <param name="numVertices"></param>
         /// <param name="usage"></param>
-        /// DOC
         public SoftwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage )
             : base( vertexSize, numVertices, usage, true, false )
         {
@@ -156,16 +129,8 @@ namespace Axiom.Graphics
         {
 
             // return the offset into the array as a pointer
-            unsafe
-            {
-				fixed ( void* pData = &data[ offset ] )
-                {
-					return new IntPtr( pData );
-                }
-            }
-			//return Marshal.UnsafeAddrOfPinnedArrayElement( data, offset );
-            //handle = GCHandle.Alloc( data, GCHandleType.Pinned );
-            //return handle.AddrOfPinnedObject();
+            handle = GCHandle.Alloc( data, GCHandleType.Pinned );
+            return handle.AddrOfPinnedObject();
         }
 
         public override void ReadData( int offset, int length, IntPtr dest )
@@ -195,7 +160,7 @@ namespace Axiom.Graphics
         protected override void UnlockImpl()
         {
 
-            //handle.Free();
+            handle.Free();
         }
 
         public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
@@ -221,15 +186,7 @@ namespace Axiom.Graphics
         /// </summary>
         public IntPtr GetDataPointer( int offset )
         {
-            unsafe
-            {
-				fixed ( void* pData = &data[ offset ] )
-                {
-					return new IntPtr( pData );
-                }
-            }
-			//return Marshal.UnsafeAddrOfPinnedArrayElement( data, offset );
-            //return handle.AddrOfPinnedObject();
+            return handle.AddrOfPinnedObject();
         }
 
 		protected override void dispose( bool disposeManagedResources )
@@ -262,8 +219,8 @@ namespace Axiom.Graphics
         /// <summary>
         ///     Holds the buffer data.
         /// </summary>
-        protected byte[] data;
-        //protected GCHandle handle;
+		protected byte[] data;
+        protected GCHandle handle;
 
         #endregion
 
@@ -278,7 +235,6 @@ namespace Axiom.Graphics
         /// <param name="type"></param>
         /// <param name="numIndices"></param>
         /// <param name="usage"></param>
-        /// DOC
         public SoftwareIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
             : base( type, numIndices, usage, true, false )
         {
@@ -304,16 +260,8 @@ namespace Axiom.Graphics
             //isLocked = true;
 
             // return the offset into the array as a pointer
-            unsafe
-            {
-				fixed ( void* pData = &data[ offset ] )
-                {
-					return new IntPtr( pData );
-                }
-            }
-			//return Marshal.UnsafeAddrOfPinnedArrayElement( data, offset );
-            //handle = GCHandle.Alloc( data, GCHandleType.Pinned );
-            //return handle.AddrOfPinnedObject();
+            handle = GCHandle.Alloc( data, GCHandleType.Pinned );
+            return handle.AddrOfPinnedObject();
         }
 
         public override void ReadData( int offset, int length, IntPtr dest )
@@ -343,7 +291,7 @@ namespace Axiom.Graphics
         protected override void UnlockImpl()
         {
 
-            //handle.Free();
+            handle.Free();
         }
 
         public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
@@ -369,15 +317,7 @@ namespace Axiom.Graphics
         /// </summary>
         public IntPtr GetDataPointer( int offset )
         {
-            unsafe
-            {
-				fixed ( void* pData = &data[ offset ] )
-                {
-					return new IntPtr( pData );
-                }
-            }
-			//return Marshal.UnsafeAddrOfPinnedArrayElement( data, offset );
-            //return handle.AddrOfPinnedObject();
+            return handle.AddrOfPinnedObject();
         }
 
 		protected override void dispose( bool disposeManagedResources )
