@@ -47,39 +47,44 @@ using Axiom.Math;
 namespace Axiom.Graphics
 {
 	/// <summary>
-	///     Abstract base class for classes that iterate over the triangles in a mesh
+	/// Base class for classes that iterate over the vertices in a mesh
 	/// </summary>
-	public class AnyBuilder
+	public class AnyBuilder : IDisposable
 	{
+
 		#region Fields
 
 		/// <summary>
-		///		List of objects that will provide index data to the build process.
+		/// List of objects that will provide index data to the build process.
 		/// </summary>
 		protected IndexDataList indexDataList = new IndexDataList();
 		/// <summary>
-		///		Mapping of index data sets to vertex data sets.
+		/// Mapping of index data sets to vertex data sets.
 		/// </summary>
 		protected IntList indexDataVertexDataSetList = new IntList();
 		/// <summary>
-		///		List of vertex data objects.
+		/// List of vertex data objects.
 		/// </summary>
 		protected VertexDataList vertexDataList = new VertexDataList();
 		/// <summary>
-		///		Mappings of operation type to vertex data.
+		/// Mappings of operation type to vertex data.
 		/// </summary>
 		protected OperationTypeList operationTypes = new OperationTypeList();
+		/// <summary>
+		/// List of software index buffers that were created and to be disposed by this class.
+		/// </summary>
+		protected List<SoftwareIndexBuffer> customIndexBufferList = new	List<SoftwareIndexBuffer>();
 
 		#endregion Fields
 
 		#region Methods
 
 		/// <summary>
-		///     Add a set of vertex geometry data to the edge builder.
+		/// Add a set of vertex geometry data to the edge builder.
 		/// </summary>
 		/// <remarks>
-		///     You must add at least one set of vertex data to the builder before invoking the
-		///     <see cref="Build"/> method.
+		/// You must add at least one set of vertex data to the builder before invoking the
+		/// <see cref="Build"/> method.
 		/// </remarks>
 		/// <param name="vertexData">Vertex data to consider for edge detection.</param>
 		public void AddVertexData( VertexData vertexData )
@@ -88,11 +93,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///     Add a set of index geometry data to the edge builder.
+		/// Add a set of index geometry data to the edge builder.
 		/// </summary>
 		/// <remarks>
-		///     You must add at least one set of index data to the builder before invoking the
-		///     <see cref="Build"/> method.
+		/// You must add at least one set of index data to the builder before invoking the
+		/// <see cref="Build"/> method.
 		/// </remarks>
 		/// <param name="indexData">The index information which describes the triangles.</param>
 		public void AddIndexData( IndexData indexData )
@@ -106,16 +111,16 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///     Add a set of index geometry data to the edge builder.
+		/// Add a set of index geometry data to the edge builder.
 		/// </summary>
 		/// <remarks>
-		///     You must add at least one set of index data to the builder before invoking the
-		///     <see cref="Build"/> method.
+		/// You must add at least one set of index data to the builder before invoking the
+		/// <see cref="Build"/> method.
 		/// </remarks>
 		/// <param name="indexData">The index information which describes the triangles.</param>
 		/// <param name="vertexSet">
-		///     The vertex data set this index data refers to; you only need to alter this
-		///     if you have added multiple sets of vertices.
+		/// The vertex data set this index data refers to; you only need to alter this
+		/// if you have added multiple sets of vertices.
 		/// </param>
 		public void AddIndexData( IndexData indexData, int vertexSet, OperationType opType )
 		{
@@ -124,7 +129,162 @@ namespace Axiom.Graphics
 			operationTypes.Add( opType );
 		}
 
+		/// <summary>
+		/// Populate with data as obtained from an IRenderable.
+		/// <remarks>
+		/// Will share the buffers.
+		/// In case there are no index data associated with the <see cref="IRenderable"/>, i.e. <see cref="RenderOperation.useIndices"/> is false,
+		/// custom software index buffer is created to provide default index data to the builder.
+		/// This makes it possible for derived classes to handle the data in a convenient way.
+		/// </remarks>
+		/// </summary>
+		/// <param name="objects"></param>
+		public void AddObject( IRenderable obj )
+		{
+			if ( obj == null )
+				throw new ArgumentNullException();
+
+			RenderOperation renderOp = new RenderOperation();
+			obj.GetRenderOperation( renderOp );
+
+			IndexData indexData;
+			if ( renderOp.useIndices )
+			{
+				indexData = renderOp.indexData;
+			}
+			else
+			{
+				//Create custom index buffer
+				int vertexCount = renderOp.vertexData.vertexCount;
+				IndexType itype = vertexCount > UInt16.MaxValue ?
+				IndexType.Size32 : IndexType.Size16;
+
+				SoftwareIndexBuffer ibuf = (SoftwareIndexBuffer)
+				SoftwareBufferManager.Instance.CreateIndexBuffer( itype,
+				vertexCount, BufferUsage.Static );
+				customIndexBufferList.Add( ibuf ); //to be disposed later
+
+				indexData = new IndexData();
+				indexData.indexBuffer = ibuf;
+				indexData.indexCount = vertexCount;
+				indexData.indexStart = 0;
+
+				//Fill buffer with indices
+				IntPtr ibuffer =
+				indexData.indexBuffer.Lock( BufferLocking.Normal );
+				try
+				{
+					unsafe
+					{
+						Int16* ibuf16 = (Int16*)ibuffer;
+						Int32* ibuf32 = (Int32*)ibuffer;
+						for ( int i = 0; i < indexData.indexCount; i++ )
+						{
+							if ( itype == IndexType.Size16 )
+							{
+								ibuf16[ i ] = (Int16)i;
+							}
+							else
+							{
+								ibuf32[ i ] = i;
+							}
+						}
+					} //unsafe
+				}
+				finally
+				{
+					indexData.indexBuffer.Unlock();
+				}
+			}
+
+			AddVertexData( renderOp.vertexData );
+			AddIndexData( indexData, vertexDataList.Count - 1,
+			renderOp.operationType );
+		}
+
+
+		/// <summary>
+		/// Add vertex and index sets of a mesh to the builder.
+		/// </summary>
+		/// <param name="mesh">The mesh object.</param>
+		/// <param name="lodIndex">The LOD level to be processed.</param>
+		public void AddObject( Mesh mesh, int lodIndex )
+		{
+			if ( mesh == null )
+				throw new ArgumentNullException();
+
+			//mesh.AddVertexAndIndexSets(this, lodIndex);
+
+			//NOTE: The Mesh.AddVertexAndIndexSets() assumes there weren't any vertex data added to the builder yet.
+			//For this class I decided to break that assumption, thus using following replacement for the commented call.
+			//I guess rarely, but still you might want to add vertex/index sets of several objects to one builder.
+			//Maybe AddVertexAndIndexSets could be removed and this method utilized back in Mesh.
+
+			//TODO: find out whether custom index buffer needs to be created in cases (like in the AddObject(IRenderable)).
+			//Borrilis, do you know?
+
+			int vertexSetCount = vertexDataList.Count;
+			int indexOfSharedVertexSet = vertexSetCount;
+
+			if ( mesh.SharedVertexData != null )
+			{
+				AddVertexData( mesh.SharedVertexData );
+				vertexSetCount++;
+			}
+
+			// Prepare the builder using the submesh information
+			for ( int i = 0; i < mesh.SubMeshCount; i++ )
+			{
+				SubMesh sm = mesh.GetSubMesh( i );
+
+				if ( sm.useSharedVertices )
+				{
+					// Use shared vertex data
+					if ( lodIndex == 0 )
+					{
+						AddIndexData( sm.IndexData, indexOfSharedVertexSet,
+						sm.OperationType );
+					}
+					else
+					{
+						AddIndexData( sm.LodFaceList[ lodIndex - 1 ],
+						indexOfSharedVertexSet, sm.OperationType );
+					}
+				}
+				else
+				{
+					// own vertex data, add it and reference it directly
+					AddVertexData( sm.VertexData );
+
+					if ( lodIndex == 0 )
+					{
+						// base index data
+						AddIndexData( sm.IndexData, vertexSetCount++,
+						sm.OperationType );
+					}
+					else
+					{
+						// LOD index data
+						AddIndexData( sm.LodFaceList[ lodIndex - 1 ],
+						vertexSetCount++, sm.OperationType );
+					}
+				}
+			}
+		}
+
 		#endregion Methods
+
+		#region IDisposable Implementation
+
+		public void Dispose()
+		{
+			foreach ( SoftwareIndexBuffer buf in customIndexBufferList )
+			{
+				SoftwareBufferManager.Instance.DisposeIndexBuffer( buf );
+			}
+		}
+
+		#endregion
 
 	}
 }
