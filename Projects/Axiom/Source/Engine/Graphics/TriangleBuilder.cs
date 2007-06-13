@@ -56,14 +56,17 @@ namespace Axiom.Graphics
 
 		#region Methods
 
-		public List<TriangleVertices> Build()
+		public IEnumerable<TriangleVertices> Build()
 		{
 			List<TriangleVertices> triangles = new List<TriangleVertices>();
-			for ( int ind = 0, indexSet = 0; ind < indexDataList.Count; ind++, indexSet++ )
-			{
-				int vertexSet = (int)indexDataVertexDataSetList[ ind ];
 
-				IndexData indexData = (IndexData)indexDataList[ indexSet ];
+			//Iterate index sets
+			for ( int indexSet = 0; indexSet < indexDataList.Count;	indexSet++ )
+			{
+				IndexData indexData = indexDataList[ indexSet ];
+				VertexData vertexData =
+				vertexDataList[ (int)indexDataVertexDataSetList[ indexSet ] ];
+				IndexType indexType = indexData.indexBuffer.Type;
 				OperationType opType = operationTypes[ indexSet ];
 
 				int iterations = 0;
@@ -78,122 +81,127 @@ namespace Axiom.Graphics
 					case OperationType.TriangleStrip:
 						iterations = indexData.indexCount - 2;
 						break;
+
+					default:
+						throw new AxiomException( "Operation type not supported: {0}", opType );
 				}
 
-				// locate position element & the buffer to go with it
-				VertexData vertexData = (VertexData)vertexDataList[ vertexSet ];
-				VertexElement posElem =
-					vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+				triangles.Capacity = triangles.Count + iterations;
 
-				HardwareVertexBuffer posBuffer = vertexData.vertexBufferBinding.GetBuffer( posElem.Source );
-				IntPtr posPtr = posBuffer.Lock( BufferLocking.ReadOnly );
-				IntPtr idxPtr = indexData.indexBuffer.Lock( BufferLocking.ReadOnly );
+				//Get the vertex buffer
+				VertexElement posElement = vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+				HardwareVertexBuffer vertexBuffer =	vertexData.vertexBufferBinding.GetBuffer( posElement.Source );
 
-				unsafe
+				//Lock buffers
+				IntPtr vxPtr = vertexBuffer.Lock( BufferLocking.ReadOnly );
+				try
 				{
-					byte* pBaseVertex = (byte*)posPtr.ToPointer();
-
-					short* p16Idx = null;
-					int* p32Idx = null;
-
-					// counters used for pointer indexing
-					int count16 = 0;
-					int count32 = 0;
-
-					if ( indexData.indexBuffer.Type == IndexType.Size16 )
+					IntPtr idxPtr = indexData.indexBuffer.Lock( BufferLocking.ReadOnly );
+					try
 					{
-						p16Idx = (short*)idxPtr.ToPointer();
-					}
-					else
-					{
-						p32Idx = (int*)idxPtr.ToPointer();
-					}
-
-					float* pReal = null;
-
-					int triStart = triangles.Count;
-
-					// iterate over all the groups of 3 indices
-					triangles.Capacity = triStart + iterations;
-
-					int[] index = new int[ 3 ];
-
-					for ( int t = 0; t < iterations; t++ )
-					{
-						Vector3[] v = new Vector3[ 3 ];
-						TriangleVertices tri = new TriangleVertices( v );
-
-						for ( int i = 0; i < 3; i++ )
+						unsafe
 						{
-							// Standard 3-index read for tri list or first tri in strip / fan
-							if ( opType == OperationType.TriangleList || t == 0 )
+							byte* pVertexPos = (byte*)vxPtr + posElement.Offset; // positional element of the base vertex
+							float* pReal;										 // for vector component retrieval
+							int icount = 0;										 // index into the index buffer
+							int index;											 // index into the vertex buffer
+							short* p16Idx = null;
+							int* p32Idx = null;
+
+							if ( indexType == IndexType.Size16 )
 							{
-								if ( indexData.indexBuffer.Type == IndexType.Size32 )
-								{
-									index[ i ] = p32Idx[ count32++ ];
-								}
-								else
-								{
-									index[ i ] = p16Idx[ count16++ ];
-								}
+								p16Idx = (Int16*)idxPtr; //.ToPointer(); (?)
 							}
 							else
 							{
-								// Strips and fans are formed from last 2 indexes plus the 
-								// current one for triangles after the first
-								if ( indexData.indexBuffer.Type == IndexType.Size32 )
-								{
-									index[ i ] = p32Idx[ i - 2 ];
-								}
-								else
-								{
-									index[ i ] = p16Idx[ i - 2 ];
-								}
+								p32Idx = (Int32*)idxPtr; //.ToPointer();
+							}
 
-								// Perform single-index increment at the last tri index
-								if ( i == 2 )
+							// iterate over all the groups of 3 indices
+							for ( int t = 0; t < iterations; t++ )
+							{
+								Vector3[] v = new Vector3[ 3 ]; //vertices of a single triangle, new instance needed each iteration
+
+								//assemble a triangle
+								for ( int i = 0; i < 3; i++ )
 								{
-									if ( indexData.indexBuffer.Type == IndexType.Size32 )
+									// standard 3-index read for tri list or first tri in strip / fan
+									if ( opType == OperationType.TriangleList || t == 0 )
 									{
-										count32++;
+										if ( indexType == IndexType.Size32 )
+										{
+											index = p32Idx[ icount++ ];
+										}
+										else
+										{
+											index = p16Idx[ icount++ ];
+										}
 									}
 									else
 									{
-										count16++;
+										// Strips and fans are formed from last 2 indexes plus the
+										// current one for triangles after the first
+
+										if ( indexType == IndexType.Size32 )
+										{
+											index = p32Idx[ icount + i -
+											2 ];
+										}
+										else
+										{
+											index = p16Idx[ icount + i -
+											2 ];
+										}
+
+										if ( i == 2 )
+										{
+											icount++;
+										}
 									}
+
+									//retrieve vertex position
+									pReal = (float*)( pVertexPos + index * vertexBuffer.VertexSize );
+									v[ i ].x = *pReal++;
+									v[ i ].y = *pReal++;
+									v[ i ].z = *pReal;
 								}
-							}
 
-							// Retrieve the vertex position
-							byte* pVertex = pBaseVertex + ( index[ i ] * posBuffer.VertexSize );
-							pReal = (float*)( pVertex + posElem.Offset );
-							v[ i ].x = *pReal++;
-							v[ i ].y = *pReal++;
-							v[ i ].z = *pReal++;
-						}
-						// Put the points in in counter-clockwise order
-						if ( ( ( v[ 0 ].x - v[ 2 ].x ) * ( v[ 1 ].y - v[ 2 ].y ) - ( v[ 1 ].x - v[ 2 ].x ) * ( v[ 0 ].y - v[ 2 ].y ) ) < 0 )
-						{
-							// Clockwise, so reverse points 1 and 2
-							Vector3 tmp = v[ 1 ];
-							v[ 1 ] = v[ 2 ];
-							v[ 2 ] = tmp;
-						}
-						Debug.Assert( ( ( v[ 0 ].x - v[ 2 ].x ) * ( v[ 1 ].y - v[ 2 ].y ) - ( v[ 1 ].x - v[ 2 ].x ) * ( v[ 0 ].y - v[ 2 ].y ) ) >= 0 );
-						// Add to the list of triangles
-						triangles.Add( new TriangleVertices( v ) );
-					} // for iterations
-				} // unsafe
+								// Put the points in in counter-clockwise order
+								if ( ( ( v[ 0 ].x - v[ 2 ].x ) * ( v[ 1 ].y - v[ 2 ].y )
+								- ( v[ 1 ].x - v[ 2 ].x ) * ( v[ 0 ].y - v[ 2 ].y ) ) < 0 )
+								{
+									// Clockwise, so reverse points 1 and 2
+									Vector3 tmp = v[ 1 ];
+									v[ 1 ] = v[ 2 ];
+									v[ 2 ] = tmp;
+								}
 
-				// unlock those buffers!
-				indexData.indexBuffer.Unlock();
-				posBuffer.Unlock();
+								Debug.Assert( ( ( v[ 0 ].x - v[ 2 ].x ) * ( v[ 1 ].y - v[ 2 ].y ) - 
+									            ( v[ 1 ].x - v[ 2 ].x ) * ( v[ 0 ].y - v[ 2 ].y ) ) >= 0, 
+												"Failed to arrange triangle points counter-clockwise." );
+
+								// Add to the list of triangles
+								triangles.Add( new TriangleVertices( v ) );
+
+							} // for iterations
+						} // unsafe
+					}
+					finally
+					{
+						indexData.indexBuffer.Unlock();
+					}
+				}
+				finally
+				{
+					vertexBuffer.Unlock();
+				}
 			}
 
 			return triangles;
 		}
 
 		#endregion Methods
+
 	}
 
 	public class TriangleVertices
