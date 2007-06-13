@@ -243,21 +243,6 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        ///    		Returns the full transformation of the parent SceneNode or the attachingPoint node
-        /// </summary>
-        public virtual Matrix4 ParentFullTransform
-        {
-            get
-            {
-                if ( parentNode != null )
-                    return parentNode.FullTransform;
-
-                // identity if no parent
-                return Matrix4.Identity;
-            }
-        }
-
-        /// <summary>
         ///		Gets the full transformation of the parent SceneNode or TagPoint.
         /// </summary>
         public virtual Matrix4 ParentNodeFullTransform
@@ -359,7 +344,7 @@ namespace Axiom.Core
             if ( derive )
             {
                 worldAABB = this.BoundingBox;
-                worldAABB.Transform( this.ParentFullTransform );
+                worldAABB.Transform( this.ParentNodeFullTransform );
             }
 
             return worldAABB;

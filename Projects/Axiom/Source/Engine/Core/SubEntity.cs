@@ -453,7 +453,7 @@ namespace Axiom.Core
 		{
 			if ( parent.numBoneMatrices == 0 || !parent.IsHardwareAnimationEnabled )
 			{
-				matrices[ 0 ] = parent.ParentFullTransform;
+				matrices[ 0 ] = parent.ParentNodeFullTransform;
 			}
 			else
 			{
@@ -471,7 +471,7 @@ namespace Axiom.Core
 				else
 					for ( int i = 0; i < matrices.Length; i++ )
 					{
-						matrices[ i ] = parent.ParentFullTransform;
+						matrices[ i ] = parent.ParentNodeFullTransform;
 					}
 			}
 		}
