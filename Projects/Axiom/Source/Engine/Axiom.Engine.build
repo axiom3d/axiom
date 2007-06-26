@@ -40,7 +40,8 @@
 				<include name="System.dll"/>
 				<include name="System.Configuration.dll"/>
 				<include name="System.Data.dll"/>
-				<include name="System.Xml.dll"/>
+        <include name="System.Windows.Forms.dll"/>
+        <include name="System.Xml.dll"/>
 				<include name="${ICSharpCode.SharpZipLib.dll}"/>
 			</references>
 		</csc>
