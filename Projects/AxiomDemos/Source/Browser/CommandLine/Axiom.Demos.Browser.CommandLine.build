@@ -27,6 +27,7 @@
 			<include name="${axiom.assemblies.dir}/Axiom.dll"/>
 			<include name="${axiom.assemblies.dir}/Axiom.Plugins.CgProgramManager.dll"/>
 			<include name="${axiom.assemblies.dir}/Axiom.Plugins.ParticleFX.dll"/>
+			<include name="${axiom.assemblies.dir}/Axiom.Plugins.DevILCodecs.dll"/>
 			<include name="${axiom.assemblies.dir}/Axiom.SceneManagers.Bsp.dll"/>
 			<include name="${axiom.assemblies.dir}/Axiom.SceneManagers.Octree.dll"/>
 			<include unless="${platform::is-win32()}" name="${axiom.assemblies.dir}/Axiom.RenderSystems.OpenGL.Sdl.dll"/>
