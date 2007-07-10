@@ -46,5 +46,5 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle( "Axiom nVidia Cg Plugin" )]
-[assembly: AssemblyDescription( "Plugin capable of loading and compiling Cg programs into low level ASM programs." )]
+[assembly: AssemblyTitle( "Axiom DevIL Codecs Plugin" )]
+[assembly: AssemblyDescription( "Plugin capable of loading image files using the popular DevIL libraries." )]
