@@ -376,7 +376,8 @@ namespace Axiom.Serialization
 
         protected bool IsEOF( BinaryReader reader )
         {
-            return reader.PeekChar() == -1;
+            //return reader.PeekChar() == -1;
+			return reader.BaseStream.Position >= reader.BaseStream.Length;
         }
 
         #endregion Methods

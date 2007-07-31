@@ -69,12 +69,14 @@ using System.Security.Permissions;
 #if DEBUG
 [assembly: AssemblyVersion( "0.7.1.*" )]
 #else
-[assembly: AssemblyVersion( "0.7.1.0" )]
+[assembly: AssemblyVersion( "0.7.1.1" )]
 #endif
 
-[assembly: AssemblyFileVersion( "0.7.1.0" )]
+[assembly: AssemblyFileVersion( "0.7.1.2" )]
 
 [assembly: SecurityPermission( SecurityAction.RequestMinimum )]
+[assembly: CLSCompliant( true )]
+[assembly: ComVisible( false )]
 
 [assembly: AssemblyDelaySign( false )]
 [assembly: AssemblyKeyFile( "" )]
