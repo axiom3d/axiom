@@ -24,6 +24,10 @@
 		<Files>
 			<Match pattern="Axiom.build" path="" />
 			<Match pattern="Axiom.prebuild" path="" />
+      <Match pattern="ChangeLog.txt" path=".." />
+      <Match pattern="Credits.txt" path=".." />
+      <Match pattern="license.txt" path=".." />
+      <Match pattern="readme.txt" path=".." />
 		</Files>
 
 		<Project name="Axiom" type="Library" path="Source/Engine" language="C#" runtime="Microsoft" >		
@@ -82,10 +86,7 @@
 			<ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
 
 			<Reference name="System" />
-			<Reference name="System.Data" />
-			<Reference name="System.Drawing" />
 			<Reference name="System.Windows.Forms" />
-			<Reference name="System.Xml" />
 			<Reference name="Axiom" localCopy="true"/>
 			<Reference name="Microsoft.DirectX, Version=1.0.2902.0, Culture=neutral" />
 			<Reference name="Microsoft.DirectX.DirectInput, Version=1.0.2902.0, Culture=neutral" />
@@ -117,10 +118,8 @@
 			<ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
 
 			<Reference name="System" />
-			<Reference name="System.Data" />
 			<Reference name="System.Drawing" />
 			<Reference name="System.Windows.Forms" />
-			<Reference name="System.Xml" />
 			<Reference name="Axiom" localCopy="true"/>
 			<Reference name="Microsoft.DirectX, Version=1.0.2902.0, Culture=neutral" />
 			<Reference name="Microsoft.DirectX.Direct3D, Version=1.0.2902.0, Culture=neutral" />
@@ -155,9 +154,6 @@
 			<ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
 
 			<Reference name="System" />
-			<Reference name="System.Data" />
-			<Reference name="System.Drawing" />
-			<Reference name="System.Xml" />
 			<Reference name="Axiom" localCopy="true"/>
 			<Reference name="Tao.Sdl" localCopy="true" />
 
@@ -188,10 +184,8 @@
 			<ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
 
 			<Reference name="System" />
-			<Reference name="System.Data" />
 			<Reference name="System.Drawing" />
 			<Reference name="System.Windows.Forms" />
-			<Reference name="System.Xml" />
 			<Reference name="Axiom" localCopy="true"/>
 			<Reference name="Tao.OpenGl" localCopy="true" />
 			<Reference name="Tao.OpenGl.Glu" localCopy="true" />
@@ -239,8 +233,6 @@
 			<ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
 
 			<Reference name="System" />
-			<Reference name="System.Data" />
-			<Reference name="System.Xml" />
 			<Reference name="Axiom" localCopy="true"/>
 			<Reference name="Tao.Cg" localCopy="true" />
 
@@ -267,8 +259,6 @@
 			</Configuration>
 
 			<Reference name="System" />
-			<Reference name="System.Data" />
-			<Reference name="System.Xml" />
 			<Reference name="Axiom" localCopy="true"/>
 
 			<Files>

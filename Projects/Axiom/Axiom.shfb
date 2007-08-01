@@ -1,14 +1,14 @@
-<project schemaVersion="1.3.3.1">
+﻿<project schemaVersion="1.3.3.1">
     <assemblies>
-        <assembly assemblyPath="..\..\Lib\Managed\XPlatform\Axiom\debug\Axiom.dll"                          xmlCommentsPath="..\..\Lib\Managed\XPlatform\Axiom\debug\Axiom.xml"                          commentsOnly="False" />
-        <assembly assemblyPath="..\..\Lib\Managed\XPlatform\Axiom\debug\Axiom.Platforms.SDL.dll"            xmlCommentsPath="..\..\Lib\Managed\XPlatform\Axiom\debug\Axiom.Platforms.SDL.xml"            commentsOnly="False" />
-        <assembly assemblyPath="..\..\Lib\Managed\XPlatform\Axiom\debug\Axiom.Platforms.Win32.dll"          xmlCommentsPath="..\..\Lib\Managed\XPlatform\Axiom\debug\Axiom.Platforms.Win32.xml"          commentsOnly="False" />
-        <assembly assemblyPath="..\..\Lib\Managed\XPlatform\Axiom\debug\Axiom.Plugins.CgProgramManager.dll" xmlCommentsPath="..\..\Lib\Managed\XPlatform\Axiom\debug\Axiom.Plugins.CgProgramManager.xml" commentsOnly="False" />
-        <assembly assemblyPath="..\..\Lib\Managed\XPlatform\Axiom\debug\Axiom.Plugins.ParticleFX.dll"       xmlCommentsPath="..\..\Lib\Managed\XPlatform\Axiom\debug\Axiom.Plugins.ParticleFX.xml"       commentsOnly="False" />
-        <assembly assemblyPath="..\..\Lib\Managed\XPlatform\Axiom\debug\Axiom.RenderSystems.DirectX9.dll"   xmlCommentsPath="..\..\Lib\Managed\XPlatform\Axiom\debug\Axiom.RenderSystems.DirectX9.xml"   commentsOnly="False" />
-        <assembly assemblyPath="..\..\Lib\Managed\XPlatform\Axiom\debug\Axiom.RenderSystems.OpenGL.dll"     xmlCommentsPath="..\..\Lib\Managed\XPlatform\Axiom\debug\Axiom.RenderSystems.OpenGL.xml"     commentsOnly="False" />
-        <assembly assemblyPath="..\..\Lib\Managed\XPlatform\Axiom\debug\Axiom.SceneManagers.Bsp.dll"        xmlCommentsPath="..\..\Lib\Managed\XPlatform\Axiom\debug\Axiom.SceneManagers.Bsp.xml"        commentsOnly="False" />
-        <assembly assemblyPath="..\..\Lib\Managed\XPlatform\Axiom\debug\Axiom.SceneManagers.Octree.dll"     xmlCommentsPath="..\..\Lib\Managed\XPlatform\Axiom\debug\Axiom.SceneManagers.Octree.xml"     commentsOnly="False" />
+        <assembly assemblyPath="..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.dll" xmlCommentsPath="..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.xml" commentsOnly="False" />
+        <assembly assemblyPath="..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.Platforms.SDL.dll" xmlCommentsPath="..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.Platforms.SDL.xml" commentsOnly="False" />
+        <assembly assemblyPath="..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.Platforms.Win32.dll" xmlCommentsPath="..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.Platforms.Win32.xml" commentsOnly="False" />
+        <assembly assemblyPath="..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.Plugins.CgProgramManager.dll" xmlCommentsPath="..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.Plugins.CgProgramManager.xml" commentsOnly="False" />
+        <assembly assemblyPath="..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.Plugins.ParticleFX.dll" xmlCommentsPath="..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.Plugins.ParticleFX.xml" commentsOnly="False" />
+        <assembly assemblyPath="..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.RenderSystems.DirectX9.dll" xmlCommentsPath="..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.RenderSystems.DirectX9.xml" commentsOnly="False" />
+        <assembly assemblyPath="..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.RenderSystems.OpenGL.dll" xmlCommentsPath="..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.RenderSystems.OpenGL.xml" commentsOnly="False" />
+        <assembly assemblyPath="..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.SceneManagers.Bsp.dll" xmlCommentsPath="..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.SceneManagers.Bsp.xml" commentsOnly="False" />
+        <assembly assemblyPath="..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.SceneManagers.Octree.dll" xmlCommentsPath="..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.SceneManagers.Octree.xml" commentsOnly="False" />
     </assemblies>
     <namespaceSummaries>
         <namespaceSummaryItem name="" isDocumented="False" />
@@ -74,7 +74,7 @@
     <feedbackEMailAddress>borrillis@gmail.com</feedbackEMailAddress>
     <headerText />
     <projectLinks>Index</projectLinks>
-    <sdkLinks>None</sdkLinks>
+    <sdkLinks>Msdn</sdkLinks>
     <presentationStyle>Prototype</presentationStyle>
     <namingMethod>MemberName</namingMethod>
     <syntaxFilters>Standard</syntaxFilters>

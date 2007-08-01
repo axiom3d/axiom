@@ -565,7 +565,7 @@ namespace Axiom.Core
             Entity entity = new Entity( name, mesh, this );
 
             // add it to our local list
-            entityList.Add( entity );
+            entityList.Add( name, entity );
 
             return entity;
         }

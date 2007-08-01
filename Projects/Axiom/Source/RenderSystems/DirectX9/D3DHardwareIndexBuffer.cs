@@ -111,7 +111,6 @@ namespace Axiom.RenderSystems.DirectX9
         /// <summary>
         /// 
         /// </summary>
-        /// DOC
         public override void UnlockImpl()
         {
             // unlock the buffer
@@ -124,7 +123,6 @@ namespace Axiom.RenderSystems.DirectX9
         /// <param name="offset"></param>
         /// <param name="length"></param>
         /// <param name="dest"></param>
-        /// DOC
         public override void ReadData( int offset, int length, IntPtr dest )
         {
             // lock the buffer for reading
@@ -144,7 +142,6 @@ namespace Axiom.RenderSystems.DirectX9
         /// <param name="length"></param>
         /// <param name="src"></param>
         /// <param name="discardWholeBuffer"></param>
-        /// DOC
         public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
         {
             // lock the buffer real quick

@@ -22,7 +22,7 @@ theTurbo			- Full ODE physics library, with Ragdolls, Trimesh collisions, variou
 				  Contributions to the David Walkers ODE wrapper.
 Jock				- BSP scene manager port.
 c0d3g33k			- NAnt Build system.
-Borrillis			- PagingLandscapeSceneManager
+Borrillis			- PagingLandscapeSceneManager and current maintainer
 
 
 Just cuz you aren't listed doesn't mean you haven't done anything useful.  I know there are more, I just didn't have time to comb the forums and find em all, and my memory is terrible.  So if you aren't on the list and you should be, please let me know ASAP via email or private message on the forums and you will be added ASAP.
