@@ -41,7 +41,7 @@ using System.Security.Permissions;
 #endregion Namespace Declarations
 
 [assembly: ComVisible( false ) ]
-[assembly: CLSCompliant( true ) ]
+[assembly: CLSCompliant( false ) ]
 
 #if DEBUG
 [assembly: AssemblyConfiguration( "Debug" )]
@@ -70,12 +70,12 @@ using System.Security.Permissions;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 #if DEBUG
-[assembly: AssemblyVersion( "0.7.1.*" )]
+[assembly: AssemblyVersion( "0.7.2.*" )]
 #else
-[assembly: AssemblyVersion( "0.7.1.1" )]
+[assembly: AssemblyVersion( "0.7.2.0" )]
 #endif
 
-[assembly: AssemblyFileVersion( "0.7.1.1" )]
+[assembly: AssemblyFileVersion( "0.7.2.0" )]
 
 [assembly: SecurityPermission( SecurityAction.RequestMinimum )]
 

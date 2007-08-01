@@ -116,7 +116,6 @@ namespace Axiom.RenderSystems.DirectX9
         /// <summary>
         /// 
         /// </summary>
-        /// DOC
         public D3D.VertexDeclaration D3DVertexDecl
         {
             get

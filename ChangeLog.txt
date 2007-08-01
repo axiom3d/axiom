@@ -5,7 +5,6 @@ hobbiton merged to trunk
 - Updated Fix for Serializer.IsEOF [1710556]
 - Updated Build numbers
 
-
 03-12-2007 - Borrillis
 - Reverted GCHandle usage in SoftwareBufferManager.cs as it does not lock the buffer properly.
 - Fixed up the Axiom.prebuild to remove some extraneous references.
