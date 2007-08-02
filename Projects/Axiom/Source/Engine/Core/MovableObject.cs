@@ -333,7 +333,7 @@ namespace Axiom.Core
             if ( derive )
             {
                 worldAABB = this.BoundingBox;
-                worldAABB.Transform( this.ParentFullTransform );
+                worldAABB.Transform( this.ParentNodeFullTransform );
             }
 
             return worldAABB;

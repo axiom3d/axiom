@@ -151,6 +151,17 @@ namespace Axiom.Math
         }
 
         /// <summary>
+        /// Used to divide a vector by a vector.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="scalar"></param>
+        /// <returns></returns>
+        public static Vector3 Divide( Vector3 left, Vector3 right )
+        {
+            return left / right;
+        }
+
+        /// <summary>
         /// Used to divide a vector by a scalar value.
         /// </summary>
         /// <param name="left"></param>
@@ -168,6 +179,23 @@ namespace Axiom.Math
             vector.x = left.x * inverse;
             vector.y = left.y * inverse;
             vector.z = left.z * inverse;
+
+            return vector;
+        }
+
+        /// <summary>
+        /// Used to divide a vector by a vector.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="scalar"></param>
+        /// <returns></returns>
+        public static Vector3 operator /( Vector3 left, Vector3 right )
+        {
+            Vector3 vector = new Vector3();
+
+            vector.x = left.x / right.x;
+            vector.y = left.y / right.y;
+            vector.z = left.z / right.z;
 
             return vector;
         }
