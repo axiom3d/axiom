@@ -142,14 +142,14 @@ namespace Axiom.Graphics
             this.usage = usage;
             this.useSystemMemory = useSystemMemory;
             this.useShadowBuffer = useShadowBuffer;
-			this.shadowBuffer = null;
-			this.shadowUpdated = false;
-			this.suppressHardwareUpdate = false;
+            this.shadowBuffer = null;
+            this.shadowUpdated = false;
+            this.suppressHardwareUpdate = false;
             ID = nextID++;
-			if ( useShadowBuffer && usage == BufferUsage.Dynamic )
-				usage = BufferUsage.DynamicWriteOnly;
-			else if ( useShadowBuffer && usage == BufferUsage.Static )
-				usage = BufferUsage.StaticWriteOnly;
+            if ( useShadowBuffer && usage == BufferUsage.Dynamic )
+                usage = BufferUsage.DynamicWriteOnly;
+            else if ( useShadowBuffer && usage == BufferUsage.Static )
+                usage = BufferUsage.StaticWriteOnly;
         }
 
         #endregion
@@ -176,14 +176,15 @@ namespace Axiom.Graphics
         ///		Used to lock a vertex buffer in hardware memory in order to make modifications.
         /// </summary>
         /// <param name="offset">Starting index in the buffer to lock.</param>
-        /// <param name="length">Nunber of bytes to lock after the offset.</param>
+        /// <param name="length">Number of bytes to lock after the offset.</param>
         /// <param name="locking">Specifies how to lock the buffer.</param>
         /// <returns>An array of the <code>System.Type</code> associated with this VertexBuffer.</returns>
         public virtual IntPtr Lock( int offset, int length, BufferLocking locking )
         {
-            Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." );
+            Debug.Assert( !IsLocked, "Cannot lock this buffer because it is already locked." );
+            Debug.Assert( offset >= 0 && ( offset + length ) <= sizeInBytes, "The data area to be locked exceeds the buffer." );
 
-            IntPtr data = IntPtr.Zero;
+            IntPtr data; // = IntPtr.Zero;
 
             if ( useShadowBuffer )
             {
@@ -249,33 +250,6 @@ namespace Axiom.Graphics
         protected abstract void UnlockImpl();
 
         /// <summary>
-        ///     Updates the real buffer from the shadow buffer, if required.
-        /// </summary>
-        protected void UpdateFromShadow()
-        {
-            if ( useShadowBuffer && shadowUpdated && !suppressHardwareUpdate )
-            {
-                // do this manually to avoid locking problems
-                IntPtr src = shadowBuffer.LockImpl( lockStart, lockSize, BufferLocking.ReadOnly );
-
-                // Lock with discard if the whole buffer was locked, otherwise normal
-                BufferLocking locking =
-                    ( lockStart == 0 && lockSize == sizeInBytes ) ? BufferLocking.Discard : BufferLocking.Normal;
-
-                IntPtr dest = this.LockImpl( lockStart, lockSize, locking );
-
-                // copy the data in directly
-                Memory.Copy( src, dest, lockSize );
-
-                // unlock both buffers to commit the write
-                this.UnlockImpl();
-                shadowBuffer.UnlockImpl();
-
-                shadowUpdated = false;
-            }
-        }
-
-        /// <summary>
         ///     Reads data from the buffer and places it in the memory pointed to by 'dest'.
         /// </summary>
         /// <param name="offset">The byte offset from the start of the buffer to read.</param>
@@ -293,10 +267,11 @@ namespace Axiom.Graphics
         /// <param name="offset">The byte offset from the start of the buffer to start writing.</param>
         /// <param name="length">The size of the data to write to, in bytes.</param>
         /// <param name="src">The source of the data to be written.</param>
-        public void WriteData( int offset, int length, IntPtr src )
-        {
-            WriteData( offset, length, src, false );
-        }
+        /// <param name="discardWholeBuffer">
+        ///     If true, this allows the driver to discard the entire buffer when writing,
+        ///     such that DMA stalls can be avoided; use if you can.
+        /// </param>
+        public abstract void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer );
 
         /// <summary>
         ///     Writes data to the buffer from an area of system memory; note that you must
@@ -305,11 +280,10 @@ namespace Axiom.Graphics
         /// <param name="offset">The byte offset from the start of the buffer to start writing.</param>
         /// <param name="length">The size of the data to write to, in bytes.</param>
         /// <param name="src">The source of the data to be written.</param>
-        /// <param name="discardWholeBuffer">
-        ///     If true, this allows the driver to discard the entire buffer when writing,
-        ///     such that DMA stalls can be avoided; use if you can.
-        /// </param>
-        public abstract void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer );
+        public void WriteData( int offset, int length, IntPtr src )
+        {
+            WriteData( offset, length, src, false );
+        }
 
         /// <summary>
         ///    Allows passing in a managed array of data to fill the vertex buffer.
@@ -323,11 +297,12 @@ namespace Axiom.Graphics
         /// </param>
         public void WriteData( int offset, int length, System.Array data )
         {
-			GCHandle handle = GCHandle.Alloc( data, GCHandleType.Pinned );
-			IntPtr dataPtr = handle.AddrOfPinnedObject();
-			// IntPtr dataPtr = Marshal.UnsafeAddrOfPinnedArrayElement(data, 0);
-            WriteData( offset, length, dataPtr );
-			handle.Free();
+            GCHandle handle = GCHandle.Alloc( data, GCHandleType.Pinned );
+            IntPtr dataPtr = handle.AddrOfPinnedObject();
+
+            WriteData( offset, length, dataPtr, false );
+
+            handle.Free();
         }
 
         /// <summary>
@@ -346,11 +321,12 @@ namespace Axiom.Graphics
         /// </param>
         public virtual void WriteData( int offset, int length, System.Array data, bool discardWholeBuffer )
         {
-			GCHandle handle = GCHandle.Alloc( data, GCHandleType.Pinned );
-			IntPtr dataPtr = handle.AddrOfPinnedObject();
-			// IntPtr dataPtr = Marshal.UnsafeAddrOfPinnedArrayElement(data, 0);
+            GCHandle handle = GCHandle.Alloc( data, GCHandleType.Pinned );
+            IntPtr dataPtr = handle.AddrOfPinnedObject();
+
             WriteData( offset, length, dataPtr, discardWholeBuffer );
-			handle.Free();
+
+            handle.Free();
         }
 
         /// <summary>
@@ -384,6 +360,33 @@ namespace Axiom.Graphics
 
             // unlock the source buffer
             srcBuffer.Unlock();
+        }
+
+        /// <summary>
+        ///     Updates the real buffer from the shadow buffer, if required.
+        /// </summary>
+        protected void UpdateFromShadow()
+        {
+            if ( useShadowBuffer && shadowUpdated && !suppressHardwareUpdate )
+            {
+                // do this manually to avoid locking problems
+                IntPtr src = shadowBuffer.LockImpl( lockStart, lockSize, BufferLocking.ReadOnly );
+
+                // Lock with discard if the whole buffer was locked, otherwise normal
+                BufferLocking locking =
+                    ( lockStart == 0 && lockSize == sizeInBytes ) ? BufferLocking.Discard : BufferLocking.Normal;
+
+                IntPtr dest = this.LockImpl( lockStart, lockSize, locking );
+
+                // copy the data in directly
+                Memory.Copy( src, dest, lockSize );
+
+                // unlock both buffers to commit the write
+                this.UnlockImpl();
+                shadowBuffer.UnlockImpl();
+
+                shadowUpdated = false;
+            }
         }
 
         /// <summary>
@@ -465,72 +468,56 @@ namespace Axiom.Graphics
 
         #region IDisposable Implementation
 
+        /// <summary>
+        /// Determines if this instance has been disposed of already.
+        /// </summary>
+        protected bool isDisposed;
 
-		#region isDisposed Property
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        /// <remarks>
+        /// When implementing this method in an inherited class the following template should be used;
+        /// protected override void dispose( bool disposeManagedResources )
+        /// {
+        /// 	if ( !isDisposed )
+        /// 	{
+        /// 		if ( disposeManagedResources )
+        /// 		{
+        /// 			// Dispose managed resources.
+        /// 		}
+        /// 
+        /// 		// If there are any unmanaged resources 
+        ///         // they need to be released here.
+        ///
+        ///         base.dispose( disposeManagedResources ); //isDisposed = true;
+        /// 	}
+        /// }
+        /// </remarks>
+        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+        protected virtual void dispose( bool disposeManagedResources )
+        {
+            if ( !isDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    // Dispose managed resources.
+                }
 
-		private bool _disposed = false;
-		/// <summary>
-		/// Determines if this instance has been disposed of already.
-		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
+            isDisposed = true;
+        }
 
-		#endregion isDisposed Property
+        public void Dispose()
+        {
+            dispose( true );
+            GC.SuppressFinalize( this );
+        }
 
-		/// <summary>
-		/// Class level dispose method
-		/// </summary>
-		/// <remarks>
-		/// When implementing this method in an inherited class the following template should be used;
-		/// protected override void dispose( bool disposeManagedResources )
-		/// {
-		/// 	if ( !isDisposed )
-		/// 	{
-		/// 		if ( disposeManagedResources )
-		/// 		{
-		/// 			// Dispose managed resources.
-		/// 		}
-		/// 
-		/// 		// There are no unmanaged resources to release, but
-		/// 		// if we add them, they need to be released here.
-		/// 	}
-		/// 	isDisposed = true;
-		///
-		/// 	// If it is available, make the call to the
-		/// 	// base class's Dispose(Boolean) method
-		/// 	base.dispose( disposeManagedResources );
-		/// }
-		/// </remarks>
-		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
-		{
-			if ( !isDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					// Dispose managed resources.
-				}
-
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-			}
-			isDisposed = true;
-		}
-
-		public void Dispose()
-		{
-			dispose( true );
-			GC.SuppressFinalize( this );
-		}
-		#endregion IDisposable Implementation
+        #endregion IDisposable Implementation
     }
 }
+
+
