@@ -222,10 +222,13 @@ namespace Axiom.Graphics
         {
             if ( !isDisposed )
             {
+                if ( IsLocked )
+                {
+                    Unlock();
+                }
+
                 if ( disposeManagedResources )
                 {
-                    //TODO: consider whether to dispose a locked buffer (probably an issue in the user application)
-                    Debug.Assert( !isLocked, "Cannot dispose a locked buffer." ); //debug only, data will be collected even if pinned
                     data = null;
                 }
 
@@ -276,19 +279,15 @@ namespace Axiom.Graphics
 
         #region Methods
 
-        //public override IntPtr Lock( int offset, int length, BufferLocking locking )
-        //{
-        //    //we are not going to take advantage of the base.Lock() implementation (gaining a bit performance by that)
-        //    //as software buffers do not generally need a shadow buffer, being often shadow buffers them selves. 
-        //
-        //    return base.Lock(offset, length, locking); //use it either, includes range checking etc.
-        //
-        //    //Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." );
-        //
-        //    //isLocked = true;
-        //
-        //    //return LockImpl( offset, length, locking );
-        //}
+        public override IntPtr Lock( int offset, int length, BufferLocking locking )
+        {
+            Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." );
+            Debug.Assert( offset >= 0 && ( offset + length ) <= sizeInBytes, "The data area to be locked exceeds the buffer." );
+
+            isLocked = true;
+
+            return LockImpl( offset, length, locking );
+        }
 
         protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
         {
@@ -307,16 +306,14 @@ namespace Axiom.Graphics
             //return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
         }
 
-        //public override void Unlock()
-        //{
-        //    base.Unlock();
+        public override void Unlock()
+        {
+            Debug.Assert( isLocked, "Cannot unlock buffer if it wasn't locked." );
 
-        //    //Debug.Assert(isLocked, "Cannot unlock buffer if it wasn't locked.");
+            isLocked = false;
 
-        //    //isLocked = false;
-
-        //    //UnlockImpl();
-        //}
+            UnlockImpl();
+        }
 
         protected override void UnlockImpl()
         {
@@ -381,10 +378,13 @@ namespace Axiom.Graphics
         {
             if ( !isDisposed )
             {
+                if ( IsLocked )
+                {
+                    Unlock();
+                }
+
                 if ( disposeManagedResources )
                 {
-                    //TODO: consider whether to dispose a locked buffer (probably an issue in the user application)
-                    Debug.Assert( !IsLocked, "Cannot dispose a locked buffer." ); //debug only, data will be collected even if pinned
                     data = null;
                 }
 

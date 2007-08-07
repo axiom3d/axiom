@@ -129,7 +129,7 @@ namespace Axiom.Graphics
 
         #endregion Fields
 
-        #region Constructors
+        #region Construction and Destruction
 
         /// <summary>
         ///     Constructor.
@@ -150,6 +150,11 @@ namespace Axiom.Graphics
                 usage = BufferUsage.DynamicWriteOnly;
             else if ( useShadowBuffer && usage == BufferUsage.Static )
                 usage = BufferUsage.StaticWriteOnly;
+        }
+
+        ~HardwareBuffer()
+        {
+            dispose( false );
         }
 
         #endregion
