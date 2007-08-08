@@ -77,11 +77,11 @@ namespace Axiom.Core
         /// <summary>
         /// Gets the list of scene objects attached to this scene node
         /// </summary>
-		public ICollection Objects
+        public ICollection Objects
         {
             get
             {
-				return objectList.Values;
+                return objectList.Values;
             }
         }
 
@@ -139,7 +139,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Local 'normal' direction vector.
         /// </summary>
-		protected Vector3 autoTrackLocalDirection = Vector3.NegativeUnitZ;
+        protected Vector3 autoTrackLocalDirection = Vector3.NegativeUnitZ;
         /// <summary>
         ///		Determines whether node and children are visible or not.
         /// </summary>
@@ -269,7 +269,8 @@ namespace Axiom.Core
             set
             {
                 autoTrackTarget = value;
-                creator.NotifyAutoTrackingSceneNode( this, value != null );
+                if ( creator != null )
+                    creator.NotifyAutoTrackingSceneNode( this, value != null );
             }
         }
 
@@ -292,11 +293,11 @@ namespace Axiom.Core
 
         #region Methods
 
-		protected override void OnRename( string oldName )
-		{
-			//ensure that it is keyed to the name name in the Scene Manager that manages it
-			this.creator.RekeySceneNode( oldName, this );
-		}
+        protected override void OnRename( string oldName )
+        {
+            //ensure that it is keyed to the name name in the Scene Manager that manages it
+            this.creator.RekeySceneNode( oldName, this );
+        }
 
 
         /// <summary>
@@ -525,10 +526,10 @@ namespace Axiom.Core
             FindVisibleObjects( camera, queue, includeChildren, displayNodes, false );
         }
 
-		private static TimingMeter objectListMeter = MeterManager.GetMeter( "Object List", "Find Visible" );
-		private static TimingMeter childListMeter = MeterManager.GetMeter( "Child List", "Find Visible" );
-		private static TimingMeter notifyCameraMeter = MeterManager.GetMeter( "Notify Camera", "Find Visible" );
-		private static TimingMeter updateQueueMeter = MeterManager.GetMeter( "Update Queue", "Find Visible" );
+        private static TimingMeter objectListMeter = MeterManager.GetMeter( "Object List", "Find Visible" );
+        private static TimingMeter childListMeter = MeterManager.GetMeter( "Child List", "Find Visible" );
+        private static TimingMeter notifyCameraMeter = MeterManager.GetMeter( "Notify Camera", "Find Visible" );
+        private static TimingMeter updateQueueMeter = MeterManager.GetMeter( "Update Queue", "Find Visible" );
 
         /// <summary>
         ///		Internal method which locates any visible objects attached to this node and adds them to the passed in queue.
@@ -546,28 +547,28 @@ namespace Axiom.Core
                 return;
 
             // add visible objects to the render queue
-			//objectListMeter.Enter();
+            //objectListMeter.Enter();
             for ( int i = 0; i < objectList.Count; i++ )
             {
                 MovableObject obj = objectList[ i ];
 
                 // tell attached object about current camera in case it wants to know
-				//notifyCameraMeter.Enter();
+                //notifyCameraMeter.Enter();
                 obj.NotifyCurrentCamera( camera );
-				//notifyCameraMeter.Exit();
+                //notifyCameraMeter.Exit();
 
                 // if this object is visible, add it to the render queue
                 if ( obj.IsVisible &&
                     ( !onlyShadowCasters || obj.CastShadows ) )
                 {
-					//updateQueueMeter.Enter();
+                    //updateQueueMeter.Enter();
                     obj.UpdateRenderQueue( queue );
-					//updateQueueMeter.Exit();
+                    //updateQueueMeter.Exit();
                 }
             }
-			//objectListMeter.Exit();
+            //objectListMeter.Exit();
 
-			//childListMeter.Enter();
+            //childListMeter.Enter();
             if ( includeChildren )
             {
                 // ask all child nodes to update the render queue with visible objects
@@ -578,7 +579,7 @@ namespace Axiom.Core
                         childNode.FindVisibleObjects( camera, queue, includeChildren, displayNodes, onlyShadowCasters );
                 }
             }
-			//childListMeter.Exit();
+            //childListMeter.Exit();
 
             // if we wanna display nodes themself..
             if ( displayNodes )
@@ -589,7 +590,7 @@ namespace Axiom.Core
 
             // do we wanna show our beautiful bounding box?
             // do it if either we want it, or the SceneManager dictates it
-            if ( showBoundingBox || creator.ShowBoundingBoxes )
+            if ( showBoundingBox || ( creator != null && creator.ShowBoundingBoxes ) )
             {
                 AddBoundingBoxToQueue( queue );
             }
@@ -884,7 +885,11 @@ namespace Axiom.Core
             // visible nodes, so temporarily visible nodes will not be updated
             // Since this is only called for visible nodes, skip the check for now
             //if(lightListDirty) {
-            creator.PopulateLightList( this.DerivedPosition, radius, lightList );
+            if ( creator != null )
+                creator.PopulateLightList( this.DerivedPosition, radius, lightList );
+            else
+                lightList.Clear();
+
             lightListDirty = false;
             //}
 

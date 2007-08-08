@@ -610,7 +610,7 @@ namespace Axiom.RenderSystems.DirectX9
 			D3D.TextureLoader.CheckTextureRequirements( device, d3dUsage, D3D.Pool.Default, out texRequire );
 			numMips = texRequire.NumberMipLevels;
 			d3dPixelFormat = texRequire.Format;
-			Debug.Assert( normTexture == null );
+			//Debug.Assert( normTexture == null );
 			LogManager.Instance.Write( "Created normal texture {0}", this.Name );
 			// create the texture
 			normTexture = new D3D.Texture(
@@ -1240,8 +1240,10 @@ namespace Axiom.RenderSystems.DirectX9
 				// Just free any internal resources, don't call unload() here
 				// because we want the un-touched resource to keep its unloaded status
 				// after device reset.
-				Debug.Assert( false, "Release of D3D9 textures is not yet implemented" );
-				// Unload();
+				//Debug.Assert( false, "Release of D3D9 textures is not yet implemented" )
+
+                FreeInternalResources();
+
 				// FIXME
 #if OGRE_CODE
                 FreeInternalResources();
@@ -1264,8 +1266,22 @@ namespace Axiom.RenderSystems.DirectX9
 				// 1. This is a render texture, or
 				// 2. This is a manual texture with no loader, or
 				// 3. This was an unloaded regular texture (preserve unloaded state)
-				Debug.Assert( false, "Recreation of D3D9 textures is not yet implemented" );
-				// FIXME
+				//Debug.Assert( false, "Recreation of D3D9 textures is not yet implemented" );
+
+                if ((Usage & TextureUsage.RenderTarget) != null || IsLoaded == true)
+                {
+                    CreateInternalResources();
+                }
+                else
+                {
+                    // The internal resources already freed, need unload/load here:
+                    // 1. Make sure resource memory usage statistic correction.
+                    // 2. Don't call unload() in releaseIfDefaultPool() because we want
+                    //    the un-touched resource keep unload status after device reset.
+                    Unload();
+                    Load();
+                }
+
 #if OGRE_CODE
 			    if ((mIsManual && !mLoader) || (mUsage & TU_RENDERTARGET) || !mIsLoaded)
 			    {

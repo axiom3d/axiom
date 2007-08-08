@@ -62,505 +62,505 @@ namespace Axiom.Core
     {
         #region Fields and Properties
 
-		/// <summary>
-		///		Should this viewport be cleared very frame?
-		/// </summary>
-		private bool _clearEveryFrame;
+        /// <summary>
+        ///		Should this viewport be cleared very frame?
+        /// </summary>
+        private bool _clearEveryFrame;
 
-		/// <summary>
-		///		Which buffers to clear every frame
-		/// </summary>
-		private FrameBuffer _clearBuffers;
+        /// <summary>
+        ///		Which buffers to clear every frame
+        /// </summary>
+        private FrameBuffer _clearBuffers;
 
-		#region Camera Property
+        #region Camera Property
 
-		/// <summary>
-		///		Camera that this viewport is attached to.
-		/// </summary>
-		private Camera _camera;
-		/// <summary>
-		///		Retrieves a reference to the camera for this viewport.
-		/// </summary>
-		public Camera Camera
-		{
-			get
-			{
-				return _camera;
-			}
-			set
-			{
-				_camera = value;
-			}
-		}
+        /// <summary>
+        ///		Camera that this viewport is attached to.
+        /// </summary>
+        private Camera _camera;
+        /// <summary>
+        ///		Retrieves a reference to the camera for this viewport.
+        /// </summary>
+        public Camera Camera
+        {
+            get
+            {
+                return _camera;
+            }
+            set
+            {
+                _camera = value;
+            }
+        }
 
-		#endregion Camera Property
-			
-		#region Target Property
+        #endregion Camera Property
 
-		/// <summary>
-		///		Render target that is using this viewport.
-		/// </summary>
-		private RenderTarget _target;
-		/// <summary>
-		///		Retrieves a reference to the render target for this viewport.
-		/// </summary>
-		public RenderTarget Target
-		{
-			get
-			{
-				return _target;
-			}
-			set
-			{
-				_target = value;
-			}
-		}
+        #region Target Property
 
-		#endregion Target Property
+        /// <summary>
+        ///		Render target that is using this viewport.
+        /// </summary>
+        private RenderTarget _target;
+        /// <summary>
+        ///		Retrieves a reference to the render target for this viewport.
+        /// </summary>
+        public RenderTarget Target
+        {
+            get
+            {
+                return _target;
+            }
+            set
+            {
+                _target = value;
+            }
+        }
 
-		#region Top (Relative [0.0, 1.0]) Property
+        #endregion Target Property
 
-		/// <summary>
-		///		Relative top [0.0, 1.0].
-		/// </summary>
-		private float _relativeTop;
-		/// <summary>
-		///		Gets the relative top edge of the viewport, a value between 0.0 and 1.0.
-		/// </summary>
-		public float Top
-		{
-			get
-			{
-				return _relativeTop;
-			}
-		}
+        #region Top (Relative [0.0, 1.0]) Property
 
-		#endregion Top (Relative [0.0, 1.0]) Property
-			
-		#region Left (Relative [0.0, 1.0]) Property
+        /// <summary>
+        ///		Relative top [0.0, 1.0].
+        /// </summary>
+        private float _relativeTop;
+        /// <summary>
+        ///		Gets the relative top edge of the viewport, a value between 0.0 and 1.0.
+        /// </summary>
+        public float Top
+        {
+            get
+            {
+                return _relativeTop;
+            }
+        }
 
-		/// <summary>
-		///		Relative left [0.0, 1.0].
-		/// </summary>
-		private float _relativeLeft;
-		/// <summary>
-		///		Gets the relative left edge of the viewport, a value between 0.0 and 1.0.
-		/// </summary>
-		public float Left
-		{
-			get
-			{
-				return _relativeLeft;
-			}
-		}
+        #endregion Top (Relative [0.0, 1.0]) Property
 
-		#endregion Left (Relative [0.0, 1.0]) Property
+        #region Left (Relative [0.0, 1.0]) Property
 
-		#region With (Relative [0.0, 1.0]) Property
+        /// <summary>
+        ///		Relative left [0.0, 1.0].
+        /// </summary>
+        private float _relativeLeft;
+        /// <summary>
+        ///		Gets the relative left edge of the viewport, a value between 0.0 and 1.0.
+        /// </summary>
+        public float Left
+        {
+            get
+            {
+                return _relativeLeft;
+            }
+        }
 
-		/// <summary>
-		///		Relative width [0.0, 1.0].
-		/// </summary>
-		private float _relativeWidth;
-		/// <summary>
-		///		Gets the relative width of the viewport, a value between 0.0 and 1.0.
-		/// </summary>
-		public float Width
-		{
-			get
-			{
-				return _relativeWidth;
-			}
-		}
+        #endregion Left (Relative [0.0, 1.0]) Property
 
-		#endregion With (Relative [0.0, 1.0]) Property
+        #region With (Relative [0.0, 1.0]) Property
 
-		#region Height (Relative [0.0, 1.0]) Property
+        /// <summary>
+        ///		Relative width [0.0, 1.0].
+        /// </summary>
+        private float _relativeWidth;
+        /// <summary>
+        ///		Gets the relative width of the viewport, a value between 0.0 and 1.0.
+        /// </summary>
+        public float Width
+        {
+            get
+            {
+                return _relativeWidth;
+            }
+        }
 
-		/// <summary>
-		///		Relative height [0.0, 1.0].
-		/// </summary>
-		private float _relativeHeight;
-		/// <summary>
-		///		Gets the relative height of the viewport, a value between 0.0 and 1.0.
-		/// </summary>
-		public float Height
-		{
-			get
-			{
-				return _relativeHeight;
-			}
-		}
+        #endregion With (Relative [0.0, 1.0]) Property
 
-		#endregion Height (Relative [0.0, 1.0]) Property
+        #region Height (Relative [0.0, 1.0]) Property
 
-		#region ActualTop (In Pixels) Property
+        /// <summary>
+        ///		Relative height [0.0, 1.0].
+        /// </summary>
+        private float _relativeHeight;
+        /// <summary>
+        ///		Gets the relative height of the viewport, a value between 0.0 and 1.0.
+        /// </summary>
+        public float Height
+        {
+            get
+            {
+                return _relativeHeight;
+            }
+        }
 
-		/// <summary>
-		///		Absolute top edge of the viewport (in pixels).
-		/// </summary>
-		private int _actualTop;
-		/// <summary>
-		///		Gets the actual top edge of the viewport, a value in pixels.
-		/// </summary>
-		public int ActualTop
-		{
-			get
-			{
-				return _actualTop;
-			}
-		}
+        #endregion Height (Relative [0.0, 1.0]) Property
 
-		#endregion ActualTop (In Pixels) Property
+        #region ActualTop (In Pixels) Property
 
-		#region ActualLeft (In Pixels) Property
+        /// <summary>
+        ///		Absolute top edge of the viewport (in pixels).
+        /// </summary>
+        private int _actualTop;
+        /// <summary>
+        ///		Gets the actual top edge of the viewport, a value in pixels.
+        /// </summary>
+        public int ActualTop
+        {
+            get
+            {
+                return _actualTop;
+            }
+        }
 
-		/// <summary>
-		///		Absolute left edge of the viewport (in pixels).
-		/// </summary>
-		private int _actualLeft;
-		/// <summary>
-		///		Gets the actual left edge of the viewport, a value in pixels.
-		/// </summary>
-		public int ActualLeft
-		{
-			get
-			{
-				return _actualLeft;
-			}
-		}
+        #endregion ActualTop (In Pixels) Property
 
-		#endregion ActualLeft (In Pixels) Property
+        #region ActualLeft (In Pixels) Property
 
-		#region ActualWidth (In Pixels) Property
+        /// <summary>
+        ///		Absolute left edge of the viewport (in pixels).
+        /// </summary>
+        private int _actualLeft;
+        /// <summary>
+        ///		Gets the actual left edge of the viewport, a value in pixels.
+        /// </summary>
+        public int ActualLeft
+        {
+            get
+            {
+                return _actualLeft;
+            }
+        }
 
-		/// <summary>
-		///		Absolute width of the viewport (in pixels).
-		/// </summary>
-		private int _actualWidth;
-		/// <summary>
-		///		Gets the actual width of the viewport, a value in pixels.
-		/// </summary>
-		public int ActualWidth
-		{
-			get
-			{
-				return _actualWidth;
-			}
-		}
+        #endregion ActualLeft (In Pixels) Property
 
-		#endregion ActualWidth (In Pixels) Property
+        #region ActualWidth (In Pixels) Property
 
-		#region ActualHeight (In Pixels) Property
+        /// <summary>
+        ///		Absolute width of the viewport (in pixels).
+        /// </summary>
+        private int _actualWidth;
+        /// <summary>
+        ///		Gets the actual width of the viewport, a value in pixels.
+        /// </summary>
+        public int ActualWidth
+        {
+            get
+            {
+                return _actualWidth;
+            }
+        }
 
-		/// <summary>
-		///		Absolute height of the viewport (in pixels).
-		/// </summary>
-		private int _actualHeight;
-		/// <summary>
-		///		Gets the actual height of the viewport, a value in pixels.
-		/// </summary>
-		public int ActualHeight
-		{
-			get
-			{
-				return _actualHeight;
-			}
-		}
+        #endregion ActualWidth (In Pixels) Property
 
-		#endregion ActualHeight (In Pixels) Property
-			
-		#region ZOrder Property
+        #region ActualHeight (In Pixels) Property
 
-		/// <summary>
-		///		Depth order of the viewport, for sorting.
-		/// </summary>
-		private int _zOrder;
-		/// <summary>
-		///		Gets the ZOrder of this viewport.
-		/// </summary>
-		public int ZOrder
-		{
-			get
-			{
-				return _zOrder;
-			}
-		} 
-		#endregion ZOrder Property
-			
-		#region BackgroundColor Property
+        /// <summary>
+        ///		Absolute height of the viewport (in pixels).
+        /// </summary>
+        private int _actualHeight;
+        /// <summary>
+        ///		Gets the actual height of the viewport, a value in pixels.
+        /// </summary>
+        public int ActualHeight
+        {
+            get
+            {
+                return _actualHeight;
+            }
+        }
 
-		/// <summary>
-		///		Background color of the viewport.
-		/// </summary>
-		private ColorEx _backColor;
-		/// <summary>
-		///		Gets/Sets the background color which will be used to clear the screen every frame.
-		/// </summary>
-		public ColorEx BackgroundColor
-		{
-			get
-			{
-				return _backColor;
-			}
-			set
-			{
-				_backColor = value;
-			}
-		}
+        #endregion ActualHeight (In Pixels) Property
 
-		#endregion BackgroundColor Property
-			
-		#region IsUpdated Property
+        #region ZOrder Property
 
-		/// <summary>
-		///		Has this viewport been updated?
-		/// </summary>
-		private bool _isUpdated;
-		/// <summary>
-		///		Gets/Sets the IsUpdated value.
-		/// </summary>
-		public bool IsUpdated
-		{
-			get
-			{
-				return _isUpdated;
-			}
-			set
-			{
-				_isUpdated = value;
-			}
-		}
+        /// <summary>
+        ///		Depth order of the viewport, for sorting.
+        /// </summary>
+        private int _zOrder;
+        /// <summary>
+        ///		Gets the ZOrder of this viewport.
+        /// </summary>
+        public int ZOrder
+        {
+            get
+            {
+                return _zOrder;
+            }
+        }
+        #endregion ZOrder Property
 
-		#endregion IsUpdated Property
-			
-		#region ShowOverlays Property
+        #region BackgroundColor Property
 
-		/// <summary>
-		///		Should we show overlays on this viewport?
-		/// </summary>
-		private bool _showOverlays;
-		/// <summary>
-		///		Tells this viewport whether it should display Overlay objects.
-		///	</summary>
-		///	<remarks>
-		///		Overlay objects are layers which appear on top of the scene. They are created via
-		///		SceneManager.CreateOverlay and every viewport displays these by default.
-		///		However, you probably don't want this if you're using multiple viewports,
-		///		because one of them is probably a picture-in-picture which is not supposed to
-		///		have overlays of it's own. In this case you can turn off overlays on this viewport
-		///		by calling this method.
-		public bool ShowOverlays
-		{
-			get
-			{
-				return _showOverlays;
-			}
-			set
-			{
-				_showOverlays = value;
-			}
-		}
+        /// <summary>
+        ///		Background color of the viewport.
+        /// </summary>
+        private ColorEx _backColor;
+        /// <summary>
+        ///		Gets/Sets the background color which will be used to clear the screen every frame.
+        /// </summary>
+        public ColorEx BackgroundColor
+        {
+            get
+            {
+                return _backColor;
+            }
+            set
+            {
+                _backColor = value;
+            }
+        }
 
-		#endregion ShowOverlays Property
+        #endregion BackgroundColor Property
 
-		#region ShowSkies Property
+        #region IsUpdated Property
 
-		/// <summary>
-		///		Should we show skies on this viewport?
-		/// </summary>
-		private bool _showSkies;
-		/// <summary>
-		/// Tells this viewport whether it should display skies.
-		/// </summary>
-		/// <remarks>
-		/// Skies are layers which appear on background of the scene. They are created via
-		/// SceneManager.SetSkyBox, SceneManager.SetSkyPlane and SceneManager.SetSkyDome and
-		/// every viewport displays these by default. However, you probably don't want this if
-		/// you're using multiple viewports, because one of them is probably a picture-in-picture
-		/// which is not supposed to have skies of it's own. In this case you can turn off skies
-		/// on this viewport by calling this method.
-		/// </remarks>
-		public bool ShowSkies
-		{
-			get
-			{
-				return _showSkies;
-			}
-			set
-			{
-				_showSkies = value;
-			}
-		}
+        /// <summary>
+        ///		Has this viewport been updated?
+        /// </summary>
+        private bool _isUpdated;
+        /// <summary>
+        ///		Gets/Sets the IsUpdated value.
+        /// </summary>
+        public bool IsUpdated
+        {
+            get
+            {
+                return _isUpdated;
+            }
+            set
+            {
+                _isUpdated = value;
+            }
+        }
 
-		#endregion ShowSkies Property
+        #endregion IsUpdated Property
 
-		#region ShowShadows Property
+        #region ShowOverlays Property
 
-		/// <summary>
-		///		Should we show shadows on this viewport?
-		/// </summary>
-		private bool _showShadows;
-		/// <summary>
-		/// Tells this viewport whether it should display shadows.
-		/// </summary>
-		/// <remarks>
-		/// This setting enables you to disable shadow rendering for a given viewport. The global
-		/// shadow technique set on SceneManager still controls the type and nature of shadows,
-		/// but this flag can override the setting so that no shadows are rendered for a given
-		/// viewport to save processing time where they are not required.
-		/// </remarks>
-		public bool ShowShadows
-		{
-			get
-			{
-				return _showShadows;
-			}
-			set
-			{
-				_showShadows = value;
-			}
-		}
+        /// <summary>
+        ///		Should we show overlays on this viewport?
+        /// </summary>
+        private bool _showOverlays;
+        /// <summary>
+        ///		Tells this viewport whether it should display Overlay objects.
+        ///	</summary>
+        ///	<remarks>
+        ///		Overlay objects are layers which appear on top of the scene. They are created via
+        ///		SceneManager.CreateOverlay and every viewport displays these by default.
+        ///		However, you probably don't want this if you're using multiple viewports,
+        ///		because one of them is probably a picture-in-picture which is not supposed to
+        ///		have overlays of it's own. In this case you can turn off overlays on this viewport
+        ///		by calling this method.
+        public bool ShowOverlays
+        {
+            get
+            {
+                return _showOverlays;
+            }
+            set
+            {
+                _showOverlays = value;
+            }
+        }
 
-		#endregion ShowShadows Property
-			
-		#region MaterialScheme Property
+        #endregion ShowOverlays Property
 
-		/// <summary>
-		///     Which material scheme should this viewport use?
-		/// </summary>
-		private string _materialScheme;
-		/// <summary>
-		/// the material scheme which the viewport should use.
-		/// </summary>
-		/// <remarks>
-		/// This allows you to tell the system to use a particular
-		/// material scheme when rendering this viewport, which can 
-		/// involve using different techniques to render your materials.
-		/// <see>Technique.SchemeName</see>
-		/// </remarks>
-		public string MaterialScheme
-		{
-			get
-			{
-				return _materialScheme;
-			}
-			set
-			{
-				_materialScheme = value;
-			}
-		}
+        #region ShowSkies Property
 
-		#endregion MaterialScheme Property
+        /// <summary>
+        ///		Should we show skies on this viewport?
+        /// </summary>
+        private bool _showSkies;
+        /// <summary>
+        /// Tells this viewport whether it should display skies.
+        /// </summary>
+        /// <remarks>
+        /// Skies are layers which appear on background of the scene. They are created via
+        /// SceneManager.SetSkyBox, SceneManager.SetSkyPlane and SceneManager.SetSkyDome and
+        /// every viewport displays these by default. However, you probably don't want this if
+        /// you're using multiple viewports, because one of them is probably a picture-in-picture
+        /// which is not supposed to have skies of it's own. In this case you can turn off skies
+        /// on this viewport by calling this method.
+        /// </remarks>
+        public bool ShowSkies
+        {
+            get
+            {
+                return _showSkies;
+            }
+            set
+            {
+                _showSkies = value;
+            }
+        }
 
-		#region VisibilityMask Property
+        #endregion ShowSkies Property
 
-		/// <summary>
-		/// the per-viewport visibility mask
-		/// </summary>
-		private int _visibilityMask;
-		/// <summary>
-		/// a per-viewport visibility mask.
-		/// </summary>
-		/// <remarks>
-		/// The visibility mask is a way to exclude objects from rendering for
-		/// a given viewport. For each object in the frustum, a check is made
-		/// between this mask and the objects visibility flags 
-		/// (MovableObject.VisibilityFlags), and if a binary 'and'
-		/// returns zero, the object will not be rendered.
-		/// </remarks>
-		public int VisibilityMask
-		{
-			get
-			{
-				return _visibilityMask;
-			}
-			set
-			{
-				_visibilityMask = value;
-			}
-		}
+        #region ShowShadows Property
 
-		#endregion VisibilityMask Property
-			
-		#region RenderedFaceCount Property
+        /// <summary>
+        ///		Should we show shadows on this viewport?
+        /// </summary>
+        private bool _showShadows;
+        /// <summary>
+        /// Tells this viewport whether it should display shadows.
+        /// </summary>
+        /// <remarks>
+        /// This setting enables you to disable shadow rendering for a given viewport. The global
+        /// shadow technique set on SceneManager still controls the type and nature of shadows,
+        /// but this flag can override the setting so that no shadows are rendered for a given
+        /// viewport to save processing time where they are not required.
+        /// </remarks>
+        public bool ShowShadows
+        {
+            get
+            {
+                return _showShadows;
+            }
+            set
+            {
+                _showShadows = value;
+            }
+        }
 
-		/// <summary>
-		///		Returns the number of faces rendered to this viewport during the last frame.
-		/// </summary>
-		public int RenderedFaceCount
-		{
-			get
-			{
-				return _camera.RenderedFaceCount;
-			}
-		}
+        #endregion ShowShadows Property
 
-		#endregion RenderedFaceCount Property
+        #region MaterialScheme Property
 
-		#region RenderedBatchCount Property
+        /// <summary>
+        ///     Which material scheme should this viewport use?
+        /// </summary>
+        private string _materialScheme;
+        /// <summary>
+        /// the material scheme which the viewport should use.
+        /// </summary>
+        /// <remarks>
+        /// This allows you to tell the system to use a particular
+        /// material scheme when rendering this viewport, which can 
+        /// involve using different techniques to render your materials.
+        /// <see>Technique.SchemeName</see>
+        /// </remarks>
+        public string MaterialScheme
+        {
+            get
+            {
+                return _materialScheme;
+            }
+            set
+            {
+                _materialScheme = value;
+            }
+        }
 
-		/// <summary>
-		/// Gets the number of rendered batches in the last update.
-		/// </summary>
-		public int RenderedBatchCount
-		{
-			get
-			{
-				//TODO : Implement Camera.RenderedBatchCount
-				//return Camera.RenderedBatchCount;
-				return 0;
-			}
-		}
-		
-		#endregion RenderedBatchCount Property
+        #endregion MaterialScheme Property
 
-		#region RenderQueueSequence Properties Property
+        #region VisibilityMask Property
 
-		/// <summary>
-		/// The name of the render queue invocation sequence for this target.
-		/// </summary>
-		/// <remarks>
-		/// RenderQueueInvocationSequence instances are managed through Root. By
-		/// setting this, you are indicating that you wish this RenderTarget to
-		/// be updated using a custom sequence of render queue invocations, with
-		/// potentially customised ordering and render state options. You should
-		/// create the named sequence through Root first, then set the name here.
-		/// </remarks>
-		public string RenderQueueInvocationSequenceName
-		{
-			get
-			{
-				//TODO : Implement Viewport.RenderQueueSequenceName
-				throw new System.NotImplementedException();
-			}
-			set
-			{
-			}
-		}
+        /// <summary>
+        /// the per-viewport visibility mask
+        /// </summary>
+        private int _visibilityMask;
+        /// <summary>
+        /// a per-viewport visibility mask.
+        /// </summary>
+        /// <remarks>
+        /// The visibility mask is a way to exclude objects from rendering for
+        /// a given viewport. For each object in the frustum, a check is made
+        /// between this mask and the objects visibility flags 
+        /// (MovableObject.VisibilityFlags), and if a binary 'and'
+        /// returns zero, the object will not be rendered.
+        /// </remarks>
+        public int VisibilityMask
+        {
+            get
+            {
+                return _visibilityMask;
+            }
+            set
+            {
+                _visibilityMask = value;
+            }
+        }
 
-		/// <summary>
-		/// the invocation sequence - will return null if using standard
-		/// </summary>
-		public RenderQueueInvocationSequence RenderQueueInvocationSequence
-		{
-			get
-			{
-				//TODO : Implement Viewport.RenderQueueSequence
-				return null;
-			}
-			set
-			{
-			}
-		}
+        #endregion VisibilityMask Property
 
-		#endregion RenderQueueSequence Properties Property
+        #region RenderedFaceCount Property
 
-		#endregion Fields and Properties
+        /// <summary>
+        ///		Returns the number of faces rendered to this viewport during the last frame.
+        /// </summary>
+        public int RenderedFaceCount
+        {
+            get
+            {
+                return _camera.RenderedFaceCount;
+            }
+        }
 
-		#region Construction and Destruction
+        #endregion RenderedFaceCount Property
 
-		/// <summary>
+        #region RenderedBatchCount Property
+
+        /// <summary>
+        /// Gets the number of rendered batches in the last update.
+        /// </summary>
+        public int RenderedBatchCount
+        {
+            get
+            {
+                //TODO : Implement Camera.RenderedBatchCount
+                //return Camera.RenderedBatchCount;
+                return 0;
+            }
+        }
+
+        #endregion RenderedBatchCount Property
+
+        #region RenderQueueSequence Properties Property
+
+        /// <summary>
+        /// The name of the render queue invocation sequence for this target.
+        /// </summary>
+        /// <remarks>
+        /// RenderQueueInvocationSequence instances are managed through Root. By
+        /// setting this, you are indicating that you wish this RenderTarget to
+        /// be updated using a custom sequence of render queue invocations, with
+        /// potentially customised ordering and render state options. You should
+        /// create the named sequence through Root first, then set the name here.
+        /// </remarks>
+        public string RenderQueueInvocationSequenceName
+        {
+            get
+            {
+                //TODO : Implement Viewport.RenderQueueSequenceName
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+            }
+        }
+
+        /// <summary>
+        /// the invocation sequence - will return null if using standard
+        /// </summary>
+        public RenderQueueInvocationSequence RenderQueueInvocationSequence
+        {
+            get
+            {
+                //TODO : Implement Viewport.RenderQueueSequence
+                return null;
+            }
+            set
+            {
+            }
+        }
+
+        #endregion RenderQueueSequence Properties Property
+
+        #endregion Fields and Properties
+
+        #region Construction and Destruction
+
+        /// <summary>
         ///		The constructor. Dimensions of the viewport are expressed as a pecentage between
         ///		0 and 100. This allows the dimensions to apply irrespective of
         ///		changes in the target's size: e.g. to fill the whole area,
@@ -592,15 +592,15 @@ namespace Axiom.Core
 
             _backColor = ColorEx.Black;
             _clearEveryFrame = true;
-			_clearBuffers = FrameBuffer.Color | FrameBuffer.Depth;
+            _clearBuffers = FrameBuffer.Color | FrameBuffer.Depth;
 
             // Calculate actual dimensions
             UpdateDimensions();
 
             _isUpdated = true;
             _showOverlays = true;
-			_showSkies = true;
-			_showShadows = true;
+            _showSkies = true;
+            _showShadows = true;
 
             // notify camera
             camera.NotifyViewport( this );
@@ -608,9 +608,9 @@ namespace Axiom.Core
 
         #endregion
 
-		#region Methods
+        #region Methods
 
-		/// <summary>
+        /// <summary>
         ///		Notifies the viewport of a possible change in dimensions.
         /// </summary>
         ///	<remarks>
@@ -634,11 +634,11 @@ namespace Axiom.Core
             // which can have their own dimensions and aspect ratios.
             if ( _camera.AutoAspectRatio )
             {
-                _camera.AspectRatio = _actualWidth / _actualHeight;
+                _camera.AspectRatio = (float)_actualWidth / (float)_actualHeight;
             }
 
-            LogManager.Instance.Write( "Viewport for camera '{0}' - actual dimensions L:{1},T:{2},W:{3},H:{4}",
-                _camera.Name, _actualLeft, _actualTop, _actualWidth, _actualHeight );
+            LogManager.Instance.Write( "Viewport for camera '{0}' - actual dimensions L:{1},T:{2},W:{3},H:{4}, AR:{5}",
+                _camera.Name, _actualLeft, _actualTop, _actualWidth, _actualHeight, _camera.AspectRatio );
 
             _isUpdated = true;
         }
@@ -650,36 +650,36 @@ namespace Axiom.Core
         ///		If you expecting every pixel on the viewport to be redrawn
         ///		every frame, you can save a little time by not clearing the
         ///		viewport before every frame. Do so by setting this property
-		///		to false.
+        ///		to false.
         ///	</remarks>
-		public bool ClearEveryFrame
-		{
-			get
-			{
-				return _clearEveryFrame;
-			}
-			set
-			{
-				_clearEveryFrame = value;
-			}
-		}
+        public bool ClearEveryFrame
+        {
+            get
+            {
+                return _clearEveryFrame;
+            }
+            set
+            {
+                _clearEveryFrame = value;
+            }
+        }
 
 
-		/// <summary>
-		/// Gets the buffers to clear every frame
-		/// </summary>
-		/// <returns></returns>
-		public FrameBuffer ClearBuffers
-		{
-			get
-			{
-				return _clearBuffers;
-			}
-			set
-			{
-				_clearBuffers = value;
-			}
-		}
+        /// <summary>
+        /// Gets the buffers to clear every frame
+        /// </summary>
+        /// <returns></returns>
+        public FrameBuffer ClearBuffers
+        {
+            get
+            {
+                return _clearBuffers;
+            }
+            set
+            {
+                _clearBuffers = value;
+            }
+        }
 
         /// <summary>
         ///		Instructs the viewport to updates its contents from the viewpoint of

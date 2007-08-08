@@ -16,7 +16,7 @@ using System.Windows.Forms;
 
 #endregion Namespace Declarations
 
-namespace Axiom.Demos.Browser.CommandLine
+namespace Axiom.Demos.Browser.WinForm
 {
 
     /// <summary>

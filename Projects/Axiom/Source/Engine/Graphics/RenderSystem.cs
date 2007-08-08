@@ -394,6 +394,31 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
+        /// Set a clipping plane
+        ///</summary>
+        public void SetClipPlane (ushort index, Plane p)
+        {
+             SetClipPlane (index, p.Normal.x, p.Normal.y, p.Normal.z, p.D);
+        }
+
+        /// <summary>
+        /// Set a clipping plane
+        /// </summary>
+        /// <param name="index">Index of plane</param>
+        /// <param name="A"></param>
+        /// <param name="B"></param>
+        /// <param name="C"></param>
+        /// <param name="D"></param>
+        public abstract void SetClipPlane (ushort index, float A, float B, float C, float D);
+
+        /// <summary>
+        /// Enable the clipping plane
+        /// </summary>
+        /// <param name="index">Index of plane</param>
+        /// <param name="enable">Enable True or False</param>
+        public abstract void EnableClipPlane (ushort index, bool enable);
+
+		/// <summary>
 		///		Utility method to notify all render targets that a camera has been removed, 
 		///		incase they were referring to it as their viewer. 
 		/// </summary>

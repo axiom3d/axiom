@@ -197,11 +197,9 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///     List of available attibute parsers for script attributes.
 		/// </summary>
-		private Dictionary<string, MethodInfo> attribParsers =
-			new Dictionary<string, MethodInfo>();
+		private Dictionary<string, MethodInfo> attribParsers = new Dictionary<string, MethodInfo>();
 
-
-		#endregion
+        #endregion
 
 		#region Constructors
 		/// <summary>
@@ -414,14 +412,18 @@ namespace Axiom.ParticleSystems
 		/// <param name="timeElapsed"></param>
 		protected void TriggerEmitters( float timeElapsed )
 		{
+            int index;
 			int totalRequested, emissionAllowed;
 
 			emissionAllowed = freeParticles.Count;
 			totalRequested = 0;
 
 			// Count up total requested emissions
-			foreach ( ParticleEmitter emitter in emitterList )
+			//foreach ( ParticleEmitter emitter in emitterList )
+            for ( index = 0; index < emitterList.Count; index++ )
 			{
+                ParticleEmitter emitter = emitterList[ index ];
+
 				if ( !requested.ContainsKey( emitter ) )
 				{
 					requested.Add( emitter, 0 );
@@ -433,8 +435,10 @@ namespace Axiom.ParticleSystems
 				}
 			}
 
-			foreach ( ParticleEmitter activeEmitter in activeEmittedEmitters )
+			//foreach ( ParticleEmitter activeEmitter in activeEmittedEmitters )
+            for ( index = 0; index < activeEmittedEmitters.Count; index++ )
 			{
+                ParticleEmitter activeEmitter = activeEmittedEmitters[ index ];
 				if ( !requested.ContainsKey( activeEmitter ) )
 				{
 					requested.Add( activeEmitter, 0 );
@@ -457,8 +461,10 @@ namespace Axiom.ParticleSystems
 			// For each emission, apply a subset of the motion for the frame
 			// this ensures an even distribution of particles when many are
 			// emitted in a single frame
-			foreach ( ParticleEmitter emitter in emitterList )
+			//foreach ( ParticleEmitter emitter in emitterList )
+            for ( index =0;index < emitterList.Count; index++ )
 			{
+                ParticleEmitter emitter = emitterList[ index ];
 				// Trigger the emitters, but exclude the emitters that are already in the emitted emitters list; 
 				// they are handled in a separate loop
 				if ( !emitter.IsEmitted )
@@ -467,8 +473,10 @@ namespace Axiom.ParticleSystems
 				}
 			}
 
-			foreach ( ParticleEmitter activeEmitter in activeEmittedEmitters )
+			//foreach ( ParticleEmitter activeEmitter in activeEmittedEmitters )
+            for( index = 0; index < activeEmittedEmitters.Count; index++ )
 			{
+                ParticleEmitter activeEmitter = activeEmittedEmitters[ index ];
 				executeTriggerEmitters( activeEmitter, (int)( (float)activeEmitter.GetEmissionCount( timeElapsed ) * ratio ), timeElapsed );
 			}
 		}
@@ -1416,7 +1424,11 @@ namespace Axiom.ParticleSystems
 			timeElapsed *= speedFactor;
 
 			// Init renderer if not done already
-			ConfigureRenderer();
+            if ( renderer != null )
+            {
+                if ( !isRendererConfigured )
+                    ConfigureRenderer();
+            }
 
 			// Initialise emitted emitters list if not done already
 			initializeEmittedEmitters();

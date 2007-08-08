@@ -88,6 +88,7 @@ namespace Axiom.RenderSystems.OpenGL
                 string error;
 
                 Gl.glGetIntegerv( Gl.GL_PROGRAM_ERROR_POSITION_ARB, out pos );
+				//error = Gl.glGetString( Gl.GL_PROGRAM_ERROR_STRING_ARB ); // TAO 2.0
                 error = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_PROGRAM_ERROR_STRING_ARB ) );
 
                 throw new Exception( string.Format( "Error on line {0} in program '{1}'\nError: {2}", pos, name, error ) );
