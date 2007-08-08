@@ -49,7 +49,8 @@
 				<include name="System.dll"/>
 				<include name="System.Data.dll"/>
 				<include name="System.Drawing.dll"/>
-				<include name="System.Xml.dll"/>
+        <include name="System.Windows.Forms.dll"/>
+        <include name="System.Xml.dll"/>
 				<include name="${Tao.OpenGl.dll}"/>
 				<include name="${Tao.OpenGl.ExtensionLoader.dll}"/>
 				<include name="${Tao.OpenGl.Glu.dll}"/>

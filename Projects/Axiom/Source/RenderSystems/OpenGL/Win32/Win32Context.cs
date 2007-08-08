@@ -63,7 +63,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		~Win32Context()
 		{
-			dispose( true );
+			dispose( false );
 		}
 
 		protected override void dispose( bool disposeManagedResources )
@@ -80,7 +80,6 @@ namespace Axiom.RenderSystems.OpenGL
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
-			isDisposed = true;
 
 			// If it is available, make the call to the
 			// base class's Dispose(Boolean) method

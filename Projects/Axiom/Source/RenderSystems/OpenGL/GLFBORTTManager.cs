@@ -189,7 +189,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		/// 
 		/// </summary>
-		private Dictionary<RBFormat, RBRef> _renderBufferMap;
+		private Dictionary<RBFormat, RBRef> _renderBufferMap = new Dictionary<RBFormat, RBRef>();
 
 		/// <summary>
 		/// Buggy ATI driver?

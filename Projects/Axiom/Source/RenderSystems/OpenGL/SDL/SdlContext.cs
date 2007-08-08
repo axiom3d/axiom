@@ -94,8 +94,11 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void SetCurrent()
 		{
-			
+#if WIN32
 			Wgl.wglMakeCurrent( _hDeviceContext, _hRenderingContext );
+#else
+			Glx.glXMakeCurrent( _display, _drawable, _context );
+#endif
 		}
 
 		public override void EndCurrent()

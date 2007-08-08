@@ -237,7 +237,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
         /// </summary>
         protected override void LoadFromSource()
         {
-            Gl.glShaderSourceARB( glHandle, 1, ref source, null );
+            Gl.glShaderSourceARB( glHandle, 1, new string[] {source}, null );
 
             // check for load errors
             GLSLHelper.CheckForGLSLError( "Cannot load GLGL high-level shader source " + name, 0 );

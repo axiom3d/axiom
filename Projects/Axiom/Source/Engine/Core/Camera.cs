@@ -766,6 +766,14 @@ namespace Axiom.Core
 			}
 		}
 
+        public List<Plane> WindowPlanes
+        {
+            get
+            {
+                return windowClipPlanes;
+            }
+        }
+
 		#endregion
 
 		#region Public methods

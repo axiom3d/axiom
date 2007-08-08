@@ -54,8 +54,8 @@ namespace Axiom.RenderSystems.OpenGL
         #region Fields
 
         private Sdl.SDL_Surface surface;
-		private IntPtr _window;
-		private SdlContext _glContext;
+		private IntPtr _hWindow;
+		//private SdlContext _glContext;
 
         #endregion Fields
 
@@ -72,7 +72,7 @@ namespace Axiom.RenderSystems.OpenGL
 				switch ( attribute.ToLower() )
 				{
 					case "glcontext":
-						return _glContext;
+						return null; //	_glContext;
 					case "window":
 						System.Windows.Forms.Control ctrl = System.Windows.Forms.Control.FromChildHandle( _hWindow );
 						return ctrl;
@@ -162,7 +162,7 @@ namespace Axiom.RenderSystems.OpenGL
 
             // set the video mode (and create the surface)
             // TODO: Grab return val once changed to the right type
-            _window = Sdl.SDL_SetVideoMode( width, height, ColorDepth, flags );
+            _hWindow = Sdl.SDL_SetVideoMode( width, height, ColorDepth, flags );
 
 			// lets get active!
             IsActive = true;

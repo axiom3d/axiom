@@ -2154,6 +2154,57 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
+    //    //---------------------------------------------------------------------
+    //void SetClipPlanes(const PlaneList& clipPlanes)
+    //{
+    //    size_t i;
+    //    size_t numClipPlanes;
+    //    float dx9ClipPlane[4];
+    //    DWORD mask = 0;
+    //    HRESULT hr;
+
+    //    numClipPlanes = clipPlanes.size();
+    //    for (i = 0; i < numClipPlanes; ++i)
+    //    {
+    //        const Plane& plane = clipPlanes[i];
+
+    //        dx9ClipPlane[0] = plane.normal.x;
+    //        dx9ClipPlane[1] = plane.normal.y;
+    //        dx9ClipPlane[2] = plane.normal.z;
+    //        dx9ClipPlane[3] = plane.d;
+
+    //        hr = mpD3DDevice->SetClipPlane(i, dx9ClipPlane);
+    //        if (FAILED(hr))
+    //        {
+    //            OGRE_EXCEPT(hr, "Unable to set clip plane", 
+    //                "D3D9RenderSystem::setClipPlanes");
+    //        }
+
+    //        mask |= (1 << i);
+    //    }
+
+    //    hr = __SetRenderState(D3DRS_CLIPPLANEENABLE, mask);
+    //    if (FAILED(hr))
+    //    {
+    //        OGRE_EXCEPT(hr, "Unable to set render state for clip planes", 
+    //            "D3D9RenderSystem::setClipPlanes");
+    //    }
+    //}
+    ////---------------------------------------------------------------------
+
+        public override void SetClipPlane(ushort index, float A, float B, float C, float D)
+        {
+            float[] plane = { A, B, C, D };
+            device.ClipPlanes[index].SetSingleArray(plane);
+            device.RenderState.Clipping = true;
+        }
+
+        public override void EnableClipPlane(ushort index, bool enable)
+        {
+            device.ClipPlanes[index].Enabled = enable;
+        }
+
+
 		public override void SetScissorTest( bool enable, int left, int top, int right, int bottom )
 		{
 			if ( enable )
@@ -2565,6 +2616,8 @@ namespace Axiom.RenderSystems.DirectX9
 			LogManager.Instance.Write( "!!! Direct3D Device successfully restored." );
 
 			_deviceLost = false;
+
+             device.RenderState.Clipping = true;
 
 			//TODO fireEvent("DeviceRestored");
 

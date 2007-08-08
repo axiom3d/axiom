@@ -662,6 +662,8 @@ namespace Axiom.RenderSystems.DirectX9
 						}
 					}
 
+                    device.DeviceResizing += new System.ComponentModel.CancelEventHandler(OnDeviceResizing);
+
 				}
 				// update device in driver
 				Driver.D3DDevice = device;
@@ -670,6 +672,8 @@ namespace Axiom.RenderSystems.DirectX9
 				_renderZBuffer = device.DepthStencilSurface;
 				// release immediately so we don't hog them
 				_renderZBuffer.ReleaseGraphics();
+
+                device.DeviceReset += new EventHandler(OnResetDevice);
 
 			}
 		}
@@ -1027,6 +1031,12 @@ namespace Axiom.RenderSystems.DirectX9
 			resetDevice.RenderState.ZBufferEnable = true;
 			resetDevice.RenderState.Lighting = true;    //make sure lighting is enabled
 		}
+
+        private void OnDeviceResizing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
+        }
+
 
 		public override void Update( bool swapBuffers )
 		{
