@@ -83,9 +83,36 @@ namespace Axiom.Math
 
 		#endregion
 
-		#region Intersection Methods
+        #region Methods
 
-		/// <summary>
+        /// <summary>
+        /// Gets the position of a point t units along the ray.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public Vector3 GetPoint( float t )
+        {
+            return origin + ( direction * t );
+        }
+
+        /// <summary>
+        /// Gets the position of a point t units along the ray.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public Vector3 this[ float t ]
+        {
+            get
+            {
+                return origin + ( direction * t );
+            }
+        }
+
+        #endregion Methods
+
+        #region Intersection Methods
+
+        /// <summary>
 		///    Tests whether this ray intersects the given box.
 		/// </summary>
 		/// <param name="box"></param>
@@ -142,7 +169,7 @@ namespace Axiom.Math
 		#region Operator Overloads
 
 		/// <summary>
-		///    Gets the position of a point t units along the ray.
+		/// Gets the position of a point t units along the ray.
 		/// </summary>
 		/// <param name="ray"></param>
 		/// <param name="t"></param>
@@ -151,6 +178,7 @@ namespace Axiom.Math
 		{
 			return ray.origin + ( ray.direction * t );
 		}
+
 		public static bool operator ==( Ray left, Ray right )
 		{
 			return left.direction == right.direction && left.origin == right.origin;

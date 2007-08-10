@@ -68,7 +68,6 @@ namespace Axiom.RenderSystems.OpenGL
 		public GLSupport()
 			: base()
 		{
-			_initializeWgl();
 		}
 
 		private void _initializeWgl()
@@ -283,6 +282,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public override void Start()
 		{
 			LogManager.Instance.Write( "*** Starting Win32GL Subsystem ***" );
+            _initializeWgl();
 		}
 
 		public override void Stop()

@@ -1685,7 +1685,12 @@ namespace Axiom.RenderSystems.OpenGL
                 else
                 {
                     // get a direct pointer to the software buffer data for using standard vertex arrays
-                    bufferData = ( (SoftwareVertexBuffer)vertexBuffer ).GetDataPointer( element.Offset );
+                    // SoftwareBuffers in Axiom use a byte[] backer which in .Net
+                    // Could change it's location in memory during GC. So to prevent
+                    // the GC from moving the byte[] on us while we are still accessing it
+                    // Lock() the buffer which pins the byte[] in memory. We must remember to unlock it
+                    // when we are done so the GC can caompact the managed heap around us.
+                    bufferData = ((SoftwareVertexBuffer)vertexBuffer).Lock(element.Offset, vertexBuffer.VertexSize, BufferLocking.ReadOnly);
                 }
 
                 // get the type of this buffer
@@ -1793,6 +1798,12 @@ namespace Axiom.RenderSystems.OpenGL
                     default:
                         break;
                 } // switch
+
+                // If using Software Buffers, unlock it.
+                if ( !_hwCapabilities.HasCapability( Capabilities.VertexBuffer ) )
+                {
+                    ((SoftwareVertexBuffer)vertexBuffer).Unlock();
+                }
             } // for
 
             // reset to texture unit 0
@@ -1826,7 +1837,11 @@ namespace Axiom.RenderSystems.OpenGL
             if ( op.useIndices )
             {
                 // setup a pointer to the index data
-                IntPtr indexPtr = IntPtr.Zero;
+				IntPtr indexPtr; // = IntPtr.Zero;
+
+                // find what type of index buffer elements we are using
+                int indexType = (op.indexData.indexBuffer.Type == IndexType.Size16)
+                    ? Gl.GL_UNSIGNED_SHORT : Gl.GL_UNSIGNED_INT;
 
                 // if hardware is supported, expect it is a hardware buffer.  else, fallback to software
                 if ( _hwCapabilities.HasCapability( Capabilities.VertexBuffer ) )
@@ -1839,16 +1854,22 @@ namespace Axiom.RenderSystems.OpenGL
 
                     // get the offset pointer to the data in the vbo
                     indexPtr = BUFFER_OFFSET( op.indexData.indexStart * op.indexData.indexBuffer.IndexSize );
+
+                    // draw the indexed vertex data
+                    //				Gl.glDrawRangeElementsEXT(
+                    //					primType,
+                    //					op.indexData.indexStart,
+                    //					op.indexData.indexStart + op.indexData.indexCount - 1,
+                    //					op.indexData.indexCount,
+                    //					indexType, indexPtr);
+                    Gl.glDrawElements(primType, op.indexData.indexCount, indexType, indexPtr);
                 }
                 else
                 {
                     // get the index data as a direct pointer to the software buffer data
-                    indexPtr = ( (SoftwareIndexBuffer)op.indexData.indexBuffer ).GetDataPointer( op.indexData.indexStart * op.indexData.indexBuffer.IndexSize );
-                }
-
-                // find what type of index buffer elements we are using
-                int indexType = ( op.indexData.indexBuffer.Type == IndexType.Size16 )
-                    ? Gl.GL_UNSIGNED_SHORT : Gl.GL_UNSIGNED_INT;
+                    int bufOffset = op.indexData.indexStart * op.indexData.indexBuffer.IndexSize;
+                    indexPtr = ((SoftwareIndexBuffer)op.indexData.indexBuffer)
+                        .Lock(bufOffset, op.indexData.indexBuffer.Size - bufOffset, BufferLocking.ReadOnly);
 
                 // draw the indexed vertex data
                 //				Gl.glDrawRangeElementsEXT(
@@ -1858,6 +1879,9 @@ namespace Axiom.RenderSystems.OpenGL
                 //					op.indexData.indexCount,
                 //					indexType, indexPtr);
                 Gl.glDrawElements( primType, op.indexData.indexCount, indexType, indexPtr );
+                    
+                    ((SoftwareIndexBuffer)op.indexData.indexBuffer).Unlock();
+                }
             }
             else
             {

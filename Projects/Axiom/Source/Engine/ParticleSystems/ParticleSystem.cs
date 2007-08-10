@@ -598,14 +598,18 @@ namespace Axiom.ParticleSystems
 
 		private Particle CreateParticle()
 		{
-			// Fast creation (don't use superclass since emitter will init)
-			Particle newParticle = freeParticles[ 0 ];
-			freeParticles.RemoveAt( 0 );
+            Particle newParticle = null;
+            if ( freeParticles.Count > 0 )
+            {
+                // Fast creation (don't use superclass since emitter will init)
+                newParticle = freeParticles[ 0 ];
+                freeParticles.RemoveAt( 0 );
 
-			// add the billboard to the active list
-			activeParticles.Add( newParticle );
+                // add the billboard to the active list
+                activeParticles.Add( newParticle );
 
-			newParticle.NotifyOwner( this );
+                newParticle.NotifyOwner( this );
+            }
 			return newParticle;
 		}
 

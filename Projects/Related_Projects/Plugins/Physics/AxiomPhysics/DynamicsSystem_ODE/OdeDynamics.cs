@@ -130,10 +130,15 @@ namespace Axiom.Dynamics.ODE
 
 				HardwareVertexBuffer positionBuffer = vertexData.vertexBufferBinding.GetBuffer(originalPosBufferBinding);
 				float[] vertex = new float[positionBuffer.VertexCount * 3];
-				IntPtr ptr = System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(vertex, 0);
+				//IntPtr ptr = System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(vertex, 0);
+                unsafe
+                {
+                    fixed (void* ptr = vertex)
+                    {
 				float f = 0;
-				positionBuffer.ReadData(0, positionBuffer.VertexCount * 3 * System.Runtime.InteropServices.Marshal.SizeOf (f.GetType()), ptr);
-
+                        positionBuffer.ReadData(0, positionBuffer.VertexCount * 3 * System.Runtime.InteropServices.Marshal.SizeOf(f.GetType()), (IntPtr)ptr);
+                    }
+                }
 				for (int j = 0; j < positionBuffer.VertexCount; j++)
 				{
 					vertices[actualvertex+j] = new Ode.Vector3 (vertex[j * 3],vertex[j*3+1],vertex[j*3+2]);
@@ -142,10 +147,15 @@ namespace Axiom.Dynamics.ODE
 				IndexData indexData = mesh.GetSubMesh(i).indexData;
 				HardwareIndexBuffer indexBuffer = indexData.indexBuffer;
 				short[] subindices = new short[indexData.indexCount];
-				ptr = System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(subindices, 0);
+				//ptr = System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(subindices, 0);
+                unsafe
+                {
+                    fixed (void* ptr = subindices)
+                    {
 				short s = 0;
-				indexBuffer.ReadData (0, indexData.indexCount*System.Runtime.InteropServices.Marshal.SizeOf (s.GetType()), ptr);
-
+                        indexBuffer.ReadData(0, indexData.indexCount * System.Runtime.InteropServices.Marshal.SizeOf(s.GetType()), (IntPtr)ptr);
+                    }
+                }
 				for (int j = 0; j < subindices.Length; j++)
 				{
 					indices[actualindex+j] = (short)(subindices[j]+actualvertex);

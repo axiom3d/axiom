@@ -41,6 +41,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Math.Collections;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -117,7 +118,7 @@ namespace Axiom.Core
         /// <summary>
         ///     List of control points.
         /// </summary>
-		protected Vector3List controlPoints = new Vector3List();
+        protected Vector3List controlPoints = new Vector3List();
 
         protected HardwareVertexBuffer vertexBuffer;
         protected HardwareIndexBuffer indexBuffer;
@@ -129,6 +130,7 @@ namespace Axiom.Core
         protected AxisAlignedBox aabb = AxisAlignedBox.Null;
         protected float boundingSphereRadius;
 
+        protected GCHandle controlPointsPinnedHandle; //used to pin array of control point vertices
 
         /// <summary>
         ///     Constant for indicating automatic determination of subdivision level for patches.
@@ -136,6 +138,7 @@ namespace Axiom.Core
         const int AUTO_LEVEL = -1;
 
         #endregion Fields
+
         #region Constructor
 
         /// <summary>
@@ -147,7 +150,58 @@ namespace Axiom.Core
         }
 
         #endregion Constructor
+
+        #region Finalizer
+
+        ~PatchSurface()
+        {
+            if ( controlPointsPinnedHandle.IsAllocated )
+            {
+                controlPointsPinnedHandle.Free();
+            }
+        }
+
+        #endregion
+
         #region Methods
+
+        /// <summary>
+        ///     Sets up the surface by defining it's control points, type and initial subdivision level.
+        /// </summary>
+        /// <remarks>
+        ///     This method initializes the surface by passing it a set of control points. The type of curves to be used
+        ///     are also defined here, although the only supported option currently is a bezier patch. You can also
+        ///     specify a global subdivision level here if you like, although it is recommended that the parameter
+        ///     is left as AUTO_LEVEL, which means the system decides how much subdivision is required (based on the
+        ///     curvature of the surface).
+        /// </remarks>
+        /// <param name="controlPointArray">
+        ///     An array containing the vertex data which define control points of the curves 
+        ///     rather than actual vertices. Note that you are expected to provide not
+        ///     just position information, but potentially normals and texture coordinates too. 
+        ///     The array is internally treated as a contiguous memory buffer without any gaps between the elements.
+        ///     The format of the buffer is defined in the VertexDeclaration parameter.
+        /// </param>
+        /// <param name="decl">
+        ///     VertexDeclaration describing the contents of the buffer. 
+        ///     Note this declaration must _only_ draw on buffer source 0!
+        /// </param>
+        /// <param name="width">Specifies the width of the patch in control points.</param>
+        /// <param name="height">Specifies the height of the patch in control points.</param>
+        /// <param name="type">The type of surface.</param>
+        /// <param name="uMaxSubdivision">
+        ///     If you want to manually set the top level of subdivision, 
+        ///     do it here, otherwise let the system decide.
+        /// </param>
+        /// <param name="vMaxSubdivisionLevel">
+        ///     If you want to manually set the top level of subdivision, 
+        ///     do it here, otherwise let the system decide.
+        /// </param>
+        /// <param name="side">Determines which side of the patch (or both) triangles are generated for.</param>
+        public void DefineSurface( Array controlPointArray, VertexDeclaration decl, int width, int height )
+        {
+            DefineSurface( controlPointArray, decl, width, height, PatchSurfaceType.Bezier, AUTO_LEVEL, AUTO_LEVEL, VisibleSide.Front );
+        }
 
         /// <summary>
         ///     Sets up the surface by defining it's control points, type and initial subdivision level.
@@ -159,11 +213,12 @@ namespace Axiom.Core
         ///     is left as AUTO_LEVEL, which means the system decides how much subdivision is required (based on the
         ///     curvature of the surface).
         /// </remarks>
-        /// <param name="controlPoints">
-        ///     A pointer to a buffer containing the vertex data which defines control points 
-        ///     of the curves rather than actual vertices. Note that you are expected to provide not
-        ///     just position information, but potentially normals and texture coordinates too. The
-        ///     format of the buffer is defined in the VertexDeclaration parameter.
+        /// <param name="controlPointArray">
+        ///     An array containing the vertex data which define control points of the curves 
+        ///     rather than actual vertices. Note that you are expected to provide not
+        ///     just position information, but potentially normals and texture coordinates too. 
+        ///     The array is internally treated as a contiguous memory buffer without any gaps between the elements.
+        ///     The format of the buffer is defined in the VertexDeclaration parameter.
         /// </param>
         /// <param name="decl">
         ///     VertexDeclaration describing the contents of the buffer. 
@@ -181,7 +236,7 @@ namespace Axiom.Core
         ///     do it here, otherwise let the system decide.
         /// </param>
         /// <param name="side">Determines which side of the patch (or both) triangles are generated for.</param>
-        public void DefineSurface( IntPtr controlPointBuffer, VertexDeclaration declaration, int width, int height,
+        public void DefineSurface( Array controlPointArray, VertexDeclaration declaration, int width, int height,
             PatchSurfaceType type, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide )
         {
 
@@ -190,11 +245,18 @@ namespace Axiom.Core
                 return; // Do nothing - garbage
             }
 
+            //pin the input to have a pointer
+            if ( controlPointsPinnedHandle.IsAllocated )
+            {
+                controlPointsPinnedHandle.Free();
+            }
+            controlPointsPinnedHandle = GCHandle.Alloc( controlPointArray, GCHandleType.Pinned ); //excepts in case providing a non-blittable type
+
             this.type = type;
             this.controlWidth = width;
             this.controlHeight = height;
             this.controlCount = width * height;
-            this.controlPointBuffer = controlPointBuffer;
+            this.controlPointBuffer = controlPointsPinnedHandle.AddrOfPinnedObject();
             this.declaration = declaration;
 
             // Copy positions into Vector3 vector
@@ -202,16 +264,16 @@ namespace Axiom.Core
             VertexElement elem = declaration.FindElementBySemantic( VertexElementSemantic.Position );
             int vertSize = declaration.GetVertexSize( 0 );
 
-			unsafe
-			{
-				byte* pVert = (byte*)controlPointBuffer.ToPointer();
-				float* pReal = null;
-				for ( int i = 0; i < controlCount; i++ )
-				{
-					pReal = (float*)( pVert + ( i * vertSize ) + elem.Offset );
-					controlPoints.Add( new Vector3( pReal[ 0 ], pReal[ 1 ], pReal[ 2 ] ) );
-				}
-			}
+            unsafe
+            {
+                byte* pVert = (byte*)controlPointBuffer;
+                float* pReal = null;
+                for ( int i = 0; i < controlCount; i++ )
+                {
+                    pReal = (float*)( pVert + ( i * vertSize ) + elem.Offset );
+                    controlPoints.Add( new Vector3( pReal[ 0 ], pReal[ 1 ], pReal[ 2 ] ) );
+                }
+            }
             this.side = visibleSide;
 
             // Determine max level
@@ -273,42 +335,6 @@ namespace Axiom.Core
             boundingSphereRadius = Utility.Sqrt( maxSqRadius );
         }
 
-        /// <summary>
-        ///     Sets up the surface by defining it's control points, type and initial subdivision level.
-        /// </summary>
-        /// <remarks>
-        ///     This method initialises the surface by passing it a set of control points. The type of curves to be used
-        ///     are also defined here, although the only supported option currently is a bezier patch. You can also
-        ///     specify a global subdivision level here if you like, although it is recommended that the parameter
-        ///     is left as AUTO_LEVEL, which means the system decides how much subdivision is required (based on the
-        ///     curvature of the surface).
-        /// </remarks>
-        /// <param name="controlPoints">
-        ///     A pointer to a buffer containing the vertex data which defines control points 
-        ///     of the curves rather than actual vertices. Note that you are expected to provide not
-        ///     just position information, but potentially normals and texture coordinates too. The
-        ///     format of the buffer is defined in the VertexDeclaration parameter.
-        /// </param>
-        /// <param name="decl">
-        ///     VertexDeclaration describing the contents of the buffer. 
-        ///     Note this declaration must _only_ draw on buffer source 0!
-        /// </param>
-        /// <param name="width">Specifies the width of the patch in control points.</param>
-        /// <param name="height">Specifies the height of the patch in control points.</param>
-        /// <param name="type">The type of surface.</param>
-        /// <param name="uMaxSubdivision">
-        ///     If you want to manually set the top level of subdivision, 
-        ///     do it here, otherwise let the system decide.
-        /// </param>
-        /// <param name="vMaxSubdivision">
-        ///     If you want to manually set the top level of subdivision, 
-        ///     do it here, otherwise let the system decide.
-        /// </param>
-        /// <param name="side">Determines which side of the patch (or both) triangles are generated for.</param>
-        public void DefineSurface( IntPtr controlPoints, VertexDeclaration decl, int width, int height )
-        {
-            DefineSurface( controlPoints, decl, width, height, PatchSurfaceType.Bezier, AUTO_LEVEL, AUTO_LEVEL, VisibleSide.Front );
-        }
 
         /// <summary>
         ///     Tells the system to build the mesh relating to the surface into externally created buffers.
@@ -416,83 +442,84 @@ namespace Axiom.Core
         /// 
         /// </summary>
         /// <param name="lockedBuffer"></param>
-		protected unsafe void DistributeControlPoints( IntPtr lockedBuffer )
-		{
-			// Insert original control points into expanded mesh
-			int uStep = 1 << uLevel;
-			int vStep = 1 << vLevel;
+        protected unsafe void DistributeControlPoints( IntPtr lockedBuffer )
+        {
+            // Insert original control points into expanded mesh
+            int uStep = 1 << uLevel;
+            int vStep = 1 << vLevel;
 
-			void* pSrc = controlPointBuffer.ToPointer();
-			void* pDest;
-			int vertexSize = declaration.GetVertexSize( 0 );
-			float* pSrcReal, pDestReal;
-			int* pSrcRGBA, pDestRGBA;
 
-			VertexElement elemPos = declaration.FindElementBySemantic( VertexElementSemantic.Position );
-			VertexElement elemNorm = declaration.FindElementBySemantic( VertexElementSemantic.Normal );
-			VertexElement elemTex0 = declaration.FindElementBySemantic( VertexElementSemantic.TexCoords, 0 );
-			VertexElement elemTex1 = declaration.FindElementBySemantic( VertexElementSemantic.TexCoords, 1 );
-			VertexElement elemDiffuse = declaration.FindElementBySemantic( VertexElementSemantic.Diffuse );
+            VertexElement elemPos = declaration.FindElementBySemantic( VertexElementSemantic.Position );
+            VertexElement elemNorm = declaration.FindElementBySemantic( VertexElementSemantic.Normal );
+            VertexElement elemTex0 = declaration.FindElementBySemantic( VertexElementSemantic.TexCoords, 0 );
+            VertexElement elemTex1 = declaration.FindElementBySemantic( VertexElementSemantic.TexCoords, 1 );
+            VertexElement elemDiffuse = declaration.FindElementBySemantic( VertexElementSemantic.Diffuse );
 
-			for ( int v = 0; v < meshHeight; v += vStep )
-			{
-				// set dest by v from base
-				pDest = (void*)( (byte*)( lockedBuffer.ToPointer() ) + ( vertexSize * meshWidth * v ) );
+            byte* pSrc = (byte*)controlPointBuffer;
+            byte* pDest;
+            int vertexSize = declaration.GetVertexSize( 0 );
+            float* pSrcReal, pDestReal;
+            int* pSrcRGBA, pDestRGBA;
 
-				for ( int u = 0; u < meshWidth; u += uStep )
-				{
-					// Copy Position
-					pSrcReal = (float*)( (byte*)pSrc + elemPos.Offset );
-					pDestReal = (float*)( (byte*)pDest + elemPos.Offset );
-					*pDestReal++ = *pSrcReal++;
-					*pDestReal++ = *pSrcReal++;
-					*pDestReal++ = *pSrcReal++;
+            for ( int v = 0; v < meshHeight; v += vStep )
+            {
+                // set dest by v from base
+                pDest = (byte*)( lockedBuffer ) + ( vertexSize * meshWidth * v );
 
-					// Copy Normals
-					if ( elemNorm != null )
-					{
-						pSrcReal = (float*)( (byte*)pSrc + elemNorm.Offset );
-						pDestReal = (float*)( (byte*)pDest + elemNorm.Offset );
-						*pDestReal++ = *pSrcReal++;
-						*pDestReal++ = *pSrcReal++;
-						*pDestReal++ = *pSrcReal++;
-					}
+                for ( int u = 0; u < meshWidth; u += uStep )
+                {
+                    // Copy Position
+                    pSrcReal = (float*)( (byte*)pSrc + elemPos.Offset );
+                    pDestReal = (float*)( (byte*)pDest + elemPos.Offset );
+                    *pDestReal++ = *pSrcReal++;
+                    *pDestReal++ = *pSrcReal++;
+                    *pDestReal++ = *pSrcReal++;
 
-					// Copy Diffuse
-					if ( elemDiffuse != null )
-					{
-						pSrcRGBA = (int*)( (byte*)pSrc + elemDiffuse.Offset );
-						pDestRGBA = (int*)( (byte*)pDest + elemDiffuse.Offset );
-						*pDestRGBA++ = *pSrcRGBA++;
-					}
+                    // Copy Normals
+                    if ( elemNorm != null )
+                    {
+                        pSrcReal = (float*)( (byte*)pSrc + elemNorm.Offset );
+                        pDestReal = (float*)( (byte*)pDest + elemNorm.Offset );
+                        *pDestReal++ = *pSrcReal++;
+                        *pDestReal++ = *pSrcReal++;
+                        *pDestReal++ = *pSrcReal++;
+                    }
 
-					// Copy texture coords
-					if ( elemTex0 != null )
-					{
-						pSrcReal = (float*)( (byte*)pSrc + elemTex0.Offset );
-						pDestReal = (float*)( (byte*)pDest + elemTex0.Offset );
-						for ( int dim = 0; dim < VertexElement.GetTypeCount( elemTex0.Type ); dim++ )
-						{
-							*pDestReal++ = *pSrcReal++;
-						}
-					}
-					if ( elemTex1 != null )
-					{
-						pSrcReal = (float*)( (byte*)pSrc + elemTex1.Offset );
-						pDestReal = (float*)( (byte*)pDest + elemTex1.Offset );
-						for ( int dim = 0; dim < VertexElement.GetTypeCount( elemTex1.Type ); dim++ )
-						{
-							*pDestReal++ = *pSrcReal++;
-						}
-					}
+                    // Copy Diffuse
+                    if ( elemDiffuse != null )
+                    {
+                        pSrcRGBA = (int*)( (byte*)pSrc + elemDiffuse.Offset );
+                        pDestRGBA = (int*)( (byte*)pDest + elemDiffuse.Offset );
+                        *pDestRGBA++ = *pSrcRGBA++;
+                    }
 
-					// Increment source by one vertex
-					pSrc = (void*)( (byte*)( pSrc ) + vertexSize );
-					// Increment dest by 1 vertex * uStep
-					pDest = (void*)( (byte*)( pDest ) + ( vertexSize * uStep ) );
-				} // u
-			} // v
-		}
+                    // Copy texture coords
+                    if ( elemTex0 != null )
+                    {
+                        pSrcReal = (float*)( (byte*)pSrc + elemTex0.Offset );
+                        pDestReal = (float*)( (byte*)pDest + elemTex0.Offset );
+                        for ( int dim = 0; dim < VertexElement.GetTypeCount( elemTex0.Type ); dim++ )
+                        {
+                            *pDestReal++ = *pSrcReal++;
+                        }
+                    }
+                    if ( elemTex1 != null )
+                    {
+                        pSrcReal = (float*)( (byte*)pSrc + elemTex1.Offset );
+                        pDestReal = (float*)( (byte*)pDest + elemTex1.Offset );
+                        for ( int dim = 0; dim < VertexElement.GetTypeCount( elemTex1.Type ); dim++ )
+                        {
+                            *pDestReal++ = *pSrcReal++;
+                        }
+                    }
+
+                    // Increment source by one vertex
+                    pSrc += vertexSize;
+                    // Increment dest by 1 vertex * uStep
+                    pDest += vertexSize * uStep;
+                } // u
+            } // v
+        }
 
         /// <summary>
         /// 
@@ -561,9 +588,9 @@ namespace Axiom.Core
             byte* pDest, pLeft, pRight;
 
             // Set up pointers & interpolate
-            pDest = ( (byte*)( lockedBuffer.ToPointer() ) + ( vertexSize * destIndex ) );
-            pLeft = ( (byte*)( lockedBuffer.ToPointer() ) + ( vertexSize * leftIndex ) );
-            pRight = ( (byte*)( lockedBuffer.ToPointer() ) + ( vertexSize * rightIndex ) );
+            pDest = ( (byte*)lockedBuffer + ( vertexSize * destIndex ) );
+            pLeft = ( (byte*)lockedBuffer + ( vertexSize * leftIndex ) );
+            pRight = ( (byte*)lockedBuffer + ( vertexSize * rightIndex ) );
 
             // Position
             pDestReal = (float*)( (byte*)pDest + elemPos.Offset );
@@ -691,7 +718,7 @@ namespace Axiom.Core
                     requiredIndexCount * sizeof( int ),
                     BufferLocking.NoOverwrite );
 
-                p32 = (int*)intBuffer.ToPointer();
+                p32 = (int*)intBuffer;
             }
             else
             {
@@ -700,7 +727,7 @@ namespace Axiom.Core
                     requiredIndexCount * sizeof( short ),
                     BufferLocking.NoOverwrite );
 
-                p16 = (short*)shortBuffer.ToPointer();
+                p16 = (short*)shortBuffer;
             }
 
             while ( iterations-- > 0 )
@@ -999,16 +1026,18 @@ namespace Axiom.Core
             }
         }
 
-        /// <summary>
-        ///     Gets the control point buffer being used for this patch surface.
-        /// </summary>
-        public IntPtr ControlPointBuffer
-        {
-            get
-            {
-                return controlPointBuffer;
-            }
-        }
+        ///// <summary>
+        /////     Gets the control point buffer being used for this patch surface.
+        /////     Contains pinned data, the pointer will become invalid once this class is garbage collected.
+        /////     Use with care.
+        ///// </summary>
+        //public IntPtr ControlPointBuffer
+        //{
+        //    get
+        //    {
+        //        return controlPointBuffer;
+        //    }
+        //}
 
         #endregion Properties
     }
