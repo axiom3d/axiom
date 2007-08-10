@@ -66,6 +66,27 @@ namespace Axiom.RenderSystems.OpenGL
 
         #endregion Constructor
 
+        #region Finalizer
+
+        ~ARBGpuProgram()
+        {
+            if (_handle.IsAllocated)
+            {
+                //GCHandle's a value type, valid even inside the scope of a a finalizer
+                _handle.Free();
+            }
+            
+            //Gl.glDeleteProgramsARB(1, ref programId);
+        }
+
+        #endregion Finalizer
+
+        #region Private
+
+        private GCHandle _handle; //handle to managed data
+
+        #endregion Private
+
         #region Implementation of GpuProgram
 
         /// <summary>
@@ -78,7 +99,23 @@ namespace Axiom.RenderSystems.OpenGL
             // MONO: Cannot compile programs when passing in the string as is for whatever reason.
             // would get "Invalid vertex program header", which I assume means the source got mangled along the way
             byte[] bytes = Encoding.ASCII.GetBytes( source );
-            IntPtr sourcePtr = Marshal.UnsafeAddrOfPinnedArrayElement( bytes, 0 );
+            // TODO: We pin the managed 'bytes' to get a pointer to data and get sure they won't move around in memory.
+            //       In case glProgramStringARB() doesn't store the pointer internally, we better free the handle yet in this method,
+            //       or rather utilize a fixed (byte* sourcePtr = bytes) statement, which cares for unpinning the data even in case
+            //       of an exception, where GCHandle.Free() would be missed without try-finally.
+
+            //       In case the above isn't possible, the theory also says that if we have a handle to managed data (except Weak, WeakTrackResurrection handle types)
+            //       we should be implementing a finalizer to ensure freeing the handle as that can be treated as an unmanaged resource from this point of view.
+            //       I decided not to extend this class with IDisposable for several reasons, including class's user contract,
+            //       and the fact that this might be a temporary issue only. So for now only a finalizer will take care for avoiding memory leaks (although minor ones in this case).
+            //       So recheck the MONO issue later, the above comment talks about passing the string directly, btw. the method seems to take byte[] as well (if that would work eventually...).
+            if (_handle.IsAllocated)
+            {
+                _handle.Free();
+            }
+            _handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
+            IntPtr sourcePtr = _handle.AddrOfPinnedObject();
+
             Gl.glProgramStringARB( programType, Gl.GL_PROGRAM_FORMAT_ASCII_ARB, source.Length, sourcePtr );
 
             // check for any errors
@@ -100,11 +137,16 @@ namespace Axiom.RenderSystems.OpenGL
         /// </summary>
         public override void Unload()
         {
-            base.Unload();
 
             if ( isLoaded )
             {
+                if (_handle.IsAllocated)
+                {
+                    _handle.Free();
+                }
+
                 Gl.glDeleteProgramsARB( 1, ref programId );
+                base.Unload();
 
                 isLoaded = false;
             }
