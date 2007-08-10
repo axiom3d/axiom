@@ -50,7 +50,6 @@ namespace Axiom.Core
     /// </remarks>
     public class PatchMesh : Mesh
     {
-        // ------------------------------------
         #region Fields
         /// <summary>
         ///     Internal surface definition.
@@ -62,16 +61,14 @@ namespace Axiom.Core
         protected VertexDeclaration vertexDeclaration;
 
         #endregion Fields
-        // ------------------------------------
 
-        // ------------------------------------
         /// <summary>
         ///     Creates a new PatchMesh.
         /// </summary>
         /// <remarks>
         ///     As defined in <see cref="MeshManager.CreateBezierPatch" />.
         /// </remarks>
-        public PatchMesh( string name, IntPtr controlPointBuffer, VertexDeclaration declaration,
+        public PatchMesh( string name, Array controlPointArray, VertexDeclaration declaration,
             int width, int height, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide,
             BufferUsage vbUsage, BufferUsage ibUsage, bool vbUseShadow, bool ibUseShadow )
             : base( name )
@@ -86,7 +83,7 @@ namespace Axiom.Core
             // define the surface
             // NB clone the declaration to make it independent
             vertexDeclaration = (VertexDeclaration)declaration.Clone();
-            patchSurface.DefineSurface( controlPointBuffer, vertexDeclaration, width, height,
+            patchSurface.DefineSurface( controlPointArray, vertexDeclaration, width, height,
                 PatchSurfaceType.Bezier, uMaxSubdivisionLevel, vMaxSubdivisionLevel, visibleSide );
         }
 

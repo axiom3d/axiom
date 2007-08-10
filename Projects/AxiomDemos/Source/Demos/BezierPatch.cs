@@ -8,7 +8,7 @@ using Axiom.Math;
 using System.Runtime.InteropServices;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.Demos
 {
     public class BezierPatch : TechDemo
@@ -21,6 +21,9 @@ namespace Axiom.Demos
         private bool isWireframe;
         private PatchMesh patch;
         private Entity patchEntity;
+
+        private GCHandle _handle;
+
         #endregion Private Fields
 
         #region Private Structs
@@ -140,8 +143,7 @@ namespace Axiom.Demos
             patchVertices[ 8 ].U = 1;
             patchVertices[ 8 ].V = 1;
 
-			IntPtr buffPtr = Marshal.UnsafeAddrOfPinnedArrayElement( patchVertices, 0 );
-			patch = MeshManager.Instance.CreateBezierPatch( "Bezier1", buffPtr, patchDeclaration, 3, 3, 5, 5, VisibleSide.Both, BufferUsage.StaticWriteOnly, BufferUsage.DynamicWriteOnly, true, true );
+            patch = MeshManager.Instance.CreateBezierPatch( "Bezier1", patchVertices, patchDeclaration, 3, 3, 5, 5, VisibleSide.Both, BufferUsage.StaticWriteOnly, BufferUsage.DynamicWriteOnly, true, true );
 
             // Start patch a 0 detail
             patch.SetSubdivision( 0 );

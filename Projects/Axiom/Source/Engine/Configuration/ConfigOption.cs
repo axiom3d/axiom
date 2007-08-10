@@ -125,7 +125,7 @@ namespace Axiom.Configuration
         {
 			set
 			{
-				Immutable = value;
+				_immutable = value;
 			}
             get
             {
