@@ -43,7 +43,7 @@ namespace Axiom.Scripting
 	/// <summary>
 	/// Provides an interface for executing a method via a Command Pattern on an Object.
 	/// </summary>
-	public interface IExecuteCommand<object>
+	public interface IExecuteCommand : IExecuteCommand<object>
 	{
 	}
 
