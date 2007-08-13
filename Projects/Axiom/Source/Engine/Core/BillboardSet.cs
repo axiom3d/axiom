@@ -1384,7 +1384,7 @@ namespace Axiom.Core
 				materialName = value;
 
 				// find the requested material
-				material = MaterialManager.Instance.GetByName( materialName );
+				material = (Material)MaterialManager.Instance[ materialName ];
 
 				if ( material != null )
 				{

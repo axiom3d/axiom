@@ -102,7 +102,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Implementation of RenderWindow
 
-		public override object this[ string attribute ]		
+		public override object this[ string attribute ]
 		{
 			get
 			{
@@ -215,8 +215,8 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					form.Top = 0;
 					form.Left = 0;
-                    form.FormBorderStyle = SWF.FormBorderStyle.None;
-                    form.WindowState = SWF.FormWindowState.Maximized;
+					form.FormBorderStyle = SWF.FormBorderStyle.None;
+					form.WindowState = SWF.FormWindowState.Maximized;
 					form.TopMost = true;
 					form.TopLevel = true;
 				}
@@ -224,7 +224,7 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					if ( parentHwnd != IntPtr.Zero )
 					{
-                        form.Owner = (SWF.Form)SWF.Control.FromHandle( parentHwnd );
+						form.Owner = (SWF.Form)SWF.Control.FromHandle( parentHwnd );
 					}
 					else
 					{
@@ -233,8 +233,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 					form.Top = top;
 					form.Left = left;
-                    //form.FormBorderStyle = SWF.FormBorderStyle.FixedSingle;
-                    form.WindowState = SWF.FormWindowState.Normal;
+					//form.FormBorderStyle = SWF.FormBorderStyle.FixedSingle;
+					form.WindowState = SWF.FormWindowState.Normal;
 					form.Text = title;
 				}
 
@@ -264,7 +264,7 @@ namespace Axiom.RenderSystems.OpenGL
 			IntPtr old_hdc = Wgl.wglGetCurrentDC();
 			IntPtr old_context = Wgl.wglGetCurrentContext();
 
-            SWF.Control ctrl = SWF.Form.FromHandle( _hWindow );
+			SWF.Control ctrl = SWF.Form.FromHandle( _hWindow );
 			//Form frm = (Form)ctrl.TopLevelControl;
 			this.top = ctrl.Top;
 			this.left = ctrl.Left;
@@ -338,12 +338,12 @@ namespace Axiom.RenderSystems.OpenGL
 					{                                        // Do We Not Have A Rendering Context?
 						if ( !Wgl.wglMakeCurrent( IntPtr.Zero, IntPtr.Zero ) )
 						{         // Are We Able To Release The DC And RC Contexts?
-                            SWF.MessageBox.Show( "Release Of DC And RC Failed.", "SHUTDOWN ERROR", SWF.MessageBoxButtons.OK, SWF.MessageBoxIcon.Information );
+							SWF.MessageBox.Show( "Release Of DC And RC Failed.", "SHUTDOWN ERROR", SWF.MessageBoxButtons.OK, SWF.MessageBoxIcon.Information );
 						}
 
 						if ( !Wgl.wglDeleteContext( _hRenderingContext ) )
 						{                            // Are We Not Able To Delete The RC?
-                            SWF.MessageBox.Show( "Release Rendering Context Failed.", "SHUTDOWN ERROR", SWF.MessageBoxButtons.OK, SWF.MessageBoxIcon.Information );
+							SWF.MessageBox.Show( "Release Rendering Context Failed.", "SHUTDOWN ERROR", SWF.MessageBoxButtons.OK, SWF.MessageBoxIcon.Information );
 						}
 						_hRenderingContext = IntPtr.Zero;                                          // Set RC To NULL
 					}
@@ -352,7 +352,6 @@ namespace Axiom.RenderSystems.OpenGL
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
-			isDisposed = true;
 
 			// If it is available, make the call to the
 			// base class's Dispose(Boolean) method
@@ -370,49 +369,49 @@ namespace Axiom.RenderSystems.OpenGL
 		public override void Resize( int width, int height )
 		{
 
-            //Gl.glMatrixMode(Gl.GL_PROJECTION);	// Select The Projection Matrix
-            //Gl.glLoadIdentity();		// Reset The Projection Matrix
+			//Gl.glMatrixMode(Gl.GL_PROJECTION);	// Select The Projection Matrix
+			//Gl.glLoadIdentity();		// Reset The Projection Matrix
 
-            //// Calculate The Aspect Ratio Of The Window
-            //Glu.gluPerspective(45.0f, width / height, 0.1f, 100.0f);
+			//// Calculate The Aspect Ratio Of The Window
+			//Glu.gluPerspective(45.0f, width / height, 0.1f, 100.0f);
 
-            //Gl.glMatrixMode(Gl.GL_MODELVIEW);	// Select The Modelview Matrix
-            //Gl.glLoadIdentity();		// Reset The Modelview Matrix
+			//Gl.glMatrixMode(Gl.GL_MODELVIEW);	// Select The Modelview Matrix
+			//Gl.glLoadIdentity();		// Reset The Modelview Matrix
 
-            return;
+			return;
 		}
 
-        public override void WindowMovedOrResized()
-        {
-            SWF.Control ctrl = SWF.Form.FromHandle( _hWindow );
-            this.top = ctrl.Top;
-            this.left = ctrl.Left;
-            this.Width = ctrl.ClientRectangle.Width;
-            this.Height = ctrl.ClientRectangle.Height;
+		public override void WindowMovedOrResized()
+		{
+			SWF.Control ctrl = SWF.Form.FromHandle( _hWindow );
+			this.top = ctrl.Top;
+			this.left = ctrl.Left;
+			this.Width = ctrl.ClientRectangle.Width;
+			this.Height = ctrl.ClientRectangle.Height;
 
-            // Update dimensions incase changed
-            foreach (KeyValuePair<int, Viewport> entry in this.viewportList)
-            {
-                entry.Value.UpdateDimensions();
-            }
+			// Update dimensions incase changed
+			foreach ( KeyValuePair<int, Viewport> entry in this.viewportList )
+			{
+				entry.Value.UpdateDimensions();
+			}
 
-        }
+		}
 
-        private SWF.Form GetForm(SWF.Control windowHandle)
-        {
-            SWF.Control tmp = windowHandle;
+		private SWF.Form GetForm( SWF.Control windowHandle )
+		{
+			SWF.Control tmp = windowHandle;
 
-            if (windowHandle == null)
-                return null;
-            if (tmp is SWF.Form)
-                return (SWF.Form)tmp;
-            do
-            {
-                tmp = tmp.Parent;
-            } while (!(tmp is SWF.Form));
+			if ( windowHandle == null )
+				return null;
+			if ( tmp is SWF.Form )
+				return (SWF.Form)tmp;
+			do
+			{
+				tmp = tmp.Parent;
+			} while ( !( tmp is SWF.Form ) );
 
-            return (SWF.Form)tmp;
-        }
+			return (SWF.Form)tmp;
+		}
 
 
 		public override void SwapBuffers( bool waitForVSync )

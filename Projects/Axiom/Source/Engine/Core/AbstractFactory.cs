@@ -49,12 +49,12 @@ namespace Axiom
     /// <ogre name="FactoryObj">
     ///     <file name="OgreFactoryObj.h"   revision="1.10" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
     /// </ogre> 
-    public abstract class AbstractFactory<T> 
+    public interface AbstractFactory<T> 
     {
         /// <summary>
         /// The factory type.
         /// </summary>
-        public abstract string Type
+        string Type
         {
             get;
         }
@@ -67,12 +67,12 @@ namespace Axiom
         /// An object created by the factory. The type of the object depends on
         /// the factory.
         /// </returns>
-        public abstract T CreateInstance( string name );  
+        T CreateInstance( string name );  
 
         /// <summary>
         /// Destroys an object which was created by this factory.
         /// </summary>
         /// <param name="obj">the object to destroy</param>
-        public abstract void DestroyInstance( T obj);    
+        void DestroyInstance( T obj);    
     }
 }

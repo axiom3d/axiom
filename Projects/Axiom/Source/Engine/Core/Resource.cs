@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -36,12 +37,30 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.IO;
 
+using ResourceHandle = System.UInt64;
+using Axiom.Scripting;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
 	/// <summary>
-	///		Abstract class reprensenting a loadable resource (e.g. textures, sounds etc)
+	/// Enum identifying the loading state of the resource
+	/// </summary>
+	public enum LoadingState
+	{
+		/// Not loaded
+		Unloaded,
+		/// Loading is in progress
+		Loading,
+		/// Fully loaded
+		Loaded,
+		/// Currently unloading
+		Unloading
+	};
+
+	/// <summary>
+	///		Abstract class representing a loadable resource (e.g. textures, sounds etc)
 	/// </summary>
 	/// <remarks>
 	///		Resources are generally passive constructs, handled through the
@@ -50,84 +69,43 @@ namespace Axiom.Core
 	///		ResourceManager to stay within a defined memory budget. Therefore,
 	///		all Resources must be able to load, unload (whilst retainin enough
 	///		info about themselves to be reloaded later), and state how big they are.
-	///
+	/// <para/>
 	///		Subclasses must implement:
 	///		1. A constructor, with at least a mandatory name param.
 	///			This constructor must set name and optionally size.
 	///		2. The Load() and Unload() methods - size must be set after Load()
-	///			Each must check & update the isLoaded flag.
+	///			Each must check &amp; update the isLoaded flag.
 	/// </remarks>
-	public abstract class Resource : IDisposable
+	public abstract class Resource : ScriptableObject, IDisposable
 	{
-		#region Fields
 
+		#region Fields and Properties
+
+		private object _loadingStatusMutex = new object();
+
+		#region Creator Property
+
+		private ResourceManager _creator;
 		/// <summary>
-		///		Name of this resource.
+		/// the manager which created this resource.
 		/// </summary>
-		protected string name;
-		/// <summary>
-		///		Has this resource been loaded yet?
-		/// </summary>
-		protected bool isLoaded;
-		/// <summary>
-		///		 Size (in bytes) that this resource takes up in memory.
-		/// </summary>
-		protected long size;
-		/// <summary>
-		///		Timestamp of the last time this resource was accessed.
-		/// </summary>
-		protected long lastAccessed;
-		/// <summary>
-		///		Unique handle of this resource.
-		/// </summary>
-		protected int handle;
-
-		#endregion Fields
-
-		#region Constructors
-
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
-		/// <remarks>Subclasses must initialize name and size.</remarks>
-		public Resource()
-		{
-			isLoaded = false;
-			size = 0;
-		}
-
-		#endregion
-
-		#region Virtual/Abstract methods
-
-		/// <summary>
-		///		Loads the resource, if not loaded already.
-		/// </summary>
-		public abstract void Load();
-
-		/// <summary>
-		///		Unloads the resource data, but retains enough info. to be able to recreate it
-		///		on demand.
-		/// </summary>
-		public virtual void Unload()
-		{
-		}
-
-		#endregion
-
-		#region Properties
-
-		/// <summary>
-		///		Size of this resource.
-		/// </summary>
-		public long Size
+		public ResourceManager Creator
 		{
 			get
 			{
-				return size;
+				return _creator;
+			}
+			protected set
+			{
+				_creator = value;
 			}
 		}
 
+		#endregion Parent Property
+
+		#region Name Property
+
+		protected string _name;
 		/// <summary>
 		///		Name of this resource.
 		/// </summary>
@@ -135,80 +113,601 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return name;
+				return _name;
+			}
+			protected set
+			{
+				_name = value;
 			}
 		}
 
+		#endregion Property
+
+		#region Goup Property
+
+		protected string _group;
 		/// <summary>
-		///		Is this resource loaded?
+		///		Name of this resource.
+		/// </summary>
+		public string Group
+		{
+			get
+			{
+				return _group;
+			}
+			set
+			{
+				if (_group != value)
+				{
+					String oldGroup = _group;
+					_group = value;
+					ResourceGroupManager.Instance.notifyResourceGroupChanged(oldGroup, this);
+				}
+				
+			}
+		}
+
+		#endregion Group Property
+
+		#region IsLoaded Property
+
+		private bool _isLoaded;
+		/// <summary>
+		///		Has this resource been loaded yet?
 		/// </summary>
 		public bool IsLoaded
 		{
 			get
 			{
-				return isLoaded;
+				return _isLoaded;
+			}
+			protected set
+			{
+				_isLoaded = value;
 			}
 		}
 
+		#endregion IsLoaded Property
+
+		#region IsManuallyLoaded Property
+
+		private bool _isManuallyLoaded;
 		/// <summary>
-		///		The time the resource was last touched.
+		/// 
+		/// </summary>
+		public bool IsManuallyLoaded
+		{
+			get
+			{
+				return _isManuallyLoaded;
+			}
+			protected set
+			{
+				_isManuallyLoaded = value;
+			}
+		}
+
+		#endregion IsManual Property
+
+		#region Size Property
+
+		private long _size;
+		/// <summary>
+		///		Size (in bytes) that this resource takes up in memory.
+		/// </summary>
+		public long Size
+		{
+			get
+			{
+				return _size;
+			}
+			protected set
+			{
+				_size = value;
+			}
+		}
+
+		#endregion Size Property
+
+		#region LastAccessed Property
+
+		private long _lastAccessed;
+		/// <summary>
+		///		Timestamp of the last time this resource was accessed.
 		/// </summary>
 		public long LastAccessed
 		{
 			get
 			{
-				return lastAccessed;
+				return _lastAccessed;
+			}
+			protected set
+			{
+				_lastAccessed = value;
+			}
+		}
+
+		#endregion LastAccessed Property
+
+		#region Handle Property
+
+		private ResourceHandle _handle;
+		/// <summary>
+		///		Unique handle of this resource.
+		/// </summary>
+		public ResourceHandle Handle
+		{
+			get
+			{
+				return _handle;
+			}
+			set
+			{
+				_handle = value;
+			}
+		}
+
+		#endregion Handle Property
+
+		#region Origin Property
+
+		private string _origin;
+		/// <summary>
+		/// Origin of this resource (e.g. script name) - optional
+		/// </summary>
+		public string Origin
+		{
+			get
+			{
+				return _origin;
+			}
+			protected set
+			{
+				_origin = value;
+			}
+		}
+
+		#endregion Origin Property
+
+		#region loader Property
+
+		private IManualResourceLoader _loader;
+		/// <summary>
+		/// Optional manual loader; if provided, data is loaded from here instead of a file
+		/// </summary>
+		protected IManualResourceLoader loader
+		{
+			get
+			{
+				return _loader;
+			}
+			set
+			{
+				_loader = value;
+			}
+		}
+
+		#endregion loader Property
+
+		#region LoadingState Property
+
+		private LoadingState _loadingState;
+		/// <summary>
+		/// Returns whether the resource is currently in the process of	background loading.
+		/// </summary>
+		public LoadingState LoadingState
+		{
+			get
+			{
+				return _loadingState;
+			}
+			set
+			{
+				_loadingState = value;
+			}
+		}
+
+		#endregion LoadingState Property
+
+		#region IsBackgroundLoaded Property
+
+		private bool _isBackgroundLoaded;
+		/// <summary>
+		/// Returns whether this Resource has been earmarked for background loading.
+		/// </summary>
+		/// <remarks>
+		/// This option only makes sense when you have built Axiom with 
+		/// thread support (AXIOM_THREAD_SUPPORT). If a resource has been marked
+		/// for background loading, then it won't load on demand like normal
+		/// when load() is called. Instead, it will ignore request to load()
+		/// except if the caller indicates it is the background loader. Any
+		/// other users of this resource should check isLoaded(), and if that
+		/// returns false, don't use the resource and come back later.
+		/// <para/>
+		/// Note that setting this only	defers the normal on-demand loading 
+		/// behaviour of a resource, it	does not actually set up a thread to make 
+		/// sure the resource gets loaded in the background. You should use 
+		/// ResourceBackgroundLoadingQueue to manage the actual loading 
+		/// (which will set this property itself).
+		/// </remarks>
+		public bool IsBackgroundLoaded
+		{
+			get
+			{
+				return _isBackgroundLoaded;
+			}
+			set
+			{
+				_isBackgroundLoaded = value;
+			}
+		}
+
+		#endregion IsBackgroundLoaded Property
+
+		/// <summary>
+		///  Is the Resource reloadable?
+		/// </summary>
+		/// <returns></returns>
+		public bool IsReloadable
+		{
+			get
+			{
+				return _isManuallyLoaded || ( _loader != null );
+			}
+		}
+
+		#endregion Fields and Properties
+
+		#region Constructors and Destructor
+
+		/// <summary>
+		///	Protected unnamed constructor to prevent default construction. 
+		/// </summary>
+		protected Resource()
+		{
+			_creator = null;
+			_handle = 0;
+			_isLoaded = false;
+			_size = 0;
+			_isManuallyLoaded = false;
+			_loader = null;
+
+		}
+
+		/// <overloads>
+		/// <summary>
+		/// Standard constructor.
+		/// </summary>
+		/// <param name="parent">ResourceManager that is creating this resource</param>
+		/// <param name="name">The unique name of the resource</param>
+		/// <param name="handle"></param>
+		/// <param name="group">The name of the resource group to which this resource belongs</param>
+		/// </overloads>
+		protected Resource( ResourceManager parent, string name, ResourceHandle handle, string group )
+			: this( parent, name, handle, group, false, null )
+		{
+		}
+
+		/// <param name="isManual">
+		///     Is this resource manually loaded? If so, you should really
+		///     populate the loader parameter in order that the load process
+		///     can call the loader back when loading is required. 
+		/// </param>
+		/// <param name="loader">
+		///     An IManualResourceLoader implementation which will be called
+		///     when the Resource wishes to load (should be supplied if you set
+		///     isManual to true). You can in fact leave this parameter null 
+		///     if you wish, but the Resource will never be able to reload if 
+		///     anything ever causes it to unload. Therefore provision of a proper
+		///     IManualResourceLoader instance is strongly recommended.
+		/// </param>
+		protected Resource( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+		{
+			_creator = parent;
+			_name = name;
+			_handle = handle;
+			_group = group;
+			_size = 0;
+			_isManuallyLoaded = isManual;
+			_loader = loader;
+		}
+
+		~Resource()
+		{
+			dispose( false );
+		}
+
+		#endregion Constructors and Destructor
+
+		#region Methods
+
+		/// <summary>
+		/// Escalates the loading of a background loaded resource. 
+		/// </summary>
+		/// <remarks>
+		/// If a resource is set to load in the background, but something needs
+		/// it before it's been loaded, there could be a problem. If the user
+		/// of this resource really can't wait, they can escalate the loading
+		/// which basically pulls the loading into the current thread immediately.
+		/// If the resource is already being loaded but just hasn't quite finished
+		/// then this method will simply wait until the background load is complete.
+		/// </remarks>
+		public void EscalateLoading()
+		{
+			// Just call load as if this is the background thread, locking on
+			// load status will prevent race conditions
+			Load( true );
+		}
+
+		/// <summary>
+		///		Loads the resource, if not loaded already.
+		/// </summary>
+		/// <remarks>
+		/// If the resource is loaded from a file, loading is automatic. If not,
+		/// if for example this resource gained it's data from procedural calls
+		/// rather than loading from a file, then this resource will not reload 
+		/// on it's own
+		/// </remarks>
+		public void Load( )
+		{
+			Load( false );
+		}
+
+		/// <summary>
+		/// Loads the resource, if not loaded already.
+		/// </summary>
+		/// <remarks>
+		/// If the resource is loaded from a file, loading is automatic. If not,
+		/// if for example this resource gained it's data from procedural calls
+		/// rather than loading from a file, then this resource will not reload 
+		/// on it's own.
+		/// </remarks>
+		/// <param name="background">Indicates whether the caller of this method is
+		/// the background resource loading thread.</param>
+		public virtual void Load( bool background )
+		{
+			// Early-out without lock (mitigate perf cost of ensuring loaded)
+			// Don't load if:
+			// 1. We're already loaded
+			// 2. Another thread is loading right now
+			// 3. We're marked for background loading and this is not the background
+			//    loading thread we're being called by
+			if ( _loadingState != LoadingState.Unloaded || ( _isBackgroundLoaded && !background ) )
+				return;
+
+			// Scope lock over load status
+			lock( _loadingStatusMutex )
+			{
+				// Check again just in case status changed (since we didn't lock above)
+				if (_loadingState != LoadingState.Unloaded || (_isBackgroundLoaded && !background))
+				{
+					// no loading to be done
+					return;
+				}
+				_loadingState = LoadingState.Loading;
+			}
+
+			if ( !_isLoaded )
+			{
+				if ( _isManuallyLoaded )
+				{
+					// Load from manual loader
+					if ( _loader != null )
+					{
+						_loader.LoadResource( this );
+					}
+					else
+					{
+						// Warn that this resource is not reloadable
+						LogManager.Instance.Write( "WARNING: {0} instance '{1}' was defined as manually loaded, but no manual loader was provided. This Resource " +
+													"will be lost if it has to be reloaded.", _creator.ResourceType, _name );
+					}
+				}
+				else
+				{
+					if ( Group == ResourceGroupManager.AutoDetectResourceGroupName)
+					{
+						// Derive resource group
+						Group = ResourceGroupManager.Instance.FindGroupContainingResource( Name );
+					}
+					load();
+				}
+
+				// Calculate resource size
+				_size = calculateSize();
+
+				// Now loaded
+				_isLoaded = true;
+
+				// Notify manager
+				if ( _creator != null )
+					_creator.NotifyResourceLoaded( this );
 			}
 		}
 
 		/// <summary>
-		///		Gets/Sets the unique handle of this resource.
+		///		Unloads the resource data, but retains enough info. to be able to recreate it
+		///		on demand.
 		/// </summary>
-		public int Handle
+		public virtual void Unload()
 		{
-			get
+			if ( _isLoaded )
 			{
-				return handle;
-			}
-			set
-			{
-				handle = value;
+				unload();
+				_isLoaded = false;
+
+				// Notify manager
+				if ( _creator != null )
+					_creator.NotifyResourceUnloaded( this );
 			}
 		}
 
-		#endregion
-
-		#region Public methods
+		/// <summary>
+		/// Reloads the resource, if it is already loaded.
+		/// </summary>
+		/// <remarks>
+		/// Calls unload() and then load() again, if the resource is already
+		/// loaded. If it is not loaded already, then nothing happens.
+		/// </remarks>
+		public virtual void Reload()
+		{
+			if ( _isLoaded )
+			{
+				Unload();
+				Load();
+			}
+		}
 
 		/// <summary>
 		///		Indicates this resource has been used.
 		/// </summary>
 		public virtual void Touch()
 		{
-			lastAccessed = Root.Instance.Timer.Milliseconds;
+			_lastAccessed = Root.Instance.Timer.Milliseconds;
 
-			if ( !isLoaded )
+			if ( !_isLoaded )
 			{
 				Load();
 			}
+
+			if ( _creator != null )
+				_creator.NotifyResourceTouched( this );
+
 		}
 
-		#endregion
+		/// <summary>
+		/// Calculate the size of a resource; this will only be called after 'load'
+		/// </summary>
+		/// <returns></returns>
+		protected virtual int calculateSize()
+		{
+			return 0;
+		}
 
-		#region Implementation of IDisposable
+
+		#region Abstract Load/Unload Implementation Methods
 
 		/// <summary>
-		///		Dispose method.  Made virtual to allow subclasses to destroy resources their own way.
+		/// Internal implementation of the 'load' action, only called if this 
+		/// resource is not being loaded from a ManualResourceLoader. 
 		/// </summary>
-		public virtual void Dispose()
+		protected abstract void load();
+
+		/// <summary>
+		/// Internal implementation of the 'unload' action; called regardless of
+		/// whether this resource is being loaded from a ManualResourceLoader. 
+		/// </summary>
+		protected abstract void unload();
+
+		#endregion Abstract Load/Unload Implementation Methods
+
+		#endregion Methods
+
+		#region IDisposable Implementation
+
+		#region isDisposed Property
+
+		private bool _disposed = false;
+		/// <summary>
+		/// Determines if this instance has been disposed of already.
+		/// </summary>
+		protected bool isDisposed
 		{
-			if ( isLoaded )
+			get
 			{
-				// unload this resource
-				Unload();
+				return _disposed;
+			}
+			set
+			{
+				_disposed = value;
 			}
 		}
 
-		#endregion
+		#endregion isDisposed Property
+
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		/// <remarks>
+		/// When implementing this method in an inherited class the following template should be used;
+		/// protected override void dispose( bool disposeManagedResources )
+		/// {
+		/// 	if ( !isDisposed )
+		/// 	{
+		/// 		if ( disposeManagedResources )
+		/// 		{
+		/// 			// Dispose managed resources.
+		/// 		}
+		/// 
+		/// 		// There are no unmanaged resources to release, but
+		/// 		// if we add them, they need to be released here.
+		/// 	}
+		/// 	isDisposed = true;
+		///
+		/// 	// If it is available, make the call to the
+		/// 	// base class's Dispose(Boolean) method
+		/// 	base.dispose( disposeManagedResources );
+		/// }
+		/// </remarks>
+		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+		protected virtual void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					// Dispose managed resources.
+					if ( _isLoaded )
+						Unload();
+				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
+			isDisposed = true;
+		}
+
+		public void Dispose()
+		{
+			dispose( true );
+			GC.SuppressFinalize( this );
+		}
+
+		#endregion IDisposable Implementation
+	}
+
+	/// <summary>
+	/// Interface describing a manual resource loader.
+	/// </summary>
+	/// <remarks>
+	/// Resources are usually loaded from files; however in some cases you
+	/// want to be able to set the data up manually instead. This provides
+	/// some problems, such as how to reload a Resource if it becomes
+	/// unloaded for some reason, either because of memory constraints, or
+	/// because a device fails and some or all of the data is lost.
+	/// <para/>
+	/// This interface should be implemented by all classes which wish to
+	/// provide manual data to a resource. They provide a pointer to themselves
+	/// when defining the resource (via the appropriate ResourceManager), 
+	/// and will be called when the Resource tries to load. 
+	/// They should implement the loadResource method such that the Resource 
+	/// is in the end set up exactly as if it had loaded from a file, 
+	/// although the implementations will likely differ	between subclasses 
+	/// of Resource, which is why no generic algorithm can be stated here. 
+	/// <para/>
+	/// The loader must remain valid for the entire life of the resource,
+	/// so that if need be it can be called upon to re-load the resource
+	/// at any time.
+	/// </remarks>
+	/// <ogre name="ManualResourceLoader">
+	///     <file name="OgreResource.h"   revision="1.16.2.1" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+	/// </ogre> 
+	public interface IManualResourceLoader
+	{
+		/// <summary>
+		/// Called when a resource wishes to load.
+		/// </summary>
+		/// <param name="resource">The resource which wishes to load</param>
+		void LoadResource( Resource resource );
 	}
 }

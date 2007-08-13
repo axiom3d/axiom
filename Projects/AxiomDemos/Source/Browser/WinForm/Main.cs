@@ -40,7 +40,7 @@ namespace Axiom.Demos.Browser.WinForm
             _setupResources();
 
 			dlg = new DemoConfigDialog();
-			dlg.LoadDemos( "Axiom.Demos.dll" );
+			dlg.LoadDemos( Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location )+ @"\Axiom.Demos.dll" );
             DialogResult result = dlg.ShowDialog();
             if ( result == DialogResult.Cancel )
                 return false;
@@ -66,7 +66,7 @@ namespace Axiom.Demos.Browser.WinForm
                 // interrogate the available resource paths
                 foreach ( EngineConfig.FilePathRow row in config.FilePath )
                 {
-                    ResourceManager.AddCommonArchive( row.src, row.type );
+                    ResourceGroupManager.Instance.AddResourceLocation( row.src, row.type );
                 }
             }
         }
@@ -84,6 +84,7 @@ namespace Axiom.Demos.Browser.WinForm
                         {
                             demo.Start();//show and start rendering
                         }//dispose of it when done
+						MeterManager.Report( "BillboardSet");
                     }
 
                 }

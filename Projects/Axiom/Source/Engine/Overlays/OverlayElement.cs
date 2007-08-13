@@ -320,13 +320,13 @@ namespace Axiom.Overlays
                 MethodInfo method = methods[ i ];
 
                 // see if the method should be used to parse one or more material attributes
-                AttributeParserAttribute[] parserAtts =
-                    (AttributeParserAttribute[])method.GetCustomAttributes( typeof( AttributeParserAttribute ), true );
+                ParserCommandAttribute[] parserAtts =
+                    (ParserCommandAttribute[])method.GetCustomAttributes( typeof( ParserCommandAttribute ), true );
 
                 // loop through each one we found and register its parser
                 for ( int j = 0; j < parserAtts.Length; j++ )
                 {
-                    AttributeParserAttribute parserAtt = parserAtts[ j ];
+                    ParserCommandAttribute parserAtt = parserAtts[ j ];
 
                     //attribParsers.Add( parserAtt.Name, Delegate.CreateDelegate( typeof( AttributeParserMethod ), method. ) );
                     attribParsers.Add(parserAtt.Name, method);
@@ -948,7 +948,7 @@ namespace Axiom.Overlays
             set
             {
                 materialName = value;
-                material = MaterialManager.Instance.GetByName( materialName );
+				material = (Material)MaterialManager.Instance[ materialName ];
 
                 if ( material == null )
                 {
@@ -1389,7 +1389,7 @@ namespace Axiom.Overlays
 
         #region Script parser methods
 
-        [AttributeParser( "metrics_mode", "OverlayElement" )]
+        [ParserCommand( "metrics_mode", "OverlayElement" )]
         public static void ParseMetricsMode( string[] parms, params object[] objects )
         {
             OverlayElement element = (OverlayElement)objects[ 0 ];
@@ -1397,7 +1397,7 @@ namespace Axiom.Overlays
             element.MetricsMode = (MetricsMode)ScriptEnumAttribute.Lookup( parms[ 0 ], typeof( MetricsMode ) );
         }
 
-        [AttributeParser( "horz_align", "OverlayElement" )]
+        [ParserCommand( "horz_align", "OverlayElement" )]
         public static void ParseHorzAlign( string[] parms, params object[] objects )
         {
             OverlayElement element = (OverlayElement)objects[ 0 ];
@@ -1405,7 +1405,7 @@ namespace Axiom.Overlays
             element.HorizontalAlignment = (HorizontalAlignment)ScriptEnumAttribute.Lookup( parms[ 0 ], typeof( HorizontalAlignment ) );
         }
 
-        [AttributeParser( "vert_align", "OverlayElement" )]
+        [ParserCommand( "vert_align", "OverlayElement" )]
         public static void ParseVertAlign( string[] parms, params object[] objects )
         {
             OverlayElement element = (OverlayElement)objects[ 0 ];
@@ -1413,7 +1413,7 @@ namespace Axiom.Overlays
             element.VerticalAlignment = (VerticalAlignment)ScriptEnumAttribute.Lookup( parms[ 0 ], typeof( VerticalAlignment ) );
         }
 
-        [AttributeParser( "top", "OverlayElement" )]
+        [ParserCommand( "top", "OverlayElement" )]
         public static void ParseTop( string[] parms, params object[] objects )
         {
             OverlayElement element = (OverlayElement)objects[ 0 ];
@@ -1421,7 +1421,7 @@ namespace Axiom.Overlays
             element.Top = StringConverter.ParseFloat( parms[ 0 ] );
         }
 
-        [AttributeParser( "left", "OverlayElement" )]
+        [ParserCommand( "left", "OverlayElement" )]
         public static void ParseLeft( string[] parms, params object[] objects )
         {
             OverlayElement element = (OverlayElement)objects[ 0 ];
@@ -1429,7 +1429,7 @@ namespace Axiom.Overlays
             element.Left = StringConverter.ParseFloat( parms[ 0 ] );
         }
 
-        [AttributeParser( "width", "OverlayElement" )]
+        [ParserCommand( "width", "OverlayElement" )]
         public static void ParseWidth( string[] parms, params object[] objects )
         {
             OverlayElement element = (OverlayElement)objects[ 0 ];
@@ -1437,7 +1437,7 @@ namespace Axiom.Overlays
             element.Width = StringConverter.ParseFloat( parms[ 0 ] );
         }
 
-        [AttributeParser( "height", "OverlayElement" )]
+        [ParserCommand( "height", "OverlayElement" )]
         public static void ParseHeight( string[] parms, params object[] objects )
         {
             OverlayElement element = (OverlayElement)objects[ 0 ];
@@ -1445,7 +1445,7 @@ namespace Axiom.Overlays
             element.Height = StringConverter.ParseFloat( parms[ 0 ] );
         }
 
-        [AttributeParser( "caption", "OverlayElement" )]
+        [ParserCommand( "caption", "OverlayElement" )]
         public static void ParseCaption( string[] parms, params object[] objects )
         {
             OverlayElement element = (OverlayElement)objects[ 0 ];
@@ -1465,7 +1465,7 @@ namespace Axiom.Overlays
             element.Text = sb.ToString();
         }
 
-        [AttributeParser( "material", "OverlayElement" )]
+        [ParserCommand( "material", "OverlayElement" )]
         public static void ParseMaterial( string[] parms, params object[] objects )
         {
             OverlayElement element = (OverlayElement)objects[ 0 ];

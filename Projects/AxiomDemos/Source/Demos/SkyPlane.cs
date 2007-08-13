@@ -28,7 +28,7 @@ namespace Axiom.Demos
             plane.Normal = -Vector3.UnitY;
 
             // create the skyplace 10000 units wide, tile the texture 3 times
-            scene.SetSkyPlane( true, plane, "Skyplane/Space", 10000, 3, true, 0 );
+			scene.SetSkyPlane( true, plane, "Skyplane/Space", 10000, 3, true, 0, ResourceGroupManager.DefaultResourceGroupName );
 
             // create a default point light
             Light light = scene.CreateLight( "MainLight" );

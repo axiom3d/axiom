@@ -790,7 +790,7 @@ namespace Axiom.Demos
             fNorms = new Vector3[ cmplx, cmplx, 2 ]; // face Normals for each triangle
 
             // Create mesh and submesh to represent the Water
-            mesh = (Mesh)MeshManager.Instance.CreateManual( meshName );
+            mesh = (Mesh)MeshManager.Instance.CreateManual( meshName, ResourceGroupManager.DefaultResourceGroupName, null );
             subMesh = mesh.CreateSubMesh();
             subMesh.useSharedVertices = false;
 

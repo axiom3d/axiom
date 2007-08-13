@@ -39,6 +39,9 @@ using System.Diagnostics;
 
 using Axiom.Core;
 
+using Real = System.Single;
+using System.Collections.Generic;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
@@ -52,43 +55,665 @@ namespace Axiom.Graphics
 	/// </remarks>
 	public class Technique
 	{
-		#region Fields
+		#region Constants and Enumerations
+		// illumination pass state type
+		protected enum IlluminationPassesState
+		{
+			Disabled = -1,
+			NotCompiled = 0,
+			Compiled = 1
+		}
+
+		#endregion Constants and Enumerations
+
+		#region Fields and Properties
+
+		private ushort _schemeIndex;
+
+		/// <summary>
+		///    The list of passes (fixed function or programmable) contained in this technique.
+		/// </summary>
+		private List<Pass> _passes = new List<Pass>();
+
+		/// <summary>
+		///		List of derived passes, categorized (and ordered) into illumination stages.
+		/// </summary>
+		private List<IlluminationPass> _illuminationPasses = new List<IlluminationPass>();
+
+		#region Parent Property
 
 		/// <summary>
 		///    The material that owns this technique.
 		/// </summary>
-		protected Material parent;
+		private Material _parent;
 		/// <summary>
-		///    The list of passes (fixed function or programmable) contained in this technique.
+		///    Gets a reference to the Material that owns this Technique.
 		/// </summary>
-		protected PassList passes = new PassList();
-		/// <summary>
-		///		List of derived passes, categorized (and ordered) into illumination stages.
-		/// </summary>
-		protected ArrayList illuminationPasses = new ArrayList();
+		public Material Parent
+		{
+			get
+			{
+				return _parent;
+			}
+			protected set
+			{
+				_parent = value;
+			}
+		}
+
+		#endregion Parent Property
+
+		#region IsSupported Property
+
 		/// <summary>
 		///    Flag that states whether or not this technique is supported on the current hardware.
 		/// </summary>
-		protected bool isSupported;
+		private bool _isSupported;
+		/// <summary>
+		///    Flag that states whether or not this technique is supported on the current hardware.
+		/// </summary>
+		/// <remarks>
+		///    This will only be correct after the Technique has been compiled, which is
+		///    usually triggered in Material.Compile.
+		/// </remarks>
+		public bool IsSupported
+		{
+			get
+			{
+				return _isSupported;
+			}
+			protected set
+			{
+				_isSupported = value;
+			}
+		}
+
+		#endregion IsSupported Property
+			
+		#region Name Property
+
 		/// <summary>
 		///    Name of this technique.
 		/// </summary>
-		protected string name;
+		private string _name;
+		/// <summary>
+		///    Gets/Sets the name of this technique.
+		/// </summary>
+		public string Name
+		{
+			get
+			{
+				return _name;
+			}
+			set
+			{
+				_name = value;
+			}
+		}
+
+		#endregion Name Property
+
+		#region LodIndex Property
+
 		/// <summary>
 		///		Level of detail index for this technique.
 		/// </summary>
-		protected int lodIndex;
+		private int _lodIndex;
+		/// <summary>
+		///		Assigns a level-of-detail (LOD) index to this Technique.
+		/// </summary>
+		/// <remarks>
+		///		As noted previously, as well as providing fallback support for various
+		///		graphics cards, multiple Technique objects can also be used to implement
+		///		material LOD, where the detail of the material diminishes with distance to 
+		///		save rendering power.
+		///		<p/>
+		///		By default, all Techniques have a LOD index of 0, which means they are the highest
+		///		level of detail. Increasing LOD indexes are lower levels of detail. You can 
+		///		assign more than one Technique to the same LOD index, meaning that the best 
+		///		Technique that is supported at that LOD index is used. 
+		///		<p/>
+		///		You should not leave gaps in the LOD sequence; the engine will allow you to do this
+		///		and will continue to function as if the LODs were sequential, but it will 
+		///		confuse matters.
+		/// </remarks>
+		public int LodIndex
+		{
+			get
+			{
+				return _lodIndex;
+			}
+			set
+			{
+				_lodIndex = value;
+				NotifyNeedsRecompile();
+			}
+		}
 
-		protected bool compiledIlluminationPasses;
+		#endregion LodIndex Property
 
-		#endregion
+		#region compiledIlluminationPasses Property
 
-		#region Constructors
+		private bool _compiledIlluminationPasses;
+		protected bool compiledIlluminationPasses
+		{
+			get
+			{
+				return _compiledIlluminationPasses;
+			}
+			set
+			{
+				_compiledIlluminationPasses = value;
+			}
+		}
+		
+		#endregion compiledIlluminationPasses Property
+			
+		#region IlluminationPassCount Property
+
+		/// <summary>
+		///		Gets the number of illumination passes compiled from this technique.
+		/// </summary>
+		public int IlluminationPassCount
+		{
+			get
+			{
+				if ( !_compiledIlluminationPasses )
+				{
+					CompileIlluminationPasses();
+				}
+				return _illuminationPasses.Count;
+			}
+		}
+
+		#endregion IlluminationPassCount Property
+
+		#region Pass Convienence Properties
+
+		/// <summary>
+		/// Sets the point size properties for every Pass in this Technique.
+		/// </summary>
+		/// <remarks>
+		/// This property actually exists on the Pass class. For simplicity, this method allows 
+		/// you to set these properties for every current Pass within this Technique. If 
+		/// you need more precision, retrieve the Pass instance and set the
+		/// property there.
+		/// <see cref="Pass.PointSize"/>
+		/// </remarks>
+		public Real PointSize
+		{
+			set
+			{
+				foreach ( Pass p in _passes )
+				{
+					p.PointSize = value;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets the ambient size properties for every Pass in this Technique.
+		/// </summary>
+		/// <remarks>
+		/// This property actually exists on the Pass class. For simplicity, this method allows 
+		/// you to set these properties for every current Pass within this Technique. If 
+		/// you need more precision, retrieve the Pass instance and set the
+		/// property there.
+		/// <see cref="Pass.Ambient"/>
+		/// </remarks>
+		public ColorEx Ambient
+		{
+			set
+			{
+				foreach ( Pass p in _passes )
+				{
+					p.Ambient = value;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets the Diffuse property for every Pass in this Technique.
+		/// </summary>
+		/// <remarks>
+		/// This property actually exists on the Pass class. For simplicity, this method allows 
+		/// you to set these properties for every current Pass within this Technique. If 
+		/// you need more precision, retrieve the Pass instance and set the
+		/// property there.
+		/// <see cref="Pass.Diffuse"/>
+		/// </remarks>
+		public ColorEx Diffuse
+		{
+			set
+			{
+				foreach ( Pass p in _passes )
+				{
+					p.Diffuse = value;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets the Specular property for every Pass in this Technique.
+		/// </summary>
+		/// <remarks>
+		/// This property actually exists on the Pass class. For simplicity, this method allows 
+		/// you to set these properties for every current Pass within this Technique. If 
+		/// you need more precision, retrieve the Pass instance and set the
+		/// property there.
+		/// <see cref="Pass.Specular"/>
+		/// </remarks>
+		public ColorEx Specular
+		{
+			set
+			{
+				foreach ( Pass p in _passes )
+				{
+					p.Specular = value;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets the Shininess property for every Pass in this Technique.
+		/// </summary>
+		/// <remarks>
+		/// This property actually exists on the Pass class. For simplicity, this method allows 
+		/// you to set these properties for every current Pass within this Technique. If 
+		/// you need more precision, retrieve the Pass instance and set the
+		/// property there.
+		/// <see cref="Pass.Shininess"/>
+		/// </remarks>
+		public Real Shininess
+		{
+			set
+			{
+				foreach ( Pass p in _passes )
+				{
+					p.Shininess = value;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets the SelfIllumination property for every Pass in this Technique.
+		/// </summary>
+		/// <remarks>
+		/// This property actually exists on the Pass class. For simplicity, this method allows 
+		/// you to set these properties for every current Pass within this Technique. If 
+		/// you need more precision, retrieve the Pass instance and set the
+		/// property there.
+		/// <see cref="Pass.SelfIllumination"/>
+		/// </remarks>
+		public ColorEx SelfIllumination
+		{
+			set
+			{
+				foreach ( Pass p in _passes )
+				{
+					p.SelfIllumination = value;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets the Emissive property for every Pass in this Technique.
+		/// </summary>
+		/// <remarks>
+		/// This property actually exists on the Pass class. For simplicity, this method allows 
+		/// you to set these properties for every current Pass within this Technique. If 
+		/// you need more precision, retrieve the Pass instance and set the
+		/// property there.
+		/// <see cref="Pass.Emissive"/>
+		/// </remarks>
+		public ColorEx Emissive
+		{
+			set
+			{
+				foreach ( Pass p in _passes )
+				{
+					p.Emissive = value;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets the CullingMode property for every Pass in this Technique.
+		/// </summary>
+		/// <remarks>
+		/// This property actually exists on the Pass class. For simplicity, this method allows 
+		/// you to set these properties for every current Pass within this Technique. If 
+		/// you need more precision, retrieve the Pass instance and set the
+		/// property there.
+		/// <see cref="Pass.CullingMode"/>
+		/// </remarks>
+		public CullingMode CullingMode
+		{
+			set
+			{
+				foreach ( Pass p in _passes )
+				{
+					p.CullingMode = value;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets the ManualCullingMode property for every Pass in this Technique.
+		/// </summary>
+		/// <remarks>
+		/// This property actually exists on the Pass class. For simplicity, this method allows 
+		/// you to set these properties for every current Pass within this Technique. If 
+		/// you need more precision, retrieve the Pass instance and set the
+		/// property there.
+		/// <see cref="Pass.ManualCullingMode"/>
+		/// </remarks>
+		public ManualCullingMode ManualCullingMode
+		{
+			set
+			{
+				foreach ( Pass p in _passes )
+				{
+					p.ManualCullingMode = value;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets whether or not dynamic lighting is enabled for every Pass.
+		/// </summary>
+		/// <remarks>
+		/// This property actually exists on the Pass class. For simplicity, this method allows 
+		/// you to set these properties for every current Pass within this Technique. If 
+		/// you need more precision, retrieve the Pass instance and set the
+		/// property there.
+		/// <see ref="Pass.LightingEnabled"></see>
+		/// </remarks>
+		public bool LightingEnabled
+		{
+			set
+			{
+				foreach ( Pass p in _passes )
+				{
+					p.LightingEnabled = value;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets the depth bias to be used for each Pass.
+		/// </summary>
+		/// <remarks>
+		/// This property actually exists on the Pass class. For simplicity, this method allows 
+		/// you to set these properties for every current Pass within this Technique. If 
+		/// you need more precision, retrieve the Pass instance and set the
+		/// property there.
+		/// <see ref="Pass.DepthBias"></see>
+		/// </remarks>
+		public int DepthBias
+		{
+			set
+			{
+				foreach ( Pass p in _passes )
+				{
+					p.SetDepthBias( value );
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets the type of light shading required
+		/// </summary>
+		/// <remarks>
+		/// This property actually exists on the Pass class. For simplicity, this method allows 
+		/// you to set these properties for every current Pass within this Technique. If 
+		/// you need more precision, retrieve the Pass instance and set the
+		/// property there.
+		/// <see ref="Pass.ShadingMode"></see>
+		/// </remarks>
+		public Shading ShadingMode
+		{
+			set
+			{
+				foreach ( Pass p in _passes )
+				{
+					p.ShadingMode = value;
+				}
+			}
+		}
+
+
+		public void SetFog( bool overrideScene )
+		{
+			SetFog( overrideScene, FogMode.None, ColorEx.White, 0.001f, 0.0f, 1.0f );
+		}
+		/// <summary>
+		/// Sets the fogging mode applied to each pass.
+		/// </summary>
+		/// <remarks>
+		/// This property actually exists on the Pass class. For simplicity, this method allows 
+		/// you to set these properties for every current Pass within this Technique. If 
+		/// you need more precision, retrieve the Pass instance and set the
+		/// property there.
+		/// <see ref="Pass.SetFog"></see>
+		/// </remarks>
+		public void SetFog( bool overrideScene, FogMode mode, ColorEx color, Real expDensity, Real linearStart, Real linearEnd )
+		{
+			// load each technique
+			foreach ( Pass p in _passes )
+			{
+				p.SetFog( overrideScene, mode, color, expDensity, linearStart, linearEnd );
+			}
+		}
+
+		/// <summary>
+		/// Sets the DepthCheck property for every Pass in this Technique.
+		/// </summary>
+		/// <remarks>
+		/// This property actually exists on the Pass class. For simplicity, this method allows 
+		/// you to set these properties for every current Pass within this Technique. If 
+		/// you need more precision, retrieve the Pass instance and set the
+		/// property there.
+		/// <see cref="Pass.DepthCheck"/>
+		/// </remarks>
+		public bool DepthCheck
+		{
+			set
+			{
+				foreach ( Pass p in _passes )
+				{
+					p.DepthCheck = value;
+				}
+			}
+			get
+			{
+				if ( _passes.Count == 0 )
+				{
+					return false;
+				}
+				else
+				{
+					// Base decision on the depth settings of the first pass
+					return _passes[ 0 ].DepthCheck;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets the function used to compare depth values when depth checking is on.
+		/// </summary>
+		/// <remarks>
+		/// This property actually exists on the Pass class. For simplicity, this method allows 
+		/// you to set these properties for every current Pass within this Technique. If 
+		/// you need more precision, retrieve the Pass instance and set the
+		/// property there.
+		/// <see ref="Pass.DepthFunction"></see>
+		/// </remarks>
+		public CompareFunction DepthFunction
+		{
+			set
+			{
+				foreach ( Pass p in _passes )
+				{
+					p.DepthFunction = value;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets the DepthWrite property for every Pass in this Technique.
+		/// </summary>
+		/// <remarks>
+		/// This property actually exists on the Pass class. For simplicity, this method allows 
+		/// you to set these properties for every current Pass within this Technique. If 
+		/// you need more precision, retrieve the Pass instance and set the
+		/// property there.
+		/// <see cref="Pass.DepthWrite"/>
+		/// </remarks>
+		public bool DepthWrite
+		{
+			set
+			{
+				foreach ( Pass p in _passes )
+				{
+					p.DepthWrite = value;
+				}
+			}
+			get
+			{
+				if ( _passes.Count == 0 )
+				{
+					return false;
+				}
+				else
+				{
+					// Base decision on the depth settings of the first pass
+					return _passes[ 0 ].DepthWrite;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets whether or not colour buffer writing is enabled for each Pass.
+		/// </summary>
+		/// <remarks>
+		/// This property actually exists on the Pass class. For simplicity, this method allows 
+		/// you to set these properties for every current Pass within this Technique. If 
+		/// you need more precision, retrieve the Pass instance and set the
+		/// property there.
+		/// <see ref="Pass.ColorWrite"></see>
+		/// </remarks>
+		public bool ColorWrite
+		{
+			set
+			{
+				foreach ( Pass p in _passes )
+				{
+					p.ColorWrite = value;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets the anisotropy level to be used for all textures.
+		/// </summary>
+		/// <remarks>
+		/// This property actually exists on the Pass class. For simplicity, this method allows 
+		/// you to set these properties for every current Pass within this Technique. If 
+		/// you need more precision, retrieve the Pass instance and set the
+		/// property there.
+		/// <see ref="Pass.TextureAnisotropy"></see>
+		/// </remarks>
+		public int TextureAnisotropy
+		{
+			set
+			{
+				foreach ( Pass p in _passes )
+				{
+					p.TextureAnisotropy = value;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets the TextureFiltering property for every Pass in this Technique.
+		/// </summary>
+		/// <remarks>
+		/// This property actually exists on the Pass class. For simplicity, this method allows 
+		/// you to set these properties for every current Pass within this Technique. If 
+		/// you need more precision, retrieve the Pass instance and set the
+		/// property there.
+		/// <see cref="Pass.TextureFiltering"/>
+		/// </remarks>
+		public TextureFiltering TextureFiltering
+		{
+			set
+			{
+				foreach ( Pass p in _passes )
+				{
+					p.TextureFiltering = value;
+				}
+			}
+		}
+
+		#endregion Pass Convienence Properties
+
+		/// <summary>
+		///    Returns true if this Technique has already been loaded.
+		/// </summary>
+		public bool IsLoaded
+		{
+			get
+			{
+				return _parent.IsLoaded;
+			}
+		}
+
+		/// <summary>
+		///    Returns true if this Technique involves transparency.
+		/// </summary>
+		/// <remarks>
+		///    This basically boils down to whether the first pass
+		///    has a scene blending factor. Even if the other passes 
+		///    do not, the base color, including parts of the original 
+		///    scene, may be used for blending, therefore we have to treat
+		///    the whole Technique as transparent.
+		/// </remarks>
+		public bool IsTransparent
+		{
+			get
+			{
+				if ( _passes.Count == 0 )
+				{
+					return false;
+				}
+				else
+				{
+					// based on the transparency of the first pass
+					return ( (Pass)_passes[ 0 ] ).IsTransparent;
+				}
+			}
+		}
+
+		/// <summary>
+		///    Gets the number of passes within this Technique.
+		/// </summary>
+		public int PassCount
+		{
+			get
+			{
+				return _passes.Count;
+			}
+		}
+
+		#endregion Fields and Properties
+
+		#region Construction and Destruction
 
 		public Technique( Material parent )
 		{
-			this.parent = parent;
-			this.compiledIlluminationPasses = false;
+			this._parent = parent;
+			this._compiledIlluminationPasses = false;
 		}
 
 		#endregion
@@ -100,9 +725,9 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected void ClearIlluminationPasses()
 		{
-			for ( int i = 0; i < illuminationPasses.Count; i++ )
+			for ( int i = 0; i < _illuminationPasses.Count; i++ )
 			{
-				IlluminationPass iPass = (IlluminationPass)illuminationPasses[ i ];
+				IlluminationPass iPass = (IlluminationPass)_illuminationPasses[ i ];
 
 				if ( iPass.DestroyOnShutdown )
 				{
@@ -110,7 +735,7 @@ namespace Axiom.Graphics
 				}
 			}
 
-			illuminationPasses.Clear();
+			_illuminationPasses.Clear();
 		}
 
 		/// <summary>
@@ -133,21 +758,21 @@ namespace Axiom.Graphics
 		/// <param name="target"></param>
 		public void CopyTo( Technique target )
 		{
-			target.isSupported = isSupported;
-			target.lodIndex = lodIndex;
+			target._isSupported = _isSupported;
+			target._lodIndex = _lodIndex;
 
 			target.RemoveAllPasses();
 
 			// clone each pass and add that to the new technique
-			for ( int i = 0; i < passes.Count; i++ )
+			for ( int i = 0; i < _passes.Count; i++ )
 			{
-				Pass pass = (Pass)passes[ i ];
+				Pass pass = (Pass)_passes[ i ];
 				Pass newPass = pass.Clone( target, pass.Index );
-				target.passes.Add( newPass );
+				target._passes.Add( newPass );
 			}
 
 			// recompile illumination passes
-			if ( compiledIlluminationPasses )
+			if ( _compiledIlluminationPasses )
 			{
 			target.CompileIlluminationPasses();
 		}
@@ -163,18 +788,18 @@ namespace Axiom.Graphics
 		internal void Compile( bool autoManageTextureUnits )
 		{
 			// assume not supported unless it proves otherwise
-			isSupported = false;
+			_isSupported = false;
 
 			// grab a ref to the current hardware caps
 			HardwareCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
 			int numAvailTexUnits = caps.TextureUnitCount;
 
 			// check requirements for each pass
-			for ( int i = 0; i < passes.Count; i++ )
+			for ( int i = 0; i < _passes.Count; i++ )
 			{
-				Pass pass = (Pass)passes[ i ];
+				Pass pass = (Pass)_passes[ i ];
 
-				int numTexUnitsRequested = pass.NumTextureUnitStages;
+				int numTexUnitsRequested = pass.TextureUnitStageCount;
 
 				if ( pass.HasFragmentProgram )
 				{
@@ -197,7 +822,7 @@ namespace Axiom.Graphics
 				else
 				{
 					// check support for a few fixed function options while we are here
-					for ( int j = 0; j < pass.NumTextureUnitStages; j++ )
+					for ( int j = 0; j < pass.TextureUnitStageCount; j++ )
 					{
 						TextureUnitState texUnit = pass.GetTextureUnitState( j );
 
@@ -219,7 +844,7 @@ namespace Axiom.Graphics
 					{
 						// split this pass up into more passes
 						pass = pass.Split( numAvailTexUnits );
-						numTexUnitsRequested = pass.NumTextureUnitStages;
+						numTexUnitsRequested = pass.TextureUnitStageCount;
 					}
 				}
 
@@ -236,7 +861,7 @@ namespace Axiom.Graphics
 			} // for
 
 			// if we made it this far, we are good to go!
-			isSupported = true;
+			_isSupported = true;
 
 			// CompileIlluminationPasses() used to be called here, but it is now done on
 			// demand since it the illumination passes are only needed for additive shadows
@@ -262,9 +887,9 @@ namespace Axiom.Graphics
 
 			bool hasAmbient = false;
 
-			for ( int i = 0; i < passes.Count; /* increment in logic */)
+			for ( int i = 0; i < _passes.Count; /* increment in logic */)
 			{
-				Pass pass = (Pass)passes[ i ];
+				Pass pass = (Pass)_passes[ i ];
 				IlluminationPass iPass;
 
 				switch ( stage )
@@ -277,7 +902,7 @@ namespace Axiom.Graphics
 							iPass.OriginalPass = pass;
 							iPass.Pass = pass;
 							iPass.Stage = stage;
-							illuminationPasses.Add( iPass );
+							_illuminationPasses.Add( iPass );
 							hasAmbient = true;
 
 							// progress to the next pass
@@ -322,7 +947,7 @@ namespace Axiom.Graphics
 								iPass.Pass = newPass;
 								iPass.Stage = stage;
 
-								illuminationPasses.Add( iPass );
+								_illuminationPasses.Add( iPass );
 								hasAmbient = true;
 							}
 
@@ -340,7 +965,7 @@ namespace Axiom.Graphics
 								iPass.OriginalPass = pass;
 								iPass.Pass = newPass;
 								iPass.Stage = stage;
-								illuminationPasses.Add( iPass );
+								_illuminationPasses.Add( iPass );
 								hasAmbient = true;
 							}
 
@@ -351,7 +976,7 @@ namespace Axiom.Graphics
 						break;
 
 					case IlluminationStage.PerLight:
-						if ( pass.RunOncePerLight )
+						if ( pass.IteratePerLight )
 						{
 							// if this is per-light already, use it directly
 							iPass = new IlluminationPass();
@@ -359,7 +984,7 @@ namespace Axiom.Graphics
 							iPass.OriginalPass = pass;
 							iPass.Pass = pass;
 							iPass.Stage = stage;
-							illuminationPasses.Add( iPass );
+							_illuminationPasses.Add( iPass );
 
 							// progress to the next pass
 							i++;
@@ -398,7 +1023,7 @@ namespace Axiom.Graphics
 								iPass.Pass = newPass;
 								iPass.Stage = stage;
 
-								illuminationPasses.Add( iPass );
+								_illuminationPasses.Add( iPass );
 							}
 
 							// This means the end of per-light passes
@@ -410,7 +1035,7 @@ namespace Axiom.Graphics
 					case IlluminationStage.Decal:
 						// We just want a 'lighting off' pass to finish off
 						// and only if there are texture units
-						if ( pass.NumTextureUnitStages > 0 )
+						if ( pass.TextureUnitStageCount > 0 )
 						{
 							if ( !pass.LightingEnabled )
 							{
@@ -420,7 +1045,7 @@ namespace Axiom.Graphics
 								iPass.OriginalPass = pass;
 								iPass.Pass = pass;
 								iPass.Stage = stage;
-								illuminationPasses.Add( iPass );
+								_illuminationPasses.Add( iPass );
 							}
 							else
 							{
@@ -443,7 +1068,7 @@ namespace Axiom.Graphics
 								iPass.OriginalPass = pass;
 								iPass.Pass = newPass;
 								iPass.Stage = stage;
-								illuminationPasses.Add( iPass );
+								_illuminationPasses.Add( iPass );
 							}
 						}
 
@@ -454,7 +1079,7 @@ namespace Axiom.Graphics
 				}
 			}
 
-			compiledIlluminationPasses = true;
+			_compiledIlluminationPasses = true;
 		}
 
 		/// <summary>
@@ -475,8 +1100,8 @@ namespace Axiom.Graphics
 		/// <returns>A new Pass object reference.</returns>
 		public Pass CreatePass()
 		{
-			Pass pass = new Pass( this, passes.Count );
-			passes.Add( pass );
+			Pass pass = new Pass( this, _passes.Count );
+			_passes.Add( pass );
 			return pass;
 		}
 
@@ -486,7 +1111,7 @@ namespace Axiom.Graphics
 		/// <param name="passName">Name of the Pass to retreive.</param>
 		public Pass GetPass( string passName )
 		{
-			foreach ( Pass pass in passes )
+			foreach ( Pass pass in _passes )
 			{
 				if ( pass.Name == passName )
 					return pass;
@@ -500,9 +1125,9 @@ namespace Axiom.Graphics
 		/// <param name="index">Index of the Pass to retreive.</param>
 		public Pass GetPass( int index )
 		{
-			Debug.Assert( index < passes.Count, "index < passes.Count" );
+			Debug.Assert( index < _passes.Count, "index < passes.Count" );
 
-			return (Pass)passes[ index ];
+			return (Pass)_passes[ index ];
 		}
 
 		/// <summary>
@@ -512,14 +1137,14 @@ namespace Axiom.Graphics
 		public IlluminationPass GetIlluminationPass( int index )
 		{
 
-			if ( !compiledIlluminationPasses )
+			if ( !_compiledIlluminationPasses )
 			{
 				CompileIlluminationPasses();
 			}
 
-			Debug.Assert( index < illuminationPasses.Count, "index < illuminationPasses.Count" );
+			Debug.Assert( index < _illuminationPasses.Count, "index < illuminationPasses.Count" );
 
-			return (IlluminationPass)illuminationPasses[ index ];
+			return (IlluminationPass)_illuminationPasses[ index ];
 		}
 
 		/// <summary>
@@ -529,12 +1154,12 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void Preload()
 		{
-			Debug.Assert( isSupported, "This technique is not supported." );
+			Debug.Assert( _isSupported, "This technique is not supported." );
 
 			// load each pass
-			for ( int i = 0; i < passes.Count; i++ )
+			for ( int i = 0; i < _passes.Count; i++ )
 			{
-				( (Pass)passes[ i ] ).Load();
+				( (Pass)_passes[ i ] ).Load();
 			}
 		}
 
@@ -543,12 +1168,12 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void Load()
 		{
-			Debug.Assert( isSupported, "This technique is not supported." );
+			Debug.Assert( _isSupported, "This technique is not supported." );
 
 			// load each pass
-			for ( int i = 0; i < passes.Count; i++ )
+			for ( int i = 0; i < _passes.Count; i++ )
 			{
-				( (Pass)passes[ i ] ).Load();
+				( (Pass)_passes[ i ] ).Load();
 			}
 		}
 
@@ -560,7 +1185,7 @@ namespace Axiom.Graphics
 		/// </remarks>
 		internal void NotifyNeedsRecompile()
 		{
-			parent.NotifyNeedsRecompile();
+			_parent.NotifyNeedsRecompile();
 		}
 
 		/// <summary>
@@ -573,7 +1198,7 @@ namespace Axiom.Graphics
 
 			pass.QueueForDeletion();
 
-			passes.Remove( pass );
+			_passes.Remove( pass );
 		}
 
 		/// <summary>
@@ -582,30 +1207,30 @@ namespace Axiom.Graphics
 		public void RemoveAllPasses()
 		{
 			// load each pass
-			for ( int i = 0; i < passes.Count; i++ )
+			for ( int i = 0; i < _passes.Count; i++ )
 			{
-				Pass pass = (Pass)passes[ i ];
+				Pass pass = (Pass)_passes[ i ];
 				pass.QueueForDeletion();
 			}
 
-			passes.Clear();
+			_passes.Clear();
 		}
 
 		public void SetSceneBlending( SceneBlendType blendType )
 		{
 			// load each pass
-			for ( int i = 0; i < passes.Count; i++ )
+			for ( int i = 0; i < _passes.Count; i++ )
 			{
-				( (Pass)passes[ i ] ).SetSceneBlending( blendType );
+				( (Pass)_passes[ i ] ).SetSceneBlending( blendType );
 			}
 		}
 
 		public void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest )
 		{
 			// load each pass
-			for ( int i = 0; i < passes.Count; i++ )
+			for ( int i = 0; i < _passes.Count; i++ )
 			{
-				( (Pass)passes[ i ] ).SetSceneBlending( src, dest );
+				( (Pass)_passes[ i ] ).SetSceneBlending( src, dest );
 			}
 		}
 
@@ -615,287 +1240,13 @@ namespace Axiom.Graphics
 		public void Unload()
 		{
 			// load each pass
-			for ( int i = 0; i < passes.Count; i++ )
+			for ( int i = 0; i < _passes.Count; i++ )
 			{
-				( (Pass)passes[ i ] ).Unload();
+				( (Pass)_passes[ i ] ).Unload();
 			}
 		}
 
 		#endregion
 
-		#region Properties
-
-		public ColorEx Ambient
-		{
-			set
-			{
-				for ( int i = 0; i < passes.Count; i++ )
-				{
-					( (Pass)passes[ i ] ).Ambient = value;
-				}
-			}
-		}
-
-		public CullingMode CullingMode
-		{
-			set
-			{
-				for ( int i = 0; i < passes.Count; i++ )
-				{
-					( (Pass)passes[ i ] ).CullMode = value;
-				}
-			}
-		}
-
-		public bool DepthCheck
-		{
-			set
-			{
-				for ( int i = 0; i < passes.Count; i++ )
-				{
-					( (Pass)passes[ i ] ).DepthCheck = value;
-				}
-			}
-			get
-			{
-				if ( passes.Count == 0 )
-				{
-					return false;
-				}
-				else
-				{
-					// Base decision on the depth settings of the first pass
-					return ( (Pass)passes[ 0 ] ).DepthCheck;
-				}
-			}
-		}
-
-		public bool DepthWrite
-		{
-			set
-			{
-				for ( int i = 0; i < passes.Count; i++ )
-				{
-					( (Pass)passes[ i ] ).DepthWrite = value;
-				}
-			}
-			get
-			{
-				if ( passes.Count == 0 )
-				{
-					return false;
-				}
-				else
-				{
-					// Base decision on the depth settings of the first pass
-					return ( (Pass)passes[ 0 ] ).DepthWrite;
-				}
-			}
-		}
-
-		public ColorEx Diffuse
-		{
-			set
-			{
-				for ( int i = 0; i < passes.Count; i++ )
-				{
-					( (Pass)passes[ i ] ).Diffuse = value;
-				}
-			}
-		}
-
-		public ColorEx Specular
-		{
-			set
-			{
-				for ( int i = 0; i < passes.Count; i++ )
-				{
-					( (Pass)passes[ i ] ).Specular = value;
-				}
-			}
-		}
-		public ColorEx Emissive
-		{
-			set
-			{
-				for ( int i = 0; i < passes.Count; i++ )
-				{
-					( (Pass)passes[ i ] ).Emissive = value;
-				}
-			}
-		}
-
-		/// <summary>
-		///    Returns true if this Technique has already been loaded.
-		/// </summary>
-		public bool IsLoaded
-		{
-			get
-			{
-				return parent.IsLoaded;
-			}
-		}
-
-		/// <summary>
-		///    Flag that states whether or not this technique is supported on the current hardware.
-		/// </summary>
-		/// <remarks>
-		///    This will only be correct after the Technique has been compiled, which is
-		///    usually triggered in Material.Compile.
-		/// </remarks>
-		public bool IsSupported
-		{
-			get
-			{
-				return isSupported;
-			}
-		}
-
-		/// <summary>
-		///    Returns true if this Technique involves transparency.
-		/// </summary>
-		/// <remarks>
-		///    This basically boils down to whether the first pass
-		///    has a scene blending factor. Even if the other passes 
-		///    do not, the base color, including parts of the original 
-		///    scene, may be used for blending, therefore we have to treat
-		///    the whole Technique as transparent.
-		/// </remarks>
-		public bool IsTransparent
-		{
-			get
-			{
-				if ( passes.Count == 0 )
-				{
-					return false;
-				}
-				else
-				{
-					// based on the transparency of the first pass
-					return ( (Pass)passes[ 0 ] ).IsTransparent;
-				}
-			}
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		public bool Lighting
-		{
-			set
-			{
-				for ( int i = 0; i < passes.Count; i++ )
-				{
-					( (Pass)passes[ i ] ).LightingEnabled = value;
-				}
-			}
-		}
-
-		/// <summary>
-		///		Assigns a level-of-detail (LOD) index to this Technique.
-		/// </summary>
-		/// <remarks>
-		///		As noted previously, as well as providing fallback support for various
-		///		graphics cards, multiple Technique objects can also be used to implement
-		///		material LOD, where the detail of the material diminishes with distance to 
-		///		save rendering power.
-		///		<p/>
-		///		By default, all Techniques have a LOD index of 0, which means they are the highest
-		///		level of detail. Increasing LOD indexes are lower levels of detail. You can 
-		///		assign more than one Technique to the same LOD index, meaning that the best 
-		///		Technique that is supported at that LOD index is used. 
-		///		<p/>
-		///		You should not leave gaps in the LOD sequence; the engine will allow you to do this
-		///		and will continue to function as if the LODs were sequential, but it will 
-		///		confuse matters.
-		/// </remarks>
-		public int LodIndex
-		{
-			get
-			{
-				return lodIndex;
-			}
-			set
-			{
-				lodIndex = value;
-				NotifyNeedsRecompile();
-			}
-		}
-
-		public ManualCullingMode ManualCullMode
-		{
-			set
-			{
-				for ( int i = 0; i < passes.Count; i++ )
-				{
-					( (Pass)passes[ i ] ).ManualCullMode = value;
-				}
-			}
-		}
-
-		/// <summary>
-		///    Gets/Sets the name of this technique.
-		/// </summary>
-		public string Name
-		{
-			get
-			{
-				return name;
-			}
-			set
-			{
-				name = value;
-			}
-		}
-
-		/// <summary>
-		///    Gets the number of passes within this Technique.
-		/// </summary>
-		public int NumPasses
-		{
-			get
-			{
-				return passes.Count;
-			}
-		}
-
-		/// <summary>
-		///		Gets the number of illumination passes compiled from this technique.
-		/// </summary>
-		public int IlluminationPassCount
-		{
-			get
-			{
-				if ( !compiledIlluminationPasses )
-				{
-					CompileIlluminationPasses();
-				}
-				return illuminationPasses.Count;
-			}
-		}
-
-		/// <summary>
-		///    Gets a reference to the Material that owns this Technique.
-		/// </summary>
-		public Material Parent
-		{
-			get
-			{
-				return parent;
-			}
-		}
-
-		public TextureFiltering TextureFiltering
-		{
-			set
-			{
-				for ( int i = 0; i < passes.Count; i++ )
-				{
-					( (Pass)passes[ i ] ).TextureFiltering = value;
-				}
-			}
-		}
-
-		#endregion
 	}
 }

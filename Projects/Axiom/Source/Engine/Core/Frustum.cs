@@ -227,7 +227,7 @@ namespace Axiom.Core
             vertexData.vertexBufferBinding.SetBinding( 0,
                 HardwareBufferManager.Instance.CreateVertexBuffer( 4 * 3, vertexData.vertexCount, BufferUsage.DynamicWriteOnly ) );
 
-            material = MaterialManager.Instance.GetByName( "BaseWhite" );
+            material = (Material)MaterialManager.Instance[ "BaseWhite" ];
 
             UpdateView();
         }

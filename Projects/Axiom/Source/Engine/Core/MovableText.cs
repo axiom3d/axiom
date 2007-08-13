@@ -62,24 +62,24 @@ namespace Axiom.Core
 
         // Vertex Buffer Binding Indexes
         const int POS_TEX_BINDING = 0;
-        const int COLOR_BINDING = 1;
+        const int COLOR_BINDING   = 1;
 
         HorizontalAlignment _horizontalAlignment = HorizontalAlignment.Left;
         VerticalAlignment _verticalAlignment = VerticalAlignment.Below;
 
-        private RenderOperation _renderOperation;
+        private RenderOperation	_renderOperation;
 
         private float _additionalHeight = 0.0f;
 
-        private bool _needUpdate;
-        private bool _updateColor;
+		private bool			_needUpdate;
+        private bool            _updateColor;
 
-        private float _timeUntilNextToggle;
-        private float _radius;
+		private float			_timeUntilNextToggle;
+		private float			_radius;
 
-        private Font _font;
+		private Font			_font;
         private string _fontName;
-        public string FontName
+		public string FontName
         {
             get
             {
@@ -89,30 +89,30 @@ namespace Axiom.Core
             set
             {
                 if ( _fontName != value || this.material == null || _font == null )
-                {
-                    _fontName = value;
-                    _font = (Font)FontManager.Instance.GetByName( _fontName );
+		        {
+			        _fontName = value;
+			        _font = (Font)FontManager.Instance[ _fontName ];
                     if ( _font == null )
-                        throw new AxiomException( String.Format( "Could not find font '{0}'.", _fontName ) );
-                    _font.Load();
+				        throw new AxiomException( String.Format( "Could not find font '{0}'.", _fontName ) );
+			        _font.Load();
                     if ( this.material != null )
-                    {
+			        {
                         if ( material.Name != "BaseWhite" )
                             MaterialManager.Instance.Unload( this.material );
                         this.material = null;
-                    }
-                    this.material = _font.Material.Clone( name + "Material" );
+			        }
+                    this.material = _font.Material.Clone( name + "Material", false, _font.Material.Group );
                     if ( this.material.IsLoaded == true )
                         this.material.Load();
                     this.material.DepthCheck = !_onTop;
                     this.material.Lighting = false;
-                    _needUpdate = true;
-                }
+			        _needUpdate = true;
+		        }
             }
         }
 
         private string _caption;
-        public string Caption
+		public string Caption
         {
             get
             {
@@ -126,7 +126,7 @@ namespace Axiom.Core
         }
 
         private ColorEx _color;
-        public ColorEx Color
+		public ColorEx Color
         {
             get
             {
@@ -140,7 +140,7 @@ namespace Axiom.Core
         }
 
         private int _characterHeight;
-        public int CharacterHeight
+		public int CharacterHeight
         {
             get
             {
@@ -154,7 +154,7 @@ namespace Axiom.Core
         }
 
         private int _spaceWidth;
-        public int SpaceWidth
+		public int SpaceWidth
         {
             get
             {
@@ -225,7 +225,7 @@ namespace Axiom.Core
         }
 
         private bool _onTop;
-        public bool OnTop
+		public bool OnTop
         {
             get
             {
@@ -268,8 +268,8 @@ namespace Axiom.Core
             _onTop = true;
             _horizontalAlignment = HorizontalAlignment.Center;
 
-            this.FontName = fontName;
-            this._setupGeometry();
+		    this.FontName = fontName;
+		    this._setupGeometry();
         }
 
         #endregion Construction and Destruction
@@ -281,9 +281,9 @@ namespace Axiom.Core
 
         private void _translate3Dto2DPixels( Camera camera, Vector3 vertex, out int x, out int y )
         {
-            // calculate hsc screen coordinates
+		    // calculate hsc screen coordinates
             Vector3 hsc = _translate3Dto2D( camera, vertex );
-            // convert to window position in pixels
+		    // convert to window position in pixels
             //RenderTarget *rt = Root.Instance.RenderTarget(in.getName());
             //if ( !rt )
             //    throw new AxiomException( string.Format( "Can't find '{0}' render target", mpWin.getName() ) );
@@ -293,64 +293,64 @@ namespace Axiom.Core
 
         private void _setupGeometry()
         {
-            int vertexCount = _caption.Length * 6;
-            if ( _renderOperation.vertexData != null )
-            {
-                _renderOperation.vertexData = null;
-                _updateColor = true;
-            }
+		    int vertexCount = _caption.Length * 6;
+		    if ( _renderOperation.vertexData != null )
+		    {
+				    _renderOperation.vertexData = null;
+				    _updateColor = true;
+			    }
 
-            if ( _renderOperation.vertexData == null )
-                _renderOperation.vertexData = new VertexData();
+		    if ( _renderOperation.vertexData == null )
+			    _renderOperation.vertexData = new VertexData();
 
             _renderOperation.indexData = null;
-            _renderOperation.vertexData.vertexStart = 0;
-            _renderOperation.vertexData.vertexCount = vertexCount;
+		    _renderOperation.vertexData.vertexStart = 0;
+		    _renderOperation.vertexData.vertexCount = vertexCount;
             _renderOperation.operationType = OperationType.TriangleList;
             _renderOperation.useIndices = false;
 
-            VertexDeclaration decl = _renderOperation.vertexData.vertexDeclaration;
-            VertexBufferBinding bind = _renderOperation.vertexData.vertexBufferBinding;
+            VertexDeclaration	decl = _renderOperation.vertexData.vertexDeclaration;
+            VertexBufferBinding	bind = _renderOperation.vertexData.vertexBufferBinding;
             int offset = 0;
 
-            // create/bind positions/tex.ccord. buffer
-            if ( decl.FindElementBySemantic( VertexElementSemantic.Position ) == null )
-                decl.AddElement( POS_TEX_BINDING, offset, VertexElementType.Float3, VertexElementSemantic.Position );
+		    // create/bind positions/tex.ccord. buffer
+		    if ( decl.FindElementBySemantic( VertexElementSemantic.Position ) == null )
+			    decl.AddElement( POS_TEX_BINDING, offset, VertexElementType.Float3,  VertexElementSemantic.Position );
             offset += VertexElement.GetTypeSize( VertexElementType.Float3 );
 
-            if ( decl.FindElementBySemantic( VertexElementSemantic.TexCoords ) == null )
+		    if ( decl.FindElementBySemantic( VertexElementSemantic.TexCoords ) == null )
                 decl.AddElement( POS_TEX_BINDING, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
 
             HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.GetVertexSize( POS_TEX_BINDING ),
                                                                                            _renderOperation.vertexData.vertexCount,
-                                                                                           BufferUsage.DynamicWriteOnly );
+				                                                                           BufferUsage.DynamicWriteOnly );
             bind.SetBinding( POS_TEX_BINDING, vbuf );
 
             // Colours - store these in a separate buffer because they change less often
-            if ( decl.FindElementBySemantic( VertexElementSemantic.Diffuse ) == null )
-                decl.AddElement( COLOR_BINDING, 0, VertexElementType.Color, VertexElementSemantic.Diffuse );
+		    if ( decl.FindElementBySemantic( VertexElementSemantic.Diffuse ) == null )
+			    decl.AddElement( COLOR_BINDING, 0, VertexElementType.Color, VertexElementSemantic.Diffuse );
             HardwareVertexBuffer cbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.GetVertexSize( COLOR_BINDING ),
                                                                                            _renderOperation.vertexData.vertexCount,
-                                                                                           BufferUsage.DynamicWriteOnly );
+				                                                                           BufferUsage.DynamicWriteOnly );
             bind.SetBinding( COLOR_BINDING, cbuf );
 
-            int charlen = _caption.Length;
+		    int charlen = _caption.Length;
 
             float largestWidth = 0.0f;
             float left = 0f * 2.0f - 1.0f;
             float top = -( ( 0f * 2.0f ) - 1.0f );
 
             // Derive space with from a capital A
-            if ( _spaceWidth == 0 )
+		    if ( _spaceWidth == 0 )
                 _spaceWidth = (int)( _font.GetGlyphAspectRatio( 'A' ) * _characterHeight * 2.0f );
 
-            // for calculation of AABB
-            Vector3 min, max, currPos;
+		    // for calculation of AABB
+		    Vector3 min, max, currPos;
             float maxSquaredRadius = 0.0f;
-            bool first = true;
+		    bool first = true;
 
             min = max = currPos = Vector3.NegativeUnitY;
-            // Use iterator
+		    // Use iterator
             bool newLine = true;
             float len = 0.0f;
 
@@ -414,7 +414,7 @@ namespace Axiom.Core
                     //
                     // Upper left
                     if ( _horizontalAlignment == HorizontalAlignment.Left )
-                        pPCBuff[ cntPos++ ] = left;
+                    pPCBuff[ cntPos++ ] = left;
                     else
                         pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
                     pPCBuff[ cntPos++ ] = top;
@@ -424,7 +424,7 @@ namespace Axiom.Core
 
                     // Deal with bounds
                     if ( _horizontalAlignment == HorizontalAlignment.Left )
-                        currPos = new Vector3( left, top, -1.0f );
+                    currPos = new Vector3( left, top, -1.0f );
                     else
                         currPos = new Vector3( left - ( len / 2.0f ), top, -1.0f );
 
@@ -445,7 +445,7 @@ namespace Axiom.Core
 
                     // Bottom left
                     if ( _horizontalAlignment == HorizontalAlignment.Left )
-                        pPCBuff[ cntPos++ ] = left;
+                    pPCBuff[ cntPos++ ] = left;
                     else
                         pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
                     pPCBuff[ cntPos++ ] = top;
@@ -455,7 +455,7 @@ namespace Axiom.Core
 
                     // Deal with bounds
                     if ( _horizontalAlignment == HorizontalAlignment.Left )
-                        currPos = new Vector3( left, top, -1.0f );
+                    currPos = new Vector3( left, top, -1.0f );
                     else
                         currPos = new Vector3( left - ( len / 2.0f ), top, -1.0f );
 
@@ -468,7 +468,7 @@ namespace Axiom.Core
 
                     // Top right
                     if ( _horizontalAlignment == HorizontalAlignment.Left )
-                        pPCBuff[ cntPos++ ] = left;
+                    pPCBuff[ cntPos++ ] = left;
                     else
                         pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
                     pPCBuff[ cntPos++ ] = top;
@@ -479,7 +479,7 @@ namespace Axiom.Core
 
                     // Deal with bounds
                     if ( _horizontalAlignment == HorizontalAlignment.Left )
-                        currPos = new Vector3( left, top, -1.0f );
+                    currPos = new Vector3( left, top, -1.0f );
                     else
                         currPos = new Vector3( left - ( len / 2.0f ), top, -1.0f );
                     min.Floor( currPos );
@@ -491,7 +491,7 @@ namespace Axiom.Core
                     //
                     // Top right (again)
                     if ( _horizontalAlignment == HorizontalAlignment.Left )
-                        pPCBuff[ cntPos++ ] = left;
+                    pPCBuff[ cntPos++ ] = left;
                     else
                         pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
                     pPCBuff[ cntPos++ ] = top;
@@ -509,7 +509,7 @@ namespace Axiom.Core
 
                     // Bottom left (again)
                     if ( _horizontalAlignment == HorizontalAlignment.Left )
-                        pPCBuff[ cntPos++ ] = left;
+                    pPCBuff[ cntPos++ ] = left;
                     else
                         pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
                     pPCBuff[ cntPos++ ] = top;
@@ -526,7 +526,7 @@ namespace Axiom.Core
 
                     // Bottom right
                     if ( _horizontalAlignment == HorizontalAlignment.Left )
-                        pPCBuff[ cntPos++ ] = left;
+                    pPCBuff[ cntPos++ ] = left;
                     else
                         pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
                     pPCBuff[ cntPos++ ] = top;
@@ -551,14 +551,14 @@ namespace Axiom.Core
             // Unlock vertex buffer
             vbuf.Unlock();
 
-            // update AABB/Sphere radius
+		    // update AABB/Sphere radius
             this.box = new AxisAlignedBox( min, max );
-            this._radius = Utility.Sqrt( maxSquaredRadius );
+		    this._radius = Utility.Sqrt( maxSquaredRadius );
 
-            if ( _updateColor )
-                this._updateColors();
+		    if ( _updateColor )
+			    this._updateColors();
 
-            _needUpdate = false;
+		    _needUpdate = false;
         }
 
         private void _updateColors()
@@ -566,7 +566,7 @@ namespace Axiom.Core
             //assert(mpFont);
             //assert(!mpMaterial.isNull());
 
-            // Convert to system-specific
+		    // Convert to system-specific
             int color;
             color = Root.Instance.ConvertColor( _color );
             HardwareVertexBuffer cbuf = _renderOperation.vertexData.vertexBufferBinding.GetBuffer( COLOR_BINDING );
@@ -578,7 +578,7 @@ namespace Axiom.Core
                     pPos[ i ] = color;
             }
             cbuf.Unlock();
-            _updateColor = false;
+		    _updateColor = false;
         }
 
         #region Implementation of SimpleRenderable

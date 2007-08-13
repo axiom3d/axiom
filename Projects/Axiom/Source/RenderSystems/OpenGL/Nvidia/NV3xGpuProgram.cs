@@ -36,9 +36,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Runtime.InteropServices;
 
+using Axiom.Core;
 using Axiom.Graphics;
 
 using Tao.OpenGl;
+
+using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
 
@@ -56,16 +59,15 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 	{
 		#region Constructor
 
-		public NV3xGpuProgram( string name, GpuProgramType type, string syntaxCode )
-			: base( name, type, syntaxCode )
+		public NV3xGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+			: base( parent, name, handle, group, isManual, loader )
 		{
 
 			// generate the program and store the unique name
 			Gl.glGenProgramsNV( 1, out programId );
 
 			// find the GL enum for the type of program this is
-			programType = ( type == GpuProgramType.Vertex ) ?
-				Gl.GL_VERTEX_PROGRAM_NV : Gl.GL_FRAGMENT_PROGRAM_NV;
+			programType = ( type == GpuProgramType.Vertex ) ? Gl.GL_VERTEX_PROGRAM_NV : Gl.GL_FRAGMENT_PROGRAM_NV;
 		}
 
 		#endregion Constructor
@@ -81,12 +83,12 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 			Gl.glBindProgramNV( programType, programId );
 
 			// load the ASM source into an NV program
-            // Gl.glLoadProgramNV( programType, programId, source.Length, System.Text.Encoding.ASCII.GetBytes( source ) ); // TAO 2.0
-            Gl.glLoadProgramNV( programType, programId, source.Length, source );
+			// Gl.glLoadProgramNV( programType, programId, source.Length, System.Text.Encoding.ASCII.GetBytes( source ) ); // TAO 2.0
+			Gl.glLoadProgramNV( programType, programId, source.Length, source );
 
 			// get the error string from the NV program loader
 			//string error = Gl.glGetString( Gl.GL_PROGRAM_ERROR_STRING_NV ); // TAO 2.0
-            string error = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_PROGRAM_ERROR_STRING_NV ) );
+			string error = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_PROGRAM_ERROR_STRING_NV ) );
 
 			// if there was an error, report it
 			if ( error != null && error.Length > 0 )
@@ -96,7 +98,7 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 				// get the position of the error
 				Gl.glGetIntegerv( Gl.GL_PROGRAM_ERROR_POSITION_ARB, out pos );
 
-				throw new Exception( string.Format( "Error on line {0} in program '{1}'\nError: {2}", pos, name, error ) );
+				throw new Exception( string.Format( "Error on line {0} in program '{1}'\nError: {2}", pos, Name, error ) );
 			}
 		}
 
@@ -147,8 +149,8 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 	{
 		#region Constructor
 
-		public VP30GpuProgram( string name, GpuProgramType type, string syntaxCode )
-			: base( name, type, syntaxCode )
+		public VP30GpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+			: base( parent, name, handle, group, isManual, loader )
 		{
 		}
 
@@ -200,8 +202,8 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 	{
 		#region Constructor
 
-		public FP30GpuProgram( string name, GpuProgramType type, string syntaxCode )
-			: base( name, type, syntaxCode )
+		public FP30GpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+			: base( parent, name, handle, group, isManual, loader )
 		{
 		}
 
@@ -227,8 +229,8 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 
 						// send the params 4 at a time
 						//Gl.glProgramNamedParameter4fvNV( programId, name.Length, System.Text.Encoding.ASCII.GetBytes( name ), entry.val ); // TAO 2.0
-                        Gl.glProgramNamedParameter4fvNV( programId, name.Length, name, entry.val );
-                    }
+						Gl.glProgramNamedParameter4fvNV( programId, name.Length, name, entry.val );
+					}
 				}
 			}
 		}
@@ -242,18 +244,23 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 	{
 		#region IOpenGLGpuProgramFactory Members
 
-		public GLGpuProgram Create( string name, Axiom.Graphics.GpuProgramType type, string syntaxCode )
+		public GLGpuProgram Create( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
 		{
+			GLGpuProgram ret;
 			if ( type == GpuProgramType.Vertex )
 			{
-				return new VP30GpuProgram( name, type, syntaxCode );
+				ret = new VP30GpuProgram( parent, name, handle, group, isManual, loader );
 			}
 			else
 			{
-				return new FP30GpuProgram( name, type, syntaxCode );
+				ret = new FP30GpuProgram( parent, name, handle, group, isManual, loader );
 			}
+			ret.Type = type;
+			ret.SyntaxCode = syntaxCode;
+			return ret;
 		}
 
 		#endregion
+
 	}
 }

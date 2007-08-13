@@ -41,6 +41,7 @@ using System.IO;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
+using ResourceHandle = System.UInt64;
 
 using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
@@ -121,42 +122,15 @@ namespace Axiom.RenderSystems.DirectX9
 		//public D3DTexture(string name, D3D.Device device, TextureUsage usage, TextureType type)
 		//    : this(name, device, type, 0, 0, 0, PixelFormat.Unknown, usage) {}
 
-		public D3DTexture( string name, bool isManual, D3D.Device device )
+		public D3DTexture( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, D3D.Device device )
+			: base( parent, name, handle, group, isManual, loader )
 		{
 			Debug.Assert( device != null, "Cannot create a texture without a valid D3D Device." );
-			this.name = name;
 			this.device = device;
 
 			InitDevice();
 		}
 
-		//    // set the name of the cubemap faces
-		//    if(this.TextureType == TextureType.CubeMap) {
-		//        ConstructCubeFaceNames(name);
-		//    }
-
-		//    // get device caps
-		//    devCaps = device.DeviceCaps;
-
-		//    // save off the params used to create the Direct3D device
-		//    this.device = device;
-		//    devParms = device.CreationParameters;
-
-		//    // get the pixel format of the back buffer
-		//    using(D3D.Surface back = device.GetBackBuffer(0, 0, D3D.BackBufferType.Mono)) {
-		//        bbPixelFormat = back.Description.Format;
-		//    }
-
-		//    SetSrcAttributes(width, height, 1, format);
-
-		//    // if render target, create the texture up front
-		//    if(usage == TextureUsage.RenderTarget) {
-		//        // for render texture, use the format we actually asked for
-		//        bbPixelFormat = ConvertFormat(format);
-		//        CreateTexture();
-		//        isLoaded = true;
-		//    }
-		//}
 
 		#region Properties
 
@@ -208,28 +182,22 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		///   This is the combination of Ogre's load and loadImpl
 		/// </summary>
-		public override void Load()
+		protected override void load()
 		{
-			// unload if loaded already
-			if ( isLoaded )
-			{
-				Unload();
-			}
-
-			// log a quick message
-			LogManager.Instance.Write( "D3DTexture: Loading {0} with {1} mipmaps from an Image.", name, numMipmaps );
-
 			// create a render texture if need be
-			if ( usage == TextureUsage.RenderTarget )
+			if ( Usage == TextureUsage.RenderTarget )
 			{
 				CreateInternalResources();
-				isLoaded = true;
 				return;
 			}
 
-			//if (!internalResourcesCreated) {
-			//    d3dPool = D3D.Pool.Managed;
-			//}
+			if ( !internalResourcesCreated )
+			{
+				// NB: Need to initialise pool to some value other than D3DPOOL_DEFAULT,
+				// otherwise, if the texture loading failed, it might re-create as empty
+				// texture when device lost/restore. The actual pool will determine later.
+				d3dPool = D3D.Pool.Managed;
+			}
 
 			// create a regular texture
 			switch ( this.TextureType )
@@ -250,8 +218,6 @@ namespace Axiom.RenderSystems.DirectX9
 				default:
 					throw new Exception( "Unsupported texture type!" );
 			}
-
-			isLoaded = true;
 		}
 
 		protected void InitDevice()
@@ -270,34 +236,28 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		public override void LoadImage( Image image )
-		{
-			List<Image> images = new List<Image>();
-			images.Add( image );
-			LoadImages( images );
-#if ORIG_CODE
-			// we need src image info
-			this.SetSrcAttributes(image.Width, image.Height, 1, image.Format);
-			// create a blank texture
-			this.CreateNormalTexture();
-			// set gamma prior to blitting
-			Image.ApplyGamma(image.Data, this.gamma, image.Size, image.BitsPerPixel);
-			this.BlitImageToNormalTexture(image);
-			isLoaded = true;
-#endif
-		}
-
-
-
 		/// <summary>
-		/// 
+		///		Implementation of IDisposable to determine how resources are disposed of.
 		/// </summary>
-		public override void Dispose()
+		protected override void dispose( bool disposeManagedResources )
 		{
-			ClearSurfaceList();
-			foreach ( IDisposable disp in managedObjects )
-				disp.Dispose();
-			base.Dispose();
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					ClearSurfaceList();
+					foreach ( IDisposable disp in managedObjects )
+						disp.Dispose();
+				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
+			isDisposed = true;
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
 		}
 
 		/// <summary>
@@ -324,30 +284,30 @@ namespace Axiom.RenderSystems.DirectX9
 		/// </summary>
 		private void LoadNormalTexture()
 		{
-			Debug.Assert( textureType == TextureType.OneD || textureType == TextureType.TwoD );
+			Debug.Assert( TextureType == TextureType.OneD || TextureType == TextureType.TwoD );
 			using ( AutoTimer auto = new AutoTimer( textureLoadMeter ) )
 			{
 
-				Stream stream = TextureManager.Instance.FindResourceData( name );
+				Stream stream = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
 
 				// use D3DX to load the image directly from the stream
 #if !NO_OGRE_D3D_MANAGE_BUFFERS
-				int numMips = numRequestedMipmaps + 1;
+				int numMips = RequestedMipmapCount + 1;
 				// check if mip map volume textures are supported
 				if ( !( devCaps.TextureCaps.SupportsMipMap ) )
 				{
 					// no mip map support for this kind of textures :(
-					numMipmaps = 0;
+					MipmapCount = 0;
 					numMips = 1;
 				}
 				D3D.Pool pool;
-				if ( ( usage & TextureUsage.Dynamic ) != 0 )
+				if ( ( Usage & TextureUsage.Dynamic ) != 0 )
 					pool = D3D.Pool.Default;
 				else
 					pool = D3D.Pool.Managed;
 				Debug.Assert( normTexture == null );
 				Debug.Assert( texture == null );
-				LogManager.Instance.Write( "Loaded normal texture {0}", this.Name );
+				//LogManager.Instance.Write( "Loaded normal texture {0}", this.Name );
 				normTexture = D3D.TextureLoader.FromStream( device, stream, 0, 0, numMips,
 															D3D.Usage.None, D3D.Format.Unknown, pool,
 															D3D.Filter.None, D3D.Filter.Box, 0 );
@@ -364,7 +324,7 @@ namespace Axiom.RenderSystems.DirectX9
 				SetSrcAttributes( desc.Width, desc.Height, 1, D3DHelper.ConvertEnum( desc.Format ) );
 				SetFinalAttributes( desc.Width, desc.Height, 1, D3DHelper.ConvertEnum( desc.Format ) );
 
-				isLoaded = true;
+				IsLoaded = true;
 				internalResourcesCreated = true;
 			}
 		}
@@ -380,7 +340,7 @@ namespace Axiom.RenderSystems.DirectX9
 #if !NOT_YET
 			d3dPool = D3D.Pool.Default;
 #endif
-			if ( name.EndsWith( ".dds" ) )
+			if ( Name.EndsWith( ".dds" ) )
 			{
 #if NOT_YET
                 if ((usage & BufferUsage.Dynamic) != 0) {
@@ -389,7 +349,7 @@ namespace Axiom.RenderSystems.DirectX9
                     d3dPool = D3D.Pool.Managed;
                 } 
 #endif
-				Stream stream = TextureManager.Instance.FindResourceData( name );
+				Stream stream = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
 
 #if NOT_YET
 			    int numMips = numRequestedMipmaps + 1;
@@ -419,7 +379,7 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				// Load from 6 separate files
 				// Use OGRE its own codecs
-				ConstructCubeFaceNames( name );
+				ConstructCubeFaceNames( Name );
 
 				Image[] images = new Image[ 6 ];
 
@@ -442,7 +402,7 @@ namespace Axiom.RenderSystems.DirectX9
 				BlitImagesToCubeTex();
 			}
 
-			isLoaded = true;
+			IsLoaded = true;
 			internalResourcesCreated = true;
 
 			textureLoadMeter.Exit();
@@ -455,7 +415,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			Debug.Assert( this.TextureType == TextureType.ThreeD );
 
-			Stream stream = TextureManager.Instance.FindResourceData( name );
+			Stream stream = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
 
 			// load the cube texture from the image data stream directly
 			volumeTexture = D3D.TextureLoader.FromVolumeStream( device, stream );
@@ -468,7 +428,7 @@ namespace Axiom.RenderSystems.DirectX9
 			SetSrcAttributes( desc.Width, desc.Height, desc.Depth, D3DHelper.ConvertEnum( desc.Format ) );
 			SetFinalAttributes( desc.Width, desc.Height, desc.Depth, D3DHelper.ConvertEnum( desc.Format ) );
 
-			isLoaded = true;
+			IsLoaded = true;
 			internalResourcesCreated = true;
 		}
 
@@ -477,19 +437,19 @@ namespace Axiom.RenderSystems.DirectX9
 		/// </summary>
 		private void CreateCubeTexture()
 		{
-			Debug.Assert( srcWidth > 0 && srcHeight > 0 );
+			Debug.Assert( SrcWidth > 0 && SrcHeight > 0 );
 
 			// use current back buffer format for render textures, else use the one
 			// defined by this texture format
 			D3D.Format d3dPixelFormat =
-				( usage == TextureUsage.RenderTarget ) ? bbPixelFormat : ChooseD3DFormat();
+				( Usage == TextureUsage.RenderTarget ) ? bbPixelFormat : ChooseD3DFormat();
 
 			// set the appropriate usage based on the usage of this texture
 			D3D.Usage d3dUsage =
-				( usage == TextureUsage.RenderTarget ) ? D3D.Usage.RenderTarget : 0;
+				( Usage == TextureUsage.RenderTarget ) ? D3D.Usage.RenderTarget : 0;
 
 			// how many mips to use?  make sure its at least one
-			int numMips = ( numMipmaps > 0 ) ? numMipmaps : 1;
+			int numMips = ( MipmapCount > 0 ) ? MipmapCount : 1;
 
 			if ( devCaps.TextureCaps.SupportsMipCubeMap )
 			{
@@ -502,7 +462,7 @@ namespace Axiom.RenderSystems.DirectX9
 			else
 			{
 				// no mip map support for this kind of texture
-				numMipmaps = 0;
+				MipmapCount = 0;
 				numMips = 1;
 			}
 
@@ -515,11 +475,11 @@ namespace Axiom.RenderSystems.DirectX9
 			// create the cube texture
 			cubeTexture = new D3D.CubeTexture(
 				device,
-				srcWidth,
+				SrcWidth,
 				numMips,
 				d3dUsage,
 				d3dPixelFormat,
-				( usage == TextureUsage.RenderTarget ) ? D3D.Pool.Default : D3D.Pool.Managed );
+				( Usage == TextureUsage.RenderTarget ) ? D3D.Pool.Default : D3D.Pool.Managed );
 			// store base reference to the texture
 			texture = cubeTexture;
 
@@ -530,7 +490,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// store base reference to the texture
 			texture = cubeTexture;
 
-			if ( mipmapsHardwareGenerated )
+			if ( this.MipmapsHardwareGenerated )
 				texture.AutoGenerateFilterType = GetBestFilterMethod();
 
 			//if(usage == TextureUsage.RenderTarget) {
@@ -560,34 +520,43 @@ namespace Axiom.RenderSystems.DirectX9
 
 		private void CreateNormalTexture()
 		{
-			Debug.Assert( srcWidth > 0 && srcHeight > 0 );
+			Debug.Assert( SrcWidth > 0 && SrcHeight > 0 );
 
 			// determine which D3D9 pixel format we'll use
 			D3D.Format d3dPixelFormat = ChooseD3DFormat();
 
 			// set the appropriate usage based on the usage of this texture
-			D3D.Usage d3dUsage =
-				( ( usage & TextureUsage.RenderTarget ) == TextureUsage.RenderTarget ) ? D3D.Usage.RenderTarget : D3D.Usage.None;
+			D3D.Usage d3dUsage = ( ( Usage & TextureUsage.RenderTarget ) == TextureUsage.RenderTarget ) ? D3D.Usage.RenderTarget : D3D.Usage.None;
 
 			// how many mips to use?
-			int numMips = numRequestedMipmaps + 1;
+			int numMips = RequestedMipmapCount + 1;
 
 			D3D.TextureRequirements texRequire = new D3D.TextureRequirements();
-			texRequire.Width = srcWidth;
-			texRequire.Height = srcHeight;
+			texRequire.Width = SrcWidth;
+			texRequire.Height = SrcHeight;
 
-			// FIXME: Ogre checks for dynamic here
+			if ( ( Usage & TextureUsage.Dynamic ) == TextureUsage.Dynamic )
+			{
+				if ( CanUseDynamicTextures( d3dUsage, D3D.ResourceType.Textures, d3dPixelFormat ) )
+				{
+					d3dUsage |= D3D.Usage.Dynamic;
+					dynamicTextures = true;
+				}
+				else
+				{
+					dynamicTextures = false;
+				}
+			}
+
 			// check if mip maps are supported on hardware
-
-			mipmapsHardwareGenerated = false;
+			MipmapsHardwareGenerated = false;
 			if ( devCaps.TextureCaps.SupportsMipMap )
 			{
-				if ( ( ( usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap )
-					&& numRequestedMipmaps > 0 )
+				if ( ( ( Usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap ) && RequestedMipmapCount > 0 )
 				{
 
-					mipmapsHardwareGenerated = this.CanAutoGenMipMaps( d3dUsage, D3D.ResourceType.Textures, d3dPixelFormat );
-					if ( mipmapsHardwareGenerated )
+					MipmapsHardwareGenerated = this.CanAutoGenMipMaps( d3dUsage, D3D.ResourceType.Textures, d3dPixelFormat );
+					if ( MipmapsHardwareGenerated )
 					{
 						d3dUsage |= D3D.Usage.AutoGenerateMipMap;
 						numMips = 0;
@@ -598,29 +567,25 @@ namespace Axiom.RenderSystems.DirectX9
 			else
 			{
 				// no mip map support for this kind of texture
-				numMipmaps = 0;
+				MipmapCount = 0;
 				numMips = 1;
 			}
 
 			// check texture requirements
-			texRequire.NumberMipLevels = numMips;
-			texRequire.Format = d3dPixelFormat;
-			// NOTE: Although texRequire is an out parameter, it actually does 
-			//       use the data passed in with that object.
-			D3D.TextureLoader.CheckTextureRequirements( device, d3dUsage, D3D.Pool.Default, out texRequire );
-			numMips = texRequire.NumberMipLevels;
-			d3dPixelFormat = texRequire.Format;
+			//texRequire.NumberMipLevels = numMips;
+			//texRequire.Format = d3dPixelFormat;
+			//// NOTE: Although texRequire is an out parameter, it actually does 
+			////       use the data passed in with that object.
+			//D3D.TextureLoader.CheckTextureRequirements( device, d3dUsage, D3D.Pool.Default, out texRequire );
+
+			//numMips = texRequire.NumberMipLevels;
+			//d3dPixelFormat = texRequire.Format;
+
 			//Debug.Assert( normTexture == null );
-			LogManager.Instance.Write( "Created normal texture {0}", this.Name );
+
 			// create the texture
-			normTexture = new D3D.Texture(
-				device,
-				srcWidth,
-				srcHeight,
-				numMips,
-				d3dUsage,
-				d3dPixelFormat,
-					d3dPool );
+			normTexture = new D3D.Texture( device, SrcWidth, SrcHeight, numMips, d3dUsage, d3dPixelFormat, d3dPool );
+			LogManager.Instance.Write( "Created normal texture {0}", this.Name );
 
 			// store base reference to the texture
 			texture = normTexture;
@@ -629,7 +594,7 @@ namespace Axiom.RenderSystems.DirectX9
 			D3D.SurfaceDescription desc = normTexture.GetLevelDescription( 0 );
 			SetFinalAttributes( desc.Width, desc.Height, 1, D3DHelper.ConvertEnum( desc.Format ) );
 
-			if ( mipmapsHardwareGenerated )
+			if ( MipmapsHardwareGenerated )
 				texture.AutoGenerateFilterType = GetBestFilterMethod();
 
 			//if(usage == TextureUsage.RenderTarget) 
@@ -640,7 +605,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		private void CreateVolumeTexture()
 		{
-			Debug.Assert( srcWidth > 0 && srcHeight > 0 );
+			Debug.Assert( SrcWidth > 0 && SrcHeight > 0 );
 			throw new NotImplementedException();
 		}
 
@@ -651,25 +616,25 @@ namespace Axiom.RenderSystems.DirectX9
 			D3DHardwarePixelBuffer buffer;
 			Debug.Assert( texture != null );
 			// Make sure number of mips is right
-			numMipmaps = texture.LevelCount - 1;
+			MipmapCount = texture.LevelCount - 1;
 			// Need to know static / dynamic
 			BufferUsage bufusage;
-			if ( ( ( usage & TextureUsage.Dynamic ) != 0 ) && dynamicTextures )
+			if ( ( ( Usage & TextureUsage.Dynamic ) != 0 ) && dynamicTextures )
 				bufusage = BufferUsage.Dynamic;
 			else
 				bufusage = BufferUsage.Static;
-			if ( ( usage & TextureUsage.RenderTarget ) != 0 )
+			if ( ( Usage & TextureUsage.RenderTarget ) != 0 )
 				bufusage = (BufferUsage)( (int)bufusage | (int)TextureUsage.RenderTarget );
 
 			// If we already have the right number of surfaces, just update the old list
-			bool updateOldList = ( surfaceList.Count == ( this.NumFaces * ( numMipmaps + 1 ) ) );
+			bool updateOldList = ( surfaceList.Count == ( faceCount * ( MipmapCount + 1 ) ) );
 			if ( !updateOldList )
 			{
 				// Create new list of surfaces
 				ClearSurfaceList();
-				for ( int face = 0; face < this.NumFaces; ++face )
+				for ( int face = 0; face < faceCount; ++face )
 				{
-					for ( int mip = 0; mip <= numMipmaps; ++mip )
+					for ( int mip = 0; mip <= MipmapCount; ++mip )
 					{
 						buffer = new D3DHardwarePixelBuffer( bufusage );
 						surfaceList.Add( buffer );
@@ -677,13 +642,13 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 			}
 
-			switch ( textureType )
+			switch ( TextureType )
 			{
 				case TextureType.OneD:
 				case TextureType.TwoD:
 					Debug.Assert( normTexture != null );
 					// For all mipmaps, store surfaces as HardwarePixelBuffer
-					for ( int mip = 0; mip <= numMipmaps; ++mip )
+					for ( int mip = 0; mip <= MipmapCount; ++mip )
 					{
 						surface = normTexture.GetSurfaceLevel( mip );
 						// decrement reference count, the GetSurfaceLevel call increments this
@@ -698,7 +663,7 @@ namespace Axiom.RenderSystems.DirectX9
 					// For all faces and mipmaps, store surfaces as HardwarePixelBufferSharedPtr
 					for ( int face = 0; face < 6; ++face )
 					{
-						for ( int mip = 0; mip <= numMipmaps; ++mip )
+						for ( int mip = 0; mip <= MipmapCount; ++mip )
 						{
 							surface = cubeTexture.GetCubeMapSurface( (D3D.CubeMapFace)face, mip );
 							// decrement reference count, the GetSurfaceLevel call increments this
@@ -712,7 +677,7 @@ namespace Axiom.RenderSystems.DirectX9
 				case TextureType.ThreeD:
 					Debug.Assert( volumeTexture != null );
 					// For all mipmaps, store surfaces as HardwarePixelBuffer
-					for ( int mip = 0; mip <= numMipmaps; ++mip )
+					for ( int mip = 0; mip <= MipmapCount; ++mip )
 					{
 						volume = volumeTexture.GetVolumeLevel( mip );
 						// decrement reference count, the GetSurfaceLevel call increments this
@@ -724,10 +689,10 @@ namespace Axiom.RenderSystems.DirectX9
 					break;
 			}
 			// Set autogeneration of mipmaps for each face of the texture, if it is enabled
-			if ( ( numRequestedMipmaps != 0 ) && ( ( usage & TextureUsage.AutoMipMap ) != 0 ) )
+			if ( ( RequestedMipmapCount != 0 ) && ( ( Usage & TextureUsage.AutoMipMap ) != 0 ) )
 			{
-				for ( int face = 0; face < this.NumFaces; ++face )
-					GetSurfaceAtLevel( face, 0 ).SetMipmapping( true, mipmapsHardwareGenerated, texture );
+				for ( int face = 0; face < faceCount; ++face )
+					GetSurfaceAtLevel( face, 0 ).SetMipmapping( true, MipmapsHardwareGenerated, texture );
 			}
 		}
 
@@ -740,7 +705,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		private D3DHardwarePixelBuffer GetSurfaceAtLevel( int face, int mip )
 		{
-			return surfaceList[ face * ( numMipmaps + 1 ) + mip ];
+			return surfaceList[ face * ( MipmapCount + 1 ) + mip ];
 		}
 
 		/// <summary>
@@ -856,7 +821,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		private void CopyMemoryToSurface( byte[] buffer, D3D.Surface surface )
 		{
-			CopyMemoryToSurface( buffer, surface, srcWidth, srcHeight, srcBpp, hasAlpha );
+			CopyMemoryToSurface( buffer, surface, SrcWidth, SrcHeight, srcBpp, HasAlpha );
 		}
 
 		private static uint ConvertBitPattern( uint srcValue, uint srcBitMask, uint destBitMask )
@@ -1008,7 +973,7 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 
 				// copy the image data to a memory stream
-				Stream stream = TextureManager.Instance.FindResourceData( cubeFaceNames[ i ] );
+				Stream stream = ResourceGroupManager.Instance.OpenResource( cubeFaceNames[ i ], Group );
 
 				// load the stream into the cubemap surface
 				D3D.SurfaceLoader.FromStream( dstSurface, stream, D3D.Filter.Point, 0 );
@@ -1059,6 +1024,12 @@ namespace Axiom.RenderSystems.DirectX9
 			return false;
 		}
 
+		private bool CanUseDynamicTextures( D3D.Usage srcUsage, D3D.ResourceType srcType, D3D.Format srcFormat )
+		{
+			// Check for dynamic texture support
+			return D3D.Manager.CheckDeviceFormat( devParms.AdapterOrdinal, devParms.DeviceType, bbPixelFormat, srcUsage | D3D.Usage.Dynamic, srcType, srcFormat );
+		}
+
 		public void CopyToTexture( Axiom.Core.Texture target )
 		{
 			// TODO: Check usage and format, need Usage property on Texture
@@ -1096,19 +1067,19 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		/// 
 		/// </summary>
-		protected override void CreateInternalResourcesImpl()
+		protected override void createInternalResources()
 		{
-			if ( srcWidth == 0 || srcHeight == 0 )
+			if ( SrcWidth == 0 || SrcHeight == 0 )
 			{
-				srcWidth = width;
-				srcHeight = height;
+				SrcWidth = Width;
+				SrcHeight = Height;
 			}
 
 			// Determine D3D pool to use
 			// Use managed unless we're a render target or user has asked for 
 			// a dynamic texture
-			if ( ( usage & TextureUsage.RenderTarget ) != 0 ||
-				( usage & TextureUsage.Dynamic ) != 0 )
+			if ( ( Usage & TextureUsage.RenderTarget ) != 0 ||
+				( Usage & TextureUsage.Dynamic ) != 0 )
 			{
 				d3dPool = D3D.Pool.Default;
 			}
@@ -1135,7 +1106,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		protected override void FreeInternalResourcesImpl()
+		protected override void freeInternalResources()
 		{
 			Dispose();
 		}
@@ -1147,9 +1118,9 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <returns></returns>
 		protected D3D.Format ChooseD3DFormat()
 		{
-			if ( format == PixelFormat.Unknown )
+			if ( Format == PixelFormat.Unknown )
 				return bbPixelFormat;
-			return D3DHelper.ConvertEnum( D3DHelper.GetClosestSupported( format ) );
+			return D3DHelper.ConvertEnum( D3DHelper.GetClosestSupported( Format ) );
 		}
 
 		/// <summary>
@@ -1161,10 +1132,45 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <param name="format"></param>
 		private void SetSrcAttributes( int width, int height, int depth, PixelFormat format )
 		{
-			srcWidth = width;
-			srcHeight = height;
-			srcBpp = PixelUtil.GetNumElemBits( format );
-			hasAlpha = PixelUtil.HasAlpha( format );
+			SrcWidth = width;
+			SrcHeight = height;
+			SrcDepth = PixelUtil.GetNumElemBits( format );
+			HasAlpha = PixelUtil.HasAlpha( format );
+
+			// say to the world what we are doing
+			string renderTargetFormat = "D3D : Creating {0} RenderTarget, name : '{1}' with {2} mip map levels.";
+			string textureFormat = "D3D : Loading {0} Texture, image name : '{1}' with {2} mip map levels.";
+
+			switch ( this.TextureType )
+			{
+				case TextureType.OneD:
+					if ( ( Usage & TextureUsage.RenderTarget ) == TextureUsage.RenderTarget )
+						LogManager.Instance.Write( String.Format( renderTargetFormat, TextureType.OneD.ToString(), this.Name, MipmapCount ) );
+					else
+						LogManager.Instance.Write( String.Format( textureFormat, TextureType.OneD.ToString(), this.Name, MipmapCount ) );
+					break;
+				case TextureType.TwoD:
+					if ( ( Usage & TextureUsage.RenderTarget ) == TextureUsage.RenderTarget )
+						LogManager.Instance.Write( String.Format( renderTargetFormat, TextureType.TwoD.ToString(), this.Name, MipmapCount ) );
+					else
+						LogManager.Instance.Write( String.Format( textureFormat, TextureType.TwoD.ToString(), this.Name, MipmapCount ) );
+					break;
+				case TextureType.ThreeD:
+					if ( ( Usage & TextureUsage.RenderTarget ) == TextureUsage.RenderTarget )
+						LogManager.Instance.Write( String.Format( renderTargetFormat, TextureType.ThreeD.ToString(), this.Name, MipmapCount ) );
+					else
+						LogManager.Instance.Write( String.Format( textureFormat, TextureType.ThreeD.ToString(), this.Name, MipmapCount ) );
+					break;
+				case TextureType.CubeMap:
+					if ( ( Usage & TextureUsage.RenderTarget ) == TextureUsage.RenderTarget )
+						LogManager.Instance.Write( String.Format( renderTargetFormat, TextureType.CubeMap.ToString(), this.Name, MipmapCount ) );
+					else
+						LogManager.Instance.Write( String.Format( textureFormat, TextureType.CubeMap.ToString(), this.Name, MipmapCount ) );
+					break;
+				default:
+					this.FreeInternalResources();
+					throw new Exception( "Unknown texture type" );
+			}
 		}
 
 		/// <summary>
@@ -1177,20 +1183,23 @@ namespace Axiom.RenderSystems.DirectX9
 		private void SetFinalAttributes( int width, int height, int depth, PixelFormat format )
 		{
 			// set target texture attributes
-			this.height = height;
-			this.width = width;
-			this.depth = depth;
-			this.format = format;
+			this.Height = height;
+			this.Width = width;
+			this.Depth = depth;
+			this.Format = format;
 
 			// Update size (the final size, not including temp space)
 			// this is needed in Resource class
-			int bytesPerPixel = finalBpp >> 3;
-			if ( !hasAlpha && finalBpp == 32 )
+			Size = calculateSize();
+
+			// say to the world what we are doing
+			if ( Width != SrcWidth || Height != SrcHeight )
 			{
-				bytesPerPixel--;
+				LogManager.Instance.Write( "D3D9 : ***** Dimensions altered by the render system" );
+				LogManager.Instance.Write( "D3D9 : ***** Source image dimensions : {0}x{1}", SrcWidth, SrcHeight );
+				LogManager.Instance.Write( "D3D9 : ***** Texture dimensions :  {0}x{1}", Width, Height );
 			}
 
-			size = width * height * depth * bytesPerPixel * ( ( textureType == TextureType.CubeMap ) ? 6 : 1 );
 
 			CreateSurfaceList();
 		}
@@ -1204,7 +1213,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			base.Unload();
 
-			if ( isLoaded )
+			if ( IsLoaded )
 			{
 				if ( texture != null )
 				{
@@ -1228,7 +1237,7 @@ namespace Axiom.RenderSystems.DirectX9
 					volumeTexture = null;
 				}
 
-				isLoaded = false;
+				IsLoaded = false;
 			}
 		}
 

@@ -44,6 +44,9 @@ using Axiom.Graphics;
 using Axiom.Controllers;
 
 using Axiom.SceneManagers.Bsp.Collections;
+using System.Collections.Generic;
+
+using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
 
@@ -62,192 +65,195 @@ namespace Axiom.SceneManagers.Bsp
     /// </remarks>
     public class Quake3Shader : Resource
     {
-        #region Protected members
-        protected uint flags;
-        protected ShaderPassCollection pass;
-        protected bool farBox;            // Skybox
-        protected string farBoxName;
-        protected bool skyDome;
-        protected float cloudHeight;       // Skydome
-        protected ShaderDeformFunc deformFunc;
-        protected float[] deformParams;
-        protected ManualCullingMode cullMode;
+        #region Fields and Properties
 
-        protected bool fog;
-        protected ColorEx fogColour;
-        protected float fogDistance;
-        #endregion
-
-        #region Properties
+        #region Flags Property
+        private uint _flags;
         public uint Flags
         {
             get
             {
-                return flags;
+                return _flags;
             }
             set
             {
-                flags = value;
+                _flags = value;
             }
         }
+        #endregion Flags Property
 
-        public int NumPasses
+        public int PassCount
         {
             get
             {
-                return pass.Count;
+                return _pass.Count;
             }
         }
 
-        public ShaderPassCollection Pass
+        #region Pass Property
+        private List<ShaderPass> _pass;
+        public ICollection<ShaderPass> Pass
         {
             get
             {
-                return pass;
-            }
-            set
-            {
-                pass = value;
+                return _pass;
             }
         }
+        #endregion Pass Property
 
+        #region Farbox Property
+        private bool _farBox;            // Skybox
         public bool Farbox
         {
             get
             {
-                return farBox;
+                return _farBox;
             }
             set
             {
-                farBox = value;
+                _farBox = value;
             }
         }
+        #endregion FarBox Property
 
+        #region FarboxName Property
+        private string _farBoxName;
         public string FarboxName
         {
             get
             {
-                return farBoxName;
+                return _farBoxName;
             }
             set
             {
-                farBoxName = value;
+                _farBoxName = value;
             }
         }
+        #endregion FarboxName Property
 
+        private bool _skyDome;
         public bool SkyDome
         {
             get
             {
-                return skyDome;
+                return _skyDome;
             }
             set
             {
-                skyDome = value;
+                _skyDome = value;
             }
         }
 
+        private float _cloudHeight;       // Skydome
         public float CloudHeight
         {
             get
             {
-                return cloudHeight;
+                return _cloudHeight;
             }
             set
             {
-                cloudHeight = value;
+                _cloudHeight = value;
             }
         }
 
+        private ShaderDeformFunc _deformFunc;
         public ShaderDeformFunc DeformFunc
         {
             get
             {
-                return deformFunc;
+                return _deformFunc;
             }
             set
             {
-                deformFunc = value;
+                _deformFunc = value;
             }
         }
 
+        private float[] _deformParams;
         public float[] DeformParams
         {
             get
             {
-                return deformParams;
+                return _deformParams;
             }
             set
             {
-                deformParams = value;
+                _deformParams = value;
             }
         }
 
+        private ManualCullingMode _cullingMode;
         public ManualCullingMode CullingMode
         {
             get
             {
-                return cullMode;
+                return _cullingMode;
             }
             set
             {
-                cullMode = value;
+                _cullingMode = value;
             }
         }
 
+        private bool _fog;
         public bool Fog
         {
             get
             {
-                return fog;
+                return _fog;
             }
             set
             {
-                fog = value;
+                _fog = value;
             }
         }
 
+        private ColorEx _fogColour;
         public ColorEx FogColour
         {
             get
             {
-                return fogColour;
+                return _fogColour;
             }
             set
             {
-                fogColour = value;
+                _fogColour = value;
             }
         }
 
+        private float _fogDistance;
         public float FogDistance
         {
             get
             {
-                return fogDistance;
+                return _fogDistance;
             }
             set
             {
-                fogDistance = value;
+                _fogDistance = value;
             }
         }
         #endregion
 
-        #region Constructor
+        #region Construction and Destruction
+
         /// <summary>
         ///		Default constructor - used by <see cref="Quake3ShaderManager"/> (do not call directly)
         /// </summary>
         /// <param name="name">Shader name.</param>
-        public Quake3Shader( string name )
+        public Quake3Shader( ResourceManager parent, string name, ResourceHandle handle, string group ) : base( parent, name, handle, group )
         {
-            this.name = name;
-            deformFunc = ShaderDeformFunc.None;
-            deformParams = new float[ 5 ];
-            cullMode = ManualCullingMode.Back;
-            pass = new ShaderPassCollection();
+            _deformFunc = ShaderDeformFunc.None;
+            _deformParams = new float[ 5 ];
+            _cullingMode = ManualCullingMode.Back;
+            _pass = new List<ShaderPass>();
         }
+
         #endregion
 
         #region Methods
+
         protected string GetAlternateName( string textureName )
         {
             // Get alternative JPG to TGA and vice versa
@@ -277,27 +283,31 @@ namespace Axiom.SceneManagers.Bsp
         /// </remarks>
         /// <param name="sm">SceneManager to register the material with.</param>
         /// <param name="lightmapNumber">Lightmap number</param>
-        public Material CreateAsMaterial( SceneManager sm, int lightmapNumber )
+        public Material CreateAsMaterial( int lightmapNumber )
         {
-            string materialName = String.Format( "{0}#{1}", name, lightmapNumber );
-            Material material = sm.CreateMaterial( materialName );
+            string materialName = String.Format( "{0}#{1}", Name, lightmapNumber );
+            string groupName = ResourceGroupManager.Instance.WorldResourceGroupName;
 
-            LogManager.Instance.Write( "Using Q3 shader {0}", name );
+            Material material = (Material)MaterialManager.Instance.Create( materialName, groupName );
+            Pass pass = material.GetTechnique( 0 ).GetPass( 0 );
 
-            for ( int p = 0; p < pass.Count; ++p )
+            LogManager.Instance.Write( "Using Q3 shader {0}", Name );
+
+            for ( int p = 0; p < _pass.Count; ++p )
             {
                 TextureUnitState t;
 
                 // Create basic texture
-                if ( pass[ p ].textureName == "$lightmap" )
+                if ( _pass[ p ].textureName == "$lightmap" )
                 {
                     string lightmapName = String.Format( "@lightmap{0}", lightmapNumber );
-                    t = material.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( lightmapName );
+                    t = pass.CreateTextureUnitState( lightmapName );
                 }
+
                 // Animated texture support
-                else if ( pass[ p ].animNumFrames > 0 )
+                else if ( _pass[ p ].animNumFrames > 0 )
                 {
-                    float sequenceTime = pass[ p ].animNumFrames / pass[ p ].animFps;
+                    float sequenceTime = _pass[ p ].animNumFrames / _pass[ p ].animFps;
 
                     /* Pre-load textures
                     We need to know if each one was loaded OK since extensions may change for each
@@ -305,138 +315,136 @@ namespace Axiom.SceneManagers.Bsp
                     Pain in the arse - have to check for each frame as letters<n>.tga for example
                     is different per frame!
                     */
-                    for ( uint alt = 0; alt < pass[ p ].animNumFrames; ++alt )
+                    for ( uint alt = 0; alt < _pass[ p ].animNumFrames; ++alt )
                     {
-                        try
-                        {
-                            TextureManager.Instance.Load( pass[ p ].frames[ alt ] );
-                        }
-                        catch
+                        if ( !ResourceGroupManager.Instance.ResourceExists( groupName, _pass[ p ].frames[ alt ] ) )
                         {
                             // Try alternate extension
-                            pass[ p ].frames[ alt ] = GetAlternateName( pass[ p ].frames[ alt ] );
+                            _pass[ p ].frames[ alt ] = GetAlternateName( _pass[ p ].frames[ alt ] );
 
-                            try
-                            {
-                                TextureManager.Instance.Load( pass[ p ].frames[ alt ] );
-                            }
-                            catch
+                            if ( !ResourceGroupManager.Instance.ResourceExists( groupName, _pass[ p ].frames[ alt ] ) )
                             {
                                 // stuffed - no texture
+                                continue;
                             }
                         }
 
                     }
 
-                    t = material.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( "" );
-                    t.SetAnimatedTextureName( pass[ p ].frames, pass[ p ].animNumFrames, sequenceTime );
+                    t = pass.CreateTextureUnitState( "" );
+                    t.SetAnimatedTextureName( _pass[ p ].frames, _pass[ p ].animNumFrames, sequenceTime );
 
                     if ( t.IsBlank )
                     {
-                        for ( int alt = 0; alt < pass[ p ].animNumFrames; alt++ )
-                            pass[ p ].frames[ alt ] = GetAlternateName( pass[ p ].frames[ alt ] );
+                        for ( int alt = 0; alt < _pass[ p ].animNumFrames; alt++ )
+                            _pass[ p ].frames[ alt ] = GetAlternateName( _pass[ p ].frames[ alt ] );
 
-                        t.SetAnimatedTextureName( pass[ p ].frames, pass[ p ].animNumFrames, sequenceTime );
+                        t.SetAnimatedTextureName( _pass[ p ].frames, _pass[ p ].animNumFrames, sequenceTime );
                     }
                 }
                 else
                 {
                     // Quake3 can still include alternate extension filenames e.g. jpg instead of tga
                     // Pain in the arse - have to check for failure
-                    try
-                    {
-                        TextureManager.Instance.Load( pass[ p ].textureName );
-                    }
-                    catch
+                    if ( !ResourceGroupManager.Instance.ResourceExists( groupName, _pass[ p ].textureName ) )
                     {
                         // Try alternate extension
-                        pass[ p ].textureName = GetAlternateName( pass[ p ].textureName );
+                        _pass[ p ].textureName = GetAlternateName( _pass[ p ].textureName );
 
-                        try
-                        {
-                            TextureManager.Instance.Load( pass[ p ].textureName );
-                        }
-                        catch
+                        if ( !ResourceGroupManager.Instance.ResourceExists( groupName, _pass[ p ].textureName ) )
                         {
                             // stuffed - no texture
+                            continue;
                         }
                     }
 
-                    t = material.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( pass[ p ].textureName );
+                    t = pass.CreateTextureUnitState( _pass[ p ].textureName );
                 }
 
                 // Blending
                 if ( p == 0 )
                 {
                     // scene blend
-                    material.SetSceneBlending( pass[ p ].blendSrc, pass[ p ].blendDest );
+                    material.SetSceneBlending( _pass[ p ].blendSrc, _pass[ p ].blendDest );
 
-                    if ( material.IsTransparent && ( pass[ p ].blendSrc != SceneBlendFactor.SourceAlpha ) )
+                    if ( material.IsTransparent && ( _pass[ p ].blendSrc != SceneBlendFactor.SourceAlpha ) )
                         material.DepthWrite = false;
 
                     t.SetColorOperation( LayerBlendOperation.Replace );
+
+                    // Alpha Settings
+                    pass.SetAlphaReject( _pass[ p ].alphaFunc, _pass[ p ].alphaVal );
                 }
                 else
                 {
-                    if ( pass[ p ].customBlend )
+                    if ( _pass[ p ].customBlend )
                     {
                         // Fallback for now
                         t.SetColorOperation( LayerBlendOperation.Modulate );
                     }
                     else
                     {
-                        t.SetColorOperation( pass[ p ].blend );
+                        t.SetColorOperation( _pass[ p ].blend );
+                    }
+
+                    // Alpha mode, prefer 'most alphary'
+                    CompareFunction currFunc = pass.AlphaRejectFunction;
+                    int currValue = pass.AplhaRejectValue;
+                    if ( _pass[ p ].alphaFunc > currFunc
+                        || ( _pass[ p ].alphaFunc == currFunc && _pass[ p ].alphaVal < currValue ) )
+                    {
+                        pass.SetAlphaReject( _pass[ p ].alphaFunc, _pass[ p ].alphaVal );
                     }
                 }
 
                 // Tex coords
-                if ( pass[ p ].texGen == ShaderTextureGen.Base )
+                if ( _pass[ p ].texGen == ShaderTextureGen.Base )
                     t.TextureCoordSet = 0;
-                else if ( pass[ p ].texGen == ShaderTextureGen.Lightmap )
+                else if ( _pass[ p ].texGen == ShaderTextureGen.Lightmap )
                     t.TextureCoordSet = 1;
-                else if ( pass[ p ].texGen == ShaderTextureGen.Environment )
+                else if ( _pass[ p ].texGen == ShaderTextureGen.Environment )
                     t.SetEnvironmentMap( true, EnvironmentMap.Planar );
 
                 // Tex mod
                 // Scale
-                t.SetTextureScaleU( pass[ p ].tcModScale[ 0 ] );
-                t.SetTextureScaleV( pass[ p ].tcModScale[ 1 ] );
+                t.SetTextureScaleU( _pass[ p ].tcModScale[ 0 ] );
+                t.SetTextureScaleV( _pass[ p ].tcModScale[ 1 ] );
 
                 // Procedural mods
                 // Custom - don't use mod if generating environment
                 // Because I do env a different way it look horrible
-                if ( pass[ p ].texGen != ShaderTextureGen.Environment )
+                if ( _pass[ p ].texGen != ShaderTextureGen.Environment )
                 {
-                    if ( pass[ p ].tcModRotate != 0.0f )
-                        t.SetRotateAnimation( pass[ p ].tcModRotate );
+                    if ( _pass[ p ].tcModRotate != 0.0f )
+                        t.SetRotateAnimation( _pass[ p ].tcModRotate );
 
-                    if ( ( pass[ p ].tcModScroll[ 0 ] != 0.0f ) || ( pass[ p ].tcModScroll[ 1 ] != 0.0f ) )
+                    if ( ( _pass[ p ].tcModScroll[ 0 ] != 0.0f ) || ( _pass[ p ].tcModScroll[ 1 ] != 0.0f ) )
                     {
-                        if ( pass[ p ].tcModTurbOn )
+                        if ( _pass[ p ].tcModTurbOn )
                         {
                             // Turbulent scroll
-                            if ( pass[ p ].tcModScroll[ 0 ] != 0.0f )
+                            if ( _pass[ p ].tcModScroll[ 0 ] != 0.0f )
                             {
                                 t.SetTransformAnimation( TextureTransform.TranslateU, WaveformType.Sine,
-                                    pass[ p ].tcModTurb[ 0 ], pass[ p ].tcModTurb[ 3 ], pass[ p ].tcModTurb[ 2 ], pass[ p ].tcModTurb[ 1 ] );
+                                    _pass[ p ].tcModTurb[ 0 ], _pass[ p ].tcModTurb[ 3 ], _pass[ p ].tcModTurb[ 2 ], _pass[ p ].tcModTurb[ 1 ] );
                             }
-                            if ( pass[ p ].tcModScroll[ 1 ] != 0.0f )
+                            if ( _pass[ p ].tcModScroll[ 1 ] != 0.0f )
                             {
                                 t.SetTransformAnimation( TextureTransform.TranslateV, WaveformType.Sine,
-                                    pass[ p ].tcModTurb[ 0 ], pass[ p ].tcModTurb[ 3 ], pass[ p ].tcModTurb[ 2 ], pass[ p ].tcModTurb[ 1 ] );
+                                    _pass[ p ].tcModTurb[ 0 ], _pass[ p ].tcModTurb[ 3 ], _pass[ p ].tcModTurb[ 2 ], _pass[ p ].tcModTurb[ 1 ] );
                             }
                         }
                         else
                         {
                             // Constant scroll
-                            t.SetScrollAnimation( pass[ p ].tcModScroll[ 0 ], pass[ p ].tcModScroll[ 1 ] );
+                            t.SetScrollAnimation( _pass[ p ].tcModScroll[ 0 ], _pass[ p ].tcModScroll[ 1 ] );
                         }
                     }
 
-                    if ( pass[ p ].tcModStretchWave != ShaderWaveType.None )
+                    if ( _pass[ p ].tcModStretchWave != ShaderWaveType.None )
                     {
                         WaveformType wft = WaveformType.Sine;
-                        switch ( pass[ p ].tcModStretchWave )
+                        switch ( _pass[ p ].tcModStretchWave )
                         {
                             case ShaderWaveType.Sin:
                                 wft = WaveformType.Sine;
@@ -456,40 +464,39 @@ namespace Axiom.SceneManagers.Bsp
                         }
 
                         // Create wave-based stretcher
-                        t.SetTransformAnimation( TextureTransform.ScaleU, wft, pass[ p ].tcModStretchParams[ 3 ],
-                            pass[ p ].tcModStretchParams[ 0 ], pass[ p ].tcModStretchParams[ 2 ], pass[ p ].tcModStretchParams[ 1 ] );
-                        t.SetTransformAnimation( TextureTransform.ScaleV, wft, pass[ p ].tcModStretchParams[ 3 ],
-                            pass[ p ].tcModStretchParams[ 0 ], pass[ p ].tcModStretchParams[ 2 ], pass[ p ].tcModStretchParams[ 1 ] );
+                        t.SetTransformAnimation( TextureTransform.ScaleU, wft, _pass[ p ].tcModStretchParams[ 3 ],
+                            _pass[ p ].tcModStretchParams[ 0 ], _pass[ p ].tcModStretchParams[ 2 ], _pass[ p ].tcModStretchParams[ 1 ] );
+                        t.SetTransformAnimation( TextureTransform.ScaleV, wft, _pass[ p ].tcModStretchParams[ 3 ],
+                            _pass[ p ].tcModStretchParams[ 0 ], _pass[ p ].tcModStretchParams[ 2 ], _pass[ p ].tcModStretchParams[ 1 ] );
                     }
                 }
                 // Address mode
-                t.TextureAddressing = pass[ p ].addressMode;
-                // Alpha mode
-                t.SetAlphaRejectSettings( pass[ p ].alphaFunc, pass[ p ].alphaVal );
+                t.TextureAddressing = _pass[ p ].addressMode;
+
             }
 
             // Do farbox (create new material)
 
             // Do skydome (use this material)
-            if ( skyDome )
-            {
-                float halfAngle = 0.5f * ( 0.5f * ( 4.0f * (float)System.Math.Atan( 1.0f ) ) );
-                float sin = (float)Utility.Sin( halfAngle );
+            //if ( _skyDome )
+            //{
+            //    float halfAngle = 0.5f * ( 0.5f * ( 4.0f * (float)System.Math.Atan( 1.0f ) ) );
+            //    float sin = (float)Utility.Sin( halfAngle );
 
-                // Quake3 is always aligned with Z upwards
-                Quaternion q = new Quaternion(
-                    (float)Utility.Cos( halfAngle ),
-                    sin * Vector3.UnitX.x,
-                    sin * Vector3.UnitY.y,
-                    sin * Vector3.UnitX.z
-                    );
+            //    // Quake3 is always aligned with Z upwards
+            //    Quaternion q = new Quaternion(
+            //        (float)Utility.Cos( halfAngle ),
+            //        sin * Vector3.UnitX.x,
+            //        sin * Vector3.UnitY.y,
+            //        sin * Vector3.UnitX.z
+            //        );
 
-                // Also draw last, and make close to camera (far clip plane is shorter)
-                sm.SetSkyDome( true, materialName, 20 - ( cloudHeight / 256 * 18 ), 12, 2000, false, q );
-            }
+            //    // Also draw last, and make close to camera (far clip plane is shorter)
+            //    sm.SetSkyDome( true, materialName, 20 - ( _cloudHeight / 256 * 18 ), 12, 2000, false, q );
+            //}
 
             material.CullingMode = Axiom.Graphics.CullingMode.None;
-            material.ManualCullMode = cullMode;
+            material.ManualCullingMode = _cullingMode;
             material.Lighting = false;
             material.Load();
 
@@ -497,16 +504,18 @@ namespace Axiom.SceneManagers.Bsp
         }
         #endregion
 
-        #region Implementation of Resource
-        public override void Load()
+        #region Resource Implementation
+
+        protected override void load()
         {
             // Do nothing.
         }
 
-        public override void Unload()
+        protected override void unload()
         {
             // Do nothing.
         }
+
         #endregion
     }
 

@@ -34,6 +34,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Configuration;
+using System.Xml;
+using System.Xml.Serialization;
+using System.Xml.XPath;
 
 #endregion Namespace Declarations
 

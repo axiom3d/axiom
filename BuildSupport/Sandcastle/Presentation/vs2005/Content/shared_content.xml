@@ -1,0 +1,93 @@
+<content xml:space="preserve"
+ xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+
+	<!-- paths -->
+	<item id="iconPath">../icons/{0}</item>
+	<item id="scriptPath">../scripts/{0}</item>
+	<item id="artPath">../art/{0}</item>
+	<item id="stylePath">../styles/{0}</item>
+
+	<!-- locale -->
+	<item id="locale">en-us</item>
+
+	<item id="desktopTechnologyAttribute">kbNetFramewk</item>
+	<item id="netcfTechnologyAttribute">kbNetCompactFramewk</item>
+	<item id="netcfDocSetAttribute">NetCompactFramework</item>
+
+  <!-- header -->
+	<item id="header"><font color="DarkGray">[This topic is pre-release documentation and is subject to change in future releases. Blank topics are included as placeholders.]</font>
+		<p/> </item>
+
+	<!-- alert titles -->
+	<item id="cautionTitle"><b>Caution:</b></item>
+	<item id="securityTitle"><b>Security Note:</b></item>
+	<item id="noteTitle"><b>Note:</b></item>
+	<item id="importantTitle"><b>Important Note:</b></item>
+	<item id="visualBasicTitle"><b>Visual Basic Note:</b></item>
+	<item id="visualC#Title"><b>C# Note:</b></item>
+	<item id="visualC++Title"><b>C++ Note:</b></item>
+	<item id="visualJ#Title"><b>J# Note:</b></item>
+
+	<!-- alert alt text -->
+	<item id="cautionAltText">Caution note</item>
+	<item id="securityAltText">Security note</item>
+	<item id="noteAltText">Note</item>
+	<item id="importantAltText">Important note</item>
+	<item id="visualBasicAltText">Visual Basic note</item>
+	<item id="visualC#AltText">C# note</item>
+	<item id="visualC++AltText">C++ note</item>
+	<item id="visualJ#AltText">J# note</item>	
+	
+	<!-- code labels -->
+	<item id="CSharpLabel">C#</item>
+	<item id="VisualBasicLabel">Visual Basic</item>
+	<item id="ManagedCPlusPlusLabel">Managed C++</item>
+	<item id="JSharpLabel">J#</item>
+	<item id="JScriptLabel">JScript</item>
+
+  	 <!-- product labels -->
+  	<item id="framework">.NET Framework</item>
+  	<item id="compact">.NET Compact Framework</item>
+  	<item id="everett">1.1</item>
+  	<item id="whidbey">2.0</item>
+
+	<item id="copyCode">Copy Code</item>
+  <item id="CopyCodeImage">Copy image</item>
+  
+   <!-- dynamic Link Information -->
+  <item id="mshelpKTable"><MSHelp:ktable keywords='{0}' locHeader='Location' topicHeader = 'Topic' disambiguator='table' indexMoniker='!DefaultDynamicLinkIndex' /></item>
+
+  <item id="dynamicLinkInlinePreFixText">For more information, see </item>
+  <item id="dynamicLinkInlinePostFixText">.</item>
+  <item id="dynamicLinkInlineSeperatorText"> and </item>
+    
+  <item id="remarksTitle">Remarks</item>
+  
+  <!-- transforms insert K Index Technology qualifiers based on a conceptual topic's //metadata/attribute[@name='DocSet'] value />-->
+	<!-- If you add new docset values, the item/@id must = "kIndexTechTag_" + the lower-case DocSet name. -->
+  <item id="kIndexTermWithTechQualifier">{0}<include item="kIndexTechTag_{1}" />{2}</item>
+	<item id="kIndexTechTag_avalon"> [Windows Presentation Foundation]</item>
+	<item id="kIndexTechTag_wpf"> [Windows Presentation Foundation]</item>
+	<item id="kIndexTechTag_wcf"> [Windows Communication Foundation]</item>
+	<item id="kindextechtag_windowsforms"> [Windows Forms]</item>
+
+	<!-- footer -->	
+	    
+	<item id="footer">
+		<p/>	
+		<span>
+			Send
+		<a>
+			<includeAttribute name="href" item="MailToLink">
+				<parameter>{0}</parameter>
+				<parameter>{1}</parameter>
+			</includeAttribute>
+			comments
+		</a>
+			about this topic to Microsoft.
+		</span>
+	</item>
+
+	<item id="MailToLink">javascript:sendfeedback('Documentation Feedback (Sandcastle CTP): ', '{1}', 'sandchlp@microsoft.com');</item>
+
+</content>

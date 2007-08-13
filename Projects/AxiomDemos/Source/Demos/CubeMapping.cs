@@ -206,7 +206,7 @@ namespace Axiom.Demos
             if ( originalMesh == null )
             {
                 originalMesh = (Mesh)MeshManager.Instance.Load(
-                    meshName,
+                    meshName, ResourceGroupManager.DefaultResourceGroupName,
                     BufferUsage.StaticWriteOnly,
                     BufferUsage.StaticWriteOnly,
                     true, true, 1 );
@@ -237,7 +237,7 @@ namespace Axiom.Demos
                 if ( subMesh.IsMaterialInitialized )
                 {
                     string matName = subMesh.MaterialName;
-                    Material subMat = MaterialManager.Instance.GetByName( matName );
+                    Material subMat = (Material)MaterialManager.Instance.GetByName( matName );
 
                     if ( subMat != null )
                     {
@@ -248,7 +248,7 @@ namespace Axiom.Demos
                         Pass clonedPass = cloned.GetTechnique( 0 ).GetPass( 0 );
 
                         // add global texture layers to the existing material of the entity
-                        for ( int j = 0; j < pass.NumTextureUnitStages; j++ )
+                        for ( int j = 0; j < pass.TextureUnitStageCount; j++ )
                         {
                             TextureUnitState orgLayer = pass.GetTextureUnitState( j );
                             TextureUnitState newLayer = clonedPass.CreateTextureUnitState( orgLayer.TextureName );
@@ -279,7 +279,7 @@ namespace Axiom.Demos
         private void PrepareClonedMesh()
         {
             // create a new mesh based on the original, only with different BufferUsage flags (inside PrepareVertexData)
-            clonedMesh = MeshManager.Instance.CreateManual( MESH_NAME );
+            clonedMesh = MeshManager.Instance.CreateManual( MESH_NAME, ResourceGroupManager.DefaultResourceGroupName, null);
             clonedMesh.BoundingBox = (AxisAlignedBox)originalMesh.BoundingBox.Clone();
             clonedMesh.BoundingSphereRadius = originalMesh.BoundingSphereRadius;
 
@@ -607,7 +607,7 @@ namespace Axiom.Demos
             material.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 ).SetCubicTextureName( cubeMapName, true );
 
             // get the current skybox cubemap and change it to the new one
-            Material skyBoxMat = MaterialManager.Instance.GetByName( SKYBOX_MATERIAL );
+            Material skyBoxMat = (Material)MaterialManager.Instance.GetByName( SKYBOX_MATERIAL );
 
             // toast the existing textures
             for ( int i = 0; i < skyBoxMat.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 ).NumFrames; i++ )
@@ -789,7 +789,7 @@ namespace Axiom.Demos
             if ( base.Setup() )
             {
 
-                material = MaterialManager.Instance.GetByName( MATERIAL_NAME );
+                material = (Material)MaterialManager.Instance.GetByName( MATERIAL_NAME );
 
                 ToggleNoise();
                 ToggleMesh();

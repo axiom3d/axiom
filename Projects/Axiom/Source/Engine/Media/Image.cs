@@ -317,12 +317,12 @@ namespace Axiom.Media
 			// find a registered codec for this type
 			ICodec codec = CodecManager.Instance.GetCodec( ext );
 
-			// TODO: Need ArchiveManager
-			Stream encoded = ResourceManager.FindCommonResourceData( fileName );
+			Stream encoded = ResourceGroupManager.Instance.OpenResource( fileName );
 			MemoryStream decoded = new MemoryStream();
 
 			// decode the image data
 			ImageCodec.ImageData data = (ImageCodec.ImageData)codec.Decode( encoded, decoded );
+			encoded.Close();
 
 			Image image = new Image();
 
@@ -487,8 +487,16 @@ namespace Axiom.Media
 			offset += faceSize * face;
 			// Return subface as pixelbox
 			//IntPtr newBufPtr = Marshal.UnsafeAddrOfPinnedArrayElement( buffer, offset );
-			IntPtr newBufPtr = GCHandle.Alloc( buffer ).AddrOfPinnedObject();
-			return new PixelBox( width, height, depth, this.Format, newBufPtr );
+			//unsafe
+			//{
+				//fixed ( byte* buffPtr = &buffer[ 0 ] )
+				//{
+
+					IntPtr newBufPtr = GCHandle.Alloc( buffer, GCHandleType.Pinned ).AddrOfPinnedObject();
+					//IntPtr newBufPtr = new IntPtr( buffPtr );
+					return new PixelBox( width, height, depth, this.Format, newBufPtr );
+				//}
+			//}
 		}
 
 

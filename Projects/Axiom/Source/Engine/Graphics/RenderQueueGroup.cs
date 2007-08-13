@@ -110,28 +110,28 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="item"></param>
 		/// <param name="priority"></param>
-		public void AddRenderable( IRenderable item, ushort priority )
+		public void AddRenderable( IRenderable item, Technique technique, ushort priority )
 		{
-			RenderPriorityGroup group = null;
+		    RenderPriorityGroup group = null;
 
-			// see if there is a current queue group for this group id
-			if ( !priorityGroups.ContainsKey( priority ) )
-			{
-				// create a new queue group for this group id
-				group = new RenderPriorityGroup( splitPassesByLightingType, splitNoShadowPasses,
-												splitPassesByLightingType );
+		    // see if there is a current queue group for this group id
+		    if ( !priorityGroups.ContainsKey( priority ) )
+		    {
+		        // create a new queue group for this group id
+		        group = new RenderPriorityGroup( splitPassesByLightingType, splitNoShadowPasses,
+		                                        splitPassesByLightingType );
 
-				// add the new group to cached render group
-				priorityGroups.Add( priority, group );
-			}
-			else
-			{
-				// retreive the existing queue group
-				group = (RenderPriorityGroup)priorityGroups.GetByKey( priority );
-			}
+		        // add the new group to cached render group
+		        priorityGroups.Add( priority, group );
+		    }
+		    else
+		    {
+		        // retreive the existing queue group
+		        group = (RenderPriorityGroup)priorityGroups.GetByKey( priority );
+		    }
 
-			// add the renderable to the appropriate group
-			group.AddRenderable( item );
+		    // add the renderable to the appropriate group
+		    group.AddRenderable( item, technique );
 		}
 
 		/// <summary>

@@ -146,7 +146,7 @@ namespace Axiom.Core
 		/// </summary>
 		internal SubEntity()
 		{
-			material = MaterialManager.Instance.GetByName( "BaseWhite" );
+			material = (Material)MaterialManager.Instance[ "BaseWhite" ];
 			renderDetail = SceneDetailLevel.Solid;
 
 			isVisible = true;
@@ -187,7 +187,7 @@ namespace Axiom.Core
 				materialName = value;
 
 				// load the material from the material manager (it should already exist
-				material = MaterialManager.Instance.GetByName( materialName );
+				material = (Material)MaterialManager.Instance[ materialName ];
 
 				if ( material == null )
 				{
@@ -195,7 +195,7 @@ namespace Axiom.Core
 						"Cannot assign material '{0}' to SubEntity '{1}' because the material doesn't exist.", materialName, parent.Name );
 
 					// give it base white so we can continue
-					material = MaterialManager.Instance.GetByName( "BaseWhite" );
+					material = (Material)MaterialManager.Instance[ "BaseWhite" ];
 				}
 
 				// ensure the material is loaded.  It will skip it if it already is

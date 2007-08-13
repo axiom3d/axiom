@@ -50,7 +50,7 @@ namespace Axiom.RenderSystems.OpenGL
 	{
 		#region Construction and Destruction
 
-		internal GLPBRTTManager( BaseGLSupport glSupport, RenderTarget target ) 
+		internal GLPBRTTManager( BaseGLSupport glSupport, RenderTarget target )
 			: base( glSupport )
 		{
 		}

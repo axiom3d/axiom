@@ -38,6 +38,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using Axiom.Core;
+
+using ResourceHandle = System.UInt64;
+
 #endregion Namespace Declarations
 			
 namespace Axiom.Graphics
@@ -82,7 +86,13 @@ namespace Axiom.Graphics
 
 		#region Construction and Destruction
 
-		internal UnifiedHighLevelGpuProgram( string name, GpuProgramType type, string language ) : base ( name, type, language ) 
+		internal UnifiedHighLevelGpuProgram( ResourceManager creator, string name, ResourceHandle handle, string group )
+			: this( creator, name, handle, group, false, null )
+		{
+		}
+
+		internal UnifiedHighLevelGpuProgram( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+			: base( creator, name, handle, group, isManual, loader )
 		{
 		}
 
@@ -96,7 +106,7 @@ namespace Axiom.Graphics
 			_chosenDelgate = null;
 			foreach ( string delegateName in _delegateNames )
 			{
-				HighLevelGpuProgram program = HighLevelGpuProgramManager.Instance.GetByName( delegateName );
+				HighLevelGpuProgram program = HighLevelGpuProgramManager.Instance[ delegateName ];
 				if ( program != null && program.IsSupported )
 				{
 					_chosenDelgate = program;
@@ -289,21 +299,21 @@ namespace Axiom.Graphics
 		#endregion HighLevelGpuProgram Implementation
 	}
 
-	public class UnifiedHighLevelGpuProgramFactory : IHighLevelGpuProgramFactory
+	public class UnifiedHighLevelGpuProgramFactory : HighLevelGpuProgramFactory
 	{
 		#region IHighLevelGpuProgramFactory Members
 
-		public HighLevelGpuProgram Create( string name, GpuProgramType type )
-		{
-			return new UnifiedHighLevelGpuProgram( name, type, Language );
-		}
-
-		public string Language
+		public override string Language
 		{
 			get
 			{
 				return "unified";
 			}
+		}
+
+		public override HighLevelGpuProgram  CreateInstance(ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader)
+		{
+			return new UnifiedHighLevelGpuProgram( creator, name, handle, group, isManual, loader );
 		}
 
 		#endregion

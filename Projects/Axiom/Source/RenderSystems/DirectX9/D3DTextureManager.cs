@@ -36,7 +36,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 
 using Axiom.Core;
+using Axiom.Collections;
 using Axiom.Graphics;
+using Axiom.Media;
 
 using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
@@ -56,46 +58,16 @@ namespace Axiom.RenderSystems.DirectX9
 		public D3DTextureManager( D3D.Device device )
 		{
 			this.device = device;
-
-			is32Bit = true;
 		}
 
-		public override Resource Create( string name, bool isManual )
+		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
-			Resource rv = new D3DTexture( name, isManual, device );
-			Add( rv );
-			return rv;
+			return new D3DTexture( this, name, handle, group, isManual, loader, device );
 		}
-
-		//public override Axiom.Core.Texture Create(string name, TextureType type) {
-		//    D3DTexture texture = new D3DTexture(name, device, TextureUsage.Default, type);
-
-		//    // Handle 32-bit texture settings
-		//    texture.Enable32Bit(is32Bit);
-
-		//    return texture;
-		//}
-
-		/// <summary>
-		///    Used to create a blank D3D texture.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="type"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="numMipMaps"></param>
-		/// <param name="format"></param>
-		/// <param name="usage"></param>
-		/// <returns></returns>
-		//public override Axiom.Core.Texture CreateManual(string name, TextureType type, int width, int height, int numMipMaps, Axiom.Media.PixelFormat format, TextureUsage usage) {
-		//    D3DTexture texture = new D3DTexture(name, device, type, width, height, numMipMaps, format, usage);
-		//    texture.Enable32Bit(is32Bit);
-		//    return texture;
-		//}
 
 		// This ends up just discarding the format passed in; the C# methods don't let you supply
 		// a "recommended" format.  Ah well.
-		public override Axiom.Media.PixelFormat GetNativeFormat( TextureType ttype, Axiom.Media.PixelFormat format, TextureUsage usage )
+		public override Axiom.Media.PixelFormat GetNativeFormat( TextureType ttype, PixelFormat format, TextureUsage usage )
 		{
 			// Basic filtering
 			D3D.Format d3dPF = D3DHelper.ConvertEnum( D3DHelper.GetClosestSupported( format ) );
@@ -141,7 +113,7 @@ namespace Axiom.RenderSystems.DirectX9
 		public void ReleaseDefaultPoolResources()
 		{
 			int count = 0;
-			foreach ( D3DTexture tex in resourceList.Values )
+			foreach ( D3DTexture tex in resources.Values )
 			{
 				if ( tex.ReleaseIfDefaultPool() )
 					count++;
@@ -152,7 +124,7 @@ namespace Axiom.RenderSystems.DirectX9
 		public void RecreateDefaultPoolResources()
 		{
 			int count = 0;
-			foreach ( D3DTexture tex in resourceList.Values )
+			foreach ( D3DTexture tex in resources.Values )
 			{
 				if ( tex.RecreateIfDefaultPool( device ) )
 					count++;

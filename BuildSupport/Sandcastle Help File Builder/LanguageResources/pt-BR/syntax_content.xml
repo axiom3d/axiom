@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!-- Translations provided by Vin¡cius Lazzeris -->
+<content xml:space="preserve">
+	<item id="UnsupportedOperator_CSharp">C# não suporta este operador.</item>
+
+	<item id="UnsupportedOperator_ManagedCPlusPlus">Managed C++ não suporta este operador.</item>
+
+	<item id="UnsupportedUnsafe_VisualBasic">Visual Basic não suporta APIs que consomem ou retornam tipos inseguros.</item>
+	<item id="UnsupportedOperator_VisualBasic">Visual Basic não suporta este operador.</item>
+
+	<item id="UnsupportedUnsafe_JSharp">J# não suporta APIs que consomem ou retornam tipos inseguros.</item>
+	<item id="UnsupportedGeneric_JSharp">J# suporta o uso de APIs genéricas, mas não a declaração de novas.</item>
+	<item id="UnsupportedOperator_JSharp">J# não suporta sobrecarga de operadores.</item>
+	<item id="UnsupportedStaticConstructor_JSharp">J# não suporta construtores estáticos.</item>
+
+	<item id="UnsupportedUnsafe_JScript">JScript não suporta APIs que consomem ou retornam tipos inseguros.</item>
+	<item id="UnsupportedGeneric_JScript">JScript não suporta tipos ou métodos genéricos.</item>
+	<item id="UnsupportedExplicit_Jscript">JScript não suporta a implementação explícita de interfaces.</item>
+	<item id="UnsupportedOperator_JScript">JScript não suporta sobrecarga de operadores.</item>
+	<item id="UnsupportedEvent_JScript">JScript não suporta eventos.</item>
+	<item id="UnsupportedDelegate_JScript">JScript não suporta delegados.</item>
+	<item id="UnsupportedStructure_JScript">JScript supporta o uso de estruturas, mas não a declaração de novas.</item>
+
+	<item id="UnsupportedUnsafe_VisualBasicUsage">Visual Basic não suporta APIs que consomem ou retornam tipos inseguros.</item>
+	<item id="UnsupportedOperator_VisualBasicUsage">Visual Basic não suporta este operador.</item>
+	<item id="UnsupportedStaticClass_VisualBasicUsage">Você não precisa declarar uma instância de uma classe estática para acessar seus membros.</item>
+
+	<!-- XAML Syntax Boilerplate -->
+	<item id="classXamlSyntax_abstract">Esta classe é abstrata; veja em <a href="#familyToggle" onclick="OpenSection(familyToggle)"><include item="familyTitle"/></a> classes derivadas não abstratas que podem ser utilizadas no XAML.</item>
+	<item id="classXamlSyntax_excludedSubClass">Esta classe gerenciada não é tipicamente utilizada no XAML.</item>
+	<item id="classXamlSyntax_noDefaultCtor">Você não pode criar diretamente uma instância desta classe no XAML.</item>
+	<item id="classXamlSyntax_noDefaultCtorWithTypeConverter"></item>  <!-- this item intentionally empty, per spec -->
+
+	<item id="structXamlSyntax_nonXaml">Você não pode utilizar esta estrutura gerenciada no XAML.</item>
+	<item id="structXamlSyntax_attributeUsage"></item>  <!-- this item intentionally empty, per spec -->
+
+	<item id="eventXamlSyntax_parentIsExcludedSubClass">Membros desta classe não são tipicamente utilizados no XAML, ou não podem ser utilizados no XAML.</item>
+	<item id="eventXamlSyntax_noXamlSyntaxForInterfaceMembers">Você não pode utilizar este evento no XAML.</item>
+	<item id="eventXamlSyntax_nonXamlParent">Você não pode utilizar este evento no XAML.</item>
+	<item id="eventXamlSyntax_notPublic">Você não pode utilizar este evento no XAML.</item>
+	<item id="eventXamlSyntax_abstract">Você não pode utilizar este evento no XAML.</item>
+	<item id="eventXamlSyntax_nonXaml">Você não pode utilizar este evento no XAML.</item>  <!-- this id is not currently output by SyntaxBuilder -->
+
+	<item id="propertyXamlSyntax_parentIsExcludedSubClass">Membros desta classe não são tipicamente utilizados no XAML, ou não podem ser utilizados no XAML.</item>
+	<item id="propertyXamlSyntax_noXamlSyntaxForInterfaceMembers">Você não pode setar esta propriedade no XAML.</item>
+	<item id="propertyXamlSyntax_nonXamlParent">Você não pode setar esta propriedade no XAML.</item>
+	<item id="propertyXamlSyntax_notPublic">Você não pode setar esta propriedade no XAML.</item>
+	<item id="propertyXamlSyntax_abstract">Você não pode setar esta propriedade no XAML.</item>
+	<item id="propertyXamlSyntax_readOnly">Você não pode setar esta propriedade no XAML.</item>
+	<item id="propertyXamlSyntax_abstractType">Para informações sobre XAML, veja o tipo {0}.</item>
+	<item id="propertyXamlSyntax_nonXaml">Você não pode setar esta propriedade no XAML.</item>
+
+	<!-- syntax used with all enums in xaml assemblies -->
+	<item id="enumerationOverviewXamlSyntax"><span>&lt;<i>object property</i>="<i>enumerationValue</i>" .../&gt;</span></item>
+
+	<!-- boilerplate used with all method, field, etc. in xaml assemblies -->
+	<item id="constructorOverviewXamlSyntax">Você não pode utilizar construtores no XAML.</item>
+	<item id="methodOverviewXamlSyntax">Você não pode utilizar métodos no XAML.</item>
+	<item id="fieldOverviewXamlSyntax">Você não pode utilizar campos no XAML.</item>
+	<item id="delegateOverviewXamlSyntax">No XAML, você pode utilizar delegados mas você não pode definir os seus.</item>
+	<item id="interfaceOverviewXamlSyntax">Interfaces não podem ser utilizar diretamente no XAML; veja tipos que implementam esta interface.</item>
+
+	<!-- boilerplate used with all types and members in all non-xaml assemblies -->
+	<item id="nonXamlAssemblyBoilerplate">Não aplicável.</item>
+
+	<!-- XAML Section Headings -->
+	<item id="xamlAttributeUsageHeading">Uso de Atributo XAML</item>
+	<item id="xamlObjectElementUsageHeading">Uso do Elemento XAML Objeto</item>
+	<item id="xamlImplicitCollectionUsageHeading">Uso de Coleção XAML Implícita</item>
+	<item id="xamlPropertyElementUsageHeading">Uso do Elemento XAML Propriedade</item>
+	<item id="xamlContentElementUsageHeading">Uso do Elemento XAML Conteúdo</item>
+	<item id="xamlValuesSectionHeading">Valores XAML</item>
+	<item id="xamlSyntaxBoilerplateHeading">XAML</item>
+
+</content>

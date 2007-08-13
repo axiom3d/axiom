@@ -64,7 +64,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public override void Start()
 		{
 			LogManager.Instance.Write( "*** Starting SDLGL Subsystem ***" );
-		}
+        }
 
 		public override void Stop()
 		{

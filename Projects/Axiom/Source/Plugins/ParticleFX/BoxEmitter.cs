@@ -80,7 +80,7 @@ namespace Axiom.ParticleFX
         ///    
         /// </summary>
         [Command( "width", "Width of the box emitter.", typeof( ParticleEmitter ) )]
-        class WidthCommand : ICommand
+		class WidthCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -98,7 +98,7 @@ namespace Axiom.ParticleFX
         ///    
         /// </summary>
         [Command( "height", "Height of the box emitter.", typeof( ParticleEmitter ) )]
-        class HeightCommand : ICommand
+		class HeightCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -116,7 +116,7 @@ namespace Axiom.ParticleFX
         ///    
         /// </summary>
         [Command( "depth", "Depth of the box emitter.", typeof( ParticleEmitter ) )]
-        class DepthCommand : ICommand
+		class DepthCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {

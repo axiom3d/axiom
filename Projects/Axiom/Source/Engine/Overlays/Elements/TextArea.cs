@@ -542,11 +542,15 @@ namespace Axiom.Overlays.Elements
             }
             set
             {
-                font = (Font)FontManager.Instance.GetByName( value );
+                font = (Font)FontManager.Instance[ value ];
+				if ( font == null )
+				{
+					throw new Exception( "Could not find font " + value );
+				}
                 font.Load();
 
                 // note: font materials are created with lighting and depthcheck disabled by default
-                material = font.Material.Clone( this.name + "Font" );
+				material = font.Material;
 
                 // TODO See if this can be eliminated
 
@@ -667,7 +671,7 @@ namespace Axiom.Overlays.Elements
 
         #region Script parser methods
 
-        [AttributeParser( "char_height", "TextArea" )]
+        [ParserCommand( "char_height", "TextArea" )]
         public static void ParseCharHeight( string[] parms, params object[] objects )
         {
             TextArea textArea = (TextArea)objects[ 0 ];
@@ -675,7 +679,7 @@ namespace Axiom.Overlays.Elements
             textArea.CharHeight = StringConverter.ParseFloat( parms[ 0 ] );
         }
 
-        [AttributeParser( "space_width", "TextArea" )]
+        [ParserCommand( "space_width", "TextArea" )]
         public static void ParseSpaceWidth( string[] parms, params object[] objects )
         {
             TextArea textArea = (TextArea)objects[ 0 ];
@@ -683,7 +687,7 @@ namespace Axiom.Overlays.Elements
             textArea.SpaceWidth = StringConverter.ParseFloat( parms[ 0 ] );
         }
 
-        [AttributeParser( "font_name", "TextArea" )]
+        [ParserCommand( "font_name", "TextArea" )]
         public static void ParseFontName( string[] parms, params object[] objects )
         {
             TextArea textArea = (TextArea)objects[ 0 ];
@@ -691,8 +695,8 @@ namespace Axiom.Overlays.Elements
             textArea.FontName = parms[ 0 ];
         }
 
-        [AttributeParser( "color", "TextArea" )]
-        [AttributeParser( "colour", "TextArea" )]
+        [ParserCommand( "color", "TextArea" )]
+        [ParserCommand( "colour", "TextArea" )]
         public static void ParseColor( string[] parms, params object[] objects )
         {
             TextArea textArea = (TextArea)objects[ 0 ];
@@ -700,8 +704,8 @@ namespace Axiom.Overlays.Elements
             textArea.Color = StringConverter.ParseColor( parms );
         }
 
-        [AttributeParser( "color_top", "TextArea" )]
-        [AttributeParser( "colour_top", "TextArea" )]
+        [ParserCommand( "color_top", "TextArea" )]
+        [ParserCommand( "colour_top", "TextArea" )]
         public static void ParseColorTop( string[] parms, params object[] objects )
         {
             TextArea textArea = (TextArea)objects[ 0 ];
@@ -709,8 +713,8 @@ namespace Axiom.Overlays.Elements
             textArea.ColorTop = StringConverter.ParseColor( parms );
         }
 
-        [AttributeParser( "color_bottom", "TextArea" )]
-        [AttributeParser( "colour_bottom", "TextArea" )]
+        [ParserCommand( "color_bottom", "TextArea" )]
+        [ParserCommand( "colour_bottom", "TextArea" )]
         public static void ParseColorBottom( string[] parms, params object[] objects )
         {
             TextArea textArea = (TextArea)objects[ 0 ];

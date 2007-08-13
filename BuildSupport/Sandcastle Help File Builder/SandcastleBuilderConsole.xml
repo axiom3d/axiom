@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SandcastleBuilderConsole</name>
+    </assembly>
+    <members>
+        <member name="T:SandcastleBuilderConsole.SandcastleBuilderConsole">
+            <summary>
+            This is the console mode version of the Sandcastle Help File Builder.
+            </summary>
+        </member>
+        <member name="M:SandcastleBuilderConsole.SandcastleBuilderConsole.Main(System.String[])">
+            <summary>
+            Main program entry point
+            </summary>
+            <param name="args">The command line arguments.  This should be a
+            list of projects to build and an optional "/v" option to provide
+            verbose output.</param>
+            <returns>Zero on success, non-zero on failure</returns>
+        </member>
+        <member name="M:SandcastleBuilderConsole.SandcastleBuilderConsole.LoadResponseFile(System.String,System.Collections.Generic.List{SandcastleBuilderConsole.OptionInfo})">
+            <summary>
+            Load settings from a response file.
+            </summary>
+            <param name="filename">The response file to load.</param>
+            <param name="options">The option list to which the content is
+            added.</param>
+            <remarks>Nested response files are supported.  Blank lines and
+            lines starting with '#' (comments) are ignored.</remarks>
+        </member>
+        <member name="M:SandcastleBuilderConsole.SandcastleBuilderConsole.AddAssemblyWildCard(System.String,SandcastleBuilder.Utils.SandcastleProject,System.Boolean)">
+            <summary>
+            This is called to add multiple assemblies and/or comments files to
+            a project for documenting.
+            </summary>
+            <param name="wildcard">The wildcard to add.</param>
+            <param name="project">The project to which they are added.</param>
+            <param name="commentsOnly">True if adding comments only, false if
+            adding assembly/comments file pairs.</param>
+        </member>
+        <member name="M:SandcastleBuilderConsole.SandcastleBuilderConsole.ShowHelp">
+            <summary>
+            This is used to show the command line syntax
+            </summary>
+        </member>
+        <member name="M:SandcastleBuilderConsole.SandcastleBuilderConsole.BuildProject(SandcastleBuilder.Utils.SandcastleProject)">
+            <summary>
+            This is called to build a project
+            </summary>
+            <param name="project">The project to build</param>
+            <returns>Returns true if successful, false if not</returns>
+        </member>
+        <member name="M:SandcastleBuilderConsole.SandcastleBuilderConsole.buildProcess_BuildStepChanged(System.Object,SandcastleBuilder.Utils.BuildProgressEventArgs)">
+            <summary>
+            This is called by the build process thread to update the
+            application with the current build step.
+            </summary>
+            <param name="sender">The sender of the event</param>
+            <param name="e">The event arguments</param>
+        </member>
+        <member name="M:SandcastleBuilderConsole.SandcastleBuilderConsole.buildProcess_BuildProgress(System.Object,SandcastleBuilder.Utils.BuildProgressEventArgs)">
+            <summary>
+            This is called by the build process thread to update the
+            application with information about progress.
+            </summary>
+            <param name="sender">The sender of the event</param>
+            <param name="e">The event arguments</param>
+        </member>
+        <member name="T:SandcastleBuilderConsole.OptionInfo">
+            <summary>
+            This is the console mode version of the Sandcastle Help File Builder.
+            </summary>
+        </member>
+        <member name="M:SandcastleBuilderConsole.OptionInfo.#ctor(System.String)">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="P:SandcastleBuilderConsole.OptionInfo.OptionText">
+            <summary>
+            Get the option text as specified
+            </summary>
+        </member>
+        <member name="P:SandcastleBuilderConsole.OptionInfo.Name">
+            <summary>
+            Get the option name
+            </summary>
+        </member>
+        <member name="P:SandcastleBuilderConsole.OptionInfo.Value">
+            <summary>
+            Get the option value
+            </summary>
+        </member>
+        <member name="P:SandcastleBuilderConsole.OptionInfo.SecondValue">
+            <summary>
+            Get the second option value if there was one
+            </summary>
+        </member>
+        <member name="P:SandcastleBuilderConsole.OptionInfo.ThirdValue">
+            <summary>
+            Get the third option value if there was one
+            </summary>
+        </member>
+    </members>
+</doc>

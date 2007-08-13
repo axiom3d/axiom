@@ -38,7 +38,7 @@ namespace Axiom.Demos
             CreateWateryPlane();
 
             // set up a material for the skydome
-            Material skyMaterial = scene.CreateMaterial( "SkyMat" );
+			Material skyMaterial = (Material)MaterialManager.Instance.Create( "SkyMat", ResourceGroupManager.DefaultResourceGroupName );
             skyMaterial.Lighting = false;
             // use a cloudy sky
             Pass pass = skyMaterial.GetTechnique( 0 ).GetPass( 0 );

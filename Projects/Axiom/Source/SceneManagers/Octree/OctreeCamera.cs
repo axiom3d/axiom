@@ -89,7 +89,7 @@ namespace Axiom.SceneManagers.Octree
         public OctreeCamera( string name, SceneManager scene )
             : base( name, scene )
         {
-            material = MaterialManager.Instance.GetByName( "BaseWhite" );
+            material = (Material)MaterialManager.Instance.GetByName( "BaseWhite" );
         }
 
         /// <summary>

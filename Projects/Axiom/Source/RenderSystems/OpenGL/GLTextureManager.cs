@@ -43,22 +43,22 @@ using Axiom.Media;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-    /// <summary>
-    /// Summary description for GLTextureManager.
-    /// </summary>
-    public class GLTextureManager : TextureManager
-    {
-        internal GLTextureManager( BaseGLSupport glSupport)
-        {
-			//_glSupprt = glSupport;
-            is32Bit = true;
-        }
+	/// <summary>
+	/// Summary description for GLTextureManager.
+	/// </summary>
+	public class GLTextureManager : TextureManager
+	{
+		BaseGLSupport _glSupport;
 
-		public override Resource Create( string name, bool isManual )
+		internal GLTextureManager( BaseGLSupport glSupport )
 		{
-			Resource rv = new GLTexture( name, TextureType.TwoD );
-			Add( rv );
-			return rv;
+			_glSupport = glSupport;
+			Is32Bit = true;
+		}
+
+		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, Axiom.Collections.NameValuePairList createParams )
+		{
+			return new GLTexture( this, name, handle, group, isManual, loader, _glSupport );
 		}
 
 		public override Axiom.Media.PixelFormat GetNativeFormat( TextureType ttype, Axiom.Media.PixelFormat format, TextureUsage usage )
@@ -68,24 +68,24 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// Check compressed texture support
 			// if a compressed format not supported, revert to PF_A8R8G8B8
-			if(PixelUtil.IsCompressed(format) &&
-				!caps.HasCapability( Capabilities.TextureCompressionDXT ))
+			if ( PixelUtil.IsCompressed( format ) &&
+				!caps.HasCapability( Capabilities.TextureCompressionDXT ) )
 			{
 				return PixelFormat.A8R8G8B8;
 			}
 			// if floating point textures not supported, revert to PF_A8R8G8B8
-			if(PixelUtil.IsFloatingPoint(format) &&
-				!caps.HasCapability( Capabilities.TextureFloat ))
+			if ( PixelUtil.IsFloatingPoint( format ) &&
+				!caps.HasCapability( Capabilities.TextureFloat ) )
 			{
 				return PixelFormat.A8R8G8B8;
 			}
-	        
+
 			// Check if this is a valid rendertarget format
-			if( (usage & TextureUsage.RenderTarget) != 0 )
+			if ( ( usage & TextureUsage.RenderTarget ) != 0 )
 			{
 				/// Get closest supported alternative
 				/// If mFormat is supported it's returned
-				return GLRTTManager.Instance.GetSupportedAlternative(format);
+				return GLRTTManager.Instance.GetSupportedAlternative( format );
 			}
 
 			// Supported
@@ -101,17 +101,17 @@ namespace Axiom.RenderSystems.OpenGL
 		//    return texture;
 		//}
 
-        /// <summary>
-        ///    Creates a GL texture manually.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="type"></param>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="numMipMaps"></param>
-        /// <param name="format"></param>
-        /// <param name="usage"></param>
-        /// <returns></returns>
+		/// <summary>
+		///    Creates a GL texture manually.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="type"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="numMipMaps"></param>
+		/// <param name="format"></param>
+		/// <param name="usage"></param>
+		/// <returns></returns>
 		//public override Texture CreateManual( string name, TextureType type, int width, int height, int numMipMaps, Axiom.Media.PixelFormat format, TextureUsage usage )
 		//{
 		//    GLTexture texture = new GLTexture( name, type, width, height, numMipMaps, format, usage );
@@ -119,10 +119,10 @@ namespace Axiom.RenderSystems.OpenGL
 		//    return texture;
 		//}
 
-        // TODO: Finish
-        public override void UnloadAndDestroyAll()
-        {
-            base.UnloadAndDestroyAll();
-        }
-    }
+		// TODO: Finish
+		//public override void UnloadAndDestroyAll()
+		//{
+		//    base.UnloadAndDestroyAll();
+		//}
+	}
 }

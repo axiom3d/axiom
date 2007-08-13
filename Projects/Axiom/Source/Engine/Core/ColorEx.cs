@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Diagnostics;
 
 #endregion Namespace Declarations
 
@@ -50,22 +51,74 @@ namespace Axiom.Core
 	{
 		#region Member variables
 
+        //private float _a;
 		/// <summary>
 		///		Alpha value [0,1].
 		/// </summary>
 		public float a;
+        //{
+        //    get
+        //    {
+        //        return _a;
+        //    }
+        //    set
+        //    {
+        //        Debug.Assert( value >= 0.0f && value <= 1.0f );
+        //        _a = value;
+        //    }
+        //}
+
+        //private float _r;
 		/// <summary>
 		///		Red color component [0,1].
 		/// </summary>
-		public float r;
+        public float r;
+        //{
+        //    get
+        //    {
+        //        return _r;
+        //    }
+        //    set
+        //    {
+        //        Debug.Assert( value >= 0.0f && value <= 1.0f );
+        //        _r = value;
+        //    }
+        //}
+
+        //private float _g;
 		/// <summary>
 		///		Green color component [0,1].
 		/// </summary>
-		public float g;
+        public float g;
+        //{
+        //    get
+        //    {
+        //        return _g;
+        //    }
+        //    set
+        //    {
+        //        Debug.Assert( value >= 0.0f && value <= 1.0f );
+        //        _g = value;
+        //    }
+        //}
+
+        //private float _b;
 		/// <summary>
 		///		Blue color component [0,1].
 		/// </summary>
-		public float b;
+        public float b;
+        //{
+        //    get
+        //    {
+        //        return _b;
+        //    }
+        //    set
+        //    {
+        //        Debug.Assert( value >= 0.0f && value <= 1.0f );
+        //        _b = value;
+        //    }
+        //}
+
 
 		#endregion
 
@@ -100,6 +153,11 @@ namespace Axiom.Core
 		/// <param name="b">Blue color component.</param>
 		public ColorEx( float a, float r, float g, float b )
 		{
+            //Debug.Assert( a >= 0.0f && a <= 1.0f );
+            //Debug.Assert( r >= 0.0f && r <= 1.0f );
+            //Debug.Assert( g >= 0.0f && g <= 1.0f );
+            //Debug.Assert( b >= 0.0f && b <= 1.0f );
+
 			this.a = a;
 			this.r = r;
 			this.g = g;

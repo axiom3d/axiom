@@ -198,12 +198,12 @@
 		<call target="build.axiom.engine" />
 		<call target="build.axiom.platforms.win32" if="${platform::is-win32()}" />
 		<call target="build.axiom.platforms.sdl" />
-    <call target="build.axiom.plugins.devilcodecs" />
-    <call target="build.axiom.plugins.cgprogrammanager" />
+		<call target="build.axiom.plugins.devilcodecs" />
+		<call target="build.axiom.plugins.cgprogrammanager" />
 		<call target="build.axiom.plugins.particlefx" />
 		<call target="build.axiom.rendersystems.directx9" if="${platform::is-win32()}" />
 		<call target="build.axiom.rendersystems.opengl" />
-    <call target="build.axiom.scenemanagers.bsp" />
+		<call target="build.axiom.scenemanagers.bsp" />
 		<call target="build.axiom.scenemanagers.octree" />
 
 	</target>
@@ -227,13 +227,13 @@
 		</nant>
 	</target>
 
-  <target name="build.axiom.plugins.devilcodecs" description="Build Axiom.Plugins.DevILCodec assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.plugins.devilcodecs')}">
-    <nant target="build">
-      <buildfiles refid="axiom.plugins.devilcodecs.buildfile"/>
-    </nant>
-  </target>
+	<target name="build.axiom.plugins.devilcodecs" description="Build Axiom.Plugins.DevILCodec assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.plugins.devilcodecs')}">
+		<nant target="build">
+			<buildfiles refid="axiom.plugins.devilcodecs.buildfile"/>
+		</nant>
+	</target>
 
-  <target name="build.axiom.plugins.cgprogrammanager" description="Build Axiom.Plugins.CgProgramManager assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.plugins.cgprogrammanager')}">
+	<target name="build.axiom.plugins.cgprogrammanager" description="Build Axiom.Plugins.CgProgramManager assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.plugins.cgprogrammanager')}">
 		<nant target="build">
 			<buildfiles refid="axiom.plugins.cgprogrammanager.buildfile"/>
 		</nant>
@@ -257,7 +257,7 @@
 		</nant>
 	</target>
 
-  <target name="build.axiom.scenemanagers.bsp" description="Build Axiom.SceneManagers.Bsp assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.scenemanagers.bsp')}">
+	<target name="build.axiom.scenemanagers.bsp" description="Build Axiom.SceneManagers.Bsp assembly" depends="build.axiom.engine" unless="${target::has-executed('build.axiom.scenemanagers.bsp')}">
 		<nant target="build">
 			<buildfiles refid="axiom.scenemanagers.bsp.buildfile"/>
 		</nant>
@@ -304,13 +304,14 @@
 	<!-- BEGIN: Packaging targets -->
 
 	<zipfileset id="fileset.axiom.source" basedir="../.." prefix="Axiom">
-    <include name="Projects/Axiom/**/*.cs" />
-    <include name="Projects/Axiom/**/*.build" />
-    <include name="Projects/Axiom/**/*.prebuild" />
-    <include name="Projects/Axiom/**/*.cmd" />
-    <include name="Projects/Axiom/**/*.txt" />
-    <include name="Projects/Axiom/**/*.xml" />
-  </zipfileset>
+		<include name="Projects/Axiom/**/*.cs" />
+		<include name="Projects/Axiom/**/*.build" />
+		<include name="Projects/Axiom/**/*.prebuild" />
+		<include name="Projects/Axiom/**/*.cmd" />
+		<include name="Projects/Axiom/**/*.txt" />
+		<include name="Projects/Axiom/**/*.xml" />
+    
+	</zipfileset>
 	
 	<zipfileset id="fileset.axiom.buildtools" basedir="../.." prefix="Axiom">
 		<include name="BuildSupport/**" />

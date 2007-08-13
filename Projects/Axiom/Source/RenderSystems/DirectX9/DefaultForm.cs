@@ -119,17 +119,11 @@ namespace Axiom.RenderSystems.DirectX9
 
         private void DefaultForm_Load( object sender, System.EventArgs e )
         {
-            System.IO.Stream strm = Axiom.Core.ResourceManager.FindCommonResourceData( "AxiomIcon.ico" );
+            System.IO.Stream strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico", ResourceGroupManager.BootstrapResourceGroupName );
             if ( strm != null )
             {
                 this.Icon = new System.Drawing.Icon( strm );
             }
-		}
-
-		protected override void WndProc( ref Message m )
-		{
-			//WindowMonitor.WndProc( ref m );
-			base.WndProc( ref m );
 		}
 
 		private void DefaultForm_Resize( object sender, System.EventArgs e )

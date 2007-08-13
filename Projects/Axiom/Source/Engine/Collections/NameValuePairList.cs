@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 using System;
+using System.Collections.Generic;
 #endregion Namespace Declarations
 
 namespace Axiom.Collections
@@ -40,13 +41,7 @@ namespace Axiom.Collections
     /// <summary>
     /// Summary for NewClass
     /// </summary>
-    public class NameValuePairList : System.Collections.Specialized.NameValueCollection
-    {
-        /// <summary>
-        /// Default Constructor
-        /// </summary>
-        public NameValuePairList()
-        {
-        }
+    public class NameValuePairList : Dictionary< string, string>
+	{
     };
 }

@@ -45,6 +45,8 @@ using Axiom.Core;
 using Axiom.Collections;
 using Axiom.Serialization;
 
+using ResourceHandle = System.UInt64;
+
 #endregion Namespace Declarations
 
 #region Ogre Synchronization Information
@@ -56,57 +58,78 @@ using Axiom.Serialization;
 
 namespace Axiom.Animating
 {
-    /// <summary>
-    ///		A collection of Bone objects used to animate a skinned mesh.
-    ///	 </summary>
-    ///	 <remarks>
-    ///		Skeletal animation works by having a collection of 'bones' which are 
-    ///		actually just joints with a position and orientation, arranged in a tree structure.
-    ///		For example, the wrist joint is a child of the elbow joint, which in turn is a
-    ///		child of the shoulder joint. Rotating the shoulder automatically moves the elbow
-    ///		and wrist as well due to this hierarchy.
-    ///		<p/>
-    ///		So how does this animate a mesh? Well every vertex in a mesh is assigned to one or more
-    ///		bones which affects it's position when the bone is moved. If a vertex is assigned to 
-    ///		more than one bone, then weights must be assigned to determine how much each bone affects
-    ///		the vertex (actually a weight of 1.0 is used for single bone assignments). 
-    ///		Weighted vertex assignments are especially useful around the joints themselves
-    ///		to avoid 'pinching' of the mesh in this region. 
-    ///		<p/>
-    ///		Therefore by moving the skeleton using preset animations, we can animate the mesh. The
-    ///		advantage of using skeletal animation is that you store less animation data, especially
-    ///		as vertex counts increase. In addition, you are able to blend multiple animations together
-    ///		(e.g. walking and looking around, running and shooting) and provide smooth transitions
-    ///		between animations without incurring as much of an overhead as would be involved if you
-    ///		did this on the core vertex data.
-    ///		<p/>
-    ///		Skeleton definitions are loaded from datafiles, namely the .xsf file format. They
-    ///		are loaded on demand, especially when referenced by a Mesh.
-    /// </remarks>
+	/// <summary>
+	///		A collection of Bone objects used to animate a skinned mesh.
+	///	 </summary>
+	///	 <remarks>
+	///		Skeletal animation works by having a collection of 'bones' which are 
+	///		actually just joints with a position and orientation, arranged in a tree structure.
+	///		For example, the wrist joint is a child of the elbow joint, which in turn is a
+	///		child of the shoulder joint. Rotating the shoulder automatically moves the elbow
+	///		and wrist as well due to this hierarchy.
+	///		<p/>
+	///		So how does this animate a mesh? Well every vertex in a mesh is assigned to one or more
+	///		bones which affects it's position when the bone is moved. If a vertex is assigned to 
+	///		more than one bone, then weights must be assigned to determine how much each bone affects
+	///		the vertex (actually a weight of 1.0 is used for single bone assignments). 
+	///		Weighted vertex assignments are especially useful around the joints themselves
+	///		to avoid 'pinching' of the mesh in this region. 
+	///		<p/>
+	///		Therefore by moving the skeleton using preset animations, we can animate the mesh. The
+	///		advantage of using skeletal animation is that you store less animation data, especially
+	///		as vertex counts increase. In addition, you are able to blend multiple animations together
+	///		(e.g. walking and looking around, running and shooting) and provide smooth transitions
+	///		between animations without incurring as much of an overhead as would be involved if you
+	///		did this on the core vertex data.
+	///		<p/>
+	///		Skeleton definitions are loaded from datafiles, namely the .xsf file format. They
+	///		are loaded on demand, especially when referenced by a Mesh.
+	/// </remarks>
 	public class Skeleton : Resource
 	{
+		#region Constants
 
-		#region Member variables
+		/// <summary>Maximum total available bone matrices that are available during blending.</summary>
+		public const int MAX_BONE_COUNT = 256;
+
+		#endregion Constants
+
+		#region Fields and Properties
 
 		protected TimingMeter skeletonLoadMeter = MeterManager.GetMeter( "Skeleton Load", "Skeleton" );
 
+		#region BlendMode Property
+
 		/// <summary>Mode of animation blending to use.</summary>
-		protected SkeletalAnimBlendMode blendMode;
-		/// <summary>Internal list of bones attached to this skeleton, indexed by handle.</summary>
-		protected BoneCollection boneList = new BoneCollection();
+		private SkeletalAnimBlendMode _blendMode = SkeletalAnimBlendMode.Average;
+		/// <summary>
+		///    Gets/Sets the animation blending mode which this skeleton will use.
+		/// </summary>
+		public SkeletalAnimBlendMode BlendMode
+		{
+			get
+			{
+				return _blendMode;
+			}
+			set
+			{
+				_blendMode = value;
+			}
+		}
+
+		#endregion BlendMode Property
+
 		/// <summary>Internal list of bones attached to this skeleton, indexed by name.</summary>
 		protected Hashtable namedBoneList = new Hashtable();
-		/// <summary>The entity that is currently updating this skeleton.</summary>
-		protected Entity currentEntity;
-		/// <summary>Reference to the root bone of this skeleton.</summary>
-		protected BoneList rootBones = new BoneList();
-		/// <summary>Used for auto generated handles to ensure they are unique.</summary>
-		protected internal ushort nextAutoHandle;
-		/// <summary>Lookup table for animations related to this skeleton.</summary>
-		protected AnimationCollection animationList = new AnimationCollection();
-		/// <summary>Internal list of bones attached to this skeleton, indexed by handle.</summary>
-		protected List<AttachmentPoint> attachmentPoints = new List<AttachmentPoint>();
 
+		#region BoneList Properties
+
+		/// <summary>Internal list of bones attached to this skeleton, indexed by handle.</summary>
+		protected BoneCollection boneList = new BoneCollection();
+		/// <summary>
+		/// Gets the bones.
+		/// </summary>
+		/// <value>The bones.</value>
 		public ICollection Bones
 		{
 			get
@@ -115,6 +138,126 @@ namespace Axiom.Animating
 			}
 		}
 
+		/// <summary>
+		///    Gets the number of bones in this skeleton.
+		/// </summary>
+		public int BoneCount
+		{
+			get
+			{
+				return boneList.Count;
+			}
+		}
+		#endregion BoneList Properties
+
+		#region RootBones Properties
+
+		/// <summary>Reference to the root bone of this skeleton.</summary>
+		protected BoneList rootBones = new BoneList();
+		/// <summary>
+		///    Gets the root bone of the skeleton.
+		/// </summary>
+		/// <remarks>
+		///    The system derives the root bone the first time you ask for it. The root bone is the
+		///    only bone in the skeleton which has no parent. The system locates it by taking the
+		///    first bone in the list and going up the bone tree until there are no more parents,
+		///    and saves this top bone as the root. If you are building the skeleton manually using
+		///    CreateBone then you must ensure there is only one bone which is not a child of 
+		///    another bone, otherwise your skeleton will not work properly. If you use CreateBone
+		///    only once, and then use Bone.CreateChild from then on, then inherently the first
+		///    bone you create will by default be the root.
+		/// </remarks>
+		public Bone RootBone
+		{
+			get
+			{
+				if ( rootBones.Count == 0 )
+				{
+					DeriveRootBone();
+				}
+
+				return rootBones[ 0 ];
+			}
+		}
+
+		/// <summary>
+		///		Gets the number of root bones in this skeleton.
+		/// </summary>
+		public int RootBoneCount
+		{
+			get
+			{
+				if ( rootBones.Count == 0 )
+				{
+					DeriveRootBone();
+				}
+
+				return rootBones.Count;
+			}
+		}
+		#endregion RootBones Properties
+
+		#region CurrentEntity Property
+
+		/// <summary>The entity that is currently updating this skeleton.</summary>
+		private Entity _currentEntity;
+		/// <summary>
+		///    Get/Set the entity that is currently updating this skeleton.
+		/// </summary>
+		public Entity CurrentEntity
+		{
+			get
+			{
+				return _currentEntity;
+			}
+			set
+			{
+				_currentEntity = value;
+			}
+		}
+
+		#endregion CurrentEntity Property
+
+		#region nextAutoHandle Property
+
+		/// <summary>Used for auto generated handles to ensure they are unique.</summary>
+		private ushort _nextAutoHandle = 0;
+		protected internal ushort nextAutoHandle
+		{
+			get
+			{
+				return _nextAutoHandle++;
+			}
+			set
+			{
+				_nextAutoHandle = value;
+			}
+		}
+
+		#endregion nextAutoHandle Property
+			
+		#region AnimationList Properties
+
+		/// <summary>Lookup table for animations related to this skeleton.</summary>
+		protected AnimationCollection animationList = new AnimationCollection();
+
+		/// <summary>
+		///    Gets the number of animations associated with this skeleton.
+		/// </summary>
+		public virtual int AnimationCount
+		{
+			get
+			{
+				return animationList.Count;
+			}
+		}
+
+		#endregion AnimationList Properties
+
+		#region AttachmentPoints Property
+
+		/// <summary>Internal list of bones attached to this skeleton, indexed by handle.</summary>
+		protected List<AttachmentPoint> attachmentPoints = new List<AttachmentPoint>();
 		public List<AttachmentPoint> AttachmentPoints
 		{
 			get
@@ -123,29 +266,40 @@ namespace Axiom.Animating
 			}
 		}
 
-		#endregion Member variables
+		#endregion AttachmentPoints Property
 
-		#region Constants
+		#endregion Fields and Properties
 
-		/// <summary>Maximum total available bone matrices that are available during blending.</summary>
-		public const int MAX_BONE_COUNT = 256;
+		#region Construction and Destruction
 
-		#endregion Constants
-
-		#region Constructors
-
-		/// <summary>
-		///    Default constructor.
-		/// </summary>
-		public Skeleton( string name )
+		internal Skeleton()
 		{
-			this.name = name;
-
-			// default to weighted blending
-			blendMode = SkeletalAnimBlendMode.Average;
 		}
 
-		#endregion Constructors
+		/// <summary>
+		/// Constructor, don't call directly, use SkeletonManager.
+		/// </summary>
+		/// <remarks>  
+		/// On creation, a Skeleton has a no bones, you should create them and link
+		/// them together appropriately. 
+		/// </remarks>
+		public Skeleton( ResourceManager parent, String name, ResourceHandle handle, string group )
+			: this( parent, name, handle, group, false, null )
+		{
+		}
+		/// <summary>
+		/// Constructor, don't call directly, use SkeletonManager.
+		/// </summary>
+		/// <remarks>  
+		/// On creation, a Skeleton has a no bones, you should create them and link
+		/// them together appropriately. 
+		/// </remarks>
+		public Skeleton( ResourceManager parent, String name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+			: base( parent, name, handle, group, isManual, loader )
+		{
+		}
+
+		#endregion Construction and Destruction
 
 		#region Methods
 
@@ -170,6 +324,8 @@ namespace Axiom.Animating
 			return anim;
 		}
 
+		#region CreateBone Method
+
 		/// <summary>
 		///    Creates a brand new Bone owned by this Skeleton. 
 		/// </summary>
@@ -187,7 +343,7 @@ namespace Axiom.Animating
 		/// </remarks>
 		public Bone CreateBone()
 		{
-			return CreateBone( nextAutoHandle++ );
+			return CreateBone( nextAutoHandle );
 		}
 
 		/// <summary>
@@ -215,7 +371,7 @@ namespace Axiom.Animating
 			}
 
 			// create the new bone, and add it to both lookup lists
-			Bone bone = new Bone( name, nextAutoHandle++, this );
+			Bone bone = new Bone( name, nextAutoHandle, this );
 			boneList.Add( bone.Handle, bone );
 			namedBoneList.Add( bone.Name, bone );
 
@@ -240,7 +396,7 @@ namespace Axiom.Animating
 			}
 
 			// create the new bone, and add it to both lookup lists
-			Bone bone = new Bone( nextAutoHandle++, this );
+			Bone bone = new Bone( nextAutoHandle, this );
 			boneList.Add( bone.Handle, bone );
 			namedBoneList.Add( bone.Name, bone );
 
@@ -277,7 +433,9 @@ namespace Axiom.Animating
 			namedBoneList.Add( bone.Name, bone );
 
 			return bone;
-		}
+		} 
+		#endregion CreateBone Method
+			
 
 		/// <summary>
 		///    Internal method which parses the bones to derive the root bone.
@@ -305,6 +463,8 @@ namespace Axiom.Animating
 				}
 			}
 		}
+
+		#region GetAnimation Method
 
 		/// <summary>
 		///    Returns the animation with the specified index.
@@ -334,10 +494,14 @@ namespace Axiom.Animating
 			return animationList[ name ];
 		}
 
+		#endregion GetAnimation Method
+			
 		public virtual bool ContainsAnimation( string name )
 		{
 			return animationList.ContainsKey( name );
 		}
+
+		#region GetBone Method
 
 		/// <summary>
 		///    Gets a bone by its handle.
@@ -369,6 +533,8 @@ namespace Axiom.Animating
 			return (Bone)namedBoneList[ name ];
 		}
 
+		#endregion GetBone Method
+			
 		/// <summary>
 		///    Checks to see if a bone exists
 		/// </summary>
@@ -510,7 +676,7 @@ namespace Axiom.Animating
 				// tolerate state entries for animations we're not aware of
 				if ( anim != null )
 				{
-					anim.Apply( this, animState.Time, animState.Weight, blendMode == SkeletalAnimBlendMode.Cumulative, 1.0f );
+					anim.Apply( this, animState.Time, animState.Weight, _blendMode == SkeletalAnimBlendMode.Cumulative, 1.0f );
 				}
 			} // foreach
 		}
@@ -559,159 +725,6 @@ namespace Axiom.Animating
 			return ap;
 		}
 
-
-		#endregion Methods
-
-		#region Properties
-
-		/// <summary>
-		///    Gets the number of animations associated with this skeleton.
-		/// </summary>
-		public virtual int AnimationCount
-		{
-			get
-			{
-				return animationList.Count;
-			}
-		}
-
-		/// <summary>
-		///    Gets/Sets the animation blending mode which this skeleton will use.
-		/// </summary>
-		public SkeletalAnimBlendMode BlendMode
-		{
-			get
-			{
-				return blendMode;
-			}
-			set
-			{
-				blendMode = value;
-			}
-		}
-
-		/// <summary>
-		///    Gets the number of bones in this skeleton.
-		/// </summary>
-		public int BoneCount
-		{
-			get
-			{
-				return boneList.Count;
-			}
-		}
-
-		/// <summary>
-		///    Get/Set the entity that is currently updating this skeleton.
-		/// </summary>
-		public Entity CurrentEntity
-		{
-			get
-			{
-				return currentEntity;
-			}
-			set
-			{
-				currentEntity = value;
-			}
-		}
-
-		/// <summary>
-		///    Gets the root bone of the skeleton.
-		/// </summary>
-		/// <remarks>
-		///    The system derives the root bone the first time you ask for it. The root bone is the
-		///    only bone in the skeleton which has no parent. The system locates it by taking the
-		///    first bone in the list and going up the bone tree until there are no more parents,
-		///    and saves this top bone as the root. If you are building the skeleton manually using
-		///    CreateBone then you must ensure there is only one bone which is not a child of 
-		///    another bone, otherwise your skeleton will not work properly. If you use CreateBone
-		///    only once, and then use Bone.CreateChild from then on, then inherently the first
-		///    bone you create will by default be the root.
-		/// </remarks>
-		public Bone RootBone
-		{
-			get
-			{
-				if ( rootBones.Count == 0 )
-				{
-					DeriveRootBone();
-				}
-
-				return rootBones[ 0 ];
-			}
-		}
-
-		/// <summary>
-		///		Gets the number of root bones in this skeleton.
-		/// </summary>
-		public int RootBoneCount
-		{
-			get
-			{
-				if ( rootBones.Count == 0 )
-				{
-					DeriveRootBone();
-				}
-
-				return rootBones.Count;
-			}
-		}
-
-		#endregion Properties
-
-		#region Implementation of Resource
-
-		/// <summary>
-		///    Generic load, called by SkeletonManager.
-		/// </summary>
-		public override void Load()
-		{
-			if ( isLoaded )
-				return;
-
-			LogManager.Instance.Write( "Skeleton: Loading '{0}'...", name );
-			skeletonLoadMeter.Enter();
-
-			// load the skeleton file
-			Stream data = SkeletonManager.Instance.FindResourceData( name );
-
-
-			string extension = Path.GetExtension( name );
-
-			if ( extension == ".skeleton" )
-			{
-				// instantiate a new skeleton reader
-				OgreSkeletonSerializer reader = new OgreSkeletonSerializer();
-				reader.ImportSkeleton( data, this );
-			}
-			else
-			{
-				data.Close();
-				throw new AxiomException( "Unsupported skeleton file format '{0}'", extension );
-			}
-			data.Close();
-
-			isLoaded = true;
-
-			skeletonLoadMeter.Exit();
-		}
-
-		/// <summary>
-		///    Generic unload, called by SkeletonManager.
-		/// </summary>
-		public override void Unload()
-		{
-			// clear the internal lists
-			animationList.Clear();
-			boneList.Clear();
-			namedBoneList.Clear();
-
-			base.Unload();
-		}
-
-		#endregion Implementation of Resource
-
 		/// <summary>
 		/// 
 		/// </summary>
@@ -722,7 +735,7 @@ namespace Axiom.Animating
 			StreamWriter writer = new StreamWriter( fs );
 			writer.AutoFlush = true;
 
-			writer.WriteLine( "-= Debug output of skeleton  {0} =-", this.name );
+			writer.WriteLine( "-= Debug output of skeleton  {0} =-", this.Name );
 			writer.WriteLine( "" );
 			writer.WriteLine( "== Bones ==" );
 			writer.WriteLine( "Number of bones: {0}", boneList.Count );
@@ -779,6 +792,58 @@ namespace Axiom.Animating
 			writer.Close();
 			fs.Close();
 		}
+
+
+		#endregion Methods
+
+		#region Implementation of Resource
+
+		/// <summary>
+		///    Generic load, called by SkeletonManager.
+		/// </summary>
+		protected override void load()
+		{
+			if ( IsLoaded )
+				return;
+
+			LogManager.Instance.Write( "Skeleton: Loading '{0}'...", Name );
+			skeletonLoadMeter.Enter();
+
+			// load the skeleton file
+			Stream data = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
+
+			// instantiate a new skeleton reader
+			OgreSkeletonSerializer reader = new OgreSkeletonSerializer();
+			reader.ImportSkeleton( data, this );
+
+			string extension = Path.GetExtension( Name );
+
+			//TODO: Load any linked skeletons
+			//LinkedSkeletonAnimSourceList::iterator i;
+			//for (i = mLinkedSkeletonAnimSourceList.begin(); 
+			//    i != mLinkedSkeletonAnimSourceList.end(); ++i)
+			//{
+			//    i->pSkeleton = SkeletonManager::getSingleton().load(
+			//        i->skeletonName, mGroup);
+			//}
+
+			skeletonLoadMeter.Exit();
+		}
+
+		/// <summary>
+		///    Generic unload, called by SkeletonManager.
+		/// </summary>
+		protected override void unload()
+		{
+			// clear the internal lists
+			animationList.Clear();
+			boneList.Clear();
+			namedBoneList.Clear();
+
+			//base.Unload();
+		}
+
+		#endregion Implementation of Resource
 
 	}
 }

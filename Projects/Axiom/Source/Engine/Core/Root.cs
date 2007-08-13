@@ -97,7 +97,7 @@ namespace Axiom.Core
 				info.AppendFormat( ".Net Framework: {0}\n", Environment.Version.ToString() );
 
 				// Initializes the Log Manager singleton
-				LogManager logMgr = new LogManager();
+				logMgr = new LogManager();
 
 				//if logFileName is null, then just the Diagnostics (debug) writes will be made
 				// create a new default log
@@ -106,12 +106,14 @@ namespace Axiom.Core
 				logMgr.Write( info.ToString() );
 				logMgr.Write( "*-*-* Axiom Intializing" );
 
-				new ArchiveManager();
+				ArchiveManager.Instance.Initialize();
+				ResourceGroupManager.Instance.Initialize();
+
 				sceneManagerList = SceneManagerEnumerator.Instance;
 
-				new MaterialManager();
-				new MeshManager();
-				new SkeletonManager();
+				MaterialManager.Instance.Initialize();
+				MeshManager.Instance.Initialize();
+				SkeletonManager.Instance.Initialize();
 				new ParticleSystemManager();
 #if !XBOX360
 				new PlatformManager();
@@ -119,14 +121,18 @@ namespace Axiom.Core
 				// create a new timer
                 timer = new Timer(); 
 
-				new OverlayManager();
+				FontManager.Instance.Initialize();
+
+				OverlayManager.Instance.Initialize();
 				new OverlayElementManager();
-				new FontManager();
-				new ZipArchiveFactory();
+
+				ArchiveManager.Instance.AddArchiveFactory( new ZipArchiveFactory() );
+				ArchiveManager.Instance.AddArchiveFactory( new FileSystemArchiveFactory() );
+
 				new CodecManager();
 
 				new HighLevelGpuProgramManager();
-				new CompositorManager();
+				CompositorManager.Instance.Initialize();
 
 				new PluginManager();
 
@@ -178,6 +184,10 @@ namespace Axiom.Core
 		///     Name of the file containing configuration info.
 		/// </summary>
 		private string configFileName;
+		/// <summary>
+		/// Holds instance of LogManager
+		/// </summary>
+		private LogManager logMgr;
 
 		/// <summary>
 		///     Start time of last frame.
@@ -492,22 +502,13 @@ namespace Axiom.Core
 			if ( firstTimePostWindowInit )
 			{
 				// init material manager singleton, which parse sources for materials
-				MaterialManager.Instance.Initialize();
+				//MaterialManager.Instance.Initialize();
 
 				// init the particle system manager singleton
 				ParticleSystemManager.Instance.Initialize();
 
-				// init font manager singletons
-				FontManager.Instance.ParseAllSources();
-
-				// init overlay manager
-				OverlayManager.Instance.ParseAllSources();
-
 				// init mesh manager
-				MeshManager.Instance.Initialize();
-
-				// init compositor manager
-				CompositorManager.Instance.Initialize();
+				//MeshManager.Instance.Initialize();
 
 				firstTimePostWindowInit = false;
 			}

@@ -38,6 +38,10 @@ using System.Collections;
 
 using Axiom.Core;
 
+using ResourceHandle = System.UInt64;
+using Axiom.Collections;
+using System.Collections.Generic;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
@@ -65,16 +69,22 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Singleton instance of this class.
 		/// </summary>
-		private static HighLevelGpuProgramManager instance;
+		private static HighLevelGpuProgramManager _instance;
 
 		/// <summary>
 		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal HighLevelGpuProgramManager()
+			: base() 
 		{
-			if ( instance == null )
+			if ( _instance == null )
 			{
-				instance = this;
+				_instance = this;
+				LoadingOrder = 50.0f;
+				ResourceType = "HighLevelGpuProgram";
+
+				ResourceGroupManager.Instance.RegisterResourceManager( ResourceType, this );
+				//AddFactory( new NullGpuProgramFactory() );
 				AddFactory( new UnifiedHighLevelGpuProgramFactory() );
 			}
 		}
@@ -86,11 +96,16 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return instance;
+				return _instance;
 			}
 		}
 
 		#endregion Singleton implementation
+
+		~HighLevelGpuProgramManager()
+		{
+			Dispose();
+		}
 
 		#region Fields
 
@@ -109,7 +124,7 @@ namespace Axiom.Graphics
 		/// <param name="factory">
 		///    The factory instance to register.
 		/// </param>
-		public void AddFactory( IHighLevelGpuProgramFactory factory )
+		public void AddFactory( HighLevelGpuProgramFactory factory )
 		{
 			factories.Add( factory.Language, factory );
 		}
@@ -126,10 +141,10 @@ namespace Axiom.Graphics
 		/// <param name="language">HLSL language to use.</param>
 		/// <param name="type">Type of program, i.e. vertex or fragment.</param>
 		/// <returns>An unloaded instance of HighLevelGpuProgram.</returns>
-		public HighLevelGpuProgram CreateProgram( string name, string language, GpuProgramType type )
+		public HighLevelGpuProgram CreateProgram( string name, string group, string language, GpuProgramType type )
 		{
 			// lookup the factory for the requested program language
-			IHighLevelGpuProgramFactory factory = GetFactory( language );
+			HighLevelGpuProgramFactory factory = GetFactory( language );
 
 			if ( factory == null )
 			{
@@ -137,8 +152,11 @@ namespace Axiom.Graphics
 			}
 
 			// create the high level program using the factory
-			HighLevelGpuProgram program = factory.Create( name, type );
-			Add( program );
+			HighLevelGpuProgram program = factory.CreateInstance(this, name, nextHandle, group, false, null );
+			program.Type = type;
+			program.SyntaxCode = language;
+
+			_add( program );
 			return program;
 		}
 
@@ -148,11 +166,11 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="language">HLSL language.</param>
 		/// <returns>A factory capable of creating a HighLevelGpuProgram of the specified language.</returns>
-		public IHighLevelGpuProgramFactory GetFactory( string language )
+		public HighLevelGpuProgramFactory GetFactory( string language )
 		{
 			if ( factories.ContainsKey( language ) )
 			{
-				return (IHighLevelGpuProgramFactory)factories[ language ];
+				return (HighLevelGpuProgramFactory)factories[ language ];
 			}
 
 			// wasn't found, so return null
@@ -167,9 +185,9 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				string[] sl = new string[ resourceList.Count ];
+				string[] sl = new string[ resources.Count ];
 				int count = 0;
-				foreach ( string s in resourceList.Keys )
+				foreach ( string s in resources.Keys )
 				{
 					sl[ count++ ] = s;
 				}
@@ -181,15 +199,14 @@ namespace Axiom.Graphics
 
 		#region ResourceManager Implementation
 
-		/// <summary>
-		///    Overridden to throw an exception since this Create method isn't sufficient enough
-		///    for creating HighLevelGpuPrograms, since more info is required.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
-		public override Resource Create( string name, bool isManual )
+		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
-			throw new AxiomException( "The more specific method, CreateProgram should be used." );
+
+			if ( createParams == null || !createParams.ContainsKey( "language" ) )
+			{
+				throw new Exception( "You must supply a 'language' parameter");
+			}
+	        return GetFactory(createParams["language"]).CreateInstance(this, name, nextHandle, group, isManual, loader );
 		}
 
 		/// <summary>
@@ -197,58 +214,54 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="name">Name of the program to retrieve.</param>
 		/// <returns>The high level gpu program with the specified name.</returns>
-		public new HighLevelGpuProgram GetByName( string name )
+		public new HighLevelGpuProgram this[ string name ]
 		{
-			return (HighLevelGpuProgram)base.GetByName( name );
+			get
+			{
+				return (HighLevelGpuProgram)base[ name ];
+			}
+		}
+
+		/// <summary>
+		///     Gets a HighLevelGpuProgram with the specified handle.
+		/// </summary>
+		/// <param name="name">Handle of the program to retrieve.</param>
+		/// <returns>The high level gpu program with the specified handle.</returns>
+		public new HighLevelGpuProgram this[ ResourceHandle handle ]
+		{
+			get
+			{
+				return (HighLevelGpuProgram)base[ handle ];
+			}
 		}
 
 		/// <summary>
 		///     Called when the engine is shutting down.
 		/// </summary>
-		public override void Dispose()
+		/// <summary>
+		///     Called when the engine is shutting down.
+		/// </summary>
+		protected override void dispose( bool disposeManagedResources )
 		{
-			base.Dispose();
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
+					_instance = null;
+				}
 
-			instance = null;
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
+			isDisposed = true;
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
 		}
 
 		#endregion ResourceManager Implementation
 	}
 
-	/// <summary>
-	///    Interface definition for factories that create instances of HighLevelGpuProgram.
-	/// </summary>
-	public interface IHighLevelGpuProgramFactory
-	{
-		#region Methods
-
-		/// <summary>
-		///    Create method which needs to be implemented to return an
-		///    instance of a HighLevelGpuProgram.
-		/// </summary>
-		/// <param name="name">
-		///    Name of the program to create.
-		/// </param>
-		/// <param name="type">
-		///    Type of program to create, i.e. vertex or fragment.
-		/// </param>
-		/// <returns>
-		///    A newly created instance of HighLevelGpuProgram.
-		/// </returns>
-		HighLevelGpuProgram Create( string name, GpuProgramType type );
-
-		#endregion Methods
-
-		#region Properties
-
-		/// <summary>
-		///    Gets the name of the HLSL language that this factory creates programs for.
-		/// </summary>
-		string Language
-		{
-			get;
-		}
-
-		#endregion Properties
-	}
 }

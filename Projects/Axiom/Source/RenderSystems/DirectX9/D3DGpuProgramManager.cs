@@ -36,7 +36,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 
 using Axiom.Core;
+using Axiom.Collections;
 using Axiom.Graphics;
+using ResourceHandle = System.UInt64;
 
 using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
@@ -58,32 +60,45 @@ namespace Axiom.RenderSystems.DirectX9
         }
 
         /// <summary>
-        ///    Create the specified type of GpuProgram.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public override GpuProgram Create( string name, GpuProgramType type, string syntaxCode )
-        {
-            switch ( type )
-            {
-                case GpuProgramType.Vertex:
-                    return new D3DVertexProgram( name, device, syntaxCode );
-
-                case GpuProgramType.Fragment:
-                    return new D3DFragmentProgram( name, device, syntaxCode );
-                default:
-                    throw new NotSupportedException( "The program type is not supported." );
-            }
-        }
-
-        /// <summary>
         ///    Returns a specialized version of GpuProgramParameters.
         /// </summary>
         /// <returns></returns>
         public override GpuProgramParameters CreateParameters()
         {
             return new GpuProgramParameters();
-        }
-    }
+		}
+
+		#region GpuProgramManager Implementation
+
+		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
+		{
+			if ( type == GpuProgramType.Vertex )
+			{
+				return new D3DVertexProgram( this, name, handle, group, isManual, loader, device );
+			}
+			else
+			{
+				return new D3DFragmentProgram( this, name, handle, group, isManual, loader, device );
+			}
+		}
+
+		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		{
+			if ( !createParams.ContainsKey( "type" ) )
+			{
+				throw new Exception( "You must supply a 'type' parameter." );
+			}
+
+			if ( createParams[ "type" ] == "vertex_program" )
+			{
+				return new D3DVertexProgram( this, name, handle, group,isManual, loader, device ); 
+			}
+			else
+			{
+				return new D3DFragmentProgram( this, name, handle, group, isManual, loader, device );
+			}
+		}
+
+		#endregion GpuProgramManager Implementation
+	}
 }

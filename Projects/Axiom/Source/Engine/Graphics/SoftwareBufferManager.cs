@@ -234,6 +234,7 @@ namespace Axiom.Graphics
 
                 base.dispose( disposeManagedResources ); //isDisposed = true;
             }
+
         }
 
         #endregion

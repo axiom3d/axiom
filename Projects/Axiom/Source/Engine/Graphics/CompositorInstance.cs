@@ -301,7 +301,7 @@ namespace Axiom.Graphics
 						/// Create local material
 						Material localMat = CreateLocalMaterial();
 						/// Copy and adapt passes from source material
-						for ( int i = 0; i < srctech.NumPasses; i++ )
+						for ( int i = 0; i < srctech.PassCount; i++ )
 						{
 							Pass srcpass = srctech.GetPass( i );
 							/// Create new target pass
@@ -314,7 +314,7 @@ namespace Axiom.Graphics
 								string inp = pass.Inputs[ x ];
 								if ( inp != string.Empty )
 								{
-									if ( x < targetpass.NumTextureUnitStages )
+									if ( x < targetpass.TextureUnitStageCount )
 										targetpass.GetTextureUnitState( x ).SetTextureName( GetSourceForTex( inp ) );
 									else
 									{
@@ -411,7 +411,7 @@ namespace Axiom.Graphics
 		///</summary>
 		protected Material CreateLocalMaterial()
 		{
-			Material mat = (Material)MaterialManager.Instance.Create( "CompositorInstanceMaterial" + materialDummyCounter );
+			Material mat = (Material)MaterialManager.Instance.Create( "CompositorInstanceMaterial" + materialDummyCounter, ResourceGroupManager.InternalResourceGroupName );
 			++materialDummyCounter;
 			// Ogre removed it from the resource list, but no such API exists in
 			// in Axiom.
@@ -442,7 +442,7 @@ namespace Axiom.Graphics
 					height = chain.Viewport.ActualHeight;
 				/// Make the tetxure
 				Texture tex = TextureManager.Instance.CreateManual(
-					"CompositorInstanceTexture" + resourceDummyCounter,
+					"CompositorInstanceTexture" + resourceDummyCounter,ResourceGroupManager.InternalResourceGroupName,
 					TextureType.TwoD, width, height, 0, def.Format, TextureUsage.RenderTarget );
 				++resourceDummyCounter;
 				localTextures[ def.Name ] = tex;
@@ -753,7 +753,7 @@ namespace Axiom.Graphics
 			// Fire listener
 			instance.FireNotifyMaterialRender( pass_id, mat );
 			// Queue passes from mat
-			for ( int i = 0; i < technique.NumPasses; i++ )
+			for ( int i = 0; i < technique.PassCount; i++ )
 			{
 				Pass pass = technique.GetPass( i );
 				sm.InjectRenderWithPass( pass,

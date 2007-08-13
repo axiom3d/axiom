@@ -48,12 +48,12 @@ using Tao.OpenGl;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-    /// <summary>
-    /// Summary description for GLHelper.
-    /// </summary>
-    internal abstract class BaseGLSupport
-    {
-        #region Fields and Properties
+	/// <summary>
+	/// Summary description for GLHelper.
+	/// </summary>
+	internal abstract class BaseGLSupport
+	{
+		#region Fields and Properties
 
 		#region Extensions Property
 
@@ -130,7 +130,7 @@ namespace Axiom.RenderSystems.OpenGL
 		}
 
 		#endregion VideoCard Property
-			
+
 		#region ConfigOptions Property
 
 		/// <summary>
@@ -147,71 +147,71 @@ namespace Axiom.RenderSystems.OpenGL
 				return _engineConfig;
 			}
 		}
-		
+
 		#endregion ConfigOptions Property
-			
-        #endregion Fields and Properties
 
-        #region Methods
+		#endregion Fields and Properties
 
-        /// <summary>
-        ///		Handy check to see if the current GL version is at least what is supplied.
-        /// </summary>
-        /// <param name="version">What you want to check for, i.e. "1.3" </param>
-        /// <returns></returns>
-        public bool CheckMinVersion( string version )
-        {
+		#region Methods
+
+		/// <summary>
+		///		Handy check to see if the current GL version is at least what is supplied.
+		/// </summary>
+		/// <param name="version">What you want to check for, i.e. "1.3" </param>
+		/// <returns></returns>
+		public bool CheckMinVersion( string version )
+		{
 			return float.Parse( version ) <= float.Parse( _glVersion.Substring( 0, version.Length ) );
-        }
+		}
 
-        /// <summary>
-        ///		
-        /// </summary>
-        /// <param name="extention"></param>
-        /// <returns></returns>
-        public bool CheckExtension( string extention )
-        {
-            // check if the extension is supported
-            return _extensionList.Contains( extention );
-        }
+		/// <summary>
+		///		
+		/// </summary>
+		/// <param name="extention"></param>
+		/// <returns></returns>
+		public bool CheckExtension( string extention )
+		{
+			// check if the extension is supported
+			return _extensionList.Contains( extention );
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public void InitializeExtensions()
-        {
-            if ( _extensionList == null )
-            {
-                GlExtensionLoader.LoadAllExtensions();
+		/// <summary>
+		/// 
+		/// </summary>
+		public void InitializeExtensions()
+		{
+			if ( _extensionList == null )
+			{
+				GlExtensionLoader.LoadAllExtensions();
 
-                // get the OpenGL version string and vendor name
+				// get the OpenGL version string and vendor name
 				//_glVersion = Gl.glGetString( Gl.GL_VERSION ); // TAO 2.0
-                _glVersion = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_VERSION ) ); 
-                //_videoCard = Gl.glGetString( Gl.GL_RENDERER ); // TAO 2.0
-                _videoCard = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_RENDERER ) );
-                //_vendor = Gl.glGetString( Gl.GL_VENDOR ); // TAO 2.0
-                _vendor = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_VENDOR ) );
+				_glVersion = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_VERSION ) );
+				//_videoCard = Gl.glGetString( Gl.GL_RENDERER ); // TAO 2.0
+				_videoCard = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_RENDERER ) );
+				//_vendor = Gl.glGetString( Gl.GL_VENDOR ); // TAO 2.0
+				_vendor = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_VENDOR ) );
 
-                // parse out the first piece of the vendor string if there are spaces in it
-                if ( _vendor.IndexOf( " " ) != -1 )
-                {
-                    _vendor = _vendor.Substring( 0, _vendor.IndexOf( " " ) );
-                }
+				// parse out the first piece of the vendor string if there are spaces in it
+				if ( _vendor.IndexOf( " " ) != -1 )
+				{
+					_vendor = _vendor.Substring( 0, _vendor.IndexOf( " " ) );
+				}
 
-                // create a new extension list
-                _extensionList = new StringCollection();
+				// create a new extension list
+				_extensionList = new StringCollection();
 
-                //string allExt = Gl.glGetString( Gl.GL_EXTENSIONS ); // TAO 2.0
-                string allExt = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_EXTENSIONS ) );
-                string[] splitExt = allExt.Split( Char.Parse( " " ) );
+				//string allExt = Gl.glGetString( Gl.GL_EXTENSIONS ); // TAO 2.0
+				string allExt = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_EXTENSIONS ) );
+				string[] splitExt = allExt.Split( Char.Parse( " " ) );
 
-                // store the parsed extension list
-                for ( int i = 0; i < splitExt.Length; i++ )
-                {
-                    _extensionList.Add( splitExt[ i ] );
-                }
-            }
-        }
+				// store the parsed extension list
+				for ( int i = 0; i < splitExt.Length; i++ )
+				{
+					_extensionList.Add( splitExt[ i ] );
+				}
+			}
+		}
 
 		public virtual bool SupportsPBuffers
 		{
@@ -221,14 +221,14 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-		public virtual GLPBuffer CreatePBuffer(PixelComponentType format, int width, int height)
+		public virtual GLPBuffer CreatePBuffer( PixelComponentType format, int width, int height )
 		{
 			return null;
 		}
 
 		#endregion Methods
 
-        #region Abstract Members
+		#region Abstract Members
 
 		/// <summary>
 		/// Start anything speciual
@@ -240,45 +240,45 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		public abstract void Stop();
 
-        /// <summary>
-        ///		Add any special config values to the system.
-        /// </summary>
-        public abstract void AddConfig();
+		/// <summary>
+		///		Add any special config values to the system.
+		/// </summary>
+		public abstract void AddConfig();
 
-        /// <summary>
-        ///		
-        /// </summary>
-        /// <param name="autoCreateWindow"></param>
-        /// <param name="renderSystem"></param>
-        /// <param name="windowTitle"></param>
-        /// <returns></returns>
-        public abstract RenderWindow CreateWindow( bool autoCreateWindow, GLRenderSystem renderSystem, string windowTitle );
+		/// <summary>
+		///		
+		/// </summary>
+		/// <param name="autoCreateWindow"></param>
+		/// <param name="renderSystem"></param>
+		/// <param name="windowTitle"></param>
+		/// <returns></returns>
+		public abstract RenderWindow CreateWindow( bool autoCreateWindow, GLRenderSystem renderSystem, string windowTitle );
 
-        /// <summary>
-        ///		Subclasses need to implement a means to return the pointer to the extension function
-        ///		for OpenGL calls.
-        /// </summary>
-        /// <param name="extension">Name of the extension to retreive the pointer for.</param>
-        /// <returns>Pointer to the location of the function in the OpenGL driver modules.</returns>
-        public abstract IntPtr GetProcAddress( string extension );
+		/// <summary>
+		///		Subclasses need to implement a means to return the pointer to the extension function
+		///		for OpenGL calls.
+		/// </summary>
+		/// <param name="extension">Name of the extension to retreive the pointer for.</param>
+		/// <returns>Pointer to the location of the function in the OpenGL driver modules.</returns>
+		public abstract IntPtr GetProcAddress( string extension );
 
-        /// <summary>
-        ///		Creates a specific instance of a render window.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="colorDepth"></param>
-        /// <param name="fullScreen"></param>
-        /// <param name="left"></param>
-        /// <param name="top"></param>
-        /// <param name="depthBuffer"></param>
-        /// <param name="parent"></param>
-        /// <param name="vsync"></param>
-        /// <returns></returns>
-        public abstract RenderWindow NewWindow( string name, int width, int height, bool fullScreen, NamedParameterList miscParams);
+		/// <summary>
+		///		Creates a specific instance of a render window.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="colorDepth"></param>
+		/// <param name="fullScreen"></param>
+		/// <param name="left"></param>
+		/// <param name="top"></param>
+		/// <param name="depthBuffer"></param>
+		/// <param name="parent"></param>
+		/// <param name="vsync"></param>
+		/// <returns></returns>
+		public abstract RenderWindow NewWindow( string name, int width, int height, bool fullScreen, NamedParameterList miscParams );
 
-        #endregion Abstract Members
+		#endregion Abstract Members
 
 	}
 }

@@ -143,7 +143,7 @@ namespace Axiom.Demos
             patchVertices[ 8 ].U = 1;
             patchVertices[ 8 ].V = 1;
 
-            patch = MeshManager.Instance.CreateBezierPatch( "Bezier1", patchVertices, patchDeclaration, 3, 3, 5, 5, VisibleSide.Both, BufferUsage.StaticWriteOnly, BufferUsage.DynamicWriteOnly, true, true );
+            patch = MeshManager.Instance.CreateBezierPatch( "Bezier1", ResourceGroupManager.DefaultResourceGroupName, patchVertices, patchDeclaration, 3, 3, 5, 5, VisibleSide.Both, BufferUsage.StaticWriteOnly, BufferUsage.DynamicWriteOnly, true, true );
 
             // Start patch a 0 detail
             patch.SetSubdivision( 0 );
@@ -151,7 +151,7 @@ namespace Axiom.Demos
             // Create entity based on patch
             patchEntity = scene.CreateEntity( "Entity1", "Bezier1" );
 
-            Material material = (Material)MaterialManager.Instance.Create( "TextMat" );
+			Material material = (Material)MaterialManager.Instance.Create( "TextMat", ResourceGroupManager.DefaultResourceGroupName, null );
             material.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( "BumpyMetal.jpg" );
             patchEntity.MaterialName = "TextMat";
 

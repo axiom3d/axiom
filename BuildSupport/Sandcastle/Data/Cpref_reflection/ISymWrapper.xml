@@ -1,0 +1,2892 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<reflection>
+  <assemblies>
+    <assembly name="ISymWrapper" version="2.0.0.0" culture="" key="002400000480000094000000060200000024000052534131000400000100010007D1FA57C4AED9F0A32E84AA0FAEFD0DE9E8FD6AEC8F87FB03766C834C99921EB23BE79AD9D5DCC1DD9AD236132102900B723CF980957FC4E177108FC607774F29E8320E92EA05ECE4E821C0A5EFE8F1645C4C0C93C1AB99285D622CAA652C1DFAD63D745D6F2DE5F17E5EAF0FC4963D261C8A12436518206DC093344D5AD293" hash="SHA1">
+      <attributes>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyInformationalVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.50727.42</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyFileVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.50727.42</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCopyrightAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>頍icrosoft Corporation.  All rights reserved.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCompanyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft Corporation</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDefaultAliasAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>ISymWrapper.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDescriptionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>ISymWrapper.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyTitleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>ISymWrapper.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.CLSCompliantAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyProductAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft® .NET Framework</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyKeyFileAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>f:\RTM\Tools\devdiv\FinalPublicKey.snk</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDelaySignAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.NeutralResourcesLanguageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>en-US</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.SatelliteContractVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.0.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.SecurityPermissionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="RequestMinimum" />
+            </enumValue>
+          </argument>
+          <assignment name="SkipVerification">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+    </assembly>
+  </assemblies>
+  <apis>
+    <api id="R:Project">
+      <apidata group="root" pseudo="true" />
+      <elements>
+        <element api="N:System.Diagnostics.SymbolStore" />
+      </elements>
+    </api>
+    <api id="N:System.Diagnostics.SymbolStore">
+      <apidata name="System.Diagnostics.SymbolStore" group="namespace" />
+      <elements>
+        <element api="T:System.Diagnostics.SymbolStore.SymDocument" />
+        <element api="T:System.Diagnostics.SymbolStore.SymDocumentWriter" />
+        <element api="T:System.Diagnostics.SymbolStore.SymMethod" />
+        <element api="T:System.Diagnostics.SymbolStore.SymReader" />
+        <element api="T:System.Diagnostics.SymbolStore.SymScope" />
+        <element api="T:System.Diagnostics.SymbolStore.SymVariable" />
+        <element api="T:System.Diagnostics.SymbolStore.SymWriter" />
+        <element api="T:System.Diagnostics.SymbolStore.SymBinder" />
+      </elements>
+    </api>
+    <api id="T:System.Diagnostics.SymbolStore.SymBinder">
+      <apidata name="SymBinder" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Diagnostics.SymbolStore.ISymbolBinder" ref="true" />
+        <type api="T:System.Diagnostics.SymbolStore.ISymbolBinder1" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Diagnostics.SymbolStore.SymBinder.#ctor" />
+        <element api="M:System.Diagnostics.SymbolStore.SymBinder.Finalize" />
+        <element api="M:System.Diagnostics.SymbolStore.SymBinder.GetReader(System.IntPtr,System.String,System.String)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymBinder.GetReader(System.Int32,System.String,System.String)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymBinder.{dtor}" />
+        <element api="M:System.Object.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" overload="true" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.MemberwiseClone">
+          <apidata name="MemberwiseClone" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.HostProtectionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="LinkDemand" />
+            </enumValue>
+          </argument>
+          <assignment name="MayLeakOnAbort">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymBinder.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymBinder" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymBinder.{dtor}">
+      <apidata name="{dtor}" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymBinder" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymBinder.Finalize">
+      <apidata name="Finalize" group="member" subgroup="method" />
+      <memberdata visibility="family" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:System.Object.Finalize">
+          <type api="T:System.Object" ref="true" />
+        </member>
+      </overrides>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymBinder" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymBinder.GetReader(System.Int32,System.String,System.String)">
+      <apidata name="GetReader" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" overload="true" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="importer">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="filename">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="searchPath">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Diagnostics.SymbolStore.ISymbolReader" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymBinder" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.ObsoleteAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>The recommended alternative is SymBinder.GetReader(IntPtr, String). ISymbolBinder1.GetReader takes the importer interface pointer as an IntPtr instead of an Int32, and thus works on both 32-bit and 64-bit architectures. http://go.microsoft.com/fwlink/?linkid=14202</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymBinder.GetReader(System.IntPtr,System.String,System.String)">
+      <apidata name="GetReader" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" overload="true" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="importer">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="filename">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="searchPath">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Diagnostics.SymbolStore.ISymbolReader" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymBinder" ref="true" />
+      </containers>
+    </api>
+    <api id="T:System.Diagnostics.SymbolStore.SymDocument">
+      <apidata name="SymDocument" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Diagnostics.SymbolStore.ISymbolDocument" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Diagnostics.SymbolStore.SymDocument.#ctor(System.Diagnostics.SymbolStore.Private.ISymUnmanagedDocument*)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymDocument.Finalize" />
+        <element api="M:System.Diagnostics.SymbolStore.SymDocument.GetUnmanaged" />
+        <element api="M:System.Diagnostics.SymbolStore.SymDocument.GetCheckSum" />
+        <element api="M:System.Diagnostics.SymbolStore.SymDocument.FindClosestLine(System.Int32)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymDocument.GetSourceRange(System.Int32,System.Int32,System.Int32,System.Int32)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymDocument.{dtor}" />
+        <element api="P:System.Diagnostics.SymbolStore.SymDocument.SourceLength" />
+        <element api="P:System.Diagnostics.SymbolStore.SymDocument.HasEmbeddedSource" />
+        <element api="P:System.Diagnostics.SymbolStore.SymDocument.CheckSumAlgorithmId" />
+        <element api="P:System.Diagnostics.SymbolStore.SymDocument.LanguageVendor" />
+        <element api="P:System.Diagnostics.SymbolStore.SymDocument.Language" />
+        <element api="P:System.Diagnostics.SymbolStore.SymDocument.DocumentType" />
+        <element api="P:System.Diagnostics.SymbolStore.SymDocument.URL" />
+        <element api="M:System.Object.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" overload="true" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.MemberwiseClone">
+          <apidata name="MemberwiseClone" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.HostProtectionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="LinkDemand" />
+            </enumValue>
+          </argument>
+          <assignment name="MayLeakOnAbort">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymDocument.#ctor(System.Diagnostics.SymbolStore.Private.ISymUnmanagedDocument*)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="pDocument">
+          <pointerTo>
+            <type api="T:System.Diagnostics.SymbolStore.Private.ISymUnmanagedDocument" ref="false" />
+          </pointerTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymDocument" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymDocument.{dtor}">
+      <apidata name="{dtor}" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymDocument" ref="true" />
+      </containers>
+    </api>
+    <api id="P:System.Diagnostics.SymbolStore.SymDocument.CheckSumAlgorithmId">
+      <apidata name="CheckSumAlgorithmId" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Guid" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymDocument" ref="true" />
+      </containers>
+    </api>
+    <api id="P:System.Diagnostics.SymbolStore.SymDocument.DocumentType">
+      <apidata name="DocumentType" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Guid" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymDocument" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymDocument.Finalize">
+      <apidata name="Finalize" group="member" subgroup="method" />
+      <memberdata visibility="family" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:System.Object.Finalize">
+          <type api="T:System.Object" ref="true" />
+        </member>
+      </overrides>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymDocument" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymDocument.FindClosestLine(System.Int32)">
+      <apidata name="FindClosestLine" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="line">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymDocument" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymDocument.GetCheckSum">
+      <apidata name="GetCheckSum" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:System.Byte" ref="false" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymDocument" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymDocument.GetSourceRange(System.Int32,System.Int32,System.Int32,System.Int32)">
+      <apidata name="GetSourceRange" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="startLine">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="startColumn">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="endLine">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="endColumn">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:System.Byte" ref="false" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymDocument" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymDocument.GetUnmanaged">
+      <apidata name="GetUnmanaged" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <returns>
+        <pointerTo>
+          <type api="T:System.Diagnostics.SymbolStore.Private.ISymUnmanagedDocument" ref="false" />
+        </pointerTo>
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymDocument" ref="true" />
+      </containers>
+    </api>
+    <api id="P:System.Diagnostics.SymbolStore.SymDocument.HasEmbeddedSource">
+      <apidata name="HasEmbeddedSource" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymDocument" ref="true" />
+      </containers>
+    </api>
+    <api id="P:System.Diagnostics.SymbolStore.SymDocument.Language">
+      <apidata name="Language" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Guid" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymDocument" ref="true" />
+      </containers>
+    </api>
+    <api id="P:System.Diagnostics.SymbolStore.SymDocument.LanguageVendor">
+      <apidata name="LanguageVendor" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Guid" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymDocument" ref="true" />
+      </containers>
+    </api>
+    <api id="P:System.Diagnostics.SymbolStore.SymDocument.SourceLength">
+      <apidata name="SourceLength" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymDocument" ref="true" />
+      </containers>
+    </api>
+    <api id="P:System.Diagnostics.SymbolStore.SymDocument.URL">
+      <apidata name="URL" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymDocument" ref="true" />
+      </containers>
+    </api>
+    <api id="T:System.Diagnostics.SymbolStore.SymDocumentWriter">
+      <apidata name="SymDocumentWriter" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Diagnostics.SymbolStore.ISymbolDocumentWriter" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Diagnostics.SymbolStore.SymDocumentWriter.#ctor(System.Diagnostics.SymbolStore.Private.ISymUnmanagedDocumentWriter*)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymDocumentWriter.Finalize" />
+        <element api="M:System.Diagnostics.SymbolStore.SymDocumentWriter.GetUnmanaged" />
+        <element api="M:System.Diagnostics.SymbolStore.SymDocumentWriter.SetSource(System.Byte[])" />
+        <element api="M:System.Diagnostics.SymbolStore.SymDocumentWriter.SetCheckSum(System.Guid,System.Byte[])" />
+        <element api="M:System.Diagnostics.SymbolStore.SymDocumentWriter.{dtor}" />
+        <element api="M:System.Object.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" overload="true" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.MemberwiseClone">
+          <apidata name="MemberwiseClone" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.HostProtectionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="LinkDemand" />
+            </enumValue>
+          </argument>
+          <assignment name="MayLeakOnAbort">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymDocumentWriter.#ctor(System.Diagnostics.SymbolStore.Private.ISymUnmanagedDocumentWriter*)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="pDocumentWriter">
+          <pointerTo>
+            <type api="T:System.Diagnostics.SymbolStore.Private.ISymUnmanagedDocumentWriter" ref="false" />
+          </pointerTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymDocumentWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymDocumentWriter.{dtor}">
+      <apidata name="{dtor}" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymDocumentWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymDocumentWriter.Finalize">
+      <apidata name="Finalize" group="member" subgroup="method" />
+      <memberdata visibility="family" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:System.Object.Finalize">
+          <type api="T:System.Object" ref="true" />
+        </member>
+      </overrides>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymDocumentWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymDocumentWriter.GetUnmanaged">
+      <apidata name="GetUnmanaged" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <returns>
+        <pointerTo>
+          <type api="T:System.Diagnostics.SymbolStore.Private.ISymUnmanagedDocumentWriter" ref="false" />
+        </pointerTo>
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymDocumentWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymDocumentWriter.SetCheckSum(System.Guid,System.Byte[])">
+      <apidata name="SetCheckSum" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="algorithmId">
+          <type api="T:System.Guid" ref="false" />
+        </parameter>
+        <parameter name="source">
+          <arrayOf rank="1">
+            <type api="T:System.Byte" ref="false" />
+          </arrayOf>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymDocumentWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymDocumentWriter.SetSource(System.Byte[])">
+      <apidata name="SetSource" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="source">
+          <arrayOf rank="1">
+            <type api="T:System.Byte" ref="false" />
+          </arrayOf>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymDocumentWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="T:System.Diagnostics.SymbolStore.SymMethod">
+      <apidata name="SymMethod" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Diagnostics.SymbolStore.ISymbolMethod" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Diagnostics.SymbolStore.SymMethod.#ctor(System.Diagnostics.SymbolStore.Private.ISymUnmanagedMethod*)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymMethod.Finalize" />
+        <element api="M:System.Diagnostics.SymbolStore.SymMethod.GetSequencePoints(System.Int32[],System.Diagnostics.SymbolStore.ISymbolDocument[],System.Int32[],System.Int32[],System.Int32[],System.Int32[])" />
+        <element api="M:System.Diagnostics.SymbolStore.SymMethod.RootScopeInternal" />
+        <element api="M:System.Diagnostics.SymbolStore.SymMethod.GetScope(System.Int32)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymMethod.GetOffset(System.Diagnostics.SymbolStore.ISymbolDocument,System.Int32,System.Int32)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymMethod.GetRanges(System.Diagnostics.SymbolStore.ISymbolDocument,System.Int32,System.Int32)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymMethod.GetParameters" />
+        <element api="M:System.Diagnostics.SymbolStore.SymMethod.GetNamespace" />
+        <element api="M:System.Diagnostics.SymbolStore.SymMethod.GetSourceStartEnd(System.Diagnostics.SymbolStore.ISymbolDocument[],System.Int32[],System.Int32[])" />
+        <element api="M:System.Diagnostics.SymbolStore.SymMethod.{dtor}" />
+        <element api="P:System.Diagnostics.SymbolStore.SymMethod.RootScope" />
+        <element api="P:System.Diagnostics.SymbolStore.SymMethod.SequencePointCount" />
+        <element api="P:System.Diagnostics.SymbolStore.SymMethod.Token" />
+        <element api="M:System.Object.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" overload="true" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.MemberwiseClone">
+          <apidata name="MemberwiseClone" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.HostProtectionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="LinkDemand" />
+            </enumValue>
+          </argument>
+          <assignment name="MayLeakOnAbort">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymMethod.#ctor(System.Diagnostics.SymbolStore.Private.ISymUnmanagedMethod*)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="pMethod">
+          <pointerTo>
+            <type api="T:System.Diagnostics.SymbolStore.Private.ISymUnmanagedMethod" ref="false" />
+          </pointerTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymMethod" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymMethod.{dtor}">
+      <apidata name="{dtor}" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymMethod" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymMethod.Finalize">
+      <apidata name="Finalize" group="member" subgroup="method" />
+      <memberdata visibility="family" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:System.Object.Finalize">
+          <type api="T:System.Object" ref="true" />
+        </member>
+      </overrides>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymMethod" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymMethod.GetNamespace">
+      <apidata name="GetNamespace" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <returns>
+        <type api="T:System.Diagnostics.SymbolStore.ISymbolNamespace" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymMethod" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymMethod.GetOffset(System.Diagnostics.SymbolStore.ISymbolDocument,System.Int32,System.Int32)">
+      <apidata name="GetOffset" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="document">
+          <type api="T:System.Diagnostics.SymbolStore.ISymbolDocument" ref="true" />
+        </parameter>
+        <parameter name="line">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="column">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymMethod" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymMethod.GetParameters">
+      <apidata name="GetParameters" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:System.Diagnostics.SymbolStore.ISymbolVariable" ref="true" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymMethod" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymMethod.GetRanges(System.Diagnostics.SymbolStore.ISymbolDocument,System.Int32,System.Int32)">
+      <apidata name="GetRanges" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="document">
+          <type api="T:System.Diagnostics.SymbolStore.ISymbolDocument" ref="true" />
+        </parameter>
+        <parameter name="line">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="column">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:System.Int32" ref="false" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymMethod" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymMethod.GetScope(System.Int32)">
+      <apidata name="GetScope" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="offset">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Diagnostics.SymbolStore.ISymbolScope" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymMethod" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymMethod.GetSequencePoints(System.Int32[],System.Diagnostics.SymbolStore.ISymbolDocument[],System.Int32[],System.Int32[],System.Int32[],System.Int32[])">
+      <apidata name="GetSequencePoints" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="offsets">
+          <arrayOf rank="1">
+            <type api="T:System.Int32" ref="false" />
+          </arrayOf>
+        </parameter>
+        <parameter name="documents">
+          <arrayOf rank="1">
+            <type api="T:System.Diagnostics.SymbolStore.ISymbolDocument" ref="true" />
+          </arrayOf>
+        </parameter>
+        <parameter name="lines">
+          <arrayOf rank="1">
+            <type api="T:System.Int32" ref="false" />
+          </arrayOf>
+        </parameter>
+        <parameter name="columns">
+          <arrayOf rank="1">
+            <type api="T:System.Int32" ref="false" />
+          </arrayOf>
+        </parameter>
+        <parameter name="endLines">
+          <arrayOf rank="1">
+            <type api="T:System.Int32" ref="false" />
+          </arrayOf>
+        </parameter>
+        <parameter name="endColumns">
+          <arrayOf rank="1">
+            <type api="T:System.Int32" ref="false" />
+          </arrayOf>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymMethod" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymMethod.GetSourceStartEnd(System.Diagnostics.SymbolStore.ISymbolDocument[],System.Int32[],System.Int32[])">
+      <apidata name="GetSourceStartEnd" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="docs">
+          <arrayOf rank="1">
+            <type api="T:System.Diagnostics.SymbolStore.ISymbolDocument" ref="true" />
+          </arrayOf>
+        </parameter>
+        <parameter name="lines">
+          <arrayOf rank="1">
+            <type api="T:System.Int32" ref="false" />
+          </arrayOf>
+        </parameter>
+        <parameter name="columns">
+          <arrayOf rank="1">
+            <type api="T:System.Int32" ref="false" />
+          </arrayOf>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymMethod" ref="true" />
+      </containers>
+    </api>
+    <api id="P:System.Diagnostics.SymbolStore.SymMethod.RootScope">
+      <apidata name="RootScope" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Diagnostics.SymbolStore.ISymbolScope" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymMethod" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymMethod.RootScopeInternal">
+      <apidata name="RootScopeInternal" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <returns>
+        <type api="T:System.Diagnostics.SymbolStore.ISymbolScope" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymMethod" ref="true" />
+      </containers>
+    </api>
+    <api id="P:System.Diagnostics.SymbolStore.SymMethod.SequencePointCount">
+      <apidata name="SequencePointCount" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymMethod" ref="true" />
+      </containers>
+    </api>
+    <api id="P:System.Diagnostics.SymbolStore.SymMethod.Token">
+      <apidata name="Token" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Diagnostics.SymbolStore.SymbolToken" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymMethod" ref="true" />
+      </containers>
+    </api>
+    <api id="T:System.Diagnostics.SymbolStore.SymReader">
+      <apidata name="SymReader" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Diagnostics.SymbolStore.ISymbolReader" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Diagnostics.SymbolStore.SymReader.#ctor(System.Diagnostics.SymbolStore.Private.ISymUnmanagedReader*)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymReader.Finalize" />
+        <element api="M:System.Diagnostics.SymbolStore.SymReader.GetDocument(System.String,System.Guid,System.Guid,System.Guid)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymReader.GetDocuments" />
+        <element api="M:System.Diagnostics.SymbolStore.SymReader.GetMethod(System.Diagnostics.SymbolStore.SymbolToken,System.Int32)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymReader.GetMethod(System.Diagnostics.SymbolStore.SymbolToken)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymReader.GetVariables(System.Diagnostics.SymbolStore.SymbolToken)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymReader.GetGlobalVariables" />
+        <element api="M:System.Diagnostics.SymbolStore.SymReader.GetMethodFromDocumentPosition(System.Diagnostics.SymbolStore.ISymbolDocument,System.Int32,System.Int32)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymReader.GetSymAttribute(System.Diagnostics.SymbolStore.SymbolToken,System.String)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymReader.GetNamespaces" />
+        <element api="M:System.Diagnostics.SymbolStore.SymReader.UpdateSymbolStore(System.String,System.IntPtr)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymReader.ReplaceSymbolStore(System.String,System.IntPtr)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymReader.{dtor}" />
+        <element api="P:System.Diagnostics.SymbolStore.SymReader.UserEntryPoint" />
+        <element api="M:System.Object.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" overload="true" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.MemberwiseClone">
+          <apidata name="MemberwiseClone" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.HostProtectionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="LinkDemand" />
+            </enumValue>
+          </argument>
+          <assignment name="MayLeakOnAbort">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymReader.#ctor(System.Diagnostics.SymbolStore.Private.ISymUnmanagedReader*)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="pReader">
+          <pointerTo>
+            <type api="T:System.Diagnostics.SymbolStore.Private.ISymUnmanagedReader" ref="false" />
+          </pointerTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymReader" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymReader.{dtor}">
+      <apidata name="{dtor}" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymReader" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymReader.Finalize">
+      <apidata name="Finalize" group="member" subgroup="method" />
+      <memberdata visibility="family" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:System.Object.Finalize">
+          <type api="T:System.Object" ref="true" />
+        </member>
+      </overrides>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymReader" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymReader.GetDocument(System.String,System.Guid,System.Guid,System.Guid)">
+      <apidata name="GetDocument" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="url">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="language">
+          <type api="T:System.Guid" ref="false" />
+        </parameter>
+        <parameter name="languageVendor">
+          <type api="T:System.Guid" ref="false" />
+        </parameter>
+        <parameter name="documentType">
+          <type api="T:System.Guid" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Diagnostics.SymbolStore.ISymbolDocument" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymReader" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymReader.GetDocuments">
+      <apidata name="GetDocuments" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:System.Diagnostics.SymbolStore.ISymbolDocument" ref="true" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymReader" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymReader.GetGlobalVariables">
+      <apidata name="GetGlobalVariables" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:System.Diagnostics.SymbolStore.ISymbolVariable" ref="true" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymReader" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymReader.GetMethod(System.Diagnostics.SymbolStore.SymbolToken)">
+      <apidata name="GetMethod" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" overload="true" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="method">
+          <type api="T:System.Diagnostics.SymbolStore.SymbolToken" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Diagnostics.SymbolStore.ISymbolMethod" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymReader" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymReader.GetMethod(System.Diagnostics.SymbolStore.SymbolToken,System.Int32)">
+      <apidata name="GetMethod" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" overload="true" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="method">
+          <type api="T:System.Diagnostics.SymbolStore.SymbolToken" ref="false" />
+        </parameter>
+        <parameter name="version">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Diagnostics.SymbolStore.ISymbolMethod" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymReader" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymReader.GetMethodFromDocumentPosition(System.Diagnostics.SymbolStore.ISymbolDocument,System.Int32,System.Int32)">
+      <apidata name="GetMethodFromDocumentPosition" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="document">
+          <type api="T:System.Diagnostics.SymbolStore.ISymbolDocument" ref="true" />
+        </parameter>
+        <parameter name="line">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="column">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Diagnostics.SymbolStore.ISymbolMethod" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymReader" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymReader.GetNamespaces">
+      <apidata name="GetNamespaces" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:System.Diagnostics.SymbolStore.ISymbolNamespace" ref="true" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymReader" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymReader.GetSymAttribute(System.Diagnostics.SymbolStore.SymbolToken,System.String)">
+      <apidata name="GetSymAttribute" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="parent">
+          <type api="T:System.Diagnostics.SymbolStore.SymbolToken" ref="false" />
+        </parameter>
+        <parameter name="name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:System.Byte" ref="false" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymReader" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymReader.GetVariables(System.Diagnostics.SymbolStore.SymbolToken)">
+      <apidata name="GetVariables" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="parent">
+          <type api="T:System.Diagnostics.SymbolStore.SymbolToken" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:System.Diagnostics.SymbolStore.ISymbolVariable" ref="true" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymReader" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymReader.ReplaceSymbolStore(System.String,System.IntPtr)">
+      <apidata name="ReplaceSymbolStore" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="fileName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="stream">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymReader" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymReader.UpdateSymbolStore(System.String,System.IntPtr)">
+      <apidata name="UpdateSymbolStore" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="fileName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="stream">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymReader" ref="true" />
+      </containers>
+    </api>
+    <api id="P:System.Diagnostics.SymbolStore.SymReader.UserEntryPoint">
+      <apidata name="UserEntryPoint" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Diagnostics.SymbolStore.SymbolToken" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymReader" ref="true" />
+      </containers>
+    </api>
+    <api id="T:System.Diagnostics.SymbolStore.SymScope">
+      <apidata name="SymScope" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Diagnostics.SymbolStore.ISymbolScope" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Diagnostics.SymbolStore.SymScope.#ctor(System.Diagnostics.SymbolStore.Private.ISymUnmanagedScope*)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymScope.Finalize" />
+        <element api="M:System.Diagnostics.SymbolStore.SymScope.GetChildren" />
+        <element api="M:System.Diagnostics.SymbolStore.SymScope.GetLocals" />
+        <element api="M:System.Diagnostics.SymbolStore.SymScope.GetNamespaces" />
+        <element api="M:System.Diagnostics.SymbolStore.SymScope.{dtor}" />
+        <element api="P:System.Diagnostics.SymbolStore.SymScope.EndOffset" />
+        <element api="P:System.Diagnostics.SymbolStore.SymScope.StartOffset" />
+        <element api="P:System.Diagnostics.SymbolStore.SymScope.Parent" />
+        <element api="P:System.Diagnostics.SymbolStore.SymScope.Method" />
+        <element api="M:System.Object.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" overload="true" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.MemberwiseClone">
+          <apidata name="MemberwiseClone" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.HostProtectionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="LinkDemand" />
+            </enumValue>
+          </argument>
+          <assignment name="MayLeakOnAbort">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymScope.#ctor(System.Diagnostics.SymbolStore.Private.ISymUnmanagedScope*)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="pScope">
+          <pointerTo>
+            <type api="T:System.Diagnostics.SymbolStore.Private.ISymUnmanagedScope" ref="false" />
+          </pointerTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymScope" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymScope.{dtor}">
+      <apidata name="{dtor}" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymScope" ref="true" />
+      </containers>
+    </api>
+    <api id="P:System.Diagnostics.SymbolStore.SymScope.EndOffset">
+      <apidata name="EndOffset" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymScope" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymScope.Finalize">
+      <apidata name="Finalize" group="member" subgroup="method" />
+      <memberdata visibility="family" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:System.Object.Finalize">
+          <type api="T:System.Object" ref="true" />
+        </member>
+      </overrides>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymScope" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymScope.GetChildren">
+      <apidata name="GetChildren" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:System.Diagnostics.SymbolStore.ISymbolScope" ref="true" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymScope" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymScope.GetLocals">
+      <apidata name="GetLocals" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:System.Diagnostics.SymbolStore.ISymbolVariable" ref="true" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymScope" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymScope.GetNamespaces">
+      <apidata name="GetNamespaces" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:System.Diagnostics.SymbolStore.ISymbolNamespace" ref="true" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymScope" ref="true" />
+      </containers>
+    </api>
+    <api id="P:System.Diagnostics.SymbolStore.SymScope.Method">
+      <apidata name="Method" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Diagnostics.SymbolStore.ISymbolMethod" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymScope" ref="true" />
+      </containers>
+    </api>
+    <api id="P:System.Diagnostics.SymbolStore.SymScope.Parent">
+      <apidata name="Parent" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Diagnostics.SymbolStore.ISymbolScope" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymScope" ref="true" />
+      </containers>
+    </api>
+    <api id="P:System.Diagnostics.SymbolStore.SymScope.StartOffset">
+      <apidata name="StartOffset" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymScope" ref="true" />
+      </containers>
+    </api>
+    <api id="T:System.Diagnostics.SymbolStore.SymVariable">
+      <apidata name="SymVariable" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Diagnostics.SymbolStore.ISymbolVariable" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Diagnostics.SymbolStore.SymVariable.#ctor(System.Diagnostics.SymbolStore.Private.ISymUnmanagedVariable*)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymVariable.Finalize" />
+        <element api="M:System.Diagnostics.SymbolStore.SymVariable.GetSignature" />
+        <element api="M:System.Diagnostics.SymbolStore.SymVariable.{dtor}" />
+        <element api="P:System.Diagnostics.SymbolStore.SymVariable.EndOffset" />
+        <element api="P:System.Diagnostics.SymbolStore.SymVariable.StartOffset" />
+        <element api="P:System.Diagnostics.SymbolStore.SymVariable.AddressField3" />
+        <element api="P:System.Diagnostics.SymbolStore.SymVariable.AddressField2" />
+        <element api="P:System.Diagnostics.SymbolStore.SymVariable.AddressField1" />
+        <element api="P:System.Diagnostics.SymbolStore.SymVariable.AddressKind" />
+        <element api="P:System.Diagnostics.SymbolStore.SymVariable.Attributes" />
+        <element api="P:System.Diagnostics.SymbolStore.SymVariable.Name" />
+        <element api="M:System.Object.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" overload="true" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.MemberwiseClone">
+          <apidata name="MemberwiseClone" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.HostProtectionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="LinkDemand" />
+            </enumValue>
+          </argument>
+          <assignment name="MayLeakOnAbort">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymVariable.#ctor(System.Diagnostics.SymbolStore.Private.ISymUnmanagedVariable*)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="pVariable">
+          <pointerTo>
+            <type api="T:System.Diagnostics.SymbolStore.Private.ISymUnmanagedVariable" ref="false" />
+          </pointerTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymVariable" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymVariable.{dtor}">
+      <apidata name="{dtor}" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymVariable" ref="true" />
+      </containers>
+    </api>
+    <api id="P:System.Diagnostics.SymbolStore.SymVariable.AddressField1">
+      <apidata name="AddressField1" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymVariable" ref="true" />
+      </containers>
+    </api>
+    <api id="P:System.Diagnostics.SymbolStore.SymVariable.AddressField2">
+      <apidata name="AddressField2" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymVariable" ref="true" />
+      </containers>
+    </api>
+    <api id="P:System.Diagnostics.SymbolStore.SymVariable.AddressField3">
+      <apidata name="AddressField3" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymVariable" ref="true" />
+      </containers>
+    </api>
+    <api id="P:System.Diagnostics.SymbolStore.SymVariable.AddressKind">
+      <apidata name="AddressKind" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Diagnostics.SymbolStore.SymAddressKind" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymVariable" ref="true" />
+      </containers>
+    </api>
+    <api id="P:System.Diagnostics.SymbolStore.SymVariable.Attributes">
+      <apidata name="Attributes" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Object" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymVariable" ref="true" />
+      </containers>
+    </api>
+    <api id="P:System.Diagnostics.SymbolStore.SymVariable.EndOffset">
+      <apidata name="EndOffset" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymVariable" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymVariable.Finalize">
+      <apidata name="Finalize" group="member" subgroup="method" />
+      <memberdata visibility="family" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:System.Object.Finalize">
+          <type api="T:System.Object" ref="true" />
+        </member>
+      </overrides>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymVariable" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymVariable.GetSignature">
+      <apidata name="GetSignature" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:System.Byte" ref="false" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymVariable" ref="true" />
+      </containers>
+    </api>
+    <api id="P:System.Diagnostics.SymbolStore.SymVariable.Name">
+      <apidata name="Name" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymVariable" ref="true" />
+      </containers>
+    </api>
+    <api id="P:System.Diagnostics.SymbolStore.SymVariable.StartOffset">
+      <apidata name="StartOffset" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymVariable" ref="true" />
+      </containers>
+    </api>
+    <api id="T:System.Diagnostics.SymbolStore.SymWriter">
+      <apidata name="SymWriter" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.Diagnostics.SymbolStore.ISymbolWriter" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.#ctor(System.Boolean)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.#ctor" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.InitWriter(System.Boolean)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.GetWriter" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.Finalize" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.DefineDocument(System.String,System.Guid,System.Guid,System.Guid)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.SetUserEntryPoint(System.Diagnostics.SymbolStore.SymbolToken)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.OpenMethod(System.Diagnostics.SymbolStore.SymbolToken)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.CloseMethod" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.OpenScope(System.Int32)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.CloseScope(System.Int32)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.SetScopeRange(System.Int32,System.Int32,System.Int32)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.DefineLocalVariable(System.String,System.Reflection.FieldAttributes,System.Byte[],System.Diagnostics.SymbolStore.SymAddressKind,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.DefineParameter(System.String,System.Reflection.ParameterAttributes,System.Int32,System.Diagnostics.SymbolStore.SymAddressKind,System.Int32,System.Int32,System.Int32)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.DefineField(System.Diagnostics.SymbolStore.SymbolToken,System.String,System.Reflection.FieldAttributes,System.Byte[],System.Diagnostics.SymbolStore.SymAddressKind,System.Int32,System.Int32,System.Int32)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.DefineGlobalVariable(System.String,System.Reflection.FieldAttributes,System.Byte[],System.Diagnostics.SymbolStore.SymAddressKind,System.Int32,System.Int32,System.Int32)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.Close" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.SetSymAttribute(System.Diagnostics.SymbolStore.SymbolToken,System.String,System.Byte[])" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.OpenNamespace(System.String)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.CloseNamespace" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.UsingNamespace(System.String)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.SetMethodSourceRange(System.Diagnostics.SymbolStore.ISymbolDocumentWriter,System.Int32,System.Int32,System.Diagnostics.SymbolStore.ISymbolDocumentWriter,System.Int32,System.Int32)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.Initialize(System.IntPtr,System.String,System.Boolean)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.DefineSequencePoints(System.Diagnostics.SymbolStore.ISymbolDocumentWriter,System.Int32[],System.Int32[],System.Int32[],System.Int32[],System.Int32[])" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.SetUnderlyingWriter(System.IntPtr)" />
+        <element api="M:System.Diagnostics.SymbolStore.SymWriter.{dtor}" />
+        <element api="M:System.Object.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" overload="true" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.MemberwiseClone">
+          <apidata name="MemberwiseClone" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.HostProtectionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="LinkDemand" />
+            </enumValue>
+          </argument>
+          <assignment name="MayLeakOnAbort">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" overload="true" />
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.#ctor(System.Boolean)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" overload="true" />
+      <parameters>
+        <parameter name="noUnderlyingWriter">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.{dtor}">
+      <apidata name="{dtor}" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.Close">
+      <apidata name="Close" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.CloseMethod">
+      <apidata name="CloseMethod" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.CloseNamespace">
+      <apidata name="CloseNamespace" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.CloseScope(System.Int32)">
+      <apidata name="CloseScope" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="endOffset">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.DefineDocument(System.String,System.Guid,System.Guid,System.Guid)">
+      <apidata name="DefineDocument" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="url">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="language">
+          <type api="T:System.Guid" ref="false" />
+        </parameter>
+        <parameter name="languageVendor">
+          <type api="T:System.Guid" ref="false" />
+        </parameter>
+        <parameter name="documentType">
+          <type api="T:System.Guid" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Diagnostics.SymbolStore.ISymbolDocumentWriter" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.DefineField(System.Diagnostics.SymbolStore.SymbolToken,System.String,System.Reflection.FieldAttributes,System.Byte[],System.Diagnostics.SymbolStore.SymAddressKind,System.Int32,System.Int32,System.Int32)">
+      <apidata name="DefineField" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="parent">
+          <type api="T:System.Diagnostics.SymbolStore.SymbolToken" ref="false" />
+        </parameter>
+        <parameter name="name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="attributes">
+          <type api="T:System.Reflection.FieldAttributes" ref="false" />
+        </parameter>
+        <parameter name="signature">
+          <arrayOf rank="1">
+            <type api="T:System.Byte" ref="false" />
+          </arrayOf>
+        </parameter>
+        <parameter name="addrKind">
+          <type api="T:System.Diagnostics.SymbolStore.SymAddressKind" ref="false" />
+        </parameter>
+        <parameter name="addr1">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="addr2">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="addr3">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.DefineGlobalVariable(System.String,System.Reflection.FieldAttributes,System.Byte[],System.Diagnostics.SymbolStore.SymAddressKind,System.Int32,System.Int32,System.Int32)">
+      <apidata name="DefineGlobalVariable" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="attributes">
+          <type api="T:System.Reflection.FieldAttributes" ref="false" />
+        </parameter>
+        <parameter name="signature">
+          <arrayOf rank="1">
+            <type api="T:System.Byte" ref="false" />
+          </arrayOf>
+        </parameter>
+        <parameter name="addrKind">
+          <type api="T:System.Diagnostics.SymbolStore.SymAddressKind" ref="false" />
+        </parameter>
+        <parameter name="addr1">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="addr2">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="addr3">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.DefineLocalVariable(System.String,System.Reflection.FieldAttributes,System.Byte[],System.Diagnostics.SymbolStore.SymAddressKind,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+      <apidata name="DefineLocalVariable" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="attributes">
+          <type api="T:System.Reflection.FieldAttributes" ref="false" />
+        </parameter>
+        <parameter name="signature">
+          <arrayOf rank="1">
+            <type api="T:System.Byte" ref="false" />
+          </arrayOf>
+        </parameter>
+        <parameter name="addrKind">
+          <type api="T:System.Diagnostics.SymbolStore.SymAddressKind" ref="false" />
+        </parameter>
+        <parameter name="addr1">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="addr2">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="addr3">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="startOffset">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="endOffset">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.DefineParameter(System.String,System.Reflection.ParameterAttributes,System.Int32,System.Diagnostics.SymbolStore.SymAddressKind,System.Int32,System.Int32,System.Int32)">
+      <apidata name="DefineParameter" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="attributes">
+          <type api="T:System.Reflection.ParameterAttributes" ref="false" />
+        </parameter>
+        <parameter name="sequence">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="addrKind">
+          <type api="T:System.Diagnostics.SymbolStore.SymAddressKind" ref="false" />
+        </parameter>
+        <parameter name="addr1">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="addr2">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="addr3">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.DefineSequencePoints(System.Diagnostics.SymbolStore.ISymbolDocumentWriter,System.Int32[],System.Int32[],System.Int32[],System.Int32[],System.Int32[])">
+      <apidata name="DefineSequencePoints" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="document">
+          <type api="T:System.Diagnostics.SymbolStore.ISymbolDocumentWriter" ref="true" />
+        </parameter>
+        <parameter name="offsets">
+          <arrayOf rank="1">
+            <type api="T:System.Int32" ref="false" />
+          </arrayOf>
+        </parameter>
+        <parameter name="lines">
+          <arrayOf rank="1">
+            <type api="T:System.Int32" ref="false" />
+          </arrayOf>
+        </parameter>
+        <parameter name="columns">
+          <arrayOf rank="1">
+            <type api="T:System.Int32" ref="false" />
+          </arrayOf>
+        </parameter>
+        <parameter name="endLines">
+          <arrayOf rank="1">
+            <type api="T:System.Int32" ref="false" />
+          </arrayOf>
+        </parameter>
+        <parameter name="endColumns">
+          <arrayOf rank="1">
+            <type api="T:System.Int32" ref="false" />
+          </arrayOf>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.Finalize">
+      <apidata name="Finalize" group="member" subgroup="method" />
+      <memberdata visibility="family" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:System.Object.Finalize">
+          <type api="T:System.Object" ref="true" />
+        </member>
+      </overrides>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.GetWriter">
+      <apidata name="GetWriter" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <returns>
+        <pointerTo>
+          <type api="T:System.Diagnostics.SymbolStore.Private.ISymUnmanagedWriter" ref="false" />
+        </pointerTo>
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.Initialize(System.IntPtr,System.String,System.Boolean)">
+      <apidata name="Initialize" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="emitter">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="filename">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="fFullBuild">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.InitWriter(System.Boolean)">
+      <apidata name="InitWriter" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="noUnderlyingWriter">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.OpenMethod(System.Diagnostics.SymbolStore.SymbolToken)">
+      <apidata name="OpenMethod" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="method">
+          <type api="T:System.Diagnostics.SymbolStore.SymbolToken" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.OpenNamespace(System.String)">
+      <apidata name="OpenNamespace" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.OpenScope(System.Int32)">
+      <apidata name="OpenScope" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="startOffset">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.SetMethodSourceRange(System.Diagnostics.SymbolStore.ISymbolDocumentWriter,System.Int32,System.Int32,System.Diagnostics.SymbolStore.ISymbolDocumentWriter,System.Int32,System.Int32)">
+      <apidata name="SetMethodSourceRange" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="startDoc">
+          <type api="T:System.Diagnostics.SymbolStore.ISymbolDocumentWriter" ref="true" />
+        </parameter>
+        <parameter name="startLine">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="startColumn">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="endDoc">
+          <type api="T:System.Diagnostics.SymbolStore.ISymbolDocumentWriter" ref="true" />
+        </parameter>
+        <parameter name="endLine">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="endColumn">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.SetScopeRange(System.Int32,System.Int32,System.Int32)">
+      <apidata name="SetScopeRange" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="scopeID">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="startOffset">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="endOffset">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.SetSymAttribute(System.Diagnostics.SymbolStore.SymbolToken,System.String,System.Byte[])">
+      <apidata name="SetSymAttribute" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="parent">
+          <type api="T:System.Diagnostics.SymbolStore.SymbolToken" ref="false" />
+        </parameter>
+        <parameter name="name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="data">
+          <arrayOf rank="1">
+            <type api="T:System.Byte" ref="false" />
+          </arrayOf>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.SetUnderlyingWriter(System.IntPtr)">
+      <apidata name="SetUnderlyingWriter" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="underlyingWriter">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.SetUserEntryPoint(System.Diagnostics.SymbolStore.SymbolToken)">
+      <apidata name="SetUserEntryPoint" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="entryMethod">
+          <type api="T:System.Diagnostics.SymbolStore.SymbolToken" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+    <api id="M:System.Diagnostics.SymbolStore.SymWriter.UsingNamespace(System.String)">
+      <apidata name="UsingNamespace" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="fullName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="ISymWrapper" module="ISymWrapper" />
+        <namespace api="N:System.Diagnostics.SymbolStore" />
+        <type api="T:System.Diagnostics.SymbolStore.SymWriter" ref="true" />
+      </containers>
+    </api>
+  </apis>
+</reflection>

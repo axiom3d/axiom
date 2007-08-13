@@ -44,94 +44,94 @@ using Axiom.Graphics;
 namespace Axiom.RenderSystems.OpenGL
 {
 
-    public class DefaultForm : System.Windows.Forms.Form
-    {
-        private RenderWindow renderWindow;
+	public class DefaultForm : System.Windows.Forms.Form
+	{
+		private RenderWindow renderWindow;
 
-        public DefaultForm()
-        {
-            InitializeComponent();
+		public DefaultForm()
+		{
+			InitializeComponent();
 
-            this.Deactivate += new System.EventHandler( this.DefaultForm_Deactivate );
-            this.Activated += new System.EventHandler( this.DefaultForm_Activated );
-            this.Closing += new System.ComponentModel.CancelEventHandler( this.DefaultForm_Close );
-        }
+			this.Deactivate += new System.EventHandler( this.DefaultForm_Deactivate );
+			this.Activated += new System.EventHandler( this.DefaultForm_Activated );
+			this.Closing += new System.ComponentModel.CancelEventHandler( this.DefaultForm_Close );
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="e"></param>
-        public void DefaultForm_Deactivate( object source, System.EventArgs e )
-        {
-            if ( renderWindow != null )
-            {
-                renderWindow.IsActive = false;
-            }
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="e"></param>
+		public void DefaultForm_Deactivate( object source, System.EventArgs e )
+		{
+			if ( renderWindow != null )
+			{
+				renderWindow.IsActive = false;
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="e"></param>
-        public void DefaultForm_Activated( object source, System.EventArgs e )
-        {
-            if ( renderWindow != null )
-            {
-                renderWindow.IsActive = true;
-            }
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="e"></param>
+		public void DefaultForm_Activated( object source, System.EventArgs e )
+		{
+			if ( renderWindow != null )
+			{
+				renderWindow.IsActive = true;
+			}
+		}
 
-        private void InitializeComponent()
-        {
-            this.SuspendLayout();
-            // 
-            // DefaultForm
-            // 
-            this.AutoScaleBaseSize = new System.Drawing.Size( 5, 13 );
-            this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size( 292, 266 );
-            this.Name = "DefaultForm";
-            this.Load += new System.EventHandler( this.DefaultForm_Load );
-            this.ResumeLayout( false );
+		private void InitializeComponent()
+		{
+			this.SuspendLayout();
+			// 
+			// DefaultForm
+			// 
+			this.AutoScaleBaseSize = new System.Drawing.Size( 5, 13 );
+			this.BackColor = System.Drawing.Color.Black;
+			this.ClientSize = new System.Drawing.Size( 292, 266 );
+			this.Name = "DefaultForm";
+			this.Load += new System.EventHandler( this.DefaultForm_Load );
+			this.ResumeLayout( false );
 
-        }
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="e"></param>
-        public void DefaultForm_Close( object source, System.ComponentModel.CancelEventArgs e )
-        {
-            // set the window to inactive
-            //window.IsActive = false;
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="e"></param>
+		public void DefaultForm_Close( object source, System.ComponentModel.CancelEventArgs e )
+		{
+			// set the window to inactive
+			//window.IsActive = false;
 
-            // remove it from the list of render windows, which will halt the rendering loop
-            // since there should now be 0 windows left
-            //Root.Instance.RenderSystem.RenderWindows.Remove(renderWindow);
-        }
+			// remove it from the list of render windows, which will halt the rendering loop
+			// since there should now be 0 windows left
+			//Root.Instance.RenderSystem.RenderWindows.Remove(renderWindow);
+		}
 
-        private void DefaultForm_Load( object sender, System.EventArgs e )
-        {
-            this.Icon = new System.Drawing.Icon( Axiom.Core.ResourceManager.FindCommonResourceData( "AxiomIcon.ico" ) );
-        }
+		private void DefaultForm_Load( object sender, System.EventArgs e )
+		{
+			this.Icon = new System.Drawing.Icon( ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico" ) );
+		}
 
-        /// <summary>
-        ///		Get/Set the RenderWindow associated with this form.
-        /// </summary>
-        public RenderWindow RenderWindow
-        {
-            get
-            {
-                return renderWindow;
-            }
-            set
-            {
-                renderWindow = value;
-            }
-        }
+		/// <summary>
+		///		Get/Set the RenderWindow associated with this form.
+		/// </summary>
+		public RenderWindow RenderWindow
+		{
+			get
+			{
+				return renderWindow;
+			}
+			set
+			{
+				renderWindow = value;
+			}
+		}
 
-    }
+	}
 }

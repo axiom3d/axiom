@@ -59,8 +59,8 @@ namespace Axiom.Demos
 
             try
             {
-                Stream image = ResourceManager.FindCommonResourceData( _logoResourceName );
-                Stream icon = ResourceManager.FindCommonResourceData( _iconResourceName );
+				Stream image = ResourceGroupManager.Instance.OpenResource( _logoResourceName, ResourceGroupManager.DefaultResourceGroupName );
+				Stream icon = ResourceGroupManager.Instance.OpenResource( _iconResourceName, ResourceGroupManager.DefaultResourceGroupName );
 
                 if ( image != null )
                 {
@@ -71,6 +71,9 @@ namespace Axiom.Demos
                 {
                     this.Icon = new Icon( icon );
                 }
+
+				image.Close();
+				icon.Close();
             }
             catch ( Exception )
             {

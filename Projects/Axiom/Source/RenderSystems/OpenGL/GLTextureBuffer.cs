@@ -43,22 +43,22 @@ using Tao.OpenGl;
 using Axiom.Core;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGL
 {
 	class GLTextureBuffer : GLHardwarePixelBuffer
 	{
 		#region Fields and Properties
 
-        // In case this is a texture level
+		// In case this is a texture level
 		private int _target;
 		private int _faceTarget; // same as _target in case of Gl.GL_TEXTURE_xD, but cubemap face for cubemaps
 		private int _textureId;
 		private int _face;
 		private int _level;
 		private bool _softwareMipmap;		// Use GLU for mip mapping
-        
-        private List<RenderTexture> _sliceTRT = new List<RenderTexture>();
+
+		private List<RenderTexture> _sliceTRT = new List<RenderTexture>();
 
 		#endregion Fields and Properties
 
@@ -261,7 +261,7 @@ namespace Axiom.RenderSystems.OpenGL
 					Gl.glPixelStorei( Gl.GL_UNPACK_ROW_LENGTH, box.RowPitch );
 				if ( box.Height * box.Width != box.SlicePitch )
 					Gl.glPixelStorei( Gl.GL_UNPACK_IMAGE_HEIGHT, ( box.SlicePitch / box.Width ) );
-				if ( ( ( box.Width * PixelUtil.GetNumElemBytes( box.Format ) ) & 3 ) != 0)
+				if ( ( ( box.Width * PixelUtil.GetNumElemBytes( box.Format ) ) & 3 ) != 0 )
 				{
 					// Standard alignment of 4 is not right
 					Gl.glPixelStorei( Gl.GL_UNPACK_ALIGNMENT, 1 );

@@ -222,6 +222,21 @@ namespace Axiom.Math
 			}
 		}
 
+		/// <summary>
+		/// Check whether or not the matrix is affine matrix.
+		/// </summary>
+		/// <remarks>
+		/// An affine matrix is a 4x4 matrix with row 3 equal to (0, 0, 0, 1),
+		/// e.g. no projective coefficients.
+		/// </remarks>
+		public bool IsAffine
+        {
+			get
+			{
+				return m30 == 0 && m31 == 0 && m32 == 0 && m33 == 1;
+			}
+        }
+
 		#endregion
 
 		#region Public methods
@@ -259,6 +274,45 @@ namespace Axiom.Math
 				this.m02, this.m12, this.m22, this.m32,
 				this.m03, this.m13, this.m23, this.m33 );
 		}
+
+		/// <summary>
+		/// 3-D Vector transformation specially for affine matrix.
+		/// </summary>
+		/// <remarks>
+		/// Transforms the given 3-D vector by the matrix, projecting the
+		/// result back into <i>w</i> = 1.
+		/// The matrix must be an affine matrix. <see cref="Matrix4.IsAffine"/>.
+		/// </remarks>
+		/// <param name="v"></param>
+		/// <returns></returns>
+        public Vector3 TransformAffine( Vector3 v)
+        {
+			Debug.Assert( IsAffine );
+
+            return new Vector3(
+                    m00 * v.x + m01 * v.y + m02 * v.z + m03, 
+                    m10 * v.x + m11 * v.y + m12 * v.z + m13,
+                    m20 * v.x + m21 * v.y + m22 * v.z + m23);
+        }
+
+		/// <summary>
+		/// 4-D Vector transformation specially for affine matrix.
+		/// </summary>
+		/// <remarks>
+		/// The matrix must be an affine matrix. <see cref="Matrix4.IsAffine"/>.
+		/// </remarks>
+		/// <param name="v"></param>
+		/// <returns></returns>
+        public Vector4 TransformAffine( Vector4 v) 
+        {
+            Debug.Assert( IsAffine );
+
+            return new Vector4(
+                m00 * v.x + m01 * v.y + m02 * v.z + m03 * v.w, 
+                m10 * v.x + m11 * v.y + m12 * v.z + m13 * v.w,
+                m20 * v.x + m21 * v.y + m22 * v.z + m23 * v.w,
+                v.w);
+        }
 
 		#endregion
 

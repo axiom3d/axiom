@@ -1379,7 +1379,7 @@ namespace Axiom.Core
         {
             if ( nodeSubMesh == null )
             {
-                Mesh nodeMesh = MeshManager.Instance.Load( "axes.mesh" );
+                Mesh nodeMesh = (Mesh)MeshManager.Instance.Load( "axes.mesh", ResourceGroupManager.BootstrapResourceGroupName );
                 nodeSubMesh = nodeMesh.GetSubMesh( 0 );
             }
             // return the render operation of the submesh itself
@@ -1400,7 +1400,7 @@ namespace Axiom.Core
             {
                 if ( nodeMaterial == null )
                 {
-                    nodeMaterial = MaterialManager.Instance.GetByName( "Core/NodeMaterial" );
+					nodeMaterial = (Material)MaterialManager.Instance[ "Core/NodeMaterial" ];
 
                     if ( nodeMaterial == null )
                     {

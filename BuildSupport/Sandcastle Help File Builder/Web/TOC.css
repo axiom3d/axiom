@@ -1,0 +1,82 @@
+/* File    : TOC.css
+// Author  : Eric Woodruff  (Eric@EWoodruff.us)
+// Updated : 09/08/2006
+//
+// Stylesheet for the table of content
+*/
+
+body
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 8.5pt;
+    margin-left: 6;
+    margin-top: 2;
+    background-color: #6699CC;
+    color: White;
+}
+
+img
+{
+    border: 0;
+    margin-left: 5px;
+    margin-right: 2px;
+}
+
+img.TreeNodeImg
+{
+    cursor: pointer;
+}
+
+img.TOCLink
+{
+    cursor: pointer;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+a.SelectedNode, a.UnselectedNode
+{
+	color: black;
+    text-decoration: none;
+	padding: 1px 3px 1px 3px;
+    white-space: nowrap;
+}
+
+a.SelectedNode
+{
+	background-color: #ffffff;
+    border: solid 1px #999999;
+	padding: 0px 2px 0px 2px;
+}
+
+a.UnselectedNode:hover, a.SelectedNode:hover
+{
+    background-color: #cccccc;
+    border: solid 1px #999999;
+	padding: 0px 2px 0px 2px;
+}
+
+.Visible
+{
+    display: block;
+    margin-left: 2em;
+}
+
+.Hidden
+{
+    display: none;
+}
+
+.Tree
+{
+	background-color: #f0f0f0;
+	color: Black;
+	overflow: auto;
+	margin: 10px 0px 0px 0px;
+}
+
+.TreeNode, .TreeItem
+{
+    white-space: nowrap;
+    margin: 2px 2px 2px 2px;
+}

@@ -178,7 +178,7 @@ namespace Axiom.Core
 			{
 				if ( logLevel <= 1 )
 					LogManager.Instance.Write( "MaterialBucket.Build: Building material {0}", materialName );
-				material = MaterialManager.Instance.GetByName( materialName );
+				material = (Material)MaterialManager.Instance[ materialName ];
 				if ( null == material )
 					throw new AxiomException( "Material '{0}' not found.", materialName );
 				material.Load();

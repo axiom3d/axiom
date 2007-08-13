@@ -102,11 +102,11 @@ namespace Axiom.ParticleFX
         #region Command definition classes
 
         [Command( "rate", "Rate of particle scaling.", typeof( ParticleAffector ) )]
-        class RateCommand : ICommand
-        {
-            #region ICommand Members
+		class RateCommand : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 ScaleAffector affector = target as ScaleAffector;
                 return StringConverter.ToString( affector.ScaleAdjust );

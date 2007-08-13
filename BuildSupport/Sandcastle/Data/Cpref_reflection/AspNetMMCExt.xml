@@ -1,0 +1,2983 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<reflection>
+  <assemblies>
+    <assembly name="AspNetMMCExt" version="2.0.0.0" culture="" key="002400000480000094000000060200000024000052534131000400000100010007D1FA57C4AED9F0A32E84AA0FAEFD0DE9E8FD6AEC8F87FB03766C834C99921EB23BE79AD9D5DCC1DD9AD236132102900B723CF980957FC4E177108FC607774F29E8320E92EA05ECE4E821C0A5EFE8F1645C4C0C93C1AB99285D622CAA652C1DFAD63D745D6F2DE5F17E5EAF0FC4963D261C8A12436518206DC093344D5AD293" hash="SHA1">
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Diagnostics.DebuggableAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Diagnostics.DebuggableAttribute.DebuggingModes" ref="false">
+              <type api="T:System.Diagnostics.DebuggableAttribute" ref="true" />
+            </type>
+            <enumValue>
+              <field name="IgnoreSymbolStoreSequencePoints" />
+            </enumValue>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.CompilationRelaxationsAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>8</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.CLSCompliantAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.SatelliteContractVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.0.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyInformationalVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.50727.42</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyTitleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>AspNetMMCExt.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComCompatibleVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>1</value>
+          </argument>
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>0</value>
+          </argument>
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>3300</value>
+          </argument>
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyKeyFileAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>f:\RTM\Tools\devdiv\FinalPublicKey.snk</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDelaySignAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.NeutralResourcesLanguageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>en-US</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute" ref="true" />
+          <assignment name="WrapNonExceptionThrows">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyFileVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.50727.42</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCopyrightAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>© Microsoft Corporation.  All rights reserved.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyProductAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft® .NET Framework</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCompanyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft Corporation</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDefaultAliasAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>AspNetMMCExt.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDescriptionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>AspNetMMCExt.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.SecurityPermissionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="RequestMinimum" />
+            </enumValue>
+          </argument>
+          <assignment name="SkipVerification">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+      </attributes>
+    </assembly>
+  </assemblies>
+  <apis>
+    <api id="R:Project">
+      <apidata group="root" pseudo="true" />
+      <elements>
+        <element api="N:Microsoft.Aspnet.Snapin" />
+      </elements>
+    </api>
+    <api id="N:Microsoft.Aspnet.Snapin">
+      <apidata name="Microsoft.Aspnet.Snapin" group="namespace" />
+      <elements>
+        <element api="T:Microsoft.Aspnet.Snapin.ISnapinAbout" />
+        <element api="T:Microsoft.Aspnet.Snapin.IAspNetManagementUtility" />
+        <element api="T:Microsoft.Aspnet.Snapin.AspNetManagementUtility" />
+        <element api="T:Microsoft.Aspnet.Snapin.IDataObject" />
+        <element api="T:Microsoft.Aspnet.Snapin.IPropertySheetCallback" />
+        <element api="T:Microsoft.Aspnet.Snapin.IExtendPropertySheet" />
+        <element api="T:Microsoft.Aspnet.Snapin.IExtendPropertySheet2" />
+        <element api="T:Microsoft.Aspnet.Snapin.IEnumFORMATETC" />
+        <element api="T:Microsoft.Aspnet.Snapin.IContextMenuCallback" />
+        <element api="T:Microsoft.Aspnet.Snapin.IExtendContextMenu" />
+        <element api="T:Microsoft.Aspnet.Snapin.MMC_CONTROL_TYPE" />
+        <element api="T:Microsoft.Aspnet.Snapin.MMC_TASK_DISPLAY_OBJECT" />
+        <element api="T:Microsoft.Aspnet.Snapin.MMC_TASK" />
+        <element api="T:Microsoft.Aspnet.Snapin.MMC_LISTPAD_INFO" />
+        <element api="T:Microsoft.Aspnet.Snapin.MMCBUTTON" />
+        <element api="T:Microsoft.Aspnet.Snapin.CONTEXTMENUITEM" />
+        <element api="T:Microsoft.Aspnet.Snapin.SCOPEDATAITEM" />
+        <element api="T:Microsoft.Aspnet.Snapin.RESULTDATAITEM" />
+        <element api="T:Microsoft.Aspnet.Snapin.CLSID" />
+        <element api="T:Microsoft.Aspnet.Snapin.FORMATETC" />
+        <element api="T:Microsoft.Aspnet.Snapin.DialogProc" />
+        <element api="T:Microsoft.Aspnet.Snapin.PropSheetPageProc" />
+        <element api="T:Microsoft.Aspnet.Snapin.STGMEDIUM" />
+      </elements>
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.AspNetManagementUtility">
+      <apidata name="AspNetManagementUtility" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:Microsoft.Aspnet.Snapin.IAspNetManagementUtility" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.MessageBox(System.IntPtr,System.String,System.String,System.Int32)" />
+        <element api="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.GetActiveWindow" />
+        <element api="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.DisplayAspNetConfigSettings(System.String,System.String,System.String,System.String,System.String,System.Int32,System.String@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.AcquireVersionList(System.String@,System.Int32)" />
+        <element api="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.ReadFileDates(System.String,System.String@,System.String@,System.String@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.IsRemoteConfigured(System.Int32@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.PathIsDirectory(System.String,System.Int32@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.ChangeScriptMap(System.String,System.String,System.Int32)" />
+        <element api="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.RegisterAsnetMmcAssembly(System.Int32,System.String,System.String,System.IntPtr@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.#ctor" />
+        <element api="M:System.Object.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" overload="true" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Finalize">
+          <apidata name="Finalize" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:System.Runtime.ConstrainedExecution.ReliabilityContractAttribute" ref="true" />
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Consistency" ref="false" />
+                <enumValue>
+                  <field name="WillNotCorruptState" />
+                </enumValue>
+              </argument>
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Cer" ref="false" />
+                <enumValue>
+                  <field name="Success" />
+                </enumValue>
+              </argument>
+            </attribute>
+          </attributes>
+        </element>
+        <element api="M:System.Object.MemberwiseClone">
+          <apidata name="MemberwiseClone" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ProgIdAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft.Aspnet.Snapin.AspNetManagementUtility.2</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ClassInterfaceAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ClassInterfaceType" ref="false" />
+            <enumValue>
+              <field name="AutoDual" />
+            </enumValue>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>FD5CD8B1-6FE0-44F3-BBFB-65E3655B096E</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.AspNetManagementUtility" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.AcquireVersionList(System.String@,System.Int32)">
+      <apidata name="AcquireVersionList" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="versionList" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+        <parameter name="versionFirst">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.AspNetManagementUtility" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.ChangeScriptMap(System.String,System.String,System.Int32)">
+      <apidata name="ChangeScriptMap" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="keyPath">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="dllInstall">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="flags">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.AspNetManagementUtility" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.DisplayAspNetConfigSettings(System.String,System.String,System.String,System.String,System.String,System.Int32,System.String@)">
+      <apidata name="DisplayAspNetConfigSettings" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="machineName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="site">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="virtualDirectory">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="siteName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="location">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="processID">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="exception" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.AspNetManagementUtility" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.GetActiveWindow">
+      <apidata name="GetActiveWindow" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <returns>
+        <type api="T:System.IntPtr" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.AspNetManagementUtility" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.IsRemoteConfigured(System.Int32@)">
+      <apidata name="IsRemoteConfigured" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="isRemoteConfigured" out="true">
+          <referenceTo>
+            <type api="T:System.Int32" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.AspNetManagementUtility" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.MessageBox(System.IntPtr,System.String,System.String,System.Int32)">
+      <apidata name="MessageBox" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="hWnd">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="text">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="caption">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="type">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.AspNetManagementUtility" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.PathIsDirectory(System.String,System.Int32@)">
+      <apidata name="PathIsDirectory" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="filename" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="result" out="true">
+          <referenceTo>
+            <type api="T:System.Int32" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.AspNetManagementUtility" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.ReadFileDates(System.String,System.String@,System.String@,System.String@)">
+      <apidata name="ReadFileDates" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="filename">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="creationDate" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+        <parameter name="modifiedDate" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+        <parameter name="lastAccessDate" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.AspNetManagementUtility" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.AspNetManagementUtility.RegisterAsnetMmcAssembly(System.Int32,System.String,System.String,System.IntPtr@)">
+      <apidata name="RegisterAsnetMmcAssembly" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="doReg">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="typeName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="binaryDirectory">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="exception" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.AspNetManagementUtility" ref="true" />
+      </containers>
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.CLSID">
+      <apidata name="CLSID" group="type" subgroup="structure" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="sequential" format="ansi" />
+      <elements>
+        <element api="M:System.ValueType.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.Equals(System.Object)">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.ValueType.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.GetHashCode">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.ValueType.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.ToString">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Finalize">
+          <apidata name="Finalize" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:System.Runtime.ConstrainedExecution.ReliabilityContractAttribute" ref="true" />
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Consistency" ref="false" />
+                <enumValue>
+                  <field name="WillNotCorruptState" />
+                </enumValue>
+              </argument>
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Cer" ref="false" />
+                <enumValue>
+                  <field name="Success" />
+                </enumValue>
+              </argument>
+            </attribute>
+          </attributes>
+        </element>
+        <element api="M:System.Object.MemberwiseClone">
+          <apidata name="MemberwiseClone" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.CONTEXTMENUITEM">
+      <apidata name="CONTEXTMENUITEM" group="type" subgroup="structure" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="sequential" format="ansi" />
+      <elements>
+        <element api="M:System.ValueType.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.Equals(System.Object)">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.ValueType.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.GetHashCode">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.ValueType.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.ToString">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Finalize">
+          <apidata name="Finalize" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:System.Runtime.ConstrainedExecution.ReliabilityContractAttribute" ref="true" />
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Consistency" ref="false" />
+                <enumValue>
+                  <field name="WillNotCorruptState" />
+                </enumValue>
+              </argument>
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Cer" ref="false" />
+                <enumValue>
+                  <field name="Success" />
+                </enumValue>
+              </argument>
+            </attribute>
+          </attributes>
+        </element>
+        <element api="M:System.Object.MemberwiseClone">
+          <apidata name="MemberwiseClone" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.DialogProc">
+      <apidata name="DialogProc" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <parameters>
+        <parameter name="hwndDlg">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="uMsg">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="wParam">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="lParam">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.FORMATETC">
+      <apidata name="FORMATETC" group="type" subgroup="structure" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="sequential" format="ansi" />
+      <elements>
+        <element api="M:System.ValueType.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.Equals(System.Object)">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.ValueType.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.GetHashCode">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.ValueType.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.ToString">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Finalize">
+          <apidata name="Finalize" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:System.Runtime.ConstrainedExecution.ReliabilityContractAttribute" ref="true" />
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Consistency" ref="false" />
+                <enumValue>
+                  <field name="WillNotCorruptState" />
+                </enumValue>
+              </argument>
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Cer" ref="false" />
+                <enumValue>
+                  <field name="Success" />
+                </enumValue>
+              </argument>
+            </attribute>
+          </attributes>
+        </element>
+        <element api="M:System.Object.MemberwiseClone">
+          <apidata name="MemberwiseClone" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.IAspNetManagementUtility">
+      <apidata name="IAspNetManagementUtility" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.DisplayAspNetConfigSettings(System.String,System.String,System.String,System.String,System.String,System.Int32,System.String@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.AcquireVersionList(System.String@,System.Int32)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.IsRemoteConfigured(System.Int32@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.ReadFileDates(System.String,System.String@,System.String@,System.String@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.PathIsDirectory(System.String,System.Int32@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.ChangeScriptMap(System.String,System.String,System.Int32)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.RegisterAsnetMmcAssembly(System.Int32,System.String,System.String,System.IntPtr@)" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>ED068D9D-F021-4B07-A43E-3E0CB470172D</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.AcquireVersionList(System.String@,System.Int32)">
+      <apidata name="AcquireVersionList" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="versionList" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+        <parameter name="versionFirst">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IAspNetManagementUtility" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.ChangeScriptMap(System.String,System.String,System.Int32)">
+      <apidata name="ChangeScriptMap" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="keyPath" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="dllInstall" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="flags">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IAspNetManagementUtility" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.DisplayAspNetConfigSettings(System.String,System.String,System.String,System.String,System.String,System.Int32,System.String@)">
+      <apidata name="DisplayAspNetConfigSettings" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="machineName" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="site" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="virtualDirectory" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="siteName" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="location" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="processID">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="exception" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IAspNetManagementUtility" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.IsRemoteConfigured(System.Int32@)">
+      <apidata name="IsRemoteConfigured" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="isRemoteConfigured" out="true">
+          <referenceTo>
+            <type api="T:System.Int32" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IAspNetManagementUtility" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.PathIsDirectory(System.String,System.Int32@)">
+      <apidata name="PathIsDirectory" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="filename" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="result" out="true">
+          <referenceTo>
+            <type api="T:System.Int32" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IAspNetManagementUtility" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.ReadFileDates(System.String,System.String@,System.String@,System.String@)">
+      <apidata name="ReadFileDates" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="filename" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="creationDate" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+        <parameter name="modifiedDate" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+        <parameter name="lastAccessDate" out="true">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IAspNetManagementUtility" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IAspNetManagementUtility.RegisterAsnetMmcAssembly(System.Int32,System.String,System.String,System.IntPtr@)">
+      <apidata name="RegisterAsnetMmcAssembly" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="doReg">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="assemblyName" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="binaryDirectory" in="true">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="exception" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IAspNetManagementUtility" ref="true" />
+      </containers>
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.IContextMenuCallback">
+      <apidata name="IContextMenuCallback" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Aspnet.Snapin.IContextMenuCallback.AddItem(Microsoft.Aspnet.Snapin.CONTEXTMENUITEM@)" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>43136EB7-D36C-11CF-ADBC-00AA00A80033</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.InterfaceTypeAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ComInterfaceType" ref="false" />
+            <enumValue>
+              <field name="InterfaceIsIUnknown" />
+            </enumValue>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IContextMenuCallback.AddItem(Microsoft.Aspnet.Snapin.CONTEXTMENUITEM@)">
+      <apidata name="AddItem" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="pItem">
+          <referenceTo>
+            <type api="T:Microsoft.Aspnet.Snapin.CONTEXTMENUITEM" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IContextMenuCallback" ref="true" />
+      </containers>
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.IDataObject">
+      <apidata name="IDataObject" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Aspnet.Snapin.IDataObject.GetData(Microsoft.Aspnet.Snapin.FORMATETC@,Microsoft.Aspnet.Snapin.STGMEDIUM@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IDataObject.GetDataHere(Microsoft.Aspnet.Snapin.FORMATETC@,Microsoft.Aspnet.Snapin.STGMEDIUM@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IDataObject.QueryGetData(Microsoft.Aspnet.Snapin.FORMATETC)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IDataObject.GetCanonicalFormatEtc(System.IntPtr,System.IntPtr)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IDataObject.SetData(System.IntPtr,System.IntPtr,System.Int32)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IDataObject.EnumFormatEtc(System.Int32,System.IntPtr)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IDataObject.DAdvise(System.IntPtr,System.Int32,System.IntPtr,System.Int32@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IDataObject.DUnadvise(System.Int32)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IDataObject.EnumDAdvise(System.IntPtr)" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>0000010e-0000-0000-C000-000000000046</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.InterfaceTypeAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ComInterfaceType" ref="false" />
+            <enumValue>
+              <field name="InterfaceIsIUnknown" />
+            </enumValue>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IDataObject.DAdvise(System.IntPtr,System.Int32,System.IntPtr,System.Int32@)">
+      <apidata name="DAdvise" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="a">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="b">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="c">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="d">
+          <referenceTo>
+            <type api="T:System.Int32" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IDataObject.DUnadvise(System.Int32)">
+      <apidata name="DUnadvise" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="a">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IDataObject.EnumDAdvise(System.IntPtr)">
+      <apidata name="EnumDAdvise" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="a">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IDataObject.EnumFormatEtc(System.Int32,System.IntPtr)">
+      <apidata name="EnumFormatEtc" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="a">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="b">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IDataObject.GetCanonicalFormatEtc(System.IntPtr,System.IntPtr)">
+      <apidata name="GetCanonicalFormatEtc" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="a">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="b">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IDataObject.GetData(Microsoft.Aspnet.Snapin.FORMATETC@,Microsoft.Aspnet.Snapin.STGMEDIUM@)">
+      <apidata name="GetData" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="pFormatEtc">
+          <referenceTo>
+            <type api="T:Microsoft.Aspnet.Snapin.FORMATETC" ref="false" />
+          </referenceTo>
+        </parameter>
+        <parameter name="b">
+          <referenceTo>
+            <type api="T:Microsoft.Aspnet.Snapin.STGMEDIUM" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IDataObject.GetDataHere(Microsoft.Aspnet.Snapin.FORMATETC@,Microsoft.Aspnet.Snapin.STGMEDIUM@)">
+      <apidata name="GetDataHere" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="pFormatEtc">
+          <referenceTo>
+            <type api="T:Microsoft.Aspnet.Snapin.FORMATETC" ref="false" />
+          </referenceTo>
+        </parameter>
+        <parameter name="b">
+          <referenceTo>
+            <type api="T:Microsoft.Aspnet.Snapin.STGMEDIUM" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IDataObject.QueryGetData(Microsoft.Aspnet.Snapin.FORMATETC)">
+      <apidata name="QueryGetData" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="a">
+          <type api="T:Microsoft.Aspnet.Snapin.FORMATETC" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IDataObject.SetData(System.IntPtr,System.IntPtr,System.Int32)">
+      <apidata name="SetData" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="a">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="b">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="c">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+      </containers>
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.IEnumFORMATETC">
+      <apidata name="IEnumFORMATETC" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>00000103-0000-0000-C000-000000000046</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.InterfaceTypeAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ComInterfaceType" ref="false" />
+            <enumValue>
+              <field name="InterfaceIsIUnknown" />
+            </enumValue>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.IExtendContextMenu">
+      <apidata name="IExtendContextMenu" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Aspnet.Snapin.IExtendContextMenu.AddMenuItems(Microsoft.Aspnet.Snapin.IDataObject,Microsoft.Aspnet.Snapin.IContextMenuCallback,System.Int32@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IExtendContextMenu.Command(System.Int32,Microsoft.Aspnet.Snapin.IDataObject)" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>4F3B7A4F-CFAC-11CF-B8E3-00C04FD8D5B0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.InterfaceTypeAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ComInterfaceType" ref="false" />
+            <enumValue>
+              <field name="InterfaceIsIUnknown" />
+            </enumValue>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IExtendContextMenu.AddMenuItems(Microsoft.Aspnet.Snapin.IDataObject,Microsoft.Aspnet.Snapin.IContextMenuCallback,System.Int32@)">
+      <apidata name="AddMenuItems" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="piDataObject">
+          <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+        </parameter>
+        <parameter name="piCallback">
+          <type api="T:Microsoft.Aspnet.Snapin.IContextMenuCallback" ref="true" />
+        </parameter>
+        <parameter name="pInsertionAllowed">
+          <referenceTo>
+            <type api="T:System.Int32" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IExtendContextMenu" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IExtendContextMenu.Command(System.Int32,Microsoft.Aspnet.Snapin.IDataObject)">
+      <apidata name="Command" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="lCommandID">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="piDataObject">
+          <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IExtendContextMenu" ref="true" />
+      </containers>
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.IExtendPropertySheet">
+      <apidata name="IExtendPropertySheet" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Aspnet.Snapin.IExtendPropertySheet.CreatePropertyPages(Microsoft.Aspnet.Snapin.IPropertySheetCallback,System.IntPtr,Microsoft.Aspnet.Snapin.IDataObject)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IExtendPropertySheet.QueryPagesFor(Microsoft.Aspnet.Snapin.IDataObject)" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>85DE64DC-EF21-11cf-A285-00C04FD8DBE6</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.InterfaceTypeAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ComInterfaceType" ref="false" />
+            <enumValue>
+              <field name="InterfaceIsIUnknown" />
+            </enumValue>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IExtendPropertySheet.CreatePropertyPages(Microsoft.Aspnet.Snapin.IPropertySheetCallback,System.IntPtr,Microsoft.Aspnet.Snapin.IDataObject)">
+      <apidata name="CreatePropertyPages" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="lpProvider">
+          <type api="T:Microsoft.Aspnet.Snapin.IPropertySheetCallback" ref="true" />
+        </parameter>
+        <parameter name="handle">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="lpIDataObject">
+          <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IExtendPropertySheet" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IExtendPropertySheet.QueryPagesFor(Microsoft.Aspnet.Snapin.IDataObject)">
+      <apidata name="QueryPagesFor" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="lpDataObject">
+          <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IExtendPropertySheet" ref="true" />
+      </containers>
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.IExtendPropertySheet2">
+      <apidata name="IExtendPropertySheet2" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Aspnet.Snapin.IExtendPropertySheet2.CreatePropertyPages(Microsoft.Aspnet.Snapin.IPropertySheetCallback,System.IntPtr,Microsoft.Aspnet.Snapin.IDataObject)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IExtendPropertySheet2.QueryPagesFor(Microsoft.Aspnet.Snapin.IDataObject)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IExtendPropertySheet2.GetWatermarks(Microsoft.Aspnet.Snapin.IDataObject,System.IntPtr@,System.IntPtr@,System.IntPtr@,System.Int32@)" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.InterfaceTypeAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ComInterfaceType" ref="false" />
+            <enumValue>
+              <field name="InterfaceIsIUnknown" />
+            </enumValue>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>B7A87232-4A51-11D1-A7EA-00C04FD909DD</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IExtendPropertySheet2.CreatePropertyPages(Microsoft.Aspnet.Snapin.IPropertySheetCallback,System.IntPtr,Microsoft.Aspnet.Snapin.IDataObject)">
+      <apidata name="CreatePropertyPages" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="lpProvider">
+          <type api="T:Microsoft.Aspnet.Snapin.IPropertySheetCallback" ref="true" />
+        </parameter>
+        <parameter name="handle">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="lpIDataObject">
+          <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IExtendPropertySheet2" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IExtendPropertySheet2.GetWatermarks(Microsoft.Aspnet.Snapin.IDataObject,System.IntPtr@,System.IntPtr@,System.IntPtr@,System.Int32@)">
+      <apidata name="GetWatermarks" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="lpIDataObject">
+          <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+        </parameter>
+        <parameter name="lphWatermark" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+        <parameter name="lphHeader" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+        <parameter name="lphPalette" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+        <parameter name="bStretch" out="true">
+          <referenceTo>
+            <type api="T:System.Int32" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IExtendPropertySheet2" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IExtendPropertySheet2.QueryPagesFor(Microsoft.Aspnet.Snapin.IDataObject)">
+      <apidata name="QueryPagesFor" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="lpDataObject">
+          <type api="T:Microsoft.Aspnet.Snapin.IDataObject" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IExtendPropertySheet2" ref="true" />
+      </containers>
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.IPropertySheetCallback">
+      <apidata name="IPropertySheetCallback" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Aspnet.Snapin.IPropertySheetCallback.AddPage(System.IntPtr)" />
+        <element api="M:Microsoft.Aspnet.Snapin.IPropertySheetCallback.RemovePage(System.IntPtr)" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>85DE64DD-EF21-11cf-A285-00C04FD8DBE6</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.InterfaceTypeAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ComInterfaceType" ref="false" />
+            <enumValue>
+              <field name="InterfaceIsIUnknown" />
+            </enumValue>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IPropertySheetCallback.AddPage(System.IntPtr)">
+      <apidata name="AddPage" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="hPage">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IPropertySheetCallback" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.IPropertySheetCallback.RemovePage(System.IntPtr)">
+      <apidata name="RemovePage" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="hPage">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.IPropertySheetCallback" ref="true" />
+      </containers>
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.ISnapinAbout">
+      <apidata name="ISnapinAbout" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:Microsoft.Aspnet.Snapin.ISnapinAbout.GetSnapinDescription(System.IntPtr@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.ISnapinAbout.GetProvider(System.IntPtr@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.ISnapinAbout.GetSnapinVersion(System.IntPtr@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.ISnapinAbout.GetSnapinImage(System.IntPtr@)" />
+        <element api="M:Microsoft.Aspnet.Snapin.ISnapinAbout.GetStaticFolderImage(System.IntPtr@,System.IntPtr@,System.IntPtr@,System.Int32@)" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.InterfaceTypeAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ComInterfaceType" ref="false" />
+            <enumValue>
+              <field name="InterfaceIsIUnknown" />
+            </enumValue>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>1245208C-A151-11D0-A7D7-00C04FD909DD</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.ISnapinAbout.GetProvider(System.IntPtr@)">
+      <apidata name="GetProvider" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="pName" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.ISnapinAbout" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.ISnapinAbout.GetSnapinDescription(System.IntPtr@)">
+      <apidata name="GetSnapinDescription" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="lpDescription" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.ISnapinAbout" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.ISnapinAbout.GetSnapinImage(System.IntPtr@)">
+      <apidata name="GetSnapinImage" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="hAppIcon" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.ISnapinAbout" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.ISnapinAbout.GetSnapinVersion(System.IntPtr@)">
+      <apidata name="GetSnapinVersion" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="lpVersion" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.ISnapinAbout" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Aspnet.Snapin.ISnapinAbout.GetStaticFolderImage(System.IntPtr@,System.IntPtr@,System.IntPtr@,System.Int32@)">
+      <apidata name="GetStaticFolderImage" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="hSmallImage" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+        <parameter name="hSmallImageOpen" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+        <parameter name="hLargeImage" out="true">
+          <referenceTo>
+            <type api="T:System.IntPtr" ref="false" />
+          </referenceTo>
+        </parameter>
+        <parameter name="cMask" out="true">
+          <referenceTo>
+            <type api="T:System.Int32" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.ISnapinAbout" ref="true" />
+      </containers>
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.MMC_CONTROL_TYPE">
+      <apidata name="MMC_CONTROL_TYPE" group="type" subgroup="enumeration" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <enumerationbase>
+        <type api="T:System.Int32" ref="false" />
+      </enumerationbase>
+      <elements>
+        <element api="F:Microsoft.Aspnet.Snapin.MMC_CONTROL_TYPE.TOOLBAR" />
+        <element api="F:Microsoft.Aspnet.Snapin.MMC_CONTROL_TYPE.MENUBUTTON" />
+        <element api="F:Microsoft.Aspnet.Snapin.MMC_CONTROL_TYPE.COMBOBOXBAR" />
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+    </api>
+    <api id="F:Microsoft.Aspnet.Snapin.MMC_CONTROL_TYPE.COMBOBOXBAR">
+      <apidata name="COMBOBOXBAR" group="member" subgroup="field" />
+      <memberdata visibility="public" static="true" special="false" />
+      <fielddata literal="true" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:Microsoft.Aspnet.Snapin.MMC_CONTROL_TYPE" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.MMC_CONTROL_TYPE" ref="false" />
+      </containers>
+    </api>
+    <api id="F:Microsoft.Aspnet.Snapin.MMC_CONTROL_TYPE.MENUBUTTON">
+      <apidata name="MENUBUTTON" group="member" subgroup="field" />
+      <memberdata visibility="public" static="true" special="false" />
+      <fielddata literal="true" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:Microsoft.Aspnet.Snapin.MMC_CONTROL_TYPE" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.MMC_CONTROL_TYPE" ref="false" />
+      </containers>
+    </api>
+    <api id="F:Microsoft.Aspnet.Snapin.MMC_CONTROL_TYPE.TOOLBAR">
+      <apidata name="TOOLBAR" group="member" subgroup="field" />
+      <memberdata visibility="public" static="true" special="false" />
+      <fielddata literal="true" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:Microsoft.Aspnet.Snapin.MMC_CONTROL_TYPE" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.MMC_CONTROL_TYPE" ref="false" />
+      </containers>
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.MMC_LISTPAD_INFO">
+      <apidata name="MMC_LISTPAD_INFO" group="type" subgroup="structure" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="sequential" format="ansi" />
+      <elements>
+        <element api="M:System.ValueType.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.Equals(System.Object)">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.ValueType.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.GetHashCode">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.ValueType.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.ToString">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Finalize">
+          <apidata name="Finalize" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:System.Runtime.ConstrainedExecution.ReliabilityContractAttribute" ref="true" />
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Consistency" ref="false" />
+                <enumValue>
+                  <field name="WillNotCorruptState" />
+                </enumValue>
+              </argument>
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Cer" ref="false" />
+                <enumValue>
+                  <field name="Success" />
+                </enumValue>
+              </argument>
+            </attribute>
+          </attributes>
+        </element>
+        <element api="M:System.Object.MemberwiseClone">
+          <apidata name="MemberwiseClone" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.MMC_TASK">
+      <apidata name="MMC_TASK" group="type" subgroup="structure" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="sequential" format="ansi" />
+      <elements>
+        <element api="M:System.ValueType.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.Equals(System.Object)">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.ValueType.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.GetHashCode">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.ValueType.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.ToString">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Finalize">
+          <apidata name="Finalize" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:System.Runtime.ConstrainedExecution.ReliabilityContractAttribute" ref="true" />
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Consistency" ref="false" />
+                <enumValue>
+                  <field name="WillNotCorruptState" />
+                </enumValue>
+              </argument>
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Cer" ref="false" />
+                <enumValue>
+                  <field name="Success" />
+                </enumValue>
+              </argument>
+            </attribute>
+          </attributes>
+        </element>
+        <element api="M:System.Object.MemberwiseClone">
+          <apidata name="MemberwiseClone" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.MMC_TASK_DISPLAY_OBJECT">
+      <apidata name="MMC_TASK_DISPLAY_OBJECT" group="type" subgroup="structure" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="sequential" format="ansi" />
+      <elements>
+        <element api="M:System.ValueType.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.Equals(System.Object)">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.ValueType.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.GetHashCode">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.ValueType.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.ToString">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Finalize">
+          <apidata name="Finalize" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:System.Runtime.ConstrainedExecution.ReliabilityContractAttribute" ref="true" />
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Consistency" ref="false" />
+                <enumValue>
+                  <field name="WillNotCorruptState" />
+                </enumValue>
+              </argument>
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Cer" ref="false" />
+                <enumValue>
+                  <field name="Success" />
+                </enumValue>
+              </argument>
+            </attribute>
+          </attributes>
+        </element>
+        <element api="M:System.Object.MemberwiseClone">
+          <apidata name="MemberwiseClone" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.MMCBUTTON">
+      <apidata name="MMCBUTTON" group="type" subgroup="structure" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="sequential" format="ansi" />
+      <elements>
+        <element api="M:System.ValueType.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.Equals(System.Object)">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.ValueType.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.GetHashCode">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.ValueType.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.ToString">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Finalize">
+          <apidata name="Finalize" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:System.Runtime.ConstrainedExecution.ReliabilityContractAttribute" ref="true" />
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Consistency" ref="false" />
+                <enumValue>
+                  <field name="WillNotCorruptState" />
+                </enumValue>
+              </argument>
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Cer" ref="false" />
+                <enumValue>
+                  <field name="Success" />
+                </enumValue>
+              </argument>
+            </attribute>
+          </attributes>
+        </element>
+        <element api="M:System.Object.MemberwiseClone">
+          <apidata name="MemberwiseClone" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.PropSheetPageProc">
+      <apidata name="PropSheetPageProc" group="type" subgroup="delegate" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <parameters>
+        <parameter name="hwnd">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+        <parameter name="uMsg">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="lParam">
+          <type api="T:System.IntPtr" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.RESULTDATAITEM">
+      <apidata name="RESULTDATAITEM" group="type" subgroup="structure" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="sequential" format="ansi" />
+      <elements>
+        <element api="M:System.ValueType.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.Equals(System.Object)">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.ValueType.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.GetHashCode">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.ValueType.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.ToString">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Finalize">
+          <apidata name="Finalize" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:System.Runtime.ConstrainedExecution.ReliabilityContractAttribute" ref="true" />
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Consistency" ref="false" />
+                <enumValue>
+                  <field name="WillNotCorruptState" />
+                </enumValue>
+              </argument>
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Cer" ref="false" />
+                <enumValue>
+                  <field name="Success" />
+                </enumValue>
+              </argument>
+            </attribute>
+          </attributes>
+        </element>
+        <element api="M:System.Object.MemberwiseClone">
+          <apidata name="MemberwiseClone" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.SCOPEDATAITEM">
+      <apidata name="SCOPEDATAITEM" group="type" subgroup="structure" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="sequential" format="ansi" />
+      <elements>
+        <element api="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.mask" />
+        <element api="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.displayname" />
+        <element api="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.nImage" />
+        <element api="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.nOpenImage" />
+        <element api="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.nState" />
+        <element api="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.cChildren" />
+        <element api="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.lParam" />
+        <element api="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.relativeID" />
+        <element api="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.ID" />
+        <element api="M:System.ValueType.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.Equals(System.Object)">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.ValueType.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.GetHashCode">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.ValueType.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.ToString">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Finalize">
+          <apidata name="Finalize" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:System.Runtime.ConstrainedExecution.ReliabilityContractAttribute" ref="true" />
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Consistency" ref="false" />
+                <enumValue>
+                  <field name="WillNotCorruptState" />
+                </enumValue>
+              </argument>
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Cer" ref="false" />
+                <enumValue>
+                  <field name="Success" />
+                </enumValue>
+              </argument>
+            </attribute>
+          </attributes>
+        </element>
+        <element api="M:System.Object.MemberwiseClone">
+          <apidata name="MemberwiseClone" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+    </api>
+    <api id="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.cChildren">
+      <apidata name="cChildren" group="member" subgroup="field" />
+      <memberdata visibility="public" static="false" special="false" />
+      <fielddata literal="false" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.SCOPEDATAITEM" ref="false" />
+      </containers>
+    </api>
+    <api id="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.displayname">
+      <apidata name="displayname" group="member" subgroup="field" />
+      <memberdata visibility="public" static="false" special="false" />
+      <fielddata literal="false" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.IntPtr" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.SCOPEDATAITEM" ref="false" />
+      </containers>
+    </api>
+    <api id="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.ID">
+      <apidata name="ID" group="member" subgroup="field" />
+      <memberdata visibility="public" static="false" special="false" />
+      <fielddata literal="false" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.SCOPEDATAITEM" ref="false" />
+      </containers>
+    </api>
+    <api id="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.lParam">
+      <apidata name="lParam" group="member" subgroup="field" />
+      <memberdata visibility="public" static="false" special="false" />
+      <fielddata literal="false" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.SCOPEDATAITEM" ref="false" />
+      </containers>
+    </api>
+    <api id="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.mask">
+      <apidata name="mask" group="member" subgroup="field" />
+      <memberdata visibility="public" static="false" special="false" />
+      <fielddata literal="false" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.SCOPEDATAITEM" ref="false" />
+      </containers>
+    </api>
+    <api id="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.nImage">
+      <apidata name="nImage" group="member" subgroup="field" />
+      <memberdata visibility="public" static="false" special="false" />
+      <fielddata literal="false" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.SCOPEDATAITEM" ref="false" />
+      </containers>
+    </api>
+    <api id="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.nOpenImage">
+      <apidata name="nOpenImage" group="member" subgroup="field" />
+      <memberdata visibility="public" static="false" special="false" />
+      <fielddata literal="false" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.SCOPEDATAITEM" ref="false" />
+      </containers>
+    </api>
+    <api id="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.nState">
+      <apidata name="nState" group="member" subgroup="field" />
+      <memberdata visibility="public" static="false" special="false" />
+      <fielddata literal="false" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.SCOPEDATAITEM" ref="false" />
+      </containers>
+    </api>
+    <api id="F:Microsoft.Aspnet.Snapin.SCOPEDATAITEM.relativeID">
+      <apidata name="relativeID" group="member" subgroup="field" />
+      <memberdata visibility="public" static="false" special="false" />
+      <fielddata literal="false" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+        <type api="T:Microsoft.Aspnet.Snapin.SCOPEDATAITEM" ref="false" />
+      </containers>
+    </api>
+    <api id="T:Microsoft.Aspnet.Snapin.STGMEDIUM">
+      <apidata name="STGMEDIUM" group="type" subgroup="structure" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="sequential" format="ansi" />
+      <elements>
+        <element api="M:System.ValueType.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.Equals(System.Object)">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.ValueType.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.GetHashCode">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.ValueType.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Object.ToString">
+              <type api="T:System.Object" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.ValueType" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Finalize">
+          <apidata name="Finalize" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:System.Runtime.ConstrainedExecution.ReliabilityContractAttribute" ref="true" />
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Consistency" ref="false" />
+                <enumValue>
+                  <field name="WillNotCorruptState" />
+                </enumValue>
+              </argument>
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Cer" ref="false" />
+                <enumValue>
+                  <field name="Success" />
+                </enumValue>
+              </argument>
+            </attribute>
+          </attributes>
+        </element>
+        <element api="M:System.Object.MemberwiseClone">
+          <apidata name="MemberwiseClone" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="AspNetMMCExt" module="AspNetMMCExt" />
+        <namespace api="N:Microsoft.Aspnet.Snapin" />
+      </containers>
+    </api>
+  </apis>
+</reflection>

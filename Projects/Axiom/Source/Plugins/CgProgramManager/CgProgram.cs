@@ -93,8 +93,8 @@ namespace Axiom.CgPrograms
         /// <param name="type">Type of this program, vertex or fragment program.</param>
         /// <param name="language">HLSL language of this program.</param>
         /// <param name="context">CG context id.</param>
-        public CgProgram( string name, GpuProgramType type, string language, IntPtr context )
-            : base( name, type, language )
+        public CgProgram( ResourceManager parent, string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, IntPtr context )
+			: base( parent, name, handle, group, isManual, loader )
         {
             this.cgContext = context;
         }
@@ -115,7 +115,7 @@ namespace Axiom.CgPrograms
                     selectedProfile = profiles[ i ];
                     selectedCgProfile = Cg.cgGetProfile( selectedProfile );
 
-                    CgHelper.CheckCgError( "Unable to find Cg profile enum for program " + name, cgContext );
+                    CgHelper.CheckCgError( "Unable to find Cg profile enum for program " + Name, cgContext );
 
                     break;
                 }
@@ -140,7 +140,7 @@ namespace Axiom.CgPrograms
             // create the Cg program
             cgProgram = Cg.cgCreateProgram( cgContext, Cg.CG_SOURCE, source, selectedCgProfile, entry, args );
 
-            CgHelper.CheckCgError( "Unable to compile Cg program " + name, cgContext );
+            CgHelper.CheckCgError( "Unable to compile Cg program " + Name, cgContext );
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace Axiom.CgPrograms
             string lowLevelSource = Cg.cgGetProgramString( cgProgram, Cg.CG_COMPILED_PROGRAM );
 
             // create a low-level program, with the same name as this one
-            assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( name, lowLevelSource, type, selectedProfile );
+            assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( Name, Group, lowLevelSource, type, selectedProfile );
         }
 
         /// <summary>
@@ -248,7 +248,7 @@ namespace Axiom.CgPrograms
             {
                 Cg.cgDestroyProgram( cgProgram );
 
-                CgHelper.CheckCgError( string.Format( "Error unloading CgProgram named '{0}'", this.name ), cgContext );
+                CgHelper.CheckCgError( string.Format( "Error unloading CgProgram named '{0}'", this.Name ), cgContext );
             }
         }
 

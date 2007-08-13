@@ -300,9 +300,9 @@ namespace Axiom.Graphics
 		public virtual void Blit( HardwarePixelBuffer src, BasicBox srcBox, BasicBox dstBox )
 		{
 			if ( IsLocked || src.IsLocked )
-				throw new Exception( "Source and destination buffer may not be locked!  In HardwarePixelBuffer.Blit" );
+				throw new Exception( "Source and destination buffer may not be locked!" );
 			if ( src == this )
-				throw new Exception( "Source must not be the same object, in HardwarePixelBuffer.Blit" );
+				throw new Exception( "Source must not be the same object." );
 
 			PixelBox srclock = src.Lock( srcBox, BufferLocking.ReadOnly );
 
@@ -316,7 +316,7 @@ namespace Axiom.Graphics
 			PixelBox dstlock = Lock( dstBox, method );
 			if ( dstlock.Width != srclock.Width || dstlock.Height != srclock.Height || dstlock.Depth != srclock.Depth )
 				// Scaling desired
-				throw new Exception( "Image scaling not yet implemented; in HardwarePixelBuffer.Blit" );
+				throw new Exception( "Image scaling not yet implemented." );
 				//Image.Scale(srclock, dstlock);
 			else
 				// No scaling needed
@@ -340,8 +340,7 @@ namespace Axiom.Graphics
 		///</summary>
 		public override void ReadData( int offset, int length, IntPtr dest )
 		{
-			throw new Exception( "Reading a byte range is not implemented. Use blitToMemory; in " +
-								"HardwarePixelBuffer.ReadData" );
+			throw new Exception( "Reading a byte range is not implemented. Use blitToMemory." );
 		}
 
 		///<summary>
@@ -350,8 +349,7 @@ namespace Axiom.Graphics
 		public override void WriteData( int offset, int length, IntPtr source,
 									  bool discardWholeBuffer )
 		{
-			throw new Exception( "Writing a byte range is not implemented. Use blitToMemory; in " +
-								"HardwarePixelBuffer.WriteData" );
+			throw new Exception( "Writing a byte range is not implemented. Use blitToMemory." );
 		}
 
 		///<summary>
@@ -407,8 +405,7 @@ namespace Axiom.Graphics
 		///</returns>
 		public virtual RenderTexture GetRenderTarget( int slice )
 		{
-			throw new Exception( "Not yet implemented for this rendersystem; in " +
-								"HardwarePixelBuffer.GetRenderTarget" );
+			throw new Exception( "Not yet implemented for this rendersystem." );
 		}
 
 		public virtual RenderTexture GetRenderTarget()

@@ -74,10 +74,10 @@ namespace Axiom.Demos
             light.Type = LightType.Directional;
             light.Direction = -Vector3.UnitY;
 
-            Material mat = MaterialManager.Instance.GetByName( "Examples/FresnelReflectionRefraction" );
+            Material mat = (Material)MaterialManager.Instance.GetByName( "Examples/FresnelReflectionRefraction" );
 
             // Refraction texture
-			Texture mTexture = TextureManager.Instance.CreateManual( "Refraction", TextureType.TwoD, 512, 512, 0, Axiom.Media.PixelFormat.R8G8B8, TextureUsage.RenderTarget );
+			Texture mTexture = TextureManager.Instance.CreateManual( "Refraction", ResourceGroupManager.DefaultResourceGroupName, TextureType.TwoD, 512, 512, 0, Axiom.Media.PixelFormat.R8G8B8, TextureUsage.RenderTarget );
 			RenderTarget rttTex = mTexture.GetBuffer().GetRenderTarget();
             //RenderTexture rttTex = Root.Instance.RenderSystem.CreateRenderTexture( "Refraction", 512, 512 );
             {
@@ -89,7 +89,7 @@ namespace Axiom.Demos
             }
 
             // Reflection texture
-			mTexture = TextureManager.Instance.CreateManual( "Reflection", TextureType.TwoD, 512, 512, 0, Axiom.Media.PixelFormat.R8G8B8, TextureUsage.RenderTarget );
+			mTexture = TextureManager.Instance.CreateManual( "Reflection", ResourceGroupManager.DefaultResourceGroupName, TextureType.TwoD, 512, 512, 0, Axiom.Media.PixelFormat.R8G8B8, TextureUsage.RenderTarget );
 			rttTex = mTexture.GetBuffer().GetRenderTarget();
 			//rttTex = Root.Instance.RenderSystem.CreateRenderTexture( "Reflection", 512, 512 );
             {
@@ -103,7 +103,7 @@ namespace Axiom.Demos
             reflectionPlane.Normal = Vector3.UnitY;
             reflectionPlane.D = 0;
             MeshManager.Instance.CreatePlane(
-                "ReflectionPlane", reflectionPlane, 1500, 1500, 10, 10, true, 1, 5, 5, Vector3.UnitZ );
+				"ReflectionPlane", ResourceGroupManager.DefaultResourceGroupName, reflectionPlane, 1500, 1500, 10, 10, true, 1, 5, 5, Vector3.UnitZ );
 
             planeEnt = scene.CreateEntity( "Plane", "ReflectionPlane" );
             planeEnt.MaterialName = "Examples/FresnelReflectionRefraction";

@@ -182,20 +182,20 @@ namespace Axiom.Serialization
 				}
 
 				// create
-				gp = GpuProgramManager.Instance.CreateProgram( def.name, def.source, def.progType, def.syntax );
+				gp = GpuProgramManager.Instance.CreateProgram( def.name, scriptContext.groupName, def.source, def.progType, def.syntax );
 			}
 			else
 			{
 				// high level program
 				// validate
-				if ( def.source == string.Empty )
+				if ( def.source == string.Empty && def.language != "unified" )
 				{
 					LogParseError( scriptContext, "Invalid program definition for {0}, you must specify a source file.", def.name );
 				}
 				// create
 				try
 				{
-					HighLevelGpuProgram hgp = HighLevelGpuProgramManager.Instance.CreateProgram( def.name, def.language, def.progType );
+					HighLevelGpuProgram hgp = HighLevelGpuProgramManager.Instance.CreateProgram( def.name, scriptContext.groupName, def.language, def.progType );
 					gp = hgp;
 					// set source file
 					hgp.SourceFile = def.source;
@@ -573,7 +573,7 @@ namespace Axiom.Serialization
 				throw new ArgumentException( string.Format( "A material with name {0} was already created from material script file {1} and a duplicate from {2} cannot be created. "
 					+ "You may need to qualify the material names to prevent this name collision", materialName, sourceFileForAlreadyExistingMaterial, context.filename ) );
 			}
-			context.material = (Material)MaterialManager.Instance.Create( materialName );
+			context.material = (Material)MaterialManager.Instance.Create( materialName, context.groupName );
 			materialSourceFiles.Add( materialName, context.filename );
 
 
@@ -678,7 +678,7 @@ namespace Axiom.Serialization
 			string[] values = parameters.Split( new char[] { ' ', '\t' } );
 
 			// if params is not empty then see if the pass name already exists
-			if ( values.Length > 0 && values[ 0 ].Length > 0 && context.technique.NumPasses > 0 )
+			if ( values.Length > 0 && values[ 0 ].Length > 0 && context.technique.PassCount > 0 )
 			{
 				// find the pass with name = params
 				Pass foundPass = context.technique.GetPass( values[ 0 ] );
@@ -688,7 +688,7 @@ namespace Axiom.Serialization
 					// name was not found so a new pass is needed
 					// position pass level to the end index
 					// a new pass will be created later on
-					context.passLev = context.technique.NumPasses;
+					context.passLev = context.technique.PassCount;
 			}
 			else
 			{
@@ -696,7 +696,7 @@ namespace Axiom.Serialization
 				context.passLev++;
 			}
 
-			if ( context.technique.NumPasses > context.passLev )
+			if ( context.technique.PassCount > context.passLev )
 			{
 				context.pass = context.technique.GetPass( context.passLev );
 			}
@@ -863,7 +863,7 @@ namespace Axiom.Serialization
 			// if a value was found, assign it
 			if ( val != null )
 			{
-				context.pass.CullMode = (CullingMode)val;
+				context.pass.CullingMode = (CullingMode)val;
 			}
 			else
 			{
@@ -883,7 +883,7 @@ namespace Axiom.Serialization
 			// if a value was found, assign it
 			if ( val != null )
 			{
-				context.pass.ManualCullMode = (ManualCullingMode)val;
+				context.pass.ManualCullingMode = (ManualCullingMode)val;
 			}
 			else
 			{
@@ -897,7 +897,16 @@ namespace Axiom.Serialization
 		[MaterialAttributeParser( "depth_bias", MaterialScriptSection.Pass )]
 		protected static bool ParseDepthBias( string parameters, MaterialScriptContext context )
 		{
-			context.pass.DepthBias = int.Parse( parameters );
+			string[] values = parameters.Split( new char[] { ' ', '\t' } );
+
+			float constantBias = float.Parse( values[0] );
+			float slopeScaleBias = 0.0f;
+			if ( values.Length > 1 )
+			{
+				slopeScaleBias = float.Parse( values[1] );
+			}
+
+			context.pass.SetDepthBias( constantBias, slopeScaleBias );
 
 			return false;
 		}
@@ -1114,7 +1123,7 @@ namespace Axiom.Serialization
 		[MaterialAttributeParser( "max_lights", MaterialScriptSection.Pass )]
 		protected static bool ParseMaxLights( string parameters, MaterialScriptContext context )
 		{
-			context.pass.MaxLights = int.Parse( parameters );
+			context.pass.MaxSimultaneousLights = int.Parse( parameters );
 			return false;
 		}
 
@@ -1201,18 +1210,21 @@ namespace Axiom.Serialization
 		{
 			string[] values = parameters.Split( new char[] { ' ', '\t' } );
 
-			if ( values.Length != 4 && values.Length != 5 )
+			if ( values.Length == 4 && values.Length == 5 )
 			{
-				LogParseError( context, "Bad emissive attribute, wrong number of parameters (expected 4 or 5)." );
+				ColorEx specular = new ColorEx();
+				specular.r = StringConverter.ParseFloat( values[ 0 ] );
+				specular.g = StringConverter.ParseFloat( values[ 1 ] );
+				specular.b = StringConverter.ParseFloat( values[ 2 ] );
+				specular.a = ( values.Length == 5 ) ? StringConverter.ParseFloat( values[ 3 ] ) : 1.0f;
+
+				context.pass.Specular = specular;
+
+				context.pass.Shininess = StringConverter.ParseFloat( values[ values.Length - 1 ] );
 			}
 			else
 			{
-				context.pass.Specular = StringConverter.ParseColor( values );
-
-				if ( values.Length == 5 )
-				{
-					context.pass.Shininess = StringConverter.ParseFloat( values[ 4 ] );
-				}
+				LogParseError( context, "Bad specular attribute, wrong number of parameters (expected 4 or 5)." );
 			}
 
 			return false;
@@ -2216,9 +2228,9 @@ namespace Axiom.Serialization
 		/// <summary>
 		///		Parses a Material script file passed in the specified stream.
 		/// </summary>
-		/// <param name="data">Stream containing the material file data.</param></param>
-		/// <param name="fileName">Name of the material file, which will only be used in logging.</param>
-		public void ParseScript( Stream stream, string fileName )
+		/// <param name="data">Stream containing the material file data.</param>
+		/// <param name="groupName">Name of the material group.</param>
+		public void ParseScript( Stream stream, string groupName, string fileName )
 		{
 			StreamReader script = new StreamReader( stream, System.Text.Encoding.ASCII );
 
@@ -2226,6 +2238,7 @@ namespace Axiom.Serialization
 			bool nextIsOpenBrace = false;
 
 			scriptContext.section = MaterialScriptSection.None;
+			scriptContext.groupName = groupName;
 			scriptContext.material = null;
 			scriptContext.technique = null;
 			scriptContext.pass = null;
@@ -2496,6 +2509,7 @@ namespace Axiom.Serialization
 	public class MaterialScriptContext
 	{
 		public MaterialScriptSection section;
+		public string groupName;
 		public Material material;
 		public Technique technique;
 		public Pass pass;

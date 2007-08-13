@@ -50,7 +50,7 @@ namespace Axiom.RenderSystems.OpenGL
 	{
 		#region Construction and Destruction
 
-		internal GLCopyingRTTManager(BaseGLSupport glSupport)
+		internal GLCopyingRTTManager( BaseGLSupport glSupport )
 			: base( glSupport )
 		{
 		}

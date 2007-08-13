@@ -282,7 +282,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public override void Start()
 		{
 			LogManager.Instance.Write( "*** Starting Win32GL Subsystem ***" );
-            _initializeWgl();
+			_initializeWgl();
 		}
 
 		public override void Stop()

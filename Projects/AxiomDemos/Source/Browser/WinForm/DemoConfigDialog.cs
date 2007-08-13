@@ -116,17 +116,19 @@ namespace Axiom.Demos
 			this.tmrRotator.Stop();
 			try
 			{
-				image = ResourceManager.FindCommonResourceData( ( (DemoItem)lstDemos.SelectedItem ).Name + ".jpg" );
+				image = ResourceGroupManager.Instance.OpenResource( ( (DemoItem)lstDemos.SelectedItem ).Name + ".jpg", ResourceGroupManager.DefaultResourceGroupName );
 			}
 			catch ( Exception )
 			{
-				image = ResourceManager.FindCommonResourceData( "ImageNotAvailable.jpg" );
+				image = ResourceGroupManager.Instance.OpenResource( "ImageNotAvailable.jpg", ResourceGroupManager.DefaultResourceGroupName );
 			}
 
 			if ( image != null )
 			{
 				this.picPreview.Image = System.Drawing.Image.FromStream( image, true );
 			}
+
+			image.Close();
 		}
 
 		public Type Demo

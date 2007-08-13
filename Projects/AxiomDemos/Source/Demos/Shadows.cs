@@ -138,7 +138,7 @@ namespace Axiom.Demos
             // change the moving light to a spotlight
             lightNode.SetAutoTracking( true, scene.RootSceneNode );
 
-            Mesh mesh = MeshManager.Instance.Load( "athene.mesh" );
+            Mesh mesh = MeshManager.Instance.Load( "athene.mesh", ResourceGroupManager.DefaultResourceGroupName );
 
             short srcIdx, destIdx;
 
@@ -185,7 +185,7 @@ namespace Axiom.Demos
 
             Plane plane = new Plane( Vector3.UnitY, -100 );
             MeshManager.Instance.CreatePlane(
-                "MyPlane", plane, 1500, 1500, 20, 20, true, 1, 5, 5, Vector3.UnitZ );
+				"MyPlane", ResourceGroupManager.DefaultResourceGroupName, plane, 1500, 1500, 20, 20, true, 1, 5, 5, Vector3.UnitZ );
 
             Entity planeEnt = scene.CreateEntity( "Plane", "MyPlane" );
             planeEnt.MaterialName = "Examples/Rockwall";

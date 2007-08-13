@@ -195,7 +195,7 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				material = MaterialManager.Instance.GetByName( value );
+				material = (Material)MaterialManager.Instance[ value ];
 			}
 		}
 
