@@ -55,7 +55,7 @@ namespace Axiom.RenderSystems.OpenGL
 
         private Sdl.SDL_Surface surface;
 		private IntPtr _hWindow;
-		private SdlContext _glContext;
+		//private SdlContext _glContext;
 
         #endregion Fields
 
