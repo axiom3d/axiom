@@ -792,7 +792,7 @@ namespace Axiom.RenderSystems.DirectX9
 				return;
 
 			if ( _renderSurface != null )
-				_renderSurface.ReleaseGraphics();
+			_renderSurface.ReleaseGraphics();
 
 			if ( _isSwapChain )
 			{
