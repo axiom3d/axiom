@@ -39,6 +39,8 @@ using System.Collections;
 
 using Axiom.Core;
 
+using ResourceHandle = System.UInt64;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
@@ -48,68 +50,314 @@ namespace Axiom.Graphics
 	/// </summary>
 	public abstract class GpuProgram : Resource
 	{
-		#region Fields
+		#region Fields and Properties
+
+		#region BindingDelegate Property
+
+		/// <summary>
+		///    Returns the GpuProgram which should be bound to the pipeline.
+		/// </summary>
+		/// <remarks>
+		///    This method is simply to allow some subclasses of GpuProgram to delegate
+		///    the program which is bound to the pipeline to a delegate, if required.
+		/// </remarks>
+		public virtual GpuProgram BindingDelegate
+		{
+			get
+			{
+				return this;
+			}
+		}
+
+		#endregion BindingDelegate Property
+
+		/// <summary>
+		///    Whether this source is being loaded from file or not.
+		/// </summary>
+		protected bool loadFromFile;
+
+		#region SourceFile Property
 
 		/// <summary>
 		///    The name of the file to load from source (may be blank).
 		/// </summary>
 		protected string fileName;
 		/// <summary>
+		///    Gets/Sets the source file for this program.
+		/// </summary>
+		/// <remarks>
+		///    Setting this will have no effect until you (re)load the program.
+		/// </remarks>
+		public string SourceFile
+		{
+			get
+			{
+				return fileName;
+			}
+			set
+			{
+				fileName = value;
+				source = "";
+				loadFromFile = true;
+			}
+		}
+
+		#endregion SourceFile Property
+
+		#region Source Property
+
+		/// <summary>
 		///    The assembler source of this program.
 		/// </summary>
 		protected string source;
 		/// <summary>
-		///    Whether this source is being loaded from file or not.
+		///    Gets/Sets the source assembler code for this program.
 		/// </summary>
-		protected bool loadFromFile;
+		/// <remarks>
+		///    Setting this will have no effect until you (re)load the program.
+		/// </remarks>
+		public string Source
+		{
+			get
+			{
+				return source;
+			}
+			set
+			{
+				source = value;
+				fileName = "";
+				loadFromFile = false;
+			}
+		}
+
+		#endregion Source Property
+
+		#region SyntaxCode Property
+
 		/// <summary>
 		///    Syntax code (i.e. arbvp1, vs_2_0, etc.)
 		/// </summary>
 		protected string syntaxCode;
 		/// <summary>
+		///    Gets the syntax code of this program (i.e. arbvp1, vs_1_1, etc).
+		/// </summary>
+		public string SyntaxCode
+		{
+			get
+			{
+				return syntaxCode;
+			}
+			set
+			{
+				syntaxCode = value;
+			}
+		}
+
+		#endregion SyntaxCode Property
+
+		#region Type Property
+
+		/// <summary>
 		///    Type of program this represents (vertex or fragment).
 		/// </summary>
 		protected GpuProgramType type;
+		/// <summary>
+		///    Gets the type of GPU program this represents (vertex or fragment).
+		/// </summary>
+		public virtual GpuProgramType Type
+		{
+			get
+			{
+				return type;
+			}
+			set
+			{
+				type = value;
+			}
+		}
+
+		#endregion Type Property
+
+		#region IsSkeletalAnimationIncluded Property
+
 		/// <summary>
 		///		Flag indicating whether this program is being used for hardware skinning.
 		/// </summary>
 		protected bool isSkeletalAnimationSupported;
 		/// <summary>
+		///		Gets/Sets whether a vertex program includes the required instructions
+		///		to perform skeletal animation. 
+		/// </summary>
+		public virtual bool IsSkeletalAnimationIncluded
+		{
+			get
+			{
+				return isSkeletalAnimationSupported;
+			}
+			set
+			{
+				isSkeletalAnimationSupported = value;
+			}
+		}
+
+		#endregion IsSkeletalAnimationIncluded Property
+
+		#region IsMorphAninimationIncluded Property
+
+		/// <summary>
 		///		Does this (vertex) program include morph animation?
 		/// </summary>
 		protected bool isMorphAnimationSupported;
 		/// <summary>
+		///		Gets/Sets whether a vertex program includes the required instructions
+		///		to perform morph animation. 
+		/// </summary>
+		public virtual bool IsMorphAnimationIncluded
+		{
+			get
+			{
+				return isMorphAnimationSupported;
+			}
+			set
+			{
+				isMorphAnimationSupported = value;
+			}
+		}
+
+		#endregion IsMorphAninimationIncluded Property
+
+		#region PoseAnimationCount Property
+
+		/// <summary>
 		///		Does this (vertex) program include morph animation?
 		/// </summary>
 		protected ushort poseAnimationCount;
+		/// <summary>
+		///		Gets/Sets whether a vertex program includes the required instructions
+		///		to perform pose animation. 
+		/// </summary>
+		public virtual ushort PoseAnimationCount
+		{
+			get
+			{
+				return poseAnimationCount;
+			}
+			set
+			{
+				poseAnimationCount = value;
+			}
+		}
+
+		#endregion PoseAnimationCount Property
+
+		#region DefaultParameters Property
 
 		/// <summary>
 		///		List of default parameters, as gathered from the program definition.
 		/// </summary>
 		protected GpuProgramParameters defaultParams;
 		/// <summary>
+		///		List of default parameters, as gathered from the program definition.
+		/// </summary>
+		public virtual GpuProgramParameters DefaultParameters
+		{
+			get
+			{
+				if ( defaultParams == null )
+				{
+					defaultParams = this.CreateParameters();
+				}
+				return defaultParams;
+			}
+		}
+
+		#endregion DefaultParameters Property
+
+		#region PassSurfaceAndLightStates Property
+
+		/// <summary>
 		///		Does this program want light states passed through fixed pipeline?
 		/// </summary>
 		protected bool passSurfaceAndLightStates;
+		/// <summary>
+		///		Sets whether a vertex program requires light and material states to be passed
+		///		to through fixed pipeline low level API rendering calls.
+		/// </summary>
+		/// <remarks>
+		///		If this is set to true, Axiom will pass all active light states to the fixed function
+		///		pipeline.  This is useful for high level shaders like GLSL that can read the OpenGL
+		///		light and material states.  This way the user does not have to use autoparameters to 
+		///		pass light position, color etc.
+		/// </remarks>
+		public virtual bool PassSurfaceAndLightStates
+		{
+			get
+			{
+				return passSurfaceAndLightStates;
+			}
+			set
+			{
+				passSurfaceAndLightStates = value;
+			}
+		}
 
-		#endregion Fields
+		#endregion PassSurfaceAndLightStates Property
 
-		#region Constructors
+		#region IsSupported Property
+
+		/// <summary>
+		///    Returns whether this program can be supported on the current renderer and hardware.
+		/// </summary>
+		public virtual bool IsSupported
+		{
+			get
+			{
+				// If skeletal animation is being done, we need support for UBYTE4
+				if ( this.IsSkeletalAnimationIncluded &&
+					!Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexFormatUByte4 ) )
+				{
+
+					return false;
+				}
+
+				return GpuProgramManager.Instance.IsSyntaxSupported( syntaxCode );
+			}
+		}
+
+		#endregion IsSupported Property
+
+		#region SamplerCount Property
+
+		/// <summary>
+		/// Returns the maximum number of samplers that this fragment program has access
+		/// to, based on the fragment program profile it uses.
+		/// </summary>
+		public abstract int SamplerCount
+		{
+			get;
+		}
+
+		#endregion SamplerCount Property
+
+		#endregion Fields and Properties
+
+		#region Construction and Destruction
 
 		/// <summary>
 		///    Constructor for creating
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="type"></param>
-		public GpuProgram( string name, GpuProgramType type, string syntaxCode )
+		public GpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+			: base( parent, name, handle, group, isManual, loader )
 		{
-			this.type = type;
-			this.name = name;
-			this.syntaxCode = syntaxCode;
+			this.Name = name;
+
+			this.type = GpuProgramType.Vertex;
 			this.loadFromFile = true;
 		}
 
-		#endregion Constructors
+		#endregion Construction and Destruction
 
 		#region Methods
 
@@ -139,9 +387,9 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Loads this Gpu Program.
 		/// </summary>
-		public override void Load()
+		protected override void load()
 		{
-			if ( isLoaded )
+			if ( IsLoaded )
 			{
 				Unload();
 			}
@@ -149,7 +397,7 @@ namespace Axiom.Graphics
 			// load from file and get the source string from it
 			if ( loadFromFile )
 			{
-				Stream stream = GpuProgramManager.Instance.FindResourceData( fileName );
+				Stream stream = ResourceGroupManager.Instance.OpenResource( fileName, this.Group );
 				StreamReader reader = new StreamReader( stream, System.Text.Encoding.ASCII );
 				source = reader.ReadToEnd();
 			}
@@ -157,8 +405,12 @@ namespace Axiom.Graphics
 			// call polymorphic load to read source
 			LoadFromSource();
 
-			isLoaded = true;
+			IsLoaded = true;
 		}
+
+        protected override void unload()
+        {
+        }
 
 		/// <summary>
 		///    Method which must be implemented by subclasses, loads the program from source.
@@ -167,195 +419,5 @@ namespace Axiom.Graphics
 
 		#endregion
 
-		#region Properties
-
-		/// <summary>
-		///    Returns the GpuProgram which should be bound to the pipeline.
-		/// </summary>
-		/// <remarks>
-		///    This method is simply to allow some subclasses of GpuProgram to delegate
-		///    the program which is bound to the pipeline to a delegate, if required.
-		/// </remarks>
-		public virtual GpuProgram BindingDelegate
-		{
-			get
-			{
-				return this;
-			}
-		}
-
-		public virtual GpuProgramParameters DefaultParameters
-		{
-			get
-			{
-				if ( defaultParams == null )
-				{
-					defaultParams = this.CreateParameters();
-				}
-				return defaultParams;
-			}
-		}
-
-		/// <summary>
-		///		Gets/Sets whether a vertex program includes the required instructions
-		///		to perform skeletal animation. 
-		/// </summary>
-		public virtual bool IsSkeletalAnimationIncluded
-		{
-			get
-			{
-				return isSkeletalAnimationSupported;
-			}
-			set
-			{
-				isSkeletalAnimationSupported = value;
-			}
-		}
-
-		/// <summary>
-		///		Gets/Sets whether a vertex program includes the required instructions
-		///		to perform morph animation. 
-		/// </summary>
-		public virtual bool IsMorphAnimationIncluded
-		{
-			get
-			{
-				return isMorphAnimationSupported;
-			}
-			set
-			{
-				isMorphAnimationSupported = value;
-			}
-		}
-
-		/// <summary>
-		///		Gets/Sets whether a vertex program includes the required instructions
-		///		to perform pose animation. 
-		/// </summary>
-		public virtual ushort PoseAnimationCount
-		{
-			get
-			{
-				return poseAnimationCount;
-			}
-			set
-			{
-				poseAnimationCount = value;
-			}
-		}
-
-		/// <summary>
-		///    Returns whether this program can be supported on the current renderer and hardware.
-		/// </summary>
-		public virtual bool IsSupported
-		{
-			get
-			{
-				// If skeletal animation is being done, we need support for UBYTE4
-				if ( this.IsSkeletalAnimationIncluded &&
-					!Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexFormatUByte4 ) )
-				{
-
-					return false;
-				}
-
-				return GpuProgramManager.Instance.IsSyntaxSupported( syntaxCode );
-			}
-		}
-
-		/// <summary>
-		///		Sets whether a vertex program requires light and material states to be passed
-		///		to through fixed pipeline low level API rendering calls.
-		/// </summary>
-		/// <remarks>
-		///		If this is set to true, Axiom will pass all active light states to the fixed function
-		///		pipeline.  This is useful for high level shaders like GLSL that can read the OpenGL
-		///		light and material states.  This way the user does not have to use autoparameters to 
-		///		pass light position, color etc.
-		/// </remarks>
-		public virtual bool PassSurfaceAndLightStates
-		{
-			get
-			{
-				return passSurfaceAndLightStates;
-			}
-			set
-			{
-				passSurfaceAndLightStates = value;
-			}
-		}
-
-		/// <summary>
-		///    Gets/Sets the source assembler code for this program.
-		/// </summary>
-		/// <remarks>
-		///    Setting this will have no effect until you (re)load the program.
-		/// </remarks>
-		public string Source
-		{
-			get
-			{
-				return source;
-			}
-			set
-			{
-				source = value;
-				fileName = "";
-				loadFromFile = false;
-			}
-		}
-
-		/// <summary>
-		///    Gets/Sets the source file for this program.
-		/// </summary>
-		/// <remarks>
-		///    Setting this will have no effect until you (re)load the program.
-		/// </remarks>
-		public string SourceFile
-		{
-			get
-			{
-				return fileName;
-			}
-			set
-			{
-				fileName = value;
-				source = "";
-				loadFromFile = true;
-			}
-		}
-
-		/// <summary>
-		///    Gets the syntax code of this program (i.e. arbvp1, vs_1_1, etc).
-		/// </summary>
-		public string SyntaxCode
-		{
-			get
-			{
-				return syntaxCode;
-			}
-		}
-
-		/// <summary>
-		///    Gets the type of GPU program this represents (vertex or fragment).
-		/// </summary>
-		public GpuProgramType Type
-		{
-			get
-			{
-				return type;
-			}
-		}
-
-		/// <summary>
-		/// Returns the maximum number of samplers that this fragment program has access
-		/// to, based on the fragment program profile it uses.
-		/// </summary>
-		public abstract int SamplerCount
-		{
-			get;
-		}
-
-		#endregion
 	}
 }

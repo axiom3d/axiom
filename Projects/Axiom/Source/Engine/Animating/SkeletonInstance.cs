@@ -78,7 +78,7 @@ namespace Axiom.Animating
 		/// </summary>
 		/// <param name="masterCopy"></param>
 		public SkeletonInstance( Skeleton masterCopy )
-			: base( "" )
+			: base( )
 		{
 			this.skeleton = masterCopy;
 		}
@@ -239,12 +239,12 @@ namespace Axiom.Animating
 		/// <summary>
 		///		Overriden to copy/clone the bones of the master skeleton.
 		/// </summary>
-		public override void Load()
+		protected override void load()
 		{
 			nextAutoHandle = skeleton.nextAutoHandle;
 			nextTagPointAutoHandle = 0;
 
-			this.blendMode = skeleton.BlendMode;
+			this.BlendMode = skeleton.BlendMode;
 
 			// copy bones starting at the roots
 			for ( int i = 0; i < skeleton.RootBoneCount; i++ )
@@ -264,7 +264,7 @@ namespace Axiom.Animating
 				this.CreateAttachmentPoint( ap.Name, parentBone.Handle, ap.Orientation, ap.Position );
 			}
 
-			isLoaded = true;
+			IsLoaded = true;
 		}
 
 		/// <summary>

@@ -37,170 +37,185 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
+using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.RenderSystems.OpenGL;
 
 using Tao.OpenGl;
 
+using ResourceHandle = System.UInt64;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGL
 {
-    /// <summary>
-    /// Summary description for ARBGpuProgram.
-    /// </summary>
-    public class ARBGpuProgram : GLGpuProgram
-    {
-        #region Constructor
+	/// <summary>
+	/// Summary description for ARBGpuProgram.
+	/// </summary>
+	public class ARBGpuProgram : GLGpuProgram
+	{
+		#region Constructor
 
-        public ARBGpuProgram( string name, GpuProgramType type, string syntaxCode )
-            : base( name, type, syntaxCode )
-        {
+		public ARBGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+			: base( parent, name, handle, group, isManual, loader )
+		{
+			// generate a new program
+			Gl.glGenProgramsARB( 1, out programId );
+		}
 
-            // set the type of program for ARB
-            programType = ( type == GpuProgramType.Vertex ) ? Gl.GL_VERTEX_PROGRAM_ARB : Gl.GL_FRAGMENT_PROGRAM_ARB;
+		#endregion Constructor
 
-            // generate a new program
-            Gl.glGenProgramsARB( 1, out programId );
-        }
+		#region Finalizer
 
-        #endregion Constructor
+		~ARBGpuProgram()
+		{
+			if ( _handle.IsAllocated )
+			{
+				//GCHandle's a value type, valid even inside the scope of a a finalizer
+				_handle.Free();
+			}
 
-        #region Finalizer
+			//Gl.glDeleteProgramsARB(1, ref programId);
+		}
 
-        ~ARBGpuProgram()
-        {
-            if (_handle.IsAllocated)
-            {
-                //GCHandle's a value type, valid even inside the scope of a a finalizer
-                _handle.Free();
-            }
-            
-            //Gl.glDeleteProgramsARB(1, ref programId);
-        }
+		#endregion Finalizer
 
-        #endregion Finalizer
+		#region Private
 
-        #region Private
+		private GCHandle _handle; //handle to managed data
 
-        private GCHandle _handle; //handle to managed data
+		#endregion Private
 
-        #endregion Private
+		#region Implementation of GpuProgram
 
-        #region Implementation of GpuProgram
+		/// <summary>
+		///     Load Assembler gpu program source.
+		/// </summary>
+		protected override void LoadFromSource()
+		{
+			Gl.glBindProgramARB( programType, programId );
 
-        /// <summary>
-        ///     Load Assembler gpu program source.
-        /// </summary>
-        protected override void LoadFromSource()
-        {
-            Gl.glBindProgramARB( programType, programId );
+			// MONO: Cannot compile programs when passing in the string as is for whatever reason.
+			// would get "Invalid vertex program header", which I assume means the source got mangled along the way
+			byte[] bytes = Encoding.ASCII.GetBytes( source );
+			// TODO: We pin the managed 'bytes' to get a pointer to data and get sure they won't move around in memory.
+			//       In case glProgramStringARB() doesn't store the pointer internally, we better free the handle yet in this method,
+			//       or rather utilize a fixed (byte* sourcePtr = bytes) statement, which cares for unpinning the data even in case
+			//       of an exception, where GCHandle.Free() would be missed without try-finally.
 
-            // MONO: Cannot compile programs when passing in the string as is for whatever reason.
-            // would get "Invalid vertex program header", which I assume means the source got mangled along the way
-            byte[] bytes = Encoding.ASCII.GetBytes( source );
-            // TODO: We pin the managed 'bytes' to get a pointer to data and get sure they won't move around in memory.
-            //       In case glProgramStringARB() doesn't store the pointer internally, we better free the handle yet in this method,
-            //       or rather utilize a fixed (byte* sourcePtr = bytes) statement, which cares for unpinning the data even in case
-            //       of an exception, where GCHandle.Free() would be missed without try-finally.
+			//       In case the above isn't possible, the theory also says that if we have a handle to managed data (except Weak, WeakTrackResurrection handle types)
+			//       we should be implementing a finalizer to ensure freeing the handle as that can be treated as an unmanaged resource from this point of view.
+			//       I decided not to extend this class with IDisposable for several reasons, including class's user contract,
+			//       and the fact that this might be a temporary issue only. So for now only a finalizer will take care for avoiding memory leaks (although minor ones in this case).
+			//       So recheck the MONO issue later, the above comment talks about passing the string directly, btw. the method seems to take byte[] as well (if that would work eventually...).
+			if ( _handle.IsAllocated )
+			{
+				_handle.Free();
+			}
+			_handle = GCHandle.Alloc( bytes, GCHandleType.Pinned );
+			IntPtr sourcePtr = _handle.AddrOfPinnedObject();
 
-            //       In case the above isn't possible, the theory also says that if we have a handle to managed data (except Weak, WeakTrackResurrection handle types)
-            //       we should be implementing a finalizer to ensure freeing the handle as that can be treated as an unmanaged resource from this point of view.
-            //       I decided not to extend this class with IDisposable for several reasons, including class's user contract,
-            //       and the fact that this might be a temporary issue only. So for now only a finalizer will take care for avoiding memory leaks (although minor ones in this case).
-            //       So recheck the MONO issue later, the above comment talks about passing the string directly, btw. the method seems to take byte[] as well (if that would work eventually...).
-            if (_handle.IsAllocated)
-            {
-                _handle.Free();
-            }
-            _handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
-            IntPtr sourcePtr = _handle.AddrOfPinnedObject();
+			Gl.glProgramStringARB( programType, Gl.GL_PROGRAM_FORMAT_ASCII_ARB, source.Length, sourcePtr );
 
-            Gl.glProgramStringARB( programType, Gl.GL_PROGRAM_FORMAT_ASCII_ARB, source.Length, sourcePtr );
+			// check for any errors
+			if ( Gl.glGetError() == Gl.GL_INVALID_OPERATION )
+			{
+				int pos;
+				string error;
 
-            // check for any errors
-            if ( Gl.glGetError() == Gl.GL_INVALID_OPERATION )
-            {
-                int pos;
-                string error;
-
-                Gl.glGetIntegerv( Gl.GL_PROGRAM_ERROR_POSITION_ARB, out pos );
+				Gl.glGetIntegerv( Gl.GL_PROGRAM_ERROR_POSITION_ARB, out pos );
 				//error = Gl.glGetString( Gl.GL_PROGRAM_ERROR_STRING_ARB ); // TAO 2.0
-                error = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_PROGRAM_ERROR_STRING_ARB ) );
+				error = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_PROGRAM_ERROR_STRING_ARB ) );
 
-                throw new Exception( string.Format( "Error on line {0} in program '{1}'\nError: {2}", pos, name, error ) );
-            }
-        }
+				throw new Exception( string.Format( "Error on line {0} in program '{1}'\nError: {2}", pos, Name, error ) );
+			}
+		}
 
-        /// <summary>
-        ///     Unload GL gpu programs.
-        /// </summary>
-        public override void Unload()
-        {
+		/// <summary>
+		///     Unload GL gpu programs.
+		/// </summary>
+		public override void Unload()
+		{
 
-            if ( isLoaded )
-            {
-                if (_handle.IsAllocated)
-                {
-                    _handle.Free();
-                }
+			if ( IsLoaded )
+			{
+				if ( _handle.IsAllocated )
+				{
+					_handle.Free();
+				}
 
-                Gl.glDeleteProgramsARB( 1, ref programId );
-                base.Unload();
+				Gl.glDeleteProgramsARB( 1, ref programId );
+				base.Unload();
 
-                isLoaded = false;
-            }
-        }
+				IsLoaded = false;
+			}
+		}
 
-        #endregion Implementation of GpuProgram
+		public override GpuProgramType Type
+		{
+			get
+			{
+				return base.Type;
+			}
+			set
+			{
+				base.Type = value;
+				programType = ( Type == GpuProgramType.Vertex ) ? Gl.GL_VERTEX_PROGRAM_ARB : Gl.GL_FRAGMENT_PROGRAM_ARB;
+			}
+		}
 
-        #region Implementation of GLGpuProgram
+		#endregion Implementation of GpuProgram
 
-        public override void Bind()
-        {
-            Gl.glEnable( programType );
-            Gl.glBindProgramARB( programType, programId );
-        }
+		#region Implementation of GLGpuProgram
 
-        public override void Unbind()
-        {
-            Gl.glBindProgramARB( programType, 0 );
-            Gl.glDisable( programType );
-        }
+		public override void Bind()
+		{
+			Gl.glEnable( programType );
+			Gl.glBindProgramARB( programType, programId );
+		}
 
-        public override void BindParameters( GpuProgramParameters parms )
-        {
-            if ( parms.HasFloatConstants )
-            {
-                for ( int index = 0; index < parms.FloatConstantCount; index++ )
-                {
-                    GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
+		public override void Unbind()
+		{
+			Gl.glBindProgramARB( programType, 0 );
+			Gl.glDisable( programType );
+		}
 
-                    if ( entry.isSet )
-                    {
-                        // MONO: the 4fv version does not work
-                        float[] vals = entry.val;
-                        Gl.glProgramLocalParameter4fARB( programType, index, vals[ 0 ], vals[ 1 ], vals[ 2 ], vals[ 3 ] );
-                    }
-                }
-            }
-        }
+		public override void BindParameters( GpuProgramParameters parms )
+		{
+			if ( parms.HasFloatConstants )
+			{
+				for ( int index = 0; index < parms.FloatConstantCount; index++ )
+				{
+					GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
 
-        #endregion Implementation of GLGpuProgram
-    }
+					if ( entry.isSet )
+					{
+						// MONO: the 4fv version does not work
+						float[] vals = entry.val;
+						Gl.glProgramLocalParameter4fARB( programType, index, vals[ 0 ], vals[ 1 ], vals[ 2 ], vals[ 3 ] );
+					}
+				}
+			}
+		}
 
-    /// <summary>
-    ///     Creates a new ARB gpu program.
-    /// </summary>
-    public class ARBGpuProgramFactory : IOpenGLGpuProgramFactory
-    {
-        #region IOpenGLGpuProgramFactory Implementation
+		#endregion Implementation of GLGpuProgram
+	}
 
-        public GLGpuProgram Create( string name, GpuProgramType type, string syntaxCode )
-        {
-            return new ARBGpuProgram( name, type, syntaxCode );
-        }
+	/// <summary>
+	///     Creates a new ARB gpu program.
+	/// </summary>
+	public class ARBGpuProgramFactory : IOpenGLGpuProgramFactory
+	{
+		#region IOpenGLGpuProgramFactory Implementation
 
-        #endregion IOpenGLGpuProgramFactory Implementation
-    }
+		public GLGpuProgram Create( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
+		{
+			GLGpuProgram ret = new ARBGpuProgram( parent, name, handle, group, isManual, loader );
+			ret.Type = type;
+			ret.SyntaxCode = syntaxCode;
+			return ret;
+		}
+
+		#endregion IOpenGLGpuProgramFactory Implementation
+	}
 }

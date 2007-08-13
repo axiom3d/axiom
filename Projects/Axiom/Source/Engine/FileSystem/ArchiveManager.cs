@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -35,105 +36,180 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-using System.Collections.Specialized;
-
-using Axiom.Core;
 using System.Collections.Generic;
 
-#endregion NAmespace Declarations
+using Axiom.Core;
+
+#endregion Namespace Declarations
 
 namespace Axiom.FileSystem
 {
-	/// <summary>
-	///     ResourceManager specialization to handle Archive plug-ins.
-	/// </summary>
-	public sealed class ArchiveManager : IDisposable
-	{
-		#region Singleton implementation
+    /// <summary>
+    ///  This class manages the available ArchiveFactory plugins.
+    /// </summary>
+    /// <ogre name="ArchiveManager">
+    ///     <file name="OgreArchiveManager.h"   revision="1.8.2.1" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+    ///     <file name="OgreArchiveManager.cpp" revision="1.14.2.1" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+    /// </ogre> 
+    public sealed class ArchiveManager : Singleton<ArchiveManager>
+    {
+        #region Fields and Properties
+
+        /// <summary>
+        /// The list of factories
+        /// </summary>
+        private Dictionary<string, ArchiveFactory> _factories = new Dictionary<string,ArchiveFactory>();
+        private Dictionary<string, Archive> _archives = new Dictionary<string, Archive>();
+
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Internal constructor.  This class cannot be instantiated externally.
+        /// </summary>
+        private ArchiveManager()
+        {
+        }
+
+        #endregion Constructor
+
+        #region Methods
+
+        /// <summary>
+        /// Opens an archive for file reading.
+        /// </summary>
+        /// <remarks>
+        /// The archives are created using class factories within
+        /// extension libraries.
+        /// </remarks>
+        /// <param name="filename">The filename that will be opened</param>
+        /// <param name="archiveType">The library that contains the data-handling code</param>
+        /// <returns>
+        /// If the function succeeds, a valid pointer to an Archive object is returned.
+        /// <para/>
+        /// If the function fails, an exception is thrown.
+        /// </returns>
+        public Archive Load( string filename, string archiveType )
+        {
+            Archive arch = null;
+			if ( !_archives.TryGetValue( filename, out arch ) )
+            {
+                // Search factories
+				ArchiveFactory fac = null;
+                if ( !_factories.TryGetValue( archiveType , out fac ) )
+                    throw new AxiomException("Cannot find an archive factory to deal with archive of type {0}", archiveType );
+
+                arch = fac.CreateInstance(filename);
+                arch.Load();
+                _archives.Add(filename,arch);
+
+            }   
+            return arch;
+        }
+
+
+        #region Unload Method
+
+        /// <summary>
+        ///  Unloads an archive.
+        ///  </summary>
+        ///  <remarks>
+        /// You must ensure that this archive is not being used before removing it.
+        ///  </remarks>
+        /// <param name="arch">The Archive to unload</param>
+        public void Unload( Archive arch )
+        {
+            Unload( arch.Name );
+        }
+
+        /// <summary>
+        ///  Unloads an archive.
+        ///  </summary>
+        ///  <remarks>
+        /// You must ensure that this archive is not being used before removing it.
+        ///  </remarks>
+        /// <param name="arch">The Archive to unload</param>
+        public void Unload( string filename )
+        {
+            Archive arch = _archives[filename];
+
+            if ( arch != null )
+            {
+                arch.Unload();
+
+                ArchiveFactory fac = _factories[ arch.Type ];
+                if ( fac == null )
+					throw new AxiomException( "Cannot find an archive factory to deal with archive of type {0}", arch.Type );
+                fac.DestroyInstance( arch );
+                _archives.Remove( arch.Name );
+            }
+        }
+
+        #endregion Unload Method
+
+        /// <summary>
+        /// Add an archive factory to the list
+        /// </summary>
+        /// <param name="type">The type of the factory (zip, file, etc.)</param>
+        /// <param name="factory">The factory itself</param>
+        public void AddArchiveFactory( ArchiveFactory factory )
+        {
+            if ( _factories.ContainsKey(factory.Type) == true )
+            {
+                throw new AxiomException( "Attempted to add the {0} factory to ArchiveManager more than once.", factory.Type );
+            }
+
+            _factories.Add( factory.Type, factory );
+            LogManager.Instance.Write("ArchiveFactory for archive type {0} registered.", factory.Type);
+
+        }
+
+        #endregion Methods
+
+        #region Singleton<ArchiveManager> Implementation
 
 		/// <summary>
-		///     Singleton instance of this class.
-		/// </summary>
-		private static ArchiveManager instance;
-
-		/// <summary>
-		///     Internal constructor.  This class cannot be instantiated externally.
-		/// </summary>
-		internal ArchiveManager()
+        ///     Called when the engine is shutting down.
+        /// </summary>
+		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( instance == null )
+			if ( !isDisposed )
 			{
-				instance = this;
+				if ( disposeManagedResources )
+				{
+					// Unload & delete resources in turn
+					foreach ( KeyValuePair<string, Archive> arch in _archives )
+					{
+						// Unload
+						arch.Value.Unload();
 
-				// add zip and folder factories by default
-				instance.AddArchiveFactory( new ZipArchiveFactory() );
-				instance.AddArchiveFactory( new FolderFactory() );
+						// Find factory to destroy
+						ArchiveFactory fac = _factories[ arch.Value.Type ];
+						if ( fac == null )
+						{
+							// Factory not found
+							throw new AxiomException( "Cannot find an archive factory to deal with archive of type {0}", arch.Value.Type );
+						}
+						fac.DestroyInstance( arch.Value );
+
+					}
+
+					// Empty the list
+					_archives.Clear();
+
+				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
 			}
+			isDisposed = true;
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
 		}
 
-		/// <summary>
-		///     Gets the singleton instance of this class.
-		/// </summary>
-		public static ArchiveManager Instance
-		{
-			get
-			{
-				return instance;
-			}
-		}
-
-		#endregion Singleton implementation
-
-		#region Fields
-
-		/// <summary>
-		/// The list of factories
-		/// </summary>
-        private Dictionary<string, IArchiveFactory> factories = new Dictionary<string, IArchiveFactory>( new CaseInsensitiveStringComparer() );
-
-		#endregion
-
-		#region Methods
-
-		/// <summary>
-		/// Add an archive factory to the list
-		/// </summary>
-		/// <param name="type">The type of the factory (zip, file, etc.)</param>
-		/// <param name="factory">The factory itself</param>
-		public void AddArchiveFactory( IArchiveFactory factory )
-		{
-			if ( factories.ContainsKey( factory.Type ) )
-			{
-				throw new AxiomException( "Attempted to add the {0} factory to ArchiveManager more than once.", factory.Type );
-			}
-
-			factories.Add( factory.Type, factory );
-		}
-
-		/// <summary>
-		/// Get the archive factory
-		/// </summary>
-		/// <param name="type">The type of factory to get</param>
-		/// <returns>The corresponding factory, or null if no factory</returns>
-		public IArchiveFactory GetArchiveFactory( string type )
-		{
-			return (IArchiveFactory)factories[ type ];
-		}
-
-		#endregion Methods
-
-		#region IDisposable Implementation
-
-		/// <summary>
-		///     Called when the engine is shutting down.
-		/// </summary>
-		public void Dispose()
-		{
-			factories.Clear();
-
-			instance = null;
-		}
-
-		#endregion IDisposable Implementation
+		#endregion Singleton<ArchiveManager> Implementation
 	}
 }

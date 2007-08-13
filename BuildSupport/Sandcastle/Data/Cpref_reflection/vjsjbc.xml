@@ -1,0 +1,905 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<reflection>
+  <assemblies>
+    <assembly name="vjsjbc" version="2.0.0.0" culture="" key="002400000480000094000000060200000024000052534131000400000100010007D1FA57C4AED9F0A32E84AA0FAEFD0DE9E8FD6AEC8F87FB03766C834C99921EB23BE79AD9D5DCC1DD9AD236132102900B723CF980957FC4E177108FC607774F29E8320E92EA05ECE4E821C0A5EFE8F1645C4C0C93C1AB99285D622CAA652C1DFAD63D745D6F2DE5F17E5EAF0FC4963D261C8A12436518206DC093344D5AD293" hash="SHA1">
+      <attributes>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyKeyFileAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>f:\RTM\Tools\devdiv\FinalPublicKey.snk</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDelaySignAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDescriptionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>vjsjbc.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.CompilationRelaxationsAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>8</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Diagnostics.DebuggableAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Diagnostics.DebuggableAttribute.DebuggingModes" ref="false">
+              <type api="T:System.Diagnostics.DebuggableAttribute" ref="true" />
+            </type>
+            <enumValue>
+              <field name="IgnoreSymbolStoreSequencePoints" />
+            </enumValue>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.VJSharpAssemblyAttribute" ref="true" />
+          <argument>
+            <type api="T:com.ms.vjsharp.cor.VJSharpAssemblyGeneratorType" ref="false" />
+            <enumValue>
+              <field name="VJSHARP_COMPILER" />
+            </enumValue>
+          </argument>
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>1.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.CLSCompliantAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.AllowPartiallyTrustedCallersAttribute" ref="true" />
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyTitleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>vjsjbc.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCopyrightAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>© Microsoft Corporation.  All rights reserved.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.NeutralResourcesLanguageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>en-US</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCompanyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft Corporation</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyProductAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft® .NET Framework</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDefaultAliasAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>vjsjbc.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyFileVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.50727.42</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyInformationalVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.50727.42</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.SatelliteContractVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.0.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.SecurityPermissionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="RequestMinimum" />
+            </enumValue>
+          </argument>
+          <assignment name="Flags">
+            <type api="T:System.Security.Permissions.SecurityPermissionFlag" ref="false" />
+            <enumValue>
+              <field name="Execution" />
+            </enumValue>
+          </assignment>
+        </attribute>
+      </attributes>
+    </assembly>
+  </assemblies>
+  <apis>
+    <api id="R:Project">
+      <apidata group="root" pseudo="true" />
+      <elements>
+        <element api="N:netscape.javascript" />
+      </elements>
+    </api>
+    <api id="N:netscape.javascript">
+      <apidata name="netscape.javascript" group="namespace" />
+      <elements>
+        <element api="T:netscape.javascript.JSException" />
+        <element api="T:netscape.javascript.JSObject" />
+      </elements>
+    </api>
+    <api id="T:netscape.javascript.JSException">
+      <apidata name="JSException" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="true" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:java.lang.RuntimeException" ref="true" />
+          <type api="T:java.lang.Exception" ref="true" />
+          <type api="T:java.lang.Throwable" ref="true" />
+          <type api="T:System.Exception" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:netscape.javascript.JSException.#ctor" />
+        <element api="M:netscape.javascript.JSException.#ctor(System.String,System.Exception)" />
+        <element api="M:netscape.javascript.JSException.#ctor(System.String)" />
+        <element api="M:netscape.javascript.JSException.#ctor(System.String,System.String,System.Int32,System.String,System.Int32)" />
+        <element api="M:netscape.javascript.JSException.MemberwiseClone" />
+        <element api="M:java.lang.Throwable.fillInStackTrace">
+          <apidata name="fillInStackTrace" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:java.lang.Throwable" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="vjslib" module="vjslib" />
+            <namespace api="N:java.lang" />
+            <type api="T:java.lang.Throwable" ref="true" />
+          </containers>
+        </element>
+        <element api="M:java.lang.Throwable.getLocalizedMessage">
+          <apidata name="getLocalizedMessage" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="vjslib" module="vjslib" />
+            <namespace api="N:java.lang" />
+            <type api="T:java.lang.Throwable" ref="true" />
+          </containers>
+        </element>
+        <element api="M:java.lang.Throwable.getMessage">
+          <apidata name="getMessage" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="vjslib" module="vjslib" />
+            <namespace api="N:java.lang" />
+            <type api="T:java.lang.Throwable" ref="true" />
+          </containers>
+        </element>
+        <element api="M:java.lang.Throwable.printStackTrace">
+          <apidata name="printStackTrace" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" overload="true" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <containers>
+            <library assembly="vjslib" module="vjslib" />
+            <namespace api="N:java.lang" />
+            <type api="T:java.lang.Throwable" ref="true" />
+          </containers>
+        </element>
+        <element api="M:java.lang.Throwable.printStackTrace(java.io.PrintStream)">
+          <apidata name="printStackTrace" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" overload="true" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="s">
+              <type api="T:java.io.PrintStream" ref="true" />
+            </parameter>
+          </parameters>
+          <containers>
+            <library assembly="vjslib" module="vjslib" />
+            <namespace api="N:java.lang" />
+            <type api="T:java.lang.Throwable" ref="true" />
+          </containers>
+        </element>
+        <element api="M:java.lang.Throwable.printStackTrace(java.io.PrintWriter)">
+          <apidata name="printStackTrace" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" overload="true" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="wr">
+              <type api="T:java.io.PrintWriter" ref="true" />
+            </parameter>
+          </parameters>
+          <containers>
+            <library assembly="vjslib" module="vjslib" />
+            <namespace api="N:java.lang" />
+            <type api="T:java.lang.Throwable" ref="true" />
+          </containers>
+        </element>
+        <element api="M:java.lang.Throwable.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Exception.ToString">
+              <type api="T:System.Exception" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="vjslib" module="vjslib" />
+            <namespace api="N:java.lang" />
+            <type api="T:java.lang.Throwable" ref="true" />
+          </containers>
+        </element>
+        <element api="M:java.lang.Throwable.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+          <apidata name="GetObjectData" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:System.Exception.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+              <type api="T:System.Exception" ref="true" />
+            </member>
+          </overrides>
+          <parameters>
+            <parameter name="info">
+              <type api="T:System.Runtime.Serialization.SerializationInfo" ref="true" />
+            </parameter>
+            <parameter name="context">
+              <type api="T:System.Runtime.Serialization.StreamingContext" ref="false" />
+            </parameter>
+          </parameters>
+          <containers>
+            <library assembly="vjslib" module="vjslib" />
+            <namespace api="N:java.lang" />
+            <type api="T:java.lang.Throwable" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Exception.GetBaseException">
+          <apidata name="GetBaseException" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.Exception" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Exception" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Exception.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="true" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Exception" ref="true" />
+          </containers>
+        </element>
+        <element api="P:System.Exception.Message">
+          <apidata name="Message" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <propertydata get="true" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Exception" ref="true" />
+          </containers>
+        </element>
+        <element api="P:System.Exception.Data">
+          <apidata name="Data" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <propertydata get="true" />
+          <returns>
+            <type api="T:System.Collections.IDictionary" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Exception" ref="true" />
+          </containers>
+        </element>
+        <element api="P:System.Exception.InnerException">
+          <apidata name="InnerException" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="true" />
+          <propertydata get="true" />
+          <returns>
+            <type api="T:System.Exception" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Exception" ref="true" />
+          </containers>
+        </element>
+        <element api="P:System.Exception.TargetSite">
+          <apidata name="TargetSite" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="true" />
+          <propertydata get="true" />
+          <returns>
+            <type api="T:System.Reflection.MethodBase" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Exception" ref="true" />
+          </containers>
+        </element>
+        <element api="P:System.Exception.StackTrace">
+          <apidata name="StackTrace" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <propertydata get="true" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Exception" ref="true" />
+          </containers>
+        </element>
+        <element api="P:System.Exception.HelpLink">
+          <apidata name="HelpLink" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Exception" ref="true" />
+          </containers>
+        </element>
+        <element api="P:System.Exception.Source">
+          <apidata name="Source" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Exception" ref="true" />
+          </containers>
+        </element>
+        <element api="P:System.Exception.HResult">
+          <apidata name="HResult" group="member" subgroup="property" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Exception" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" overload="true" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Finalize">
+          <apidata name="Finalize" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:System.Runtime.ConstrainedExecution.ReliabilityContractAttribute" ref="true" />
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Consistency" ref="false" />
+                <enumValue>
+                  <field name="WillNotCorruptState" />
+                </enumValue>
+              </argument>
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Cer" ref="false" />
+                <enumValue>
+                  <field name="Success" />
+                </enumValue>
+              </argument>
+            </attribute>
+          </attributes>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="vjsjbc" module="vjsjbc" />
+        <namespace api="N:netscape.javascript" />
+      </containers>
+    </api>
+    <api id="M:netscape.javascript.JSException.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" overload="true" />
+      <containers>
+        <library assembly="vjsjbc" module="vjsjbc" />
+        <namespace api="N:netscape.javascript" />
+        <type api="T:netscape.javascript.JSException" ref="true" />
+      </containers>
+    </api>
+    <api id="M:netscape.javascript.JSException.#ctor(System.String)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" overload="true" />
+      <parameters>
+        <parameter name="msg">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="vjsjbc" module="vjsjbc" />
+        <namespace api="N:netscape.javascript" />
+        <type api="T:netscape.javascript.JSException" ref="true" />
+      </containers>
+    </api>
+    <api id="M:netscape.javascript.JSException.#ctor(System.String,System.Exception)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" overload="true" />
+      <parameters>
+        <parameter name="msg">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="innerEx">
+          <type api="T:System.Exception" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="vjsjbc" module="vjsjbc" />
+        <namespace api="N:netscape.javascript" />
+        <type api="T:netscape.javascript.JSException" ref="true" />
+      </containers>
+    </api>
+    <api id="M:netscape.javascript.JSException.#ctor(System.String,System.String,System.Int32,System.String,System.Int32)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" overload="true" />
+      <parameters>
+        <parameter name="s">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="filename">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="lineno">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="source">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="tokenIndex">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="vjsjbc" module="vjsjbc" />
+        <namespace api="N:netscape.javascript" />
+        <type api="T:netscape.javascript.JSException" ref="true" />
+      </containers>
+    </api>
+    <api id="M:netscape.javascript.JSException.MemberwiseClone">
+      <apidata name="MemberwiseClone" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:java.lang.Throwable.MemberwiseClone">
+          <type api="T:java.lang.Throwable" ref="true" />
+        </member>
+      </overrides>
+      <returns>
+        <type api="T:System.Object" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="vjsjbc" module="vjsjbc" />
+        <namespace api="N:netscape.javascript" />
+        <type api="T:netscape.javascript.JSException" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.JavaThrownExceptions" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>1;java/lang/CloneNotSupportedException;</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.JavaFlags" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>4227077</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="T:netscape.javascript.JSObject">
+      <apidata name="JSObject" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:netscape.javascript.JSObject.call(System.String,System.Object[])" />
+        <element api="M:netscape.javascript.JSObject.eval(System.String)" />
+        <element api="M:netscape.javascript.JSObject.getMember(System.String)" />
+        <element api="M:netscape.javascript.JSObject.getSlot(System.Int32)" />
+        <element api="M:netscape.javascript.JSObject.getWindow(java.applet.Applet)" />
+        <element api="M:netscape.javascript.JSObject.removeMember(System.String)" />
+        <element api="M:netscape.javascript.JSObject.setMember(System.String,System.Object)" />
+        <element api="M:netscape.javascript.JSObject.setSlot(System.Int32,System.Object)" />
+        <element api="M:netscape.javascript.JSObject.ToString" />
+        <element api="M:netscape.javascript.JSObject.MemberwiseClone" />
+        <element api="M:System.Object.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" overload="true" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Finalize">
+          <apidata name="Finalize" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:System.Runtime.ConstrainedExecution.ReliabilityContractAttribute" ref="true" />
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Consistency" ref="false" />
+                <enumValue>
+                  <field name="WillNotCorruptState" />
+                </enumValue>
+              </argument>
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Cer" ref="false" />
+                <enumValue>
+                  <field name="Success" />
+                </enumValue>
+              </argument>
+            </attribute>
+          </attributes>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="vjsjbc" module="vjsjbc" />
+        <namespace api="N:netscape.javascript" />
+      </containers>
+    </api>
+    <api id="M:netscape.javascript.JSObject.call(System.String,System.Object[])">
+      <apidata name="call" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="args">
+          <arrayOf rank="1">
+            <type api="T:System.Object" ref="true" />
+          </arrayOf>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Object" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="vjsjbc" module="vjsjbc" />
+        <namespace api="N:netscape.javascript" />
+        <type api="T:netscape.javascript.JSObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:netscape.javascript.JSObject.eval(System.String)">
+      <apidata name="eval" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Object" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="vjsjbc" module="vjsjbc" />
+        <namespace api="N:netscape.javascript" />
+        <type api="T:netscape.javascript.JSObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:netscape.javascript.JSObject.getMember(System.String)">
+      <apidata name="getMember" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Object" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="vjsjbc" module="vjsjbc" />
+        <namespace api="N:netscape.javascript" />
+        <type api="T:netscape.javascript.JSObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:netscape.javascript.JSObject.getSlot(System.Int32)">
+      <apidata name="getSlot" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="index">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Object" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="vjsjbc" module="vjsjbc" />
+        <namespace api="N:netscape.javascript" />
+        <type api="T:netscape.javascript.JSObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:netscape.javascript.JSObject.getWindow(java.applet.Applet)">
+      <apidata name="getWindow" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="applet">
+          <type api="T:java.applet.Applet" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:netscape.javascript.JSObject" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="vjsjbc" module="vjsjbc" />
+        <namespace api="N:netscape.javascript" />
+        <type api="T:netscape.javascript.JSObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:netscape.javascript.JSObject.MemberwiseClone">
+      <apidata name="MemberwiseClone" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:System.Object.MemberwiseClone">
+          <type api="T:System.Object" ref="true" />
+        </member>
+      </overrides>
+      <returns>
+        <type api="T:System.Object" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="vjsjbc" module="vjsjbc" />
+        <namespace api="N:netscape.javascript" />
+        <type api="T:netscape.javascript.JSObject" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.JavaFlags" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>4227077</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.JavaThrownExceptions" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>1;java/lang/CloneNotSupportedException;</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:netscape.javascript.JSObject.removeMember(System.String)">
+      <apidata name="removeMember" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="vjsjbc" module="vjsjbc" />
+        <namespace api="N:netscape.javascript" />
+        <type api="T:netscape.javascript.JSObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:netscape.javascript.JSObject.setMember(System.String,System.Object)">
+      <apidata name="setMember" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="value">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="vjsjbc" module="vjsjbc" />
+        <namespace api="N:netscape.javascript" />
+        <type api="T:netscape.javascript.JSObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:netscape.javascript.JSObject.setSlot(System.Int32,System.Object)">
+      <apidata name="setSlot" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <parameters>
+        <parameter name="index">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="value">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="vjsjbc" module="vjsjbc" />
+        <namespace api="N:netscape.javascript" />
+        <type api="T:netscape.javascript.JSObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:netscape.javascript.JSObject.ToString">
+      <apidata name="ToString" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:System.Object.ToString">
+          <type api="T:System.Object" ref="true" />
+        </member>
+      </overrides>
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="vjsjbc" module="vjsjbc" />
+        <namespace api="N:netscape.javascript" />
+        <type api="T:netscape.javascript.JSObject" ref="true" />
+      </containers>
+    </api>
+  </apis>
+</reflection>

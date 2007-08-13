@@ -1944,7 +1944,7 @@ namespace Axiom.Graphics
 					try
 					{
 						// ensure the texture is loaded
-						TextureManager.Instance.Load( frames[ i ], textureType );
+						TextureManager.Instance.Load( frames[ i ], ResourceGroupManager.DefaultResourceGroupName, textureType );
 
 						isBlank = false;
 					}

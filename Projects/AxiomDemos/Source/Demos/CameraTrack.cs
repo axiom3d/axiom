@@ -44,7 +44,7 @@ namespace Axiom.Demos
             plane.D = 200;
 
             // create a plane mesh
-            MeshManager.Instance.CreatePlane( "FloorPlane", plane, 200000, 200000, 20, 20, true, 1, 50, 50, Vector3.UnitZ );
+            MeshManager.Instance.CreatePlane( "FloorPlane", ResourceGroupManager.DefaultResourceGroupName, plane, 200000, 200000, 20, 20, true, 1, 50, 50, Vector3.UnitZ );
 
             // create an entity to reference this mesh
             Entity planeEntity = scene.CreateEntity( "Floor", "FloorPlane" );

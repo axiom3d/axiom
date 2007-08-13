@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using Axiom.Graphics;
 using Axiom.Media;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -88,46 +89,55 @@ namespace Axiom.Core
 
 		#endregion Singleton implementation
 
-		#region Fields
+		#region Fields and Properties
+
+		#region Is32Bit Property
 
 		/// <summary>
 		///    Flag that indicates whether 32-bit texture are being used.
 		/// </summary>
-		protected bool is32Bit;
+		private bool _is32Bit;
+		/// <summary>
+		///    Flag that indicates whether 32-bit texture are being used.
+		/// </summary>
+		public bool Is32Bit
+		{
+			get
+			{
+				return _is32Bit;
+			}
+			protected set
+			{
+				_is32Bit = value;
+			}
+		}
+
+		#endregion Is32Bit Property
+
+		#region DefaultMipmapCount Property
 
 		/// <summary>
 		///    Default number of mipmaps to be used for loaded textures.
 		/// </summary>
-		protected int defaultNumMipMaps = 5;
-
-		#endregion Fields
-
-		#region Properties
-
+		protected int _defaultMipmapCount = 5;
 		/// <summary>
 		///    Gets/Sets the default number of mipmaps to be used for loaded textures.
 		/// </summary>
-		public int DefaultNumMipMaps
+		public int DefaultMipmapCount
 		{
 			get
 			{
-				return defaultNumMipMaps;
+				return _defaultMipmapCount;
 			}
 			set
 			{
-				defaultNumMipMaps = value;
+				_defaultMipmapCount = value;
 			}
 		}
 
-		public bool Is32Bit
-		{
-			get
-		{
-				return is32Bit;
-			}
-		}
+		#endregion DefaultMipmapCount Property
 
-		#endregion Properties
+		#endregion Fields and Properties
 
 		#region Methods
 
@@ -142,24 +152,23 @@ namespace Axiom.Core
 		/// <param name="format"></param>
 		/// <param name="usage"></param>
 		/// <returns></returns>
-		public Texture CreateManual( string name, TextureType texType, int width, int height, int depth, int numMipmaps, PixelFormat format, TextureUsage usage )
+		public Texture CreateManual( string name, string group, TextureType texType, int width, int height, int depth, int numMipmaps, PixelFormat format, TextureUsage usage )
 		{
-			Texture ret = (Texture)Create( name, true );
+			Texture ret = (Texture)Create( name, group );
 			ret.TextureType = texType;
 			ret.Width = width;
 			ret.Height = height;
 			ret.Depth = depth;
-			ret.NumMipMaps = ( numMipmaps == -1 ) ? defaultNumMipMaps : numMipmaps;
+			ret.MipmapCount = ( numMipmaps == -1 ) ? _defaultMipmapCount : numMipmaps;
 			ret.Format = format;
 			ret.Usage = usage;
-			ret.Enable32Bit( is32Bit );
 			ret.CreateInternalResources();
 			return ret;
 		}
 
-		public Texture CreateManual( string name, TextureType type, int width, int height, int numMipmaps, PixelFormat format, TextureUsage usage )
+		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int numMipmaps, PixelFormat format, TextureUsage usage )
 		{
-			return CreateManual( name, type, width, height, 1, numMipmaps, format, usage );
+			return CreateManual( name, group, type, width, height, 1, numMipmaps, format, usage );
 		}
 
 		/// <summary>
@@ -167,9 +176,9 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public Texture Load( string name )
+		public Texture Load( string name, string group )
 		{
-			return Load( name, TextureType.TwoD );
+			return Load( name, group, TextureType.TwoD );
 		}
 
 		/// <summary>
@@ -177,12 +186,17 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public Texture Load( string name, TextureType type )
+		public Texture Load( string name, string group, TextureType type )
 		{
 			// load the texture by default with -1 mipmaps (uses default), gamma of 1, isAlpha of false
-			return Load( name, type, -1, 1.0f, false );
+			return Load( name, group, type, -1, 1.0f, false );
 		}
 
+		public Texture Load( string name, string group, TextureType type, int numMipMaps )
+		{
+			// load the texture by default with -1 mipmaps (uses default), gamma of 1, isAlpha of false
+			return Load( name, group, type, numMipMaps, 1.0f, false );
+		}
 		/// <summary>
 		/// 
 		/// </summary>
@@ -191,35 +205,29 @@ namespace Axiom.Core
 		/// <param name="gamma"></param>
 		/// <param name="priority"></param>
 		/// <returns></returns>
-		public Texture Load( string name, TextureType type, int numMipMaps, float gamma, int isAlpha )
+		public Texture Load( string name, string group, TextureType type, int numMipMaps, float gamma, bool isAlpha )
 		{
-			return Load( name, type, numMipMaps, gamma, false );
+			return Load( name, group, type, numMipMaps, gamma, false, PixelFormat.Unknown );
 		}
 
-		public Texture Load( string name, TextureType type, int numMipMaps, float gamma, bool isAlpha )
+		public Texture Load( string name, string group, TextureType type, int numMipMaps, float gamma, bool isAlpha, PixelFormat desiredFormat )
 		{
 			// does this texture exist already?
-			Texture texture = GetByName( name );
+			Tuple<Resource, bool> result = CreateOrRetrieve( name, group );
 
-			if ( texture == null )
+			Texture texture = (Texture)result.first;
+
+			// was it created?
+			if ( result.second == true )
 			{
-				// create a new texture
-				texture = (Texture)Create( name );
 				texture.TextureType = type;
-				if ( numMipMaps == -1 )
-					texture.NumMipMaps = defaultNumMipMaps;
-				else
-					texture.NumMipMaps = numMipMaps;
-
+				texture.MipmapCount = ( numMipMaps == -1 ) ? _defaultMipmapCount : numMipMaps;
 				// set bit depth and gamma
 				texture.Gamma = gamma;
-				if ( isAlpha )
-					texture.Format = PixelFormat.A8;
-				texture.Enable32Bit( is32Bit );
-
-				// call the base class load method
-				base.Load( texture, 1 );
+				texture.TreatLuminanceAsAlpha = isAlpha;
+				texture.Format = desiredFormat;
 			}
+			texture.Load();
 
 			return texture;
 		}
@@ -247,13 +255,13 @@ namespace Axiom.Core
 		//    return LoadImage(name, image, texType, -1, 1.0f, 1);
 		//}
 
-		public Texture LoadImage( string name, Image image )
+		public Texture LoadImage( string name, string group, Image image )
 		{
-			return LoadImage( name, image, TextureType.TwoD );
+			return LoadImage( name, group, image, TextureType.TwoD );
 		}
-		public Texture LoadImage( string name, Image image, TextureType texType )
+		public Texture LoadImage( string name, string group, Image image, TextureType texType )
 		{
-			return LoadImage( name, image, texType, -1, 1.0f, false );
+			return LoadImage( name, group, image, texType, -1, 1.0f, false, PixelFormat.Unknown );
 		}
 
 		/// <summary>
@@ -265,23 +273,20 @@ namespace Axiom.Core
 		/// <param name="gamma"></param>
 		/// <param name="priority"></param>
 		/// <returns></returns>
-		public Texture LoadImage( string name, Image image, TextureType texType, int numMipMaps, float gamma, bool isAlpha )
+		public Texture LoadImage( string name, string group, Image image, TextureType texType, int numMipMaps, float gamma, bool isAlpha, PixelFormat desiredFormat )
 		{
 			// create a new texture
-			Texture texture = (Texture)Create( name, true );
+			Texture texture = (Texture)Create( name, group, true, null, null );
 
 			texture.TextureType = texType;
 			// set the number of mipmaps to use for this texture
-			if ( numMipMaps == -1 )
-				texture.NumMipMaps = defaultNumMipMaps;
-			else
-				texture.NumMipMaps = numMipMaps;
+			texture.MipmapCount = ( numMipMaps == -1 ) ? _defaultMipmapCount : numMipMaps;
 
 			// set bit depth and gamma
 			texture.Gamma = gamma;
-			if ( isAlpha )
-				texture.Format = PixelFormat.A8;
-			texture.Enable32Bit( is32Bit );
+
+			texture.TreatLuminanceAsAlpha = isAlpha;
+			texture.Format = desiredFormat;
 
 			// load image data
 			texture.LoadImage( image );
@@ -294,22 +299,37 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public new Texture GetByName( string name )
+		public new Texture this[ string name ]
 		{
-			return (Texture)base.GetByName( name );
+			get
+			{
+				return (Texture)base[ name ];
+			}
 		}
 
 		/// <summary>
 		///     Called when the engine is shutting down.    
 		/// </summary>
-		public override void Dispose()
+		protected override void dispose( bool disposeManagedResources )
 		{
-			base.Dispose();
-
-			if ( this == instance )
+			if ( !isDisposed )
 			{
-				instance = null;
+				if ( disposeManagedResources )
+				{
+					if ( this == instance )
+					{
+						instance = null;
+					}
+				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
 			}
+			isDisposed = true;
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
 		}
 
 		public virtual PixelFormat GetNativeFormat( TextureType ttype, PixelFormat format,

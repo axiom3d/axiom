@@ -63,7 +63,7 @@ namespace Axiom.RenderSystems.OpenGL
 			/// <summary>
 			/// This format can be used as RTT (FBO)
 			/// </summary>
-			public bool Valid; 
+			public bool Valid;
 
 			/// <summary>
 			/// Allowed modes/properties for this pixel format
@@ -73,11 +73,11 @@ namespace Axiom.RenderSystems.OpenGL
 				/// <summary>
 				/// Depth format (0=no depth)
 				/// </summary>
-				public int Depth;   
+				public int Depth;
 				/// <summary>
 				/// Stencil format (0=no stencil)
 				/// </summary>
-				public int Stencil; 
+				public int Stencil;
 			};
 
 			public List<Mode> Modes = new List<Mode>();
@@ -183,8 +183,8 @@ namespace Axiom.RenderSystems.OpenGL
 													//Gl.GL_DEPTH24_STENCIL8_EXT // packed depth / stencil
 												};
 
-		private int[] _depthBits = new int[] { 0,16,24,32,24 };
-		
+		private int[] _depthBits = new int[] { 0, 16, 24, 32, 24 };
+
 
 		/// <summary>
 		/// 
@@ -349,10 +349,10 @@ namespace Axiom.RenderSystems.OpenGL
 
 			RBFormat key = new RBFormat( surface.Buffer.GLFormat, surface.Buffer.Width, surface.Buffer.Height );
 			RBRef value;
-            bool result = _renderBufferMap.TryGetValue(key, out value);
+			bool result = _renderBufferMap.TryGetValue( key, out value );
 			Debug.Assert( result );
 			{
-				Debug.Assert(value.Buffer == surface.Buffer);
+				Debug.Assert( value.Buffer == surface.Buffer );
 				// Increase refcount
 				value.Refcount++;
 			}
@@ -470,31 +470,31 @@ namespace Axiom.RenderSystems.OpenGL
 								}
 							}
 						}
-//                        else
-//                        {
-//                            // Packed depth/stencil format
+						//                        else
+						//                        {
+						//                            // Packed depth/stencil format
 
-//#if PLATFORM_LINUX
-//                            // Only query packed depth/stencil formats for 32-bit
-//                            // non-floating point formats (ie not R32!) 
-//                            // Linux nVidia driver segfaults if you query others
-//                            if (PixelUtil.getNumElemBits((PixelFormat)x) != 32 ||
-//                                PixelUtil.isFloatingPoint((PixelFormat)x))
-//                            {
-//                                continue;
-//                            }
-//#endif
+						//#if PLATFORM_LINUX
+						//                            // Only query packed depth/stencil formats for 32-bit
+						//                            // non-floating point formats (ie not R32!) 
+						//                            // Linux nVidia driver segfaults if you query others
+						//                            if (PixelUtil.getNumElemBits((PixelFormat)x) != 32 ||
+						//                                PixelUtil.isFloatingPoint((PixelFormat)x))
+						//                            {
+						//                                continue;
+						//                            }
+						//#endif
 
-//                            if ( _tryPackedFormat( _depthFormats[ depth ] ) )
-//                            {
-//                                /// Add mode to allowed modes
-//                                str.AppendFormat( "Packed-D{0}S8 ", _depthBits[ depth ] );
-//                                FormatProperties.Mode mode;
-//                                mode.Depth = depth;
-//                                mode.Stencil = 0;   // unuse
-//                                _props[ x ].Modes.Add( mode );
-//                            }
-//                        }
+						//                            if ( _tryPackedFormat( _depthFormats[ depth ] ) )
+						//                            {
+						//                                /// Add mode to allowed modes
+						//                                str.AppendFormat( "Packed-D{0}S8 ", _depthBits[ depth ] );
+						//                                FormatProperties.Mode mode;
+						//                                mode.Depth = depth;
+						//                                mode.Stencil = 0;   // unuse
+						//                                _props[ x ].Modes.Add( mode );
+						//                            }
+						//                        }
 					}
 
 					LogManager.Instance.Write( str.ToString() );
@@ -559,7 +559,7 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, Gl.GL_STENCIL_ATTACHMENT_EXT, Gl.GL_RENDERBUFFER_EXT, 0 );
 			if ( depthRB != 0 )
 				Gl.glDeleteRenderbuffersEXT( 1, ref depthRB );
-			if ( stencilRB != 0)
+			if ( stencilRB != 0 )
 				Gl.glDeleteRenderbuffersEXT( 1, ref stencilRB );
 
 			return status == Gl.GL_FRAMEBUFFER_COMPLETE_EXT && !failed;
@@ -611,7 +611,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override MultiRenderTarget CreateMultiRenderTarget( string name )
 		{
-			throw new NotImplementedException(); 
+			throw new NotImplementedException();
 			//TODO: return new GLFBOMultiRenderTarget( this, name );
 		}
 
@@ -632,7 +632,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public override void Bind( RenderTarget target )
 		{
 			/// Check if the render target is in the rendertarget->FBO map
-			GLFrameBufferObject fbo = (GLFrameBufferObject)target["FBO"];
+			GLFrameBufferObject fbo = (GLFrameBufferObject)target[ "FBO" ];
 			if ( fbo != null )
 				fbo.Bind();
 			else
@@ -656,13 +656,13 @@ namespace Axiom.RenderSystems.OpenGL
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if( _renderBufferMap.Count != 0 )
+					if ( _renderBufferMap.Count != 0 )
 					{
-						LogManager.Instance.Write("GL: Warning! GLFBORTTManager Disposed, but not all renderbuffers were released.");
+						LogManager.Instance.Write( "GL: Warning! GLFBORTTManager Disposed, but not all renderbuffers were released." );
 					}
 				}
-        
-				Gl.glDeleteFramebuffersEXT(1, ref _tempFBO);      
+
+				Gl.glDeleteFramebuffersEXT( 1, ref _tempFBO );
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.

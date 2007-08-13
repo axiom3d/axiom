@@ -135,7 +135,7 @@ namespace Axiom.ParticleFX
         ///    
         /// </summary>
         [Command( "width", "Width of the hollow ellipsoidal emitter.", typeof( ParticleEmitter ) )]
-        class WidthCommand : ICommand
+		class WidthCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -153,7 +153,7 @@ namespace Axiom.ParticleFX
         ///    
         /// </summary>
         [Command( "height", "Height of the hollow ellipsoidal emitter.", typeof( ParticleEmitter ) )]
-        class HeightCommand : ICommand
+		class HeightCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -171,7 +171,7 @@ namespace Axiom.ParticleFX
         ///    
         /// </summary>
         [Command( "depth", "Depth of the hollow ellipsoidal emitter.", typeof( ParticleEmitter ) )]
-        class DepthCommand : ICommand
+		class DepthCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -189,7 +189,7 @@ namespace Axiom.ParticleFX
         ///    
         /// </summary>
         [Command( "inner_width", "Parametric value describing the proportion of the shape which is hollow.", typeof( ParticleEmitter ) )]
-        class InnerWidthCommand : ICommand
+		class InnerWidthCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -207,7 +207,7 @@ namespace Axiom.ParticleFX
         ///    
         /// </summary>
         [Command( "inner_height", "Parametric value describing the proportion of the shape which is hollow.", typeof( ParticleEmitter ) )]
-        class InnerHeightCommand : ICommand
+		class InnerHeightCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {

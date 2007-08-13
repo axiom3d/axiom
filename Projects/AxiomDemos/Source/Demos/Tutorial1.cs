@@ -156,7 +156,7 @@ namespace Axiom.Demos
 
             // MATERIAL
             // grab a copy of the BaseWhite material for our use
-            Material material = MaterialManager.Instance.GetByName( "BaseWhite" );
+            Material material = (Material)MaterialManager.Instance.GetByName( "BaseWhite" );
             material = material.Clone( "LineMat" );
             // disable lighting to vertex colors are used
             material.Lighting = false;
@@ -276,7 +276,7 @@ namespace Axiom.Demos
 
             // MATERIAL
             // grab a copy of the BaseWhite material for our use
-            Material material = MaterialManager.Instance.GetByName( "BaseWhite" );
+            Material material = (Material)MaterialManager.Instance.GetByName( "BaseWhite" );
             material = material.Clone( "TriMat" );
 
             // disable lighting to vertex colors are used

@@ -1,0 +1,3008 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<reflection>
+  <assemblies>
+    <assembly name="Microsoft.Build.VisualJSharp" version="2.0.0.0" culture="" key="002400000480000094000000060200000024000052534131000400000100010007D1FA57C4AED9F0A32E84AA0FAEFD0DE9E8FD6AEC8F87FB03766C834C99921EB23BE79AD9D5DCC1DD9AD236132102900B723CF980957FC4E177108FC607774F29E8320E92EA05ECE4E821C0A5EFE8F1645C4C0C93C1AB99285D622CAA652C1DFAD63D745D6F2DE5F17E5EAF0FC4963D261C8A12436518206DC093344D5AD293" hash="SHA1">
+      <attributes>
+        <attribute>
+          <type api="T:System.Resources.SatelliteContractVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.0.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.NeutralResourcesLanguageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>en-US</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDelaySignAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyKeyFileAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>f:\RTM\tools\devdiv\FinalPublicKey.snk</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.CompilationRelaxationsAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>8</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Diagnostics.DebuggableAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Diagnostics.DebuggableAttribute.DebuggingModes" ref="false">
+              <type api="T:System.Diagnostics.DebuggableAttribute" ref="true" />
+            </type>
+            <enumValue>
+              <field name="IgnoreSymbolStoreSequencePoints" />
+            </enumValue>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.VJSharpAssemblyAttribute" ref="true" />
+          <argument>
+            <type api="T:com.ms.vjsharp.cor.VJSharpAssemblyGeneratorType" ref="false" />
+            <enumValue>
+              <field name="VJSHARP_COMPILER" />
+            </enumValue>
+          </argument>
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>1.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.ConstrainedExecution.ReliabilityContractAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.ConstrainedExecution.Consistency" ref="false" />
+            <enumValue>
+              <field name="MayCorruptProcess" />
+            </enumValue>
+          </argument>
+          <argument>
+            <type api="T:System.Runtime.ConstrainedExecution.Cer" ref="false" />
+            <enumValue>
+              <field name="None" />
+            </enumValue>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDefaultAliasAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft.Build.VisualJSharp.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.CLSCompliantAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyTitleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft.Build.VisualJSharp.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDescriptionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft.Build.VisualJSharp.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyProductAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft® .NET Framework</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCompanyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft Corporation</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCopyrightAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>© Microsoft Corporation.  All rights reserved.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyFileVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.50727.42</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyInformationalVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.50727.42</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.SecurityPermissionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="RequestMinimum" />
+            </enumValue>
+          </argument>
+          <assignment name="Flags">
+            <type api="T:System.Security.Permissions.SecurityPermissionFlag" ref="false" />
+            <enumValue>
+              <field name="Execution" />
+            </enumValue>
+          </assignment>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.EnvironmentPermissionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="RequestRefuse" />
+            </enumValue>
+          </argument>
+        </attribute>
+      </attributes>
+    </assembly>
+  </assemblies>
+  <apis>
+    <api id="R:Project">
+      <apidata group="root" pseudo="true" />
+      <elements>
+        <element api="N:Microsoft.Build.Tasks" />
+      </elements>
+    </api>
+    <api id="N:Microsoft.Build.Tasks">
+      <apidata name="Microsoft.Build.Tasks" group="namespace" />
+      <elements>
+        <element api="T:Microsoft.Build.Tasks.CreateJSharpManifestResourceName" />
+        <element api="T:Microsoft.Build.Tasks.IVjcHostObject" />
+        <element api="T:Microsoft.Build.Tasks.Vjc" />
+        <element api="T:Microsoft.Build.Tasks.VjsResGen" />
+      </elements>
+    </api>
+    <api id="T:Microsoft.Build.Tasks.CreateJSharpManifestResourceName">
+      <apidata name="CreateJSharpManifestResourceName" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.Build.Tasks.CreateManifestResourceName" ref="true" />
+          <type api="T:Microsoft.Build.Tasks.TaskExtension" ref="true" />
+          <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Tasks.CreateJSharpManifestResourceName.CreateManifestName(System.String,System.String,System.String,System.String,System.IO.Stream)" />
+        <element api="M:Microsoft.Build.Tasks.CreateJSharpManifestResourceName.IsSourceFile(System.String)" />
+        <element api="M:Microsoft.Build.Tasks.CreateJSharpManifestResourceName.#ctor" />
+        <element api="M:Microsoft.Build.Tasks.CreateJSharpManifestResourceName.MemberwiseClone" />
+        <element api="M:Microsoft.Build.Tasks.CreateJSharpManifestResourceName.ToString" />
+        <element api="M:Microsoft.Build.Tasks.CreateManifestResourceName.Execute">
+          <apidata name="Execute" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:Microsoft.Build.Utilities.Task.Execute">
+              <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.CreateManifestResourceName" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.CreateManifestResourceName.ResourceFiles">
+          <apidata name="ResourceFiles" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <arrayOf rank="1">
+              <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+            </arrayOf>
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.CreateManifestResourceName" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:Microsoft.Build.Framework.RequiredAttribute" ref="true" />
+            </attribute>
+          </attributes>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.CreateManifestResourceName.RootNamespace">
+          <apidata name="RootNamespace" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.CreateManifestResourceName" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.CreateManifestResourceName.ManifestResourceNames">
+          <apidata name="ManifestResourceNames" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" />
+          <returns>
+            <arrayOf rank="1">
+              <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+            </arrayOf>
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.CreateManifestResourceName" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:Microsoft.Build.Framework.OutputAttribute" ref="true" />
+            </attribute>
+          </attributes>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.TaskExtension.Log">
+          <apidata name="Log" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <overrides>
+            <member api="P:Microsoft.Build.Utilities.Task.Log">
+              <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+            </member>
+          </overrides>
+          <propertydata get="true" />
+          <returns>
+            <type api="T:Microsoft.Build.Utilities.TaskLoggingHelper" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.TaskExtension" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine">
+          <apidata name="BuildEngine" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="true" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:Microsoft.Build.Framework.IBuildEngine" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Utilities.Task.HostObject">
+          <apidata name="HostObject" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="true" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:Microsoft.Build.Framework.ITaskHost" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Utilities.Task.TaskResources">
+          <apidata name="TaskResources" group="member" subgroup="property" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.Resources.ResourceManager" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Utilities.Task.HelpKeywordPrefix">
+          <apidata name="HelpKeywordPrefix" group="member" subgroup="property" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" overload="true" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Finalize">
+          <apidata name="Finalize" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:System.Runtime.ConstrainedExecution.ReliabilityContractAttribute" ref="true" />
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Consistency" ref="false" />
+                <enumValue>
+                  <field name="WillNotCorruptState" />
+                </enumValue>
+              </argument>
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Cer" ref="false" />
+                <enumValue>
+                  <field name="Success" />
+                </enumValue>
+              </argument>
+            </attribute>
+          </attributes>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.CreateJSharpManifestResourceName.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.CreateJSharpManifestResourceName" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.CreateJSharpManifestResourceName.CreateManifestName(System.String,System.String,System.String,System.String,System.IO.Stream)">
+      <apidata name="CreateManifestName" group="member" subgroup="method" />
+      <memberdata visibility="family or assembly" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:Microsoft.Build.Tasks.CreateManifestResourceName.CreateManifestName(System.String,System.String,System.String,System.String,System.IO.Stream)">
+          <type api="T:Microsoft.Build.Tasks.CreateManifestResourceName" ref="true" />
+        </member>
+      </overrides>
+      <parameters>
+        <parameter name="fileName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="linkFileName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="rootNamespaceName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="dependentUponFileName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="binaryStream">
+          <type api="T:System.IO.Stream" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.CreateJSharpManifestResourceName" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.JavaFlags" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>4</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.CreateJSharpManifestResourceName.IsSourceFile(System.String)">
+      <apidata name="IsSourceFile" group="member" subgroup="method" />
+      <memberdata visibility="family or assembly" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:Microsoft.Build.Tasks.CreateManifestResourceName.IsSourceFile(System.String)">
+          <type api="T:Microsoft.Build.Tasks.CreateManifestResourceName" ref="true" />
+        </member>
+      </overrides>
+      <parameters>
+        <parameter name="fileName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.CreateJSharpManifestResourceName" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.JavaFlags" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>4</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.CreateJSharpManifestResourceName.MemberwiseClone">
+      <apidata name="MemberwiseClone" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:System.Object.MemberwiseClone">
+          <type api="T:System.Object" ref="true" />
+        </member>
+      </overrides>
+      <returns>
+        <type api="T:System.Object" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.CreateJSharpManifestResourceName" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.JavaThrownExceptions" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>1;java/lang/CloneNotSupportedException;</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.JavaFlags" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>4227077</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.CreateJSharpManifestResourceName.ToString">
+      <apidata name="ToString" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:System.Object.ToString">
+          <type api="T:System.Object" ref="true" />
+        </member>
+      </overrides>
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.CreateJSharpManifestResourceName" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.JavaFlags" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>4227073</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="T:Microsoft.Build.Tasks.IVjcHostObject">
+      <apidata name="IVjcHostObject" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <implements>
+        <type api="T:Microsoft.Build.Framework.ITaskHost" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.BeginBuild" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.EndBuild" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.BeginInitialization" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.EndInitialization(System.String@,System.Int32@)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.IsDesignTime" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.Compile" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetAdditionalLibPaths(System.String[])" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetAddModules(System.String[])" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetBaseAddress(System.String)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetCodePage(System.Int32)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetDebugType(System.String)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetDefineConstants(System.String)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetDelaySign(System.Boolean,System.Boolean)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetDisabledWarnings(System.String)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetDisableExtensions(System.String)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetDocumentationFile(System.String)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetEmitDebugInformation(System.Boolean)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetJcpa(System.String)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetKeyContainer(System.String)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetKeyFile(System.String)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetLinkResources(Microsoft.Build.Framework.ITaskItem[])" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetMainEntryPoint(System.String,System.String)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetNoConfig(System.Boolean)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetOptimize(System.Boolean)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetOutputAssembly(System.String)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetReferences(Microsoft.Build.Framework.ITaskItem[])" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetResources(Microsoft.Build.Framework.ITaskItem[])" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetResponseFiles(Microsoft.Build.Framework.ITaskItem[])" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetSecureScoping(System.Boolean)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetSources(Microsoft.Build.Framework.ITaskItem[])" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetTargetType(System.String)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetTreatWarningsAsErrors(System.Boolean)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetUtf8Output(System.Boolean)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetWarningLevel(System.Int32)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetWin32Icon(System.String)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.SetWin32Resource(System.String)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.ReportMessage(System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.String)" />
+        <element api="M:Microsoft.Build.Tasks.IVjcHostObject.IsUpToDate" />
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.JavaInterface" ref="true" />
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.InterfaceTypeAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ComInterfaceType" ref="false" />
+            <enumValue>
+              <field name="InterfaceIsIUnknown" />
+            </enumValue>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>46F8DD46-C5C5-4181-A406-A40C41484D2E</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.JavaInterfaces" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>1;Microsoft/Build/Framework/ITaskHost;</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.BeginBuild">
+      <apidata name="BeginBuild" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.BeginInitialization">
+      <apidata name="BeginInitialization" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.Compile">
+      <apidata name="Compile" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.EndBuild">
+      <apidata name="EndBuild" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.EndInitialization(System.String@,System.Int32@)">
+      <apidata name="EndInitialization" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="errorMessage">
+          <referenceTo>
+            <type api="T:System.String" ref="true" />
+          </referenceTo>
+        </parameter>
+        <parameter name="errorCode">
+          <referenceTo>
+            <type api="T:System.Int32" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.IsDesignTime">
+      <apidata name="IsDesignTime" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.IsUpToDate">
+      <apidata name="IsUpToDate" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.ReportMessage(System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.String)">
+      <apidata name="ReportMessage" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="messageKind">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="messageCode">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="line">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="column">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="fileName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="messageText">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetAdditionalLibPaths(System.String[])">
+      <apidata name="SetAdditionalLibPaths" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="additionalLibPaths">
+          <arrayOf rank="1">
+            <type api="T:System.String" ref="true" />
+          </arrayOf>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetAddModules(System.String[])">
+      <apidata name="SetAddModules" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="addModules">
+          <arrayOf rank="1">
+            <type api="T:System.String" ref="true" />
+          </arrayOf>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetBaseAddress(System.String)">
+      <apidata name="SetBaseAddress" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="baseAddress">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetCodePage(System.Int32)">
+      <apidata name="SetCodePage" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="codePage">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetDebugType(System.String)">
+      <apidata name="SetDebugType" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="debugType">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetDefineConstants(System.String)">
+      <apidata name="SetDefineConstants" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="defineConstants">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetDelaySign(System.Boolean,System.Boolean)">
+      <apidata name="SetDelaySign" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="delaySignExplicitlySet">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+        <parameter name="delaySign">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetDisabledWarnings(System.String)">
+      <apidata name="SetDisabledWarnings" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="disabledWarnings">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetDisableExtensions(System.String)">
+      <apidata name="SetDisableExtensions" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="langExtension">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetDocumentationFile(System.String)">
+      <apidata name="SetDocumentationFile" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="documentationFile">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetEmitDebugInformation(System.Boolean)">
+      <apidata name="SetEmitDebugInformation" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="emitDebugInformation">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetJcpa(System.String)">
+      <apidata name="SetJcpa" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="jcpaSpec">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetKeyContainer(System.String)">
+      <apidata name="SetKeyContainer" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="keyContainer">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetKeyFile(System.String)">
+      <apidata name="SetKeyFile" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="keyFile">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetLinkResources(Microsoft.Build.Framework.ITaskItem[])">
+      <apidata name="SetLinkResources" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="linkResources">
+          <arrayOf rank="1">
+            <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+          </arrayOf>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetMainEntryPoint(System.String,System.String)">
+      <apidata name="SetMainEntryPoint" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="targetType">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="mainEntryPoint">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetNoConfig(System.Boolean)">
+      <apidata name="SetNoConfig" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="noConfig">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetOptimize(System.Boolean)">
+      <apidata name="SetOptimize" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="optimize">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetOutputAssembly(System.String)">
+      <apidata name="SetOutputAssembly" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="outputAssembly">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetReferences(Microsoft.Build.Framework.ITaskItem[])">
+      <apidata name="SetReferences" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="references">
+          <arrayOf rank="1">
+            <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+          </arrayOf>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetResources(Microsoft.Build.Framework.ITaskItem[])">
+      <apidata name="SetResources" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="resources">
+          <arrayOf rank="1">
+            <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+          </arrayOf>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetResponseFiles(Microsoft.Build.Framework.ITaskItem[])">
+      <apidata name="SetResponseFiles" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="responseFiles">
+          <arrayOf rank="1">
+            <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+          </arrayOf>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetSecureScoping(System.Boolean)">
+      <apidata name="SetSecureScoping" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="secureScope">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetSources(Microsoft.Build.Framework.ITaskItem[])">
+      <apidata name="SetSources" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="sources">
+          <arrayOf rank="1">
+            <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+          </arrayOf>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetTargetType(System.String)">
+      <apidata name="SetTargetType" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="targetType">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetTreatWarningsAsErrors(System.Boolean)">
+      <apidata name="SetTreatWarningsAsErrors" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="treatWarningsAsErrors">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetUtf8Output(System.Boolean)">
+      <apidata name="SetUtf8Output" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="utf8Output">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetWarningLevel(System.Int32)">
+      <apidata name="SetWarningLevel" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="warningLevel">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetWin32Icon(System.String)">
+      <apidata name="SetWin32Icon" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="win32Icon">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.IVjcHostObject.SetWin32Resource(System.String)">
+      <apidata name="SetWin32Resource" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="win32Resource">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.IVjcHostObject" ref="true" />
+      </containers>
+    </api>
+    <api id="T:Microsoft.Build.Tasks.Vjc">
+      <apidata name="Vjc" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          <type api="T:Microsoft.Build.Tasks.ToolTaskExtension" ref="true" />
+          <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+          <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Tasks.Vjc.GenerateFullPathToTool" />
+        <element api="M:Microsoft.Build.Tasks.Vjc.AddResponseFileCommands(Microsoft.Build.Tasks.CommandLineBuilderExtension)" />
+        <element api="M:Microsoft.Build.Tasks.Vjc.InitializeHostObject" />
+        <element api="M:Microsoft.Build.Tasks.Vjc.CallHostObjectToExecute" />
+        <element api="M:Microsoft.Build.Tasks.Vjc.#ctor" />
+        <element api="M:Microsoft.Build.Tasks.Vjc.MemberwiseClone" />
+        <element api="M:Microsoft.Build.Tasks.Vjc.ToString" />
+        <element api="P:Microsoft.Build.Tasks.Vjc.BaseAddress" />
+        <element api="P:Microsoft.Build.Tasks.Vjc.DisableExtensions" />
+        <element api="P:Microsoft.Build.Tasks.Vjc.DisabledWarnings" />
+        <element api="P:Microsoft.Build.Tasks.Vjc.DocumentationFile" />
+        <element api="P:Microsoft.Build.Tasks.Vjc.Jcpa" />
+        <element api="P:Microsoft.Build.Tasks.Vjc.SecureScoping" />
+        <element api="P:Microsoft.Build.Tasks.Vjc.ToolName" />
+        <element api="P:Microsoft.Build.Tasks.Vjc.WarningLevel" />
+        <element api="M:Microsoft.Build.Tasks.ManagedCompiler.AddCommandLineCommands(Microsoft.Build.Tasks.CommandLineBuilderExtension)">
+          <apidata name="AddCommandLineCommands" group="member" subgroup="method" />
+          <memberdata visibility="family or assembly" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:Microsoft.Build.Tasks.ToolTaskExtension.AddCommandLineCommands(Microsoft.Build.Tasks.CommandLineBuilderExtension)">
+              <type api="T:Microsoft.Build.Tasks.ToolTaskExtension" ref="true" />
+            </member>
+          </overrides>
+          <parameters>
+            <parameter name="commandLine">
+              <type api="T:Microsoft.Build.Tasks.CommandLineBuilderExtension" ref="true" />
+            </parameter>
+          </parameters>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="M:Microsoft.Build.Tasks.ManagedCompiler.ValidateParameters">
+          <apidata name="ValidateParameters" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:Microsoft.Build.Utilities.ToolTask.ValidateParameters">
+              <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="M:Microsoft.Build.Tasks.ManagedCompiler.ListHasNoDuplicateItems(Microsoft.Build.Framework.ITaskItem[],System.String)">
+          <apidata name="ListHasNoDuplicateItems" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <parameters>
+            <parameter name="itemList">
+              <arrayOf rank="1">
+                <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+              </arrayOf>
+            </parameter>
+            <parameter name="parameterName">
+              <type api="T:System.String" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="M:Microsoft.Build.Tasks.ManagedCompiler.HandleTaskExecutionErrors">
+          <apidata name="HandleTaskExecutionErrors" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:Microsoft.Build.Utilities.ToolTask.HandleTaskExecutionErrors">
+              <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="M:Microsoft.Build.Tasks.ManagedCompiler.CheckHostObjectSupport(System.String,System.Boolean)">
+          <apidata name="CheckHostObjectSupport" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <parameters>
+            <parameter name="parameterName">
+              <type api="T:System.String" ref="true" />
+            </parameter>
+            <parameter name="resultFromHostObjectSetOperation">
+              <type api="T:System.Boolean" ref="false" />
+            </parameter>
+          </parameters>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="M:Microsoft.Build.Tasks.ManagedCompiler.CheckAllReferencesExistOnDisk">
+          <apidata name="CheckAllReferencesExistOnDisk" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.AdditionalLibPaths">
+          <apidata name="AdditionalLibPaths" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <arrayOf rank="1">
+              <type api="T:System.String" ref="true" />
+            </arrayOf>
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.AddModules">
+          <apidata name="AddModules" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <arrayOf rank="1">
+              <type api="T:System.String" ref="true" />
+            </arrayOf>
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.CodePage">
+          <apidata name="CodePage" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.DebugType">
+          <apidata name="DebugType" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.DefineConstants">
+          <apidata name="DefineConstants" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.DelaySign">
+          <apidata name="DelaySign" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.EmitDebugInformation">
+          <apidata name="EmitDebugInformation" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.FileAlignment">
+          <apidata name="FileAlignment" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.KeyContainer">
+          <apidata name="KeyContainer" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.KeyFile">
+          <apidata name="KeyFile" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.LinkResources">
+          <apidata name="LinkResources" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <arrayOf rank="1">
+              <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+            </arrayOf>
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.MainEntryPoint">
+          <apidata name="MainEntryPoint" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.NoConfig">
+          <apidata name="NoConfig" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.NoLogo">
+          <apidata name="NoLogo" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.Optimize">
+          <apidata name="Optimize" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.OutputAssembly">
+          <apidata name="OutputAssembly" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:Microsoft.Build.Framework.OutputAttribute" ref="true" />
+            </attribute>
+          </attributes>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.References">
+          <apidata name="References" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <arrayOf rank="1">
+              <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+            </arrayOf>
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.Resources">
+          <apidata name="Resources" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <arrayOf rank="1">
+              <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+            </arrayOf>
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.ResponseFiles">
+          <apidata name="ResponseFiles" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <arrayOf rank="1">
+              <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+            </arrayOf>
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.Sources">
+          <apidata name="Sources" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <arrayOf rank="1">
+              <type api="T:Microsoft.Build.Framework.ITaskItem" ref="true" />
+            </arrayOf>
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.TargetType">
+          <apidata name="TargetType" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.TreatWarningsAsErrors">
+          <apidata name="TreatWarningsAsErrors" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.Utf8Output">
+          <apidata name="Utf8Output" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.Win32Icon">
+          <apidata name="Win32Icon" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.Win32Resource">
+          <apidata name="Win32Resource" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.StandardOutputEncoding">
+          <apidata name="StandardOutputEncoding" group="member" subgroup="property" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="P:Microsoft.Build.Utilities.ToolTask.StandardOutputEncoding">
+              <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+            </member>
+          </overrides>
+          <propertydata get="true" />
+          <returns>
+            <type api="T:System.Text.Encoding" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ManagedCompiler.HostCompilerSupportsAllParameters">
+          <apidata name="HostCompilerSupportsAllParameters" group="member" subgroup="property" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+          </containers>
+        </element>
+        <element api="M:Microsoft.Build.Tasks.ToolTaskExtension.GetBoolParameterWithDefault(System.String,System.Boolean)">
+          <apidata name="GetBoolParameterWithDefault" group="member" subgroup="method" />
+          <memberdata visibility="family or assembly" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <parameters>
+            <parameter name="parameterName">
+              <type api="T:System.String" ref="true" />
+            </parameter>
+            <parameter name="defaultValue">
+              <type api="T:System.Boolean" ref="false" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ToolTaskExtension" ref="true" />
+          </containers>
+        </element>
+        <element api="M:Microsoft.Build.Tasks.ToolTaskExtension.GetIntParameterWithDefault(System.String,System.Int32)">
+          <apidata name="GetIntParameterWithDefault" group="member" subgroup="method" />
+          <memberdata visibility="family or assembly" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <parameters>
+            <parameter name="parameterName">
+              <type api="T:System.String" ref="true" />
+            </parameter>
+            <parameter name="defaultValue">
+              <type api="T:System.Int32" ref="false" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ToolTaskExtension" ref="true" />
+          </containers>
+        </element>
+        <element api="M:Microsoft.Build.Tasks.ToolTaskExtension.GenerateResponseFileCommands">
+          <apidata name="GenerateResponseFileCommands" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:Microsoft.Build.Utilities.ToolTask.GenerateResponseFileCommands">
+              <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ToolTaskExtension" ref="true" />
+          </containers>
+        </element>
+        <element api="M:Microsoft.Build.Tasks.ToolTaskExtension.GenerateCommandLineCommands">
+          <apidata name="GenerateCommandLineCommands" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:Microsoft.Build.Utilities.ToolTask.GenerateCommandLineCommands">
+              <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ToolTaskExtension" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ToolTaskExtension.Log">
+          <apidata name="Log" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <overrides>
+            <member api="P:Microsoft.Build.Utilities.Task.Log">
+              <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+            </member>
+          </overrides>
+          <propertydata get="true" />
+          <returns>
+            <type api="T:Microsoft.Build.Utilities.TaskLoggingHelper" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ToolTaskExtension" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Tasks.ToolTaskExtension.Bag">
+          <apidata name="Bag" group="member" subgroup="property" />
+          <memberdata visibility="family or assembly" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" />
+          <returns>
+            <type api="T:System.Collections.Hashtable" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Tasks" module="Microsoft.Build.Tasks" />
+            <namespace api="N:Microsoft.Build.Tasks" />
+            <type api="T:Microsoft.Build.Tasks.ToolTaskExtension" ref="true" />
+          </containers>
+        </element>
+        <element api="M:Microsoft.Build.Utilities.ToolTask.GetWorkingDirectory">
+          <apidata name="GetWorkingDirectory" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+          </containers>
+        </element>
+        <element api="M:Microsoft.Build.Utilities.ToolTask.SkipTaskExecution">
+          <apidata name="SkipTaskExecution" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+          </containers>
+        </element>
+        <element api="M:Microsoft.Build.Utilities.ToolTask.GetResponseFileSwitch(System.String)">
+          <apidata name="GetResponseFileSwitch" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="responseFilePath">
+              <type api="T:System.String" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+          </containers>
+        </element>
+        <element api="M:Microsoft.Build.Utilities.ToolTask.LogToolCommand(System.String)">
+          <apidata name="LogToolCommand" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="message">
+              <type api="T:System.String" ref="true" />
+            </parameter>
+          </parameters>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+          </containers>
+        </element>
+        <element api="M:Microsoft.Build.Utilities.ToolTask.LogPathToTool(System.String,System.String)">
+          <apidata name="LogPathToTool" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="toolName">
+              <type api="T:System.String" ref="true" />
+            </parameter>
+            <parameter name="pathToTool">
+              <type api="T:System.String" ref="true" />
+            </parameter>
+          </parameters>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+          </containers>
+        </element>
+        <element api="M:Microsoft.Build.Utilities.ToolTask.ExecuteTool(System.String,System.String,System.String)">
+          <apidata name="ExecuteTool" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="pathToTool">
+              <type api="T:System.String" ref="true" />
+            </parameter>
+            <parameter name="responseFileCommands">
+              <type api="T:System.String" ref="true" />
+            </parameter>
+            <parameter name="commandLineCommands">
+              <type api="T:System.String" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+          </containers>
+        </element>
+        <element api="M:Microsoft.Build.Utilities.ToolTask.LogEventsFromTextOutput(System.String,Microsoft.Build.Framework.MessageImportance)">
+          <apidata name="LogEventsFromTextOutput" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="singleLine">
+              <type api="T:System.String" ref="true" />
+            </parameter>
+            <parameter name="messageImportance">
+              <type api="T:Microsoft.Build.Framework.MessageImportance" ref="false" />
+            </parameter>
+          </parameters>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+          </containers>
+        </element>
+        <element api="M:Microsoft.Build.Utilities.ToolTask.Execute">
+          <apidata name="Execute" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <overrides>
+            <member api="M:Microsoft.Build.Utilities.Task.Execute">
+              <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+            </member>
+          </overrides>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Utilities.ToolTask.ExitCode">
+          <apidata name="ExitCode" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" />
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:Microsoft.Build.Framework.OutputAttribute" ref="true" />
+            </attribute>
+          </attributes>
+        </element>
+        <element api="P:Microsoft.Build.Utilities.ToolTask.ToolPath">
+          <apidata name="ToolPath" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Utilities.ToolTask.Timeout">
+          <apidata name="Timeout" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Utilities.ToolTask.ResponseFileEncoding">
+          <apidata name="ResponseFileEncoding" group="member" subgroup="property" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <propertydata get="true" />
+          <returns>
+            <type api="T:System.Text.Encoding" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Utilities.ToolTask.StandardErrorEncoding">
+          <apidata name="StandardErrorEncoding" group="member" subgroup="property" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <propertydata get="true" />
+          <returns>
+            <type api="T:System.Text.Encoding" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Utilities.ToolTask.EnvironmentOverride">
+          <apidata name="EnvironmentOverride" group="member" subgroup="property" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <propertydata get="true" />
+          <returns>
+            <type api="T:System.Collections.Specialized.StringDictionary" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Utilities.ToolTask.StandardErrorLoggingImportance">
+          <apidata name="StandardErrorLoggingImportance" group="member" subgroup="property" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <propertydata get="true" />
+          <returns>
+            <type api="T:Microsoft.Build.Framework.MessageImportance" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Utilities.ToolTask.StandardOutputLoggingImportance">
+          <apidata name="StandardOutputLoggingImportance" group="member" subgroup="property" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <propertydata get="true" />
+          <returns>
+            <type api="T:Microsoft.Build.Framework.MessageImportance" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine">
+          <apidata name="BuildEngine" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="true" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:Microsoft.Build.Framework.IBuildEngine" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Utilities.Task.HostObject">
+          <apidata name="HostObject" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="true" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:Microsoft.Build.Framework.ITaskHost" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Utilities.Task.TaskResources">
+          <apidata name="TaskResources" group="member" subgroup="property" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.Resources.ResourceManager" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Utilities.Task.HelpKeywordPrefix">
+          <apidata name="HelpKeywordPrefix" group="member" subgroup="property" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" overload="true" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Finalize">
+          <apidata name="Finalize" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:System.Runtime.ConstrainedExecution.ReliabilityContractAttribute" ref="true" />
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Consistency" ref="false" />
+                <enumValue>
+                  <field name="WillNotCorruptState" />
+                </enumValue>
+              </argument>
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Cer" ref="false" />
+                <enumValue>
+                  <field name="Success" />
+                </enumValue>
+              </argument>
+            </attribute>
+          </attributes>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.Vjc.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.Vjc" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.Vjc.AddResponseFileCommands(Microsoft.Build.Tasks.CommandLineBuilderExtension)">
+      <apidata name="AddResponseFileCommands" group="member" subgroup="method" />
+      <memberdata visibility="family or assembly" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:Microsoft.Build.Tasks.ManagedCompiler.AddResponseFileCommands(Microsoft.Build.Tasks.CommandLineBuilderExtension)">
+          <type api="T:Microsoft.Build.Tasks.ManagedCompiler" ref="true" />
+        </member>
+      </overrides>
+      <parameters>
+        <parameter name="commandLine">
+          <type api="T:Microsoft.Build.Tasks.CommandLineBuilderExtension" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.Vjc" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.JavaFlags" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>4</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="P:Microsoft.Build.Tasks.Vjc.BaseAddress">
+      <apidata name="BaseAddress" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.Vjc" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.Vjc.CallHostObjectToExecute">
+      <apidata name="CallHostObjectToExecute" group="member" subgroup="method" />
+      <memberdata visibility="family or assembly" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:Microsoft.Build.Utilities.ToolTask.CallHostObjectToExecute">
+          <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+        </member>
+      </overrides>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.Vjc" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.JavaFlags" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>4</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.JavaThrownExceptions" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>1;System/IO/IOException;</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="P:Microsoft.Build.Tasks.Vjc.DisabledWarnings">
+      <apidata name="DisabledWarnings" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.Vjc" ref="true" />
+      </containers>
+    </api>
+    <api id="P:Microsoft.Build.Tasks.Vjc.DisableExtensions">
+      <apidata name="DisableExtensions" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.Vjc" ref="true" />
+      </containers>
+    </api>
+    <api id="P:Microsoft.Build.Tasks.Vjc.DocumentationFile">
+      <apidata name="DocumentationFile" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.Vjc" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.Vjc.GenerateFullPathToTool">
+      <apidata name="GenerateFullPathToTool" group="member" subgroup="method" />
+      <memberdata visibility="family or assembly" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:Microsoft.Build.Utilities.ToolTask.GenerateFullPathToTool">
+          <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+        </member>
+      </overrides>
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.Vjc" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.JavaFlags" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>4</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.Vjc.InitializeHostObject">
+      <apidata name="InitializeHostObject" group="member" subgroup="method" />
+      <memberdata visibility="family or assembly" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:Microsoft.Build.Utilities.ToolTask.InitializeHostObject">
+          <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+        </member>
+      </overrides>
+      <returns>
+        <type api="T:Microsoft.Build.Utilities.HostObjectInitializationStatus" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.Vjc" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.JavaFlags" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>4</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="P:Microsoft.Build.Tasks.Vjc.Jcpa">
+      <apidata name="Jcpa" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.Vjc" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.Vjc.MemberwiseClone">
+      <apidata name="MemberwiseClone" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:System.Object.MemberwiseClone">
+          <type api="T:System.Object" ref="true" />
+        </member>
+      </overrides>
+      <returns>
+        <type api="T:System.Object" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.Vjc" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.JavaThrownExceptions" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>1;java/lang/CloneNotSupportedException;</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.JavaFlags" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>4227077</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="P:Microsoft.Build.Tasks.Vjc.SecureScoping">
+      <apidata name="SecureScoping" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.Vjc" ref="true" />
+      </containers>
+    </api>
+    <api id="P:Microsoft.Build.Tasks.Vjc.ToolName">
+      <apidata name="ToolName" group="member" subgroup="property" />
+      <memberdata visibility="family or assembly" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="P:Microsoft.Build.Utilities.ToolTask.ToolName">
+          <type api="T:Microsoft.Build.Utilities.ToolTask" ref="true" />
+        </member>
+      </overrides>
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.Vjc" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.Vjc.ToString">
+      <apidata name="ToString" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:System.Object.ToString">
+          <type api="T:System.Object" ref="true" />
+        </member>
+      </overrides>
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.Vjc" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.JavaFlags" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>4227073</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="P:Microsoft.Build.Tasks.Vjc.WarningLevel">
+      <apidata name="WarningLevel" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.Vjc" ref="true" />
+      </containers>
+    </api>
+    <api id="T:Microsoft.Build.Tasks.VjsResGen">
+      <apidata name="VjsResGen" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:Microsoft.Build.Tasks.VjsResGen.#ctor" />
+        <element api="M:Microsoft.Build.Tasks.VjsResGen.Execute" />
+        <element api="M:Microsoft.Build.Tasks.VjsResGen.MemberwiseClone" />
+        <element api="M:Microsoft.Build.Tasks.VjsResGen.ToString" />
+        <element api="P:Microsoft.Build.Tasks.VjsResGen.OutputResx" />
+        <element api="P:Microsoft.Build.Tasks.VjsResGen.Sources" />
+        <element api="P:Microsoft.Build.Tasks.VjsResGen.Wildcards" />
+        <element api="P:Microsoft.Build.Utilities.Task.BuildEngine">
+          <apidata name="BuildEngine" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="true" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:Microsoft.Build.Framework.IBuildEngine" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Utilities.Task.HostObject">
+          <apidata name="HostObject" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="true" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:Microsoft.Build.Framework.ITaskHost" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Utilities.Task.Log">
+          <apidata name="Log" group="member" subgroup="property" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" />
+          <returns>
+            <type api="T:Microsoft.Build.Utilities.TaskLoggingHelper" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Utilities.Task.TaskResources">
+          <apidata name="TaskResources" group="member" subgroup="property" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.Resources.ResourceManager" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+          </containers>
+        </element>
+        <element api="P:Microsoft.Build.Utilities.Task.HelpKeywordPrefix">
+          <apidata name="HelpKeywordPrefix" group="member" subgroup="property" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <propertydata get="true" set="true" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="Microsoft.Build.Utilities" module="Microsoft.Build.Utilities" />
+            <namespace api="N:Microsoft.Build.Utilities" />
+            <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" overload="true" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Finalize">
+          <apidata name="Finalize" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:System.Runtime.ConstrainedExecution.ReliabilityContractAttribute" ref="true" />
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Consistency" ref="false" />
+                <enumValue>
+                  <field name="WillNotCorruptState" />
+                </enumValue>
+              </argument>
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Cer" ref="false" />
+                <enumValue>
+                  <field name="Success" />
+                </enumValue>
+              </argument>
+            </attribute>
+          </attributes>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.VjsResGen.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.VjsResGen" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.VjsResGen.Execute">
+      <apidata name="Execute" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:Microsoft.Build.Utilities.Task.Execute">
+          <type api="T:Microsoft.Build.Utilities.Task" ref="true" />
+        </member>
+      </overrides>
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.VjsResGen" ref="true" />
+      </containers>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.VjsResGen.MemberwiseClone">
+      <apidata name="MemberwiseClone" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:System.Object.MemberwiseClone">
+          <type api="T:System.Object" ref="true" />
+        </member>
+      </overrides>
+      <returns>
+        <type api="T:System.Object" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.VjsResGen" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.JavaFlags" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>4227077</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.JavaThrownExceptions" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>1;java/lang/CloneNotSupportedException;</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="P:Microsoft.Build.Tasks.VjsResGen.OutputResx">
+      <apidata name="OutputResx" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:System.String" ref="true" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.VjsResGen" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:Microsoft.Build.Framework.OutputAttribute" ref="true" />
+        </attribute>
+      </attributes>
+    </api>
+    <api id="P:Microsoft.Build.Tasks.VjsResGen.Sources">
+      <apidata name="Sources" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:System.String" ref="true" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.VjsResGen" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:Microsoft.Build.Framework.RequiredAttribute" ref="true" />
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:Microsoft.Build.Tasks.VjsResGen.ToString">
+      <apidata name="ToString" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <overrides>
+        <member api="M:System.Object.ToString">
+          <type api="T:System.Object" ref="true" />
+        </member>
+      </overrides>
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.VjsResGen" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:com.ms.vjsharp.cor.JavaFlags" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>4227073</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="P:Microsoft.Build.Tasks.VjsResGen.Wildcards">
+      <apidata name="Wildcards" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="false" />
+      <propertydata get="true" set="true" />
+      <returns>
+        <arrayOf rank="1">
+          <type api="T:System.String" ref="true" />
+        </arrayOf>
+      </returns>
+      <containers>
+        <library assembly="Microsoft.Build.VisualJSharp" module="Microsoft.Build.VisualJSharp" />
+        <namespace api="N:Microsoft.Build.Tasks" />
+        <type api="T:Microsoft.Build.Tasks.VjsResGen" ref="true" />
+      </containers>
+    </api>
+  </apis>
+</reflection>

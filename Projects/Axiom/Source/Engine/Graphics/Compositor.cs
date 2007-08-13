@@ -46,6 +46,8 @@ using System.IO;
 using Axiom.Core;
 using Axiom.Configuration;
 
+using ResourceHandle = System.UInt64;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
@@ -82,19 +84,11 @@ namespace Axiom.Graphics
 
 		#region Constructors
 
-		public Compositor( string name )
+		public Compositor( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+			: base( parent, name, handle, group, isManual, loader )
 		{
 			techniques = new List<CompositionTechnique>();
 			supportedTechniques = new List<CompositionTechnique>();
-			this.name = name;
-			this.compilationRequired = true;
-		}
-
-		public Compositor()
-		{
-			techniques = new List<CompositionTechnique>();
-			supportedTechniques = new List<CompositionTechnique>();
-			this.name = String.Format( "_Compositor{0}", autoNumber++ );
 			this.compilationRequired = true;
 		}
 
@@ -141,16 +135,16 @@ namespace Axiom.Graphics
 		///		are not already), GPU programs are created if applicable, and Controllers are instantiated.
 		///		Once a material has been loaded, all changes made to it are immediately loaded too
 		/// </remarks>
-		public override void Load()
+		protected override void load()
 		{
-			if ( !isLoaded )
+			if ( !IsLoaded )
 			{
 				// compile if needed
 				if ( compilationRequired )
 				{
 					Compile();
 				}
-				isLoaded = true;
+				IsLoaded = true;
 			}
 		}
 
@@ -158,21 +152,34 @@ namespace Axiom.Graphics
 		///		Unloads the material, frees resources etc.
 		///		<see cref="Resource"/>
 		/// </summary>
-		public override void Unload()
+		protected override void unload()
 		{
-			isLoaded = false;
+			IsLoaded = false;
 		}
 
 		/// <summary>
 		///	    Disposes of any resources used by this object.	
 		/// </summary>
-		public override void Dispose()
+		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( isLoaded )
+			if ( !isDisposed )
 			{
-				Unload();
+				if ( disposeManagedResources )
+				{
+					if ( IsLoaded )
+						Unload();
+				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
 			}
+			isDisposed = true;
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
 		}
+
 
 		/// <summary>
 		///    Overridden to ensure a recompile occurs if needed before use.

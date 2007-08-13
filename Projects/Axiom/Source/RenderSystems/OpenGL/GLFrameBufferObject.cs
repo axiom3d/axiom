@@ -48,7 +48,7 @@ using Axiom.Configuration;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	internal class GLFrameBufferObject :IDisposable
+	internal class GLFrameBufferObject : IDisposable
 	{
 		#region Fields and Properties
 
@@ -62,7 +62,7 @@ namespace Axiom.RenderSystems.OpenGL
 			get
 			{
 				//assert( mColour[ 0 ].buffer );
-				return _color[0].Buffer.Height;
+				return _color[ 0 ].Buffer.Height;
 			}
 		}
 
@@ -71,7 +71,7 @@ namespace Axiom.RenderSystems.OpenGL
 			get
 			{
 				//assert( mColour[ 0 ].buffer );
-				return _color[0].Buffer.Width;
+				return _color[ 0 ].Buffer.Width;
 			}
 		}
 
@@ -80,7 +80,7 @@ namespace Axiom.RenderSystems.OpenGL
 			get
 			{
 				//assert( mColour[ 0 ].buffer );
-				return _color[0].Buffer.Format;
+				return _color[ 0 ].Buffer.Format;
 			}
 		}
 
@@ -150,15 +150,15 @@ namespace Axiom.RenderSystems.OpenGL
 			//assert( attachment < OGRE_MAX_MULTIPLE_RENDER_TARGETS );
 			_color[ attachment ].Buffer = null;
 			// Re-initialise if buffer 0 still bound
-			if ( _color[ 0 ].Buffer == null)
+			if ( _color[ 0 ].Buffer == null )
 			{
 				_initialize();
 			}
 		}
-                
-        /// <summary>
+
+		/// <summary>
 		/// Bind FrameBufferObject
-        /// </summary>
+		/// </summary>
 		public void Bind()
 		{
 			/// Bind it to FBO

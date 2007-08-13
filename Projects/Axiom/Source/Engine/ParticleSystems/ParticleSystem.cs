@@ -358,8 +358,10 @@ namespace Axiom.ParticleSystems
 		protected void Expire( float timeElapsed )
 		{
 			List<Particle> expiredList = new List<Particle>();
-			foreach ( Particle particle in activeParticles )
+			for ( int index = 0; index < activeParticles.Count; index ++)
+			//foreach ( Particle particle in activeParticles )
 			{
+				Particle particle = activeParticles[ index ];
 				// is this particle dead?
 				if ( particle.timeToLive < timeElapsed )
 				{
@@ -392,8 +394,10 @@ namespace Axiom.ParticleSystems
 					particle.timeToLive -= timeElapsed;
 				}
 			}
-			foreach ( Particle p in expiredList )
+			for ( int index = 0; index < expiredList.Count; index ++ )
+			//foreach ( Particle p in expiredList )
 			{
+				Particle p = expiredList[ index ];
 				activeParticles.Remove( p );
 			}
 		}
@@ -598,18 +602,18 @@ namespace Axiom.ParticleSystems
 
 		private Particle CreateParticle()
 		{
-            Particle newParticle = null;
-            if ( freeParticles.Count > 0 )
-            {
-                // Fast creation (don't use superclass since emitter will init)
-                newParticle = freeParticles[ 0 ];
-                freeParticles.RemoveAt( 0 );
+			Particle newParticle = null;
+			if ( freeParticles.Count != 0 )
+			{
+				// Fast creation (don't use superclass since emitter will init)
+				newParticle = freeParticles[ 0 ];
+				freeParticles.RemoveAt( 0 );
 
-                // add the billboard to the active list
-                activeParticles.Add( newParticle );
+				// add the billboard to the active list
+				activeParticles.Add( newParticle );
 
-                newParticle.NotifyOwner( this );
-            }
+				newParticle.NotifyOwner( this );
+			}
 			return newParticle;
 		}
 
@@ -856,7 +860,7 @@ namespace Axiom.ParticleSystems
 				renderer.NotifyAttached( parentNode, parentIsTagPoint );
 				renderer.NotifyDefaultDimensions( defaultWidth, defaultHeight );
 				CreateVisualParticles( 0, particlePool.Count );
-				Material mat = MaterialManager.Instance.Load( materialName );
+				Material mat = (Material)MaterialManager.Instance.Load( materialName, resourceGroupName );
 				renderer.Material = mat;
 				if ( renderQueueIDSet )
 					renderer.RenderQueueGroup = renderQueueID;
@@ -972,13 +976,13 @@ namespace Axiom.ParticleSystems
 				MethodInfo method = methods[ i ];
 
 				// see if the method should be used to parse one or more material attributes
-				AttributeParserAttribute[] parserAtts =
-					(AttributeParserAttribute[])method.GetCustomAttributes( typeof( AttributeParserAttribute ), true );
+				ParserCommandAttribute[] parserAtts =
+					(ParserCommandAttribute[])method.GetCustomAttributes( typeof( ParserCommandAttribute ), true );
 
 				// loop through each one we found and register its parser
 				for ( int j = 0; j < parserAtts.Length; j++ )
 				{
-					AttributeParserAttribute parserAtt = parserAtts[ j ];
+					ParserCommandAttribute parserAtt = parserAtts[ j ];
 
 					switch ( parserAtt.ParserType )
 					{
@@ -992,7 +996,7 @@ namespace Axiom.ParticleSystems
 			} // for
 		}
 
-		[AttributeParser( "sorted", PARTICLE )]
+		[ParserCommand( "sorted", PARTICLE )]
 		public static void ParseSorted( string[] values, ParticleSystem system )
 		{
 			if ( values.Length != 1 )
@@ -1004,7 +1008,7 @@ namespace Axiom.ParticleSystems
 			system.Sorted = StringConverter.ParseBool( values[ 0 ] );
 		}
 
-		[AttributeParser( "emit_emitter_quota", PARTICLE )]
+		[ParserCommand( "emit_emitter_quota", PARTICLE )]
 		public static void ParseEmitEmitterQuota( string[] values, ParticleSystem system )
 		{
 			if ( values.Length != 1 )
@@ -1017,7 +1021,7 @@ namespace Axiom.ParticleSystems
 		}
 
 
-		[AttributeParser( "cull_each", PARTICLE )]
+		[ParserCommand( "cull_each", PARTICLE )]
 		public static void ParseCullEach( string[] values, ParticleSystem system )
 		{
 			if ( values.Length != 1 )
@@ -1029,7 +1033,7 @@ namespace Axiom.ParticleSystems
 			system.CullIndividual = StringConverter.ParseBool( values[ 0 ] );
 		}
 
-		[AttributeParser( "particle_width", PARTICLE )]
+		[ParserCommand( "particle_width", PARTICLE )]
 		public static void ParseWidth( string[] values, ParticleSystem system )
 		{
 			if ( values.Length != 1 )
@@ -1041,7 +1045,7 @@ namespace Axiom.ParticleSystems
 			system.DefaultWidth = StringConverter.ParseFloat( values[ 0 ] );
 		}
 
-		[AttributeParser( "particle_height", PARTICLE )]
+		[ParserCommand( "particle_height", PARTICLE )]
 		public static void ParseHeight( string[] values, ParticleSystem system )
 		{
 			if ( values.Length != 1 )
@@ -1053,7 +1057,7 @@ namespace Axiom.ParticleSystems
 			system.DefaultHeight = StringConverter.ParseFloat( values[ 0 ] );
 		}
 
-		[AttributeParser( "material", PARTICLE )]
+		[ParserCommand( "material", PARTICLE )]
 		public static void ParseMaterial( string[] values, ParticleSystem system )
 		{
 			if ( values.Length != 1 )
@@ -1065,7 +1069,7 @@ namespace Axiom.ParticleSystems
 			system.MaterialName = values[ 0 ];
 		}
 
-		[AttributeParser( "quota", PARTICLE )]
+		[ParserCommand( "quota", PARTICLE )]
 		public static void ParseQuota( string[] values, ParticleSystem system )
 		{
 			if ( values.Length != 1 )
@@ -1077,7 +1081,7 @@ namespace Axiom.ParticleSystems
 			system.ParticleQuota = int.Parse( values[ 0 ] );
 		}
 
-		[AttributeParser( "local_space", PARTICLE )]
+		[ParserCommand( "local_space", PARTICLE )]
 		public static void ParseLocalSpace( string[] values, ParticleSystem system )
 		{
 			if ( values.Length != 1 )
@@ -1089,7 +1093,7 @@ namespace Axiom.ParticleSystems
 			system.LocalSpace = StringConverter.ParseBool( values[ 0 ] );
 		}
 
-		[AttributeParser( "renderer", PARTICLE )]
+		[ParserCommand( "renderer", PARTICLE )]
 		public static void ParseRenderer( string[] values, ParticleSystem system )
 		{
 			if ( values.Length != 1 )
@@ -1101,7 +1105,7 @@ namespace Axiom.ParticleSystems
 			system.RendererName = values[ 0 ];
 		}
 
-		[AttributeParser( "iteration_interval", PARTICLE )]
+		[ParserCommand( "iteration_interval", PARTICLE )]
 		public static void ParseIterationInterval( string[] values, ParticleSystem system )
 		{
 			if ( values.Length != 1 )
@@ -1113,7 +1117,7 @@ namespace Axiom.ParticleSystems
 			system.IterationInterval = float.Parse( values[ 0 ] );
 		}
 
-		[AttributeParser( "nonvisible_update_timeout", PARTICLE )]
+		[ParserCommand( "nonvisible_update_timeout", PARTICLE )]
 		public static void ParseNonvisibleUpdateTimeout( string[] values, ParticleSystem system )
 		{
 			if ( values.Length != 1 )
@@ -1225,7 +1229,7 @@ namespace Axiom.ParticleSystems
 				materialName = value;
 				if ( isRendererConfigured )
 				{
-					Material mat = MaterialManager.Instance.Load( materialName );
+					Material mat = (Material)MaterialManager.Instance.Load( materialName, resourceGroupName );
 					renderer.Material = mat;
 				}
 			}

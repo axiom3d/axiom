@@ -56,11 +56,11 @@ namespace Axiom.SceneManagers.Bsp
 
         public BspGeometry()
         {
-            geometryMat = MaterialManager.Instance.GetByName( "Axiom/BspGeometryMaterial" );
+            geometryMat = (Material)MaterialManager.Instance.GetByName( "Axiom/BspGeometryMaterial" );
 
             if ( geometryMat == null )
             {
-                geometryMat = (Material)MaterialManager.Instance.Create( "Axiom/BspGeometryMaterial" );
+                geometryMat = (Material)MaterialManager.Instance.Create( "Axiom/BspGeometryMaterial", ResourceGroupManager.Instance.WorldResourceGroupName );
                 geometryMat.ReceiveShadows = true;
                 technique = geometryMat.GetTechnique( 0 );
             }

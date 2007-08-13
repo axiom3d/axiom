@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="Axiom.RenderSystems.OpenGL.GLGpuProgram">
+    <Position X="12.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>GLGpuProgram.cs</FileName>
+      <HashCode>CABAhACBAAAAAAAAAAAAAAAAAAgAIgAIAAAEAAAICAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Axiom.RenderSystems.OpenGL.ARBGpuProgram">
+    <Position X="8" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>ARBGpuProgram.cs</FileName>
+      <HashCode>CAAAgACBAAAAAAAAAAAAAAAAAAAAAAAAAQAEAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Axiom.RenderSystems.OpenGL.ATI.ATIFragmentShaderGpuProgram">
+    <Position X="10.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>ATI\ATIFragmentShaderGpuProgram.cs</FileName>
+      <HashCode>CAAAgACBAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Axiom.RenderSystems.OpenGL.GLSL.GLSLGpuProgram">
+    <Position X="12.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>GLSL\GLSLGpuProgram.cs</FileName>
+      <HashCode>CIAAgAABAIAQAAAAEgAAgAAAAAAAAAAAAAAEAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Axiom.RenderSystems.OpenGL.Nvidia.NV3xGpuProgram">
+    <Position X="14.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Nvidia\NV3xGpuProgram.cs</FileName>
+      <HashCode>CAAAgACAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Axiom.RenderSystems.OpenGL.Nvidia.NvparseFragmentProgram">
+    <Position X="17" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Nvidia\NvparseFragmentProgram.cs</FileName>
+      <HashCode>CCAAgACBAAAAAAAAABAAAAAIAAAAAAQAAAAEAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+</ClassDiagram>

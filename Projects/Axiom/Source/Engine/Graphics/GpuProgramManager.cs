@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 
@@ -42,7 +43,8 @@ using Axiom.Core;
 using Axiom.FileSystem;
 using Axiom.Scripting;
 using Axiom.Math;
-using System.Collections.Generic;
+
+using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
 
@@ -58,7 +60,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Singleton instance of this class.
 		/// </summary>
-		private static GpuProgramManager instance;
+		private static GpuProgramManager _instance;
 
 		/// <summary>
 		///     Internal constructor.  This class cannot be instantiated externally.
@@ -69,10 +71,17 @@ namespace Axiom.Graphics
 		/// </remarks>
 		protected internal GpuProgramManager()
 		{
-			if ( instance == null )
+			if ( _instance == null )
 			{
-				instance = this;
+				_instance = this;
 			}
+
+			// Loading order
+			LoadingOrder = 50.0f;
+			// Resource type
+			ResourceType = "GpuProgram";
+
+			// subclasses should register with resource group manager
 		}
 
 		/// <summary>
@@ -82,7 +91,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return instance;
+				return _instance;
 			}
 		}
 
@@ -108,21 +117,12 @@ namespace Axiom.Graphics
 		#region Methods
 
 		/// <summary>
-		///     Overrides the base Create method to enforce the use of Load or Create instead.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
-		public override Resource Create( string name, bool isManual )
-		{
-			throw new AxiomException( "You need to create a program using the Load or Create* methods." );
-		}
-
-		/// <summary>
 		///    Creates a new GpuProgram.
 		/// </summary>
 		/// <param name="name">
 		///    Name of the program to create.
 		/// </param>
+		/// <param name="group"></param>
 		/// <param name="type">
 		///    Type of the program to create, i.e. vertex or fragment.
 		/// </param>
@@ -132,7 +132,50 @@ namespace Axiom.Graphics
 		/// <returns>
 		///    A new instance of GpuProgram.
 		/// </returns>
-		public abstract GpuProgram Create( string name, GpuProgramType type, string syntaxCode );
+		public GpuProgram Create( string name, string group, GpuProgramType type, string syntaxCode)
+		{
+			return Create( name, group, type, syntaxCode, false, null );
+		}
+
+		/// <summary>
+		///    Creates a new GpuProgram.
+		/// </summary>
+		/// <param name="name">
+		///    Name of the program to create.
+		/// </param>
+		/// <param name="group"></param>
+		/// <param name="type">
+		///    Type of the program to create, i.e. vertex or fragment.
+		/// </param>
+		/// <param name="syntaxCode">
+		///    Syntax of the program, i.e. vs_1_1, arbvp1, etc.
+		/// </param>
+		/// <returns>
+		///    A new instance of GpuProgram.
+		/// </returns>
+		public virtual GpuProgram Create( string name, string group, GpuProgramType type, string syntaxCode, bool isManual, IManualResourceLoader loader )
+		{
+			// Call creation implementation
+			GpuProgram ret = (GpuProgram)_create( name, nextHandle, group, isManual, loader, type, syntaxCode );
+
+			_add( ret );
+			// Tell resource group manager
+			ResourceGroupManager.Instance.notifyResourceCreated( ret );
+			return ret;
+		}
+
+		/// <summary>
+		/// Internal method for created programs, must be implemented by subclasses
+		/// </summary>
+		/// <param name="name"> Name of the program to create.</param>
+		/// <param name="handle">Handle of the program</param>
+		/// <param name="group">resource group of the program</param>
+		/// <param name="isManual">is this program manually created</param>
+		/// <param name="loader">The ManualResourceLoader if this program is manually loaded</param>
+		/// <param name="type">Type of the program to create, i.e. vertex or fragment.</param>
+		/// <param name="syntaxCode">Syntax of the program, i.e. vs_1_1, arbvp1, etc.</param>
+		/// <returns>A new instance of GpuProgram.</returns>
+		protected abstract Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode );
 
 		/// <summary>
 		///    Create a new, unloaded GpuProgram from a file of assembly.
@@ -153,11 +196,12 @@ namespace Axiom.Graphics
 		/// <returns>
 		///    An unloaded GpuProgram instance.
 		/// </returns>
-		public virtual GpuProgram CreateProgram( string name, string fileName, GpuProgramType type, string syntaxCode )
+		public virtual GpuProgram CreateProgram( string name, string group, string fileName, GpuProgramType type, string syntaxCode )
 		{
-			GpuProgram program = Create( name, type, syntaxCode );
+			GpuProgram program = Create( name, group, type, syntaxCode );
+
 			program.SourceFile = fileName;
-			Add( program );
+
 			return program;
 		}
 
@@ -178,11 +222,12 @@ namespace Axiom.Graphics
 		///    Name of the syntax to use for the program, i.e. vs_1_1, arbvp1, etc.
 		/// </param>
 		/// <returns>An unloaded GpuProgram instance.</returns>
-		public virtual GpuProgram CreateProgramFromString( string name, string source, GpuProgramType type, string syntaxCode )
+		public virtual GpuProgram CreateProgramFromString( string name, string group, string source, GpuProgramType type, string syntaxCode )
 		{
-			GpuProgram program = Create( name, type, syntaxCode );
+			GpuProgram program = Create( name, group, type, syntaxCode );
+
 			program.Source = source;
-			Add( program );
+
 			return program;
 		}
 
@@ -194,7 +239,10 @@ namespace Axiom.Graphics
 		///    Program parameters can be shared between multiple programs if you wish.
 		/// </remarks>
 		/// <returns></returns>
-		public abstract GpuProgramParameters CreateParameters();
+		public virtual GpuProgramParameters CreateParameters()
+		{
+			return new GpuProgramParameters();
+		}
 
 		/// <summary>
 		///    Returns whether a given syntax code (e.g. "ps_1_3", "fp20", "arbvp1") is supported. 
@@ -226,10 +274,16 @@ namespace Axiom.Graphics
 		/// <param name="syntaxCode">
 		///    Syntax code of the program, i.e. vs_1_1, arbvp1, etc.
 		/// </param>
-		public virtual GpuProgram Load( string name, string fileName, GpuProgramType type, string syntaxCode )
+		public virtual GpuProgram Load( string name, string group, string fileName, GpuProgramType type, string syntaxCode )
 		{
-			GpuProgram program = Create( fileName, type, syntaxCode );
-			base.Load( program, 1 );
+			GpuProgram program = GetByName( name );
+
+			if ( program == null )
+			{
+				program = CreateProgram( name, group, fileName, type, syntaxCode );
+			}
+
+			program.Load();
 			return program;
 		}
 
@@ -253,11 +307,16 @@ namespace Axiom.Graphics
 		/// <param name="syntaxCode">
 		///    Syntax code of the program, i.e. vs_1_1, arbvp1, etc.
 		/// </param>
-		public virtual GpuProgram LoadFromString( string name, string source, GpuProgramType type, string syntaxCode )
+		public virtual GpuProgram LoadFromString( string name, string group, string source, GpuProgramType type, string syntaxCode )
 		{
-			GpuProgram program = Create( name, type, syntaxCode );
-			program.Source = source;
-			base.Load( program, 1 );
+			GpuProgram program = GetByName(name);
+
+			if ( program == null )
+			{
+				program = CreateProgramFromString( name, group, source, type, syntaxCode );
+			}
+
+			program.Load();
 			return program;
 		}
 
@@ -272,7 +331,7 @@ namespace Axiom.Graphics
 
 		#endregion
 
-		#region Implementation of ResourceManager
+		#region ResourceManager Implementation
 
 		/// <summary>
 		///     Gets a GpuProgram with the specified name.
@@ -282,7 +341,7 @@ namespace Axiom.Graphics
 		public new GpuProgram GetByName( string name )
 		{
 			// look for a high level program first
-			GpuProgram program = HighLevelGpuProgramManager.Instance.GetByName( name );
+			GpuProgram program = HighLevelGpuProgramManager.Instance[ name ];
 
 			// return if found
 			if ( program != null )
@@ -291,19 +350,30 @@ namespace Axiom.Graphics
 			}
 
 			// return low level program
-			return (GpuProgram)base.GetByName( name );
+			return (GpuProgram)base[ name ];
 		}
 
 		/// <summary>
 		///     Called when the engine is shutting down.
 		/// </summary>
-		public override void Dispose()
+		protected override void dispose( bool disposeManagedResources )
 		{
-			base.Dispose();
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					_instance = null;
+				}
 
-			instance = null;
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
+			isDisposed = true;
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
 		}
-
-		#endregion
+		#endregion  ResourceManager Implementation
 	}
 }

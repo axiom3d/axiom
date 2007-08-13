@@ -39,6 +39,7 @@ using System.Diagnostics;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
+using ResourceHandle = System.UInt64;
 
 using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
@@ -67,8 +68,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region Constructor
 
-		public D3DGpuProgram( string name, GpuProgramType type, D3D.Device device, string syntaxCode )
-			: base( name, type, syntaxCode )
+		public D3DGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, D3D.Device device )
+			: base(parent, name, handle, group, isManual, loader )
 		{
 			this.device = device;
 		}
@@ -80,12 +81,12 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		///     Overridden to allow for loading microcode from external sources.
 		/// </summary>
-		public override void Load()
+		protected override void load()
 		{
 			if ( externalMicrocode != null )
 			{
 				// unload if needed
-				if ( isLoaded )
+				if ( IsLoaded )
 				{
 					Unload();
 				}
@@ -93,7 +94,7 @@ namespace Axiom.RenderSystems.DirectX9
 				// creates the shader from an external microcode source
 				// for example, a compiled HLSL program
 				LoadFromMicrocode( externalMicrocode );
-				isLoaded = true;
+				IsLoaded = true;
 			}
 			else
 			{
@@ -114,7 +115,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( errors != null && errors.Length != 0 )
 			{
-				LogManager.Instance.Write( "Error while compiling pixel shader '{0}':\n {1}", name, errors );
+				LogManager.Instance.Write( "Error while compiling pixel shader '{0}':\n {1}", Name, errors );
 				return;
 			}
 
@@ -178,9 +179,10 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region Constructor
 
-		internal D3DVertexProgram( string name, D3D.Device device, string syntaxCode )
-			: base( name, GpuProgramType.Vertex, device, syntaxCode )
+		internal D3DVertexProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, D3D.Device device )
+			: base( parent, name, handle, group, isManual, loader, device )
 		{
+            type = GpuProgramType.Vertex;
 		}
 
 		#endregion Constructor
@@ -200,10 +202,8 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		///     Unloads the VertexShader object.
 		/// </summary>
-		public override void Unload()
+		protected override void unload()
 		{
-			base.Unload();
-
 			if ( vertexShader != null )
 			{
 				vertexShader.Dispose();
@@ -253,9 +253,10 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region Constructors
 
-		internal D3DFragmentProgram( string name, D3D.Device device, string syntaxCode )
-			: base( name, GpuProgramType.Fragment, device, syntaxCode )
+		internal D3DFragmentProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, D3D.Device device )
+			: base( parent, name, handle, group, isManual, loader, device )
 		{
+            type = GpuProgramType.Fragment;
 		}
 
 		#endregion Constructors
@@ -275,10 +276,8 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		///     Unloads the PixelShader object.
 		/// </summary>
-		public override void Unload()
+		protected override void unload()
 		{
-			base.Unload();
-
 			if ( pixelShader != null )
 			{
 				pixelShader.Dispose();

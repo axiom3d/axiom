@@ -339,7 +339,7 @@ namespace Axiom.Graphics
 				viewport.Target.BeforeViewportUpdate += BeforeViewportUpdate;
 				viewport.Target.AfterViewportUpdate += AfterViewportUpdate;
 				/// Create base "original scene" compositor
-				Compositor baseCompositor = (Compositor)CompositorManager.Instance.LoadExisting( "Ogre/Scene" );
+				Compositor baseCompositor = (Compositor)CompositorManager.Instance.Load( "Ogre/Scene", ResourceGroupManager.InternalResourceGroupName );
 				originalScene = baseCompositor.GetSupportedTechnique( 0 ).CreateInstance( this );
 			}
 

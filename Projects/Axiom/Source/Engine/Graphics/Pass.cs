@@ -67,186 +67,1634 @@ namespace Axiom.Graphics
 	/// </remarks>
 	public class Pass
 	{
-		#region Fields
+
+		#region Static Interface
+
+		#region DirtyList Property
+
+		/// <summary>
+		///		List of passes with dirty hashes.
+		/// </summary>
+		private static PassList _dirtyList = new PassList();
+		/// <summary>
+		///		Gets a list of dirty passes.
+		/// </summary>
+		internal static PassList DirtyList
+		{
+			get
+			{
+				return _dirtyList;
+			}
+		}
+
+		#endregion DirtyList Property
+
+		#region GraveyardList Property
+
+		/// <summary>
+		///		List of passes queued for deletion.
+		/// </summary>
+		private static PassList _graveyardList = new PassList();
+		/// <summary>
+		///		Gets a list of passes queued for deletion.
+		/// </summary>
+		internal static PassList GraveyardList
+		{
+			get
+			{
+				return _graveyardList;
+			}
+		}
+
+		#endregion GraveyardList Property
+
+		protected static int nextPassId = 0;
+		protected static Object passLock = new Object();
+
+		#endregion Static Interface
+
+		#region Fields and Properties
+
+		public int passId;
+
+		/// <summary>
+		///    Texture anisotropy level.
+		/// </summary>
+		private int _maxAnisotropy;
+			
+		#region Parent Property
 
 		/// <summary>
 		///    A reference to the technique that owns this Pass.
 		/// </summary>
-		protected Technique parent;
+		private Technique _parent;
+		/// <summary>
+		///    Gets a reference to the Technique that owns this pass.
+		/// </summary>
+		public Technique Parent
+		{
+			get
+			{
+				return _parent;
+			}
+			set
+			{
+				_parent = value;
+			}
+		}
+
+		#endregion Parent Property
+			
+		#region Index Property
+
 		/// <summary>
 		///    Index of this rendering pass.
 		/// </summary>
-		protected int index;
+		private int _index;
 		/// <summary>
-		///     Name of this pass (or the index if it isn't set)
+		///    Gets the index of this Pass in the parent Technique.
 		/// </summary>
-		protected string name;
+		public int Index
+		{
+			get
+			{
+				return _index;
+			}
+			set
+			{
+				_index = value;
+			}
+		}
+
+		#endregion Index Property
+
 		/// <summary>
 		///    Pass hash, used for sorting passes.
 		/// </summary>
-		protected int hashCode;
+		private int _hashCode;
+
+		#region Name Property
+
+		/// <summary>
+		///     Name of this pass (or the index if it isn't set)
+		/// </summary>
+		private string _name;
+		/// <summary>
+		///     Name of this pass (or the index if it isn't set)
+		/// </summary>
+		public string Name
+		{
+			get
+			{
+				return _name;
+			}
+			set
+			{
+				_name = value;
+			}
+		}
+
+		#endregion Name Property
+			
+		#region Ambient Property
+
 		/// <summary>
 		///    Ambient color in fixed function passes.
 		/// </summary>
-		protected ColorEx ambient;
+		private ColorEx _ambient;
+		/// <summary>
+		///    Sets the ambient color reflectance properties of this pass.
+		/// </summary>
+		/// <remarks>
+		///    The base color of a pass is determined by how much red, green and blue light is reflects
+		///    (provided texture layer #0 has a blend mode other than LayerBlendOperation.Replace). 
+		///    This property determines how much ambient light (directionless global light) is reflected. 
+		///    The default is full white, meaning objects are completely globally illuminated. Reduce this 
+		///    if you want to see diffuse or specular light effects, or change the blend of colors to make 
+		///    the object have a base color other than white.
+		///    <p/>
+		///    This setting has no effect if dynamic lighting is disabled (see <see cref="Pass.LightingEnabled"/>),
+		///    or if this is a programmable pass.
+		/// </remarks>
+		public ColorEx Ambient
+		{
+			get
+			{
+				return _ambient;
+			}
+			set
+			{
+				_ambient = value;
+			}
+		}
+
+		#endregion Ambient Property
+
+		#region Diffuse Property
+
 		/// <summary>
 		///    Diffuse color in fixed function passes.
 		/// </summary>
-		protected ColorEx diffuse;
+		private ColorEx _diffuse;
+		/// <summary>
+		///    Sets the diffuse color reflectance properties of this pass.
+		/// </summary>
+		/// <remarks>
+		///    The base color of a pass is determined by how much red, green and blue light is reflects
+		///    (provided texture layer #0 has a blend mode other than LayerBlendOperation.Replace). This property determines how
+		///    much diffuse light (light from instances of the Light class in the scene) is reflected. The default
+		///    is full white, meaning objects reflect the maximum white light they can from Light objects.
+		///    <p/>
+		///    This setting has no effect if dynamic lighting is disabled (see <see cref="Pass.LightingEnabled"/>),
+		///    or if this is a programmable pass.
+		/// </remarks>
+		public ColorEx Diffuse
+		{
+			get
+			{
+				return _diffuse;
+			}
+			set
+			{
+				_diffuse = value;
+			}
+		}
+
+		#endregion Diffuse Property
+
+		#region Specular Property
+
 		/// <summary>
 		///    Specular color in fixed function passes.
 		/// </summary>
-		protected ColorEx specular;
+		private ColorEx _specular;
 		/// <summary>
-		///    Emissive color in fixed function passes.
+		///    Sets the specular color reflectance properties of this pass.
 		/// </summary>
-		protected ColorEx emissive;
+		/// <remarks>
+		///    The base color of a pass is determined by how much red, green and blue light is reflects
+		///    (provided texture layer #0 has a blend mode other than LBO_REPLACE). This property determines how
+		///    much specular light (highlights from instances of the Light class in the scene) is reflected.
+		///    The default is to reflect no specular light.
+		///    <p/>
+		///    The size of the specular highlights is determined by the separate Shininess property.
+		///    <p/>
+		///    This setting has no effect if dynamic lighting is disabled (see <see cref="Pass.LightingEnabled"/>),
+		///    or if this is a programmable pass.
+		/// </remarks>
+		public ColorEx Specular
+		{
+			get
+			{
+				return _specular;
+			}
+			set
+			{
+				_specular = value;
+			}
+		}
+
+		#endregion Specular Property
+			
+		#region Emmissive Property
+
+		/// <summary>
+		/// Emissive color in fixed function passes.
+		/// </summary>
+		private ColorEx _emissive;
+		/// <summary>
+		/// Emissive color in fixed function passes.
+		/// </summary>
+		public ColorEx Emissive
+		{
+			get
+			{
+				return _emissive;
+			}
+			set
+			{
+				_emissive = value;
+			}
+		}
+
+		/// <summary>
+		/// Emissive color in fixed function passes.
+		/// </summary>
+		public ColorEx SelfIllumination
+		{
+			get
+			{
+				return _emissive;
+			}
+			set
+			{
+				_emissive = value;
+			}
+		}
+
+		#endregion Emmissive Property
+
+		#region Shininess Property
+
 		/// <summary>
 		///    Shininess of the object's surface in fixed function passes.
 		/// </summary>
-		protected float shininess;
+		private float _shininess;
+		/// <summary>
+		///    Sets the shininess of the pass, affecting the size of specular highlights.
+		/// </summary>
+		/// <remarks>
+		///    This setting has no effect if dynamic lighting is disabled (see Pass::setLightingEnabled),
+		///    or if this is a programmable pass.
+		/// </remarks>
+		public float Shininess
+		{
+			get
+			{
+				return _shininess;
+			}
+			set
+			{
+				_shininess = value;
+			}
+		}
+
+		#endregion Shininess Property
+
+		#region VertexColorTracking Property
+
 		/// <summary>
 		///    Color parameters that should track the vertex color for fixed function passes.
 		/// </summary>
-		protected TrackVertexColor tracking = TrackVertexColor.None;
+		private TrackVertexColor _tracking = TrackVertexColor.None;
+		/// <summary>
+		///    Color parameters that should track the vertex color for fixed function passes.
+		/// </summary>
+		public TrackVertexColor VertexColorTracking
+		{
+			get
+			{
+				return _tracking;
+			}
+			set
+			{
+				_tracking = value;
+			}
+		}
+
+		#endregion VertexColorTracking Property
+
+		#region SourceBlendFactor Property
+
 		/// <summary>
 		///    Source blend factor.
 		/// </summary>
-		protected SceneBlendFactor sourceBlendFactor;
+		private SceneBlendFactor _sourceBlendFactor;
+		/// <summary>
+		///    Retrieves the source blending factor for the material (as set using SetSceneBlending).
+		/// </summary>
+		public SceneBlendFactor SourceBlendFactor
+		{
+			get
+			{
+				return _sourceBlendFactor;
+			}
+			set
+			{
+				_sourceBlendFactor = value;
+			}
+		}
+
+		#endregion SourceBlendFactor Property
+			
+		#region DestinationBlendFactor Property
+
 		/// <summary>
 		///    Destination blend factor.
 		/// </summary>
-		protected SceneBlendFactor destBlendFactor;
+		private SceneBlendFactor _destinationBlendFactor;
+		/// <summary>
+		///    Retrieves the destination blending factor for the material (as set using SetSceneBlending).
+		/// </summary>
+		public SceneBlendFactor DestinationBlendFactor
+		{
+			get
+			{
+				return _destinationBlendFactor;
+			}
+		}
+
+		#endregion DestinationBlendFactor Property
+			
+		#region DepthCheck Property
+
 		/// <summary>
 		///    Depth buffer checking setting for this pass.
 		/// </summary>
-		protected bool depthCheck;
+		private bool _depthCheck;
+		/// <summary>
+		///    Gets/Sets whether or not this pass renders with depth-buffer checking on or not.
+		/// </summary>
+		/// <remarks>
+		///    If depth-buffer checking is on, whenever a pixel is about to be written to the frame buffer
+		///    the depth buffer is checked to see if the pixel is in front of all other pixels written at that
+		///    point. If not, the pixel is not written.
+		///    <p/>
+		///    If depth checking is off, pixels are written no matter what has been rendered before.
+		///    Also see <see cref="DepthFunction"/> for more advanced depth check configuration.
+		/// </remarks>
+		public bool DepthCheck
+		{
+			get
+			{
+				return _depthCheck;
+			}
+			set
+			{
+				_depthCheck = value;
+			}
+		}
+
+		#endregion DepthCheck Property
+
+		#region DepthWrite Property
+
 		/// <summary>
 		///    Depth write setting for this pass.
 		/// </summary>
-		protected bool depthWrite;
+		private bool _depthWrite;
+		/// <summary>
+		///    Gets/Sets whether or not this pass renders with depth-buffer writing on or not.
+		/// </summary>
+		/// <remarks>
+		///    If depth-buffer writing is on, whenever a pixel is written to the frame buffer
+		///    the depth buffer is updated with the depth value of that new pixel, thus affecting future
+		///    rendering operations if future pixels are behind this one.
+		///    <p/>
+		///    If depth writing is off, pixels are written without updating the depth buffer. Depth writing should
+		///    normally be on but can be turned off when rendering static backgrounds or when rendering a collection
+		///    of transparent objects at the end of a scene so that they overlap each other correctly.
+		/// </remarks>
+		public bool DepthWrite
+		{
+			get
+			{
+				return _depthWrite;
+			}
+			set
+			{
+				_depthWrite = value;
+			}
+		}
+
+		#endregion DepthWrite Property
+			
+		#region DepthFunction Property
+
 		/// <summary>
 		///    Depth comparison function for this pass.
 		/// </summary>
-		protected CompareFunction depthFunc;
+		private CompareFunction _depthFunction;
+		/// <summary>
+		///    Gets/Sets the function used to compare depth values when depth checking is on.
+		/// </summary>
+		/// <remarks>
+		///    If depth checking is enabled (see <see cref="DepthCheck"/>) a comparison occurs between the depth
+		///    value of the pixel to be written and the current contents of the buffer. This comparison is
+		///    normally CompareFunction.LessEqual, i.e. the pixel is written if it is closer (or at the same distance)
+		///    than the current contents. If you wish, you can change this comparison using this method.
+		/// </remarks>
+		public CompareFunction DepthFunction
+		{
+			get
+			{
+				return _depthFunction;
+			}
+			set
+			{
+				_depthFunction = value;
+			}
+		}
+
+		#endregion DepthFunction Property
+
+		#region DepthBias Properties
+
 		/// <summary>
 		///    Depth bias for this pass.
 		/// </summary>
-		protected int depthBias;
+		private float _depthBiasConstant;
+		/// <summary>
+		///		Depth bias slope for this pass.
+		/// </summary>
+		private float _depthBiasSlopeScale;
+
+		/// <overloads>
+		/// <summary>
+		///    Sets the depth bias to be used for this Pass.
+		/// </summary>
+		/// <remarks>
+		///    When polygons are coplanar, you can get problems with 'depth fighting' (or 'z fighting') where
+		///    the pixels from the two polys compete for the same screen pixel. This is particularly
+		///    a problem for decals (polys attached to another surface to represent details such as
+		///    bulletholes etc.).
+		///    <p/>
+		///    A way to combat this problem is to use a depth bias to adjust the depth buffer value
+		///    used for the decal such that it is slightly higher than the true value, ensuring that
+		///    the decal appears on top. There are two aspects to the biasing, a constant
+		///    bias value and a slope-relative biasing value, which varies according to the
+		///    maximum depth slope relative to the camera, ie:
+		///    <pre>finalBias = maxSlope * slopeScaleBias + constantBias</pre>
+		///    Note that slope scale bias, whilst more accurate, may be ignored by old hardware.
+		/// </remarks>
+		/// <param name="constantBias">The constant bias value, expressed as a factor of the minimum observable depth</param>
+		/// </overloads>
+		/// <param name="slopeBias">The slope-relative bias value, expressed as a factor of the depth slope</param>
+		public void SetDepthBias( float constantBias, float slopeBias )
+		{
+			_depthBiasConstant = constantBias;
+			_depthBiasSlopeScale = slopeBias;
+		}
+
+		public void SetDepthBias( float constantBias)
+		{
+			SetDepthBias( constantBias, 0.0f );
+		}
+
+		/// <summary>
+		/// Returns the current DepthBiasConstant value for this pass.
+		/// </summary>
+		/// <remarks>Use <see cref="SetDepthBias"/> to set this property</remarks>
+		public float DepthBiasConstant
+		{
+			get
+			{
+				return _depthBiasConstant;
+			}
+		}
+
+		/// <summary>
+		/// Returns the current DepthBiasSlopeScale value for this pass.
+		/// </summary>
+		/// <remarks>Use <see cref="SetDepthBias"/> to set this property</remarks>
+		public float DepthBiasSlopeScale
+		{
+			get
+			{
+				return _depthBiasSlopeScale;
+			}
+		}
+
+		#endregion DepthBias Property
+
+		#region ColorWrite Property
+
 		/// <summary>
 		///    Color write setting for this pass.
 		/// </summary>
-		protected bool colorWrite;
+		private bool _colorWrite;
+		/// <summary>
+		///    Sets whether or not color buffer writing is enabled for this Pass.
+		/// </summary>
+		/// <remarks>
+		///    For some effects, you might wish to turn off the color write operation
+		///    when rendering geometry; this means that only the depth buffer will be
+		///    updated (provided you have depth buffer writing enabled, which you 
+		///    probably will do, although you may wish to only update the stencil
+		///    buffer for example - stencil buffer state is managed at the RenderSystem
+		///    level only, not the Material since you are likely to want to manage it 
+		///    at a higher level).
+		/// </remarks>
+		public bool ColorWrite
+		{
+			get
+			{
+				return _colorWrite;
+			}
+			set
+			{
+				_colorWrite = value;
+			}
+		}
+
+		#endregion ColorWrite Property
+
+		#region AlphaReject Properties
+
+		private CompareFunction _alphaRejectFunction = CompareFunction.AlwaysPass;
+		private int _alphaRejectValue;
+
+		/// <summary>
+		/// Sets the way the pass will have use alpha to totally reject pixels from the pipeline.
+		/// </summary>
+		/// <remarks>
+		/// The default is <see ref="CompareFunction.AlwaysPass" /> i.e. alpha is not used to reject pixels.
+		/// <para>This option applies in both the fixed function and the programmable pipeline.</para></remarks>
+		/// <param name="alphaRejectFunction">The comparison which must pass for the pixel to be written.</param>
+		/// <param name="value">value against which alpha values will be tested [(0-255]</param>
+		public void SetAlphaReject( CompareFunction alphaRejectFunction, int value )
+		{
+			_alphaRejectFunction = alphaRejectFunction;
+			_alphaRejectValue = value;
+		}
+
+		/// <summary>
+		/// The comparison which must pass for the pixel to be written.
+		/// </summary>
+		public CompareFunction AlphaRejectFunction
+		{
+			get
+			{
+				return _alphaRejectFunction;
+			}
+			set
+			{
+				_alphaRejectFunction = value;
+			}
+		}
+
+		/// <summary>
+		/// value against which alpha values will be tested [(0-255]
+		/// </summary>
+		public int AplhaRejectValue
+		{
+			get
+			{
+				return _alphaRejectValue;
+			}
+			set
+			{
+				Debug.Assert( value < 255 && value > 0 , "AlphaRejectValue must be between 0 and 255" );
+				_alphaRejectValue = value;
+			}
+		}
+
+		#endregion AlphaReject Properties
+
+		#region CullingMode Property
+
 		/// <summary>
 		///    Hardware culling mode for this pass.
 		/// </summary>
-		protected CullingMode cullMode;
+		private CullingMode _cullingMode;
+		/// <summary>
+		///    Sets the culling mode for this pass based on the 'vertex winding'.
+		/// </summary>
+		/// <remarks>
+		///    A typical way for the rendering engine to cull triangles is based on the 'vertex winding' of
+		///    triangles. Vertex winding refers to the direction in which the vertices are passed or indexed
+		///    to in the rendering operation as viewed from the camera, and will wither be clockwise or
+		///    counterclockwise. The default is Clockwise i.e. that only triangles whose vertices are passed/indexed in 
+		///    counter-clockwise order are rendered - this is a common approach and is used in 3D studio models for example. 
+		///    You can alter this culling mode if you wish but it is not advised unless you know what you are doing.
+		///    <p/>
+		///    You may wish to use the CullingMode.None option for mesh data that you cull yourself where the vertex
+		///    winding is uncertain.
+		/// </remarks>
+		public CullingMode CullingMode
+		{
+			get
+			{
+				return _cullingMode;
+			}
+			set
+			{
+				_cullingMode = value;
+			}
+		} 
+
+		#endregion CullingMode Property
+
+		#region ManualCullingMode Property
+
 		/// <summary>
 		///    Software culling mode for this pass.
 		/// </summary>
-		protected ManualCullingMode manualCullMode;
+		private ManualCullingMode _manualCullingMode;
+		/// <summary>
+		///    Sets the manual culling mode, performed by CPU rather than hardware.
+		/// </summary>
+		/// <remarks>
+		///    In some situations you want to use manual culling of triangles rather than sending the
+		///    triangles to the hardware and letting it cull them. This setting only takes effect on SceneManager's
+		///    that use it (since it is best used on large groups of planar world geometry rather than on movable
+		///    geometry since this would be expensive), but if used can cull geometry before it is sent to the
+		///    hardware.
+		/// </remarks>
+		/// <value>
+		///    The default for this setting is ManualCullingMode.Back.
+		/// </value>
+		public ManualCullingMode ManualCullingMode
+		{
+			get
+			{
+				return _manualCullingMode;
+			}
+			set
+			{
+				_manualCullingMode = value;
+			}
+		} 
+
+		#endregion ManualCullingMode Property
+
+		#region LightingEnabled Property
+
 		/// <summary>
 		///    Is lighting enabled for this pass?
 		/// </summary>
-		protected bool lightingEnabled;
+		private bool _lightingEnabled;
+		/// <summary>
+		///    Sets whether or not dynamic lighting is enabled.
+		/// </summary>
+		/// <remarks>
+		///    If true, dynamic lighting is performed on geometry with normals supplied, geometry without
+		///    normals will not be displayed.
+		///    If false, no lighting is applied and all geometry will be full brightness.
+		/// </remarks>
+		public bool LightingEnabled
+		{
+			get
+			{
+				return _lightingEnabled;
+			}
+			set
+			{
+				_lightingEnabled = value;
+			}
+		}
+
+		#endregion LightingEnabled Property
+
+		#region MaxSimultaneousLights Property
+
 		/// <summary>
 		///    Max number of simultaneous lights that can be used for this pass.
 		/// </summary>
-		protected int maxLights;
+		private int _maxSimultaneousLights;
+		/// <summary>
+		///    Sets the maximum number of lights to be used by this pass. 
+		/// </summary>
+		/// <remarks>
+		///    During rendering, if lighting is enabled (or if the pass uses an automatic
+		///    program parameter based on a light) the engine will request the nearest lights 
+		///    to the object being rendered in order to work out which ones to use. This
+		///    parameter sets the limit on the number of lights which should apply to objects 
+		///    rendered with this pass. 
+		/// </remarks>
+		public int MaxSimultaneousLights
+		{
+			get
+			{
+				return _maxSimultaneousLights;
+			}
+			set
+			{
+				_maxSimultaneousLights = value;
+			}
+		}
+
+		#endregion MaxLights Property
+
+		#region StartLight Property
+
+		/// <summary>
+		///    the light index that this pass will start at in the light list.
+		/// </summary>
+		private bool _startLight;
+		/// <summary>
+		///    Sets the light index that this pass will start at in the light list.
+		/// </summary>
+		/// <remarks>
+		/// Normally the lights passed to a pass will start from the beginning
+		/// of the light list for this object. This option allows you to make this
+		/// pass start from a higher light index, for example if one of your earlier
+		/// passes could deal with lights 0-3, and this pass dealt with lights 4+. 
+		/// This option also has an interaction with pass iteration, in that
+		/// if you choose to iterate this pass per light too, the iteration will
+		/// only begin from light 4.
+		/// </remarks>
+		public bool StartLight
+		{
+			get
+			{
+				return _startLight;
+			}
+			set
+			{
+				_startLight = value;
+			}
+		}
+
+		#endregion StartLight Property
+
+		#region IteratePerLight Property
+
 		/// <summary>
 		///    Run this pass once per light? 
 		/// </summary>
-		protected bool runOncePerLight;
+		private bool _iteratePerLight;
+		/// <summary>
+		///    Does this pass run once for every light in range?
+		/// </summary>
+		public bool IteratePerLight
+		{
+			get
+			{
+				return _iteratePerLight;
+			}
+			set
+			{
+				_iteratePerLight = value;
+			}
+		}
+
+		#endregion IteratePerLight Property
+
+		#region LightsPerIteration Property
+		private int _lightsPerIteration = 1;
+
+		/// <summary>
+		/// If light iteration is enabled, determine the number of lights per iteration.
+		/// </summary>
+		/// <remarks>
+		/// The default for this setting is 1, so if you enable light iteration
+		/// (<see cref="IteratePerLight"/>), the pass is rendered once per light. If
+		/// you set this value higher, the passes will occur once per 'n' lights.
+		/// The start of the iteration is set by <see cref="StartLight"/> and the end
+		/// by <see cref="MaxSimultaneousLights"/>.
+		/// </remarks>
+		public int LightsPerIteration
+		{
+			get
+			{
+				return _lightsPerIteration;
+			}
+			set
+			{
+				_lightsPerIteration = value;
+			}
+		}
+
+		#endregion LightsPerIteration Property
+			
+		#region RunOnlyOncePerLightType Property
+
 		/// <summary>
 		///     Should it only be run for a certain light type? 
 		/// </summary>
-		protected bool runOnlyForOneLightType;
+		private bool _runOnlyForOneLightType;
+		/// <summary>
+		///    Does this pass run only for a single light type (if RunOncePerLight is true). 
+		/// </summary>
+		public bool RunOnlyOncePerLightType
+		{
+			get
+			{
+				return _runOnlyForOneLightType;
+			}
+			set
+			{
+				_runOnlyForOneLightType = value;
+			}
+		}
+
+		#endregion RunOnlyOncePerLightType Property
+						
+		#region OnlyLightType Property
+
 		/// <summary>
 		///    Type of light for a programmable pass that supports only one particular type of light.
 		/// </summary>
-		protected LightType onlyLightType;
+		private LightType _onlyLightType;
+		/// <summary>
+		///     Gets the single light type this pass runs for if RunOncePerLight and 
+		///     RunOnlyForOneLightType are both true. 
+		/// </summary>
+		public LightType OnlyLightType
+		{
+			get
+			{
+				return _onlyLightType;
+			}
+			set
+			{
+				_onlyLightType = value;
+			}
+		}
+
+		#endregion OnlyLightType Property
+
+		#region ShadingMode Property
+
 		/// <summary>
 		///    Shading options for this pass.
 		/// </summary>
-		protected Shading shadeOptions;
+		private Shading _shadingMode;
 		/// <summary>
-		///    Texture anisotropy level.
+		///    Sets the type of light shading required.
 		/// </summary>
-		protected int maxAniso;
+		/// <value>
+		///    The default shading method is Gouraud shading.
+		/// </value>
+		public Shading ShadingMode
+		{
+			get
+			{
+				return _shadingMode;
+			}
+			set
+			{
+				_shadingMode = value;
+			}
+		}
+
+		#endregion ShadingMode Property
+
+		#region PolygonMode Property
+
+		/// <summary>
+		/// the type of polygon rendering required
+		/// </summary>
+		private SceneDetailLevel _polygonMode = SceneDetailLevel.Solid;
+		/// <summary>
+		/// Sets the type of polygon rendering required
+		/// </summary>
+		/// <remarks>
+		/// The default shading method is Solid
+		/// </remarks>
+		public SceneDetailLevel PolygonMode
+		{
+			get
+			{
+				return _polygonMode;
+			}
+			set
+			{
+				_polygonMode = value;
+			}
+		}
+
+		#endregion PolygonMode Property
+			
+		#region Fog Properties
+
+		#region FogOverride Property
+
 		/// <summary>
 		///    Does this pass override global fog settings?
 		/// </summary>
-		protected bool fogOverride;
+		private bool _fogOverride;
+		/// <summary>
+		///    Returns true if this pass is to override the scene fog settings.
+		/// </summary>
+		public bool FogOverride
+		{
+			get
+			{
+				return _fogOverride;
+			}
+			protected set
+			{
+				_fogOverride = value;
+			}
+		}
+
+		#endregion FogOverride Property
+			
+		#region FogMode Property
+
 		/// <summary>
 		///    Fog mode to use for this pass (if overriding).
 		/// </summary>
-		protected FogMode fogMode;
+		private FogMode _fogMode;
+		/// <summary>
+		///    Returns the fog mode for this pass.
+		/// </summary>
+		/// <remarks>
+		///    Only valid if FogOverride is true.
+		/// </remarks>
+		public FogMode FogMode
+		{
+			get
+			{
+				return _fogMode;
+			}
+			protected set
+			{
+				_fogMode = value;
+			}
+		}
+
+		#endregion FogMode Property
+			
+		#region FogColor Property
+
 		/// <summary>
 		///    Color of the fog used for this pass (if overriding).
 		/// </summary>
-		protected ColorEx fogColor;
+		private ColorEx _fogColor;
+		/// <summary>
+		///    Returns the fog color for the scene.
+		/// </summary>
+		/// <remarks>
+		///    Only valid if FogOverride is true.
+		/// </remarks>
+		public ColorEx FogColor
+		{
+			get
+			{
+				return _fogColor;
+			}
+			protected set
+			{
+				_fogColor = value;
+			}
+		}
+
+		#endregion FogColor Property
+
+		#region FogStart Property
+
 		/// <summary>
 		///    Starting point of the fog for this pass (if overriding).
 		/// </summary>
-		protected float fogStart;
+		private float _fogStart;
+		/// <summary>
+		///    Returns the fog start distance for this pass.
+		/// </summary>
+		/// <remarks>
+		///    Only valid if FogOverride is true.
+		/// </remarks>
+		public float FogStart
+		{
+			get
+			{
+				return _fogStart;
+			}
+			protected set
+			{
+				_fogStart = value;
+			}
+		}
+
+		#endregion FogStart Property
+			
+		#region FogEnd Property
+
 		/// <summary>
 		///    Ending point of the fog for this pass (if overriding).
 		/// </summary>
-		protected float fogEnd;
+		private float _fogEnd;
+		/// <summary>
+		///    Returns the fog end distance for this pass.
+		/// </summary>
+		/// <remarks>
+		///    Only valid if FogOverride is true.
+		/// </remarks>
+		public float FogEnd
+		{
+			get
+			{
+				return _fogEnd;
+			}
+			set
+			{
+				_fogEnd = value;
+			}
+		}
+
+		#endregion FogEnd Property
+			
+		#region FogDensity Property
+
 		/// <summary>
 		///    Density of the fog for this pass (if overriding).
 		/// </summary>
-		protected float fogDensity;
+		private float _fogDensity;
+		/// <summary>
+		///    Returns the fog density for this pass.
+		/// </summary>
+		/// <remarks>
+		///    Only valid if FogOverride is true.
+		/// </remarks>
+		public float FogDensity
+		{
+			get
+			{
+				return _fogDensity;
+			}
+			protected set
+			{
+				_fogDensity = value;
+			}
+		}
+
+		#endregion FogDensity Property
+
+		#endregion Fog Properties
+
+		#region TextureUnitState Convenience Properties
+
 		/// <summary>
 		///    List of fixed function texture unit states for this pass.
 		/// </summary>
 		protected TextureUnitStateList textureUnitStates = new TextureUnitStateList();
+
+		/// <summary>
+		///    Gets the number of fixed function texture unit states for this Pass.
+		/// </summary>
+		public int TextureUnitStageCount
+		{
+			get
+			{
+				return textureUnitStates.Count;
+			}
+		}
+
+		/// <summary>
+		///    Sets the anisotropy level to be used for all textures.
+		/// </summary>
+		/// <remarks>
+		///    This property has been moved to the TextureUnitState class, which is accessible via the 
+		///    Technique and Pass. For simplicity, this method allows you to set these properties for 
+		///    every current TeextureUnitState, If you need more precision, retrieve the Technique, 
+		///    Pass and TextureUnitState instances and set the property there.
+		/// </remarks>
+		public int TextureAnisotropy
+		{
+			set
+			{
+				for ( int i = 0; i < textureUnitStates.Count; i++ )
+				{
+					( (TextureUnitState)textureUnitStates[ i ] ).TextureAnisotropy = value;
+				}
+			}
+		}
+
+		/// <summary>
+		///    Set texture filtering for every texture unit.
+		/// </summary>
+		/// <remarks>
+		///    This property actually exists on the TextureUnitState class
+		///    For simplicity, this method allows you to set these properties for 
+		///    every current TeextureUnitState, If you need more precision, retrieve the  
+		///    TextureUnitState instance and set the property there.
+		/// </remarks>
+		public TextureFiltering TextureFiltering
+		{
+			set
+			{
+				for ( int i = 0; i < textureUnitStates.Count; i++ )
+				{
+					( (TextureUnitState)textureUnitStates[ i ] ).SetTextureFiltering( value );
+				}
+			}
+		}
+
+		#endregion TextureUnitState Convenience Properties
+
+		#region Programmable Pipeline Propteries
+
+		/// <summary>
+		///    Returns true if this pass is programmable ie includes either a vertex or fragment program.
+		/// </summary>
+		public bool IsProgrammable
+		{
+			get
+			{
+				return _vertexProgramUsage != null || _fragmentProgramUsage != null;
+			}
+		}
+
+		#region VertexProgram Properties
+
 		/// <summary>
 		///    Details on the vertex program to be used for this pass.
 		/// </summary>
-		protected GpuProgramUsage vertexProgramUsage;
+		private GpuProgramUsage _vertexProgramUsage;
+
+		/// <summary>
+		///    Returns true if this Pass uses the programmable vertex pipeline.
+		/// </summary>
+		public bool HasVertexProgram
+		{
+			get
+			{
+				return _vertexProgramUsage != null;
+			}
+		}
+
+		/// <summary>
+		///    Gets the vertex program used by this pass.
+		/// </summary>
+		/// <remarks>
+		///    Only available after Load() has been called.
+		/// </remarks>
+		public GpuProgram VertexProgram
+		{
+			get
+			{
+				Debug.Assert( this.HasVertexProgram, "This pass does not contain a vertex program!" );
+				return _vertexProgramUsage.Program;
+			}
+		}
+
+		/// <summary>
+		///    Gets/Sets the name of the vertex program to use.
+		/// </summary>
+		/// <remarks>
+		///    Only applicable to programmable passes, and this particular call is
+		///    designed for low-level programs; use the named parameter methods
+		///    for setting high-level programs.
+		///    <p/>
+		///    This must have been created using GpuProgramManager by the time that 
+		///    this Pass is loaded.
+		/// </remarks>
+		public string VertexProgramName
+		{
+			get
+			{
+				if ( this.HasVertexProgram )
+				{
+					return _vertexProgramUsage.ProgramName;
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+			set
+			{
+				SetVertexProgram( value );
+			}
+		}
+
+		/// <summary>
+		///    Gets/Sets the vertex program parameters used by this pass.
+		/// </summary>
+		/// <remarks>
+		///    Only applicable to programmable passes, and this particular call is
+		///    designed for low-level programs; use the named parameter methods
+		///    for setting high-level program parameters.
+		/// </remarks>
+		public GpuProgramParameters VertexProgramParameters
+		{
+			get
+			{
+				Debug.Assert( this.HasVertexProgram, "This pass does not contain a vertex program!" );
+				return _vertexProgramUsage.Params;
+			}
+			set
+			{
+				Debug.Assert( this.HasVertexProgram, "This pass does not contain a vertex program!" );
+				_vertexProgramUsage.Params = value;
+			}
+		}
+
+		#endregion VertexProgram Properties
+			
+		#region FragmentProgram Properties 
+
 		/// <summary>
 		///    Details on the fragment program to be used for this pass.
 		/// </summary>
-		protected GpuProgramUsage fragmentProgramUsage;
+		private GpuProgramUsage _fragmentProgramUsage;
+
+		/// <summary>
+		///    Returns true if this Pass uses the programmable fragment pipeline.
+		/// </summary>
+		public bool HasFragmentProgram
+		{
+			get
+			{
+				return _fragmentProgramUsage != null;
+			}
+		}
+
+		/// <summary>
+		///    Gets the vertex program used by this pass.
+		/// </summary>
+		/// <remarks>
+		///    Only available after Load() has been called.
+		/// </remarks>
+		public GpuProgram FragmentProgram
+		{
+			get
+			{
+				Debug.Assert( this.HasFragmentProgram, "This pass does not contain a fragment program!" );
+				return _fragmentProgramUsage.Program;
+			}
+		}
+
+		/// <summary>
+		///    Gets/Sets the name of the fragment program to use.
+		/// </summary>
+		/// <remarks>
+		///    Only applicable to programmable passes, and this particular call is
+		///    designed for low-level programs; use the named parameter methods
+		///    for setting high-level programs.
+		///    <p/>
+		///    This must have been created using GpuProgramManager by the time that 
+		///    this Pass is loaded.
+		/// </remarks>
+		public string FragmentProgramName
+		{
+			get
+			{
+				// return blank if there is no fragment program in this pass
+				if ( this.HasFragmentProgram )
+				{
+					return _fragmentProgramUsage.ProgramName;
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+			set
+			{
+				SetFragmentProgram( value );
+			}
+		}
+
+		/// <summary>
+		///    Gets/Sets the fragment program parameters used by this pass.
+		/// </summary>
+		/// <remarks>
+		///    Only applicable to programmable passes, and this particular call is
+		///    designed for low-level programs; use the named parameter methods
+		///    for setting high-level program parameters.
+		/// </remarks>
+		public GpuProgramParameters FragmentProgramParameters
+		{
+			get
+			{
+				Debug.Assert( this.HasFragmentProgram, "This pass does not contain a fragment program!" );
+				return _fragmentProgramUsage.Params;
+			}
+			set
+			{
+				Debug.Assert( this.HasFragmentProgram, "This pass does not contain a fragment program!" );
+				_fragmentProgramUsage.Params = value;
+			}
+		}
+
+		#endregion FragmentProgram Properties
+
+		#region ShadowCasterVertexProgram Properties
+
 		/// <summary>
 		///    Details on the shadow caster vertex program to be used for this pass.
 		/// </summary>
 		protected GpuProgramUsage shadowCasterVertexProgramUsage;
+
+		/// <summary>
+		///    Returns true if this Pass uses the programmable shadow caster vertex pipeline.
+		/// </summary>
+		public bool HasShadowCasterVertexProgram
+		{
+			get
+			{
+				return shadowCasterVertexProgramUsage != null;
+			}
+		}
+		public string ShadowCasterVertexProgramName
+		{
+			get
+			{
+				if ( this.HasShadowCasterVertexProgram )
+				{
+					return shadowCasterVertexProgramUsage.ProgramName;
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+		}
+		public GpuProgramParameters ShadowCasterVertexProgramParameters
+		{
+			get
+			{
+				Debug.Assert( this.HasShadowCasterVertexProgram, "This pass does not contain a shadow caster vertex program!" );
+				return shadowCasterVertexProgramUsage.Params;
+			}
+			set
+			{
+				Debug.Assert( this.HasShadowCasterVertexProgram, "This pass does not contain a shadow caster vertex program!" );
+				shadowCasterVertexProgramUsage.Params = value;
+			}
+		}
+
+		#endregion ShadowCasterVertexProgram Properties
+
+		#region ShadowCasterFragmentProgram Properties
+
 		/// <summary>
 		///    Details on the shadow caster fragment program to be used for this pass.
 		/// </summary>
-		protected GpuProgramUsage shadowCasterFragmentProgramUsage;
+		private GpuProgramUsage _shadowCasterFragmentProgramUsage;
+
+		/// <summary>
+		///    Returns true if this Pass uses the programmable shadow caster fragment pipeline.
+		/// </summary>
+		public bool HasShadowCasterFragmentProgram
+		{
+			get
+			{
+				return _shadowCasterFragmentProgramUsage != null;
+			}
+		}
+		public string ShadowCasterFragmentProgramName
+		{
+			get
+			{
+				if ( this.HasShadowCasterFragmentProgram )
+				{
+					return _shadowCasterFragmentProgramUsage.ProgramName;
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+		}
+		public GpuProgramParameters ShadowCasterFragmentProgramParameters
+		{
+			get
+			{
+				Debug.Assert( this.HasShadowCasterFragmentProgram, "This pass does not contain a shadow caster fragment program!" );
+				return _shadowCasterFragmentProgramUsage.Params;
+			}
+			set
+			{
+				Debug.Assert( this.HasShadowCasterFragmentProgram, "This pass does not contain a shadow caster fragment program!" );
+				_shadowCasterFragmentProgramUsage.Params = value;
+			}
+		}
+
+		#endregion ShadowCasterFragmentProgram Properties
+
+		#region ShadowRecieverVertexProgram Properties
+
 		/// <summary>
 		///    Details on the shadow receiver vertex program to be used for this pass.
 		/// </summary>
-		protected GpuProgramUsage shadowReceiverVertexProgramUsage;
+		private GpuProgramUsage _shadowReceiverVertexProgramUsage;
+		/// <summary>
+		///    Returns true if this Pass uses the programmable shadow receiver vertex pipeline.
+		/// </summary>
+		public bool HasShadowReceiverVertexProgram
+		{
+			get
+			{
+				return _shadowReceiverVertexProgramUsage != null;
+			}
+		}
+		public string ShadowReceiverVertexProgramName
+		{
+			get
+			{
+				if ( this.HasShadowReceiverVertexProgram )
+				{
+					return _shadowReceiverVertexProgramUsage.ProgramName;
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+		}
+		public GpuProgramParameters ShadowReceiverVertexProgramParameters
+		{
+			get
+			{
+				Debug.Assert( this.HasShadowReceiverVertexProgram, "This pass does not contain a shadow receiver vertex program!" );
+				return _shadowReceiverVertexProgramUsage.Params;
+			}
+			set
+			{
+				Debug.Assert( this.HasShadowReceiverVertexProgram, "This pass does not contain a shadow receiver vertex program!" );
+				_shadowReceiverVertexProgramUsage.Params = value;
+			}
+		}
+
+		#endregion ShadowRecieverVertexProgram Properties
+
+		#region ShadowRecieverFragmentProgram Properties
+
 		/// <summary>
 		///    Details on the shadow receiver fragment program to be used for this pass.
 		/// </summary>
-		protected GpuProgramUsage shadowReceiverFragmentProgramUsage;
+		private GpuProgramUsage _shadowReceiverFragmentProgramUsage;
+		/// <summary>
+		///    Returns true if this Pass uses the programmable shadow receiver fragment pipeline.
+		/// </summary>
+		public bool HasShadowReceiverFragmentProgram
+		{
+			get
+			{
+				return _shadowReceiverFragmentProgramUsage != null;
+			}
+		}
+		public string ShadowReceiverFragmentProgramName
+		{
+			get
+			{
+				if ( this.HasShadowReceiverFragmentProgram )
+				{
+					return _shadowReceiverFragmentProgramUsage.ProgramName;
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
+		}
+		public GpuProgramParameters ShadowReceiverFragmentProgramParameters
+		{
+			get
+			{
+				Debug.Assert( this.HasShadowReceiverFragmentProgram, "This pass does not contain a shadow receiver fragment program!" );
+				return _shadowReceiverFragmentProgramUsage.Params;
+			}
+			set
+			{
+				Debug.Assert( this.HasShadowReceiverFragmentProgram, "This pass does not contain a shadow receiver fragment program!" );
+				_shadowReceiverFragmentProgramUsage.Params = value;
+			}
+		}
+
+		#endregion ShadowRecieverFragmentProgram Properties
+			
+		#endregion Programmable Pipeline Propteries
+
+		#region PointSize Property
+
+		private float _pointSize;
+		public float PointSize
+		{
+			get
+			{
+				return _pointSize;
+			}
+			set
+			{
+				_pointSize = value;
+			}
+		}
+
+		#endregion PointSize Property
+
+		#region PointMinSize Property
+
+		private float _pointMinSize;
+		public float PointMixSize
+		{
+			get
+			{
+				return _pointMinSize;
+			}
+			set
+			{
+				_pointMinSize = value;
+			}
+		}
+
+		#endregion PointMinSize Property
+
+		#region PointMaxSize Property
+
+		private float _pointMaxSize;
+		public float PointMaxSize
+		{
+			get
+			{
+				return _pointMaxSize;
+			}
+			set
+			{
+				_pointMaxSize = value;
+			}
+		}
+
+		#endregion PointMaxSize Property
+			
+		#region PointSpritesEnabled Property
+
+		private bool _pointSpritesEnabled;
+
+		public bool PointSpritesEnabled
+		{
+			get
+			{
+				return _pointSpritesEnabled;
+			}
+			set
+			{
+				_pointSpritesEnabled = value;
+			}
+		}
+
+		#endregion PointSpritesEnabled Property
+			
 		/// <summary>
 		///		Is this pass queued for deletion?
 		/// </summary>
 		protected bool queuedForDeletion;
 
+		#region PassIterationCount Property
+
+
+		#endregion PassIterationCount Property
+			
 		/// <summary>
-		///		List of passes with dirty hashes.
+		///		Gets a flag indicating whether this pass is ambient only.
 		/// </summary>
-		protected static PassList dirtyHashList = new PassList();
+		public bool IsAmbientOnly
+		{
+			get
+			{
+				// treat as ambient if lighting is off, or color write is off, 
+				// or all non-ambient (& emissive) colors are black
+				// NB a vertex program could override this, but passes using vertex
+				// programs are expected to indicate they are ambient only by 
+				// setting the state so it matches one of the conditions above, even 
+				// though this state is not used in rendering.
+				return ( !_lightingEnabled || 
+					     !_colorWrite ||
+						 ( _diffuse == ColorEx.Black && _specular == ColorEx.Black ) );
+			}
+		}
+
 		/// <summary>
-		///		List of passes queued for deletion.
+		///    Returns true if this pass is loaded.
 		/// </summary>
-		protected static PassList graveyardList = new PassList();
+		public bool IsLoaded
+		{
+			get
+			{
+				return _parent.IsLoaded;
+			}
+		}
 
-		protected static int nextPassId = 0;
-		protected static Object passLock = new Object();
 
-		public int passId;
+		/// <summary>
+		///    Returns true if this pass has some element of transparency.
+		/// </summary>
+		public bool IsTransparent
+		{
+			get
+			{
+				// Transparent if any of the destination color is taken into account
+				return ( _destinationBlendFactor != SceneBlendFactor.Zero );
+			}
+		}
 
-		#endregion
+		#endregion Fields and Properties
 
-		#region Constructors
+		#region Construction and Destruction
 
 		/// <summary>
 		///    Default constructor.
@@ -255,8 +1703,8 @@ namespace Axiom.Graphics
 		/// <param name="index">Index of this pass.</param>
 		public Pass( Technique parent, int index )
 		{
-			this.parent = parent;
-			this.index = index;
+			this._parent = parent;
+			this._index = index;
 
 			lock ( passLock )
 			{
@@ -264,50 +1712,50 @@ namespace Axiom.Graphics
 			}
 
 			// color defaults
-			ambient = ColorEx.White;
-			diffuse = ColorEx.White;
-			specular = ColorEx.Black;
-			emissive = ColorEx.Black;
+			_ambient = ColorEx.White;
+			_diffuse = ColorEx.White;
+			_specular = ColorEx.Black;
+			_emissive = ColorEx.Black;
 
 			// by default, don't override the scene's fog settings
-			fogOverride = false;
-			fogMode = FogMode.None;
-			fogColor = ColorEx.White;
-			fogStart = 0;
-			fogEnd = 1;
-			fogDensity = 0.001f;
+			_fogOverride = false;
+			_fogMode = FogMode.None;
+			_fogColor = ColorEx.White;
+			_fogStart = 0;
+			_fogEnd = 1;
+			_fogDensity = 0.001f;
 
 			// default blending (overwrite)
-			sourceBlendFactor = SceneBlendFactor.One;
-			destBlendFactor = SceneBlendFactor.Zero;
+			_sourceBlendFactor = SceneBlendFactor.One;
+			_destinationBlendFactor = SceneBlendFactor.Zero;
 
 
 
 			// depth buffer settings
-			depthCheck = true;
-			depthWrite = true;
-			colorWrite = true;
-			depthFunc = CompareFunction.LessEqual;
+			_depthCheck = true;
+			_depthWrite = true;
+			_colorWrite = true;
+			_depthFunction = CompareFunction.LessEqual;
 
 			// cull settings
-			cullMode = CullingMode.Clockwise;
-			manualCullMode = ManualCullingMode.Back;
+			_cullingMode = CullingMode.Clockwise;
+			_manualCullingMode = ManualCullingMode.Back;
 
 			// light settings
-			lightingEnabled = true;
-			runOnlyForOneLightType = true;
-			onlyLightType = LightType.Point;
-			shadeOptions = Shading.Gouraud;
+			_lightingEnabled = true;
+			_runOnlyForOneLightType = true;
+			_onlyLightType = LightType.Point;
+			_shadingMode = Shading.Gouraud;
 
 			// Default max lights to the global max
-			maxLights = Config.MaxSimultaneousLights;
+			_maxSimultaneousLights = Config.MaxSimultaneousLights;
 
-			name = index.ToString();
+			_name = index.ToString();
 
 			DirtyHash();
 		}
 
-		#endregion
+		#endregion Construction and Destruction
 
 		#region Methods
 
@@ -328,7 +1776,7 @@ namespace Axiom.Graphics
 				state.TextureNameAlias = null;
 			}
 			// needs recompilation
-			parent.NotifyNeedsRecompile();
+			_parent.NotifyNeedsRecompile();
 			DirtyHash();
 		}
 
@@ -355,55 +1803,56 @@ namespace Axiom.Graphics
 		/// <param name="target">Destination pass to copy this pass's attributes to.</param>
 		public void CopyTo( Pass target )
 		{
-			target.name = name;
-			target.hashCode = hashCode;
+			target._name = _name;
+			target._hashCode = _hashCode;
 
 			// surface
-			target.ambient = ambient.Clone();
-			target.diffuse = diffuse.Clone();
-			target.specular = specular.Clone();
-			target.emissive = emissive.Clone();
-			target.shininess = shininess;
-			target.tracking = tracking;
+			target._ambient = _ambient.Clone();
+			target._diffuse = _diffuse.Clone();
+			target._specular = _specular.Clone();
+			target._emissive = _emissive.Clone();
+			target._shininess = _shininess;
+			target._tracking = _tracking;
 
 			// fog
-			target.fogOverride = fogOverride;
-			target.fogMode = fogMode;
-			target.fogColor = fogColor.Clone();
-			target.fogStart = fogStart;
-			target.fogEnd = fogEnd;
-			target.fogDensity = fogDensity;
+			target._fogOverride = _fogOverride;
+			target._fogMode = _fogMode;
+			target._fogColor = _fogColor.Clone();
+			target._fogStart = _fogStart;
+			target._fogEnd = _fogEnd;
+			target._fogDensity = _fogDensity;
 
 			// default blending
-			target.sourceBlendFactor = sourceBlendFactor;
-			target.destBlendFactor = destBlendFactor;
+			target._sourceBlendFactor = _sourceBlendFactor;
+			target._destinationBlendFactor = _destinationBlendFactor;
 
-			target.depthCheck = depthCheck;
-			target.depthWrite = depthWrite;
+			target._depthCheck = _depthCheck;
+			target._depthWrite = _depthWrite;
 			// target.alphaRejectFunc = alphaRejectFunc;
 			// target.alphaRejectVal = alphaRejectVal;
-			target.colorWrite = colorWrite;
-			target.depthFunc = depthFunc;
-			target.depthBias = depthBias;
-			target.cullMode = cullMode;
-			target.manualCullMode = manualCullMode;
-			target.lightingEnabled = lightingEnabled;
-			target.maxLights = maxLights;
-			target.runOncePerLight = runOncePerLight;
-			target.runOnlyForOneLightType = runOnlyForOneLightType;
-			target.onlyLightType = onlyLightType;
-			target.shadeOptions = shadeOptions;
+			target._colorWrite = _colorWrite;
+			target._depthFunction = _depthFunction;
+			target._depthBiasConstant = _depthBiasConstant;
+			target._depthBiasSlopeScale = _depthBiasSlopeScale;
+			target._cullingMode = _cullingMode;
+			target._manualCullingMode = _manualCullingMode;
+			target._lightingEnabled = _lightingEnabled;
+			target._maxSimultaneousLights = _maxSimultaneousLights;
+			target._iteratePerLight = _iteratePerLight;
+			target._runOnlyForOneLightType = _runOnlyForOneLightType;
+			target._onlyLightType = _onlyLightType;
+			target._shadingMode = _shadingMode;
 			// target.polygonMode = polygonMode
 			// target.passIterationCount = passIterationCount;
 
 			// vertex program
-			if ( vertexProgramUsage != null )
+			if ( _vertexProgramUsage != null )
 			{
-				target.vertexProgramUsage = vertexProgramUsage.Clone();
+				target._vertexProgramUsage = _vertexProgramUsage.Clone();
 			}
 			else
 			{
-				target.vertexProgramUsage = null;
+				target._vertexProgramUsage = null;
 			}
 
 			// shadow caster vertex program
@@ -417,43 +1866,43 @@ namespace Axiom.Graphics
 			}
 
 			// shadow receiver vertex program
-			if ( shadowReceiverVertexProgramUsage != null )
+			if ( _shadowReceiverVertexProgramUsage != null )
 			{
-				target.shadowReceiverVertexProgramUsage = shadowReceiverVertexProgramUsage.Clone();
+				target._shadowReceiverVertexProgramUsage = _shadowReceiverVertexProgramUsage.Clone();
 			}
 			else
 			{
-				target.shadowReceiverVertexProgramUsage = null;
+				target._shadowReceiverVertexProgramUsage = null;
 			}
 
 			// fragment program
-			if ( fragmentProgramUsage != null )
+			if ( _fragmentProgramUsage != null )
 			{
-				target.fragmentProgramUsage = fragmentProgramUsage.Clone();
+				target._fragmentProgramUsage = _fragmentProgramUsage.Clone();
 			}
 			else
 			{
-				target.fragmentProgramUsage = null;
+				target._fragmentProgramUsage = null;
 			}
 
 			// shadow caster fragment program
-			if ( shadowCasterFragmentProgramUsage != null )
+			if ( _shadowCasterFragmentProgramUsage != null )
 			{
-				target.shadowCasterFragmentProgramUsage = shadowCasterFragmentProgramUsage.Clone();
+				target._shadowCasterFragmentProgramUsage = _shadowCasterFragmentProgramUsage.Clone();
 			}
 			else
 			{
-				target.shadowCasterFragmentProgramUsage = null;
+				target._shadowCasterFragmentProgramUsage = null;
 			}
 
 			// shadow receiver fragment program
-			if ( shadowReceiverFragmentProgramUsage != null )
+			if ( _shadowReceiverFragmentProgramUsage != null )
 			{
-				target.shadowReceiverFragmentProgramUsage = shadowReceiverFragmentProgramUsage.Clone();
+				target._shadowReceiverFragmentProgramUsage = _shadowReceiverFragmentProgramUsage.Clone();
 			}
 			else
 			{
-				target.shadowReceiverFragmentProgramUsage = null;
+				target._shadowReceiverFragmentProgramUsage = null;
 			}
 
 			// texture units
@@ -481,7 +1930,7 @@ namespace Axiom.Graphics
 			TextureUnitState state = new TextureUnitState( this );
 			textureUnitStates.Add( state );
 			// needs recompilation
-			parent.NotifyNeedsRecompile();
+			_parent.NotifyNeedsRecompile();
 			DirtyHash();
 			return state;
 		}
@@ -514,7 +1963,7 @@ namespace Axiom.Graphics
 			state.TextureCoordSet = texCoordSet;
 			textureUnitStates.Add( state );
 			// needs recompilation
-			parent.NotifyNeedsRecompile();
+			_parent.NotifyNeedsRecompile();
 			DirtyHash();
 			return state;
 		}
@@ -548,13 +1997,13 @@ namespace Axiom.Graphics
 			if ( this.HasVertexProgram )
 			{
 				// load vertex program
-				vertexProgramUsage.Load();
+				_vertexProgramUsage.Load();
 			}
 
 			if ( this.HasFragmentProgram )
 			{
 				// load vertex program
-				fragmentProgramUsage.Load();
+				_fragmentProgramUsage.Load();
 			}
 
 			if ( this.HasShadowCasterVertexProgram )
@@ -566,19 +2015,19 @@ namespace Axiom.Graphics
 			if ( this.HasShadowCasterFragmentProgram )
 			{
 				// load shadow caster fragment program
-				shadowCasterFragmentProgramUsage.Load();
+				_shadowCasterFragmentProgramUsage.Load();
 			}
 
 			if ( this.HasShadowReceiverVertexProgram )
 			{
 				// load shadow receiver vertex program
-				shadowReceiverVertexProgramUsage.Load();
+				_shadowReceiverVertexProgramUsage.Load();
 			}
 
 			if ( this.HasShadowReceiverFragmentProgram )
 			{
 				// load shadow receiver fragment program
-				shadowReceiverFragmentProgramUsage.Load();
+				_shadowReceiverFragmentProgramUsage.Load();
 			}
 
 			// recalculate hash code
@@ -590,7 +2039,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		internal void NotifyNeedsRecompile()
 		{
-			parent.NotifyNeedsRecompile();
+			_parent.NotifyNeedsRecompile();
 		}
 
 		/// <summary>
@@ -608,16 +2057,16 @@ namespace Axiom.Graphics
 			   on the assumption that these are less frequently used; sorting on 
 			   the first 2 gives us the most benefit for now.
 		   */
-			hashCode = ( index << 28 );
-			int count = NumTextureUnitStages;
+			_hashCode = ( _index << 28 );
+			int count = TextureUnitStageCount;
 
 			if ( count > 0 && !( (TextureUnitState)textureUnitStates[ 0 ] ).IsBlank )
 			{
-				hashCode += ( ( (TextureUnitState)textureUnitStates[ 0 ] ).TextureName.GetHashCode() & ( ( 1 << 14 ) - 1 ) ) << 14;
+				_hashCode += ( ( (TextureUnitState)textureUnitStates[ 0 ] ).TextureName.GetHashCode() & ( ( 1 << 14 ) - 1 ) ) << 14;
 			}
 			if ( count > 1 && !( (TextureUnitState)textureUnitStates[ 1 ] ).IsBlank )
 			{
-				hashCode += ( ( (TextureUnitState)textureUnitStates[ 1 ] ).TextureName.GetHashCode() & ( ( 1 << 14 ) - 1 ) );
+				_hashCode += ( ( (TextureUnitState)textureUnitStates[ 1 ] ).TextureName.GetHashCode() & ( ( 1 << 14 ) - 1 ) );
 			}
 		}
 
@@ -631,7 +2080,7 @@ namespace Axiom.Graphics
 			if ( !queuedForDeletion )
 			{
 				// needs recompilation
-				parent.NotifyNeedsRecompile();
+				_parent.NotifyNeedsRecompile();
 			}
 
 			DirtyHash();
@@ -648,7 +2097,7 @@ namespace Axiom.Graphics
 			if ( !queuedForDeletion )
 			{
 				// needs recompilation
-				parent.NotifyNeedsRecompile();
+				_parent.NotifyNeedsRecompile();
 			}
 
 			DirtyHash();
@@ -705,16 +2154,16 @@ namespace Axiom.Graphics
 		/// </param>
 		public void SetFog( bool overrideScene, FogMode mode, ColorEx color, float density, float start, float end )
 		{
-			fogOverride = overrideScene;
+			_fogOverride = overrideScene;
 
 			// set individual params if overriding scene level fog
 			if ( overrideScene )
 			{
-				fogMode = mode;
-				fogColor = color;
-				fogDensity = density;
-				fogStart = start;
-				fogEnd = end;
+				_fogMode = mode;
+				_fogColor = color;
+				_fogDensity = density;
+				_fogStart = start;
+				_fogEnd = end;
 			}
 		}
 
@@ -833,9 +2282,9 @@ namespace Axiom.Graphics
 		/// <param name="lightType">The single light type which will be considered for this pass.</param>
 		public void SetRunOncePerLight( bool enabled, bool onlyForOneLightType, LightType lightType )
 		{
-			runOncePerLight = enabled;
-			runOnlyForOneLightType = onlyForOneLightType;
-			onlyLightType = lightType;
+			_iteratePerLight = enabled;
+			_runOnlyForOneLightType = onlyForOneLightType;
+			_onlyLightType = lightType;
 		}
 
 		public void SetRunOncePerLight( bool enabled, bool onlyForOneLightType )
@@ -910,8 +2359,8 @@ namespace Axiom.Graphics
 		public void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest )
 		{
 			// copy settings
-			sourceBlendFactor = src;
-			destBlendFactor = dest;
+			_sourceBlendFactor = src;
+			_destinationBlendFactor = dest;
 		}
 
 		/// <summary>
@@ -933,21 +2382,21 @@ namespace Axiom.Graphics
 			// turn off fragment programs when the name is set to null
 			if ( name.Length == 0 )
 			{
-				fragmentProgramUsage = null;
+				_fragmentProgramUsage = null;
 			}
 			else
 			{
 				// create a new usage object
 				if ( !this.HasFragmentProgram )
 				{
-					fragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment );
+					_fragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment );
 				}
 
-				fragmentProgramUsage.ProgramName = name;
+				_fragmentProgramUsage.ProgramName = name;
 			}
 
 			// needs recompilation
-			parent.NotifyNeedsRecompile();
+			_parent.NotifyNeedsRecompile();
 		}
 
 		/// <summary>
@@ -960,21 +2409,21 @@ namespace Axiom.Graphics
 			// turn off fragment programs when the name is set to null
 			if ( name.Length == 0 )
 			{
-				shadowCasterFragmentProgramUsage = null;
+				_shadowCasterFragmentProgramUsage = null;
 			}
 			else
 			{
 				// create a new usage object
 				if ( !this.HasShadowCasterFragmentProgram )
 				{
-					shadowCasterFragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment );
+					_shadowCasterFragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment );
 				}
 
-				shadowCasterFragmentProgramUsage.ProgramName = name;
+				_shadowCasterFragmentProgramUsage.ProgramName = name;
 			}
 
 			// needs recompilation
-			parent.NotifyNeedsRecompile();
+			_parent.NotifyNeedsRecompile();
 		}
 
 		/// <summary>
@@ -987,21 +2436,21 @@ namespace Axiom.Graphics
 			// turn off fragment programs when the name is set to null
 			if ( name.Length == 0 )
 			{
-				shadowReceiverFragmentProgramUsage = null;
+				_shadowReceiverFragmentProgramUsage = null;
 			}
 			else
 			{
 				// create a new usage object
 				if ( !this.HasShadowReceiverFragmentProgram )
 				{
-					shadowReceiverFragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment );
+					_shadowReceiverFragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment );
 				}
 
-				shadowReceiverFragmentProgramUsage.ProgramName = name;
+				_shadowReceiverFragmentProgramUsage.ProgramName = name;
 			}
 
 			// needs recompilation
-			parent.NotifyNeedsRecompile();
+			_parent.NotifyNeedsRecompile();
 		}
 
 		/// <summary>
@@ -1023,21 +2472,21 @@ namespace Axiom.Graphics
 			// turn off vertex programs when the name is set to null
 			if ( name.Length == 0 )
 			{
-				vertexProgramUsage = null;
+				_vertexProgramUsage = null;
 			}
 			else
 			{
 				// create a new usage object
 				if ( !this.HasVertexProgram )
 				{
-					vertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex );
+					_vertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex );
 				}
 
-				vertexProgramUsage.ProgramName = name;
+				_vertexProgramUsage.ProgramName = name;
 			}
 
 			// needs recompilation
-			parent.NotifyNeedsRecompile();
+			_parent.NotifyNeedsRecompile();
 		}
 
 		/// <summary>
@@ -1064,7 +2513,7 @@ namespace Axiom.Graphics
 			}
 
 			// needs recompilation
-			parent.NotifyNeedsRecompile();
+			_parent.NotifyNeedsRecompile();
 		}
 
 		/// <summary>
@@ -1077,21 +2526,21 @@ namespace Axiom.Graphics
 			// turn off vertex programs when the name is set to null
 			if ( name.Length == 0 )
 			{
-				shadowReceiverVertexProgramUsage = null;
+				_shadowReceiverVertexProgramUsage = null;
 			}
 			else
 			{
 				// create a new usage object
 				if ( !this.HasShadowReceiverVertexProgram )
 				{
-					shadowReceiverVertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex );
+					_shadowReceiverVertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex );
 				}
 
-				shadowReceiverVertexProgramUsage.ProgramName = name;
+				_shadowReceiverVertexProgramUsage.ProgramName = name;
 			}
 
 			// needs recompilation
-			parent.NotifyNeedsRecompile();
+			_parent.NotifyNeedsRecompile();
 		}
 
 		/// <summary>
@@ -1109,7 +2558,7 @@ namespace Axiom.Graphics
 		public Pass Split( int numUnits )
 		{
 			// can't split programmable passes
-			if ( fragmentProgramUsage != null )
+			if ( _fragmentProgramUsage != null )
 			{
 				throw new Exception( "Passes with fragment programs cannot be automatically split.  Define a fallback technique instead" );
 			}
@@ -1118,7 +2567,7 @@ namespace Axiom.Graphics
 			{
 				int start = textureUnitStates.Count - numUnits;
 
-				Pass newPass = parent.CreatePass();
+				Pass newPass = _parent.CreatePass();
 
 				// get a reference ot the texture unit state at the split position
 				TextureUnitState state = (TextureUnitState)textureUnitStates[ start ];
@@ -1164,13 +2613,13 @@ namespace Axiom.Graphics
 			// auto update vertex program parameters
 			if ( this.HasVertexProgram )
 			{
-				vertexProgramUsage.Params.UpdateAutoParamsLightsOnly( source );
+				_vertexProgramUsage.Params.UpdateAutoParamsLightsOnly( source );
 			}
 
 			// auto update fragment program parameters
 			if ( this.HasFragmentProgram )
 			{
-				fragmentProgramUsage.Params.UpdateAutoParamsLightsOnly( source );
+				_fragmentProgramUsage.Params.UpdateAutoParamsLightsOnly( source );
 			}
 		}
 
@@ -1184,13 +2633,13 @@ namespace Axiom.Graphics
 			// auto update vertex program parameters
 			if ( this.HasVertexProgram )
 			{
-				vertexProgramUsage.Params.UpdateAutoParamsNoLights( source );
+				_vertexProgramUsage.Params.UpdateAutoParamsNoLights( source );
 			}
 
 			// auto update fragment program parameters
 			if ( this.HasFragmentProgram )
 			{
-				fragmentProgramUsage.Params.UpdateAutoParamsNoLights( source );
+				_fragmentProgramUsage.Params.UpdateAutoParamsNoLights( source );
 			}
 		}
 
@@ -1199,7 +2648,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void DirtyHash()
 		{
-			dirtyHashList.Add( this );
+			_dirtyList.Add( this );
 		}
 
 		/// <summary>
@@ -1212,9 +2661,9 @@ namespace Axiom.Graphics
 			RemoveAllTextureUnitStates();
 
 			// remove from the dirty list
-			dirtyHashList.Remove( this );
+			_dirtyList.Remove( this );
 
-			graveyardList.Add( this );
+			_graveyardList.Add( this );
 		}
 
 		/// <summary>
@@ -1223,17 +2672,17 @@ namespace Axiom.Graphics
 		public static void ProcessPendingUpdates()
 		{
 			// clear the graveyard
-			graveyardList.Clear();
+			_graveyardList.Clear();
 
 			// recalc the hashcode for each pass
-			for ( int i = 0; i < dirtyHashList.Count; i++ )
+			for ( int i = 0; i < _dirtyList.Count; i++ )
 			{
-				Pass pass = (Pass)dirtyHashList[ i ];
+				Pass pass = (Pass)_dirtyList[ i ];
 				pass.RecalculateHash();
 			}
 
 			// clear out the dirty list
-			dirtyHashList.Clear();
+			_dirtyList.Clear();
 		}
 
 		#endregion
@@ -1251,985 +2700,11 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public override int GetHashCode()
 		{
-			return hashCode;
+			return _hashCode;
 		}
 
 		#endregion Object overrides
 
-		#region Properties
-
-		public string Name
-		{
-			get
-			{
-				return name;
-			}
-			set
-			{
-				name = value;
-			}
-		}
-
-		/// <summary>
-		///    Sets the ambient color reflectance properties of this pass.
-		/// </summary>
-		/// <remarks>
-		///    The base color of a pass is determined by how much red, green and blue light is reflects
-		///    (provided texture layer #0 has a blend mode other than LayerBlendOperation.Replace). 
-		///    This property determines how much ambient light (directionless global light) is reflected. 
-		///    The default is full white, meaning objects are completely globally illuminated. Reduce this 
-		///    if you want to see diffuse or specular light effects, or change the blend of colors to make 
-		///    the object have a base color other than white.
-		///    <p/>
-		///    This setting has no effect if dynamic lighting is disabled (see <see cref="Pass.LightingEnabled"/>),
-		///    or if this is a programmable pass.
-		/// </remarks>
-		public ColorEx Ambient
-		{
-			get
-			{
-				return ambient;
-			}
-			set
-			{
-				ambient = value;
-			}
-		}
-
-		/// <summary>
-		///    Sets whether or not color buffer writing is enabled for this Pass.
-		/// </summary>
-		/// <remarks>
-		///    For some effects, you might wish to turn off the color write operation
-		///    when rendering geometry; this means that only the depth buffer will be
-		///    updated (provided you have depth buffer writing enabled, which you 
-		///    probably will do, although you may wish to only update the stencil
-		///    buffer for example - stencil buffer state is managed at the RenderSystem
-		///    level only, not the Material since you are likely to want to manage it 
-		///    at a higher level).
-		/// </remarks>
-		public bool ColorWrite
-		{
-			get
-			{
-				return colorWrite;
-			}
-			set
-			{
-				colorWrite = value;
-			}
-		}
-
-		/// <summary>
-		///    Sets the culling mode for this pass based on the 'vertex winding'.
-		/// </summary>
-		/// <remarks>
-		///    A typical way for the rendering engine to cull triangles is based on the 'vertex winding' of
-		///    triangles. Vertex winding refers to the direction in which the vertices are passed or indexed
-		///    to in the rendering operation as viewed from the camera, and will wither be clockwise or
-		///    counterclockwise. The default is Clockwise i.e. that only triangles whose vertices are passed/indexed in 
-		///    counter-clockwise order are rendered - this is a common approach and is used in 3D studio models for example. 
-		///    You can alter this culling mode if you wish but it is not advised unless you know what you are doing.
-		///    <p/>
-		///    You may wish to use the CullingMode.None option for mesh data that you cull yourself where the vertex
-		///    winding is uncertain.
-		/// </remarks>
-		public CullingMode CullMode
-		{
-			get
-			{
-				return cullMode;
-			}
-			set
-			{
-				cullMode = value;
-			}
-		}
-
-		/// <summary>
-		///    Sets the depth bias to be used for this Pass.
-		/// </summary>
-		/// <remarks>
-		///    When polygons are coplanar, you can get problems with 'depth fighting' (or 'z fighting') where
-		///    the pixels from the two polys compete for the same screen pixel. This is particularly
-		///    a problem for decals (polys attached to another surface to represent details such as
-		///    bulletholes etc.).
-		///    <p/>
-		///    A way to combat this problem is to use a depth bias to adjust the depth buffer value
-		///    used for the decal such that it is slightly higher than the true value, ensuring that
-		///    the decal appears on top.
-		/// </remarks>
-		/// <value>
-		///    The bias value, should be between 0 and 16.
-		/// </value>
-		public int DepthBias
-		{
-			get
-			{
-				return depthBias;
-			}
-			set
-			{
-				Debug.Assert( value <= 16, "Depth bias must be between 0 and 16." );
-				depthBias = value;
-			}
-		}
-
-		/// <summary>
-		///    Gets/Sets whether or not this pass renders with depth-buffer checking on or not.
-		/// </summary>
-		/// <remarks>
-		///    If depth-buffer checking is on, whenever a pixel is about to be written to the frame buffer
-		///    the depth buffer is checked to see if the pixel is in front of all other pixels written at that
-		///    point. If not, the pixel is not written.
-		///    <p/>
-		///    If depth checking is off, pixels are written no matter what has been rendered before.
-		///    Also see <see cref="DepthFunction"/> for more advanced depth check configuration.
-		/// </remarks>
-		public bool DepthCheck
-		{
-			get
-			{
-				return depthCheck;
-			}
-			set
-			{
-				depthCheck = value;
-			}
-		}
-
-		/// <summary>
-		///    Gets/Sets the function used to compare depth values when depth checking is on.
-		/// </summary>
-		/// <remarks>
-		///    If depth checking is enabled (see <see cref="DepthCheck"/>) a comparison occurs between the depth
-		///    value of the pixel to be written and the current contents of the buffer. This comparison is
-		///    normally CompareFunction.LessEqual, i.e. the pixel is written if it is closer (or at the same distance)
-		///    than the current contents. If you wish, you can change this comparison using this method.
-		/// </remarks>
-		public CompareFunction DepthFunction
-		{
-			get
-			{
-				return depthFunc;
-			}
-			set
-			{
-				depthFunc = value;
-			}
-		}
-
-		/// <summary>
-		///    Gets/Sets whether or not this pass renders with depth-buffer writing on or not.
-		/// </summary>
-		/// <remarks>
-		///    If depth-buffer writing is on, whenever a pixel is written to the frame buffer
-		///    the depth buffer is updated with the depth value of that new pixel, thus affecting future
-		///    rendering operations if future pixels are behind this one.
-		///    <p/>
-		///    If depth writing is off, pixels are written without updating the depth buffer. Depth writing should
-		///    normally be on but can be turned off when rendering static backgrounds or when rendering a collection
-		///    of transparent objects at the end of a scene so that they overlap each other correctly.
-		/// </remarks>
-		public bool DepthWrite
-		{
-			get
-			{
-				return depthWrite;
-			}
-			set
-			{
-				depthWrite = value;
-			}
-		}
-
-		/// <summary>
-		///    Retrieves the destination blending factor for the material (as set using SetSceneBlending).
-		/// </summary>
-		public SceneBlendFactor DestBlendFactor
-		{
-			get
-			{
-				return destBlendFactor;
-			}
-		}
-
-		/// <summary>
-		///    Sets the diffuse color reflectance properties of this pass.
-		/// </summary>
-		/// <remarks>
-		///    The base color of a pass is determined by how much red, green and blue light is reflects
-		///    (provided texture layer #0 has a blend mode other than LayerBlendOperation.Replace). This property determines how
-		///    much diffuse light (light from instances of the Light class in the scene) is reflected. The default
-		///    is full white, meaning objects reflect the maximum white light they can from Light objects.
-		///    <p/>
-		///    This setting has no effect if dynamic lighting is disabled (see <see cref="Pass.LightingEnabled"/>),
-		///    or if this is a programmable pass.
-		/// </remarks>
-		public ColorEx Diffuse
-		{
-			get
-			{
-				return diffuse;
-			}
-			set
-			{
-				diffuse = value;
-			}
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		public ColorEx Emissive
-		{
-			get
-			{
-				return emissive;
-			}
-			set
-			{
-				emissive = value;
-			}
-		}
-
-		/// <summary>
-		///    Returns the fog color for the scene.
-		/// </summary>
-		/// <remarks>
-		///    Only valid if FogOverride is true.
-		/// </remarks>
-		public ColorEx FogColor
-		{
-			get
-			{
-				return fogColor;
-			}
-		}
-
-		/// <summary>
-		///    Returns the fog density for this pass.
-		/// </summary>
-		/// <remarks>
-		///    Only valid if FogOverride is true.
-		/// </remarks>
-		public float FogDensity
-		{
-			get
-			{
-				return fogDensity;
-			}
-		}
-
-		/// <summary>
-		///    Returns the fog end distance for this pass.
-		/// </summary>
-		/// <remarks>
-		///    Only valid if FogOverride is true.
-		/// </remarks>
-		public float FogEnd
-		{
-			get
-			{
-				return fogEnd;
-			}
-		}
-
-		/// <summary>
-		///    Returns the fog mode for this pass.
-		/// </summary>
-		/// <remarks>
-		///    Only valid if FogOverride is true.
-		/// </remarks>
-		public FogMode FogMode
-		{
-			get
-			{
-				return fogMode;
-			}
-		}
-
-		/// <summary>
-		///    Returns true if this pass is to override the scene fog settings.
-		/// </summary>
-		public bool FogOverride
-		{
-			get
-			{
-				return fogOverride;
-			}
-		}
-
-		/// <summary>
-		///    Returns the fog start distance for this pass.
-		/// </summary>
-		/// <remarks>
-		///    Only valid if FogOverride is true.
-		/// </remarks>
-		public float FogStart
-		{
-			get
-			{
-				return fogStart;
-			}
-		}
-
-		/// <summary>
-		///    Gets the vertex program used by this pass.
-		/// </summary>
-		/// <remarks>
-		///    Only available after Load() has been called.
-		/// </remarks>
-		public GpuProgram FragmentProgram
-		{
-			get
-			{
-				Debug.Assert( this.HasFragmentProgram, "This pass does not contain a fragment program!" );
-				return fragmentProgramUsage.Program;
-			}
-		}
-
-		/// <summary>
-		///    Gets/Sets the name of the fragment program to use.
-		/// </summary>
-		/// <remarks>
-		///    Only applicable to programmable passes, and this particular call is
-		///    designed for low-level programs; use the named parameter methods
-		///    for setting high-level programs.
-		///    <p/>
-		///    This must have been created using GpuProgramManager by the time that 
-		///    this Pass is loaded.
-		/// </remarks>
-		public string FragmentProgramName
-		{
-			get
-			{
-				// return blank if there is no fragment program in this pass
-				if ( this.HasFragmentProgram )
-				{
-					return fragmentProgramUsage.ProgramName;
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-			set
-			{
-				SetFragmentProgram( value );
-			}
-		}
-
-		/// <summary>
-		///    Gets/Sets the fragment program parameters used by this pass.
-		/// </summary>
-		/// <remarks>
-		///    Only applicable to programmable passes, and this particular call is
-		///    designed for low-level programs; use the named parameter methods
-		///    for setting high-level program parameters.
-		/// </remarks>
-		public GpuProgramParameters FragmentProgramParameters
-		{
-			get
-			{
-				Debug.Assert( this.HasFragmentProgram, "This pass does not contain a fragment program!" );
-				return fragmentProgramUsage.Params;
-			}
-			set
-			{
-				Debug.Assert( this.HasFragmentProgram, "This pass does not contain a fragment program!" );
-				fragmentProgramUsage.Params = value;
-			}
-		}
-
-		public string ShadowCasterFragmentProgramName
-		{
-			get
-			{
-				if ( this.HasShadowCasterFragmentProgram )
-				{
-					return shadowCasterFragmentProgramUsage.ProgramName;
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-		}
-
-		public string ShadowReceiverFragmentProgramName
-		{
-			get
-			{
-				if ( this.HasShadowReceiverFragmentProgram )
-				{
-					return shadowReceiverFragmentProgramUsage.ProgramName;
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-		}
-
-		public GpuProgramParameters ShadowCasterFragmentProgramParameters
-		{
-			get
-			{
-				Debug.Assert( this.HasShadowCasterFragmentProgram, "This pass does not contain a shadow caster fragment program!" );
-				return shadowCasterFragmentProgramUsage.Params;
-			}
-			set
-			{
-				Debug.Assert( this.HasShadowCasterFragmentProgram, "This pass does not contain a shadow caster fragment program!" );
-				shadowCasterFragmentProgramUsage.Params = value;
-			}
-		}
-
-		public GpuProgramParameters ShadowReceiverFragmentProgramParameters
-		{
-			get
-			{
-				Debug.Assert( this.HasShadowReceiverFragmentProgram, "This pass does not contain a shadow receiver fragment program!" );
-				return shadowReceiverFragmentProgramUsage.Params;
-			}
-			set
-			{
-				Debug.Assert( this.HasShadowReceiverFragmentProgram, "This pass does not contain a shadow receiver fragment program!" );
-				shadowReceiverFragmentProgramUsage.Params = value;
-			}
-		}
-
-		/// <summary>
-		///    Returns true if this Pass uses the programmable fragment pipeline.
-		/// </summary>
-		public bool HasFragmentProgram
-		{
-			get
-			{
-				return fragmentProgramUsage != null;
-			}
-		}
-
-		/// <summary>
-		///    Returns true if this Pass uses the programmable vertex pipeline.
-		/// </summary>
-		public bool HasVertexProgram
-		{
-			get
-			{
-				return vertexProgramUsage != null;
-			}
-		}
-
-		/// <summary>
-		///    Returns true if this Pass uses the programmable shadow caster vertex pipeline.
-		/// </summary>
-		public bool HasShadowCasterVertexProgram
-		{
-			get
-			{
-				return shadowCasterVertexProgramUsage != null;
-			}
-		}
-
-		/// <summary>
-		///    Returns true if this Pass uses the programmable shadow caster fragment pipeline.
-		/// </summary>
-		public bool HasShadowCasterFragmentProgram
-		{
-			get
-			{
-				return shadowCasterFragmentProgramUsage != null;
-			}
-		}
-
-		/// <summary>
-		///    Returns true if this Pass uses the programmable shadow receiver vertex pipeline.
-		/// </summary>
-		public bool HasShadowReceiverVertexProgram
-		{
-			get
-			{
-				return shadowReceiverVertexProgramUsage != null;
-			}
-		}
-
-		/// <summary>
-		///    Returns true if this Pass uses the programmable shadow receiver fragment pipeline.
-		/// </summary>
-		public bool HasShadowReceiverFragmentProgram
-		{
-			get
-			{
-				return shadowReceiverFragmentProgramUsage != null;
-			}
-		}
-
-		/// <summary>
-		///    Gets the index of this Pass in the parent Technique.
-		/// </summary>
-		public int Index
-		{
-			get
-			{
-				return index;
-			}
-			set
-			{
-				index = value;
-			}
-		}
-
-		/// <summary>
-		///		Gets a flag indicating whether this pass is ambient only.
-		/// </summary>
-		public bool IsAmbientOnly
-		{
-			get
-			{
-				// treat as ambient if lighting is off, or color write is off, 
-				// or all non-ambient (& emissive) colors are black
-				// NB a vertex program could override this, but passes using vertex
-				// programs are expected to indicate they are ambient only by 
-				// setting the state so it matches one of the conditions above, even 
-				// though this state is not used in rendering.
-				return ( !lightingEnabled || !colorWrite ||
-					( diffuse == ColorEx.Black && specular == ColorEx.Black ) );
-			}
-		}
-
-		/// <summary>
-		///    Returns true if this pass is loaded.
-		/// </summary>
-		public bool IsLoaded
-		{
-			get
-			{
-				return parent.IsLoaded;
-			}
-		}
-
-		/// <summary>
-		///    Returns true if this pass is programmable ie includes either a vertex or fragment program.
-		/// </summary>
-		public bool IsProgrammable
-		{
-			get
-			{
-				return vertexProgramUsage != null || fragmentProgramUsage != null;
-			}
-		}
-
-		/// <summary>
-		///    Returns true if this pass has some element of transparency.
-		/// </summary>
-		public bool IsTransparent
-		{
-			get
-			{
-				// Transparent if any of the destination color is taken into account
-				return ( destBlendFactor != SceneBlendFactor.Zero );
-			}
-		}
-
-		/// <summary>
-		///    Sets whether or not dynamic lighting is enabled.
-		/// </summary>
-		/// <remarks>
-		///    If true, dynamic lighting is performed on geometry with normals supplied, geometry without
-		///    normals will not be displayed.
-		///    If false, no lighting is applied and all geometry will be full brightness.
-		/// </remarks>
-		public bool LightingEnabled
-		{
-			get
-			{
-				return lightingEnabled;
-			}
-			set
-			{
-				lightingEnabled = value;
-			}
-		}
-
-		/// <summary>
-		///    Sets the manual culling mode, performed by CPU rather than hardware.
-		/// </summary>
-		/// <remarks>
-		///    In some situations you want to use manual culling of triangles rather than sending the
-		///    triangles to the hardware and letting it cull them. This setting only takes effect on SceneManager's
-		///    that use it (since it is best used on large groups of planar world geometry rather than on movable
-		///    geometry since this would be expensive), but if used can cull geometry before it is sent to the
-		///    hardware.
-		/// </remarks>
-		/// <value>
-		///    The default for this setting is ManualCullingMode.Back.
-		/// </value>
-		public ManualCullingMode ManualCullMode
-		{
-			get
-			{
-				return manualCullMode;
-			}
-			set
-			{
-				manualCullMode = value;
-			}
-		}
-
-		/// <summary>
-		///    Sets the maximum number of lights to be used by this pass. 
-		/// </summary>
-		/// <remarks>
-		///    During rendering, if lighting is enabled (or if the pass uses an automatic
-		///    program parameter based on a light) the engine will request the nearest lights 
-		///    to the object being rendered in order to work out which ones to use. This
-		///    parameter sets the limit on the number of lights which should apply to objects 
-		///    rendered with this pass. 
-		/// </remarks>
-		public int MaxLights
-		{
-			get
-			{
-				return maxLights;
-			}
-			set
-			{
-				maxLights = value;
-			}
-		}
-
-		/// <summary>
-		///    Gets the number of fixed function texture unit states for this Pass.
-		/// </summary>
-		public int NumTextureUnitStages
-		{
-			get
-			{
-				return textureUnitStates.Count;
-			}
-		}
-
-		/// <summary>
-		///     Gets the single light type this pass runs for if RunOncePerLight and 
-		///     RunOnlyForOneLightType are both true. 
-		/// </summary>
-		public LightType OnlyLightType
-		{
-			get
-			{
-				return onlyLightType;
-			}
-		}
-
-		/// <summary>
-		///    Gets a reference to the Technique that owns this pass.
-		/// </summary>
-		public Technique Parent
-		{
-			get
-			{
-				return parent;
-			}
-		}
-
-		/// <summary>
-		///    Does this pass run once for every light in range?
-		/// </summary>
-		public bool RunOncePerLight
-		{
-			get
-			{
-				return runOncePerLight;
-			}
-		}
-
-		/// <summary>
-		///    Does this pass run only for a single light type (if RunOncePerLight is true). 
-		/// </summary>
-		public bool RunOnlyOncePerLightType
-		{
-			get
-			{
-				return runOnlyForOneLightType;
-			}
-		}
-
-		/// <summary>
-		///    Sets the type of light shading required.
-		/// </summary>
-		/// <value>
-		///    The default shading method is Gouraud shading.
-		/// </value>
-		public Shading ShadingMode
-		{
-			get
-			{
-				return shadeOptions;
-			}
-			set
-			{
-				shadeOptions = value;
-			}
-		}
-
-		/// <summary>
-		///    Sets the shininess of the pass, affecting the size of specular highlights.
-		/// </summary>
-		/// <remarks>
-		///    This setting has no effect if dynamic lighting is disabled (see Pass::setLightingEnabled),
-		///    or if this is a programmable pass.
-		/// </remarks>
-		public float Shininess
-		{
-			get
-			{
-				return shininess;
-			}
-			set
-			{
-				shininess = value;
-			}
-		}
-
-		public TrackVertexColor VertexColorTracking
-		{
-			get
-			{
-				return tracking;
-			}
-			set
-			{
-				tracking = value;
-			}
-		}
-
-		/// <summary>
-		///    Retrieves the source blending factor for the material (as set using SetSceneBlending).
-		/// </summary>
-		public SceneBlendFactor SourceBlendFactor
-		{
-			get
-			{
-				return sourceBlendFactor;
-			}
-		}
-
-		/// <summary>
-		///    Sets the specular color reflectance properties of this pass.
-		/// </summary>
-		/// <remarks>
-		///    The base color of a pass is determined by how much red, green and blue light is reflects
-		///    (provided texture layer #0 has a blend mode other than LBO_REPLACE). This property determines how
-		///    much specular light (highlights from instances of the Light class in the scene) is reflected.
-		///    The default is to reflect no specular light.
-		///    <p/>
-		///    The size of the specular highlights is determined by the separate Shininess property.
-		///    <p/>
-		///    This setting has no effect if dynamic lighting is disabled (see <see cref="Pass.LightingEnabled"/>),
-		///    or if this is a programmable pass.
-		/// </remarks>
-		public ColorEx Specular
-		{
-			get
-			{
-				return specular;
-			}
-			set
-			{
-				specular = value;
-			}
-		}
-
-		/// <summary>
-		///    Sets the anisotropy level to be used for all textures.
-		/// </summary>
-		/// <remarks>
-		///    This property has been moved to the TextureUnitState class, which is accessible via the 
-		///    Technique and Pass. For simplicity, this method allows you to set these properties for 
-		///    every current TeextureUnitState, If you need more precision, retrieve the Technique, 
-		///    Pass and TextureUnitState instances and set the property there.
-		/// </remarks>
-		public int TextureAnisotropy
-		{
-			set
-			{
-				for ( int i = 0; i < textureUnitStates.Count; i++ )
-				{
-					( (TextureUnitState)textureUnitStates[ i ] ).TextureAnisotropy = value;
-				}
-			}
-		}
-
-		/// <summary>
-		///    Set texture filtering for every texture unit.
-		/// </summary>
-		/// <remarks>
-		///    This property actually exists on the TextureUnitState class
-		///    For simplicity, this method allows you to set these properties for 
-		///    every current TeextureUnitState, If you need more precision, retrieve the  
-		///    TextureUnitState instance and set the property there.
-		/// </remarks>
-		public TextureFiltering TextureFiltering
-		{
-			set
-			{
-				for ( int i = 0; i < textureUnitStates.Count; i++ )
-				{
-					( (TextureUnitState)textureUnitStates[ i ] ).SetTextureFiltering( value );
-				}
-			}
-		}
-
-		/// <summary>
-		///    Gets the vertex program used by this pass.
-		/// </summary>
-		/// <remarks>
-		///    Only available after Load() has been called.
-		/// </remarks>
-		public GpuProgram VertexProgram
-		{
-			get
-			{
-				Debug.Assert( this.HasVertexProgram, "This pass does not contain a vertex program!" );
-				return vertexProgramUsage.Program;
-			}
-		}
-
-		/// <summary>
-		///    Gets/Sets the name of the vertex program to use.
-		/// </summary>
-		/// <remarks>
-		///    Only applicable to programmable passes, and this particular call is
-		///    designed for low-level programs; use the named parameter methods
-		///    for setting high-level programs.
-		///    <p/>
-		///    This must have been created using GpuProgramManager by the time that 
-		///    this Pass is loaded.
-		/// </remarks>
-		public string VertexProgramName
-		{
-			get
-			{
-				if ( this.HasVertexProgram )
-				{
-					return vertexProgramUsage.ProgramName;
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-			set
-			{
-				SetVertexProgram( value );
-			}
-		}
-
-		/// <summary>
-		///    Gets/Sets the vertex program parameters used by this pass.
-		/// </summary>
-		/// <remarks>
-		///    Only applicable to programmable passes, and this particular call is
-		///    designed for low-level programs; use the named parameter methods
-		///    for setting high-level program parameters.
-		/// </remarks>
-		public GpuProgramParameters VertexProgramParameters
-		{
-			get
-			{
-				Debug.Assert( this.HasVertexProgram, "This pass does not contain a vertex program!" );
-				return vertexProgramUsage.Params;
-			}
-			set
-			{
-				Debug.Assert( this.HasVertexProgram, "This pass does not contain a vertex program!" );
-				vertexProgramUsage.Params = value;
-			}
-		}
-
-		public string ShadowCasterVertexProgramName
-		{
-			get
-			{
-				if ( this.HasShadowCasterVertexProgram )
-				{
-					return shadowCasterVertexProgramUsage.ProgramName;
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-		}
-
-		public GpuProgramParameters ShadowCasterVertexProgramParameters
-		{
-			get
-			{
-				Debug.Assert( this.HasShadowCasterVertexProgram, "This pass does not contain a shadow caster vertex program!" );
-				return shadowCasterVertexProgramUsage.Params;
-			}
-			set
-			{
-				Debug.Assert( this.HasShadowCasterVertexProgram, "This pass does not contain a shadow caster vertex program!" );
-				shadowCasterVertexProgramUsage.Params = value;
-			}
-		}
-
-		public string ShadowReceiverVertexProgramName
-		{
-			get
-			{
-				if ( this.HasShadowReceiverVertexProgram )
-				{
-					return shadowReceiverVertexProgramUsage.ProgramName;
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
-		}
-
-		public GpuProgramParameters ShadowReceiverVertexProgramParameters
-		{
-			get
-			{
-				Debug.Assert( this.HasShadowReceiverVertexProgram, "This pass does not contain a shadow receiver vertex program!" );
-				return shadowReceiverVertexProgramUsage.Params;
-			}
-			set
-			{
-				Debug.Assert( this.HasShadowReceiverVertexProgram, "This pass does not contain a shadow receiver vertex program!" );
-				shadowReceiverVertexProgramUsage.Params = value;
-			}
-		}
-
-		/// <summary>
-		///		Gets a list of dirty passes.
-		/// </summary>
-		internal static PassList DirtyList
-		{
-			get
-			{
-				return dirtyHashList;
-			}
-		}
-
-		/// <summary>
-		///		Gets a list of passes queued for deletion.
-		/// </summary>
-		internal static PassList GraveyardList
-		{
-			get
-			{
-				return graveyardList;
-			}
-		}
-
-		#endregion
 	}
 
 	/// <summary>

@@ -46,8 +46,8 @@ namespace Axiom.RenderSystems.OpenGL
 	/// GL surface descriptor. Points to a 2D surface that can be rendered to. 
 	/// </summary>
 	internal struct GLSurfaceDesc
-    {
+	{
 		public GLHardwarePixelBuffer Buffer;
-        public int ZOffset;
-    }
+		public int ZOffset;
+	}
 }

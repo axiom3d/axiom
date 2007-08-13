@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<reflection>
+  <assemblies />
+  <apis>
+    <api id="R:Project">
+      <apidata group="root" pseudo="true" />
+      <elements />
+    </api>
+  </apis>
+</reflection>

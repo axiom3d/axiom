@@ -180,9 +180,9 @@ namespace Axiom.Math
 			unsafe
 			{
 				fixed ( float* pM = &m00 )
-					return new Vector3( *( pM + col ),   //m[0,col], 
-						*( pM + 3 + col ),   //m[1,col], 
-						*( pM + 6 + col ) );  //m[2,col]);
+					return new Vector3( *( pM + col ),        //m[0,col], 
+									    *( pM + 3 + col ),    //m[1,col], 
+										*( pM + 6 + col ) );  //m[2,col]);
 			}
 		}
 

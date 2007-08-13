@@ -86,7 +86,7 @@ namespace Axiom.Demos
             // Load the meshes with non-default HBU options
             for ( int mn = 0; mn < entityMeshes.Length; mn++ )
             {
-                Mesh mesh = MeshManager.Instance.Load( entityMeshes[ mn ],
+				Mesh mesh = MeshManager.Instance.Load( entityMeshes[ mn ], ResourceGroupManager.DefaultResourceGroupName,
                     BufferUsage.DynamicWriteOnly,
                     BufferUsage.StaticWriteOnly,
                     true, true, 1 ); //so we can still read it

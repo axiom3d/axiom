@@ -233,7 +233,7 @@ namespace Axiom.SceneManagers.Bsp
                 spotlightFrustum = new SpotlightFrustum();
 
             // Load using resource manager
-            level = BspResourceManager.Instance.Load( (string)optionList[ "Map" ] );
+            level = (BspLevel)BspResourceManager.Instance.Load( (string)optionList[ "Map" ], ResourceGroupManager.Instance.WorldResourceGroupName );
 
             // Init static render operation
             renderOp.vertexData = level.VertexData;
@@ -608,10 +608,10 @@ namespace Axiom.SceneManagers.Bsp
 
             Texture texLight = TextureLight.CreateTexture();
 
-            textureLightMaterial = MaterialManager.Instance.GetByName( "Axiom/BspTextureLightMaterial" );
+            textureLightMaterial = (Material)MaterialManager.Instance.GetByName( "Axiom/BspTextureLightMaterial" );
             if ( textureLightMaterial == null )
             {
-                textureLightMaterial = (Material)MaterialManager.Instance.Create( "Axiom/BspTextureLightMaterial" );
+                textureLightMaterial = (Material)MaterialManager.Instance.Create( "Axiom/BspTextureLightMaterial", ResourceGroupManager.DefaultResourceGroupName );
                 textureLightPass = textureLightMaterial.GetTechnique( 0 ).GetPass( 0 );
                 // the texture light
                 TextureUnitState tex = textureLightPass.CreateTextureUnitState( texLight.Name );
@@ -755,7 +755,7 @@ namespace Axiom.SceneManagers.Bsp
                     Material mat = GetMaterial( faceGroup.materialHandle );
 
                     // Check normal (manual culling)
-                    ManualCullingMode cullMode = mat.GetTechnique( 0 ).GetPass( 0 ).ManualCullMode;
+                    ManualCullingMode cullMode = mat.GetTechnique( 0 ).GetPass( 0 ).ManualCullingMode;
 
                     if ( cullMode != ManualCullingMode.None )
                     {
@@ -1013,7 +1013,7 @@ namespace Axiom.SceneManagers.Bsp
 
                 if ( isQuakeShader )
                 {
-                    for ( int i = 0; i < thisMaterial.GetTechnique( 0 ).NumPasses; i++ )
+                    for ( int i = 0; i < thisMaterial.GetTechnique( 0 ).PassCount; i++ )
                     {
                         SetPass( thisMaterial.GetTechnique( 0 ).GetPass( i ) );
                         targetRenderSystem.Render( renderOp );
@@ -1023,7 +1023,7 @@ namespace Axiom.SceneManagers.Bsp
                 else if ( !passIsSet )
                 {
                     int i;
-                    for ( i = 0; i < thisMaterial.GetTechnique( 0 ).NumPasses; i++ )
+                    for ( i = 0; i < thisMaterial.GetTechnique( 0 ).PassCount; i++ )
                     {
                         SetPass( thisMaterial.GetTechnique( 0 ).GetPass( i ) );
 
@@ -1046,7 +1046,7 @@ namespace Axiom.SceneManagers.Bsp
                     TextureUnitState geometryTex = pass.GetTextureUnitState( 0 );
                     targetRenderSystem.SetTexture( 0, true, geometryTex.TextureName );
 
-                    if ( pass.NumTextureUnitStages > 1 )
+                    if ( pass.TextureUnitStageCount > 1 )
                     {
                         // Get the lightmap
                         TextureUnitState lightmapTex = pass.GetTextureUnitState( 1 );
@@ -1143,7 +1143,7 @@ namespace Axiom.SceneManagers.Bsp
                 if ( faceGrp[ 0 ].isQuakeShader )
                     continue;
 
-                ManualCullingMode cullMode = thisMaterial.GetTechnique( 0 ).GetPass( 0 ).ManualCullMode;
+                ManualCullingMode cullMode = thisMaterial.GetTechnique( 0 ).GetPass( 0 ).ManualCullingMode;
 
                 // Empty existing cache
                 renderOp.indexData.indexCount = 0;
@@ -1219,19 +1219,19 @@ namespace Axiom.SceneManagers.Bsp
                 }
             }
 
-            CullingMode prevCullMode = shadowReceiverPass.CullMode;
+            CullingMode prevCullMode = shadowReceiverPass.CullingMode;
             LayerBlendModeEx colorBlend = shadowTex.ColorBlendMode;
             LayerBlendSource prevSource = colorBlend.source2;
             ColorEx prevColorArg = colorBlend.colorArg2;
 
             // Quake uses counter-clockwise culling
-            shadowReceiverPass.CullMode = CullingMode.CounterClockwise;
+            shadowReceiverPass.CullingMode = CullingMode.CounterClockwise;
             colorBlend.source2 = LayerBlendSource.Manual;
             colorBlend.colorArg2 = ColorEx.White;
 
             SetPass( shadowReceiverPass );
 
-            shadowReceiverPass.CullMode = prevCullMode;
+            shadowReceiverPass.CullingMode = prevCullMode;
             colorBlend.source2 = prevSource;
             colorBlend.colorArg2 = prevColorArg;
 

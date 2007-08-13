@@ -106,11 +106,11 @@ namespace Axiom.ParticleFX
         #region Command definition classes
 
         [Command( "colour0", "Initial 'keyframe' color.", typeof( ParticleAffector ) )]
-        class Color0Command : ICommand
-        {
-            #region ICommand Members
+		class Color0Command : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
@@ -127,11 +127,11 @@ namespace Axiom.ParticleFX
         }
 
         [Command( "colour1", "1st 'keyframe' color.", typeof( ParticleAffector ) )]
-        class Color1Command : ICommand
-        {
-            #region ICommand Members
+		class Color1Command : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
@@ -149,11 +149,11 @@ namespace Axiom.ParticleFX
         }
 
         [Command( "colour2", "2nd 'keyframe' color.", typeof( ParticleAffector ) )]
-        class Color2Command : ICommand
-        {
-            #region ICommand Members
+		class Color2Command : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
@@ -171,11 +171,11 @@ namespace Axiom.ParticleFX
         }
 
         [Command( "colour3", "3rd 'keyframe' color.", typeof( ParticleAffector ) )]
-        class Color3Command : ICommand
-        {
-            #region ICommand Members
+		class Color3Command : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
@@ -192,11 +192,11 @@ namespace Axiom.ParticleFX
         }
 
         [Command( "colour4", "4th 'keyframe' color.", typeof( ParticleAffector ) )]
-        class Color4Command : ICommand
-        {
-            #region ICommand Members
+		class Color4Command : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
@@ -213,11 +213,11 @@ namespace Axiom.ParticleFX
         }
 
         [Command( "colour5", "5th 'keyframe' color.", typeof( ParticleAffector ) )]
-        class Color5Command : ICommand
-        {
-            #region ICommand Members
+		class Color5Command : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
@@ -234,11 +234,11 @@ namespace Axiom.ParticleFX
         }
 
         [Command( "time0", "Initial 'keyframe' time.", typeof( ParticleAffector ) )]
-        class Time0Command : ICommand
-        {
-            #region ICommand Members
+		class Time0Command : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
@@ -255,11 +255,11 @@ namespace Axiom.ParticleFX
         }
 
         [Command( "time1", "1st 'keyframe' time.", typeof( ParticleAffector ) )]
-        class Time1Command : ICommand
-        {
-            #region ICommand Members
+		class Time1Command : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
@@ -276,11 +276,11 @@ namespace Axiom.ParticleFX
         }
 
         [Command( "time2", "2nd 'keyframe' time.", typeof( ParticleAffector ) )]
-        class Time2Command : ICommand
-        {
-            #region ICommand Members
+		class Time2Command : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
@@ -297,11 +297,11 @@ namespace Axiom.ParticleFX
         }
 
         [Command( "time3", "3rd 'keyframe' time.", typeof( ParticleAffector ) )]
-        class Time3Command : ICommand
-        {
-            #region ICommand Members
+		class Time3Command : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
@@ -318,11 +318,11 @@ namespace Axiom.ParticleFX
         }
 
         [Command( "time4", "4th 'keyframe' time.", typeof( ParticleAffector ) )]
-        class Time4Command : ICommand
-        {
-            #region ICommand Members
+		class Time4Command : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 
@@ -339,11 +339,11 @@ namespace Axiom.ParticleFX
         }
 
         [Command( "time5", "5th 'keyframe' time.", typeof( ParticleAffector ) )]
-        class Time5Command : ICommand
-        {
-            #region ICommand Members
+		class Time5Command : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
 

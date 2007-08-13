@@ -39,7 +39,7 @@ using System.Collections.Generic;
 using System.Text;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGL
 {
 	/// <summary>
@@ -90,7 +90,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		/// Enable the context. All subsequent rendering commands will go here.
 		/// </summary>
-        public abstract void SetCurrent();
+		public abstract void SetCurrent();
 
 		/// <summary>
 		/// This is called before another context is made current. By default,
@@ -100,14 +100,14 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 		}
 
-        /// <summary>
-        /// Create a new context based on the same window/pbuffer as this
+		/// <summary>
+		/// Create a new context based on the same window/pbuffer as this
 		/// context - mostly useful for additional threads.
-        /// </summary>
+		/// </summary>
 		/// <remarks>
 		///	The caller is responsible for deleting the returned context.
 		/// </remarks>
-        /// <returns></returns>
+		/// <returns></returns>
 		public abstract GLContext Clone();
 
 		#endregion Methods

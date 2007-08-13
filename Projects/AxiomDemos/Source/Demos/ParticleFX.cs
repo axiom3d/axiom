@@ -25,6 +25,7 @@ namespace Axiom.Demos
 
         protected override void CreateScene()
         {
+
 			// set some ambient light
 			scene.AmbientLight = ColorEx.Gray;
 
@@ -89,4 +90,5 @@ namespace Axiom.Demos
 
         #endregion
     }
+
 }

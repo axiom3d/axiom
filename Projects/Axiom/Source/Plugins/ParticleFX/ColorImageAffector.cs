@@ -143,11 +143,11 @@ namespace Axiom.ParticleFX
         #region Command definition classes
 
         [Command( "image", "Image for color alterations.", typeof( ParticleAffector ) )]
-        class ImageCommand : ICommand
-        {
-            #region ICommand Members
+		class ImageCommand : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 ColorImageAffector affector = target as ColorImageAffector;
                 return affector.ColorImageName;

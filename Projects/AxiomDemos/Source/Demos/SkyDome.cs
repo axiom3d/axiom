@@ -85,7 +85,7 @@ namespace Axiom.Demos
             Plane p = new Plane();
             p.Normal = Vector3.UnitY;
             p.D = 200;
-            MeshManager.Instance.CreatePlane( "FloorPlane", p, 2000, 2000, 1, 1, true, 1, 5, 5, Vector3.UnitZ );
+			MeshManager.Instance.CreatePlane( "FloorPlane", ResourceGroupManager.DefaultResourceGroupName, p, 2000, 2000, 1, 1, true, 1, 5, 5, Vector3.UnitZ );
 
             // add the floor entity
             Entity floor = scene.CreateEntity( "Floor", "FloorPlane" );

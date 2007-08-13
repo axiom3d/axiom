@@ -56,6 +56,7 @@ namespace Axiom.Demos
 
             MeshManager.Instance.CreatePlane(
                 "WaterPlane",
+                ResourceGroupManager.DefaultResourceGroupName,
                 waterPlane,
                 2800, 2800,
                 20, 20,

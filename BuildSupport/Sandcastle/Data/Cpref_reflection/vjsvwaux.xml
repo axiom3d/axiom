@@ -1,0 +1,1883 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<reflection>
+  <assemblies>
+    <assembly name="vjsvwaux" version="2.0.0.0" culture="" key="002400000480000094000000060200000024000052534131000400000100010007D1FA57C4AED9F0A32E84AA0FAEFD0DE9E8FD6AEC8F87FB03766C834C99921EB23BE79AD9D5DCC1DD9AD236132102900B723CF980957FC4E177108FC607774F29E8320E92EA05ECE4E821C0A5EFE8F1645C4C0C93C1AB99285D622CAA652C1DFAD63D745D6F2DE5F17E5EAF0FC4963D261C8A12436518206DC093344D5AD293" hash="SHA1">
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.SatelliteContractVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.0.0</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.CLSCompliantAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>False</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.CompilationRelaxationsAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>8</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Diagnostics.DebuggableAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Diagnostics.DebuggableAttribute.DebuggingModes" ref="false">
+              <type api="T:System.Diagnostics.DebuggableAttribute" ref="true" />
+            </type>
+            <enumValue>
+              <field name="IgnoreSymbolStoreSequencePoints" />
+            </enumValue>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.CompilerServices.RuntimeCompatibilityAttribute" ref="true" />
+          <assignment name="WrapNonExceptionThrows">
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </assignment>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyKeyFileAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>f:\RTM\Tools\devdiv\FinalPublicKey.snk</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDelaySignAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Resources.NeutralResourcesLanguageAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>en-US</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyInformationalVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.50727.42</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyFileVersionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>2.0.50727.42</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCopyrightAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>© Microsoft Corporation.  All rights reserved.</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyProductAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft® .NET Framework</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyCompanyAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>Microsoft Corporation</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDefaultAliasAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>vjsvwaux.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyDescriptionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>vjsvwaux.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Reflection.AssemblyTitleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>vjsvwaux.dll</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.AllowPartiallyTrustedCallersAttribute" ref="true" />
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.SecurityPermissionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="RequestMinimum" />
+            </enumValue>
+          </argument>
+          <assignment name="Flags">
+            <type api="T:System.Security.Permissions.SecurityPermissionFlag" ref="false" />
+            <enumValue>
+              <field name="AllFlags" />
+            </enumValue>
+          </assignment>
+        </attribute>
+      </attributes>
+    </assembly>
+  </assemblies>
+  <apis>
+    <api id="R:Project">
+      <apidata group="root" pseudo="true" />
+      <elements>
+        <element api="N:" />
+        <element api="N:AppletSecurityModel.JBCPolicy" />
+      </elements>
+    </api>
+    <api id="N:">
+      <apidata name="" group="namespace" />
+      <elements>
+        <element api="T:DisposeAppDomainHelper" />
+        <element api="T:IVJSViewer" />
+        <element api="T:IAppletDispatch" />
+        <element api="T:ViewerAux" />
+        <element api="T:IAppletAppDomainLoader" />
+        <element api="T:AppletAppDomainLoader" />
+        <element api="T:JSObjectOperationCode" />
+        <element api="T:IScriptHost" />
+        <element api="T:IVJSHostCtl" />
+      </elements>
+    </api>
+    <api id="T:AppletAppDomainLoader">
+      <apidata name="AppletAppDomainLoader" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:IAppletAppDomainLoader" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:AppletAppDomainLoader.GetViewer(IVJSHostCtl)" />
+        <element api="M:AppletAppDomainLoader.AppletDisposing" />
+        <element api="M:AppletAppDomainLoader.#ctor" />
+        <element api="M:System.Object.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" overload="true" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Finalize">
+          <apidata name="Finalize" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:System.Runtime.ConstrainedExecution.ReliabilityContractAttribute" ref="true" />
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Consistency" ref="false" />
+                <enumValue>
+                  <field name="WillNotCorruptState" />
+                </enumValue>
+              </argument>
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Cer" ref="false" />
+                <enumValue>
+                  <field name="Success" />
+                </enumValue>
+              </argument>
+            </attribute>
+          </attributes>
+        </element>
+        <element api="M:System.Object.MemberwiseClone">
+          <apidata name="MemberwiseClone" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>f13ef6b4-9fcd-4274-a966-f398edbf8b1a</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Security.Permissions.PermissionSetAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="LinkDemand" />
+            </enumValue>
+          </argument>
+          <assignment name="Name">
+            <type api="T:System.String" ref="true" />
+            <value>FullTrust</value>
+          </assignment>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:AppletAppDomainLoader.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:AppletAppDomainLoader" ref="true" />
+      </containers>
+    </api>
+    <api id="M:AppletAppDomainLoader.AppletDisposing">
+      <apidata name="AppletDisposing" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:AppletAppDomainLoader" ref="true" />
+      </containers>
+    </api>
+    <api id="M:AppletAppDomainLoader.GetViewer(IVJSHostCtl)">
+      <apidata name="GetViewer" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="pHostCtl">
+          <type api="T:IVJSHostCtl" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.IntPtr" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:AppletAppDomainLoader" ref="true" />
+      </containers>
+    </api>
+    <api id="T:DisposeAppDomainHelper">
+      <apidata name="DisposeAppDomainHelper" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.MarshalByRefObject" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:System.IDisposable" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:DisposeAppDomainHelper.Dispose" />
+        <element api="M:DisposeAppDomainHelper.#ctor" />
+        <element api="M:System.MarshalByRefObject.MemberwiseClone(System.Boolean)">
+          <apidata name="MemberwiseClone" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <parameters>
+            <parameter name="cloneIdentity">
+              <type api="T:System.Boolean" ref="false" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.MarshalByRefObject" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.MarshalByRefObject" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.MarshalByRefObject.GetLifetimeService">
+          <apidata name="GetLifetimeService" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="true" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.MarshalByRefObject" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.MarshalByRefObject.InitializeLifetimeService">
+          <apidata name="InitializeLifetimeService" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.MarshalByRefObject" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.MarshalByRefObject.CreateObjRef(System.Type)">
+          <apidata name="CreateObjRef" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="requestedType">
+              <type api="T:System.Type" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Runtime.Remoting.ObjRef" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.MarshalByRefObject" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" overload="true" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Finalize">
+          <apidata name="Finalize" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:System.Runtime.ConstrainedExecution.ReliabilityContractAttribute" ref="true" />
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Consistency" ref="false" />
+                <enumValue>
+                  <field name="WillNotCorruptState" />
+                </enumValue>
+              </argument>
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Cer" ref="false" />
+                <enumValue>
+                  <field name="Success" />
+                </enumValue>
+              </argument>
+            </attribute>
+          </attributes>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Security.Permissions.StrongNameIdentityPermissionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="LinkDemand" />
+            </enumValue>
+          </argument>
+          <assignment name="Name">
+            <type api="T:System.String" ref="true" />
+            <value>vjsvwaux</value>
+          </assignment>
+          <assignment name="PublicKey">
+            <type api="T:System.String" ref="true" />
+            <value>002400000480000094000000060200000024000052534131000400000100010007D1FA57C4AED9F0A32E84AA0FAEFD0DE9E8FD6AEC8F87FB03766C834C99921EB23BE79AD9D5DCC1DD9AD236132102900B723CF980957FC4E177108FC607774F29E8320E92EA05ECE4E821C0A5EFE8F1645C4C0C93C1AB99285D622CAA652C1DFAD63D745D6F2DE5F17E5EAF0FC4963D261C8A12436518206DC093344D5AD293</value>
+          </assignment>
+          <assignment name="Version">
+            <type api="T:System.String" ref="true" />
+            <value>2.0.0.0</value>
+          </assignment>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:DisposeAppDomainHelper.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:DisposeAppDomainHelper" ref="true" />
+      </containers>
+    </api>
+    <api id="M:DisposeAppDomainHelper.Dispose">
+      <apidata name="Dispose" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:DisposeAppDomainHelper" ref="true" />
+      </containers>
+    </api>
+    <api id="T:IAppletAppDomainLoader">
+      <apidata name="IAppletAppDomainLoader" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:IAppletAppDomainLoader.GetViewer(IVJSHostCtl)" />
+        <element api="M:IAppletAppDomainLoader.AppletDisposing" />
+      </elements>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>7b8a5b98-d9b1-434e-aa41-212128253257</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.InterfaceTypeAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ComInterfaceType" ref="false" />
+            <enumValue>
+              <field name="InterfaceIsIUnknown" />
+            </enumValue>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:IAppletAppDomainLoader.AppletDisposing">
+      <apidata name="AppletDisposing" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IAppletAppDomainLoader" ref="true" />
+      </containers>
+    </api>
+    <api id="M:IAppletAppDomainLoader.GetViewer(IVJSHostCtl)">
+      <apidata name="GetViewer" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="hostCtl">
+          <type api="T:IVJSHostCtl" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.IntPtr" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IAppletAppDomainLoader" ref="true" />
+      </containers>
+    </api>
+    <api id="T:IAppletDispatch">
+      <apidata name="IAppletDispatch" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:IAppletDispatch.registerEventSink(System.Object)" />
+        <element api="M:IAppletDispatch.unregisterEventSink" />
+        <element api="M:IAppletDispatch.getMemberDispID(System.String)" />
+        <element api="M:IAppletDispatch.invokeMember(System.Int32,System.Int32,System.Runtime.InteropServices.ComTypes.DISPPARAMS@)" />
+      </elements>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>f0836c82-afee-421f-8df3-ed4aa7783b61</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.InterfaceTypeAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ComInterfaceType" ref="false" />
+            <enumValue>
+              <field name="InterfaceIsIUnknown" />
+            </enumValue>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:IAppletDispatch.getMemberDispID(System.String)">
+      <apidata name="getMemberDispID" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="memberName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IAppletDispatch" ref="true" />
+      </containers>
+    </api>
+    <api id="M:IAppletDispatch.invokeMember(System.Int32,System.Int32,System.Runtime.InteropServices.ComTypes.DISPPARAMS@)">
+      <apidata name="invokeMember" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="dispid">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="flags">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="dispParams">
+          <referenceTo>
+            <type api="T:System.Runtime.InteropServices.ComTypes.DISPPARAMS" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Object" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IAppletDispatch" ref="true" />
+      </containers>
+    </api>
+    <api id="M:IAppletDispatch.registerEventSink(System.Object)">
+      <apidata name="registerEventSink" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="disp">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IAppletDispatch" ref="true" />
+      </containers>
+    </api>
+    <api id="M:IAppletDispatch.unregisterEventSink">
+      <apidata name="unregisterEventSink" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IAppletDispatch" ref="true" />
+      </containers>
+    </api>
+    <api id="T:IScriptHost">
+      <apidata name="IScriptHost" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:IScriptHost.SetAppletObject(System.Object)" />
+        <element api="M:IScriptHost.InvokeScriptMethod(JSObjectOperationCode,System.Object,System.Object[])" />
+        <element api="M:IScriptHost.GetIFontObject(System.String,System.Int32,System.Boolean,System.Boolean)" />
+        <element api="M:IScriptHost.GetSinkDisp" />
+        <element api="M:IScriptHost.GetGACPath" />
+        <element api="P:IScriptHost.HostedInIE" />
+      </elements>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.InterfaceTypeAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ComInterfaceType" ref="false" />
+            <enumValue>
+              <field name="InterfaceIsIUnknown" />
+            </enumValue>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>049fabf5-18f8-48fe-a87e-61c2bf75ac31</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:IScriptHost.GetGACPath">
+      <apidata name="GetGACPath" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IScriptHost" ref="true" />
+      </containers>
+    </api>
+    <api id="M:IScriptHost.GetIFontObject(System.String,System.Int32,System.Boolean,System.Boolean)">
+      <apidata name="GetIFontObject" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="fontName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="fontSize">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="fBold">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+        <parameter name="fItalic">
+          <type api="T:System.Boolean" ref="false" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Object" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IScriptHost" ref="true" />
+      </containers>
+    </api>
+    <api id="M:IScriptHost.GetSinkDisp">
+      <apidata name="GetSinkDisp" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <returns>
+        <type api="T:System.Object" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IScriptHost" ref="true" />
+      </containers>
+    </api>
+    <api id="P:IScriptHost.HostedInIE">
+      <apidata name="HostedInIE" group="member" subgroup="property" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <propertydata get="true" />
+      <returns>
+        <type api="T:System.Boolean" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IScriptHost" ref="true" />
+      </containers>
+    </api>
+    <api id="M:IScriptHost.InvokeScriptMethod(JSObjectOperationCode,System.Object,System.Object[])">
+      <apidata name="InvokeScriptMethod" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="opCode">
+          <type api="T:JSObjectOperationCode" ref="false" />
+        </parameter>
+        <parameter name="disp">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+        <parameter name="args">
+          <arrayOf rank="1">
+            <type api="T:System.Object" ref="true" />
+          </arrayOf>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Object" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IScriptHost" ref="true" />
+      </containers>
+    </api>
+    <api id="M:IScriptHost.SetAppletObject(System.Object)">
+      <apidata name="SetAppletObject" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="o">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IScriptHost" ref="true" />
+      </containers>
+    </api>
+    <api id="T:IVJSHostCtl">
+      <apidata name="IVJSHostCtl" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:IVJSHostCtl.ShowStatus(System.String)" />
+        <element api="M:IVJSHostCtl.ShowDocument(System.String,System.String)" />
+        <element api="M:IVJSHostCtl.GetHTMLDocument" />
+        <element api="M:IVJSHostCtl.GetTopLevelURL" />
+        <element api="M:IVJSHostCtl.GetTopLevelBrowser" />
+        <element api="M:IVJSHostCtl.GetDocumentURL" />
+      </elements>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>B133546D-D517-11D2-9F92-000000000000</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:IVJSHostCtl.GetDocumentURL">
+      <apidata name="GetDocumentURL" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IVJSHostCtl" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.DispIdAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>7</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:IVJSHostCtl.GetHTMLDocument">
+      <apidata name="GetHTMLDocument" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <returns>
+        <type api="T:System.Object" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IVJSHostCtl" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.DispIdAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>4</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:IVJSHostCtl.GetTopLevelBrowser">
+      <apidata name="GetTopLevelBrowser" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <returns>
+        <type api="T:System.Object" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IVJSHostCtl" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.DispIdAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>6</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:IVJSHostCtl.GetTopLevelURL">
+      <apidata name="GetTopLevelURL" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <returns>
+        <type api="T:System.String" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IVJSHostCtl" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.DispIdAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>5</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:IVJSHostCtl.ShowDocument(System.String,System.String)">
+      <apidata name="ShowDocument" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="url">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="frameName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IVJSHostCtl" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.DispIdAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>2</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:IVJSHostCtl.ShowStatus(System.String)">
+      <apidata name="ShowStatus" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="msg">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IVJSHostCtl" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.DispIdAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>1</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="T:IVJSViewer">
+      <apidata name="IVJSViewer" group="type" subgroup="interface" />
+      <typedata visibility="public" abstract="true" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <elements>
+        <element api="M:IVJSViewer.loadPropertyBag(System.String,System.Object)" />
+        <element api="M:IVJSViewer.loadPropertyBagStr(System.String,System.String)" />
+        <element api="M:IVJSViewer.loadApplet(IVJSHostCtl)" />
+        <element api="M:IVJSViewer.viewAppletInBrowser(System.Int32)" />
+        <element api="M:IVJSViewer.setAppletSize(System.Int32,System.Int32)" />
+        <element api="M:IVJSViewer.disposeAppletInBrowser" />
+      </elements>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.ComVisibleAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Boolean" ref="false" />
+            <value>True</value>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.InterfaceTypeAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Runtime.InteropServices.ComInterfaceType" ref="false" />
+            <enumValue>
+              <field name="InterfaceIsIUnknown" />
+            </enumValue>
+          </argument>
+        </attribute>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>BDAAA964-7685-4BFB-AA42-176418FDD4D8</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:IVJSViewer.disposeAppletInBrowser">
+      <apidata name="disposeAppletInBrowser" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IVJSViewer" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.DispIdAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>6</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:IVJSViewer.loadApplet(IVJSHostCtl)">
+      <apidata name="loadApplet" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="v">
+          <type api="T:IVJSHostCtl" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IVJSViewer" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.DispIdAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>3</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:IVJSViewer.loadPropertyBag(System.String,System.Object)">
+      <apidata name="loadPropertyBag" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="s">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="o">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IVJSViewer" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.DispIdAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>1</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:IVJSViewer.loadPropertyBagStr(System.String,System.String)">
+      <apidata name="loadPropertyBagStr" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="s1">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="s2">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IVJSViewer" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.DispIdAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>2</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:IVJSViewer.setAppletSize(System.Int32,System.Int32)">
+      <apidata name="setAppletSize" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="i">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="j">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IVJSViewer" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.DispIdAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>5</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:IVJSViewer.viewAppletInBrowser(System.Int32)">
+      <apidata name="viewAppletInBrowser" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="true" virtual="true" final="false" />
+      <parameters>
+        <parameter name="i">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:IVJSViewer" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.DispIdAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>4</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="T:JSObjectOperationCode">
+      <apidata name="JSObjectOperationCode" group="type" subgroup="enumeration" />
+      <typedata visibility="public" abstract="false" sealed="true" serializable="false" layout="auto" format="ansi" />
+      <enumerationbase>
+        <type api="T:System.Int32" ref="false" />
+      </enumerationbase>
+      <elements>
+        <element api="F:JSObjectOperationCode.JSObjectCall" />
+        <element api="F:JSObjectOperationCode.JSObjectEval" />
+        <element api="F:JSObjectOperationCode.JSObjectGetMember" />
+        <element api="F:JSObjectOperationCode.JSObjectSetMember" />
+      </elements>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.GuidAttribute" ref="true" />
+          <argument>
+            <type api="T:System.String" ref="true" />
+            <value>f2fe73da-18f7-4784-b31f-dd302769a477</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="F:JSObjectOperationCode.JSObjectCall">
+      <apidata name="JSObjectCall" group="member" subgroup="field" />
+      <memberdata visibility="public" static="true" special="false" />
+      <fielddata literal="true" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:JSObjectOperationCode" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:JSObjectOperationCode" ref="false" />
+      </containers>
+    </api>
+    <api id="F:JSObjectOperationCode.JSObjectEval">
+      <apidata name="JSObjectEval" group="member" subgroup="field" />
+      <memberdata visibility="public" static="true" special="false" />
+      <fielddata literal="true" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:JSObjectOperationCode" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:JSObjectOperationCode" ref="false" />
+      </containers>
+    </api>
+    <api id="F:JSObjectOperationCode.JSObjectGetMember">
+      <apidata name="JSObjectGetMember" group="member" subgroup="field" />
+      <memberdata visibility="public" static="true" special="false" />
+      <fielddata literal="true" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:JSObjectOperationCode" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:JSObjectOperationCode" ref="false" />
+      </containers>
+    </api>
+    <api id="F:JSObjectOperationCode.JSObjectSetMember">
+      <apidata name="JSObjectSetMember" group="member" subgroup="field" />
+      <memberdata visibility="public" static="true" special="false" />
+      <fielddata literal="true" initonly="false" volatile="false" serialized="true" />
+      <returns>
+        <type api="T:JSObjectOperationCode" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:JSObjectOperationCode" ref="false" />
+      </containers>
+    </api>
+    <api id="T:ViewerAux">
+      <apidata name="ViewerAux" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.MarshalByRefObject" ref="true" />
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <implements>
+        <type api="T:IVJSViewer" ref="true" />
+        <type api="T:IAppletDispatch" ref="true" />
+      </implements>
+      <elements>
+        <element api="M:ViewerAux.#ctor(System.String)" />
+        <element api="M:ViewerAux.loadPropertyBag(System.String,System.Object)" />
+        <element api="M:ViewerAux.loadPropertyBagStr(System.String,System.String)" />
+        <element api="M:ViewerAux.loadApplet(IVJSHostCtl)" />
+        <element api="M:ViewerAux.viewAppletInBrowser(System.Int32)" />
+        <element api="M:ViewerAux.setAppletSize(System.Int32,System.Int32)" />
+        <element api="M:ViewerAux.disposeAppletInBrowser" />
+        <element api="M:ViewerAux.registerEventSink(System.Object)" />
+        <element api="M:ViewerAux.unregisterEventSink" />
+        <element api="M:ViewerAux.getMemberDispID(System.String)" />
+        <element api="M:ViewerAux.invokeMember(System.Int32,System.Int32,System.Runtime.InteropServices.ComTypes.DISPPARAMS@)" />
+        <element api="M:System.MarshalByRefObject.MemberwiseClone(System.Boolean)">
+          <apidata name="MemberwiseClone" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <parameters>
+            <parameter name="cloneIdentity">
+              <type api="T:System.Boolean" ref="false" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.MarshalByRefObject" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.MarshalByRefObject" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.MarshalByRefObject.GetLifetimeService">
+          <apidata name="GetLifetimeService" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="true" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.MarshalByRefObject" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.MarshalByRefObject.InitializeLifetimeService">
+          <apidata name="InitializeLifetimeService" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.MarshalByRefObject" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.MarshalByRefObject.CreateObjRef(System.Type)">
+          <apidata name="CreateObjRef" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="requestedType">
+              <type api="T:System.Type" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Runtime.Remoting.ObjRef" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.MarshalByRefObject" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" overload="true" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Finalize">
+          <apidata name="Finalize" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:System.Runtime.ConstrainedExecution.ReliabilityContractAttribute" ref="true" />
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Consistency" ref="false" />
+                <enumValue>
+                  <field name="WillNotCorruptState" />
+                </enumValue>
+              </argument>
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Cer" ref="false" />
+                <enumValue>
+                  <field name="Success" />
+                </enumValue>
+              </argument>
+            </attribute>
+          </attributes>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Security.Permissions.StrongNameIdentityPermissionAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Security.Permissions.SecurityAction" ref="false" />
+            <enumValue>
+              <field name="LinkDemand" />
+            </enumValue>
+          </argument>
+          <assignment name="Name">
+            <type api="T:System.String" ref="true" />
+            <value>vjsvwaux</value>
+          </assignment>
+          <assignment name="PublicKey">
+            <type api="T:System.String" ref="true" />
+            <value>002400000480000094000000060200000024000052534131000400000100010007D1FA57C4AED9F0A32E84AA0FAEFD0DE9E8FD6AEC8F87FB03766C834C99921EB23BE79AD9D5DCC1DD9AD236132102900B723CF980957FC4E177108FC607774F29E8320E92EA05ECE4E821C0A5EFE8F1645C4C0C93C1AB99285D622CAA652C1DFAD63D745D6F2DE5F17E5EAF0FC4963D261C8A12436518206DC093344D5AD293</value>
+          </assignment>
+          <assignment name="Version">
+            <type api="T:System.String" ref="true" />
+            <value>2.0.0.0</value>
+          </assignment>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:ViewerAux.#ctor(System.String)">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <parameters>
+        <parameter name="urlStr">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:ViewerAux" ref="true" />
+      </containers>
+    </api>
+    <api id="M:ViewerAux.disposeAppletInBrowser">
+      <apidata name="disposeAppletInBrowser" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:ViewerAux" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.DispIdAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>6</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:ViewerAux.getMemberDispID(System.String)">
+      <apidata name="getMemberDispID" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="memberName">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Int32" ref="false" />
+      </returns>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:ViewerAux" ref="true" />
+      </containers>
+    </api>
+    <api id="M:ViewerAux.invokeMember(System.Int32,System.Int32,System.Runtime.InteropServices.ComTypes.DISPPARAMS@)">
+      <apidata name="invokeMember" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="dispid">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="flags">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="dispParams">
+          <referenceTo>
+            <type api="T:System.Runtime.InteropServices.ComTypes.DISPPARAMS" ref="false" />
+          </referenceTo>
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Object" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:ViewerAux" ref="true" />
+      </containers>
+    </api>
+    <api id="M:ViewerAux.loadApplet(IVJSHostCtl)">
+      <apidata name="loadApplet" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="HostCtl">
+          <type api="T:IVJSHostCtl" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:ViewerAux" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.DispIdAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>3</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:ViewerAux.loadPropertyBag(System.String,System.Object)">
+      <apidata name="loadPropertyBag" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="val">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:ViewerAux" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.DispIdAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>1</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:ViewerAux.loadPropertyBagStr(System.String,System.String)">
+      <apidata name="loadPropertyBagStr" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="name">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+        <parameter name="val">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:ViewerAux" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.DispIdAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>2</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:ViewerAux.registerEventSink(System.Object)">
+      <apidata name="registerEventSink" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="disp">
+          <type api="T:System.Object" ref="true" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:ViewerAux" ref="true" />
+      </containers>
+    </api>
+    <api id="M:ViewerAux.setAppletSize(System.Int32,System.Int32)">
+      <apidata name="setAppletSize" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="width">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+        <parameter name="height">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:ViewerAux" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.DispIdAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>5</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="M:ViewerAux.unregisterEventSink">
+      <apidata name="unregisterEventSink" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:ViewerAux" ref="true" />
+      </containers>
+    </api>
+    <api id="M:ViewerAux.viewAppletInBrowser(System.Int32)">
+      <apidata name="viewAppletInBrowser" group="member" subgroup="method" />
+      <memberdata visibility="public" static="false" special="false" />
+      <proceduredata abstract="false" virtual="true" final="true" />
+      <parameters>
+        <parameter name="hWnd">
+          <type api="T:System.Int32" ref="false" />
+        </parameter>
+      </parameters>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:" />
+        <type api="T:ViewerAux" ref="true" />
+      </containers>
+      <attributes>
+        <attribute>
+          <type api="T:System.Runtime.InteropServices.DispIdAttribute" ref="true" />
+          <argument>
+            <type api="T:System.Int32" ref="false" />
+            <value>4</value>
+          </argument>
+        </attribute>
+      </attributes>
+    </api>
+    <api id="N:AppletSecurityModel.JBCPolicy">
+      <apidata name="AppletSecurityModel.JBCPolicy" group="namespace" />
+      <elements>
+        <element api="T:AppletSecurityModel.JBCPolicy.AppDomainPolicy" />
+      </elements>
+    </api>
+    <api id="T:AppletSecurityModel.JBCPolicy.AppDomainPolicy">
+      <apidata name="AppDomainPolicy" group="type" subgroup="class" />
+      <typedata visibility="public" abstract="false" sealed="false" serializable="false" layout="auto" format="ansi" />
+      <family>
+        <ancestors>
+          <type api="T:System.Object" ref="true" />
+        </ancestors>
+      </family>
+      <elements>
+        <element api="M:AppletSecurityModel.JBCPolicy.AppDomainPolicy.GetPolicyForFileProtocol(System.String)" />
+        <element api="M:AppletSecurityModel.JBCPolicy.AppDomainPolicy.#ctor" />
+        <element api="M:System.Object.ToString">
+          <apidata name="ToString" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.String" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Equals(System.Object)">
+          <apidata name="Equals" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" overload="true" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <parameters>
+            <parameter name="obj">
+              <type api="T:System.Object" ref="true" />
+            </parameter>
+          </parameters>
+          <returns>
+            <type api="T:System.Boolean" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetHashCode">
+          <apidata name="GetHashCode" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <returns>
+            <type api="T:System.Int32" ref="false" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.GetType">
+          <apidata name="GetType" group="member" subgroup="method" />
+          <memberdata visibility="public" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Type" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+        <element api="M:System.Object.Finalize">
+          <apidata name="Finalize" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="true" final="false" />
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+          <attributes>
+            <attribute>
+              <type api="T:System.Runtime.ConstrainedExecution.ReliabilityContractAttribute" ref="true" />
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Consistency" ref="false" />
+                <enumValue>
+                  <field name="WillNotCorruptState" />
+                </enumValue>
+              </argument>
+              <argument>
+                <type api="T:System.Runtime.ConstrainedExecution.Cer" ref="false" />
+                <enumValue>
+                  <field name="Success" />
+                </enumValue>
+              </argument>
+            </attribute>
+          </attributes>
+        </element>
+        <element api="M:System.Object.MemberwiseClone">
+          <apidata name="MemberwiseClone" group="member" subgroup="method" />
+          <memberdata visibility="family" static="false" special="false" />
+          <proceduredata abstract="false" virtual="false" final="false" />
+          <returns>
+            <type api="T:System.Object" ref="true" />
+          </returns>
+          <containers>
+            <library assembly="mscorlib" module="mscorlib" />
+            <namespace api="N:System" />
+            <type api="T:System.Object" ref="true" />
+          </containers>
+        </element>
+      </elements>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:AppletSecurityModel.JBCPolicy" />
+      </containers>
+    </api>
+    <api id="M:AppletSecurityModel.JBCPolicy.AppDomainPolicy.#ctor">
+      <apidata name=".ctor" group="member" subgroup="constructor" />
+      <memberdata visibility="public" static="false" special="true" />
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:AppletSecurityModel.JBCPolicy" />
+        <type api="T:AppletSecurityModel.JBCPolicy.AppDomainPolicy" ref="true" />
+      </containers>
+    </api>
+    <api id="M:AppletSecurityModel.JBCPolicy.AppDomainPolicy.GetPolicyForFileProtocol(System.String)">
+      <apidata name="GetPolicyForFileProtocol" group="member" subgroup="method" />
+      <memberdata visibility="public" static="true" special="false" />
+      <proceduredata abstract="false" virtual="false" final="false" />
+      <parameters>
+        <parameter name="gacPath">
+          <type api="T:System.String" ref="true" />
+        </parameter>
+      </parameters>
+      <returns>
+        <type api="T:System.Security.Policy.PolicyLevel" ref="true" />
+      </returns>
+      <containers>
+        <library assembly="vjsvwaux" module="vjsvwaux" />
+        <namespace api="N:AppletSecurityModel.JBCPolicy" />
+        <type api="T:AppletSecurityModel.JBCPolicy.AppDomainPolicy" ref="true" />
+      </containers>
+    </api>
+  </apis>
+</reflection>

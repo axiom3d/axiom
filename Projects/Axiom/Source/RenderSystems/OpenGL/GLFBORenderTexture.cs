@@ -51,7 +51,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Fields and Properties
 
-        private GLFrameBufferObject _fbo;
+		private GLFrameBufferObject _fbo;
 
 		#endregion Fields and Properties
 
@@ -74,7 +74,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region GLRenderTexture Implementation
 
-		public override object this[ string attribute]
+		public override object this[ string attribute ]
 		{
 			get
 			{

@@ -113,7 +113,7 @@ namespace Axiom.Overlays
         /// <param name="name"></param>
         internal Overlay( string name )
         {
-            this.name = name;
+            this.Name = name;
             this.scaleX = 1.0f;
             this.scaleY = 1.0f;
             this.isTransformOutOfDate = true;
@@ -593,11 +593,10 @@ namespace Axiom.Overlays
 
         #region Implementation of Resource
 
-
         /// <summary>
         ///		
         /// </summary>
-        public override void Load()
+        protected override void load()
         {
             // do nothing
         }
@@ -605,18 +604,11 @@ namespace Axiom.Overlays
         /// <summary>
         ///		
         /// </summary>
-        public override void Unload()
+        protected override void unload()
         {
             // do nothing
         }
 
-        /// <summary>
-        ///		
-        /// </summary>
-        public override void Dispose()
-        {
-            // do nothing
-        }
 
         #endregion
     }

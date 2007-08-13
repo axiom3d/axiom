@@ -45,7 +45,7 @@ using Axiom.Graphics;
 using Axiom.Core;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGL
 {
 	static class GLPixelUtil
@@ -139,7 +139,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 			return 0;
 		}
-	
+
 		/// <summary>
 		/// Takes the Axiom pixel format and returns type that must be provided
 		/// to GL as data type for reading it into the GPU
@@ -208,14 +208,14 @@ namespace Axiom.RenderSystems.OpenGL
 				case PixelFormat.FLOAT32_RGBA:
 					return Gl.GL_FLOAT;
 				case PixelFormat.SHORT_RGBA:
-				//case PixelFormat.SHORT_RGB:
-				//case PixelFormat.SHORT_GR:
+					//case PixelFormat.SHORT_RGB:
+					//case PixelFormat.SHORT_GR:
 					return Gl.GL_UNSIGNED_SHORT;
 				default:
 					return 0;
 			}
 		}
-        
+
 		/// <summary>
 		/// Takes the Axiom pixel format and returns the type that must be provided
 		/// to GL as internal format. GL_NONE if no match exists.
@@ -376,7 +376,7 @@ namespace Axiom.RenderSystems.OpenGL
 					return PixelFormat.A8R8G8B8;
 			}
 		}
-	
+
 		/// <summary>
 		/// Returns the maximum number of Mipmaps that can be generated until we reach
 		/// the mininum format possible. This does not count the base level.			
@@ -409,12 +409,12 @@ namespace Axiom.RenderSystems.OpenGL
 			return count;
 		}
 
-        /// <summary>
-        /// Returns next power-of-two size if required by render system, in case
+		/// <summary>
+		/// Returns next power-of-two size if required by render system, in case
 		/// RSC_NON_POWER_OF_2_TEXTURES is supported it returns value as-is.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
+		/// </summary>
+		/// <param name="value"></param>
+		/// <returns></returns>
 		public static int OptionalPO2( int value )
 		{
 			HardwareCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;

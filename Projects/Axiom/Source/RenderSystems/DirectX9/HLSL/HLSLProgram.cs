@@ -38,6 +38,7 @@ using System.Diagnostics;
 
 using Axiom.Core;
 using Axiom.Graphics;
+using ResourceHandle = System.UInt64;
 
 using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
@@ -74,8 +75,8 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 
 		#region Constructor
 
-		public HLSLProgram( string name, GpuProgramType type, string language )
-			: base( name, type, language )
+		public HLSLProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+			: base( parent, name, handle, group, isManual, loader )
 		{
 		}
 
@@ -91,7 +92,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		{
 			// create a new program, without source since we are setting the microcode manually
 			assemblerProgram =
-				GpuProgramManager.Instance.CreateProgramFromString( name, "", type, target );
+				GpuProgramManager.Instance.CreateProgramFromString( Name, Group,  "", type, target );
 
 			// set the microcode for this program
 			( (D3DGpuProgram)assemblerProgram ).ExternalMicrocode = microcode;
@@ -130,7 +131,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			// check for errors
 			if ( errors != null && errors.Length > 0 )
 			{
-				throw new AxiomException( "HLSL: Unable to compile high level shader {0}:\n{1}", name, errors );
+				throw new AxiomException( "HLSL: Unable to compile high level shader {0}:\n{1}", Name, errors );
 			}
 		}
 

@@ -86,7 +86,7 @@ namespace Axiom.Demos
 
             if ( o == null )
             {
-                throw new Exception( string.Format( "Could not find overlay named '{0}'.", "Core/DebugOverlay" ) );
+                LogManager.Instance.Write( string.Format( "Could not find overlay named '{0}'.", "Core/DebugOverlay" ) );
             }
 
             if ( show )
@@ -147,6 +147,8 @@ namespace Axiom.Demos
             //}
             window = Root.Instance.Initialize( true, "Axiom Engine Demo Window" );
 
+			ResourceGroupManager.Instance.InitializeAllResourceGroups();
+
             ShowDebugOverlay( showDebugOverlay );
 
             ChooseSceneManager();
@@ -154,7 +156,7 @@ namespace Axiom.Demos
             CreateViewports();
 
             // set default mipmap level
-            TextureManager.Instance.DefaultNumMipMaps = 5;
+            TextureManager.Instance.DefaultMipmapCount = 5;
 
             // call the overridden CreateScene method
             CreateScene();

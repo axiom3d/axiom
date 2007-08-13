@@ -87,7 +87,7 @@ namespace Axiom.RenderSystems.OpenGL
 		}
 
 		#endregion GLInternalFormat Property
-			
+
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
@@ -170,7 +170,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void BlitFromMemory( PixelBox src, BasicBox dstBox )
 		{
-			if ( _buffer.Contains( dstBox ) )
+			if ( !_buffer.Contains( dstBox ) )
 				throw new ArgumentException( "Destination box out of range." );
 			PixelBox scaled;
 
@@ -187,7 +187,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 				//allocateBuffer();
 				//scaled = _buffer.GetSubVolume( dstBox );
-				
+
 				//Image.Scale( src, scaled, ImageFilter.BiLinear );
 			}
 			else if ( GLPixelUtil.GetGLOriginFormat( src.Format ) == 0 )

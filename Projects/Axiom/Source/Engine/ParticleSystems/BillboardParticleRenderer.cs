@@ -74,7 +74,7 @@ namespace Axiom.ParticleSystems
 		}
 
 		#region Attribute Parsers
-		[AttributeParser( "billboard_type", PARTICLE )]
+		[ParserCommand( "billboard_type", PARTICLE )]
 		public static void ParseBillboardType( string[] values, ParticleSystemRenderer _renderer )
 		{
 			if ( values.Length != 1 )
@@ -94,7 +94,7 @@ namespace Axiom.ParticleSystems
 				ParseHelper.LogParserError( "billboard_type", _renderer.Type, "Invalid enum value" );
 		}
 
-		[AttributeParser( "billboard_origin", PARTICLE )]
+		[ParserCommand( "billboard_origin", PARTICLE )]
 		public static void ParseBillboardOrigin( string[] values, ParticleSystemRenderer _renderer )
 		{
 			if ( values.Length != 1 )
@@ -114,7 +114,7 @@ namespace Axiom.ParticleSystems
 				ParseHelper.LogParserError( "billboard_origin", _renderer.Type, "Invalid enum value" );
 		}
 
-		[AttributeParser( "billboard_rotation_type", PARTICLE )]
+		[ParserCommand( "billboard_rotation_type", PARTICLE )]
 		public static void ParseBillboardRotationType( string[] values, ParticleSystemRenderer _renderer )
 		{
 			if ( values.Length != 1 )
@@ -134,7 +134,7 @@ namespace Axiom.ParticleSystems
 				ParseHelper.LogParserError( "billboard_rotation_type", _renderer.Type, "Invalid enum value" );
 		}
 
-		[AttributeParser( "common_direction", PARTICLE )]
+		[ParserCommand( "common_direction", PARTICLE )]
 		public static void ParseCommonDirection( string[] values, ParticleSystemRenderer _renderer )
 		{
 			if ( values.Length != 3 )
@@ -146,7 +146,7 @@ namespace Axiom.ParticleSystems
 			renderer.CommonDirection = StringConverter.ParseVector3( values );
 		}
 
-		[AttributeParser( "common_up_vector", PARTICLE )]
+		[ParserCommand( "common_up_vector", PARTICLE )]
 		public static void ParseCommonUpDirection( string[] values, ParticleSystemRenderer _renderer )
 		{
 			if ( values.Length != 3 )
@@ -158,7 +158,7 @@ namespace Axiom.ParticleSystems
 			renderer.CommonUpVector = StringConverter.ParseVector3( values );
 		}
 
-		[AttributeParser( "point_rendering", PARTICLE )]
+		[ParserCommand( "point_rendering", PARTICLE )]
 		public static void ParsePointRendering( string[] values, ParticleSystemRenderer _renderer )
 		{
 			if ( values.Length != 1 )
@@ -171,7 +171,7 @@ namespace Axiom.ParticleSystems
 			renderer.PointRenderingEnabled = StringConverter.ParseBool( values[ 0 ] );
 		}
 
-		[AttributeParser( "accurate_facing", PARTICLE )]
+		[ParserCommand( "accurate_facing", PARTICLE )]
 		public static void ParseAccurateFacing( string[] values, ParticleSystemRenderer _renderer )
 		{
 			if ( values.Length != 1 )
@@ -201,13 +201,13 @@ namespace Axiom.ParticleSystems
 				MethodInfo method = methods[ i ];
 
 				// see if the method should be used to parse one or more material attributes
-				AttributeParserAttribute[] parserAtts =
-					(AttributeParserAttribute[])method.GetCustomAttributes( typeof( AttributeParserAttribute ), true );
+				ParserCommandAttribute[] parserAtts =
+					(ParserCommandAttribute[])method.GetCustomAttributes( typeof( ParserCommandAttribute ), true );
 
 				// loop through each one we found and register its parser
 				for ( int j = 0; j < parserAtts.Length; j++ )
 				{
-					AttributeParserAttribute parserAtt = parserAtts[ j ];
+					ParserCommandAttribute parserAtt = parserAtts[ j ];
 
 					switch ( parserAtt.ParserType )
 					{
@@ -449,31 +449,31 @@ namespace Axiom.ParticleSystems
 	}
 
 	/** Factory class for BillboardParticleRenderer */
-	public class BillboardParticleRendererFactory : ParticleSystemRendererFactory
+	public class BillboardParticleRendererFactory : IParticleSystemRendererFactory
 	{
-		static string rendererTypeName = "billboard";
+		private const string rendererTypeName = "billboard";
 
-		public BillboardParticleRendererFactory()
-		{
-		}
+		#region IParticleSystemRendererFactory Members
 
-		/// @copydoc FactoryObj::createInstance
-		public override ParticleSystemRenderer CreateInstance( string name )
-		{
-			return new BillboardParticleRenderer();
-		}
-
-		/// @copydoc FactoryObj::destroyInstance
-		public override void DestroyInstance( ParticleSystemRenderer inst )
-		{
-		}
-
-		public override string Type
+		public string Type
 		{
 			get
 			{
 				return rendererTypeName;
 			}
 		}
+
+		/// @copydoc FactoryObj::createInstance
+		public ParticleSystemRenderer CreateInstance( string name )
+		{
+			return new BillboardParticleRenderer();
+		}
+
+		/// @copydoc FactoryObj::destroyInstance
+		public void DestroyInstance( ParticleSystemRenderer inst )
+		{
+		}
+
+		#endregion IParticleSystemRendererFactory Members
 	};
 }

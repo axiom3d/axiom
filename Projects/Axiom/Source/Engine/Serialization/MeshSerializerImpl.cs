@@ -282,8 +282,7 @@ namespace Axiom.Serialization
 					short index = ReadShort( reader );
 					string name = ReadString( reader );
 
-					string oldName = string.Format( "{0}_SubMesh{1}", mesh.Name, index );
-					SubMesh sub = mesh.GetSubMesh( oldName );
+					SubMesh sub = mesh.GetSubMesh( index );
 
 					if ( sub != null )
 					{
@@ -1301,10 +1300,10 @@ namespace Axiom.Serialization
 			mesh.numLods = ReadShort( reader );
 
 			// load manual?
-			mesh.isLodManual = ReadBool( reader );
+			mesh.IsLodManual = ReadBool( reader );
 
 			// preallocate submesh lod face data if not manual
-			if ( !mesh.isLodManual )
+			if ( !mesh.IsLodManual )
 			{
 				for ( int i = 0; i < mesh.SubMeshCount; i++ )
 				{
@@ -1333,7 +1332,7 @@ namespace Axiom.Serialization
 				MeshLodUsage usage = new MeshLodUsage();
 				usage.fromSquaredDepth = ReadFloat( reader );
 
-				if ( mesh.isLodManual )
+				if ( mesh.IsLodManual )
 				{
 					ReadMeshLodUsageManual( reader, i, ref usage );
 				}
@@ -1576,7 +1575,7 @@ namespace Axiom.Serialization
 				}
 			}
 
-			mesh.edgeListsBuilt = true;
+			mesh.IsEdgeListBuilt = true;
 		}
 
 
@@ -1925,7 +1924,7 @@ namespace Axiom.Serialization
 				}
 			}
 
-			mesh.edgeListsBuilt = true;
+			mesh.IsEdgeListBuilt = true;
 		}
 
 		#endregion Methods

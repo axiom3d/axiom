@@ -205,7 +205,7 @@ namespace Axiom.ParticleSystems
 		public abstract void SetKeepParticlesInLocalSpace( bool keepLocal );
     }
 
-	public abstract class ParticleSystemRendererFactory : AbstractFactory<ParticleSystemRenderer>
+	public interface IParticleSystemRendererFactory : AbstractFactory<ParticleSystemRenderer>
 	{
 	}
 

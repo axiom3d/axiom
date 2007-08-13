@@ -898,7 +898,7 @@ namespace Axiom.ParticleSystems
                 string name = (string)entry.Key;
 
                 // get the value of the param from this instance
-                string val = ( (ICommand)entry.Value ).Get( this );
+                string val = ( (IPropertyCommand)entry.Value ).Get( this );
 
                 // set the param on the target instance
                 emitter.SetParam( name, val );
@@ -927,7 +927,7 @@ namespace Axiom.ParticleSystems
         {
             if ( commandTable.ContainsKey( name ) )
             {
-                ICommand command = (ICommand)commandTable[ name ];
+                IPropertyCommand command = (IPropertyCommand)commandTable[ name ];
 
                 command.Set( this, val );
 
@@ -986,7 +986,7 @@ namespace Axiom.ParticleSystems
         ///    
         /// </summary>
         [Command( "angle", "Angle to emit the particles at.", typeof( ParticleEmitter ) )]
-        class AngleCommand : ICommand
+        class AngleCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -1004,7 +1004,7 @@ namespace Axiom.ParticleSystems
         ///    
         /// </summary>
         [Command( "position", "Particle emitter position.", typeof( ParticleEmitter ) )]
-        class PositionCommand : ICommand
+        class PositionCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -1022,7 +1022,7 @@ namespace Axiom.ParticleSystems
         ///    
         /// </summary>
         [Command( "emission_rate", "Rate of particle emission.", typeof( ParticleEmitter ) )]
-        class EmissionRateCommand : ICommand
+        class EmissionRateCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -1037,7 +1037,7 @@ namespace Axiom.ParticleSystems
         }
 
 		[Command( "emit_emitter", "If set, this emitter will emit other emitters instead of visual particles.", typeof( ParticleEmitter ) )]
-		class EmitEmitterCommand : ICommand
+		class EmitEmitterCommand : IPropertyCommand
 		{
 			public void Set( object target, string val )
 			{
@@ -1055,7 +1055,7 @@ namespace Axiom.ParticleSystems
         ///    
         /// </summary>
         [Command( "time_to_live", "Constant lifespan of a particle.", typeof( ParticleEmitter ) )]
-        class TtlCommand : ICommand
+        class TtlCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -1073,7 +1073,7 @@ namespace Axiom.ParticleSystems
         ///    
         /// </summary>
         [Command( "time_to_live_min", "Minimum lifespan of a particle.", typeof( ParticleEmitter ) )]
-        class TtlMinCommand : ICommand
+        class TtlMinCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -1091,7 +1091,7 @@ namespace Axiom.ParticleSystems
         ///    
         /// </summary>
         [Command( "time_to_live_max", "Maximum lifespan of a particle.", typeof( ParticleEmitter ) )]
-        class TtlMaxCommand : ICommand
+        class TtlMaxCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -1109,7 +1109,7 @@ namespace Axiom.ParticleSystems
         ///    
         /// </summary>
         [Command( "direction", "Particle direction.", typeof( ParticleEmitter ) )]
-        class DirectionCommand : ICommand
+        class DirectionCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -1127,7 +1127,7 @@ namespace Axiom.ParticleSystems
         ///    
         /// </summary>
         [Command( "duration", "Constant duration.", typeof( ParticleEmitter ) )]
-        class DurationCommand : ICommand
+        class DurationCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -1145,7 +1145,7 @@ namespace Axiom.ParticleSystems
         ///    
         /// </summary>
         [Command( "duration_min", "Minimum duration.", typeof( ParticleEmitter ) )]
-        class MinDurationCommand : ICommand
+        class MinDurationCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -1163,7 +1163,7 @@ namespace Axiom.ParticleSystems
         ///    
         /// </summary>
         [Command( "duration_max", "Maximum duration.", typeof( ParticleEmitter ) )]
-        class MaxDurationCommand : ICommand
+        class MaxDurationCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -1181,7 +1181,7 @@ namespace Axiom.ParticleSystems
         ///    
         /// </summary>
         [Command( "repeat_delay", "Constant delay between repeating durations.", typeof( ParticleEmitter ) )]
-        class RepeatDelayCommand : ICommand
+        class RepeatDelayCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -1199,7 +1199,7 @@ namespace Axiom.ParticleSystems
         ///    
         /// </summary>
         [Command( "repeat_delay_min", "Minimum delay between repeating durations.", typeof( ParticleEmitter ) )]
-        class RepeatDelayMinCommand : ICommand
+        class RepeatDelayMinCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -1217,7 +1217,7 @@ namespace Axiom.ParticleSystems
         ///    
         /// </summary>
         [Command( "repeat_delay_max", "Maximum delay between repeating durations.", typeof( ParticleEmitter ) )]
-        class RepeatDelayMaxCommand : ICommand
+        class RepeatDelayMaxCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -1235,7 +1235,7 @@ namespace Axiom.ParticleSystems
         ///    
         /// </summary>
         [Command( "velocity", "Constant particle velocity.", typeof( ParticleEmitter ) )]
-        class VelocityCommand : ICommand
+        class VelocityCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -1253,7 +1253,7 @@ namespace Axiom.ParticleSystems
         ///    
         /// </summary>
         [Command( "velocity_min", "Minimum particle velocity.", typeof( ParticleEmitter ) )]
-        class VelocityMinCommand : ICommand
+        class VelocityMinCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -1271,7 +1271,7 @@ namespace Axiom.ParticleSystems
         ///    
         /// </summary>
         [Command( "velocity_max", "Maximum particle velocity.", typeof( ParticleEmitter ) )]
-        class VelocityMaxCommand : ICommand
+        class VelocityMaxCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -1289,7 +1289,7 @@ namespace Axiom.ParticleSystems
         /// 
         /// </summary>
 		[Command( "colour", "Color.", typeof( ParticleEmitter ) )]
-		class ColorCommand : ICommand
+		class ColorCommand : IPropertyCommand
 		{
 			public void Set( object target, string val )
 			{
@@ -1307,7 +1307,7 @@ namespace Axiom.ParticleSystems
 		/// 
 		/// </summary>
         [Command( "colour_range_start", "Color range start.", typeof( ParticleEmitter ) )]
-        class ColorRangeStartCommand : ICommand
+        class ColorRangeStartCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -1326,7 +1326,7 @@ namespace Axiom.ParticleSystems
         /// 
         /// </summary>
         [Command( "colour_range_end", "Color range end.", typeof( ParticleEmitter ) )]
-        class ColorRangeEndCommand : ICommand
+        class ColorRangeEndCommand : IPropertyCommand
         {
             public void Set( object target, string val )
             {
@@ -1344,7 +1344,7 @@ namespace Axiom.ParticleSystems
 		///    
 		/// </summary>
 		[Command( "name", "particle emmitter name.", typeof( ParticleEmitter ) )]
-		class NameCommand : ICommand
+		class NameCommand : IPropertyCommand
 		{
 			public void Set( object target, string val )
 			{

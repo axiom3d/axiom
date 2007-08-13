@@ -430,7 +430,7 @@ namespace Axiom.RenderSystems.DirectX9
 				newWin.Left = left;
 
 				_window = newWin;
-				WindowMonitor.Instance.RegisterWindow( this );
+				WindowEventMonitor.Instance.RegisterWindow( this );
 				_window.Show();
 			}
 			else
@@ -734,7 +734,7 @@ namespace Axiom.RenderSystems.DirectX9
 					// Dispose Other resources
 					if ( _window != null && !_isExternal )
 					{
-						WindowMonitor.Instance.UnregisterWindow( this );
+						WindowEventMonitor.Instance.UnregisterWindow( this );
 						( (SWF.Form)_window ).Close();
 
 					}
@@ -791,7 +791,8 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( Width == width && Height == height )
 				return;
 
-			_renderSurface.ReleaseGraphics();
+			if ( _renderSurface != null )
+				_renderSurface.ReleaseGraphics();
 
 			if ( _isSwapChain )
 			{

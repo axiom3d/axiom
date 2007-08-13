@@ -38,6 +38,8 @@ using System;
 using Axiom.Core;
 using Axiom.Math;
 
+using ResourceHandle = System.UInt64;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
@@ -108,7 +110,7 @@ namespace Axiom.Graphics
         ///     Note the use of the material handle rather than the material
         ///     name - this is for efficiency since there will be many of these.
         /// </summary>
-        public int materialHandle;
+        public ResourceHandle materialHandle;
 
         public Plane plane;
 

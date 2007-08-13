@@ -40,6 +40,8 @@ using System.IO;
 using Axiom.Core;
 using Axiom.Graphics;
 
+using ResourceHandle = System.UInt64;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
@@ -69,42 +71,57 @@ namespace Axiom.Graphics
     /// </remarks>
     public abstract class HighLevelGpuProgram : GpuProgram, IConfigurable
     {
-        #region Fields
+        #region Fields and Properties
 
         /// <summary>
         ///    Whether the high-level program (and it's parameter defs) is loaded.
         /// </summary>
         protected bool isHighLevelLoaded;
-        /// <summary>
-        ///    The underlying assembler program.
-        /// </summary>
-        protected GpuProgram assemblerProgram;
 
-        #endregion Fields
+		#region BindingDelegate Property
 
-        #region Constructors
+		/// <summary>
+		///    The underlying assembler program.
+		/// </summary>
+		protected GpuProgram assemblerProgram;
+		/// <summary>
+		///    Gets the lowlevel assembler program based on this HighLevel program.
+		/// </summary>
+		public override GpuProgram BindingDelegate
+		{
+			get
+			{
+				return assemblerProgram;
+			}
+		} 
+		#endregion BindingDelegate Property
+			
 
-        /// <summary>
+		#endregion Fields and Properties
+
+		#region Construction and Destruction
+
+		/// <summary>
         ///    Default constructor.
         /// </summary>
         /// <param name="name">Name of the high level program.</param>
         /// <param name="type">Type of program, vertex or fragment.</param>
         /// <param name="language">HLSL language this program is written in.</param>
-        public HighLevelGpuProgram( string name, GpuProgramType type, string language )
-            : base( name, type, language )
+		public HighLevelGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+			: base( parent, name, handle, group, isManual, loader )
         {
-        }
+		}
 
-        #endregion
+		#endregion Construction and Destruction
 
-        #region Methods
+		#region Methods
 
-        /// <summary>
-        ///    Implementation of Resource.Load.
+		/// <summary>
+        ///    Implementation of Resource.load.
         /// </summary>
-        public override void Load()
+        protected override void load()
         {
-            if ( isLoaded )
+            if ( IsLoaded )
             {
                 Unload();
             }
@@ -119,7 +136,7 @@ namespace Axiom.Graphics
 
             // load the low level assembler program
             assemblerProgram.Load();
-            isLoaded = true;
+            IsLoaded = true;
         }
 
         /// <summary>
@@ -132,9 +149,10 @@ namespace Axiom.Graphics
             {
                 if ( loadFromFile )
                 {
-                    Stream stream = GpuProgramManager.Instance.FindResourceData( fileName );
+                    Stream stream = ResourceGroupManager.Instance.OpenResource( fileName );
                     StreamReader reader = new StreamReader( stream, System.Text.Encoding.ASCII );
                     source = reader.ReadToEnd();
+					stream.Close();
                 }
 
                 LoadFromSource();
@@ -149,9 +167,9 @@ namespace Axiom.Graphics
         protected abstract void CreateLowLevelImpl();
 
         /// <summary>
-        ///    Implementation of Resource.Unload.
+        ///    Implementation of Resource.unload.
         /// </summary>
-        public override void Unload()
+        protected override void unload()
         {
             if ( assemblerProgram != null )
             {
@@ -161,7 +179,7 @@ namespace Axiom.Graphics
             // polymorphic unload
             UnloadImpl();
 
-            isLoaded = false;
+            IsLoaded = false;
             isHighLevelLoaded = false;
         }
 
@@ -211,21 +229,6 @@ namespace Axiom.Graphics
 
         #endregion
 
-        #region Properties
-
-        /// <summary>
-        ///    Gets the lowlevel assembler program based on this HighLevel program.
-        /// </summary>
-        public override GpuProgram BindingDelegate
-        {
-            get
-            {
-                return assemblerProgram;
-            }
-        }
-
-        #endregion
-
         #region IConfigurable Members
 
         /// <summary>
@@ -237,4 +240,75 @@ namespace Axiom.Graphics
 
         #endregion
     }
+
+	/// <summary>
+	///    Interface definition for factories that create instances of HighLevelGpuProgram.
+	/// </summary>
+	public abstract class HighLevelGpuProgramFactory : AbstractFactory<HighLevelGpuProgram>
+	{
+		#region Properties
+
+		/// <summary>
+		///    Gets the name of the HLSL language that this factory creates programs for.
+		/// </summary>
+		public abstract string Language
+		{
+			get;
+		}
+
+		#endregion Properties
+
+		#region Methods
+
+		/// <summary>
+		///    Create method which needs to be implemented to return an
+		///    instance of a HighLevelGpuProgram.
+		/// </summary>
+		/// <param name="name">
+		///    Name of the program to create.
+		/// </param>
+		/// <param name="type">
+		///    Type of program to create, i.e. vertex or fragment.
+		/// </param>
+		/// <returns>
+		///    A newly created instance of HighLevelGpuProgram.
+		/// </returns>
+		public abstract HighLevelGpuProgram CreateInstance( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader );
+
+
+		#endregion Methods
+
+		#region AbstractFactory<HighLevelGpuProgram> Implementation
+
+		/// <summary>
+		/// For HighLevelGpuPrograms this simply returns the Language.
+		/// </summary>
+		public string Type
+		{
+			get
+			{
+				return Language;
+			}
+		}
+
+		/// <summary>
+		/// Creates an instance of a HighLevelGpuProgram
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		/// <remarks>This method cannot be used to create an instance of a HighLevelGpuProgram use CreateInstance( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader ) instead.</remarks>
+		public HighLevelGpuProgram CreateInstance( string name )
+		{
+			throw new Exception( "Cannot create a HighLevelGpuProgram without specifing the GpuProgramType." );
+		}
+
+		public virtual void DestroyInstance( HighLevelGpuProgram obj )
+		{
+			obj.Dispose();
+			obj = null;
+		}
+
+		#endregion AbstractFactory<HighLevelGpuProgram> Implementation
+	}
+
 }

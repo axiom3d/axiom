@@ -41,7 +41,7 @@ using System.Text;
 using Axiom.Media;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGL
 {
 	/// <summary>
@@ -115,7 +115,7 @@ namespace Axiom.RenderSystems.OpenGL
 		}
 
 		#endregion GLContext Property
-			
+
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
@@ -145,6 +145,6 @@ namespace Axiom.RenderSystems.OpenGL
 		}
 
 		#endregion Methods
-			
+
 	}
 }

@@ -107,11 +107,11 @@ namespace Axiom.ParticleFX
         #region Command definition classes
 
         [Command( "rotation_speed_range_start", "Start range of particle rotation speed.", typeof( ParticleAffector ) )]
-        class RotationSpeedRangeStartCommand : ICommand
-        {
-            #region ICommand Members
+		class RotationSpeedRangeStartCommand : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 RotationAffector affector = target as RotationAffector;
                 return StringConverter.ToString( affector.rotationSpeedRangeStart );
@@ -126,11 +126,11 @@ namespace Axiom.ParticleFX
         }
 
         [Command( "rotation_speed_range_end", "End range of particle rotation speed.", typeof( ParticleAffector ) )]
-        class RotationSpeedRangeEndCommand : ICommand
-        {
-            #region ICommand Members
+		class RotationSpeedRangeEndCommand : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 RotationAffector affector = target as RotationAffector;
                 return StringConverter.ToString( affector.rotationSpeedRangeEnd );
@@ -145,11 +145,11 @@ namespace Axiom.ParticleFX
         }
 
         [Command( "rotation_range_start", "Start range of particle rotation.", typeof( ParticleAffector ) )]
-        class RotationRangeStartCommand : ICommand
-        {
-            #region ICommand Members
+		class RotationRangeStartCommand : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 RotationAffector affector = target as RotationAffector;
                 return StringConverter.ToString( affector.rotationRangeStart );
@@ -165,11 +165,11 @@ namespace Axiom.ParticleFX
 
 
         [Command( "rotation_range_end", "End range of particle rotation.", typeof( ParticleAffector ) )]
-        class RotationRangeEndCommand : ICommand
-        {
-            #region ICommand Members
+		class RotationRangeEndCommand : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 RotationAffector affector = target as RotationAffector;
                 return StringConverter.ToString( affector.rotationRangeEnd );

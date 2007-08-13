@@ -59,7 +59,7 @@ namespace Axiom.Demos
             // since whole screen is being redrawn every frame, dont bother clearing
             // option works for GL right now, uncomment to test it out.  huge fps increase
             // also, depth_write in the skybox material must be set to on
-            //mainViewport.ClearEveryFrame = false;
+            //viewport.ClearEveryFrame = false;
 
             // set ambient light
             scene.AmbientLight = new ColorEx( 1.0f, 0.5f, 0.5f, 0.5f );

@@ -48,6 +48,8 @@ using Axiom.Math.Collections;
 using Axiom.Serialization;
 using Axiom.Graphics;
 
+using ResourceHandle = System.UInt64;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Core
@@ -86,175 +88,18 @@ namespace Axiom.Core
 	///    also that mesh sub-sections (when used in an instantiated object)
 	///    share the same scene node as the parent.
 	/// </remarks>
-	/// TODO: Add Clone method
 	public class Mesh : Resource
 	{
-		#region Fields
+		#region Fields and Properties
 
-		// protected TimingMeter meshLoadMeter = MeterManager.GetMeter("Mesh Load", "Mesh");
+		protected TimingMeter meshLoadMeter = MeterManager.GetMeter( "Mesh Load", "Mesh" );
+
+		#region SharedVertexData Property
 
 		/// <summary>
 		///		Shared vertex data between multiple meshes.
 		///	</summary>
-		protected VertexData sharedVertexData;
-		/// <summary>
-		///		Collection of sub meshes for this mesh.
-		///	</summary>
-		protected List<SubMesh> subMeshList = new List<SubMesh>();
-		/// <summary>
-		///		Flag that indicates whether or not this mesh will be loaded from a file, or constructed manually.
-		///	</summary>
-		protected bool isManuallyDefined = false;
-		/// <summary>
-		///		Local bounding box of this mesh.
-		/// </summary>
-		protected AxisAlignedBox boundingBox = AxisAlignedBox.Null;
-		/// <summary>
-		///		Radius of this mesh's bounding sphere.
-		/// </summary>
-		protected float boundingSphereRadius;
-
-		/// <summary>Name of the skeleton bound to this mesh.</summary>
-		protected string skeletonName;
-		/// <summary>Reference to the skeleton bound to this mesh.</summary>
-		protected Skeleton skeleton;
-		/// <summary>List of bone assignment for this mesh.</summary>
-		protected Dictionary<int, List<VertexBoneAssignment>> boneAssignmentList =
-			new Dictionary<int, List<VertexBoneAssignment>>();
-		/// <summary>Flag indicating that bone assignments need to be recompiled.</summary>
-		protected bool boneAssignmentsOutOfDate;
-		/// <summary>Number of blend weights that are assigned to each vertex.</summary>
-		protected short numBlendWeightsPerVertex;
-		/// <summary>Option whether to use software or hardware blending, there are tradeoffs to both.</summary>
-		protected internal bool useSoftwareBlending;
-
-		/// <summary>
-		///		Flag indicating the use of manually created LOD meshes.
-		/// </summary>
-		protected internal bool isLodManual;
-		/// <summary>
-		///		Number of LOD meshes available.
-		/// </summary>
-		protected internal int numLods;
-		/// <summary>
-		///		List of data structures describing LOD usage.
-		/// </summary>
-		protected internal List<MeshLodUsage> lodUsageList = new List<MeshLodUsage>();
-
-		/// <summary>
-		///		Usage type for the vertex buffer.
-		/// </summary>
-		protected BufferUsage vertexBufferUsage;
-		/// <summary>
-		///		Usage type for the index buffer.
-		/// </summary>
-		protected BufferUsage indexBufferUsage;
-		/// <summary>
-		///		Use a shadow buffer for the vertex data?
-		/// </summary>
-		protected bool useVertexShadowBuffer;
-		/// <summary>
-		///		Use a shadow buffer for the index data?
-		/// </summary>
-		protected bool useIndexShadowBuffer;
-
-		/// <summary>
-		///		Flag indicating whether precalculation steps to support shadows have been taken.
-		/// </summary>
-		protected bool isPreparedForShadowVolumes;
-		/// <summary>
-		///		Should edge lists be automatically built for this mesh?
-		/// </summary>
-		protected bool autoBuildEdgeLists;
-		/// <summary>
-		///     Have the edge lists been built for this mesh yet?
-		/// </summary>
-		protected internal bool edgeListsBuilt;
-
-		/// <summary>Internal list of named transforms attached to this mesh.</summary>
-		protected List<AttachmentPoint> attachmentPoints = new List<AttachmentPoint>();
-
-		/// <summary>
-		///     Storage of morph animations, lookup by name
-		/// </summary>
-		protected Dictionary<string, Animation> animationsList = new Dictionary<string, Animation>();
-		/// <summary>
-		///     The vertex animation type associated with the shared vertex data
-		/// </summary>
-		protected VertexAnimationType sharedVertexDataAnimationType;
-		/// <summary>
-		///     Do we need to scan animations for animation types?
-		/// </summary>
-		protected bool animationTypesDirty;
-		/// <summary>
-		///     List of available poses for shared and dedicated geometryPoseList
-		/// </summary>
-		protected List<Pose> poseList = new List<Pose>();
-		/// <summary>
-		///     A list of triangles, plus machinery to determine the closest intersection point
-		/// </summary>
-		protected TriangleIntersector triangleIntersector = null;
-
-		#endregion
-
-		#region Constructors
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="name"></param>
-		public Mesh( string name )
-		{
-			this.name = name;
-
-			// default to static write only for speed
-			vertexBufferUsage = BufferUsage.StaticWriteOnly;
-			indexBufferUsage = BufferUsage.StaticWriteOnly;
-
-			// default to having shadow buffers
-			useVertexShadowBuffer = true;
-			useIndexShadowBuffer = true;
-
-			numLods = 1;
-			MeshLodUsage lod = new MeshLodUsage();
-			lod.fromSquaredDepth = 0.0f;
-			lodUsageList.Add( lod );
-
-			// always use software blending for now
-			useSoftwareBlending = true;
-
-			this.SkeletonName = "";
-		}
-
-		#endregion
-
-		#region Properties
-
-		public List<AttachmentPoint> AttachmentPoints
-		{
-			get
-			{
-				return attachmentPoints;
-			}
-		}
-
-		/// <summary>
-		///		Gets/Sets whether or not this Mesh should automatically build edge lists
-		///		when asked for them, or whether it should never build them if
-		///		they are not already provided.
-		/// </summary>
-		public bool AutoBuildEdgeLists
-		{
-			get
-			{
-				return autoBuildEdgeLists;
-			}
-			set
-			{
-				autoBuildEdgeLists = value;
-			}
-		}
-
+		private VertexData _sharedVertexData;
 		/// <summary>
 		///		Gets/Sets the shared VertexData for this mesh.
 		/// </summary>
@@ -262,13 +107,23 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return sharedVertexData;
+				return _sharedVertexData;
 			}
 			set
 			{
-				sharedVertexData = value;
+				_sharedVertexData = value;
 			}
 		}
+
+		#endregion SharedVertexData Property
+
+		#region SubMesh Properties
+
+		/// <summary>
+		///		Collection of sub meshes for this mesh.
+		///	</summary>
+		private List<SubMesh> _subMeshList = new List<SubMesh>();
+		private Dictionary<string, ushort> _subMeshNameMap = new Dictionary<string, ushort>();
 
 		/// <summary>
 		///    Gets the number of submeshes belonging to this mesh.
@@ -277,10 +132,38 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return subMeshList.Count;
+				return _subMeshList.Count;
+			}
+		}
+		
+		#endregion SubMesh Properties
+			
+		/// <summary>
+		///		Flag that indicates whether or not this mesh will be loaded from a file, or constructed manually.
+		///	</summary>
+		protected bool isManuallyDefined = false;
+		/// <summary>
+		///		Defines whether this mesh is to be loaded from a resource, or created manually at runtime.
+		/// </summary>
+		public bool IsManuallyDefined
+		{
+			get
+			{
+				return isManuallyDefined;
+			}
+			set
+			{
+				isManuallyDefined = value;
 			}
 		}
 
+
+		#region BoundingBox Property
+
+		/// <summary>
+		///		Local bounding box of this mesh.
+		/// </summary>
+		private AxisAlignedBox _boundingBox = AxisAlignedBox.Null;
 		/// <summary>
 		///		Gets/Sets the bounding box for this mesh.
 		/// </summary>
@@ -295,20 +178,28 @@ namespace Axiom.Core
 			get
 			{
 				// OPTIMIZE: Cloning to prevent direct modification
-				return (AxisAlignedBox)boundingBox.Clone();
+				return (AxisAlignedBox)_boundingBox.Clone();
 			}
 			set
 			{
-				boundingBox = value;
+				_boundingBox = value;
 
-				float sqLen1 = boundingBox.Minimum.LengthSquared;
-				float sqLen2 = boundingBox.Maximum.LengthSquared;
+				float sqLen1 = _boundingBox.Minimum.LengthSquared;
+				float sqLen2 = _boundingBox.Maximum.LengthSquared;
 
 				// update the bounding sphere radius as well
-				boundingSphereRadius = Utility.Sqrt( Utility.Max( sqLen1, sqLen2 ) );
+				_boundingSphereRadius = Utility.Sqrt( Utility.Max( sqLen1, sqLen2 ) );
 			}
 		}
 
+		#endregion BoundingBox Property
+
+		#region BoundingSphereRadius Property
+
+		/// <summary>
+		///		Radius of this mesh's bounding sphere.
+		/// </summary>
+		private float _boundingSphereRadius;
 		/// <summary>
 		///    Bounding spehere radius from this mesh in local coordinates.
 		/// </summary>
@@ -316,14 +207,347 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return boundingSphereRadius;
+				return _boundingSphereRadius;
 			}
 			set
 			{
-				boundingSphereRadius = value;
+				_boundingSphereRadius = value;
 			}
 		}
 
+		#endregion BoundingSphereRadius Property
+
+		#region Skeleton Property
+
+		/// <summary>Reference to the skeleton bound to this mesh.</summary>
+		private Skeleton _skeleton;
+		/// <summary>
+		///    Gets the skeleton currently bound to this mesh.
+		/// </summary>
+		public Skeleton Skeleton
+		{
+			get
+			{
+				return _skeleton;
+			}
+			protected set
+			{
+				_skeleton = value;
+			}
+		}
+
+		#endregion Skeleton Property
+
+		#region SkeletonName Property
+
+		/// <summary>Name of the skeleton bound to this mesh.</summary>
+		private string _skeletonName;
+		/// <summary>
+		///    Get/Sets the name of the skeleton which will be bound to this mesh.
+		/// </summary>
+		public string SkeletonName
+		{
+			get
+			{
+				return _skeletonName;
+			}
+			set
+			{
+				_skeletonName = value;
+
+				if ( _skeletonName == null || _skeletonName.Length == 0 )
+				{
+					_skeleton = null;
+				}
+				else
+				{
+					try
+					{
+						// load the skeleton
+						_skeleton = (Skeleton)SkeletonManager.Instance.Load( _skeletonName, Group );
+					}
+					catch ( Exception ex )
+					{
+						LogManager.Instance.Write( "Unable to load skeleton " + _skeletonName + " for Mesh " + Name + ". This Mesh will not be animated. You can ignore this message if you are using an offline tool." );
+					}
+				}
+			}
+		}
+
+		#endregion SkeletonName Property
+
+		#region HasSkeleton Property
+
+		/// <summary>
+		///    Determins whether or not this mesh has a skeleton associated with it.
+		/// </summary>
+		public bool HasSkeleton
+		{
+			get
+			{
+				return ( _skeletonName.Length != 0 );
+			}
+		}
+
+		#endregion HasSkeleton Property
+
+		#region BoneAssignmentList Property
+
+		/// <summary>List of bone assignment for this mesh.</summary>
+		private Dictionary<int, List<VertexBoneAssignment>> _boneAssignmentList = new Dictionary<int, List<VertexBoneAssignment>>();
+		/// <summary>
+		///		Gets bone assigment list
+		/// </summary>
+		public Dictionary<int, List<VertexBoneAssignment>> BoneAssignmentList
+		{
+			get
+			{
+				return _boneAssignmentList;
+			}
+		}
+		
+		#endregion BoneAssignmentList Property
+			
+		/// <summary>Flag indicating that bone assignments need to be recompiled.</summary>
+		protected bool boneAssignmentsOutOfDate;
+
+		/// <summary>Number of blend weights that are assigned to each vertex.</summary>
+		protected short numBlendWeightsPerVertex;
+
+		/// <summary>Option whether to use software or hardware blending, there are tradeoffs to both.</summary>
+		protected internal bool useSoftwareBlending;
+
+		#region IsLodManual Property
+
+		/// <summary>
+		///		Flag indicating the use of manually created LOD meshes.
+		/// </summary>
+		private bool _isLodManual;
+		/// <summary>
+		///     Returns true if this mesh is using manual LOD.
+		/// </summary>
+		/// <remarks>
+		///     A mesh can either use automatically generated LOD, or it can use alternative
+		///     meshes as provided by an artist. A mesh can only use either all manual LODs 
+		///     or all generated LODs, not a mixture of both.
+		/// </remarks>
+		public bool IsLodManual
+		{
+			get
+			{
+				return _isLodManual;
+			}
+			protected internal set
+			{
+				_isLodManual = value;
+			}
+		}
+
+		#endregion IsLodManual Property
+			
+		/// <summary>
+		///		Number of LOD meshes available.
+		/// </summary>
+		protected internal int numLods;
+
+		/// <summary>
+		///		List of data structures describing LOD usage.
+		/// </summary>
+		protected internal List<MeshLodUsage> lodUsageList = new List<MeshLodUsage>();
+		/// <summary>
+		///		Gets the current number of Lod levels associated with this mesh.
+		/// </summary>
+		public int LodLevelCount
+		{
+			get
+			{
+				return lodUsageList.Count;
+			}
+		}
+
+
+		#region VertexBufferUsage Property
+
+		/// <summary>
+		///		Usage type for the vertex buffer.
+		/// </summary>
+		private BufferUsage _vertexBufferUsage;
+		/// <summary>
+		///    Gets the usage setting for this meshes vertex buffers.
+		/// </summary>
+		public BufferUsage VertexBufferUsage
+		{
+			get
+			{
+				return _vertexBufferUsage;
+			}
+			protected set
+			{
+				_vertexBufferUsage = value;
+			}
+		}
+
+		#endregion VertexBufferUsage Property
+			
+		#region IndexBufferUsage Property
+
+		/// <summary>
+		///		Usage type for the index buffer.
+		/// </summary>
+		private BufferUsage _indexBufferUsage;
+		/// <summary>
+		///    Gets the usage setting for this meshes index buffers.
+		/// </summary>
+		public BufferUsage IndexBufferUsage
+		{
+			get
+			{
+				return _indexBufferUsage;
+			}
+			protected set
+			{
+				_indexBufferUsage = value;
+			}
+		}
+
+		#endregion IndexBufferUsage Property
+
+		#region UseVertexShadowBuffer Property
+
+		/// <summary>
+		///		Use a shadow buffer for the vertex data?
+		/// </summary>
+		private bool _useVertexShadowBuffer;
+		/// <summary>
+		///    Gets whether or not this meshes vertex buffers are shadowed.
+		/// </summary>
+		public bool UseVertexShadowBuffer
+		{
+			get
+			{
+				return _useVertexShadowBuffer;
+			}
+			protected set
+			{
+				_useVertexShadowBuffer = value;
+			}
+		}
+
+		#endregion UseVertexShadowBuffer Property
+			
+		#region UseIndexShadowBuffer Property
+
+		/// <summary>
+		///		Use a shadow buffer for the index data?
+		/// </summary>
+		private bool _useIndexShadowBuffer;
+		/// <summary>
+		///    Gets whether or not this meshes index buffers are shadowed.
+		/// </summary>
+		public bool UseIndexShadowBuffer
+		{
+			get
+			{
+				return _useIndexShadowBuffer;
+			}
+			protected set
+			{
+				_useIndexShadowBuffer = value;
+			}
+		}
+
+		#endregion UseIndexShadowBuffer Property
+
+		#region IsPreparedForShadowVolumes Property
+
+		/// <summary>
+		///		Flag indicating whether precalculation steps to support shadows have been taken.
+		/// </summary>
+		private bool _isPreparedForShadowVolumes;
+		/// <summary>
+		///		Gets whether this mesh has already had its geometry prepared for use in 
+		///		rendering shadow volumes.
+		/// </summary>
+		public bool IsPreparedForShadowVolumes
+		{
+			get
+			{
+				return _isPreparedForShadowVolumes;
+			}
+		}
+
+		#endregion IsPreparedForShadowVolumes Property
+			
+		#region AutoBuildEdgeLists Property
+
+		/// <summary>
+		///		Should edge lists be automatically built for this mesh?
+		/// </summary>
+		private bool _autoBuildEdgeLists;
+		/// <summary>
+		///		Gets/Sets whether or not this Mesh should automatically build edge lists
+		///		when asked for them, or whether it should never build them if
+		///		they are not already provided.
+		/// </summary>
+		public bool AutoBuildEdgeLists
+		{
+			get
+			{
+				return _autoBuildEdgeLists;
+			}
+			set
+			{
+				_autoBuildEdgeLists = value;
+			}
+		}
+
+		#endregion AutoBuildEdgeLists Property
+
+		#region IsEdgeListBuilt Property
+
+		/// <summary>
+		///     Have the edge lists been built for this mesh yet?
+		/// </summary>
+		private bool _edgeListsBuilt;
+		/// <summary>
+		///     Returns whether this mesh has an attached edge list.
+		/// </summary>
+		public bool IsEdgeListBuilt
+		{
+			get
+			{
+				return _edgeListsBuilt;
+			}
+			protected internal set
+			{
+				_edgeListsBuilt = value;
+			}
+		}
+		
+		#endregion IsEdgeListBuilt Property
+			
+		#region AttachmentPoints Property
+
+		/// <summary>Internal list of named transforms attached to this mesh.</summary>
+		private List<AttachmentPoint> _attachmentPoints = new List<AttachmentPoint>();
+		/// <summary>
+		/// Llist of named transforms attached to this mesh.
+		/// </summary>
+		/// <value>The attachment points.</value>
+		public List<AttachmentPoint> AttachmentPoints
+		{
+			get
+			{
+				return _attachmentPoints;
+			}
+		}
+
+		#endregion AttachmentPoints Property
+			
+		/// <summary>
+		///     Storage of morph animations, lookup by name
+		/// </summary>
+		private Dictionary<string, Animation> _animationsList = new Dictionary<string, Animation>();
 		/// <summary>
 		///   The number of vertex animations in the mesh
 		/// </summary>
@@ -331,9 +555,132 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return animationsList.Count;
+				return _animationsList.Count;
 			}
 		}
+
+		/// <summary>Returns whether or not this mesh has some kind of vertex animation.</summary>
+		public bool HasVertexAnimation
+		{
+			get
+			{
+				return _animationsList.Count > 0;
+			}
+		}
+
+		#region SharedVertexDataAnimationType Property
+
+		/// <summary>
+		///     The vertex animation type associated with the shared vertex data
+		/// </summary>
+		private VertexAnimationType _sharedVertexDataAnimationType;
+		/// <summary>
+		///		Gets bone assigment list
+		/// </summary>
+		public VertexAnimationType SharedVertexDataAnimationType
+		{
+			get
+			{
+				if ( _animationTypesDirty )
+					DetermineAnimationTypes();
+				return _sharedVertexDataAnimationType;
+			}
+		}
+
+		#endregion SharedVertexDataAnimationType Property
+
+		#region AnimationTypesDirty Property
+
+		/// <summary>
+		///     Do we need to scan animations for animation types?
+		/// </summary>
+		private bool _animationTypesDirty;
+		/// <summary>Are the derived animation types out of date?</summary>
+		public bool AnimationTypesDirty
+		{
+			get
+			{
+				return _animationTypesDirty;
+			}
+		}
+
+		#endregion AnimationTypesDirty Property
+
+		#region PoseList Property
+
+		/// <summary>
+		///     List of available poses for shared and dedicated geometryPoseList
+		/// </summary>
+		private List<Pose> _poseList = new List<Pose>();
+		/// <summary>
+		///		Gets bone assigment list
+		/// </summary>
+		public List<Pose> PoseList
+		{
+			get
+			{
+				return _poseList;
+			}
+		}
+
+		#endregion PoseList Property
+
+		#region TriangleIntersector Property
+
+		/// <summary>
+		///     A list of triangles, plus machinery to determine the closest intersection point
+		/// </summary>
+		private TriangleIntersector _triangleIntersector = null;
+		/// <summary>A list of triangles, plus machinery to determine the closest intersection point</summary>
+		public TriangleIntersector TriangleIntersector
+		{
+			get
+			{
+				return _triangleIntersector;
+			}
+			set
+			{
+				_triangleIntersector = value;
+			}
+		}
+
+		#endregion TriangleIntersector Property
+			
+		#endregion Fields and Properties
+
+		#region Construction and Destruction
+
+		public Mesh( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+			: base( parent, name, handle, group, isManual, loader )
+		{
+
+			// This will be set to false by serializers 1.3 and above
+			_autoBuildEdgeLists = true;
+
+			// default to static write only for speed
+			_vertexBufferUsage = BufferUsage.StaticWriteOnly;
+			_indexBufferUsage = BufferUsage.StaticWriteOnly;
+
+			// default to having shadow buffers
+			_useVertexShadowBuffer = true;
+			_useIndexShadowBuffer = true;
+
+			// Init first (manual) lod
+			numLods = 1;
+			MeshLodUsage lod = new MeshLodUsage();
+			lod.fromSquaredDepth = 0.0f;
+			lodUsageList.Add( lod );
+
+			// always use software blending for now
+			useSoftwareBlending = true;
+
+			this.SkeletonName = "";
+		}
+
+		#endregion Construction and Destruction
+
+		#region Properties
+
 
 		/// <summary>
 		///		Gets the edge list for this mesh, building it if required. 
@@ -353,7 +700,7 @@ namespace Axiom.Core
 		/// </remarks>
 		public EdgeData GetEdgeList( int lodIndex )
 		{
-			if ( !edgeListsBuilt )
+			if ( !_edgeListsBuilt )
 			{
 				BuildEdgeList();
 			}
@@ -361,227 +708,14 @@ namespace Axiom.Core
 			return GetLodLevel( lodIndex ).edgeData;
 		}
 
-		/// <summary>
-		///    Determins whether or not this mesh has a skeleton associated with it.
-		/// </summary>
-		public bool HasSkeleton
-		{
-			get
-			{
-				return ( skeletonName.Length != 0 );
-			}
-		}
 
-		/// <summary>
-		///    Gets the usage setting for this meshes index buffers.
-		/// </summary>
-		public BufferUsage IndexBufferUsage
-		{
-			get
-			{
-				return indexBufferUsage;
-			}
-		}
 
-		/// <summary>
-		///    Gets whether or not this meshes index buffers are shadowed.
-		/// </summary>
-		public bool UseIndexShadowBuffer
-		{
-			get
-			{
-				return useIndexShadowBuffer;
-			}
-		}
 
-		/// <summary>
-		///     Returns whether this mesh has an attached edge list.
-		/// </summary>
-		public bool IsEdgeListBuilt
-		{
-			get
-			{
-				return edgeListsBuilt;
-			}
-		}
 
-		/// <summary>
-		///     Returns true if this mesh is using manual LOD.
-		/// </summary>
-		/// <remarks>
-		///     A mesh can either use automatically generated LOD, or it can use alternative
-		///     meshes as provided by an artist. A mesh can only use either all manual LODs 
-		///     or all generated LODs, not a mixture of both.
-		/// </remarks>
-		public bool IsLodManual
-		{
-			get
-			{
-				return isLodManual;
-			}
-		}
 
-		/// <summary>
-		///		Defines whether this mesh is to be loaded from a resource, or created manually at runtime.
-		/// </summary>
-		public bool IsManuallyDefined
-		{
-			get
-			{
-				return isManuallyDefined;
-			}
-			set
-			{
-				isManuallyDefined = value;
-			}
-		}
 
-		/// <summary>
-		///		Gets whether this mesh has already had its geometry prepared for use in 
-		///		rendering shadow volumes.
-		/// </summary>
-		public bool IsPreparedForShadowVolumes
-		{
-			get
-			{
-				return isPreparedForShadowVolumes;
-			}
-		}
 
-		/// <summary>
-		///		Gets the current number of Lod levels associated with this mesh.
-		/// </summary>
-		public int LodLevelCount
-		{
-			get
-			{
-				return lodUsageList.Count;
-			}
-		}
 
-		/// <summary>
-		///    Gets the skeleton currently bound to this mesh.
-		/// </summary>
-		public Skeleton Skeleton
-		{
-			get
-			{
-				return skeleton;
-			}
-		}
-
-		/// <summary>
-		///    Get/Sets the name of the skeleton which will be bound to this mesh.
-		/// </summary>
-		public string SkeletonName
-		{
-			get
-			{
-				return skeletonName;
-			}
-			set
-			{
-				skeletonName = value;
-
-				if ( skeletonName == null || skeletonName.Length == 0 )
-				{
-					skeleton = null;
-				}
-				else
-				{
-					// load the skeleton
-					skeleton = SkeletonManager.Instance.Load( skeletonName );
-				}
-			}
-		}
-
-		/// <summary>
-		///    Gets the usage setting for this meshes vertex buffers.
-		/// </summary>
-		public BufferUsage VertexBufferUsage
-		{
-			get
-			{
-				return vertexBufferUsage;
-			}
-		}
-
-		/// <summary>
-		///    Gets whether or not this meshes vertex buffers are shadowed.
-		/// </summary>
-		public bool UseVertexShadowBuffer
-		{
-			get
-			{
-				return useVertexShadowBuffer;
-			}
-		}
-
-		/// <summary>
-		///		Gets bone assigment list
-		/// </summary>
-		public Dictionary<int, List<VertexBoneAssignment>> BoneAssignmentList
-		{
-			get
-			{
-				return boneAssignmentList;
-			}
-		}
-
-		/// <summary>
-		///		Gets bone assigment list
-		/// </summary>
-		public List<Pose> PoseList
-		{
-			get
-			{
-				return poseList;
-			}
-		}
-
-		/// <summary>
-		///		Gets bone assigment list
-		/// </summary>
-		public VertexAnimationType SharedVertexDataAnimationType
-		{
-			get
-			{
-				if ( animationTypesDirty )
-					DetermineAnimationTypes();
-				return sharedVertexDataAnimationType;
-			}
-		}
-
-		/// <summary>Returns whether or not this mesh has some kind of vertex animation.</summary>
-		public bool HasVertexAnimation
-		{
-			get
-			{
-				return animationsList.Count > 0;
-			}
-		}
-
-		/// <summary>Are the derived animation types out of date?</summary>
-		public bool AnimationTypesDirty
-		{
-			get
-			{
-				return animationTypesDirty;
-			}
-		}
-
-		/// <summary>A list of triangles, plus machinery to determine the closest intersection point</summary>
-		public TriangleIntersector TriangleIntersector
-		{
-			get
-			{
-				return triangleIntersector;
-			}
-			set
-			{
-				triangleIntersector = value;
-			}
-		}
 
 		#endregion Properties
 
@@ -599,9 +733,9 @@ namespace Axiom.Core
 		/// <param name="boneAssignment">Bone assignment to add.</param>
 		public void AddBoneAssignment( VertexBoneAssignment boneAssignment )
 		{
-			if ( !boneAssignmentList.ContainsKey( boneAssignment.vertexIndex ) )
-				boneAssignmentList[ boneAssignment.vertexIndex ] = new List<VertexBoneAssignment>();
-			boneAssignmentList[ boneAssignment.vertexIndex ].Add( boneAssignment );
+			if ( !_boneAssignmentList.ContainsKey( boneAssignment.vertexIndex ) )
+				_boneAssignmentList[ boneAssignment.vertexIndex ] = new List<VertexBoneAssignment>();
+			_boneAssignmentList[ boneAssignment.vertexIndex ].Add( boneAssignment );
 			boneAssignmentsOutOfDate = true;
 		}
 
@@ -613,16 +747,16 @@ namespace Axiom.Core
 		{
 			int vertexSetCount = 0;
 
-			if ( sharedVertexData != null )
+			if ( _sharedVertexData != null )
 			{
-				builder.AddVertexData( sharedVertexData );
+				builder.AddVertexData( _sharedVertexData );
 				vertexSetCount++;
 			}
 
 			// Prepare the builder using the submesh information
-			for ( int i = 0; i < subMeshList.Count; i++ )
+			for ( int i = 0; i < _subMeshList.Count; i++ )
 			{
-				SubMesh sm = subMeshList[ i ];
+				SubMesh sm = _subMeshList[ i ];
 
 				if ( sm.useSharedVertices )
 				{
@@ -662,7 +796,7 @@ namespace Axiom.Core
 		/// </summary>
 		public void BuildEdgeList()
 		{
-			if ( edgeListsBuilt )
+			if ( _edgeListsBuilt )
 			{
 				return;
 			}
@@ -673,7 +807,7 @@ namespace Axiom.Core
 				// use getLodLevel to enforce loading of manual mesh lods
 				MeshLodUsage usage = GetLodLevel( lodIndex );
 
-				if ( isLodManual && lodIndex != 0 )
+				if ( _isLodManual && lodIndex != 0 )
 				{
 					// Delegate edge building to manual mesh
 					// It should have already built its own edge list while loading
@@ -691,12 +825,12 @@ namespace Axiom.Core
 				}
 			}
 
-			edgeListsBuilt = true;
+			_edgeListsBuilt = true;
 		}
 
 		public void FreeEdgeList()
 		{
-			if ( !edgeListsBuilt )
+			if ( !_edgeListsBuilt )
 				return;
 
 			for ( int i = 0; i < lodUsageList.Count; ++i )
@@ -705,7 +839,7 @@ namespace Axiom.Core
 				usage.edgeData = null;
 			}
 
-			edgeListsBuilt = false;
+			_edgeListsBuilt = false;
 		}
 
 		/// <summary>
@@ -718,7 +852,7 @@ namespace Axiom.Core
 			// Add this mesh's vertex and index data structures for lod 0
 			AddVertexAndIndexSets( builder, 0 );
 			// Create the list of triangles
-			triangleIntersector = new TriangleIntersector( builder.Build() );
+			_triangleIntersector = new TriangleIntersector( builder.Build() );
 		}
 
 		/// <summary>
@@ -785,7 +919,7 @@ namespace Axiom.Core
 							continue;
 						}
 
-						usedVertexData = sharedVertexData;
+						usedVertexData = _sharedVertexData;
 						sharedGeometryDone = true;
 					}
 					else
@@ -807,7 +941,7 @@ namespace Axiom.Core
 					if ( srcElem == null || srcElem.Type != VertexElementType.Float2 )
 					{
 						// TODO: SubMesh names
-						throw new AxiomException( "SubMesh '{0}' of Mesh '{1}' has no 2D texture coordinates at the selected set, therefore we cannot calculate tangents.", "<TODO: SubMesh name>", name );
+						throw new AxiomException( "SubMesh '{0}' of Mesh '{1}' has no 2D texture coordinates at the selected set, therefore we cannot calculate tangents.", "<TODO: SubMesh name>", Name );
 					}
 
 					HardwareVertexBuffer srcBuffer = null, destBuffer = null, posBuffer = null;
@@ -983,7 +1117,7 @@ namespace Axiom.Core
 		/// </remarks>
 		public void ClearBoneAssignments()
 		{
-			boneAssignmentList.Clear();
+			_boneAssignmentList.Clear();
 			boneAssignmentsOutOfDate = true;
 		}
 
@@ -992,7 +1126,7 @@ namespace Axiom.Core
 		/// </summary>
 		protected internal void CompileBoneAssignments()
 		{
-			int maxBones = RationalizeBoneAssignments( sharedVertexData.vertexCount, boneAssignmentList );
+			int maxBones = RationalizeBoneAssignments( _sharedVertexData.vertexCount, _boneAssignmentList );
 
 			// check for no bone assignments
 			if ( maxBones == 0 )
@@ -1000,7 +1134,7 @@ namespace Axiom.Core
 				return;
 			}
 
-			CompileBoneAssignments( boneAssignmentList, maxBones, sharedVertexData );
+			CompileBoneAssignments( _boneAssignmentList, maxBones, _sharedVertexData );
 
 			boneAssignmentsOutOfDate = false;
 		}
@@ -1095,14 +1229,16 @@ namespace Axiom.Core
 				float* pWeight;
 				byte* pIndex;
 
-				for ( int v = 0; v < targetVertexData.vertexCount; v++ )
+				//for ( int v = 0; v < targetVertexData.vertexCount; v++ )
+				foreach ( KeyValuePair<int, List<VertexBoneAssignment>> boneAssignment in boneAssignments )
 				{
 					/// Convert to specific pointers
 					pWeight = (float*)( (byte*)pBase + weightElem.Offset );
 					pIndex = pBase + idxElem.Offset;
 
 					// get the bone assignment enumerator and move to the first one in the list
-					List<VertexBoneAssignment> vbaList = boneAssignments[ v ];
+					//List<VertexBoneAssignment> vbaList = boneAssignments[ v ];
+					List<VertexBoneAssignment> vbaList = boneAssignment.Value;
 
 					for ( int bone = 0; bone < numBlendWeightsPerVertex; bone++ )
 					{
@@ -1151,12 +1287,12 @@ namespace Axiom.Core
 			MeshLodUsage usage = lodUsageList[ index ];
 
 			// load the manual lod mesh for this level if not done already
-			if ( isLodManual && index > 0 && usage.manualMesh == null )
+			if ( _isLodManual && index > 0 && usage.manualMesh == null )
 			{
-				usage.manualMesh = MeshManager.Instance.Load( usage.manualName );
+				usage.manualMesh = MeshManager.Instance.Load( usage.manualName, Group );
 
 				// get the edge data, if required
-				if ( !autoBuildEdgeLists )
+				if ( !_autoBuildEdgeLists )
 				{
 					usage.edgeData = usage.manualMesh.GetEdgeList( 0 );
 				}
@@ -1278,9 +1414,9 @@ namespace Axiom.Core
 			bool foundExisting = false;
 			bool firstOne = true;
 
-			for ( int i = 0; i < subMeshList.Count; i++ )
+			for ( int i = 0; i < _subMeshList.Count; i++ )
 			{
-				SubMesh sm = subMeshList[ i ];
+				SubMesh sm = _subMeshList[ i ];
 
 				VertexData vertexData;
 
@@ -1291,7 +1427,7 @@ namespace Axiom.Core
 						continue;
 					}
 
-					vertexData = sharedVertexData;
+					vertexData = _sharedVertexData;
 					sharedGeometryDone = true;
 				}
 				else
@@ -1370,10 +1506,10 @@ namespace Axiom.Core
 		{
 			RemoveLodLevels();
 
-			foreach ( SubMesh subMesh in subMeshList )
+			foreach ( SubMesh subMesh in _subMeshList )
 			{
 				// Set up data for reduction
-				VertexData vertexData = subMesh.useSharedVertices ? sharedVertexData : subMesh.vertexData;
+				VertexData vertexData = subMesh.useSharedVertices ? _sharedVertexData : subMesh.vertexData;
 
 				ProgressiveMesh pm = new ProgressiveMesh( vertexData, subMesh.indexData );
 				pm.Build( (ushort)lodDistances.Count, subMesh.lodFaceList, reductionMethod, reductionValue );
@@ -1396,7 +1532,7 @@ namespace Axiom.Core
 		{
 			if ( !this.IsLodManual )
 			{
-				foreach ( SubMesh subMesh in this.subMeshList )
+				foreach ( SubMesh subMesh in this._subMeshList )
 					subMesh.RemoveLodLevels();
 			}
 
@@ -1408,7 +1544,7 @@ namespace Axiom.Core
 			lod.edgeData = null;
 			lod.manualMesh = null;
 			this.lodUsageList.Add( lod );
-			this.isLodManual = false;
+			this._isLodManual = false;
 		}
 
 		/// <summary>
@@ -1442,9 +1578,9 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public SubMesh GetSubMesh( int index )
 		{
-			Debug.Assert( index < subMeshList.Count, "index < subMeshList.Count" );
+			Debug.Assert( index < _subMeshList.Count, "index < subMeshList.Count" );
 
-			return subMeshList[ index ];
+			return _subMeshList[ index ];
 		}
 
 		/// <summary>
@@ -1454,16 +1590,16 @@ namespace Axiom.Core
 		/// <returns>The track handle to use for animation tracks associated with the give submesh</returns>
 		public int GetTrackHandle( string name )
 		{
-			for ( int i = 0; i < subMeshList.Count; i++ )
+			for ( int i = 0; i < _subMeshList.Count; i++ )
 			{
-				if ( subMeshList[ i ].name == name )
+				if ( _subMeshList[ i ].name == name )
 				{
 					return i + 1;
 				}
 			}
 
 			// not found
-			throw new AxiomException( "A SubMesh with the name '{0}' does not exist in mesh '{1}'", name, this.name );
+			throw new AxiomException( "A SubMesh with the name '{0}' does not exist in mesh '{1}'", name, this.Name );
 		}
 
 		/// <summary>
@@ -1473,9 +1609,9 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public SubMesh GetSubMesh( string name )
 		{
-			for ( int i = 0; i < subMeshList.Count; i++ )
+			for ( int i = 0; i < _subMeshList.Count; i++ )
 			{
-				SubMesh sub = subMeshList[ i ];
+				SubMesh sub = _subMeshList[ i ];
 
 				if ( sub.name == name )
 				{
@@ -1484,7 +1620,7 @@ namespace Axiom.Core
 			}
 
 			// not found
-			throw new AxiomException( "A SubMesh with the name '{0}' does not exist in mesh '{1}'", name, this.name );
+			throw new AxiomException( "A SubMesh with the name '{0}' does not exist in mesh '{1}'", name, this.Name );
 		}
 
 		/// <summary>
@@ -1494,19 +1630,19 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public void RemoveSubMesh( string name )
 		{
-			for ( int i = 0; i < subMeshList.Count; i++ )
+			for ( int i = 0; i < _subMeshList.Count; i++ )
 			{
-				SubMesh sub = subMeshList[ i ];
+				SubMesh sub = _subMeshList[ i ];
 
 				if ( sub.name == name )
 				{
-					subMeshList.RemoveAt( i );
+					_subMeshList.RemoveAt( i );
 					return;
 				}
 			}
 
 			// not found
-			throw new AxiomException( "A SubMesh with the name '{0}' does not exist in mesh '{1}'", name, this.name );
+			throw new AxiomException( "A SubMesh with the name '{0}' does not exist in mesh '{1}'", name, this.Name );
 		}
 
 
@@ -1524,7 +1660,7 @@ namespace Axiom.Core
 			if ( HasSkeleton )
 			{
 				// delegate the animation set to the skeleton
-				skeleton.InitAnimationState( animSet );
+				_skeleton.InitAnimationState( animSet );
 
 				// Take the opportunity to update the compiled bone assignments
 				if ( boneAssignmentsOutOfDate )
@@ -1533,9 +1669,9 @@ namespace Axiom.Core
 				}
 
 				// compile bone assignments for each sub mesh
-				for ( int i = 0; i < subMeshList.Count; i++ )
+				for ( int i = 0; i < _subMeshList.Count; i++ )
 				{
-					SubMesh subMesh = subMeshList[ i ];
+					SubMesh subMesh = _subMeshList[ i ];
 
 					if ( subMesh.boneAssignmentsOutOfDate )
 					{
@@ -1545,7 +1681,7 @@ namespace Axiom.Core
 			}
 
 			// Animation states for vertex animation
-			foreach ( Animation animation in animationsList.Values )
+			foreach ( Animation animation in _animationsList.Values )
 			{
 				// Only create a new animation state if it doesn't exist
 				// We can have the same named animation in both skeletal and vertex
@@ -1567,7 +1703,7 @@ namespace Axiom.Core
 		/// <summary>Returns whether or not this mesh has the named vertex animation.</summary>
 		public bool ContainsAnimation( string name )
 		{
-			return animationsList.ContainsKey( name );
+			return _animationsList.ContainsKey( name );
 		}
 
 		/// <summary>
@@ -1581,8 +1717,8 @@ namespace Axiom.Core
 		/// <param name="skeleton"></param>
 		public void NotifySkeleton( Skeleton skeleton )
 		{
-			this.skeleton = skeleton;
-			skeletonName = skeleton.Name;
+			this._skeleton = skeleton;
+			_skeletonName = skeleton.Name;
 		}
 
 		/// <summary>
@@ -1607,19 +1743,19 @@ namespace Axiom.Core
 		/// </remarks>
 		public void PrepareForShadowVolume()
 		{
-			if ( isPreparedForShadowVolumes )
+			if ( _isPreparedForShadowVolumes )
 			{
 				return;
 			}
 
-			if ( sharedVertexData != null )
+			if ( _sharedVertexData != null )
 			{
-				sharedVertexData.PrepareForShadowVolume();
+				_sharedVertexData.PrepareForShadowVolume();
 			}
 
-			for ( int i = 0; i < subMeshList.Count; i++ )
+			for ( int i = 0; i < _subMeshList.Count; i++ )
 			{
-				SubMesh sm = subMeshList[ i ];
+				SubMesh sm = _subMeshList[ i ];
 
 				if ( !sm.useSharedVertices )
 				{
@@ -1627,7 +1763,7 @@ namespace Axiom.Core
 				}
 			}
 
-			isPreparedForShadowVolumes = true;
+			_isPreparedForShadowVolumes = true;
 		}
 
 		/// <summary>
@@ -1652,10 +1788,11 @@ namespace Axiom.Core
 			int maxBones = 0;
 			int currentBones = 0;
 
-			for ( int i = 0; i < vertexCount; i++ )
+			//for ( int i = 0; i < vertexCount; i++ )
+			foreach ( KeyValuePair<int, List<VertexBoneAssignment>> assignment in assignments )
 			{
 				// gets the numbers of assignments for the current vertex
-				currentBones = assignments[ i ].Count;
+				currentBones = assignment.Value.Count;
 
 				// Deal with max bones update 
 				// (note this will record maxBones even if they exceed limit)
@@ -1667,7 +1804,8 @@ namespace Axiom.Core
 				// does the number of bone assignments exceed limit?
 				if ( currentBones > Config.MaxBlendWeights )
 				{
-					List<VertexBoneAssignment> sortedList = assignments[ i ];
+					//List<VertexBoneAssignment> sortedList = assignments[ i ];
+					List<VertexBoneAssignment> sortedList = assignment.Value;
 					IComparer<VertexBoneAssignment> comp = new VertexBoneAssignmentWeightComparer();
 					sortedList.Sort( comp );
 					sortedList.RemoveRange( 0, currentBones - Config.MaxBlendWeights );
@@ -1679,7 +1817,8 @@ namespace Axiom.Core
 				// Do this irrespective of whether we had to remove assignments or not
 				//   since it gives us a guarantee that weights are normalised
 				//  We assume this, so it's a good idea since some modellers may not
-				List<VertexBoneAssignment> vbaList = assignments[ i ];
+				//List<VertexBoneAssignment> vbaList = assignments[ i ];
+				List<VertexBoneAssignment> vbaList = assignment.Value;
 
 				foreach ( VertexBoneAssignment vba in vbaList )
 				{
@@ -1700,7 +1839,7 @@ namespace Axiom.Core
 			// Warn that we've reduced bone assignments
 			if ( maxBones > Config.MaxBlendWeights )
 			{
-				LogManager.Instance.Write( "WARNING: Mesh '{0}' includes vertices with more than {1} bone assignments.  The lowest weighted assignments beyond this limit have been removed.", name, Config.MaxBlendWeights );
+				LogManager.Instance.Write( "WARNING: Mesh '{0}' includes vertices with more than {1} bone assignments.  The lowest weighted assignments beyond this limit have been removed.", Name, Config.MaxBlendWeights );
 
 				maxBones = Config.MaxBlendWeights;
 			}
@@ -1715,14 +1854,9 @@ namespace Axiom.Core
 		/// <returns>A new <see cref="SubMesh"/> with this Mesh as its parent.</returns>
 		public SubMesh CreateSubMesh( string name )
 		{
-			SubMesh subMesh = new SubMesh( name );
+			SubMesh subMesh = CreateSubMesh();
 
-			// set the parent of the subMesh to us
-			subMesh.Parent = this;
-
-			// add to the list of child meshes
-			subMeshList.Add( subMesh );
-
+			nameSubMesh( name, (ushort)(_subMeshList.Count - 1) );	
 			return subMesh;
 		}
 
@@ -1737,17 +1871,27 @@ namespace Axiom.Core
 		/// <returns>A new SubMesh with this Mesh as its parent.</returns>
 		public SubMesh CreateSubMesh()
 		{
-			string name = string.Format( "{0}_SubMesh{1}", this.name, subMeshList.Count );
-
-			SubMesh subMesh = new SubMesh( name );
+			SubMesh subMesh = new SubMesh();
 
 			// set the parent of the subMesh to us
 			subMesh.Parent = this;
 
 			// add to the list of child meshes
-			subMeshList.Add( subMesh );
+			_subMeshList.Add( subMesh );
 
 			return subMesh;
+		}
+
+		protected void nameSubMesh( string name, ushort index)
+		{
+			if ( !_subMeshNameMap.ContainsKey( name ) )
+			{
+				_subMeshNameMap.Add( name, index );
+			}
+			else
+			{
+				_subMeshNameMap[ name ] = index;
+			}
 		}
 
 		/// <summary>
@@ -1776,8 +1920,8 @@ namespace Axiom.Core
 		/// </param>
 		public void SetVertexBufferPolicy( BufferUsage usage, bool useShadowBuffer )
 		{
-			vertexBufferUsage = usage;
-			useVertexShadowBuffer = useShadowBuffer;
+			_vertexBufferUsage = usage;
+			_useVertexShadowBuffer = useShadowBuffer;
 		}
 
 		/// <summary>
@@ -1806,8 +1950,8 @@ namespace Axiom.Core
 		/// </param>
 		public void SetIndexBufferPolicy( BufferUsage usage, bool useShadowBuffer )
 		{
-			indexBufferUsage = usage;
-			useIndexShadowBuffer = useShadowBuffer;
+			_indexBufferUsage = usage;
+			_useIndexShadowBuffer = useShadowBuffer;
 		}
 
 		/// <summary>
@@ -1817,7 +1961,7 @@ namespace Axiom.Core
 		public void AddManualLodEntries( List<MeshLodUsage> manualLodEntries )
 		{
 			Debug.Assert( lodUsageList.Count == 1 );
-			isLodManual = true;
+			_isLodManual = true;
 			foreach ( MeshLodUsage usage in manualLodEntries )
 				lodUsageList.Add( usage );
 		}
@@ -1832,7 +1976,7 @@ namespace Axiom.Core
 		public virtual AttachmentPoint CreateAttachmentPoint( string name, Quaternion rotation, Vector3 translation )
 		{
 			AttachmentPoint ap = new AttachmentPoint( name, null, rotation, translation );
-			attachmentPoints.Add( ap );
+			_attachmentPoints.Add( ap );
 			return ap;
 		}
 
@@ -1848,7 +1992,7 @@ namespace Axiom.Core
 			// done, allow caller to force if they need to
 
 			// Initialise all types to nothing
-			sharedVertexDataAnimationType = VertexAnimationType.None;
+			_sharedVertexDataAnimationType = VertexAnimationType.None;
 			for ( int sm = 0; sm < this.SubMeshCount; sm++ )
 			{
 				SubMesh subMesh = GetSubMesh( sm );
@@ -1857,7 +2001,7 @@ namespace Axiom.Core
 
 			// Scan all animations and determine the type of animation tracks
 			// relating to each vertex data
-			foreach ( Animation anim in animationsList.Values )
+			foreach ( Animation anim in _animationsList.Values )
 			{
 				foreach ( VertexAnimationTrack track in anim.VertexTracks.Values )
 				{
@@ -1865,15 +2009,15 @@ namespace Axiom.Core
 					if ( handle == 0 )
 					{
 						// shared data
-						if ( sharedVertexDataAnimationType != VertexAnimationType.None &&
-							sharedVertexDataAnimationType != track.AnimationType )
+						if ( _sharedVertexDataAnimationType != VertexAnimationType.None &&
+							_sharedVertexDataAnimationType != track.AnimationType )
 						{
 							// Mixing of morph and pose animation on same data is not allowed
 							throw new Exception( "Animation tracks for shared vertex data on mesh "
-												+ name + " try to mix vertex animation types, which is " +
+												+ Name + " try to mix vertex animation types, which is " +
 												"not allowed, in Mesh.DetermineAnimationTypes" );
 						}
-						sharedVertexDataAnimationType = track.AnimationType;
+						_sharedVertexDataAnimationType = track.AnimationType;
 					}
 					else
 					{
@@ -1884,7 +2028,7 @@ namespace Axiom.Core
 						{
 							// Mixing of morph and pose animation on same data is not allowed
 							throw new Exception( string.Format( "Animation tracks for dedicated vertex data {0}  on mesh {1}",
-															  handle - 1, name ) +
+															  handle - 1, Name ) +
 												" try to mix vertex animation types, which is " +
 												"not allowed, in Mesh.DetermineAnimationTypes" );
 						}
@@ -1893,7 +2037,7 @@ namespace Axiom.Core
 				}
 			}
 
-			animationTypesDirty = false;
+			_animationTypesDirty = false;
 		}
 
 		/// <summary>
@@ -1904,16 +2048,16 @@ namespace Axiom.Core
 		public Animation CreateAnimation( string name, float length )
 		{
 			// Check name not used
-			if ( animationsList.ContainsKey( name ) )
+			if ( _animationsList.ContainsKey( name ) )
 			{
 				throw new Exception( "An animation with the name " + name + " already exists" +
 									", in Mesh.CreateAnimation" );
 			}
 			Animation ret = new Animation( name, length );
 			// Add to list
-			animationsList[ name ] = ret;
+			_animationsList[ name ] = ret;
 			// Mark animation types dirty
-			animationTypesDirty = true;
+			_animationTypesDirty = true;
 			return ret;
 		}
 
@@ -1924,7 +2068,7 @@ namespace Axiom.Core
 		public Animation GetAnimation( string name )
 		{
 			Animation ret;
-			if ( !animationsList.TryGetValue( name, out ret ) )
+			if ( !_animationsList.TryGetValue( name, out ret ) )
 				return null;
 			return ret;
 		}
@@ -1935,11 +2079,11 @@ namespace Axiom.Core
 		public Animation GetAnimation( ushort index )
 		{
 			// If you hit this assert, then the index is out of bounds.
-			Debug.Assert( index < animationsList.Count );
+			Debug.Assert( index < _animationsList.Count );
 			// ??? The only way I can figure out to do this is with
 			// ??? a loop over the elements.
 			ushort i = 0;
-			foreach ( Animation animation in animationsList.Values )
+			foreach ( Animation animation in _animationsList.Values )
 			{
 				if ( i == index )
 					return animation;
@@ -1952,7 +2096,7 @@ namespace Axiom.Core
 		/// <summary>Returns whether this mesh contains the named vertex animation.</summary>
 		public bool HasAnimation( string name )
 		{
-			return animationsList.ContainsKey( name );
+			return _animationsList.ContainsKey( name );
 		}
 
 		/// <summary>Removes vertex Animation from this mesh.</summary>
@@ -1963,15 +2107,15 @@ namespace Axiom.Core
 				throw new Exception( "No animation entry found named " + name +
 									", in Mesh.RemoveAnimation" );
 			}
-			animationsList.Remove( name );
-			animationTypesDirty = true;
+			_animationsList.Remove( name );
+			_animationTypesDirty = true;
 		}
 
 		/// <summary>Removes all morph Animations from this mesh.</summary>
 		public void RemoveAllAnimations()
 		{
-			animationsList.Clear();
-			animationTypesDirty = true;
+			_animationsList.Clear();
+			_animationTypesDirty = true;
 		}
 
 		/// <summary>
@@ -1984,7 +2128,7 @@ namespace Axiom.Core
 		public VertexData GetVertexDataByTrackHandle( ushort handle )
 		{
 			if ( handle == 0 )
-				return sharedVertexData;
+				return _sharedVertexData;
 			else
 				return GetSubMesh( handle - 1 ).vertexData;
 		}
@@ -2010,7 +2154,7 @@ namespace Axiom.Core
 		{
 			if ( index >= PoseList.Count )
 				throw new Exception( "Index out of bounds, in Mesh.GetPose" );
-			return poseList[ index ];
+			return _poseList[ index ];
 		}
 
 		/// <summary>Retrieve an existing Pose by name.</summary>
@@ -2032,7 +2176,7 @@ namespace Axiom.Core
 				if ( PoseList[ i ].Name == name )
 					return i;
 			}
-			throw new Exception( "No pose called " + name + " found in Mesh " + this.name +
+			throw new Exception( "No pose called " + name + " found in Mesh " + this.Name +
 								", in Mesh.GetPoseIndex" );
 		}
 
@@ -2040,7 +2184,7 @@ namespace Axiom.Core
 		/// <remarks>This will invalidate any animation tracks referring to this pose or those after it.</remarks>
 		public void RemovePose( ushort index )
 		{
-			if ( index >= poseList.Count )
+			if ( index >= _poseList.Count )
 			{
 				throw new Exception( "Index out of bounds, in Mesh.RemovePose" );
 			}
@@ -2051,7 +2195,7 @@ namespace Axiom.Core
 		/// <remarks>This will invalidate any animation tracks referring to this pose or those after it.</remarks>
 		public void RemovePose( string name )
 		{
-			for ( int i = 0; i < poseList.Count; i++ )
+			for ( int i = 0; i < _poseList.Count; i++ )
 			{
 				Pose pose = PoseList[ i ];
 				if ( pose.Name == name )
@@ -2067,7 +2211,7 @@ namespace Axiom.Core
 		/// <summary>Destroy all poses.</summary>
 		public void RemoveAllPoses()
 		{
-			poseList.Clear();
+			_poseList.Clear();
 		}
 
 		#endregion Methods
@@ -2628,16 +2772,16 @@ namespace Axiom.Core
 		/// <summary>
 		///		Loads the mesh data.
 		/// </summary>
-		public override void Load()
+		protected override void load()
 		{
 
-			// meshLoadMeter.Enter();
+			meshLoadMeter.Enter();
 
 			// unload this first if it is already loaded
-			if ( isLoaded )
+			if ( IsLoaded )
 			{
 				Unload();
-				isLoaded = false;
+				IsLoaded = false;
 			}
 
 			// I should eventually call Preload here, and then use 
@@ -2651,9 +2795,9 @@ namespace Axiom.Core
 				MeshSerializer serializer = new MeshSerializer();
 
 				// get the resource data from MeshManager
-				Stream data = MeshManager.Instance.FindResourceData( name );
+				Stream data = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
 
-				string extension = Path.GetExtension( name );
+				string extension = Path.GetExtension( Name );
 
 				if ( extension != ".mesh" )
 				{
@@ -2672,17 +2816,17 @@ namespace Axiom.Core
 			// prepare the mesh for a shadow volume?
 			if ( MeshManager.Instance.PrepareAllMeshesForShadowVolumes )
 			{
-				if ( edgeListsBuilt || autoBuildEdgeLists )
+				if ( _edgeListsBuilt || _autoBuildEdgeLists )
 				{
 					PrepareForShadowVolume();
 				}
-				if ( !edgeListsBuilt && autoBuildEdgeLists )
+				if ( !_edgeListsBuilt && _autoBuildEdgeLists )
 				{
 					BuildEdgeList();
 				}
 			}
 
-			isLoaded = true;
+			IsLoaded = true;
 
 			// meshLoadMeter.Exit();
 		}
@@ -2690,14 +2834,14 @@ namespace Axiom.Core
 		/// <summary>
 		///		Unloads the mesh data.
 		/// </summary>
-		public override void Unload()
+		protected override void unload()
 		{
-			subMeshList.Clear();
-			sharedVertexData = null;
+			_subMeshList.Clear();
+			_sharedVertexData = null;
 			// TODO: SubMeshNameCount
 			// TODO: Remove LOD levels
-			isPreparedForShadowVolumes = false;
-			isLoaded = false;
+			_isPreparedForShadowVolumes = false;
+			IsLoaded = false;
 		}
 
 		#endregion

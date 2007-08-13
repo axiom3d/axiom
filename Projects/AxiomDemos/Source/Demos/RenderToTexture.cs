@@ -59,7 +59,7 @@ namespace Axiom.Demos
             tmpPlane.D = 0;
             tmpPlane.Normal = Vector3.UnitY;
 
-            MeshManager.Instance.CreatePlane( "ReflectionPlane", tmpPlane, 2000, 2000, 1, 1, true, 1, 1, 1, Vector3.UnitZ );
+			MeshManager.Instance.CreatePlane( "ReflectionPlane", ResourceGroupManager.DefaultResourceGroupName, tmpPlane, 2000, 2000, 1, 1, true, 1, 1, 1, Vector3.UnitZ );
             planeEntity = scene.CreateEntity( "Plane", "ReflectionPlane" );
 
             // create an entity from a model
@@ -83,7 +83,7 @@ namespace Axiom.Demos
             rootNode.CreateChildSceneNode( "Head" ).AttachObject( head );
 
             // create a render texture
-			Texture texture = TextureManager.Instance.CreateManual( "RttTex",TextureType.TwoD, 512, 512, 0, Axiom.Media.PixelFormat.R8G8B8, TextureUsage.RenderTarget);
+			Texture texture = TextureManager.Instance.CreateManual( "RttTex", ResourceGroupManager.DefaultResourceGroupName, TextureType.TwoD, 512, 512, 0, Axiom.Media.PixelFormat.R8G8B8, TextureUsage.RenderTarget );
 			RenderTarget rttTex = texture.GetBuffer().GetRenderTarget();
 
 			reflectCam = scene.CreateCamera( "ReflectCam" );
@@ -96,7 +96,7 @@ namespace Axiom.Demos
             viewport.ShowOverlays = false;
             viewport.BackgroundColor = ColorEx.Black;
 
-            Material mat = scene.CreateMaterial( "RttMat" );
+			Material mat = (Material)MaterialManager.Instance.Create( "RttMat", ResourceGroupManager.DefaultResourceGroupName );
             TextureUnitState t = mat.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( "RustedMetal.jpg" );
             t = mat.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( "RttTex" );
 

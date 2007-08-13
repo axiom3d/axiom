@@ -36,6 +36,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 
 using Axiom.Core;
+using Axiom.Collections;
+
+using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
 
@@ -44,25 +47,9 @@ namespace Axiom.Animating
 	/// <summary>
 	/// Summary description for SkeletonManager.
 	/// </summary>
-	public sealed class SkeletonManager : ResourceManager
+	public sealed class SkeletonManager : ResourceManager, ISingleton<SkeletonManager>
 	{
-		#region Singleton implementation
-
-		/// <summary>
-		///     Singleton instance of this class.
-		/// </summary>
-		private static SkeletonManager instance;
-
-		/// <summary>
-		///     Internal constructor.  This class cannot be instantiated externally.
-		/// </summary>
-		internal SkeletonManager()
-		{
-			if ( instance == null )
-			{
-				instance = this;
-			}
-		}
+		#region ISingleton<SkeletonManager> Implementation
 
 		/// <summary>
 		///     Gets the singleton instance of this class.
@@ -71,11 +58,41 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return instance;
+				return Singleton<SkeletonManager>.Instance;
 			}
 		}
 
-		#endregion Singleton implementation
+		/// <summary>
+		/// Initializes the Skeleton Manager
+		/// </summary>
+		/// <param name="args"></param>
+		/// <returns></returns>
+		public bool Initialize( params object[] args )
+		{
+			return true;
+		}
+
+		#endregion ISingleton<SkeletonManager> Implementation
+
+		#region Construction and Destruction
+
+		/// <summary>
+		///     Internal constructor.  This class cannot be instantiated externally.
+		/// </summary>
+		private SkeletonManager()
+		{
+			LoadingOrder = 300.0f;
+			ResourceType = "Skeleton";
+
+			ResourceGroupManager.Instance.RegisterResourceManager( ResourceType, this );
+		}
+
+		~SkeletonManager()
+		{
+			Dispose();
+		}
+
+		#endregion Construction and Destruction
 
 		#region ResourceManager Implementation
 
@@ -84,45 +101,29 @@ namespace Axiom.Animating
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public override Resource Create( string name, bool isManual )
+		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
-			return new Skeleton( name );
+			return new Skeleton( this, name, handle, group, isManual, loader );
 		}
 
-		/// <summary>
-		///    Overloaded method.  Call overload with default of priority 1.
-		/// </summary>
-		/// <param name="fileName">Name of the skeleton file to load.</param>
-		public Skeleton Load( string fileName )
+		protected override void dispose( bool disposeManagedResources )
 		{
-			return Load( fileName, 1 );
-		}
-
-		/// <summary>
-		///    Load a skeleton.  Creates one if it doesn't exists, else return the cached version.
-		/// </summary>
-		/// <remarks>
-		///    Creates one if it doesn't exists, else return the cached version.
-		/// </remarks>
-		/// <param name="fileName"></param>
-		/// <param name="priority"></param>
-		public Skeleton Load( string fileName, int priority )
-		{
-			Skeleton skeleton = GetByName( fileName );
-
-			if ( skeleton == null )
+			if ( !isDisposed )
 			{
-				// create and load the skeleton
-				skeleton = (Skeleton)Create( fileName );
-				base.Load( skeleton, priority );
+				if ( disposeManagedResources )
+				{
+					ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
+					Singleton<SkeletonManager>.Destroy();
+				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
 			}
+			isDisposed = true;
 
-			return skeleton;
-		}
-
-		public new Skeleton GetByName( string name )
-		{
-			return (Skeleton)base.GetByName( name );
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
 		}
 
 		#endregion ResourceManager Implementation

@@ -42,244 +42,706 @@ using Marshal = System.Runtime.InteropServices.Marshal;
 using Axiom.Graphics;
 using Axiom.Media;
 
+using ResourceHandle = System.UInt64;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
-	/// <summary>
-	///		Abstract class representing a Texture resource.
-	/// </summary>
-	/// <remarks>
-	///		The actual concrete subclass which will exist for a texture
-	///		is dependent on the rendering system in use (Direct3D, OpenGL etc).
-	///		This class represents the commonalities, and is the one 'used'
-	///		by programmers even though the real implementation could be
-	///		different in reality. Texture objects are created through
-	///		the 'Create' method of the TextureManager concrete subclass.
-	/// </remarks>
-	public abstract class Texture : Resource
-	{
-		#region Member variables
+    /// <summary>
+    ///		Abstract class representing a Texture resource.
+    /// </summary>
+    /// <remarks>
+    ///		The actual concrete subclass which will exist for a texture
+    ///		is dependent on the rendering system in use (Direct3D, OpenGL etc).
+    ///		This class represents the commonalities, and is the one 'used'
+    ///		by programmers even though the real implementation could be
+    ///		different in reality. Texture objects are created through
+    ///		the 'Create' method of the TextureManager concrete subclass.
+    /// </remarks>
+    public abstract class Texture : Resource
+    {
+        #region Fields and Properties
+        protected object _loadingStatusMutex = new Object();
 
-		/// <summary>Width of this texture.</summary>
-		protected int width;
-		/// <summary>Height of this texture.</summary>
-		protected int height;
-		/// <summary>Depth of this texture.</summary>
-		protected int depth;
-		/// <summary>Bits per pixel in this texture.</summary>
-		protected int finalBpp;
-		/// <summary>Original source width if this texture had been modified.</summary>
-		protected int srcWidth;
-		/// <summary>Original source height if this texture had been modified.</summary>
-		protected int srcHeight;
-		/// <summary>Original source depth if this texture had been modified.</summary>
-		protected int srcDepth;
-		/// <summary>Original source bits per pixel if this texture had been modified.</summary>
-		protected int srcBpp;
-		/// <summary>Does this texture have an alpha component?</summary>
-		protected bool hasAlpha;
-		/// <summary>Pixel format of this texture.</summary>
-		protected PixelFormat format;
-		/// <summary>Specifies how this texture will be used.</summary>
-		protected TextureUsage usage = TextureUsage.Default;
-		/// <summary>Type of texture, i.e. 1D, 2D, Cube, Volume.</summary>
-		protected TextureType textureType;
-		/// <summary>Number of mipmaps present in this texture.</summary>
-		protected int numMipmaps;
-		/// <summary>Number of mipmaps requested for this texture.</summary>
-		protected int numRequestedMipmaps;
-		/// <summary>Are the mipmaps generated in hardware?</summary>
-		protected bool mipmapsHardwareGenerated = false;
-		/// <summary>Gamma setting for this texture.</summary>
-		protected float gamma;
-		/// <summary>Have the internal resources been created?</summary>
-		protected bool internalResourcesCreated = false;
+        private bool _internalResourcesCreated = false;
+        protected bool internalResourcesCreated
+        {
+            get
+            {
+                return _internalResourcesCreated;
+            }
+            set
+            {
+                _internalResourcesCreated = value;
+            }
+        }
 
-		#endregion
+        #region Width Property
 
-		#region Constructors
+        /// <summary>Width of this texture.</summary>
+        private int _width;
+        /// <summary>
+        ///    Gets the width (in pixels) of this texture.
+        /// </summary>
+        /// <ogre name="getWidth" />
+        /// <ogre name="setWidth" />
+        public int Width
+        {
+            get
+            {
+                return _width;
+            }
+            set
+            {
+                _width = value;
+            }
+        }
 
-		#endregion
+        #endregion Width Property
 
-		#region Methods
+        #region Height Property
 
-		/// <summary>
-		///    Specifies whether this texture should use 32 bit color or not.
-		/// </summary>
-		/// <param name="enable">true if this should be treated as 32-bit, false if it should be 16-bit.</param>
-		public void Enable32Bit( bool enable )
-		{
-			finalBpp = ( enable == true ) ? 32 : 16;
-		}
+        /// <summary>Height of this texture.</summary>
+        private int _height;
+        /// <summary>
+        ///    Gets the height (in pixels) of this texture.
+        /// </summary>
+        /// <ogre name="setHeight" />
+        /// <ogre name="getHeight" />
+        public int Height
+        {
+            get
+            {
+                return _height;
+            }
+            set
+            {
+                _height = value;
+            }
+        }
 
+        #endregion Height Property
 
-		/// <summary>
-		///    Loads data from an Image directly into this texture.
-		/// </summary>
-		/// <param name="image"></param>
-		public abstract void LoadImage( Image image );
+        #region Depth Property
 
-		/// <summary>
-		///    Loads raw image data from the stream into this texture.
-		/// </summary>
-		/// <param name="data">The raw, decoded image data.</param>
-		/// <param name="width">Width of the texture data.</param>
-		/// <param name="height">Height of the texture data.</param>
-		/// <param name="format">Format of the supplied image data.</param>
-		public void LoadRawData( Stream data, int width, int height, PixelFormat format )
-		{
-			// load the raw data
-			Image image = Image.FromRawStream( data, width, height, format );
+        /// <summary>Depth of this texture.</summary>
+        private int _depth;
+        /// <summary>
+        ///    Gets the depth of this texture (for volume textures).
+        /// </summary>
+        /// <ogre name="setDepth" />
+        /// <ogre name="getDepth" />
+        public int Depth
+        {
+            get
+            {
+                return _depth;
+            }
+            set
+            {
+                _depth = value;
+            }
+        }
 
-			// call the polymorphic LoadImage implementation
-			LoadImage( image );
-		}
+        #endregion Depth Property
 
-		public void CreateInternalResources()
-		{
-			if ( !internalResourcesCreated )
-			{
-				CreateInternalResourcesImpl();
-				internalResourcesCreated = true;
-			}
-		}
+        #region Bpp Property
 
-		public void FreeInternalResources()
-		{
-			if ( internalResourcesCreated )
-			{
-				FreeInternalResourcesImpl();
-				internalResourcesCreated = false;
-			}
-		}
+        /// <summary>Bits per pixel in this texture.</summary>
+        private int _finalBpp;
+        /// <summary>
+        ///    Gets the bits per pixel found within this texture data.
+        /// </summary>
+        public int Bpp
+        {
+            get
+            {
+                return _finalBpp;
+            }
+            protected set
+            {
+                _finalBpp = value;
+            }
+        }
 
-		protected abstract void CreateInternalResourcesImpl();
-		protected abstract void FreeInternalResourcesImpl();
+        #endregion Bpp Property
 
-		protected virtual void LoadImages( List<Image> images )
-		{
-			Debug.Assert( images.Count >= 1 );
-			if ( isLoaded )
-			{
-				LogManager.Instance.Write( "Unloading image: {0}", name );
-				Unload();
-			}
-			srcWidth = width = images[ 0 ].Width;
-			srcHeight = height = images[ 0 ].Height;
-			srcDepth = depth = images[ 0 ].Depth;
-			if ( hasAlpha && images[ 0 ].Format == PixelFormat.L8 )
-			{
-				format = PixelFormat.A8;
-				srcBpp = 8;
-			}
-			else
-			{
-				this.Format = images[ 0 ].Format;
-			}
-			if ( finalBpp == 16 )
-			{
-				switch ( format )
-				{
-					case PixelFormat.R8G8B8:
-					case PixelFormat.X8R8G8B8:
-						format = PixelFormat.R5G6B5;
-						break;
-					case PixelFormat.B8G8R8:
-					case PixelFormat.X8B8G8R8:
-						format = PixelFormat.B5G6R5;
-						break;
-					case PixelFormat.A8R8G8B8:
-					case PixelFormat.R8G8B8A8:
-					case PixelFormat.A8B8G8R8:
-					case PixelFormat.B8G8R8A8:
-						format = PixelFormat.A4R4G4B4;
-						break;
-					default:
-						// use the original format
-						break;
-				}
-			}
+        #region HasAlpha Property
 
-			// The custom mipmaps in the image have priority over everything
-			int imageMips = images[ 0 ].NumMipMaps;
-			if ( imageMips > 0 )
-			{
-				numMipmaps = imageMips;
-				usage &= ~TextureUsage.AutoMipMap;
-			}
+        /// <summary>Does this texture have an alpha component?</summary>
+        private bool _hasAlpha;
+        /// <summary>
+        ///    Gets whether or not the PixelFormat of this texture contains an alpha component.
+        /// </summary>
+        /// <ogre name="hasAlpha" />
+        public bool HasAlpha
+        {
+            get
+            {
+                return _hasAlpha;
+            }
+            protected set
+            {
+                _hasAlpha = value;
+            }
+        }
 
-			// Create the texture
-			CreateInternalResources();
+        #endregion HasAlpha Property
 
-			// Check if we're loading one image with multiple faces
-			// or a vector of images representing the faces
-			int faces;
-			bool multiImage; // Load from multiple images?
-			if ( images.Count > 1 )
-			{
-				faces = images.Count;
-				multiImage = true;
-			}
-			else
-			{
-				faces = images[ 0 ].NumFaces;
-				multiImage = false;
-			}
+        #region TreatLuminanceAsAlpha Property
 
-			// Check wether number of faces in images exceeds number of faces
-			// in this texture. If so, clamp it.
-			if ( faces > this.NumFaces )
-				faces = this.NumFaces;
+        private bool _treatLuminanceAsAlpha;
+        /// <summary>
+        /// Gets or sets a value indicating whether to treat luminence as aplha.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if treat luminence as aplha; otherwise, <c>false</c>.
+        /// </value>
+        public bool TreatLuminanceAsAlpha
+        {
+            get
+            {
+                return _treatLuminanceAsAlpha;
+            }
+            set
+            {
+                _treatLuminanceAsAlpha = value;
+            }
+        }
 
-			// Say what we're doing
-			LogManager.Instance.Write( "Texture: {0}: Loading {1} faces({2},{3}x{4}x{5})",
-				name, faces, PixelUtil.GetFormatName( images[ 0 ].Format ),
-				images[ 0 ].Width, images[ 0 ].Height, images[ 0 ].Depth );
+        #endregion TreatLuminanceAsAlpha Property
 
-			// Main loading loop
-			// imageMips == 0 if the image has no custom mipmaps, otherwise contains the number of custom mips
-			for ( int mip = 0; mip <= imageMips; ++mip )
-			{
-				for ( int i = 0; i < faces; ++i )
-				{
-					PixelBox src;
-					if ( multiImage )
-					{
-						// Load from multiple images
-						src = images[ i ].GetPixelBox( 0, mip );
-					}
-					else
-					{
-						// Load from faces of images[0]
-						src = images[ 0 ].GetPixelBox( i, mip );
+        #region Gamma Property
 
-						if ( hasAlpha && src.Format == PixelFormat.L8 )
-							src.Format = PixelFormat.A8;
-					}
+        /// <summary>Gamma setting for this texture.</summary>
+        private float _gamma;
+        /// <summary>
+        ///    Gets/Sets the gamma adjustment factor for this texture.
+        /// </summary>
+        /// <remarks>
+        ///    Must be called before any variation of Load.
+        /// </remarks>
+        /// <ogre name="setGamma" />
+        /// <ogre name="getGamma" />
+        public float Gamma
+        {
+            get
+            {
+                return _gamma;
+            }
+            set
+            {
+                _gamma = value;
+            }
+        }
 
-					if ( gamma != 1.0f )
-					{
-						// Apply gamma correction
-						// Do not overwrite original image but do gamma correction in temporary buffer
+        #endregion Gamma Property
+
+        #region Format Property
+
+        /// <summary>Pixel format of this texture.</summary>
+        private PixelFormat _format;
+        /// <summary>
+        ///    Gets the PixelFormat of this texture.
+        /// </summary>
+        /// <ogre name="getFormat" />
+        public PixelFormat Format
+        {
+            get
+            {
+                return _format;
+            }
+            set
+            {
+                _format = value;
+
+                srcBpp = PixelUtil.GetNumElemBytes( _format );
+                HasAlpha = PixelUtil.HasAlpha( _format );
+
+            }
+        }
+
+        #endregion Format Property
+
+        #region MipmapCount Property
+
+        /// <summary>Number of mipmaps present in this texture.</summary>
+        private int _mipmapCount;
+        /// <summary>
+        ///    Number of mipmaps present in this texture.
+        /// </summary>
+        /// <ogre name="setNumMipmaps" />
+        /// <ogre name="getNumMipmaps" />
+        public int MipmapCount
+        {
+            get
+            {
+                return _mipmapCount;
+            }
+            set
+            {
+                _mipmapCount = value;
+            }
+        }
+
+        #endregion MipmapCount Property
+
+        #region RequestedMipMapCount Property
+
+        /// <summary>Number of mipmaps requested for this texture.</summary>
+        private int _requestedMipmapCount;
+        /// <summary>
+        /// Gets or sets the requested mipmap count.
+        /// </summary>
+        /// <value>The requested mipmap count.</value>
+        protected int RequestedMipmapCount
+        {
+            get
+            {
+                return _requestedMipmapCount;
+            }
+            set
+            {
+                _requestedMipmapCount = value;
+            }
+        }
+
+        #endregion RequestedMipMapCount Property
+
+        #region MipmapsHardwareGenerated Property
+
+        /// <summary>Are the mipmaps generated in hardware?</summary>
+        private bool _mipmapsHardwareGenerated = false;
+        /// <summary>
+        /// Gets or sets a value indicating whether mipmaps are hardware generated.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if mipmaps are hardware generated; otherwise, <c>false</c>.
+        /// </value>
+        protected bool MipmapsHardwareGenerated
+        {
+            get
+            {
+                return _mipmapsHardwareGenerated;
+            }
+            set
+            {
+                _mipmapsHardwareGenerated = value;
+            }
+        }
+
+        #endregion MipmapsHardwareGenerated Property
+
+        #region TextureType Property
+
+        /// <summary>Type of texture, i.e. 1D, 2D, Cube, Volume.</summary>
+        private TextureType _textureType;
+        /// <summary>
+        ///    Type of texture, i.e. 2d, 3d, cubemap.
+        /// </summary>
+        /// <ogre name="setTextureType" />
+        /// <ogre name="getTextureType" />
+        public TextureType TextureType
+        {
+            get
+            {
+                return _textureType;
+            }
+            set
+            {
+                _textureType = value;
+            }
+        }
+
+        #endregion TextureType Property
+
+        #region Usage Property
+
+        /// <summary>Specifies how this texture will be used.</summary>
+        private TextureUsage _usage;
+        /// <summary>
+        ///     Gets the intended usage of this texture, whether for standard usage
+        ///     or as a render target.
+        /// </summary>
+        /// <ogre name="setUsage" />
+        /// <ogre name="getUsage" />
+        public TextureUsage Usage
+        {
+            get
+            {
+                return _usage;
+            }
+            set
+            {
+                _usage = value;
+            }
+        }
+
+        #endregion Usage Property
+
+        #region SrcWidth Property
+
+        /// <summary>Original source width if this texture had been modified.</summary>
+        private int _srcWidth;
+        /// <summary>Original source width if this texture had been modified.</summary>
+        /// <ogre name="geteSrcWidth" />
+        public int SrcWidth
+        {
+            get
+            {
+                return _srcWidth;
+            }
+            protected set
+            {
+                _srcWidth = value;
+            }
+        }
+
+        #endregion SrcWidth Property
+
+        #region SrcHeight Property
+
+        /// <summary>Original source height if this texture had been modified.</summary>
+        private int _srcHeight;
+        /// <summary>Original source height if this texture had been modified.</summary>
+        /// <ogre name="getSrcHeight" />
+        public int SrcHeight
+        {
+            get
+            {
+                return _srcHeight;
+            }
+            protected set
+            {
+                _srcHeight = value;
+            }
+        }
+
+        #endregion SrcHeight Property
+
+        #region SrcBpp Property
+
+        /// <summary>Original source bits per pixel if this texture had been modified.</summary>
+        private int _srcBpp;
+        /// <summary>Original source bits per pixel if this texture had been modified.</summary>
+        public int srcBpp
+        {
+            get
+            {
+                return _srcBpp;
+            }
+            protected set
+            {
+                _srcBpp = value;
+            }
+        }
+
+        #endregion SrcBpp Property
+
+        #region SrcDepth Property
+
+        /// <summary>Original depth of the input texture (only applicable for 3D textures).</summary>
+        private int _srcDepth;
+        /// <summary>Original depth of the input texture (only applicable for 3D textures).</summary>
+        /// <ogre name="getSrcDepth" />
+        public int SrcDepth
+        {
+            get
+            {
+                return _srcDepth;
+            }
+            protected set
+            {
+                _srcDepth = value;
+            }
+        }
+
+        #endregion SrcDepth Property
+
+        /// <summary>
+        ///    Specifies whether this texture is 32 bits or not.
+        /// </summary>
+        /// <ogre name="enable32Bit" />
+        public bool Is32Bit
+        {
+            get
+            {
+                return ( _finalBpp == 32 );
+            }
+            set
+            {
+                _finalBpp = value ? 32 : 16;
+            }
+        }
+
+        /// <summary>
+        /// Return the number of faces this texture has. This will be 6 for a cubemap texture and 1 for a 1D, 2D or 3D one.
+        /// </summary>
+        protected int faceCount
+        {
+            get
+            {
+                return ( TextureType == TextureType.CubeMap ) ? 6 : 1;
+            }
+        }
+
+        #endregion Fields and Properties
+
+        #region Construction and Destruction
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Texture"/> class.
+        /// </summary>
+        /// <param name="parent">The parent.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="handle">The handle.</param>
+        /// <param name="group">The group.</param>
+        public Texture( ResourceManager parent, string name, ResourceHandle handle, string group )
+            : this( parent, name, handle, group, false, null )
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Texture"/> class.
+        /// </summary>
+        /// <param name="parent">The parent.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="handle">The handle.</param>
+        /// <param name="group">The group.</param>
+        /// <param name="isManual">if set to <c>true</c> [is manual].</param>
+        /// <param name="loader">The loader.</param>
+        public Texture( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+            : base( parent, name, handle, group, isManual, loader )
+        {
+            // init defaults; can be overridden before load()
+            Height = 512;
+            Width = 512;
+            Depth = 1;
+            RequestedMipmapCount = 0;
+            MipmapCount = 0;
+            MipmapsHardwareGenerated = false;
+            Gamma = 1.0f;
+            TextureType = TextureType.TwoD;
+            Format = PixelFormat.A8R8G8B8;
+            Usage = TextureUsage.Default;
+            // SrcBpp inited later on
+
+            SrcWidth = 0;
+            SrcHeight = 0;
+            SrcDepth = 0;
+
+            // FinalBpp inited later on by enable32bit
+            // HasAlpha inited later on            
+
+            Is32Bit = false;
+
+            //if ( createParamDictionary( "Texture" ) )
+            //{
+            //    // Define the parameters that have to be present to load
+            //    // from a generic source; actually there are none, since when
+            //    // predeclaring, you use a texture file which includes all the
+            //    // information required.
+            //}
+        }
+
+        #endregion Construction and Destruction
+
+        #region Methods
+
+        /// <summary>
+        ///    Loads data from an Image directly into this texture.
+        /// </summary>
+        /// <param name="image"></param>
+        /// <ogre name="loadImage" />
+        public virtual void LoadImage( Image image )
+        {
+            lock ( _loadingStatusMutex )
+            {
+                if ( LoadingState != LoadingState.Unloaded )
+                {
+                    return; // no loading to be done.
+                }
+                LoadingState = LoadingState.Loading;
+            }
+
+            try
+            {
+                // create a list with one texture to pass it in to the common loading method
+                List<Image> images = new List<Image>();
+                images.Add( image );
+
+                // load this image
+                LoadImages( images );
+
+            }
+            catch ( Exception ex )
+            {
+                lock ( _loadingStatusMutex )
+                {
+                    LoadingState = LoadingState.Unloaded;
+                }
+                throw ex;
+            }
+
+            lock ( _loadingStatusMutex )
+            {
+                LoadingState = LoadingState.Loaded;
+            }
+        }
+
+        /// <summary>
+        ///    Loads raw image data from the stream into this texture.
+        /// </summary>
+        /// <param name="data">The raw, decoded image data.</param>
+        /// <param name="width">Width of the texture data.</param>
+        /// <param name="height">Height of the texture data.</param>
+        /// <param name="format">Format of the supplied image data.</param>
+        /// <ogre name="loadRawData" />
+        public void LoadRawData( Stream data, int width, int height, PixelFormat format )
+        {
+            // load the raw data
+            Image image = Image.FromRawStream( data, width, height, format );
+
+            // call the polymorphic LoadImage implementation
+            LoadImage( image );
+        }
+
+        /// <summary>
+        /// Generic method to load the texture from a set of images. This can be
+        /// used by the specific implementation for convience. Implementations
+        /// might decide not to use this function if they can use their own image loading
+        /// functions.
+        /// </summary>
+        ///<param name="images">
+        /// Vector of pointers to Images. If there is only one image
+        /// in this vector, the faces of that image will be used. If there are multiple
+        /// images in the vector each image will be loaded as a face.
+        /// </param>
+        protected internal void LoadImages( List<Image> images )
+        {
+            int faces;
+
+            Debug.Assert( images.Count >= 1 );
+            if ( IsLoaded )
+            {
+                LogManager.Instance.Write( "Unloading image: {0}", _name );
+                Unload();
+            }
+            _srcWidth = _width = images[ 0 ].Width;
+            _srcHeight = _height = images[ 0 ].Height;
+            _srcDepth = _depth = images[ 0 ].Depth;
+            if ( _hasAlpha && images[ 0 ].Format == PixelFormat.L8 )
+            {
+                _format = PixelFormat.A8;
+                srcBpp = 8;
+            }
+            else
+            {
+                this.Format = images[ 0 ].Format;
+            }
+            if ( _finalBpp == 16 )
+            {
+                switch ( _format )
+                {
+                    case PixelFormat.R8G8B8:
+                    case PixelFormat.X8R8G8B8:
+                        _format = PixelFormat.R5G6B5;
+                        break;
+                    case PixelFormat.B8G8R8:
+                    case PixelFormat.X8B8G8R8:
+                        _format = PixelFormat.B5G6R5;
+                        break;
+                    case PixelFormat.A8R8G8B8:
+                    case PixelFormat.R8G8B8A8:
+                    case PixelFormat.A8B8G8R8:
+                    case PixelFormat.B8G8R8A8:
+                        _format = PixelFormat.A4R4G4B4;
+                        break;
+                    default:
+                        // use the original format
+                        break;
+                }
+            }
+
+            // The custom mipmaps in the image have priority over everything
+            int imageMips = images[ 0 ].NumMipMaps;
+            if ( imageMips > 0 )
+            {
+                this._mipmapCount = imageMips;
+                _usage &= ~TextureUsage.AutoMipMap;
+            }
+
+            // Create the texture
+            CreateInternalResources();
+
+            // Check if we're loading one image with multiple faces
+            // or a vector of images representing the faces
+            bool multiImage; // Load from multiple images?
+            if ( images.Count > 1 )
+            {
+                faces = images.Count;
+                multiImage = true;
+            }
+            else
+            {
+                faces = images[ 0 ].NumFaces;
+                multiImage = false;
+            }
+
+            // Check wether number of faces in images exceeds number of faces
+            // in this texture. If so, clamp it.
+            if ( faces > this.faceCount )
+                faces = this.faceCount;
+
+            // Say what we're doing
+            LogManager.Instance.Write( "Texture: {0}: Loading {1} faces({2},{3}x{4}x{5})",
+                _name, faces, PixelUtil.GetFormatName( images[ 0 ].Format ),
+                images[ 0 ].Width, images[ 0 ].Height, images[ 0 ].Depth );
+
+            // Main loading loop
+            // imageMips == 0 if the image has no custom mipmaps, otherwise contains the number of custom mips
+            for ( int mip = 0; mip <= imageMips; ++mip )
+            {
+                for ( int i = 0; i < faces; ++i )
+                {
+                    PixelBox src;
+                    if ( multiImage )
+                    {
+                        // Load from multiple images
+                        src = images[ i ].GetPixelBox( 0, mip );
+                    }
+                    else
+                    {
+                        // Load from faces of images[0]
+                        src = images[ 0 ].GetPixelBox( i, mip );
+
+                        if ( _hasAlpha && src.Format == PixelFormat.L8 )
+                            src.Format = PixelFormat.A8;
+                    }
+
+                    if ( _gamma != 1.0f )
+                    {
+                        // Apply gamma correction
+                        // Do not overwrite original image but do gamma correction in temporary buffer
                         int bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, src.Format );
-                        byte[] buff = new byte[bufSize];
+                        byte[] buff = new byte[ bufSize ];
                         unsafe
                         {
-                            fixed (void* pBuf = &buff[0])
+                            fixed ( void* pBuf = &buff[ 0 ] )
                             {
-                                IntPtr buffer = new IntPtr(pBuf);
+                                IntPtr buffer = new IntPtr( pBuf );
 
                                 try
                                 {
-                                    PixelBox corrected = new PixelBox(src.Width, src.Height, src.Depth, src.Format, buffer);
-                                    PixelConverter.BulkPixelConversion(src, corrected);
+                                    PixelBox corrected = new PixelBox( src.Width, src.Height, src.Depth, src.Format, buffer );
+                                    PixelConverter.BulkPixelConversion( src, corrected );
 
-                                    Image.ApplyGamma(corrected.Data, gamma, corrected.ConsecutiveSize, PixelUtil.GetNumElemBits(src.Format));
+                                    Image.ApplyGamma( corrected.Data, _gamma, corrected.ConsecutiveSize, PixelUtil.GetNumElemBits( src.Format ) );
 
                                     // Destination: entire texture. BlitFromMemory does the scaling to
                                     // a power of two for us when needed
-                                    GetBuffer(i, mip).BlitFromMemory(corrected);
+                                    GetBuffer( i, mip ).BlitFromMemory( corrected );
                                 }
                                 finally
                                 {
@@ -287,265 +749,107 @@ namespace Axiom.Core
                                 }
                             }
                         }
-					}
-					else
-					{
-						// Destination: entire texture. BlitFromMemory does the scaling to
-						// a power of two for us when needed
-						GetBuffer( i, mip ).BlitFromMemory( src );
-					}
-				}
-			}
-			// Update size (the final size, not including temp space)
-			size = this.NumFaces * PixelUtil.GetMemorySize( width, height, depth, format );
+                    }
+                    else
+                    {
+                        // Destination: entire texture. BlitFromMemory does the scaling to
+                        // a power of two for us when needed
+                        GetBuffer( i, mip ).BlitFromMemory( src );
+                    }
+                }
+            }
+            // Update size (the final size, not including temp space)
+            Size = faces * PixelUtil.GetMemorySize( _width, _height, _depth, _format );
 
-			isLoaded = true;
-		}
+            IsLoaded = true;
+        }
 
-		/// <summary>
-		///    Return hardware pixel buffer for a surface. This buffer can then
-		///    be used to copy data from and to a particular level of the texture.
-		/// </summary>
-		/// <param name="face">
-		///    Face number, in case of a cubemap texture. Must be 0
-		///    for other types of textures.
-		///    For cubemaps, this is one of 
-		///    +X (0), -X (1), +Y (2), -Y (3), +Z (4), -Z (5)
-		/// </param>
-		/// <param name="mipmap">
-		///    Mipmap level. This goes from 0 for the first, largest
-		///    mipmap level to getNumMipmaps()-1 for the smallest.
-		/// </param>
-		/// <remarks>
-		///    The buffer is invalidated when the resource is unloaded or destroyed.
-		///    Do not use it after the lifetime of the containing texture.
-		/// </remarks>
-		/// <returns>A shared pointer to a hardware pixel buffer</returns>
-		public abstract HardwarePixelBuffer GetBuffer( int face, int mipmap );
+        /// <summary>
+        ///    Return hardware pixel buffer for a surface. This buffer can then
+        ///    be used to copy data from and to a particular level of the texture.
+        /// </summary>
+        /// <param name="face">
+        ///    Face number, in case of a cubemap texture. Must be 0
+        ///    for other types of textures.
+        ///    For cubemaps, this is one of 
+        ///    +X (0), -X (1), +Y (2), -Y (3), +Z (4), -Z (5)
+        /// </param>
+        /// <param name="mipmap">
+        ///    Mipmap level. This goes from 0 for the first, largest
+        ///    mipmap level to getNumMipmaps()-1 for the smallest.
+        /// </param>
+        /// <remarks>
+        ///    The buffer is invalidated when the resource is unloaded or destroyed.
+        ///    Do not use it after the lifetime of the containing texture.
+        /// </remarks>
+        /// <returns>A shared pointer to a hardware pixel buffer</returns>
+        public abstract HardwarePixelBuffer GetBuffer( int face, int mipmap );
 
-		public HardwarePixelBuffer GetBuffer( int face )
-		{
-			return GetBuffer( face, 0 );
-		}
-		public HardwarePixelBuffer GetBuffer()
-		{
-			return GetBuffer( 0, 0 );
-		}
+        public HardwarePixelBuffer GetBuffer( int face )
+        {
+            return GetBuffer( face, 0 );
+        }
+        public HardwarePixelBuffer GetBuffer()
+        {
+            return GetBuffer( 0, 0 );
+        }
 
-		#endregion
+        public void CreateInternalResources()
+        {
+            if ( !_internalResourcesCreated )
+            {
+                createInternalResources();
+                _internalResourcesCreated = true;
+            }
+        }
+        protected abstract void createInternalResources();
 
-		#region Properties
+        public void FreeInternalResources()
+        {
+            if ( _internalResourcesCreated )
+            {
+                freeInternalResources();
+                _internalResourcesCreated = false;
+            }
+        }
+        protected abstract void freeInternalResources();
 
-		/// <summary>
-		///    Gets the width (in pixels) of this texture.
-		/// </summary>
-		public int SrcWidth
-		{
-			get
-			{
-				return srcWidth;
-			}
-		}
+        #endregion
 
-		public int SrcHeight
-		{
-			get
-			{
-				return srcHeight;
-			}
-		}
+        #region Implementation of Resource
 
-		public int SrcDepth
-		{
-			get
-			{
-				return srcDepth;
-			}
-		}
+        protected override void unload()
+        {
+            FreeInternalResources();
+        }
 
-		public int SrcBpp
-		{
-			get
-			{
-				return srcBpp;
-			}
-		}
+        protected override int calculateSize()
+        {
+            return faceCount * PixelUtil.GetMemorySize( Width, Height, Depth, Format );
+        }
 
-		/// <summary>
-		///    Gets the width (in pixels) of this texture.
-		/// </summary>
-		public int Width
-		{
-			get
-			{
-				return width;
-			}
-			set
-			{
-				width = srcWidth = value;
-			}
-		}
+        /// <summary>
+        ///		Implementation of IDisposable to determine how resources are disposed of.
+        /// </summary>
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !isDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    Unload();
+                }
 
-		/// <summary>
-		///    Gets the height (in pixels) of this texture.
-		/// </summary>
-		public int Height
-		{
-			get
-			{
-				return height;
-			}
-			set
-			{
-				height = srcHeight = value;
-			}
-		}
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
+            isDisposed = true;
 
-		/// <summary>
-		///    Gets the depth of this texture (for volume textures).
-		/// </summary>
-		public int Depth
-		{
-			get
-			{
-				return depth;
-			}
-			set
-			{
-				depth = srcDepth = value;
-			}
-		}
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose( disposeManagedResources );
+        }
 
-		/// <summary>
-		///    Gets the bits per pixel found within this texture data.
-		/// </summary>
-		public int Bpp
-		{
-			get
-			{
-				return finalBpp;
-			}
-		}
-
-		/// <summary>
-		///    Gets whether or not the PixelFormat of this texture contains an alpha component.
-		/// </summary>
-		public bool HasAlpha
-		{
-			get
-			{
-				return hasAlpha;
-			}
-		}
-
-		/// <summary>
-		///    Gets/Sets the gamma adjustment factor for this texture.
-		/// </summary>
-		/// <remarks>
-		///    Must be called before any variation of Load.
-		/// </remarks>
-		public float Gamma
-		{
-			get
-			{
-				return gamma;
-			}
-			set
-			{
-				gamma = value;
-			}
-		}
-
-		/// <summary>
-		///    Gets the PixelFormat of this texture.
-		/// </summary>
-		public PixelFormat Format
-		{
-			get
-			{
-				return format;
-			}
-			set
-			{
-				// This can only be called before Load()
-				format = value;
-				srcBpp = PixelUtil.GetNumElemBits( format );
-				hasAlpha = PixelUtil.HasAlpha( format );
-			}
-		}
-
-		/// <summary>
-		///    Number of mipmaps present in this texture.
-		/// </summary>
-		public int NumMipMaps
-		{
-			get
-			{
-				return numMipmaps;
-			}
-			set
-			{
-				numMipmaps = value;
-				numRequestedMipmaps = value;
-			}
-		}
-
-		/// <summary>
-		///   Number of faces in this texture
-		/// </summary>
-		public int NumFaces
-		{
-			get
-			{
-				return ( textureType == TextureType.CubeMap ) ? 6 : 1;
-			}
-		}
-
-		/// <summary>
-		///    Type of texture, i.e. 2d, 3d, cubemap.
-		/// </summary>
-		public TextureType TextureType
-		{
-			get
-			{
-				return textureType;
-			}
-			set
-			{
-				// This should not be called after Load()
-				textureType = value;
-			}
-		}
-
-		/// <summary>
-		///     Gets the intended usage of this texture, whether for standard usage
-		///     or as a render target.
-		/// </summary>
-		public TextureUsage Usage
-		{
-			get
-			{
-				return usage;
-			}
-			set
-			{
-				usage = value;
-			}
-		}
-
-		#endregion Properties
-
-		#region Implementation of Resource
-
-		/// <summary>
-		///		Implementation of IDisposable to determine how resources are disposed of.
-		/// </summary>
-		public override void Dispose()
-		{
-			// call polymorphic Unload method
-			Unload();
-		}
-
-		#endregion
-	}
+        #endregion
+    }
 }

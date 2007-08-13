@@ -52,7 +52,8 @@ namespace Axiom.RenderSystems.OpenGL
 	{
 		#region Construction and Destruction
 
-		public GLRenderTexture( string name, GLSurfaceDesc target ) : base(target.Buffer, target.ZOffset )
+		public GLRenderTexture( string name, GLSurfaceDesc target )
+			: base( target.Buffer, target.ZOffset )
 		{
 			Name = name;
 		}

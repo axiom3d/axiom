@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -34,17 +35,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
-// using System.Collections.Specialized;
+using System.Collections;
+using System.Collections.Specialized;
 using System.IO;
 using System.Reflection;
 
-using Axiom.Controllers;
+using Axiom.Collections;
 using Axiom.Core;
-using Axiom.FileSystem;
-using Axiom.Math;
-using Axiom.Scripting;
 using Axiom.Serialization;
+
+using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
 
@@ -65,43 +65,17 @@ namespace Axiom.Graphics
 	///     Because this is a subclass of ResourceManager, any files loaded will be searched for in any path or
 	///     archive added to the resource paths/archives. See ResourceManager for details.
 	///     <p/>
-	///     For a definition of the material script format, see http://www.ogre3d.org/docs/manual/manual_16.html#SEC25.
-	/// </summary>
+	///     For a definition of the material script format, see <a href="http://www.ogre3d.org/docs/manual/manual_16.html#SEC25">here</a>.
+	/// </remarks>
+	/// 
+	/// <ogre name="MaterialManager">
+	///     <file name="OgreMaterialManager.h"   revision="" lastUpdated="6/19/2006" lastUpdatedBy="Borrillis" />
+	///     <file name="OgreMaterialManager.cpp" revision="" lastUpdated="6/19/2006" lastUpdatedBy="Borrillis" />
+	/// </ogre> 
+	/// 
 	public class MaterialManager : ResourceManager
 	{
-		#region Singleton implementation
-
-		/// <summary>
-		///     Singleton instance of this class.
-		/// </summary>
-		private static MaterialManager instance;
-
-		/// <summary>
-		///     Internal constructor.  This class cannot be instantiated externally.
-		/// </summary>
-		internal MaterialManager()
-		{
-			if ( instance == null )
-			{
-				instance = this;
-
-				this.SetDefaultTextureFiltering( TextureFiltering.Bilinear );
-				defaultMaxAniso = 1;
-			}
-		}
-
-		/// <summary>
-		///     Gets the singleton instance of this class.
-		/// </summary>
-		public static MaterialManager Instance
-		{
-			get
-			{
-				return instance;
-			}
-		}
-
-		#endregion Singleton implementation
+		public static string DefaultSchemeName = "Default";
 
 		#region Delegates
 
@@ -110,46 +84,44 @@ namespace Axiom.Graphics
 
 		#endregion
 
-		#region Fields
+		#region Singleton implementation
+
+		/// <summary>
+		///     Gets the singleton instance of this class.
+		/// </summary>
+		public static MaterialManager Instance
+		{
+			get
+			{
+				return Singleton<MaterialManager>.Instance;
+			}
+		}
+
+		#endregion Singleton implementation
+
+		#region Fields and Properties
 
 		/// <summary>
 		///     Default Texture filtering - minification.
 		/// </summary>
-		protected FilterOptions defaultMinFilter;
+		private FilterOptions _defaultMinFilter;
+
 		/// <summary>
 		///     Default Texture filtering - magnification.
 		/// </summary>
-		protected FilterOptions defaultMagFilter;
+		private FilterOptions _defaultMagFilter;
+
 		/// <summary>
 		///     Default Texture filtering - mipmapping.
 		/// </summary>
-		protected FilterOptions defaultMipFilter;
+		private FilterOptions _defaultMipFilter;
+
+		#region DefaultAnisotropy Property
+
 		/// <summary>
 		///     Default Texture anisotropy.
 		/// </summary>
-		protected int defaultMaxAniso;
-		/// <summary>
-		///		Used for parsing material scripts.
-		/// </summary>
-		protected MaterialSerializer serializer = new MaterialSerializer();
-		protected TextureFiltering filtering;
-		/// <summary>
-		///		Scheme name -> index. Never shrinks! Should be pretty static anyway
-		/// </summary>
-		protected Dictionary<string, int> schemes;
-		/// <summary>
-		///     Current material scheme
-		/// </summary>
-		protected string activeSchemeName;
-		/// <summary>
-		///     Current material scheme
-		/// </summary>
-		protected int activeSchemeIndex;
-
-		#endregion Fields
-
-		#region Properties
-
+		private int _defaultMaxAniso;
 		/// <summary>
 		///    Sets the default anisotropy level to be used for loaded textures, for when textures are
 		///    loaded automatically (e.g. by Material class) or when 'Load' is called with the default
@@ -159,54 +131,57 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return defaultMaxAniso;
+				return _defaultMaxAniso;
 			}
 			set
 			{
-				defaultMaxAniso = value;
+				_defaultMaxAniso = value;
 			}
 		}
 
-		public int ActiveSchemeIndex
+		#endregion DefaultAnisotropy Property
+
+		/// <summary>
+		///		Used for parsing material scripts.
+		/// </summary>
+		private MaterialSerializer _serializer = new MaterialSerializer();
+
+		private TextureFiltering _filtering;
+
+
+		#endregion Fields and Properties
+
+		#region Constructors and Destructor
+
+		/// <summary>
+		/// private constructor.  This class cannot be instantiated externally.
+		/// </summary>
+		private MaterialManager()
 		{
-			get
-			{
-				return activeSchemeIndex;
-			}
+			this.SetDefaultTextureFiltering( TextureFiltering.Bilinear );
+			_defaultMaxAniso = 1;
+
+			// Loading order
+			this.LoadingOrder = 100.0f;
+
+			// Scripting is supported by this manager
+			ScriptPatterns.Add( "*.program" );
+			ScriptPatterns.Add( "*.material" );
+			ResourceGroupManager.Instance.RegisterScriptLoader( this );
+
+			// Resource type
+			ResourceType = "Material";
+
+			// Register with resource group manager
+			ResourceGroupManager.Instance.RegisterResourceManager( ResourceType, this );
 		}
 
-		public string ActiveScheme
+		~MaterialManager()
 		{
-			get
-			{
-				return activeSchemeName;
-			}
-			set
-			{
-				int index;
-				if ( schemes.TryGetValue( value, out index ) )
-				{
-					activeSchemeName = value;
-					activeSchemeIndex = index;
-				}
-				else
-				{
-					// Invalid scheme, use default
-					activeSchemeName = DefaultSchemeName;
-					activeSchemeIndex = 0;
-				}
-			}
+			Dispose();
 		}
 
-		public static string DefaultSchemeName
-		{
-			get
-			{
-				return "Default";
-			}
-		}
-
-		#endregion Properties
+		#endregion Constructors and Destructor
 
 		#region Methods
 
@@ -216,30 +191,31 @@ namespace Axiom.Graphics
 		public void Initialize()
 		{
 			// Set up default material - don't use name contructor as we want to avoid applying defaults
-			Material.defaultSettings = new Material();
-			Material.defaultSettings.SetName( "DefaultSettings" );
+			Material.defaultSettings = (Material)Create( "DefaultSettings", ResourceGroupManager.DefaultResourceGroupName );
 			// Add a single technique and pass, non-programmable
 			Material.defaultSettings.CreateTechnique().CreatePass();
 
-			// just create the default BaseWhite material
-			Material baseWhite = (Material)instance.Create( "BaseWhite" );
-			baseWhite.Lighting = false;
+			// create the default BaseWhite materials
+			Create( "BaseWhite", ResourceGroupManager.DefaultResourceGroupName );
 
-			// parse all material scripts.
-			// programs are parsed first since they may be referenced by materials
-			ParseAllSources( ".program" );
-			ParseAllSources( ".material" );
+			// create the default BaseWhiteNoLighting Material
+			((Material)Create( "BaseWhiteNoLighting", ResourceGroupManager.DefaultResourceGroupName )).Lighting = false;
+
 		}
 
+		#region SetDefaultTextureFiltering Method
+
+		/// <overload>
 		/// <summary>
 		///     Sets the default texture filtering to be used for loaded textures, for when textures are
 		///     loaded automatically (e.g. by Material class) or when 'load' is called with the default
 		///     parameters by the application.
 		/// </summary>
+		/// </overload> 
 		/// <param name="options">Default options to use.</param>
 		public virtual void SetDefaultTextureFiltering( TextureFiltering filtering )
 		{
-			this.filtering = filtering;
+			this._filtering = filtering;
 			switch ( filtering )
 			{
 				case TextureFiltering.None:
@@ -256,16 +232,7 @@ namespace Axiom.Graphics
 					break;
 			}
 		}
-		public virtual TextureFiltering GetDefaultTextureFiltering()
-		{
-			return filtering;
-		}
 
-		/// <summary>
-		///     Sets the default texture filtering to be used for loaded textures, for when textures are
-		///     loaded automatically (e.g. by Material class) or when 'load' is called with the default
-		///     parameters by the application.
-		/// </summary>
 		/// <param name="type">Type to configure.</param>
 		/// <param name="options">Options to set for the specified type.</param>
 		public virtual void SetDefaultTextureFiltering( FilterType type, FilterOptions options )
@@ -273,33 +240,32 @@ namespace Axiom.Graphics
 			switch ( type )
 			{
 				case FilterType.Min:
-					defaultMinFilter = options;
+					_defaultMinFilter = options;
 					break;
 
 				case FilterType.Mag:
-					defaultMagFilter = options;
+					_defaultMagFilter = options;
 					break;
 
 				case FilterType.Mip:
-					defaultMipFilter = options;
+					_defaultMipFilter = options;
 					break;
 			}
 		}
 
-		/// <summary>
-		///     Sets the default texture filtering to be used for loaded textures, for when textures are
-		///     loaded automatically (e.g. by Material class) or when 'load' is called with the default
-		///     parameters by the application.
-		/// </summary>
 		/// <param name="minFilter">Minification filter.</param>
 		/// <param name="magFilter">Magnification filter.</param>
 		/// <param name="mipFilter">Map filter.</param>
 		public virtual void SetDefaultTextureFiltering( FilterOptions minFilter, FilterOptions magFilter, FilterOptions mipFilter )
 		{
-			defaultMinFilter = minFilter;
-			defaultMagFilter = magFilter;
-			defaultMipFilter = mipFilter;
+			_defaultMinFilter = minFilter;
+			_defaultMagFilter = magFilter;
+			_defaultMipFilter = mipFilter;
 		}
+
+		#endregion SetDefaultTextureFiltering Method
+
+		#region GetDefaultTextureFiltering Method
 
 		/// <summary>
 		///     Gets the default texture filtering options for the specified filter type.
@@ -311,13 +277,13 @@ namespace Axiom.Graphics
 			switch ( type )
 			{
 				case FilterType.Min:
-					return defaultMinFilter;
+					return _defaultMinFilter;
 
 				case FilterType.Mag:
-					return defaultMagFilter;
+					return _defaultMagFilter;
 
 				case FilterType.Mip:
-					return defaultMipFilter;
+					return _defaultMipFilter;
 			}
 
 			// make the compiler happy
@@ -325,174 +291,68 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///		Look for material scripts in all known sources and parse them.
+		///     Gets the default texture filtering options.
 		/// </summary>
-		/// <param name="extension">Extension to parse (i.e. ".material").</param>
-		public void ParseAllSources( string extension )
+		public virtual TextureFiltering GetDefaultTextureFiltering()
 		{
-			// search archives
-			for ( int i = 0; i < archives.Count; i++ )
-			{
-				Archive archive = (Archive)archives[ i ];
-				string[] files = archive.GetFileNamesLike( "", extension );
-
-				for ( int j = 0; j < files.Length; j++ )
-				{
-					Stream data = archive.ReadFile( files[ j ] );
-
-					// parse the materials
-					serializer.ParseScript( data, files[ j ] );
-				}
-			}
-
-			// search common archives
-			for ( int i = 0; i < commonArchives.Count; i++ )
-			{
-				Archive archive = (Archive)commonArchives[ i ];
-				string[] files = archive.GetFileNamesLike( "", extension );
-
-				for ( int j = 0; j < files.Length; j++ )
-				{
-					Stream data = archive.ReadFile( files[ j ] );
-
-					// parse the materials
-					serializer.ParseScript( data, files[ j ] );
-				}
-			}
+			return _filtering;
 		}
 
-		/// <summary>
-		///		Internal method - returns index for a given material scheme name.
-		///    see Technique.SetSchemeName
-		/// </summary>
-		public int GetSchemeIndex( string schemeName )
-		{
-			int ret;
-			if ( !schemes.TryGetValue( schemeName, out ret ) )
-			{
-				ret = schemes.Count;
-				schemes[ schemeName ] = ret;
-			}
-			return ret;
-		}
-
-		/// <summary>
-		///		Internal method - returns name for a given material scheme index.
-		///    see Technique.SetSchemeName
-		/// </summary>
-		public string GetSchemeName( int index )
-		{
-			foreach ( KeyValuePair<string, int> pair in schemes )
-			{
-				if ( pair.Value == index )
-					return pair.Key;
-			}
-			return DefaultSchemeName;
-		}
+		#endregion GetDefaultTextureFiltering Method
 
 		#endregion Methods
 
 		#region ResourceManager Implementation
 
-		/// <summary>
-		///		Gets a material with the specified name.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
-		public new Material GetByName( string name )
+		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
-			return (Material)base.GetByName( name );
-		}
-
-
-		/// <summary>
-		///		Gets a material with the specified name.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
-		public new Material LoadExisting( string name )
-		{
-			return (Material)base.LoadExisting( name );
-		}
-
-		public Material this[ string name ]
-		{
-			get
-			{
-				return (Material)base.GetByName( name );
-			}
-		}
-
-		public Material this[ int handle ]
-			{
-			get
-			{
-				return (Material)base.GetByHandle( handle );
-			}
-			}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
-		public override Resource Create( string name, bool isManual )
-		{
-			Material material = (Material)base.GetByName( name );
-			if ( material == null )
-			{
-				// create a material
-				material = new Material( name );
-			}
-
-			Add( material );
-
-			return material;
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="priority"></param>
-		/// <returns></returns>
-		public Material Load( string name, int priority )
-		{
-			Material material = null;
-
-			// if the resource isn't cached, create it
-			if ( !resourceList.ContainsKey( name ) )
-			{
-				material = (Material)Create( name );
-				base.Load( material, priority );
-			}
-			else
-			{
-				// get the cached version
-				material = (Material)resourceList[ name ];
-			}
-
-			return material;
-		}
-
-		public Material Load( string name )
-		{
-			return Load( name, 0 );
-		}
-
-		/// <summary>
-		///     Called when the engine is shutting down.
-		/// </summary>
-		public override void Dispose()
-		{
-			base.Dispose();
-
-			if ( instance == this )
-			{
-				instance = null;
-			}
+			return new Material( this, name, handle, group, isManual, loader );
 		}
 
 		#endregion ResourceManager Implementation
+
+		#region IScriptLoader Implementation
+
+		/// <summary>
+		///    Parse a .fontdef script passed in as a chunk.
+		/// </summary>
+		/// <param name="script"></param>
+		public override void ParseScript( Stream stream, string groupName, string fileName )
+		{
+			_serializer.ParseScript( stream, groupName, fileName );
+		}
+
+		#endregion IScriptLoader Implementation
+
+		#region IDisposable Implementation
+
+		/// <summary>
+		/// Dispose of this object 
+		/// </summary>
+		/// <ogre name="~MaterialManager" />
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					// Unregister with resource group manager
+					ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
+					// Unegister scripting with resource group manager
+					ResourceGroupManager.Instance.UnregisterScriptLoader( this );
+				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
+			isDisposed = true;
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+		}
+
+		#endregion IDisposable Implementation
+
 	}
 }

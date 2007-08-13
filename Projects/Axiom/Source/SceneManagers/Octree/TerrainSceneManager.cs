@@ -85,7 +85,7 @@ namespace Axiom.SceneManagers.Octree
             options = new TerrainOptions();
 
             DataSet optionData = new DataSet();
-            optionData.ReadXml( fileName );
+            optionData.ReadXml( System.IO.Path.GetDirectoryName( System.Reflection.Assembly.GetExecutingAssembly().Location ) +@"\" + fileName );
             DataTable table = optionData.Tables[ 0 ];
             DataRow row = table.Rows[ 0 ];
 
@@ -167,7 +167,7 @@ namespace Axiom.SceneManagers.Octree
 
             Resize( new AxisAlignedBox( Vector3.Zero, new Vector3( maxx, maxy, maxz ) ) );
 
-            terrainMaterial = CreateMaterial( "Terrain" );
+            terrainMaterial = (Material)MaterialManager.Instance.Create( "Terrain", ResourceGroupManager.Instance.WorldResourceGroupName );
 
             if ( worldTexture != "" )
             {

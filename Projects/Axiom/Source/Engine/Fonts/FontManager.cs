@@ -1,7 +1,7 @@
 #region LGPL License
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2006  Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -26,7 +26,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region SVN Version Information
 // <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
+//     <copyright see="prj:///doc/copyright.txt"/>
+//     <license see="prj:///doc/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
@@ -36,8 +37,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.IO;
 
+using Axiom.Collections;
 using Axiom.Core;
-using Axiom.FileSystem;
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
@@ -47,25 +48,15 @@ namespace Axiom.Fonts
 	/// <summary>
 	///    Manages Font resources, parsing .fontdef files and generally organizing them.
 	/// </summary>
-	public class FontManager : ResourceManager
+	/// 
+	/// <ogre name="FontManager">
+	///     <file name="OgreFontManager.h"   revision="1.10" lastUpdated="6/19/2006" lastUpdatedBy="Borrillis" />
+	///     <file name="OgreFontManager.cpp" revision="1.14" lastUpdated="6/19/2006" lastUpdatedBy="Borrillis" />
+	/// </ogre> 
+	/// 
+	public class FontManager : ResourceManager , ISingleton<FontManager>
 	{
-		#region Singleton implementation
-
-		/// <summary>
-		///     Singleton instance of this class.
-		/// </summary>
-		private static FontManager instance;
-
-		/// <summary>
-		///     Internal constructor.  This class cannot be instantiated externally.
-		/// </summary>
-		internal FontManager()
-		{
-			if ( instance == null )
-			{
-				instance = this;
-			}
-		}
+		#region ISingleton<FontManager> Implementation
 
 		/// <summary>
 		///     Gets the singleton instance of this class.
@@ -74,104 +65,58 @@ namespace Axiom.Fonts
 		{
 			get
 			{
-				return instance;
+				return Singleton<FontManager>.Instance;
 			}
 		}
 
-		#endregion Singleton implementation
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args"></param>
+		/// <returns></returns>
+		public bool Initialize( params object[] args )
+		{
+			return true;
+		}
+
+		#endregion ISingleton<FontManager> Implementation
+
+		#region Constructors and Destructor
+
+		/// <summary>
+		///     Internal constructor.  This class cannot be instantiated externally.
+		/// </summary>
+		private FontManager()
+		{
+			// Loading order
+			LoadingOrder = 200.0f;
+			// Scripting is supported by this manager
+			ScriptPatterns.Add( "*.fontdef" );
+			// Register scripting with resource group manager
+			ResourceGroupManager.Instance.RegisterScriptLoader( this );
+
+			// Resource type
+			ResourceType = "Font";
+
+			// Register with resource group manager
+			ResourceGroupManager.Instance.RegisterResourceManager( ResourceType, this );
+		}
+
+		~FontManager()
+		{
+			Dispose();
+		}
+
+		#endregion Constructors and Destructor
 
 		#region Methods
-
-		/// <summary>
-		///    Parses all .fontdef scripts available in all resource locations.
-		/// </summary>
-		public void ParseAllSources()
-		{
-			string extension = ".fontdef";
-
-			// search archives
-			for ( int i = 0; i < archives.Count; i++ )
-			{
-				Archive archive = (Archive)archives[ i ];
-				string[] files = archive.GetFileNamesLike( "", extension );
-
-				for ( int j = 0; j < files.Length; j++ )
-				{
-					Stream data = archive.ReadFile( files[ j ] );
-
-					// parse the materials
-					ParseScript( data );
-				}
-			}
-
-			// search common archives
-			for ( int i = 0; i < commonArchives.Count; i++ )
-			{
-				Archive archive = (Archive)commonArchives[ i ];
-				string[] files = archive.GetFileNamesLike( "", extension );
-
-				for ( int j = 0; j < files.Length; j++ )
-				{
-					Stream data = archive.ReadFile( files[ j ] );
-
-					// parse the materials
-					ParseScript( data );
-				}
-			}
-		}
-
-		/// <summary>
-		///    Parse a .fontdef script passed in as a chunk.
-		/// </summary>
-		/// <param name="script"></param>
-		public void ParseScript( Stream stream )
-		{
-			StreamReader script = new StreamReader( stream, System.Text.Encoding.ASCII );
-
-			Font font = null;
-
-			string line = "";
-
-			// parse through the data to the end
-			while ( ( line = ParseHelper.ReadLine( script ) ) != null )
-			{
-				// ignore blank lines and comments
-				if ( line.Length == 0 || line.StartsWith( "//" ) )
-				{
-					continue;
-				}
-				else
-				{
-					if ( font == null )
-					{
-						// first valid data should be the font name
-						font = (Font)Create( line );
-
-						ParseHelper.SkipToNextOpenBrace( script );
-					}
-					else
-					{
-						// currently in a font
-						if ( line == "}" )
-						{
-							// finished
-							font = null;
-						}
-						else
-						{
-							ParseAttribute( line, font );
-						}
-					}
-				}
-			}
-		}
 
 		/// <summary>
 		///    Parses an attribute of the font definitions.
 		/// </summary>
 		/// <param name="line"></param>
 		/// <param name="font"></param>
-		private void ParseAttribute( string line, Font font )
+		protected void parseAttribute( string line, Font font )
 		{
 			string[] parms = line.Split( new char[] { ' ', '\t' } );
 			string attrib = parms[ 0 ].ToLower();
@@ -265,38 +210,91 @@ namespace Axiom.Fonts
 
 		#endregion Methods
 
-		#region Implementation of ResourceManager
+		#region ResourceManager Implementation
 
-		public override void Load( Resource resource, int priority )
+		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
-			base.Load( resource, priority );
+			return new Font( this, name, handle, group, isManual, loader );
 		}
 
-		public override Resource Create( string name, bool isManual )
+		#endregion ResourceManager Implementation
+
+		#region IScriptLoader Implementation
+
+		/// <summary>
+		///    Parse a .fontdef script passed in as a chunk.
+		/// </summary>
+		/// <param name="stream"></param>
+		/// <param name="groupName"></param>
+		public override void ParseScript( Stream stream, string groupName, string fileName )
 		{
-			// either return an existing font if already created, or create a new one
-			if ( GetByName( name ) != null )
+			StreamReader script = new StreamReader( stream, System.Text.Encoding.ASCII );
+
+			Font font = null;
+
+			string line;
+
+			// parse through the data to the end
+			while ( ( line = ParseHelper.ReadLine( script ) ) != null )
 			{
-				return GetByName( name );
-			}
-			else
-			{
-				// create a new font and add it to the list of resources
-				Font font = new Font( name );
+				// ignore blank lines and comments
+				if ( line.Length == 0 || line.StartsWith( "//" ) )
+				{
+					continue;
+				}
+				else
+				{
+					if ( font == null )
+					{
+						// first valid data should be the font name
+						font = (Font)Create( line, groupName );
 
-				Add( font );
-
-				return font;
+						ParseHelper.SkipToNextOpenBrace( script );
+					}
+					else
+					{
+						// currently in a font
+						if ( line == "}" )
+						{
+							// finished
+							font = null;
+							// NB font isn't loaded until required
+						}
+						else
+						{
+							parseAttribute( line, font );
+						}
+					}
+				}
 			}
 		}
 
-		public override void Dispose()
+		#endregion IScriptLoader Implementation
+
+		#region IDisposable Implementation
+
+		protected override void dispose( bool disposeManagedResources )
 		{
-			base.Dispose();
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					// Unregister with resource group manager
+					ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
+					// Unegister scripting with resource group manager
+					ResourceGroupManager.Instance.UnregisterScriptLoader( this );
+				}
 
-			instance = null;
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
+			isDisposed = true;
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
 		}
 
-		#endregion
+		#endregion IDisposable Implementation
 	}
 }

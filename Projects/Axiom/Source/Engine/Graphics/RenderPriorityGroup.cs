@@ -112,45 +112,32 @@ namespace Axiom.Graphics
 		///		Add a renderable to this group.
 		/// </summary>
 		/// <param name="renderable">Renderable to add to the queue.</param>
-		public void AddRenderable( IRenderable renderable )
+		public void AddRenderable( IRenderable renderable, Technique technique )
 		{
-			Technique t = null;
+			// Transparent and depth/colour settings mean depth sorting is required?
+			// Note: colour write disabled with depth check/write enabled means
+			//       setup depth buffer for other passes use.
 
-			// Check material & technique supplied (the former since the default implementation
-			// of Technique is based on it for backwards compatibility
-			if ( renderable.Material == null || renderable.Technique == null )
+			if ( technique.IsTransparent && !( technique.DepthWrite || technique.DepthCheck ) )
 			{
-				// use default if not found
-				t = MaterialManager.Instance.GetByName( "BaseWhite" ).GetTechnique( 0 );
+				AddTransparentRenderable( technique, renderable );
 			}
 			else
 			{
-				t = renderable.Technique;
-			}
-
-			// Transparent and depth settings mean depth sorting is required?
-			if ( t.IsTransparent && !( t.DepthWrite && t.DepthCheck ) )
-			{
-				AddTransparentRenderable( t, renderable );
-			}
-			else
-			{
-				if ( splitNoShadowPasses &&
-				   ( !t.Parent.ReceiveShadows ||
-					renderable.CastsShadows && shadowCastersCannotBeReceivers ) )
+				if ( splitNoShadowPasses && ( !technique.Parent.ReceiveShadows || renderable.CastsShadows && shadowCastersCannotBeReceivers ) )
 				{
 					// Add solid renderable and add passes to no-shadow group
-					AddSolidRenderable( t, renderable, true );
+					AddSolidRenderable( technique, renderable, true );
 				}
 				else
 				{
 					if ( splitPassesByLightingType )
 					{
-						AddSolidRenderableSplitByLightType( t, renderable );
+						AddSolidRenderableSplitByLightType( technique, renderable );
 					}
 					else
 					{
-						AddSolidRenderable( t, renderable, false );
+						AddSolidRenderable( technique, renderable, false );
 					}
 				}
 			}
@@ -175,7 +162,7 @@ namespace Axiom.Graphics
 				passMap = solidPasses;
 			}
 
-			for ( int i = 0; i < technique.NumPasses; i++ )
+			for ( int i = 0; i < technique.PassCount; i++ )
 			{
 				Pass pass = technique.GetPass( i );
 
@@ -239,7 +226,7 @@ namespace Axiom.Graphics
 		/// <param name="renderable">Renderable to add to the queue.</param>
 		protected void AddTransparentRenderable( Technique technique, IRenderable renderable )
 		{
-			for ( int i = 0; i < technique.NumPasses; i++ )
+			for ( int i = 0; i < technique.PassCount; i++ )
 			{
 				// add to transparent list
 				transparentPasses.Add( new RenderablePass( renderable, technique.GetPass( i ) ) );

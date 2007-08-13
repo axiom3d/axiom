@@ -35,7 +35,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Drawing;
 using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
@@ -208,7 +207,7 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		///<summary>
-		///    Convert Ogre integer Box to D3D rectangle
+		///    Convert Axiom integer Box to D3D rectangle
 		///</summary>
 		protected static System.Drawing.Rectangle ToD3DRectangle( BasicBox lockBox )
 		{
@@ -272,8 +271,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			// Check for misuse
 			if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
-				throw new Exception( "DirectX does not allow locking of or directly writing to RenderTargets. Use BlitFromMemory if you need the contents; " +
-									"in D3DHardwarePixelBuffer.LockImpl" );
+				throw new Exception( "DirectX does not allow locking of or directly writing to RenderTargets. Use BlitFromMemory if you need the contents." );
 			// Set extents and format
 			PixelBox rval = new PixelBox( lockBox, Format );
 			// Set locking flags according to options
@@ -298,19 +296,25 @@ namespace Axiom.RenderSystems.DirectX9
 				// Surface
 				DX.GraphicsStream data = null;
 				int pitch = 0;
-				if ( lockBox.Left == 0 && lockBox.Top == 0 &&
-					lockBox.Right == Width && lockBox.Bottom == Height )
+				try
 				{
-					// Lock whole surface
-					data = surface.LockRectangle( flags, out pitch );
+					if ( lockBox.Left == 0      && lockBox.Top == 0 &&
+						 lockBox.Right == Width && lockBox.Bottom == Height )
+					{
+						// Lock whole surface
+						data = surface.LockRectangle( flags, out pitch );
+					}
+					else
+					{
+						System.Drawing.Rectangle prect = ToD3DRectangle( lockBox ); // specify range to lock
+						data = surface.LockRectangle( prect, flags, out pitch );
+					}
 				}
-				else
+				catch ( Exception e )
 				{
-					System.Drawing.Rectangle prect = ToD3DRectangle( lockBox ); // specify range to lock
-					data = surface.LockRectangle( prect, flags, out pitch );
+					throw new Exception( "Surface locking failed.", e );
 				}
-				if ( data == null )
-					throw new Exception( "Surface locking failed; in D3DHardwarePixelBuffer.LockImpl" );
+
 				FromD3DLock( rval, pitch, data );
 			}
 			else

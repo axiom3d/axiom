@@ -80,7 +80,7 @@ namespace Axiom.Graphics
         public SimpleRenderable()
         {
             materialName = "BaseWhite";
-            material = MaterialManager.Instance.GetByName( "BaseWhite" );
+			material = (Material)MaterialManager.Instance[ "BaseWhite" ];
             name = "SimpleRenderable" + nextAutoGenName++;
 
             material.Load();
