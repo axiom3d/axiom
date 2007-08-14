@@ -69,13 +69,13 @@ using System.Security.Permissions;
 
 
 #if DEBUG
-[assembly: AssemblyVersion( "0.7.2.*" )]
+[assembly: AssemblyVersion( "0.8.0.*" )]
 #else
-[assembly: AssemblyVersion( "0.7.2.0" )]
+[assembly: AssemblyVersion( "0.8.0.0" )]
 #endif
 
 #if !XBOX360
-[assembly: AssemblyFileVersion( "0.7.2.0" )]
+[assembly: AssemblyFileVersion( "0.8.0.0" )]
 #endif
 
 #if !XBOX360
