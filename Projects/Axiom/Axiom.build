@@ -6,7 +6,7 @@
 
 	<!-- global project settings -->
 	<property name="project.name" value="Axiom" />
-	<property name="project.version" value="0.7.1.0" unless="${property::exists('project.version')}" />
+	<property name="project.version" value="0.8.0.0" unless="${property::exists('project.version')}" />
 	<property name="project.release.type" value="dev" unless="${property::exists('project.release.type')}" />
 	<!-- nightly / dev / alpha / beta# / rc# / release -->
 	<if test="${project.release.type == 'nightly'}">
