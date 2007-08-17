@@ -66,106 +66,195 @@ namespace Axiom.Media
 	/// </remarks>
 	public class Image : IDisposable
 	{
-		#region Fields
+		#region Fields and Properties
 
 		/// <summary>
 		///    Byte array containing the image data.
 		/// </summary>
 		protected byte[] buffer;
 		/// <summary>
-		///    Width of the image (in pixels).
-		/// </summary>
-		protected int width;
-		/// <summary>
-		///    Width of the image (in pixels).
-		/// </summary>
-		protected int height;
-		/// <summary>
-		///    Depth of the image
-		/// </summary>
-		protected int depth;
-		/// <summary>
-		///    Size of the image buffer.
-		/// </summary>
-		protected int size;
-		/// <summary>
-		///    Number of mip maps in this image.
-		/// </summary>
-		protected int numMipMaps;
-		/// <summary>
-		///    Additional features on this image.
-		/// </summary>
-		protected ImageFlags flags;
-		/// <summary>
-		///    Image format.
-		/// </summary>
-		protected PixelFormat format;
-
-		/// <summary>
 		///   This allows me to pin the buffer, so that I can return PixelBox 
 		///   objects representing subsets of this image.  Since the PixelBox
 		///   does not own the data, and has an IntPtr, I need to pin the
 		///   internal buffer here.
 		/// </summary>
-		protected GCHandle bufGCHandle;
+		protected GCHandle bufferPinnedHandle;
 		/// <summary>
 		///   This is the pointer to the contents of buffer.
 		/// </summary>
 		protected IntPtr bufPtr;
 
-		#endregion Fields
+		/// <summary>
+		///    Gets the byte array that holds the image data.
+		/// </summary>
+		public byte[] Data
+		{
+			get
+			{
+				return buffer;
+			}
+		}
+		/// <summary>
+		///    Gets the size (in bytes) of this image.
+		/// </summary>
+		public int Size
+		{
+			get
+			{
+				return buffer != null ? buffer.Length : 0;
+			}
+		}
 
-		#region Constructors
+		/// <summary>
+		///    Width of the image (in pixels).
+		/// </summary>
+		protected int width;
+		/// <summary>
+		///    Gets the width of this image.
+		/// </summary>
+		public int Width
+		{
+			get
+			{
+				return width;
+			}
+		}
+
+		/// <summary>
+		///    Width of the image (in pixels).
+		/// </summary>
+		protected int height;
+		/// <summary>
+		///    Gets the height of this image.
+		/// </summary>
+		public int Height
+		{
+			get
+			{
+				return height;
+			}
+		}
+
+		/// <summary>
+		///    Depth of the image
+		/// </summary>
+		protected int depth;
+		/// <summary>
+		///    Gets the depth of this image.
+		/// </summary>
+		public int Depth
+		{
+			get
+			{
+				return depth;
+			}
+		}
+		/// <summary>
+		///    Size of the image buffer.
+		/// </summary>
+		protected int size;
+
+		/// <summary>
+		///    Number of mip maps in this image.
+		/// </summary>
+		protected int numMipMaps;
+		/// <summary>
+		///    Gets the number of mipmaps contained in this image.
+		/// </summary>
+		public int NumMipMaps
+		{
+			get
+			{
+				return numMipMaps;
+			}
+		}
+		/// <summary>
+		///    Additional features on this image.
+		/// </summary>
+		protected ImageFlags flags;
+		/// <summary>
+		///   Get the numer of faces of the image. This is usually 6 for a cubemap,
+		///   and 1 for a normal image.
+		/// </summary>
+		public int NumFaces
+		{
+			get
+			{
+				if ( HasFlag( ImageFlags.CubeMap ) )
+					return 6;
+				return 1;
+			}
+		}
+
+		/// <summary>
+		///    Image format.
+		/// </summary>
+		protected PixelFormat format;
+		/// <summary>
+		///    Gets the format of this image.
+		/// </summary>
+		public PixelFormat Format
+		{
+			get
+			{
+				return format;
+			}
+		}
+		/// <summary>
+		///    Gets the number of bits per pixel in this image.
+		/// </summary>
+		public int BitsPerPixel
+		{
+			get
+			{
+				return PixelUtil.GetNumElemBits( format );
+			}
+		}
+
+		/// <summary>
+		///    Gets whether or not this image has an alpha component in its pixel format.
+		/// </summary>
+		public bool HasAlpha
+		{
+			get
+			{
+				return PixelUtil.HasAlpha( format );
+			}
+		}
+
+
+
+		#endregion Fields and Properties
+
+		#region Construction and Destruction
 
 		public Image()
 		{
 		}
 
-		#endregion Constructors
+		public ~Image()
+		{
+			dispose( false );
+		}
+
+		#endregion Construction and Destruction
 
 		#region Methods
 
 		protected void SetBuffer( byte[] newBuffer )
 		{
-			if ( bufGCHandle.IsAllocated )
+			if ( bufferPinnedHandle.IsAllocated )
 			{
-				bufGCHandle.Free();
+				bufferPinnedHandle.Free();
 				bufPtr = IntPtr.Zero;
 				buffer = null;
 			}
 			if ( newBuffer != null )
 			{
-				bufGCHandle = GCHandle.Alloc( newBuffer, GCHandleType.Pinned );
-				bufPtr = bufGCHandle.AddrOfPinnedObject();
+				bufferPinnedHandle = GCHandle.Alloc( newBuffer, GCHandleType.Pinned );
+				bufPtr = bufferPinnedHandle.AddrOfPinnedObject();
 				buffer = newBuffer;
 			}
-		}
-
-		public void Dispose()
-		{
-			Dispose( true );
-			GC.SuppressFinalize( this );
-		}
-
-		protected void Dispose( bool disposing )
-		{
-			// if (disposing) {
-			//   Release managed resources.
-			//   we don't have any managed resources that need to be released
-			// }
-			// Release unmanaged resources.
-			// This will unpin the buffer and free the GCHandle
-			bufGCHandle.Free();
-			// Set large fields to null.
-			bufPtr = IntPtr.Zero;
-			buffer = null;
-			// Call Dispose on your base class.
-			// base.Dispose(disposing); // we don't have any children
-		}
-
-		~Image()
-		{
-			Dispose( false );
 		}
 
 		/// <summary>
@@ -486,17 +575,14 @@ namespace Axiom.Media
 			faceSize = PixelUtil.GetMemorySize( width, height, depth, this.Format );
 			offset += faceSize * face;
 			// Return subface as pixelbox
-			//IntPtr newBufPtr = Marshal.UnsafeAddrOfPinnedArrayElement( buffer, offset );
-			//unsafe
-			//{
-				//fixed ( byte* buffPtr = &buffer[ 0 ] )
-				//{
-
-					IntPtr newBufPtr = GCHandle.Alloc( buffer, GCHandleType.Pinned ).AddrOfPinnedObject();
-					//IntPtr newBufPtr = new IntPtr( buffPtr );
-					return new PixelBox( width, height, depth, this.Format, newBufPtr );
-				//}
-			//}
+			if ( bufPtr != IntPtr.Zero )
+			{
+				return new PixelBox( width, height, depth, this.Format, bufPtr );
+			}
+			else
+			{
+				throw new AxiomException( "Image wasn't loaded, can't get a PixelBox." );
+			}
 		}
 
 
@@ -678,121 +764,84 @@ namespace Axiom.Media
 		*/
 		#endregion Methods
 
-		#region Properties
+		#region IDisposable Implementation
 
+		#region isDisposed Property
+
+		private bool _disposed = false;
 		/// <summary>
-		///    Gets the byte array that holds the image data.
+		/// Determines if this instance has been disposed of already.
 		/// </summary>
-		public byte[] Data
+		protected bool isDisposed
 		{
 			get
 			{
-				return buffer;
+				return _disposed;
+			}
+			set
+			{
+				_disposed = value;
 			}
 		}
+
+		#endregion isDisposed Property
 
 		/// <summary>
-		///    Gets the width of this image.
+		/// Class level dispose method
 		/// </summary>
-		public int Width
+		/// <remarks>
+		/// When implementing this method in an inherited class the following template should be used;
+		/// protected override void dispose( bool disposeManagedResources )
+		/// {
+		/// 	if ( !isDisposed )
+		/// 	{
+		/// 		if ( disposeManagedResources )
+		/// 		{
+		/// 			// Dispose managed resources.
+		/// 		}
+		/// 
+		/// 		// There are no unmanaged resources to release, but
+		/// 		// if we add them, they need to be released here.
+		/// 	}
+		/// 	isDisposed = true;
+		///
+		/// 	// If it is available, make the call to the
+		/// 	// base class's Dispose(Boolean) method
+		/// 	base.dispose( disposeManagedResources );
+		/// }
+		/// </remarks>
+		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+		protected virtual void dispose( bool disposeManagedResources )
 		{
-			get
+			if ( !isDisposed )
 			{
-				return width;
+				if ( disposeManagedResources )
+				{
+					// Dispose managed resources.
+				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+				if ( bufferPinnedHandle.IsAllocated )
+				{
+					bufferPinnedHandle.Free();
+				}
+				// Set large fields to null.
+				bufPtr = IntPtr.Zero;
+				buffer = null;
 			}
+			isDisposed = true;
 		}
 
-		/// <summary>
-		///    Gets the height of this image.
-		/// </summary>
-		public int Height
+		public void Dispose()
 		{
-			get
-			{
-				return height;
-			}
+			dispose( true );
+			GC.SuppressFinalize( this );
 		}
 
-		/// <summary>
-		///    Gets the number of bits per pixel in this image.
-		/// </summary>
-		public int BitsPerPixel
-		{
-			get
-			{
-				return PixelUtil.GetNumElemBits( format );
-			}
-		}
+		#endregion IDisposable Implementation
 
-		/// <summary>
-		///    Gets the depth of this image.
-		/// </summary>
-		public int Depth
-		{
-			get
-			{
-				return depth;
-			}
-		}
-
-		/// <summary>
-		///    Gets the size (in bytes) of this image.
-		/// </summary>
-		public int Size
-		{
-			get
-			{
-				return buffer != null ? buffer.Length : 0;
-			}
-		}
-
-		/// <summary>
-		///    Gets the number of mipmaps contained in this image.
-		/// </summary>
-		public int NumMipMaps
-		{
-			get
-			{
-				return numMipMaps;
-			}
-		}
-
-		/// <summary>
-		///   Get the numer of faces of the image. This is usually 6 for a cubemap,
-		///   and 1 for a normal image.
-		/// </summary>
-		public int NumFaces
-		{
-			get
-			{
-				if ( HasFlag( ImageFlags.CubeMap ) )
-					return 6;
-				return 1;
-			}
-		}
-
-		/// <summary>
-		///    Gets the format of this image.
-		/// </summary>
-		public PixelFormat Format
-		{
-			get
-			{
-				return format;
-			}
-		}
-
-		/// <summary>
-		///    Gets whether or not this image has an alpha component in its pixel format.
-		/// </summary>
-		public bool HasAlpha
-		{
-			get
-			{
-				return PixelUtil.HasAlpha( format );
-			}
-		}
-
-		#endregion Properties
 	}
 }
+
+
