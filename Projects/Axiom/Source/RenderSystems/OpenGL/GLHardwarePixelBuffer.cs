@@ -52,7 +52,7 @@ namespace Axiom.RenderSystems.OpenGL
 		#region Fields and Properties
 
 		private BufferLocking _currentLockOptions;
-		private GCHandle _bufGCHandle;
+		private GCHandle _bufferPinndedHandle;
 		private byte[] _data;
 
 		#region buffer Property
@@ -101,6 +101,11 @@ namespace Axiom.RenderSystems.OpenGL
 			GLFormat = Gl.GL_NONE;
 		}
 
+		public ~GLHardwarePixelBuffer()
+		{
+			dispose( false );
+		}
+
 		#endregion Construction and Destruction
 
 		#region Methods
@@ -120,8 +125,8 @@ namespace Axiom.RenderSystems.OpenGL
 				// Already allocated
 				return;
 			_data = new byte[ this.sizeInBytes ];
-			_bufGCHandle = GCHandle.Alloc( _data, GCHandleType.Pinned );
-			buffer.Data = _bufGCHandle.AddrOfPinnedObject();
+			_bufferPinndedHandle = GCHandle.Alloc( _data, GCHandleType.Pinned );
+			buffer.Data = _bufferPinndedHandle.AddrOfPinnedObject();
 			// TODO: use PBO if we're HBU_DYNAMIC
 		}
 
@@ -129,10 +134,10 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			if ( ( usage & BufferUsage.Static ) == BufferUsage.Static )
 			{
-				if ( _bufGCHandle.IsAllocated )
+				if ( _bufferPinndedHandle.IsAllocated )
 				{
 					buffer.Data = IntPtr.Zero;
-					_bufGCHandle.Free();
+					_bufferPinndedHandle.Free();
 					_data = null;
 				}
 			}
@@ -271,6 +276,10 @@ namespace Axiom.RenderSystems.OpenGL
 					// Dispose managed resources.
 				}
 
+				if ( _bufferPinndedHandle.IsAllocated )
+				{
+					_bufferPinndedHandle.Free();
+				}
 				buffer.Data = IntPtr.Zero;
 				buffer = null;
 				// There are no unmanaged resources to release, but
