@@ -147,13 +147,13 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		///    Constructor used when creating a manual texture.
 		/// </summary>
+		/// <param name="parent"></param>
 		/// <param name="name"></param>
-		/// <param name="type"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="MipmapCount"></param>
-		/// <param name="format"></param>
-		/// <param name="usage"></param>
+		/// <param name="handle"></param>
+		/// <param name="group"></param>
+		/// <param name="isManual"></param>
+		/// <param name="loader"></param>
+		/// <param name="glSupport"></param>
 		internal GLTexture( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, BaseGLSupport glSupport )
 			: base( parent, name, handle, group, isManual, loader )
 		{
@@ -163,6 +163,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		~GLTexture()
 		{
+			dispose( false );
 		}
 
 		#endregion Construction and Destruction
@@ -181,76 +182,71 @@ namespace Axiom.RenderSystems.OpenGL
 				return;
 			}
 
-			if ( TextureType == TextureType.TwoD
+			if ( Name.IndexOf( '.' ) == -1 )
+				throw new Exception( "Unable to load image file '" + Name + "' - invalid extension." );
+
+			string baseName = Name.Substring( 0, Name.LastIndexOf( '.' ) );
+			string ext = Name.Substring( Name.LastIndexOf( '.' ) + 1);
+
+			List<Image> images = new List<Image>();
+			Image image;
+			Stream stream;
+
+			if (   TextureType == TextureType.TwoD
 				|| TextureType == TextureType.OneD
 				|| TextureType == TextureType.ThreeD )
 			{
+            	// find & load resource data intro stream to allow resource
+				// group changes if required
+				stream = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
+				image = Image.FromStream( stream, ext );
 
-				Image image = Image.FromFile( Name );
-				
-				if ( Name.EndsWith( ".dds" ) && image.HasFlag( ImageFlags.CubeMap ) )
-				{
-					List<Image> images = new List<Image>();
-
-					// all 6 images are in a single data buffer, so we will pull out all 6 pieces
-					int imageSize = image.Size / 6;
-
+				// If this is a cube map, set the texture type flag accordingly.
+				if ( image.HasFlag( ImageFlags.CubeMap ) )
 					TextureType = TextureType.CubeMap;
 
-					for ( int i = 0, offset = 0; i < 6; i++, offset += imageSize )
-					{
-						byte[] tempBuffer = new byte[ imageSize ];
-						Array.Copy( image.Data, offset, tempBuffer, 0, imageSize );
+				// If this is a volumetric texture set the texture type flag accordingly.
+				if ( image.Depth > 1 )
+					TextureType = TextureType.ThreeD;
 
-						// load the raw data for this portion of the image data
-						Image cubeImage = Image.FromRawStream( new MemoryStream( tempBuffer ),
-															   image.Width,
-															   image.Height,
-															   image.Format );
+				// Call internal _loadImages, not loadImage since that's external and 
+				// will determine load status etc again
+				images.Add( image );
+				LoadImages( images );
+			}
+			else if ( TextureType == TextureType.CubeMap )
+			{
+				if ( Name.EndsWith( ".dds" ) )
+				{
+	            	// find & load resource data intro stream to allow resource
+					// group changes if required
+					stream = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
+					image = Image.FromStream( stream, ext );
 
-						// add to the list of images to load
-						images.Add( cubeImage );
-					} // for
-
+					// Call internal _loadImages, not loadImage since that's external and 
+					// will determine load status etc again
+					images.Add( image );
 					LoadImages( images );
 				}
 				else
 				{
-					// if this is a dds volumetric texture, set the flag accordingly
-					if ( Name.EndsWith( ".dds" ) && image.Depth > 1 )
+					string[] postfixes = { "_rt", "_lf", "_up", "_dn", "_fr", "_bk" };
+
+					for ( int i = 0; i < 6; i++ )
 					{
-						TextureType = TextureType.ThreeD;
-					}
-					List<Image> images = new List<Image>();
-					images.Add( image );
-					// just load the 1 texture
+						string fullName = baseName + postfixes[ i ] + ext;
+
+						// load the image
+						stream = ResourceGroupManager.Instance.OpenResource( fullName, Group, true, this );
+						image = Image.FromStream( stream, ext );
+
+						images.Add( image );
+					} // for
+
+					// load all 6 images
 					LoadImages( images );
 				}
 			}
-			else if ( TextureType == TextureType.CubeMap )
-			{
-				string baseName, ext;
-				List<Image> images = new List<Image>();
-				string[] postfixes = { "_rt", "_lf", "_up", "_dn", "_fr", "_bk" };
-
-				int pos = Name.LastIndexOf( "." );
-
-				baseName = Name.Substring( 0, pos );
-				ext = Name.Substring( pos );
-
-				for ( int i = 0; i < 6; i++ )
-				{
-					string fullName = baseName + postfixes[ i ] + ext;
-
-					// load the image
-					Image image = Image.FromFile( fullName );
-
-					images.Add( image );
-				} // for
-
-				// load all 6 images
-				LoadImages( images );
-			} // else
 			else
 			{
 				throw new NotImplementedException( "Unknown texture type." );
@@ -372,30 +368,9 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		private void CreateRenderTexture()
 		{
-			if ( this.TextureType != TextureType.TwoD )
-			{
-				throw new NotImplementedException( "Can only create render textures for 2D textures." );
-			}
-
-			// create and bind the texture
-			Gl.glGenTextures( 1, out _glTextureID );
-			Gl.glBindTexture( this.GLTextureType, _glTextureID );
-
-			// generate an image without data by default to use for rendering to
-			// Note: null is casted to byte[] in order to remove compiler confusion over ambiguous overloads
-			Gl.glTexImage2D(
-				this.GLTextureType,
-				0,
-				this.GLFormat,
-				Width,
-				Height,
-				0,
-				this.GLFormat,
-				Gl.GL_UNSIGNED_BYTE,
-				(byte[])null );
-
-			// This needs to be set otherwise the texture doesn't get rendered
-			Gl.glTexParameteri( this.GLTextureType, Gl.GL_TEXTURE_MAX_LEVEL, MipmapCount );
+			// Create the GL texture
+			// This already does everything neccessary
+			createInternalResources();
 		}
 
 		private byte[] RescaleNPower2( Image src )
@@ -481,7 +456,7 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				for ( int mip = 0; mip <= MipmapCount; mip++ )
 				{
-					GLHardwarePixelBuffer buf = new GLTextureBuffer( Name, GLTextureType, _glTextureID, face, mip, (BufferUsage)Usage, doSoftware && mip == 0 );
+					GLHardwarePixelBuffer buf = new GLTextureBuffer( Name, GLTextureType, _glTextureID, face, mip, (BufferUsage)Usage, doSoftware && mip == 0, _glSupport );
 					_surfaceList.Add( buf );
 
 					/// Check for error
@@ -580,7 +555,14 @@ namespace Axiom.RenderSystems.OpenGL
 		protected override void freeInternalResources()
 		{
 			_surfaceList.Clear();
-			Gl.glDeleteTextures( 1, ref _glTextureID );
+			try
+			{
+				Gl.glDeleteTextures( 1, ref _glTextureID );
+			}
+			catch ( AccessViolationException ave )
+			{
+				LogManager.Instance.Write( "Failed to delete Texture[{0}]", _glTextureID );
+			}
 		}
 
 		public override HardwarePixelBuffer GetBuffer( int face, int mipmap )
@@ -593,5 +575,31 @@ namespace Axiom.RenderSystems.OpenGL
 			Debug.Assert( idx < _surfaceList.Count );
 			return _surfaceList[ idx ];
 		}
+
+		/// <summary>
+		///		Implementation of IDisposable to determine how resources are disposed of.
+		/// </summary>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					if ( IsLoaded )
+						Unload();
+				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+
+				FreeInternalResources();
+			}
+			isDisposed = true;
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+		}
+
 	}
 }

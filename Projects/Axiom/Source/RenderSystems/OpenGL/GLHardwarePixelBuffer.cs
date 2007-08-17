@@ -52,6 +52,8 @@ namespace Axiom.RenderSystems.OpenGL
 		#region Fields and Properties
 
 		private BufferLocking _currentLockOptions;
+		private GCHandle _bufGCHandle;
+		private byte[] _data;
 
 		#region buffer Property
 
@@ -117,9 +119,9 @@ namespace Axiom.RenderSystems.OpenGL
 			if ( buffer.Data != IntPtr.Zero )
 				// Already allocated
 				return;
-			byte[] newBuffer = new byte[ this.sizeInBytes ];
-			GCHandle bufGCHandle = GCHandle.Alloc( newBuffer, GCHandleType.Pinned );
-			buffer.Data = bufGCHandle.AddrOfPinnedObject();
+			_data = new byte[ this.sizeInBytes ];
+			_bufGCHandle = GCHandle.Alloc( _data, GCHandleType.Pinned );
+			buffer.Data = _bufGCHandle.AddrOfPinnedObject();
 			// TODO: use PBO if we're HBU_DYNAMIC
 		}
 
@@ -127,7 +129,12 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			if ( ( usage & BufferUsage.Static ) == BufferUsage.Static )
 			{
-				buffer.Data = IntPtr.Zero;
+				if ( _bufGCHandle.IsAllocated )
+				{
+					buffer.Data = IntPtr.Zero;
+					_bufGCHandle.Free();
+					_data = null;
+				}
 			}
 		}
 

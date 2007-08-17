@@ -72,7 +72,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         public void Stop()
         {
-            // nothiing at the moment
+            // nothing at the moment
             renderSystem.Shutdown();
         }
 

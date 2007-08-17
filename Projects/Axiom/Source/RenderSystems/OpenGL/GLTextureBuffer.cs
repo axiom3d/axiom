@@ -41,6 +41,7 @@ using Axiom.Graphics;
 using Axiom.Media;
 using Tao.OpenGl;
 using Axiom.Core;
+using System.Diagnostics;
 
 #endregion Namespace Declarations
 
@@ -49,6 +50,8 @@ namespace Axiom.RenderSystems.OpenGL
 	class GLTextureBuffer : GLHardwarePixelBuffer
 	{
 		#region Fields and Properties
+
+		private BaseGLSupport _glSupport;
 
 		// In case this is a texture level
 		private int _target;
@@ -64,10 +67,12 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Construction and Destruction
 
-		public GLTextureBuffer( string baseName, int target, int id, int face, int level, BufferUsage usage, bool softwareMipmap )
+		public GLTextureBuffer( string baseName, int target, int id, int face, int level, BufferUsage usage, bool softwareMipmap, BaseGLSupport glSupport )
 			: base( 0, 0, 0, PixelFormat.Unknown, usage )
 		{
 			int value;
+
+			_glSupport = glSupport;
 
 			_target = target;
 			_textureId = id;
@@ -117,10 +122,6 @@ namespace Axiom.RenderSystems.OpenGL
 				/// We are invalid, do not allocate a buffer
 				return;
 
-			// Allocate buffer
-			//if(mUsage & HBU_STATIC)
-			//	allocateBuffer();
-
 			// Is this a render target?
 			if ( ( (TextureUsage)Usage & TextureUsage.RenderTarget ) == 0 )
 			{
@@ -150,22 +151,64 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void BindToFramebuffer( int attachment, int zOffset )
 		{
-			base.BindToFramebuffer( attachment, zOffset );
+			Debug.Assert( zOffset < Depth );
+			switch ( _target )
+			{
+				case Gl.GL_TEXTURE_1D:
+					Gl.glFramebufferTexture1DEXT( Gl.GL_FRAMEBUFFER_EXT, attachment,
+										_faceTarget, _textureId, _level );
+					break;
+				case Gl.GL_TEXTURE_2D:
+				case Gl.GL_TEXTURE_CUBE_MAP:
+					Gl.glFramebufferTexture2DEXT( Gl.GL_FRAMEBUFFER_EXT, attachment,
+										_faceTarget, _textureId, _level );
+					break;
+				case Gl.GL_TEXTURE_3D:
+					Gl.glFramebufferTexture3DEXT( Gl.GL_FRAMEBUFFER_EXT, attachment,
+										_faceTarget, _textureId, _level, zOffset );
+					break;
+			}
 		}
 
 		public override void BlitFromMemory( PixelBox src, BasicBox dstBox )
 		{
-			base.BlitFromMemory( src, dstBox );
+			/// Fall back to normal GLHardwarePixelBuffer.BlitFromMemory in case 
+			/// - FBO is not supported
+			/// - the source dimensions match the destination ones, in which case no scaling is needed
+			if ( !_glSupport.CheckExtension( "GL_EXT_framebuffer_object" ) ||
+				 ( src.Width == dstBox.Width && src.Height == dstBox.Height && src.Depth == dstBox.Depth ) )
+			{
+				base.BlitFromMemory( src, dstBox );
+				return;
+			}
+			
 		}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					// Dispose managed resources.
+					foreach ( RenderTexture rt in _sliceTRT )
+					{
+						rt.Dispose();
+					}
+				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
 			base.dispose( disposeManagedResources );
 		}
 
-		public override RenderTexture GetRenderTarget()
+		public override RenderTexture GetRenderTarget( int offset )
 		{
-			return base.GetRenderTarget();
+			return _sliceTRT[ offset ];
 		}
 
 		protected override void download( PixelBox box )

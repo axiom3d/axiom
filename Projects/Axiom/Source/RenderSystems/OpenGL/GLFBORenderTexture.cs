@@ -88,6 +88,24 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					// Dispose managed resources.
+					_fbo.Dispose();
+				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+		}
 		#endregion GLRenderTexture Implementation
 
 	}

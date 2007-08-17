@@ -425,6 +425,8 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				textureManager.Dispose();
 			}
+			LogManager.Instance.Write( "D3D9 : " + Name + " shutdown." );
+
 		}
 
 		/// <summary>

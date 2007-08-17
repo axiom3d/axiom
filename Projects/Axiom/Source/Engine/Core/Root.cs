@@ -724,13 +724,17 @@ namespace Axiom.Core
 		/// </summary>
 		public void Shutdown()
 		{
-			activeRenderSystem.Shutdown();
-
 			SceneManagerEnumerator.Instance.ShutdownAll();
+
+			PluginManager.Instance.UnloadAll();
 
 			// destroy all auto created GPU programs
 			ShadowVolumeExtrudeProgram.Shutdown();
 
+			// ResourceBackGroundPool.Instance.Shutdown();
+			ResourceGroupManager.Instance.ShutdownAll();
+			
+			//_isIntialized = false;
 			LogManager.Instance.Write( "*-*-* Axiom Shutdown" );
 		}
 
@@ -850,6 +854,10 @@ namespace Axiom.Core
 			// force the engine to shutdown
 			Shutdown();
 
+			if ( CompositorManager.Instance != null )
+			{
+				CompositorManager.Instance.Dispose();
+			}
 			if ( OverlayManager.Instance != null )
 			{
 				OverlayManager.Instance.Dispose();
