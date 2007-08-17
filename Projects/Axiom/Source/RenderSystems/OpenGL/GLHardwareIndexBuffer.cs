@@ -270,7 +270,14 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 				}
 
-				Gl.glDeleteBuffersARB( 1, ref bufferID );
+				try
+				{
+					Gl.glDeleteBuffersARB( 1, ref bufferID );
+				}
+				catch ( AccessViolationException ave )
+				{
+					LogManager.Instance.Write( "Failed to delete IndexBuffer[{0}].", bufferID );
+				}
 
 			}
 			isDisposed = true;

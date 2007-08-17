@@ -40,6 +40,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Xml;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -86,7 +87,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		List of loaded plugins.
 		/// </summary>
-		private ArrayList plugins = new ArrayList();
+		private List<IPlugin> _plugins = new List<IPlugin>();
 
 		#endregion Fields
 
@@ -100,9 +101,9 @@ namespace Axiom.Core
 			// TODO: Make optional, using scanning again in the meantim
 			// trigger load of the plugins app.config section
 			//ArrayList newPlugins = (ArrayList)ConfigurationSettings.GetConfig("plugins");
-			ArrayList newPlugins = ScanForPlugins();
+			ScanForPlugins();
 
-			foreach ( IPlugin plugin in newPlugins )
+			foreach ( IPlugin plugin in _plugins )
 			{
 				LoadPlugin( plugin );
 			}
@@ -112,10 +113,8 @@ namespace Axiom.Core
 		///		Scans for plugin files in the current directory.
 		/// </summary>
 		/// <returns></returns>
-		protected ArrayList ScanForPlugins()
+		protected IPlugin[] ScanForPlugins()
 		{
-			ArrayList plugins = new ArrayList();
-
 			string[] files = Directory.GetFiles( ".", "*.dll" );
 
 			foreach ( string file in files )
@@ -142,7 +141,7 @@ namespace Axiom.Core
 								{
 									IPlugin plugin = (IPlugin)Activator.CreateInstance( type );
 									if ( plugin != null )
-										plugins.Add( plugin );
+										_plugins.Add( plugin );
 									else
 										LogManager.Instance.Write( "Failed to create instance of plugin of type {0}.", type );
 								}
@@ -161,7 +160,7 @@ namespace Axiom.Core
 				}
 			}
 
-			return plugins;
+			return _plugins.ToArray();
 		}
 
 		/// <summary>
@@ -170,9 +169,9 @@ namespace Axiom.Core
 		public void UnloadAll()
 		{
 			// loop through and stop all loaded plugins
-			for ( int i = 0; i < plugins.Count; i++ )
+			for ( int i = _plugins.Count - 1; i >= 0; i-- )
 			{
-				IPlugin plugin = (IPlugin)plugins[ i ];
+				IPlugin plugin = (IPlugin)_plugins[ i ];
 
 				LogManager.Instance.Write( "Unloading plugin {0} from {1}", plugin, GetAssemblyTitle( plugin ) );
 
@@ -180,7 +179,7 @@ namespace Axiom.Core
 			}
 
 			// clear the plugin list
-			plugins.Clear();
+			_plugins.Clear();
 		}
 
 		public static string GetAssemblyTitle( object instance )

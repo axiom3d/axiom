@@ -252,10 +252,16 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 				}
 
-				Gl.glDeleteBuffersARB( 1, ref bufferID );
+				try
+				{
+					Gl.glDeleteBuffersARB( 1, ref bufferID );
+				}
+				catch ( AccessViolationException ave )
+				{
+					LogManager.Instance.Write( "Error Deleting Vertexbuffer[{0}].", bufferID );
+				}
 
 			}
-			isDisposed = true;
 
 			// If it is available, make the call to the
 			// base class's Dispose(Boolean) method

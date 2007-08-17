@@ -124,5 +124,27 @@ namespace Axiom.RenderSystems.OpenGL
 		//{
 		//    base.UnloadAndDestroyAll();
 		//}
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					foreach ( Resource texture in Resources )
+					{
+						texture.Dispose();
+					}
+
+				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+
+		}
 	}
 }

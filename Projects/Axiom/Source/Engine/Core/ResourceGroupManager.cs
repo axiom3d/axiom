@@ -1862,8 +1862,11 @@ namespace Axiom.Core
         /// <param name="su">ScriptLoader instance.</param>
         public void UnregisterScriptLoader( IScriptLoader su )
         {
-            LogManager.Instance.Write( "Registering ScriptLoader for patterns {0}", su.ScriptPatterns );
-            if ( _scriptLoaderOrders.ContainsKey( su.LoadingOrder ) )
+			StringBuilder patterns = new StringBuilder();
+			foreach ( string pattern in su.ScriptPatterns )
+				patterns.Append( pattern + " " );
+			LogManager.Instance.Write( "Unregistering ScriptLoader for patterns {0}", patterns );
+			if ( _scriptLoaderOrders.ContainsKey( su.LoadingOrder ) )
             {
                 _scriptLoaderOrders[ su.LoadingOrder ].Remove( su );
             }
@@ -1983,7 +1986,6 @@ namespace Axiom.Core
                         if ( res.Creator == manager )
                         {
                             // Increment first since iterator will be invalidated
-                            //LoadUnloadResourceList::iterator del = l++;
                             rl.Remove( res );
                         }
                         else
