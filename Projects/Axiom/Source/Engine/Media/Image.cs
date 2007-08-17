@@ -232,7 +232,7 @@ namespace Axiom.Media
 		{
 		}
 
-		public ~Image()
+		~Image()
 		{
 			dispose( false );
 		}
