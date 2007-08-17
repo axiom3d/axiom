@@ -84,7 +84,8 @@
 			<Reference name="Axiom.Demos" localCopy="true" />
 			<Reference name="Axiom.Plugins.ParticleFX" localCopy="true"/>
 			<Reference name="Axiom.Plugins.CgProgramManager" localCopy="true"/>
-			<Reference name="Axiom.SceneManagers.Bsp" localCopy="true"/>
+      <Reference name="Axiom.Plugins.DevILCodecs" localCopy="true"/>
+      <Reference name="Axiom.SceneManagers.Bsp" localCopy="true"/>
 			<Reference name="Axiom.SceneManagers.Octree" localCopy="true"/>
 
 			<Files>
@@ -128,7 +129,8 @@
 			<Reference name="Axiom.Demos" localCopy="true" />
 			<Reference name="Axiom.Plugins.ParticleFX" localCopy="true"/>
 			<Reference name="Axiom.Plugins.CgProgramManager" localCopy="true"/>
-			<Reference name="Axiom.SceneManagers.Bsp" localCopy="true"/>
+      <Reference name="Axiom.Plugins.DevILCodecs" localCopy="true"/>
+      <Reference name="Axiom.SceneManagers.Bsp" localCopy="true"/>
 			<Reference name="Axiom.SceneManagers.Octree" localCopy="true"/>
 
 			<?if OS = "Win32" ?>
