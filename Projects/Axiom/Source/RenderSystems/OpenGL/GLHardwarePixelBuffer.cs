@@ -101,7 +101,7 @@ namespace Axiom.RenderSystems.OpenGL
 			GLFormat = Gl.GL_NONE;
 		}
 
-		public ~GLHardwarePixelBuffer()
+		~GLHardwarePixelBuffer()
 		{
 			dispose( false );
 		}
