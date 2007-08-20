@@ -40,7 +40,7 @@ namespace Axiom.Demos.Browser.WinForm
             _setupResources();
 
 			dlg = new DemoConfigDialog();
-			dlg.LoadDemos( Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location )+ @"\Axiom.Demos.dll" );
+			dlg.LoadDemos( Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location ) + System.IO.Path.DirectorySeparatorChar + @"Axiom.Demos.dll" );
             DialogResult result = dlg.ShowDialog();
             if ( result == DialogResult.Cancel )
                 return false;
