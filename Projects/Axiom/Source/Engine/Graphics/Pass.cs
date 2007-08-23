@@ -592,7 +592,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Color write setting for this pass.
 		/// </summary>
-		private bool _colorWrite;
+		private bool _colorWriteEnabled;
 		/// <summary>
 		///    Sets whether or not color buffer writing is enabled for this Pass.
 		/// </summary>
@@ -605,15 +605,15 @@ namespace Axiom.Graphics
 		///    level only, not the Material since you are likely to want to manage it 
 		///    at a higher level).
 		/// </remarks>
-		public bool ColorWrite
+		public bool ColorWriteEnabled
 		{
 			get
 			{
-				return _colorWrite;
+				return _colorWriteEnabled;
 			}
 			set
 			{
-				_colorWrite = value;
+				_colorWriteEnabled = value;
 			}
 		}
 
@@ -1663,7 +1663,7 @@ namespace Axiom.Graphics
 				// setting the state so it matches one of the conditions above, even 
 				// though this state is not used in rendering.
 				return ( !_lightingEnabled || 
-					     !_colorWrite ||
+					     !_colorWriteEnabled ||
 						 ( _diffuse == ColorEx.Black && _specular == ColorEx.Black ) );
 			}
 		}
@@ -1734,7 +1734,7 @@ namespace Axiom.Graphics
 			// depth buffer settings
 			_depthCheck = true;
 			_depthWrite = true;
-			_colorWrite = true;
+			_colorWriteEnabled = true;
 			_depthFunction = CompareFunction.LessEqual;
 
 			// cull settings
@@ -1830,7 +1830,7 @@ namespace Axiom.Graphics
 			target._depthWrite = _depthWrite;
 			// target.alphaRejectFunc = alphaRejectFunc;
 			// target.alphaRejectVal = alphaRejectVal;
-			target._colorWrite = _colorWrite;
+			target._colorWriteEnabled = _colorWriteEnabled;
 			target._depthFunction = _depthFunction;
 			target._depthBiasConstant = _depthBiasConstant;
 			target._depthBiasSlopeScale = _depthBiasSlopeScale;
