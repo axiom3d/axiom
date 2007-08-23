@@ -40,7 +40,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.Graphics
 {
 	/// <summary>
@@ -185,6 +185,131 @@ namespace Axiom.Graphics
 			Debug.Assert( index < elements.Count && index >= 0, "Element index out of bounds." );
 
 			return elements[ index ];
+		}
+
+		/// <summary>
+		///  Returns the entire vertexelement list
+		/// </summary>
+		public List<VertexElement> Elements
+		{
+			get
+			{
+				return elements;
+			}
+		}
+
+		public class VertexElementLess : IComparer<Axiom.Graphics.VertexElement>
+		{
+			// Sort routine for VertexElement
+			#region IComparer Members
+
+			public int Compare( VertexElement e1, VertexElement e2 )
+			{
+				// Sort by source first
+				if ( e1.Source < e2.Source )
+				{
+					return 1;
+				}
+				else if ( e1.Source == e2.Source )
+				{
+					// Use ordering of semantics to sort
+					if ( e1.Semantic < e2.Semantic )
+					{
+						return 1;
+					}
+					else if ( e1.Semantic == e2.Semantic )
+					{
+						// Use index to sort
+						if ( e1.Index < e2.Index )
+						{
+							return 1;
+						}
+					}
+				}
+				return -1;
+			}
+
+			#endregion
+		}
+
+		public void Sort()
+		{
+			VertexElementLess compareFunction = new VertexElementLess();
+			elements.Sort( compareFunction );
+		}
+
+		public VertexDeclaration GetAutoOrganizedDeclaration( bool skeletalAnimation, bool vertexAnimation )
+		{
+			VertexDeclaration newDecl = (VertexDeclaration)this.Clone();
+			// Set all sources to the same buffer (for now)
+			List<VertexElement> elems = newDecl.Elements;
+
+			int c = 0;
+
+			for ( int i = 0; i < elems.Count; i++, ++c )
+			{
+				VertexElement elem = elems[ i ];
+				newDecl.ModifyElement( c, 0, 0, elem.Type, elem.Semantic, elem.Index );
+			}
+
+			newDecl.Sort();
+
+			// Now sort out proper buffer assignments and offsets
+			int offset = 0;
+			c = 0;
+			short buffer = 0;
+			VertexElementSemantic prevSemantic = VertexElementSemantic.Position;
+
+			for ( int i = 0; i < elems.Count; i++, ++c )
+			{
+				VertexElement elem = elems[ i ];
+				bool splitWithPrev = false;
+				bool splitWithNext = false;
+				switch ( elem.Semantic )
+				{
+					case VertexElementSemantic.Position:
+						// For morph animation, we need positions on their own
+						splitWithPrev = vertexAnimation;
+						splitWithNext = vertexAnimation;
+						break;
+					case VertexElementSemantic.Normal:
+						// Normals can't sharing with blend weights/indices
+						splitWithPrev = ( prevSemantic == VertexElementSemantic.BlendWeights || prevSemantic == VertexElementSemantic.BlendIndices );
+						// All animated meshes have to split after normal
+						splitWithNext = ( skeletalAnimation || vertexAnimation );
+						break;
+					case VertexElementSemantic.BlendWeights:
+						// Blend weights/indices can be sharing with their own buffer only
+						splitWithPrev = true;
+						break;
+					case VertexElementSemantic.BlendIndices:
+						// Blend weights/indices can be sharing with their own buffer only
+						splitWithNext = true;
+						break;
+				}
+
+				if ( splitWithPrev && offset > 0 )
+				{
+					++buffer;
+					offset = 0;
+				}
+
+				prevSemantic = elem.Semantic;
+
+				newDecl.ModifyElement( c, buffer, offset, elem.Type, elem.Semantic, elem.Index );
+
+				if ( splitWithNext )
+				{
+					++buffer;
+					offset = 0;
+				}
+				else
+				{
+					offset += elem.Size;
+				}
+			}
+
+			return newDecl;
 		}
 
 		/// <summary>

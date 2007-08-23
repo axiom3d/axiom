@@ -236,25 +236,25 @@ namespace Axiom.Graphics
 		/// <param name="priority"></param>
 		public void AddRenderable( IRenderable renderable, ushort priority, RenderQueueGroupID groupID )
 		{
-		    RenderQueueGroup group = GetQueueGroup( groupID );
+			RenderQueueGroup group = GetQueueGroup( groupID );
 
-		    // let the material know it has been used, which also forces a recompile if required
-		    if ( renderable.Material != null )
-		    {
-		        renderable.Material.Touch();
-		    }
+			// let the material know it has been used, which also forces a recompile if required
+			if ( renderable.Material != null )
+			{
+				renderable.Material.Touch();
+			}
 			// Check material & technique supplied (the former since the default implementation
 			// of getTechnique is based on it for backwards compatibility
 			Technique t = renderable.Technique;
-			if(renderable.Material == null || t == null)
+			if ( renderable.Material == null || t == null )
 			{
 				// Use default base white
-				Material baseWhite = (Material)MaterialManager.Instance["BaseWhite"];
-				t = baseWhite.GetTechnique(0);
+				Material baseWhite = (Material)MaterialManager.Instance[ "BaseWhite" ];
+				t = baseWhite.GetTechnique( 0 );
 			}
 
-		    // add the renderable to the appropriate group
-		    group.AddRenderable( renderable, t, priority );
+			// add the renderable to the appropriate group
+			group.AddRenderable( renderable, t, priority );
 		}
 
 		/// <summary>
@@ -262,10 +262,21 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="item"></param>
 		/// <param name="groupID"></param>
+		public void AddRenderable( IRenderable item, RenderQueueGroupID groupID )
+		{
+			AddRenderable( item, DEFAULT_PRIORITY, groupID );
+		}
+
+		/// <summary>
+		///		Overloaded method.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <param name="priority"></param>
 		public void AddRenderable( IRenderable item, ushort priority )
 		{
 			AddRenderable( item, priority, defaultGroup );
 		}
+
 
 		/// <summary>
 		///		Overloaded method.
