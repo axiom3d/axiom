@@ -51,73 +51,73 @@ namespace Axiom.Core
 	{
 		#region Member variables
 
-        //private float _a;
+		//private float _a;
 		/// <summary>
 		///		Alpha value [0,1].
 		/// </summary>
 		public float a;
-        //{
-        //    get
-        //    {
-        //        return _a;
-        //    }
-        //    set
-        //    {
-        //        Debug.Assert( value >= 0.0f && value <= 1.0f );
-        //        _a = value;
-        //    }
-        //}
+		//{
+		//    get
+		//    {
+		//        return _a;
+		//    }
+		//    set
+		//    {
+		//        Debug.Assert( value >= 0.0f && value <= 1.0f );
+		//        _a = value;
+		//    }
+		//}
 
-        //private float _r;
+		//private float _r;
 		/// <summary>
 		///		Red color component [0,1].
 		/// </summary>
-        public float r;
-        //{
-        //    get
-        //    {
-        //        return _r;
-        //    }
-        //    set
-        //    {
-        //        Debug.Assert( value >= 0.0f && value <= 1.0f );
-        //        _r = value;
-        //    }
-        //}
+		public float r;
+		//{
+		//    get
+		//    {
+		//        return _r;
+		//    }
+		//    set
+		//    {
+		//        Debug.Assert( value >= 0.0f && value <= 1.0f );
+		//        _r = value;
+		//    }
+		//}
 
-        //private float _g;
+		//private float _g;
 		/// <summary>
 		///		Green color component [0,1].
 		/// </summary>
-        public float g;
-        //{
-        //    get
-        //    {
-        //        return _g;
-        //    }
-        //    set
-        //    {
-        //        Debug.Assert( value >= 0.0f && value <= 1.0f );
-        //        _g = value;
-        //    }
-        //}
+		public float g;
+		//{
+		//    get
+		//    {
+		//        return _g;
+		//    }
+		//    set
+		//    {
+		//        Debug.Assert( value >= 0.0f && value <= 1.0f );
+		//        _g = value;
+		//    }
+		//}
 
-        //private float _b;
+		//private float _b;
 		/// <summary>
 		///		Blue color component [0,1].
 		/// </summary>
-        public float b;
-        //{
-        //    get
-        //    {
-        //        return _b;
-        //    }
-        //    set
-        //    {
-        //        Debug.Assert( value >= 0.0f && value <= 1.0f );
-        //        _b = value;
-        //    }
-        //}
+		public float b;
+		//{
+		//    get
+		//    {
+		//        return _b;
+		//    }
+		//    set
+		//    {
+		//        Debug.Assert( value >= 0.0f && value <= 1.0f );
+		//        _b = value;
+		//    }
+		//}
 
 
 		#endregion
@@ -153,10 +153,10 @@ namespace Axiom.Core
 		/// <param name="b">Blue color component.</param>
 		public ColorEx( float a, float r, float g, float b )
 		{
-            //Debug.Assert( a >= 0.0f && a <= 1.0f );
-            //Debug.Assert( r >= 0.0f && r <= 1.0f );
-            //Debug.Assert( g >= 0.0f && g <= 1.0f );
-            //Debug.Assert( b >= 0.0f && b <= 1.0f );
+			//Debug.Assert( a >= 0.0f && a <= 1.0f );
+			//Debug.Assert( r >= 0.0f && r <= 1.0f );
+			//Debug.Assert( g >= 0.0f && g <= 1.0f );
+			//Debug.Assert( b >= 0.0f && b <= 1.0f );
 
 			this.a = a;
 			this.r = r;
@@ -200,6 +200,19 @@ namespace Axiom.Core
 		//{
 		//    return System.Drawing.Color.FromArgb( (int)( a * 255.0f ), (int)( r * 255.0f ), (int)( g * 255.0f ), (int)( b * 255.0f ) );
 		//}
+
+		public int ToRGBA()
+		{
+			int result = 0;
+
+			result += ( (int)( r * 255.0f ) ) << 24;
+			result += ( (int)( g * 255.0f ) ) << 16;
+			result += ( (int)( b * 255.0f ) ) << 8;
+			result += ( (int)( a * 255.0f ) );
+
+			return result;
+		}
+
 
 		/// <summary>
 		///		Converts this color value to packed ABGR format.
