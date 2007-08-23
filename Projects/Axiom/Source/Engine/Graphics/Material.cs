@@ -513,16 +513,16 @@ namespace Axiom.Graphics
 		/// every current Technique, and for every current Pass within those Techniques. If 
 		/// you need more precision, retrieve the Technique and Pass instances and set the
 		/// property there.
-		/// <see ref="Pass.ColorWrite"></see>
+		/// <see ref="Pass.ColorWriteEnabled"></see>
 		/// </remarks>
 		/// <ogre name="setColourWriteEnabled" />
-		public bool ColorWrite
+		public bool ColorWriteEnabled
 		{
 			set
 			{
 				for ( int i = 0; i < techniques.Count; i++ )
 				{
-					( (Technique)techniques[ i ] ).ColorWrite = value;
+					( (Technique)techniques[ i ] ).ColorWriteEnabled = value;
 				}
 			}
 		}

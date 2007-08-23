@@ -118,8 +118,7 @@ namespace Axiom.Graphics
 		    if ( !priorityGroups.ContainsKey( priority ) )
 		    {
 		        // create a new queue group for this group id
-		        group = new RenderPriorityGroup( splitPassesByLightingType, splitNoShadowPasses,
-		                                        splitPassesByLightingType );
+		        group = new RenderPriorityGroup( this, splitPassesByLightingType, splitNoShadowPasses, splitPassesByLightingType );
 
 		        // add the new group to cached render group
 		        priorityGroups.Add( priority, group );

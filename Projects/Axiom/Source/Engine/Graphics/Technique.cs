@@ -601,15 +601,22 @@ namespace Axiom.Graphics
 		/// you to set these properties for every current Pass within this Technique. If 
 		/// you need more precision, retrieve the Pass instance and set the
 		/// property there.
-		/// <see ref="Pass.ColorWrite"></see>
+		/// <see ref="Pass.ColorWriteEnabled"></see>
 		/// </remarks>
-		public bool ColorWrite
+		public bool ColorWriteEnabled
 		{
+			get
+			{
+				if ( _passes.Count == 0 )
+					return true;
+				else
+					return _passes[ 0 ].ColorWriteEnabled;
+			}
 			set
 			{
 				foreach ( Pass p in _passes )
 				{
-					p.ColorWrite = value;
+					p.ColorWriteEnabled = value;
 				}
 			}
 		}
@@ -938,7 +945,7 @@ namespace Axiom.Graphics
 									newPass.Emissive.CompareTo( ColorEx.Black ) == 0 )
 								{
 
-									newPass.ColorWrite = false;
+									newPass.ColorWriteEnabled = false;
 								}
 
 								iPass = new IlluminationPass();

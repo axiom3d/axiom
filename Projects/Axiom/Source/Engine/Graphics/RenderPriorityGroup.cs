@@ -60,6 +60,10 @@ namespace Axiom.Graphics
 	{
 		#region Fields
 
+		private RenderQueueGroup _parent;
+		/// <summary>
+		/// 
+		/// </summary>
 		protected internal ArrayList transparentPasses = new ArrayList();
 		/// <summary>
 		///		Solid pass list, used when no shadows, modulative shadows, or ambient passes for additive.
@@ -91,8 +95,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Default constructor.
 		/// </summary>
-		internal RenderPriorityGroup( bool splitPassesByLightingType, bool splitNoShadowPasses,
-									 bool shadowCastersCannotBeReceivers )
+		internal RenderPriorityGroup( RenderQueueGroup parent, bool splitPassesByLightingType, bool splitNoShadowPasses, bool shadowCastersCannotBeReceivers )
 		{
 			// sorted list, using Pass as a key (sorted based on hashcode), and IRenderable as the value
 			solidPasses = new SortedList( new SolidSort(), 50 );
@@ -118,20 +121,20 @@ namespace Axiom.Graphics
 			// Note: colour write disabled with depth check/write enabled means
 			//       setup depth buffer for other passes use.
 
-			if ( technique.IsTransparent && !( technique.DepthWrite || technique.DepthCheck ) )
+			if ( technique.IsTransparent && ( !technique.DepthWrite || !technique.DepthCheck || technique.ColorWriteEnabled ) )
 			{
 				AddTransparentRenderable( technique, renderable );
 			}
 			else
 			{
-				if ( splitNoShadowPasses && ( !technique.Parent.ReceiveShadows || renderable.CastsShadows && shadowCastersCannotBeReceivers ) )
+				if ( splitNoShadowPasses && _parent.ShadowsEnabled && ( !technique.Parent.ReceiveShadows || renderable.CastsShadows && shadowCastersCannotBeReceivers ) )
 				{
 					// Add solid renderable and add passes to no-shadow group
 					AddSolidRenderable( technique, renderable, true );
 				}
 				else
 				{
-					if ( splitPassesByLightingType )
+					if ( splitPassesByLightingType && _parent.ShadowsEnabled )
 					{
 						AddSolidRenderableSplitByLightType( technique, renderable );
 					}
