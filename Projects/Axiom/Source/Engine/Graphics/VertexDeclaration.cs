@@ -206,27 +206,40 @@ namespace Axiom.Graphics
 			public int Compare( VertexElement e1, VertexElement e2 )
 			{
 				// Sort by source first
+
+				if ( e1 == null && e2 == null )
+					return 0;
+
+				if ( e1 == null )
+					return -1;
+				else if ( e2 == null )
+					return 1;
+
 				if ( e1.Source < e2.Source )
 				{
-					return 1;
+					return -1;
 				}
 				else if ( e1.Source == e2.Source )
 				{
 					// Use ordering of semantics to sort
 					if ( e1.Semantic < e2.Semantic )
 					{
-						return 1;
+						return -1;
 					}
 					else if ( e1.Semantic == e2.Semantic )
 					{
 						// Use index to sort
 						if ( e1.Index < e2.Index )
 						{
-							return 1;
+							return -1;
+						}
+						else if ( e1.Index == e2.Index )
+						{
+							return 0;
 						}
 					}
 				}
-				return -1;
+				return 1;
 			}
 
 			#endregion
