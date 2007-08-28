@@ -186,7 +186,7 @@ namespace Axiom.Graphics
 			// Default
 			_rowPitch = width;
 			_slicePitch = height * width;
-			sizeInBytes = height * width * depth * PixelUtil.GetNumElemBytes( format );
+			sizeInBytes = height * width * PixelUtil.GetNumElemBytes( format );
 		}
 
 		#endregion Constructors

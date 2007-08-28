@@ -438,10 +438,11 @@ namespace Axiom.RenderSystems.DirectX9
 			// and finally from the temporary surface to the real surface.
 			PixelBox converted = src;
 			GCHandle bufGCHandle = new GCHandle();
+			int bufSize = 0;
 			// convert to pixelbuffer's native format if necessary
 			if ( D3DHelper.ConvertEnum( src.Format ) == D3D.Format.Unknown )
 			{
-				int bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, Format );
+				bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, Format );
 				byte[] newBuffer = new byte[ bufSize ];
 				bufGCHandle = GCHandle.Alloc( newBuffer, GCHandleType.Pinned );
 				converted = new PixelBox( src.Width, src.Height, src.Depth, Format, bufGCHandle.AddrOfPinnedObject() );
@@ -450,27 +451,11 @@ namespace Axiom.RenderSystems.DirectX9
 
 			// int formatBytes = PixelUtil.GetNumElemBytes(converted.Format);
 			D3D.Surface tmpSurface = device.CreateOffscreenPlainSurface( converted.Width, converted.Height, D3DHelper.ConvertEnum( converted.Format ), D3D.Pool.Scratch );
-			int pitch;
-			// Ideally I would be using the Array mechanism here, but that doesn't seem to work
-			DX.GraphicsStream buf = tmpSurface.LockRectangle( D3D.LockFlags.NoSystemLock, out pitch );
-			buf.Position = 0;
-			unsafe
-			{
-				int bufSize = PixelUtil.GetMemorySize( converted.Width, converted.Height, converted.Depth, converted.Format );
-				byte* srcPtr = (byte*)converted.Data.ToPointer();
-				byte[] ugh = new byte[ bufSize ];
-				for ( int i = 0; i < bufSize; ++i )
-					ugh[ i ] = srcPtr[ i ];
-				buf.Write( ugh );
-			}
-			tmpSurface.UnlockRectangle();
-			buf.Dispose();
+			bufSize = PixelUtil.GetMemorySize( converted.Width, converted.Height, converted.Depth, converted.Format );
+			byte[] ugh = new byte[ bufSize ];
+			Marshal.Copy( converted.Data, ugh, 0, bufSize );
+			D3DTexture.CopyMemoryToSurface( ugh, tmpSurface, converted.Width, converted.Height, PixelUtil.GetNumElemBits( converted.Format ), PixelUtil.HasAlpha( converted.Format ) );
 
-			//ImageInformation imageInfo = new ImageInformation();
-			//imageInfo.Format = D3DHelper.ConvertEnum(converted.Format);
-			//imageInfo.Width = converted.Width;
-			//imageInfo.Height = converted.Height;
-			//imageInfo.Depth = converted.Depth;
 			if ( surface != null )
 			{
 				// I'm trying to write to surface using the data in converted
@@ -483,8 +468,8 @@ namespace Axiom.RenderSystems.DirectX9
 				D3D.Box srcBox = ToD3DBoxExtent( converted );
 				D3D.Box destBox = ToD3DBox( dstBox );
 				Debug.Assert( false, "Volume textures not yet supported" );
-				// VolumeLoader.FromStream(volume, destBox, converted.Data, converted.RowPitch * converted.SlicePitch * formatBytes, srcBox, Filter.None, 0);
-				D3D.VolumeLoader.FromStream( volume, destBox, buf, srcBox, D3D.Filter.None, 0 );
+				//D3D.VolumeLoader.FromStream(volume, destBox, converted.Data, converted.RowPitch * converted.SlicePitch * formatBytes, srcBox, Filter.None, 0);
+				//D3D.VolumeLoader.FromStream( volume, destBox, buf, srcBox, D3D.Filter.None, 0 );
 			}
 
 			tmpSurface.Dispose();

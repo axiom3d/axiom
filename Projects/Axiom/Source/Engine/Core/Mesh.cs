@@ -2781,7 +2781,6 @@ namespace Axiom.Core
 			if ( IsLoaded )
 			{
 				Unload();
-				IsLoaded = false;
 			}
 
 			// I should eventually call Preload here, and then use 
@@ -2826,7 +2825,6 @@ namespace Axiom.Core
 				}
 			}
 
-			IsLoaded = true;
 
 			// meshLoadMeter.Exit();
 		}
@@ -2841,7 +2839,6 @@ namespace Axiom.Core
 			// TODO: SubMeshNameCount
 			// TODO: Remove LOD levels
 			_isPreparedForShadowVolumes = false;
-			IsLoaded = false;
 		}
 
 		#endregion

@@ -76,6 +76,11 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected bool loadFromFile;
 
+		/// <summary>
+		/// Did we encounter a compilation error?
+		/// </summary>
+		protected bool _compileError = false;
+
 		#region SourceFile Property
 
 		/// <summary>
@@ -99,6 +104,7 @@ namespace Axiom.Graphics
 				fileName = value;
 				source = "";
 				loadFromFile = true;
+				_compileError = false;
 			}
 		}
 
@@ -127,6 +133,7 @@ namespace Axiom.Graphics
 				source = value;
 				fileName = "";
 				loadFromFile = false;
+				_compileError = false;
 			}
 		}
 
@@ -226,6 +233,30 @@ namespace Axiom.Graphics
 
 		#endregion IsMorphAninimationIncluded Property
 
+		#region IsVertexTextureFetchRequired Property
+
+		/// <summary>
+		///		Does this (vertex) program require vertex texture fetch?
+		/// </summary>
+		protected bool _isVertexTextureFetchRequired;
+		/// <summary>
+		///		Gets/Sets whether this vertex program requires support for vertex 
+		///		texture fetch from the hardware. 
+		/// </summary>
+		public virtual bool IsVertexTextureFetchRequired
+		{
+			get
+			{
+				return _isVertexTextureFetchRequired;
+			}
+			set
+			{
+				_isVertexTextureFetchRequired = value;
+			}
+		}
+
+		#endregion IsVertexTextureFetchRequired Property
+
 		#region PoseAnimationCount Property
 
 		/// <summary>
@@ -312,9 +343,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				// If skeletal animation is being done, we need support for UBYTE4
-				if ( this.IsSkeletalAnimationIncluded &&
-					!Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexFormatUByte4 ) )
+				if ( _compileError || !isRequiredCapabilitiesSupported())
 				{
 
 					return false;
@@ -389,11 +418,6 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected override void load()
 		{
-			if ( IsLoaded )
-			{
-				Unload();
-			}
-
 			// load from file and get the source string from it
 			if ( loadFromFile )
 			{
@@ -402,10 +426,16 @@ namespace Axiom.Graphics
 				source = reader.ReadToEnd();
 			}
 
-			// call polymorphic load to read source
-			LoadFromSource();
-
-			IsLoaded = true;
+			try
+			{
+				// call polymorphic load to read source
+				LoadFromSource();
+			}
+			catch ( Exception ex )
+			{
+				LogManager.Instance.Write( "Gpu program {0} encountered an error during loading and is thus not supported.", Name );
+				_compileError = true;
+			}
 		}
 
         protected override void unload()
@@ -416,6 +446,26 @@ namespace Axiom.Graphics
 		///    Method which must be implemented by subclasses, loads the program from source.
 		/// </summary>
 		protected abstract void LoadFromSource();
+
+		protected bool isRequiredCapabilitiesSupported()
+		{
+			HardwareCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
+			// If skeletal animation is being done, we need support for UBYTE4
+			if ( this.IsSkeletalAnimationIncluded &&
+				!caps.HasCapability( Capabilities.VertexFormatUByte4 ) )
+			{
+				return false;
+			}
+
+			// Vertex texture fetch required?
+			if ( this.IsVertexTextureFetchRequired &&
+				!caps.HasCapability( Capabilities.VertexTextureFetch ) )
+			{
+				return false;
+			}
+
+			return true;
+		}
 
 		#endregion
 

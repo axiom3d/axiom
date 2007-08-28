@@ -136,7 +136,6 @@ namespace Axiom.Graphics
 
             // load the low level assembler program
             assemblerProgram.Load();
-            IsLoaded = true;
         }
 
         /// <summary>
@@ -179,7 +178,6 @@ namespace Axiom.Graphics
             // polymorphic unload
             UnloadImpl();
 
-            IsLoaded = false;
             isHighLevelLoaded = false;
         }
 

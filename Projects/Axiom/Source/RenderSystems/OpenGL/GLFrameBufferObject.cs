@@ -182,7 +182,7 @@ namespace Axiom.RenderSystems.OpenGL
 			/// First buffer must be bound
 			if ( _color[ 0 ].Buffer != null )
 			{
-				throw new ArgumentException( "Attachment 0 must have surface attached" );
+				throw new ArgumentException( "Attachment 0 must have surface attached." );
 			}
 
 			/// Bind FBO to frame buffer

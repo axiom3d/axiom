@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <EngineConfig xmlns="http://tempuri.org/EngineConfig.xsd">
-	<FilePath type="Folder" src="../../../../Media/Textures"/>
+  <FilePath type="ZipFile" src="../../../../Media/Archives/AxiomCore.zip"/>
+  <FilePath type="Folder" src="../../../../Media/Textures"/>
   <FilePath type="Folder" src="../../../../Media/BrowserImages"/>
   <FilePath type="Folder" src="../../../../Media/Icons"/>
 	<FilePath type="Folder" src="../../../../Media/Fonts"/>
@@ -10,7 +11,6 @@
 	<FilePath type="Folder" src="../../../../Media/Overlays"/>
 	<FilePath type="Folder" src="../../../../Media/GpuPrograms"/>
   <FilePath type="ZipFile" src="../../../../Media/Archives/Fresnel.zip"/>
-	<FilePath type="ZipFile" src="../../../../Media/Archives/Water.zip"/>
 	<FilePath type="ZipFile" src="../../../../Media/Textures/SkyBoxes.zip"/>
 	<FilePath type="ZipFile" src="../../../../Media/Archives/chiropteraDM.zip"/>
 </EngineConfig>

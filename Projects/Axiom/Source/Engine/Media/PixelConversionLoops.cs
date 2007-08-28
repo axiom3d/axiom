@@ -303,6 +303,30 @@ namespace Axiom.Media
 			}
 		}
 
+		unsafe private static void R8G8B8A8toA8R8G8B8( PixelBox src, PixelBox dst )
+		{
+			uint* srcptr = (uint*)( src.Data.ToPointer() );
+			uint* dstptr = (uint*)( dst.Data.ToPointer() );
+			int srcSliceSkip = src.SliceSkip;
+			int dstSliceSkip = dst.SliceSkip;
+			int k = src.Right - src.Left;
+			for ( int z = src.Front; z < src.Back; z++ )
+			{
+				for ( int y = src.Top; y < src.Bottom; y++ )
+				{
+					for ( int x = 0; x < k; x++ )
+					{
+						uint inp = srcptr[ x ];
+						dstptr[ x ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0xFFFFFF00 ) >> 8 );
+					}
+					srcptr += src.RowPitch;
+					dstptr += dst.RowPitch;
+				}
+				srcptr += srcSliceSkip;
+				dstptr += dstSliceSkip;
+			}
+		}
+
 		unsafe private static void R8G8B8A8toA8B8G8R8( PixelBox src, PixelBox dst )
 		{
 			uint* srcptr = (uint*)( src.Data.ToPointer() );
@@ -1035,48 +1059,48 @@ namespace Axiom.Media
 		{
 			switch ( (int)dst.Format << 8 + (int)src.Format )
 			{
-				// 			case ((int)PixelFormat.A8R8G8B8 << 8) + (int)PixelFormat.A8B8G8R8:
-				// 				A8R8G8B8toA8B8G8R8(src, dst);
-				// 				break;
+				case ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.A8B8G8R8:
+					A8R8G8B8toA8B8G8R8( src, dst );
+					break;
 				case ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8A8:
 					A8R8G8B8toB8G8R8A8( src, dst );
 					break;
-				// 			case ((int)PixelFormat.A8R8G8B8 << 8) + (int)PixelFormat.R8G8B8A8:
-				// 				A8R8G8B8toR8G8B8A8(src, dst);
-				// 				break;
-				// 			case ((int)PixelFormat.A8B8G8R8 << 8) + (int)PixelFormat.A8R8G8B8:
-				// 				A8B8G8R8toA8R8G8B8(src, dst);
-				// 				break;
-				// 			case ((int)PixelFormat.A8B8G8R8 << 8) + (int)PixelFormat.B8G8R8A8:
-				// 				A8B8G8R8toB8G8R8A8(src, dst);
-				// 				break;
-				// 			case ((int)PixelFormat.A8B8G8R8 << 8) + (int)PixelFormat.R8G8B8A8:
-				// 				A8B8G8R8toR8G8B8A8(src, dst);
-				// 				break;
+				case ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.R8G8B8A8:
+					A8R8G8B8toR8G8B8A8( src, dst );
+					break;
+				case ( (int)PixelFormat.A8B8G8R8 << 8 ) + (int)PixelFormat.A8R8G8B8:
+					A8B8G8R8toA8R8G8B8( src, dst );
+					break;
+				case ( (int)PixelFormat.A8B8G8R8 << 8 ) + (int)PixelFormat.B8G8R8A8:
+					A8B8G8R8toB8G8R8A8( src, dst );
+					break;
+				case ( (int)PixelFormat.A8B8G8R8 << 8 ) + (int)PixelFormat.R8G8B8A8:
+					A8B8G8R8toR8G8B8A8( src, dst );
+					break;
 				case ( (int)PixelFormat.B8G8R8A8 << 8 ) + (int)PixelFormat.A8R8G8B8:
 					B8G8R8A8toA8R8G8B8( src, dst );
 					break;
-				// 			case ((int)PixelFormat.B8G8R8A8 << 8) + (int)PixelFormat.A8B8G8R8:
-				// 				B8G8R8A8toA8B8G8R8(src, dst);
-				// 				break;
-				// 			case ((int)PixelFormat.B8G8R8A8 << 8) + (int)PixelFormat.R8G8B8A8:
-				// 				B8G8R8A8toR8G8B8A8(src, dst);
-				// 				break;
-				// 			case ((int)PixelFormat.R8G8B8A8 << 8) + (int)PixelFormat.A8R8G8B8:
-				// 				R8G8B8A8toA8R8G8B8(src, dst);
-				// 				break;
-				// 			case ((int)PixelFormat.R8G8B8A8 << 8) + (int)PixelFormat.A8B8G8R8:
-				// 				R8G8B8A8toA8B8G8R8(src, dst);
-				// 				break;
-				// 			case ((int)PixelFormat.R8G8B8A8 << 8) + (int)PixelFormat.B8G8R8A8:
-				// 				R8G8B8A8toB8G8R8A8(src, dst);
-				// 				break;
-				// 			case ((int)PixelFormat.A8B8G8R8 << 8) + (int)PixelFormat.L8:
-				// 				A8B8G8R8toL8(src, dst);
-				// 				break;
-				// 			case ((int)PixelFormat.L8 << 8) + (int)PixelFormat.A8B8G8R8:
-				// 				L8toA8B8G8R8(src, dst);
-				// 				break;
+				case ( (int)PixelFormat.B8G8R8A8 << 8 ) + (int)PixelFormat.A8B8G8R8:
+					B8G8R8A8toA8B8G8R8( src, dst );
+					break;
+				case ( (int)PixelFormat.B8G8R8A8 << 8 ) + (int)PixelFormat.R8G8B8A8:
+					B8G8R8A8toR8G8B8A8( src, dst );
+					break;
+				case ( (int)PixelFormat.R8G8B8A8 << 8 ) + (int)PixelFormat.A8R8G8B8:
+					R8G8B8A8toA8R8G8B8( src, dst );
+					break;
+				case ( (int)PixelFormat.R8G8B8A8 << 8 ) + (int)PixelFormat.A8B8G8R8:
+					R8G8B8A8toA8B8G8R8( src, dst );
+					break;
+				case ( (int)PixelFormat.R8G8B8A8 << 8 ) + (int)PixelFormat.B8G8R8A8:
+					R8G8B8A8toB8G8R8A8( src, dst );
+					break;
+				case ( (int)PixelFormat.A8B8G8R8 << 8 ) + (int)PixelFormat.L8:
+					A8B8G8R8toL8( src, dst );
+					break;
+				case ( (int)PixelFormat.L8 << 8 ) + (int)PixelFormat.A8B8G8R8:
+					L8toA8B8G8R8( src, dst );
+					break;
 				case ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.L8:
 					A8R8G8B8toL8( src, dst );
 					break;
@@ -1107,12 +1131,12 @@ namespace Axiom.Media
 				case ( (int)PixelFormat.B8G8R8 << 8 ) + (int)PixelFormat.A8R8G8B8:
 					B8G8R8toA8R8G8B8( src, dst );
 					break;
-				// 			case ((int)PixelFormat.R8G8B8 << 8) + (int)PixelFormat.A8B8G8R8:
-				// 				R8G8B8toA8B8G8R8(src, dst);
-				// 				break;
-				// 			case ((int)PixelFormat.B8G8R8 << 8) + (int)PixelFormat.A8B8G8R8:
-				// 				B8G8R8toA8B8G8R8(src, dst);
-				// 				break;
+				case ( (int)PixelFormat.R8G8B8 << 8 ) + (int)PixelFormat.A8B8G8R8:
+					R8G8B8toA8B8G8R8( src, dst );
+					break;
+				case ( (int)PixelFormat.B8G8R8 << 8 ) + (int)PixelFormat.A8B8G8R8:
+					B8G8R8toA8B8G8R8( src, dst );
+					break;
 				case ( (int)PixelFormat.R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8A8:
 					R8G8B8toB8G8R8A8( src, dst );
 					break;
@@ -1125,30 +1149,30 @@ namespace Axiom.Media
 				case ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8:
 					A8R8G8B8toB8G8R8( src, dst );
 					break;
-				// 			case ((int)PixelFormat.X8R8G8B8 << 8) + (int)PixelFormat.A8R8G8B8:
-				// 				X8R8G8B8toA8R8G8B8(src, dst);
-				// 				break;
-				// 			case ((int)PixelFormat.X8R8G8B8 << 8) + (int)PixelFormat.A8B8G8R8:
-				// 				X8R8G8B8toA8B8G8R8(src, dst);
-				// 				break;
-				// 			case ((int)PixelFormat.X8R8G8B8 << 8) + (int)PixelFormat.B8G8R8A8:
-				// 				X8R8G8B8toB8G8R8A8(src, dst);
-				// 				break;
-				// 			case ((int)PixelFormat.X8R8G8B8 << 8) + (int)PixelFormat.R8G8B8A8:
-				// 				X8R8G8B8toR8G8B8A8(src, dst);
-				// 				break;
-				// 			case ((int)PixelFormat.X8B8G8R8 << 8) + (int)PixelFormat.A8R8G8B8:
-				// 				X8B8G8R8toA8R8G8B8(src, dst);
-				// 				break;
-				// 			case ((int)PixelFormat.X8B8G8R8 << 8) + (int)PixelFormat.A8B8G8R8:
-				// 				X8B8G8R8toA8B8G8R8(src, dst);
-				// 				break;
-				// 			case ((int)PixelFormat.X8B8G8R8 << 8) + (int)PixelFormat.B8G8R8A8:
-				// 				X8B8G8R8toB8G8R8A8(src, dst);
-				// 				break;
-				// 			case ((int)PixelFormat.X8B8G8R8 << 8) + (int)PixelFormat.R8G8B8A8:
-				// 				X8B8G8R8toR8G8B8A8(src, dst);
-				// 				break;
+				case ( (int)PixelFormat.X8R8G8B8 << 8 ) + (int)PixelFormat.A8R8G8B8:
+					X8R8G8B8toA8R8G8B8( src, dst );
+					break;
+				case ( (int)PixelFormat.X8R8G8B8 << 8 ) + (int)PixelFormat.A8B8G8R8:
+					X8R8G8B8toA8B8G8R8( src, dst );
+					break;
+				case ( (int)PixelFormat.X8R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8A8:
+					X8R8G8B8toB8G8R8A8( src, dst );
+					break;
+				case ( (int)PixelFormat.X8R8G8B8 << 8 ) + (int)PixelFormat.R8G8B8A8:
+					X8R8G8B8toR8G8B8A8( src, dst );
+					break;
+				case ( (int)PixelFormat.X8B8G8R8 << 8 ) + (int)PixelFormat.A8R8G8B8:
+					X8B8G8R8toA8R8G8B8( src, dst );
+					break;
+				case ( (int)PixelFormat.X8B8G8R8 << 8 ) + (int)PixelFormat.A8B8G8R8:
+					X8B8G8R8toA8B8G8R8( src, dst );
+					break;
+				case ( (int)PixelFormat.X8B8G8R8 << 8 ) + (int)PixelFormat.B8G8R8A8:
+					X8B8G8R8toB8G8R8A8( src, dst );
+					break;
+				case ( (int)PixelFormat.X8B8G8R8 << 8 ) + (int)PixelFormat.R8G8B8A8:
+					X8B8G8R8toR8G8B8A8( src, dst );
+					break;
 				default:
 					return false;
 			}

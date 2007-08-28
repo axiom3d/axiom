@@ -94,7 +94,6 @@ namespace Axiom.RenderSystems.DirectX9
 				// creates the shader from an external microcode source
 				// for example, a compiled HLSL program
 				LoadFromMicrocode( externalMicrocode );
-				IsLoaded = true;
 			}
 			else
 			{

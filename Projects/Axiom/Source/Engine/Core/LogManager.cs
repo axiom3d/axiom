@@ -74,6 +74,11 @@ namespace Axiom.Core
             }
         }
 
+		~LogManager()
+		{
+			instance = null;
+		}
+
         #endregion Singleton implementation
 
         #region Fields
@@ -294,6 +299,8 @@ namespace Axiom.Core
             }
 
             logList.Clear();
+
+			instance = null;
         }
 
         #endregion

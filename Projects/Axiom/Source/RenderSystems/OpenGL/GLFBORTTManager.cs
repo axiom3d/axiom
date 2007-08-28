@@ -54,6 +54,10 @@ namespace Axiom.RenderSystems.OpenGL
 	internal class GLFBORTTManager : GLRTTManager
 	{
 		#region Enumerations and Structures
+		/// <summary>
+		/// Extra GL Constant
+		/// </summary>
+		const int GL_DEPTH24_STENCIL8_EXT = 0x88F0;
 
 		/// <summary>
 		/// Frame Buffer Object properties for a certain texture format.
@@ -268,8 +272,8 @@ namespace Axiom.RenderSystems.OpenGL
 					desirability += 2000;
 				if ( _depthBits[ props.Modes[ mode ].Depth ] == 24 ) // Prefer 24 bit for now
 					desirability += 500;
-				//if ( _depthFormats[ props.Modes[ mode ].Depth ] == Gl.GL_DEPTH24_STENCIL8_EXT ) // Prefer 24/8 packed 
-				//    desirability += 5000;
+				if ( _depthFormats[ props.Modes[ mode ].Depth ] == GL_DEPTH24_STENCIL8_EXT ) // Prefer 24/8 packed 
+				    desirability += 5000;
 				desirability += _stencilBits[ props.Modes[ mode ].Stencil ] + _depthBits[ props.Modes[ mode ].Depth ];
 
 				if ( desirability > bestscore )
@@ -446,12 +450,12 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					_props[ x ].Valid = true;
 					StringBuilder str = new StringBuilder();
-					str.AppendFormat( "FBO {0} depth/stencil support: ", PixelUtil.GetFormatName( (PixelFormat)x ) );
+					str.AppendFormat( "\tFBO {0} depth/stencil support: ", PixelUtil.GetFormatName( (PixelFormat)x ) );
 
 					// For each depth/stencil formats
 					for ( int depth = 0; depth < _depthFormats.GetLength( 0 ); ++depth )
 					{
-						//if ( _depthFormats[ depth ] != Gl.GL_DEPTH24_STENCIL8_EXT )
+						if ( _depthFormats[ depth ] != GL_DEPTH24_STENCIL8_EXT )
 						{
 							// General depth/stencil combination
 
@@ -470,31 +474,30 @@ namespace Axiom.RenderSystems.OpenGL
 								}
 							}
 						}
-						//                        else
-						//                        {
-						//                            // Packed depth/stencil format
+                        else
+                        {
+							// Packed depth/stencil format
 
-						//#if PLATFORM_LINUX
-						//                            // Only query packed depth/stencil formats for 32-bit
-						//                            // non-floating point formats (ie not R32!) 
-						//                            // Linux nVidia driver segfaults if you query others
-						//                            if (PixelUtil.getNumElemBits((PixelFormat)x) != 32 ||
-						//                                PixelUtil.isFloatingPoint((PixelFormat)x))
-						//                            {
-						//                                continue;
-						//                            }
-						//#endif
+                            // Only query packed depth/stencil formats for 32-bit
+                            // non-floating point formats (ie not R32!) 
+                            // Linux nVidia driver segfaults if you query others
+							if ( !PlatformManager.IsWindowsOS &&
+								 ( PixelUtil.GetNumElemBits( (PixelFormat)x ) != 32 ||
+								   PixelUtil.IsFloatingPoint( (PixelFormat)x ) ) )
+							{
+								continue;
+							}
 
-						//                            if ( _tryPackedFormat( _depthFormats[ depth ] ) )
-						//                            {
-						//                                /// Add mode to allowed modes
-						//                                str.AppendFormat( "Packed-D{0}S8 ", _depthBits[ depth ] );
-						//                                FormatProperties.Mode mode;
-						//                                mode.Depth = depth;
-						//                                mode.Stencil = 0;   // unuse
-						//                                _props[ x ].Modes.Add( mode );
-						//                            }
-						//                        }
+							if ( _tryPackedFormat( _depthFormats[ depth ] ) )
+							{
+								/// Add mode to allowed modes
+								str.AppendFormat( "Packed-D{0}S8 ", _depthBits[ depth ] );
+								FormatProperties.Mode mode;
+								mode.Depth = depth;
+								mode.Stencil = 0;   // unuse
+								_props[ x ].Modes.Add( mode );
+							}
+						}
 					}
 
 					LogManager.Instance.Write( str.ToString() );

@@ -1253,7 +1253,6 @@ namespace Axiom.Graphics
 				target.Name = Name;
 				target.Handle = Handle;
 				target.Group = Group;
-				target.IsLoaded = IsLoaded;
 				target.IsManuallyLoaded = IsManuallyLoaded;
 				target.loader = loader;
 			}
@@ -1295,7 +1294,6 @@ namespace Axiom.Graphics
 			}
 
 			target.compilationRequired = compilationRequired;
-			target.IsLoaded = this.IsLoaded;
 		}
 
 		#endregion CopyTo Method

@@ -1936,6 +1936,9 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void Load()
 		{
+			// Unload first
+			Unload();
+
 			// load all textures
 			for ( int i = 0; i < numFrames; i++ )
 			{
@@ -1944,7 +1947,7 @@ namespace Axiom.Graphics
 					try
 					{
 						// ensure the texture is loaded
-						TextureManager.Instance.Load( frames[ i ], ResourceGroupManager.DefaultResourceGroupName, textureType );
+						TextureManager.Instance.Load( frames[ i ], ResourceGroupManager.DefaultResourceGroupName, textureType, textureSrcMipmaps, 1.0f, this.isAlpha );
 
 						isBlank = false;
 					}

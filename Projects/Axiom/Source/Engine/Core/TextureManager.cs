@@ -74,6 +74,9 @@ namespace Axiom.Core
 			{
 				instance = this;
 			}
+
+			ResourceType = "Texture";
+			LoadingOrder = 75.0f; 
 		}
 
 		/// <summary>
@@ -136,6 +139,118 @@ namespace Axiom.Core
 		}
 
 		#endregion DefaultMipmapCount Property
+
+		#region PreferredXXXBitDepth Properties
+
+		#region PreferredIntegerBitDepth Property
+
+		private ushort _preferredIntegerBitDepth = 0;
+
+		public ushort PreferredIntegerBitDepth
+		{
+			get
+			{
+				return _preferredIntegerBitDepth;
+			}
+			set
+			{
+				SetPreferredIntegerBitDepth( value, false );
+			}
+		}
+
+		public void SetPreferredIntegerBitDepth( ushort bits, bool reloadTextures )
+		{
+			_preferredIntegerBitDepth = bits;
+
+			if ( reloadTextures )
+			{
+				// Iterate throught all textures
+				foreach ( Texture texture in Resources )
+				{
+					// Reload loaded and reloadable texture only
+					if ( texture.IsLoaded && texture.IsReloadable )
+					{
+						texture.Unload();
+						texture.DesiredIntegerBitDepth = bits;
+						texture.Load();
+					}
+					else
+					{
+						texture.DesiredIntegerBitDepth = bits;
+					}
+				}
+			}
+		}
+
+		#endregion PreferredIntegerBitDepth Property
+
+		#region PreferredFloatBitDepth Property
+
+		private ushort _preferredFloatBitDepth = 0;
+		public ushort PreferredFloatBitDepth
+		{
+			get
+			{
+				return _preferredFloatBitDepth;
+			}
+			set
+			{
+				SetPreferredFloatBitDepth( value, false );
+			}
+		}
+
+		public void SetPreferredFloatBitDepth( ushort bits, bool reloadTextures )
+		{
+			_preferredFloatBitDepth = bits;
+
+			if ( reloadTextures )
+			{
+				// Iterate throught all textures
+				foreach ( Texture texture in Resources )
+				{
+					// Reload loaded and reloadable texture only
+					if ( texture.IsLoaded && texture.IsReloadable )
+					{
+						texture.Unload();
+						texture.DesiredFloatBitDepth = bits;
+						texture.Load();
+					}
+					else
+					{
+						texture.DesiredFloatBitDepth = bits;
+					}
+				}
+			}
+		}
+		
+		#endregion PreferredFloatBitDepth Property
+
+		public void SetPreferredBitDepths( ushort integerBits, ushort floatBits, bool reloadTextures )
+		{
+			_preferredFloatBitDepth = floatBits;
+			_preferredIntegerBitDepth = integerBits;
+
+			if ( reloadTextures )
+			{
+				// Iterate throught all textures
+				foreach ( Texture texture in Resources )
+				{
+					// Reload loaded and reloadable texture only
+					if ( texture.IsLoaded && texture.IsReloadable )
+					{
+						texture.Unload();
+						texture.SetDesiredBitDepths( integerBits, floatBits );
+						texture.Load();
+					}
+					else
+					{
+						texture.SetDesiredBitDepths( integerBits, floatBits );
+					}
+				}
+			}
+		}
+
+		#endregion PreferredXXXBitDepth Properties
 
 		#endregion Fields and Properties
 
@@ -210,6 +325,17 @@ namespace Axiom.Core
 			return Load( name, group, type, numMipMaps, gamma, false, PixelFormat.Unknown );
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="group"></param>
+		/// <param name="type"></param>
+		/// <param name="numMipMaps"></param>
+		/// <param name="gamma"></param>
+		/// <param name="isAlpha"></param>
+		/// <param name="desiredFormat"></param>
+		/// <returns></returns>
 		public Texture Load( string name, string group, TextureType type, int numMipMaps, float gamma, bool isAlpha, PixelFormat desiredFormat )
 		{
 			// does this texture exist already?
@@ -233,32 +359,25 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///		Overloaded method.
+		/// Loads a pre-existing image into the texture.
 		/// </summary>
 		/// <param name="name"></param>
+		/// <param name="group"></param>
 		/// <param name="image"></param>
 		/// <returns></returns>
-		//public Texture LoadImage(string name, Image image) 
-		//{
-		//    return LoadImage(name, image, TextureType.TwoD, -1, 1.0f, 1);
-		//}
-
-		/// <summary>
-		///		Overloaded method.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="image"></param>
-		/// <param name="texType"></param>
-		/// <returns></returns>
-		//public Texture LoadImage(string name, Image image, TextureType texType) 
-		//{
-		//    return LoadImage(name, image, texType, -1, 1.0f, 1);
-		//}
-
 		public Texture LoadImage( string name, string group, Image image )
 		{
 			return LoadImage( name, group, image, TextureType.TwoD );
 		}
+
+		/// <summary>
+		/// Loads a pre-existing image into the texture.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="group"></param>
+		/// <param name="image"></param>
+		/// <param name="texType"></param>
+		/// <returns></returns>
 		public Texture LoadImage( string name, string group, Image image, TextureType texType )
 		{
 			return LoadImage( name, group, image, texType, -1, 1.0f, false, PixelFormat.Unknown );

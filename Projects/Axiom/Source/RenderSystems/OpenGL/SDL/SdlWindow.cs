@@ -159,7 +159,6 @@ namespace Axiom.RenderSystems.OpenGL
                 flags |= Sdl.SDL_FULLSCREEN;
             }
 
-
             // set the video mode (and create the surface)
             // TODO: Grab return val once changed to the right type
             _hWindow = Sdl.SDL_SetVideoMode( width, height, ColorDepth, flags );

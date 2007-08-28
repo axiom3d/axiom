@@ -159,7 +159,7 @@ namespace Axiom.Media
 				),
 			//-----------------------------------------------------------------------
 			new PixelFormatDescription(
-				"L16",
+				"PF_L16",
 				PixelFormat.L16,
 				/* Bytes per element */ 
 				2,  
@@ -840,16 +840,16 @@ namespace Axiom.Media
 						( (ushort*)dest )[ 2 ] = Bitwise.FloatToHalf( b );
 						( (ushort*)dest )[ 3 ] = Bitwise.FloatToHalf( a );
 						break;
-					//   				case PixelFormat.SHORT_RGBA:
-					//   					((ushort*)dest)[0] = Bitwise.FloatToFixed(r, 16);
-					//   					((ushort*)dest)[1] = Bitwise.FloatToFixed(g, 16);
-					//   					((ushort*)dest)[2] = Bitwise.FloatToFixed(b, 16);
-					//   					((ushort*)dest)[3] = Bitwise.FloatToFixed(a, 16);
-					//   					break;
-					//   				case PixelFormat.BYTE_LA:
-					//   					((byte*)dest)[0] = Bitwise.FloatToFixed(r, 8);
-					//   					((byte*)dest)[1] = Bitwise.FloatToFixed(a, 8);
-					//   					break;
+					//case PixelFormat.SHORT_RGBA:
+					//    ( (ushort*)dest )[ 0 ] = Bitwise.FloatToFixed( r, 16 );
+					//    ( (ushort*)dest )[ 1 ] = Bitwise.FloatToFixed( g, 16 );
+					//    ( (ushort*)dest )[ 2 ] = Bitwise.FloatToFixed( b, 16 );
+					//    ( (ushort*)dest )[ 3 ] = Bitwise.FloatToFixed( a, 16 );
+					//    break;
+					//case PixelFormat.BYTE_LA:
+					//    ( (byte*)dest )[ 0 ] = Bitwise.FloatToFixed( r, 8 );
+					//    ( (byte*)dest )[ 1 ] = Bitwise.FloatToFixed( a, 8 );
+					//    break;
 					default:
 						// Not yet supported
 						throw new Exception( "Pack to " + format + " not implemented, in PixelUtil.PackColor" );
@@ -971,16 +971,16 @@ namespace Axiom.Media
 						b = Bitwise.HalfToFloat( ( (ushort*)src )[ 2 ] );
 						a = Bitwise.HalfToFloat( ( (ushort*)src )[ 3 ] );
 						break;
-					//   				case PixelFormat.SHORT_RGBA:
-					//   					r = Bitwise.FixedToFloat(((ushort*)src)[0], 16);
-					//   					g = Bitwise.FixedToFloat(((ushort*)src)[1], 16);
-					//   					b = Bitwise.FixedToFloat(((ushort*)src)[2], 16);
-					//   					a = Bitwise.FixedToFloat(((ushort*)src)[3], 16);
-					//   					break;
-					//   				case PixelFormat.BYTE_LA:
-					//   					r = g = b = Bitwise.FixedToFloat(((byte*)src)[0], 8);
-					//   					a = Bitwise.FixedToFloat(((byte*)src)[1], 8);
-					//   					break;
+					//case PixelFormat.SHORT_RGBA:
+					//    r = Bitwise.FixedToFloat( ( (ushort*)src )[ 0 ], 16 );
+					//    g = Bitwise.FixedToFloat( ( (ushort*)src )[ 1 ], 16 );
+					//    b = Bitwise.FixedToFloat( ( (ushort*)src )[ 2 ], 16 );
+					//    a = Bitwise.FixedToFloat( ( (ushort*)src )[ 3 ], 16 );
+					//    break;
+					//case PixelFormat.BYTE_LA:
+					//    r = g = b = Bitwise.FixedToFloat( ( (byte*)src )[ 0 ], 8 );
+					//    a = Bitwise.FixedToFloat( ( (byte*)src )[ 1 ], 8 );
+					//    break;
 					default:
 						// Not yet supported
 						throw new Exception( "Unpack from " + pf + " not implemented, in PixelUtil.UnpackColor" );
@@ -1092,29 +1092,29 @@ namespace Axiom.Media
 				}
 				return;
 			}
+
+			// TODO : Implement  X8* Conversions
+
 			//// Converting to X8R8G8B8 is exactly the same as converting to
 			//// A8R8G8B8. (same with X8B8G8R8 and A8B8G8R8)
-			//// The X8* formats are not currently supported in Axiom
-			//// FIXME: These X8 formats are supported now, so I should handle them
-			//if ( dst.format == PixelFormat.X8R8G8B8 || dst.format == PixelFormat.X8B8G8R8 )
+			//if ( dst.Format == PixelFormat.X8R8G8B8 || dst.Format == PixelFormat.X8B8G8R8 )
 			//{
 			//    // Do the same conversion, with A8R8G8B8, which has a lot of 
 			//    // optimized conversions
-			//    PixelBox tempdst = new PixelFormat( dst );
-			//    tempdst.format = dst.format == PixelFormat.X8R8G8B8 ? PixelFormat.A8R8G8B8 : PixelFormat.A8B8G8R8;
+			//    PixelBox tempdst = new PixelBox( dst );
+			//    tempdst.Format = dst.Format == PixelFormat.X8R8G8B8 ? PixelFormat.A8R8G8B8 : PixelFormat.A8B8G8R8;
 			//    BulkPixelConversion( src, tempdst );
 			//    return;
 			//}
 
 			//// Converting from X8R8G8B8 is exactly the same as converting from
 			//// A8R8G8B8, given that the destination format does not have alpha.
-			//if ( ( src.format == PixelFormat.X8R8G8B8 || src.format == PixelFormat.X8B8G8R8 ) &&
-			//   !Image.FormatHasAlpha( dst.format ) )
+			//if ( ( src.Format == PixelFormat.X8R8G8B8 || src.Format == PixelFormat.X8B8G8R8 ) && !Image.FormatHasAlpha( dst.Format ) )
 			//{
 			//    // Do the same conversion, with A8R8G8B8, which has a lot of 
 			//    // optimized conversions
 			//    PixelBox tempsrc = src;
-			//    tempsrc.format = src.format == PixelFormat.X8R8G8B8 ? PixelFormat.A8R8G8B8 : PixelFormat.A8B8G8R8;
+			//    tempsrc.Format = src.Format == PixelFormat.X8R8G8B8 ? PixelFormat.A8R8G8B8 : PixelFormat.A8B8G8R8;
 			//    BulkPixelConversion( tempsrc, dst );
 			//    return;
 			//}
@@ -1257,6 +1257,106 @@ namespace Axiom.Media
 		public static PixelComponentType GetComponentType( PixelFormat format )
 		{
 			return PixelConverter.GetDescriptionFor( format ).componentType;
+		}
+
+		public static PixelFormat GetFormatForBitDepths( PixelFormat format, ushort integerBits, ushort floatBits )
+		{
+			switch ( integerBits )
+			{
+				case 16:
+					switch ( format )
+					{
+						case PixelFormat.R8G8B8:
+						case PixelFormat.X8R8G8B8:
+							return PixelFormat.R5G6B5;
+
+						case PixelFormat.B8G8R8:
+						case PixelFormat.X8B8G8R8:
+							return PixelFormat.B5G6R5;
+
+						case PixelFormat.A8R8G8B8:
+						case PixelFormat.R8G8B8A8:
+						case PixelFormat.A8B8G8R8:
+						case PixelFormat.B8G8R8A8:
+							return PixelFormat.A4R4G4B4;
+
+						default:
+							// use the original format
+							break;
+					}
+					break;
+
+				case 32:
+					switch ( format )
+					{
+						case PixelFormat.R5G6B5:
+							return PixelFormat.X8R8G8B8;
+
+						case PixelFormat.B5G6R5:
+							return PixelFormat.X8B8G8R8;
+
+						case PixelFormat.A4R4G4B4:
+							return PixelFormat.A8R8G8B8;
+
+						case PixelFormat.A1R5G5B5:
+							return PixelFormat.A2R10G10B10;
+
+						default:
+							// use the original format
+							break;
+					}
+					break;
+
+				default:
+					// use the original format
+					break;
+			}
+
+			switch ( floatBits )
+			{
+				case 16:
+					switch ( format )
+					{
+						case PixelFormat.FLOAT32_R:
+							return PixelFormat.FLOAT16_R;
+
+						case PixelFormat.FLOAT32_RGB:
+							return PixelFormat.FLOAT16_RGB;
+
+						case PixelFormat.FLOAT32_RGBA:
+							return PixelFormat.FLOAT16_RGBA;
+
+						default:
+							// use original image format
+							break;
+					}
+					break;
+
+				case 32:
+					switch ( format )
+					{
+						case PixelFormat.FLOAT16_R:
+							return PixelFormat.FLOAT32_R;
+
+						case PixelFormat.FLOAT16_RGB:
+							return PixelFormat.FLOAT32_RGB;
+
+						case PixelFormat.FLOAT16_RGBA:
+							return PixelFormat.FLOAT32_RGBA;
+
+						default:
+							// use original image format
+							break;
+					}
+					break;
+
+				default:
+					// use original image format
+					break;
+
+			}
+
+			return format;
 		}
 	}
 }

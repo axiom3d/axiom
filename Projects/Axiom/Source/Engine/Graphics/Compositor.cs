@@ -144,7 +144,6 @@ namespace Axiom.Graphics
 				{
 					Compile();
 				}
-				IsLoaded = true;
 			}
 		}
 
@@ -154,7 +153,6 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected override void unload()
 		{
-			IsLoaded = false;
 		}
 
 		/// <summary>

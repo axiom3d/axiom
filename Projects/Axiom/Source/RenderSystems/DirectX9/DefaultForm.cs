@@ -119,11 +119,11 @@ namespace Axiom.RenderSystems.DirectX9
 
         private void DefaultForm_Load( object sender, System.EventArgs e )
         {
-            System.IO.Stream strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico", ResourceGroupManager.BootstrapResourceGroupName );
-            if ( strm != null )
-            {
-                this.Icon = new System.Drawing.Icon( strm );
-            }
+			System.IO.Stream strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico", ResourceGroupManager.BootstrapResourceGroupName );
+			if ( strm != null )
+			{
+				this.Icon = new System.Drawing.Icon( strm );
+			}
 		}
 
 		private void DefaultForm_Resize( object sender, System.EventArgs e )

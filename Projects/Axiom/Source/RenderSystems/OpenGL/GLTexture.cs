@@ -178,7 +178,6 @@ namespace Axiom.RenderSystems.OpenGL
 			if ( Usage == TextureUsage.RenderTarget )
 			{
 				CreateRenderTexture();
-				IsLoaded = true;
 				return;
 			}
 
@@ -196,7 +195,7 @@ namespace Axiom.RenderSystems.OpenGL
 				|| TextureType == TextureType.OneD
 				|| TextureType == TextureType.ThreeD )
 			{
-            	// find & load resource data intro stream to allow resource
+            	// find & load resource data into stream to allow resource
 				// group changes if required
 				stream = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
 				image = Image.FromStream( stream, ext );
@@ -261,7 +260,6 @@ namespace Axiom.RenderSystems.OpenGL
 			if ( IsLoaded )
 			{
 				Gl.glDeleteTextures( 1, ref _glTextureID );
-				IsLoaded = false;
 			}
 		}
 
@@ -370,7 +368,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			// Create the GL texture
 			// This already does everything neccessary
-			createInternalResources();
+			CreateInternalResources();
 		}
 
 		private byte[] RescaleNPower2( Image src )
@@ -516,7 +514,7 @@ namespace Axiom.RenderSystems.OpenGL
 			int depth = Depth;
 
 			{
-				// Run through this process to pregenerate mipmap piramid
+				// Run through this process to pregenerate mipmap pyramid
 				for ( int mip = 0; mip <= MipmapCount; mip++ )
 				{
 					// Normal formats
