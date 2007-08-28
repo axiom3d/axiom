@@ -147,7 +147,6 @@ namespace Axiom.RenderSystems.OpenGL
 				Gl.glDeleteProgramsARB( 1, ref programId );
 				base.Unload();
 
-				IsLoaded = false;
 			}
 		}
 

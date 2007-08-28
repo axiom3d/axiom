@@ -40,6 +40,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 
 using ResourceHandle = System.UInt64;
+using System.IO;
 
 #endregion Namespace Declarations
 
@@ -426,19 +427,19 @@ namespace Axiom.Fonts
 		}
 
 		/// <summary>
-		///		Retreives the texture coordinates for the specifed character in this font.
+		///		Retrieves the texture coordinates for the specifed character in this font.
 		/// </summary>
 		/// <param name="c"></param>
 		/// <param name="u1"></param>
 		/// <param name="u2"></param>
 		/// <param name="v1"></param>
 		/// <param name="v2"></param>
-		public void GetGlyphTexCoords( char c, out float u1, out float u2, out float v1, out float v2 )
+		public void GetGlyphTexCoords( char c, out float u1, out float v1, out float u2, out float v2 )
 		{
 			int idx = c - START_CHAR;
 			u1 = texCoordU1[ idx ];
-			u2 = texCoordU2[ idx ];
 			v1 = texCoordV1[ idx ];
+			u2 = texCoordU2[ idx ];
 			v2 = texCoordV2[ idx ];
 		}
 
@@ -454,8 +455,8 @@ namespace Axiom.Fonts
 		{
 			int idx = c - START_CHAR;
 			texCoordU1[ idx ] = u1;
-			texCoordU2[ idx ] = v1;
-			texCoordV1[ idx ] = u2;
+			texCoordV1[ idx ] = v1;
+			texCoordU2[ idx ] = u2;
 			texCoordV2[ idx ] = v2;
 			aspectRatio[ idx ] = ( u2 - u1 ) / ( v2 - v1 );
 		}
@@ -596,10 +597,11 @@ namespace Axiom.Fonts
 				// calculate the texture coords for the character
 				// note: flip the y coords by subtracting from 1
 				float u1 = (float)x / (float)BITMAP_WIDTH;
-				float u2 = ( (float)x + metrics.Width - 4 ) / (float)BITMAP_WIDTH;
-				float v1 = 1 - ( (float)y / (float)BITMAP_HEIGHT );
-				float v2 = 1 - ( ( (float)y + metrics.Height ) / (float)BITMAP_HEIGHT );
-				SetGlyphTexCoords( c, u1, u2, v1, v2 );
+				float v1 = (float)y / (float)BITMAP_HEIGHT;
+
+				float u2 = (float)( x + ( metrics.Width - 4 ) ) / (float)BITMAP_WIDTH;
+				float v2 = (float)( y + metrics.Height ) / (float)BITMAP_HEIGHT;
+				SetGlyphTexCoords( c, u1, v1, u2, v2 );
 
 				// increment X by the width of the current char
 				x += (int)metrics.Width - 3;
@@ -621,6 +623,22 @@ namespace Axiom.Fonts
 				g.DrawLine( linePen, 0, y + font.Height, BITMAP_WIDTH, y + font.Height );
 			}
 
+			//bitmap.Save( "C:\\" + Name + ".png" );
+			//FileStream file = new FileStream( "C:\\" + Name + ".fontdef", FileMode.Create );
+			//StreamWriter str = new StreamWriter( file );
+			//str.WriteLine( Name );
+			//str.WriteLine( "{" );
+			//str.WriteLine( "\ttype\timage" );
+			//str.WriteLine( "\tsource\t{0}.png\n", Name );
+
+			//for ( int i = 0; i < END_CHAR-START_CHAR; i++ )
+			//{
+			//    char c = (char)(i+START_CHAR);
+			//    str.WriteLine( "\tglyph\t{0}\t{1:F6}\t{2:F6}\t{3:F6}\t{4:F6}", c, texCoordU1[ i ], texCoordV1[ i ], texCoordU2[ i ], texCoordV2[ i ] );
+			//}
+			//str.WriteLine( "}" );
+			//str.Close();
+			//file.Close();
 		}
 
 		#endregion Implementation of IManualResourceLoader

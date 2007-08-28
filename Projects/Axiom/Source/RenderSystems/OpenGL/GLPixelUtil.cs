@@ -80,7 +80,7 @@ namespace Axiom.RenderSystems.OpenGL
 					return Gl.GL_BGR;
 				case PixelFormat.A4R4G4B4:
 					return Gl.GL_BGRA;
-#if OGRE_ENDIAN == OGRE_ENDIAN_BIG
+#if !LITTLE_ENDIAN
 				// Formats are in native endian, so R8G8B8 on little endian is
 				// BGR, on big endian it is RGB.
 				case PixelFormat.R8G8B8:
@@ -95,10 +95,10 @@ namespace Axiom.RenderSystems.OpenGL
 #endif
 				case PixelFormat.X8R8G8B8:
 				case PixelFormat.A8R8G8B8:
-					return Gl.GL_BGRA;
+					return Gl.GL_RGBA;
 				case PixelFormat.X8B8G8R8:
 				case PixelFormat.A8B8G8R8:
-					return Gl.GL_RGBA;
+					return Gl.GL_BGRA;
 				case PixelFormat.B8G8R8A8:
 					return Gl.GL_BGRA;
 				case PixelFormat.R8G8B8A8:
@@ -125,8 +125,8 @@ namespace Axiom.RenderSystems.OpenGL
 					return Gl.GL_RGBA;
 				case PixelFormat.SHORT_RGBA:
 					return Gl.GL_RGBA;
-				//case PixelFormat.SHORT_RGB:
-				//    return Gl.GL_RGB;
+				case PixelFormat.SHORT_RGB:
+				    return Gl.GL_RGB;
 				case PixelFormat.SHORT_GR:
 					return Gl.GL_LUMINANCE_ALPHA;
 				case PixelFormat.DXT1:
@@ -157,8 +157,8 @@ namespace Axiom.RenderSystems.OpenGL
 				case PixelFormat.L8:
 				case PixelFormat.R8G8B8:
 				case PixelFormat.B8G8R8:
-				//case PixelFormat.BYTE_LA:
-				//    return Gl.GL_UNSIGNED_BYTE;
+				case PixelFormat.BYTE_LA:
+				    return Gl.GL_UNSIGNED_BYTE;
 				case PixelFormat.R3G3B2:
 					return Gl.GL_UNSIGNED_BYTE_3_3_2;
 				case PixelFormat.A1R5G5B5:
@@ -170,7 +170,7 @@ namespace Axiom.RenderSystems.OpenGL
 					return Gl.GL_UNSIGNED_SHORT_4_4_4_4_REV;
 				case PixelFormat.L16:
 					return Gl.GL_UNSIGNED_SHORT;
-#if OGRE_ENDIAN == OGRE_ENDIAN_BIG
+#if !LITTLE_ENDIAN
 				case PixelFormat.X8B8G8R8:
 				case PixelFormat.A8B8G8R8:
 					return Gl.GL_UNSIGNED_INT_8_8_8_8_REV;

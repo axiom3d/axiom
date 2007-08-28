@@ -35,44 +35,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-using Axiom.Core;
-using Axiom.Graphics;
+using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.OpenGL
-{
-	/// <summary>
-	/// Summary description for Plugin.
-	/// </summary>
-	public sealed class Plugin : IPlugin
-	{
-		#region Implementation of IPlugin
-
-		/// <summary>
-		///     Reference to a GLSL program factory.
-		/// </summary>
-		private GLSL.GLSLProgramFactory factory = new GLSL.GLSLProgramFactory();
-		/// <summary>
-		///     Reference to the render system instance.
-		/// </summary>
-		private GLRenderSystem renderSystem = new GLRenderSystem();
-
-		public void Start()
-		{
-			// add an instance of this plugin to the list of available RenderSystems
-			Root.Instance.RenderSystems.Add( Assembly.GetExecutingAssembly().GetName().FullName, renderSystem );
-
-			HighLevelGpuProgramManager.Instance.AddFactory( factory );
-		}
-
-		public void Stop()
-		{
-			factory.Dispose();
-			renderSystem.Shutdown();
-		}
-
-		#endregion Implementation of IPlugin
-	}
-}
+//
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+//
+[assembly: AssemblyTitle( "Axiom OpenGL (Tao/SDL) Renderer" )]
+[assembly: AssemblyDescription( "The OpenGL renderer implementation using the Tao.OpenGl library." )]

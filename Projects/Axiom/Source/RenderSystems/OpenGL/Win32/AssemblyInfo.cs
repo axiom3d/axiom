@@ -46,5 +46,5 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle( "Axiom OpenGL (Tao) Renderer" )]
+[assembly: AssemblyTitle( "Axiom OpenGL (Tao/Win32) Renderer" )]
 [assembly: AssemblyDescription( "The OpenGL renderer implementation using the Tao.OpenGl library." )]

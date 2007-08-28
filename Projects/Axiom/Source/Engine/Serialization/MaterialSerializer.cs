@@ -841,10 +841,10 @@ namespace Axiom.Serialization
 			switch ( parameters.ToLower() )
 			{
 				case "on":
-					context.pass.ColorWrite = true;
+					context.pass.ColorWriteEnabled = true;
 					break;
 				case "off":
-					context.pass.ColorWrite = false;
+					context.pass.ColorWriteEnabled = false;
 					break;
 				default:
 					LogParseError( context, "Bad color_write attribute, valid parameters are 'on' or 'off'." );

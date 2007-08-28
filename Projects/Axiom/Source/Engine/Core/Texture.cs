@@ -43,6 +43,7 @@ using Axiom.Graphics;
 using Axiom.Media;
 
 using ResourceHandle = System.UInt64;
+using System.Text;
 
 #endregion Namespace Declarations
 
@@ -62,9 +63,13 @@ namespace Axiom.Core
     public abstract class Texture : Resource
     {
         #region Fields and Properties
-        protected object _loadingStatusMutex = new Object();
 
-        private bool _internalResourcesCreated = false;
+		#region internalResourcesCreated Property
+
+		private bool _internalResourcesCreated = false;
+		/// <summary>
+		/// 
+		/// </summary>
         protected bool internalResourcesCreated
         {
             get
@@ -75,11 +80,13 @@ namespace Axiom.Core
             {
                 _internalResourcesCreated = value;
             }
-        }
+		}
 
-        #region Width Property
+		#endregion internalResourcesCreated Property
 
-        /// <summary>Width of this texture.</summary>
+		#region Width Property
+
+		/// <summary>Width of this texture.</summary>
         private int _width;
         /// <summary>
         ///    Gets the width (in pixels) of this texture.
@@ -191,7 +198,7 @@ namespace Axiom.Core
 
         #region TreatLuminanceAsAlpha Property
 
-        private bool _treatLuminanceAsAlpha;
+        private bool _treatLuminanceAsAlpha = false;
         /// <summary>
         /// Gets or sets a value indicating whether to treat luminence as aplha.
         /// </summary>
@@ -267,7 +274,7 @@ namespace Axiom.Core
         #region MipmapCount Property
 
         /// <summary>Number of mipmaps present in this texture.</summary>
-        private int _mipmapCount;
+        protected int _mipmapCount;
         /// <summary>
         ///    Number of mipmaps present in this texture.
         /// </summary>
@@ -281,7 +288,7 @@ namespace Axiom.Core
             }
             set
             {
-                _mipmapCount = value;
+                _requestedMipmapCount = _mipmapCount = value;
             }
         }
 
@@ -459,7 +466,103 @@ namespace Axiom.Core
 
         #endregion SrcDepth Property
 
-        /// <summary>
+		#region SrcFormat Property
+
+		/// <summary>Original format of the input texture (only applicable for 3D textures).</summary>
+		private PixelFormat _srcFormat;
+		/// <summary>Original format of the input texture (only applicable for 3D textures).</summary>
+		/// <ogre name="getSrcDepth" />
+		public PixelFormat SrcFormat
+		{
+			get
+			{
+				return _srcFormat;
+			}
+			protected set
+			{
+				_srcFormat = value;
+			}
+		}
+
+		#endregion SrcFormat Property
+
+		#region DesiredFormat Property
+
+		/// <summary>Desired format of the input texture (only applicable for 3D textures).</summary>
+		private PixelFormat _desiredFormat = PixelFormat.Unknown;
+		/// <summary>Desired format of the input texture (only applicable for 3D textures).</summary>
+		/// <ogre name="getSrcDepth" />
+		public PixelFormat DesiredFormat
+		{
+			get
+			{
+				return _desiredFormat;
+			}
+			protected set
+			{
+				_desiredFormat = value;
+			}
+		}
+
+		#endregion DesiredFormat Property
+
+		#region DesiredBitDepth
+
+		private ushort _desiredFloatBitDepth = 0;
+		private ushort _desiredIntegerBitDepth = 0;
+
+		/// <summary>
+		/// Desired bit depth for integer pixel format textures.
+		/// </summary>
+		/// <remarks>
+		/// Available values: 0, 16 and 32, where 0 (the default) means keep original format
+		/// as it is. This value is number of bits for a channel of the pixel.
+		/// </remarks>
+		public virtual ushort DesiredIntegerBitDepth
+		{
+			get
+			{
+				return _desiredIntegerBitDepth;
+			}
+			set
+			{
+				_desiredIntegerBitDepth = value;
+			}
+		}
+
+		/// <summary>
+		/// Desired bit depth for float pixel format textures.
+		/// </summary>
+		/// <remarks>
+		/// Available values: 0, 16 and 32, where 0 (the default) means keep original format
+		/// as it is. This value is number of bits for a channel of the pixel.
+		/// </remarks>
+		public virtual ushort DesiredFloatBitDepth
+		{
+			get
+			{
+				return _desiredFloatBitDepth;
+			}
+			set
+			{
+				_desiredFloatBitDepth = value;
+			}
+		}
+
+		/// <summary>
+		/// Sets desired bit depth for integer and float pixel format.
+		/// </summary>
+		/// <param name="integerBitDepth"></param>
+		/// <param name="floatBitDepth"></param>
+		public virtual void SetDesiredBitDepths( ushort integerBitDepth, ushort floatBitDepth )
+		{
+			_desiredFloatBitDepth = floatBitDepth;
+			_desiredIntegerBitDepth = integerBitDepth;
+		}
+
+		#endregion
+
+		/// <summary>
         ///    Specifies whether this texture is 32 bits or not.
         /// </summary>
         /// <ogre name="enable32Bit" />
@@ -543,6 +646,13 @@ namespace Axiom.Core
             //    // predeclaring, you use a texture file which includes all the
             //    // information required.
             //}
+
+			if ( TextureManager.Instance != null )
+			{
+				TextureManager mgr = TextureManager.Instance;
+				MipmapCount = mgr.DefaultMipmapCount;
+				SetDesiredBitDepths( mgr.PreferredIntegerBitDepth, mgr.PreferredFloatBitDepth );
+			}
         }
 
         #endregion Construction and Destruction
@@ -628,47 +738,36 @@ namespace Axiom.Core
                 LogManager.Instance.Write( "Unloading image: {0}", _name );
                 Unload();
             }
+
+			// Set desired texture size and properties from images[0]
             _srcWidth = _width = images[ 0 ].Width;
             _srcHeight = _height = images[ 0 ].Height;
             _srcDepth = _depth = images[ 0 ].Depth;
-            if ( _hasAlpha && images[ 0 ].Format == PixelFormat.L8 )
+
+			// Get source image format and adjust if required
+			_srcFormat = images[ 0 ].Format;
+			if ( _treatLuminanceAsAlpha && _srcFormat == PixelFormat.L8 )
             {
-                _format = PixelFormat.A8;
-                srcBpp = 8;
+				_srcFormat = PixelFormat.A8;
             }
-            else
-            {
-                this.Format = images[ 0 ].Format;
-            }
-            if ( _finalBpp == 16 )
-            {
-                switch ( _format )
-                {
-                    case PixelFormat.R8G8B8:
-                    case PixelFormat.X8R8G8B8:
-                        _format = PixelFormat.R5G6B5;
-                        break;
-                    case PixelFormat.B8G8R8:
-                    case PixelFormat.X8B8G8R8:
-                        _format = PixelFormat.B5G6R5;
-                        break;
-                    case PixelFormat.A8R8G8B8:
-                    case PixelFormat.R8G8B8A8:
-                    case PixelFormat.A8B8G8R8:
-                    case PixelFormat.B8G8R8A8:
-                        _format = PixelFormat.A4R4G4B4;
-                        break;
-                    default:
-                        // use the original format
-                        break;
-                }
-            }
+
+			if ( _desiredFormat != PixelFormat.Unknown )
+			{
+	            // If have desired format, use it
+				_format = _desiredFormat;
+			}
+			else
+			{
+	            // Get the format according with desired bit depth
+				_format = PixelUtil.GetFormatForBitDepths( _srcFormat, _desiredIntegerBitDepth, _desiredFloatBitDepth );
+			}
 
             // The custom mipmaps in the image have priority over everything
             int imageMips = images[ 0 ].NumMipMaps;
             if ( imageMips > 0 )
             {
-                this._mipmapCount = imageMips;
+                _mipmapCount = _requestedMipmapCount = imageMips;
+				// Disable flag for auto mip generation
                 _usage &= ~TextureUsage.AutoMipMap;
             }
 
@@ -695,9 +794,27 @@ namespace Axiom.Core
                 faces = this.faceCount;
 
             // Say what we're doing
-            LogManager.Instance.Write( "Texture: {0}: Loading {1} faces({2},{3}x{4}x{5})",
-                _name, faces, PixelUtil.GetFormatName( images[ 0 ].Format ),
-                images[ 0 ].Width, images[ 0 ].Height, images[ 0 ].Depth );
+			{ // Scoped
+				StringBuilder msg = new StringBuilder();
+				msg.AppendFormat( "Texture: {0}: Loading {1} faces( {2}, {3}x{4}x{5} ) with",
+				  						_name, faces, PixelUtil.GetFormatName( images[ 0 ].Format ),
+										images[ 0 ].Width, images[ 0 ].Height, images[ 0 ].Depth );
+				if ( !( _mipmapsHardwareGenerated && _mipmapCount == 0 ) )
+					msg.AppendFormat( " {0}", _mipmapCount );
+
+				if ( (_usage & TextureUsage.AutoMipMap) == TextureUsage.AutoMipMap )
+					msg.AppendFormat( "{0} generated mipmaps", _mipmapsHardwareGenerated ? " hardware" : "" );
+				else
+					msg.Append( " custom mipmaps" );
+
+				msg.AppendFormat( " from {0}.\n\t", multiImage ? "multiple Images" : "an Image" );
+
+				// Print data about first destination surface
+				HardwarePixelBuffer buf = GetBuffer(0, 0);
+				msg.AppendFormat( " Internal format is {0} , {1}x{2}x{3}.", PixelUtil.GetFormatName( buf.Format ), buf.Width, buf.Height, buf.Depth );
+
+				LogManager.Instance.Write( msg.ToString() );
+			}
 
             // Main loading loop
             // imageMips == 0 if the image has no custom mipmaps, otherwise contains the number of custom mips
@@ -739,8 +856,8 @@ namespace Axiom.Core
 
                                     Image.ApplyGamma( corrected.Data, _gamma, corrected.ConsecutiveSize, PixelUtil.GetNumElemBits( src.Format ) );
 
-                                    // Destination: entire texture. BlitFromMemory does the scaling to
-                                    // a power of two for us when needed
+                                    // Destination: entire texture. BlitFromMemory does
+                                    // the scaling to a power of two for us when needed
                                     GetBuffer( i, mip ).BlitFromMemory( corrected );
                                 }
                                 finally
@@ -752,8 +869,8 @@ namespace Axiom.Core
                     }
                     else
                     {
-                        // Destination: entire texture. BlitFromMemory does the scaling to
-                        // a power of two for us when needed
+                        // Destination: entire texture. BlitFromMemory does
+                        // the scaling to a power of two for us when needed
                         GetBuffer( i, mip ).BlitFromMemory( src );
                     }
                 }
@@ -761,29 +878,28 @@ namespace Axiom.Core
             // Update size (the final size, not including temp space)
             Size = faces * PixelUtil.GetMemorySize( _width, _height, _depth, _format );
 
-            IsLoaded = true;
         }
 
-        /// <summary>
-        ///    Return hardware pixel buffer for a surface. This buffer can then
-        ///    be used to copy data from and to a particular level of the texture.
-        /// </summary>
-        /// <param name="face">
-        ///    Face number, in case of a cubemap texture. Must be 0
-        ///    for other types of textures.
-        ///    For cubemaps, this is one of 
-        ///    +X (0), -X (1), +Y (2), -Y (3), +Z (4), -Z (5)
-        /// </param>
-        /// <param name="mipmap">
-        ///    Mipmap level. This goes from 0 for the first, largest
-        ///    mipmap level to getNumMipmaps()-1 for the smallest.
-        /// </param>
-        /// <remarks>
-        ///    The buffer is invalidated when the resource is unloaded or destroyed.
-        ///    Do not use it after the lifetime of the containing texture.
-        /// </remarks>
-        /// <returns>A shared pointer to a hardware pixel buffer</returns>
-        public abstract HardwarePixelBuffer GetBuffer( int face, int mipmap );
+		/// <summary>
+		///    Return hardware pixel buffer for a surface. This buffer can then
+		///    be used to copy data from and to a particular level of the texture.
+		/// </summary>
+		/// <param name="face">
+		///    Face number, in case of a cubemap texture. Must be 0
+		///    for other types of textures.
+		///    For cubemaps, this is one of 
+		///    +X (0), -X (1), +Y (2), -Y (3), +Z (4), -Z (5)
+		/// </param>
+		/// <param name="mipmap">
+		///    Mipmap level. This goes from 0 for the first, largest
+		///    mipmap level to getNumMipmaps()-1 for the smallest.
+		/// </param>
+		/// <remarks>
+		///    The buffer is invalidated when the resource is unloaded or destroyed.
+		///    Do not use it after the lifetime of the containing texture.
+		/// </remarks>
+		/// <returns>A shared pointer to a hardware pixel buffer</returns>
+		public abstract HardwarePixelBuffer GetBuffer( int face, int mipmap );
 
         public HardwarePixelBuffer GetBuffer( int face )
         {

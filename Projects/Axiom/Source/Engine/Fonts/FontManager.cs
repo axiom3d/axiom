@@ -131,7 +131,7 @@ namespace Axiom.Fonts
 					}
 					else
 					{
-						if ( parms[ 0 ].ToLower() == "truetype" )
+						if ( parms[ 1 ].ToLower() == "truetype" )
 						{
 							font.Type = FontType.TrueType;
 						}

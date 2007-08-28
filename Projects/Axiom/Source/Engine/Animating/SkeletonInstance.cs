@@ -264,7 +264,6 @@ namespace Axiom.Animating
 				this.CreateAttachmentPoint( ap.Name, parentBone.Handle, ap.Orientation, ap.Position );
 			}
 
-			IsLoaded = true;
 		}
 
 		/// <summary>

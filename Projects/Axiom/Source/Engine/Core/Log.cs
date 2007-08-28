@@ -64,7 +64,10 @@ namespace Axiom.Core
         ///     Debug output enabled?
         /// </summary>
         private bool debugOutput;
-
+		/// <summary>
+		///		flag to indicate object already disposed.
+		/// </summary>
+		private bool _isDisposed;
         /// <summary>
         ///     LogMessageLevel + LoggingLevel > LOG_THRESHOLD = message logged.
         /// </summary>
@@ -103,6 +106,11 @@ namespace Axiom.Core
 			}
 
         }
+
+		~Log()
+		{
+			Dispose();
+		}
 
         #endregion Constructors
 
@@ -173,22 +181,26 @@ namespace Axiom.Core
         /// </param>
         public void Write( LogMessageLevel level, bool maskDebug, string message, params object[] substitutions )
         {
+			if ( _isDisposed )
+				return;
+
 			if ( message == null )
 				throw new ArgumentNullException( "The log message cannot be null" );
 			if ( ( (int)logLevel + (int)level ) > LogThreshold )
 				return;	//too verbose a message to write
 
-                // construct the log message
-                if ( substitutions != null && substitutions.Length > 0 )
-                {
-                    message = string.Format( message, substitutions );
-                }
+            // construct the log message
+            if ( substitutions != null && substitutions.Length > 0 )
+            {
+                message = string.Format( message, substitutions );
+            }
 
-                // write the the debug output if requested
-                if ( debugOutput && !maskDebug )
-                {
-                    System.Diagnostics.Debug.WriteLine( message );
-                }
+            // write the the debug output if requested
+            if ( debugOutput && !maskDebug )
+            {
+                System.Diagnostics.Debug.WriteLine( message );
+            }
+
 			if ( writer.BaseStream != null )
 			{
 
@@ -217,6 +229,8 @@ namespace Axiom.Core
             writer.Close();
 			if ( log != null )
             log.Close();
+
+			_isDisposed = true;
         }
 
         #endregion

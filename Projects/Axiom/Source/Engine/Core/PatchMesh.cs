@@ -138,7 +138,6 @@ namespace Axiom.Core
             // set the bounds
             this.BoundingBox = patchSurface.Bounds;
             this.BoundingSphereRadius = patchSurface.BoundingSphereRadius;
-            IsLoaded = true;
         }
     }
 }

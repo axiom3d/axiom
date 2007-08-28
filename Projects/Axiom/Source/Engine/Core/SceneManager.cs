@@ -2463,7 +2463,7 @@ namespace Axiom.Core
 
 				// Color Write
 				// right now only using on/off, not per channel
-				bool colWrite = pass.ColorWrite;
+				bool colWrite = pass.ColorWriteEnabled;
 				targetRenderSystem.SetColorBufferWriteEnabled( colWrite, colWrite, colWrite, colWrite );
 
 				// Culling Mode

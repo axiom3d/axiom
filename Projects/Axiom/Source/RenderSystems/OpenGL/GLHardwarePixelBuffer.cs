@@ -53,7 +53,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		private BufferLocking _currentLockOptions;
 		private GCHandle _bufferPinndedHandle;
-		private byte[] _data;
+		private byte[] _data = null;
 
 		#region buffer Property
 
@@ -124,6 +124,8 @@ namespace Axiom.RenderSystems.OpenGL
 			if ( buffer.Data != IntPtr.Zero )
 				// Already allocated
 				return;
+
+			// Allocate storage
 			_data = new byte[ this.sizeInBytes ];
 			_bufferPinndedHandle = GCHandle.Alloc( _data, GCHandleType.Pinned );
 			buffer.Data = _bufferPinndedHandle.AddrOfPinnedObject();
@@ -182,13 +184,14 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void BlitFromMemory( PixelBox src, BasicBox dstBox )
 		{
-			if ( !_buffer.Contains( dstBox ) )
-				throw new ArgumentException( "Destination box out of range." );
 			PixelBox scaled;
 
+			if ( !_buffer.Contains( dstBox ) )
+				throw new ArgumentException( "Destination box out of range." );
+
 			if ( src.Width != dstBox.Width ||
-				src.Height != dstBox.Height ||
-				src.Depth != dstBox.Depth )
+				 src.Height != dstBox.Height ||
+				 src.Depth != dstBox.Depth )
 			{
 				// Scale to destination size. Use DevIL and not iluScale because ILU screws up for 
 				// floating point textures and cannot cope with 3D images.
@@ -232,12 +235,12 @@ namespace Axiom.RenderSystems.OpenGL
 			if ( !_buffer.Contains( srcBox ) )
 				throw new ArgumentException( "Source box out of range." );
 			if ( srcBox.Left == 0 && srcBox.Right == Width &&
-			   srcBox.Top == 0 && srcBox.Bottom == Height &&
-			   srcBox.Front == 0 && srcBox.Back == Depth &&
-			   dst.Width == Width &&
-			   dst.Height == Height &&
-			   dst.Depth == Depth &&
-			   GLPixelUtil.GetGLOriginFormat( dst.Format ) != 0 )
+			     srcBox.Top == 0 && srcBox.Bottom == Height &&
+			     srcBox.Front == 0 && srcBox.Back == Depth &&
+			     dst.Width == Width &&
+			     dst.Height == Height &&
+			     dst.Depth == Depth &&
+			     GLPixelUtil.GetGLOriginFormat( dst.Format ) != 0 )
 			{
 				// The direct case: the user wants the entire texture in a format supported by GL
 				// so we don't need an intermediate buffer
@@ -276,14 +279,14 @@ namespace Axiom.RenderSystems.OpenGL
 					// Dispose managed resources.
 				}
 
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
 				if ( _bufferPinndedHandle.IsAllocated )
 				{
 					_bufferPinndedHandle.Free();
 				}
 				buffer.Data = IntPtr.Zero;
 				buffer = null;
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
 			}
 			isDisposed = true;
 

@@ -261,7 +261,6 @@ namespace Axiom.SceneManagers.Bsp
             q3.LoadFromStream( stream );
 
             LoadQuake3Level( q3 );
-            IsLoaded = true;
 
         }
 
@@ -1035,7 +1034,6 @@ namespace Axiom.SceneManagers.Bsp
             LoadQuake3Level( q3 );
             chunk.Close();
 
-            IsLoaded = true;
         }
 
         /// <summary>
