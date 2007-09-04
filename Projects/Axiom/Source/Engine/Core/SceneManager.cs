@@ -1357,6 +1357,23 @@ namespace Axiom.Core
 			}
 		}
 
+        public void ResetViewProjectionMode()
+        {
+            if (lastViewWasIdentity)
+            {
+                // Coming back to normal from identity view
+                targetRenderSystem.ViewMatrix = cameraInProgress.ViewMatrix;
+                lastViewWasIdentity = false;
+            }
+    
+            if (lastProjectionWasIdentity)
+            {
+                // Coming back from flat projection
+                targetRenderSystem.ProjectionMatrix = cameraInProgress.ProjectionMatrixRS;
+                lastProjectionWasIdentity = false;
+            }
+        }
+    
 		#endregion
 
 		#region Protected methods
@@ -4386,7 +4403,7 @@ namespace Axiom.Core
 			targetRenderSystem.RasterizationMode = camera.SceneDetail;
 
 			// Set initial camera state
-			targetRenderSystem.ProjectionMatrix = camera.ProjectionMatrix;
+			targetRenderSystem.ProjectionMatrix = camera.ProjectionMatrixRS;
 			targetRenderSystem.ViewMatrix = camera.ViewMatrix;
 
 			// render all visible objects
@@ -4722,7 +4739,7 @@ namespace Axiom.Core
 					// Set ortho projection
 					texCam.ProjectionType = Projection.Orthographic;
 					// set easy FOV and near dist so that texture covers far dist
-					texCam.FOV = 90;
+					texCam.FieldOfView = 90;
 					texCam.Near = shadowDist;
 					// TODO: Ogre doesn't include this line
 					texCam.Far = shadowDirLightExtrudeDist * 3;
@@ -4765,7 +4782,7 @@ namespace Axiom.Core
 					// Set perspective projection
 					texCam.ProjectionType = Projection.Perspective;
 					// set FOV slightly larger than the spotlight range to ensure coverage
-					texCam.FOV = light.SpotlightOuterAngle * 1.2f;
+					texCam.FieldOfView = light.SpotlightOuterAngle * 1.2f;
 					// set near clip the same as main camera, since they are likely
 					// to both reflect the nature of the scene
 					texCam.Near = camera.Near;
@@ -4780,7 +4797,7 @@ namespace Axiom.Core
 					// Set perspective projection
 					texCam.ProjectionType = Projection.Perspective;
 					// Use 120 degree FOV for point light to ensure coverage more area
-					texCam.FOV = 120;
+					texCam.FieldOfView = 120;
 					// set near clip the same as main camera, since they are likely
 					// to both reflect the nature of the scene
 					texCam.Near = camera.Near;
@@ -5105,6 +5122,9 @@ namespace Axiom.Core
 				targetRenderSystem.Render( op );
 				renderOpMeter.Exit();
 			}
+
+            // Reset view / projection changes if any
+            ResetViewProjectionMode();
 		}
 
 		/// <summary>

@@ -187,14 +187,14 @@ namespace Axiom.Core
 			orientation = Quaternion.Identity;
 			derivedOrientation = Quaternion.Identity;
 
-			fieldOfView = Utility.RadiansToDegrees( Utility.PI / 4.0f );
-			nearDistance = 100.0f;
-			farDistance = 100000.0f;
-			aspectRatio = 1.33333333333333f;
-			projectionType = Projection.Perspective;
+			FieldOfView = Utility.RadiansToDegrees( Utility.PI / 4.0f );
+			Near = 100.0f;
+			Far = 100000.0f;
+			AspectRatio = 1.33333333333333f;
+			ProjectionType = Projection.Perspective;
 
-			viewMatrix = Matrix4.Zero;
-			projectionMatrix = Matrix4.Zero;
+			ViewMatrix = Matrix4.Zero;
+			ProjectionMatrix = Matrix4.Zero;
 
 			// Reasonable defaults to camera params
 			sceneDetail = SceneDetailLevel.Solid;
@@ -247,7 +247,7 @@ namespace Axiom.Core
 		/// </summary>
 		protected override void InvalidateView()
 		{
-			recalculateView = true;
+			_recalculateView = true;
 			recalculateWindow = true;
 		}
 
@@ -256,7 +256,7 @@ namespace Axiom.Core
 		/// </summary>
 		protected override void InvalidateFrustum()
 		{
-			recalculateFrustum = true;
+			_recalculateFrustum = true;
 			recalculateWindow = true;
 		}
 
@@ -292,18 +292,18 @@ namespace Axiom.Core
 				// are we attached to another node?
 				if ( parentNode != null )
 				{
-					if ( !recalculateView && parentNode.DerivedOrientation == lastParentOrientation &&
-						parentNode.DerivedPosition == lastParentPosition )
+					if ( !_recalculateView && parentNode.DerivedOrientation == _lastParentOrientation &&
+						parentNode.DerivedPosition == _lastParentPosition )
 					{
 						returnVal = false;
 					}
 					else
 					{
 						// we are out of date with the parent scene node
-						lastParentOrientation = parentNode.DerivedOrientation;
-						lastParentPosition = parentNode.DerivedPosition;
-						derivedOrientation = lastParentOrientation * orientation;
-						derivedPosition = ( lastParentOrientation * position ) + lastParentPosition;
+						_lastParentOrientation = parentNode.DerivedOrientation;
+						_lastParentPosition = parentNode.DerivedPosition;
+						derivedOrientation = _lastParentOrientation * orientation;
+						derivedPosition = ( _lastParentOrientation * position ) + _lastParentPosition;
 						returnVal = true;
 					}
 				}
@@ -314,17 +314,17 @@ namespace Axiom.Core
 					derivedPosition = position;
 				}
 
-				if ( isReflected && linkedReflectionPlane != null &&
-					!( lastLinkedReflectionPlane == linkedReflectionPlane.DerivedPlane ) )
+				if ( IsReflected && _linkedReflectionPlane != null &&
+					!( _lastLinkedReflectionPlane == _linkedReflectionPlane.DerivedPlane ) )
 				{
 
-					reflectionPlane = linkedReflectionPlane.DerivedPlane;
-					reflectionMatrix = Utility.BuildReflectionMatrix( reflectionPlane );
-					lastLinkedReflectionPlane = linkedReflectionPlane.DerivedPlane;
+					ReflectionPlane = _linkedReflectionPlane.DerivedPlane;
+					ReflectionMatrix = Utility.BuildReflectionMatrix( ReflectionPlane );
+					_lastLinkedReflectionPlane = _linkedReflectionPlane.DerivedPlane;
 					returnVal = true;
 				}
 
-				return returnVal || recalculateView;
+				return returnVal || _recalculateView;
 			}
 		}
 
@@ -355,7 +355,7 @@ namespace Axiom.Core
 			{
 				// return a little bigger than the near distance
 				// just to keep things just outside
-				return nearDistance * 1.5f;
+				return Near * 1.5f;
 			}
 		}
 
@@ -1004,39 +1004,51 @@ namespace Axiom.Core
 				return;
 			}
 
-			float thetaY = Utility.DegreesToRadians( fieldOfView * 0.5f );
-			float tanThetaY = Utility.Tan( thetaY );
-			float tanThetaX = tanThetaY * aspectRatio;
+            // Calculate general projection parameters
+            float vpLeft = 0.0f, vpRight = 0.0f, vpBottom = 0.0f, vpTop = 0.0f;
+            CalcProjectionParameters(ref vpLeft, ref vpRight, ref vpBottom, ref vpTop);
 
-			float vpTop = tanThetaY * nearDistance;
-			float vpLeft = -tanThetaX * nearDistance;
-			float vpWidth = -2 * vpLeft;
-			float vpHeight = -2 * vpTop;
+            float vpWidth = vpRight - vpLeft;
+            float vpHeight = vpTop - vpBottom;
 
 			float wvpLeft = vpLeft + windowLeft * vpWidth;
 			float wvpRight = vpLeft + windowRight * vpWidth;
 			float wvpTop = vpTop - windowTop * vpHeight;
 			float wvpBottom = vpTop - windowBottom * vpHeight;
 
-			Vector3 vpUpLeft = new Vector3( wvpLeft, wvpTop, -nearDistance );
-			Vector3 vpUpRight = new Vector3( wvpRight, wvpTop, -nearDistance );
-			Vector3 vpBottomLeft = new Vector3( wvpLeft, wvpBottom, -nearDistance );
-			Vector3 vpBottomRight = new Vector3( wvpRight, wvpBottom, -nearDistance );
+			Vector3 vpUpLeft = new Vector3( wvpLeft, wvpTop, -Near );
+			Vector3 vpUpRight = new Vector3( wvpRight, wvpTop, -Near );
+			Vector3 vpBottomLeft = new Vector3( wvpLeft, wvpBottom, -Near );
+			Vector3 vpBottomRight = new Vector3( wvpRight, wvpBottom, -Near );
 
-			Matrix4 inv = viewMatrix.Inverse();
+			Matrix4 inv = _viewMatrix.Inverse();
 
-			Vector3 vwUpLeft = inv * vpUpLeft;
-			Vector3 vwUpRight = inv * vpUpRight;
-			Vector3 vwBottomLeft = inv * vpBottomLeft;
-			Vector3 vwBottomRight = inv * vpBottomRight;
+			Vector3 vwUpLeft = inv.TransformAffine(vpUpLeft);
+			Vector3 vwUpRight = inv.TransformAffine(vpUpRight);
+			Vector3 vwBottomLeft = inv.TransformAffine(vpBottomLeft);
+			Vector3 vwBottomRight = inv.TransformAffine(vpBottomRight);
 
-			Vector3 pos = Position;
+            if (ProjectionType == Projection.Perspective)
+            {
+                Vector3 pos = Position;
 
-			windowClipPlanes.Clear();
-			windowClipPlanes.Add( new Plane( pos, vwBottomLeft, vwUpLeft ) );
-			windowClipPlanes.Add( new Plane( pos, vwUpLeft, vwUpRight ) );
-			windowClipPlanes.Add( new Plane( pos, vwUpRight, vwBottomRight ) );
-			windowClipPlanes.Add( new Plane( pos, vwBottomRight, vwBottomLeft ) );
+                windowClipPlanes.Clear();
+                windowClipPlanes.Add(new Plane(pos, vwBottomLeft, vwUpLeft));
+                windowClipPlanes.Add(new Plane(pos, vwUpLeft, vwUpRight));
+                windowClipPlanes.Add(new Plane(pos, vwUpRight, vwBottomRight));
+                windowClipPlanes.Add(new Plane(pos, vwBottomRight, vwBottomLeft));
+            }
+            else
+            {
+                Vector3 x_axis = new Vector3(inv.m00, inv.m01, inv.m02); 
+                Vector3 y_axis = new Vector3(inv.m10, inv.m11, inv.m12);
+                x_axis.Normalize();
+                y_axis.Normalize();
+                windowClipPlanes.Add(new Plane(x_axis, vwBottomLeft));
+                windowClipPlanes.Add(new Plane(-x_axis, vwUpRight));
+                windowClipPlanes.Add(new Plane(y_axis, vwBottomLeft));
+                windowClipPlanes.Add(new Plane(-y_axis, vwUpLeft));
+            }
 
 			recalculateWindow = false;
 		}
@@ -1081,20 +1093,35 @@ namespace Axiom.Core
 			float centeredScreenX = ( screenX - 0.5f );
 			float centeredScreenY = ( 0.5f - screenY );
 
-			float normalizedSlope = Utility.Tan( Utility.DegreesToRadians( fieldOfView * 0.5f ) );
-			float viewportYToWorldY = normalizedSlope * nearDistance * 2;
-			float viewportXToWorldX = viewportYToWorldY * aspectRatio;
+			float normalizedSlope = Utility.Tan( Utility.DegreesToRadians( FieldOfView * 0.5f ) );
+			float viewportYToWorldY = normalizedSlope * Near * 2;
+			float viewportXToWorldX = viewportYToWorldY * AspectRatio;
 
-			Vector3 rayDirection =
-				new Vector3(
-				centeredScreenX * viewportXToWorldX,
-				centeredScreenY * viewportYToWorldY,
-				-nearDistance );
+			Vector3 rayDirection, rayOrigin;
 
-			rayDirection = this.DerivedOrientation * rayDirection;
-			rayDirection.Normalize();
+            if (ProjectionType == Projection.Perspective)
+            {
+                // From camera center
+                rayOrigin = DerivedPosition;
+                // Point to perspective projected position
+                rayDirection.x = centeredScreenX * viewportXToWorldX;
+                rayDirection.y = centeredScreenY * viewportYToWorldY;
+                rayDirection.z = -Near;
+                rayDirection = DerivedOrientation * rayDirection;
+                rayDirection.Normalize();
+            }
+            else
+            {
+                // Ortho always parallel to point on screen
+                rayOrigin.x = centeredScreenX * viewportXToWorldX;
+                rayOrigin.y = centeredScreenY * viewportYToWorldY;
+                rayOrigin.z = 0.0f;
+                rayOrigin = DerivedOrientation * rayOrigin;
+                rayOrigin = DerivedPosition + rayOrigin;
+                rayDirection = DerivedDirection;
+            }
 
-			return new Ray( this.DerivedPosition, rayDirection );
+			return new Ray( rayOrigin, rayDirection );
 		}
 
 		/// <summary>

@@ -116,17 +116,17 @@ namespace Axiom.Demos
 
             if ( input.IsKeyPressed( KeyCodes.D1 ) )
             {
-                if ( frustum.FOV - change > 20 )
+                if ( frustum.FieldOfView - change > 20 )
                 {
-                    frustum.FOV -= change;
+                    frustum.FieldOfView -= change;
                 }
             }
 
             if ( input.IsKeyPressed( KeyCodes.D2 ) )
             {
-                if ( frustum.FOV < 90 )
+                if ( frustum.FieldOfView < 90 )
                 {
-                    frustum.FOV += change;
+                    frustum.FieldOfView += change;
                 }
             }
 

@@ -572,7 +572,7 @@ namespace Axiom.Graphics
 					}
 					else
 					{
-				projectionMatrix = camera.StandardProjectionMatrix;
+				projectionMatrix = camera.ProjectionMatrixRSDepth;
 					}
 				if ( currentRenderTarget != null && currentRenderTarget.RequiresTextureFlipping )
 				{
@@ -634,7 +634,7 @@ namespace Axiom.Graphics
 				{
 					textureViewProjMatrix =
 						ProjectionClipSpace2DToImageSpacePerspective *
-						currentTextureProjector.StandardProjectionMatrix *
+						currentTextureProjector.ProjectionMatrixRSDepth *
 						currentTextureProjector.ViewMatrix;
 
 					textureViewProjMatrixDirty = false;

@@ -2092,25 +2092,9 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override Matrix4 ConvertProjectionMatrix( Matrix4 matrix, bool forGpuProgram )
 		{
-			Matrix4 dest = new Matrix4( matrix.m00, matrix.m01, matrix.m02, matrix.m03,
-									   matrix.m10, matrix.m11, matrix.m12, matrix.m13,
-									   matrix.m20, matrix.m21, matrix.m22, matrix.m23,
-									   matrix.m30, matrix.m31, matrix.m32, matrix.m33 );
+            // No conversion required for OpenGL
 
-			// Convert depth range from [-1,+1] to [0,1]
-			dest.m20 = ( dest.m20 + dest.m30 ) / 2;
-			dest.m21 = ( dest.m21 + dest.m31 ) / 2;
-			dest.m22 = ( dest.m22 + dest.m32 ) / 2;
-			dest.m23 = ( dest.m23 + dest.m33 ) / 2;
-
-			if ( !forGpuProgram )
-			{
-				// Convert right-handed to left-handed
-				dest.m02 = -dest.m02;
-				dest.m12 = -dest.m12;
-				dest.m22 = -dest.m22;
-				dest.m32 = -dest.m32;
-			}
+            Matrix4 dest = matrix;
 
 			return dest;
 		}
