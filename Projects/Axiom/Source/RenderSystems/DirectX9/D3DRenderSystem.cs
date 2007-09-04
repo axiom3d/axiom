@@ -637,10 +637,10 @@ namespace Axiom.RenderSystems.DirectX9
 									   mat.m30, mat.m31, mat.m32, mat.m33 );
 
 			// Convert depth range from [-1,+1] to [0,1]
-			dest.m20 = ( dest.m20 + dest.m30 ) / 2;
-			dest.m21 = ( dest.m21 + dest.m31 ) / 2;
-			dest.m22 = ( dest.m22 + dest.m32 ) / 2;
-			dest.m23 = ( dest.m23 + dest.m33 ) / 2;
+			dest.m20 = ( dest.m20 + dest.m30 ) / 2.0f;
+			dest.m21 = ( dest.m21 + dest.m31 ) / 2.0f;
+			dest.m22 = ( dest.m22 + dest.m32 ) / 2.0f;
+			dest.m23 = ( dest.m23 + dest.m33 ) / 2.0f;
 
 			if ( !forGpuProgram )
 			{
