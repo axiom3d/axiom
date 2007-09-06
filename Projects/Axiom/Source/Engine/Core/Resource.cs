@@ -270,7 +270,7 @@ namespace Axiom.Core
 			{
 				return _origin;
 			}
-			protected set
+			set
 			{
 				_origin = value;
 			}
