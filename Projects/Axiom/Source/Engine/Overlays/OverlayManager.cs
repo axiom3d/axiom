@@ -908,7 +908,7 @@ namespace Axiom.Overlays
 						}
 						string includeFile = parms[ 2 ];
 
-						Stream data = ResourceGroupManager.Instance.OpenResource( fileName );
+						Stream data = ResourceGroupManager.Instance.OpenResource( includeFile );
 						ParseScript( data, groupName, includeFile );
 						data.Close();
 
