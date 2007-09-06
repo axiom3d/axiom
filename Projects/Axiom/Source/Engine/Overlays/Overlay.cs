@@ -473,25 +473,6 @@ namespace Axiom.Overlays
         }
 
         /// <summary>
-        /// Get the origin of this overlay, e.g. a script file name.
-        /// </summary>
-        /// <remarks>
-        /// This property will only contain something if the creator of
-        /// this overlay chose to populate it. Script loaders are advised
-        /// to populate it.
-        ///</remarks>
-        public string Origin
-        {
-            get
-            {
-                return origin;
-            }
-            set
-            {
-                origin = value;
-            }
-        }
-        /// <summary>
         ///    Gets/Sets the rotation applied to this overlay, in degrees.
         /// </summary>
         public float Rotation
