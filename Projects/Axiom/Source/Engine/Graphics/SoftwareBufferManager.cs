@@ -154,11 +154,8 @@ namespace Axiom.Graphics
 
         protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
         {
-
             // return the offset into the array as a pointer
-            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
-            //handle = GCHandle.Alloc( data, GCHandleType.Pinned );
-            //return handle.AddrOfPinnedObject();
+            return GetDataPointer( offset );
         }
 
         public override void ReadData( int offset, int length, IntPtr dest )
@@ -187,8 +184,7 @@ namespace Axiom.Graphics
 
         public override void UnlockImpl()
         {
-
-            //handle.Free();
+            handle.Free();
         }
 
         public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
@@ -212,15 +208,25 @@ namespace Axiom.Graphics
         ///		Allows direct access to the software buffer data in cases when it is known that the underlying
         ///		buffer is software and not hardware.
         /// </summary>
+        /// <remarks>
+        /// The caller is responible for calling <see>Unlock</see> when they are done using this pointer
+        /// </remarks>
         public IntPtr GetDataPointer( int offset )
         {
-            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
-            //return handle.AddrOfPinnedObject();
+            if ( !handle.IsAllocated )
+                handle = GCHandle.Alloc( data, GCHandleType.Pinned );
+            IntPtr result;
+            unsafe
+            {
+                result = (IntPtr)( (byte*)handle.AddrOfPinnedObject() + offset );
+            }
+            return result;
+
         }
 
         public override void Dispose()
         {
-            if ( isLocked )
+            if ( isLocked || handle.IsAllocated )
                 Unlock();
             data = null;
         }
@@ -276,13 +282,8 @@ namespace Axiom.Graphics
 
         protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
         {
-            //isLocked = true;
-
             // return the offset into the array as a pointer
-            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
-
-            //handle = GCHandle.Alloc( data, GCHandleType.Pinned );
-            //return handle.AddrOfPinnedObject();
+            return GetDataPointer( offset );
         }
 
         public override void ReadData( int offset, int length, IntPtr dest )
@@ -311,8 +312,7 @@ namespace Axiom.Graphics
 
         public override void UnlockImpl()
         {
-
-            //handle.Free();
+            handle.Free();
         }
 
         public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
@@ -336,15 +336,25 @@ namespace Axiom.Graphics
         ///		Allows direct access to the software buffer data in cases when it is known that the underlying
         ///		buffer is software and not hardware.
         /// </summary>
+        /// <remarks>
+        /// The caller is responible for calling <see>Unlock</see> when they are done using this pointer
+        /// </remarks>
         public IntPtr GetDataPointer( int offset )
         {
-            return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
-            //return handle.AddrOfPinnedObject();
+            if ( !handle.IsAllocated )
+                handle = GCHandle.Alloc( data, GCHandleType.Pinned );
+            IntPtr result;
+            unsafe
+            {
+                result = (IntPtr)( (byte*)handle.AddrOfPinnedObject() + offset );
+            }
+            return result;
+
         }
 
         public override void Dispose()
         {
-            if ( isLocked )
+            if ( isLocked || handle.IsAllocated )
                 Unlock();
             data = null;
         }
