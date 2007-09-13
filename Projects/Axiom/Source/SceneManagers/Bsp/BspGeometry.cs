@@ -210,17 +210,6 @@ namespace Axiom.SceneManagers.Bsp
         }
 
         /// <summary>
-        ///		Will allow for setting per renderable scene detail levels.
-        /// </summary>
-        public SceneDetailLevel RenderDetail
-        {
-            get
-            {
-                return SceneDetailLevel.Solid;
-            }
-        }
-
-        /// <summary>
         ///    Gets the worldspace orientation of this renderable; this is used in order to
         ///    more efficiently update parameters to vertex & fragment programs, since inverting Quaterion
         ///    and Vector in order to derive object-space positions / directions for cameras and
@@ -323,6 +312,18 @@ namespace Axiom.SceneManagers.Bsp
         }
 
         #endregion
+
+        #endregion
+
+        #region IRenderable Members
+
+        public bool PolygonModeOverrideable
+        {
+            get
+            {
+                return true;
+            }
+        }
 
         #endregion
     }

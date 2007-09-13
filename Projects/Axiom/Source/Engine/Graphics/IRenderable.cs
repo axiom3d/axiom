@@ -172,9 +172,13 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
-        ///		Will allow for setting per renderable scene detail levels.
+        /// Gets whether this renderable's chosen detail level can be
+		///	overridden (downgraded) by the camera setting. 
+		/// override true means that a lower camera detail will override this
+	    /// renderables detail level, false means it won't.
         /// </summary>
-        SceneDetailLevel RenderDetail
+
+        bool PolygonModeOverrideable
         {
             get;
         }

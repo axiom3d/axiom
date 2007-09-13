@@ -904,16 +904,13 @@ namespace Axiom
 			}
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public SceneDetailLevel RenderDetail
-		{
-			get
-			{
-				return SceneDetailLevel.Solid;
-			}
-		}
+        public virtual bool PolygonModeOverrideable
+        {
+            get
+            {
+                return true;
+            }
+        }
 
 		/// <summary>
 		/// 

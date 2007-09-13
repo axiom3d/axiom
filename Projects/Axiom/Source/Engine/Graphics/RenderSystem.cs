@@ -823,7 +823,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Gets/Sets how to rasterise triangles, as points, wireframe or solid polys.
 		/// </summary>
-		public abstract SceneDetailLevel RasterizationMode
+		public abstract PolygonMode PolygonMode
 		{
 			get;
 			set;

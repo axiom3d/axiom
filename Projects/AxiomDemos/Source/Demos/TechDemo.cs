@@ -319,20 +319,20 @@ namespace Axiom.Demos
             // toggle rendering mode
             if ( input.IsKeyPressed( KeyCodes.R ) && toggleDelay < 0 )
             {
-                if ( camera.SceneDetail == SceneDetailLevel.Points )
+                if ( camera.PolygonMode == PolygonMode.Points )
                 {
-                    camera.SceneDetail = SceneDetailLevel.Solid;
+                    camera.PolygonMode = PolygonMode.Solid;
                 }
-                else if ( camera.SceneDetail == SceneDetailLevel.Solid )
+                else if ( camera.PolygonMode == PolygonMode.Solid )
                 {
-                    camera.SceneDetail = SceneDetailLevel.Wireframe;
+                    camera.PolygonMode = PolygonMode.Wireframe;
                 }
                 else
                 {
-                    camera.SceneDetail = SceneDetailLevel.Points;
+                    camera.PolygonMode = PolygonMode.Points;
                 }
 
-                Console.WriteLine( "Rendering mode changed to '{0}'.", camera.SceneDetail );
+                Console.WriteLine( "Rendering mode changed to '{0}'.", camera.PolygonMode );
 
                 toggleDelay = 1;
             }

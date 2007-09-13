@@ -84,10 +84,6 @@ namespace Axiom.Core
 		/// </summary>
 		protected SubMesh subMesh;
 		/// <summary>
-		///    Detail to be used for rendering this sub entity.
-		/// </summary>
-		protected SceneDetailLevel renderDetail;
-		/// <summary>
 		///		Current LOD index to use.
 		/// </summary>
 		internal int materialLodIndex;
@@ -147,7 +143,6 @@ namespace Axiom.Core
 		internal SubEntity()
 		{
 			material = (Material)MaterialManager.Instance[ "BaseWhite" ];
-			renderDetail = SceneDetailLevel.Solid;
 
 			isVisible = true;
 		}
@@ -516,20 +511,13 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public SceneDetailLevel RenderDetail
-		{
-			get
-			{
-				return renderDetail;
-			}
-			set
-			{
-				renderDetail = value;
-			}
-		}
+        public virtual bool PolygonModeOverrideable
+        {
+            get
+            {
+                return true;
+            }
+        }
 
 		/// <summary>
 		/// 

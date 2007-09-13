@@ -109,7 +109,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Rendering type (wireframe, solid, point).
 		/// </summary>
-		protected SceneDetailLevel sceneDetail;
+		protected PolygonMode sceneDetail;
 		/// <summary>
 		///		Stored number of visible faces in the last render.
 		/// </summary>
@@ -197,7 +197,7 @@ namespace Axiom.Core
 			ProjectionMatrix = Matrix4.Zero;
 
 			// Reasonable defaults to camera params
-			sceneDetail = SceneDetailLevel.Solid;
+			sceneDetail = PolygonMode.Solid;
 
 			// Default to fixed yaw (freelook)
 			this.FixedYawAxis = Vector3.UnitY;
@@ -458,7 +458,7 @@ namespace Axiom.Core
 		///		that behavior, allowing you to make the camera just render a
 		///		wireframe view, for example.
 		/// </remarks>
-		public SceneDetailLevel SceneDetail
+		public PolygonMode PolygonMode
 		{
 			get
 			{

@@ -956,14 +956,14 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// the type of polygon rendering required
 		/// </summary>
-		private SceneDetailLevel _polygonMode = SceneDetailLevel.Solid;
+		private PolygonMode _polygonMode = PolygonMode.Solid;
 		/// <summary>
 		/// Sets the type of polygon rendering required
 		/// </summary>
 		/// <remarks>
 		/// The default shading method is Solid
 		/// </remarks>
-		public SceneDetailLevel PolygonMode
+		public PolygonMode PolygonMode
 		{
 			get
 			{

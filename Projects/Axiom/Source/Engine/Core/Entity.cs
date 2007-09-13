@@ -148,10 +148,6 @@ namespace Axiom.Core
 		/// </summary>
 		protected bool usingManualLod;
 		/// <summary>
-		///    Render detail to be used for this entity (solid, wireframe, point).
-		/// </summary>
-		protected SceneDetailLevel renderDetail;
-		/// <summary>
 		///		Temp blend buffer details for shared geometry.
 		/// </summary>
 		protected TempBlendedBufferInfo tempSkelAnimInfo = new TempBlendedBufferInfo();
@@ -310,7 +306,6 @@ namespace Axiom.Core
 			this.name = name;
 			this.sceneMgr = creator;
 			//defaults to Points if not set
-			this.renderDetail = SceneDetailLevel.Solid;
 
 			SetMesh( mesh );
 
@@ -532,26 +527,6 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///    Sets the rendering detail of this entire entity (solid, wireframe etc).
-		/// </summary>
-		public SceneDetailLevel RenderDetail
-		{
-			get
-			{
-				return renderDetail;
-			}
-			set
-			{
-				renderDetail = value;
-
-				// also set for all sub entities
-				for ( int i = 0; i < subEntityList.Count; i++ )
-				{
-					GetSubEntity( i ).RenderDetail = renderDetail;
-				}
-			}
-		}
 
 		/// <summary>
 		///    Gets the number of sub entities that belong to this entity.

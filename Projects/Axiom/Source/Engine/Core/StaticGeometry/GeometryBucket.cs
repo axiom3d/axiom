@@ -498,13 +498,13 @@ namespace Axiom.Core
 				}
 			}
 
-			public SceneDetailLevel RenderDetail
-			{
-				get
-				{
-					return SceneDetailLevel.Solid;
-				}
-			}
+            public virtual bool PolygonModeOverrideable
+            {
+                get
+                {
+                    return true;
+                }
+            }
 
 			public Vector4 GetCustomParameter( int index )
 			{

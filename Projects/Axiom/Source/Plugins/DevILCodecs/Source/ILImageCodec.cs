@@ -242,6 +242,8 @@ namespace Axiom.Plugins.DevILCodecs
                             return PixelFormat.B4G4R4A4;
                         case Il.IL_RGBA:
                             return PixelFormat.A4R4G4B4;
+						case Il.IL_LUMINANCE_ALPHA:
+							return PixelFormat.BYTE_LA;
                     }
                     break;
 

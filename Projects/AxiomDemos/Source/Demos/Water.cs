@@ -451,19 +451,19 @@ namespace Axiom.Demos
             // 'R' Toggles Render Mode
             if ( input.IsKeyPressed( KeyCodes.R ) )
             {
-                switch ( camera.SceneDetail )
+                switch ( camera.PolygonMode )
                 {
-                    case SceneDetailLevel.Points:
-                        camera.SceneDetail = SceneDetailLevel.Solid;
+                    case PolygonMode.Points:
+                        camera.PolygonMode = PolygonMode.Solid;
                         break;
-                    case SceneDetailLevel.Solid:
-                        camera.SceneDetail = SceneDetailLevel.Wireframe;
+                    case PolygonMode.Solid:
+                        camera.PolygonMode = PolygonMode.Wireframe;
                         break;
-                    case SceneDetailLevel.Wireframe:
-                        camera.SceneDetail = SceneDetailLevel.Points;
+                    case PolygonMode.Wireframe:
+                        camera.PolygonMode = PolygonMode.Points;
                         break;
                 }
-                HandleUserModeInput( string.Format( "Rendering mode changed to '{0}'.", camera.SceneDetail ) );
+                HandleUserModeInput( string.Format( "Rendering mode changed to '{0}'.", camera.PolygonMode ) );
             }
 
             // 'T' Toggles Texture Settings

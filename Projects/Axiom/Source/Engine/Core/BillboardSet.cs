@@ -1628,22 +1628,19 @@ namespace Axiom.Core
 		/// <summary>
 		/// 
 		/// </summary>
-		public bool UseIdentityView
-		{
-			get
-			{
-				return false;
-			}
-            }
-
-		/// <summary>
-		/// 
-		/// </summary>
-		public SceneDetailLevel RenderDetail
-		{
-			get
+        public bool UseIdentityView
+        {
+            get
             {
-				return SceneDetailLevel.Solid;
+                return false;
+            }
+        }
+
+        public virtual bool PolygonModeOverrideable
+        {
+            get
+            {
+                return true;
             }
         }
 
