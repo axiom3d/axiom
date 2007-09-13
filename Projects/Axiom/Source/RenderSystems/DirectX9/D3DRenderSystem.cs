@@ -432,7 +432,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		///		Sets the rasterization mode to use during rendering.
 		/// </summary>
-		public override SceneDetailLevel RasterizationMode
+		public override PolygonMode PolygonMode
 		{
 			get
 			{
@@ -440,11 +440,11 @@ namespace Axiom.RenderSystems.DirectX9
 				switch ( device.RenderState.FillMode )
 				{
 					case D3D.FillMode.Point:
-						return SceneDetailLevel.Points;
+						return PolygonMode.Points;
 					case D3D.FillMode.WireFrame:
-						return SceneDetailLevel.Wireframe;
+						return PolygonMode.Wireframe;
 					case D3D.FillMode.Solid:
-						return SceneDetailLevel.Solid;
+						return PolygonMode.Solid;
 					default:
 						throw new NotSupportedException();
 				}
@@ -453,13 +453,13 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				switch ( value )
 				{
-					case SceneDetailLevel.Points:
+					case PolygonMode.Points:
 						device.RenderState.FillMode = D3D.FillMode.Point;
 						break;
-					case SceneDetailLevel.Wireframe:
+					case PolygonMode.Wireframe:
 						device.RenderState.FillMode = D3D.FillMode.WireFrame;
 						break;
-					case SceneDetailLevel.Solid:
+					case PolygonMode.Solid:
 						device.RenderState.FillMode = D3D.FillMode.Solid;
 						break;
 				}

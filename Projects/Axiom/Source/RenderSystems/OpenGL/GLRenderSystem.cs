@@ -129,7 +129,7 @@ namespace Axiom.RenderSystems.OpenGL
 		protected FilterOptions mipFilter;
 
 		// render state redundency reduction settings
-		protected SceneDetailLevel lastRasterizationMode;
+		protected PolygonMode lastPolygonMode;
 		protected ColorEx lastDiffuse, lastAmbient, lastSpecular, lastEmissive;
 		protected float lastShininess;
 		protected TexCoordCalcMethod[] lastTexCalMethods = new TexCoordCalcMethod[ Config.MaxTextureLayers ];
@@ -452,7 +452,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		///		Sets the mode to use for rendering
 		/// </summary>
-		public override SceneDetailLevel RasterizationMode
+		public override PolygonMode PolygonMode
 		{
 			get
 			{
@@ -460,7 +460,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 			set
 			{
-				if ( value == lastRasterizationMode )
+				if ( value == lastPolygonMode )
 				{
 					return;
 				}
@@ -470,13 +470,13 @@ namespace Axiom.RenderSystems.OpenGL
 
 				switch ( value )
 				{
-					case SceneDetailLevel.Solid:
+					case PolygonMode.Solid:
 						mode = Gl.GL_FILL;
 						break;
-					case SceneDetailLevel.Points:
+					case PolygonMode.Points:
 						mode = Gl.GL_POINT;
 						break;
-					case SceneDetailLevel.Wireframe:
+					case PolygonMode.Wireframe:
 						mode = Gl.GL_LINE;
 						break;
 					default:
@@ -492,7 +492,7 @@ namespace Axiom.RenderSystems.OpenGL
 				// set the specified polygon mode
 				Gl.glPolygonMode( Gl.GL_FRONT_AND_BACK, mode );
 
-				lastRasterizationMode = value;
+				lastPolygonMode = value;
 			}
 		}
 

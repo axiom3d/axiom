@@ -21,6 +21,7 @@ namespace Axiom.Demos
         private bool isWireframe;
         private PatchMesh patch;
         private Entity patchEntity;
+        private Pass patchPass;
 
         private GCHandle _handle;
 
@@ -149,11 +150,13 @@ namespace Axiom.Demos
             patch.SetSubdivision( 0 );
 
             // Create entity based on patch
+
             patchEntity = scene.CreateEntity( "Entity1", "Bezier1" );
 
 			Material material = (Material)MaterialManager.Instance.Create( "TextMat", ResourceGroupManager.DefaultResourceGroupName, null );
             material.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( "BumpyMetal.jpg" );
             patchEntity.MaterialName = "TextMat";
+            patchPass = material.GetTechnique(0).GetPass(0);
 
             // Attach the entity to the root of the scene
             scene.RootSceneNode.AttachObject( patchEntity );
@@ -179,7 +182,7 @@ namespace Axiom.Demos
                 if ( factor > 1.0f )
                 {
                     isWireframe = !isWireframe;
-                    patchEntity.RenderDetail = ( isWireframe ? SceneDetailLevel.Wireframe : SceneDetailLevel.Solid );
+                    patchPass.PolygonMode = ( isWireframe ? PolygonMode.Wireframe : PolygonMode.Solid );
                     factor = 0.0f;
                 }
 

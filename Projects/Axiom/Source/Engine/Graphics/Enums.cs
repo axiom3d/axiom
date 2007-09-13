@@ -1063,7 +1063,7 @@ namespace Axiom.Graphics
 	/// <summary>
 	/// The broad type of detail for rendering.
 	/// </summary>
-	public enum SceneDetailLevel
+	public enum PolygonMode
 	{
 		/// <summary>
 		///		Render subsequent requests drawing only the vertices in the scene.

@@ -506,7 +506,7 @@ namespace Axiom.Core
 		protected uint visibilityMask = 0xFFFFFFFF;
 		protected LightList nullLightList = new LightList();
 		protected ulong lastFrameNumber;
-		protected SceneDetailLevel lastDetailLevel = SceneDetailLevel.Points;
+		protected PolygonMode lastPolyMode = PolygonMode.Points;
 		protected Viewport currentViewport;
 
 		/// <summary>
@@ -4400,7 +4400,7 @@ namespace Axiom.Core
 			targetRenderSystem.BeginFrame();
 
 			// use the camera's current scene detail level
-			targetRenderSystem.RasterizationMode = camera.SceneDetail;
+			targetRenderSystem.PolygonMode = camera.PolygonMode;
 
 			// Set initial camera state
 			targetRenderSystem.ProjectionMatrix = camera.ProjectionMatrixRS;
@@ -4913,7 +4913,7 @@ namespace Axiom.Core
 			ushort numMatrices = 0;
 
 			// grab the current scene detail level
-			SceneDetailLevel camDetailLevel = cameraInProgress.SceneDetail;
+			PolygonMode camPolyMode = cameraInProgress.PolygonMode;
 
 			// 			// update auto params if this is a programmable pass
 			// 			if(pass.IsProgrammable) {
@@ -4966,24 +4966,28 @@ namespace Axiom.Core
 				bool thisNormalize = renderable.NormalizeNormals;
 
 				if ( thisNormalize != normalizeNormals )
-				{
-					targetRenderSystem.NormalizeNormals = thisNormalize;
-					normalizeNormals = thisNormalize;
-				}
+                {
+                    targetRenderSystem.NormalizeNormals = thisNormalize;
+                    normalizeNormals = thisNormalize;
+                }
 
-				// Set up the solid / wireframe override
-				SceneDetailLevel requestedDetail = renderable.RenderDetail;
-				if ( requestedDetail != lastDetailLevel || requestedDetail != camDetailLevel )
-				{
-					if ( requestedDetail > camDetailLevel )
-					{
-						// only downgrade detail; if cam says wireframe we don't go up to solid
-						requestedDetail = camDetailLevel;
-					}
-					targetRenderSystem.RasterizationMode = requestedDetail;
-					lastDetailLevel = requestedDetail;
+                // Set up the solid / wireframe override
+                PolygonMode requestedMode = pass.PolygonMode;
+                if (renderable.PolygonModeOverrideable == true)
+                {
+                    // check camera detial only when render detail is overridable
+                    if (requestedMode > camPolyMode)
+                    {
+                        // only downgrade detail; if cam says wireframe we don't go up to solid
+                        requestedMode = camPolyMode;
+                    }
+                }
 
-				}
+                if (requestedMode != lastPolyMode)
+                {
+                    targetRenderSystem.PolygonMode = requestedMode;
+                    lastPolyMode = requestedMode;
+                }
 
 				// TODO: Add ClipPlanes to RenderSystem.cs
                 // This is removed in OGRE 1.6.0... no need to port - J. Price

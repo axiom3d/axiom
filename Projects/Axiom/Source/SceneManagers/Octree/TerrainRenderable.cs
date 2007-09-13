@@ -844,11 +844,11 @@ namespace Axiom.SceneManagers.Octree
             }
         }
 
-        public Axiom.Graphics.SceneDetailLevel RenderDetail
+        public virtual bool PolygonModeOverrideable
         {
             get
             {
-                return SceneDetailLevel.Solid;
+                return true;
             }
         }
 

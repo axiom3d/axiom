@@ -997,7 +997,20 @@ namespace Axiom.RenderSystems.DirectX9
 
 					for ( int x = 0; x < desc.Width; x++ )
 					{
-						offset = x * 4;
+                        switch (desc.Format)
+                        {
+                            case Microsoft.DirectX.Direct3D.Format.A8R8G8B8:
+                            case Microsoft.DirectX.Direct3D.Format.X8R8G8B8:
+                                {
+                                    offset = x * 4;
+                                    break;
+                                }
+                            case Microsoft.DirectX.Direct3D.Format.R8G8B8:
+                                {
+                                    offset = x * 3;
+                                    break;
+                                }
+                        }
 
 						int pixel = line + offset;
 

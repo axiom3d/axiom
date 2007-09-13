@@ -769,7 +769,7 @@ namespace Axiom.Core
         /// <param name="name">The name of the resource group to initialise</param>
         public void InitializeResourceGroup( string groupName )
         {
-            LogManager.Instance.Write( "Initializing resource group {0}", groupName );
+            LogManager.Instance.Write( "Initializing resource group {0}.", groupName );
             ResourceGroup grp = getResourceGroup( groupName );
             if ( grp == null )
             {
@@ -938,7 +938,7 @@ namespace Axiom.Core
         public void UnloadResourceGroup( string groupName, bool reloadableOnly )
         {
 
-            LogManager.Instance.Write( "Unloading resource group {0}", groupName );
+            LogManager.Instance.Write( "Unloading resource group {0}.", groupName );
             ResourceGroup grp = getResourceGroup( groupName );
             if ( grp == null )
             {
@@ -960,7 +960,7 @@ namespace Axiom.Core
 
             // reset current group
             _currentGroup = null;
-            LogManager.Instance.Write( "Finished unloading resource group {0}", groupName );
+            LogManager.Instance.Write( "Finished unloading resource group {0}.", groupName );
         }
         /// <summary>
         /// Unload all resources which are not referenced by any other object.

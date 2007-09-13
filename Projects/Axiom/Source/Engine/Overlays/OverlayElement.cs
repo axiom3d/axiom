@@ -1309,16 +1309,14 @@ namespace Axiom.Overlays
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public SceneDetailLevel RenderDetail
+        public virtual bool PolygonModeOverrideable
         {
             get
             {
-                return SceneDetailLevel.Solid;
+                return false;
             }
         }
+
 
         /// <summary>
         ///    Implementation of IRenderable.
