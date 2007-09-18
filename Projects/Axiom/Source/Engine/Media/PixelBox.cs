@@ -344,8 +344,7 @@ namespace Axiom.Media
 		///<param name="format">Format of this buffer</param>
 		///<param name="data">Pointer to the actual data</param>
 		public PixelBox( int width, int height, int depth, PixelFormat format, IntPtr data )
-			:
-			base( 0, 0, 0, width, height, depth )
+			: base( 0, 0, 0, width, height, depth )
 		{
 			this.format = format;
 			this.data = data;
@@ -354,8 +353,7 @@ namespace Axiom.Media
 		}
 
 		public PixelBox( int width, int height, int depth, PixelFormat format )
-			:
-			base( 0, 0, 0, width, height, depth )
+			: base( 0, 0, 0, width, height, depth )
 		{
 			this.format = format;
 			SetConsecutive();

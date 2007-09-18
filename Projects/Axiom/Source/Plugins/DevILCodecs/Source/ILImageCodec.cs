@@ -46,186 +46,285 @@ using Tao.DevIl;
 
 namespace Axiom.Plugins.DevILCodecs
 {
-    /// <summary>
-    ///    Base DevIL (OpenIL) implementation for loading images.
-    /// </summary>
-    public abstract class ILImageCodec : ImageCodec
-    {
-        #region Fields
+	/// <summary>
+	///    Base DevIL (OpenIL) implementation for loading images.
+	/// </summary>
+	public abstract class ILImageCodec : ImageCodec
+	{
+		#region Fields
 
-        /// <summary>
-        ///    Flag used to ensure DevIL gets initialized once.
-        /// </summary>
-        protected static bool isInitialized;
+		/// <summary>
+		///    Flag used to ensure DevIL gets initialized once.
+		/// </summary>
+		protected static bool isInitialized;
 
-        #endregion
+		#endregion
 
-        #region Constructor
+		#region Constructor
 
-        public ILImageCodec()
-        {
-            InitializeIL();
-        }
+		public ILImageCodec()
+		{
+			InitializeIL();
+		}
 
-        #endregion Constructor
+		#endregion Constructor
 
-        #region ImageCodec Implementation
+		#region ImageCodec Implementation
 
-        public override void EncodeToFile( Stream input, string fileName, object codecData )
-        {
-            int imageID;
+		public override void EncodeToFile( Stream input, string fileName, object codecData )
+		{
+			int imageID;
 
-            // create and bind a new image
-            Il.ilGenImages( 1, out imageID );
-            Il.ilBindImage( imageID );
+			// create and bind a new image
+			Il.ilGenImages( 1, out imageID );
+			Il.ilBindImage( imageID );
 
-            byte[] buffer = new byte[ input.Length ];
-            input.Read( buffer, 0, buffer.Length );
+			byte[] buffer = new byte[ input.Length ];
+			input.Read( buffer, 0, buffer.Length );
 
-            ImageData data = (ImageData)codecData;
-            Pair formatBpp = ConvertToILFormat( data.format );
+			ImageData data = (ImageData)codecData;
+			Pair formatBpp = ConvertToILFormat( data.format );
 
-            int format = (int)formatBpp.first;
-            byte bytesPerPixel = (byte)( (int)formatBpp.second );
+			int format = (int)formatBpp.first;
+			byte bytesPerPixel = (byte)( (int)formatBpp.second );
 
-            // stuff the data into the image
-            Il.ilTexImage( data.width, data.height, 1, bytesPerPixel, format, Il.IL_UNSIGNED_BYTE, buffer );
+			// stuff the data into the image
+			Il.ilTexImage( data.width, data.height, 1, bytesPerPixel, format, Il.IL_UNSIGNED_BYTE, buffer );
 
-            if ( data.flip )
-            {
-                // flip the image
-                Ilu.iluFlipImage();
-            }
+			if ( data.flip )
+			{
+				// flip the image
+				Ilu.iluFlipImage();
+			}
 
-            // save the image to file
-            Il.ilSaveImage( fileName );
+			// save the image to file
+			Il.ilSaveImage( fileName );
 
-            // delete the image
-            Il.ilDeleteImages( 1, ref imageID );
-        }
+			// delete the image
+			Il.ilDeleteImages( 1, ref imageID );
+		}
 
-        public override object Decode( Stream input, Stream output, params object[] args )
-        {
-            ImageData data = new ImageData();
+		public override object Decode( Stream input, Stream output, params object[] args )
+		{
+			ImageData data = new ImageData();
 
-            int imageID;
-            int format, bytesPerPixel;
+			int imageID;
+			int format, bytesPerPixel;
 
-            // create and bind a new image
-            Il.ilGenImages( 1, out imageID );
-            Il.ilBindImage( imageID );
+			// create and bind a new image
+			Il.ilGenImages( 1, out imageID );
+			Il.ilBindImage( imageID );
 
-            // create a temp buffer and write the stream into it
-            byte[] buffer = new byte[ input.Length ];
-            input.Read( buffer, 0, buffer.Length );
+			// create a temp buffer and write the stream into it
+			byte[] buffer = new byte[ input.Length ];
+			input.Read( buffer, 0, buffer.Length );
 
-            // load the data into DevIL
-            Il.ilLoadL( this.ILType, buffer, buffer.Length );
+			// load the data into DevIL
+			Il.ilLoadL( this.ILType, buffer, buffer.Length );
 
-            // check for an error
-            int ilError = Il.ilGetError();
+			// check for an error
+			int ilError = Il.ilGetError();
 
-            if ( ilError != Il.IL_NO_ERROR )
-            {
-                throw new AxiomException( "Error while decoding image data: '{0}'", Ilu.iluErrorString( ilError ) );
-            }
+			if ( ilError != Il.IL_NO_ERROR )
+			{
+				throw new AxiomException( "Error while decoding image data: '{0}'", Ilu.iluErrorString( ilError ) );
+			}
 
-            format = Il.ilGetInteger( Il.IL_IMAGE_FORMAT );
-            bytesPerPixel = Il.ilGetInteger( Il.IL_IMAGE_BYTES_PER_PIXEL );
+			format = Il.ilGetInteger( Il.IL_IMAGE_FORMAT );
+			int imageType = Il.ilGetInteger( Il.IL_IMAGE_TYPE );
+			bytesPerPixel = Il.ilGetInteger( Il.IL_IMAGE_BYTES_PER_PIXEL );
 
-            // populate the image data
-            data.width = Il.ilGetInteger( Il.IL_IMAGE_WIDTH );
-            data.height = Il.ilGetInteger( Il.IL_IMAGE_HEIGHT );
-            data.depth = Il.ilGetInteger( Il.IL_IMAGE_DEPTH );
-            data.numMipMaps = Il.ilGetInteger( Il.IL_NUM_MIPMAPS );
-            data.format = ConvertFromILFormat( format, bytesPerPixel );
-            data.size = data.width * data.height * bytesPerPixel;
+			// populate the image data
+			data.width = Il.ilGetInteger( Il.IL_IMAGE_WIDTH );
+			data.height = Il.ilGetInteger( Il.IL_IMAGE_HEIGHT );
+			data.depth = Il.ilGetInteger( Il.IL_IMAGE_DEPTH );
+			data.numMipMaps = Il.ilGetInteger( Il.IL_NUM_MIPMAPS );
+			data.format = ConvertFromILFormat( format, imageType );
+			data.size = data.width * data.height * bytesPerPixel;
 
-            // get the decoded data
-            buffer = new byte[ data.size ];
-            IntPtr ptr = Il.ilGetData();
+			// get the decoded data
+			buffer = new byte[ data.size ];
+			IntPtr ptr = Il.ilGetData();
 
-            // copy the data into the byte array
-            unsafe
-            {
-                byte* pBuffer = (byte*)ptr;
-                for ( int i = 0; i < buffer.Length; i++ )
-                {
-                    buffer[ i ] = pBuffer[ i ];
-                }
-            }
+			// copy the data into the byte array
+			unsafe
+			{
+				byte* pBuffer = (byte*)ptr;
+				for ( int i = 0; i < buffer.Length; i++ )
+				{
+					buffer[ i ] = pBuffer[ i ];
+				}
+			}
 
-            // write the decoded data to the output stream
-            output.Write( buffer, 0, buffer.Length );
+			// write the decoded data to the output stream
+			output.Write( buffer, 0, buffer.Length );
 
-            // we won't be needing this anymore
-            Il.ilDeleteImages( 1, ref imageID );
+			// we won't be needing this anymore
+			Il.ilDeleteImages( 1, ref imageID );
 
-            return data;
-        }
+			return data;
+		}
 
-        #endregion ImageCodec Implementation
+		#endregion ImageCodec Implementation
 
-        #region Methods
+		#region Methods
 
-        /// <summary>
-        ///    One time DevIL initialization.
-        /// </summary>
-        public void InitializeIL()
-        {
-            if ( !isInitialized )
-            {
-                // fire it up!
-                Il.ilInit();
+		/// <summary>
+		///    One time DevIL initialization.
+		/// </summary>
+		public void InitializeIL()
+		{
+			if ( !isInitialized )
+			{
+				// fire it up!
+				Il.ilInit();
 
-                // enable automatic file overwriting
-                Il.ilEnable( Il.IL_FILE_OVERWRITE );
+				// enable automatic file overwriting
+				Il.ilEnable( Il.IL_FILE_OVERWRITE );
 
-                isInitialized = true;
-            }
-        }
+				isInitialized = true;
+			}
+		}
 
-        /// <summary>
-        ///    Converts a PixelFormat enum to a pair with DevIL format enum and bytesPerPixel.
-        /// </summary>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        public Pair ConvertToILFormat( PixelFormat format )
-        {
-            switch ( format )
-            {
-                case PixelFormat.L8:
-                case PixelFormat.A8:
-                    return new Pair( Il.IL_LUMINANCE, 1 );
-                case PixelFormat.R5G6B5:
-                    return new Pair( Il.IL_RGB, 2 );
-                case PixelFormat.B5G6R5:
-                    return new Pair( Il.IL_BGR, 2 );
-                case PixelFormat.A4R4G4B4:
-                    return new Pair( Il.IL_RGBA, 2 );
-                case PixelFormat.B4G4R4A4:
-                    return new Pair( Il.IL_BGRA, 2 );
-                case PixelFormat.R8G8B8:
-                    return new Pair( Il.IL_RGB, 3 );
-                case PixelFormat.B8G8R8:
-                    return new Pair( Il.IL_BGR, 3 );
-                case PixelFormat.A8R8G8B8:
-                    return new Pair( Il.IL_RGBA, 4 );
-                case PixelFormat.B8G8R8A8:
-                    return new Pair( Il.IL_BGRA, 4 );
-            }
+		/// <summary>
+		///    Converts a PixelFormat enum to a pair with DevIL format enum and bytesPerPixel.
+		/// </summary>
+		/// <param name="format"></param>
+		/// <returns></returns>
+		public Pair ConvertToILFormat( PixelFormat format )
+		{
+			switch ( format )
+			{
+				case PixelFormat.L8:
+				case PixelFormat.A8:
+					return new Pair( Il.IL_LUMINANCE, 1 );
+				case PixelFormat.R5G6B5:
+					return new Pair( Il.IL_RGB, 2 );
+				case PixelFormat.B5G6R5:
+					return new Pair( Il.IL_BGR, 2 );
+				case PixelFormat.A4R4G4B4:
+					return new Pair( Il.IL_RGBA, 2 );
+				case PixelFormat.B4G4R4A4:
+					return new Pair( Il.IL_BGRA, 2 );
+				case PixelFormat.R8G8B8:
+					return new Pair( Il.IL_RGB, 3 );
+				case PixelFormat.B8G8R8:
+					return new Pair( Il.IL_BGR, 3 );
+				case PixelFormat.A8R8G8B8:
+					return new Pair( Il.IL_RGBA, 4 );
+				case PixelFormat.B8G8R8A8:
+					return new Pair( Il.IL_BGRA, 4 );
+			}
 
-            return new Pair( -1, -1 );
-        }
+			return new Pair( -1, -1 );
+		}
 
-        /// <summary>
-        ///    Converts a DevIL format enum to a PixelFormat enum.
-        /// </summary>
-        /// <param name="format"></param>
-        /// <param name="bytesPerPixel"></param>
-        /// <returns></returns>
-        public PixelFormat ConvertFromILFormat( int format, int bytesPerPixel )
-        {
+		/// <summary>
+		///    Converts a DevIL format enum to a PixelFormat enum.
+		/// </summary>
+		/// <param name="format"></param>
+		/// <param name="bytesPerPixel"></param>
+		/// <returns></returns>
+		public PixelFormat ConvertFromILFormat( int imageFormat, int imageType )
+		{
+			PixelFormat fmt = PixelFormat.Unknown;
+			switch ( imageFormat )
+			{
+				/* Compressed formats -- ignore type */
+				case Il.IL_DXT1:
+					fmt = PixelFormat.DXT1;
+					break;
+				case Il.IL_DXT2:
+					fmt = PixelFormat.DXT2;
+					break;
+				case Il.IL_DXT3:
+					fmt = PixelFormat.DXT3;
+					break;
+				case Il.IL_DXT4:
+					fmt = PixelFormat.DXT4;
+					break;
+				case Il.IL_DXT5:
+					fmt = PixelFormat.DXT5;
+					break;
+				/* Normal formats */
+				case Il.IL_RGB:
+					switch ( imageType )
+					{
+						case Il.IL_FLOAT:
+							fmt = PixelFormat.FLOAT32_RGB;
+							break;
+						case Il.IL_UNSIGNED_SHORT:
+						case Il.IL_SHORT:
+							fmt = PixelFormat.SHORT_RGBA;
+							break;
+						default:
+							fmt = PixelFormat.BYTE_RGB;
+							break;
+					}
+					break;
+				case Il.IL_BGR:
+					switch ( imageType )
+					{
+						case Il.IL_FLOAT:
+							fmt = PixelFormat.FLOAT32_RGB;
+							break;
+						case Il.IL_UNSIGNED_SHORT:
+						case Il.IL_SHORT:
+							fmt = PixelFormat.SHORT_RGBA;
+							break;
+						default:
+							fmt = PixelFormat.BYTE_BGR;
+							break;
+					}
+					break;
+				case Il.IL_RGBA:
+					switch ( imageType )
+					{
+						case Il.IL_FLOAT:
+							fmt = PixelFormat.FLOAT32_RGBA;
+							break;
+						case Il.IL_UNSIGNED_SHORT:
+						case Il.IL_SHORT:
+							fmt = PixelFormat.SHORT_RGBA;
+							break;
+						default:
+							fmt = PixelFormat.BYTE_RGBA;
+							break;
+					}
+					break;
+				case Il.IL_BGRA:
+					switch ( imageType )
+					{
+						case Il.IL_FLOAT:
+							fmt = PixelFormat.FLOAT32_RGBA;
+							break;
+						case Il.IL_UNSIGNED_SHORT:
+						case Il.IL_SHORT:
+							fmt = PixelFormat.SHORT_RGBA;
+							break;
+						default:
+							fmt = PixelFormat.BYTE_BGRA;
+							break;
+					}
+					break;
+				case Il.IL_LUMINANCE:
+					switch ( imageType )
+					{
+						case Il.IL_BYTE:
+						case Il.IL_UNSIGNED_BYTE:
+							fmt = PixelFormat.L8;
+							break;
+						default:
+							fmt = PixelFormat.L16;
+							break;
+					}
+					break;
+				case Il.IL_LUMINANCE_ALPHA:
+					fmt = PixelFormat.BYTE_LA;
+					break;
+			}
+			return fmt;
+			/*
             switch ( bytesPerPixel )
             {
                 case 1:
@@ -279,21 +378,22 @@ namespace Axiom.Plugins.DevILCodecs
             }
 
             return PixelFormat.Unknown;
-        }
+			 * */
+		}
 
-        #endregion Methods
+		#endregion Methods
 
-        #region Properties
+		#region Properties
 
-        /// <summary>
-        ///    Implemented by subclasses to return the IL type enum value for this
-        ///    images file type.
-        /// </summary>
-        public abstract int ILType
-        {
-            get;
-        }
+		/// <summary>
+		///    Implemented by subclasses to return the IL type enum value for this
+		///    images file type.
+		/// </summary>
+		public abstract int ILType
+		{
+			get;
+		}
 
-        #endregion Properties
-    }
+		#endregion Properties
+	}
 }

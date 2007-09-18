@@ -146,23 +146,23 @@ namespace Axiom.Media
 		///    32-bit pixel format, 8 bits for alpha, red, green and blue.
 		/// </summary>
 		A8R8G8B8 = 12,
+		BYTE_BGRA = A8R8G8B8,
 
 		/// <summary>
 		///    32-bit pixel format, 8 bits for alpha, blue, green and red`.
 		/// </summary>
 		A8B8G8R8 = 13,
+		BYTE_RGBA = A8B8G8R8,
 
 		/// <summary>
 		///    32-bit pixel format, 8 bits for blue, green, red and alpha.
 		/// </summary>
 		B8G8R8A8 = 14,
-		BYTE_BGRA = B8G8R8A8,
 
 		/// <summary>
 		///    32-bit pixel format, 8 bits for red, green, blue and alpha.
 		/// </summary>
 		R8G8B8A8 = 28,
-		BYTE_RGBA = R8G8B8A8,
 
 		/// <summary>
 		///    32-bit pixel format, 8 bits for red, green and blue.

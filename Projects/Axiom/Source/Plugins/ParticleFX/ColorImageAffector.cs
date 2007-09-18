@@ -71,7 +71,7 @@ namespace Axiom.ParticleFX
 
                 PixelFormat format = colorImage.Format;
 
-                if ( format != PixelFormat.A8R8G8B8 )
+                if ( format != PixelFormat.A8B8G8R8 )
                 {
                     throw new NotSupportedException( "Error: Image is not a rgba image.  ColorImageAffector.ColorImageName property set" );
                 }

@@ -449,13 +449,27 @@ namespace Axiom.RenderSystems.DirectX9
 				PixelConverter.BulkPixelConversion( src, converted );
 			}
 
-			// int formatBytes = PixelUtil.GetNumElemBytes(converted.Format);
+			//int formatBytes = PixelUtil.GetNumElemBytes(converted.Format);
 			D3D.Surface tmpSurface = device.CreateOffscreenPlainSurface( converted.Width, converted.Height, D3DHelper.ConvertEnum( converted.Format ), D3D.Pool.Scratch );
-			bufSize = PixelUtil.GetMemorySize( converted.Width, converted.Height, converted.Depth, converted.Format );
-			byte[] ugh = new byte[ bufSize ];
-			Marshal.Copy( converted.Data, ugh, 0, bufSize );
-			D3DTexture.CopyMemoryToSurface( ugh, tmpSurface, converted.Width, converted.Height, PixelUtil.GetNumElemBits( converted.Format ), PixelUtil.HasAlpha( converted.Format ) );
+			int pitch;
+			// Ideally I would be using the Array mechanism here, but that doesn't seem to work
+			DX.GraphicsStream buf = tmpSurface.LockRectangle( D3D.LockFlags.NoSystemLock, out pitch );
+			buf.Position = 0;
+			unsafe
+			{
+				bufSize = PixelUtil.GetMemorySize( converted.Width, converted.Height, converted.Depth, converted.Format );
+				byte* srcPtr = (byte*)converted.Data.ToPointer();
+				byte[] ugh = new byte[ bufSize ];
 
+				for ( int i = 0; i < bufSize; i++ )
+				{
+					ugh[ i ] = srcPtr[ i ];
+				}
+				buf.Write( ugh );
+			}
+			tmpSurface.UnlockRectangle();
+			buf.Dispose();
+			
 			if ( surface != null )
 			{
 				// I'm trying to write to surface using the data in converted
