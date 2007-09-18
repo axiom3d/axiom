@@ -304,11 +304,11 @@ namespace Axiom.RenderSystems.DirectX9
 					texture = normTexture;
 
 					// set src and dest attributes to the same, we can't know
-					D3D.VolumeDescription desc = volumeTexture.GetLevelDescription( 0 );
+					D3D.SurfaceDescription desc = normTexture.GetLevelDescription( 0 );
 					d3dPool = desc.Pool;
 
-					SetSrcAttributes( desc.Width, desc.Height, desc.Depth, D3DHelper.ConvertEnum( desc.Format ) );
-					SetFinalAttributes( desc.Width, desc.Height, desc.Depth, D3DHelper.ConvertEnum( desc.Format ) );
+					SetSrcAttributes( desc.Width, desc.Height, 1, D3DHelper.ConvertEnum( desc.Format ) );
+					SetFinalAttributes( desc.Width, desc.Height, 1, D3DHelper.ConvertEnum( desc.Format ) );
 
 					internalResourcesCreated = true;
 				}

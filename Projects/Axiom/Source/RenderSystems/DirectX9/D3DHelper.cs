@@ -857,14 +857,20 @@ namespace Axiom.RenderSystems.DirectX9
 					return D3D.Format.A2B10G10R10;
 				case Axiom.Media.PixelFormat.FLOAT16_R:
 					return D3D.Format.R16F;
+				case Axiom.Media.PixelFormat.FLOAT16_GR:
+					return D3D.Format.G16R16F;
 				case Axiom.Media.PixelFormat.FLOAT16_RGBA:
 					return D3D.Format.A16B16G16R16F;
 				case Axiom.Media.PixelFormat.FLOAT32_R:
 					return D3D.Format.R32F;
+				case Axiom.Media.PixelFormat.FLOAT32_GR:
+					return D3D.Format.G32R32F;
 				case Axiom.Media.PixelFormat.FLOAT32_RGBA:
 					return D3D.Format.A32B32G32R32F;
 				case Axiom.Media.PixelFormat.SHORT_RGBA:
 					return D3D.Format.A16B16G16R16;
+				case Axiom.Media.PixelFormat.SHORT_GR:
+					return D3D.Format.G16R16;
 				case Axiom.Media.PixelFormat.DXT1:
 					return D3D.Format.Dxt1;
 				case Axiom.Media.PixelFormat.DXT2:

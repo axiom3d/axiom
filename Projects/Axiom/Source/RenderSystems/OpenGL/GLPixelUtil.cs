@@ -68,8 +68,8 @@ namespace Axiom.RenderSystems.OpenGL
 					return Gl.GL_LUMINANCE;
 				case PixelFormat.L16:
 					return Gl.GL_LUMINANCE;
-				//case PixelFormat.L4A4:
-				//    return Gl.GL_LUMINANCE_ALPHA;
+				case PixelFormat.BYTE_LA:
+				    return Gl.GL_LUMINANCE_ALPHA;
 				case PixelFormat.R3G3B2:
 					return Gl.GL_RGB;
 				case PixelFormat.A1R5G5B5:
@@ -80,25 +80,16 @@ namespace Axiom.RenderSystems.OpenGL
 					return Gl.GL_BGR;
 				case PixelFormat.A4R4G4B4:
 					return Gl.GL_BGRA;
-#if !LITTLE_ENDIAN
-				// Formats are in native endian, so R8G8B8 on little endian is
-				// BGR, on big endian it is RGB.
 				case PixelFormat.R8G8B8:
-					return Gl.GL_RGB;
-				case PixelFormat.B8G8R8:
 					return Gl.GL_BGR;
-#else
-            case PixelFormat.R8G8B8:
-                return Gl.GL_BGR;
-            case PixelFormat.B8G8R8:
-                return Gl.GL_RGB;
-#endif
+				case PixelFormat.B8G8R8:
+					return Gl.GL_RGB;
 				case PixelFormat.X8R8G8B8:
 				case PixelFormat.A8R8G8B8:
-					return Gl.GL_RGBA;
+					return Gl.GL_BGRA;
 				case PixelFormat.X8B8G8R8:
 				case PixelFormat.A8B8G8R8:
-					return Gl.GL_BGRA;
+					return Gl.GL_RGBA;
 				case PixelFormat.B8G8R8A8:
 					return Gl.GL_BGRA;
 				case PixelFormat.R8G8B8A8:
@@ -109,8 +100,8 @@ namespace Axiom.RenderSystems.OpenGL
 					return Gl.GL_RGBA;
 				case PixelFormat.FLOAT16_R:
 					return Gl.GL_LUMINANCE;
-				//case PixelFormat.FLOAT16_GR:
-				//    return Gl.GL_LUMINANCE_ALPHA;
+				case PixelFormat.FLOAT16_GR:
+					return Gl.GL_LUMINANCE_ALPHA;
 				case PixelFormat.FLOAT16_RGB:
 					return Gl.GL_RGB;
 				case PixelFormat.FLOAT16_RGBA:
