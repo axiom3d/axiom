@@ -98,7 +98,7 @@ namespace Axiom.RenderSystems.DirectX9
 			else
 			{
 				// call base implementation
-				base.Load();
+				base.load();
 			}
 		}
 

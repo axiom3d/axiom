@@ -316,7 +316,7 @@ namespace Axiom.Media
 		///<param name="extents">Extents of the region defined by data</param>
 		///<param name="ormat">Format of this buffer</param>
 		///<param name="data">Pointer to the actual data</param>
-		protected PixelBox( BasicBox extents, PixelFormat format, IntPtr data )
+		internal PixelBox( BasicBox extents, PixelFormat format, IntPtr data )
 		{
 			CopyFromBasicBox( extents );
 			this.format = format;

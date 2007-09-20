@@ -1057,7 +1057,7 @@ namespace Axiom.Media
 
 		public static bool DoOptimizedConversion( PixelBox src, PixelBox dst )
 		{
-			switch ( (int)dst.Format << 8 + (int)src.Format )
+			switch ( ( (int)src.Format << 8 ) + (int)dst.Format )
 			{
 				case ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.A8B8G8R8:
 					A8R8G8B8toA8B8G8R8( src, dst );

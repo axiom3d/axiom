@@ -1136,8 +1136,9 @@ namespace Axiom.Graphics
 		{
 			_compilationRequired = true;
 
-			// force reload of any new resources
-			unload();
+			// Also need to unload to ensure we loaded any new items
+			if ( IsLoaded ) // needed to stop this being called in 'loading' state
+				unload();
 		}
 
 		/// <summary>

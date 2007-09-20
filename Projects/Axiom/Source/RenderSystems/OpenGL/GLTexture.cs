@@ -233,7 +233,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 					for ( int i = 0; i < 6; i++ )
 					{
-						string fullName = baseName + postfixes[ i ] + ext;
+						string fullName = baseName + postfixes[ i ] + "." + ext;
 
 						// load the image
 						stream = ResourceGroupManager.Instance.OpenResource( fullName, Group, true, this );

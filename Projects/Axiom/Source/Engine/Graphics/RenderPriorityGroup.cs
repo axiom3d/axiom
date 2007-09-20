@@ -97,6 +97,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		internal RenderPriorityGroup( RenderQueueGroup parent, bool splitPassesByLightingType, bool splitNoShadowPasses, bool shadowCastersCannotBeReceivers )
 		{
+			_parent = parent;
 			// sorted list, using Pass as a key (sorted based on hashcode), and IRenderable as the value
 			solidPasses = new SortedList( new SolidSort(), 50 );
 			solidPassesDiffuseSpecular = new SortedList( new SolidSort(), 50 );

@@ -450,43 +450,37 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			//int formatBytes = PixelUtil.GetNumElemBytes(converted.Format);
-			D3D.Surface tmpSurface = device.CreateOffscreenPlainSurface( converted.Width, converted.Height, D3DHelper.ConvertEnum( converted.Format ), D3D.Pool.Scratch );
-			int pitch;
-			// Ideally I would be using the Array mechanism here, but that doesn't seem to work
-			DX.GraphicsStream buf = tmpSurface.LockRectangle( D3D.LockFlags.NoSystemLock, out pitch );
-			buf.Position = 0;
-			unsafe
+			using ( D3D.Surface tmpSurface = device.CreateOffscreenPlainSurface( converted.Width, converted.Height, D3DHelper.ConvertEnum( converted.Format ), D3D.Pool.Scratch ) )
 			{
-				bufSize = PixelUtil.GetMemorySize( converted.Width, converted.Height, converted.Depth, converted.Format );
-				byte* srcPtr = (byte*)converted.Data.ToPointer();
-				byte[] ugh = new byte[ bufSize ];
-
-				for ( int i = 0; i < bufSize; i++ )
+				int pitch;
+				// Ideally I would be using the Array mechanism here, but that doesn't seem to work
+				using ( DX.GraphicsStream buf = tmpSurface.LockRectangle( D3D.LockFlags.NoSystemLock, out pitch ) )
 				{
-					ugh[ i ] = srcPtr[ i ];
+					buf.Position = 0; // Ensure starting Position
+					bufSize = PixelUtil.GetMemorySize( converted.Width, converted.Height, converted.Depth, converted.Format );
+					byte[] ugh = new byte[ bufSize ];
+					Marshal.Copy( converted.Data, ugh, 0, bufSize );
+					buf.Write( ugh );
 				}
-				buf.Write( ugh );
-			}
-			tmpSurface.UnlockRectangle();
-			buf.Dispose();
-			
-			if ( surface != null )
-			{
-				// I'm trying to write to surface using the data in converted
-				System.Drawing.Rectangle srcRect = ToD3DRectangleExtent( converted );
-				System.Drawing.Rectangle destRect = ToD3DRectangle( dstBox );
-				D3D.SurfaceLoader.FromSurface( surface, destRect, tmpSurface, srcRect, D3D.Filter.None, 0 );
-			}
-			else
-			{
-				D3D.Box srcBox = ToD3DBoxExtent( converted );
-				D3D.Box destBox = ToD3DBox( dstBox );
-				Debug.Assert( false, "Volume textures not yet supported" );
-				//D3D.VolumeLoader.FromStream(volume, destBox, converted.Data, converted.RowPitch * converted.SlicePitch * formatBytes, srcBox, Filter.None, 0);
-				//D3D.VolumeLoader.FromStream( volume, destBox, buf, srcBox, D3D.Filter.None, 0 );
-			}
+				tmpSurface.UnlockRectangle();
 
-			tmpSurface.Dispose();
+				if ( surface != null )
+				{
+					// I'm trying to write to surface using the data in converted
+					System.Drawing.Rectangle srcRect = ToD3DRectangleExtent( converted );
+					System.Drawing.Rectangle destRect = ToD3DRectangle( dstBox );
+					D3D.SurfaceLoader.FromSurface( surface, destRect, tmpSurface, srcRect, D3D.Filter.None, 0 );
+				}
+				else
+				{
+					D3D.Box srcBox = ToD3DBoxExtent( converted );
+					D3D.Box destBox = ToD3DBox( dstBox );
+					Debug.Assert( false, "Volume textures not yet supported" );
+					//D3D.VolumeLoader.FromStream(volume, destBox, converted.Data, converted.RowPitch * converted.SlicePitch * formatBytes, srcBox, Filter.None, 0);
+					//D3D.VolumeLoader.FromStream( volume, destBox, buf, srcBox, D3D.Filter.None, 0 );
+				}
+
+			}
 
 			// If we allocated a buffer for the temporary conversion, free it here
 			// If I used bufPtr to store my temporary data while I converted 
