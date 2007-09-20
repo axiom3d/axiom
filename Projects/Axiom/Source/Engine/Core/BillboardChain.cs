@@ -274,6 +274,18 @@ namespace Axiom
 			set
 			{
 				materialName = value;
+				material = (Material)MaterialManager.Instance[ value ];
+				if ( material == null )
+				{
+					LogManager.Instance.Write( "Can't assign material {0} to BillboardChain {1} because this " +
+											   "Material does not exist. Have you forgotten to define it in a .material script?",
+											   materialName, Name );
+
+					material = (Material)MaterialManager.Instance[ "BaseWhiteNoLighting" ];
+					if ( material == null )
+						throw new Exception( String.Format( "Can't assign default material to BillboardChain of {0}. Did " +
+											 "you forget to call MaterialManager::initialise()?", Name ) );
+				}
 			}
 		}
 		#endregion
