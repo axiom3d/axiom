@@ -200,6 +200,8 @@ namespace Axiom.Graphics
 		{
 			GpuProgram program = Create( name, group, type, syntaxCode );
 
+			program.Type = type;
+			program.SyntaxCode = syntaxCode;
 			program.SourceFile = fileName;
 
 			return program;
@@ -226,6 +228,8 @@ namespace Axiom.Graphics
 		{
 			GpuProgram program = Create( name, group, type, syntaxCode );
 
+			program.Type = type;
+			program.SyntaxCode = syntaxCode;
 			program.Source = source;
 
 			return program;
