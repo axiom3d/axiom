@@ -50,9 +50,9 @@ namespace Axiom.Demos
             light.Position = new Vector3( -200, -80, -100 );
             light.Diffuse = new ColorEx( 1.0f, .5f, .5f, 1.0f );
 
-            //light = scene.CreateLight("GreenLight");
-            //light.Position = new Vector3(0, 0, -100);
-            //light.Diffuse = new ColorEx(1.0f, 0.5f, 1.0f, 0.5f);
+			light = scene.CreateLight( "GreenLight" );
+			light.Position = new Vector3( 0, 0, -100 );
+			light.Diffuse = new ColorEx( 1.0f, 0.5f, 1.0f, 0.5f );
 
             // setup the camera for a nice view of the robot
             camera.Position = new Vector3( 100, 50, 100 );

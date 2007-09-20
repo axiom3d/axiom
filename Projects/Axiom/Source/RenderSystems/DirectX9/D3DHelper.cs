@@ -993,7 +993,7 @@ namespace Axiom.RenderSystems.DirectX9
 				case Axiom.Media.PixelFormat.B5G6R5:
 					return Axiom.Media.PixelFormat.R5G6B5;
 				case Axiom.Media.PixelFormat.B8G8R8:
-					return Axiom.Media.PixelFormat.R8G8B8;
+					return Axiom.Media.PixelFormat.A8R8G8B8; // Would be R8G8B8 normaly but MDX doesn't like that format.
 				case Axiom.Media.PixelFormat.B8G8R8A8:
 					return Axiom.Media.PixelFormat.A8R8G8B8;
 				case Axiom.Media.PixelFormat.FLOAT16_RGB:

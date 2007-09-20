@@ -295,7 +295,7 @@ namespace Axiom.Graphics
 		///    The source and destination regions dimensions don't have to match, in which
 		///    case scaling is done. This scaling is generally done using a bilinear filter in hardware,
 		///    but it is faster to pass the source image in the right dimensions.
-		///    Only call this function when both  buffers are unlocked. 
+		///    Only call this function when both buffers are unlocked. 
 		///</remarks>
 		public virtual void Blit( HardwarePixelBuffer src, BasicBox srcBox, BasicBox dstBox )
 		{

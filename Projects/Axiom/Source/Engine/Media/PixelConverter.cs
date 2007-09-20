@@ -1095,29 +1095,29 @@ namespace Axiom.Media
 
 			// TODO : Implement  X8* Conversions
 
-			//// Converting to X8R8G8B8 is exactly the same as converting to
-			//// A8R8G8B8. (same with X8B8G8R8 and A8B8G8R8)
-			//if ( dst.Format == PixelFormat.X8R8G8B8 || dst.Format == PixelFormat.X8B8G8R8 )
-			//{
-			//    // Do the same conversion, with A8R8G8B8, which has a lot of 
-			//    // optimized conversions
-			//    PixelBox tempdst = new PixelBox( dst );
-			//    tempdst.Format = dst.Format == PixelFormat.X8R8G8B8 ? PixelFormat.A8R8G8B8 : PixelFormat.A8B8G8R8;
-			//    BulkPixelConversion( src, tempdst );
-			//    return;
-			//}
+			// Converting to X8R8G8B8 is exactly the same as converting to
+			// A8R8G8B8. (same with X8B8G8R8 and A8B8G8R8)
+			if ( dst.Format == PixelFormat.X8R8G8B8 || dst.Format == PixelFormat.X8B8G8R8 )
+			{
+				// Do the same conversion, with A8R8G8B8, which has a lot of 
+				// optimized conversions
+				PixelFormat dstFormat = dst.Format == PixelFormat.X8R8G8B8 ? PixelFormat.A8R8G8B8 : PixelFormat.A8B8G8R8;
+				PixelBox tempdst = new PixelBox( dst, dstFormat, dst.Data );
+				BulkPixelConversion( src, tempdst );
+				return;
+			}
 
-			//// Converting from X8R8G8B8 is exactly the same as converting from
-			//// A8R8G8B8, given that the destination format does not have alpha.
-			//if ( ( src.Format == PixelFormat.X8R8G8B8 || src.Format == PixelFormat.X8B8G8R8 ) && !Image.FormatHasAlpha( dst.Format ) )
-			//{
-			//    // Do the same conversion, with A8R8G8B8, which has a lot of 
-			//    // optimized conversions
-			//    PixelBox tempsrc = src;
-			//    tempsrc.Format = src.Format == PixelFormat.X8R8G8B8 ? PixelFormat.A8R8G8B8 : PixelFormat.A8B8G8R8;
-			//    BulkPixelConversion( tempsrc, dst );
-			//    return;
-			//}
+			// Converting from X8R8G8B8 is exactly the same as converting from
+			// A8R8G8B8, given that the destination format does not have alpha.
+			if ( ( src.Format == PixelFormat.X8R8G8B8 || src.Format == PixelFormat.X8B8G8R8 ) && !PixelUtil.HasAlpha( dst.Format ) )
+			{
+				// Do the same conversion, with A8R8G8B8, which has a lot of 
+				// optimized conversions
+				PixelFormat srcFormat = src.Format == PixelFormat.X8R8G8B8 ? PixelFormat.A8R8G8B8 : PixelFormat.A8B8G8R8;
+				PixelBox tempsrc = new PixelBox( src, srcFormat, src.Data );
+				BulkPixelConversion( tempsrc, dst );
+				return;
+			}
 
 			if ( PixelConversionLoops.DoOptimizedConversion( src, dst ) )
 				// If so, good

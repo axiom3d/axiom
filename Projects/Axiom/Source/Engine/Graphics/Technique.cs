@@ -1192,7 +1192,10 @@ namespace Axiom.Graphics
 		/// </remarks>
 		internal void NotifyNeedsRecompile()
 		{
-			_parent.NotifyNeedsRecompile();
+			//if ( illuminationPassesCompileStage != IlluminationPassesState.Disabled )
+			//{
+				_parent.NotifyNeedsRecompile();
+			//}
 		}
 
 		/// <summary>

@@ -53,7 +53,10 @@ namespace Axiom.RenderSystems.DirectX9
 	/// <summary>
 	/// Summary description for D3DTexture.
 	/// </summary>
-	/// <remarks>When loading a cubic texture, the image with the texture base name plus the "_rt", "_lf", "_up", "_dn", "_fr", "_bk" suffixes will automaticaly be loaded to construct it.</remarks>
+	/// <remarks>
+	/// When loading a cubic texture, the image with the texture base name plus the 
+	/// "_rt", "_lf", "_up", "_dn", "_fr", "_bk" suffixes will automaticaly be loaded to construct it.
+	/// </remarks>
 	public sealed class D3DTexture : Texture
 	{
 		#region Fields and Properties
@@ -202,9 +205,6 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		/// <summary>
-		///    
-		/// </summary>
 		private void LoadNormalTexture()
 		{
 			Debug.Assert( TextureType == TextureType.OneD || TextureType == TextureType.TwoD );
@@ -268,9 +268,6 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
 		private void LoadCubeTexture()
 		{
 			Debug.Assert( this.TextureType == TextureType.CubeMap, "this.TextureType == TextureType.CubeMap" );
@@ -339,9 +336,6 @@ namespace Axiom.RenderSystems.DirectX9
 			_textureLoadMeter.Exit();
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
 		private void LoadVolumeTexture()
 		{
 			Debug.Assert( this.TextureType == TextureType.ThreeD );
@@ -402,9 +396,6 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
 		private void CreateCubeTexture()
 		{
 			Debug.Assert( SrcWidth > 0 && SrcHeight > 0 );
@@ -436,12 +427,6 @@ namespace Axiom.RenderSystems.DirectX9
 				numMips = 1;
 			}
 
-			// HACK: Why does Managed D3D report R8G8B8 as an invalid format....
-			if ( d3dPixelFormat == D3D.Format.R8G8B8 )
-			{
-				d3dPixelFormat = D3D.Format.A8R8G8B8;
-			}
-
 			// create the cube texture
 			_cubeTexture = new D3D.CubeTexture(
 				_device,
@@ -462,10 +447,6 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( this.MipmapsHardwareGenerated )
 				_texture.AutoGenerateFilterType = GetBestFilterMethod();
-
-			//if(usage == TextureUsage.RenderTarget) {
-			//    CreateDepthStencil();
-			//}
 		}
 
 		private void CreateNormalTexture()
@@ -680,13 +661,6 @@ namespace Axiom.RenderSystems.DirectX9
 			return D3D.TextureFilter.Point;
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="usage"></param>
-		/// <param name="type"></param>
-		/// <param name="format"></param>
-		/// <returns></returns>
 		private bool CanAutoGenMipMaps( D3D.Usage srcUsage, D3D.ResourceType srcType, D3D.Format srcFormat )
 		{
 			Debug.Assert( _device != null );
@@ -763,11 +737,6 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="format"></param>
-		/// <returns></returns>
 		private D3D.Format ChooseD3DFormat()
 		{
 			if ( Format == PixelFormat.Unknown )
@@ -775,13 +744,6 @@ namespace Axiom.RenderSystems.DirectX9
 			return D3DHelper.ConvertEnum( D3DHelper.GetClosestSupported( Format ) );
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="depth"></param>
-		/// <param name="format"></param>
 		private void SetSrcAttributes( int width, int height, int depth, PixelFormat format )
 		{
 			SrcWidth = width;
@@ -825,13 +787,6 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="depth"></param>
-		/// <param name="format"></param>
 		private void SetFinalAttributes( int width, int height, int depth, PixelFormat format )
 		{
 			// set target texture attributes
@@ -950,11 +905,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#endregion
 
-		#region Texture Implementation
+		#region Implementation of Texture
 
-		/// <summary>
-		/// 
-		/// </summary>
 		protected override void load()
 		{
 			// create a render texture if need be
@@ -993,9 +945,6 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
 		protected override void createInternalResources()
 		{
 			if ( SrcWidth == 0 || SrcHeight == 0 )
@@ -1091,6 +1040,6 @@ namespace Axiom.RenderSystems.DirectX9
 			base.dispose( disposeManagedResources );
 		}
 
-		#endregion Texture Implementation
+		#endregion Implementation of Texture
 	}
 }
