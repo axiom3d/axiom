@@ -33,15 +33,19 @@ namespace Axiom.Demos.Browser.CommandLine
         private bool _configure( )
         {
             // instantiate the Root singleton
-            engine = new Root( CONFIG_FILE, "AxiomDemos.log" );
+            engine = new Root( "AxiomDemos.log" );
 
             _setupResources();
 
             // HACK: Temporary
             ConfigDialog dlg = new ConfigDialog();
             DialogResult result = dlg.ShowDialog();
-            if ( result == DialogResult.Cancel )
-                return false;
+			if ( result == DialogResult.Cancel )
+			{
+				Root.Instance.Dispose();
+				engine = null;
+				return false;
+			}
 
             return true;
         }

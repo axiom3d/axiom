@@ -35,15 +35,19 @@ namespace Axiom.Demos.Browser.WinForm
         private bool _configure( )
         {
             // instantiate the Root singleton
-            engine = new Root( CONFIG_FILE, "AxiomDemos.log" );
+            engine = new Root( "AxiomDemos.log" );
 
             _setupResources();
 
 			dlg = new DemoConfigDialog();
 			dlg.LoadDemos( Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location ) + System.IO.Path.DirectorySeparatorChar + @"Axiom.Demos.dll" );
             DialogResult result = dlg.ShowDialog();
-            if ( result == DialogResult.Cancel )
-                return false;
+			if ( result == DialogResult.Cancel )
+			{
+				Root.Instance.Dispose();
+				engine = null;
+				return false;
+			}
 
             return true;
         }
