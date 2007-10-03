@@ -1460,7 +1460,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <remarks>
 		///		Because different APIs have different requirements (some incompatible) for the
-		///		projection matrix, this method allows each to implement their own correctly and pass
+		///		orthographic matrix, this method allows each to implement their own correctly and pass
 		///		back a generic Matrix4 for storage in the engine.
 		///	 </remarks>
 		/// <param name="fov">Field of view angle.</param>
