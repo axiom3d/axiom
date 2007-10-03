@@ -75,15 +75,13 @@ namespace Axiom.Core
 		///     This public contructor is intended for the user to decide when the Root object gets instantiated.
 		///     This is a critical step in preparing the engine for use.
 		/// </remarks>
-		/// <param name="configFileName">Name of the config file to load.</param>
 		/// <param name="logFileName">Name of the default log file.</param>
-		public Root( string configFileName, string logFileName )
+		public Root( string logFileName )
 		{
 			if ( instance == null )
 			{
 				instance = this;
 
-				this.configFileName = configFileName;
 				this.meterFrameCount = 0;
 				this.pendingMeterFrameCount = 0;
 
@@ -180,10 +178,6 @@ namespace Axiom.Core
 		///     Auto created window (if one was created).
 		/// </summary>
 		private RenderWindow autoWindow;
-		/// <summary>
-		///     Name of the file containing configuration info.
-		/// </summary>
-		private string configFileName;
 		/// <summary>
 		/// Holds instance of LogManager
 		/// </summary>
@@ -909,6 +903,10 @@ namespace Axiom.Core
 
 			Pass.ProcessPendingUpdates();
 
+			if ( ResourceGroupManager.Instance != null )
+			{
+				ResourceGroupManager.Instance.Dispose();
+			}
 			//if ( PlatformManager.Instance != null )
 			//{
 			//    PlatformManager.Instance.Dispose();

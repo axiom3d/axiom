@@ -207,7 +207,7 @@ namespace Axiom.Core
     ///     <file name="OgreResourceGroupManager.h"   revision="1.12.2.4" lastUpdated="5/14/2006" lastUpdatedBy="Borrillis" />
     ///     <file name="OgreResourceGroupManager.cpp" revision="1.16.2.10" lastUpdated="5/14/2006" lastUpdatedBy="Borrillis" />
     /// </ogre> 
-    public class ResourceGroupManager : Singleton<ResourceGroupManager>
+    public class ResourceGroupManager : Singleton<ResourceGroupManager>, IDisposable
     {
         #region Delegates
 
@@ -583,14 +583,7 @@ namespace Axiom.Core
 
         ~ResourceGroupManager()
         {
-            // delete all resource groups
-            foreach ( KeyValuePair<string, ResourceGroup> pair in resourceGroups )
-            {
-                ResourceGroup rg = pair.Value;
-                _deleteGroup( rg );
-            }
-            resourceGroups.Clear();
-            _currentGroup = null;
+			Dispose();
         }
 
         #endregion Constructors and Destructor
@@ -1865,7 +1858,7 @@ namespace Axiom.Core
 			StringBuilder patterns = new StringBuilder();
 			foreach ( string pattern in su.ScriptPatterns )
 				patterns.Append( pattern + " " );
-			LogManager.Instance.Write( "Unregistering ScriptLoader for patterns {0}", patterns );
+			LogManager.Instance.Write( "Unregistering ScriptLoader for patterns {0}", patterns.ToString() );
 			if ( _scriptLoaderOrders.ContainsKey( su.LoadingOrder ) )
             {
                 _scriptLoaderOrders[ su.LoadingOrder ].Remove( su );
@@ -2227,5 +2220,21 @@ namespace Axiom.Core
 
         #endregion Private Methods
 
-    };
+
+		#region IDisposable Members
+
+		void IDisposable.Dispose()
+		{
+			// delete all resource groups
+			foreach ( KeyValuePair<string, ResourceGroup> pair in resourceGroups )
+			{
+				ResourceGroup rg = pair.Value;
+				_deleteGroup( rg );
+			}
+			resourceGroups.Clear();
+			_currentGroup = null;
+		}
+
+		#endregion
+	};
 }
