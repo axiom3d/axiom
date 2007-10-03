@@ -116,6 +116,7 @@ namespace Axiom.Core
 		protected IPlugin[] ScanForPlugins()
 		{
 			string[] files = Directory.GetFiles( ".", "*.dll" );
+			Assembly assembly = null;
 
 			foreach ( string file in files )
 			{
@@ -124,7 +125,7 @@ namespace Axiom.Core
 				{
 					try
 					{
-						Assembly assembly = Assembly.LoadFrom( file );
+						assembly = Assembly.LoadFrom( file );
 
 						foreach ( Type type in assembly.GetTypes() )
 						{
@@ -156,6 +157,15 @@ namespace Axiom.Core
 					catch ( BadImageFormatException )
 					{
 						// ignore native assemblies which will throw this exception when loaded
+					}
+					catch ( ReflectionTypeLoadException rtle )
+					{
+						LogManager.Instance.Write( "Failed to load types from assembly {0}.", assembly.FullName );
+						LogManager.Instance.Write( rtle.Message );
+						foreach ( Exception le in rtle.LoaderExceptions )
+						{
+							LogManager.Instance.Write( le.Message );							
+						}
 					}
 				}
 			}
