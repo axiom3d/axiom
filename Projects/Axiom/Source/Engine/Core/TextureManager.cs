@@ -439,6 +439,11 @@ namespace Axiom.Core
 					{
 						instance = null;
 					}
+
+					foreach ( Texture texture in Resources )
+					{
+						texture.Dispose();
+					}
 				}
 
 				// There are no unmanaged resources to release, but
