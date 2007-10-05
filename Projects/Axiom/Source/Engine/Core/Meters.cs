@@ -96,6 +96,9 @@ namespace Axiom.Core
 		// DEBUG
 		private static List<MeterStackEntry> debugMeterStack = new List<MeterStackEntry>();
 
+		public static string MeterLogFilename = "MeterLog.txt";
+		public static string MeterEventsFilename = "MeterEvents.txt";
+
 		private static void DebugAddEvent( TimingMeter meter, MeterEvent evt )
 		{
 			if ( evt.eventKind == ekEnter )
@@ -199,10 +202,9 @@ namespace Axiom.Core
 
 		protected void DumpEventLog()
 		{
-			string p = "../MeterEvents.txt";
-			if ( File.Exists( p ) )
-				File.Delete( p );
-			FileStream f = new FileStream( p, FileMode.Create, FileAccess.Write );
+			if ( File.Exists( MeterEventsFilename ) )
+				File.Delete( MeterEventsFilename );
+			FileStream f = new FileStream( MeterEventsFilename, FileMode.Create, FileAccess.Write );
 			StreamWriter writer = new StreamWriter( f );
 			writer.Write( string.Format( "Dumping meter event log on {0} at {1}; units are usecs\r\n",
 									   DateTime.Now.ToShortDateString(), DateTime.Now.ToShortTimeString() ) );
@@ -455,12 +457,11 @@ namespace Axiom.Core
 			bool opened = false;
 			if ( writer == null )
 			{
-				string p = "../MeterLog.txt";
-				FileStream f = new FileStream( p,
-											  ( File.Exists( p ) ? FileMode.Append : FileMode.Create ),
+				FileStream f = new FileStream( MeterLogFilename,
+											  ( File.Exists( MeterLogFilename ) ? FileMode.Append : FileMode.Create ),
 											  FileAccess.Write );
 				writer = new StreamWriter( f );
-				writer.Write( string.Format( "\r\n\r\n\r\nStarting meter report on {0} at {1} for {2}; units are usecs\r\n",
+				writer.Write( string.Format( "\r\nStarting meter report on {0} at {1} for {2}; units are usecs.",
 										   DateTime.Now.ToShortDateString(), DateTime.Now.ToShortTimeString(), title ) );
 				opened = true;
 			}
