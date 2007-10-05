@@ -191,13 +191,17 @@ namespace Axiom.FileSystem
 
         public override System.IO.Stream Open( string fileName )
         {
-		    pushDirectory(_basePath);
+			Stream strm = null;
+
+			pushDirectory( _basePath );
             if ( File.Exists( _basePath + fileName ) )
             {
 				System.IO.FileInfo fi = new System.IO.FileInfo( _basePath + fileName );
-                return (Stream)fi.Open( FileMode.Open, FileAccess.Read );
+                strm = (Stream)fi.Open( FileMode.Open, FileAccess.Read );
             }
-            return null;
+			popDirectory();
+
+            return strm;
         }
 
         public override List<string> List( bool recursive )
