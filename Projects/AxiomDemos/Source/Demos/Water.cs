@@ -723,17 +723,6 @@ namespace Axiom.Demos
             modeTimer = 0f;
         }
 
-        protected new void UpdateStats()
-        {
-            statsTimer = 0f; // reset Stats Timer
-            OverlayElementManager.Instance.GetElement( "Core/CurrFps" ).Text = string.Format( "Current FPS: {0}", Root.Instance.CurrentFPS );
-            OverlayElementManager.Instance.GetElement( "Core/BestFps" ).Text = string.Format( "Best FPS: {0}", Root.Instance.BestFPS );
-            OverlayElementManager.Instance.GetElement( "Core/WorstFps" ).Text = string.Format( "Worst FPS: {0}", Root.Instance.WorstFPS );
-            OverlayElementManager.Instance.GetElement( "Core/AverageFps" ).Text = string.Format( "Average FPS: {0}", Root.Instance.AverageFPS );
-            OverlayElementManager.Instance.GetElement( "Core/NumTris" ).Text = string.Format( "Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered );
-            OverlayElementManager.Instance.GetElement( "Core/DebugText" ).Text = debugText;
-        }
-
         #endregion Water Class EVENT HANDLERS
     } // end Water class
 
