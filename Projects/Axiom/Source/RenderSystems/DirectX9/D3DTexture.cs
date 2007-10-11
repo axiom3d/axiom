@@ -1026,6 +1026,7 @@ namespace Axiom.RenderSystems.DirectX9
 					ClearSurfaceList();
 					foreach ( IDisposable disp in _managedObjects )
 						disp.Dispose();
+					
 				}
 
 				// There are no unmanaged resources to release, but

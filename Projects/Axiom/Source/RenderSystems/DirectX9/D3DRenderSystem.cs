@@ -404,7 +404,6 @@ namespace Axiom.RenderSystems.DirectX9
 
 		public override void Shutdown()
 		{
-			base.Shutdown();
 
 			_activeDriver = null;
 			// dispose of the device
@@ -425,6 +424,9 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				textureManager.Dispose();
 			}
+
+			base.Shutdown();
+
 			LogManager.Instance.Write( "D3D9 : " + Name + " shutdown." );
 
 		}

@@ -628,43 +628,37 @@ namespace Axiom.Core
 		/// <param name="offsetPosition">An adjustment to the position of the attached object, relative to the bone.</param>
 		public TagPoint AttachObjectToBone( string boneName, MovableObject sceneObject, Quaternion offsetOrientation, Vector3 offsetPosition )
 		{
-			if ( sceneObject.IsAttached )
+			if ( childObjectList.ContainsKey( sceneObject.Name ) )
 			{
-				throw new AxiomException( "SceneObject '{0}' is already attached to '{1}'", sceneObject.Name, sceneObject.ParentNode.Name );
+				throw new AxiomException( "An object with the name {0} is already attached.", sceneObject.Name );
 			}
 
-			TagPoint tagPoint = AttachNodeToBone( boneName, offsetOrientation, offsetPosition );
-			AttachObjectToTagPoint( tagPoint, sceneObject );
+			if ( sceneObject.IsAttached )
+			{
+				throw new AxiomException( "MovableObject '{0}' is already attached to '{1}'", sceneObject.Name, sceneObject.ParentNode.Name );
+			}
 
-			return tagPoint;
-		}
-
-		public void AttachObjectToTagPoint( TagPoint tagPoint, MovableObject sceneObject )
-		{
-			tagPoint.ChildObject = sceneObject;
-
-			AttachObjectImpl( sceneObject, tagPoint );
-		}
-
-		public TagPoint AttachNodeToBone( string boneName, Quaternion offsetOrientation, Vector3 offsetPosition )
-		{
-			if ( !this.HasSkeleton )
+			if ( !HasSkeleton )
 			{
 				throw new AxiomException( "Entity '{0}' has no skeleton to attach an object to.", this.name );
 			}
 
 			Bone bone = skeletonInstance.GetBone( boneName );
-
 			if ( bone == null )
 			{
-				throw new AxiomException( "Entity '{0}' does not have a skeleton with a bone named '{1}'.",
-										 this.name, boneName );
+				throw new AxiomException( "Entity '{0}' does not have a skeleton with a bone named '{1}'.", this.name, boneName );
 			}
 
-			TagPoint tagPoint =
-				skeletonInstance.CreateTagPointOnBone( bone, offsetOrientation, offsetPosition );
+			TagPoint tagPoint =	skeletonInstance.CreateTagPointOnBone( bone, offsetOrientation, offsetPosition );
 
 			tagPoint.ParentEntity = this;
+			tagPoint.ChildObject = sceneObject;
+
+			AttachObjectImpl( sceneObject, tagPoint );
+
+			// Trigger update of bounding box if necessary
+			if ( parentNode != null )
+				parentNode.NeedUpdate();
 
 			return tagPoint;
 		}
@@ -696,13 +690,15 @@ namespace Axiom.Core
 			return obj;
 		}
 
-		/** Detaches an object by pointer.
-		@remarks
-		Use this method to destroy a MovableObject which is attached to a bone of belonging this entity.
-		But sometimes the object may be not in the child object list because it is a lod entity,
-		this method can safely detect and ignore in this case and won't raise an exception.
-		*/
-
+		/// <summary>
+		/// Detaches an object by reference.
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <remarks>
+		/// Use this method to destroy a MovableObject which is attached to a bone of belonging this entity.
+		/// But sometimes the object may be not in the child object list because it is a lod entity,
+		/// this method can safely detect and ignore in this case and won't raise an exception.
+		/// </remarks>
 		public void DetachObjectFromBone( MovableObject obj )
 		{
 			for ( int i = 0; i < childObjectList.Count; i++ )
