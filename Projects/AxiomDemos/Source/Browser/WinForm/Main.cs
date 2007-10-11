@@ -88,7 +88,6 @@ namespace Axiom.Demos.Browser.WinForm
                         {
                             demo.Start();//show and start rendering
                         }//dispose of it when done
-						MeterManager.Report( "BillboardSet");
                     }
 
                 }
