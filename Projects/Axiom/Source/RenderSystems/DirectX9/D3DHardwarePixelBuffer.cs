@@ -106,8 +106,7 @@ namespace Axiom.RenderSystems.DirectX9
 		#region Constructors
 
 		public D3DHardwarePixelBuffer( BufferUsage usage )
-			:
-			base( 0, 0, 0, Axiom.Media.PixelFormat.Unknown, usage, false, false )
+			: base( 0, 0, 0, Axiom.Media.PixelFormat.Unknown, usage, false, false )
 		{
 			device = null;
 			surface = null;

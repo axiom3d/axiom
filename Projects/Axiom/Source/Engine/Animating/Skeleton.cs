@@ -527,7 +527,8 @@ namespace Axiom.Animating
 		{
 			if ( !namedBoneList.ContainsKey( name ) )
 			{
-				throw new Exception( "Bone with the name '" + name + "' not found." );
+				//throw new Exception( "Bone with the name '" + name + "' not found." );
+				return null;
 			}
 
 			return (Bone)namedBoneList[ name ];
