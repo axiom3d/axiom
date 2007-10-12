@@ -247,8 +247,8 @@ namespace Axiom.Core
 		/// </summary>
 		protected override void InvalidateView()
 		{
-			_recalculateView = true;
 			recalculateWindow = true;
+			base.InvalidateView();
 		}
 
 		/// <summary>
@@ -257,25 +257,7 @@ namespace Axiom.Core
 		protected override void InvalidateFrustum()
 		{
 			_recalculateFrustum = true;
-			recalculateWindow = true;
-		}
-
-		/// <summary>
-		///		Updates the frustum data.
-		/// </summary>
-		protected override void UpdateFrustum()
-		{
-			base.UpdateFrustum();
-			SetWindowImpl();
-		}
-
-		/// <summary>
-		///		Updates the view matrix.
-		/// </summary>
-		protected override void UpdateView()
-		{
-			base.UpdateView();
-			SetWindowImpl();
+			base.InvalidateFrustum();
 		}
 
 		/// <summary>

@@ -44,6 +44,8 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 
+using Real = System.Single;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Math
@@ -261,6 +263,52 @@ namespace Axiom.Math
 		public Matrix4 Inverse()
 		{
 			return Adjoint() * ( 1.0f / this.Determinant );
+		}
+
+		/// <summary>
+		/// returns an inverted affine Matrix
+		/// </summary>
+		/// <returns></returns>
+		public Matrix4 InverseAffine()
+		{
+			Debug.Assert( IsAffine );
+
+			Real t00 = m22 * m11 - m21 * m12;
+			Real t10 = m20 * m12 - m22 * m10;
+			Real t20 = m21 * m10 - m20 * m11;
+
+			Real invDet = 1 / ( m00 * t00 + m01 * t10 + m02 * t20 );
+
+			t00 *= invDet;
+			t10 *= invDet;
+			t20 *= invDet;
+
+			m00 *= invDet;
+			m01 *= invDet;
+			m02 *= invDet;
+
+			Real r00 = t00;
+			Real r01 = m02 * m21 - m01 * m22;
+			Real r02 = m01 * m12 - m02 * m11;
+
+			Real r10 = t10;
+			Real r11 = m00 * m22 - m02 * m20;
+			Real r12 = m02 * m10 - m00 * m12;
+
+			Real r20 = t20;
+			Real r21 = m01 * m20 - m00 * m21;
+			Real r22 = m00 * m11 - m01 * m10;
+
+			Real r03 = -( r00 * m03 + r01 * m13 + r02 * m23 );
+			Real r13 = -( r10 * m03 + r11 * m13 + r12 * m23 );
+			Real r23 = -( r20 * m03 + r21 * m13 + r22 * m23 );
+
+			return new Matrix4(
+				r00, r01, r02, r03,
+				r10, r11, r12, r13,
+				r20, r21, r22, r23,
+				  0, 0, 0, 1 );
+
 		}
 
 		/// <summary>
