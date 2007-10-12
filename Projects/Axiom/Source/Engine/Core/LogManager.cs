@@ -292,6 +292,7 @@ namespace Axiom.Core
         /// </summary>
         public void Dispose()
         {
+			Write( "*-*-* Axiom Shutdown Complete." );
             // dispose of all the logs
             foreach ( IDisposable o in logList.Values )
             {

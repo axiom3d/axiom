@@ -117,7 +117,7 @@ namespace Axiom.Core
 				new PlatformManager();
 #endif
 				// create a new timer
-                timer = new Timer(); 
+				timer = new Timer();
 
 				FontManager.Instance.Initialize();
 
@@ -579,12 +579,9 @@ namespace Axiom.Core
 
 
 		private static TimingMeter oneFrameMeter = MeterManager.GetMeter( "Engine One Frame", "Engine One Frame" );
-		private static TimingMeter oneFrameStartedMeter = MeterManager.GetMeter( "Engine One Frame Started",
-																				"Engine One Frame" );
-		private static TimingMeter oneFrameEndedMeter = MeterManager.GetMeter( "Engine One Frame Ended",
-																			  "Engine One Frame" );
-		private static TimingMeter updateRenderTargetsMeter = MeterManager.GetMeter( "Engine One Frame Update",
-																					"Engine One Frame" );
+		private static TimingMeter oneFrameStartedMeter = MeterManager.GetMeter( "Engine One Frame Started", "Engine One Frame" );
+		private static TimingMeter oneFrameEndedMeter = MeterManager.GetMeter( "Engine One Frame Ended", "Engine One Frame" );
+		private static TimingMeter updateRenderTargetsMeter = MeterManager.GetMeter( "Engine One Frame Update", "Engine One Frame" );
 
 		protected long CaptureCurrentTime()
 		{
@@ -718,6 +715,9 @@ namespace Axiom.Core
 		/// </summary>
 		public void Shutdown()
 		{
+			//_isIntialized = false;
+			LogManager.Instance.Write( "*-*-* Axiom Shutdown Initiated." );
+
 			SceneManagerEnumerator.Instance.ShutdownAll();
 
 			PluginManager.Instance.UnloadAll();
@@ -727,9 +727,7 @@ namespace Axiom.Core
 
 			// ResourceBackGroundPool.Instance.Shutdown();
 			ResourceGroupManager.Instance.ShutdownAll();
-			
-			//_isIntialized = false;
-			LogManager.Instance.Write( "*-*-* Axiom Shutdown" );
+
 		}
 
 		/// <summary>
@@ -852,26 +850,32 @@ namespace Axiom.Core
 			{
 				CompositorManager.Instance.Dispose();
 			}
+
 			if ( OverlayManager.Instance != null )
 			{
 				OverlayManager.Instance.Dispose();
 			}
+
 			if ( OverlayElementManager.Instance != null )
 			{
 				OverlayElementManager.Instance.Dispose();
 			}
+
 			if ( FontManager.Instance != null )
 			{
 				FontManager.Instance.Dispose();
 			}
+
 			if ( ArchiveManager.Instance != null )
 			{
 				ArchiveManager.Instance.Dispose();
 			}
+
 			if ( SkeletonManager.Instance != null )
 			{
 				SkeletonManager.Instance.Dispose();
 			}
+
 			if ( MeshManager.Instance != null )
 			{
 				MeshManager.Instance.Dispose();
@@ -888,14 +892,17 @@ namespace Axiom.Core
 			{
 				ParticleSystemManager.Instance.Dispose();
 			}
+
 			if ( ControllerManager.Instance != null )
 			{
 				ControllerManager.Instance.Dispose();
 			}
+
 			if ( HighLevelGpuProgramManager.Instance != null )
 			{
 				HighLevelGpuProgramManager.Instance.Dispose();
 			}
+
 			if ( PluginManager.Instance != null )
 			{
 				PluginManager.Instance.Dispose();
@@ -908,11 +915,12 @@ namespace Axiom.Core
 				ResourceGroupManager.Instance.Dispose();
 			}
 
-			//if ( PlatformManager.Instance != null )
-			//{
-			//    PlatformManager.Instance.Dispose();
-			//}
-
+#if !XBOX360
+			if ( PlatformManager.Instance != null )
+			{
+				PlatformManager.Instance.Dispose();
+			}
+#endif
 			if ( LogManager.Instance != null )
 			{
 				LogManager.Instance.Dispose();
