@@ -207,7 +207,7 @@ namespace Axiom.Core
     ///     <file name="OgreResourceGroupManager.h"   revision="1.12.2.4" lastUpdated="5/14/2006" lastUpdatedBy="Borrillis" />
     ///     <file name="OgreResourceGroupManager.cpp" revision="1.16.2.10" lastUpdated="5/14/2006" lastUpdatedBy="Borrillis" />
     /// </ogre> 
-    public class ResourceGroupManager : Singleton<ResourceGroupManager>, IDisposable
+    public class ResourceGroupManager : Singleton<ResourceGroupManager>
     {
         #region Delegates
 
@@ -2223,16 +2223,29 @@ namespace Axiom.Core
 
 		#region IDisposable Members
 
-		void IDisposable.Dispose()
+		protected override void dispose( bool disposeManagedResources )
 		{
-			// delete all resource groups
-			foreach ( KeyValuePair<string, ResourceGroup> pair in resourceGroups )
+			if ( !isDisposed )
 			{
-				ResourceGroup rg = pair.Value;
-				_deleteGroup( rg );
+				if ( disposeManagedResources )
+				{
+					// delete all resource groups
+					foreach ( KeyValuePair<string, ResourceGroup> pair in resourceGroups )
+					{
+						ResourceGroup rg = pair.Value;
+						_deleteGroup( rg );
+					}
+					resourceGroups.Clear();
+					_currentGroup = null;
+				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
 			}
-			resourceGroups.Clear();
-			_currentGroup = null;
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
 		}
 
 		#endregion

@@ -907,10 +907,12 @@ namespace Axiom.Core
 			{
 				ResourceGroupManager.Instance.Dispose();
 			}
+
 			//if ( PlatformManager.Instance != null )
 			//{
 			//    PlatformManager.Instance.Dispose();
 			//}
+
 			if ( LogManager.Instance != null )
 			{
 				LogManager.Instance.Dispose();
