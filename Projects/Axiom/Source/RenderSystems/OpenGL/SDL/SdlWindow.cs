@@ -98,6 +98,10 @@ namespace Axiom.RenderSystems.OpenGL
                 Sdl.SDL_GL_SetAttribute( Sdl.SDL_GL_STENCIL_SIZE, 8 );
             }
 
+			// request Alpha channel
+			if ( colorDepth > 16 )
+				Sdl.SDL_GL_SetAttribute( Sdl.SDL_GL_ALPHA_SIZE, 8 );
+
             // set the video mode (and create the surface)
             // TODO: Grab return val once changed to the right type
             Sdl.SDL_SetVideoMode( width, height, colorDepth, flags );
