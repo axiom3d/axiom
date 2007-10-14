@@ -43,6 +43,7 @@ using Axiom.Graphics;
 using Axiom.Media;
 
 using Tao.OpenGl;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -161,7 +162,8 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <returns></returns>
 		public bool CheckMinVersion( string version )
 		{
-			return float.Parse( version ) <= float.Parse( _glVersion.Substring( 0, version.Length ) );
+			return Utility.ParseReal( version ) <= Utility.ParseReal( _glVersion.Substring( 0, version.Length ) ); 
+			//return float.Parse( version ) <= float.Parse( _glVersion.Substring( 0, version.Length ) );
 		}
 
 		/// <summary>

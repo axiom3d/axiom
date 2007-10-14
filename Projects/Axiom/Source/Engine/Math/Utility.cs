@@ -138,6 +138,10 @@ namespace Axiom.Math
             return FloatEqual( a, b, .00001f );
         }
 
+		public static Real ParseReal( string value )
+		{
+			return Real.Parse( value, System.Globalization.CultureInfo.CurrentCulture );
+		}
 
         public static int Sign( Real number )
         {
