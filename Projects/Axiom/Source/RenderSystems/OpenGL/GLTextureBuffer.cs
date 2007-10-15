@@ -123,7 +123,7 @@ namespace Axiom.RenderSystems.OpenGL
 				return;
 
 			// Is this a render target?
-			if ( ( (TextureUsage)Usage & TextureUsage.RenderTarget ) == 0 )
+			if ( ( (TextureUsage)Usage & TextureUsage.RenderTarget ) != 0 )
 			{
 				// Create render target for each slice
 				_sliceTRT.Capacity = Depth;
