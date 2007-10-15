@@ -140,7 +140,7 @@ namespace Axiom.Math
 
 		public static Real ParseReal( string value )
 		{
-			return Real.Parse( value, new CultureInfo( "en-US" ) );
+			return Real.Parse( value, new System.Globalization.CultureInfo( "en-US" ) );
 		}
 
         public static int Sign( Real number )
