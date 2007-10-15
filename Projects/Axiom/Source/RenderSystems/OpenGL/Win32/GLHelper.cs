@@ -44,6 +44,7 @@ using Axiom.Collections;
 using Axiom.Core;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 #endregion Namespace Declarations
 
@@ -145,7 +146,7 @@ namespace Axiom.RenderSystems.OpenGL
 				    };
 					int[] formats = new int[ 256 ];
 					uint count;
-					// cheating here.  wglChoosePixelFormatARB procc address needed later on
+					// cheating here.  wglChoosePixelFormatARB proc address needed later on
 					// when a valid GL context does not exist and glew is not initialized yet.
 					_wglChoosePixelFormatARB = Wgl.wglGetProcAddress( "wglChoosePixelFormatARB" );
 					if ( Wgl.wglChoosePixelFormatARB( _wglChoosePixelFormatARB, hdc, iattr, null, 256, formats, out count ) != 0 )
@@ -233,9 +234,8 @@ namespace Axiom.RenderSystems.OpenGL
 			pfd.nVersion = 1;
 			pfd.dwFlags = Gdi.PFD_DRAW_TO_WINDOW | Gdi.PFD_SUPPORT_OPENGL | Gdi.PFD_DOUBLEBUFFER;
 			pfd.iPixelType = (byte)Gdi.PFD_TYPE_RGBA;
-			pfd.cColorBits = (byte)colorDepth;
-			//pfd.cColorBits = (byte)((colorDepth > 16)? 24 : colorDepth);
-			//pfd.cAlphaBits = (byte)((colorDepth > 16)? 8 : 0);
+			pfd.cColorBits = (byte)((colorDepth > 16)? 24 : colorDepth);
+			pfd.cAlphaBits = (byte)((colorDepth > 16)? 8 : 0);
 			pfd.cDepthBits = 24;
 			pfd.cStencilBits = 8;
 
@@ -253,16 +253,16 @@ namespace Axiom.RenderSystems.OpenGL
 					Wgl.WGL_DOUBLE_BUFFER_ARB, 1,
 					Wgl.WGL_SAMPLE_BUFFERS_ARB, 1,
 					Wgl.WGL_ACCELERATION_ARB, Wgl.WGL_FULL_ACCELERATION_ARB,
-					//Wgl.WGL_COLOR_BITS_ARB, pfd.cColorBits,
-					//Wgl.WGL_ALPHA_BITS_ARB, pfd.cAlphaBits,
-					//Wgl.WGL_DEPTH_BITS_ARB, pfd.cDepthBits,
-					//Wgl.WGL_STENCIL_BITS_ARB, pfd.cStencilBits,
+					Wgl.WGL_COLOR_BITS_ARB, pfd.cColorBits,
+					Wgl.WGL_ALPHA_BITS_ARB, pfd.cAlphaBits,
+					Wgl.WGL_DEPTH_BITS_ARB, pfd.cDepthBits,
+					Wgl.WGL_STENCIL_BITS_ARB, pfd.cStencilBits,
 					Wgl.WGL_SAMPLES_ARB, multisample,
 					0
 				};
 
 				int nformats;
-				//assert(_wglChoosePixelFormatARB && "failed to get proc address for ChoosePixelFormatARB");
+				Debug.Assert( _wglChoosePixelFormatARB != null, "failed to get proc address for ChoosePixelFormatARB" );
 				// ChoosePixelFormatARB proc address was obtained when setting up a dummy GL context in initialiseWGL()
 				// since glew hasn't been initialized yet, we have to cheat and use the previously obtained address
 				int result = Wgl.wglChoosePixelFormatARB( _wglChoosePixelFormatARB, hdc, iattr, null, 1, format, out nformats );
