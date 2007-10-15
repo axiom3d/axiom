@@ -108,6 +108,7 @@ namespace Axiom.Platforms.Win32
             {
                 inputReader.Dispose();
             }
+			LogManager.Instance.Write( "Win32 Platform Manager Shutdown." );
         }
 
         #endregion
