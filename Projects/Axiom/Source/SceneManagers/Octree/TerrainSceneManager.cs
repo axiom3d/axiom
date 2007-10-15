@@ -85,7 +85,7 @@ namespace Axiom.SceneManagers.Octree
             options = new TerrainOptions();
 
             DataSet optionData = new DataSet();
-            optionData.ReadXml( System.IO.Path.GetDirectoryName( System.Reflection.Assembly.GetExecutingAssembly().Location ) +@"\" + fileName );
+            optionData.ReadXml( System.IO.Path.GetDirectoryName( System.Reflection.Assembly.GetExecutingAssembly().Location ) + System.IO.Path.DirectorySeparatorChar + fileName );
             DataTable table = optionData.Tables[ 0 ];
             DataRow row = table.Rows[ 0 ];
 
