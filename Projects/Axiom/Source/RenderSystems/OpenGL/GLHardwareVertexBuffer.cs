@@ -181,7 +181,7 @@ namespace Axiom.RenderSystems.OpenGL
 			if ( discardWholeBuffer )
 			{
 				//Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB,
-				//    new IntPtr(sizeInBytes),
+				//    new IntPtr( sizeInBytes ),
 				//    IntPtr.Zero,
 				//    GLHelper.ConvertEnum( usage ) ); // TAO 2.0
 				Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB,
@@ -193,8 +193,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 			//Gl.glBufferSubDataARB(
 			//    Gl.GL_ARRAY_BUFFER_ARB,
-			//    new IntPtr(offset),
-			//    new IntPtr(length),
+			//    new IntPtr( offset ),
+			//    new IntPtr( length ),
 			//    src ); // TAO 2.0
 			Gl.glBufferSubDataARB(
 				Gl.GL_ARRAY_BUFFER_ARB,
@@ -229,8 +229,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 				//Gl.glGetBufferSubDataARB(
 				//    Gl.GL_ARRAY_BUFFER_ARB,
-				//    new IntPtr(offset),
-				//    new IntPtr(length),
+				//    new IntPtr( offset ),
+				//    new IntPtr( length ),
 				//    dest ); // TAO 2.0
 				Gl.glGetBufferSubDataARB(
 					Gl.GL_ARRAY_BUFFER_ARB,

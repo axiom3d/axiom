@@ -1797,7 +1797,7 @@ namespace Axiom.RenderSystems.OpenGL
 						{
 							int attrib = currentVertexProgram.AttributeIndex( element.Semantic );
 							Gl.glVertexAttribPointerARB(
-								(uint)attrib, // matrix indices are vertex attribute 7
+								attrib, // matrix indices are vertex attribute 7
 								VertexElement.GetTypeCount( element.Type ),
 								GLHelper.ConvertEnum( element.Type ),
 								Gl.GL_FALSE, // normalisation disabled
