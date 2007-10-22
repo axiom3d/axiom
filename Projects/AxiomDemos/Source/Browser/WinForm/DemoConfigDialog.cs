@@ -47,6 +47,7 @@ namespace Axiom.Demos
 			this.grpAvailableDemos = new GroupBox();
 			this.picPreview = new PictureBox();
 			this.tmrRotator = new System.Windows.Forms.Timer();
+
 			///
 			/// lstDemos
 			this.lstDemos.ItemHeight = 14;
@@ -54,8 +55,6 @@ namespace Axiom.Demos
 			this.lstDemos.Name = "lstDemos";
 			this.lstDemos.Size = new System.Drawing.Size( 200, 130 );
 			this.lstDemos.TabIndex = 0;
-			this.lstDemos.SelectedIndexChanged += new EventHandler( lstDemos_SelectedIndexChanged );
-			this.lstDemos.DoubleClick += new EventHandler( cmdOk_Click );
 
 			//
 			// picPreview
@@ -90,6 +89,7 @@ namespace Axiom.Demos
 			/// 
 			this.tmrRotator.Interval = 1000;
 			this.tmrRotator.Tick += new EventHandler( tmrRotator_Tick );
+
 			///
 			/// DemoConfigDialog
 			this.ClientSize = new System.Drawing.Size( 442, 595 );
@@ -116,7 +116,7 @@ namespace Axiom.Demos
 			this.tmrRotator.Stop();
 			try
 			{
-				image = ResourceGroupManager.Instance.OpenResource( ( (DemoItem)lstDemos.SelectedItem ).Name + ".jpg", ResourceGroupManager.DefaultResourceGroupName );
+			    image = ResourceGroupManager.Instance.OpenResource( ( (DemoItem)lstDemos.SelectedItem ).Name + ".jpg", ResourceGroupManager.DefaultResourceGroupName );
 			}
 			catch ( Exception )
 			{
@@ -125,10 +125,18 @@ namespace Axiom.Demos
 
 			if ( image != null )
 			{
-				this.picPreview.Image = System.Drawing.Image.FromStream( image, true );
+				// This is needed currently for Mono, closing the stream causes a GDI fault, 
+				// not closing the stream leaves it locked for the next access
+				byte[] stuff = new byte[image.Length];
+				while( image.Position < image.Length )
+					stuff[image.Position] = (byte)image.ReadByte();
+				MemoryStream mem = new MemoryStream();
+				mem.Write( stuff, 0, stuff.Length );
+				this.picPreview.Image = System.Drawing.Image.FromStream( mem, true );
+				// this.picPreview.Image = System.Drawing.Image.FromStream( image, true );
+				image.Close();
 			}
 
-			image.Close();
 		}
 
 		public Type Demo
@@ -160,6 +168,9 @@ namespace Axiom.Demos
 			{
 				lstDemos.Items.Add( typeName.Value );
 			}
+
+			this.lstDemos.SelectedIndexChanged += new EventHandler( lstDemos_SelectedIndexChanged );
+			this.lstDemos.DoubleClick += new EventHandler( cmdOk_Click );
 
 			if ( lstDemos.Items.Count > 0 )
 				lstDemos.SelectedIndex = 0;
