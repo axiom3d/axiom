@@ -389,7 +389,7 @@ namespace Axiom.SceneManagers.Bsp
             // Build initial patches - we need to know how big the vertex buffer needs to be
             // to accommodate the subdivision
             // we don't want to include the elements for texture lighting, so we clone it
-            rgm.notifyWorldGeometryStageStarted( "Initialising patches" );
+            rgm.notifyWorldGeometryStageStarted( "Initializing patches" );
             InitQuake3Patches( q3lvl, (VertexDeclaration)decl.Clone() );
             rgm.notifyWorldGeometryStageEnded();
 
@@ -510,9 +510,25 @@ namespace Axiom.SceneManagers.Bsp
             // it can be used with multiple lightmaps)
             string shaderName;
             int face = q3lvl.Faces.Length;
+			int progressCountdown = 100;
+			int progressCount = 0;
 
             while ( face-- > 0 )
             {
+				// Progress reporting
+				if (progressCountdown == 100)
+				{
+					++progressCount;
+					String str = String.Format( "Loading materials (phase {0})",progressCount ); 
+					rgm.notifyWorldGeometryStageStarted(str);
+				}
+				else if (progressCountdown == 0)
+				{
+					// stage report
+					rgm.notifyWorldGeometryStageEnded();
+					progressCountdown = 100 + 1; 
+				}
+
                 // Check to see if existing material
                 // Format shader#lightmap
                 int shadIdx = q3lvl.Faces[ face ].shader;
@@ -543,25 +559,28 @@ namespace Axiom.SceneManagers.Bsp
                     else
                     {
                         // No shader script, try default type texture
-                        shadMat = (Material)MaterialManager.Instance.Create( shaderName, ResourceGroupManager.Instance.WorldResourceGroupName );
+                        shadMat = (Material)MaterialManager.Instance.Create( shaderName, rgm.WorldResourceGroupName );
                         Pass shadPass = shadMat.GetTechnique( 0 ).GetPass( 0 );
 
                         // Try jpg
-                        TextureUnitState tex = shadPass.CreateTextureUnitState( tryName + ".jpg" );
-                        tex.Load();
+						TextureUnitState tex = null;
+						if ( ResourceGroupManager.Instance.ResourceExists( rgm.WorldResourceGroupName, tryName + ".jpg" ) )
+						{
+							tex = shadPass.CreateTextureUnitState( tryName + ".jpg" );
+						}
+						if ( ResourceGroupManager.Instance.ResourceExists( rgm.WorldResourceGroupName, tryName + ".tga" ) )
+						{
+							tex = shadPass.CreateTextureUnitState( tryName + ".tga" );
+						}
 
-                        if ( tex.IsBlank )
-                        {
-                            // Try tga
-                            tex.SetTextureName( tryName + ".tga" );
-                        }
-
-                        // Set replace on all first layer textures for now
-                        tex.SetColorOperation( LayerBlendOperation.Replace );
-                        tex.TextureAddressing = TextureAddressing.Wrap;
-
-                        // for ambient lighting
-                        tex.ColorBlendMode.source2 = LayerBlendSource.Manual;
+						if ( tex != null )
+						{
+							// Set replace on all first layer textures for now
+							tex.SetColorOperation( LayerBlendOperation.Replace );
+							tex.TextureAddressing = TextureAddressing.Wrap;
+							// for ambient lighting
+							tex.ColorBlendMode.source2 = LayerBlendSource.Manual;
+						}
 
                         if ( bspOptions.useLightmaps && q3lvl.Faces[ face ].lmTexture != -1 )
                         {
