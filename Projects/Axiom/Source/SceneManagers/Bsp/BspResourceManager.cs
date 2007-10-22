@@ -64,7 +64,6 @@ namespace Axiom.SceneManagers.Bsp
 
         #endregion Fields and Properties
 
-
         #region Methods
 
         /// <summary>
