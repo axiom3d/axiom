@@ -6,7 +6,7 @@
 
 	<!-- global project settings -->
 	<property name="project.name" value="Axiom" />
-	<property name="project.version" value="0.7.1.2" unless="${property::exists('project.version')}" />
+	<property name="project.version" value="0.7.2" unless="${property::exists('project.version')}" />
 	<property name="project.release.type" value="dev" unless="${property::exists('project.release.type')}" />
 	<!-- nightly / dev / alpha / beta# / rc# / release -->
 	<if test="${project.release.type == 'nightly'}">
@@ -144,13 +144,13 @@
 		this would cause the build number to be updated
 		NOTE: disabled at present for Axiom, but left in for future consideration
 	-->
-	<property name="create.assemblyinfo" value="false" />
+	<property name="create.assemblyinfo" value="true" />
 
 	<target name="create-common-assemblyinfo" if="${create.assemblyinfo}">
 		<!-- ensure CommonAssemblyInfo.cs is writable if it already exists -->
-		<attrib file="Axiom/GlobalAssemblyInfo.cs" readonly="false" if="${file::exists('Axiom/GlobalAssemblyInfo.cs')}" />
+		<attrib file="Source/GlobalAssemblyInfo.Test.cs" readonly="false" if="${file::exists('Source/GlobalAssemblyInfo.Test.cs')}" />
 		<!-- generate the source file holding the common assembly-level attributes -->
-		<asminfo output="Axiom/GlobalAssemblyInfo.cs" language="CSharp">
+		<asminfo output="Source/GlobalAssemblyInfo.Test.cs" language="CSharp">
 			<imports>
 				<import namespace="System" />
 				<import namespace="System.Reflection" />
@@ -159,16 +159,14 @@
 			<attributes>
 				<attribute type="ComVisibleAttribute" value="false" />
 				<attribute type="CLSCompliantAttribute" value="false" />
-				<attribute type="AssemblyTitleAttribute" value="Axiom3D" />
-				<attribute type="AssemblyDescriptionAttribute" value="A .NET Graphics Engine" />
 				<attribute type="AssemblyConfigurationAttribute" value="${project.release.type}" />
-				<attribute type="AssemblyCompanyAttribute" value="http://axiomengine.sourceforge.net" />
-				<attribute type="AssemblyProductAttribute" value="Axiom" />
-				<attribute type="AssemblyCopyrightAttribute" value="Copyright (C) 2005-${datetime::get-year(datetime::now())} The Axiom Team" />
+				<attribute type="AssemblyCompanyAttribute" value="Axiom Rendering Engine Project Team (http://axiomengine.sourceforge.net)" />
+				<attribute type="AssemblyProductAttribute" value="Axiom Rendering Engine" />
+				<attribute type="AssemblyCopyrightAttribute" value="Copyright (C) 2005-${datetime::get-year(datetime::now())} Axiom Rendering Engine Project Team." />
 				<attribute type="AssemblyTrademarkAttribute" value="" />
 				<attribute type="AssemblyCultureAttribute" value="" />
-				<attribute type="AssemblyVersionAttribute" value="${project.version}.${build.number}.0" />
-				<attribute type="AssemblyInformationalVersionAttribute" value="${project.version}" />
+				<attribute type="AssemblyVersionAttribute" value="${project.version}.${build.number}" />
+				<attribute type="AssemblyInformationalVersionAttribute" value="${project.version}.0" />
 			</attributes>
 		</asminfo>
 	</target>
@@ -186,7 +184,7 @@
 		<mkdir dir="${axiom.build.dir}" />
 	</target>
 
-	<target name="build.axiom" depends="build.axiom.setup" description="Builds the Axiom3D engine for the current build configuration">
+	<target name="build.axiom" depends="build.axiom.setup" description="Builds the Axiom engine for the current build configuration">
 		<!-- Call required targets in order -->
 		<!-- 
 			Call targets building Windows-specific assemblies only on 
@@ -294,14 +292,31 @@
 	<!-- BEGIN: Packaging targets -->
 
 	<zipfileset id="fileset.axiom.source" basedir="../.." prefix="Axiom"> 
-		<include name="Source/Axiom3D/**/*.cs" />
-		<include name="Source/Axiom3D/**/*.build" />
-		<include name="Source/Axiom3D/**/*.cmd" />
-		<include name="Source/Axiom3D/**/*.txt" />
-		<include name="Source/Axiom3D/**/*.xml" />			
+		<include name="Projects/Axiom/**/*.cs" />
+		<include name="Projects/Axiom/**/*.build" />
+    <include name="Projects/Axiom/**/*.prebuild" />
+    <include name="Projects/Axiom/**/*.shfb" />
+    <include name="Projects/Axiom/**/*.cmd" />
+		<include name="Projects/Axiom/**/*.txt" />
+		<include name="Projects/Axiom/**/*.xml" />			
 	</zipfileset>
-	
-	<zipfileset id="fileset.axiom.buildtools" basedir="../.." prefix="Axiom">
+
+  <zipfileset id="fileset.axiom.demos.source" basedir="../.." prefix="Axiom">
+    <include name="Projects/AxiomDemos/**/*.cs" />
+    <include name="Projects/AxiomDemos/**/*.build" />
+    <include name="Projects/AxiomDemos/**/*.prebuild" />
+    <include name="Projects/AxiomDemos/**/*.cmd" />
+    <include name="Projects/AxiomDemos/**/*.txt" />
+    <include name="Projects/AxiomDemos/**/*.xml" />
+  </zipfileset>
+
+  <zipfileset id="fileset.axiom.demos.binary" basedir="../AxiomDemos/build" prefix="Axiom/bin">
+    <include name="**/**" />
+    <exclude name="**/.svn/**" />
+    <exclude name="**/Media/**" />
+  </zipfileset>
+
+  <zipfileset id="fileset.axiom.buildtools" basedir="../.." prefix="Axiom">
 		<include name="BuildSupport/**" />
 		<exclude name="BuildSupport/**/.svn/**" />
 	</zipfileset>
@@ -316,25 +331,27 @@
 		<exclude name="Media/**/.svn/**" />
 	</zipfileset>
 
-	<zipfileset id="fileset.axiom.binary" basedir="../../Source/Build/" prefix="Axiom/bin">
-		<include name="**" />
-		<exclude name="**/.svn/**" />
+	<zipfileset id="fileset.axiom.binary" basedir="../../Lib/Managed/XPlatform/Axiom" prefix="Axiom/bin">
+    <include name="**/**" />
+    <exclude name="**/.svn/**" />
 	</zipfileset>
 	
 	<target name="dist.axiom.source" >
 		
 		<zip zipfile="${dist.dir + '/axiom-' + project.version + '-src.zip'}">
 			<fileset refid="fileset.axiom.source" />
-			<fileset refid="fileset.axiom.buildtools" />
+      <fileset refid="fileset.axiom.demos.source" />
+      <fileset refid="fileset.axiom.buildtools" />
 			<fileset refid="fileset.axiom.libs" />
 		</zip>
 
 	</target>
 
 	<target name="dist.axiom.binary" >
-		<zip zipfile="${dist.dir + '/axiom-' + project.version + '-bin.zip'}">
+		<zip zipfile="${dist.dir + '/axiom-' + project.version + '-bin-win32.zip'}">
 			<fileset refid="fileset.axiom.binary" prefix="bin"/>
-		</zip>
+      <fileset refid="fileset.axiom.demos.binary" prefix="bin"/>
+    </zip>
 	</target>
 		
 	<target name="dist.axiom.media" >
@@ -346,7 +363,8 @@
 	<target name="dist.axiom.full" >
 		<zip zipfile="${dist.dir + '/axiom-' + project.version + '-full.zip'}">
 			<fileset refid="fileset.axiom.source" />
-			<fileset refid="fileset.axiom.buildtools" />
+      <fileset refid="fileset.axiom.demos.source" />
+      <fileset refid="fileset.axiom.buildtools" />
 			<fileset refid="fileset.axiom.libs" />
 			<fileset refid="fileset.axiom.media" />
 			<fileset refid="fileset.axiom.binary" />
