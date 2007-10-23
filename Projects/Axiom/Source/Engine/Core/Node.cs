@@ -1129,29 +1129,6 @@ namespace Axiom.Core
             }
         }
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        Quaternion IRenderable.WorldOrientation
-        {
-            get
-            {
-                return this.DerivedOrientation;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        Vector3 IRenderable.WorldPosition
-        {
-            get
-            {
-                return this.DerivedPosition;
-            }
-        }
-
         /// <summary>
         /// Gets the scaling factor of the node as derived from all parents.
         /// </summary>
@@ -1331,6 +1308,28 @@ namespace Axiom.Core
                 return false;
             }
         }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public Quaternion WorldOrientation
+		{
+			get
+			{
+				return this.DerivedOrientation;
+			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public Vector3 WorldPosition
+		{
+			get
+			{
+				return this.DerivedPosition;
+			}
+		}
 
         /// <summary>
         ///		This is only used if the SceneManager chooses to render the node. This option can be set

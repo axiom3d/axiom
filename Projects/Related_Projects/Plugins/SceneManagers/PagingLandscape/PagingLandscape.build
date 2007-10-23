@@ -66,7 +66,7 @@
 		<property name="build.debug" value="true" />
 		<property name="build.dir" value="${top.build.dir}/${project.config}" />
 		<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" />
-		<property name="axiom3d.assemblies.dir" value="${axiom3d.assemblies.topdir}/${project.config}" />
+		<property name="axiom.assemblies.dir" value="${axiom.assemblies.topdir}/${project.config}" />
 	</target>
 
 	<target name="release" description="Perform a 'release' build">
@@ -74,7 +74,7 @@
 		<property name="build.debug" value="false" />
 		<property name="build.dir" value="${top.build.dir}/${project.config}" />
 		<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version.full}" />
-		<property name="axiom3d.assemblies.dir" value="${axiom3d.assemblies.topdir}/${project.config}" />
+		<property name="axiom.assemblies.dir" value="${axiom.assemblies.topdir}/${project.config}" />
 	</target>
 
 	<!-- END: named project configurations -->
@@ -113,8 +113,8 @@
 	<!-- BEGIN: Project build tasks -->
 	<target name="references.setup" description="Sets up file references for the project's tasks" unless="${target::has-executed('references.setup')}">
 		<fileset id="paginglandscape.build.references">
-			<include name="${axiom3d.assemblies.dir}/Axiom.dll"/>
-			<include name="${axiom3d.assemblies.dir}/Axiom.RenderSystems.OpenGL.dll"/>
+			<include name="${axiom.assemblies.dir}/Axiom.dll"/>
+			<include name="${axiom.assemblies.dir}/Axiom.RenderSystems.OpenGL.dll"/>
 
 			<include name="System.dll"/>
 			<include name="System.Data.dll"/>
@@ -122,15 +122,15 @@
 			<include name="System.Windows.Forms.dll"/>
 			<include name="System.Xml.dll"/>
 		
-			<include if="${platform::is-win32()}" name="${axiom3d.assemblies.dir}/Axiom.Platforms.Win32.dll"/>
-			<include if="${platform::is-win32()}" name="${axiom3d.assemblies.dir}/Axiom.RenderSystems.DirectX9.dll"/>
-			<include unless="${platform::is-win32()}" name="${axiom3d.assemblies.dir}/Axiom.Platforms.SDL.dll"/>
+			<include if="${platform::is-win32()}" name="${axiom.assemblies.dir}/Axiom.Platforms.Win32.dll"/>
+			<include if="${platform::is-win32()}" name="${axiom.assemblies.dir}/Axiom.RenderSystems.DirectX9.dll"/>
+			<include unless="${platform::is-win32()}" name="${axiom.assemblies.dir}/Axiom.Platforms.SDL.dll"/>
 		</fileset>
 
 		<fileset id="terraindemo.build.references">
 			<include name="${build.dir}/PagingLandscape/${project::get-name()}.dll" />
-			<include name="${axiom3d.assemblies.dir}/Axiom.dll"/>
-			<include name="${axiom3d.assemblies.dir}/Axiom.RenderSystems.OpenGL.dll"/>
+			<include name="${axiom.assemblies.dir}/Axiom.dll"/>
+			<include name="${axiom.assemblies.dir}/Axiom.RenderSystems.OpenGL.dll"/>
 
 			<include name="System.dll"/>
 			<include name="System.Data.dll"/>
@@ -138,21 +138,18 @@
 			<include name="System.Windows.Forms.dll"/>
 			<include name="System.Xml.dll"/>
 		
-			<include if="${platform::is-win32()}" name="${axiom3d.assemblies.dir}/Axiom.Platforms.Win32.dll"/>
-			<include if="${platform::is-win32()}" name="${axiom3d.assemblies.dir}/Axiom.RenderSystems.DirectX9.dll"/>
-			<include unless="${platform::is-win32()}" name="${axiom3d.assemblies.dir}/Axiom.Platforms.SDL.dll"/>
+			<include if="${platform::is-win32()}" name="${axiom.assemblies.dir}/Axiom.Platforms.Win32.dll"/>
+			<include if="${platform::is-win32()}" name="${axiom.assemblies.dir}/Axiom.RenderSystems.DirectX9.dll"/>
+			<include unless="${platform::is-win32()}" name="${axiom.assemblies.dir}/Axiom.Platforms.SDL.dll"/>
 		</fileset>
 
 		<fileset id="terraindemo.runtime.references">
 
-			<include name="${axiom3d.assemblies.dir}/Axiom.dll"/>
-			<include name="${axiom3d.assemblies.dir}/Axiom.Plugins.CgProgramManager.dll"/>
-			<include name="${axiom3d.assemblies.dir}/Axiom.Plugins.ParticleFX.dll"/>
-			<include name="${axiom3d.assemblies.dir}/Axiom.RenderSystems.OpenGL.dll"/>
+			<include name="${axiom.assemblies.dir}/Axiom.dll"/>
 
-			<include if="${platform::is-win32()}" name="${axiom3d.assemblies.dir}/Axiom.Platforms.Win32.dll"/>
-			<include if="${platform::is-win32()}" name="${axiom3d.assemblies.dir}/Axiom.RenderSystems.DirectX9.dll"/>
-			<include unless="${platform::is-win32()}" name="${axiom3d.assemblies.dir}/Axiom.Platforms.SDL.dll"/>
+			<include if="${platform::is-win32()}" name="${axiom.assemblies.dir}/Axiom.Platforms.Win32.dll"/>
+			<include if="${platform::is-win32()}" name="${axiom.assemblies.dir}/Axiom.RenderSystems.DirectX9.dll"/>
+			<include unless="${platform::is-win32()}" name="${axiom.assemblies.dir}/Axiom.Platforms.SDL.dll"/>
 
 			<include name="${ICSharpCode.SharpZipLib.dll}"/>
 
@@ -178,7 +175,7 @@
 
 			<!-- Dump all the native dependencies into the build directory if on Windows -->
 			<!-- NOTE: This is a little sloppy - should really only reference the deps we need -->
-			<include if="${platform::is-win32()}" name="${native.libs.win32.dir}/*.dll"/>
+			<include if="${platform::is-win32()}" name="${libs.native.win32.dir}/*.dll"/>
 			
 			<!-- Note that all the Linux native deps should be installed by the distribution, 
 			so they aren't handled here.  We just assume they are there -->
@@ -222,7 +219,7 @@
 				<include name="../../../../../Media/Textures/Border*" />
 				<include name="../../../../../Media/Textures/Water*" />
 				<include name="../../../../../Media/Icons/AxiomIcon.ico" />
-				<include name="../../../../../Media/Logos/AxiomLogo.png" />
+				<include name="../../../../../Media/Textures/AxiomLogo.png" />
 			</fileset>
 		</copy>
 
