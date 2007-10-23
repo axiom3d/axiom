@@ -1,4 +1,18 @@
-08-01-2007
+10-23-2007 - Borrillis
+- hobbiton merged to trunk
+
+10-23-2007 - Borrillis
+- Fixed PagingLandscape to build and run properly
+- Corrected WorldOrientation/WorldPosition implementation in Node
+
+10-12-2007 - Borrillis
+- Fix for compile error on SDL/Mono
+- Corrected Alpha setting for RenderWindows in GL
+
+08-30-2007 - Borrillis
+- Fixed nAnt builds on mono/linux
+
+08-01-2007 - Borrillis
 hobbiton merged to trunk
 
 07-30-2007 - Borrillis

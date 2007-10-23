@@ -1,11 +1,9 @@
 #region Namespace Declarations
 
 using System;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Threading;
 
 using Axiom.Configuration;
 using Axiom.Core;
@@ -411,7 +409,7 @@ namespace TerrainDemo
                 viewport.OverlaysEnabled = !viewport.OverlaysEnabled;
             }
 
-            if ( !input.IsMousePressed( MouseButtons.Button0 ) )
+            if ( !input.IsMousePressed( MouseButtons.Left ) )
             {
                 float cameraYaw = -input.RelativeMouseX * .13f;
                 float cameraPitch = -input.RelativeMouseY * .13f;

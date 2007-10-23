@@ -385,6 +385,7 @@ namespace Axiom.Core
         ///		because one of them is probably a picture-in-picture which is not supposed to
         ///		have overlays of it's own. In this case you can turn off overlays on this viewport
         ///		by calling this method.
+		///	</remarks>
         public bool OverlaysEnabled
         {
             get

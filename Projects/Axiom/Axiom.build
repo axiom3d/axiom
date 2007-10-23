@@ -144,13 +144,13 @@
 		this would cause the build number to be updated
 		NOTE: disabled at present for Axiom, but left in for future consideration
 	-->
-	<property name="create.assemblyinfo" value="false" />
+	<property name="create.assemblyinfo" value="true" />
 
 	<target name="create-common-assemblyinfo" if="${create.assemblyinfo}">
 		<!-- ensure CommonAssemblyInfo.cs is writable if it already exists -->
-		<attrib file="Axiom/GlobalAssemblyInfo.cs" readonly="false" if="${file::exists('Axiom/GlobalAssemblyInfo.cs')}" />
+		<attrib file="Source/GlobalAssemblyInfo.Test.cs" readonly="false" if="${file::exists('Source/GlobalAssemblyInfo.Test.cs')}" />
 		<!-- generate the source file holding the common assembly-level attributes -->
-		<asminfo output="Axiom/GlobalAssemblyInfo.cs" language="CSharp">
+		<asminfo output="Source/GlobalAssemblyInfo.Test.cs" language="CSharp">
 			<imports>
 				<import namespace="System" />
 				<import namespace="System.Reflection" />
@@ -159,16 +159,14 @@
 			<attributes>
 				<attribute type="ComVisibleAttribute" value="false" />
 				<attribute type="CLSCompliantAttribute" value="false" />
-				<attribute type="AssemblyTitleAttribute" value="Axiom3D" />
-				<attribute type="AssemblyDescriptionAttribute" value="A .NET Graphics Engine" />
 				<attribute type="AssemblyConfigurationAttribute" value="${project.release.type}" />
-				<attribute type="AssemblyCompanyAttribute" value="http://axiomengine.sourceforge.net" />
-				<attribute type="AssemblyProductAttribute" value="Axiom" />
-				<attribute type="AssemblyCopyrightAttribute" value="Copyright (C) 2005-${datetime::get-year(datetime::now())} The Axiom Team" />
+				<attribute type="AssemblyCompanyAttribute" value="Axiom Rendering Engine Project Team (http://axiomengine.sourceforge.net)" />
+				<attribute type="AssemblyProductAttribute" value="Axiom Rendering Engine" />
+				<attribute type="AssemblyCopyrightAttribute" value="Copyright (C) 2005-${datetime::get-year(datetime::now())} Axiom Rendering Engine Project Team." />
 				<attribute type="AssemblyTrademarkAttribute" value="" />
 				<attribute type="AssemblyCultureAttribute" value="" />
-				<attribute type="AssemblyVersionAttribute" value="${project.version}.${build.number}.0" />
-				<attribute type="AssemblyInformationalVersionAttribute" value="${project.version}" />
+				<attribute type="AssemblyVersionAttribute" value="${project.version}.${build.number}" />
+				<attribute type="AssemblyInformationalVersionAttribute" value="${project.version}.0" />
 			</attributes>
 		</asminfo>
 	</target>
@@ -312,6 +310,12 @@
     <include name="Projects/AxiomDemos/**/*.xml" />
   </zipfileset>
 
+  <zipfileset id="fileset.axiom.demos.binary" basedir="../AxiomDemos/build" prefix="Axiom/bin">
+    <include name="**/**" />
+    <exclude name="**/.svn/**" />
+    <exclude name="**/Media/**" />
+  </zipfileset>
+
   <zipfileset id="fileset.axiom.buildtools" basedir="../.." prefix="Axiom">
 		<include name="BuildSupport/**" />
 		<exclude name="BuildSupport/**/.svn/**" />
@@ -344,8 +348,9 @@
 	</target>
 
 	<target name="dist.axiom.binary" >
-		<zip zipfile="${dist.dir + '/axiom-' + project.version + '-bin.zip'}">
+		<zip zipfile="${dist.dir + '/axiom-' + project.version + '-bin-win32.zip'}">
 			<fileset refid="fileset.axiom.binary" prefix="bin"/>
+      <fileset refid="fileset.axiom.demos.binary" prefix="bin"/>
 		</zip>
 	</target>
 		
