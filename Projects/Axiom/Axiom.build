@@ -6,7 +6,17 @@
 
 	<!-- global project settings -->
 	<property name="project.name" value="Axiom" />
-	<property name="project.version" value="0.7.2.0" unless="${property::exists('project.version')}" />
+
+	<!-- default configuration -->
+	<property name="project.config" value="debug" />
+	<!-- debug|release -->
+	<property name="nant.console.name" value="NAnt" />
+	<property name="build.defines" value="" />
+	<property name="build.number" value="${math::abs(math::floor(timespan::get-total-days(datetime::now() - datetime::parse('01/01/2000'))))}" />
+
+	<!-- platform specific properties. These are the defaults -->
+	<property name="current.build.defines" value="${build.defines}" />
+
 	<property name="project.release.type" value="dev" unless="${property::exists('project.release.type')}" />
 	<!-- nightly / dev / alpha / beta# / rc# / release -->
 	<if test="${project.release.type == 'nightly'}">
@@ -44,6 +54,7 @@
 	-->
 	<target name="debug" description="Perform a 'debug' build">
 		<property name="project.config" value="debug" />
+		<call target="set-version" />
 		<property name="build.debug" value="true" />
 		<!--	<property name="build.dir" value="${project::get-base-directory()}/build/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" /> -->
 		<property name="build.dir" value="${top.build.dir}/${project.config}" />
@@ -52,10 +63,22 @@
 
 	<target name="release" description="Perform a 'release' build">
 		<property name="project.config" value="release" />
+		<call target="set-version" />
 		<property name="build.debug" value="false" />
 		<!--	<property name="build.dir" value="${project::get-base-directory()}/build/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version.full}" /> -->
 		<property name="build.dir" value="${top.build.dir}/${project.config}" />
 		<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version.full}" />
+	</target>
+	
+	<target name="set-version" description="sets the version string">
+	
+		<property name="project.version.major"     value="0" unless="${property::exists('project.version.major')}"/>
+		<property name="project.version.minor" 	   value="7" unless="${property::exists('project.version.minor')}"/>
+		<property name="project.version.increment" value="3" unless="${property::exists('project.version.increment')}"/>
+		<property name="project.version.build"     value="${if(project.config=='release','0',build.number)}" />
+		
+		<property name="project.version"           value="${project.version.major}.${project.version.minor}.${project.version.increment}.${project.version.build}" />
+
 	</target>
 
 	<!-- global build settings -->
@@ -64,17 +87,6 @@
 	<!-- Settings for the top-level build envirnment -->
 	<property name="build.bin.dir" value="${path::combine(build.dir, 'bin')}" dynamic="true" />
 	<property name="build.lib.dir" value="${path::combine(build.dir, 'lib')}" dynamic="true" />
-
-	<!-- default configuration -->
-	<property name="project.config" value="debug" />
-	<!-- debug|release -->
-	<property name="nant.console.name" value="NAnt" />
-	<property name="build.defines" value="" />
-	<property name="build.number" value="${math::abs(math::floor(timespan::get-total-days(datetime::now() - datetime::parse('01/01/2000'))))}" />
-
-	<!-- platform specific properties. These are the defaults -->
-	<property name="current.build.defines" value="${build.defines}" />
-
 
 	<!-- Buildfile aliases for sub-projects of the solution -->
 	<!-- 
@@ -165,13 +177,13 @@
 				<attribute type="AssemblyCopyrightAttribute" value="Copyright (C) 2005-${datetime::get-year(datetime::now())} Axiom Rendering Engine Project Team." />
 				<attribute type="AssemblyTrademarkAttribute" value="" />
 				<attribute type="AssemblyCultureAttribute" value="" />
-				<attribute type="AssemblyVersionAttribute" value="${project.version}.${build.number}" />
-				<attribute type="AssemblyInformationalVersionAttribute" value="${project.version}.0" />
+				<attribute type="AssemblyVersionAttribute" value="${project.version}" />
+				<attribute type="AssemblyInformationalVersionAttribute" value="${project.version}" />
 			</attributes>
 		</asminfo>
 	</target>
 
-	<!-- BEGIN: Axiom3D core build tasks -->
+	<!-- BEGIN: Axiom core build tasks -->
 	<target name="build.axiom.setup" depends="build.setup" unless="${target::has-executed('build.axiom.setup')}" description="Sets up build area">
 		<!-- 
 			Define build directory for Axiom3D projects - Note: this is all the 
@@ -262,11 +274,13 @@
 			<buildfiles refid="axiom.scenemanagers.paginglandscape.buildfile"/>
 		</nant>
 	</target>
-	<!-- END: Axiom3D core build tasks -->
+	<!-- END: Axiom core build tasks -->
 
 	<!-- BEGIN: General Distribution targets -->
 	
 	<target name="dist.setup" description="General setup of the distribution directory" depends="init" unless="${target::has-executed('dist.setup')}">
+		<call target="release" if="${project.release.type == 'release'}" />
+		<call target="debug" if="${project.release.type != 'release'}" />
 		<echo message="dist Directory is ${dist.dir}" />
 		<!-- ensure dist directory exists -->
 		<mkdir dir="${dist.dir}" />
@@ -280,7 +294,7 @@
 		<delete dir="${top.dist.dir}" if="${directory::exists(top.dist.dir)}" />
 	</target>
 	
-	<target name="dist.all" description="Prepares all targets for distribution" depends="build.all, release, build.all, dist.setup" unless="${target::has-executed('dist.all')}">
+	<target name="dist.all" description="Prepares all targets for distribution" depends="dist.setup" unless="${target::has-executed('dist.all')}">
 		<call target="dist.axiom.full" />
 		<call target="dist.axiom.source" />
 		<call target="dist.axiom.media" />
@@ -294,29 +308,31 @@
 	<zipfileset id="fileset.axiom.source" basedir="../.." prefix="Axiom"> 
 		<include name="Projects/Axiom/**/*.cs" />
 		<include name="Projects/Axiom/**/*.build" />
-    <include name="Projects/Axiom/**/*.prebuild" />
-    <include name="Projects/Axiom/**/*.shfb" />
-    <include name="Projects/Axiom/**/*.cmd" />
+		<include name="Projects/Axiom/**/*.prebuild" />
+		<include name="Projects/Axiom/**/*.shfb" />
+		<include name="Projects/Axiom/**/*.cmd" />
 		<include name="Projects/Axiom/**/*.txt" />
-		<include name="Projects/Axiom/**/*.xml" />			
+		<include name="Projects/Axiom/**/*.xml" />
+		<exclude name="Projects/Axiom/**/*.FileList.txt" />
 	</zipfileset>
 
-  <zipfileset id="fileset.axiom.demos.source" basedir="../.." prefix="Axiom">
-    <include name="Projects/AxiomDemos/**/*.cs" />
-    <include name="Projects/AxiomDemos/**/*.build" />
-    <include name="Projects/AxiomDemos/**/*.prebuild" />
-    <include name="Projects/AxiomDemos/**/*.cmd" />
-    <include name="Projects/AxiomDemos/**/*.txt" />
-    <include name="Projects/AxiomDemos/**/*.xml" />
-  </zipfileset>
+	<zipfileset id="fileset.axiom.demos.source" basedir="../.." prefix="Axiom">
+		<include name="Projects/AxiomDemos/**/*.cs" />
+		<include name="Projects/AxiomDemos/**/*.build" />
+		<include name="Projects/AxiomDemos/**/*.prebuild" />
+		<include name="Projects/AxiomDemos/**/*.cmd" />
+		<include name="Projects/AxiomDemos/**/*.txt" />
+		<include name="Projects/AxiomDemos/**/*.xml" />
+		<exclude name="Projects/AxiomDemos/**/*.FileList.txt" />
+	</zipfileset>
 
-  <zipfileset id="fileset.axiom.demos.binary" basedir="../AxiomDemos/build" prefix="Axiom/bin">
+	<zipfileset id="fileset.axiom.demos.binary" basedir="../AxiomDemos/build" prefix="Axiom/bin">
     <include name="**/**" />
     <exclude name="**/.svn/**" />
     <exclude name="**/Media/**" />
   </zipfileset>
 
-  <zipfileset id="fileset.axiom.buildtools" basedir="../.." prefix="Axiom">
+	<zipfileset id="fileset.axiom.buildtools" basedir="../.." prefix="Axiom">
 		<include name="BuildSupport/**" />
 		<exclude name="BuildSupport/**/.svn/**" />
 	</zipfileset>
@@ -332,16 +348,16 @@
 	</zipfileset>
 
 	<zipfileset id="fileset.axiom.binary" basedir="../../Lib/Managed/XPlatform/Axiom" prefix="Axiom/bin">
-    <include name="**/**" />
-    <exclude name="**/.svn/**" />
+		<include name="**/**" />
+		<exclude name="**/.svn/**" />
 	</zipfileset>
 	
 	<target name="dist.axiom.source" >
 		
 		<zip zipfile="${dist.dir + '/axiom-' + project.version + '-src.zip'}">
 			<fileset refid="fileset.axiom.source" />
-      <fileset refid="fileset.axiom.demos.source" />
-      <fileset refid="fileset.axiom.buildtools" />
+				<fileset refid="fileset.axiom.demos.source" />
+				<fileset refid="fileset.axiom.buildtools" />
 			<fileset refid="fileset.axiom.libs" />
 		</zip>
 
@@ -349,8 +365,8 @@
 
 	<target name="dist.axiom.binary" >
 		<zip zipfile="${dist.dir + '/axiom-' + project.version + '-bin-win32.zip'}">
-			<fileset refid="fileset.axiom.binary" prefix="bin"/>
-      <fileset refid="fileset.axiom.demos.binary" prefix="bin"/>
+			<!-- <fileset refid="fileset.axiom.binary" prefix="bin"/> -->
+			<fileset refid="fileset.axiom.demos.binary" prefix="bin"/>
 		</zip>
 	</target>
 		
@@ -363,11 +379,11 @@
 	<target name="dist.axiom.full" >
 		<zip zipfile="${dist.dir + '/axiom-' + project.version + '-full.zip'}">
 			<fileset refid="fileset.axiom.source" />
-      <fileset refid="fileset.axiom.demos.source" />
-      <fileset refid="fileset.axiom.buildtools" />
+			<fileset refid="fileset.axiom.demos.source" />
+			<fileset refid="fileset.axiom.buildtools" />
 			<fileset refid="fileset.axiom.libs" />
 			<fileset refid="fileset.axiom.media" />
-			<fileset refid="fileset.axiom.binary" />
+			<fileset refid="fileset.axiom.demos.binary" />
 		</zip>
 	</target>
 

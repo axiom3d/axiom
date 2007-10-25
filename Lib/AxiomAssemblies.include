@@ -28,19 +28,19 @@
 	<!-- 
 		Debug and Release dirs can be explicitly defined here if you need this.
 		Normally they are dynamically defined based in the calling buildfile
-		They should probably be defined cleanly in once place to avoid mismatched definitions
+		They should probably be defined cleanly in one place to avoid mismatched definitions
 	-->
 	<!-- <property name="axiom3d.assemblies.debug.dir" value="${path:combine(axiom3d.assemblies.topdir, 'debug')}" /> -->
 	<!-- <property name="axiom3d.assemblies.release.dir" value="${path:combine(axiom3d.assemblies.topdir, 'release')}" /> -->
 
 	<!-- 
-	Aliases for individual assembly file names.
-	This is for convenience so build targets don't have to know the path details.
-	An alias can be anything.  Here we follow the convention of using the full file name as the alias name.
+		Aliases for individual assembly file names.
+		This is for convenience so build targets don't have to know the path details.
+		An alias can be anything.  Here we follow the convention of using the full file name as the alias name.
 	-->
 
 	<!-- Example for Axiom3D  --> 
-	<!-- <property name="Axiom.dll" value="${axiom3d.assemblies.debug.dir}/Axiom.dll" dynamic="false" /> -->
+	<!-- <property name="Axiom.dll" value="${axiom.assemblies.debug.dir}/Axiom.dll" dynamic="false" /> -->
 
 </project>
 
