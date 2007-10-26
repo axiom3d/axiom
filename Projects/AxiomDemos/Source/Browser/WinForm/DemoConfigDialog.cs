@@ -20,6 +20,8 @@ namespace Axiom.Demos
 		protected PictureBox picPreview;
 		protected SWF.Timer tmrRotator;
 
+		private Stream image = null;
+
 		private struct DemoItem
 		{
 			public DemoItem( string name, Type demo )
@@ -39,6 +41,12 @@ namespace Axiom.Demos
 		public DemoConfigDialog() : base()
 		{
 			InitializeComponent();
+		}
+
+		protected override void Dispose( bool disposing )
+		{
+			if ( image != null )
+				image.Close();
 		}
 
         private void InitializeComponent()
@@ -110,10 +118,12 @@ namespace Axiom.Demos
 
 		private void lstDemos_SelectedIndexChanged( object sender, EventArgs e )
 		{
-			Stream image = null;
-
 			//Stop the rotator
 			this.tmrRotator.Stop();
+
+			if ( image != null )
+				image.Close();
+
 			try
 			{
 			    image = ResourceGroupManager.Instance.OpenResource( ( (DemoItem)lstDemos.SelectedItem ).Name + ".jpg", ResourceGroupManager.DefaultResourceGroupName );
@@ -125,16 +135,7 @@ namespace Axiom.Demos
 
 			if ( image != null )
 			{
-				// This is needed currently for Mono, closing the stream causes a GDI fault, 
-				// not closing the stream leaves it locked for the next access
-				byte[] stuff = new byte[image.Length];
-				while( image.Position < image.Length )
-					stuff[image.Position] = (byte)image.ReadByte();
-				MemoryStream mem = new MemoryStream();
-				mem.Write( stuff, 0, stuff.Length );
-				this.picPreview.Image = System.Drawing.Image.FromStream( mem, true );
-				// this.picPreview.Image = System.Drawing.Image.FromStream( image, true );
-				image.Close();
+				this.picPreview.Image = System.Drawing.Image.FromStream( image, true );
 			}
 
 		}
