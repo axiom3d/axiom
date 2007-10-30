@@ -257,33 +257,134 @@ namespace Axiom.Core
 		#region Methods
 
 		/// <summary>
-		///    Method for creating a new blank texture.
+		/// Create a manual texture with specified width, height and depth (not loaded from a file).
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="texType"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="numMipMaps"></param>
-		/// <param name="format"></param>
-		/// <param name="usage"></param>
+		/// <param name="name">The name to give the resulting texture</param>
+		/// <param name="group">The name of the resource group to assign the texture to</param>
+		/// <param name="type">The type of texture to load/create, defaults to normal 2D textures</param>
+		/// <param name="width">The dimensions of the texture</param>
+		/// <param name="height">The dimensions of the texture</param>
+		/// <param name="depth">The dimensions of the texture</param>
+		/// <param name="numMipMaps">
+		/// The number of pre-filtered mipmaps to generate. If left to MIP_DEFAULT then
+		/// the TextureManager's default number of mipmaps will be used (see setDefaultNumMipmaps()).
+		/// If set to MIP_UNLIMITED mipmaps will be generated until the lowest possible
+		/// level, 1x1x1.
+		/// </param>
+		/// <param name="format">
+		/// The internal format you wish to request; the manager reserves
+		/// the right to create a different format if the one you select is
+		/// not available in this context.
+		/// </param>
+		/// <param name="usage">
+		/// The kind of usage this texture is intended for. It 
+		/// is a combination of TU_STATIC, TU_DYNAMIC, TU_WRITE_ONLY, 
+		/// TU_AUTOMIPMAP and TU_RENDERTARGET (see TextureUsage enum). You are
+		/// strongly advised to use HBU_STATIC_WRITE_ONLY wherever possible, if you need to 
+		/// update regularly, consider HBU_DYNAMIC_WRITE_ONLY.
+		/// </param>
+		/// <param name="loader">
+		/// If you intend the contents of the manual texture to be 
+		/// regularly updated, to the extent that you don't need to recover 
+		/// the contents if the texture content is lost somehow, you can leave
+		/// this parameter as null. However, if you intend to populate the
+		/// texture only once, then you should implement ManualResourceLoader
+		/// and pass a pointer to it in this parameter; this means that if the
+		/// manual texture ever needs to be reloaded, the ManualResourceLoader
+		/// will be called to do it.
+		/// </param>
 		/// <returns></returns>
-		public Texture CreateManual( string name, string group, TextureType texType, int width, int height, int depth, int numMipmaps, PixelFormat format, TextureUsage usage )
+		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int depth, int numMipMaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader )
 		{
-			Texture ret = (Texture)Create( name, group );
-			ret.TextureType = texType;
+			Texture ret = (Texture)Create( name, group, true, loader, null );
+			ret.TextureType = type;
 			ret.Width = width;
 			ret.Height = height;
 			ret.Depth = depth;
-			ret.MipmapCount = ( numMipmaps == -1 ) ? _defaultMipmapCount : numMipmaps;
+			ret.MipmapCount = ( numMipMaps == -1 ) ? _defaultMipmapCount : numMipMaps;
 			ret.Format = format;
 			ret.Usage = usage;
 			ret.CreateInternalResources();
 			return ret;
 		}
 
+		/// <summary>
+		/// Create a manual texture with a depth of 1 (not loaded from a file).
+		/// </summary>
+		/// <param name="name">The name to give the resulting texture</param>
+		/// <param name="group">The name of the resource group to assign the texture to</param>
+		/// <param name="type">The type of texture to load/create, defaults to normal 2D textures</param>
+		/// <param name="width">The dimensions of the texture</param>
+		/// <param name="height">The dimensions of the texture</param>
+		/// <param name="numMipMaps">
+		/// The number of pre-filtered mipmaps to generate. If left to MIP_DEFAULT then
+		/// the TextureManager's default number of mipmaps will be used (see setDefaultNumMipmaps()).
+		/// If set to MIP_UNLIMITED mipmaps will be generated until the lowest possible
+		/// level, 1x1x1.
+		/// </param>
+		/// <param name="format">
+		/// The internal format you wish to request; the manager reserves
+		/// the right to create a different format if the one you select is
+		/// not available in this context.
+		/// </param>
+		/// <param name="usage">
+		/// The kind of usage this texture is intended for. It 
+		/// is a combination of TU_STATIC, TU_DYNAMIC, TU_WRITE_ONLY, 
+		/// TU_AUTOMIPMAP and TU_RENDERTARGET (see TextureUsage enum). You are
+		/// strongly advised to use HBU_STATIC_WRITE_ONLY wherever possible, if you need to 
+		/// update regularly, consider HBU_DYNAMIC_WRITE_ONLY.
+		/// </param>
+		/// <param name="loader">
+		/// If you intend the contents of the manual texture to be 
+		/// regularly updated, to the extent that you don't need to recover 
+		/// the contents if the texture content is lost somehow, you can leave
+		/// this parameter as null. However, if you intend to populate the
+		/// texture only once, then you should implement ManualResourceLoader
+		/// and pass a pointer to it in this parameter; this means that if the
+		/// manual texture ever needs to be reloaded, the ManualResourceLoader
+		/// will be called to do it.
+		/// </param>
+		/// <returns></returns>
+		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int numMipmaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader )
+		{
+			return CreateManual( name, group, type, width, height, 1, numMipmaps, format, usage, loader );
+		}
+
+		/// <summary>
+		/// Create a manual texture with a depth of 1 (not loaded from a file).
+		/// </summary>
+		/// <param name="name">The name to give the resulting texture</param>
+		/// <param name="group">The name of the resource group to assign the texture to</param>
+		/// <param name="type">The type of texture to load/create, defaults to normal 2D textures</param>
+		/// <param name="width">The dimensions of the texture</param>
+		/// <param name="height">The dimensions of the texture</param>
+		/// <param name="numMipMaps">
+		/// The number of pre-filtered mipmaps to generate. If left to MIP_DEFAULT then
+		/// the TextureManager's default number of mipmaps will be used (see setDefaultNumMipmaps()).
+		/// If set to MIP_UNLIMITED mipmaps will be generated until the lowest possible
+		/// level, 1x1x1.
+		/// </param>
+		/// <param name="format">
+		/// The internal format you wish to request; the manager reserves
+		/// the right to create a different format if the one you select is
+		/// not available in this context.
+		/// </param>
+		/// <param name="usage">
+		/// The kind of usage this texture is intended for. It 
+		/// is a combination of TU_STATIC, TU_DYNAMIC, TU_WRITE_ONLY, 
+		/// TU_AUTOMIPMAP and TU_RENDERTARGET (see TextureUsage enum). You are
+		/// strongly advised to use HBU_STATIC_WRITE_ONLY wherever possible, if you need to 
+		/// update regularly, consider HBU_DYNAMIC_WRITE_ONLY.
+		/// </param>
+		/// <returns></returns>
 		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int numMipmaps, PixelFormat format, TextureUsage usage )
 		{
-			return CreateManual( name, group, type, width, height, 1, numMipmaps, format, usage );
+			return CreateManual( name, group, type, width, height, 1, numMipmaps, format, usage, null );
+		}
+
+		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int numMipmaps, PixelFormat format)
+		{
+			return CreateManual( name, group, type, width, height, 1, numMipmaps, format, TextureUsage.Default, null );
 		}
 
 		/// <summary>

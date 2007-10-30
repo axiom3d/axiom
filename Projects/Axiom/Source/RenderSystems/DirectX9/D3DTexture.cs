@@ -947,6 +947,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 		protected override void createInternalResources()
 		{
+			// If SrcWidth and SrcHeight are zero, the requested extents have probably been set
+			// through Width and Height. Take those values.
 			if ( SrcWidth == 0 || SrcHeight == 0 )
 			{
 				SrcWidth = Width;
@@ -954,8 +956,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			// Determine D3D pool to use
-			// Use managed unless we're a render target or user has asked for 
-			// a dynamic texture
+			// Use managed unless we're a render target or user has asked for a dynamic texture
 			if ( ( Usage & TextureUsage.RenderTarget ) != 0 ||
 				( Usage & TextureUsage.Dynamic ) != 0 )
 			{
