@@ -128,25 +128,18 @@ namespace Axiom.Demos
 			blaNode = scene.RootSceneNode.CreateChildSceneNode( new Vector3( -110, 200, 50 ) );
 
 			// Cloaked fish
-			//ent2 = scene.CreateEntity( "knot3", "fish.mesh" );
-			//ent2.MaterialName = "Examples/DynaTest3";
-			//swim = ent2.GetAnimationState( "swim" );
-			//swim.IsEnabled = true;
-			//blaNode.AttachObject( ent2 );
-			//blaNode.Scale( new Vector3( 50.0f, 50.0f, 50.0f ) );
+			ent2 = scene.CreateEntity( "knot3", "fish.mesh" );
+			ent2.MaterialName = "Examples/DynaTest3";
+			swim = ent2.GetAnimationState( "swim" );
+			swim.IsEnabled = true;
+			blaNode.AttachObject( ent2 );
+			blaNode.Scale( new Vector3( 50.0f, 50.0f, 50.0f ) );
 
-
-			//TextureManager::getSingleton().getByName("RustySteel.jpg");
-
-
-			//std::stringstream d;
-			//d << "HardwarePixelBuffer " << buffer->getWidth() << " " << buffer->getHeight() << " " << buffer->getDepth();
 			LogManager.Instance.Write( "HardwarePixelBuffer {0} {1} {2} ", buffer.Width, buffer.Height, buffer.Depth );
 
 			buffer.Lock( BufferLocking.Normal );
 			PixelBox pb = buffer.CurrentLock;
-			//d.str("");
-			//d << "PixelBox " << pb.getWidth() << " " << pb.getHeight() << " " << pb.getDepth() << " " << pb.rowPitch << " " << pb.slicePitch << " " << pb.data << " " << PixelUtil::getFormatName(pb.format);
+
 			LogManager.Instance.Write( "PixelBox {0} {1} {2} {3} {4} {5} {6}", pb.Width, pb.Height, pb.Depth, pb.RowPitch, pb.SlicePitch, pb.Data, pb.Format );
 			buffer.Unlock();
 

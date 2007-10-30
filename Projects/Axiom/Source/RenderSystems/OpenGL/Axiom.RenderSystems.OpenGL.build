@@ -14,7 +14,7 @@
   <target name="build" >
     <call target="build.win32" if="${platform::is-win32()}" />
     <call target="build.sdl" />
-    <call target="build.glx" if="!$(platform::is-win32()}" />
+    <call target="build.glx" unless="${platform::is-win32()}" />
   </target>
   
 	<target name="build.sdl">
@@ -105,7 +105,7 @@
     </csc>
   </target>
 
-  <target name="build.win32">
+  <target name="build.glx">
 
     <property name="unsafe" value="true" />
     <property name="warnaserror" value="false"/>
