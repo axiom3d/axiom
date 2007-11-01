@@ -82,7 +82,7 @@ namespace Axiom.Core
 				}
 				catch ( TypeInitializationException )
 				{
-					throw new Exception( "Singleton<T> sublasses must implement a private parameterless constructor." );
+					throw new Exception( string.Format( "Type {0} must implement a private parameterless constructor.", typeof( T ) ) );
 				}
             }
         }
