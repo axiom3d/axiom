@@ -138,26 +138,6 @@ namespace Axiom.Core
 		
 		#endregion SubMesh Properties
 			
-		/// <summary>
-		///		Flag that indicates whether or not this mesh will be loaded from a file, or constructed manually.
-		///	</summary>
-		protected bool isManuallyDefined = false;
-		/// <summary>
-		///		Defines whether this mesh is to be loaded from a resource, or created manually at runtime.
-		/// </summary>
-		public bool IsManuallyDefined
-		{
-			get
-			{
-				return isManuallyDefined;
-			}
-			set
-			{
-				isManuallyDefined = value;
-			}
-		}
-
-
 		#region BoundingBox Property
 
 		/// <summary>
@@ -2789,7 +2769,7 @@ namespace Axiom.Core
 			// Preload();
 
 			// load this bad boy if it is not to be manually defined
-			if ( !isManuallyDefined )
+			if ( !IsManuallyLoaded )
 			{
 				MeshSerializer serializer = new MeshSerializer();
 
