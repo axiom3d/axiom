@@ -339,7 +339,7 @@ namespace Axiom.SceneManagers.Octree
 				}
 			}
 
-			return vertex[ 0 ];
+			return _vertex[ 0 ];
 		}
 
 		public void SetNeighbor( Neighbor n, TerrainRenderable t )
