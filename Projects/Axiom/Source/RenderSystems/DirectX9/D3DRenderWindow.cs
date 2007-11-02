@@ -390,7 +390,7 @@ namespace Axiom.RenderSystems.DirectX9
 				 * If we're in windowed mode, we'll want our own.
 				 * get references to the render target and depth stencil surface
 				 */
-				if ( !IsFullScreen )
+				if ( !isFullScreen )
 				{
 					newWin.StartPosition = SWF.FormStartPosition.CenterScreen;
 					if ( parentHWnd != null )
@@ -430,8 +430,9 @@ namespace Axiom.RenderSystems.DirectX9
 				newWin.Left = left;
 
 				_window = newWin;
-				WindowEventMonitor.Instance.RegisterWindow( this );
 				_window.Show();
+
+				WindowEventMonitor.Instance.RegisterWindow( this );
 			}
 			else
 			{
