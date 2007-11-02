@@ -55,8 +55,13 @@ namespace Axiom.Demos
 					ColorEx c;
 					c = HSVtoRGB( ( 1.0f - col / 1024.0f ) * 90.0f + 225.0f, 0.9f, 0.75f + 0.25f * ( 1.0f - col / 1024.0f ) );
 					c.a = 1.0f - col / 1024.0f;
-					IntPtr dest = Marshal.UnsafeAddrOfPinnedArrayElement( clut, col );
-					PixelConverter.PackColor( c, PixelFormat.A8R8G8B8, dest );
+					unsafe
+					{
+						fixed ( uint* dest = clut )
+						{
+							PixelConverter.PackColor( c, PixelFormat.A8R8G8B8, (IntPtr)( &dest[ col ] ) );
+						}
+					}
 				}
 				// Setup
 				LogManager.Instance.Write( "Creating chemical containment" );
@@ -255,19 +260,22 @@ namespace Axiom.Demos
 			buffer.Lock( BufferLocking.Discard );
 			PixelBox pb = buffer.CurrentLock;
 			int idx = reactorExtent + 1;
-			for ( int y = 0; y < ( reactorExtent - 2 ); y++ )
+			unsafe
 			{
-				unsafe
+				fixed ( int* chem_0 = chemical[ 0 ] )
 				{
-
-					uint* data = ((uint*)pb.Data.ToPointer()) + y * pb.RowPitch;
-					int* chem = (int*)Marshal.UnsafeAddrOfPinnedArrayElement( chemical[ 0 ], idx ).ToPointer();
-					for ( int x = 0; x < ( reactorExtent - 2 ); x++ )
+					for ( int y = 0; y < ( reactorExtent - 2 ); y++ )
 					{
-						data[ x ] = clut[ ( chem[ x ] >> 6 ) & 1023 ];
+						uint* data = ( (uint*)pb.Data ) + y * pb.RowPitch;
+						int* chem = &chem_0[ idx ];
+						for ( int x = 0; x < ( reactorExtent - 2 ); x++ )
+						{
+							data[ x ] = clut[ ( chem[ x ] >> 6 ) & 1023 ];
+						}
+
+						idx += reactorExtent;
 					}
 				}
-				idx += reactorExtent;
 			}
 			buffer.Unlock();
 		}
