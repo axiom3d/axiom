@@ -301,7 +301,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
 		{
 			init = true;
 
-			Vector3 ParentPos = ParentSceneNode.WorldPosition;
+			Vector3 ParentPos = ParentSceneNode.DerivedPosition;
 
 			info.PageX = tableX;
 			info.PageZ = tableZ;
@@ -449,7 +449,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
 		{
 			get
 			{
-				return parentNode.WorldPosition;
+				return parentNode.DerivedPosition;
 			}
 		}
 

@@ -640,7 +640,7 @@ namespace Axiom.SceneManagers.PagingLandscape
 		private ColorEx getAvgColor(string tex)
 		{
 		Image img = Image.FromFile(tex);
-		int bpp = Image.GetNumElemBytes( img.Format );
+		int bpp = PixelUtil.GetNumElemBytes( img.Format );
 		byte[] data = img.Data;
 		int cr = 0, cg = 0, cb = 0, s = 0;
 
