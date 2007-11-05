@@ -113,7 +113,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Texture
 		/// <returns></returns>
 		public virtual Material CreateMaterial(string name) 
 		{
-			Material material = (Material) MaterialManager.Instance.Create(name);
+			Material material = (Material) MaterialManager.Instance.Create(name, ResourceGroupManager.DefaultResourceGroupName);
 			material.CreateTechnique().CreatePass();
 			return material;
 		}

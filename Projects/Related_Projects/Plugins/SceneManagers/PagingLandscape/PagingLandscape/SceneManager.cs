@@ -763,7 +763,7 @@ namespace Axiom.SceneManagers.PagingLandscape
 		/// <summary>
 		/// 
 		/// </summary>
-		internal EntityList Entities
+		new internal EntityList Entities
 		{
 			get 
 			{

@@ -193,8 +193,8 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 
 					throw new AxiomException( err );
 				}
-			    
-				this.bpp = (long)Image.GetNumElemBytes( image.Format );
+
+				this.bpp = (long)PixelUtil.GetNumElemBytes( image.Format );
 				if ( this.bpp != 4 )
 				{
 					throw new AxiomException("Error: Image is not a RGBA image.(4 bytes, 32 bits)");
@@ -264,7 +264,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 					throw new AxiomException( err );
 				}
 
-				this.bpp = (long)Image.GetNumElemBytes( image.Format );
+				this.bpp = (long)PixelUtil.GetNumElemBytes( image.Format );
 				if ( this.bpp != 1 )
 				{
 					throw new AxiomException("Error: Image is not a greyscale image.(1 byte, 8 bits)");
@@ -310,7 +310,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 					throw new AxiomException( err );
 				}
 
-				this.bpp = (long)Image.GetNumElemBytes( image.Format );
+				this.bpp = (long)PixelUtil.GetNumElemBytes( image.Format );
 				if ( this.bpp != 1 )
 				{
 					throw new AxiomException("Error: Image is not a greyscale image.(1 byte, 8 bits)");
