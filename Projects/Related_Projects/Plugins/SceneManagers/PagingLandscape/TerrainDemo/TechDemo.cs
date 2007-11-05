@@ -43,6 +43,7 @@ namespace TerrainDemo
         protected float camSpeed = 2.5f;
         protected int aniso = 1;
         protected TextureFiltering filtering = TextureFiltering.Bilinear;
+		protected string debugText = "";
 
         #endregion Protected Fields
 
@@ -141,7 +142,7 @@ namespace TerrainDemo
                 // interrogate the available resource paths
                 foreach (EngineConfig.FilePathRow row in config.FilePath)
                 {
-                    ResourceManager.AddCommonArchive(row.src, row.type);
+                    ResourceGroupManager.Instance.AddResourceLocation(row.src, row.type);
                 }
             }
         }
@@ -151,7 +152,7 @@ namespace TerrainDemo
         protected virtual bool Setup()
         {
             // instantiate the Root singleton
-            engine = new Root(CONFIG_FILE, "AxiomEngine.log");
+            engine = new Root("AxiomEngine.log");
             //engine = Root.Instance;
             Root.Instance.RenderSystem = Root.Instance.RenderSystems[0];
 
@@ -172,6 +173,8 @@ namespace TerrainDemo
             //}
             window = Root.Instance.Initialize( true, "Axiom TerrainDemo Window" );
 
+			ResourceGroupManager.Instance.InitializeAllResourceGroups();
+
             ShowDebugOverlay( showDebugOverlay );
 
             ChooseSceneManager();
@@ -179,7 +182,7 @@ namespace TerrainDemo
             CreateViewports();
 
             // set default mipmap level
-            TextureManager.Instance.DefaultNumMipMaps = 5;
+            TextureManager.Instance.DefaultMipmapCount = 5;
 
             // call the overridden CreateScene method
             CreateScene();
@@ -340,20 +343,20 @@ namespace TerrainDemo
             // toggle rendering mode
             if ( input.IsKeyPressed( KeyCodes.R ) && toggleDelay < 0 )
             {
-                if ( camera.SceneDetail == SceneDetailLevel.Points )
+				if ( camera.PolygonMode == PolygonMode.Points )
                 {
-                    camera.SceneDetail = SceneDetailLevel.Solid;
+					camera.PolygonMode = PolygonMode.Solid;
                 }
-                else if ( camera.SceneDetail == SceneDetailLevel.Solid )
+				else if ( camera.PolygonMode == PolygonMode.Solid )
                 {
-                    camera.SceneDetail = SceneDetailLevel.Wireframe;
+					camera.PolygonMode = PolygonMode.Wireframe;
                 }
                 else
                 {
-                    camera.SceneDetail = SceneDetailLevel.Points;
+					camera.PolygonMode = PolygonMode.Points;
                 }
 
-                Console.WriteLine( "Rendering mode changed to '{0}'.", camera.SceneDetail );
+				Console.WriteLine( "Rendering mode changed to '{0}'.", camera.PolygonMode );
 
                 toggleDelay = 1;
             }
@@ -394,7 +397,7 @@ namespace TerrainDemo
                 TakeScreenshot( fileName );
 
                 // show briefly on the screen
-                window.DebugText = string.Format( "Wrote screenshot '{0}'.", fileName );
+                debugText = string.Format( "Wrote screenshot '{0}'.", fileName );
 
                 // show for 2 seconds
                 debugTextDelay = 2.0f;
@@ -408,10 +411,10 @@ namespace TerrainDemo
             if ( input.IsKeyPressed( KeyCodes.F ) )
             {
                 // hide all overlays, includes ones besides the debug overlay
-                viewport.OverlaysEnabled = !viewport.OverlaysEnabled;
+				viewport.ShowOverlays = !viewport.ShowOverlays;
             }
 
-            if ( !input.IsMousePressed( MouseButtons.Button0 ) )
+            if ( !input.IsMousePressed( MouseButtons.Left ) )
             {
                 float cameraYaw = -input.RelativeMouseX * .13f;
                 float cameraPitch = -input.RelativeMouseY * .13f;
@@ -450,7 +453,7 @@ namespace TerrainDemo
             if ( debugTextDelay < 0.0f )
             {
                 debugTextDelay = 0.0f;
-                window.DebugText = "";
+                debugText = "";
             }
             else if ( debugTextDelay > 0.0f )
             {
@@ -458,7 +461,7 @@ namespace TerrainDemo
             }
 
             OverlayElement element = OverlayElementManager.Instance.GetElement( "Core/DebugText" );
-            element.Text = window.DebugText;
+            element.Text = debugText;
         }
 
         protected void UpdateStats()

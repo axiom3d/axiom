@@ -61,6 +61,7 @@ namespace TerrainDemo {
 
             MeshManager.Instance.CreatePlane(
                 "WaterPlane",
+				ResourceGroupManager.DefaultResourceGroupName,
                 waterPlane,
                 2800, 2800,
                 20, 20,
@@ -180,20 +181,20 @@ namespace TerrainDemo {
 			// toggle rendering mode
 			if(input.IsKeyPressed(KeyCodes.R) && toggleDelay < 0) 
 			{
-				if(camera.SceneDetail == SceneDetailLevel.Points) 
+				if ( camera.PolygonMode == PolygonMode.Points ) 
 				{
-					camera.SceneDetail = SceneDetailLevel.Solid;
+					camera.PolygonMode = PolygonMode.Solid;
 				}
-				else if(camera.SceneDetail == SceneDetailLevel.Solid) 
+				else if ( camera.PolygonMode == PolygonMode.Solid ) 
 				{
-					camera.SceneDetail = SceneDetailLevel.Wireframe;
+					camera.PolygonMode = PolygonMode.Wireframe;
 				}
 				else 
 				{
-					camera.SceneDetail = SceneDetailLevel.Points;
+					camera.PolygonMode = PolygonMode.Points;
 				}
 
-				Console.WriteLine("Rendering mode changed to '{0}'.", camera.SceneDetail);
+				Console.WriteLine( "Rendering mode changed to '{0}'.", camera.PolygonMode );
 
 				toggleDelay = 1;
 			}
@@ -232,7 +233,7 @@ namespace TerrainDemo {
 				string fileName = string.Format("screenshot{0}.jpg", temp.Length + 1);
                 
 				// show briefly on the screen
-				window.DebugText = string.Format("Wrote screenshot '{0}'.", fileName);
+				debugText = string.Format("Wrote screenshot '{0}'.", fileName);
 
 				TakeScreenshot(fileName);
 
@@ -248,10 +249,10 @@ namespace TerrainDemo {
 			if(input.IsKeyPressed(KeyCodes.F)) 
 			{
 				// hide all overlays, includes ones besides the debug overlay
-				viewport.OverlaysEnabled = !viewport.OverlaysEnabled;
+				viewport.ShowOverlays = !viewport.ShowOverlays;
 			}
 
-			if(!input.IsMousePressed(MouseButtons.Button0)) 
+			if(!input.IsMousePressed(MouseButtons.Left)) 
 			{
 				float cameraYaw = -input.RelativeMouseX * .13f;
 				float cameraPitch = -input.RelativeMouseY * .13f;
@@ -298,7 +299,7 @@ namespace TerrainDemo {
 			if(debugTextDelay < 0.0f) 
 			{
 				debugTextDelay = 0.0f;
-				window.DebugText = "";
+				debugText = "";
 			}
 			else if(debugTextDelay > 0.0f) 
 			{
