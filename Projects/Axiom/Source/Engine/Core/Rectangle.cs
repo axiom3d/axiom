@@ -190,7 +190,7 @@ namespace Axiom.Core
 			}
 			set
 			{
-				_left = value - _right;
+				_right = value - _left;
 			}
 		}
 		public float Height
