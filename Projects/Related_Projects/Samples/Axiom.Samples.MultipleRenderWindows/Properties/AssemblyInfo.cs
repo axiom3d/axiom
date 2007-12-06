@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -8,9 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle( "Axiom.Samples.MulitpleRenderWindows" )]
 [assembly: AssemblyDescription( "" )]
 [assembly: AssemblyConfiguration( "" )]
-[assembly: AssemblyCompany( "Magenic Technologies" )]
 [assembly: AssemblyProduct( "Axiom.Samples.MulitpleRenderWindows" )]
-[assembly: AssemblyCopyright( "Copyright © Magenic Technologies 2006" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
