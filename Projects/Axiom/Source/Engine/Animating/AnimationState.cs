@@ -98,7 +98,9 @@ namespace Axiom.Animating
 			this.parent = parent;
 			this.time = time;
 			this.weight = weight;
-			this.isEnabled = isEnabled;
+
+			// Set using Property
+			this.IsEnabled = isEnabled;
 
 			// set using the Length property
 			this.Length = length;
@@ -115,17 +117,10 @@ namespace Axiom.Animating
 		/// <param name="time"></param>
 		/// <param name="length"></param>
 		public AnimationState( string animationName, AnimationStateSet animationStates, float time, float length )
+			: this( animationName, animationStates, time, length, false )
 		{
-			this.animationName = animationName;
-			this.parent = animationStates;
-			this.time = time;
-			this.Length = length;
-			this.weight = 1.0f;
-			this.isEnabled = false;
-			this.loop = true;
-
-			parent.NotifyDirty();
 		}
+	
 		/// <summary>
 		///     The moral equivalent of a copy constructor
 		/// </summary>
