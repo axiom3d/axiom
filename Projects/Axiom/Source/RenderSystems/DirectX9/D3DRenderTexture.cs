@@ -92,14 +92,6 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		public override bool RequiresTextureFlipping
-		{
-			get
-			{
-				return false;
-			}
-		}
-
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !isDisposed )

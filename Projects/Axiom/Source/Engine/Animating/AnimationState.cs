@@ -117,7 +117,7 @@ namespace Axiom.Animating
 		/// <param name="time"></param>
 		/// <param name="length"></param>
 		public AnimationState( string animationName, AnimationStateSet animationStates, float time, float length )
-			: this( animationName, animationStates, time, length, false )
+			: this( animationName, animationStates, time, length, 1.0f, false )
 		{
 		}
 	
