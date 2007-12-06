@@ -664,26 +664,31 @@ namespace Axiom.Core
 		///		Create an AnimationState object for managing application of animations.
 		/// </summary>
 		/// <remarks>
+		///		<para>
 		///		You can create Animation objects for animating SceneNode obejcts using the
 		///		CreateAnimation method. However, in order to actually apply those animations
 		///		you have to call methods on Node and Animation in a particular order (namely
 		///		Node.ResetToInitialState and Animation.Apply). To make this easier and to
 		///		help track the current time position of animations, the AnimationState object
 		///		is provided. 
-		///		</p>
+		///		</para>
+		///		<para>
 		///		So if you don't want to control animation application manually, call this method,
 		///		update the returned object as you like every frame and let SceneManager apply 
 		///		the animation state for you.
-		///		<p/>
+		///		</para>
+		///		<para>
 		///		Remember, AnimationState objects are disabled by default at creation time. 
 		///		Turn them on when you want them using their Enabled property.
-		///		<p/>
+		///		</para>
+		///		<para>
 		///		Note that any SceneNode affected by this automatic animation will have it's state
 		///		reset to it's initial position before application of the animation. Unless specifically
 		///		modified using Node.SetInitialState the Node assumes it's initial state is at the
 		///		origin. If you want the base state of the SceneNode to be elsewhere, make your changes
 		///		to the node using the standard transform methods, then call SetInitialState to 
 		///		'bake' this reference position into the node.
+		///		</para>
 		/// </remarks>
 		/// <param name="animationName"></param>
 		/// <returns></returns>
