@@ -277,7 +277,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Sets visibility for this node. If invisible, child nodes will be invisible, too.
         /// </summary>
-        public bool Visible
+        public bool IsVisible
         {
             get
             {
@@ -575,7 +575,7 @@ namespace Axiom.Core
                 for ( int i = 0; i < childNodes.Count; i++ )
                 {
                     SceneNode childNode = (SceneNode)childNodes[ i ];
-                    if ( childNode.Visible )
+                    if ( childNode.IsVisible )
                         childNode.FindVisibleObjects( camera, queue, includeChildren, displayNodes, onlyShadowCasters );
                 }
             }
