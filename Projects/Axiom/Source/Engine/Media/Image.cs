@@ -461,7 +461,7 @@ namespace Axiom.Media
 			int size = width * height * depth * PixelUtil.GetNumElemBytes( format );
 			byte[] buffer = new byte[ size ];
 			stream.Read( buffer, 0, size );
-			return FromDynamicImage( buffer, width, height, depth, format );
+			return (new Image()).FromDynamicImage( buffer, width, height, depth, format );
 		}
 		/// <summary>
 		///    Loads raw image data from a byte array.
@@ -471,7 +471,7 @@ namespace Axiom.Media
 		/// <param name="height">Height of this image data (in pixels).</param>
 		/// <param name="format">Pixel format used in this texture.</param>
 		/// <returns>A new instance of Image containing the raw data supplied.</returns>
-		public static Image FromDynamicImage( byte[] buffer, int width, int height, PixelFormat format )
+		public Image FromDynamicImage( byte[] buffer, int width, int height, PixelFormat format )
 		{
 			return FromDynamicImage( buffer, width, height, 1, format );
 		}
@@ -484,18 +484,36 @@ namespace Axiom.Media
 		/// <param name="height">Height of this image data (in pixels).</param>
 		/// <param name="format">Pixel format used in this texture.</param>
 		/// <returns>A new instance of Image containing the raw data supplied.</returns>
-		public static Image FromDynamicImage( byte[] buffer, int width, int height, int depth, PixelFormat format )
+		public Image FromDynamicImage( byte[] buffer, int width, int height, int depth, PixelFormat format )
 		{
-			Image image = new Image();
+			return FromDynamicImage( buffer, width, height, depth, format, true, 1, 0 );
+		}
 
-			image.width = width;
-			image.height = height;
-			image.depth = depth;
-			image.format = format;
-			image.size = width * height * depth * PixelUtil.GetNumElemBytes( format );
-			image.SetBuffer( buffer );
+		public Image FromDynamicImage( byte[] buffer, int width, int height, int depth, PixelFormat format, bool autoDelete, int numFaces, int numMipMaps )
+		{
 
-			return image;
+			this.width = width;
+			this.height = height;
+			this.depth = depth;
+			this.format = format;
+
+			this.numMipMaps = numMipMaps;
+
+			this.flags = 0;
+			if ( PixelUtil.IsCompressed( format ) )
+				this.flags |= ImageFlags.Compressed;
+			if ( depth != 1 )
+				this.flags |= ImageFlags.Volume;
+			if ( numFaces == 6 )
+				this.flags |= ImageFlags.CubeMap;
+			if(numFaces != 6 && numFaces != 1)
+				throw new Exception("Number of faces currently must be 6 or 1.");
+
+			this.size = calculateSize( numMipMaps, numFaces, width, height, depth, format );
+
+			SetBuffer( buffer );
+
+			return this;
 		}
 
 		/// <summary>
@@ -538,6 +556,45 @@ namespace Axiom.Media
 			image.SetBuffer( buffer );
 
 			return image;
+		}
+
+		/// <summary>
+		/// Saves the Image as a file
+		/// </summary>
+		/// <remarks>
+		/// The codec used to save the file is determined by the extension of the filename passed in
+		/// Invalid or unrecognized extensions will throw an exception.
+		/// </remarks>
+		/// <param name="filename">Filename to save as</param>
+		public void Save( String filename )
+		{
+			if ( this.buffer == null )
+			{
+				throw new Exception( "No image data loaded" );
+			}
+
+			String strExt = "";
+			int pos = filename.LastIndexOf( "." );
+			if ( pos == -1 )
+				throw new Exception( "Unable to save image file '" + filename + "' - invalid extension." );
+
+			while ( pos != filename.Length - 1 )
+				strExt += filename[ ++pos ];
+
+			ICodec pCodec = CodecManager.Instance.GetCodec( strExt );
+			if ( pCodec == null )
+				throw new Exception( "Unable to save image file '" + filename + "' - invalid extension." );
+
+			ImageCodec.ImageData imgData = new ImageCodec.ImageData();
+			imgData.format = Format;
+			imgData.height = Height;
+			imgData.width = Width;
+			imgData.depth = Depth;
+
+			// Wrap memory, be sure not to delete when stream destroyed
+			MemoryStream wrapper = new MemoryStream( buffer );
+
+			pCodec.EncodeToFile( wrapper, filename, imgData );
 		}
 
 		/// <summary>
@@ -762,6 +819,23 @@ namespace Axiom.Media
 					Scale( temp.GetPixelBox( 0, 0 ), GetPixelBox( 0, 0 ), filter );
 				}
 		*/
+
+		protected int calculateSize( int mipmaps, int faces, int width, int height, int depth, PixelFormat format )
+		{
+			int size = 0;
+			for ( int mip = 0; mip <= mipmaps; ++mip )
+			{
+				size += PixelUtil.GetMemorySize( width, height, depth, format ) * faces;
+				if ( width != 1 )
+					width /= 2;
+				if ( height != 1 )
+					height /= 2;
+				if ( depth != 1 )
+					depth /= 2;
+			}
+			return size;
+
+		}
 		#endregion Methods
 
 		#region IDisposable Implementation

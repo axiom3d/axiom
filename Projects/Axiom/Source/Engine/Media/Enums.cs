@@ -72,6 +72,7 @@ namespace Axiom.Media
 		///    8-bit pixel format, all bits alpha.
 		/// </summary>
 		A8 = 3,
+		BYTE_A = A8,
 
 		/// <summary>
 		///    8-bit pixel format, 4 bits alpha, 4 bits luminance.

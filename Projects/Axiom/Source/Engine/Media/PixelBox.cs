@@ -466,7 +466,7 @@ namespace Axiom.Media
 		///    Return whether this buffer is laid out consecutive in memory (ie the pitches
 		///    are equal to the dimensions)
 		///</summary>
-		public bool Consecutive
+		public bool IsConsecutive
 		{
 			get
 			{
