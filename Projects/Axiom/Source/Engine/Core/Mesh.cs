@@ -1358,7 +1358,7 @@ namespace Axiom.Core
 					dstOffset += vertSize;
 
 					// Set the new part to 0 since we'll accumulate in this
-					Memory.Set( destPtr, dstOffset, elemSize );
+					Memory.Zero( destPtr, dstOffset, elemSize );
 					dstOffset += elemSize;
 				}
 
