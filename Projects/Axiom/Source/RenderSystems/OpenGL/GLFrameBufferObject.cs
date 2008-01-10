@@ -137,7 +137,7 @@ namespace Axiom.RenderSystems.OpenGL
 			//assert( attachment < OGRE_MAX_MULTIPLE_RENDER_TARGETS );
 			_color[ attachment ] = target;
 			// Re-initialise
-			if ( _color[ 0 ].Buffer == null )
+			if ( _color[ 0 ].Buffer != null )
 				_initialize();
 		}
 
@@ -180,7 +180,7 @@ namespace Axiom.RenderSystems.OpenGL
 			_manager.ReleaseRenderBuffer( _depth );
 			_manager.ReleaseRenderBuffer( _stencil );
 			/// First buffer must be bound
-			if ( _color[ 0 ].Buffer != null )
+			if ( _color[ 0 ].Buffer == null )
 			{
 				throw new ArgumentException( "Attachment 0 must have surface attached." );
 			}
@@ -221,14 +221,13 @@ namespace Axiom.RenderSystems.OpenGL
 
 			/// Request surfaces
 			_depth = _manager.RequestRenderBuffer( depthFormat, width, height );
-			//TODO : Support  Gl.GL_DEPTH24_STENCIL8_EXT
-			//if ( depthFormat == Gl.GL_DEPTH24_STENCIL8_EXT )
-			//{
-			//    // bind same buffer to depth and stencil attachments
-			//    _manager.RequestRenderBuffer( _depth );
-			//    _stencil = _depth;
-			//}
-			//else
+			if ( depthFormat == GLFBORTTManager.GL_DEPTH24_STENCIL8_EXT )
+			{
+			    // bind same buffer to depth and stencil attachments
+			    _manager.RequestRenderBuffer( _depth );
+			    _stencil = _depth;
+			}
+			else
 			{
 				// separate stencil
 				_stencil = _manager.RequestRenderBuffer( stencilFormat, width, height );

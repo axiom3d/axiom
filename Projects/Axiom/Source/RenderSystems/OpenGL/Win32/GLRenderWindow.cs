@@ -425,19 +425,67 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-		/// <summary>
-		///		Saves RenderWindow contents to a stream.
-		/// </summary>
-		/// <param name="stream">Target stream to save the window contents to.</param>
-		public override void Save( Stream stream )
+		public override void CopyContentsToMemory( PixelBox dst, FrameBuffer buffer )
 		{
-			// create a RGB buffer
-			byte[] buffer = new byte[ Width * Height * 3 ];
+			if ( ( dst.Left < 0 ) || ( dst.Right > Width ) ||
+				( dst.Top < 0 ) || ( dst.Bottom > Height ) ||
+				( dst.Front != 0 ) || ( dst.Back != 1 ) )
+			{
+				throw new Exception( "Invalid box." );
+			}
+			if ( buffer == RenderTarget.FrameBuffer.Auto )
+			{
+				buffer = IsFullScreen ? RenderTarget.FrameBuffer.Front : RenderTarget.FrameBuffer.Back;
+			}
 
-			// read the pixels from the GL buffer
-			Gl.glReadPixels( 0, 0, Width - 1, Height - 1, Gl.GL_RGB, Gl.GL_UNSIGNED_BYTE, buffer );
+			int format = GLPixelUtil.GetGLOriginFormat( dst.Format );
+			int type = GLPixelUtil.GetGLOriginDataType( dst.Format );
 
-			stream.Write( buffer, 0, buffer.Length );
+			if ( ( format == Gl.GL_NONE ) || ( type == 0 ) )
+			{
+				throw new Exception( "Unsupported format." );
+			}
+
+
+			// Switch context if different from current one
+			RenderSystem rsys = Root.Instance.RenderSystem;
+			rsys.SetViewport( this.GetViewport( 0 ) );
+
+			// Must change the packing to ensure no overruns!
+			Gl.glPixelStorei( Gl.GL_PACK_ALIGNMENT, 1 );
+
+			Gl.glReadBuffer( ( buffer == RenderTarget.FrameBuffer.Front ) ? Gl.GL_FRONT : Gl.GL_BACK );
+			Gl.glReadPixels( dst.Left, dst.Top, dst.Width, dst.Height, format, type, dst.Data );
+
+			// restore default alignment
+			Gl.glPixelStorei( Gl.GL_PACK_ALIGNMENT, 4 );
+
+			//vertical flip
+
+			{
+				int rowSpan = dst.Width * PixelUtil.GetNumElemBytes( dst.Format );
+				int height = dst.Height;
+				byte[] tmpData = new byte[ rowSpan * height ];
+				unsafe
+				{
+					byte* dataPtr = (byte*)dst.Data.ToPointer();
+					//int *srcRow = (uchar *)dst.data, *tmpRow = tmpData + (height - 1) * rowSpan;
+
+					for ( int row = height - 1, tmpRow = 0; row >= 0; row--, tmpRow++ )
+					{
+						for ( int col = 0; col < rowSpan; col++ )
+						{
+							tmpData[ tmpRow * rowSpan + col ] = dataPtr[ row * rowSpan + col ];
+						}
+
+					}
+				}
+				GCHandle tmpDataHandle = GCHandle.Alloc( tmpData, GCHandleType.Pinned );
+				Memory.Copy( tmpDataHandle.AddrOfPinnedObject(), dst.Data, rowSpan * height );
+				tmpDataHandle.Free();
+
+			}
+
 		}
 
 		#endregion
