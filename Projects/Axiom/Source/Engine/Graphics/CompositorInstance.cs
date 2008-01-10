@@ -628,7 +628,7 @@ namespace Axiom.Graphics
 		///<summary>
 		///    Which buffers to clear (FrameBuffer)
 		///</summary>
-		protected FrameBuffer buffers;
+		protected FrameBufferType buffers;
 		///<summary>
 		///    Color to clear in case FrameBuffer.Color is set
 		///</summary>
@@ -646,7 +646,7 @@ namespace Axiom.Graphics
 
 		#region Constructor
 
-		public RSClearOperation( FrameBuffer buffers, ColorEx color, float depth, int stencil )
+		public RSClearOperation( FrameBufferType buffers, ColorEx color, float depth, int stencil )
 		{
 			this.buffers = buffers;
 			this.color = color;
