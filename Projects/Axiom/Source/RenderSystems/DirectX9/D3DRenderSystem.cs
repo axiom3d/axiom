@@ -295,20 +295,20 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <param name="color"></param>
 		/// <param name="depth"></param>
 		/// <param name="stencil"></param>
-		public override void ClearFrameBuffer( FrameBuffer buffers, ColorEx color, float depth, int stencil )
+		public override void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, float depth, int stencil )
 		{
 			D3D.ClearFlags flags = 0;
 
-			if ( ( buffers & FrameBuffer.Color ) > 0 )
+			if ( ( buffers & FrameBufferType.Color ) > 0 )
 			{
 				flags |= D3D.ClearFlags.Target;
 			}
-			if ( ( buffers & FrameBuffer.Depth ) > 0 )
+			if ( ( buffers & FrameBufferType.Depth ) > 0 )
 			{
 				flags |= D3D.ClearFlags.ZBuffer;
 			}
 			// Only try to clear the stencil buffer if supported
-			if ( ( buffers & FrameBuffer.Stencil ) > 0
+			if ( ( buffers & FrameBufferType.Stencil ) > 0
 				&& _hwCapabilities.HasCapability( Capabilities.StencilBuffer ) )
 			{
 
@@ -952,9 +952,6 @@ namespace Axiom.RenderSystems.DirectX9
 			// we can compute the equivalent faster without calling it
 			// base.Render(op);
 
-			// ToDo: possibly remove setVertexDeclaration and 
-			// setVertexBufferBinding from RenderSystem since the sequence is
-			// a bit too D3D9-specific?
 			SetVertexDeclaration( op.vertexData.vertexDeclaration );
 			SetVertexBufferBinding( op.vertexData.vertexBufferBinding );
 
@@ -1044,11 +1041,7 @@ namespace Axiom.RenderSystems.DirectX9
 					device.SetTexture( stage, null );
 				}
 
-				// TODO: Why is this check here? Do we need it?
-				if ( stage < _hwCapabilities.TextureUnitCount )
-				{
-					device.TextureState[ stage ].ColorOperation = D3D.TextureOperation.Disable;
-				}
+				device.TextureState[ stage ].ColorOperation = D3D.TextureOperation.Disable;
 
 				// set stage description to defaults
 				texStageDesc[ stage ].tex = null;
@@ -2022,12 +2015,10 @@ namespace Axiom.RenderSystems.DirectX9
 			DX.Matrix d3dMat = DX.Matrix.Identity;
 			Matrix4 newMat = xform;
 
-			/* If envmap is applied, but device doesn't support spheremap,
-			then we have to use texture transform to make the camera space normal
-			reference the envmap properly. This isn't exactly the same as spheremap
-			(it looks nasty on flat areas because the camera space normals are the same)
-			but it's the best approximation we have in the absence of a proper spheremap */
-			if ( texStageDesc[ stage ].autoTexCoordType == TexCoordCalcMethod.EnvironmentMap )
+			// cache this since it's used often
+			TexCoordCalcMethod autoTexCoordType = texStageDesc[ stage ].autoTexCoordType;
+
+			if ( autoTexCoordType == TexCoordCalcMethod.EnvironmentMap )
 			{
 				if ( d3dCaps.VertexProcessingCaps.SupportsTextureGenerationSphereMap )
 				{
@@ -2046,13 +2037,13 @@ namespace Axiom.RenderSystems.DirectX9
 					(it looks nasty on flat areas because the camera space normals are the same)
 					but it's the best approximation we have in the absence of a proper spheremap */
 
-					// concatenate with the xForm
+					// concatenate with the xform
 					newMat = newMat * Matrix4.ClipSpace2DToImageSpace;
 				}
 			}
 
 			// If this is a cubic reflection, we need to modify using the view matrix
-			if ( texStageDesc[ stage ].autoTexCoordType == TexCoordCalcMethod.EnvironmentMapReflection )
+			if ( autoTexCoordType == TexCoordCalcMethod.EnvironmentMapReflection )
 			{
 				// get the current view matrix
 				DX.Matrix viewMatrix = device.Transform.View;
@@ -2075,75 +2066,127 @@ namespace Axiom.RenderSystems.DirectX9
 				viewTransposed.m22 = viewMatrix.M33;
 				viewTransposed.m23 = 0.0f;
 
-				viewTransposed.m30 = viewMatrix.M41;
-				viewTransposed.m31 = viewMatrix.M42;
-				viewTransposed.m32 = viewMatrix.M43;
+				viewTransposed.m30 = 0;
+				viewTransposed.m31 = 0;
+				viewTransposed.m32 = 0;
 				viewTransposed.m33 = 1.0f;
 
 				// concatenate
 				newMat = newMat * viewTransposed;
 			}
 
-			if ( texStageDesc[ stage ].autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture )
+			if ( autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture )
 			{
 				// Derive camera space to projector space transform
 				// To do this, we need to undo the camera view matrix, then 
 				// apply the projector view & projection matrices
-				newMat = viewMatrix.Inverse() * newMat;
+				newMat = viewMatrix.Inverse();
 				newMat = texStageDesc[ stage ].frustum.ViewMatrix * newMat;
 				newMat = texStageDesc[ stage ].frustum.ProjectionMatrix * newMat;
-
-				if ( texStageDesc[ stage ].frustum.ProjectionType == Projection.Perspective )
-				{
-					newMat = ProjectionClipSpace2DToImageSpacePerspective * newMat;
-				}
-				else
-				{
-					newMat = ProjectionClipSpace2DToImageSpaceOrtho * newMat;
-				}
-
+				newMat = Matrix4.ClipSpace2DToImageSpace * newMat;
+				newMat = xform * newMat;
 			}
 
-			// convert to D3D format
-			d3dMat = MakeD3DMatrix( newMat );
-
 			// need this if texture is a cube map, to invert D3D's z coord
-			if ( texStageDesc[ stage ].autoTexCoordType != TexCoordCalcMethod.None )
+			if ( autoTexCoordType != TexCoordCalcMethod.None &&
+				 autoTexCoordType != TexCoordCalcMethod.ProjectiveTexture )
 			{
-				d3dMat.M13 = -d3dMat.M13;
-				d3dMat.M23 = -d3dMat.M23;
-				d3dMat.M33 = -d3dMat.M33;
-				d3dMat.M43 = -d3dMat.M43;
+			    newMat.m20 = -newMat.m20;
+			    newMat.m21 = -newMat.m21;
+			    newMat.m22 = -newMat.m22;
+			    newMat.m23 = -newMat.m23;
 			}
 
 			D3D.TransformType d3dTransType = (D3D.TransformType)( (int)( D3D.TransformType.Texture0 ) + stage );
 
+			// convert to D3D format
+			d3dMat = MakeD3DMatrix( newMat );
+
 			// set the matrix if it is not the identity
 			if ( !D3DHelper.IsIdentity( ref d3dMat ) )
 			{
-				// tell D3D the dimension of tex. coord
-				int texCoordDim = 0;
-				if ( texStageDesc[ stage ].autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture )
+				//It's seems D3D automatically add a texture coordinate with value 1,
+				//and fill up the remaining texture coordinates with 0 for the input
+				//texture coordinates before pass to texture coordinate transformation.
+
+				//NOTE: It's difference with D3DDECLTYPE enumerated type expand in
+				//DirectX SDK documentation!
+
+				//So we should prepare the texcoord transform, make the transformation
+				//just like standardized vector expand, thus, fill w with value 1 and
+				//others with 0.
+
+				if ( autoTexCoordType == TexCoordCalcMethod.None )
 				{
-					texCoordDim = (int)D3D.TextureTransform.Projected | (int)D3D.TextureTransform.Count3;
+					//FIXME: The actually input texture coordinate dimensions should
+					//be determine by texture coordinate vertex element. Now, just trust
+					//user supplied texture type matchs texture coordinate vertex element.
+					if ( texStageDesc[ stage ].texType == D3DTexType.Normal )
+					{
+						/* It's 2D input texture coordinate:
+
+						texcoord in vertex buffer     D3D expanded to     We are adjusted to
+						-->                           -->
+						(u, v)                        (u, v, 1, 0)        (u, v, 0, 1)
+						*/
+						Utility.Swap( d3dMat.M31, d3dMat.M41 );
+						Utility.Swap( d3dMat.M32, d3dMat.M42 );
+						Utility.Swap( d3dMat.M33, d3dMat.M43 );
+						Utility.Swap( d3dMat.M34, d3dMat.M44 );
+					}
+				}
+				else
+				{
+					// All texgen generate 3D input texture coordinates.
+				}
+
+				// tell D3D the dimension of tex. coord
+				D3D.TextureTransform texCoordDim = D3D.TextureTransform.Count2;
+
+				if ( autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture )
+				{
+					//We want texcoords (u, v, w, q) always get divided by q, but D3D
+					//projected texcoords is divided by the last element (in the case of
+					//2D texcoord, is w). So we tweak the transform matrix, transform the
+					//texcoords with w and q swapped: (u, v, q, w), and then D3D will
+					//divide u, v by q. The w and q just ignored as it wasn't used by
+					//rasterizer.
+
+					switch ( texStageDesc[ stage ].texType )
+					{
+						case D3DTexType.Normal:
+							Utility.Swap( d3dMat.M13, d3dMat.M14 );
+							Utility.Swap( d3dMat.M23, d3dMat.M24 );
+							Utility.Swap( d3dMat.M33, d3dMat.M34 );
+							Utility.Swap( d3dMat.M43, d3dMat.M44 );
+
+							texCoordDim = D3D.TextureTransform.Projected | D3D.TextureTransform.Count3;
+							break;
+						case D3DTexType.Cube:
+						case D3DTexType.Volume:
+							// Yes, we support 3D projective texture.
+							texCoordDim = D3D.TextureTransform.Projected | D3D.TextureTransform.Count4;
+							break;
+					}
+
 				}
 				else
 				{
 					switch ( texStageDesc[ stage ].texType )
 					{
 						case D3DTexType.Normal:
-							texCoordDim = (int)D3D.TextureTransform.Count2;
+							texCoordDim = D3D.TextureTransform.Count2;
 							break;
 						case D3DTexType.Cube:
 						case D3DTexType.Volume:
-							texCoordDim = (int)D3D.TextureTransform.Count3;
+							texCoordDim = D3D.TextureTransform.Count3;
 							break;
 					}
 				}
 
 				// note: int values of D3D.TextureTransform correspond directly with tex dimension, so direct conversion is possible
 				// i.e. Count1 = 1, Count2 = 2, etc
-				device.TextureState[ stage ].TextureTransform = (D3D.TextureTransform)texCoordDim;
+				device.TextureState[ stage ].TextureTransform = texCoordDim;
 
 				// set the manually calculated texture matrix
 				device.SetTransform( d3dTransType, d3dMat );
@@ -2157,44 +2200,6 @@ namespace Axiom.RenderSystems.DirectX9
 				device.SetTransform( d3dTransType, DX.Matrix.Identity );
 			}
 		}
-
-    //    //---------------------------------------------------------------------
-    //void SetClipPlanes(const PlaneList& clipPlanes)
-    //{
-    //    size_t i;
-    //    size_t numClipPlanes;
-    //    float dx9ClipPlane[4];
-    //    DWORD mask = 0;
-    //    HRESULT hr;
-
-    //    numClipPlanes = clipPlanes.size();
-    //    for (i = 0; i < numClipPlanes; ++i)
-    //    {
-    //        const Plane& plane = clipPlanes[i];
-
-    //        dx9ClipPlane[0] = plane.normal.x;
-    //        dx9ClipPlane[1] = plane.normal.y;
-    //        dx9ClipPlane[2] = plane.normal.z;
-    //        dx9ClipPlane[3] = plane.d;
-
-    //        hr = mpD3DDevice->SetClipPlane(i, dx9ClipPlane);
-    //        if (FAILED(hr))
-    //        {
-    //            OGRE_EXCEPT(hr, "Unable to set clip plane", 
-    //                "D3D9RenderSystem::setClipPlanes");
-    //        }
-
-    //        mask |= (1 << i);
-    //    }
-
-    //    hr = __SetRenderState(D3DRS_CLIPPLANEENABLE, mask);
-    //    if (FAILED(hr))
-    //    {
-    //        OGRE_EXCEPT(hr, "Unable to set render state for clip planes", 
-    //            "D3D9RenderSystem::setClipPlanes");
-    //    }
-    //}
-    ////---------------------------------------------------------------------
 
         public override void SetClipPlane(ushort index, float A, float B, float C, float D)
         {

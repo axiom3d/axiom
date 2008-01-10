@@ -73,6 +73,10 @@ namespace Axiom.RenderSystems.DirectX9
 		///</summary>
 		protected D3D.Surface surface;
 		///<summary>
+		///    FSAA Surface abstracted by this buffer
+		///</summary>
+		protected D3D.Surface fsaaSurface;
+		///<summary>
 		///    Volume abstracted by this buffer
 		///</summary>
 		protected D3D.Volume volume;
@@ -122,6 +126,18 @@ namespace Axiom.RenderSystems.DirectX9
 		#endregion Constructors
 
 		#region Properties
+
+		///<summary>
+		///    Accessor for surface
+		///</summary>
+		public D3D.Surface FSAASurface
+		{
+			get
+			{
+				return fsaaSurface;
+			}
+		}
+
 
 		///<summary>
 		///    Accessor for surface
@@ -438,6 +454,7 @@ namespace Axiom.RenderSystems.DirectX9
 			PixelBox converted = src;
 			GCHandle bufGCHandle = new GCHandle();
 			int bufSize = 0;
+
 			// convert to pixelbuffer's native format if necessary
 			if ( D3DHelper.ConvertEnum( src.Format ) == D3D.Format.Unknown )
 			{

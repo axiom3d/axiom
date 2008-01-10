@@ -64,6 +64,8 @@ namespace Axiom.RenderSystems.DirectX9
 			ColorDepth = PixelUtil.GetNumElemBits( buffer.Format );
 		}
 
+		#region Axiom.Graphics.RenderTexture Implementation
+
 		public override void Update()
 		{
 			D3DRenderSystem rs = (D3DRenderSystem)Root.Instance.RenderSystem;
@@ -80,7 +82,14 @@ namespace Axiom.RenderSystems.DirectX9
 				switch ( attribute.ToUpper() )
 				{
 					case "D3DBACKBUFFER":
-						return ( (D3DHardwarePixelBuffer)pixelBuffer ).Surface;
+						if ( this.FSAA > 0 )
+						{
+							return ( (D3DHardwarePixelBuffer)pixelBuffer ).FSAASurface;
+						}
+						else
+						{
+							return ( (D3DHardwarePixelBuffer)pixelBuffer ).Surface;
+						}
 					case "HWND":
 						return null;
 					case "BUFFER":
@@ -89,6 +98,38 @@ namespace Axiom.RenderSystems.DirectX9
                         return null;
 				}
 				return null;
+			}
+		}
+
+		public override bool RequiresTextureFlipping
+		{
+			get
+			{
+				return false;
+			}
+		}
+
+		public override void SwapBuffers( bool waitForVSync )
+		{
+			//// Only needed if we have to blit from AA surface
+			if ( this.FSAA > 0 )
+			{
+
+			    D3DRenderSystem rs = (D3DRenderSystem)Root.Instance.RenderSystem;
+			    if (rs.IsDeviceLost)
+			        return;
+
+			    D3DHardwarePixelBuffer buf = (D3DHardwarePixelBuffer)this.pixelBuffer;
+
+			//    rs.Device.StretchRect(buf.FSAASurface, 0, buf.Surface, 0, D3DTEXF_NONE);
+			//    if (FAILED(hr))
+			//    {
+			//        OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, 
+			//            "Unable to copy AA buffer to final buffer: " + String(DXGetErrorDescription9(hr)), 
+			//            "D3D9RenderTexture::swapBuffers");
+			//    }
+				
+
 			}
 		}
 
@@ -101,18 +142,13 @@ namespace Axiom.RenderSystems.DirectX9
 					// Dispose managed resources.
 				}
 			}
-			isDisposed = true;
 
 			// If it is available, make the call to the
 			// base class's Dispose(Boolean) method
 			base.dispose( disposeManagedResources );
 		}
 
-		public override void Save( System.IO.Stream stream )
-		{
-			// TODO: Implement me
-			throw new NotImplementedException( "Saving RenderTextures is not yet implemented." );
-		}
+		#endregion Axiom.Graphics.RenderTexture Implementation
 
 	}
 }
