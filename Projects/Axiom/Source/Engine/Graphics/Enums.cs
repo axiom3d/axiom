@@ -664,7 +664,7 @@ namespace Axiom.Graphics
 	///		Defines the frame buffers which can be cleared.
 	/// </summary>
 	[Flags]
-	public enum FrameBuffer
+	public enum FrameBufferType
 	{
 		Color = 0x1,
 		Depth = 0x2,
@@ -986,11 +986,11 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Will be processed last.
 		/// </summary>
-		Low,
+		Low = 4,
 		/// <summary>
 		///    Will be processed first (i.e. RenderTextures).
 		/// </summary>
-		High
+		High = 2
 	}
 
 	/// <summary>

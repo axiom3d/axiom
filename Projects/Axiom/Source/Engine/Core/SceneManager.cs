@@ -818,6 +818,10 @@ namespace Axiom.Core
 			{
 				case PrefabEntity.Plane:
 					return CreateEntity( name, "Prefab_Plane" );
+				case PrefabEntity.Cube:
+					return CreateEntity( name, "Prefab_Cube" );
+				case PrefabEntity.Sphere:
+					return CreateEntity( name, "Prefab_Sphere");
 				default:
 					return null;
 			}
@@ -1362,23 +1366,23 @@ namespace Axiom.Core
 			}
 		}
 
-        public void ResetViewProjectionMode()
-        {
-            if (lastViewWasIdentity)
-            {
-                // Coming back to normal from identity view
-                targetRenderSystem.ViewMatrix = cameraInProgress.ViewMatrix;
-                lastViewWasIdentity = false;
-            }
-    
-            if (lastProjectionWasIdentity)
-            {
-                // Coming back from flat projection
-                targetRenderSystem.ProjectionMatrix = cameraInProgress.ProjectionMatrixRS;
-                lastProjectionWasIdentity = false;
-            }
-        }
-    
+		public void ResetViewProjectionMode()
+		{
+			if ( lastViewWasIdentity )
+			{
+				// Coming back to normal from identity view
+				targetRenderSystem.ViewMatrix = cameraInProgress.ViewMatrix;
+				lastViewWasIdentity = false;
+			}
+
+			if ( lastProjectionWasIdentity )
+			{
+				// Coming back from flat projection
+				targetRenderSystem.ProjectionMatrix = cameraInProgress.ProjectionMatrixRS;
+				lastProjectionWasIdentity = false;
+			}
+		}
+
 		#endregion
 
 		#region Protected methods
@@ -1574,7 +1578,7 @@ namespace Axiom.Core
 				// Load the manual buffer into an image
 				System.IO.MemoryStream imgStream = new System.IO.MemoryStream( SpotShadowFadePng.SPOT_SHADOW_FADE_PNG );
 				Media.Image img = Media.Image.FromStream( imgStream, "png" );
-				spotShadowFadeTex =	TextureManager.Instance.LoadImage( SPOT_SHADOW_FADE_IMAGE,ResourceGroupManager.InternalResourceGroupName, img, TextureType.TwoD );
+				spotShadowFadeTex = TextureManager.Instance.LoadImage( SPOT_SHADOW_FADE_IMAGE, ResourceGroupManager.InternalResourceGroupName, img, TextureType.TwoD );
 			}
 
 			shadowMaterialInitDone = true;
@@ -1586,7 +1590,7 @@ namespace Axiom.Core
 
 			if ( matShadRec == null )
 			{
-				matShadRec = (Material)MaterialManager.Instance.Create( TEXTURE_SHADOW_RECEIVER_MATERIAL,ResourceGroupManager.InternalResourceGroupName);
+				matShadRec = (Material)MaterialManager.Instance.Create( TEXTURE_SHADOW_RECEIVER_MATERIAL, ResourceGroupManager.InternalResourceGroupName );
 				shadowReceiverPass = matShadRec.GetTechnique( 0 ).GetPass( 0 );
 				shadowReceiverPass.SetSceneBlending( SceneBlendFactor.DestColor, SceneBlendFactor.Zero );
 				// No lighting, one texture unit 
@@ -1608,7 +1612,7 @@ namespace Axiom.Core
 
 			if ( matPlainBlack == null )
 			{
-				matPlainBlack = (Material)MaterialManager.Instance.Create( TEXTURE_SHADOW_CASTER_MATERIAL,ResourceGroupManager.InternalResourceGroupName );
+				matPlainBlack = (Material)MaterialManager.Instance.Create( TEXTURE_SHADOW_CASTER_MATERIAL, ResourceGroupManager.InternalResourceGroupName );
 				shadowCasterPlainBlackPass = matPlainBlack.GetTechnique( 0 ).GetPass( 0 );
 				// Lighting has to be on, because we need shadow coloured objects
 				// Note that because we can't predict vertex programs, we'll have to
@@ -1639,7 +1643,7 @@ namespace Axiom.Core
 			{
 				// Create
 				matModStencil =
-				(Material)MaterialManager.Instance.Create( STENCIL_SHADOW_MODULATIVE_MATERIAL,ResourceGroupManager.InternalResourceGroupName );
+				(Material)MaterialManager.Instance.Create( STENCIL_SHADOW_MODULATIVE_MATERIAL, ResourceGroupManager.InternalResourceGroupName );
 
 				shadowModulativePass = matModStencil.GetTechnique( 0 ).GetPass( 0 );
 				shadowModulativePass.SetSceneBlending( SceneBlendFactor.DestColor, SceneBlendFactor.Zero );
@@ -1707,13 +1711,13 @@ namespace Axiom.Core
 			if ( matStencil == null )
 			{
 				// Create
-				matStencil = (Material)MaterialManager.Instance.Create( STENCIL_SHADOW_VOLUMES_MATERIAL ,ResourceGroupManager.InternalResourceGroupName);
+				matStencil = (Material)MaterialManager.Instance.Create( STENCIL_SHADOW_VOLUMES_MATERIAL, ResourceGroupManager.InternalResourceGroupName );
 				shadowStencilPass = matStencil.GetTechnique( 0 ).GetPass( 0 );
 
 				if ( targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
 				{
 					// Enable the finite point light extruder for now, just to get some params
-					shadowStencilPass.SetVertexProgram(	ShadowVolumeExtrudeProgram.GetProgramName( ShadowVolumeExtrudeProgram.Programs.PointLightFinite ) );
+					shadowStencilPass.SetVertexProgram( ShadowVolumeExtrudeProgram.GetProgramName( ShadowVolumeExtrudeProgram.Programs.PointLightFinite ) );
 
 					finiteExtrusionParams = shadowStencilPass.VertexProgramParameters;
 					finiteExtrusionParams.SetAutoConstant( 0, AutoConstants.WorldViewProjMatrix );
@@ -2317,7 +2321,7 @@ namespace Axiom.Core
 					pass = DeriveShadowReceiverPass( pass );
 				}
 
-                //TODO :autoParamDataSource.SetPass( pass );
+				//TODO :autoParamDataSource.SetPass( pass );
 
 				bool passSurfaceAndLightParams = true;
 
@@ -2350,7 +2354,7 @@ namespace Axiom.Core
 															pass.Shininess,
 															pass.VertexColorTracking );
 					}
-                    // #if NOT_IN_OGRE
+					// #if NOT_IN_OGRE
 					else
 					{
 						// even with lighting off, we need ambient set to white
@@ -2361,8 +2365,8 @@ namespace Axiom.Core
 															0,
 															TrackVertexColor.None );
 					}
-                    // #endif
-                    // Dynamic lighting enabled?
+					// #endif
+					// Dynamic lighting enabled?
 					targetRenderSystem.LightingEnabled = pass.LightingEnabled;
 				}
 
@@ -2382,12 +2386,12 @@ namespace Axiom.Core
 				}
 				// Set fixed-function fragment settings
 
-                //We need to set fog properties always. In D3D, it applies to shaders prior
-                //to version vs_3_0 and ps_3_0. And in OGL, it applies to "ARB_fog_XXX" in
-                //fragment program, and in other ways, they maybe accessed by gpu program via
-                //"state.fog.XXX".
+				//We need to set fog properties always. In D3D, it applies to shaders prior
+				//to version vs_3_0 and ps_3_0. And in OGL, it applies to "ARB_fog_XXX" in
+				//fragment program, and in other ways, they maybe accessed by gpu program via
+				//"state.fog.XXX".
 
-                // New fog params can either be from scene or from material
+				// New fog params can either be from scene or from material
 
 				// jsw - set the fog for both fixed function and fragment programs
 				ColorEx newFogColor;
@@ -2422,34 +2426,34 @@ namespace Axiom.Core
 				// set fog using the render system
 				targetRenderSystem.SetFog( newFogMode, newFogColor, newFogDensity, newFogStart, newFogEnd );
 
-                // Tell params about ORIGINAL fog
-		        // Need to be able to override fixed function fog, but still have
-		        // original fog parameters available to a shader that chooses to use
-                // TODO : autoParamDataSource.SetFog( fogMode, fogColor, fogDensity, fogStart, fogEnd );
+				// Tell params about ORIGINAL fog
+				// Need to be able to override fixed function fog, but still have
+				// original fog parameters available to a shader that chooses to use
+				// TODO : autoParamDataSource.SetFog( fogMode, fogColor, fogDensity, fogStart, fogEnd );
 
 				// The rest of the settings are the same no matter whether we use programs or not
 
 				// Set scene blending
 				targetRenderSystem.SetSceneBlending( pass.SourceBlendFactor, pass.DestinationBlendFactor );
 
-                // TODO : Set point parameters
-                //targetRenderSystem.SetPointParameters(
-                //                                        pass.PointSize,
-                //                                        pass.IsPointAttenuationEnabled,
-                //                                        pass.PointAttenuationConstant,
-                //                                        pass.PointAttenuationLinear,
-                //                                        pass.PointAttenuationQuadratic,
-                //                                        pass.PointMinSize,
-                //                                        pass.PointMaxSize 
-                //                                        );
+				// TODO : Set point parameters
+				//targetRenderSystem.SetPointParameters(
+				//                                        pass.PointSize,
+				//                                        pass.IsPointAttenuationEnabled,
+				//                                        pass.PointAttenuationConstant,
+				//                                        pass.PointAttenuationLinear,
+				//                                        pass.PointAttenuationQuadratic,
+				//                                        pass.PointMinSize,
+				//                                        pass.PointMaxSize 
+				//                                        );
 
-                //targetRenderSystem.PointSpritesEnabled = pass.PointSpritesEnabled;
+				//targetRenderSystem.PointSpritesEnabled = pass.PointSpritesEnabled;
 
-                // TODO : Reset the shadow texture index for each pass           
-                //foreach ( TextureUnitState textureUnit in pass.TextureUnitStates )
-                //{
+				// TODO : Reset the shadow texture index for each pass           
+				//foreach ( TextureUnitState textureUnit in pass.TextureUnitStates )
+				//{
 
-                //}
+				//}
 
 				// set all required texture units for this pass, and disable ones not being used
 				int numTextureUnits;
@@ -2472,8 +2476,8 @@ namespace Axiom.Core
 					else
 					{
 						// disable this unit
-                        if ( !pass.HasFragmentProgram )
-                            targetRenderSystem.DisableTextureUnit( i );
+						if ( !pass.HasFragmentProgram )
+							targetRenderSystem.DisableTextureUnit( i );
 					}
 				}
 
@@ -4352,24 +4356,24 @@ namespace Axiom.Core
 			if ( targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.UserClipPlanes ) )
 			{
 				// TODO: Add ClipPlanes to RenderSystem.cs
-                if ( camera.IsWindowSet )
+				if ( camera.IsWindowSet )
 				{
-                    List<Plane> planeList = camera.WindowPlanes;
-                    for ( ushort i = 0; i < 4; ++i )
+					IList<Plane> planeList = camera.WindowPlanes;
+					for ( ushort i = 0; i < 4; ++i )
 					{
-                        targetRenderSystem.EnableClipPlane( i, true );
-                        targetRenderSystem.SetClipPlane( i, planeList[ i ] );
+						targetRenderSystem.EnableClipPlane( i, true );
+						targetRenderSystem.SetClipPlane( i, planeList[ i ] );
 					}
 				}
-                // this disables any user-set clipplanes... this should be done manually
-                //else
-                //{
-                //    for (ushort i = 0; i < 4; ++i)
-                //    {
-                //        targetRenderSystem.EnableClipPlane(i, false);
-                //    }
-                //}
-					}
+				// this disables any user-set clipplanes... this should be done manually
+				//else
+				//{
+				//    for (ushort i = 0; i < 4; ++i)
+				//    {
+				//        targetRenderSystem.EnableClipPlane(i, false);
+				//    }
+				//}
+			}
 
 			// Prepare render queue for receiving new objects
 			PrepareRenderQueue();
@@ -4971,31 +4975,31 @@ namespace Axiom.Core
 				bool thisNormalize = renderable.NormalizeNormals;
 
 				if ( thisNormalize != normalizeNormals )
-                {
-                    targetRenderSystem.NormalizeNormals = thisNormalize;
-                    normalizeNormals = thisNormalize;
-                }
+				{
+					targetRenderSystem.NormalizeNormals = thisNormalize;
+					normalizeNormals = thisNormalize;
+				}
 
-                // Set up the solid / wireframe override
-                PolygonMode requestedMode = pass.PolygonMode;
-                if (renderable.PolygonModeOverrideable == true)
-                {
-                    // check camera detial only when render detail is overridable
-                    if (requestedMode > camPolyMode)
-                    {
-                        // only downgrade detail; if cam says wireframe we don't go up to solid
-                        requestedMode = camPolyMode;
-                    }
-                }
+				// Set up the solid / wireframe override
+				PolygonMode requestedMode = pass.PolygonMode;
+				if ( renderable.PolygonModeOverrideable == true )
+				{
+					// check camera detial only when render detail is overridable
+					if ( requestedMode > camPolyMode )
+					{
+						// only downgrade detail; if cam says wireframe we don't go up to solid
+						requestedMode = camPolyMode;
+					}
+				}
 
-                if (requestedMode != lastPolyMode)
-                {
-                    targetRenderSystem.PolygonMode = requestedMode;
-                    lastPolyMode = requestedMode;
-                }
+				if ( requestedMode != lastPolyMode )
+				{
+					targetRenderSystem.PolygonMode = requestedMode;
+					lastPolyMode = requestedMode;
+				}
 
 				// TODO: Add ClipPlanes to RenderSystem.cs
-                // This is removed in OGRE 1.6.0... no need to port - J. Price
+				// This is removed in OGRE 1.6.0... no need to port - J. Price
 				//targetRenderSystem.ClipPlanes = renderable.ClipPlanes;
 
 				// get the renderables render operation
@@ -5132,8 +5136,8 @@ namespace Axiom.Core
 				renderOpMeter.Exit();
 			}
 
-            // Reset view / projection changes if any
-            ResetViewProjectionMode();
+			// Reset view / projection changes if any
+			ResetViewProjectionMode();
 		}
 
 		/// <summary>
@@ -5256,7 +5260,7 @@ namespace Axiom.Core
 					if ( light.CastShadows )
 					{
 						// Clear stencil
-						targetRenderSystem.ClearFrameBuffer( FrameBuffer.Stencil );
+						targetRenderSystem.ClearFrameBuffer( FrameBufferType.Stencil );
 						RenderShadowVolumesToStencil( light, cameraInProgress );
 						// turn stencil check on
 						targetRenderSystem.StencilCheckEnabled = true;
@@ -5338,7 +5342,7 @@ namespace Axiom.Core
 				if ( light.CastShadows )
 				{
 					// clear the stencil buffer
-					targetRenderSystem.ClearFrameBuffer( FrameBuffer.Stencil );
+					targetRenderSystem.ClearFrameBuffer( FrameBufferType.Stencil );
 					RenderShadowVolumesToStencil( light, cameraInProgress );
 
 					// render full-screen shadow modulator for all lights

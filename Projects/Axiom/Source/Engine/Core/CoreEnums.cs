@@ -166,12 +166,10 @@ namespace Axiom.Core
     {
         /// <summary>A flat plane.</summary>
         Plane,
-        /// <summary>The obligatory teapot.</summary>
-        Teapot,
         /// <summary>Typical box.</summary>
-        Box,
-        /// <summary>Full cairo action.</summary>
-        Pyramid
+        Cube,
+        /// <summary>That round shape.</summary>
+        Sphere
     }
 
     /// <summary>
