@@ -70,7 +70,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Which buffers to clear every frame
         /// </summary>
-        private FrameBuffer _clearBuffers;
+        private FrameBufferType _clearBuffers;
 
         #region Camera Property
 
@@ -592,7 +592,7 @@ namespace Axiom.Core
 
             _backColor = ColorEx.Black;
             _clearEveryFrame = true;
-            _clearBuffers = FrameBuffer.Color | FrameBuffer.Depth;
+            _clearBuffers = FrameBufferType.Color | FrameBufferType.Depth;
 
             // Calculate actual dimensions
             UpdateDimensions();
@@ -669,7 +669,7 @@ namespace Axiom.Core
         /// Gets the buffers to clear every frame
         /// </summary>
         /// <returns></returns>
-        public FrameBuffer ClearBuffers
+        public FrameBufferType ClearBuffers
         {
             get
             {
