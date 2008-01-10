@@ -86,7 +86,7 @@ namespace Axiom.SceneManagers.Bsp
 
         protected Bsp.Collections.Map matFaceGroupMap = new Bsp.Collections.Map();
         protected MovableObjectCollection objectsForRendering = new MovableObjectCollection();
-        protected BspGeometry bspGeometry = new BspGeometry();
+		protected BspGeometry bspGeometry;
         protected SpotlightFrustum spotlightFrustum;
         protected Material textureLightMaterial;
         protected Pass textureLightPass;
@@ -136,6 +136,8 @@ namespace Axiom.SceneManagers.Bsp
         /// </summary>
         public override void LoadWorldGeometry( string filename )
         {
+			bspGeometry = new BspGeometry();
+
             if ( Path.GetExtension( filename ).ToLower() == ".xml" )
             {
                 DataSet optionData = new DataSet();
@@ -203,6 +205,8 @@ namespace Axiom.SceneManagers.Bsp
 
         public void LoadWorldGeometry()
         {
+			bspGeometry = new BspGeometry();
+
             if ( !optionList.ContainsKey( "Map" ) )
                 throw new AxiomException( "Unable to load world geometry. \"Map\" filename option is not set." );
 
