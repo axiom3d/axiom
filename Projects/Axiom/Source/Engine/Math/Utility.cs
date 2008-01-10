@@ -313,10 +313,10 @@ namespace Axiom.Math
             Vector3 normal = plane.Normal;
 
             return new Matrix4(
-                -2.0f * normal.x * normal.x + 1.0f, -2.0f * normal.x * normal.y, -2.0f * normal.x * normal.z, -2.0f * normal.x * plane.D,
-                -2.0f * normal.y * normal.x, -2.0f * normal.y * normal.y + 1.0f, -2.0f * normal.y * normal.z, -2.0f * normal.y * plane.D,
-                -2.0f * normal.z * normal.x, -2.0f * normal.z * normal.y, -2.0f * normal.z * normal.z + 1.0f, -2.0f * normal.z * plane.D,
-                0.0f, 0.0f, 0.0f, 1.0f );
+                -2.0f * normal.x * normal.x + 1.0f,		-2.0f * normal.x * normal.y,			-2.0f * normal.x * normal.z,			-2.0f * normal.x * plane.D,
+                -2.0f * normal.y * normal.x,			-2.0f * normal.y * normal.y + 1.0f,		-2.0f * normal.y * normal.z,			-2.0f * normal.y * plane.D,
+                -2.0f * normal.z * normal.x,			-2.0f * normal.z * normal.y,			-2.0f * normal.z * normal.z + 1.0f,		-2.0f * normal.z * plane.D,
+                0.0f,									0.0f,									0.0f,									1.0f );
         }
 
         /// <summary>
@@ -959,7 +959,20 @@ namespace Axiom.Math
         }
 
         #endregion Intersection Methods
-    }
+
+		/// <summary>
+		/// Swaps two values
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="v1"></param>
+		/// <param name="v2"></param>
+		public static void Swap<T>( T v1, T v2 )
+		{
+			T temp = v1;
+			v1 = v2;
+			v2 = temp;
+		}
+	}
 
     #region Return result structures
 
