@@ -297,7 +297,7 @@ namespace Axiom.Graphics
 		{
 			renderTargets.Add( target.Name, target );
 
-			if ( target.Priority == RenderTargetPriority.High )
+			if ( target.Priority == RenderTargetPriority.RenderToTexture )
 			{
 				// insert at the front of the list
 				prioritizedRenderTargets.Insert( 0, target );
@@ -957,7 +957,7 @@ namespace Axiom.Graphics
 		/// <param name="color">The color to clear the color buffer with, if enabled.</param>
 		/// <param name="depth">The value to initialize the depth buffer with, if enabled.</param>
 		/// <param name="stencil">The value to initialize the stencil buffer with, if enabled.</param>
-		public abstract void ClearFrameBuffer( FrameBuffer buffers, ColorEx color, float depth, int stencil );
+		public abstract void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, float depth, int stencil );
 
 		/// <summary>
 		///		Converts the Axiom.Core.ColorEx value to a int.  Each API may need the 
@@ -1566,17 +1566,17 @@ namespace Axiom.Graphics
 
 		#region ClearFrameBuffer()
 
-		public void ClearFrameBuffer( FrameBuffer buffers, ColorEx color, float depth )
+		public void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, float depth )
 		{
 			ClearFrameBuffer( buffers, color, depth, 0 );
 		}
 
-		public void ClearFrameBuffer( FrameBuffer buffers, ColorEx color )
+		public void ClearFrameBuffer( FrameBufferType buffers, ColorEx color )
 		{
 			ClearFrameBuffer( buffers, color, 1.0f, 0 );
 		}
 
-		public void ClearFrameBuffer( FrameBuffer buffers )
+		public void ClearFrameBuffer( FrameBufferType buffers )
 		{
 			ClearFrameBuffer( buffers, ColorEx.Black, 1.0f, 0 );
 		}

@@ -986,11 +986,11 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Will be processed last.
 		/// </summary>
-		Low = 4,
+		Default = 4,
 		/// <summary>
 		///    Will be processed first (i.e. RenderTextures).
 		/// </summary>
-		High = 2
+		RenderToTexture = 2
 	}
 
 	/// <summary>

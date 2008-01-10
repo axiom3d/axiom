@@ -52,14 +52,6 @@ namespace Axiom.Graphics
 		protected HardwarePixelBuffer pixelBuffer;
 		protected int zOffset = 0;
 
-		public PixelFormat Format
-		{
-			get
-			{
-				return pixelBuffer.Format;
-			}
-		}
-
 		#endregion Fields
 
 		#region Constructors
@@ -68,7 +60,7 @@ namespace Axiom.Graphics
 		{
 			pixelBuffer = buffer;
 			this.zOffset = zOffset;
-			Priority = RenderTargetPriority.High;
+			Priority = RenderTargetPriority.RenderToTexture;
 			Width = buffer.Width;
 			Height = buffer.Height;
 			ColorDepth = PixelUtil.GetNumElemBits( buffer.Format );
@@ -78,10 +70,20 @@ namespace Axiom.Graphics
 
 		#region Methods
 
-		public override void Save( System.IO.Stream stream )
+		public override void CopyContentsToMemory( PixelBox dst, RenderTarget.FrameBuffer buffer )
 		{
-			// TODO Implement RenderTexture.Save( System.IO.Stream )
-			throw new Exception( "The method or operation is not implemented." );
+			if (buffer == FrameBuffer.Auto) buffer = FrameBuffer.Front;
+			if (buffer != FrameBuffer.Front)
+			{
+				throw new Exception("Invalid buffer.");
+			}
+
+			pixelBuffer.BlitToMemory( dst );
+		}
+
+		protected override PixelFormat suggestPixelFormat()
+		{
+			return pixelBuffer.Format;
 		}
 
 		/// <summary>
@@ -96,7 +98,6 @@ namespace Axiom.Graphics
 					pixelBuffer.ClearSliceRTT( 0 );
 				}
 			}
-			isDisposed = true;
 
 			// If it is available, make the call to the
 			// base class's Dispose(Boolean) method

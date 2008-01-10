@@ -42,6 +42,7 @@ using Axiom.Core;
 using Axiom.Collections;
 using Axiom.Media;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 #endregion Namespace Declarations
 
@@ -65,6 +66,15 @@ namespace Axiom.Graphics
 	/// </summary>
 	public class RenderTargetUpdateEventArgs : EventArgs
 	{
+		internal RenderTarget source;
+
+		public RenderTarget Source
+		{
+			get
+			{
+				return source;
+			}
+		}
 	}
 
 	/// <summary>
@@ -114,161 +124,48 @@ namespace Axiom.Graphics
 		/// </summary>
 		public struct FrameStatistics
 		{
-			#region LastFPS Property
-
-			private float _lastFPS;
 			/// <summary>
 			/// The number of Frames per second.
 			/// </summary>
-			public float LastFPS
-			{
-				get
-				{
-					return _lastFPS;
-				}
-				set
-				{
-					_lastFPS = value;
-				}
-			}
-
-			#endregion LastFPS Property
-			#region AverageFPS Property
-
-			private float _averageFPS;
+			public float LastFPS;
 			/// <summary>
 			/// The average number of Frames per second since Root.StartRendering was called.
 			/// </summary>
-			public float AvgerageFPS
-			{
-				get
-				{
-					return _averageFPS;
-				}
-				set
-				{
-					_averageFPS = value;
-				}
-			}
-
-			#endregion AverageFPS Property
-			#region BestFPS Property
-
-			private float _bestFPS;
+			public float AvgerageFPS;
 			/// <summary>
 			/// The highest number of Frames per second since Root.StartRendering was called.
 			/// </summary>
-			public float BestFPS
-			{
-				get
-				{
-					return _bestFPS;
-				}
-				set
-				{
-					_bestFPS = value;
-				}
-			}
-
-			#endregion BestFPS Property
-			#region WorstFPS Property
-
-			private float _worstFPS;
+			public float BestFPS;
 			/// <summary>
 			/// The lowest number of Frames per second since Root.StartRendering was called.
 			/// </summary>
-			public float WorstFPS
-			{
-				get
-				{
-					return _worstFPS;
-				}
-				set
-				{
-					_worstFPS = value;
-				}
-			}
-
-			#endregion WorstFPS Property
-			#region BestFrameTime Property
-
-			private float _bestFrameTime;
+			public float WorstFPS;
 			/// <summary>
 			/// The best frame time recorded since Root.StartRendering was called.
 			/// </summary>
-			public float BestFrameTime
-			{
-				get
-				{
-					return _bestFrameTime;
-				}
-				set
-				{
-					_bestFrameTime = value;
-				}
-			}
-
-			#endregion BestFrameTime Property
-			#region WorstFrameTime Property
-
-			private float _worstFrameTime;
+			public float BestFrameTime;
 			/// <summary>
 			/// The worst frame time recorded since Root.StartRendering was called.
 			/// </summary>
-			public float WorstFrameTime
-			{
-				get
-				{
-					return _worstFrameTime;
-				}
-				set
-				{
-					_worstFrameTime = value;
-				}
-			}
-
-			#endregion WorstFrameTime Property
-			#region TriangleCount Property
-
-			private float _triangleCount;
+			public float WorstFrameTime;
 			/// <summary>
 			/// The number of triangles processed in the last call to Update()
 			/// </summary>
-			public float TriangleCount
-			{
-				get
-				{
-					return _triangleCount;
-				}
-				set
-				{
-					_triangleCount = value;
-				}
-			}
-
-			#endregion TriangleCount Property
-			#region BatchCount Property
-
-			private float _batchCount;
+			public float TriangleCount;
 			/// <summary>
 			/// The number of batches procecssed in the last call to Update()
 			/// </summary>
-			public float BatchCount
-			{
-				get
-				{
-					return _batchCount;
-				}
-				set
-				{
-					_batchCount = value;
-				}
-			}
-
-			#endregion BatchCount Property
+			public float BatchCount;
 		};
 
-		#endregion Enumeratins
+		public enum FrameBuffer
+		{
+			Front,
+			Back,
+			Auto
+		};
+
+		#endregion Enumerations
 
 		#region Fields and Properties
 
@@ -480,6 +377,29 @@ namespace Axiom.Graphics
 		}
 
 		#endregion isDepthBuffered Property
+
+		#region FSAA Property
+
+		/// <summary>
+		///    Flag that states whether this target is FSAA.
+		/// </summary>
+		private int _fsaa = 0;
+		/// <summary>
+		///    Gets/Sets whether this RenderTarget is FSAA or not.
+		/// </summary>
+		public virtual int FSAA
+		{
+			get
+			{
+				return _fsaa;
+			}
+			set
+			{
+				_fsaa = value;
+			}
+		}
+
+		#endregion FSAA Property
 
 		#endregion Fields
 
@@ -872,7 +792,7 @@ namespace Axiom.Graphics
 		private static TimingMeter beforeViewPortUpdateMeter = MeterManager.GetMeter( "Before Viewport Update", "Update Target" );
 		private static TimingMeter afterViewPortUpdateMeter = MeterManager.GetMeter( "After Viewport Update", "Update Target" );
 		private static TimingMeter viewPortUpdateMeter = MeterManager.GetMeter( "Viewport Update", "Update Target" );
-		
+
 		/// <summary>
 		///		Tells the target to update it's contents.
 		/// </summary>
@@ -912,7 +832,7 @@ namespace Axiom.Graphics
 				viewPortUpdateMeter.Enter();
 				viewport.Update();
 				viewPortUpdateMeter.Exit();
-				
+
 				_statistics.TriangleCount += viewport.Camera.RenderedFaceCount;
 				//TODO : _statistics.BatchCount += viewport.Camera.RenderedBatchCount;
 
@@ -928,7 +848,7 @@ namespace Axiom.Graphics
 			afterUpdateMeter.Exit();
 
 			updateTargetMeter.Exit();
-			
+
 
 			// Update statistics (always on top)
 			updateStatistics();
@@ -972,42 +892,80 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Saves window contents to file (i.e. screenshot);
 		/// </summary>
-		public void Save( string fileName )
+		public void WriteContentsToFile( string fileName )
 		{
-			// create a memory stream, setting the initial capacity
-			MemoryStream bufferStream = new MemoryStream( _width * _height * 3 );
+			PixelFormat pf = suggestPixelFormat();
 
-			// save the data to the memory stream
-			Save( bufferStream );
+			byte[] data = new byte[ Width * Height * PixelUtil.GetNumElemBytes( pf ) ];
+			GCHandle bufGCHandle = new GCHandle();
+			bufGCHandle = GCHandle.Alloc( data, GCHandleType.Pinned );
+			PixelBox pb = new PixelBox( Width, Height, 1, pf, bufGCHandle.AddrOfPinnedObject() );
 
-			int pos = fileName.LastIndexOf( '.' );
+			CopyContentsToMemory( pb );
 
-			// grab the file extension
-			string extension = fileName.Substring( pos + 1 );
+			( new Image() ).FromDynamicImage( data, Width, Height, 1, pf, false, 1, 0 ).Save( fileName );
 
-			// grab the codec for the requested file extension
-			ICodec codec = CodecManager.Instance.GetCodec( extension );
+			if ( bufGCHandle.IsAllocated )
+				bufGCHandle.Free();
+		}
 
-			// setup the image file information
-			ImageCodec.ImageData imageData = new ImageCodec.ImageData();
-			imageData.width = _width;
-			imageData.height = _height;
-			imageData.format = PixelFormat.R8G8B8;
+		public void CopyContentsToMemory( PixelBox pb )
+		{
+			CopyContentsToMemory( pb, FrameBuffer.Auto );
+		}
 
-			// reset the stream position
-			bufferStream.Position = 0;
+		public abstract void CopyContentsToMemory( PixelBox pb, FrameBuffer buffer );
 
-			// finally, save to file as an image
-			codec.EncodeToFile( bufferStream, fileName, imageData );
-
-			bufferStream.Close();
+		/// <summary>
+		/// Suggests a pixel format to use for extracting the data in this target, when calling <see cref="CopyContentsToMemory"/>.
+		/// </summary>
+		/// <returns></returns>
+		protected virtual PixelFormat suggestPixelFormat()
+		{
+			return PixelFormat.BYTE_RGBA;
 		}
 
 		/// <summary>
-		///		Saves the contents of this render target to the specified stream.
+		///		Swaps the frame buffers to display the next frame.
 		/// </summary>
-		/// <param name="stream">Stream to write the contents of this render target to.</param>
-		public abstract void Save( Stream stream );
+		/// <remarks>				
+		///		For targets that are double-buffered so that no
+		///     'in-progress' versions of the scene are displayed
+		///     during rendering. Once rendering has completed (to
+		///		an off-screen version of the window) the buffers
+		///		are swapped to display the new frame.
+		/// </remarks>
+		public void SwapBuffers()
+		{
+			SwapBuffers( true );
+		}
+
+		/// <summary>
+		///		Swaps the frame buffers to display the next frame.
+		/// </summary>
+		/// <remarks>
+		///		For targets that are double-buffered so that no
+		///     'in-progress' versions of the scene are displayed
+		///     during rendering. Once rendering has completed (to
+		///		an off-screen version of the window) the buffers
+		///		are swapped to display the new frame.
+		///	</remarks>
+		/// <param name="waitForVSync">
+		///		If true, the system waits for the
+		///		next vertical blank period (when the CRT beam turns off
+		///		as it travels from bottom-right to top-left at the
+		///		end of the pass) before flipping. If false, flipping
+		///		occurs no matter what the beam position. Waiting for
+		///		a vertical blank can be slower (and limits the
+		///		framerate to the monitor refresh rate) but results
+		///		in a steadier image with no 'tearing' (a flicker
+		///		resulting from flipping buffers when the beam is
+		///		in the progress of drawing the last frame). 
+		///</param>
+		public virtual void SwapBuffers( bool waitForVSync )
+		{
+		}
+
 
 		#endregion Methods
 
@@ -1064,10 +1022,10 @@ namespace Axiom.Graphics
 				// Delete viewports
 				while ( _viewportList.Count > 0 )
 				{
-						Viewport vp = _viewportList[ _viewportList.Keys[ 0 ] ];
-						OnViewportRemoved( vp );
-						this._viewportList.Remove( _viewportList.Keys[ 0 ] );
-				} 
+					Viewport vp = _viewportList[ _viewportList.Keys[ 0 ] ];
+					OnViewportRemoved( vp );
+					this._viewportList.Remove( _viewportList.Keys[ 0 ] );
+				}
 				// Write final performance stats
 				LogManager.Instance.Write( "Final Stats [{0}]: FPS <A,B,W> : {1:#.00} {2:#.00} {3:#.00}", this.Name, this._statistics.AvgerageFPS, this._statistics.BestFPS, this._statistics.WorstFPS );
 			}
