@@ -78,34 +78,43 @@ namespace Axiom.Core
         {
             // TODO: Block copy would be faster, find a cross platform way to do it
             unsafe
-            {
-                byte* pSrc = (byte*)src.ToPointer();
-                byte* pDest = (byte*)dest.ToPointer();
+            {				
+				byte* pSrc = ((byte*)src.ToPointer()) + srcOffset;
+                byte* pDest = ((byte*)dest.ToPointer()) + destOffset;
 
-                for ( int i = 0; i < length; i++ )
-                {
-                    pDest[ i + destOffset ] = pSrc[ i + srcOffset ];
-                }
+				for ( int i = 0; i < length; i++ )
+					*pDest++ = *pSrc++;
             }
         }
 
         /// <summary>
-        ///     Sets the memory to 0 starting at the specified offset for the specified byte length.
+        /// Sets the memory to 0 starting at the specified offset for the specified byte length.
         /// </summary>
         /// <param name="dest">Destination pointer.</param>
         /// <param name="offset">Byte offset to start.</param>
         /// <param name="length">Number of bytes to set.</param>
-        public static void Set( IntPtr dest, int offset, int length )
+        public static void Zero( IntPtr dest, int offset, int length )
         {
-            unsafe
-            {
-                byte* ptr = (byte*)dest.ToPointer();
-
-                for ( int i = 0; i < length; i++ )
-                {
-                    ptr[ i + offset ] = 0;
-                }
-            }
+			Set( dest, offset, length, 0 );
         }
-    }
+
+		/// <summary>
+		/// Sets the memory to a specified value starting at the specified offset for the specified byte length.
+		/// </summary>
+		/// <param name="dest">Destination pointer.</param>
+		/// <param name="offset">Byte offset to start.</param>
+		/// <param name="length">Number of bytes to set.</param>
+		public static void Set( IntPtr dest, int offset, int length, byte value )
+		{
+			unsafe
+			{
+				byte* ptr = (byte*)dest.ToPointer();
+
+				for ( int i = 0; i < length; i++ )
+				{
+					ptr[ i + offset ] = value;
+				}
+			}
+		}
+	}
 }
