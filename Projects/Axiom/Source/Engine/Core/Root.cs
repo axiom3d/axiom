@@ -104,13 +104,16 @@ namespace Axiom.Core
 				logMgr.Write( info.ToString() );
 				logMgr.Write( "*-*-* Axiom Intializing" );
 
+				new PluginManager();
+
 				ArchiveManager.Instance.Initialize();
+
 				ResourceGroupManager.Instance.Initialize();
 
 				sceneManagerList = SceneManagerEnumerator.Instance;
 
-				MaterialManager.Instance.Initialize();
-				MeshManager.Instance.Initialize();
+				MaterialManager mat = MaterialManager.Instance;
+				MeshManager mesh = MeshManager.Instance;
 				SkeletonManager.Instance.Initialize();
 				new ParticleSystemManager();
 #if !XBOX360
@@ -132,7 +135,6 @@ namespace Axiom.Core
 				new HighLevelGpuProgramManager();
 				CompositorManager.Instance.Initialize();
 
-				new PluginManager();
 
 				PluginManager.Instance.LoadAll();
 			}
@@ -496,13 +498,13 @@ namespace Axiom.Core
 			if ( firstTimePostWindowInit )
 			{
 				// init material manager singleton, which parse sources for materials
-				//MaterialManager.Instance.Initialize();
+				MaterialManager.Instance.Initialize();
 
 				// init the particle system manager singleton
 				ParticleSystemManager.Instance.Initialize();
 
 				// init mesh manager
-				//MeshManager.Instance.Initialize();
+				MeshManager.Instance.Initialize();
 
 				firstTimePostWindowInit = false;
 			}
