@@ -34,6 +34,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using Axiom.Media;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -50,15 +52,33 @@ namespace Axiom.Graphics
 	/// </summary>
 	public abstract class MultiRenderTarget : RenderTarget
 	{
+		#region Fields and Properties
+
+		protected List<RenderTexture> boundSurfaces = new List<RenderTexture>();
+		public IList<RenderTexture> BoundSurfaces
+		{
+			get
+			{
+				return boundSurfaces;
+			}
+		}
+
+		#endregion Fields and Properties
+
 		#region Construction and Destruction
 
 		public MultiRenderTarget( string name )
 		{
+			Priority = RenderTargetPriority.RenderToTexture;
+			// Width and height is unknown with no targets attached
+			Width = Height = 0;
 		}
 
 		#endregion Construction and Destruction
 
 		#region Methods
+
+		#region BindSurface Method
 
 		/// <summary>
 		/// Bind a surface to a certain attachment point.
@@ -70,25 +90,53 @@ namespace Axiom.Graphics
 		/// - Not all bound surfaces have the same size
 		/// - Not all bound surfaces have the same internal format 
 		/// </remarks>
-		public abstract void BindSurface( int attachment, RenderTexture target);
+		public void BindSurface( int attachment, RenderTexture target )
+		{
+			for ( int i = boundSurfaces.Count; i <= attachment; ++i )
+			{
+				boundSurfaces.Add( null );
+			}
+			boundSurfaces[ attachment ] = target;
+
+			_bindSurface( attachment, target );
+		}
+		protected abstract void _bindSurface( int attachment, RenderTexture target );
+
+		#endregion BindSurface Method
+
+		#region UnbindSurface Method
 
 		/// <summary>
 		/// Unbind Attachment
 		/// </summary>
 		/// <param name="attachment"></param>
-		public abstract void unbindSurface(int attachment);
+		public void UnbindSurface( int attachment )
+		{
+			if ( attachment < boundSurfaces.Count )
+				boundSurfaces[ attachment ] = null;
+			_unbindSurface( attachment );
+		}
+		protected abstract void _unbindSurface( int attachment );
+
+		#endregion UnbindSurface Method
 
 		#endregion Methods
 
 		#region RenderTarget Implementation
 
 		/// <summary>
-		/// Error throwing implementation, it's not possible to write a MultiRenderTarget to disk. 
+		/// Error throwing implementation, it's not possible to copy a MultiRenderTarget.
 		/// </summary>
 		/// <param name="?"></param>	
-		public override void Save(System.IO.Stream stream)
+		public override void CopyContentsToMemory( PixelBox pb, FrameBuffer buffer )
 		{
- 			throw new NotSupportedException("It's not possible to write a MultiRenderTarget to disk.");
+			throw new NotSupportedException( "It's not possible to copy a MultiRenderTarget." );
+		}
+
+		/// Irrelevant implementation since cannot copy
+		protected override PixelFormat suggestPixelFormat()
+		{
+			return PixelFormat.Unknown;
 		}
 
 		#endregion RenderTarget Implementation

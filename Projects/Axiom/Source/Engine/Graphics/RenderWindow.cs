@@ -197,7 +197,7 @@ namespace Axiom.Graphics
         {
 			
             // render windows are low priority
-            this.Priority = RenderTargetPriority.Low;
+            this.Priority = RenderTargetPriority.Default;
         }
 
         #endregion
@@ -236,30 +236,6 @@ namespace Axiom.Graphics
 		public virtual void WindowMovedOrResized()
 		{
 		}
-
-        /// <summary>
-        ///		Swaps the frame buffers to display the next frame.
-        /// </summary>
-        /// <remarks>
-        ///		All render windows are float-buffered so that no
-        ///     'in-progress' versions of the scene are displayed
-        ///      during rendering. Once rendering has completed (to
-        ///		an off-screen version of the window) the buffers
-        ///		are swapped to display the new frame.
-        ///	</remarks>
-        /// <param name="pWaitForVSync">
-        ///		If true, the system waits for the
-        ///		next vertical blank period (when the CRT beam turns off
-        ///		as it travels from bottom-right to top-left at the
-        ///		end of the pass) before flipping. If false, flipping
-        ///		occurs no matter what the beam position. Waiting for
-        ///		a vertical blank can be slower (and limits the
-        ///		framerate to the monitor refresh rate) but results
-        ///		in a steadier image with no 'tearing' (a flicker
-        ///		resulting from flipping buffers when the beam is
-        ///		in the progress of drawing the last frame). 
-        ///</param>
-        public abstract void SwapBuffers( bool waitForVSync );
 
         #endregion
 
