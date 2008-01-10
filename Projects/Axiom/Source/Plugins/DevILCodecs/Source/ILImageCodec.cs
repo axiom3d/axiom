@@ -41,6 +41,7 @@ using Axiom.Math.Collections;
 using Axiom.Media;
 
 using Tao.DevIl;
+using System.Runtime.InteropServices;
 
 #endregion Namespace Declarations
 
@@ -83,25 +84,33 @@ namespace Axiom.Plugins.DevILCodecs
 			input.Read( buffer, 0, buffer.Length );
 
 			ImageData data = (ImageData)codecData;
-			Pair formatBpp = ConvertToILFormat( data.format );
 
-			int format = (int)formatBpp.first;
-			byte bytesPerPixel = (byte)( (int)formatBpp.second );
+			GCHandle bufHandle = GCHandle.Alloc( buffer, GCHandleType.Pinned );
+			PixelBox src = new PixelBox( data.width, data.height, data.depth, data.format, bufHandle.AddrOfPinnedObject() );
 
-			// stuff the data into the image
-			Il.ilTexImage( data.width, data.height, 1, bytesPerPixel, format, Il.IL_UNSIGNED_BYTE, buffer );
-
-			if ( data.flip )
+			try
 			{
-				// flip the image
-				Ilu.iluFlipImage();
+				// Convert image from Axiom to current IL image
+				ILUtil.ConvertToIL( src );
 			}
+			catch ( Exception ex )
+			{
+				LogManager.Instance.Write( "IL Failed image conversion :", ex.Message );
+			}
+
+			// flip the image
+			Ilu.iluFlipImage();
 
 			// save the image to file
 			Il.ilSaveImage( fileName );
 
-			// delete the image
-			Il.ilDeleteImages( 1, ref imageID );
+			if ( bufHandle.IsAllocated )
+				bufHandle.Free();
+
+			int error = Il.ilGetError();
+
+			if ( error != Il.IL_NO_ERROR )
+				LogManager.Instance.Write( "IL Error, could not save file: {0} : {1}", fileName, Ilu.iluErrorString( error ) );
 		}
 
 		public override object Decode( Stream input, Stream output, params object[] args )
@@ -139,7 +148,7 @@ namespace Axiom.Plugins.DevILCodecs
 			data.height = Il.ilGetInteger( Il.IL_IMAGE_HEIGHT );
 			data.depth = Il.ilGetInteger( Il.IL_IMAGE_DEPTH );
 			data.numMipMaps = Il.ilGetInteger( Il.IL_NUM_MIPMAPS );
-			data.format = ConvertFromILFormat( format, imageType );
+			data.format = ILUtil.Convert( format, imageType );
 			data.size = data.width * data.height * bytesPerPixel;
 
 			// get the decoded data
@@ -184,201 +193,6 @@ namespace Axiom.Plugins.DevILCodecs
 
 				isInitialized = true;
 			}
-		}
-
-		/// <summary>
-		///    Converts a PixelFormat enum to a pair with DevIL format enum and bytesPerPixel.
-		/// </summary>
-		/// <param name="format"></param>
-		/// <returns></returns>
-		public Pair ConvertToILFormat( PixelFormat format )
-		{
-			switch ( format )
-			{
-				case PixelFormat.L8:
-				case PixelFormat.A8:
-					return new Pair( Il.IL_LUMINANCE, 1 );
-				case PixelFormat.R5G6B5:
-					return new Pair( Il.IL_RGB, 2 );
-				case PixelFormat.B5G6R5:
-					return new Pair( Il.IL_BGR, 2 );
-				case PixelFormat.A4R4G4B4:
-					return new Pair( Il.IL_RGBA, 2 );
-				case PixelFormat.B4G4R4A4:
-					return new Pair( Il.IL_BGRA, 2 );
-				case PixelFormat.R8G8B8:
-					return new Pair( Il.IL_RGB, 3 );
-				case PixelFormat.B8G8R8:
-					return new Pair( Il.IL_BGR, 3 );
-				case PixelFormat.A8R8G8B8:
-					return new Pair( Il.IL_RGBA, 4 );
-				case PixelFormat.B8G8R8A8:
-					return new Pair( Il.IL_BGRA, 4 );
-			}
-
-			return new Pair( -1, -1 );
-		}
-
-		/// <summary>
-		///    Converts a DevIL format enum to a PixelFormat enum.
-		/// </summary>
-		/// <param name="format"></param>
-		/// <param name="bytesPerPixel"></param>
-		/// <returns></returns>
-		public PixelFormat ConvertFromILFormat( int imageFormat, int imageType )
-		{
-			PixelFormat fmt = PixelFormat.Unknown;
-			switch ( imageFormat )
-			{
-				/* Compressed formats -- ignore type */
-				case Il.IL_DXT1:
-					fmt = PixelFormat.DXT1;
-					break;
-				case Il.IL_DXT2:
-					fmt = PixelFormat.DXT2;
-					break;
-				case Il.IL_DXT3:
-					fmt = PixelFormat.DXT3;
-					break;
-				case Il.IL_DXT4:
-					fmt = PixelFormat.DXT4;
-					break;
-				case Il.IL_DXT5:
-					fmt = PixelFormat.DXT5;
-					break;
-				/* Normal formats */
-				case Il.IL_RGB:
-					switch ( imageType )
-					{
-						case Il.IL_FLOAT:
-							fmt = PixelFormat.FLOAT32_RGB;
-							break;
-						case Il.IL_UNSIGNED_SHORT:
-						case Il.IL_SHORT:
-							fmt = PixelFormat.SHORT_RGBA;
-							break;
-						default:
-							fmt = PixelFormat.BYTE_RGB;
-							break;
-					}
-					break;
-				case Il.IL_BGR:
-					switch ( imageType )
-					{
-						case Il.IL_FLOAT:
-							fmt = PixelFormat.FLOAT32_RGB;
-							break;
-						case Il.IL_UNSIGNED_SHORT:
-						case Il.IL_SHORT:
-							fmt = PixelFormat.SHORT_RGBA;
-							break;
-						default:
-							fmt = PixelFormat.BYTE_BGR;
-							break;
-					}
-					break;
-				case Il.IL_RGBA:
-					switch ( imageType )
-					{
-						case Il.IL_FLOAT:
-							fmt = PixelFormat.FLOAT32_RGBA;
-							break;
-						case Il.IL_UNSIGNED_SHORT:
-						case Il.IL_SHORT:
-							fmt = PixelFormat.SHORT_RGBA;
-							break;
-						default:
-							fmt = PixelFormat.BYTE_RGBA;
-							break;
-					}
-					break;
-				case Il.IL_BGRA:
-					switch ( imageType )
-					{
-						case Il.IL_FLOAT:
-							fmt = PixelFormat.FLOAT32_RGBA;
-							break;
-						case Il.IL_UNSIGNED_SHORT:
-						case Il.IL_SHORT:
-							fmt = PixelFormat.SHORT_RGBA;
-							break;
-						default:
-							fmt = PixelFormat.BYTE_BGRA;
-							break;
-					}
-					break;
-				case Il.IL_LUMINANCE:
-					switch ( imageType )
-					{
-						case Il.IL_BYTE:
-						case Il.IL_UNSIGNED_BYTE:
-							fmt = PixelFormat.L8;
-							break;
-						default:
-							fmt = PixelFormat.L16;
-							break;
-					}
-					break;
-				case Il.IL_LUMINANCE_ALPHA:
-					fmt = PixelFormat.BYTE_LA;
-					break;
-			}
-			return fmt;
-			/*
-            switch ( bytesPerPixel )
-            {
-                case 1:
-                    return PixelFormat.L8;
-
-                case 2:
-                    switch ( format )
-                    {
-                        case Il.IL_BGR:
-                            return PixelFormat.B5G6R5;
-                        case Il.IL_RGB:
-                            return PixelFormat.R5G6B5;
-                        case Il.IL_BGRA:
-                            return PixelFormat.B4G4R4A4;
-                        case Il.IL_RGBA:
-                            return PixelFormat.A4R4G4B4;
-						case Il.IL_LUMINANCE_ALPHA:
-							return PixelFormat.BYTE_LA;
-                    }
-                    break;
-
-                case 3:
-                    switch ( format )
-                    {
-                        case Il.IL_BGR:
-                            return PixelFormat.B8G8R8;
-                        case Il.IL_RGB:
-                            return PixelFormat.R8G8B8;
-                    }
-                    break;
-
-                case 4:
-                    switch ( format )
-                    {
-                        case Il.IL_BGRA:
-                            return PixelFormat.B8G8R8A8;
-                        case Il.IL_RGBA:
-                            return PixelFormat.A8R8G8B8;
-                        case Il.IL_DXT1:
-                            return PixelFormat.DXT1;
-                        case Il.IL_DXT2:
-                            return PixelFormat.DXT2;
-                        case Il.IL_DXT3:
-                            return PixelFormat.DXT3;
-                        case Il.IL_DXT4:
-                            return PixelFormat.DXT4;
-                        case Il.IL_DXT5:
-                            return PixelFormat.DXT5;
-                    }
-                    break;
-            }
-
-            return PixelFormat.Unknown;
-			 * */
 		}
 
 		#endregion Methods
