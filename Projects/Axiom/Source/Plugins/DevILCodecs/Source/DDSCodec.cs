@@ -91,7 +91,7 @@ namespace Axiom.Plugins.DevILCodecs
             data.height = Il.ilGetInteger( Il.IL_IMAGE_HEIGHT );
             data.depth = Il.ilGetInteger( Il.IL_IMAGE_DEPTH );
             data.numMipMaps = Il.ilGetInteger( Il.IL_NUM_MIPMAPS );
-            data.format = ConvertFromILFormat( format, bytesPerPixel );
+			data.format = ILUtil.Convert( format, bytesPerPixel );
             data.size = data.width * data.height * bytesPerPixel;
 
             int dxtFormat = Il.ilGetInteger( Il.IL_DXTC_DATA_FORMAT );
@@ -118,7 +118,7 @@ namespace Axiom.Plugins.DevILCodecs
 
                 // this data is still compressed
                 data.size = dxtSize;
-                data.format = ConvertFromILFormat( dxtFormat, bytesPerPixel );
+				data.format = ILUtil.Convert( dxtFormat, bytesPerPixel );
                 data.flags |= ImageFlags.Compressed;
             }
             else

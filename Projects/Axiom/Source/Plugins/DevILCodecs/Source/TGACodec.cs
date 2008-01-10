@@ -95,7 +95,7 @@ namespace Axiom.Plugins.DevILCodecs
             data.height = Il.ilGetInteger( Il.IL_IMAGE_HEIGHT );
             data.depth = Il.ilGetInteger( Il.IL_IMAGE_DEPTH );
             data.numMipMaps = Il.ilGetInteger( Il.IL_NUM_MIPMAPS );
-            data.format = ConvertFromILFormat( format, bytesPerPixel );
+			data.format = ILUtil.Convert( format, bytesPerPixel );
             data.size = data.width * data.height * bytesPerPixel;
 
             // get the decoded data
@@ -132,7 +132,7 @@ namespace Axiom.Plugins.DevILCodecs
                 }
             }
 
-            data.format = ConvertFromILFormat( format, bytesPerPixel );
+			data.format = ILUtil.Convert( format, bytesPerPixel );
 
             // write the decoded data to the output stream
             output.Write( buffer, 0, buffer.Length );
