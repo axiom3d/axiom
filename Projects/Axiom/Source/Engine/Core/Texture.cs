@@ -562,6 +562,26 @@ namespace Axiom.Core
 
 		#endregion
 
+		#region FSAA Property
+
+		/// <summary></summary>
+		private int _fsaa = 0;
+		/// <summary></summary>
+		/// <ogre name="getFSAA" />
+		public int FSAA
+		{
+			get
+			{
+				return _fsaa;
+			}
+			protected set
+			{
+				_fsaa = value;
+			}
+		}
+
+		#endregion FSAA Property
+
 		/// <summary>
         ///    Specifies whether this texture is 32 bits or not.
         /// </summary>
