@@ -56,6 +56,12 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 		}
 
+		public static System.Drawing.Rectangle ToRectangle( Rectangle rect )
+		{
+			return new System.Drawing.Rectangle( new System.Drawing.Point( (int)rect.Left, (int)rect.Top ),
+												 new System.Drawing.Size( (int)rect.Width, (int)rect.Height ) );
+		}
+
 		public static System.Drawing.Color ToColor( ColorEx color)
 		{
 			return System.Drawing.Color.FromArgb( (int)( color.a * 255.0f ), (int)( color.r * 255.0f ), (int)( color.g * 255.0f ), (int)( color.b * 255.0f ) );

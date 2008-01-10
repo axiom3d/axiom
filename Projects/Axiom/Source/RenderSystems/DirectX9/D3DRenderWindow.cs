@@ -46,6 +46,7 @@ using Axiom.Media;
 
 using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
+using System.Runtime.InteropServices;
 
 #endregion Namespace Declarations
 
@@ -281,39 +282,39 @@ namespace Axiom.RenderSystems.DirectX9
 				// parentWindowHandle		-> parentHWnd
 				if ( miscParams.ContainsKey( "parentWindowHandle" ) )
 				{
-                    object handle = miscParams[ "parentWindowHandle" ];
-                    IntPtr ptr = IntPtr.Zero;
-                    if ( handle.GetType() == typeof( IntPtr ) )
-                    {
-                        ptr = (IntPtr)handle;
-                    }
-                    else if ( handle.GetType() == typeof( System.Int32 ) )
-                    {
-                        ptr = new IntPtr( (int)handle );
-                    }
-                    parentHWnd = SWF.Control.FromHandle( ptr );
-                    //parentHWnd = (SWF.Control)miscParams[ "parentWindowHandle" ];
+					object handle = miscParams[ "parentWindowHandle" ];
+					IntPtr ptr = IntPtr.Zero;
+					if ( handle.GetType() == typeof( IntPtr ) )
+					{
+						ptr = (IntPtr)handle;
+					}
+					else if ( handle.GetType() == typeof( System.Int32 ) )
+					{
+						ptr = new IntPtr( (int)handle );
+					}
+					parentHWnd = SWF.Control.FromHandle( ptr );
+					//parentHWnd = (SWF.Control)miscParams[ "parentWindowHandle" ];
 				}
 
 				// externalWindowHandle		-> externalHWnd
 				if ( miscParams.ContainsKey( "externalWindowHandle" ) )
 				{
-                    object handle = miscParams[ "externalWindowHandle" ];
-                    IntPtr ptr = IntPtr.Zero;
-                    if ( handle.GetType() == typeof( IntPtr ) )
-                    {
-                        ptr = (IntPtr)handle;
-                    }
-                    else if ( handle.GetType() == typeof( System.Int32 ) )
-                    {
-                        ptr = new IntPtr( (int)handle );
-                    }
-                    externalHWnd = SWF.Control.FromHandle( ptr );
-                    //externalHWnd = (SWF.Control)miscParams["externalWindowHandle"];
-                    //if ( !( externalHWnd is SWF.Form ) && !( externalHWnd is SWF.PictureBox ) )
-                    //{
-                    //    throw new Exception( "externalWindowHandle must be either a Form or a PictureBox control." );
-                    //}
+					object handle = miscParams[ "externalWindowHandle" ];
+					IntPtr ptr = IntPtr.Zero;
+					if ( handle.GetType() == typeof( IntPtr ) )
+					{
+						ptr = (IntPtr)handle;
+					}
+					else if ( handle.GetType() == typeof( System.Int32 ) )
+					{
+						ptr = new IntPtr( (int)handle );
+					}
+					externalHWnd = SWF.Control.FromHandle( ptr );
+					//externalHWnd = (SWF.Control)miscParams["externalWindowHandle"];
+					//if ( !( externalHWnd is SWF.Form ) && !( externalHWnd is SWF.PictureBox ) )
+					//{
+					//    throw new Exception( "externalWindowHandle must be either a Form or a PictureBox control." );
+					//}
 				}
 
 				// vsync	[parseBool]
@@ -663,7 +664,7 @@ namespace Axiom.RenderSystems.DirectX9
 						}
 					}
 
-                    device.DeviceResizing += new System.ComponentModel.CancelEventHandler(OnDeviceResizing);
+					device.DeviceResizing += new System.ComponentModel.CancelEventHandler( OnDeviceResizing );
 
 				}
 				// update device in driver
@@ -674,7 +675,7 @@ namespace Axiom.RenderSystems.DirectX9
 				// release immediately so we don't hog them
 				_renderZBuffer.ReleaseGraphics();
 
-                device.DeviceReset += new EventHandler(OnResetDevice);
+				device.DeviceReset += new EventHandler( OnResetDevice );
 
 			}
 		}
@@ -793,7 +794,7 @@ namespace Axiom.RenderSystems.DirectX9
 				return;
 
 			if ( _renderSurface != null )
-			_renderSurface.ReleaseGraphics();
+				_renderSurface.ReleaseGraphics();
 
 			if ( _isSwapChain )
 			{
@@ -923,117 +924,141 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		/// <summary>
-		///     Saves the window contents to a stream.
-		/// </summary>
-		/// <param name="stream">Stream to write the window contents to.</param>
-		public override void Save( Stream stream )
+		public override void CopyContentsToMemory( PixelBox dst, FrameBuffer buffer )
 		{
-			D3D.Device device = _driver.D3DDevice;
-			D3D.DisplayMode mode = device.DisplayMode;
-
-			D3D.SurfaceDescription desc = new D3D.SurfaceDescription();
-			desc.Width = mode.Width;
-			desc.Height = mode.Height;
-			desc.Format = D3D.Format.A8R8G8B8;
-
-			// create a temp surface which will hold the screen image
-			D3D.Surface surface = device.CreateOffscreenPlainSurface(
-				mode.Width, mode.Height, D3D.Format.A8R8G8B8, D3D.Pool.SystemMemory );
-
-			// get the entire front buffer.  This is SLOW!!
-			device.GetFrontBufferData( 0, surface );
-
-			// if not fullscreen, the front buffer contains the entire desktop image.  we need to grab only the portion
-			// that contains our render window
-			if ( !IsFullScreen )
+			
+			if ( ( dst.Left < 0 ) || ( dst.Right > Width ) ||
+				( dst.Top < 0 ) || ( dst.Bottom > Height ) ||
+				( dst.Front != 0 ) || ( dst.Back != 1 ) )
 			{
-				// whatever our target SWF.Control is, we need to walk up the chain and find the parent form
-				SWF.Control Control = (SWF.Control)_window;
+				throw new Exception( "Invalid box." );
+			}
 
-				while ( !( Control is SWF.Form ) )
-				{
-					Control = Control.Parent;
-				}
+			D3D.Device device = Driver.D3DDevice;
+			D3D.Surface surface, tmpSurface = null;
+			DX.GraphicsStream stream;
+			int pitch;
+			D3D.SurfaceDescription desc;
+			D3D.LockedBox lockedBox;
+			
+			if ( buffer == RenderTarget.FrameBuffer.Auto )
+			{
+				buffer = RenderTarget.FrameBuffer.Front;
+			}
 
-				SWF.Form form = Control as SWF.Form;
+			if ( buffer == RenderTarget.FrameBuffer.Front )
+			{
+				D3D.DisplayMode mode = device.DisplayMode;
 
-				// get the actual screen location of the form
-				System.Drawing.Rectangle rect = form.RectangleToScreen( form.ClientRectangle );
-
-				desc.Width = Width;
-				desc.Height = Height;
+				desc = new D3D.SurfaceDescription();
+				desc.Width = mode.Width;
+				desc.Height = mode.Height;
 				desc.Format = D3D.Format.A8R8G8B8;
 
-				// create a temp surface that is sized the same as our target SWF.Control
-				D3D.Surface tmpSurface = device.CreateOffscreenPlainSurface( rect.Width, rect.Height, D3D.Format.A8R8G8B8, D3D.Pool.Default );
+				// create a temp surface which will hold the screen image
+				surface = device.CreateOffscreenPlainSurface( mode.Width, mode.Height, D3D.Format.A8R8G8B8, D3D.Pool.SystemMemory );
 
-				// copy the data from the front buffer to the window sized surface
-				device.UpdateSurface( surface, rect, tmpSurface );
+				// get the entire front buffer.  This is SLOW!!
+				device.GetFrontBufferData( 0, surface );
 
-				// dispose of the prior surface
-				surface.Dispose();
-
-				surface = tmpSurface;
-			}
-
-			int pitch;
-
-			// lock the surface to grab the data
-			DX.GraphicsStream graphStream = surface.LockRectangle( D3D.LockFlags.ReadOnly | D3D.LockFlags.NoSystemLock, out pitch );
-
-			// create an RGB buffer
-			byte[] buffer = new byte[ Width * Height * 3 ];
-
-			int offset = 0, line = 0, count = 0;
-
-			// gotta copy that data manually since it is in another format (sheesh!)
-			unsafe
-			{
-				byte* data = (byte*)graphStream.InternalData;
-
-				for ( int y = 0; y < desc.Height; y++ )
+				if ( IsFullScreen )
 				{
-					line = y * pitch;
-
-					for ( int x = 0; x < desc.Width; x++ )
+					if ( ( dst.Left == 0 ) && ( dst.Right == Width ) && ( dst.Top == 0 ) && ( dst.Bottom == Height ) )
 					{
-                        switch (desc.Format)
-                        {
-                            case Microsoft.DirectX.Direct3D.Format.A8R8G8B8:
-                            case Microsoft.DirectX.Direct3D.Format.X8R8G8B8:
-                                {
-                                    offset = x * 4;
-                                    break;
-                                }
-                            case Microsoft.DirectX.Direct3D.Format.R8G8B8:
-                                {
-                                    offset = x * 3;
-                                    break;
-                                }
-                        }
-
-						int pixel = line + offset;
-
-						// Actual format is BRGA for some reason
-						buffer[ count++ ] = data[ pixel + 2 ];
-						buffer[ count++ ] = data[ pixel + 1 ];
-						buffer[ count++ ] = data[ pixel + 0 ];
+						stream = surface.LockRectangle( D3D.LockFlags.ReadOnly | D3D.LockFlags.NoSystemLock, out pitch );
 					}
+					else
+					{
+						Rectangle rect = new Rectangle();
+						rect.Left = dst.Left;
+						rect.Right = dst.Right;
+						rect.Top= dst.Top;
+						rect.Bottom = dst.Bottom;
+
+						stream = surface.LockRectangle( D3DHelper.ToRectangle( rect ), D3D.LockFlags.ReadOnly | D3D.LockFlags.NoSystemLock, out pitch );
+					}
+
+				}
+				else
+				{
+					Rectangle srcRect = new Rectangle();
+					srcRect.Left = dst.Left;
+					srcRect.Right = dst.Right;
+					srcRect.Top = dst.Top;
+					srcRect.Bottom = dst.Bottom;
+					// Adjust Rectangle for Window Menu and Chrome
+					SWF.Control control = (SWF.Control)_window;
+					System.Drawing.Point point = new System.Drawing.Point();
+					point.X = (int)srcRect.Left;
+					point.Y = (int)srcRect.Top;
+					point = control.PointToScreen( point );
+					srcRect.Top = point.Y;
+					srcRect.Left = point.X;
+					srcRect.Bottom += point.Y;
+					srcRect.Right += point.X;
+
+					desc.Width = (int)(srcRect.Right - srcRect.Left);
+					desc.Height = (int)(srcRect.Bottom - srcRect.Top);
+
+					stream = surface.LockRectangle( D3DHelper.ToRectangle(srcRect), D3D.LockFlags.ReadOnly | D3D.LockFlags.NoSystemLock, out pitch );
 				}
 			}
+			else
+			{
+				surface = device.GetBackBuffer( 0, 0, D3D.BackBufferType.Mono );
+				desc = surface.Description;
 
-			surface.UnlockRectangle();
+				tmpSurface = device.CreateOffscreenPlainSurface( desc.Width, desc.Height, desc.Format, D3D.Pool.SystemMemory );
 
-			// dispose of the surface
+				if ( desc.MultiSampleType == D3D.MultiSampleType.None )
+				{
+					device.GetRenderTargetData( surface, tmpSurface );
+				}
+				else
+				{
+					D3D.Surface stretchSurface;
+					Rectangle rect = new Rectangle();
+					stretchSurface = device.CreateRenderTarget( desc.Width, desc.Height, desc.Format, D3D.MultiSampleType.None, 0, false );
+					device.StretchRectangle( tmpSurface, D3DHelper.ToRectangle( rect ), stretchSurface, D3DHelper.ToRectangle( rect ), D3D.TextureFilter.None );
+					device.GetRenderTargetData( stretchSurface, tmpSurface );
+					stretchSurface.Dispose();
+				}
+
+				if ( ( dst.Left == 0 ) && ( dst.Right == Width ) && ( dst.Top == 0 ) && ( dst.Bottom == Height ) )
+				{
+					stream = tmpSurface.LockRectangle( D3D.LockFlags.ReadOnly | D3D.LockFlags.NoSystemLock, out pitch );
+				}
+				else
+				{
+					Rectangle rect = new Rectangle();
+					rect.Left = dst.Left;
+					rect.Right = dst.Right;
+					rect.Top = dst.Top;
+					rect.Bottom = dst.Bottom;
+
+					stream = tmpSurface.LockRectangle( D3DHelper.ToRectangle(rect), D3D.LockFlags.ReadOnly | D3D.LockFlags.NoSystemLock, out pitch );
+				}
+
+			}
+
+			PixelFormat format = D3DHelper.ConvertEnum( desc.Format );
+
+			if ( format == PixelFormat.Unknown )
+			{
+				if ( tmpSurface != null )
+					tmpSurface.Dispose();
+				throw new Exception( "Unsupported format" );
+			}
+
+			PixelBox src = new PixelBox( dst.Width, dst.Height, 1, format, stream.InternalData );
+			src.RowPitch = pitch / PixelUtil.GetNumElemBytes( format );
+			src.SlicePitch = desc.Height * src.RowPitch;
+
+			PixelConverter.BulkPixelConversion( src, dst );
+
 			surface.Dispose();
-
-			// gotta flip the image real fast
-			Image image = Image.FromDynamicImage( buffer, Width, Height, PixelFormat.R8G8B8 );
-			image.FlipAroundX();
-
-			// write the data to the stream provided
-			stream.Write( image.Data, 0, image.Data.Length );
+			if ( tmpSurface != null )
+				tmpSurface.Dispose();
 		}
 
 		private void OnResetDevice( object sender, EventArgs e )
@@ -1047,10 +1072,10 @@ namespace Axiom.RenderSystems.DirectX9
 			resetDevice.RenderState.Lighting = true;    //make sure lighting is enabled
 		}
 
-        private void OnDeviceResizing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            e.Cancel = true;
-        }
+		private void OnDeviceResizing( object sender, System.ComponentModel.CancelEventArgs e )
+		{
+			e.Cancel = true;
+		}
 
 
 		public override void Update( bool swapBuffers )
