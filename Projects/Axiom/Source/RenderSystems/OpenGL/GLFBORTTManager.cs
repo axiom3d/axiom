@@ -57,7 +57,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		/// Extra GL Constant
 		/// </summary>
-		const int GL_DEPTH24_STENCIL8_EXT = 0x88F0;
+		internal const int GL_DEPTH24_STENCIL8_EXT = 0x88F0;
 
 		/// <summary>
 		/// Frame Buffer Object properties for a certain texture format.
@@ -184,7 +184,7 @@ namespace Axiom.RenderSystems.OpenGL
 													Gl.GL_DEPTH_COMPONENT16,
 													Gl.GL_DEPTH_COMPONENT24,    // Prefer 24 bit depth
 													Gl.GL_DEPTH_COMPONENT32,
-													//Gl.GL_DEPTH24_STENCIL8_EXT // packed depth / stencil
+													GL_DEPTH24_STENCIL8_EXT		// packed depth / stencil
 												};
 
 		private int[] _depthBits = new int[] { 0, 16, 24, 32, 24 };
@@ -337,7 +337,7 @@ namespace Axiom.RenderSystems.OpenGL
 					retval.ZOffset = 0;
 				}
 			}
-			LogManager.Instance.Write( "Requested renderbuffer with format {0} of {1)x{2} : {3}", format, width, height, retval.Buffer );
+			LogManager.Instance.Write( "Requested renderbuffer with format " + format.ToString() + " of " + width.ToString() + "x" + height.ToString() + "." );
 			return retval;
 		}
 
@@ -348,7 +348,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="surface"></param>
 		public void RequestRenderBuffer( GLSurfaceDesc surface )
 		{
-			if ( surface.Buffer != null )
+			if ( surface.Buffer == null )
 				return;
 
 			RBFormat key = new RBFormat( surface.Buffer.GLFormat, surface.Buffer.Width, surface.Buffer.Height );

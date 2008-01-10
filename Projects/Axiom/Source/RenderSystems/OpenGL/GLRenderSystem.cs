@@ -208,19 +208,19 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-		public override void ClearFrameBuffer( FrameBuffer buffers, ColorEx color, float depth, int stencil )
+		public override void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, float depth, int stencil )
 		{
 			int flags = 0;
 
-			if ( ( buffers & FrameBuffer.Color ) > 0 )
+			if ( ( buffers & FrameBufferType.Color ) > 0 )
 			{
 				flags |= Gl.GL_COLOR_BUFFER_BIT;
 			}
-			if ( ( buffers & FrameBuffer.Depth ) > 0 )
+			if ( ( buffers & FrameBufferType.Depth ) > 0 )
 			{
 				flags |= Gl.GL_DEPTH_BUFFER_BIT;
 			}
-			if ( ( buffers & FrameBuffer.Stencil ) > 0 )
+			if ( ( buffers & FrameBufferType.Stencil ) > 0 )
 			{
 				flags |= Gl.GL_STENCIL_BUFFER_BIT;
 			}

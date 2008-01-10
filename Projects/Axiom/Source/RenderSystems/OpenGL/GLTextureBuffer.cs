@@ -123,7 +123,7 @@ namespace Axiom.RenderSystems.OpenGL
 				return;
 
 			// Is this a render target?
-			if ( ( (TextureUsage)Usage & TextureUsage.RenderTarget ) != 0 )
+			if ( ( (TextureUsage)Usage & TextureUsage.RenderTarget ) == TextureUsage.RenderTarget )
 			{
 				// Create render target for each slice
 				_sliceTRT.Capacity = Depth;
@@ -181,7 +181,7 @@ namespace Axiom.RenderSystems.OpenGL
 				base.BlitFromMemory( src, dstBox );
 				return;
 			}
-			
+
 		}
 
 		protected override void dispose( bool disposeManagedResources )
@@ -211,9 +211,42 @@ namespace Axiom.RenderSystems.OpenGL
 			return _sliceTRT[ offset ];
 		}
 
-		protected override void download( PixelBox box )
+		protected override void download( PixelBox data )
 		{
-			base.download( box );
+			if ( data.Width != Width ||
+				data.Height != Height ||
+				data.Depth != Depth )
+				throw new ArgumentException( "only download of entire buffer is supported by GL" );
+
+			Gl.glBindTexture( _target, _textureId );
+			if ( PixelUtil.IsCompressed( data.Format ) )
+			{
+				if ( data.Format != Format || !data.IsConsecutive )
+					throw new ArgumentException( "Compressed images must be consecutive, in the source format" );
+				// Data must be consecutive and at beginning of buffer as PixelStorei not allowed
+				// for compressed formate
+				Gl.glGetCompressedTexImageARB( _faceTarget, _level, data.Data );
+			}
+			else
+			{
+				if ( data.Width != data.RowPitch )
+					Gl.glPixelStorei( Gl.GL_PACK_ROW_LENGTH, data.RowPitch );
+				if ( data.Height * data.Width != data.SlicePitch )
+					Gl.glPixelStorei( Gl.GL_PACK_IMAGE_HEIGHT, ( data.SlicePitch / data.Width ) );
+				if ( ( (data.Width * PixelUtil.GetNumElemBytes( data.Format ) ) & 3) != 0 )
+				{
+					// Standard alignment of 4 is not right
+					Gl.glPixelStorei( Gl.GL_PACK_ALIGNMENT, 1 );
+				}
+				// We can only get the entire texture
+				Gl.glGetTexImage( _faceTarget, _level,
+								  GLPixelUtil.GetGLOriginFormat( data.Format ), GLPixelUtil.GetGLOriginDataType( data.Format ),
+								  data.Data );
+				// Restore defaults
+				Gl.glPixelStorei( Gl.GL_PACK_ROW_LENGTH, 0 );
+				Gl.glPixelStorei( Gl.GL_PACK_IMAGE_HEIGHT, 0 );
+				Gl.glPixelStorei( Gl.GL_PACK_ALIGNMENT, 4 );
+			}
 		}
 
 		protected override void upload( PixelBox box )
@@ -221,7 +254,7 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glBindTexture( _target, _textureId );
 			if ( PixelUtil.IsCompressed( box.Format ) )
 			{
-				if ( box.Format != Format || !box.Consecutive )
+				if ( box.Format != Format || !box.IsConsecutive )
 					throw new ArgumentException( "Compressed images must be consecutive, in the source format" );
 
 				int format = GLPixelUtil.GetClosestGLInternalFormat( Format );
