@@ -43,6 +43,8 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
+using Real = System.Single;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Math
@@ -624,6 +626,7 @@ namespace Axiom.Math
 			return Utility.Abs( x - other.x ) < limit && Utility.Abs( y - other.y ) < limit && Utility.Abs( z - other.z ) < limit;
 		}
 
+
 		/// <summary>
 		///		Gets the shortest arc quaternion to rotate this vector to the destination vector. 
 		/// </summary>
@@ -633,9 +636,25 @@ namespace Axiom.Math
 		///	</remarks>
 		public Quaternion GetRotationTo( Vector3 destination )
 		{
+			return GetRotationTo( destination, Vector3.Zero );
+		}
+
+		/// <summary>
+		/// Gets the shortest arc quaternion to rotate this vector to the destination vector. 
+		/// </summary>
+		/// <param name="destination"></param>
+		/// <param name="fallbackAxis"></param>
+		/// <returns></returns>
+		/// <remarks>
+		///		Don't call this if you think the dest vector can be close to the inverse
+		///		of this vector, since then ANY axis of rotation is ok.
+		///	</remarks>
+		public Quaternion GetRotationTo( Vector3 destination, Vector3 fallbackAxis )
+		{
 			// Based on Stan Melax's article in Game Programming Gems
 			Quaternion q = new Quaternion();
 
+			// Copy, since cannot modify local
 			Vector3 v0 = new Vector3( this.x, this.y, this.z );
 			Vector3 v1 = destination;
 
@@ -646,8 +665,6 @@ namespace Axiom.Math
 			// get the cross product of the vectors
 			Vector3 c = v0.Cross( v1 );
 
-			// If the cross product approaches zero, we get unstable because ANY axis will do
-			// when v0 == -v1
 			float d = v0.Dot( v1 );
 
 			// If dot == 1, vectors are the same
@@ -656,14 +673,34 @@ namespace Axiom.Math
 				return Quaternion.Identity;
 			}
 
-			float s = Utility.Sqrt( ( 1 + d ) * 2 );
-			float inverse = 1 / s;
+			if ( d < ( 1e-6f - 1.0f ) )
+			{
+				if ( fallbackAxis != Vector3.Zero )
+				{
+					// rotate 180 degrees about the fallback axis
+					q = Quaternion.FromAngleAxis( Utility.PI, fallbackAxis );
+				}
+				else
+				{
+					// Generate an axis
+					Vector3 axis = Vector3.UnitX.Cross( this );
+					if ( axis.IsZeroLength ) // pick another if colinear
+						axis = Vector3.UnitY.Cross( this );
+					axis.Normalize();
+					q = Quaternion.FromAngleAxis( Utility.PI, axis );
+				}
+			}
+			else
+			{
 
-			q.x = c.x * inverse;
-			q.y = c.y * inverse;
-			q.z = c.z * inverse;
-			q.w = s * 0.5f;
+				float s = Utility.Sqrt( ( 1 + d ) * 2 );
+				float inverse = 1 / s;
 
+				q.x = c.x * inverse;
+				q.y = c.y * inverse;
+				q.z = c.z * inverse;
+				q.w = s * 0.5f;
+			}
 			return q;
 		}
 
@@ -725,6 +762,18 @@ namespace Axiom.Math
 				return this.x == 0f && this.y == 0f && this.z == 0f;
 			}
 		}
+
+		/// <summary>
+		/// Returns true if this vector is zero length.
+		/// </summary>
+        public bool IsZeroLength
+        {
+			get
+			{
+				Real sqlen = ( x * x ) + ( y * y ) + ( z * z );
+				return ( sqlen < ( 1e-06f * 1e-06f ) );
+			}
+        }
 
 		/// <summary>
 		///    Gets the length (magnitude) of this Vector3.  The Sqrt operation is expensive, so 
