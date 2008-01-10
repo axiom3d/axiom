@@ -785,22 +785,22 @@ namespace Axiom.Graphics
 								switch ( token )
 								{
 									case "buffers":
-										FrameBuffer fb = (FrameBuffer)0;
+										FrameBufferType fb = (FrameBufferType)0;
 										foreach ( string cb in args )
 										{
 											switch ( cb )
 											{
 												case "colour":
-													fb |= FrameBuffer.Color;
+													fb |= FrameBufferType.Color;
 													break;
 												case "color":
-													fb |= FrameBuffer.Color;
+													fb |= FrameBufferType.Color;
 													break;
 												case "depth":
-													fb |= FrameBuffer.Depth;
+													fb |= FrameBufferType.Depth;
 													break;
 												case "stencil":
-													fb |= FrameBuffer.Stencil;
+													fb |= FrameBufferType.Stencil;
 													break;
 												default:
 													LogError( context, "When parsing pass clear buffers options, illegal option '{0}'", cb );

@@ -86,7 +86,7 @@ namespace Axiom.Graphics
 		///<summary>
 		///    Clear buffers (in case of CompositorPassType.Clear)
 		///</summary>
-		protected FrameBuffer clearBuffers;
+		protected FrameBufferType clearBuffers;
 		///<summary>
 		///    Clear colour (in case of CompositorPassType.Clear)
 		///</summary>
@@ -128,7 +128,7 @@ namespace Axiom.Graphics
 			identifier = 0;
 			firstRenderQueue = RenderQueueGroupID.SkiesEarly;
 			lastRenderQueue = RenderQueueGroupID.SkiesLate;
-			clearBuffers = FrameBuffer.Color | FrameBuffer.Depth;
+			clearBuffers = FrameBufferType.Color | FrameBufferType.Depth;
 			clearColor = new ColorEx( 0f, 0f, 0f, 0f );
 			clearDepth = 1.0f;
 			clearStencil = 0;
@@ -223,7 +223,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-		public FrameBuffer ClearBuffers
+		public FrameBufferType ClearBuffers
 		{
 			get
 			{

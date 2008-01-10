@@ -180,7 +180,7 @@ namespace Axiom.Graphics
 		///<summary>
 		///    Old viewport settings
 		///</summary>
-		protected FrameBuffer oldClearEveryFrameBuffers;
+		protected FrameBufferType oldClearEveryFrameBuffers;
 		///<summary>
 		///    Store old scene visibility mask
 		///</summary>
