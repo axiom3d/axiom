@@ -101,7 +101,7 @@ namespace Axiom.Demos
 
         protected void TakeScreenshot( string fileName )
         {
-            window.Save( fileName );
+            window.WriteContentsToFile( fileName );
         }
 
         #endregion Protected Methods
