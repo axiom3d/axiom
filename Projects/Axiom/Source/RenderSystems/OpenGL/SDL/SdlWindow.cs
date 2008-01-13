@@ -41,6 +41,7 @@ using Axiom.Graphics;
 using Tao.OpenGl;
 using Tao.Sdl;
 using System.Collections.Generic;
+using Axiom.Media;
 
 #endregion Namespace Declarations
 
@@ -195,11 +196,6 @@ namespace Axiom.RenderSystems.OpenGL
 
         }
 
-        public void SaveToFile( string fileName )
-        {
-
-        }
-
         /// <summary>
         ///		Update the render window.
         /// </summary>
@@ -209,15 +205,10 @@ namespace Axiom.RenderSystems.OpenGL
             Sdl.SDL_GL_SwapBuffers();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="stream"></param>
-        public override void Save( System.IO.Stream stream )
-        {
-        }
-
-
+		public override void CopyContentsToMemory( PixelBox pb, FrameBuffer buffer )
+		{
+			throw new NotImplementedException();
+		}
 
         #endregion RenderWindow Implementation
     }
