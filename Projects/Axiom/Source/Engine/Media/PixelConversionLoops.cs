@@ -40,7 +40,7 @@ using System.IO;
 using Axiom.Core;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.Media
 {
 
@@ -87,1091 +87,743 @@ namespace Axiom.Media
 	public class PixelConversionLoops
 	{
 
-		unsafe private static void A8R8G8B8toA8B8G8R8( PixelBox src, PixelBox dst )
+		#region PixelFormat.A8R8G8B8 Converters
+
+		[PixelConverter( PixelFormat.A8R8G8B8, PixelFormat.A8B8G8R8 )]
+		private class A8R8G8B8toA8B8G8R8Converter : IPixelConverter
 		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ] = ( ( inp & 0x000000FF ) << 16 ) | ( inp & 0xFF00FF00 ) | ( ( inp & 0x00FF0000 ) >> 16 );
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
+				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = ( ( inp & 0x000000FF ) << 16 ) | ( inp & 0xFF00FF00 ) | ( ( inp & 0x00FF0000 ) >> 16 );
 			}
 		}
 
-		unsafe private static void A8R8G8B8toB8G8R8A8( PixelBox src, PixelBox dst )
+		[PixelConverter( PixelFormat.A8R8G8B8, PixelFormat.B8G8R8A8 )]
+		private class A8R8G8B8toB8G8R8A8Converter : IPixelConverter
 		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0x0000FF00 ) << 8 ) | ( ( inp & 0x00FF0000 ) >> 8 ) | ( ( inp & 0xFF000000 ) >> 24 );
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
+				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0x0000FF00 ) << 8 ) | ( ( inp & 0x00FF0000 ) >> 8 ) | ( ( inp & 0xFF000000 ) >> 24 );
+				
 			}
 		}
 
-		unsafe private static void A8R8G8B8toR8G8B8A8( PixelBox src, PixelBox dst )
+		[PixelConverter( PixelFormat.A8R8G8B8, PixelFormat.R8G8B8A8 )]
+		private class A8R8G8B8toR8G8B8A8Converter : IPixelConverter
 		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ] = ( ( inp & 0x00FFFFFF ) << 8 ) | ( ( inp & 0xFF000000 ) >> 24 );
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
+				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = ( ( inp & 0x00FFFFFF ) << 8 ) | ( ( inp & 0xFF000000 ) >> 24 );
 			}
 		}
 
-		unsafe private static void A8B8G8R8toA8R8G8B8( PixelBox src, PixelBox dst )
+		[PixelConverter( PixelFormat.A8R8G8B8, PixelFormat.R8G8B8 )]
+		private class A8R8G8B8toR8G8B8Converter : IPixelConverter
 		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ] = ( ( inp & 0x000000FF ) << 16 ) | ( inp & 0xFF00FF00 ) | ( ( inp & 0x00FF0000 ) >> 16 );
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
+				uint* inputPtr = (uint*)input;
+				Col3b* outputPtr = (Col3b*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ].x = (byte)( ( inp >> 16 ) & 0xFF );
+				outputPtr[ offset ].y = (byte)( ( inp >> 8 ) & 0xFF );
+				outputPtr[ offset ].z = (byte)( ( inp >> 0 ) & 0xFF );
 			}
 		}
 
-		unsafe private static void A8B8G8R8toB8G8R8A8( PixelBox src, PixelBox dst )
+		[PixelConverter( PixelFormat.A8R8G8B8, PixelFormat.B8G8R8 )]
+		private class A8R8G8B8toB8G8R8Converter : IPixelConverter
 		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ] = ( ( inp & 0x00FFFFFF ) << 8 ) | ( ( inp & 0xFF000000 ) >> 24 );
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
+				uint* inputPtr = (uint*)input;
+				Col3b* outputPtr = (Col3b*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ].x = (byte)( ( inp >> 0 ) & 0xFF );
+				outputPtr[ offset ].y = (byte)( ( inp >> 8 ) & 0xFF );
+				outputPtr[ offset ].z = (byte)( ( inp >> 16 ) & 0xFF );
 			}
 		}
 
-		unsafe private static void A8B8G8R8toR8G8B8A8( PixelBox src, PixelBox dst )
+		[PixelConverter( PixelFormat.A8R8G8B8, PixelFormat.L8 )]
+		private class A8R8G8B8toL8Converter : IPixelConverter
 		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0x0000FF00 ) << 8 ) | ( ( inp & 0x00FF0000 ) >> 8 ) | ( ( inp & 0xFF000000 ) >> 24 );
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
+				uint* inputPtr = (uint*)input;
+				byte* outputPtr = (byte*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = (byte)( ( inp & 0x00FF0000 ) >> 16 );
 			}
 		}
 
-		unsafe private static void B8G8R8A8toA8R8G8B8( PixelBox src, PixelBox dst )
+		#endregion PixelFormat.A8R8G8B8 Converters
+
+		#region PixelFormat.A8B8G8R8 Converters
+
+		[PixelConverter( PixelFormat.A8B8G8R8, PixelFormat.A8R8G8B8 )]
+		private class A8B8G8R8toA8R8G8B8Converter : IPixelConverter
 		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0x0000FF00 ) << 8 ) | ( ( inp & 0x00FF0000 ) >> 8 ) | ( ( inp & 0xFF000000 ) >> 24 );
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
+				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = ( ( inp & 0x000000FF ) << 16 ) | ( inp & 0xFF00FF00 ) | ( ( inp & 0x00FF0000 ) >> 16 );
 			}
 		}
 
-		unsafe private static void B8G8R8A8toA8B8G8R8( PixelBox src, PixelBox dst )
+		[PixelConverter( PixelFormat.A8B8G8R8, PixelFormat.B8G8R8A8 )]
+		private class A8B8G8R8toB8G8R8A8Converter : IPixelConverter
 		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0xFFFFFF00 ) >> 8 );
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
+				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = ( ( inp & 0x00FFFFFF ) << 8 ) | ( ( inp & 0xFF000000 ) >> 24 );
 			}
 		}
 
-		unsafe private static void B8G8R8A8toR8G8B8A8( PixelBox src, PixelBox dst )
+		[PixelConverter( PixelFormat.A8B8G8R8, PixelFormat.R8G8B8A8 )]
+		private class A8B8G8R8toR8G8B8A8Converter : IPixelConverter
 		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ] = ( ( inp & 0x0000FF00 ) << 16 ) | ( inp & 0x00FF00FF ) | ( ( inp & 0xFF000000 ) >> 16 );
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
+				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0x0000FF00 ) << 8 ) | ( ( inp & 0x00FF0000 ) >> 8 ) | ( ( inp & 0xFF000000 ) >> 24 );
 			}
 		}
 
-		unsafe private static void R8G8B8A8toA8R8G8B8( PixelBox src, PixelBox dst )
+		[PixelConverter( PixelFormat.A8B8G8R8, PixelFormat.L8 )]
+		private class A8B8G8R8toL8Converter : IPixelConverter
 		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0xFFFFFF00 ) >> 8 );
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
+				uint* inputPtr = (uint*)input;
+				byte* outputPtr = (byte*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = (byte)( inp & 0x000000FF );
 			}
 		}
 
-		unsafe private static void R8G8B8A8toA8B8G8R8( PixelBox src, PixelBox dst )
+		#endregion PixelFormat.A8B8G8R8 Converters
+
+		#region PixelFormat.B8G8R8A8 Converters
+
+		[PixelConverter( PixelFormat.B8G8R8A8, PixelFormat.A8R8G8B8 )]
+		private class B8G8R8A8toA8R8G8B8Converter : IPixelConverter
 		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0x0000FF00 ) << 8 ) | ( ( inp & 0x00FF0000 ) >> 8 ) | ( ( inp & 0xFF000000 ) >> 24 );
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
+				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0x0000FF00 ) << 8 ) | ( ( inp & 0x00FF0000 ) >> 8 ) | ( ( inp & 0xFF000000 ) >> 24 );
+
 			}
 		}
 
-		unsafe private static void R8G8B8A8toB8G8R8A8( PixelBox src, PixelBox dst )
+		[PixelConverter( PixelFormat.B8G8R8A8, PixelFormat.A8B8G8R8 )]
+		private class B8G8R8A8toA8B8G8R8Converter : IPixelConverter
 		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ] = ( ( inp & 0x0000FF00 ) << 16 ) | ( inp & 0x00FF00FF ) | ( ( inp & 0xFF000000 ) >> 16 );
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
+				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0xFFFFFF00 ) >> 8 );
 			}
 		}
 
-		unsafe private static void A8B8G8R8toL8( PixelBox src, PixelBox dst )
+		[PixelConverter( PixelFormat.B8G8R8A8, PixelFormat.R8G8B8A8 )]
+		private class B8G8R8A8toR8G8B8A8Converter : IPixelConverter
 		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			byte* dstptr = (byte*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ] = (byte)( inp & 0x000000FF );
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
+				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = ( ( inp & 0x0000FF00 ) << 16 ) | ( inp & 0x00FF00FF ) | ( ( inp & 0xFF000000 ) >> 16 );
 			}
 		}
 
-		unsafe private static void L8toA8B8G8R8( PixelBox src, PixelBox dst )
+		[PixelConverter( PixelFormat.B8G8R8A8, PixelFormat.L8 )]
+		private class B8G8R8A8toL8Converter : IPixelConverter
 		{
-			byte* srcptr = (byte*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						byte inp = srcptr[ x ];
-						dstptr[ x ] = 0xFF000000 | ( ( (uint)inp ) << 0 ) | ( ( (uint)inp ) << 8 ) | ( ( (uint)inp ) << 16 );
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
+				uint* inputPtr = (uint*)input;
+				byte* outputPtr = (byte*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = (byte)( ( inp & 0x0000FF00 ) >> 8 );
 			}
 		}
 
-		unsafe private static void A8R8G8B8toL8( PixelBox src, PixelBox dst )
+		#endregion PixelFormat.B8G8R8A8 Converters
+
+		#region PixelFormat.R8G8B8A8 Converters
+
+		[PixelConverter( PixelFormat.R8G8B8A8, PixelFormat.A8R8G8B8 )]
+		private class R8G8B8A8toA8R8G8B8Converter : IPixelConverter
 		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			byte* dstptr = (byte*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ] = (byte)( ( inp & 0x00FF0000 ) >> 16 );
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
+				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0xFFFFFF00 ) >> 8 );
 			}
 		}
 
-		unsafe private static void L8toA8R8G8B8( PixelBox src, PixelBox dst )
+		[PixelConverter( PixelFormat.R8G8B8A8, PixelFormat.A8B8G8R8 )]
+		private class R8G8B8A8toA8B8G8R8Converter : IPixelConverter
 		{
-			byte* srcptr = (byte*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						byte inp = srcptr[ x ];
-						dstptr[ x ] = 0xFF000000 | ( ( (uint)inp ) << 0 ) | ( ( (uint)inp ) << 8 ) | ( ( (uint)inp ) << 16 );
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
+				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = ( ( inp & 0x000000FF ) << 24 ) | ( ( inp & 0x0000FF00 ) << 8 ) | ( ( inp & 0x00FF0000 ) >> 8 ) | ( ( inp & 0xFF000000 ) >> 24 );
 			}
 		}
 
-		unsafe private static void B8G8R8A8toL8( PixelBox src, PixelBox dst )
+		[PixelConverter( PixelFormat.R8G8B8A8, PixelFormat.B8G8R8A8 )]
+		private class R8G8B8A8toB8G8R8A8Converter : IPixelConverter
 		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			byte* dstptr = (byte*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ] = (byte)( ( inp & 0x0000FF00 ) >> 8 );
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
+				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = ( ( inp & 0x0000FF00 ) << 16 ) | ( inp & 0x00FF00FF ) | ( ( inp & 0xFF000000 ) >> 16 );
 			}
 		}
 
-		unsafe private static void L8toB8G8R8A8( PixelBox src, PixelBox dst )
+		#endregion PixelFormat.R8G8B8A8 Converters
+
+		#region PixelFormat.L8 Converters
+
+		[PixelConverter( PixelFormat.L8, PixelFormat.A8B8G8R8 )]
+		private class L8toA8B8G8R8Converter : IPixelConverter
 		{
-			byte* srcptr = (byte*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						byte inp = srcptr[ x ];
-						dstptr[ x ] = 0x000000FF | ( ( (uint)inp ) << 8 ) | ( ( (uint)inp ) << 16 ) | ( ( (uint)inp ) << 24 );
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
+				byte* inputPtr = (byte*)input;
+				uint* outputPtr = (uint*)output;
+				byte inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = 0xFF000000 | ( ( (uint)inp ) << 0 ) | ( ( (uint)inp ) << 8 ) | ( ( (uint)inp ) << 16 );
+			}
+		}
+		
+		[PixelConverter( PixelFormat.L8, PixelFormat.A8R8G8B8 )]
+		private class L8toA8R8G8B8Converter : IPixelConverter
+		{
+			public unsafe void Convert( byte* input, byte* output, int offset )
+			{
+				byte* inputPtr = (byte*)input;
+				uint* outputPtr = (uint*)output;
+				byte inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = 0xFF000000 | ( ( (uint)inp ) << 0 ) | ( ( (uint)inp ) << 8 ) | ( ( (uint)inp ) << 16 );
 			}
 		}
 
-		unsafe private static void L8toL16( PixelBox src, PixelBox dst )
+		[PixelConverter( PixelFormat.L8, PixelFormat.B8G8R8A8 )]
+		private class L8toB8G8R8A8Converter : IPixelConverter
 		{
-			byte* srcptr = (byte*)( src.Data.ToPointer() );
-			ushort* dstptr = (ushort*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						byte inp = srcptr[ x ];
-						dstptr[ x ] = (ushort)( ( ( (uint)inp ) << 8 ) | ( ( (uint)inp ) ) );
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
+				byte* inputPtr = (byte*)input;
+				uint* outputPtr = (uint*)output;
+				byte inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = 0x000000FF | ( ( (uint)inp ) << 8 ) | ( ( (uint)inp ) << 16 ) | ( ( (uint)inp ) << 24 );
 			}
 		}
 
-		unsafe private static void L16toL8( PixelBox src, PixelBox dst )
+		[PixelConverter( PixelFormat.L8, PixelFormat.L16 )]
+		private class L8toL16Converter : IPixelConverter
 		{
-			ushort* srcptr = (ushort*)( src.Data.ToPointer() );
-			byte* dstptr = (byte*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						ushort inp = srcptr[ x ];
-						dstptr[ x ] = (byte)( inp >> 8 );
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
+				byte* inputPtr = (byte*)input;
+				ushort* outputPtr = (ushort*)output;
+				byte inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = (ushort)( ( ( (uint)inp ) << 8 ) | ( ( (uint)inp ) ) );
 			}
 		}
 
-		unsafe private static void R8G8B8toB8G8R8( PixelBox src, PixelBox dst )
+		#endregion PixelFormat.L8 Converters
+
+		#region PixelFormat.L16 Converters
+
+		[PixelConverter( PixelFormat.L16, PixelFormat.L8 )]
+		private class L16toL8Converter : IPixelConverter
 		{
-			Col3b* srcptr = (Col3b*)( src.Data.ToPointer() );
-			Col3b* dstptr = (Col3b*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						Col3b inp = srcptr[ x ];
-						dstptr[ x ].x = inp.z;
-						dstptr[ x ].y = inp.y;
-						dstptr[ x ].z = inp.x;
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
+				ushort* inputPtr = (ushort*)input;
+				byte* outputPtr = (byte*)output;
+				ushort inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = (byte)( inp >> 8 );
 			}
 		}
 
-		unsafe private static void B8G8R8toR8G8B8( PixelBox src, PixelBox dst )
-		{
-			Col3b* srcptr = (Col3b*)( src.Data.ToPointer() );
-			Col3b* dstptr = (Col3b*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
-			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						Col3b inp = srcptr[ x ];
-						dstptr[ x ].x = inp.z;
-						dstptr[ x ].y = inp.y;
-						dstptr[ x ].z = inp.x;
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
-			}
-		}
+		#endregion PixelFormat.L16 Converters
 
-		unsafe private static void A8R8G8B8toR8G8B8( PixelBox src, PixelBox dst )
-		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			Col3b* dstptr = (Col3b*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
-			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ].x = (byte)( ( inp >> 16 ) & 0xFF );
-						dstptr[ x ].y = (byte)( ( inp >> 8 ) & 0xFF );
-						dstptr[ x ].z = (byte)( ( inp >> 0 ) & 0xFF );
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
-			}
-		}
+		#region PixelFormat.B8R8G8 Converters
 
-		unsafe private static void A8R8G8B8toB8G8R8( PixelBox src, PixelBox dst )
+		[PixelConverter( PixelFormat.B8G8R8, PixelFormat.A8R8G8B8 )]
+		private class B8G8R8toA8R8G8B8Converter : IPixelConverter
 		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			Col3b* dstptr = (Col3b*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ].x = (byte)( ( inp >> 0 ) & 0xFF );
-						dstptr[ x ].y = (byte)( ( inp >> 8 ) & 0xFF );
-						dstptr[ x ].z = (byte)( ( inp >> 16 ) & 0xFF );
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
-			}
-		}
+				Col3b* inputPtr = (Col3b*)input;
+				uint* outputPtr = (uint*)output;
+				Col3b inp = inputPtr[ offset ];
 
-		unsafe private static void X8R8G8B8toA8R8G8B8( PixelBox src, PixelBox dst )
-		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
-			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ] = inp | 0xFF000000;
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
-			}
-		}
+				int xshift = 0, yshift = 8, zshift = 16, ashift = 24;
 
-		unsafe private static void X8R8G8B8toA8B8G8R8( PixelBox src, PixelBox dst )
-		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
-			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ] = ( ( inp & 0x0000FF ) << 16 ) | ( ( inp & 0xFF0000 ) >> 16 ) | ( inp & 0x00FF00 ) | 0xFF000000;
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
-			}
-		}
-
-		unsafe private static void X8R8G8B8toB8G8R8A8( PixelBox src, PixelBox dst )
-		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
-			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ] = ( ( inp & 0x0000FF ) << 24 ) | ( ( inp & 0xFF0000 ) >> 8 ) | ( ( inp & 0x00FF00 ) << 8 ) | 0x000000FF;
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
-			}
-		}
-
-		unsafe private static void X8R8G8B8toR8G8B8A8( PixelBox src, PixelBox dst )
-		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
-			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ] = ( ( inp & 0xFFFFFF ) << 8 ) | 0x000000FF;
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
-			}
-		}
-
-		unsafe private static void X8B8G8R8toA8R8G8B8( PixelBox src, PixelBox dst )
-		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
-			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ] = ( ( inp & 0x0000FF ) << 16 ) | ( ( inp & 0xFF0000 ) >> 16 ) | ( inp & 0x00FF00 ) | 0xFF000000;
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
-			}
-		}
-
-		unsafe private static void X8B8G8R8toA8B8G8R8( PixelBox src, PixelBox dst )
-		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
-			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ] = inp | 0xFF000000;
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
-			}
-		}
-
-		unsafe private static void X8B8G8R8toB8G8R8A8( PixelBox src, PixelBox dst )
-		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
-			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ] = ( ( inp & 0xFFFFFF ) << 8 ) | 0x000000FF;
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
-			}
-		}
-
-		unsafe private static void X8B8G8R8toR8G8B8A8( PixelBox src, PixelBox dst )
-		{
-			uint* srcptr = (uint*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
-			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						uint inp = srcptr[ x ];
-						dstptr[ x ] = ( ( inp & 0x0000FF ) << 24 ) | ( ( inp & 0xFF0000 ) >> 8 ) | ( ( inp & 0x00FF00 ) << 8 ) | 0x000000FF;
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
-			}
-		}
-
-		unsafe private static void R8G8B8toA8R8G8B8( PixelBox src, PixelBox dst )
-		{
-			Col3b* srcptr = (Col3b*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int xshift = 16;
-			int yshift = 8;
-			int zshift = 0;
-			int ashift = 24;
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
-			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						Col3b inp = srcptr[ x ];
 #if BIG_ENDIAN
-                        dstptr[x] = ((uint)(0xFF<<ashift)) | (((uint)inp.x)<<xshift) | (((uint)inp.y)<<yshift) | (((uint)inp.z)<<zshift);
+				outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else
-						dstptr[ x ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
+				outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
 #endif
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
 			}
 		}
 
-		unsafe private static void B8G8R8toA8R8G8B8( PixelBox src, PixelBox dst )
+		[PixelConverter( PixelFormat.B8G8R8, PixelFormat.A8B8G8R8 )]
+		private class B8G8R8toA8B8G8R8Converter : IPixelConverter
 		{
-			Col3b* srcptr = (Col3b*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int xshift = 0;
-			int yshift = 8;
-			int zshift = 16;
-			int ashift = 24;
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						Col3b inp = srcptr[ x ];
+				Col3b* inputPtr = (Col3b*)input;
+				uint* outputPtr = (uint*)output;
+				Col3b inp = inputPtr[ offset ];
+
+				int xshift = 8, yshift = 16, zshift = 24, ashift = 0;
+
 #if BIG_ENDIAN
-                        dstptr[x] = ((uint)(0xFF<<ashift)) | (((uint)inp.x)<<xshift) | (((uint)inp.y)<<yshift) | (((uint)inp.z)<<zshift);
+				outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else
-						dstptr[ x ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
+				outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
 #endif
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
 			}
 		}
 
-		unsafe private static void R8G8B8toA8B8G8R8( PixelBox src, PixelBox dst )
+		[PixelConverter( PixelFormat.B8G8R8, PixelFormat.B8G8R8A8 )]
+		private class B8G8R8toB8G8R8A8Converter : IPixelConverter
 		{
-			Col3b* srcptr = (Col3b*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int xshift = 0;
-			int yshift = 8;
-			int zshift = 16;
-			int ashift = 24;
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						Col3b inp = srcptr[ x ];
+				Col3b* inputPtr = (Col3b*)input;
+				uint* outputPtr = (uint*)output;
+				Col3b inp = inputPtr[ offset ];
+
+				int xshift = 24, yshift = 16, zshift = 8, ashift = 0;
+
 #if BIG_ENDIAN
-                        dstptr[x] = ((uint)(0xFF<<ashift)) | (((uint)inp.x)<<xshift) | (((uint)inp.y)<<yshift) | (((uint)inp.z)<<zshift);
+				outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else
-						dstptr[ x ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
+				outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
 #endif
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
 			}
 		}
 
-		unsafe private static void B8G8R8toA8B8G8R8( PixelBox src, PixelBox dst )
+		[PixelConverter( PixelFormat.B8G8R8, PixelFormat.R8G8B8 )]
+		private class B8G8R8toR8G8B8Converter : IPixelConverter
 		{
-			Col3b* srcptr = (Col3b*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int xshift = 8;
-			int yshift = 16;
-			int zshift = 24;
-			int ashift = 0;
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						Col3b inp = srcptr[ x ];
-#if BIG_ENDIAN
-                        dstptr[x] = ((uint)(0xFF<<ashift)) | (((uint)inp.x)<<xshift) | (((uint)inp.y)<<yshift) | (((uint)inp.z)<<zshift);
-#else
-						dstptr[ x ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
-#endif
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
+				Col3b* inputPtr = (Col3b*)input;
+				Col3b* outputPtr = (Col3b*)output;
+				Col3b inp = inputPtr[ offset ];
+
+				outputPtr[ offset ].x = inp.z;
+				outputPtr[ offset ].y = inp.y;
+				outputPtr[ offset ].z = inp.x;
 			}
 		}
 
-		unsafe private static void R8G8B8toB8G8R8A8( PixelBox src, PixelBox dst )
+		#endregion PixelFormat.B8R8G8 Converters
+
+		#region PixelFormat.R8G8B8 Converters
+
+		[PixelConverter( PixelFormat.R8G8B8, PixelFormat.A8R8G8B8 )]
+		private class R8G8B8toA8R8G8B8Converter : IPixelConverter
 		{
-			Col3b* srcptr = (Col3b*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int xshift = 8;
-			int yshift = 16;
-			int zshift = 24;
-			int ashift = 0;
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						Col3b inp = srcptr[ x ];
+				Col3b* inputPtr = (Col3b*)input;
+				uint* outputPtr = (uint*)output;
+				Col3b inp = inputPtr[ offset ];
+
+				int xshift = 16, yshift = 8, zshift = 0, ashift = 24;
+
 #if BIG_ENDIAN
-                        dstptr[x] = ((uint)(0xFF<<ashift)) | (((uint)inp.x)<<xshift) | (((uint)inp.y)<<yshift) | (((uint)inp.z)<<zshift);
+				outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else
-						dstptr[ x ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
+				outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
 #endif
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
 			}
 		}
 
-		unsafe private static void B8G8R8toB8G8R8A8( PixelBox src, PixelBox dst )
+		[PixelConverter( PixelFormat.R8G8B8, PixelFormat.A8B8G8R8 )]
+		private class R8G8B8toA8B8G8R8Converter : IPixelConverter
 		{
-			Col3b* srcptr = (Col3b*)( src.Data.ToPointer() );
-			uint* dstptr = (uint*)( dst.Data.ToPointer() );
-			int xshift = 24;
-			int yshift = 16;
-			int zshift = 8;
-			int ashift = 0;
-			int srcSliceSkip = src.SliceSkip;
-			int dstSliceSkip = dst.SliceSkip;
-			int k = src.Right - src.Left;
-			for ( int z = src.Front; z < src.Back; z++ )
+			public unsafe void Convert( byte* input, byte* output, int offset )
 			{
-				for ( int y = src.Top; y < src.Bottom; y++ )
-				{
-					for ( int x = 0; x < k; x++ )
-					{
-						Col3b inp = srcptr[ x ];
+				Col3b* inputPtr = (Col3b*)input;
+				uint* outputPtr = (uint*)output;
+				Col3b inp = inputPtr[ offset ];
+
+				int xshift = 0, yshift = 8, zshift = 16, ashift = 24;
+
 #if BIG_ENDIAN
-                        dstptr[x] = ((uint)(0xFF<<ashift)) | (((uint)inp.x)<<xshift) | (((uint)inp.y)<<yshift) | (((uint)inp.z)<<zshift);
+				outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
 #else
-						dstptr[ x ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
+				outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
 #endif
-					}
-					srcptr += src.RowPitch;
-					dstptr += dst.RowPitch;
-				}
-				srcptr += srcSliceSkip;
-				dstptr += dstSliceSkip;
+
 			}
 		}
+
+		[PixelConverter( PixelFormat.R8G8B8, PixelFormat.B8G8R8A8 )]
+		private class R8G8B8toB8G8R8A8Converter : IPixelConverter
+		{
+			public unsafe void Convert( byte* input, byte* output, int offset )
+			{
+				Col3b* inputPtr = (Col3b*)input;
+				uint* outputPtr = (uint*)output;
+				Col3b inp = inputPtr[ offset ];
+
+				int xshift = 8, yshift = 16, zshift = 24, ashift = 0;
+
+#if BIG_ENDIAN
+				outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << xshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << zshift );
+#else
+				outputPtr[ offset ] = ( (uint)( 0xFF << ashift ) ) | ( ( (uint)inp.x ) << zshift ) | ( ( (uint)inp.y ) << yshift ) | ( ( (uint)inp.z ) << xshift );
+#endif
+
+			}
+		}
+
+		[PixelConverter( PixelFormat.R8G8B8, PixelFormat.B8G8R8 )]
+		private class R8G8B8toB8G8R8Converter : IPixelConverter
+		{
+			public unsafe void Convert( byte* input, byte* output, int offset )
+			{
+				Col3b* inputPtr = (Col3b*)input;
+				Col3b* outputPtr = (Col3b*)output;
+				Col3b inp = inputPtr[ offset ];
+
+				outputPtr[ offset ].x = inp.z;
+				outputPtr[ offset ].y = inp.y;
+				outputPtr[ offset ].z = inp.x;
+			}
+		}
+
+		#endregion PixelFormat.R8G8B8 Converters
+
+		#region PixelFormat.X8R8G8B8 Converters
+
+		[PixelConverter( PixelFormat.X8R8G8B8, PixelFormat.A8R8G8B8 )]
+		private class X8R8G8B8toA8R8G8B8Converter : IPixelConverter
+		{
+			public unsafe void Convert( byte* input, byte* output, int offset )
+			{
+				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = inp | 0xFF000000;
+			}
+		}
+
+		[PixelConverter( PixelFormat.X8R8G8B8, PixelFormat.A8B8G8R8 )]
+		private class X8R8G8B8toA8B8G8R8Converter : IPixelConverter
+		{
+			public unsafe void Convert( byte* input, byte* output, int offset )
+			{
+				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = ( ( inp & 0x0000FF ) << 16 ) | ( ( inp & 0xFF0000 ) >> 16 ) | ( inp & 0x00FF00 ) | 0xFF000000;
+			}
+		}
+
+		[PixelConverter( PixelFormat.X8R8G8B8, PixelFormat.B8G8R8A8 )]
+		private class X8R8G8B8toB8G8R8A8Converter : IPixelConverter
+		{
+			public unsafe void Convert( byte* input, byte* output, int offset )
+			{
+				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = ( ( inp & 0x0000FF ) << 24 ) | ( ( inp & 0xFF0000 ) >> 8 ) | ( ( inp & 0x00FF00 ) << 8 ) | 0x000000FF;
+			}
+		}
+
+		[PixelConverter( PixelFormat.X8R8G8B8, PixelFormat.R8G8B8A8 )]
+		private class X8R8G8B8toR8G8B8A8Converter : IPixelConverter
+		{
+			public unsafe void Convert( byte* input, byte* output, int offset )
+			{
+				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = ( ( inp & 0xFFFFFF ) << 8 ) | 0x000000FF;
+			}
+		}
+
+		#endregion PixelFormat.X8R8G8B8 Converters
+
+		#region PixelFormat.X8B8G8R8 Converters
+
+		[PixelConverter( PixelFormat.X8B8G8R8, PixelFormat.A8R8G8B8 )]
+		private class X8B8G8R8toA8R8G8B8Converter : IPixelConverter
+		{
+			public unsafe void Convert( byte* input, byte* output, int offset )
+			{
+				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = ( ( inp & 0x0000FF ) << 16 ) | ( ( inp & 0xFF0000 ) >> 16 ) | ( inp & 0x00FF00 ) | 0xFF000000;
+			}
+		}
+
+		[PixelConverter( PixelFormat.X8B8G8R8, PixelFormat.A8B8G8R8 )]
+		private class X8B8G8R8toA8B8G8R8Converter : IPixelConverter
+		{
+			public unsafe void Convert( byte* input, byte* output, int offset )
+			{
+				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = inp | 0xFF000000;
+			}
+		}
+
+		[PixelConverter( PixelFormat.X8B8G8R8, PixelFormat.B8G8R8A8 )]
+		private class X8B8G8R8toB8G8R8A8Converter : IPixelConverter
+		{
+			public unsafe void Convert( byte* input, byte* output, int offset )
+			{
+				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = ( ( inp & 0xFFFFFF ) << 8 ) | 0x000000FF;
+			}
+		}
+
+		[PixelConverter( PixelFormat.X8B8G8R8, PixelFormat.R8G8B8A8 )]
+		private class X8B8G8R8toR8G8B8A8Converter : IPixelConverter
+		{
+			public unsafe void Convert( byte* input, byte* output, int offset )
+			{
+				uint* inputPtr = (uint*)input, outputPtr = (uint*)output;
+				uint inp = inputPtr[ offset ];
+
+				outputPtr[ offset ] = ( ( inp & 0x0000FF ) << 24 ) | ( ( inp & 0xFF0000 ) >> 8 ) | ( ( inp & 0x00FF00 ) << 8 ) | 0x000000FF;
+			}
+		}
+
+		#endregion PixelFormat.X8B8G8R8 Converters
+
+		private class PixelConverterAttribute : Attribute
+		{
+			private PixelFormat _srcFormat;
+			private PixelFormat _dstFormat;
+
+			public int Id
+			{
+				get
+				{
+					return ( (int)_srcFormat << 8 ) + (int)_dstFormat;
+				}
+			}
+
+			public PixelConverterAttribute( PixelFormat srcFormat, PixelFormat dstFormat )
+			{
+				_srcFormat = srcFormat;
+				_dstFormat = dstFormat;
+			}
+
+		}
+
+		private interface IPixelConverter
+		{
+			unsafe void Convert( byte* input, byte* output, int offset );
+		}
+
+		private class PixelBoxConverter<T> where T : IPixelConverter, new()
+		{
+			public void Conversion( PixelBox src, PixelBox dst )
+			{
+				unsafe
+				{
+					byte* srcptr = (byte*)( src.Data.ToPointer() );
+					byte* dstptr = (byte*)( dst.Data.ToPointer() );
+					int srcSliceSkip = src.SliceSkip;
+					int dstSliceSkip = dst.SliceSkip;
+					int k = src.Right - src.Left;
+					T pixelConverter = new T();
+
+					for ( int z = src.Front; z < src.Back; z++ )
+					{
+						for ( int y = src.Top; y < src.Bottom; y++ )
+						{
+							for ( int x = 0; x < k; x++ )
+							{
+								pixelConverter.Convert( srcptr, dstptr, x );
+							}
+							srcptr += src.RowPitch * PixelUtil.GetNumElemBytes( src.Format );
+							dstptr += dst.RowPitch * PixelUtil.GetNumElemBytes( dst.Format );
+						}
+						srcptr += srcSliceSkip;
+						dstptr += dstSliceSkip;
+					}
+				}
+			}
+		}
+
 
 		public static bool DoOptimizedConversion( PixelBox src, PixelBox dst )
 		{
 			switch ( ( (int)src.Format << 8 ) + (int)dst.Format )
 			{
 				case ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.A8B8G8R8:
-					A8R8G8B8toA8B8G8R8( src, dst );
+					( new PixelBoxConverter<A8R8G8B8toA8B8G8R8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8A8:
-					A8R8G8B8toB8G8R8A8( src, dst );
+					( new PixelBoxConverter<A8R8G8B8toB8G8R8A8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.R8G8B8A8:
-					A8R8G8B8toR8G8B8A8( src, dst );
+					( new PixelBoxConverter<A8R8G8B8toR8G8B8A8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.A8B8G8R8 << 8 ) + (int)PixelFormat.A8R8G8B8:
-					A8B8G8R8toA8R8G8B8( src, dst );
+					( new PixelBoxConverter<A8B8G8R8toA8R8G8B8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.A8B8G8R8 << 8 ) + (int)PixelFormat.B8G8R8A8:
-					A8B8G8R8toB8G8R8A8( src, dst );
+					( new PixelBoxConverter<A8B8G8R8toA8R8G8B8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.A8B8G8R8 << 8 ) + (int)PixelFormat.R8G8B8A8:
-					A8B8G8R8toR8G8B8A8( src, dst );
+					( new PixelBoxConverter<A8B8G8R8toR8G8B8A8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.B8G8R8A8 << 8 ) + (int)PixelFormat.A8R8G8B8:
-					B8G8R8A8toA8R8G8B8( src, dst );
+					( new PixelBoxConverter<B8G8R8A8toA8R8G8B8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.B8G8R8A8 << 8 ) + (int)PixelFormat.A8B8G8R8:
-					B8G8R8A8toA8B8G8R8( src, dst );
+					( new PixelBoxConverter<B8G8R8A8toA8B8G8R8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.B8G8R8A8 << 8 ) + (int)PixelFormat.R8G8B8A8:
-					B8G8R8A8toR8G8B8A8( src, dst );
+					( new PixelBoxConverter<B8G8R8A8toR8G8B8A8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.R8G8B8A8 << 8 ) + (int)PixelFormat.A8R8G8B8:
-					R8G8B8A8toA8R8G8B8( src, dst );
+					( new PixelBoxConverter<R8G8B8A8toA8R8G8B8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.R8G8B8A8 << 8 ) + (int)PixelFormat.A8B8G8R8:
-					R8G8B8A8toA8B8G8R8( src, dst );
+					( new PixelBoxConverter<R8G8B8A8toA8B8G8R8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.R8G8B8A8 << 8 ) + (int)PixelFormat.B8G8R8A8:
-					R8G8B8A8toB8G8R8A8( src, dst );
+					( new PixelBoxConverter<R8G8B8A8toB8G8R8A8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.A8B8G8R8 << 8 ) + (int)PixelFormat.L8:
-					A8B8G8R8toL8( src, dst );
+					( new PixelBoxConverter<A8B8G8R8toL8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.L8 << 8 ) + (int)PixelFormat.A8B8G8R8:
-					L8toA8B8G8R8( src, dst );
+					( new PixelBoxConverter<A8B8G8R8toA8R8G8B8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.L8:
-					A8R8G8B8toL8( src, dst );
+					( new PixelBoxConverter<A8R8G8B8toL8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.L8 << 8 ) + (int)PixelFormat.A8R8G8B8:
-					L8toA8R8G8B8( src, dst );
+					( new PixelBoxConverter<L8toA8R8G8B8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.B8G8R8A8 << 8 ) + (int)PixelFormat.L8:
-					B8G8R8A8toL8( src, dst );
+					( new PixelBoxConverter<B8G8R8A8toL8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.L8 << 8 ) + (int)PixelFormat.B8G8R8A8:
-					L8toB8G8R8A8( src, dst );
+					( new PixelBoxConverter<L8toB8G8R8A8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.L8 << 8 ) + (int)PixelFormat.L16:
-					L8toL16( src, dst );
+					( new PixelBoxConverter<L8toL16Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.L16 << 8 ) + (int)PixelFormat.L8:
-					L16toL8( src, dst );
+					( new PixelBoxConverter<L16toL8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.B8G8R8 << 8 ) + (int)PixelFormat.R8G8B8:
-					B8G8R8toR8G8B8( src, dst );
+					( new PixelBoxConverter<B8G8R8toR8G8B8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8:
-					R8G8B8toB8G8R8( src, dst );
+					( new PixelBoxConverter<R8G8B8toB8G8R8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.R8G8B8 << 8 ) + (int)PixelFormat.A8R8G8B8:
-					R8G8B8toA8R8G8B8( src, dst );
+					( new PixelBoxConverter<R8G8B8toA8R8G8B8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.B8G8R8 << 8 ) + (int)PixelFormat.A8R8G8B8:
-					B8G8R8toA8R8G8B8( src, dst );
+					( new PixelBoxConverter<B8G8R8toA8R8G8B8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.R8G8B8 << 8 ) + (int)PixelFormat.A8B8G8R8:
-					R8G8B8toA8B8G8R8( src, dst );
+					( new PixelBoxConverter<R8G8B8toA8B8G8R8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.B8G8R8 << 8 ) + (int)PixelFormat.A8B8G8R8:
-					B8G8R8toA8B8G8R8( src, dst );
+					( new PixelBoxConverter<B8G8R8toA8B8G8R8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8A8:
-					R8G8B8toB8G8R8A8( src, dst );
+					( new PixelBoxConverter<R8G8B8toB8G8R8A8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.B8G8R8 << 8 ) + (int)PixelFormat.B8G8R8A8:
-					B8G8R8toB8G8R8A8( src, dst );
+					( new PixelBoxConverter<B8G8R8toB8G8R8A8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.R8G8B8:
-					A8R8G8B8toR8G8B8( src, dst );
+					( new PixelBoxConverter<A8R8G8B8toR8G8B8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8:
-					A8R8G8B8toB8G8R8( src, dst );
+					( new PixelBoxConverter<A8R8G8B8toB8G8R8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.X8R8G8B8 << 8 ) + (int)PixelFormat.A8R8G8B8:
-					X8R8G8B8toA8R8G8B8( src, dst );
+					( new PixelBoxConverter<X8R8G8B8toA8R8G8B8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.X8R8G8B8 << 8 ) + (int)PixelFormat.A8B8G8R8:
-					X8R8G8B8toA8B8G8R8( src, dst );
+					( new PixelBoxConverter<X8R8G8B8toA8B8G8R8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.X8R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8A8:
-					X8R8G8B8toB8G8R8A8( src, dst );
+					( new PixelBoxConverter<X8R8G8B8toB8G8R8A8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.X8R8G8B8 << 8 ) + (int)PixelFormat.R8G8B8A8:
-					X8R8G8B8toR8G8B8A8( src, dst );
+					( new PixelBoxConverter<X8R8G8B8toR8G8B8A8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.X8B8G8R8 << 8 ) + (int)PixelFormat.A8R8G8B8:
-					X8B8G8R8toA8R8G8B8( src, dst );
+					( new PixelBoxConverter<X8B8G8R8toA8R8G8B8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.X8B8G8R8 << 8 ) + (int)PixelFormat.A8B8G8R8:
-					X8B8G8R8toA8B8G8R8( src, dst );
+					( new PixelBoxConverter<X8B8G8R8toA8B8G8R8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.X8B8G8R8 << 8 ) + (int)PixelFormat.B8G8R8A8:
-					X8B8G8R8toB8G8R8A8( src, dst );
+					( new PixelBoxConverter<X8B8G8R8toB8G8R8A8Converter>() ).Conversion( src, dst );
 					break;
 				case ( (int)PixelFormat.X8B8G8R8 << 8 ) + (int)PixelFormat.R8G8B8A8:
-					X8B8G8R8toR8G8B8A8( src, dst );
+					( new PixelBoxConverter<X8B8G8R8toR8G8B8A8Converter>() ).Conversion( src, dst );
 					break;
 				default:
 					return false;
@@ -1180,5 +832,3 @@ namespace Axiom.Media
 		}
 	}
 }
-
-
