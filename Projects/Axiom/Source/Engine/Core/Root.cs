@@ -104,8 +104,6 @@ namespace Axiom.Core
 				logMgr.Write( info.ToString() );
 				logMgr.Write( "*-*-* Axiom Intializing" );
 
-				new PluginManager();
-
 				ArchiveManager.Instance.Initialize();
 
 				ResourceGroupManager.Instance.Initialize();
@@ -135,7 +133,7 @@ namespace Axiom.Core
 				new HighLevelGpuProgramManager();
 				CompositorManager.Instance.Initialize();
 
-
+				new PluginManager();
 				PluginManager.Instance.LoadAll();
 			}
 		}
