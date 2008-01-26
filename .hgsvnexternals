@@ -1,0 +1,5 @@
+[Projects/Axiom/Source]
+ Engine https://axiomengine.svn.sourceforge.net/svnroot/axiomengine/trunk/Projects/Axiom/Source/Engine
+ Patforms https://axiomengine.svn.sourceforge.net/svnroot/axiomengine/trunk/Projects/Axiom/Source/Platforms
+ Plugins https://axiomengine.svn.sourceforge.net/svnroot/axiomengine/trunk/Projects/Axiom/Source/Plugins
+ SceneManagers https://axiomengine.svn.sourceforge.net/svnroot/axiomengine/trunk/Projects/Axiom/Source/SceneManagers
