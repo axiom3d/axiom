@@ -27,22 +27,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:"/>
+//     <id value="$Id: D3DGpuProgram.cs 884 2006-09-14 06:32:07Z borrillis $"/>
 // </file>
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.Diagnostics;
 
-using Axiom.Configuration;
-using Axiom.Graphics;
 using Axiom.Core;
+using Axiom.Math;
+using Axiom.Graphics;
 
-using XNA = Microsoft.Xna.Framework;
-using XFG = Microsoft.Xna.Framework.Graphics;
+using XNA = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
 
@@ -58,20 +56,24 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         ///    Reference to the current D3D device object.
         /// </summary>
-        protected XFG.GraphicsDevice device;
+        protected XNA.GraphicsDevice device;
         /// <summary>
-        ///     Microcode set externally, most likely from the HLSL compiler.
+        ///     Microsode set externally, most likely from the HLSL compiler.
         /// </summary>
-        protected XFG.CompiledShader externalMicrocode;
+        /// 
+
+        protected XNA.CompiledShader externalMicrocode;
 
         #endregion Fields
 
         #region Constructor
 
-        public XnaGpuProgram( string name, GpuProgramType type, XFG.GraphicsDevice device, string syntaxCode )
+        public XnaGpuProgram( string name, GpuProgramType type,XNA.GraphicsDevice device, string syntaxCode )
             : base( name, type, syntaxCode )
         {
             this.device = device;
+           // externalMicrocode = new Microsoft.Xna.Framework.Graphics.CompiledShader();
+            
         }
 
         #endregion Constructor
@@ -83,7 +85,7 @@ namespace Axiom.RenderSystems.Xna
         /// </summary>
         public override void Load()
         {
-            if ( externalMicrocode.ShaderSize != 0 )
+            if ( externalMicrocode.ShaderVersion != null )
             {
                 // unload if needed
                 if ( isLoaded )
@@ -104,20 +106,21 @@ namespace Axiom.RenderSystems.Xna
         }
 
         /// <summary>
-        ///     Loads a Xna shader from the assembler source.
+        ///     Loads a D3D shader from the assembler source.
         /// </summary>
         protected override void LoadFromSource()
         {
-            string errors = null;
+            string errors;
 
             // load the shader from the source string
-            XFG.CompiledShader microcode = XFG.ShaderCompiler.AssembleFromSource( source, new XFG.CompilerMacro[0], null, XFG.CompilerOptions.Debug, XNA.TargetPlatform.Windows );
+            XNA.CompiledShader microcode=XNA.ShaderCompiler.AssembleFromSource(source, null, null, Microsoft.Xna.Framework.Graphics.CompilerOptions.Debug,
+                                                                        Microsoft.Xna.Framework.TargetPlatform.Windows);
+            //DX.GraphicsStream microcode = D3D.ShaderLoader.FromString( source, null, 0, out errors );
             errors = microcode.ErrorsAndWarnings;
-
-            if ( errors != null && errors != string.Empty )
+            if ( errors != null && errors.Length != 0 )
             {
-                string msg = string.Format( "Error while compiling pixel shader '{0}':\n {1}", name, errors );
-                throw new AxiomException( msg );
+                LogManager.Instance.Write( "Error while compiling pixel shader '{0}':\n {1}", name, errors );
+                return;
             }
 
             // load the code into a shader object (polymorphic)
@@ -132,9 +135,10 @@ namespace Axiom.RenderSystems.Xna
         ///     Loads a shader object from the supplied microcode.
         /// </summary>
         /// <param name="microcode">
-        ///     GraphicsBuffer that contains the assembler instructions for the program.
+        ///     GraphicsStream that contains the assembler instructions for the program.
         /// </param>
-        protected abstract void LoadFromMicrocode( XFG.CompiledShader microcode );
+
+        protected abstract void LoadFromMicrocode(XNA.CompiledShader microcode);
 
         #endregion Methods
 
@@ -149,7 +153,7 @@ namespace Axiom.RenderSystems.Xna
         ///     level microcode, which can then be loaded into a low level GPU
         ///     program.
         /// </remarks>
-        internal XFG.CompiledShader ExternalMicrocode
+        internal XNA.CompiledShader ExternalMicrocode
         {
             get
             {
@@ -172,16 +176,15 @@ namespace Axiom.RenderSystems.Xna
         #region Fields
 
         /// <summary>
-        ///    Reference to the current Xna VertexShader object.
+        ///    Reference to the current D3D VertexShader object.
         /// </summary>
-        protected XFG.VertexShader vertexShader;
+        protected XNA.VertexShader vertexShader;
 
         #endregion Fields
 
         #region Constructor
 
-        internal XnaVertexProgram( string name, XFG.GraphicsDevice device, string syntaxCode )
-            : base( name, GpuProgramType.Vertex, device, syntaxCode )
+        internal XnaVertexProgram( string name, XNA.GraphicsDevice device, string syntaxCode ) : base( name, GpuProgramType.Vertex, device, syntaxCode )
         {
         }
 
@@ -189,10 +192,13 @@ namespace Axiom.RenderSystems.Xna
 
         #region D3DGpuProgram Memebers
 
-        protected override void LoadFromMicrocode( XFG.CompiledShader microcode )
+        protected override void LoadFromMicrocode(XNA.CompiledShader microcode)
         {
             // create the new vertex shader
-            vertexShader = new XFG.VertexShader( device, microcode.GetShaderCode() );
+            XNA.CompiledShader te = XNA.ShaderCompiler.AssembleFromSource(this.source, null, null,
+                                                                        Microsoft.Xna.Framework.Graphics.CompilerOptions.Debug,
+                                                                        Microsoft.Xna.Framework.TargetPlatform.Windows);
+            vertexShader = new Microsoft.Xna.Framework.Graphics.VertexShader( device,te.GetShaderCode() );
         }
 
         #endregion D3DGpuProgram Memebers
@@ -217,10 +223,10 @@ namespace Axiom.RenderSystems.Xna
         #region Properties
 
         /// <summary>
-        ///    Used internally by the Xna RenderSystem to get a reference to the underlying
+        ///    Used internally by the D3DRenderSystem to get a reference to the underlying
         ///    VertexShader object.
         /// </summary>
-        internal XFG.VertexShader VertexShader
+        internal XNA.VertexShader VertexShader
         {
             get
             {
@@ -232,23 +238,22 @@ namespace Axiom.RenderSystems.Xna
     }
 
     /// <summary>
-    ///    Xna implementation of low-level fragment program.
+    ///    Xna implementation of low-level vertex programs.
     /// </summary>
-    public class XNAragmentProgram : XnaGpuProgram
+    public class XnaFragmentProgram : XnaGpuProgram
     {
         #region Fields
 
         /// <summary>
-        ///    Reference to the current Xna PixelShader object.
+        ///    Reference to the current D3D PixelShader object.
         /// </summary>
-        protected XFG.PixelShader pixelShader;
+        protected XNA.PixelShader pixelShader;
 
         #endregion Fields
 
         #region Constructors
 
-        internal XNAragmentProgram( string name, XFG.GraphicsDevice device, string syntaxCode )
-            : base( name, GpuProgramType.Fragment, device, syntaxCode )
+        internal XnaFragmentProgram( string name, XNA.GraphicsDevice device, string syntaxCode ) : base( name, GpuProgramType.Fragment, device, syntaxCode )
         {
         }
 
@@ -256,10 +261,15 @@ namespace Axiom.RenderSystems.Xna
 
         #region D3DGpuProgram Memebers
 
-        protected override void LoadFromMicrocode( XFG.CompiledShader microcode )
+        protected override void LoadFromMicrocode(XNA.CompiledShader microcode)
         {
             // create a new pixel shader
-            pixelShader = new XFG.PixelShader( device, microcode.GetShaderCode() );
+            XNA.CompiledShader te = XNA.ShaderCompiler.AssembleFromSource(this.source,
+                                                                            null, null,
+                                                                            Microsoft.Xna.Framework.Graphics.CompilerOptions.Debug,
+                                                                            Microsoft.Xna.Framework.TargetPlatform.Windows);
+           //if(te.ErrorsAndWarnings==String.Empty)
+            pixelShader = new Microsoft.Xna.Framework.Graphics.PixelShader(device, te.GetShaderCode());
         }
 
         #endregion D3DGpuProgram Members
@@ -284,10 +294,10 @@ namespace Axiom.RenderSystems.Xna
         #region Properties
 
         /// <summary>
-        ///    Used internally by the Xna RenderSystem to get a reference to the underlying
+        ///    Used internally by the D3DRenderSystem to get a reference to the underlying
         ///    PixelShader object.
         /// </summary>
-        internal XFG.PixelShader PixelShader
+        internal XNA.PixelShader PixelShader
         {
             get
             {

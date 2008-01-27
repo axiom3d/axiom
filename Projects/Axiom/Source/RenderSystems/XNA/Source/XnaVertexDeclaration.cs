@@ -27,36 +27,39 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:"/>
+//     <id value="$Id: D3DVertexDeclaration.cs 884 2006-09-14 06:32:07Z borrillis $"/>
 // </file>
 #endregion SVN Version Information
 
 #region Namespace Declarations
+
 using System;
 
-using Axiom.Core;
 using Axiom.Graphics;
 
-using XNA = Microsoft.Xna.Framework;
-using XFG = Microsoft.Xna.Framework.Graphics;
+using XNA = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
 
+
 namespace Axiom.RenderSystems.Xna
 {
-    class XnaVertexDeclaration: VertexDeclaration
+    /// <summary>
+    /// 	Summary description for XnaVertexDeclaration.
+    /// </summary>
+    public class XnaVertexDeclaration : VertexDeclaration
     {
         #region Member variables
 
-        protected XFG.GraphicsDevice device;
-        protected XFG.VertexDeclaration xnaVertexDecl;
+        protected XNA.GraphicsDevice device;
+        protected XNA.VertexDeclaration d3dVertexDecl;
         protected bool needsRebuild;
 
         #endregion
 
         #region Constructors
 
-        public XnaVertexDeclaration( XFG.GraphicsDevice device )
+        public XnaVertexDeclaration( XNA.GraphicsDevice device )
         {
             this.device = device;
         }
@@ -65,18 +68,18 @@ namespace Axiom.RenderSystems.Xna
 
         #region Methods
 
-        public override VertexElement AddElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+        public override Axiom.Graphics.VertexElement AddElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
         {
-            VertexElement element = base.AddElement( source, offset, type, semantic, index );
+            Axiom.Graphics.VertexElement element = base.AddElement( source, offset, type, semantic, index );
 
             needsRebuild = true;
 
             return element;
         }
 
-        public override VertexElement InsertElement( int position, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+        public override Axiom.Graphics.VertexElement InsertElement( int position, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
         {
-            VertexElement element = base.InsertElement( position, source, offset, type, semantic, index );
+            Axiom.Graphics.VertexElement element = base.InsertElement( position, source, offset, type, semantic, index );
 
             needsRebuild = true;
 
@@ -113,59 +116,64 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         /// 
         /// </summary>
-        public XFG.VertexDeclaration XnaVertexDecl
+        /// DOC
+        public XNA.VertexDeclaration D3DVertexDecl
         {
             get
             {
                 // rebuild declaration if things have changed
                 if ( needsRebuild )
                 {
-                    if ( xnaVertexDecl != null )
-                        xnaVertexDecl.Dispose();
+                    if ( d3dVertexDecl != null )
+                        d3dVertexDecl.Dispose();
 
                     // create elements array
-                    XFG.VertexElement[] xnaElements = new XFG.VertexElement[ elements.Count ];
+                    XNA.VertexElement[] d3dElements = new XNA.VertexElement[elements.Count];
 
-                    // loop through and configure each element for XFG
+                    // loop through and configure each element for D3D
                     for ( int i = 0; i < elements.Count; i++ )
                     {
-                        VertexElement element = (VertexElement)elements[ i ];
+                        Axiom.Graphics.VertexElement element =
+                            (Axiom.Graphics.VertexElement)elements[ i ];
 
-                        xnaElements[i].Offset = (short)element.Offset;
-                        xnaElements[i].Stream = (short)element.Source;
-                        xnaElements[i].VertexElementFormat = XnaHelper.ConvertEnum( element.Type );
-                        xnaElements[i].VertexElementMethod = XFG.VertexElementMethod.Default;
-                        xnaElements[i].VertexElementUsage = XnaHelper.ConvertEnum( element.Semantic );
+                      
+                        d3dElements[ i ].VertexElementMethod= XNA.VertexElementMethod.Default;
+                      
+                        d3dElements[ i ].Offset= (short)element.Offset;
+                        d3dElements[ i ].Stream = (short)element.Source;
+                       
+                        d3dElements[ i ].VertexElementFormat =  XnaHelper.ConvertEnum( element.Type,true );
+                        
+                        d3dElements[ i ].VertexElementUsage= XnaHelper.ConvertEnum( element.Semantic );
 
                         // set usage index explicitly for diffuse and specular, use index for the rest (i.e. texture coord sets)
                         switch ( element.Semantic )
                         {
                             case VertexElementSemantic.Diffuse:
-                                xnaElements[ i ].UsageIndex = 0;
+                                d3dElements[ i ].UsageIndex = 0;
                                 break;
 
                             case VertexElementSemantic.Specular:
-                                xnaElements[ i ].UsageIndex = 1;
+                                d3dElements[ i ].UsageIndex = 1;
                                 break;
 
                             default:
-                                xnaElements[ i ].UsageIndex = (byte)element.Index;
+                                d3dElements[ i ].UsageIndex = (byte)element.Index;
                                 break;
                         } //  switch
 
                     } // for
 
-                    // configure the last element to be the end
-                    //xnaElements[elements.Count] = XFG.VertexElement.VertexDeclarationEnd;
-
                     // create the new declaration
-                    xnaVertexDecl = new XFG.VertexDeclaration( device, xnaElements );
+                   
+                    d3dVertexDecl = new XNA.VertexDeclaration(device, d3dElements);
+                  
 
                     // reset the flag
                     needsRebuild = false;
                 }
 
-                return xnaVertexDecl;
+                return d3dVertexDecl;
             }
         }
 

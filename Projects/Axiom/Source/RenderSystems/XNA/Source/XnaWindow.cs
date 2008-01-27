@@ -27,22 +27,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:"/>
+//     <id value="$Id: D3DWindow.cs 884 2006-09-14 06:32:07Z borrillis $"/>
 // </file>
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using SWF = System.Windows.Forms;
+using System.IO;
+//using System.Windows.Forms;
 
 using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Media;
 
-using XNA = Microsoft.Xna.Framework;
-using XFG = Microsoft.Xna.Framework.Graphics;
+using XNA = Microsoft.Xna.Framework.Graphics;
+using System.Windows.Forms;
 
 #endregion Namespace Declarations
 
@@ -55,12 +55,16 @@ namespace Axiom.RenderSystems.Xna
     {
         #region Fields
 
-        /// <summary>A handle to the Xna device of the XnaRenderSystem.</summary>
-        private XFG.GraphicsDevice _device;
+        /// <summary>A handle to the Direct3D device of the DirectX9RenderSystem.</summary>
+        private XNA.GraphicsDevice device;
         /// <summary>Used to provide support for multiple RenderWindows per device.</summary>
-        private XFG.Texture2D _backBuffer;
-        private XFG.DepthStencilBuffer _stencilBuffer;
-        //private XFG.SwapChain swapChain;
+        private XNA.RenderTarget backBuffer;
+        private XNA.DepthStencilBuffer stencilBuffer;
+        private XNA.RenderTarget2D swapChain;
+
+      
+        
+
 
         #endregion Fields
 
@@ -68,6 +72,9 @@ namespace Axiom.RenderSystems.Xna
 
         public XnaWindow()
         {
+           
+
+          
         }
 
         #endregion
@@ -86,64 +93,85 @@ namespace Axiom.RenderSystems.Xna
         /// <param name="top"></param>
         /// <param name="depthBuffer"></param>height
         /// <param name="miscParams"></param>
-        //public override void Create( string name, int width, int height, int colorDepth, bool isFullScreen, int left, int top, bool depthBuffer, params object[] miscParams )
-		public override void Create( string name, int width, int height, bool fullScreen, Axiom.Collections.NamedParameterList miscParams )
+        public override void Create( string name, int width, int height, int colorDepth, bool isFullScreen, int left, int top, bool depthBuffer, params object[] miscParams )
         {
-            // mMiscParams[0] = System.Windows.Forms.Control
-            // mMiscParams[1] = Microsoft.Xna.Framework.Graphics.GraphicsDevice
+            // mMiscParams[0] = Direct3D.Device
+            // mMiscParams[1] = D3DRenderSystem.Driver
+            // mMiscParams[2] = Axiom.Core.RenderWindow
 
-            System.Windows.Forms.Control targetControl = null;
+            Control targetControl = null;
 
-            /// get the Xna.Device params
+            /// get the Direct3D.Device params
             if ( miscParams.Length > 0 )
             {
                 targetControl = (System.Windows.Forms.Control)miscParams[ 0 ];
             }
 
+            // CMH - 4/24/2004 - Start
             if ( miscParams.Length > 1 && miscParams[ 1 ] != null )
             {
-                _device = (XFG.GraphicsDevice)miscParams[ 1 ];
+                device = (XNA.GraphicsDevice)miscParams[ 1 ];
             }
-            if ( _device == null )
+            if ( device == null )
             {
-                throw new Exception( "Error creating Xna window: device is null." );
+                throw new Exception( "Error creating DirectX window: device is null." );
             }
 
-            _device.DeviceLost += new EventHandler( OnDeviceLost );
-            _device.DeviceReset += new EventHandler( OnResetDevice );
-            this.OnResetDevice( _device, null );
+            // CMH - End
+
+            device.DeviceReset += new EventHandler( OnResetDevice );
+            this.OnResetDevice( device, null );
+
+            /*
+             * CMH 4/24/2004 - Note: The device initialization code has been moved to initDevice()
+             * in D3D9RenderSystem.cs, as we don't want to init a new device with every window.
+             */
+
+
+            // CMH - 4/24/2004 - Start
 
             /* If we're in fullscreen, we can use the device's back and stencil buffers.
              * If we're in windowed mode, we'll want our own.
              * get references to the render target and depth stencil surface
-			 */
-            //if ( isFullScreen )
-            //{
-                //_backBuffer = _device.GetRenderTarget( 0 );
-                //_backBuffer = new XFG.Texture2D( _device, width, height, 1, XFG.ResourceUsage.ResolveTarget, XFG.SurfaceFormat.Depth24 );
-                _stencilBuffer = _device.DepthStencilBuffer;
-            //}
-            //else
-            //{
-                //XFG.PresentationParameters presentParameters = device.PresentationParameters.Clone();
+             */
+            if ( isFullScreen )
+            {
+                backBuffer = device.GetRenderTarget( 0 );
+                stencilBuffer = device.DepthStencilBuffer;
+            }
+            else
+            {
+                XNA.PresentationParameters presentParams = new XNA.PresentationParameters();// (device.PresentationParameters);
+                presentParams.IsFullScreen = false;
+                presentParams.BackBufferCount = 1;
+                presentParams.EnableAutoDepthStencil = depthBuffer;
+                presentParams.SwapEffect = XNA.SwapEffect.Discard;
+                presentParams.DeviceWindowHandle = targetControl.Handle;
+                presentParams.BackBufferHeight = height;
+                presentParams.BackBufferWidth = width;
+                presentParams.SwapEffect= Microsoft.Xna.Framework.Graphics.SwapEffect.Default;
 
-                //presentParameters.IsFullScreen = false;
-                //presentParameters.BackBufferCount = 1;
-                //presentParameters.EnableAutoDepthStencil = depthBuffer;
-                //presentParameters.SwapEffect = XFG.SwapEffect.Discard;
-                //presentParameters.DeviceWindowHandle = targetControl.Handle;
-                //presentParameters.BackBufferHeight = height;
-                //presentParameters.BackBufferWidth = width;
-                //swapChain = new D3D.SwapChain( device, presentParameters );
-                //customAttributes[ "SwapChain" ] = swapChain;
+                /*swapChain = new Microsoft.Xna.Framework.Graphics.RenderTarget2D(device,
+        device.PresentationParameters.BackBufferWidth,
+        device.PresentationParameters.BackBufferHeight,
+        0, 0,
+        device.PresentationParameters.MultiSampleType,
+        device.PresentationParameters.MultiSampleQuality);*/
+                
+                //swapChain =// XNA.SwapEffect.Discard
+                //new Microsoft.Xna.Framework.Graphics.SwapChain( device, presentParams );
+                customAttributes[ "SwapChain" ] = swapChain;
 
-                //stencilBuffer = device.CreateDepthStencilSurface(
-                //    width, height,
-                //    presentParameters.AutoDepthStencilFormat,
-                //    presentParameters.MultiSampleType,
-                //    presentParameters.MultiSampleQuality,
-                //    false );
-            //}
+                stencilBuffer = new Microsoft.Xna.Framework.Graphics.DepthStencilBuffer(
+                    device,
+                    width, height, Microsoft.Xna.Framework.Graphics.DepthFormat.Depth24, Microsoft.Xna.Framework.Graphics.MultiSampleType.None, 0);
+
+                    //device.PresentationParameters.AutoDepthStencilFormat, 
+                   // device.PresentationParameters.MultiSampleType,
+                   // device.PresentationParameters.MultiSampleQuality
+                   // );
+            }
+            // CMH - End
 
             // set the params of the window
             this.Name = name;
@@ -156,90 +184,72 @@ namespace Axiom.RenderSystems.Xna
 
             // set as active
             this.isActive = true;
-        }
 
-		public override bool IsClosed
-		{
-			get
-			{
-				// TODO : 
-				return false;
-			}
-		}
-        /// <summary>
-        /// Specifies the custom attribute by converting this to a string and passing to GetCustomAttribute()
-        /// </summary>
-        public enum CustomAttribute
-        {
-            XNADEVICE,
-            XNAZBUFFER,
-            XNABACKBUFFER
+
+            
         }
 
         public override object GetCustomAttribute( string attribute )
         {
             switch ( attribute )
             {
-                case "DEVICE":
-                    return _device;
+                case "D3DDEVICE":
+                    return device;
 
-                case "DEPTHBUFFER":
-                    return _stencilBuffer;
+                case "D3DZBUFFER":
+                    return stencilBuffer;
 
-                case "BACKBUFFER":
-                    return _device.GetRenderTarget( 0 );
+                case "D3DBACKBUFFER":
+                    // CMH - 4/24/2004 - Start
 
+                    // if we're in windowed mode, we want to get our own backbuffer.
+                    if ( isFullScreen )
+                    {
+                        return backBuffer;
+                    }
+                    else
+                    {
+                        return  device.GetRenderTarget(0);// swapChain.GetBackBuffer(0, D3D.BackBufferType.Mono);
+                    }
+                // CMH - End
             }
 
-            return new NotSupportedException( "There is no Xna RenderWindow custom attribute named " + attribute );
+            return new NotSupportedException( "There is no D3D RenderWindow custom attribute named " + attribute );
         }
 
         /// <summary>
         /// 
         /// </summary>
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !isDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					// Dispose managed resources.
-					// if the control is a form, then close it
-					if ( targetHandle is System.Windows.Forms.Form )
-					{
-						SWF.Form form = targetHandle as SWF.Form;
-						form.Close();
-					}
+        public override void Dispose()
+        {
+            base.Dispose();
 
-					// dispopse of our back buffer if need be
-					if ( _backBuffer != null && !_backBuffer.IsDisposed )
-					{
-						_backBuffer.Dispose();
-					}
+            // if the control is a form, then close it
+            if ( targetHandle is System.Windows.Forms.Form )
+            {
+                Form form = targetHandle as System.Windows.Forms.Form;
+                form.Close();
+            }
 
-					// dispose of our stencil buffer if need be
-					if ( _stencilBuffer != null && !_stencilBuffer.IsDisposed )
-					{
-						_stencilBuffer.Dispose();
-					}
+            // dispopse of our back buffer if need be
+            if ( backBuffer != null && !backBuffer.IsDisposed)
+            {
+                backBuffer.Dispose();
+            }
 
-					// make sure this window is no longer active
-					isActive = false;
-				}
+            // dispose of our stencil buffer if need be
+            if ( stencilBuffer != null && !stencilBuffer.IsDisposed)
+            {
+                stencilBuffer.Dispose();
+            }
 
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-			}
-			isDisposed = true;
-
-			// If it is available, make the call to the
-			// base class's Dispose(Boolean) method
-			base._dispose( disposeManagedResources );
-		}
+            // make sure this window is no longer active
+            isActive = false;
+        }
 
         public override void Reposition( int left, int right )
         {
-            // TODO: Implementation of XnaWindow.Reposition()
+            // TODO: Implementation of D3DWindow.Reposition()
         }
 
         /// <summary>
@@ -249,10 +259,32 @@ namespace Axiom.RenderSystems.Xna
         /// <param name="height"></param>
         public override void Resize( int width, int height )
         {
+            // CMH 4/24/2004 - Start
             width = width < 10 ? 10 : width;
             height = height < 10 ? 10 : height;
             this.height = height;
             this.width = width;
+
+            if ( !isFullScreen )
+            {
+                XNA.PresentationParameters p = new Microsoft.Xna.Framework.Graphics.PresentationParameters();// (device.PresentationParameters);//swapchain
+                p.BackBufferHeight = height;
+                p.BackBufferWidth = width;
+                //swapChain.Dispose();
+                //swapChain = new D3D.SwapChain( device, p );
+                stencilBuffer.Dispose();
+                stencilBuffer = new Microsoft.Xna.Framework.Graphics.DepthStencilBuffer(
+                    device,
+                    width, height,
+                    device.PresentationParameters.AutoDepthStencilFormat,
+                    device.PresentationParameters.MultiSampleType,
+                    device.PresentationParameters.MultiSampleQuality
+                    );
+                 
+
+               // customAttributes[ "SwapChain" ] = swapChain;
+            }
+            // CMH - End
         }
 
         /// <summary>
@@ -261,29 +293,67 @@ namespace Axiom.RenderSystems.Xna
         /// <param name="waitForVSync"></param>
         public override void SwapBuffers( bool waitForVSync )
         {
+            Control control= (Control)targetHandle;
+            while (!(control is Form))
+            {
+                control = control.Parent;
+            }
+            
+            
+            device.Present(null,new Microsoft.Xna.Framework.Rectangle(0,0,800,600),control.Handle);
+//            device.Present();
             try
             {
                 // tests coop level to make sure we are ok to render
-                //_device.CheckCooperativeLevel();
+                //device.GraphicsDeviceCapabilities.TestCooperativeLevel();
 
                 // swap back buffer to the front
-                //if ( this.isFullScreen )
-                //{
-                    //_device.Present( ((SWF.Control)targetHandle).Handle );
-                //}
-                //else
-                //{
-                //    swapChain.Present();
-                //}
+                // CMH 4/24/2004 - Start
+                if ( this.isFullScreen )
+                {
+                    
+                }
+                else
+                {
+
+                    
+                }
+                // CMH - End
             }
-            catch ( XFG.DeviceLostException dlx )
+            catch ( XNA.DeviceLostException dlx )
             {
                 Console.WriteLine( dlx.ToString() );
             }
-            catch ( XFG.DeviceNotResetException dnrx )
+            catch ( XNA.DeviceNotResetException dnrx )
             {
                 Console.WriteLine( dnrx.ToString() );
-                _device.Reset( _device.PresentationParameters );
+                device.Reset( device.PresentationParameters );
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public override bool IsActive
+        {
+            get
+            {
+                return isActive;
+            }
+            set
+            {
+                isActive = value;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public override bool IsFullScreen
+        {
+            get
+            {
+                return base.IsFullScreen;
             }
         }
 
@@ -291,25 +361,25 @@ namespace Axiom.RenderSystems.Xna
         ///     Saves the window contents to a stream.
         /// </summary>
         /// <param name="stream">Stream to write the window contents to.</param>
-        public override void Save( System.IO.Stream stream )
+        public override void Save( Stream fileName )
         {
-            // ResolveBackBuffer
-            //device.ResolveBackBuffer();
+       
+            Microsoft.Xna.Framework.Graphics.ResolveTexture2D tex=new Microsoft.Xna.Framework.Graphics.ResolveTexture2D 
+                (device,this.width,this.height,1, Microsoft.Xna.Framework.Graphics.SurfaceFormat.Color);
+            device.ResolveBackBuffer(tex);
+            //tex.Save(fileName, Microsoft.Xna.Framework.Graphics.ImageFileFormat.Jpg);
+       
         }
 
         private void OnResetDevice( object sender, EventArgs e )
         {
-            XFG.GraphicsDevice resetDevice = (XFG.GraphicsDevice)sender;
+            XNA.GraphicsDevice resetDevice = (XNA.GraphicsDevice)sender;
 
             // Turn off culling, so we see the front and back of the triangle
-            resetDevice.RenderState.CullMode = XFG.CullMode.None;
-            // Turn on the DepthBuffer
-            resetDevice.RenderState.DepthBufferEnable = true;
-        }
-
-        void OnDeviceLost( object sender, EventArgs e )
-        {
-            //throw new Exception( "The method or operation is not implemented." );
+            resetDevice.RenderState.CullMode = XNA.CullMode.None;
+            // Turn on the ZBuffer
+            //resetDevice.RenderState.ZBufferEnable = true;
+            //resetDevice.RenderState.Lighting = true;    //make sure lighting is enabled
         }
 
         #endregion

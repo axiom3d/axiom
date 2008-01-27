@@ -27,46 +27,63 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:"/>
+//     <id value="$Id: D3DHardwareIndexBuffer.cs 884 2006-09-14 06:32:07Z borrillis $"/>
 // </file>
 #endregion SVN Version Information
 
 #region Namespace Declarations
+
 using System;
 using System.Runtime.InteropServices;
 
 using Axiom.Core;
 using Axiom.Graphics;
 
-using XNA = Microsoft.Xna.Framework;
-using XFG = Microsoft.Xna.Framework.Graphics;
+using XNA = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna
 {
-    class XnaHardwareIndexBuffer: HardwareIndexBuffer
+    /// <summary>
+    /// 	Summary description for XnaHardwareIndexBuffer.
+    /// </summary>
+    public class XnaHardwareIndexBuffer : HardwareIndexBuffer
     {
         #region Member variables
 
-        protected XFG.GraphicsDevice device;
-        protected XFG.IndexBuffer xnaBuffer;
-        private Byte[] _buffer;
-        private GCHandle _gcHandle;
+        protected XNA.GraphicsDevice device;
+        protected XNA.IndexBuffer d3dBuffer;
+        protected System.Array data;
 
-        #endregion
+        IntPtr bufferPtr;
+        byte[] bufferBytes;
+        int size;
+        Microsoft.Xna.Framework.Graphics.IndexElementSize bufferType;
+        int indexSize;
+        int Boffset;
+        int Blenght;
+#endregion
 
         #region Constructors
 
-        public XnaHardwareIndexBuffer( IndexType type, int numIndices, BufferUsage usage,
-            XFG.GraphicsDevice device, bool useSystemMemory, bool useShadowBuffer )
+       unsafe public XnaHardwareIndexBuffer( IndexType type, int numIndices, BufferUsage usage,
+           XNA.GraphicsDevice device, bool useSystemMemory, bool useShadowBuffer)
             : base( type, numIndices, usage, useSystemMemory, useShadowBuffer )
         {
 
-            XFG.IndexElementSize elementSize = ( type == IndexType.Size16 ? XFG.IndexElementSize.SixteenBits : XFG.IndexElementSize.ThirtyTwoBits);
-
+            bufferType = (type == IndexType.Size16) ? Microsoft.Xna.Framework.Graphics.IndexElementSize.SixteenBits :
+                                                                                                     Microsoft.Xna.Framework.Graphics.IndexElementSize.ThirtyTwoBits;
+          
             // create the buffer
-            xnaBuffer = new XFG.IndexBuffer( device, sizeInBytes, XnaHelper.ConvertEnum( usage ), elementSize );
+            d3dBuffer = new XNA.IndexBuffer(
+                device,
+                sizeInBytes,XnaHelper.ConvertEnum( usage ),bufferType);
+                
+            size = sizeInBytes;
+            bufferBytes = new byte[sizeInBytes];
+            bufferBytes.Initialize();
+            indexSize = (type == IndexType.Size16) ? indexSize = 4 : indexSize = 8;
         }
 
         #endregion
@@ -80,11 +97,14 @@ namespace Axiom.RenderSystems.Xna
         /// <param name="length"></param>
         /// <param name="locking"></param>
         /// <returns></returns>
-        protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
-        {
-            _buffer = new Byte[ length ];
-            xnaBuffer.GetData<Byte>( _buffer );
-            return Marshal.UnsafeAddrOfPinnedArrayElement( _buffer, 0 );
+       unsafe protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
+       {
+           Boffset = offset;
+           Blenght = length;
+           fixed ( byte* bytes =&bufferBytes[offset] )
+           {
+               return new IntPtr(bytes);
+           }
         }
 
         /// <summary>
@@ -93,9 +113,12 @@ namespace Axiom.RenderSystems.Xna
         /// DOC
         public override void UnlockImpl()
         {
-                xnaBuffer.SetData<Byte>( _buffer );
-                _buffer = null;
+            //there is no unlock/lock system on XNA, just copy the byte buffer into the video card memory
+            // d3dBuffer.SetData<byte>(bufferBytes);
+            //this is a lot faster :)
+            d3dBuffer.SetData<byte>(Boffset,bufferBytes, Boffset , Blenght);
         }
+
 
         /// <summary>
         /// 
@@ -103,15 +126,15 @@ namespace Axiom.RenderSystems.Xna
         /// <param name="offset"></param>
         /// <param name="length"></param>
         /// <param name="dest"></param>
-        public override void ReadData( int offset, int length, IntPtr dest )
+        /// DOC
+        unsafe public override void ReadData( int offset, int length, IntPtr dest )
         {
             // lock the buffer for reading
-            IntPtr src = this.Lock(offset, length, BufferLocking.ReadOnly);
+            IntPtr src = this.Lock( offset, length, BufferLocking.ReadOnly );
 
             // copy that data in there
-            Memory.Copy(src, dest, length);
-
-            // unlock the buffer
+            Memory.Copy( src, dest, length );
+            
             this.Unlock();
         }
 
@@ -122,47 +145,52 @@ namespace Axiom.RenderSystems.Xna
         /// <param name="length"></param>
         /// <param name="src"></param>
         /// <param name="discardWholeBuffer"></param>
-        public override void WriteData(int offset, int length, IntPtr src, bool discardWholeBuffer) { throw new NotImplementedException(); }
-        public override void WriteData(int offset, int length, System.Array src, bool discardWholeBuffer)
+        /// DOC
+        public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
         {
-            switch ((src.GetValue(0)).GetType().Name)
-            {
-                case "Single":
-                    xnaBuffer.SetData<float>((float[])src);
-                    break;
-                case "Vector3":
-                    xnaBuffer.SetData<Axiom.Math.Vector3>((Axiom.Math.Vector3[])src);
-                    break;
-                case "Int32":
-                    xnaBuffer.SetData<int>((int[])src);
-                    break;
-                case "Int16":
-                    xnaBuffer.SetData<System.Int16>((System.Int16[])src);
-                    break;
-                default:
-                    throw new AxiomException("XNA RenderSystem: Index Type {0} Not Supported.", (src.GetValue(0)).GetType().Name);
-                    break;
-            }
+            // lock the buffer re al quick
+            IntPtr dest = this.Lock( offset, length,
+                discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
+            
+            // copy that data in there
+            Memory.Copy(src, dest, length);
+
+           /* unsafe
+           {
+               for (int i = 0; i < length; i++)
+                   bufferBytes[i] = (byte)((short*)src.ToPointer())[i];
+               // Memory.Copy(src, te, length);
+           //    d3dBuffer.SetData<byte>(bufferBytes, offset, length);
+           }*/
+           
+           this.Unlock();
 
         }
 
         public override void Dispose()
         {
-            xnaBuffer.Dispose();
+            d3dBuffer.Dispose();
         }
 
         #endregion
 
         #region Properties
 
-        /// <summary>
-        ///		Gets the underlying XNA Vertex Buffer object.
-        /// </summary>
-        public XFG.IndexBuffer XnaIndexBuffer
+        public byte[] IndexBufferBytes
         {
             get
             {
-                return xnaBuffer;
+                return bufferBytes;
+            }
+        }
+        /// <summary>
+        ///		Gets the underlying D3D Vertex Buffer object.
+        /// </summary>
+        public XNA.IndexBuffer D3DIndexBuffer
+        {
+            get
+            {                
+                return d3dBuffer;
             }
         }
 

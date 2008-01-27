@@ -3,7 +3,7 @@
     <ProjectType>Local</ProjectType>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B73F424D-008F-4E95-A80F-6B3A33FF83E4}</ProjectGuid>
+    <ProjectGuid>{A85EA316-92AF-4B3D-B23C-2CC8E653956D}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ApplicationIcon>
@@ -83,15 +83,15 @@
       <Name>System.Xml</Name>
       <HintPath>\System.Xml.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Xna.Framework">
-      <Name>Microsoft.Xna.Framework</Name>
-      <HintPath>\Microsoft.Xna.Framework.dll</HintPath>
+    <Reference Include="Microsoft.Xna.Framework, Version=2.0.0.0, Culture=neutral">
+      <Name>Microsoft.Xna.Framework, Version=2.0.0.0, Culture=neutral</Name>
+      <HintPath>\Microsoft.Xna.Framework, Version=2.0.0.0, Culture=neutral.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\Axiom.csproj">
       <Name>Axiom</Name>
-      <Project>{9E778032-6607-4A5A-A92C-4CE5373E703B}</Project>
+      <Project>{38849C0A-9CFE-4014-8091-C2DF0744284D}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
   </ItemGroup>
@@ -99,28 +99,8 @@
     <Compile Include="Configuration\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Source\DefaultForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Source\Driver.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Source\DriverCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Source\DriverCollection.cs" />
     <Compile Include="Source\HLSL\HLSLIncludeHandler.cs" />
-    <Compile Include="Source\Plugin.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Source\RenderSystem.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Source\VideoMode.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Source\VideoModeCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Source\XnaGpuProgram.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -133,10 +113,16 @@
     <Compile Include="Source\XnaHardwareIndexBuffer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Source\XnaHardwareOcclusionQuery.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Source\XnaHardwareVertexBuffer.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Source\XnaHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\XnaRenderTexture.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Source\XnaTexture.cs">
@@ -145,16 +131,30 @@
     <Compile Include="Source\XnaTextureManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Source\XnaTextureStageDescription.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Source\XnaTextureType.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Source\XnaTextureStageDescription.cs" />
+    <Compile Include="Source\XnaTextureType.cs" />
     <Compile Include="Source\XnaVertexDeclaration.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Source\XnaWindow.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\DefaultForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Source\Driver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\Plugin.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\VideoMode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\VideoModeCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\XnaRenderSystem.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Source\HLSL\HLSLProgram.cs">

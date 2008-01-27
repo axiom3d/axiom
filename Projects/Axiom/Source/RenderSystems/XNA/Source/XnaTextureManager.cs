@@ -27,42 +27,39 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:"/>
+//     <id value="$Id: D3DTextureManager.cs 884 2006-09-14 06:32:07Z borrillis $"/>
 // </file>
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using SWF = System.Windows.Forms;
 
-using Axiom.Configuration;
-using Axiom.Media;
-using Axiom.Graphics;
 using Axiom.Core;
+using Axiom.Graphics;
 
-using XNA = Microsoft.Xna.Framework;
-using XFG = Microsoft.Xna.Framework.Graphics;
+using XNA = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna
 {
-    class XnaTextureManager: TextureManager
+    /// <summary>
+    ///     Summary description for XnaTextureManager.
+    /// </summary>
+    public class XnaTextureManager : TextureManager
     {
-        /// <summary>Reference to the Xna GraphicsDevice.</summary>
-        private XFG.GraphicsDevice device;
+        /// <summary>Reference to the D3D device.</summary>
+        private XNA.GraphicsDevice device;
 
-        public XnaTextureManager( XFG.GraphicsDevice device )
+        public XnaTextureManager(XNA.GraphicsDevice device)
         {
             this.device = device;
 
             is32Bit = true;
         }
 
-        public override Texture Create( string name, TextureType type )
+        public override Axiom.Core.Texture Create( string name, TextureType type )
         {
             XnaTexture texture = new XnaTexture( name, device, TextureUsage.Default, type );
 
@@ -73,7 +70,7 @@ namespace Axiom.RenderSystems.Xna
         }
 
         /// <summary>
-        ///    Used to create a blank Xna texture.
+        ///    Used to create a blank D3D texture.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="type"></param>
@@ -83,8 +80,9 @@ namespace Axiom.RenderSystems.Xna
         /// <param name="format"></param>
         /// <param name="usage"></param>
         /// <returns></returns>
-        public override Texture CreateManual( string name, TextureType type, int width, int height, int numMipMaps, PixelFormat format, TextureUsage usage )
+        public override Axiom.Core.Texture CreateManual( string name, TextureType type, int width, int height, int numMipMaps, Axiom.Media.PixelFormat format, TextureUsage usage )
         {
+
             XnaTexture texture = new XnaTexture( name, device, type, width, height, numMipMaps, format, usage );
             texture.Enable32Bit( is32Bit );
             return texture;

@@ -140,14 +140,14 @@ namespace Axiom.RenderSystems.Xna.HLSL
         {
             Debug.Assert( constantTable != null );
 
-            //XFG.ConstantTableDescription desc = constantTable.Description;
+            XFG.ShaderConstantTable desc = constantTable;
 
             // iterate over the constants
             for ( int i = 0; i < constantTable.Constants.Count; i++ )
             {
                 // Recursively descend through the structure levels
                 // Since D3D9 has no nice 'leaf' method like Cg (sigh)
-                ProcessParamElement( null, "", i, parms );
+                ProcessParamElement( new XFG.CompiledEffect(), "", i, parms );
             }
         }
 
@@ -156,6 +156,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
         /// </summary>
         protected override void UnloadImpl()
         {
+            //microcode.Close();
             constantTable = null;
         }
 
@@ -187,10 +188,10 @@ namespace Axiom.RenderSystems.Xna.HLSL
         /// <param name="prefix"></param>
         /// <param name="index"></param>
         /// <param name="parms"></param>
-        protected void ProcessParamElement( XFG.ShaderConstant parent, string prefix, int index, GpuProgramParameters parms )
+        protected void ProcessParamElement( XFG.CompiledEffect parent, string prefix, int index, GpuProgramParameters parms )
         {
             XFG.ShaderConstant constant = constantTable.Constants[ index ];
-
+            
             string paramName = constant.Name;
 
             // trim the odd '$' which appears at the start of the names in HLSL
@@ -200,13 +201,13 @@ namespace Axiom.RenderSystems.Xna.HLSL
             }
 
             // If it's an array, elements will be > 1
-            for ( int e = 0; e < constant.ElementCount; e++ )
+            for (int e = 0; e < constant.ElementCount; e++)
             {
                 if ( constant.ParameterClass == XFG.EffectParameterClass.Struct )
                 {
                     // work out a new prefix for the nextest members
                     // if its an array, we need the index
-                    if ( constant.ElementCount > 1 )
+                    if (constant.ElementCount > 1 )
                     {
                         prefix += string.Format( "{0}[{1}].", paramName, e );
                     }
@@ -218,7 +219,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
                     // cascade into the struct members
                     for ( int i = 0; i < constant.StructureMemberCount; i++ )
                     {
-                        ProcessParamElement( constant, prefix, i, parms );
+                        //ProcessParamElement( constant, prefix, i, parms );
                     }
                 }
                 else
@@ -290,7 +291,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
                     break;
 
                 case "target":
-                    target = val.Split( ' ' )[0];
+                    target = val.Split( ' ' )[ 0 ];
                     break;
 
                 default:
