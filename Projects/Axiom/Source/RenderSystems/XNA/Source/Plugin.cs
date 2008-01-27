@@ -54,7 +54,7 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         ///     Reference to the render system instance.
         /// </summary>
-        private Axiom.Graphics.RenderSystem renderSystem = new RenderSystem();
+        private Axiom.Graphics.RenderSystem renderSystem = new XnaRenderSystem();
 
         #endregion Fields
 

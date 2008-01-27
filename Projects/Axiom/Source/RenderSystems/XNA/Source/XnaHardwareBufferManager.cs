@@ -27,28 +27,31 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:"/>
+//     <id value="$Id: D3DHardwareBufferManager.cs 884 2006-09-14 06:32:07Z borrillis $"/>
 // </file>
 #endregion SVN Version Information
 
 #region Namespace Declarations
+
 using System;
 
-using Axiom.Core;
 using Axiom.Graphics;
+using VertexDeclaration = Axiom.Graphics.VertexDeclaration;
 
-using XNA = Microsoft.Xna.Framework;
-using XFG = Microsoft.Xna.Framework.Graphics;
+using XNA = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna
 {
-    class XnaHardwareBufferManager: HardwareBufferManager
+    /// <summary>
+    /// 	Summary description for XnaHardwareBufferManager.
+    /// </summary>
+    public class XnaHardwareBufferManager : HardwareBufferManager
     {
         #region Member variables
 
-        protected XFG.GraphicsDevice device;
+        protected XNA.GraphicsDevice device;
 
         #endregion
 
@@ -58,7 +61,7 @@ namespace Axiom.RenderSystems.Xna
         ///		
         /// </summary>
         /// <param name="device"></param>
-        public XnaHardwareBufferManager( XFG.GraphicsDevice device )
+        public XnaHardwareBufferManager(XNA.GraphicsDevice device)
         {
             this.device = device;
         }
@@ -67,13 +70,13 @@ namespace Axiom.RenderSystems.Xna
 
         #region Methods
 
-        public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
+        public override Axiom.Graphics.HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
         {
             // call overloaded method with no shadow buffer
             return CreateIndexBuffer( type, numIndices, usage, false );
         }
 
-        public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
+        public override Axiom.Graphics.HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
         {
             XnaHardwareIndexBuffer buffer = new XnaHardwareIndexBuffer( type, numIndices, usage, device, false, useShadowBuffer );
             indexBuffers.Add( buffer );
@@ -93,7 +96,7 @@ namespace Axiom.RenderSystems.Xna
             return buffer;
         }
 
-        public override VertexDeclaration CreateVertexDeclaration()
+        public override Axiom.Graphics.VertexDeclaration CreateVertexDeclaration()
         {
             VertexDeclaration decl = new XnaVertexDeclaration( device );
             vertexDeclarations.Add( decl );
@@ -101,6 +104,10 @@ namespace Axiom.RenderSystems.Xna
         }
 
         // TODO: Disposal
+
+        #endregion
+
+        #region Properties
 
         #endregion
 

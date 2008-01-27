@@ -27,61 +27,63 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
-//     <id value="$Id$"/>
+//     <id value="$Id: D3DGpuProgramManager.cs 884 2006-09-14 06:32:07Z borrillis $"/>
 // </file>
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
-using SWF = System.Windows.Forms;
 
-using Axiom.Configuration;
-using Axiom.Graphics;
 using Axiom.Core;
+using Axiom.Graphics;
 
-using XNA = Microsoft.Xna.Framework;
-using XFG = Microsoft.Xna.Framework.Graphics;
+using XNA = Microsoft.Xna.Framework.Graphics;
+using Axiom.RenderSystems.Xna;
 
 #endregion Namespace Declarations
 
-
 namespace Axiom.RenderSystems.Xna
 {
-    public class XnaGpuProgramManager : GpuProgramManager 
+    /// <summary>
+    /// 	Summary description for XnaGpuProgramManager.
+    /// </summary>
+    public class XnaGpuProgramManager : GpuProgramManager
     {
-        private XFG.GraphicsDevice _device;
+        protected XNA.GraphicsDevice device;
 
-        internal XnaGpuProgramManager( XFG.GraphicsDevice device )
+        internal XnaGpuProgramManager(XNA.GraphicsDevice device)
         {
-            _device = device;
+            this.device = device;
         }
 
-        #region GpuProgramManager Implementation
-
+        /// <summary>
+        ///    Create the specified type of GpuProgram.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public override GpuProgram Create( string name, GpuProgramType type, string syntaxCode )
         {
             switch ( type )
             {
                 case GpuProgramType.Vertex:
-                    return new XnaVertexProgram( name, _device, syntaxCode );
+                    return new XnaVertexProgram( name, device, syntaxCode );
 
                 case GpuProgramType.Fragment:
-                    return new XNAragmentProgram( name, _device, syntaxCode );
+                    return new XnaFragmentProgram( name, device, syntaxCode );
                 default:
                     throw new NotSupportedException( "The program type is not supported." );
             }
         }
 
+        /// <summary>
+        ///    Returns a specialized version of GpuProgramParameters.
+        /// </summary>
+        /// <returns></returns>
         public override GpuProgramParameters CreateParameters()
         {
             return new GpuProgramParameters();
         }
-
-        #endregion GpuProgramManager Implementation
-
     }
 }

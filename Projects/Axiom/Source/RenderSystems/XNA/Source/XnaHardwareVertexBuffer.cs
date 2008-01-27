@@ -27,41 +27,64 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:"/>
+//     <id value="$Id: D3DHardwareVertexBuffer.cs 884 2006-09-14 06:32:07Z borrillis $"/>
 // </file>
 #endregion SVN Version Information
 
 #region Namespace Declarations
+
 using System;
 using System.Runtime.InteropServices;
 
 using Axiom.Core;
 using Axiom.Graphics;
 
-using XNA = Microsoft.Xna.Framework;
-using XFG = Microsoft.Xna.Framework.Graphics;
+using XNA = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna
 {
-    class XnaHardwareVertexBuffer: HardwareVertexBuffer
+    /// <summary>
+    /// 	Summary description for XnaHardwareVertexBuffer.
+    /// </summary>
+    /// 
+    //there is no XNA buffer locking system, copy first into a byte array and when the unlock function is called, fill in memory with setdata<byte>(...)
+   unsafe public class XnaHardwareVertexBuffer : HardwareVertexBuffer
     {
         #region Member variables
 
-        protected XFG.VertexBuffer xnaBuffer;
-        private Byte[] _buffer;
-        private GCHandle _gcHandle;
+        protected XNA.VertexBuffer d3dBuffer;
+        protected XNA.GraphicsDevice device;
+     //   protected System.Array data;
 
         #endregion
 
         #region Constructors
+       
+        //IntPtr bufferPtr;
+       byte[] bufferBytes;
+       int size;
+       int vertexSize;
+       int Boffset;
+       int Blenght;
 
-        public XnaHardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage, XFG.GraphicsDevice device, bool useSystemMemory, bool useShadowBuffer )
+        public XnaHardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage,
+            XNA.GraphicsDevice dev, bool useSystemMemory, bool useShadowBuffer )
             : base( vertexSize, numVertices, usage, useSystemMemory, useShadowBuffer )
         {
-            // Create the XNA vertex buffer
-            xnaBuffer = new XFG.VertexBuffer( device, sizeInBytes, XFG.ResourceUsage.None, XFG.ResourceManagementMode.Automatic );
+            device = dev;
+            // Create the d3d vertex buffer
+                d3dBuffer = new XNA.VertexBuffer(
+                    device,
+                    vertexSize*numVertices,
+                    XnaHelper.ConvertEnum(usage));
+
+                size = vertexSize * numVertices;
+                bufferBytes = new byte[vertexSize * numVertices];
+                bufferBytes.Initialize();
+                this.vertexSize = vertexSize;
+               
         }
 
         #endregion
@@ -75,23 +98,27 @@ namespace Axiom.RenderSystems.Xna
         /// <param name="length"></param>
         /// <param name="locking"></param>
         /// <returns></returns>
+        /// DOC
         protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
         {
-            _buffer = new Byte[ length ];
-            xnaBuffer.GetData<Byte>( _buffer );
-            return Marshal.UnsafeAddrOfPinnedArrayElement( _buffer, 0 );
-            //_gcHandle = GCHandle.Alloc( xnaBuffer, GCHandleType.Weak );
-            //return GCHandle.ToIntPtr( _gcHandle );
+            Boffset = offset;
+            Blenght = length;
+            fixed (byte* bytes = &bufferBytes[offset])
+            {
+                return new IntPtr(bytes);
+            }
         }
 
         /// <summary>
         /// 
         /// </summary>
+        /// DOC
         public override void UnlockImpl()
         {
-            xnaBuffer.SetData<Byte>( _buffer );
-            //_gcHandle.Free();
-            _buffer = null;
+            //there is no unlock/lock system on XNA, just copy the byte buffer into the video card memory
+            // d3dBuffer.SetData<byte>(bufferBytes);
+            //this is faster :)
+            d3dBuffer.SetData<byte>(Boffset, bufferBytes, Boffset, Blenght, 0);
         }
 
         /// <summary>
@@ -100,16 +127,18 @@ namespace Axiom.RenderSystems.Xna
         /// <param name="offset"></param>
         /// <param name="length"></param>
         /// <param name="dest"></param>
+        /// DOC
         public override void ReadData( int offset, int length, IntPtr dest )
         {
             // lock the buffer for reading
-            IntPtr src = this.Lock(offset, length, BufferLocking.ReadOnly);
+            IntPtr src = this.Lock( offset, length, BufferLocking.ReadOnly );
 
             // copy that data in there
-            Memory.Copy(src, dest, length);
-
+            Memory.Copy( src, dest, length );
+            
             // unlock the buffer
             this.Unlock();
+
         }
 
         /// <summary>
@@ -119,44 +148,45 @@ namespace Axiom.RenderSystems.Xna
         /// <param name="length"></param>
         /// <param name="src"></param>
         /// <param name="discardWholeBuffer"></param>
-        public override void WriteData(int offset, int length, IntPtr src, bool discardWholeBuffer) { throw new NotImplementedException(); }
-        public override void WriteData( int offset, int length, System.Array src, bool discardWholeBuffer )
+        /// DOC
+        public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
         {
-            switch ( (src.GetValue( 0 )).GetType().Name )
-            {
-                case "Single":
-                    xnaBuffer.SetData<float>((float[])src);
-                    break;
-                case "Vector3":
-                    xnaBuffer.SetData<Axiom.Math.Vector3>((Axiom.Math.Vector3[])src);
-                    break;
-                case "Int32":
-                    xnaBuffer.SetData<int>((int[])src);
-                    break;
-                default:
-                    throw new AxiomException("XNA RenderSystem: Vertex Type {0} Not Supported.", (src.GetValue(0)).GetType().Name);
-                    break;
-            }
+
+            // lock the buffer real quick
+            IntPtr dest = this.Lock( offset, length,
+                discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
+
+            // copy that data in there
+            Memory.Copy( src, dest, length );
+
+            this.Unlock();
 
         }
 
         public override void Dispose()
         {
-            xnaBuffer.Dispose();
+            d3dBuffer.Dispose();
         }
 
         #endregion
 
         #region Properties
 
+       public byte[] ByteVertices
+       {
+           get
+           {
+               return bufferBytes;
+           }
+       }
         /// <summary>
         ///		Gets the underlying D3D Vertex Buffer object.
         /// </summary>
-        public XFG.VertexBuffer XnaVertexBuffer
+        public XNA.VertexBuffer D3DVertexBuffer
         {
             get
             {
-                return xnaBuffer;
+                return d3dBuffer;
             }
         }
 

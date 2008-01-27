@@ -136,7 +136,7 @@ namespace Axiom.RenderSystems.Xna
             System.IO.Stream strm = ResourceManager.FindCommonResourceData( "AxiomIcon.ico" );
             if ( strm != null )
                 this.Icon = new System.Drawing.Icon( strm );
-        }
+            }
 
         /// <summary>
         ///		Get/Set the RenderWindow associated with this form.
