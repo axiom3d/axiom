@@ -100,7 +100,7 @@ namespace Axiom.RenderSystems.Xna
 
 		public XnaRenderSystem()
 		{
-			InitConfigOptions();
+			_initConfigOptions();
 			// init the texture stage descriptions
 			for ( int i = 0; i < Config.MaxTextureLayers; i++ )
 			{
@@ -116,7 +116,7 @@ namespace Axiom.RenderSystems.Xna
 
 		#region Helper Methods
 
-		protected void SetVertexBufferBinding( VertexBufferBinding binding )
+		protected void _setVertexBufferBinding( VertexBufferBinding binding )
 		{
 			IEnumerator e = binding.Bindings;
 			// TODO: Optimize to remove enumeration if possible, although with so few iterations it may never make a difference
@@ -142,7 +142,7 @@ namespace Axiom.RenderSystems.Xna
 			numLastStreams = binding.BindingCount;
 		}
 
-		private void InitConfigOptions()
+		private void _initConfigOptions()
 		{
 			ConfigOption optDevice = new ConfigOption( "Rendering Device", "", false );
 			ConfigOption optVideoMode = new ConfigOption( "Video Mode", "800 x 600 @ 32-bit colour", false );
@@ -181,11 +181,11 @@ namespace Axiom.RenderSystems.Xna
 			ConfigOptions.Add( optFPUMode );
 		}
 
-		private XNA.Matrix MakeXnaMatrix( Axiom.Math.Matrix4 matrix )
+		private XNA.Matrix _makeXnaMatrix( Axiom.Math.Matrix4 matrix )
 		{
 			XNA.Matrix xnaMat = new XNA.Matrix();
 
-			// set it to a transposed matrix since DX uses row vectors
+			// set it to a transposed matrix since Xna uses row vectors
 			xnaMat.M11 = matrix.m00;
 			xnaMat.M12 = matrix.m10;
 			xnaMat.M13 = matrix.m20;
@@ -206,7 +206,7 @@ namespace Axiom.RenderSystems.Xna
 			return xnaMat;
 		}
 
-		private DefaultForm CreateDefaultForm( string windowTitle, int top, int left, int width, int height, bool fullScreen )
+		private DefaultForm _createDefaultForm( string windowTitle, int top, int left, int width, int height, bool fullScreen )
 		{
 			DefaultForm form = new DefaultForm();
 
@@ -236,7 +236,7 @@ namespace Axiom.RenderSystems.Xna
 			return form;
 		}
 
-		private void CheckCaps( XFG.GraphicsDevice device )
+		private void _checkCapabilities( XFG.GraphicsDevice device )
 		{
 			// get the number of possible texture units
 			caps.TextureUnitCount = _capabilities.MaxSimultaneousTextures;
@@ -646,7 +646,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 			set
 			{
-				XNA.Matrix mat = MakeXnaMatrix( value );
+				XNA.Matrix mat = _makeXnaMatrix( value );
 
 				if ( activeRenderTarget.RequiresTextureFlipping )
 				{
@@ -734,7 +734,7 @@ namespace Axiom.RenderSystems.Xna
 				_viewMatrix.m22 = -_viewMatrix.m22;
 				_viewMatrix.m23 = -_viewMatrix.m23;
 
-				XNA.Matrix dxView = MakeXnaMatrix( _viewMatrix );
+				XNA.Matrix dxView = _makeXnaMatrix( _viewMatrix );
 				viewParameter.SetValue( dxView );
 			}
 		}
@@ -748,7 +748,7 @@ namespace Axiom.RenderSystems.Xna
 			set
 			{
 				//throw new Exception("The method or operation is not implemented.");
-				worldParameter.SetValue( MakeXnaMatrix( value ) );
+				worldParameter.SetValue( _makeXnaMatrix( value ) );
 
 			}
 		}
@@ -1140,7 +1140,7 @@ namespace Axiom.RenderSystems.Xna
 
 			// intializes the HardwareBufferManager singleton
 			hardwareBufferManager = new XnaHardwareBufferManager( newDevice );
-			CheckCaps( newDevice );
+			_checkCapabilities( newDevice );
 
 
 			return newDevice;
@@ -1177,7 +1177,7 @@ namespace Axiom.RenderSystems.Xna
 				//fullScreen = true;// (ConfigOptions["Full Screen"].Value == "Yes");
 
 				// create a default form window
-				DefaultForm newWindow = CreateDefaultForm( windowTitle, 0, 0, width, height, fullScreen );
+				DefaultForm newWindow = _createDefaultForm( windowTitle, 0, 0, width, height, fullScreen );
 
 				// create the render window
 				renderWindow = CreateRenderWindow( "Main Window", width, height, bpp, fullScreen, 0, 0, true, false, newWindow );
@@ -1285,7 +1285,7 @@ namespace Axiom.RenderSystems.Xna
 			// set the vertex declaration and buffer binding
 			//SetVertexDeclaration( op.vertexData.vertexDeclaration );
 			_device.VertexDeclaration = d3dVertDecl.D3DVertexDecl;
-			SetVertexBufferBinding( op.vertexData.vertexBufferBinding );
+			_setVertexBufferBinding( op.vertexData.vertexBufferBinding );
 
 			XFG.PrimitiveType primType = 0;
 
@@ -1778,7 +1778,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 
 			// convert to D3D format
-			d3dMat = MakeXnaMatrix( newMat );
+			d3dMat = _makeXnaMatrix( newMat );
 
 			// need this if texture is a cube map, to invert D3D's z coord
 			if ( texStageDesc[ stage ].autoTexCoordType != TexCoordCalcMethod.None )
