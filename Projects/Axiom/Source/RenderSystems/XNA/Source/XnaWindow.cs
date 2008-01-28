@@ -147,7 +147,7 @@ namespace Axiom.RenderSystems.Xna
 				presentParams.BackBufferWidth = width;
 				presentParams.SwapEffect = XFG.SwapEffect.Default;
 
-				/*swapChain = new XNA.Graphics.RenderTarget2D(device,
+				/*swapChain = new XFG.RenderTarget2D(device,
 		device.PresentationParameters.BackBufferWidth,
 		device.PresentationParameters.BackBufferHeight,
 		0, 0,
@@ -155,7 +155,7 @@ namespace Axiom.RenderSystems.Xna
 		device.PresentationParameters.MultiSampleQuality);*/
 
 				//swapChain =// XNA.SwapEffect.Discard
-				//new XNA.Graphics.SwapChain( device, presentParams );
+				//new XFG.SwapChain( device, presentParams );
 				customAttributes[ "SwapChain" ] = swapChain;
 
 				stencilBuffer = new XFG.DepthStencilBuffer(
@@ -363,7 +363,7 @@ namespace Axiom.RenderSystems.Xna
 			XFG.ResolveTexture2D tex = new XFG.ResolveTexture2D
 				( device, this.width, this.height, 1, XFG.SurfaceFormat.Color );
 			device.ResolveBackBuffer( tex );
-			//tex.Save(fileName, XNA.Graphics.ImageFileFormat.Jpg);
+			//tex.Save(fileName, XFG.ImageFileFormat.Jpg);
 
 		}
 

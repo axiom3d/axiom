@@ -73,7 +73,7 @@ namespace Axiom.RenderSystems.Xna
 			: base( name, type, syntaxCode )
 		{
 			this.device = device;
-			// externalMicrocode = new XNA.Graphics.CompiledShader();
+			// externalMicrocode = new XFG.CompiledShader();
 
 		}
 

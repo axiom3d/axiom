@@ -142,9 +142,9 @@ namespace Axiom.RenderSystems.Xna
 						d3dElements[ i ].Offset = (short)element.Offset;
 						d3dElements[ i ].Stream = (short)element.Source;
 
-						d3dElements[ i ].VertexElementFormat = XnaHelper.ConvertEnum( element.Type, true );
+						d3dElements[ i ].VertexElementFormat = XnaHelper.Convert( element.Type, true );
 
-						d3dElements[ i ].VertexElementUsage = XnaHelper.ConvertEnum( element.Semantic );
+						d3dElements[ i ].VertexElementUsage = XnaHelper.Convert( element.Semantic );
 
 						// set usage index explicitly for diffuse and specular, use index for the rest (i.e. texture coord sets)
 						switch ( element.Semantic )

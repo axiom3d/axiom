@@ -46,152 +46,132 @@ using XFG = Microsoft.Xna.Framework.Graphics;
 
 namespace Axiom.RenderSystems.Xna
 {
-    /// <summary>
-    /// 	Summary description for XnaHardwareVertexBuffer.
-    /// </summary>
-    /// 
-    //there is no XNA buffer locking system, copy first into a byte array and when the unlock function is called, fill in memory with setdata<byte>(...)
-   unsafe public class XnaHardwareVertexBuffer : HardwareVertexBuffer
-    {
-        #region Member variables
+	/// <summary>
+	/// 	Summary description for XnaHardwareVertexBuffer.
+	/// </summary>
+	/// 
+	//there is no XNA buffer locking system, copy first into a byte array and when the unlock function is called, fill in memory with setdata<byte>(...)
+	unsafe public class XnaHardwareVertexBuffer : HardwareVertexBuffer
+	{
+		#region Member variables
 
-        protected XFG.VertexBuffer d3dBuffer;
-        protected XFG.GraphicsDevice device;
-     //   protected System.Array data;
+		protected XFG.VertexBuffer _buffer;
+		protected XFG.GraphicsDevice _device;
 
-        #endregion
+		private byte[] _bufferBytes;
 
-        #region Constructors
-       
-        //IntPtr bufferPtr;
-       byte[] bufferBytes;
-       int size;
-       int vertexSize;
-       int Boffset;
-       int Blenght;
+		private int _offset;
+		private int _length;
 
-        public XnaHardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage,
-            XFG.GraphicsDevice dev, bool useSystemMemory, bool useShadowBuffer )
-            : base( vertexSize, numVertices, usage, useSystemMemory, useShadowBuffer )
-        {
-            device = dev;
-            // Create the d3d vertex buffer
-                d3dBuffer = new XFG.VertexBuffer(
-                    device,
-                    vertexSize*numVertices,
-                    XnaHelper.ConvertEnum(usage));
+		#endregion
 
-                size = vertexSize * numVertices;
-                bufferBytes = new byte[vertexSize * numVertices];
-                bufferBytes.Initialize();
-                this.vertexSize = vertexSize;
-               
-        }
+		#region Constructors
 
-        #endregion
+		public XnaHardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage, XFG.GraphicsDevice dev, bool useSystemMemory, bool useShadowBuffer )
+			: base( vertexSize, numVertices, usage, useSystemMemory, useShadowBuffer )
+		{
+			_device = dev;
+			// Create the Xna vertex buffer
+			_buffer = new XFG.VertexBuffer( _device, vertexSize * numVertices, XnaHelper.Convert( usage ) );
 
-        #region Methods
+			_bufferBytes = new byte[ vertexSize * numVertices ];
+			_bufferBytes.Initialize();
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        /// <param name="locking"></param>
-        /// <returns></returns>
-        /// DOC
-        protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
-        {
-            Boffset = offset;
-            Blenght = length;
-            fixed (byte* bytes = &bufferBytes[offset])
-            {
-                return new IntPtr(bytes);
-            }
-        }
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// DOC
-        public override void UnlockImpl()
-        {
-            //there is no unlock/lock system on XNA, just copy the byte buffer into the video card memory
-            // d3dBuffer.SetData<byte>(bufferBytes);
-            //this is faster :)
-            d3dBuffer.SetData<byte>(Boffset, bufferBytes, Boffset, Blenght, 0);
-        }
+		#endregion
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        /// <param name="dest"></param>
-        /// DOC
-        public override void ReadData( int offset, int length, IntPtr dest )
-        {
-            // lock the buffer for reading
-            IntPtr src = this.Lock( offset, length, BufferLocking.ReadOnly );
+		#region Methods
 
-            // copy that data in there
-            Memory.Copy( src, dest, length );
-            
-            // unlock the buffer
-            this.Unlock();
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="offset"></param>
+		/// <param name="length"></param>
+		/// <param name="locking"></param>
+		/// <returns></returns>
+		protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
+		{
+			_offset = offset;
+			_length = length;
+			fixed ( byte* bytes = &_bufferBytes[ offset ] )
+			{
+				return new IntPtr( bytes );
+			}
+		}
 
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		public override void UnlockImpl()
+		{
+			//there is no unlock/lock system on XNA, just copy the byte buffer into the video card memory
+			// d3dBuffer.SetData<byte>(bufferBytes);
+			//this is faster :)
+			_buffer.SetData<byte>( _offset, _bufferBytes, _offset, _length, 0 );
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        /// <param name="src"></param>
-        /// <param name="discardWholeBuffer"></param>
-        /// DOC
-        public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
-        {
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="offset"></param>
+		/// <param name="length"></param>
+		/// <param name="dest"></param>
+		public override void ReadData( int offset, int length, IntPtr dest )
+		{
+			// lock the buffer for reading
+			IntPtr src = this.Lock( offset, length, BufferLocking.ReadOnly );
 
-            // lock the buffer real quick
-            IntPtr dest = this.Lock( offset, length,
-                discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
+			// copy that data in there
+			Memory.Copy( src, dest, length );
 
-            // copy that data in there
-            Memory.Copy( src, dest, length );
+			// unlock the buffer
+			this.Unlock();
 
-            this.Unlock();
+		}
 
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="offset"></param>
+		/// <param name="length"></param>
+		/// <param name="src"></param>
+		/// <param name="discardWholeBuffer"></param>
+		public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
+		{
 
-        public override void Dispose()
-        {
-            d3dBuffer.Dispose();
-        }
+			// lock the buffer real quick
+			IntPtr dest = this.Lock( offset, length,
+				discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
 
-        #endregion
+			// copy that data in there
+			Memory.Copy( src, dest, length );
 
-        #region Properties
+			this.Unlock();
 
-       public byte[] ByteVertices
-       {
-           get
-           {
-               return bufferBytes;
-           }
-       }
-        /// <summary>
-        ///		Gets the underlying D3D Vertex Buffer object.
-        /// </summary>
-        public XFG.VertexBuffer D3DVertexBuffer
-        {
-            get
-            {
-                return d3dBuffer;
-            }
-        }
+		}
 
-        #endregion
+		public override void Dispose()
+		{
+			_buffer.Dispose();
+		}
 
-    }
+		#endregion
+
+		#region Properties
+
+		/// <summary>
+		///		Gets the underlying Xna Vertex Buffer object.
+		/// </summary>
+		public XFG.VertexBuffer XnaVertexBuffer
+		{
+			get
+			{
+				return _buffer;
+			}
+		}
+
+		#endregion
+
+	}
 }

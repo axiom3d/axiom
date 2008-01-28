@@ -46,7 +46,7 @@ using XFG = Microsoft.Xna.Framework.Graphics;
 namespace Axiom.RenderSystems.Xna
 {
     /// <summary>
-    ///		Direct3D implementation of a hardware occlusion query.
+    ///		Xna implementation of a hardware occlusion query.
     /// </summary>
     // Original Author: Lee Sandberg
 
@@ -55,14 +55,13 @@ namespace Axiom.RenderSystems.Xna
         #region Fields
 
         /// <summary>
-        ///		Reference to the current Direct3D device object.
+        ///		Reference to the current Xna device object.
         /// </summary>
 		private XFG.GraphicsDevice device;
         /// <summary>
         ///		Reference to the query object being used.
         /// </summary>
-     
-        //   private D3D.Query query;
+        ///private XFG.Query query;
         /// <summary>
         ///		Number of fragments returned from the last query.
         /// </summary>
@@ -98,7 +97,7 @@ namespace Axiom.RenderSystems.Xna
             if ( isSupported )
             {
                 // attempt to create an occlusion query
-                //query = new D3D.Query( device, D3D.QueryType.Occlusion );
+                //query = new XFG.Query( device, XFG.QueryType.Occlusion );
             }
         }
 
@@ -118,7 +117,7 @@ namespace Axiom.RenderSystems.Xna
 
                 if ( skipCounter == 0 )
                 { // && lastFragmentCount != 0) {
-                 //   query.Issue( D3D.IssueFlags.Begin );
+                 //   query.Issue( XFG.IssueFlags.Begin );
                 }
             }
         }
