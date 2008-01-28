@@ -59,15 +59,6 @@ namespace Axiom.RenderSystems.Xna
 	/// </summary>
 	public class XnaRenderSystem : RenderSystem
 	{
-		private XFG.EffectParameter projectionParameter;
-		private XFG.EffectParameter viewParameter;
-		private XFG.EffectParameter worldParameter;
-		private XFG.EffectParameter lightColorParameter;
-		private XFG.EffectParameter lightDirectionParameter;
-		private XFG.EffectParameter ambientColorParameter;
-		private XFG.EffectParameter modelTextureParameter;
-		private XFG.EffectParameter modelTextureParameter2;
-
 
 		public static readonly Matrix4 ProjectionClipSpace2DToImageSpacePerspective = new Matrix4(
 		   0.5f, 0, 0, -0.5f,
@@ -91,8 +82,8 @@ namespace Axiom.RenderSystems.Xna
 		protected XnaGpuProgramManager gpuProgramMgr;
 		int numLastStreams = 0;
 
-		XFG.Effect effect2;
-		XFG.Effect effect;
+		XnaFixedFunctionEffect _effect;
+
 		protected int primCount;
 		// protected int renderCount = 0;
 
@@ -535,8 +526,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 			set
 			{
-				ambientColorParameter.SetValue( new XNA.Vector4( value.r * 255, value.g * 255, value.b * 255, value.a * 255 ) );
-				//              effect.AmbientLightColor = new XNA.Vector3(value.r * 255, value.g * 255, value.b * 255) ;
+				_effect.AmbientLightColor = new XNA.Vector4( value.r * 255, value.g * 255, value.b * 255, 0 );
 			}
 		}
 
@@ -654,10 +644,9 @@ namespace Axiom.RenderSystems.Xna
 				}
 
 				//todo set the projection matrix in effect
-				projectionParameter.SetValue( mat );
-				// effect.Projection = mat;
+				_effect.Projection = mat;
 
-				effect.CommitChanges();
+				_effect.CommitChanges();
 
 			}
 		}
@@ -734,8 +723,7 @@ namespace Axiom.RenderSystems.Xna
 				_viewMatrix.m22 = -_viewMatrix.m22;
 				_viewMatrix.m23 = -_viewMatrix.m23;
 
-				XNA.Matrix dxView = _makeXnaMatrix( _viewMatrix );
-				viewParameter.SetValue( dxView );
+				_effect.View = _makeXnaMatrix( _viewMatrix );
 			}
 		}
 
@@ -747,9 +735,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 			set
 			{
-				//throw new Exception("The method or operation is not implemented.");
-				worldParameter.SetValue( _makeXnaMatrix( value ) );
-
+				_effect.World = _makeXnaMatrix( value );
 			}
 		}
 
@@ -955,27 +941,7 @@ namespace Axiom.RenderSystems.Xna
 					_device = InitDevice( isFullscreen, depthBuffer, width, height, colorDepth, new Control() );
 				}
 
-				//create a simple effect to draw textured stuff
-				String strEffect = System.IO.File.ReadAllText( "TexturesAndColors.fx" );
-				XFG.CompiledEffect compeffect = XFG.Effect.CompileEffectFromSource( strEffect, null, null, XFG.CompilerOptions.Debug, XNA.TargetPlatform.Windows );
-				System.Diagnostics.Debug.Assert( compeffect.Success == true, compeffect.ErrorsAndWarnings );
-				byte[] effectCode = compeffect.GetEffectCode();
-
-				effect = new XFG.Effect( _device, effectCode, XFG.CompilerOptions.Debug, null );
-				//effect = new BasicEffect( device, null );
-
-
-				worldParameter = effect.Parameters[ "world" ];
-				viewParameter = effect.Parameters[ "view" ];
-				projectionParameter = effect.Parameters[ "projection" ];
-				lightColorParameter = effect.Parameters[ "lightColor" ];
-				lightDirectionParameter = effect.Parameters[ "lightDirection" ];
-				ambientColorParameter = effect.Parameters[ "ambientColor" ];
-				modelTextureParameter = effect.Parameters[ "modelTexture" ];
-				modelTextureParameter2 = effect.Parameters[ "modelTexture2" ];
-
-				effect.CurrentTechnique = effect.Techniques[ 0 ];
-
+				_effect = new XnaFixedFunctionEffect( _device );
 			}
 
 			RenderWindow window = new XnaWindow();
@@ -1325,7 +1291,7 @@ namespace Axiom.RenderSystems.Xna
 				_device.Indices = idxBuffer.XnaIndexBuffer;
 
 
-				effect.CommitChanges();
+				_effect.CommitChanges();
 
 				//XNA needs a vertexshader and pixel shader to draw something, check first if an effect has been given via fixed function
 				if ( _device.VertexShader != null && _device.PixelShader != null )
@@ -1333,15 +1299,15 @@ namespace Axiom.RenderSystems.Xna
 				//if not, so use the effect file which draws basic stuff
 				else
 				{
-					effect.Begin();
+					_effect.Begin();
 
-					for ( int i = 0; i < this.effect.CurrentTechnique.Passes.Count; ++i )
+					for ( int i = 0; i < this._effect.CurrentTechnique.Passes.Count; ++i )
 					{
-						this.effect.CurrentTechnique.Passes[ i ].Begin();
+						this._effect.CurrentTechnique.Passes[ i ].Begin();
 						_device.DrawIndexedPrimitives( primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount, op.indexData.indexStart, primCount );
-						this.effect.CurrentTechnique.Passes[ i ].End();
+						this._effect.CurrentTechnique.Passes[ i ].End();
 					}
-					effect.End();
+					_effect.End();
 					_device.VertexShader = null;
 					_device.PixelShader = null;
 				}
@@ -1353,15 +1319,15 @@ namespace Axiom.RenderSystems.Xna
 					_device.DrawPrimitives( primType, op.vertexData.vertexStart, primCount );
 				else
 				{
-					effect.Begin();
-					for ( int i = 0; i < this.effect.CurrentTechnique.Passes.Count; ++i )
+					_effect.Begin();
+					for ( int i = 0; i < this._effect.CurrentTechnique.Passes.Count; ++i )
 					{
-						this.effect.CurrentTechnique.Passes[ i ].Begin();
+						this._effect.CurrentTechnique.Passes[ i ].Begin();
 						// draw vertices without indices
 						_device.DrawPrimitives( primType, op.vertexData.vertexStart, primCount );
-						this.effect.CurrentTechnique.Passes[ i ].End();
+						this._effect.CurrentTechnique.Passes[ i ].End();
 					}
-					effect.End();
+					_effect.End();
 					_device.VertexShader = null;
 					_device.PixelShader = null;
 				}
@@ -1502,7 +1468,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			XFG.Color col = new XFG.Color( (byte)( ambient.r * 255.0f ), (byte)( ambient.g * 255.0f ), (byte)( ambient.b * 255.0f ), (byte)( ambient.a * 255.0f ) );
 			//ambient.ToXnaColor();
-			ambientColorParameter.SetValue( new XNA.Vector4( col.R, col.G, col.B, col.A ) );
+			_effect.AmbientLightColor = new XNA.Vector4( col.R, col.G, col.B, col.A );
 
 
 			/*   effect2.AmbientLightColor =new XNA.Vector3(col.R,col.G,col.B);
@@ -1728,7 +1694,7 @@ namespace Axiom.RenderSystems.Xna
 			if ( texStageDesc[ stage ].autoTexCoordType == TexCoordCalcMethod.EnvironmentMapReflection )
 			{
 				// get the current view matrix
-				XNA.Matrix viewMatrix = viewParameter.GetValueMatrix();// effect.View;// this.viewMatrix;// device.Transform.View;
+				XNA.Matrix viewMatrix = _effect.View;
 
 				// Get transposed 3x3, ie since D3D is transposed just copy
 				// We want to transpose since that will invert an orthonormal matrix ie rotation
