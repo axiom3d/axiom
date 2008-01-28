@@ -39,7 +39,8 @@ using System.Runtime.InteropServices;
 using Axiom.Core;
 using Axiom.Graphics;
 
-using XNA = Microsoft.Xna.Framework.Graphics;
+using XNA = Microsoft.Xna.Framework;
+using XFG = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
 
@@ -54,8 +55,8 @@ namespace Axiom.RenderSystems.Xna
     {
         #region Member variables
 
-        protected XNA.VertexBuffer d3dBuffer;
-        protected XNA.GraphicsDevice device;
+        protected XFG.VertexBuffer d3dBuffer;
+        protected XFG.GraphicsDevice device;
      //   protected System.Array data;
 
         #endregion
@@ -70,12 +71,12 @@ namespace Axiom.RenderSystems.Xna
        int Blenght;
 
         public XnaHardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage,
-            XNA.GraphicsDevice dev, bool useSystemMemory, bool useShadowBuffer )
+            XFG.GraphicsDevice dev, bool useSystemMemory, bool useShadowBuffer )
             : base( vertexSize, numVertices, usage, useSystemMemory, useShadowBuffer )
         {
             device = dev;
             // Create the d3d vertex buffer
-                d3dBuffer = new XNA.VertexBuffer(
+                d3dBuffer = new XFG.VertexBuffer(
                     device,
                     vertexSize*numVertices,
                     XnaHelper.ConvertEnum(usage));
@@ -182,7 +183,7 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         ///		Gets the underlying D3D Vertex Buffer object.
         /// </summary>
-        public XNA.VertexBuffer D3DVertexBuffer
+        public XFG.VertexBuffer D3DVertexBuffer
         {
             get
             {

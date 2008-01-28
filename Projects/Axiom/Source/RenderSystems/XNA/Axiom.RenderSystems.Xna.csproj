@@ -1,9 +1,9 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{A85EA316-92AF-4B3D-B23C-2CC8E653956D}</ProjectGuid>
+    <ProjectGuid>{5F595F67-FE05-4139-83B6-F7E1725DF2FD}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ApplicationIcon>
@@ -21,8 +21,24 @@
     <RootNamespace>Axiom.RenderSystems.Xna</RootNamespace>
     <StartupObject>
     </StartupObject>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
+    <FileUpgradeFlags>40</FileUpgradeFlags>
+    <UpgradeBackupLocation>C:\Projects\Open Source\Axiom3D Graphics Engine\woodhall\Projects\Backup4\</UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <PublishUrl>http://localhost/Axiom.RenderSystems.Xna/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
@@ -91,7 +107,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\Axiom.csproj">
       <Name>Axiom</Name>
-      <Project>{38849C0A-9CFE-4014-8091-C2DF0744284D}</Project>
+      <Project>{4DEED209-0B07-4FA5-B357-10856EEC14F7}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
   </ItemGroup>
@@ -99,8 +115,24 @@
     <Compile Include="Configuration\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Source\DriverCollection.cs" />
-    <Compile Include="Source\HLSL\HLSLIncludeHandler.cs" />
+    <Compile Include="Source\DefaultForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Source\Driver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\DriverCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\Plugin.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\VideoMode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\VideoModeCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Source\XnaGpuProgram.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -122,6 +154,9 @@
     <Compile Include="Source\XnaHelper.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Source\XnaRenderSystem.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Source\XnaRenderTexture.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -131,30 +166,19 @@
     <Compile Include="Source\XnaTextureManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Source\XnaTextureStageDescription.cs" />
-    <Compile Include="Source\XnaTextureType.cs" />
+    <Compile Include="Source\XnaTextureStageDescription.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\XnaTextureType.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Source\XnaVertexDeclaration.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Source\XnaWindow.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Source\DefaultForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Source\Driver.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Source\Plugin.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Source\VideoMode.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Source\VideoModeCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Source\XnaRenderSystem.cs">
+    <Compile Include="Source\HLSL\HLSLIncludeHandler.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Source\HLSL\HLSLProgram.cs">
@@ -168,6 +192,27 @@
     </Compile>
     <None Include="Axiom.RenderSystems.Xna.build">
     </None>
+    <None Include="Source\FixedFunction.fx" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>

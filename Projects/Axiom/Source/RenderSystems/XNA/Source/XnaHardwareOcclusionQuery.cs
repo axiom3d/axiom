@@ -38,7 +38,8 @@ using System;
 using Axiom.Core;
 using Axiom.Graphics;
 
-using XNA = Microsoft.Xna.Framework.Graphics;
+using XNA = Microsoft.Xna.Framework;
+using XFG = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
 
@@ -56,7 +57,7 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         ///		Reference to the current Direct3D device object.
         /// </summary>
-        private XNA.GraphicsDevice device;
+		private XFG.GraphicsDevice device;
         /// <summary>
         ///		Reference to the query object being used.
         /// </summary>
@@ -87,7 +88,7 @@ namespace Axiom.RenderSystems.Xna
         ///		Default constructor.
         /// </summary>
         /// <param name="device">Reference to a Direct3D device.</param>
-        public XnaHardwareOcclusionQuery(XNA.GraphicsDevice device)
+		public XnaHardwareOcclusionQuery( XFG.GraphicsDevice device )
         {
             this.device = device;
 

@@ -38,7 +38,8 @@ using System;
 using Axiom.Graphics;
 using VertexDeclaration = Axiom.Graphics.VertexDeclaration;
 
-using XNA = Microsoft.Xna.Framework.Graphics;
+using XNA = Microsoft.Xna.Framework;
+using XFG = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
 
@@ -51,7 +52,7 @@ namespace Axiom.RenderSystems.Xna
     {
         #region Member variables
 
-        protected XNA.GraphicsDevice device;
+		protected XFG.GraphicsDevice device;
 
         #endregion
 
@@ -61,7 +62,7 @@ namespace Axiom.RenderSystems.Xna
         ///		
         /// </summary>
         /// <param name="device"></param>
-        public XnaHardwareBufferManager(XNA.GraphicsDevice device)
+		public XnaHardwareBufferManager( XFG.GraphicsDevice device )
         {
             this.device = device;
         }

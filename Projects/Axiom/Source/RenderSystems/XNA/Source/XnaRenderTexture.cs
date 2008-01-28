@@ -39,7 +39,9 @@ using System.Diagnostics;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
-using Microsoft.Xna.Framework.Graphics;
+
+using XNA = Microsoft.Xna.Framework;
+using XFG = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
 

@@ -38,8 +38,8 @@ using System;
 using Axiom.Core;
 using Axiom.Graphics;
 
-using XNA = Microsoft.Xna.Framework.Graphics;
-using Axiom.RenderSystems.Xna;
+using XNA = Microsoft.Xna.Framework;
+using XFG = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
 
@@ -50,9 +50,9 @@ namespace Axiom.RenderSystems.Xna
     /// </summary>
     public class XnaGpuProgramManager : GpuProgramManager
     {
-        protected XNA.GraphicsDevice device;
+		protected XFG.GraphicsDevice device;
 
-        internal XnaGpuProgramManager(XNA.GraphicsDevice device)
+		internal XnaGpuProgramManager( XFG.GraphicsDevice device )
         {
             this.device = device;
         }

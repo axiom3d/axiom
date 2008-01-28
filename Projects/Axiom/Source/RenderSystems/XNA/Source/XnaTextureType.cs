@@ -40,7 +40,7 @@ namespace Axiom.RenderSystems.Xna
     /// <summary>
     ///		Xna texture types
     /// </summary>
-    public enum XnaTextureType
+    internal enum XnaTextureType
     {
         Normal,
         Cube,

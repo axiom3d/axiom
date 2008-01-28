@@ -40,271 +40,274 @@ using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
 
-using XNA = Microsoft.Xna.Framework.Graphics;
+using XNA = Microsoft.Xna.Framework;
+using XFG = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna
 {
-    /// <summary>
-    /// 	Xna implementation of a few things common to low-level vertex & fragment programs
-    /// </summary>
-    public abstract class XnaGpuProgram : GpuProgram
-    {
-        #region Fields
+	/// <summary>
+	/// 	Xna implementation of a few things common to low-level vertex & fragment programs
+	/// </summary>
+	public abstract class XnaGpuProgram : GpuProgram
+	{
+		#region Fields
 
-        /// <summary>
-        ///    Reference to the current D3D device object.
-        /// </summary>
-        protected XNA.GraphicsDevice device;
-        /// <summary>
-        ///     Microsode set externally, most likely from the HLSL compiler.
-        /// </summary>
-        /// 
+		/// <summary>
+		///    Reference to the current D3D device object.
+		/// </summary>
+		protected XFG.GraphicsDevice device;
+		/// <summary>
+		///     Microsode set externally, most likely from the HLSL compiler.
+		/// </summary>
+		/// 
 
-        protected XNA.CompiledShader externalMicrocode;
+		protected XFG.CompiledShader externalMicrocode;
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Constructor
+		#region Constructor
 
-        public XnaGpuProgram( string name, GpuProgramType type,XNA.GraphicsDevice device, string syntaxCode )
-            : base( name, type, syntaxCode )
-        {
-            this.device = device;
-           // externalMicrocode = new Microsoft.Xna.Framework.Graphics.CompiledShader();
-            
-        }
+		public XnaGpuProgram( string name, GpuProgramType type, XFG.GraphicsDevice device, string syntaxCode )
+			: base( name, type, syntaxCode )
+		{
+			this.device = device;
+			// externalMicrocode = new XNA.Graphics.CompiledShader();
 
-        #endregion Constructor
+		}
 
-        #region GpuProgram Members
+		#endregion Constructor
 
-        /// <summary>
-        ///     Overridden to allow for loading microcode from external sources.
-        /// </summary>
-        public override void Load()
-        {
-            if ( externalMicrocode.ShaderVersion != null )
-            {
-                // unload if needed
-                if ( isLoaded )
-                {
-                    Unload();
-                }
+		#region GpuProgram Members
 
-                // creates the shader from an external microcode source
-                // for example, a compiled HLSL program
-                LoadFromMicrocode( externalMicrocode );
-                isLoaded = true;
-            }
-            else
-            {
-                // call base implementation
-                base.Load();
-            }
-        }
+		/// <summary>
+		///     Overridden to allow for loading microcode from external sources.
+		/// </summary>
+		public override void Load()
+		{
+			if ( externalMicrocode.ShaderVersion != null )
+			{
+				// unload if needed
+				if ( isLoaded )
+				{
+					Unload();
+				}
 
-        /// <summary>
-        ///     Loads a D3D shader from the assembler source.
-        /// </summary>
-        protected override void LoadFromSource()
-        {
-            string errors;
+				// creates the shader from an external microcode source
+				// for example, a compiled HLSL program
+				LoadFromMicrocode( externalMicrocode );
+				isLoaded = true;
+			}
+			else
+			{
+				// call base implementation
+				base.Load();
+			}
+		}
 
-            // load the shader from the source string
-            XNA.CompiledShader microcode=XNA.ShaderCompiler.AssembleFromSource(source, null, null, Microsoft.Xna.Framework.Graphics.CompilerOptions.Debug,
-                                                                        Microsoft.Xna.Framework.TargetPlatform.Windows);
-            //DX.GraphicsStream microcode = D3D.ShaderLoader.FromString( source, null, 0, out errors );
-            errors = microcode.ErrorsAndWarnings;
-            if ( errors != null && errors.Length != 0 )
-            {
-                LogManager.Instance.Write( "Error while compiling pixel shader '{0}':\n {1}", name, errors );
-                return;
-            }
+		/// <summary>
+		///     Loads a D3D shader from the assembler source.
+		/// </summary>
+		protected override void LoadFromSource()
+		{
+			string errors;
 
-            // load the code into a shader object (polymorphic)
-            LoadFromMicrocode( microcode );
-        }
+			// load the shader from the source string
+			XFG.CompiledShader microcode = XFG.ShaderCompiler.AssembleFromSource( source, null, null, XFG.CompilerOptions.Debug,
+																		XNA.TargetPlatform.Windows );
+			//DX.GraphicsStream microcode = D3D.ShaderLoader.FromString( source, null, 0, out errors );
+			errors = microcode.ErrorsAndWarnings;
+			if ( errors != null && errors.Length != 0 )
+			{
+				LogManager.Instance.Write( "Error while compiling pixel shader '{0}':\n {1}", name, errors );
+				return;
+			}
 
-        #endregion GpuProgram Members
+			// load the code into a shader object (polymorphic)
+			LoadFromMicrocode( microcode );
+		}
 
-        #region Methods
+		#endregion GpuProgram Members
 
-        /// <summary>
-        ///     Loads a shader object from the supplied microcode.
-        /// </summary>
-        /// <param name="microcode">
-        ///     GraphicsStream that contains the assembler instructions for the program.
-        /// </param>
+		#region Methods
 
-        protected abstract void LoadFromMicrocode(XNA.CompiledShader microcode);
+		/// <summary>
+		///     Loads a shader object from the supplied microcode.
+		/// </summary>
+		/// <param name="microcode">
+		///     GraphicsStream that contains the assembler instructions for the program.
+		/// </param>
 
-        #endregion Methods
+		protected abstract void LoadFromMicrocode( XFG.CompiledShader microcode );
 
-        #region Properties
+		#endregion Methods
 
-        /// <summary>
-        ///     Gets/Sets a prepared chunk of microcode to use during Load
-        ///     rather than loading from file or a string.
-        /// </summary>
-        /// <remarks>
-        ///     This is used by the HLSL compiler once it compiles down to low
-        ///     level microcode, which can then be loaded into a low level GPU
-        ///     program.
-        /// </remarks>
-        internal XNA.CompiledShader ExternalMicrocode
-        {
-            get
-            {
-                return externalMicrocode;
-            }
-            set
-            {
-                externalMicrocode = value;
-            }
-        }
+		#region Properties
 
-        #endregion Properties
-    }
+		/// <summary>
+		///     Gets/Sets a prepared chunk of microcode to use during Load
+		///     rather than loading from file or a string.
+		/// </summary>
+		/// <remarks>
+		///     This is used by the HLSL compiler once it compiles down to low
+		///     level microcode, which can then be loaded into a low level GPU
+		///     program.
+		/// </remarks>
+		internal XFG.CompiledShader ExternalMicrocode
+		{
+			get
+			{
+				return externalMicrocode;
+			}
+			set
+			{
+				externalMicrocode = value;
+			}
+		}
 
-    /// <summary>
-    ///    Xna implementation of low-level vertex programs.
-    /// </summary>
-    public class XnaVertexProgram : XnaGpuProgram
-    {
-        #region Fields
+		#endregion Properties
+	}
 
-        /// <summary>
-        ///    Reference to the current D3D VertexShader object.
-        /// </summary>
-        protected XNA.VertexShader vertexShader;
+	/// <summary>
+	///    Xna implementation of low-level vertex programs.
+	/// </summary>
+	public class XnaVertexProgram : XnaGpuProgram
+	{
+		#region Fields
 
-        #endregion Fields
+		/// <summary>
+		///    Reference to the current D3D VertexShader object.
+		/// </summary>
+		protected XFG.VertexShader vertexShader;
 
-        #region Constructor
+		#endregion Fields
 
-        internal XnaVertexProgram( string name, XNA.GraphicsDevice device, string syntaxCode ) : base( name, GpuProgramType.Vertex, device, syntaxCode )
-        {
-        }
+		#region Constructor
 
-        #endregion Constructor
+		internal XnaVertexProgram( string name, XFG.GraphicsDevice device, string syntaxCode )
+			: base( name, GpuProgramType.Vertex, device, syntaxCode )
+		{
+		}
 
-        #region D3DGpuProgram Memebers
+		#endregion Constructor
 
-        protected override void LoadFromMicrocode(XNA.CompiledShader microcode)
-        {
-            // create the new vertex shader
-            XNA.CompiledShader te = XNA.ShaderCompiler.AssembleFromSource(this.source, null, null,
-                                                                        Microsoft.Xna.Framework.Graphics.CompilerOptions.Debug,
-                                                                        Microsoft.Xna.Framework.TargetPlatform.Windows);
-            vertexShader = new Microsoft.Xna.Framework.Graphics.VertexShader( device,te.GetShaderCode() );
-        }
+		#region D3DGpuProgram Memebers
 
-        #endregion D3DGpuProgram Memebers
+		protected override void LoadFromMicrocode( XFG.CompiledShader microcode )
+		{
+			// create the new vertex shader
+			XFG.CompiledShader te = XFG.ShaderCompiler.AssembleFromSource( this.source, null, null,
+																		XFG.CompilerOptions.Debug,
+																		XNA.TargetPlatform.Windows );
+			vertexShader = new XFG.VertexShader( device, te.GetShaderCode() );
+		}
 
-        #region GpuProgram Members
+		#endregion D3DGpuProgram Memebers
 
-        /// <summary>
-        ///     Unloads the VertexShader object.
-        /// </summary>
-        public override void Unload()
-        {
-            base.Unload();
+		#region GpuProgram Members
 
-            if ( vertexShader != null )
-            {
-                vertexShader.Dispose();
-            }
-        }
+		/// <summary>
+		///     Unloads the VertexShader object.
+		/// </summary>
+		public override void Unload()
+		{
+			base.Unload();
 
-        #endregion GpuProgram Members
+			if ( vertexShader != null )
+			{
+				vertexShader.Dispose();
+			}
+		}
 
-        #region Properties
+		#endregion GpuProgram Members
 
-        /// <summary>
-        ///    Used internally by the D3DRenderSystem to get a reference to the underlying
-        ///    VertexShader object.
-        /// </summary>
-        internal XNA.VertexShader VertexShader
-        {
-            get
-            {
-                return vertexShader;
-            }
-        }
+		#region Properties
 
-        #endregion Properties
-    }
+		/// <summary>
+		///    Used internally by the D3DRenderSystem to get a reference to the underlying
+		///    VertexShader object.
+		/// </summary>
+		internal XFG.VertexShader VertexShader
+		{
+			get
+			{
+				return vertexShader;
+			}
+		}
 
-    /// <summary>
-    ///    Xna implementation of low-level vertex programs.
-    /// </summary>
-    public class XnaFragmentProgram : XnaGpuProgram
-    {
-        #region Fields
+		#endregion Properties
+	}
 
-        /// <summary>
-        ///    Reference to the current D3D PixelShader object.
-        /// </summary>
-        protected XNA.PixelShader pixelShader;
+	/// <summary>
+	///    Xna implementation of low-level vertex programs.
+	/// </summary>
+	public class XnaFragmentProgram : XnaGpuProgram
+	{
+		#region Fields
 
-        #endregion Fields
+		/// <summary>
+		///    Reference to the current D3D PixelShader object.
+		/// </summary>
+		protected XFG.PixelShader pixelShader;
 
-        #region Constructors
+		#endregion Fields
 
-        internal XnaFragmentProgram( string name, XNA.GraphicsDevice device, string syntaxCode ) : base( name, GpuProgramType.Fragment, device, syntaxCode )
-        {
-        }
+		#region Constructors
 
-        #endregion Constructors
+		internal XnaFragmentProgram( string name, XFG.GraphicsDevice device, string syntaxCode )
+			: base( name, GpuProgramType.Fragment, device, syntaxCode )
+		{
+		}
 
-        #region D3DGpuProgram Memebers
+		#endregion Constructors
 
-        protected override void LoadFromMicrocode(XNA.CompiledShader microcode)
-        {
-            // create a new pixel shader
-            XNA.CompiledShader te = XNA.ShaderCompiler.AssembleFromSource(this.source,
-                                                                            null, null,
-                                                                            Microsoft.Xna.Framework.Graphics.CompilerOptions.Debug,
-                                                                            Microsoft.Xna.Framework.TargetPlatform.Windows);
-           //if(te.ErrorsAndWarnings==String.Empty)
-            pixelShader = new Microsoft.Xna.Framework.Graphics.PixelShader(device, te.GetShaderCode());
-        }
+		#region D3DGpuProgram Memebers
 
-        #endregion D3DGpuProgram Members
+		protected override void LoadFromMicrocode( XFG.CompiledShader microcode )
+		{
+			// create a new pixel shader
+			XFG.CompiledShader te = XFG.ShaderCompiler.AssembleFromSource( this.source,
+																			null, null,
+																			XFG.CompilerOptions.Debug,
+																			XNA.TargetPlatform.Windows );
+			//if(te.ErrorsAndWarnings==String.Empty)
+			pixelShader = new XFG.PixelShader( device, te.GetShaderCode() );
+		}
 
-        #region GpuProgram Members
+		#endregion D3DGpuProgram Members
 
-        /// <summary>
-        ///     Unloads the PixelShader object.
-        /// </summary>
-        public override void Unload()
-        {
-            base.Unload();
+		#region GpuProgram Members
 
-            if ( pixelShader != null )
-            {
-                pixelShader.Dispose();
-            }
-        }
+		/// <summary>
+		///     Unloads the PixelShader object.
+		/// </summary>
+		public override void Unload()
+		{
+			base.Unload();
 
-        #endregion GpuProgram Members
+			if ( pixelShader != null )
+			{
+				pixelShader.Dispose();
+			}
+		}
 
-        #region Properties
+		#endregion GpuProgram Members
 
-        /// <summary>
-        ///    Used internally by the D3DRenderSystem to get a reference to the underlying
-        ///    PixelShader object.
-        /// </summary>
-        internal XNA.PixelShader PixelShader
-        {
-            get
-            {
-                return pixelShader;
-            }
-        }
+		#region Properties
 
-        #endregion Properties
-    }
+		/// <summary>
+		///    Used internally by the D3DRenderSystem to get a reference to the underlying
+		///    PixelShader object.
+		/// </summary>
+		internal XFG.PixelShader PixelShader
+		{
+			get
+			{
+				return pixelShader;
+			}
+		}
+
+		#endregion Properties
+	}
 }
