@@ -136,7 +136,10 @@ namespace Axiom.RenderSystems.Xna
 			}
 			set
 			{
-				_ambientLightColor.SetValue( value );
+				if ( _ambientLightColor != null )
+				{
+					_ambientLightColor.SetValue( value );
+				}
 			}
 		}
 
@@ -197,16 +200,16 @@ namespace Axiom.RenderSystems.Xna
 				if ( !_initialized )
 				{
 					//create a simple effect to draw textured stuff
-					string strEffect = System.IO.File.ReadAllText( "TexturesAndColors.fx" );
+					string strEffect = System.IO.File.ReadAllText( "FixedFunction.fx" );
 					XFG.CompiledEffect compeffect = XFG.Effect.CompileEffectFromSource( strEffect, null, null, XFG.CompilerOptions.Debug, XNA.TargetPlatform.Windows );
 					System.Diagnostics.Debug.Assert( compeffect.Success == true, compeffect.ErrorsAndWarnings );
 					byte[] effectCode = compeffect.GetEffectCode();
 
 					_effect = new XFG.Effect( device, effectCode, XFG.CompilerOptions.Debug, null );
 
-					_world = _effect.Parameters[ "world" ];
-					_view = _effect.Parameters[ "view" ];
-					_projection = _effect.Parameters[ "projection" ];
+					_world = _effect.Parameters[ "World" ];
+					_view = _effect.Parameters[ "View" ];
+					_projection = _effect.Parameters[ "Projection" ];
 					_lightColorParameter = _effect.Parameters[ "lightColor" ];
 					_lightDirectionParameter = _effect.Parameters[ "lightDirection" ];
 					_ambientLightColor = _effect.Parameters[ "ambientColor" ];
