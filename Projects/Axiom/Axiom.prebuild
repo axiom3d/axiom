@@ -260,7 +260,7 @@
     <?endif ?>
 
     <?if OS != "Win32" ?>
-
+<!--
     <Project name="Axiom.RenderSystems.OpenGL.Glx" type="Library" path="Source/RenderSystems/OpenGL" language="C#" runtime="Microsoft" >
       <Configuration name="Debug">
         <Options>
@@ -301,7 +301,7 @@
 
       </Files>
     </Project>
-
+-->
     <?endif ?>
 
     <Project name="Axiom.Plugins.DevILCodecs" type="Library" path="Source/Plugins/DevILCodecs" language="C#" runtime="Microsoft" >
