@@ -14,7 +14,9 @@
   <target name="build" >
     <call target="build.win32" if="${platform::is-win32()}" />
     <call target="build.sdl" />
+    <!--
     <call target="build.glx" unless="${platform::is-win32()}" />
+    -->
   </target>
   
 	<target name="build.sdl">
