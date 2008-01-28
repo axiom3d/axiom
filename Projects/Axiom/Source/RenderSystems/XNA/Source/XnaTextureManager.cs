@@ -37,55 +37,57 @@ using System;
 
 using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Media;
 
-using XNA = Microsoft.Xna.Framework.Graphics;
+using XNA = Microsoft.Xna.Framework;
+using XFG = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna
 {
-    /// <summary>
-    ///     Summary description for XnaTextureManager.
-    /// </summary>
-    public class XnaTextureManager : TextureManager
-    {
-        /// <summary>Reference to the D3D device.</summary>
-        private XNA.GraphicsDevice device;
+	/// <summary>
+	///     Summary description for XnaTextureManager.
+	/// </summary>
+	public class XnaTextureManager : TextureManager
+	{
+		/// <summary>Reference to the XNA device.</summary>
+		private XFG.GraphicsDevice _device;
 
-        public XnaTextureManager(XNA.GraphicsDevice device)
-        {
-            this.device = device;
+		public XnaTextureManager( XFG.GraphicsDevice device )
+		{
+			this._device = device;
 
-            is32Bit = true;
-        }
+			is32Bit = true;
+		}
 
-        public override Axiom.Core.Texture Create( string name, TextureType type )
-        {
-            XnaTexture texture = new XnaTexture( name, device, TextureUsage.Default, type );
+		public override Texture Create( string name, TextureType type )
+		{
+			XnaTexture texture = new XnaTexture( name, _device, TextureUsage.Default, type );
 
-            // Handle 32-bit texture settings
-            texture.Enable32Bit( is32Bit );
+			// Handle 32-bit texture settings
+			texture.Enable32Bit( is32Bit );
 
-            return texture;
-        }
+			return texture;
+		}
 
-        /// <summary>
-        ///    Used to create a blank D3D texture.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="type"></param>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="numMipMaps"></param>
-        /// <param name="format"></param>
-        /// <param name="usage"></param>
-        /// <returns></returns>
-        public override Axiom.Core.Texture CreateManual( string name, TextureType type, int width, int height, int numMipMaps, Axiom.Media.PixelFormat format, TextureUsage usage )
-        {
+		/// <summary>
+		///    Used to create a blank D3D texture.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="type"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="numMipMaps"></param>
+		/// <param name="format"></param>
+		/// <param name="usage"></param>
+		/// <returns></returns>
+		public override Texture CreateManual( string name, TextureType type, int width, int height, int numMipMaps, PixelFormat format, TextureUsage usage )
+		{
 
-            XnaTexture texture = new XnaTexture( name, device, type, width, height, numMipMaps, format, usage );
-            texture.Enable32Bit( is32Bit );
-            return texture;
-        }
-    }
+			XnaTexture texture = new XnaTexture( name, _device, type, width, height, numMipMaps, format, usage );
+			texture.Enable32Bit( is32Bit );
+			return texture;
+		}
+	}
 }

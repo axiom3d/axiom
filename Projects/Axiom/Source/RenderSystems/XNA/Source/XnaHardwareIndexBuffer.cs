@@ -39,7 +39,8 @@ using System.Runtime.InteropServices;
 using Axiom.Core;
 using Axiom.Graphics;
 
-using XNA = Microsoft.Xna.Framework.Graphics;
+using XNA = Microsoft.Xna.Framework;
+using XFG = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
 
@@ -52,14 +53,14 @@ namespace Axiom.RenderSystems.Xna
     {
         #region Member variables
 
-        protected XNA.GraphicsDevice device;
-        protected XNA.IndexBuffer d3dBuffer;
+		protected XFG.GraphicsDevice device;
+		protected XFG.IndexBuffer d3dBuffer;
         protected System.Array data;
 
         IntPtr bufferPtr;
         byte[] bufferBytes;
         int size;
-        Microsoft.Xna.Framework.Graphics.IndexElementSize bufferType;
+		XFG.IndexElementSize bufferType;
         int indexSize;
         int Boffset;
         int Blenght;
@@ -68,15 +69,14 @@ namespace Axiom.RenderSystems.Xna
         #region Constructors
 
        unsafe public XnaHardwareIndexBuffer( IndexType type, int numIndices, BufferUsage usage,
-           XNA.GraphicsDevice device, bool useSystemMemory, bool useShadowBuffer)
+		   XFG.GraphicsDevice device, bool useSystemMemory, bool useShadowBuffer )
             : base( type, numIndices, usage, useSystemMemory, useShadowBuffer )
         {
 
-            bufferType = (type == IndexType.Size16) ? Microsoft.Xna.Framework.Graphics.IndexElementSize.SixteenBits :
-                                                                                                     Microsoft.Xna.Framework.Graphics.IndexElementSize.ThirtyTwoBits;
+            bufferType = (type == IndexType.Size16) ? XFG.IndexElementSize.SixteenBits : XFG.IndexElementSize.ThirtyTwoBits;
           
             // create the buffer
-            d3dBuffer = new XNA.IndexBuffer(
+			d3dBuffer = new XFG.IndexBuffer(
                 device,
                 sizeInBytes,XnaHelper.ConvertEnum( usage ),bufferType);
                 
@@ -186,7 +186,7 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         ///		Gets the underlying D3D Vertex Buffer object.
         /// </summary>
-        public XNA.IndexBuffer D3DIndexBuffer
+        public XFG.IndexBuffer D3DIndexBuffer
         {
             get
             {                

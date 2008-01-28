@@ -38,9 +38,9 @@ using System.Collections;
 
 using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.RenderSystems.Xna;
-using XNA = Microsoft.Xna.Framework.Graphics;
-//using Axiom.Core.XnaRenderSystem;
+
+using XNA = Microsoft.Xna.Framework;
+using XFG = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
 
@@ -50,9 +50,9 @@ namespace Axiom.RenderSystems.Xna
 {
     /// <summary>
     ///		Helper class for Xna that includes conversion functions and things that are
-    ///		specific to Xna.
+    ///		specific to XFG.
     /// </summary>
-    public class XnaHelper
+    internal class XnaHelper
     {
         public XnaHelper()
         {
@@ -66,14 +66,14 @@ namespace Axiom.RenderSystems.Xna
             ArrayList driverList = new ArrayList();
 
             // get the information for the default adapter (not checking secondaries)
-            XNA.GraphicsAdapter adapterInfo = XNA.GraphicsAdapter.Adapters[ 0 ];
+			XFG.GraphicsAdapter adapterInfo = XFG.GraphicsAdapter.Adapters[ 0 ];
             
             Driver driver = new Driver( adapterInfo );
 
             int lastWidth = 0, lastHeight = 0;
-            XNA.SurfaceFormat lastFormat = 0;
+			XFG.SurfaceFormat lastFormat = 0;
 
-            foreach ( XNA.DisplayMode mode in adapterInfo.SupportedDisplayModes)
+			foreach ( XFG.DisplayMode mode in adapterInfo.SupportedDisplayModes )
             {
                 // filter out lower resolutions, and make sure this isnt a dupe (ignore variations on refresh rate)
                 if ( ( mode.Width >= 640 && mode.Height >= 480 ) &&
@@ -100,20 +100,20 @@ namespace Axiom.RenderSystems.Xna
         /// <param name="caps"></param>
         /// <param name="texType"></param>
         /// <returns></returns>
-        public static XNA.TextureFilter ConvertEnum( FilterType type, FilterOptions options, XNA.GraphicsDeviceCapabilities devCaps, D3DTexType texType )
+		public static XFG.TextureFilter ConvertEnum( FilterType type, FilterOptions options, XFG.GraphicsDeviceCapabilities devCaps, XnaTextureType texType )
         {
             // setting a default val here to keep compiler from complaining about using unassigned value types
-            XNA.GraphicsDeviceCapabilities.FilterCaps filterCaps = devCaps.TextureFilterCapabilities;
+			XFG.GraphicsDeviceCapabilities.FilterCaps filterCaps = devCaps.TextureFilterCapabilities;
 
             switch ( texType )
             {
-                case D3DTexType.Normal:
+                case XnaTextureType.Normal:
                     filterCaps = devCaps.TextureFilterCapabilities;
                     break;
-                case D3DTexType.Cube:
+                case XnaTextureType.Cube:
                     filterCaps = devCaps.CubeTextureFilterCapabilities;
                     break;
-                case D3DTexType.Volume:
+                case XnaTextureType.Volume:
                     filterCaps = devCaps.VolumeTextureFilterCapabilities;
                     break;
             }
@@ -127,26 +127,26 @@ namespace Axiom.RenderSystems.Xna
                             case FilterOptions.Anisotropic:
                                 if ( filterCaps.SupportsMinifyAnisotropic)
                                 {
-                                    return XNA.TextureFilter.Anisotropic;
+									return XFG.TextureFilter.Anisotropic;
                                 }
                                 else
                                 {
-                                    return XNA.TextureFilter.Linear;
+                                    return XFG.TextureFilter.Linear;
                                 }
 
                             case FilterOptions.Linear:
                                 if ( filterCaps.SupportsMinifyLinear )
                                 {
-                                    return XNA.TextureFilter.Linear;
+                                    return XFG.TextureFilter.Linear;
                                 }
                                 else
                                 {
-                                    return XNA.TextureFilter.Point;
+                                    return XFG.TextureFilter.Point;
                                 }
 
                             case FilterOptions.Point:
                             case FilterOptions.None:
-                                return XNA.TextureFilter.Point;
+                                return XFG.TextureFilter.Point;
                         }
                         break;
                     }
@@ -157,26 +157,26 @@ namespace Axiom.RenderSystems.Xna
                             case FilterOptions.Anisotropic:
                                 if ( filterCaps.SupportsMagnifyAnisotropic )
                                 {
-                                    return XNA.TextureFilter.Anisotropic;
+                                    return XFG.TextureFilter.Anisotropic;
                                 }
                                 else
                                 {
-                                    return XNA.TextureFilter.Linear;
+                                    return XFG.TextureFilter.Linear;
                                 }
 
                             case FilterOptions.Linear:
                                 if ( filterCaps.SupportsMagnifyLinear )
                                 {
-                                    return XNA.TextureFilter.Linear;
+                                    return XFG.TextureFilter.Linear;
                                 }
                                 else
                                 {
-                                    return XNA.TextureFilter.Point;
+                                    return XFG.TextureFilter.Point;
                                 }
 
                             case FilterOptions.Point:
                             case FilterOptions.None:
-                                return XNA.TextureFilter.Point;
+                                return XFG.TextureFilter.Point;
                         }
                         break;
                     }
@@ -188,25 +188,25 @@ namespace Axiom.RenderSystems.Xna
                             case FilterOptions.Linear:
                                 if ( filterCaps.SupportsMipMapLinear )
                                 {
-                                    return XNA.TextureFilter.Linear;
+                                    return XFG.TextureFilter.Linear;
                                 }
                                 else
                                 {
-                                    return XNA.TextureFilter.Point;
+                                    return XFG.TextureFilter.Point;
                                 }
 
                             case FilterOptions.Point:
                                 if ( filterCaps.SupportsMipMapPoint )
                                 {
-                                    return XNA.TextureFilter.Point;
+                                    return XFG.TextureFilter.Point;
                                 }
                                 else
                                 {
-                                    return XNA.TextureFilter.None;
+                                    return XFG.TextureFilter.None;
                                 }
 
                             case FilterOptions.None:
-                                return XNA.TextureFilter.None;
+                                return XFG.TextureFilter.None;
                         }
                         break;
                     }
@@ -222,9 +222,9 @@ namespace Axiom.RenderSystems.Xna
         /// </summary>
         /// <param name="blendop"></param>
         /// <returns></returns>
-        public static XNA.BlendFunction ConvertEnum(LayerBlendOperationEx blendop)
+        public static XFG.BlendFunction ConvertEnum(LayerBlendOperationEx blendop)
         {
-            XNA.BlendFunction d3dTexOp =  0;
+            XFG.BlendFunction d3dTexOp =  0;
 
                 
                 // figure out what is what
@@ -232,7 +232,7 @@ namespace Axiom.RenderSystems.Xna
             {
                     
                 /*case LayerBlendOperationEx.Source1:
-                    d3dTexOp = XNA.Blend.BlendFunction.SelectArg1;
+                    d3dTexOp = XFG.Blend.BlendFunction.SelectArg1;
                     break;
 
                 case LayerBlendOperationEx.Source2:
@@ -252,26 +252,26 @@ namespace Axiom.RenderSystems.Xna
                     break;*/
 
                 case LayerBlendOperationEx.Add:
-                    d3dTexOp = XNA.BlendFunction.Add;
+                    d3dTexOp = XFG.BlendFunction.Add;
                     break;
 
                 case LayerBlendOperationEx.AddSigned:
-                    d3dTexOp = XNA.BlendFunction.Add;
+                    d3dTexOp = XFG.BlendFunction.Add;
                     break;
 
                 case LayerBlendOperationEx.AddSmooth:
-                    d3dTexOp = XNA.BlendFunction.Add;
+                    d3dTexOp = XFG.BlendFunction.Add;
                     break;
 
                 case LayerBlendOperationEx.Subtract:
-                    d3dTexOp = XNA.BlendFunction.Subtract;
+                    d3dTexOp = XFG.BlendFunction.Subtract;
                     break;
                 default:
-                    d3dTexOp = XNA.BlendFunction.Add;
+                    d3dTexOp = XFG.BlendFunction.Add;
                     break;
 
               /*  case LayerBlendOperationEx.BlendDiffuseAlpha:
-                    d3dTexOp = XNA.BlendFunction..BlendDiffuseAlpha;
+                    d3dTexOp = XFG.BlendFunction..BlendDiffuseAlpha;
                     break;
 
                 case LayerBlendOperationEx.BlendTextureAlpha:
@@ -336,198 +336,198 @@ namespace Axiom.RenderSystems.Xna
         /// </summary>
         /// <param name="factor"></param>
         /// <returns></returns>
-        public static XNA.Blend ConvertEnum( SceneBlendFactor factor )
+        public static XFG.Blend ConvertEnum( SceneBlendFactor factor )
         {
-            XNA.Blend d3dBlend = 0;
+            XFG.Blend d3dBlend = 0;
 
             switch ( factor )
             {
                 case SceneBlendFactor.One:
-                    d3dBlend = XNA.Blend.One;
+                    d3dBlend = XFG.Blend.One;
                     break;
                 case SceneBlendFactor.Zero:
-                    d3dBlend = XNA.Blend.Zero;
+                    d3dBlend = XFG.Blend.Zero;
                     break;
                 case SceneBlendFactor.DestColor:
-                    d3dBlend = XNA.Blend.DestinationColor;
+                    d3dBlend = XFG.Blend.DestinationColor;
                     break;
                 case SceneBlendFactor.SourceColor:
-                    d3dBlend = XNA.Blend.SourceColor;
+                    d3dBlend = XFG.Blend.SourceColor;
                     break;
                 case SceneBlendFactor.OneMinusDestColor:
-                    d3dBlend = XNA.Blend.InverseDestinationColor;
+                    d3dBlend = XFG.Blend.InverseDestinationColor;
                     break;
                 case SceneBlendFactor.OneMinusSourceColor:
-                    d3dBlend = XNA.Blend.InverseSourceColor;
+                    d3dBlend = XFG.Blend.InverseSourceColor;
                     break;
                 case SceneBlendFactor.DestAlpha:
-                    d3dBlend = XNA.Blend.DestinationAlpha;
+                    d3dBlend = XFG.Blend.DestinationAlpha;
                     break;
                 case SceneBlendFactor.SourceAlpha:
-                    d3dBlend = XNA.Blend.SourceAlpha;
+                    d3dBlend = XFG.Blend.SourceAlpha;
                     break;
                 case SceneBlendFactor.OneMinusDestAlpha:
-                    d3dBlend = XNA.Blend.InverseDestinationAlpha;
+                    d3dBlend = XFG.Blend.InverseDestinationAlpha;
                     break;
                 case SceneBlendFactor.OneMinusSourceAlpha:
-                    d3dBlend = XNA.Blend.InverseSourceAlpha;
+                    d3dBlend = XFG.Blend.InverseSourceAlpha;
                     break;
             }
 
             return d3dBlend;
         }
         
-        public static Microsoft.Xna.Framework.Graphics.ShaderProfile ConvertEnum(string shaderVersion)
+        public static XFG.ShaderProfile ConvertEnum(string shaderVersion)
         {
             switch (shaderVersion)
             {
                 case "PS_1_1":
-                    return Microsoft.Xna.Framework.Graphics.ShaderProfile.PS_1_1;
+                    return XFG.ShaderProfile.PS_1_1;
                     break;
                 case "PS_1_2":
-                    return Microsoft.Xna.Framework.Graphics.ShaderProfile.PS_1_2;
+                    return XFG.ShaderProfile.PS_1_2;
                     break;
                 case "PS_1_3":
-                    return Microsoft.Xna.Framework.Graphics.ShaderProfile.PS_1_3;
+                    return XFG.ShaderProfile.PS_1_3;
                     break;
                 case "PS_1_4":
-                    return Microsoft.Xna.Framework.Graphics.ShaderProfile.PS_1_4;
+                    return XFG.ShaderProfile.PS_1_4;
                     break;
                 case "PS_2_0":
-                    return Microsoft.Xna.Framework.Graphics.ShaderProfile.PS_2_0;
+                    return XFG.ShaderProfile.PS_2_0;
                     break;
                 case "PS_2_A":
-                    return Microsoft.Xna.Framework.Graphics.ShaderProfile.PS_2_A;
+                    return XFG.ShaderProfile.PS_2_A;
                     break;
                 case "PS_2_B":
-                    return Microsoft.Xna.Framework.Graphics.ShaderProfile.PS_2_B;
+                    return XFG.ShaderProfile.PS_2_B;
                     break;
                 case "PS_2_SW":
-                    return Microsoft.Xna.Framework.Graphics.ShaderProfile.PS_2_SW;
+                    return XFG.ShaderProfile.PS_2_SW;
                     break;
                 case "PS_3_0":
-                    return Microsoft.Xna.Framework.Graphics.ShaderProfile.PS_3_0;
+                    return XFG.ShaderProfile.PS_3_0;
                     break;
                 case "Unknown":
-                    return Microsoft.Xna.Framework.Graphics.ShaderProfile.Unknown;
+                    return XFG.ShaderProfile.Unknown;
                     break;
                 case "VS_1_1":
-                    return Microsoft.Xna.Framework.Graphics.ShaderProfile.VS_1_1;
+                    return XFG.ShaderProfile.VS_1_1;
                     break;
                 case "VS_2_0":
-                    return Microsoft.Xna.Framework.Graphics.ShaderProfile.VS_2_0;
+                    return XFG.ShaderProfile.VS_2_0;
                     break;
                 case "VS_2_A":
-                    return Microsoft.Xna.Framework.Graphics.ShaderProfile.VS_2_A;
+                    return XFG.ShaderProfile.VS_2_A;
                     break;
                 case "VS_2_SW":
-                    return Microsoft.Xna.Framework.Graphics.ShaderProfile.VS_2_SW;
+                    return XFG.ShaderProfile.VS_2_SW;
                     break;
                 case "VS_3_0":
-                    return Microsoft.Xna.Framework.Graphics.ShaderProfile.VS_3_0;
+                    return XFG.ShaderProfile.VS_3_0;
                     break;
                 case "XPS_3_0":
-                    return Microsoft.Xna.Framework.Graphics.ShaderProfile.XPS_3_0;
+                    return XFG.ShaderProfile.XPS_3_0;
                     break;
                 case "XVS_3_0":
-                    return Microsoft.Xna.Framework.Graphics.ShaderProfile.XVS_3_0;
+                    return XFG.ShaderProfile.XVS_3_0;
                     break; 
             }
-            return Microsoft.Xna.Framework.Graphics.ShaderProfile.Unknown;
+            return XFG.ShaderProfile.Unknown;
         }
 
-        public static XNA.VertexElementFormat ConvertEnum( VertexElementType type,bool tex )
+        public static XFG.VertexElementFormat ConvertEnum( VertexElementType type,bool tex )
         {
            // if (tex)
-             //   return Microsoft.Xna.Framework.Graphics.VertexElementFormat.Unused;
+             //   return XFG.Graphics.VertexElementFormat.Unused;
 
             // we only need to worry about a few types with D3D
             switch ( type )
             {
                 case VertexElementType.Color:
-                    return XNA.VertexElementFormat.Color;
+                    return XFG.VertexElementFormat.Color;
 
                 //case VertexElementType..Float1:
-                 //   return XNA.VertexElementFormat.Float1;
+                 //   return XFG.VertexElementFormat.Float1;
 
                 case VertexElementType.Float2:
-                    return XNA.VertexElementFormat.Vector2;
+                    return XFG.VertexElementFormat.Vector2;
 
                 case VertexElementType.Float3:
-                    return XNA.VertexElementFormat.Vector3;
+                    return XFG.VertexElementFormat.Vector3;
 
                 case VertexElementType.Float4:
-                    return XNA.VertexElementFormat.Vector4;
+                    return XFG.VertexElementFormat.Vector4;
 
                 case VertexElementType.Short2:
-                    return XNA.VertexElementFormat.Short2;
+                    return XFG.VertexElementFormat.Short2;
                 //case VertexElementType.Short3:
-                    //return XNA.VertexElementFormat.Short2;
+                    //return XFG.VertexElementFormat.Short2;
 
                 case VertexElementType.Short4:
-                    return XNA.VertexElementFormat.Short4;
+                    return XFG.VertexElementFormat.Short4;
 
                 case VertexElementType.UByte4:
-                    return XNA.VertexElementFormat.Byte4;
+                    return XFG.VertexElementFormat.Byte4;
 
             } // switch
 
             // keep the compiler happy
-            return XNA.VertexElementFormat.Vector3;// Float3;
+            return XFG.VertexElementFormat.Vector3;// Float3;
         }
 
-        public static XNA.VertexElementUsage ConvertEnum( VertexElementSemantic semantic )
+        public static XFG.VertexElementUsage ConvertEnum( VertexElementSemantic semantic )
         {
             switch ( semantic )
             {
                 case VertexElementSemantic.BlendIndices:
-                    return XNA.VertexElementUsage.BlendIndices;
+                    return XFG.VertexElementUsage.BlendIndices;
 
                 case VertexElementSemantic.BlendWeights:
-                    return XNA.VertexElementUsage.BlendWeight;
+                    return XFG.VertexElementUsage.BlendWeight;
 
                 case VertexElementSemantic.Diffuse:
                     // index makes the difference (diffuse - 0)
-                    return XNA.VertexElementUsage.Color;
+                    return XFG.VertexElementUsage.Color;
 
                 case VertexElementSemantic.Specular:
                     // index makes the difference (specular - 1)
-                    return XNA.VertexElementUsage.Color;
+                    return XFG.VertexElementUsage.Color;
 
                 case VertexElementSemantic.Normal:
-                    return XNA.VertexElementUsage.Normal;
+                    return XFG.VertexElementUsage.Normal;
 
                 case VertexElementSemantic.Position:
-                    return XNA.VertexElementUsage.Position;
+                    return XFG.VertexElementUsage.Position;
 
                 case VertexElementSemantic.TexCoords:
-                    return XNA.VertexElementUsage.TextureCoordinate;
+                    return XFG.VertexElementUsage.TextureCoordinate;
 
                 case VertexElementSemantic.Binormal:
-                    return XNA.VertexElementUsage.Binormal;
+                    return XFG.VertexElementUsage.Binormal;
 
                 case VertexElementSemantic.Tangent:
-                    return XNA.VertexElementUsage.Tangent;
+                    return XFG.VertexElementUsage.Tangent;
             } // switch
 
             // keep the compiler happy
-            return XNA.VertexElementUsage.Position;
+            return XFG.VertexElementUsage.Position;
         }
 
-        public static XNA.BufferUsage ConvertEnum(BufferUsage usage)
+        public static XFG.BufferUsage ConvertEnum(BufferUsage usage)
         {
-            XNA.BufferUsage d3dUsage = 0;
+            XFG.BufferUsage d3dUsage = 0;
             /*
             if ( usage == BufferUsage.Dynamic ||
                 usage == BufferUsage.DynamicWriteOnly )
 
-                d3dUsage |= XNA.BufferUsage.WriteOnly;
+                d3dUsage |= XFG.BufferUsage.WriteOnly;
              
             if ( usage == BufferUsage.WriteOnly ||
                 usage == BufferUsage.StaticWriteOnly ||
                 usage == BufferUsage.DynamicWriteOnly )
                 */
-                d3dUsage |= XNA.BufferUsage.WriteOnly;
+                d3dUsage |= XFG.BufferUsage.WriteOnly;
 
             return d3dUsage;
         }
@@ -537,19 +537,19 @@ namespace Axiom.RenderSystems.Xna
         /// </summary>
         /// <param name="mode"></param>
         /// <returns></returns>
-        public static XNA.FogMode ConvertEnum(Axiom.Graphics.FogMode mode)
+        public static XFG.FogMode ConvertEnum(Axiom.Graphics.FogMode mode)
         {
             // convert the fog mode value
             switch ( mode )
             {
                 case Axiom.Graphics.FogMode.Exp:
-                    return Microsoft.Xna.Framework.Graphics.FogMode.Exponent;
+                    return XFG.FogMode.Exponent;
 
                 case Axiom.Graphics.FogMode.Exp2:
-                    return Microsoft.Xna.Framework.Graphics.FogMode.ExponentSquared;
+                    return XFG.FogMode.ExponentSquared;
 
                 case Axiom.Graphics.FogMode.Linear:
-                    return Microsoft.Xna.Framework.Graphics.FogMode.Linear;
+                    return XFG.FogMode.Linear;
             } // switch
 
             return 0;
@@ -570,7 +570,7 @@ namespace Axiom.RenderSystems.Xna
             return 0;
         }*/
 
-        public static int ConvertEnum( TexCoordCalcMethod method, XNA.GraphicsDeviceCapabilities caps )
+        public static int ConvertEnum( TexCoordCalcMethod method, XFG.GraphicsDeviceCapabilities caps )
         {
             /*
             switch ( method )
@@ -615,35 +615,35 @@ namespace Axiom.RenderSystems.Xna
             return 1;
         }
 
-        public static D3DTexType ConvertEnum( TextureType type )
+        public static XnaTextureType ConvertEnum( TextureType type )
         {
             switch ( type )
             {
                 case TextureType.OneD:
                 case TextureType.TwoD:
-                    return D3DTexType.Normal;
+                    return XnaTextureType.Normal;
                 case TextureType.CubeMap:
-                    return D3DTexType.Cube;
+                    return XnaTextureType.Cube;
                 case TextureType.ThreeD:
-                    return D3DTexType.Volume;
+                    return XnaTextureType.Volume;
             }
 
-            return D3DTexType.None;
+            return XnaTextureType.None;
         }
 
-        public static XNA.TextureAddressMode ConvertEnum( TextureAddressing type )
+        public static XFG.TextureAddressMode ConvertEnum( TextureAddressing type )
         {
             // convert from ours to D3D
             switch ( type )
             {
                 case TextureAddressing.Wrap:
-                    return XNA.TextureAddressMode.Wrap;
+                    return XFG.TextureAddressMode.Wrap;
 
                 case TextureAddressing.Mirror:
-                    return XNA.TextureAddressMode.Mirror;
+                    return XFG.TextureAddressMode.Mirror;
 
                 case TextureAddressing.Clamp:
-                    return XNA.TextureAddressMode.Clamp;
+                    return XFG.TextureAddressMode.Clamp;
             } // end switch
 
             return 0;
@@ -654,33 +654,33 @@ namespace Axiom.RenderSystems.Xna
         /// </summary>
         /// <param name="func"></param>
         /// <returns></returns>
-        public static XNA.CompareFunction ConvertEnum( CompareFunction func )
+        public static XFG.CompareFunction ConvertEnum( CompareFunction func )
         {
             switch ( func )
             {
                 case CompareFunction.AlwaysFail:
-                    return XNA.CompareFunction.Never;
+                    return XFG.CompareFunction.Never;
 
                 case CompareFunction.AlwaysPass:
-                    return XNA.CompareFunction.Always;
+                    return XFG.CompareFunction.Always;
 
                 case CompareFunction.Equal:
-                    return XNA.CompareFunction.Equal;
+                    return XFG.CompareFunction.Equal;
 
                 case CompareFunction.Greater:
-                    return XNA.CompareFunction.Greater;
+                    return XFG.CompareFunction.Greater;
 
                 case CompareFunction.GreaterEqual:
-                    return XNA.CompareFunction.GreaterEqual;
+                    return XFG.CompareFunction.GreaterEqual;
 
                 case CompareFunction.Less:
-                    return XNA.CompareFunction.Less;
+                    return XFG.CompareFunction.Less;
 
                 case CompareFunction.LessEqual:
-                    return XNA.CompareFunction.LessEqual;
+                    return XFG.CompareFunction.LessEqual;
 
                 case CompareFunction.NotEqual:
-                    return XNA.CompareFunction.NotEqual;
+                    return XFG.CompareFunction.NotEqual;
             }
 
             return 0;
@@ -691,7 +691,7 @@ namespace Axiom.RenderSystems.Xna
         /// </summary>
         /// <param name="shading"></param>
         /// <returns></returns>
-        /*public static XNA.ShadeMode ConvertEnum( Shading shading )
+        /*public static XFG.ShadeMode ConvertEnum( Shading shading )
         {
             switch ( shading )
             {
@@ -725,7 +725,7 @@ namespace Axiom.RenderSystems.Xna
             return 0;
         }*/
 
-        public static XNA.StencilOperation ConvertEnum( Axiom.Graphics.StencilOperation op )
+        public static XFG.StencilOperation ConvertEnum( Axiom.Graphics.StencilOperation op )
         {
             return ConvertEnum( op, false );
         }
@@ -735,54 +735,54 @@ namespace Axiom.RenderSystems.Xna
         /// </summary>
         /// <param name="op"></param>
         /// <returns></returns>
-        public static XNA.StencilOperation ConvertEnum(Axiom.Graphics.StencilOperation op, bool invert)
+        public static XFG.StencilOperation ConvertEnum(Axiom.Graphics.StencilOperation op, bool invert)
         {
             switch ( op )
             {
                 case Axiom.Graphics.StencilOperation.Keep:
-                    return XNA.StencilOperation.Keep;
+                    return XFG.StencilOperation.Keep;
 
                 case Axiom.Graphics.StencilOperation.Zero:
-                    return XNA.StencilOperation.Zero;
+                    return XFG.StencilOperation.Zero;
 
                 case Axiom.Graphics.StencilOperation.Replace:
-                    return XNA.StencilOperation.Replace;
+                    return XFG.StencilOperation.Replace;
 
                 case Axiom.Graphics.StencilOperation.Increment:
                     return invert ?
-                        XNA.StencilOperation.DecrementSaturation : XNA.StencilOperation.IncrementSaturation;
+                        XFG.StencilOperation.DecrementSaturation : XFG.StencilOperation.IncrementSaturation;
 
                 case Axiom.Graphics.StencilOperation.Decrement:
                     return invert ?
-                        XNA.StencilOperation.IncrementSaturation : XNA.StencilOperation.DecrementSaturation;
+                        XFG.StencilOperation.IncrementSaturation : XFG.StencilOperation.DecrementSaturation;
 
                 case Axiom.Graphics.StencilOperation.IncrementWrap:
                     return invert ?
-                        XNA.StencilOperation.Decrement : XNA.StencilOperation.Increment;
+                        XFG.StencilOperation.Decrement : XFG.StencilOperation.Increment;
 
                 case Axiom.Graphics.StencilOperation.DecrementWrap:
                     return invert ?
-                        XNA.StencilOperation.Increment : XNA.StencilOperation.Decrement;
+                        XFG.StencilOperation.Increment : XFG.StencilOperation.Decrement;
 
                 case Axiom.Graphics.StencilOperation.Invert:
-                    return XNA.StencilOperation.Invert;
+                    return XFG.StencilOperation.Invert;
             }
 
             return 0;
         }
 
-        public static XNA.CullMode ConvertEnum( Axiom.Graphics.CullingMode mode, bool flip )
+        public static XFG.CullMode ConvertEnum( Axiom.Graphics.CullingMode mode, bool flip )
         {
             switch ( mode )
             {
                 case CullingMode.None:
-                    return XNA.CullMode.None;
+                    return XFG.CullMode.None;
 
                 case CullingMode.Clockwise:
-                    return flip ? XNA.CullMode.CullCounterClockwiseFace : XNA.CullMode.CullClockwiseFace;
+                    return flip ? XFG.CullMode.CullCounterClockwiseFace : XFG.CullMode.CullClockwiseFace;
 
                 case CullingMode.CounterClockwise:
-                    return flip ? XNA.CullMode.CullClockwiseFace : XNA.CullMode.CullCounterClockwiseFace;
+                    return flip ? XFG.CullMode.CullClockwiseFace : XFG.CullMode.CullCounterClockwiseFace;
             }
 
             return 0;
@@ -797,7 +797,7 @@ namespace Axiom.RenderSystems.Xna
         /// </remarks>
         /// <param name="matrix"></param>
         /// <returns></returns>
-        public static bool IsIdentity( ref Microsoft.Xna.Framework.Matrix matrix )
+        public static bool IsIdentity( ref XNA.Matrix matrix )
         {
             if ( matrix.M11 == 1.0f &&
                 matrix.M12 == 0.0f &&

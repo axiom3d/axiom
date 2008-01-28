@@ -34,16 +34,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Diagnostics;
-using SWF = System.Windows.Forms;
 
 using Axiom.Graphics;
 using Axiom.Core;
-using Axiom.Configuration;
-using Axiom.Media;
 
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
@@ -52,21 +45,21 @@ using XFG = Microsoft.Xna.Framework.Graphics;
 
 namespace Axiom.RenderSystems.Xna
 {
-    /// <summary>
-    ///		Structure holding texture unit settings for every stage
-    /// </summary>
-    internal struct XnaTextureStageDescription
-    {
-        /// the type of the texture
-        public XnaTextureType texType;
-        /// wich texCoordIndex to use
-        public int coordIndex;
-        /// type of auto tex. calc. used
-        public TexCoordCalcMethod autoTexCoordType;
-        /// Frustum, used if the above is projection
-        public Frustum frustum;
-        /// texture 
-        public XFG.Texture tex;
-    }
+	/// <summary>
+	///		Structure holding texture unit settings for every stage
+	/// </summary>
+	internal struct XnaTextureStageDescription
+	{
+		/// the type of the texture
+		public XnaTextureType texType;
+		/// wich texCoordIndex to use
+		public int coordIndex;
+		/// type of auto tex. calc. used
+		public TexCoordCalcMethod autoTexCoordType;
+		/// Frustum, used if the above is projection
+		public Frustum frustum;
+		/// texture 
+		public XFG.Texture tex;
+	}
 
 }
