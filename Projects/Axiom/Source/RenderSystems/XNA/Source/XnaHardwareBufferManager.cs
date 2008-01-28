@@ -52,7 +52,7 @@ namespace Axiom.RenderSystems.Xna
     {
         #region Member variables
 
-		protected XFG.GraphicsDevice device;
+		protected XFG.GraphicsDevice _device;
 
         #endregion
 
@@ -64,22 +64,28 @@ namespace Axiom.RenderSystems.Xna
         /// <param name="device"></param>
 		public XnaHardwareBufferManager( XFG.GraphicsDevice device )
         {
-            this.device = device;
+            this._device = device;
         }
 
         #endregion
 
-        #region Methods
+		#region HardwareBufferManager Implementation
 
-        public override Axiom.Graphics.HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
+		#region Properties
+
+		#endregion
+
+		#region Methods
+
+		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
         {
             // call overloaded method with no shadow buffer
             return CreateIndexBuffer( type, numIndices, usage, false );
         }
 
-        public override Axiom.Graphics.HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
+        public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
         {
-            XnaHardwareIndexBuffer buffer = new XnaHardwareIndexBuffer( type, numIndices, usage, device, false, useShadowBuffer );
+            XnaHardwareIndexBuffer buffer = new XnaHardwareIndexBuffer( type, numIndices, usage, _device, false, useShadowBuffer );
             indexBuffers.Add( buffer );
             return buffer;
         }
@@ -92,25 +98,20 @@ namespace Axiom.RenderSystems.Xna
 
         public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer )
         {
-            XnaHardwareVertexBuffer buffer = new XnaHardwareVertexBuffer( vertexSize, numVerts, usage, device, false, useShadowBuffer );
+            XnaHardwareVertexBuffer buffer = new XnaHardwareVertexBuffer( vertexSize, numVerts, usage, _device, false, useShadowBuffer );
             vertexBuffers.Add( buffer );
             return buffer;
         }
 
-        public override Axiom.Graphics.VertexDeclaration CreateVertexDeclaration()
+        public override VertexDeclaration CreateVertexDeclaration()
         {
-            VertexDeclaration decl = new XnaVertexDeclaration( device );
+            VertexDeclaration decl = new XnaVertexDeclaration( _device );
             vertexDeclarations.Add( decl );
             return decl;
         }
 
-        // TODO: Disposal
-
         #endregion
 
-        #region Properties
-
-        #endregion
-
-    }
+		#endregion HardwareBufferManager Implementation
+	}
 }
