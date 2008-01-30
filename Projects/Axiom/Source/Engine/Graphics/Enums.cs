@@ -1366,6 +1366,11 @@ namespace Axiom.Graphics
         Short2,
         Short3,
         Short4,
-        UByte4
+        UByte4,
+		/// D3D style compact colour
+		Color_ARGB = 10,
+		/// GL style compact colour
+		Color_ABGR = 11
+
     }
 }

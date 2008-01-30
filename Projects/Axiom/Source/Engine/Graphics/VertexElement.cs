@@ -114,7 +114,9 @@ namespace Axiom.Graphics
 
             switch ( type )
             {
-                case VertexElementType.Color:
+				case VertexElementType.Color_ABGR:
+				case VertexElementType.Color_ARGB:
+				case VertexElementType.Color:
                     return Marshal.SizeOf( typeof( int ) );
 
                 case VertexElementType.Float1:

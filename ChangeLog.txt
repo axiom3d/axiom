@@ -1,3 +1,7 @@
+01-30-2008 - Borrillis
+- Added missing VertexElementTypes Color_ARGB & Color_ABGR which was causng some mesh load problems with meshes created with oFusion
+- hobbiton merged to trunk
+
 10-23-2007 - Borrillis
 - hobbiton merged to trunk
 
