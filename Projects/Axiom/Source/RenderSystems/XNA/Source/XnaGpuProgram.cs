@@ -52,20 +52,42 @@ namespace Axiom.RenderSystems.Xna
 	/// </summary>
 	public abstract class XnaGpuProgram : GpuProgram
 	{
-		#region Fields
+		#region Fields and Properties
 
 		/// <summary>
-		///    Reference to the current D3D device object.
+		///    Reference to the current XNA device object.
 		/// </summary>
 		protected XFG.GraphicsDevice device;
+
+		#region ExternalMicrocode Property
 		/// <summary>
 		///     Microsode set externally, most likely from the HLSL compiler.
 		/// </summary>
-		/// 
-
 		protected XFG.CompiledShader externalMicrocode;
+		/// <summary>
+		///     Gets/Sets a prepared chunk of microcode to use during Load
+		///     rather than loading from file or a string.
+		/// </summary>
+		/// <remarks>
+		///     This is used by the HLSL compiler once it compiles down to low
+		///     level microcode, which can then be loaded into a low level GPU
+		///     program.
+		/// </remarks>
+		internal XFG.CompiledShader ExternalMicrocode
+		{
+			get
+			{
+				return externalMicrocode;
+			}
+			set
+			{
+				externalMicrocode = value;
+			}
+		}
 
-		#endregion Fields
+		#endregion ExternalMicrocode Property
+			
+		#endregion Fields and Properties
 
 		#region Constructor
 
@@ -73,11 +95,21 @@ namespace Axiom.RenderSystems.Xna
 			: base( name, type, syntaxCode )
 		{
 			this.device = device;
-			// externalMicrocode = new XFG.CompiledShader();
-
 		}
 
 		#endregion Constructor
+
+		#region Methods
+
+		/// <summary>
+		///     Loads a shader object from the supplied microcode.
+		/// </summary>
+		/// <param name="microcode">
+		///     contains the assembler instructions for the program.
+		/// </param>
+		protected abstract void LoadFromMicrocode( XFG.CompiledShader microcode );
+
+		#endregion Methods
 
 		#region GpuProgram Members
 
@@ -114,9 +146,7 @@ namespace Axiom.RenderSystems.Xna
 			string errors;
 
 			// load the shader from the source string
-			XFG.CompiledShader microcode = XFG.ShaderCompiler.AssembleFromSource( source, null, null, XFG.CompilerOptions.Debug,
-																		XNA.TargetPlatform.Windows );
-			//DX.GraphicsStream microcode = D3D.ShaderLoader.FromString( source, null, 0, out errors );
+			XFG.CompiledShader microcode = XFG.ShaderCompiler.AssembleFromSource( source, null, null, XFG.CompilerOptions.Debug, XNA.TargetPlatform.Windows );
 			errors = microcode.ErrorsAndWarnings;
 			if ( errors != null && errors.Length != 0 )
 			{
@@ -130,43 +160,6 @@ namespace Axiom.RenderSystems.Xna
 
 		#endregion GpuProgram Members
 
-		#region Methods
-
-		/// <summary>
-		///     Loads a shader object from the supplied microcode.
-		/// </summary>
-		/// <param name="microcode">
-		///     GraphicsStream that contains the assembler instructions for the program.
-		/// </param>
-
-		protected abstract void LoadFromMicrocode( XFG.CompiledShader microcode );
-
-		#endregion Methods
-
-		#region Properties
-
-		/// <summary>
-		///     Gets/Sets a prepared chunk of microcode to use during Load
-		///     rather than loading from file or a string.
-		/// </summary>
-		/// <remarks>
-		///     This is used by the HLSL compiler once it compiles down to low
-		///     level microcode, which can then be loaded into a low level GPU
-		///     program.
-		/// </remarks>
-		internal XFG.CompiledShader ExternalMicrocode
-		{
-			get
-			{
-				return externalMicrocode;
-			}
-			set
-			{
-				externalMicrocode = value;
-			}
-		}
-
-		#endregion Properties
 	}
 
 	/// <summary>
@@ -174,14 +167,27 @@ namespace Axiom.RenderSystems.Xna
 	/// </summary>
 	public class XnaVertexProgram : XnaGpuProgram
 	{
-		#region Fields
+		#region Fields and Properties
+
+		#region VertexShader Property
 
 		/// <summary>
-		///    Reference to the current D3D VertexShader object.
+		///    Reference to the current Xna VertexShader object.
 		/// </summary>
 		protected XFG.VertexShader vertexShader;
+		/// <summary>
+		///    Used internally by the XnaRenderSystem to get a reference to the underlying VertexShader object.
+		/// </summary>
+		internal XFG.VertexShader VertexShader
+		{
+			get
+			{
+				return vertexShader;
+			}
+		}
+		#endregion VertexShader Property
 
-		#endregion Fields
+		#endregion Fields and Properties
 
 		#region Constructor
 
@@ -192,15 +198,21 @@ namespace Axiom.RenderSystems.Xna
 
 		#endregion Constructor
 
-		#region D3DGpuProgram Memebers
+		#region XnaGpuProgram Memebers
 
+		/// <summary>
+		///     Loads a shader object from the supplied microcode.
+		/// </summary>
+		/// <param name="microcode">
+		///     contains the assembler instructions for the program.
+		/// </param>
 		protected override void LoadFromMicrocode( XFG.CompiledShader microcode )
 		{
 			// create the new vertex shader
 			vertexShader = new XFG.VertexShader( device, microcode.GetShaderCode() );
 		}
 
-		#endregion D3DGpuProgram Memebers
+		#endregion XnaGpuProgram Memebers
 
 		#region GpuProgram Members
 
@@ -219,21 +231,6 @@ namespace Axiom.RenderSystems.Xna
 
 		#endregion GpuProgram Members
 
-		#region Properties
-
-		/// <summary>
-		///    Used internally by the D3DRenderSystem to get a reference to the underlying
-		///    VertexShader object.
-		/// </summary>
-		internal XFG.VertexShader VertexShader
-		{
-			get
-			{
-				return vertexShader;
-			}
-		}
-
-		#endregion Properties
 	}
 
 	/// <summary>
@@ -241,14 +238,29 @@ namespace Axiom.RenderSystems.Xna
 	/// </summary>
 	public class XnaFragmentProgram : XnaGpuProgram
 	{
-		#region Fields
+		#region Fields and Properties
+
+		#region PixelShader Property
 
 		/// <summary>
-		///    Reference to the current D3D PixelShader object.
+		///    Reference to the current Xna PixelShader object.
 		/// </summary>
 		protected XFG.PixelShader pixelShader;
+		/// <summary>
+		///    Used internally by the XnaRenderSystem to get a reference to the underlying
+		///    PixelShader object.
+		/// </summary>
+		internal XFG.PixelShader PixelShader
+		{
+			get
+			{
+				return pixelShader;
+			}
+		}
 
-		#endregion Fields
+		#endregion PixelShader Property
+			
+		#endregion Fields and Properties
 
 		#region Constructors
 
@@ -259,15 +271,21 @@ namespace Axiom.RenderSystems.Xna
 
 		#endregion Constructors
 
-		#region D3DGpuProgram Memebers
+		#region XnaGpuProgram Memebers
 
+		/// <summary>
+		///     Loads a shader object from the supplied microcode.
+		/// </summary>
+		/// <param name="microcode">
+		///     contains the assembler instructions for the program.
+		/// </param>
 		protected override void LoadFromMicrocode( XFG.CompiledShader microcode )
 		{
 			// create a new pixel shader
 			pixelShader = new XFG.PixelShader( device, microcode.GetShaderCode() );
 		}
 
-		#endregion D3DGpuProgram Members
+		#endregion XnaGpuProgram Members
 
 		#region GpuProgram Members
 
@@ -286,20 +304,5 @@ namespace Axiom.RenderSystems.Xna
 
 		#endregion GpuProgram Members
 
-		#region Properties
-
-		/// <summary>
-		///    Used internally by the D3DRenderSystem to get a reference to the underlying
-		///    PixelShader object.
-		/// </summary>
-		internal XFG.PixelShader PixelShader
-		{
-			get
-			{
-				return pixelShader;
-			}
-		}
-
-		#endregion Properties
 	}
 }
