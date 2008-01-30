@@ -82,7 +82,7 @@ namespace Axiom.RenderSystems.Xna
 		protected XnaGpuProgramManager gpuProgramMgr;
 		int numLastStreams = 0;
 
-		XnaFixedFunctionEffect _effect;
+		XnaFixedFunctionEmulation _ffEmulator;
 
 		protected int primCount;
 		// protected int renderCount = 0;
@@ -526,7 +526,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 			set
 			{
-				_effect.AmbientLightColor = new XNA.Vector4( value.r * 255, value.g * 255, value.b * 255, 0 );
+				//_effect.AmbientLightColor = new XNA.Vector4( value.r * 255, value.g * 255, value.b * 255, 0 );
 			}
 		}
 
@@ -628,14 +628,17 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
+		private Matrix4 _projectionMatrix;
 		public override Axiom.Math.Matrix4 ProjectionMatrix
 		{
 			get
 			{
-				throw new Exception( "The method or operation is not implemented." );
+				return _projectionMatrix;
 			}
 			set
 			{
+				_projectionMatrix = value;
+
 				XNA.Matrix mat = _makeXnaMatrix( value );
 
 				if ( activeRenderTarget.RequiresTextureFlipping )
@@ -644,9 +647,9 @@ namespace Axiom.RenderSystems.Xna
 				}
 
 				//todo set the projection matrix in effect
-				_effect.Projection = mat;
+				//_effect.Projection = mat;
 
-				_effect.CommitChanges();
+				//_effect.CommitChanges();
 
 			}
 		}
@@ -711,7 +714,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			get
 			{
-				throw new Exception( "The method or operation is not implemented." );
+				return _viewMatrix;
 			}
 			set
 			{
@@ -723,19 +726,20 @@ namespace Axiom.RenderSystems.Xna
 				_viewMatrix.m22 = -_viewMatrix.m22;
 				_viewMatrix.m23 = -_viewMatrix.m23;
 
-				_effect.View = _makeXnaMatrix( _viewMatrix );
+				//_effect.View = _makeXnaMatrix( _viewMatrix );
 			}
 		}
 
+		private Matrix4 _worldMatrix;
 		public override Axiom.Math.Matrix4 WorldMatrix
 		{
 			get
 			{
-				throw new Exception( "The method or operation is not implemented." );
+				return _worldMatrix;
 			}
 			set
 			{
-				_effect.World = _makeXnaMatrix( value );
+				_worldMatrix = value;
 			}
 		}
 
@@ -941,7 +945,6 @@ namespace Axiom.RenderSystems.Xna
 					_device = InitDevice( isFullscreen, depthBuffer, width, height, colorDepth, new Control() );
 				}
 
-				_effect = new XnaFixedFunctionEffect( _device );
 			}
 
 			RenderWindow window = new XnaWindow();
@@ -1159,6 +1162,8 @@ namespace Axiom.RenderSystems.Xna
 				newWindow.RenderWindow = renderWindow;
 			}
 
+			_ffEmulator = new XnaFixedFunctionEmulation( this, _device );
+
 			return renderWindow;
 		}
 
@@ -1246,6 +1251,8 @@ namespace Axiom.RenderSystems.Xna
 			// class base implementation first
 			base.Render( op );
 
+			_ffEmulator.BeginEmulation( op );
+
 			XnaVertexDeclaration d3dVertDecl = (XnaVertexDeclaration)op.vertexData.vertexDeclaration;
 
 			// set the vertex declaration and buffer binding
@@ -1286,52 +1293,19 @@ namespace Axiom.RenderSystems.Xna
 			// are we gonna use indices?
 			if ( op.useIndices )
 			{
-				XnaHardwareIndexBuffer idxBuffer =
-					(XnaHardwareIndexBuffer)op.indexData.indexBuffer;
+				XnaHardwareIndexBuffer idxBuffer = (XnaHardwareIndexBuffer)op.indexData.indexBuffer;
 				_device.Indices = idxBuffer.XnaIndexBuffer;
 
-
-				_effect.CommitChanges();
-
-				//XNA needs a vertexshader and pixel shader to draw something, check first if an effect has been given via fixed function
-				if ( _device.VertexShader != null && _device.PixelShader != null )
-					_device.DrawIndexedPrimitives( primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount, op.indexData.indexStart, primCount );
-				//if not, so use the effect file which draws basic stuff
-				else
-				{
-					_effect.Begin();
-
-					for ( int i = 0; i < this._effect.CurrentTechnique.Passes.Count; ++i )
-					{
-						this._effect.CurrentTechnique.Passes[ i ].Begin();
-						_device.DrawIndexedPrimitives( primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount, op.indexData.indexStart, primCount );
-						this._effect.CurrentTechnique.Passes[ i ].End();
-					}
-					_effect.End();
-					_device.VertexShader = null;
-					_device.PixelShader = null;
-				}
+				_device.DrawIndexedPrimitives( primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount, op.indexData.indexStart, primCount );
 
 			}
 			else
 			{
-				if ( _device.VertexShader != null || _device.PixelShader != null )
-					_device.DrawPrimitives( primType, op.vertexData.vertexStart, primCount );
-				else
-				{
-					_effect.Begin();
-					for ( int i = 0; i < this._effect.CurrentTechnique.Passes.Count; ++i )
-					{
-						this._effect.CurrentTechnique.Passes[ i ].Begin();
-						// draw vertices without indices
-						_device.DrawPrimitives( primType, op.vertexData.vertexStart, primCount );
-						this._effect.CurrentTechnique.Passes[ i ].End();
-					}
-					_effect.End();
-					_device.VertexShader = null;
-					_device.PixelShader = null;
-				}
+				// draw vertices without indices
+				_device.DrawPrimitives( primType, op.vertexData.vertexStart, primCount );
 			}
+
+			_ffEmulator.EndEmulation();
 			//crap hack, set the sources back to null to allow accessing vertices and indices buffers
 			_device.Vertices[ 0 ].SetSource( null, 0, 0 );
 			_device.Vertices[ 1 ].SetSource( null, 0, 0 );
@@ -1415,7 +1389,7 @@ namespace Axiom.RenderSystems.Xna
 		public override void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest )
 		{
 			//TODO
-			// set the render states after converting the incoming values to D3D.Blend
+			// set the render states after converting the incoming values to XFG.Blend
 			_device.RenderState.SourceBlend = XnaHelper.Convert( src );
 			_device.RenderState.DestinationBlend = XnaHelper.Convert( dest );
 		}
@@ -1468,7 +1442,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			XFG.Color col = new XFG.Color( (byte)( ambient.r * 255.0f ), (byte)( ambient.g * 255.0f ), (byte)( ambient.b * 255.0f ), (byte)( ambient.a * 255.0f ) );
 			//ambient.ToXnaColor();
-			_effect.AmbientLightColor = new XNA.Vector4( col.R, col.G, col.B, col.A );
+			//_effect.AmbientLightColor = new XNA.Vector4( col.R, col.G, col.B, col.A );
 
 
 			/*   effect2.AmbientLightColor =new XNA.Vector3(col.R,col.G,col.B);
@@ -1656,15 +1630,15 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void SetTextureMatrix( int stage, Axiom.Math.Matrix4 xform )
 		{
+			/*
 			XNA.Matrix d3dMat = XNA.Matrix.Identity;
 			Matrix4 newMat = xform;
 
-			/* If envmap is applied, but device doesn't support spheremap,
-			then we have to use texture transform to make the camera space normal
-			reference the envmap properly. This isn't exactly the same as spheremap
-			(it looks nasty on flat areas because the camera space normals are the same)
-			but it's the best approximation we have in the absence of a proper spheremap 
-		   * */
+			//If envmap is applied, but device doesn't support spheremap,
+			//then we have to use texture transform to make the camera space normal
+			//reference the envmap properly. This isn't exactly the same as spheremap
+			//(it looks nasty on flat areas because the camera space normals are the same)
+			//but it's the best approximation we have in the absence of a proper spheremap 
 			if ( texStageDesc[ stage ].autoTexCoordType == TexCoordCalcMethod.EnvironmentMap )
 			{
 				if ( _capabilities.VertexProcessingCapabilities.SupportsTextureGenerationSphereMap )
@@ -1678,12 +1652,12 @@ namespace Axiom.RenderSystems.Xna
 				}
 				else
 				{
-					/*     If envmap is applied, but device doesn't support spheremap,
-						 then we have to use texture transform to make the camera space normal
-						 reference the envmap properly. This isn't exactly the same as spheremap
-						 (it looks nasty on flat areas because the camera space normals are the same)
-						 but it's the best approximation we have in the absence of a proper spheremap 
-						 */
+						 //If envmap is applied, but device doesn't support spheremap,
+						 //then we have to use texture transform to make the camera space normal
+						 //reference the envmap properly. This isn't exactly the same as spheremap
+						 //(it looks nasty on flat areas because the camera space normals are the same)
+						 //but it's the best approximation we have in the absence of a proper spheremap 
+						 
 					// concatenate with the xForm
 					newMat = newMat * Matrix4.ClipSpace2DToImageSpace;
 				}
@@ -1694,7 +1668,7 @@ namespace Axiom.RenderSystems.Xna
 			if ( texStageDesc[ stage ].autoTexCoordType == TexCoordCalcMethod.EnvironmentMapReflection )
 			{
 				// get the current view matrix
-				XNA.Matrix viewMatrix = _effect.View;
+				XNA.Matrix viewMatrix = this._viewMatrix;
 
 				// Get transposed 3x3, ie since D3D is transposed just copy
 				// We want to transpose since that will invert an orthonormal matrix ie rotation
@@ -1755,8 +1729,8 @@ namespace Axiom.RenderSystems.Xna
 				d3dMat.M43 = -d3dMat.M43;
 			}
 
-			/*TODO
-			 * D3D.TransformType d3dTransType = (D3D.TransformType)((int)(D3D.TransformType.Texture0) + stage);
+			//TODO
+			// D3D.TransformType d3dTransType = (D3D.TransformType)((int)(D3D.TransformType.Texture0) + stage);
 
 			 // set the matrix if it is not the identity
 			 if (!D3DHelper.IsIdentity(ref d3dMat))
