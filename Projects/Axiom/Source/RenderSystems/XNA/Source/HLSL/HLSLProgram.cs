@@ -115,6 +115,17 @@ namespace Axiom.RenderSystems.Xna.HLSL
         protected override void LoadFromSource()
         {
             string errors = null;
+
+			switch ( type )
+			{
+				case GpuProgramType.Vertex:
+					target = "vs_3_0";
+					break;
+				case GpuProgramType.Fragment:
+					target = "ps_3_0";
+					break;
+			}
+
             // compile the high level shader to low level microcode
             // note, we need to pack matrices in row-major format for HLSL
             microcode = XFG.ShaderCompiler.CompileFromSource( source, null, _includeHandler, XFG.CompilerOptions.PackMatrixRowMajor, entry, _convertTarget( target ), XNA.TargetPlatform.Windows );
@@ -304,5 +315,5 @@ namespace Axiom.RenderSystems.Xna.HLSL
         }
 
         #endregion IConfigurable Members
-    }
+	}
 }

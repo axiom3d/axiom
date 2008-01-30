@@ -48,7 +48,7 @@ using XFG = Microsoft.Xna.Framework.Graphics;
 namespace Axiom.RenderSystems.Xna
 {
 	/// <summary>
-	/// 	Xna implementation of a few things common to low-level vertex & fragment programs
+	/// 	Xna implementation of a few things common to low-level vertex &amp; fragment programs
 	/// </summary>
 	public abstract class XnaGpuProgram : GpuProgram
 	{
@@ -197,10 +197,7 @@ namespace Axiom.RenderSystems.Xna
 		protected override void LoadFromMicrocode( XFG.CompiledShader microcode )
 		{
 			// create the new vertex shader
-			XFG.CompiledShader te = XFG.ShaderCompiler.AssembleFromSource( this.source, null, null,
-																		XFG.CompilerOptions.Debug,
-																		XNA.TargetPlatform.Windows );
-			vertexShader = new XFG.VertexShader( device, te.GetShaderCode() );
+			vertexShader = new XFG.VertexShader( device, microcode.GetShaderCode() );
 		}
 
 		#endregion D3DGpuProgram Memebers
@@ -267,12 +264,7 @@ namespace Axiom.RenderSystems.Xna
 		protected override void LoadFromMicrocode( XFG.CompiledShader microcode )
 		{
 			// create a new pixel shader
-			XFG.CompiledShader te = XFG.ShaderCompiler.AssembleFromSource( this.source,
-																			null, null,
-																			XFG.CompilerOptions.Debug,
-																			XNA.TargetPlatform.Windows );
-			//if(te.ErrorsAndWarnings==String.Empty)
-			pixelShader = new XFG.PixelShader( device, te.GetShaderCode() );
+			pixelShader = new XFG.PixelShader( device, microcode.GetShaderCode() );
 		}
 
 		#endregion D3DGpuProgram Members
