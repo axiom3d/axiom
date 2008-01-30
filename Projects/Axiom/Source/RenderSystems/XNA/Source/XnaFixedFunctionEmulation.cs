@@ -131,6 +131,7 @@ namespace Axiom.RenderSystems.Xna
 
 		private static HLSLProgram _defaultVSPosition;
 		private static HLSLProgram _defaultVSPositionTexture;
+		private static HLSLProgram _defaultVSPositionColor;
 		private static HLSLProgram _defaultVSPositionTextureColor;
 		private static HLSLProgram _defaultVSPositionNormalTexture;
 		private static HLSLProgram _defaultVSPositionNormalColor;
@@ -161,13 +162,13 @@ namespace Axiom.RenderSystems.Xna
 					_rs = rs;
 					_device = device;
 
-					#region defaultVSPositionTexture
+					#region defaultVSPosition
 					_defaultVSPosition = (HLSLProgram)HighLevelGpuProgramManager.Instance.CreateProgram( "_defaultVSPosition", "hlsl", GpuProgramType.Vertex );
 					_defaultVSPosition.Source = "struct VS_INPUT { float4 Pos : POSITION0; };" +
 													   _vsSource;
 					_defaultVSPosition.SetParam( "entry_point", "VS" );
 					_defaultVSPosition.Load();
-					#endregion defaultPositionTexture
+					#endregion defaultPosition
 
 					#region defaultVSPositionTexture
 					_defaultVSPositionTexture = (HLSLProgram)HighLevelGpuProgramManager.Instance.CreateProgram( "_defaultVSPositionTexture", "hlsl", GpuProgramType.Vertex );
@@ -176,6 +177,14 @@ namespace Axiom.RenderSystems.Xna
 					_defaultVSPositionTexture.SetParam( "entry_point", "VS" );
 					_defaultVSPositionTexture.Load();
 					#endregion defaultPositionTexture
+
+					#region defaultVSPositionColor
+					_defaultVSPositionColor = (HLSLProgram)HighLevelGpuProgramManager.Instance.CreateProgram( "_defaultVSPositionColor", "hlsl", GpuProgramType.Vertex );
+					_defaultVSPositionColor.Source = "struct VS_INPUT { float4 Pos : POSITION0; float4 col : COLOR0 ;};" +
+													   _vsSourceColor;
+					_defaultVSPositionColor.SetParam( "entry_point", "VS" );
+					_defaultVSPositionColor.Load();
+					#endregion defaultPositionColor
 
 					#region defaultVSPositionTextureColor
 					_defaultVSPositionTextureColor = (HLSLProgram)HighLevelGpuProgramManager.Instance.CreateProgram( "_defaultVSPositionTextureColor", "hlsl", GpuProgramType.Vertex );
@@ -248,11 +257,19 @@ namespace Axiom.RenderSystems.Xna
 					_unBindVS = true;
 				}
 				else if ( ( op.vertexData.vertexDeclaration.ElementCount == 2 ) && 
-					 ( op.vertexData.vertexDeclaration[ 0 ].Semantic == VertexElementSemantic.Position ) && 
-					 ( op.vertexData.vertexDeclaration[ 1 ].Semantic == VertexElementSemantic.TexCoords ) )
+					 ( op.vertexData.vertexDeclaration[ 0 ].Semantic == VertexElementSemantic.Position )  )
 				{
-					_rs.BindGpuProgram( _defaultVSPositionTexture.BindingDelegate );
-					_unBindVS = true;
+					if ( ( op.vertexData.vertexDeclaration[ 1 ].Semantic == VertexElementSemantic.TexCoords ) )
+					{
+						_rs.BindGpuProgram( _defaultVSPositionTexture.BindingDelegate );
+						_unBindVS = true;
+					}
+					else if ( ( op.vertexData.vertexDeclaration[ 1 ].Semantic == VertexElementSemantic.Diffuse ) )
+					{
+						bindTextureDefault = false;
+						_rs.BindGpuProgram( _defaultVSPositionColor.BindingDelegate );
+						_unBindVS = true;
+					}
 				}
 				else if ( ( op.vertexData.vertexDeclaration.ElementCount == 3 ) &&
 						  ( op.vertexData.vertexDeclaration[ 0 ].Semantic == VertexElementSemantic.Position ) )
@@ -287,6 +304,16 @@ namespace Axiom.RenderSystems.Xna
 						_unBindVS = true;
 					}
 
+				}
+				else if ( ( op.vertexData.vertexDeclaration.ElementCount == 4 ) &&
+						  ( op.vertexData.vertexDeclaration[ 0 ].Semantic == VertexElementSemantic.Position ) )
+				{
+					if ( ( op.vertexData.vertexDeclaration[ 1 ].Semantic == VertexElementSemantic.Normal ) &&
+						 ( op.vertexData.vertexDeclaration[ 2 ].Semantic == VertexElementSemantic.TexCoords ) )
+					{
+						_rs.BindGpuProgram( _defaultVSPositionNormalTexture.BindingDelegate );
+						_unBindVS = true;
+					}
 				}
 
 				if ( ( _device.VertexShader == null ) && ( _unBindVS == false ) )
