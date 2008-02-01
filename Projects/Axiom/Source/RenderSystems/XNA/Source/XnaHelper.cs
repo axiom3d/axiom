@@ -92,6 +92,41 @@ namespace Axiom.RenderSystems.Xna
 			return driver;
 		}
 
+		public static XFG.Color Convert( Axiom.Core.ColorEx color )
+		{
+			return new XFG.Color( (byte)(color.r * 255), (byte)(color.g * 255), (byte)(color.b * 255), (byte)(color.a * 255) );
+		}
+
+		public static Axiom.Core.ColorEx Convert( XFG.Color color )
+		{
+			return new Axiom.Core.ColorEx( color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, color.A / 255.0f );
+		}
+
+		public static XNA.Matrix Convert( Axiom.Math.Matrix4 matrix )
+		{
+			XNA.Matrix xnaMat = new XNA.Matrix();
+
+			// set it to a transposed matrix since Xna uses row vectors
+			xnaMat.M11 = matrix.m00;
+			xnaMat.M12 = matrix.m10;
+			xnaMat.M13 = matrix.m20;
+			xnaMat.M14 = matrix.m30;
+			xnaMat.M21 = matrix.m01;
+			xnaMat.M22 = matrix.m11;
+			xnaMat.M23 = matrix.m21;
+			xnaMat.M24 = matrix.m31;
+			xnaMat.M31 = matrix.m02;
+			xnaMat.M32 = matrix.m12;
+			xnaMat.M33 = matrix.m22;
+			xnaMat.M34 = matrix.m32;
+			xnaMat.M41 = matrix.m03;
+			xnaMat.M42 = matrix.m13;
+			xnaMat.M43 = matrix.m23;
+			xnaMat.M44 = matrix.m33;
+
+			return xnaMat;
+		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -224,7 +259,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <returns></returns>
 		public static XFG.BlendFunction Convert( LayerBlendOperationEx blendop )
 		{
-			XFG.BlendFunction d3dTexOp = 0;
+			XFG.BlendFunction xnaTexOp = 0;
 
 
 			// figure out what is what
@@ -252,22 +287,22 @@ namespace Axiom.RenderSystems.Xna
 					break;*/
 
 				case LayerBlendOperationEx.Add:
-					d3dTexOp = XFG.BlendFunction.Add;
+					xnaTexOp = XFG.BlendFunction.Add;
 					break;
 
 				case LayerBlendOperationEx.AddSigned:
-					d3dTexOp = XFG.BlendFunction.Add;
+					xnaTexOp = XFG.BlendFunction.Add;
 					break;
 
 				case LayerBlendOperationEx.AddSmooth:
-					d3dTexOp = XFG.BlendFunction.Add;
+					xnaTexOp = XFG.BlendFunction.Add;
 					break;
 
 				case LayerBlendOperationEx.Subtract:
-					d3dTexOp = XFG.BlendFunction.Subtract;
+					xnaTexOp = XFG.BlendFunction.Subtract;
 					break;
 				default:
-					d3dTexOp = XFG.BlendFunction.Add;
+					xnaTexOp = XFG.BlendFunction.Add;
 					break;
 
 				/*  case LayerBlendOperationEx.BlendDiffuseAlpha:
@@ -298,7 +333,7 @@ namespace Axiom.RenderSystems.Xna
 					  break;*/
 			} // end switch
 
-			return d3dTexOp;
+			return xnaTexOp;
 		}
 
 		/*  public static D3D.TextureArgument Convert( LayerBlendSource blendSource )
@@ -332,49 +367,49 @@ namespace Axiom.RenderSystems.Xna
 		  }*/
 
 		/// <summary>
-		///		Helper method to convert Axiom scene blend factors to D3D
+		///		Helper method to convert Axiom scene blend factors to Xna
 		/// </summary>
 		/// <param name="factor"></param>
 		/// <returns></returns>
 		public static XFG.Blend Convert( SceneBlendFactor factor )
 		{
-			XFG.Blend d3dBlend = 0;
+			XFG.Blend xnaBlend = 0;
 
 			switch ( factor )
 			{
 				case SceneBlendFactor.One:
-					d3dBlend = XFG.Blend.One;
+					xnaBlend = XFG.Blend.One;
 					break;
 				case SceneBlendFactor.Zero:
-					d3dBlend = XFG.Blend.Zero;
+					xnaBlend = XFG.Blend.Zero;
 					break;
 				case SceneBlendFactor.DestColor:
-					d3dBlend = XFG.Blend.DestinationColor;
+					xnaBlend = XFG.Blend.DestinationColor;
 					break;
 				case SceneBlendFactor.SourceColor:
-					d3dBlend = XFG.Blend.SourceColor;
+					xnaBlend = XFG.Blend.SourceColor;
 					break;
 				case SceneBlendFactor.OneMinusDestColor:
-					d3dBlend = XFG.Blend.InverseDestinationColor;
+					xnaBlend = XFG.Blend.InverseDestinationColor;
 					break;
 				case SceneBlendFactor.OneMinusSourceColor:
-					d3dBlend = XFG.Blend.InverseSourceColor;
+					xnaBlend = XFG.Blend.InverseSourceColor;
 					break;
 				case SceneBlendFactor.DestAlpha:
-					d3dBlend = XFG.Blend.DestinationAlpha;
+					xnaBlend = XFG.Blend.DestinationAlpha;
 					break;
 				case SceneBlendFactor.SourceAlpha:
-					d3dBlend = XFG.Blend.SourceAlpha;
+					xnaBlend = XFG.Blend.SourceAlpha;
 					break;
 				case SceneBlendFactor.OneMinusDestAlpha:
-					d3dBlend = XFG.Blend.InverseDestinationAlpha;
+					xnaBlend = XFG.Blend.InverseDestinationAlpha;
 					break;
 				case SceneBlendFactor.OneMinusSourceAlpha:
-					d3dBlend = XFG.Blend.InverseSourceAlpha;
+					xnaBlend = XFG.Blend.InverseSourceAlpha;
 					break;
 			}
 
-			return d3dBlend;
+			return xnaBlend;
 		}
 
 		public static XFG.ShaderProfile Convert( string shaderVersion )
@@ -441,13 +476,13 @@ namespace Axiom.RenderSystems.Xna
 			// if (tex)
 			//   return XFG.Graphics.VertexElementFormat.Unused;
 
-			// we only need to worry about a few types with D3D
+			// we only need to worry about a few types with Xna
 			switch ( type )
 			{
 				case VertexElementType.Color:
 					return XFG.VertexElementFormat.Color;
 
-				//case VertexElementType..Float1:
+				//case VertexElementType.Float1:
 				//   return XFG.VertexElementFormat.Float1;
 
 				case VertexElementType.Float2:
@@ -516,20 +551,19 @@ namespace Axiom.RenderSystems.Xna
 
 		public static XFG.BufferUsage Convert( BufferUsage usage )
 		{
-			XFG.BufferUsage d3dUsage = 0;
-			/*
+			XFG.BufferUsage xnaUsage = 0;
 			if ( usage == BufferUsage.Dynamic ||
-				usage == BufferUsage.DynamicWriteOnly )
+				 usage == BufferUsage.DynamicWriteOnly )
 
-				d3dUsage |= XFG.BufferUsage.WriteOnly;
-             
+				xnaUsage |= XFG.BufferUsage.WriteOnly;
+
 			if ( usage == BufferUsage.WriteOnly ||
-				usage == BufferUsage.StaticWriteOnly ||
-				usage == BufferUsage.DynamicWriteOnly )
-				*/
-			d3dUsage |= XFG.BufferUsage.WriteOnly;
+				 usage == BufferUsage.StaticWriteOnly ||
+				 usage == BufferUsage.DynamicWriteOnly )
 
-			return d3dUsage;
+				xnaUsage |= XFG.BufferUsage.WriteOnly;
+
+			return xnaUsage;
 		}
 
 		/// <summary>
@@ -633,7 +667,7 @@ namespace Axiom.RenderSystems.Xna
 
 		public static XFG.TextureAddressMode Convert( TextureAddressing type )
 		{
-			// convert from ours to D3D
+			// convert from ours to Xna
 			switch ( type )
 			{
 				case TextureAddressing.Wrap:
@@ -789,15 +823,15 @@ namespace Axiom.RenderSystems.Xna
 		}
 
 		/// <summary>
-		///    Checks D3D matrix to see if it an identity matrix.
+		///    Checks Xna matrix to see if it an identity matrix.
 		/// </summary>
 		/// <remarks>
-		///    For whatever reason, the equality operator overloads for the D3D Matrix
+		///    For whatever reason, the equality operator overloads for the Xna Matrix
 		///    struct are extremely slow....
 		/// </remarks>
 		/// <param name="matrix"></param>
 		/// <returns></returns>
-		public static bool IsIdentity( ref XNA.Matrix matrix )
+		public static bool IsIdentity( XNA.Matrix matrix )
 		{
 			if ( matrix.M11 == 1.0f &&
 				matrix.M12 == 0.0f &&

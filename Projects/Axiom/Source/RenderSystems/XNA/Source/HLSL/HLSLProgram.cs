@@ -157,7 +157,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
             for ( int i = 0; i < constantTable.Constants.Count; i++ )
             {
                 // Recursively descend through the structure levels
-                // Since D3D9 has no nice 'leaf' method like Cg (sigh)
+                // Since Xna has no nice 'leaf' method like Cg (sigh)
                 ProcessParamElement( new XFG.CompiledEffect(), "", i, parms );
             }
         }

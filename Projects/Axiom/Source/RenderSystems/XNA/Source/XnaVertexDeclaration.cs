@@ -51,9 +51,9 @@ namespace Axiom.RenderSystems.Xna
 	{
 		#region Member variables
 
-		protected XFG.GraphicsDevice device;
-		protected XFG.VertexDeclaration d3dVertexDecl;
-		protected bool needsRebuild;
+		private XFG.GraphicsDevice _device;
+		private XFG.VertexDeclaration _xnaVertexDecl;
+		private bool needsRebuild;
 
 		#endregion
 
@@ -61,7 +61,7 @@ namespace Axiom.RenderSystems.Xna
 
 		public XnaVertexDeclaration( XFG.GraphicsDevice device )
 		{
-			this.device = device;
+			this._device = device;
 		}
 
 		#endregion
@@ -116,19 +116,18 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		/// 
 		/// </summary>
-		/// DOC
-		public XFG.VertexDeclaration D3DVertexDecl
+		public XFG.VertexDeclaration XnaVertexDecl
 		{
 			get
 			{
 				// rebuild declaration if things have changed
 				if ( needsRebuild )
 				{
-					if ( d3dVertexDecl != null )
-						d3dVertexDecl.Dispose();
+					if ( _xnaVertexDecl != null )
+						_xnaVertexDecl.Dispose();
 
 					// create elements array
-					XFG.VertexElement[] d3dElements = new XFG.VertexElement[ elements.Count ];
+					XFG.VertexElement[] xnaElements = new XFG.VertexElement[ elements.Count ];
 
 					// loop through and configure each element for D3D
 					for ( int i = 0; i < elements.Count; i++ )
@@ -137,28 +136,28 @@ namespace Axiom.RenderSystems.Xna
 							(Axiom.Graphics.VertexElement)elements[ i ];
 
 
-						d3dElements[ i ].VertexElementMethod = XFG.VertexElementMethod.Default;
+						xnaElements[ i ].VertexElementMethod = XFG.VertexElementMethod.Default;
 
-						d3dElements[ i ].Offset = (short)element.Offset;
-						d3dElements[ i ].Stream = (short)element.Source;
+						xnaElements[ i ].Offset = (short)element.Offset;
+						xnaElements[ i ].Stream = (short)element.Source;
 
-						d3dElements[ i ].VertexElementFormat = XnaHelper.Convert( element.Type, true );
+						xnaElements[ i ].VertexElementFormat = XnaHelper.Convert( element.Type, true );
 
-						d3dElements[ i ].VertexElementUsage = XnaHelper.Convert( element.Semantic );
+						xnaElements[ i ].VertexElementUsage = XnaHelper.Convert( element.Semantic );
 
 						// set usage index explicitly for diffuse and specular, use index for the rest (i.e. texture coord sets)
 						switch ( element.Semantic )
 						{
 							case VertexElementSemantic.Diffuse:
-								d3dElements[ i ].UsageIndex = 0;
+								xnaElements[ i ].UsageIndex = 0;
 								break;
 
 							case VertexElementSemantic.Specular:
-								d3dElements[ i ].UsageIndex = 1;
+								xnaElements[ i ].UsageIndex = 1;
 								break;
 
 							default:
-								d3dElements[ i ].UsageIndex = (byte)element.Index;
+								xnaElements[ i ].UsageIndex = (byte)element.Index;
 								break;
 						} //  switch
 
@@ -166,14 +165,14 @@ namespace Axiom.RenderSystems.Xna
 
 					// create the new declaration
 
-					d3dVertexDecl = new XFG.VertexDeclaration( device, d3dElements );
+					_xnaVertexDecl = new XFG.VertexDeclaration( _device, xnaElements );
 
 
 					// reset the flag
 					needsRebuild = false;
 				}
 
-				return d3dVertexDecl;
+				return _xnaVertexDecl;
 			}
 		}
 

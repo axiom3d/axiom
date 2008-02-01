@@ -78,14 +78,14 @@ namespace Axiom.RenderSystems.Xna
         {
             switch ( attribute )
             {
-                case "D3DZBUFFER":
+                case "XNAZBUFFER":
                     return privateTex.getDepthStencil();
                     
-                case "D3DBACKBUFFER":
+                case "XNABACKBUFFER":
                     return privateTex.renderTarget;
             }
 
-            return new NotSupportedException( "There is no D3D RenderWindow custom attribute named " + attribute );
+            return new NotSupportedException( "There is no Xna RenderTexture custom attribute named " + attribute );
 
         }
 

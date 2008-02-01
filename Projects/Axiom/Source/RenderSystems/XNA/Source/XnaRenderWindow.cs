@@ -51,7 +51,7 @@ namespace Axiom.RenderSystems.Xna
 	/// <summary>
 	/// The Xna implementation of the RenderWindow class.
 	/// </summary>
-	public class XnaWindow : RenderWindow
+	public class XnaRenderWindow : RenderWindow
 	{
 		#region Fields
 
@@ -66,7 +66,7 @@ namespace Axiom.RenderSystems.Xna
 
 		#region Constructor
 
-		public XnaWindow()
+		public XnaRenderWindow()
 		{
 
 
@@ -189,13 +189,13 @@ namespace Axiom.RenderSystems.Xna
 		{
 			switch ( attribute )
 			{
-				case "D3DDEVICE":
+				case "XNADEVICE":
 					return device;
 
-				case "D3DZBUFFER":
+				case "XNAZBUFFER":
 					return stencilBuffer;
 
-				case "D3DBACKBUFFER":
+				case "XNABACKBUFFER":
 					// CMH - 4/24/2004 - Start
 
 					// if we're in windowed mode, we want to get our own backbuffer.
@@ -210,7 +210,7 @@ namespace Axiom.RenderSystems.Xna
 				// CMH - End
 			}
 
-			return new NotSupportedException( "There is no D3D RenderWindow custom attribute named " + attribute );
+			return new NotSupportedException( "There is no Xna RenderWindow custom attribute named " + attribute );
 		}
 
 		/// <summary>

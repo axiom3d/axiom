@@ -1,3 +1,5 @@
+//#define USE_BASICEFFECT
+
 #region LGPL License
 /*
 Axiom Graphics Engine Library
@@ -33,12 +35,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
 using Axiom.Graphics;
+using Axiom.RenderSystems.Xna.HLSL;
 
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
-using Axiom.RenderSystems.Xna.HLSL;
-using System;
 
 #endregion Namespace Declarations
 
@@ -128,7 +131,11 @@ namespace Axiom.RenderSystems.Xna
 
 		private static XnaRenderSystem _rs;
 		private static XFG.GraphicsDevice _device;
+		private static bool _initialized;
 
+#if USE_BASICEFFECT
+		private static Microsoft.Xna.Framework.Graphics.BasicEffect _effect;
+#else
 		private static HLSLProgram _defaultVSPosition;
 		private static HLSLProgram _defaultVSPositionTexture;
 		private static HLSLProgram _defaultVSPositionColor;
@@ -143,8 +150,8 @@ namespace Axiom.RenderSystems.Xna
 
 		private static bool _unBindVS;
 		private static bool _unBindFS;
+#endif
 
-		private static bool _initialized;
 
 		#endregion Fields & Properties
 			
@@ -162,6 +169,9 @@ namespace Axiom.RenderSystems.Xna
 					_rs = rs;
 					_device = device;
 
+#if USE_BASICEFFECT
+					_effect = new Microsoft.Xna.Framework.Graphics.BasicEffect( _device, null );
+#else
 					#region defaultVSPosition
 					_defaultVSPosition = (HLSLProgram)HighLevelGpuProgramManager.Instance.CreateProgram( "_defaultVSPosition", "hlsl", GpuProgramType.Vertex );
 					_defaultVSPosition.Source = "struct VS_INPUT { float4 Pos : POSITION0; };" +
@@ -234,17 +244,34 @@ namespace Axiom.RenderSystems.Xna
 					_defaultVPParamters = _defaultVSPositionNormalColor.CreateParameters();
 					_defaultVPParamters.TransposeMatrices = true;
 					_defaultVPParamters.AutoAddParamName = true;
-
+#endif
 					_initialized = true;
 				}
 			}
 		}
 
-		public bool BeginEmulation( RenderOperation op )
+		public bool Begin( RenderOperation op )
 		{
 			// Need both Begin Emulate will return true if either are not present
 			bool emulationNeeded = ( _device.VertexShader == null || _device.PixelShader == null );
 
+#if USE_BASICEFFECT
+			_effect.Alpha = 1.0f;
+			_effect.World = XnaHelper.Convert( _rs.WorldMatrix );
+			_effect.View = XnaHelper.Convert( _rs.ViewMatrix );
+			_effect.Projection = XnaHelper.Convert( _rs.ProjectionMatrix );
+			_effect.AmbientLightColor = XnaHelper.Convert( _rs.AmbientLight ).ToVector3();
+
+
+			_effect.EnableDefaultLighting();
+			_effect.PreferPerPixelLighting = true;
+			_effect.VertexColorEnabled = true;
+			_effect.LightingEnabled = _rs.LightingEnabled;
+			_effect.TextureEnabled = true;
+
+			_effect.CommitChanges();
+			_effect.Begin();
+#else
 			bool bindTextureDefault = true;
 			bool bindTextureAndColorDefault = false;
 
@@ -325,7 +352,6 @@ namespace Axiom.RenderSystems.Xna
 				_defaultVPParamters.SetNamedConstant( "Projection", _rs.ProjectionMatrix );
 
 				_rs.BindGpuProgramParameters( GpuProgramType.Vertex, _defaultVPParamters );
-
 			}
 
 			if ( _device.PixelShader == null )
@@ -347,12 +373,15 @@ namespace Axiom.RenderSystems.Xna
 				if ( ( _device.PixelShader == null ) && ( _unBindFS == false ) )
 					throw new Exception( "Xna Render System requires a pixel shader, and can't find a suitable default." );
 			}
-
+#endif
 			return emulationNeeded;
 		}
 
-		public void EndEmulation()
+		public void End()
 		{
+#if USE_BASICEFFECT
+			_effect.End();
+#else
 			if ( _unBindVS )
 			{
 				_rs.UnbindGpuProgram( GpuProgramType.Vertex );
@@ -364,6 +393,41 @@ namespace Axiom.RenderSystems.Xna
 				_rs.UnbindGpuProgram( GpuProgramType.Fragment );
 				_unBindFS = false;
 			}
+#endif
+		}
+
+		internal void DrawIndexedPrimitives( XFG.PrimitiveType primType, int vertexStart, int vertexCount, int indexStart, int indexCount, int primCount )
+		{
+#if USE_BASICEFFECT
+			foreach ( Microsoft.Xna.Framework.Graphics.EffectTechnique tech in _effect.Techniques )
+			{
+				foreach ( Microsoft.Xna.Framework.Graphics.EffectPass pass in tech.Passes )
+				{
+					pass.Begin();
+					_device.DrawIndexedPrimitives( primType, vertexStart, vertexCount, indexStart, indexCount, primCount );
+					pass.End();
+				}
+			}
+#else
+			_device.DrawIndexedPrimitives( primType, vertexStart, vertexCount, indexStart, indexCount, primCount );
+#endif
+		}
+
+		internal void DrawPrimitives( XFG.PrimitiveType primType, int vertexStart, int primCount )
+		{
+#if USE_BASICEFFECT
+			foreach ( Microsoft.Xna.Framework.Graphics.EffectTechnique tech in _effect.Techniques )
+			{
+				foreach ( Microsoft.Xna.Framework.Graphics.EffectPass pass in tech.Passes )
+				{
+					pass.Begin();
+					_device.DrawPrimitives( primType, vertexStart, primCount );
+					pass.End();
+				}
+			}
+#else
+			_device.DrawPrimitives( primType, vertexStart, primCount );
+#endif
 		}
 	}
 }
