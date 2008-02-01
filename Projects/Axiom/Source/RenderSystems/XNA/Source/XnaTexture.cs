@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
-//     <id value="$Id: D3DTexture.cs 884 2006-09-14 06:32:07Z borrillis $"/>
+//     <id value="$Id: XnaTexture.cs 884 2006-09-14 06:32:07Z borrillis $"/>
 // </file>
 #endregion SVN Version Information
 
@@ -217,7 +217,7 @@ namespace Axiom.RenderSystems.Xna
             }
 
             // log a quick message
-            LogManager.Instance.Write( "D3DTexture: Loading {0} with {1} mipmaps from an Image.", name, numMipMaps );
+            LogManager.Instance.Write( "XnaTexture: Loading {0} with {1} mipmaps from an Image.", name, numMipMaps );
 
             // create a render texture if need be
             if ( usage == TextureUsage.RenderTarget )

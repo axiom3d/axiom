@@ -114,8 +114,7 @@ namespace Axiom.RenderSystems.Xna
 			while ( e.MoveNext() )
 			{
 				DictionaryEntry entry = (DictionaryEntry)e.Current;
-				XnaHardwareVertexBuffer buffer =
-					(XnaHardwareVertexBuffer)entry.Value;
+				XnaHardwareVertexBuffer buffer = (XnaHardwareVertexBuffer)entry.Value;
 
 				short stream = (short)entry.Key;
 
@@ -172,31 +171,6 @@ namespace Axiom.RenderSystems.Xna
 			ConfigOptions.Add( optFPUMode );
 		}
 
-		private XNA.Matrix _makeXnaMatrix( Axiom.Math.Matrix4 matrix )
-		{
-			XNA.Matrix xnaMat = new XNA.Matrix();
-
-			// set it to a transposed matrix since Xna uses row vectors
-			xnaMat.M11 = matrix.m00;
-			xnaMat.M12 = matrix.m10;
-			xnaMat.M13 = matrix.m20;
-			xnaMat.M14 = matrix.m30;
-			xnaMat.M21 = matrix.m01;
-			xnaMat.M22 = matrix.m11;
-			xnaMat.M23 = matrix.m21;
-			xnaMat.M24 = matrix.m31;
-			xnaMat.M31 = matrix.m02;
-			xnaMat.M32 = matrix.m12;
-			xnaMat.M33 = matrix.m22;
-			xnaMat.M34 = matrix.m32;
-			xnaMat.M41 = matrix.m03;
-			xnaMat.M42 = matrix.m13;
-			xnaMat.M43 = matrix.m23;
-			xnaMat.M44 = matrix.m33;
-
-			return xnaMat;
-		}
-
 		private DefaultForm _createDefaultForm( string windowTitle, int top, int left, int width, int height, bool fullScreen )
 		{
 			DefaultForm form = new DefaultForm();
@@ -233,7 +207,7 @@ namespace Axiom.RenderSystems.Xna
 			caps.TextureUnitCount = _capabilities.MaxSimultaneousTextures;
 
 			// max active lights
-			//caps.MaxLights = d3dCaps..MaxActiveLights;
+			caps.MaxLights = 8;
 
 			XFG.DepthStencilBuffer surface = device.DepthStencilBuffer;
 			//XNA.TextureInformation surfaceDesc = surface.Description;
@@ -275,7 +249,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 
 			// Texture Compression
-			// We always support compression, D3DX will decompress if device does not support
+			// We always support compression, Xna will decompress if device does not support
 			caps.SetCap( Capabilities.TextureCompression );
 			caps.SetCap( Capabilities.TextureCompressionDXT );
 
@@ -518,15 +492,16 @@ namespace Axiom.RenderSystems.Xna
 
 		#region Properties
 
+		private ColorEx _ambientLight;
 		public override ColorEx AmbientLight
 		{
 			get
 			{
-				throw new Exception( "The method or operation is not implemented." );
+				return _ambientLight;
 			}
 			set
 			{
-				//_effect.AmbientLightColor = new XNA.Vector4( value.r * 255, value.g * 255, value.b * 255, 0 );
+				_ambientLight = value;
 			}
 		}
 
@@ -596,23 +571,24 @@ namespace Axiom.RenderSystems.Xna
 
 		public override float HorizontalTexelOffset
 		{
-			// D3D considers the origin to be in the center of a pixel
+			// Xna considers the origin to be in the center of a pixel
 			get
 			{
 				return -0.5f;
 			}
 		}
 
+		private bool _lightingEnabled;
 		public override bool LightingEnabled
 		{
 			get
 			{
-				throw new Exception( "The method or operation is not implemented." );
+				return _lightingEnabled;
 			}
 			set
 			{
 
-				//effect.LightingEnabled = value; // throw new Exception("The method or operation is not implemented.");
+				_lightingEnabled = value;
 			}
 		}
 
@@ -639,7 +615,7 @@ namespace Axiom.RenderSystems.Xna
 			{
 				_projectionMatrix = value;
 
-				XNA.Matrix mat = _makeXnaMatrix( value );
+				XNA.Matrix mat = XnaHelper.Convert( value );
 
 				if ( activeRenderTarget.RequiresTextureFlipping )
 				{
@@ -705,7 +681,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			get
 			{
-				// D3D considers the origin to be in the center of a pixel
+				// Xna considers the origin to be in the center of a pixel
 				return -0.5f;
 			}
 		}
@@ -947,7 +923,7 @@ namespace Axiom.RenderSystems.Xna
 
 			}
 
-			RenderWindow window = new XnaWindow();
+			RenderWindow window = new XnaRenderWindow();
 
 			window.Handle = target;
 
@@ -966,9 +942,6 @@ namespace Axiom.RenderSystems.Xna
 			{
 				return _device;
 			}
-
-			// we don't care about event handlers
-			//D3D.Device.IsUsingEventHandlers = false;
 
 			XFG.GraphicsDevice newDevice;
 
@@ -1010,22 +983,22 @@ namespace Axiom.RenderSystems.Xna
 			{
 				// check for 24 bit Z buffer with 8 bit stencil (optimal choice)
 				if ( !XFG.GraphicsAdapter.DefaultAdapter.CheckDeviceFormat(
-							 XFG.DeviceType.Hardware,
-							 presentParams.BackBufferFormat,
-							 XFG.TextureUsage.None,
-							 XFG.QueryUsages.None,
-							 XFG.ResourceType.DepthStencilBuffer,
-							 XFG.DepthFormat.Depth24Stencil8 ) )
+					 XFG.DeviceType.Hardware,
+					 presentParams.BackBufferFormat,
+					 XFG.TextureUsage.None,
+					 XFG.QueryUsages.None,
+					 XFG.ResourceType.DepthStencilBuffer,
+					 XFG.DepthFormat.Depth24Stencil8 ) )
 				{
 					// doh, check for 32 bit Z buffer then
 
 					if ( !XFG.GraphicsAdapter.DefaultAdapter.CheckDeviceFormat(
-					XFG.DeviceType.Hardware,
-					presentParams.BackBufferFormat,
-					XFG.TextureUsage.None,
-					XFG.QueryUsages.None,
-					XFG.ResourceType.DepthStencilBuffer,
-					XFG.DepthFormat.Depth32 ) )
+						 XFG.DeviceType.Hardware,
+						 presentParams.BackBufferFormat,
+						 XFG.TextureUsage.None,
+						 XFG.QueryUsages.None,
+						 XFG.ResourceType.DepthStencilBuffer,
+						 XFG.DepthFormat.Depth32 ) )
 					{
 						// float doh, just use 16 bit Z buffer
 						presentParams.AutoDepthStencilFormat = XFG.DepthFormat.Depth16;
@@ -1063,14 +1036,12 @@ namespace Axiom.RenderSystems.Xna
 			try
 			{
 				// hardware vertex processing
-				newDevice = new XFG.GraphicsDevice
-					(
-						XFG.GraphicsAdapter.DefaultAdapter,
-						XFG.DeviceType.Hardware,
-						target.Handle,
-					//XNA.CreateOptions.HardwareVertexProcessing,
-						presentParams );
-				//   D3D.Device(0, D3D.DeviceType.Hardware, target, D3D.CreateFlags.HardwareVertexProcessing, presentParams);
+				newDevice = new XFG.GraphicsDevice (
+													 XFG.GraphicsAdapter.DefaultAdapter,
+													 XFG.DeviceType.Hardware,
+													 target.Handle,
+													 presentParams 
+													);
 			}
 			catch ( Exception )
 			{
@@ -1078,22 +1049,22 @@ namespace Axiom.RenderSystems.Xna
 				{
 					// doh, how bout mixed vertex processing
 					newDevice = new XFG.GraphicsDevice(
-						XFG.GraphicsAdapter.DefaultAdapter,
-						XFG.DeviceType.Hardware,
-						target.Handle,
-						//XNA.CreateOptions.MixedVertexProcessing,
-						presentParams );
+														XFG.GraphicsAdapter.DefaultAdapter,
+														XFG.DeviceType.Hardware,
+														target.Handle,
+														presentParams 
+													   );
 				}
 				catch ( XFG.DeviceNotSupportedException )
 				{
 					// what the...ok, how bout software vertex procssing.  if this fails, then I don't even know how they are seeing
 					// anything at all since they obviously don't have a video card installed
 					newDevice = new XFG.GraphicsDevice(
-						XFG.GraphicsAdapter.DefaultAdapter,
-						XFG.DeviceType.Hardware,
-						target.Handle,
-						// XNA.CreateOptions.SoftwareVertexProcessing,
-						presentParams );
+														XFG.GraphicsAdapter.DefaultAdapter,
+														XFG.DeviceType.Hardware,
+														target.Handle,
+														presentParams 
+													   );
 				}
 			}
 
@@ -1122,7 +1093,7 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void EndFrame()
 		{
-			// end the D3D scene
+			// end the scene
 			//device.EndScene();
 		}
 
@@ -1251,13 +1222,12 @@ namespace Axiom.RenderSystems.Xna
 			// class base implementation first
 			base.Render( op );
 
-			_ffEmulator.BeginEmulation( op );
+			_ffEmulator.Begin( op );
 
-			XnaVertexDeclaration d3dVertDecl = (XnaVertexDeclaration)op.vertexData.vertexDeclaration;
+			XnaVertexDeclaration vertDecl = (XnaVertexDeclaration)op.vertexData.vertexDeclaration;
 
 			// set the vertex declaration and buffer binding
-			//SetVertexDeclaration( op.vertexData.vertexDeclaration );
-			_device.VertexDeclaration = d3dVertDecl.D3DVertexDecl;
+			_device.VertexDeclaration = vertDecl.XnaVertexDecl;
 			_setVertexBufferBinding( op.vertexData.vertexBufferBinding );
 
 			XFG.PrimitiveType primType = 0;
@@ -1296,16 +1266,16 @@ namespace Axiom.RenderSystems.Xna
 				XnaHardwareIndexBuffer idxBuffer = (XnaHardwareIndexBuffer)op.indexData.indexBuffer;
 				_device.Indices = idxBuffer.XnaIndexBuffer;
 
-				_device.DrawIndexedPrimitives( primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount, op.indexData.indexStart, primCount );
+				_ffEmulator.DrawIndexedPrimitives( primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount, op.indexData.indexStart, primCount );
 
 			}
 			else
 			{
 				// draw vertices without indices
-				_device.DrawPrimitives( primType, op.vertexData.vertexStart, primCount );
+				_ffEmulator.DrawPrimitives( primType, op.vertexData.vertexStart, primCount );
 			}
 
-			_ffEmulator.EndEmulation();
+			_ffEmulator.End();
 			//crap hack, set the sources back to null to allow accessing vertices and indices buffers
 			_device.Vertices[ 0 ].SetSource( null, 0, 0 );
 			_device.Vertices[ 1 ].SetSource( null, 0, 0 );
@@ -1461,7 +1431,6 @@ namespace Axiom.RenderSystems.Xna
 		{
 			//TODO, seems to work
 			XnaTexture texture = (XnaTexture)TextureManager.Instance.GetByName( textureName );
-			//texture.NormalTexture.Save("text.jpg", ImageFileFormat.Jpg);
 			if ( enabled && texture != null )
 			{
 				//  modelTextureParameter.SetValue(texture.DXTexture);   
@@ -1493,18 +1462,18 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void SetTextureAddressingMode( int stage, TextureAddressing texAddressingMode )
 		{
-			XFG.TextureAddressMode d3dMode = XnaHelper.Convert( texAddressingMode );
+			XFG.TextureAddressMode xnaMode = XnaHelper.Convert( texAddressingMode );
 
 			// set the device sampler states accordingly
-			_device.SamplerStates[ stage ].AddressU = d3dMode;
-			_device.SamplerStates[ stage ].AddressV = d3dMode;
-			_device.SamplerStates[ stage ].AddressW = d3dMode;
+			_device.SamplerStates[ stage ].AddressU = xnaMode;
+			_device.SamplerStates[ stage ].AddressV = xnaMode;
+			_device.SamplerStates[ stage ].AddressW = xnaMode;
 
 		}
 
 		public override void SetTextureBlendMode( int stage, LayerBlendModeEx blendMode )
 		{
-			XFG.BlendFunction d3dTexOp = XnaHelper.Convert( blendMode.operation );
+			XFG.BlendFunction xnaTexOp = XnaHelper.Convert( blendMode.operation );
 
 			// TODO: Verify byte ordering
 			if ( blendMode.operation == LayerBlendOperationEx.BlendManual )
@@ -1516,29 +1485,29 @@ namespace Axiom.RenderSystems.Xna
 			if ( blendMode.blendType == LayerBlendType.Color )
 			{
 				// Make call to set operation
-				_device.RenderState.BlendFunction = d3dTexOp;
+				_device.RenderState.BlendFunction = xnaTexOp;
 			}
 			else if ( blendMode.blendType == LayerBlendType.Alpha )
 			{
 				// Make call to set operation
-				_device.RenderState.AlphaBlendOperation = d3dTexOp;
+				_device.RenderState.AlphaBlendOperation = xnaTexOp;
 				//  device.RenderState.AlphaFunction= d3dTexOp;
 			}
 
 			// Now set up sources
-			System.Drawing.Color factor = System.Drawing.Color.FromArgb( _device.RenderState.BlendFactor.A,
-																			_device.RenderState.BlendFactor.R,
-																			_device.RenderState.BlendFactor.G,
-																			_device.RenderState.BlendFactor.B );
-			ColorEx manualD3D = ColorEx.FromColor( factor );
+			XFG.Color factor = new XFG.Color( _device.RenderState.BlendFactor.A,
+											  _device.RenderState.BlendFactor.R,
+											  _device.RenderState.BlendFactor.G,
+											  _device.RenderState.BlendFactor.B );
+			ColorEx manual = XnaHelper.Convert( factor );
 
 			if ( blendMode.blendType == LayerBlendType.Color )
 			{
-				manualD3D = new ColorEx( manualD3D.a, blendMode.colorArg1.r, blendMode.colorArg1.g, blendMode.colorArg1.b );
+				manual = new ColorEx( manual.a, blendMode.colorArg1.r, blendMode.colorArg1.g, blendMode.colorArg1.b );
 			}
 			else if ( blendMode.blendType == LayerBlendType.Alpha )
 			{
-				manualD3D = new ColorEx( blendMode.alphaArg1, manualD3D.r, manualD3D.g, manualD3D.b );
+				manual = new ColorEx( blendMode.alphaArg1, manual.r, manual.g, manual.b );
 			}
 
 			LayerBlendSource blendSource = blendMode.source1;
@@ -1599,11 +1568,6 @@ namespace Axiom.RenderSystems.Xna
 			// save this for texture matrix calcs later
 			texStageDesc[ stage ].autoTexCoordType = method;
 			texStageDesc[ stage ].frustum = frustum;
-
-
-
-			//(TextureWrapCoordinates)(D3DHelper.ConvertEnum(method, d3dCaps) | texStageDesc[stage].coordIndex);
-
 			//.TextureState[stage].TextureCoordinateIndex 
 		}
 
@@ -1792,6 +1756,7 @@ namespace Axiom.RenderSystems.Xna
 					break;
 			}
 		}
+
 		XFG.DepthStencilBuffer oriDSB;
 		public override void SetViewport( Axiom.Core.Viewport viewport )
 		{
@@ -1807,11 +1772,11 @@ namespace Axiom.RenderSystems.Xna
 					oriDSB = _device.DepthStencilBuffer;
 				}
 				// get the back buffer surface for this viewport          
-				XFG.RenderTarget2D back = (XFG.RenderTarget2D)activeRenderTarget.GetCustomAttribute( "D3DBACKBUFFER" );
+				XFG.RenderTarget2D back = (XFG.RenderTarget2D)activeRenderTarget.GetCustomAttribute( "XNABACKBUFFER" );
 
 				_device.SetRenderTarget( 0, back );
 
-				XFG.DepthStencilBuffer depth = (XFG.DepthStencilBuffer)activeRenderTarget.GetCustomAttribute( "D3DZBUFFER" );
+				XFG.DepthStencilBuffer depth = (XFG.DepthStencilBuffer)activeRenderTarget.GetCustomAttribute( "XNAZBUFFER" );
 
 				// set the render target and depth stencil for the surfaces beloning to the viewport
 				//dont know why the depthstencil buffer is disposing itself, have to keep it
@@ -1825,20 +1790,20 @@ namespace Axiom.RenderSystems.Xna
 				// that may need inverted vertex winding or texture flipping
 				this.CullingMode = cullingMode;
 
-				XFG.Viewport d3dvp = new XFG.Viewport();
+				XFG.Viewport xnavp = new XFG.Viewport();
 
 				// set viewport dimensions
-				d3dvp.X = viewport.ActualLeft;
-				d3dvp.Y = viewport.ActualTop;
-				d3dvp.Width = viewport.ActualWidth;
-				d3dvp.Height = viewport.ActualHeight;
+				xnavp.X = viewport.ActualLeft;
+				xnavp.Y = viewport.ActualTop;
+				xnavp.Width = viewport.ActualWidth;
+				xnavp.Height = viewport.ActualHeight;
 
 				// Z-values from 0.0 to 1.0 (TODO: standardize with OpenGL)
-				d3dvp.MinDepth = 0.0f;
-				d3dvp.MaxDepth = 1.0f;
+				xnavp.MinDepth = 0.0f;
+				xnavp.MaxDepth = 1.0f;
 
 				// set the current D3D viewport
-				_device.Viewport = d3dvp;
+				_device.Viewport = xnavp;
 
 				// clear the updated flag
 				viewport.IsUpdated = false;

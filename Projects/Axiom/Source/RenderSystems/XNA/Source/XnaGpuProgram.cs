@@ -139,7 +139,7 @@ namespace Axiom.RenderSystems.Xna
 		}
 
 		/// <summary>
-		///     Loads a D3D shader from the assembler source.
+		///     Loads a Xna shader from the assembler source.
 		/// </summary>
 		protected override void LoadFromSource()
 		{

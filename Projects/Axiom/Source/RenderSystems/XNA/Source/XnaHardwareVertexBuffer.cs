@@ -106,7 +106,7 @@ namespace Axiom.RenderSystems.Xna
 		public override void UnlockImpl()
 		{
 			//there is no unlock/lock system on XNA, just copy the byte buffer into the video card memory
-			// d3dBuffer.SetData<byte>(bufferBytes);
+			// _buffer.SetData<byte>(bufferBytes);
 			//this is faster :)
 			_buffer.SetData<byte>( _offset, _bufferBytes, _offset, _length, 0 );
 		}
