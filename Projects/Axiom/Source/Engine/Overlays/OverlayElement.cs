@@ -329,7 +329,7 @@ namespace Axiom.Overlays
                 {
                     AttributeParserAttribute parserAtt = parserAtts[ j ];
 
-                    attribParsers.Add( parserAtt.Name, Delegate.CreateDelegate( typeof( AttributeParserMethod ), method ) );
+                    attribParsers.Add( parserAtt.Name, Delegate.CreateDelegate( typeof( AttributeParserMethod ), null, method ) );
                 } // for
             } // for
         }

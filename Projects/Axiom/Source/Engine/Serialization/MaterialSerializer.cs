@@ -515,7 +515,7 @@ namespace Axiom.Serialization
 
                     if ( parserList != null )
                     {
-                        parserList.Add( parserAtt.Name, Delegate.CreateDelegate( typeof( MaterialAttributeParserHandler ), method ) );
+                        parserList.Add( parserAtt.Name, Delegate.CreateDelegate( typeof( MaterialAttributeParserHandler ), null, method ) );
                     }
                 } // for
             } // for
