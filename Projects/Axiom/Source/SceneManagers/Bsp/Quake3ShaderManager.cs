@@ -34,10 +34,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
-using System.Diagnostics;
-using System.Collections.Specialized;
 
 using Axiom.Core;
 using Axiom.Graphics;
@@ -137,7 +137,7 @@ namespace Axiom.SceneManagers.Bsp
         public void ParseAllSources( string extension )
         {
             Stream chunk;
-            StringCollection shaderFiles = ResourceManager.GetAllCommonNamesLike( "", extension );
+            IList<String> shaderFiles = ResourceManager.GetAllCommonNamesLike( "", extension );
 
             for ( int i = 0; i < shaderFiles.Count; i++ )
             {

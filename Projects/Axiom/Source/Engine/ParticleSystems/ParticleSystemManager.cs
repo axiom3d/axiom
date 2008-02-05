@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -530,7 +530,7 @@ namespace Axiom.ParticleSystems
         /// </summary>
         private void ParseAllSources()
         {
-            StringCollection particleFiles = ResourceManager.GetAllCommonNamesLike( "", ".particle" );
+            IList<String> particleFiles = ResourceManager.GetAllCommonNamesLike( "", ".particle" );
 
             foreach ( string file in particleFiles )
             {
