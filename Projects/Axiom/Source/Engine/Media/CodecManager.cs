@@ -37,6 +37,7 @@ using System;
 using System.Collections;
 
 using Axiom.Core;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -91,7 +92,7 @@ namespace Axiom.Media
         /// <summary>
         ///    List of registered media codecs.
         /// </summary>
-        private Hashtable codecs = System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
+		private Dictionary<string, ICodec> codecs = new Dictionary<string, ICodec>( new CaseInsensitiveStringComparer() );
 
         #endregion Fields
 

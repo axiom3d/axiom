@@ -38,11 +38,29 @@ using System.Globalization;
 using System.Text;
 
 using Axiom.Math;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
+	internal class CaseInsensitiveStringComparer : IEqualityComparer<string>
+	{
+		#region IEqualityComparer<string> Members
+
+		public bool Equals( string x, string y )
+		{
+			return x.ToLowerInvariant() == y.ToLowerInvariant();
+		}
+
+		public int GetHashCode( string obj )
+		{
+			return obj.ToLowerInvariant().GetHashCode();
+		}
+
+		#endregion
+	}
+
     /// <summary>
     ///     Helper class for going back and forth between strings and various types.
     /// </summary>
