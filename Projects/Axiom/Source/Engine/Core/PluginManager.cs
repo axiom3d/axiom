@@ -234,33 +234,4 @@ namespace Axiom.Core
         #endregion IDiposable Implementation
     }
 
-    /// <summary>
-    /// The plugin configuration handler
-    /// </summary>
-    public class PluginConfigurationSectionHandler : IConfigurationSectionHandler
-    {
-
-        public object Create( object parent, object configContext, System.Xml.XmlNode section )
-        {
-            ArrayList plugins = new ArrayList();
-
-            // grab the plugin nodes
-            XmlNodeList pluginNodes = section.SelectNodes( "plugin" );
-
-            // loop through each plugin node and load the plugins
-            for ( int i = 0; i < pluginNodes.Count; i++ )
-            {
-                XmlNode pluginNode = pluginNodes[ i ];
-
-                // grab the attributes for loading these plugins
-                XmlAttribute assemblyAttribute = pluginNode.Attributes[ "assembly" ];
-                XmlAttribute classAttribute = pluginNode.Attributes[ "class" ];
-
-                plugins.Add( new ObjectCreator( assemblyAttribute.Value, classAttribute.Value ) );
-            }
-
-            return plugins;
-        }
-    }
-
 }
