@@ -34,6 +34,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 #endregion Namespace Declarations
 
@@ -55,7 +57,8 @@ namespace Axiom.Core
 
         #endregion Constructor
 
-        /// <summary>
+		#region Copy Method
+		/// <summary>
         ///		Method for copying data from one IntPtr to another.
         /// </summary>
         /// <param name="src">Source pointer.</param>
@@ -87,9 +90,10 @@ namespace Axiom.Core
                     pDest[ i + destOffset ] = pSrc[ i + srcOffset ];
                 }
             }
-        }
+		}
+		#endregion Copy Method
 
-        /// <summary>
+		/// <summary>
         ///     Sets the memory to 0 starting at the specified offset for the specified byte length.
         /// </summary>
         /// <param name="dest">Destination pointer.</param>
@@ -106,6 +110,26 @@ namespace Axiom.Core
                     ptr[ i + offset ] = 0;
                 }
             }
-        }
-    }
+		}
+
+		#region Pinned Object Access
+
+		private static Dictionary<object, GCHandle> _pinnedReferences = new Dictionary<object, GCHandle>();
+		public static IntPtr PinObject( object obj )
+		{
+			GCHandle handle;
+			if ( _pinnedReferences.ContainsKey( obj ) )
+			{
+				handle = _pinnedReferences[ obj ];
+			}
+			else
+			{
+				handle = GCHandle.Alloc( obj, GCHandleType.Pinned );
+				_pinnedReferences.Add( obj, handle );
+			}
+			return handle.AddrOfPinnedObject();
+		}
+
+		#endregion Pinned Object Access
+	}
 }
