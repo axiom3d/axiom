@@ -90,6 +90,26 @@ namespace Axiom.RenderSystems.DirectX9
             return driver;
         }
 
+		/// <summary>
+		///		Converts this instance to a <see cref="System.Drawing.Color"/> structure.
+		/// </summary>
+		/// <returns></returns>
+		public static System.Drawing.Color ToColor( ColorEx color )
+		{
+			return System.Drawing.Color.FromArgb( (int)( color.a * 255.0f ), (int)( color.r * 255.0f ), (int)( color.g * 255.0f ), (int)( color.b * 255.0f ) );
+		}
+
+		/// <summary>
+		///		Static method used to create a new <code>ColorEx</code> instance based
+		///		on an existing <see cref="System.Drawing.Color"/> structure.
+		/// </summary>
+		/// <param name="color">.Net color structure to use as a basis.</param>
+		/// <returns>A new <code>ColorEx instance.</code></returns>
+		public static ColorEx FromColor( System.Drawing.Color color )
+		{
+			return new ColorEx( (float)color.A / 255.0f, (float)color.R / 255.0f, (float)color.G / 255.0f, (float)color.B / 255.0f );
+		}
+
         /// <summary>
         /// 
         /// </summary>

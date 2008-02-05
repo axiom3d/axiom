@@ -144,7 +144,7 @@ namespace Axiom.RenderSystems.DirectX9
             }
             set
             {
-                device.RenderState.Ambient = value.ToColor();
+				device.RenderState.Ambient = D3DHelper.ToColor( value );
             }
         }
 
@@ -560,7 +560,7 @@ namespace Axiom.RenderSystems.DirectX9
                 device.RenderState.FogEnable = true;
                 device.RenderState.FogVertexMode = d3dFogMode;
                 device.RenderState.FogTableMode = D3D.FogMode.None;
-                device.RenderState.FogColor = color.ToColor();
+				device.RenderState.FogColor = D3DHelper.ToColor( color );
                 device.RenderState.FogStart = start;
                 device.RenderState.FogEnd = end;
                 device.RenderState.FogDensity = density;
@@ -1360,8 +1360,8 @@ namespace Axiom.RenderSystems.DirectX9
                 } // switch
 
                 // light colors
-                device.Lights[ index ].Diffuse = light.Diffuse.ToColor();
-                device.Lights[ index ].Specular = light.Specular.ToColor();
+                device.Lights[ index ].Diffuse = D3DHelper.ToColor( light.Diffuse );
+                device.Lights[ index ].Specular = D3DHelper.ToColor( light.Specular );
 
                 Axiom.Math.Vector3 vec;
 
@@ -1578,10 +1578,10 @@ namespace Axiom.RenderSystems.DirectX9
 
             // create a new material based on the supplied params
             D3D.Material mat = new D3D.Material();
-            mat.Ambient = ambient.ToColor();
-            mat.Diffuse = diffuse.ToColor();
-            mat.Emissive = emissive.ToColor();
-            mat.Specular = specular.ToColor();
+            mat.Ambient = D3DHelper.ToColor( ambient );
+            mat.Diffuse = D3DHelper.ToColor( diffuse );
+            mat.Emissive = D3DHelper.ToColor( emissive );
+            mat.Specular = D3DHelper.ToColor( specular );
             mat.SpecularSharpness = shininess;
 
             // set the current material
@@ -1626,7 +1626,7 @@ namespace Axiom.RenderSystems.DirectX9
 
             // Now set up sources
             System.Drawing.Color factor = System.Drawing.Color.FromArgb( device.RenderState.TextureFactor );
-            ColorEx manualD3D = ColorEx.FromColor( factor );
+            ColorEx manualD3D = D3DHelper.FromColor( factor );
 
             if ( blendMode.blendType == LayerBlendType.Color )
             {
