@@ -700,7 +700,7 @@ namespace Axiom.ParticleSystems
         /// <param name="emitter"></param>
         private void ParseEmitterAttrib( string line, ParticleEmitter emitter )
         {
-            string[] values = line.Split( new char[] { ' ' }, 2 );
+            string[] values = StringConverter.Split( line, new char[] { ' ' }, 2 );
 
             if ( !( emitter.SetParam( values[ 0 ], values[ 1 ] ) ) )
             {
@@ -716,7 +716,7 @@ namespace Axiom.ParticleSystems
         /// <param name="affector"></param>
         private void ParseAffectorAttrib( string line, ParticleAffector affector )
         {
-            string[] values = line.Split( new char[] { ' ' }, 2 );
+			string[] values = StringConverter.Split( line, new char[] { ' ' }, 2 );
 
             if ( !( affector.SetParam( values[ 0 ], values[ 1 ] ) ) )
             {
