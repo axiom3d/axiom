@@ -58,7 +58,7 @@ namespace Axiom.Core
 
         public Assembly GetAssembly()
         {
-            string assemblyFile = Path.Combine( Environment.CurrentDirectory, assemblyName );
+            string assemblyFile = Path.Combine( System.IO.Directory.GetCurrentDirectory(), assemblyName );
 
             // load the requested assembly
             return Assembly.LoadFrom( assemblyFile );
