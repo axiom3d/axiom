@@ -114,7 +114,7 @@ namespace Axiom.Core
                     System.Diagnostics.Debug.WriteLine( String.Format( "Selected the PlatformManager contained in {0}.", file ) );
                 }
 
-                string path = Path.Combine( Environment.CurrentDirectory, file );
+				string path = Path.Combine( System.IO.Directory.GetCurrentDirectory(), file );
 
                 // TODO: AssemblyManager?
                 Assembly assembly = Assembly.LoadFile( path );
