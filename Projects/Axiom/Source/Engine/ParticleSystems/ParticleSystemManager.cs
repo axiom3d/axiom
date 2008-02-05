@@ -857,7 +857,7 @@ namespace Axiom.ParticleSystems
                     {
                         // this method should parse a material attribute
                         case PARTICLE:
-                            attribParsers.Add( parserAtt.Name, Delegate.CreateDelegate( typeof( ParticleSystemAttributeParser ), method ) );
+                            attribParsers.Add( parserAtt.Name, Delegate.CreateDelegate( typeof( ParticleSystemAttributeParser ), null, method ) );
                             break;
 
                     } // switch
