@@ -208,7 +208,7 @@ namespace Axiom.Core
             controlPoints.Clear();
             VertexElement elem = declaration.FindElementBySemantic( VertexElementSemantic.Position );
             int vertSize = declaration.GetVertexSize( 0 );
-            byte* pVert = (byte*)Marshal.UnsafeAddrOfPinnedArrayElement( controlPointBuffer, 0 );
+            byte* pVert = (byte*)(Memory.PinObject( controlPointBuffer ).ToPointer());
             float* pReal = null;
 
             for ( int i = 0; i < controlCount; i++ )
@@ -428,7 +428,7 @@ namespace Axiom.Core
             int uStep = 1 << uLevel;
             int vStep = 1 << vLevel;
 
-            void* pSrc = Marshal.UnsafeAddrOfPinnedArrayElement( controlPointBuffer, 0 ).ToPointer();
+            void* pSrc = Memory.PinObject( controlPointBuffer ).ToPointer();
             void* pDest;
             int vertexSize = declaration.GetVertexSize( 0 );
             float* pSrcReal, pDestReal;
