@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
@@ -272,9 +272,9 @@ namespace Axiom.Core
             AddCommonArchive( path, "Folder" );
         }
 
-        public static StringCollection GetAllCommonNamesLike( string startPath, string extension )
+        public static IList<String> GetAllCommonNamesLike( string startPath, string extension )
         {
-            StringCollection allFiles = new StringCollection();
+            List<String> allFiles = new List<String>();
 
             for ( int i = 0; i < commonArchives.Count; i++ )
             {

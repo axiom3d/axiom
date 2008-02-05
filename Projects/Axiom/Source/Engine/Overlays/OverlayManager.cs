@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
@@ -97,7 +97,7 @@ namespace Axiom.Overlays
         private int lastViewportWidth;
         private int lastViewportHeight;
         private bool viewportDimensionsChanged;
-        private StringCollection loadedOverlays = new StringCollection();
+		private List<String> loadedOverlays = new List<String>();
 
         #endregion Fields
 

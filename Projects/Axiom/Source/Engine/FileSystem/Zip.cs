@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.IO;
 
 using ICSharpCode.SharpZipLib.Zip;
@@ -142,7 +142,7 @@ namespace Axiom.FileSystem
             fs.Position = 0;
             ZipInputStream s = new ZipInputStream( fs );
             ZipEntry entry;
-            StringCollection fileList = new StringCollection();
+            List<String> fileList = new List<String>();
 
             entry = s.GetNextEntry();
 

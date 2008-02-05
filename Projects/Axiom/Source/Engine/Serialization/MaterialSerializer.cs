@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -2270,7 +2270,7 @@ namespace Axiom.Serialization
         public int techLev;	//Keep track of what tech, pass, and state level we are in
         public int passLev;
         public int stateLev;
-        public StringCollection defaultParamLines = new StringCollection();
+        public List<String> defaultParamLines = new List<String>();
 
         // Error reporting state
         public int lineNo;

@@ -48,7 +48,7 @@ namespace Axiom.RenderSystems.OpenGL
     /// <summary>
     /// Summary description for GLSupport.
     /// </summary>
-    public class GLSupport : BaseGLSupport
+    internal class GLSupport : BaseGLSupport
     {
 
         public GLSupport()
