@@ -120,26 +120,16 @@ namespace Axiom.Core
 
             foreach ( string file in files )
             {
-                // TODO: Temp fix, allow exlusions in the app.config
-                if ( file != "Axiom.Engine.dll" && file.IndexOf( "Axiom." ) != -1 )
+                // TODO: allow exlusions in the app.config
+                if ( file != Assembly.GetExecutingAssembly().GetName().Name + ".dll" && file.IndexOf( "Axiom." ) != -1 )
                 {
-                    try
-                    {
-                        string fullPath = Path.GetFullPath( file );
+                    string fullPath = Path.GetFullPath( file );
 
-                        Assembly assembly = Assembly.LoadFrom( fullPath );
+					DynamicLoader loader = new DynamicLoader( fullPath );
 
-                        foreach ( Type type in assembly.GetTypes() )
-                        {
-                            if ( type.GetInterface( "IPlugin" ) != null )
-                            {
-                                plugins.Add( new ObjectCreator( file, type.FullName ) );
-                            }
-                        }
-                    }
-                    catch ( BadImageFormatException )
+                    foreach ( ObjectCreator factory in loader.Find( typeof( IPlugin ) ) )
                     {
-                        // eat, not a valid assembly
+                        plugins.Add( factory );
                     }
                 }
             }
@@ -157,11 +147,7 @@ namespace Axiom.Core
             {
                 IPlugin plugin = (IPlugin)plugins[ i ];
 
-                // find the title of this assembly
-                AssemblyTitleAttribute title =
-                    (AssemblyTitleAttribute)Attribute.GetCustomAttribute( plugin.GetType().Assembly, typeof( AssemblyTitleAttribute ) );
-
-                LogManager.Instance.Write( "Unloading plugin: {0}", title.Title );
+                LogManager.Instance.Write( "Unloading plugin: {0}", GetAssemblyTitle( plugin.GetType() ) );
 
                 plugin.Stop();
             }
@@ -169,6 +155,17 @@ namespace Axiom.Core
             // clear the plugin list
             plugins.Clear();
         }
+
+        public static string GetAssemblyTitle(Type type)
+        {
+            Assembly assembly = type.Assembly;
+            AssemblyTitleAttribute title = (AssemblyTitleAttribute)Attribute.GetCustomAttribute(
+                                            (Assembly)assembly, typeof(AssemblyTitleAttribute));
+            if (title == null)
+                return assembly.GetName().Name;
+            return title.Title;
+        }
+
 
         /// <summary>
         ///		Loads a plugin of the given class name from the given assembly, and calls Start() on it.
@@ -180,41 +177,47 @@ namespace Axiom.Core
         /// <returns>The loaded plugin.</returns>
         private static IPlugin LoadPlugin( ObjectCreator creator )
         {
-            // load the requested assembly
-            Assembly pluginAssembly = creator.GetAssembly();
-
-            // find the title of this assembly
-            AssemblyTitleAttribute title =
-                (AssemblyTitleAttribute)Attribute.GetCustomAttribute( pluginAssembly, typeof( AssemblyTitleAttribute ) );
-
-            // grab the plugin type from the assembly
-            Type type = pluginAssembly.GetType( creator.className );
-
-            // see if this is a valid plugin first
-            if ( type.GetInterface( "IPlugin" ) != null )
+            try
             {
-                try
-                {
-                    // create and start the plugin
-                    IPlugin plugin = (IPlugin)Activator.CreateInstance( type );
+                // create and start the plugin
+                IPlugin plugin = creator.CreateInstance<IPlugin>();
 
-                    plugin.Start();
+                plugin.Start();
 
-                    LogManager.Instance.Write( "Loaded plugin: {0}", title.Title );
+                LogManager.Instance.Write( "Loaded plugin: {0}", creator.GetAssemblyTitle() );
 
-                    return plugin;
-                }
-                catch ( Exception ex )
-                {
-                    LogManager.Instance.Write( ex.ToString() );
-                }
+                return plugin;
             }
-            else
+            catch ( Exception ex )
             {
-                throw new PluginException( "Class {0} is not a valid plugin.", creator.className );
+                LogManager.Instance.Write( ex.ToString() );
             }
 
             return null;
+        }
+
+        /// <summary>
+        ///		Loads a plugin of the given class name from the given assembly, and calls Start() on it.
+        ///		This function does NOT add the plugin to the PluginManager's
+        ///		list of plugins.
+        /// </summary>
+        /// <param name="assemblyName">The assembly filename ("xxx.dll")</param>
+        /// <param name="className">The class ("MyNamespace.PluginClassname") that implemented IPlugin.</param>
+        /// <returns>The loaded plugin.</returns>
+        public bool LoadPlugin(IPlugin plugin)
+        {
+            try
+            {
+                plugin.Start();
+
+                LogManager.Instance.Write("Loaded plugin {0} from {1}", plugin, GetAssemblyTitle(plugin));
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogManager.Instance.Write(ex.ToString());
+                return false;
+            }
         }
 
         #endregion Methods
