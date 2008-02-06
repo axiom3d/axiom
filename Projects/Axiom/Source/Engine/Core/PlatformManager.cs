@@ -37,6 +37,7 @@ using System;
 using System.Configuration;
 using System.IO;
 using System.Reflection;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -116,20 +117,15 @@ namespace Axiom.Core
 
 				string path = Path.Combine( System.IO.Directory.GetCurrentDirectory(), file );
 
-                // TODO: AssemblyManager?
-                Assembly assembly = Assembly.LoadFile( path );
-
-                // look for the type in the loaded assembly that implements IPlatformManager
-                foreach ( Type type in assembly.GetTypes() )
+                DynamicLoader platformMgr = new DynamicLoader( path );
+				IList<ObjectCreator> platforms = platformMgr.Find( typeof(IPlatformManager) );
+                if ( platforms.Count != 0 )
                 {
-                    if ( type.GetInterface( "IPlatformManager" ) != null )
-                    {
-                        instance = (IPlatformManager)assembly.CreateInstance( type.FullName );
-                        return;
-                    }
+                    instance = platformMgr.Find( typeof(IPlatformManager) )[0].CreateInstance<IPlatformManager>();
                 }
 
-                throw new PluginException( "The available Platform assembly did not contain any subclasses of PlatformManager, which is required." );
+                if ( instance == null )
+                    throw new PluginException( "The available Platform assembly did not contain any subclasses of PlatformManager, which is required." );
             }
         }
 

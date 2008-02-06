@@ -34,11 +34,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 
 using Axiom.Math;
-using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -50,12 +51,12 @@ namespace Axiom.Core
 
 		public bool Equals( string x, string y )
 		{
-			return x.ToLowerInvariant() == y.ToLowerInvariant();
+			return x.ToLower() == y.ToLower();
 		}
 
 		public int GetHashCode( string obj )
 		{
-			return obj.ToLowerInvariant().GetHashCode();
+			return obj.ToLower().GetHashCode();
 		}
 
 		#endregion
