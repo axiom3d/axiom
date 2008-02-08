@@ -83,7 +83,7 @@ namespace Axiom.RenderSystems.OpenGL
 					case "fbo":
 						return _fbo;
 					default:
-						return base[ attribute ];
+						return null;
 				}
 			}
 		}

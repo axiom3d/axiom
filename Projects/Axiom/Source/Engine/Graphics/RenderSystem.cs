@@ -135,7 +135,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Capabilites of the current hardware (populated at startup).
 		/// </summary>
-		protected HardwareCapabilities _hwCapabilities = new HardwareCapabilities();
+		protected RenderSystemCapabilities _rsCapabilities = new RenderSystemCapabilities();
 		/// <summary>
 		///		Saved set of world matrices.
 		/// </summary>
@@ -190,11 +190,11 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Gets a set of hardware capabilities queryed by the current render system.
 		/// </summary>
-		public virtual HardwareCapabilities HardwareCapabilities
+		public virtual RenderSystemCapabilities HardwareCapabilities
 		{
 			get
 			{
-				return _hwCapabilities;
+				return _rsCapabilities;
 			}
 		}
 
@@ -374,7 +374,7 @@ namespace Axiom.Graphics
 
 		public virtual void DisableTextureUnitsFrom( int texUnit )
 		{
-			for ( int i = texUnit; i < _hwCapabilities.TextureUnitCount; ++i )
+			for ( int i = texUnit; i < _rsCapabilities.TextureUnitCount; ++i )
 			{
 				DisableTextureUnit( i );
 			}
@@ -611,7 +611,7 @@ namespace Axiom.Graphics
 		/// <param name="count"></param>
 		public virtual void SetWorldMatrices( Matrix4[] matrices, ushort count )
 		{
-			if ( !_hwCapabilities.HasCapability( Capabilities.VertexBlending ) )
+			if ( !_rsCapabilities.HasCapability( Capabilities.VertexBlending ) )
 			{
 				// save these for later during software vertex blending
 				for ( int i = 0; i < count; i++ )

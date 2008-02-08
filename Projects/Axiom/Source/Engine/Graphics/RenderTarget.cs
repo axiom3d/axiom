@@ -750,11 +750,6 @@ namespace Axiom.Graphics
 		#region Custom Attributes
 
 		/// <summary>
-		///    Custom attributes that can be assigned to this target.
-		/// </summary>
-		protected SortedList<string, object> customAttributes = new SortedList<string, object>();
-
-		/// <summary>
 		/// Gets a custom (maybe platform-specific) attribute.
 		/// </summary>
 		/// <remarks>
@@ -773,12 +768,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( !customAttributes.ContainsKey( attribute ) )
-				{
-					throw new Exception( String.Format( "Attribute [{0}] not found.", attribute ) );
-				}
-
-				return customAttributes[ attribute ];
+				throw new Exception( String.Format( "Attribute [{0}] not found.", attribute ) );
 			}
 		}
 

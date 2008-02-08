@@ -449,7 +449,7 @@ namespace Axiom.Graphics
 
 		protected bool isRequiredCapabilitiesSupported()
 		{
-			HardwareCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
+			RenderSystemCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
 			// If skeletal animation is being done, we need support for UBYTE4
 			if ( this.IsSkeletalAnimationIncluded &&
 				!caps.HasCapability( Capabilities.VertexFormatUByte4 ) )

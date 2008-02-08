@@ -258,19 +258,6 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    @copydoc HardwareBuffer.Lock
-		///</summary>
-		//public virtual IntPtr Lock( int offset, int length, BasicBox lockBox, BufferLocking options )
-		//{
-		//    Debug.Assert( !IsLocked, "Cannot lock this buffer, it is already locked!" );
-		//    Debug.Assert( offset == 0 && length == sizeInBytes, "Cannot lock memory region, must lock box or entire buffer" );
-
-		//    BasicBox myBox = new BasicBox( 0, 0, 0, Width, Height, Depth );
-		//    PixelBox rv = Lock( myBox, options );
-		//    return rv.Data;
-		//}
-
-		///<summary>
 		///    Internal implementation of lock(), do not override or call this
 		///    for HardwarePixelBuffer implementations, but override the previous method
 		///</summary>
@@ -308,8 +295,8 @@ namespace Axiom.Graphics
 
 			BufferLocking method = BufferLocking.Normal;
 			if ( dstBox.Left == 0 && dstBox.Top == 0 && dstBox.Front == 0 &&
-			   dstBox.Right == _width && dstBox.Bottom == _height &&
-			   dstBox.Back == _depth )
+			     dstBox.Right == _width && dstBox.Bottom == _height &&
+			     dstBox.Back == _depth )
 				// Entire buffer -- we can discard the previous contents
 				method = BufferLocking.Discard;
 
@@ -335,19 +322,32 @@ namespace Axiom.Graphics
 			// Do nothing; derived classes may override
 		}
 
-		///<summary>
-		///    @copydoc HardwareBuffer::readData
-		///</summary>
+		/// <summary>
+		///     Reads data from the buffer and places it in the memory pointed to by 'dest'.
+		/// </summary>
+		/// <param name="offset">The byte offset from the start of the buffer to read.</param>
+		/// <param name="length">The size of the area to read, in bytes.</param>
+		/// <param name="dest">
+		///     The area of memory in which to place the data, must be large enough to 
+		///     accommodate the data!
+		/// </param>
 		public override void ReadData( int offset, int length, IntPtr dest )
 		{
 			throw new Exception( "Reading a byte range is not implemented. Use blitToMemory." );
 		}
 
-		///<summary>
-		///    @copydoc HardwareBuffer::writeData
-		///</summary>
-		public override void WriteData( int offset, int length, IntPtr source,
-									  bool discardWholeBuffer )
+		/// <summary>
+		///     Writes data to the buffer from an area of system memory; note that you must
+		///     ensure that your buffer is big enough.
+		/// </summary>
+		/// <param name="offset">The byte offset from the start of the buffer to start writing.</param>
+		/// <param name="length">The size of the data to write to, in bytes.</param>
+		/// <param name="src">The source of the data to be written.</param>
+		/// <param name="discardWholeBuffer">
+		///     If true, this allows the driver to discard the entire buffer when writing,
+		///     such that DMA stalls can be avoided; use if you can.
+		/// </param>
+		public override void WriteData( int offset, int length, IntPtr source, bool discardWholeBuffer )
 		{
 			throw new Exception( "Writing a byte range is not implemented. Use blitToMemory." );
 		}
@@ -408,6 +408,14 @@ namespace Axiom.Graphics
 			throw new Exception( "Not yet implemented for this rendersystem." );
 		}
 
+		///<summary>
+		///    Get a render target for this PixelBuffer, or a slice of it. The texture this
+		///    was acquired from must have TextureUsage.RenderTarget set, otherwise it is possible to
+		///    render to it and this method will throw an exception.
+		///</summary>
+		///<returns>
+		///    A pointer to the render target. This pointer has the lifespan of this PixelBuffer.
+		///</returns>
 		public virtual RenderTexture GetRenderTarget()
 		{
 			return GetRenderTarget( 0 );

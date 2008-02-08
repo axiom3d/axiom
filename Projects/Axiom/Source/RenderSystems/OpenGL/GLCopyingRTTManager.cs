@@ -61,22 +61,27 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override RenderTexture CreateRenderTexture( string name, GLSurfaceDesc target )
 		{
-			throw new Exception( "The method or operation is not implemented." );
+			return null; //new GLCopyingRenderTexture( name, target );
 		}
 
 		public override bool CheckFormat( PixelFormat format )
 		{
-			throw new Exception( "The method or operation is not implemented." );
+			return true;
 		}
 
 		public override void Bind( RenderTarget target )
 		{
-			throw new Exception( "The method or operation is not implemented." );
+			// nothing to do here
 		}
 
 		public override void Unbind( RenderTarget target )
 		{
-			throw new Exception( "The method or operation is not implemented." );
+			// copy on unbind
+			GLSurfaceDesc surface;
+			surface.Buffer = null;
+			surface = (GLSurfaceDesc)target.GetCustomAttribute( "TARGET" );
+			//if ( surface.Buffer != null )
+			//	( (GLTextureBuffer)surface.Buffer ).CopyFromFramebuffer( surface.ZOffset );
 		}
 
 		#endregion GLRTTManager Implementation
