@@ -408,7 +408,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <returns></returns>
 		public static int OptionalPO2( int value )
 		{
-			HardwareCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
+			RenderSystemCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
 			if ( caps.HasCapability( Capabilities.NonPowerOf2Textures ) )
 				return value;
 			else

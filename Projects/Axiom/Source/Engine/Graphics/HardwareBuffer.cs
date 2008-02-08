@@ -146,6 +146,8 @@ namespace Axiom.Graphics
             this.shadowUpdated = false;
             this.suppressHardwareUpdate = false;
             ID = nextID++;
+
+			// If use shadow buffer, upgrade to WRITE_ONLY on hardware side
             if ( useShadowBuffer && usage == BufferUsage.Dynamic )
                 usage = BufferUsage.DynamicWriteOnly;
             else if ( useShadowBuffer && usage == BufferUsage.Static )
@@ -324,15 +326,15 @@ namespace Axiom.Graphics
         ///     If true, this allows the driver to discard the entire buffer when writing,
         ///     such that DMA stalls can be avoided; use if you can.
         /// </param>
-        public virtual void WriteData( int offset, int length, System.Array data, bool discardWholeBuffer )
-        {
-            GCHandle handle = GCHandle.Alloc( data, GCHandleType.Pinned );
-            IntPtr dataPtr = handle.AddrOfPinnedObject();
+		public virtual void WriteData( int offset, int length, System.Array data, bool discardWholeBuffer )
+		{
+			GCHandle handle = GCHandle.Alloc( data, GCHandleType.Pinned );
+			IntPtr dataPtr = handle.AddrOfPinnedObject();
 
-            WriteData( offset, length, dataPtr, discardWholeBuffer );
+			WriteData( offset, length, dataPtr, discardWholeBuffer );
 
-            handle.Free();
-        }
+			handle.Free();
+		}
 
         /// <summary>
         ///     Copy data from another buffer into this one.

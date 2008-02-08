@@ -408,26 +408,36 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		///<summary>
-		///    @copydoc HardwarePixelBuffer.Blit
+		///    Copies a box from another PixelBuffer to a region of the 
+		///    this PixelBuffer. 
 		///</summary>
-		public override void Blit( HardwarePixelBuffer _src, BasicBox srcBox, BasicBox dstBox )
+		///<param name="src">Source/dest pixel buffer</param>
+		///<param name="srcBox">Image.BasicBox describing the source region in this buffer</param>
+		///<param name="dstBox">Image.BasicBox describing the destination region in this buffer</param>
+		///<remarks>
+		///    The source and destination regions dimensions don't have to match, in which
+		///    case scaling is done. This scaling is generally done using a bilinear filter in hardware,
+		///    but it is faster to pass the source image in the right dimensions.
+		///    Only call this function when both buffers are unlocked. 
+		///</remarks>
+		public override void Blit( HardwarePixelBuffer src, BasicBox srcBox, BasicBox dstBox )
 		{
-			D3DHardwarePixelBuffer src = (D3DHardwarePixelBuffer)_src;
-			if ( surface != null && src.surface != null )
+			D3DHardwarePixelBuffer _src = (D3DHardwarePixelBuffer)src;
+			if ( surface != null && _src.surface != null )
 			{
 				// Surface-to-surface
 				System.Drawing.Rectangle dsrcRect = ToD3DRectangle( srcBox );
 				System.Drawing.Rectangle ddestRect = ToD3DRectangle( dstBox );
 				// D3DXLoadSurfaceFromSurface
-				D3D.SurfaceLoader.FromSurface( surface, ddestRect, src.surface, dsrcRect, D3D.Filter.None, 0 );
+				D3D.SurfaceLoader.FromSurface( surface, ddestRect, _src.surface, dsrcRect, D3D.Filter.None, 0 );
 			}
-			else if ( volume != null && src.volume != null )
+			else if ( volume != null && _src.volume != null )
 			{
 				// Volume-to-volume
 				D3D.Box dsrcBox = ToD3DBox( srcBox );
 				D3D.Box ddestBox = ToD3DBox( dstBox );
 				// D3DXLoadVolumeFromVolume
-				D3D.VolumeLoader.FromVolume( volume, ddestBox, src.volume, dsrcBox, D3D.Filter.None, 0 );
+				D3D.VolumeLoader.FromVolume( volume, ddestBox, _src.volume, dsrcBox, D3D.Filter.None, 0 );
 			}
 			else
 				// Software fallback   
@@ -435,8 +445,17 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		///<summary>
-		///    @copydoc HardwarePixelBuffer.BlitFromMemory
+		///    Copies a region from normal memory to a region of this pixelbuffer. The source
+		///    image can be in any pixel format supported by Axiom, and in any size. 
 		///</summary>
+		///<param name="src">PixelBox containing the source pixels and format in memory</param>
+		///<param name="dstBox">Image.BasicBox describing the destination region in this buffer</param>
+		///<remarks>
+		///    The source and destination regions dimensions don't have to match, in which
+		///    case scaling is done. This scaling is generally done using a bilinear filter in hardware,
+		///    but it is faster to pass the source image in the right dimensions.
+		///    Only call this function when both  buffers are unlocked. 
+		///</remarks>
 		public override void BlitFromMemory( PixelBox src, BasicBox dstBox )
 		{
 			using ( AutoTimer timer = new AutoTimer( timingMeter ) )
@@ -511,8 +530,15 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		///<summary>
-		///    @copydoc HardwarePixelBuffer.BlitToMemory
+		///    Copies a region of this pixelbuffer to normal memory.
 		///</summary>
+		///<param name="srcBox">BasicBox describing the source region of this buffer</param>
+		///<param name="dst">PixelBox describing the destination pixels and format in memory</param>
+		///<remarks>
+		///    The source and destination regions don't have to match, in which
+		///    case scaling is done.
+		///    Only call this function when the buffer is unlocked. 
+		///</remarks>
 		public override void BlitToMemory( BasicBox srcBox, PixelBox dst )
 		{
 			// Decide on pixel format of temp surface

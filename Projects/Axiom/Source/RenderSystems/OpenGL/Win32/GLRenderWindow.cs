@@ -114,7 +114,7 @@ namespace Axiom.RenderSystems.OpenGL
 						System.Windows.Forms.Control ctrl = System.Windows.Forms.Control.FromChildHandle( _hWindow );
 						return ctrl;
 					default:
-						return base[ attribute ];
+						return null;
 				}
 			}
 		}

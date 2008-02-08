@@ -47,7 +47,7 @@ using Axiom.Graphics;
 namespace Axiom.RenderSystems.OpenGL
 {
 	/// <summary>
-	/// Manager/factory for RenderTextures.
+	/// Abstract Factory for RenderTextures.
 	/// </summary>
 	internal abstract class GLRTTManager : IDisposable
 	{

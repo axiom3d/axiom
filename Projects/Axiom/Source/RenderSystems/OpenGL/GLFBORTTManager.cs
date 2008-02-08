@@ -49,7 +49,7 @@ using System.Text;
 namespace Axiom.RenderSystems.OpenGL
 {
 	/// <summary>
-	/// Factory for GL Frame Buffer Objects, and related things.
+	/// Concrete Factory for GL Frame Buffer Objects, and related things.
 	/// </summary>
 	internal class GLFBORTTManager : GLRTTManager
 	{
@@ -342,7 +342,7 @@ namespace Axiom.RenderSystems.OpenGL
 		}
 
 		/// <summary>
-		/// Request the specify render buffer in case shared somewhere. Ignore
+		/// Request the specific render buffer in case shared somewhere. Ignore
 		/// silently if surface.buffer is 0.
 		/// </summary>
 		/// <param name="surface"></param>
@@ -355,15 +355,17 @@ namespace Axiom.RenderSystems.OpenGL
 			RBRef value;
 			bool result = _renderBufferMap.TryGetValue( key, out value );
 			Debug.Assert( result );
+			lock( this )
 			{
 				Debug.Assert( value.Buffer == surface.Buffer );
 				// Increase refcount
 				value.Refcount++;
 			}
+			LogManager.Instance.Write( "Requested renderbuffer with format " + surface.Buffer.GLFormat.ToString() + " of " + surface.Buffer.Width.ToString() + "x" + surface.Buffer.Height.ToString() + " with refcount " + value.Refcount.ToString() + "." );
 		}
 
 		/// <summary>
-		///  Release a render buffer. Ignore silently if surface.buffer is 0.
+		///  Release a render buffer. Ignore silently if surface.buffer is null.
 		/// </summary>
 		/// <param name="surface"></param>
 		public void ReleaseRenderBuffer( GLSurfaceDesc surface )
