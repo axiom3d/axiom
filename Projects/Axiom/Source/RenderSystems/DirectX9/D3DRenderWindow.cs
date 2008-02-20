@@ -616,10 +616,10 @@ namespace Axiom.RenderSystems.DirectX9
 						// If it is present, override default settings
 						foreach ( D3D.AdapterInformation adapter in D3D.Manager.Adapters )
 						{
-							LogManager.Instance.Write( "D3D : NVPerfHUD requested, checking adapter {0}:{1}", adapter.Adapter, adapter.Information.Description );
-							if ( adapter.Information.Description.ToLower().Contains( "nvperfhud" ) )
+							LogManager.Instance.Write( "D3D : NVIDIA PerfHUD requested, checking adapter {0}:{1}", adapter.Adapter, adapter.Information.Description );
+							if ( adapter.Information.Description.ToLower().Contains( "perfhud" ) )
 							{
-								LogManager.Instance.Write( "D3D : NVPerfHUD requested, using adapter {0}:{1}", adapter.Adapter, adapter.Information.Description );
+                                LogManager.Instance.Write("D3D : NVIDIA PerfHUD requested, using adapter {0}:{1}", adapter.Adapter, adapter.Information.Description);
 								adapterToUse = adapter.Adapter;
 								devType = D3D.DeviceType.Reference;
 								break;
