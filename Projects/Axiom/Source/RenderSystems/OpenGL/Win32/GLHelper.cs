@@ -191,7 +191,7 @@ namespace Axiom.RenderSystems.OpenGL
 				}
 				else
 				{
-					opt.Value = opt.PossibleValues[ 0 ];
+					opt.Value = opt.PossibleValues.Values[ 0 ];
 					opt.Immutable = false;
 				}
 			}
