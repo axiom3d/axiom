@@ -62,18 +62,6 @@ namespace Axiom.RenderSystems.DirectX9
 	public class D3DRenderSystem : RenderSystem
 	{
 
-		public static readonly Matrix4 ProjectionClipSpace2DToImageSpacePerspective = new Matrix4(
-			0.5f, 0, 0, -0.5f,
-			0, -0.5f, 0, -0.5f,
-			0, 0, 0, 1f,
-			0, 0, 0, 1f );
-
-		public static readonly Matrix4 ProjectionClipSpace2DToImageSpaceOrtho = new Matrix4(
-			-0.5f, 0, 0, -0.5f,
-			0, 0.5f, 0, -0.5f,
-			0, 0, 0, 1f,
-			0, 0, 0, 1f );
-
 		/// <summary>
 		///    Reference to the Direct3D device.
 		/// </summary>
