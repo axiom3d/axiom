@@ -54,12 +54,12 @@ namespace Axiom.Graphics
 	/// <summary>
 	///    Delegate for RenderTarget update events.
 	/// </summary>
-	public delegate void RenderTargetUpdateEventHandler( object sender, RenderTargetUpdateEventArgs e );
+	public delegate void RenderTargetUpdateEventHandler( RenderTargetUpdateEventArgs e );
 
 	/// <summary>
 	///    Delegate for Viewport update events.
 	/// </summary>
-	public delegate void ViewportUpdateEventHandler( object sender, ViewportUpdateEventArgs e );
+	public delegate void ViewportUpdateEventHandler( ViewportUpdateEventArgs e );
 
 	/// <summary>
 	///    Event arguments for render target updates.
@@ -75,12 +75,18 @@ namespace Axiom.Graphics
 				return source;
 			}
 		}
+
+		public RenderTargetUpdateEventArgs( RenderTarget source )
+		{
+			this.source = source;
+		}
+
 	}
 
 	/// <summary>
 	///    Event arguments for viewport updates while processing a RenderTarget.
 	/// </summary>
-	public class ViewportUpdateEventArgs : EventArgs
+	public class ViewportUpdateEventArgs : RenderTargetUpdateEventArgs
 	{
 		internal Viewport viewport;
 
@@ -91,6 +97,12 @@ namespace Axiom.Graphics
 				return viewport;
 			}
 		}
+
+		public ViewportUpdateEventArgs( RenderTarget source, Viewport viewport ) : base( source )
+		{
+			this.viewport = viewport;
+		}
+
 	}
 
 	#endregion Delegate/EventArg Declarations
@@ -444,7 +456,7 @@ namespace Axiom.Graphics
 		{
 			if ( BeforeUpdate != null )
 			{
-				BeforeUpdate( this, new RenderTargetUpdateEventArgs() );
+				BeforeUpdate( new RenderTargetUpdateEventArgs( this ) );
 			}
 		}
 
@@ -452,7 +464,7 @@ namespace Axiom.Graphics
 		{
 			if ( AfterUpdate != null )
 			{
-				AfterUpdate( this, new RenderTargetUpdateEventArgs() );
+				AfterUpdate( new RenderTargetUpdateEventArgs( this ) );
 			}
 		}
 
@@ -460,9 +472,7 @@ namespace Axiom.Graphics
 		{
 			if ( BeforeViewportUpdate != null )
 			{
-				ViewportUpdateEventArgs e = new ViewportUpdateEventArgs();
-				e.viewport = viewport;
-				BeforeViewportUpdate( this, e );
+				BeforeViewportUpdate( new ViewportUpdateEventArgs( this, viewport ) );
 			}
 		}
 
@@ -470,9 +480,7 @@ namespace Axiom.Graphics
 		{
 			if ( AfterViewportUpdate != null )
 			{
-				ViewportUpdateEventArgs e = new ViewportUpdateEventArgs();
-				e.viewport = viewport;
-				AfterViewportUpdate( this, e );
+				AfterViewportUpdate( new ViewportUpdateEventArgs( this, viewport ) );
 			}
 		}
 
@@ -480,9 +488,7 @@ namespace Axiom.Graphics
 		{
 			if ( ViewportAdded != null )
 			{
-				ViewportUpdateEventArgs e = new ViewportUpdateEventArgs();
-				e.viewport = viewport;
-				ViewportAdded( this, e );
+				ViewportAdded( new ViewportUpdateEventArgs( this, viewport ) );
 			}
 		}
 
@@ -490,9 +496,7 @@ namespace Axiom.Graphics
 		{
 			if ( ViewportRemoved != null )
 			{
-				ViewportUpdateEventArgs e = new ViewportUpdateEventArgs();
-				e.viewport = viewport;
-				ViewportRemoved( this, e );
+				ViewportRemoved( new ViewportUpdateEventArgs( this, viewport ) );
 			}
 		}
 

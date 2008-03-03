@@ -154,7 +154,7 @@ namespace Axiom.Demos
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void rttTex_BeforeUpdate( object sender, RenderTargetUpdateEventArgs e )
+        private void rttTex_BeforeUpdate( RenderTargetUpdateEventArgs e )
         {
             planeEntity.IsVisible = false;
         }
@@ -164,7 +164,7 @@ namespace Axiom.Demos
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void rttTex_AfterUpdate( object sender, RenderTargetUpdateEventArgs e )
+        private void rttTex_AfterUpdate( RenderTargetUpdateEventArgs e )
         {
             planeEntity.IsVisible = true;
         }

@@ -191,8 +191,8 @@ namespace Axiom.RenderSystems.OpenGL
 				}
 				else
 				{
-					opt.Value = opt.PossibleValues.Values[ 0 ];
 					opt.Immutable = false;
+					opt.Value = opt.PossibleValues.Values[ opt.PossibleValues.Count - 1 ];
 				}
 			}
 		}
@@ -203,6 +203,7 @@ namespace Axiom.RenderSystems.OpenGL
 			ConfigOption optVideoMode = ConfigOptions[ "Video Mode" ];
 			ConfigOption optColorDepth = ConfigOptions[ "Color Depth" ];
 			ConfigOption optDisplayFrequency = ConfigOptions[ "Display Frequency" ];
+			ConfigOption optFullScreen = ConfigOptions[ "Full Screen" ];
 
 			string val = optVideoMode.Value;
 
@@ -220,6 +221,17 @@ namespace Axiom.RenderSystems.OpenGL
 					optColorDepth.PossibleValues.Add( devMode.dmBitsPerPel, devMode.dmBitsPerPel.ToString() );
 				if ( !optDisplayFrequency.PossibleValues.Keys.Contains( devMode.dmDisplayFrequency ) )
 					optDisplayFrequency.PossibleValues.Add( devMode.dmDisplayFrequency, devMode.dmDisplayFrequency.ToString() );
+			}
+
+			if ( optFullScreen.Value == "No" )
+			{
+				optDisplayFrequency.Value = "N/A";
+				optDisplayFrequency.Immutable = true;
+			}
+			else
+			{
+				optDisplayFrequency.Immutable = false;
+				optDisplayFrequency.Value = optDisplayFrequency.PossibleValues.Values[ optDisplayFrequency.PossibleValues.Count - 1 ];
 			}
 
 			optColorDepth.Value = optColorDepth.PossibleValues.Values[ optColorDepth.PossibleValues.Values.Count - 1 ];

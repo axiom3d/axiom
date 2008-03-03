@@ -438,7 +438,7 @@ namespace Axiom.Graphics
 		///<summary>
 		///    @see RenderTargetListener.PreRenderTargetUpdate
 		///</summary>
-		public void BeforeRenderTargetUpdate( object sender, RenderTargetUpdateEventArgs evt )
+		public void BeforeRenderTargetUpdate( RenderTargetUpdateEventArgs evt )
 		{
 			/// Compile if state is dirty
 			if ( dirty )
@@ -471,7 +471,7 @@ namespace Axiom.Graphics
 		///<summary>
 		///    @see RenderTargetListener.PreViewportUpdate
 		///</summary>
-		public virtual void BeforeViewportUpdate( object sender, ViewportUpdateEventArgs evt )
+		public virtual void BeforeViewportUpdate( ViewportUpdateEventArgs evt )
 		{
 			// Only set up if there is at least one compositor enabled, and it's this viewport
 			if ( evt.Viewport != viewport || !anyCompositorsEnabled )
@@ -551,7 +551,7 @@ namespace Axiom.Graphics
 		///<summary>
 		///    @see RenderTargetListener.PostViewportUpdate
 		///</summary>
-		public virtual void AfterViewportUpdate( object sender, ViewportUpdateEventArgs evt )
+		public virtual void AfterViewportUpdate( ViewportUpdateEventArgs evt )
 		{
 			// Only tidy up if there is at least one compositor enabled, and it's this viewport
 			if ( evt.Viewport != viewport || !anyCompositorsEnabled )
@@ -563,7 +563,7 @@ namespace Axiom.Graphics
 		///<summary>
 		///    @see RenderTargetListener.ViewportRemoved
 		///</summary>
-		public virtual void OnViewportRemoved( object sender, ViewportUpdateEventArgs evt )
+		public virtual void OnViewportRemoved( ViewportUpdateEventArgs evt )
 		{
 			// this chain is now orphaned
 			// can't delete it since held from outside, but release all resources being used

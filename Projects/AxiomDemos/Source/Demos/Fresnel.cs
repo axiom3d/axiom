@@ -219,7 +219,7 @@ namespace Axiom.Demos
 
         #region Event Handlers
 
-        private void Reflection_BeforeUpdate( object sender, RenderTargetUpdateEventArgs e )
+        private void Reflection_BeforeUpdate( RenderTargetUpdateEventArgs e )
         {
             planeEnt.IsVisible = false;
 
@@ -231,7 +231,7 @@ namespace Axiom.Demos
             theCam.EnableReflection( reflectionPlane );
         }
 
-        private void Reflection_AfterUpdate( object sender, RenderTargetUpdateEventArgs e )
+        private void Reflection_AfterUpdate( RenderTargetUpdateEventArgs e )
         {
             planeEnt.IsVisible = true;
 
@@ -243,7 +243,7 @@ namespace Axiom.Demos
             theCam.DisableReflection();
         }
 
-        private void Refraction_BeforeUpdate( object sender, RenderTargetUpdateEventArgs e )
+        private void Refraction_BeforeUpdate( RenderTargetUpdateEventArgs e )
         {
             planeEnt.IsVisible = false;
 
@@ -253,7 +253,7 @@ namespace Axiom.Demos
             }
         }
 
-        private void Refraction_AfterUpdate( object sender, RenderTargetUpdateEventArgs e )
+        private void Refraction_AfterUpdate( RenderTargetUpdateEventArgs e )
         {
             planeEnt.IsVisible = true;
 

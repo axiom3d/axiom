@@ -1971,11 +1971,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			// store
 			texStageDesc[ stage ].coordIndex = index;
-			//TODO: Is this check needed?
-			if ( stage < 8 )
-			{
-				device.TextureState[ stage ].TextureCoordinateIndex = D3DHelper.ConvertEnum( texStageDesc[ stage ].autoTexCoordType, d3dCaps ) | index;
-			}
+			device.TextureState[ stage ].TextureCoordinateIndex = D3DHelper.ConvertEnum( texStageDesc[ stage ].autoTexCoordType, d3dCaps ) | index;
 		}
 
 		/// <summary>
@@ -2044,26 +2040,23 @@ namespace Axiom.RenderSystems.DirectX9
 
 			// If this is a cubic reflection, we need to modify using the view matrix
 			if ( autoTexCoordType == TexCoordCalcMethod.EnvironmentMapReflection )
-			{
-				// get the current view matrix
-				DX.Matrix viewMatrix = device.Transform.View;
-
+			{				
 				// Get transposed 3x3, ie since D3D is transposed just copy
 				// We want to transpose since that will invert an orthonormal matrix ie rotation
 				Matrix4 viewTransposed = Matrix4.Identity;
-				viewTransposed.m00 = viewMatrix.M11;
-				viewTransposed.m01 = viewMatrix.M12;
-				viewTransposed.m02 = viewMatrix.M13;
+				viewTransposed.m00 = viewMatrix.m00;
+				viewTransposed.m01 = viewMatrix.m01;
+				viewTransposed.m02 = viewMatrix.m02;
 				viewTransposed.m03 = 0.0f;
 
-				viewTransposed.m10 = viewMatrix.M21;
-				viewTransposed.m11 = viewMatrix.M22;
-				viewTransposed.m12 = viewMatrix.M23;
+				viewTransposed.m10 = viewMatrix.m10;
+				viewTransposed.m11 = viewMatrix.m11;
+				viewTransposed.m12 = viewMatrix.m12;
 				viewTransposed.m13 = 0.0f;
 
-				viewTransposed.m20 = viewMatrix.M31;
-				viewTransposed.m21 = viewMatrix.M32;
-				viewTransposed.m22 = viewMatrix.M33;
+				viewTransposed.m20 = viewMatrix.m20;
+				viewTransposed.m21 = viewMatrix.m21;
+				viewTransposed.m22 = viewMatrix.m23;
 				viewTransposed.m23 = 0.0f;
 
 				viewTransposed.m30 = 0;
