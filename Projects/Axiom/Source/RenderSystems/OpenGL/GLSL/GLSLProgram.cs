@@ -230,6 +230,14 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
 		#region HighLevelGpuProgram Implementation
 
+		public override int SamplerCount
+		{
+			get
+			{
+				throw new Exception( "The method or operation is not implemented." );
+			}
+		}
+
 		protected override void CreateLowLevelImpl()
 		{
 			assemblerProgram = new GLSLGpuProgram( this );
@@ -302,12 +310,5 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
 		#endregion HighLevelGpuProgram Implementation
 
-		public override int SamplerCount
-		{
-			get
-			{
-				throw new Exception( "The method or operation is not implemented." );
-			}
-		}
 	}
 }
