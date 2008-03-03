@@ -382,13 +382,13 @@ namespace Axiom.RenderSystems.OpenGL
 			optRTTMode.PossibleValues.Add( 1, "PBuffer" );
 			optRTTMode.PossibleValues.Add( 2, "Copy" );
 
-			optFullScreen.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
-			optVideoMode.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
-			optDisplayFrequency.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
-			optFSAA.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
-			optVSync.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
-			optColorDepth.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
-			optRTTMode.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
+			optFullScreen.ConfigValueChanged += new ConfigOption<string>.ValueChanged( _configOptionChanged );
+			optVideoMode.ConfigValueChanged += new ConfigOption<string>.ValueChanged( _configOptionChanged );
+			optDisplayFrequency.ConfigValueChanged += new ConfigOption<string>.ValueChanged( _configOptionChanged );
+			optFSAA.ConfigValueChanged += new ConfigOption<string>.ValueChanged( _configOptionChanged );
+			optVSync.ConfigValueChanged += new ConfigOption<string>.ValueChanged( _configOptionChanged );
+			optColorDepth.ConfigValueChanged += new ConfigOption<string>.ValueChanged( _configOptionChanged );
+			optRTTMode.ConfigValueChanged += new ConfigOption<string>.ValueChanged( _configOptionChanged );
 
 			ConfigOptions.Add( optVideoMode );
 			ConfigOptions.Add( optColorDepth );
