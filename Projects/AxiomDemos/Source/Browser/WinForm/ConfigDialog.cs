@@ -306,8 +306,10 @@ namespace Axiom.Demos
 
         private void lstOptions_SelectedIndexChanged( object sender, EventArgs e )
         {
-     
-            RenderSystem system = (RenderSystem)cboRenderSystems.SelectedItem;
+
+			this.cboOptionValues.SelectedIndexChanged -= new System.EventHandler( this.cboOptionValues_SelectedIndexChanged );
+			
+			RenderSystem system = (RenderSystem)cboRenderSystems.SelectedItem;
             ConfigOption opt = (ConfigOption)lstOptions.SelectedItem;
 
             cboOptionValues.Items.Clear();
@@ -324,6 +326,8 @@ namespace Axiom.Demos
             this.lblOption.Visible = true;
             this.cboOptionValues.Visible = true;
             this.cboOptionValues.Enabled = ( !opt.Immutable );
+
+			this.cboOptionValues.SelectedIndexChanged += new System.EventHandler( this.cboOptionValues_SelectedIndexChanged );
         }
 
         private void cboOptionValues_SelectedIndexChanged( object sender, EventArgs e )
@@ -333,11 +337,15 @@ namespace Axiom.Demos
 
             opt.Value = value;
 
-            int index = lstOptions.SelectedIndex;
-            this.lstOptions.SelectedIndexChanged -= new System.EventHandler( this.lstOptions_SelectedIndexChanged );
-            lstOptions.Items[ index ] = opt;
-            this.lstOptions.SelectedIndexChanged += new System.EventHandler( this.lstOptions_SelectedIndexChanged );
-        }
+			this.lstOptions.SelectedIndexChanged -= new System.EventHandler( this.lstOptions_SelectedIndexChanged );
+			for ( int index = 0; index < this.lstOptions.Items.Count; index++ )
+			{
+				//int index = lstOptions.SelectedIndex;
+				lstOptions.Items[ index ] = lstOptions.Items[ index ];
+			}
+			this.lstOptions.SelectedIndexChanged += new System.EventHandler( this.lstOptions_SelectedIndexChanged );				
+
+		}
 
 
 		#region IMessageFilter Members
