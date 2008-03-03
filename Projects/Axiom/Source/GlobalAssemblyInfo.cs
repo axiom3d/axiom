@@ -53,7 +53,7 @@ using System.Security.Permissions;
 //
 [assembly: AssemblyProduct( "Axiom Rendering Engine" )]
 [assembly: AssemblyCompany( "Axiom Rendering Engine Project Team." )]
-[assembly: AssemblyCopyright( "© 2003-2006 Axiom Rendering Engine Project Team." )]
+[assembly: AssemblyCopyright( "© 2003-2007 Axiom Rendering Engine Project Team." )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
