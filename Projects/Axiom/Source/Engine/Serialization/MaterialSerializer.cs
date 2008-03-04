@@ -1210,7 +1210,7 @@ namespace Axiom.Serialization
 		{
 			string[] values = parameters.Split( new char[] { ' ', '\t' } );
 
-			if ( values.Length == 4 && values.Length == 5 )
+			if ( values.Length == 4 || values.Length == 5 )
 			{
 				ColorEx specular = new ColorEx();
 				specular.r = StringConverter.ParseFloat( values[ 0 ] );
