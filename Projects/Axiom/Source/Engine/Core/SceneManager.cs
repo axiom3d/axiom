@@ -2456,18 +2456,12 @@ namespace Axiom.Core
 				//}
 
 				// set all required texture units for this pass, and disable ones not being used
-				int numTextureUnits;
+				int numTextureUnits = targetRenderSystem.HardwareCapabilities.TextureUnitCount;
 				if ( pass.HasFragmentProgram )
-				{
 					numTextureUnits = pass.FragmentProgram.SamplerCount;
-				}
-				else
-				{
-					if ( Config.MaxTextureLayers < targetRenderSystem.HardwareCapabilities.TextureUnitCount )
-						numTextureUnits = Config.MaxTextureLayers;
-					else
-						numTextureUnits = targetRenderSystem.HardwareCapabilities.TextureUnitCount;
-				}
+				else if ( Config.MaxTextureLayers < targetRenderSystem.HardwareCapabilities.TextureUnitCount )
+					numTextureUnits = Config.MaxTextureLayers;
+				
 
 				for ( int i = 0; i < numTextureUnits; i++ )
 				{
