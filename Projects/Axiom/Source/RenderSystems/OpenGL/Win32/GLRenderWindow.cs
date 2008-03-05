@@ -213,12 +213,31 @@ namespace Axiom.RenderSystems.OpenGL
 
 				if ( IsFullScreen )
 				{
+					// Set the display to the desired resolution
+					Gdi.DEVMODE screenSettings = new Gdi.DEVMODE();
+					screenSettings.dmSize = (short)Marshal.SizeOf( screenSettings );
+					screenSettings.dmPelsWidth = width;                         // Selected Screen Width
+					screenSettings.dmPelsHeight = height;                       // Selected Screen Height
+					screenSettings.dmBitsPerPel = ColorDepth;                         // Selected Bits Per Pixel
+					screenSettings.dmFields = Gdi.DM_BITSPERPEL | Gdi.DM_PELSWIDTH | Gdi.DM_PELSHEIGHT;
+
+					// Try To Set Selected Mode And Get Results.  NOTE: CDS_FULLSCREEN Gets Rid Of Start Bar.
+					int result = User.ChangeDisplaySettings( ref screenSettings, User.CDS_FULLSCREEN );
+
+					if ( result != User.DISP_CHANGE_SUCCESSFUL )
+					{
+						throw new System.ComponentModel.Win32Exception( Marshal.GetLastWin32Error(), "Unable to change user display settings." );
+					}
+
+					// Adjust form to size the screen
 					form.Top = 0;
 					form.Left = 0;
 					form.FormBorderStyle = SWF.FormBorderStyle.None;
 					form.WindowState = SWF.FormWindowState.Maximized;
+#if !DEBUG
 					form.TopMost = true;
 					form.TopLevel = true;
+#endif
 				}
 				else
 				{
@@ -240,24 +259,6 @@ namespace Axiom.RenderSystems.OpenGL
 
 				form.Show();
 				_hWindow = form.Handle;
-
-				if ( isFullScreen )
-				{
-					Gdi.DEVMODE screenSettings = new Gdi.DEVMODE();
-					screenSettings.dmSize = (short)Marshal.SizeOf( screenSettings );
-					screenSettings.dmPelsWidth = width;                         // Selected Screen Width
-					screenSettings.dmPelsHeight = height;                       // Selected Screen Height
-					screenSettings.dmBitsPerPel = ColorDepth;                         // Selected Bits Per Pixel
-					screenSettings.dmFields = Gdi.DM_BITSPERPEL | Gdi.DM_PELSWIDTH | Gdi.DM_PELSHEIGHT;
-
-					// Try To Set Selected Mode And Get Results.  NOTE: CDS_FULLSCREEN Gets Rid Of Start Bar.
-					int result = User.ChangeDisplaySettings( ref screenSettings, User.CDS_FULLSCREEN );
-
-					if ( result != User.DISP_CHANGE_SUCCESSFUL )
-					{
-						throw new System.ComponentModel.Win32Exception( Marshal.GetLastWin32Error(), "Unable to change user display settings." );
-					}
-				}
 
 			}
 
