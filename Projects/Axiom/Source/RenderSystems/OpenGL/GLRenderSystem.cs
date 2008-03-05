@@ -1483,6 +1483,8 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <returns></returns>
 		public override RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
 		{
+			HighLevelGpuProgramManager.Instance.AddFactory( new GLSL.GLSLProgramFactory() );
+
 			_glSupport.Start();
 
 			RenderWindow autoWindow = _glSupport.CreateWindow( autoCreateWindow, this, windowTitle );

@@ -53,7 +53,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		///     Reference to a GLSL program factory.
 		/// </summary>
-		private GLSL.GLSLProgramFactory factory = new GLSL.GLSLProgramFactory();
+		//private GLSL.GLSLProgramFactory factory = new GLSL.GLSLProgramFactory();
 		/// <summary>
 		///     Reference to the render system instance.
 		/// </summary>
@@ -64,12 +64,12 @@ namespace Axiom.RenderSystems.OpenGL
 			// add an instance of this plugin to the list of available RenderSystems
 			Root.Instance.RenderSystems.Add( Assembly.GetExecutingAssembly().GetName().FullName, renderSystem );
 
-			HighLevelGpuProgramManager.Instance.AddFactory( factory );
+			//HighLevelGpuProgramManager.Instance.AddFactory( factory );
 		}
 
 		public void Stop()
 		{
-			factory.Dispose();
+			//factory.Dispose();
 			renderSystem.Shutdown();
 		}
 
