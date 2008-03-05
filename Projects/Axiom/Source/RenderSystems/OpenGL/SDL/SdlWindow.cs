@@ -75,7 +75,7 @@ namespace Axiom.RenderSystems.OpenGL
 					case "glcontext":
 						return null; //	_glContext;
 					case "window":
-						System.Windows.Forms.Control ctrl = System.Windows.Forms.Control.FromChildHandle( _hWindow );
+						System.Windows.Forms.Control ctrl = System.Windows.Forms.Control.FromHandle( _hWindow );
 						return ctrl;
 					default:
 						return null;
