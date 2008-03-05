@@ -2463,7 +2463,10 @@ namespace Axiom.Core
 				}
 				else
 				{
-					numTextureUnits = targetRenderSystem.HardwareCapabilities.TextureUnitCount;
+					if ( Config.MaxTextureLayers < targetRenderSystem.HardwareCapabilities.TextureUnitCount )
+						numTextureUnits = Config.MaxTextureLayers;
+					else
+						numTextureUnits = targetRenderSystem.HardwareCapabilities.TextureUnitCount;
 				}
 
 				for ( int i = 0; i < numTextureUnits; i++ )
