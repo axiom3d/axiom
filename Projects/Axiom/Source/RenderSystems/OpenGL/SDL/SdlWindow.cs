@@ -75,8 +75,12 @@ namespace Axiom.RenderSystems.OpenGL
 					case "glcontext":
 						return null; //	_glContext;
 					case "window":
-						System.Windows.Forms.Control ctrl = System.Windows.Forms.Control.FromHandle( _hWindow );
-						return ctrl;
+						// Retrieve the Handle to the SDL Window
+						Sdl.SDL_SysWMinfo_Windows wmInfo;
+						Sdl.SDL_GetWMInfo( out wmInfo );
+						return new IntPtr( wmInfo.window );
+						//System.Windows.Forms.Control ctrl = System.Windows.Forms.Control.FromHandle( sdlWindowHandle );
+						//return ctrl;
 					default:
 						return null;
 				}
