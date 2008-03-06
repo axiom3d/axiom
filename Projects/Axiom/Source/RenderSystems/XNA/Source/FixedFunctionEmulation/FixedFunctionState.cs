@@ -40,12 +40,89 @@ using Axiom.RenderSystems.Xna.HLSL;
 
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 {
-	class FixedFunctionState
+
+
+	/// <summary>
+	/// Class defining a fixed function state.
+	/// </summary>
+	/// <remarks>
+	/// The Fixed Function Pipeline (FFP abbreviated) is one of currently two methods of modifying 
+	/// the graphic output. The other is the Programmable Pipeline also known as Shaders.
+	/// With the FFP you can choose one of those algorithms and several ways to set or 
+	/// modify the factors. There is only a handful of predefined algorithms and you cannot 
+	/// add handcrafted ones. Hence the name Fixed Function Pipeline.
+	/// One of the big differences of XNA from previous versions of DirectX and OpenGL is that it 
+	/// doesn't have support for the FFP - the motivation for this class cames from the needs
+	/// of the XNA render system to support the FFP functions using shaders.
+	/// Usually you will get better performance if you use the PP and not the FFP shader emulation.
+	/// The second common use for this class is to generate the base code for a new shader.
+	/// </remarks>
+	class FixedFunctionState : IComparable<FixedFunctionState>
 	{
+		#region Fields and Properties
+
+		protected GeneralFixedFunctionState generalFFState;
+		public GeneralFixedFunctionState GeneralFixedFunctionState
+		{
+			get
+			{
+				return generalFFState;
+			}
+		}
+
+		protected List<LightType> lights;
+		public IList<LightType> Lights
+		{
+			get
+			{
+				return lights;
+			}
+			set
+			{
+				lights = (List<LightType>)value;
+			}
+		}
+
+		protected List<TextureLayerState> textureLayerStates;
+		public IList<TextureLayerState> TextureLayerStates
+		{
+			get
+			{
+				return textureLayerStates;
+			}
+			set
+			{
+				textureLayerStates = (List<TextureLayerState>)value;
+			}
+		}
+
+		#endregion Fields and Properties
+
+		#region Construction and Destruction
+
+		public FixedFunctionState()
+		{
+		}
+
+		#endregion Construction and Destruction
+
+		#region Methods
+		#endregion Methods
+
+
+		#region IComparable<FixedFunctionState> Implementation
+
+		public int CompareTo( FixedFunctionState other )
+		{
+			throw new NotImplementedException();
+		}
+
+		#endregion
 	}
 }

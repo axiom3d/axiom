@@ -40,37 +40,20 @@ using Axiom.RenderSystems.Xna.HLSL;
 
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 {
-	abstract class ShaderGenerator
+	struct TextureLayerState
 	{
-		#region Fields and Properties
+		#region Fields
 
-		protected string name;
-		public string Name { get { return name; } }
+		public TextureType TextureType;
+		public TexCoordCalcMethod TexCoordCalcMethod;
+		public LayerBlendOperationEx LayerBlendOperationEx;
 
-		protected string languageName;
-		public string Language { get { return languageName; } }
-
-		protected string vpTarget;
-		public string VPTarget { get { return vpTarget;} }
-
-		protected string fpTarget;
-		public string FPTarget { get { return fpTarget; } }
-
-		#endregion Fields and Properties
-
-		#region Construction and Destruction
-		#endregion Construction and Destruction
-
-		#region Methods
-
-		public abstract String GetShaderSource( String vertexProgramName, String fragmentProgramName, VertexBufferDeclaration vertexBufferDeclaration, FixedFunctionState fixedFuncState );
-
-		#endregion Methods
-
+		#endregion Fields
 	}
 }
