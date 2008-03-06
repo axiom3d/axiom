@@ -1021,6 +1021,16 @@ namespace Axiom.RenderSystems.DirectX9
 					texStageDesc[ stage ].tex = texture.DXTexture;
 					texStageDesc[ stage ].texType = D3DHelper.ConvertEnum( texture.TextureType );
 				}
+				// TODO : Set gamma now too
+				//if ( dt->isHardwareGammaReadToBeUsed() )
+				//{
+				//    __SetSamplerState( stage, D3DSAMP_SRGBTEXTURE, TRUE );
+				//}
+				//else
+				//{
+				//    __SetSamplerState( stage, D3DSAMP_SRGBTEXTURE, FALSE );
+				//}
+
 			}
 			else
 			{

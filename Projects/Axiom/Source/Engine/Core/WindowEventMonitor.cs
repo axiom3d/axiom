@@ -328,7 +328,9 @@ namespace Axiom.Core
 
         private void _attachEventHandlers( RenderWindow window )
         {
-            System.Windows.Forms.Control ctrl = (System.Windows.Forms.Control)window[ "WINDOW" ];
+			IntPtr winHandle = (IntPtr)window[ "WINDOW" ];
+			System.Windows.Forms.Control ctrl = System.Windows.Forms.Control.FromHandle( winHandle );
+            //System.Windows.Forms.Control ctrl = (System.Windows.Forms.Control)window[ "WINDOW" ];
 
             ctrl.Resize += new EventHandler( _windowResize );
             ctrl.Move += new EventHandler( _windowMove );
@@ -342,7 +344,9 @@ namespace Axiom.Core
 
         private void _detachEventHandlers( RenderWindow window )
         {
-            System.Windows.Forms.Control ctrl = (System.Windows.Forms.Control)window[ "WINDOW" ];
+			IntPtr winHandle = (IntPtr)window[ "WINDOW" ];
+			System.Windows.Forms.Control ctrl = System.Windows.Forms.Control.FromHandle( winHandle );
+			//System.Windows.Forms.Control ctrl = (System.Windows.Forms.Control)window[ "WINDOW" ];
 
             ctrl.Resize -= new EventHandler( _windowResize );
             ctrl.Move -= new EventHandler( _windowMove );

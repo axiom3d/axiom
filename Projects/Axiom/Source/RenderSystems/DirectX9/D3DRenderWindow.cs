@@ -690,7 +690,7 @@ namespace Axiom.RenderSystems.DirectX9
 						return _driver.D3DDevice;
 
 					case "WINDOW":
-						return this._window;
+						return this._window.Handle;
 
 					case "ISTEXTURE":
 						return false;
