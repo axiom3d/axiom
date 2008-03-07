@@ -50,16 +50,40 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		#region Fields and Properties
 
 		protected string name;
-		public string Name { get { return name; } }
+		public string Name
+		{
+			get
+			{
+				return name;
+			}
+		}
 
 		protected string languageName;
-		public string Language { get { return languageName; } }
+		public string Language
+		{
+			get
+			{
+				return languageName;
+			}
+		}
 
 		protected string vpTarget;
-		public string VPTarget { get { return vpTarget;} }
+		public string VPTarget
+		{
+			get
+			{
+				return vpTarget;
+			}
+		}
 
 		protected string fpTarget;
-		public string FPTarget { get { return fpTarget; } }
+		public string FPTarget
+		{
+			get
+			{
+				return fpTarget;
+			}
+		}
 
 		#endregion Fields and Properties
 

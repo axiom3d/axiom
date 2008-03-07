@@ -36,6 +36,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 
+using Axiom.Graphics;
+using Axiom.Core;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
@@ -45,28 +48,26 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 	/// </summary>
 	class ShaderManager
 	{
+		#region Static Interface
+
+		private static int shaderCount = 0;
+
+		#endregion Static Interface
+
 		#region Nested Types
 
 		internal class ShaderGeneratorMap : Dictionary<String, ShaderGenerator> {}
-		protected class VertexBufferDeclaration2FixedFuncProgramsMap : Dictionary<VertexBufferDeclaration, FixedFunctionPrograms> {}
-		protected class State2Declaration2ProgramsMap : Dictionary<FixedFunctionState, VertexBufferDeclaration2FixedFuncProgramsMap> {}
+		protected class VertexBufferDeclaration2FixedFunctionProgramsMap : Dictionary<VertexBufferDeclaration, FixedFunctionPrograms> {}
+		protected class State2Declaration2ProgramsMap : Dictionary<FixedFunctionState, VertexBufferDeclaration2FixedFunctionProgramsMap> {}
 		protected class Language2State2Declaration2ProgramsMap : Dictionary<String, State2Declaration2ProgramsMap> {}
 
 		#endregion Nested Types
 
 		#region Fields and Properties
 
-		protected ShaderGeneratorMap shaderGeneratorMap;
+		protected ShaderGeneratorMap shaderGeneratorMap = new ShaderGeneratorMap();
 		protected Language2State2Declaration2ProgramsMap language2State2Declaration2ProgramsMap;
 		protected List<FixedFunctionPrograms> programsToDeleteAtTheEnd;
-
-		public FixedFunctionPrograms ShaderPrograms
-		{
-			get
-			{
-				return null;
-			}
-		}
 
 		#endregion Fields and Properties
 
@@ -80,22 +81,92 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 		#region Methods
 
-		public void RegisterGenerator( ShaderGeneratorMap generator )
+		public void RegisterGenerator( ShaderGenerator generator )
 		{
+			shaderGeneratorMap.Add( generator.Name, generator );
 		}
 
-		public void UnregisterGenerator( ShaderGeneratorMap generator )
+		public void UnregisterGenerator( ShaderGenerator generator )
 		{
+			shaderGeneratorMap.Remove( generator.Name );
 		}
 
 		public FixedFunctionPrograms GetShaderPrograms( String generatorName, VertexBufferDeclaration vertexBufferDeclaration, FixedFunctionState state )
 		{
-			return null;
+
+			// Search the maps for a matching program
+			State2Declaration2ProgramsMap languageMaps;
+			language2State2Declaration2ProgramsMap.TryGetValue( generatorName, out languageMaps );
+			if ( languageMaps != null )
+			{
+				VertexBufferDeclaration2FixedFunctionProgramsMap fixedFunctionStateMaps;
+				languageMaps.TryGetValue( state, out fixedFunctionStateMaps );
+				if ( fixedFunctionStateMaps != null )
+				{
+					FixedFunctionPrograms programs;
+					fixedFunctionStateMaps.TryGetValue( vertexBufferDeclaration, out programs );
+					if ( programs != null )
+					{
+						return programs;
+					}
+				}
+			}
+
+			// If we are here, then one did not exist.
+			// Create it.
+			return createShaderPrograms( generatorName, vertexBufferDeclaration, state );
 		}
 
 		protected FixedFunctionPrograms createShaderPrograms( String generatorName, VertexBufferDeclaration vertexBufferDeclaration, FixedFunctionState state )
 		{
-			return null;
+			const String vertexProgramName = "VS";
+			const String fragmentProgramName = "FP";
+
+			ShaderGenerator shaderGenerator = shaderGeneratorMap[generatorName];
+			String shaderSource = shaderGenerator.GetShaderSource( vertexProgramName, fragmentProgramName, vertexBufferDeclaration,	state );
+
+		
+			// Vertex program details
+			GpuProgramUsage vertexProgramUsage = new GpuProgramUsage(GpuProgramType.Vertex);
+			// Fragment program details
+			GpuProgramUsage fragmentProgramUsage = new GpuProgramUsage(GpuProgramType.Fragment);
+
+
+			HighLevelGpuProgram vs;
+			HighLevelGpuProgram fs;
+
+			shaderCount++;
+
+			vs = HighLevelGpuProgramManager.Instance.CreateProgram( "VS_" + shaderCount.ToString(), 
+																	//ResourceGroupManager.DefaultResourceGroupName,
+																	shaderGenerator.Language,
+																	GpuProgramType.Vertex );	
+			vs.Source = shaderSource;
+			vs.SetParam( "entry_point", vertexProgramName );
+			vs.SetParam( "target", shaderGenerator.VPTarget );
+			vs.Load();
+
+			vertexProgramUsage.Program = vs;
+			vertexProgramUsage.Params = vs.CreateParameters();
+
+			fs = HighLevelGpuProgramManager.Instance.CreateProgram( "FS_" + shaderCount.ToString(), 
+																	//ResourceGroupManager.DefaultResourceGroupName,
+																	shaderGenerator.Language,
+																	GpuProgramType.Fragment );	
+			fs.Source = shaderSource;
+			fs.SetParam( "entry_point", fragmentProgramName );
+			fs.SetParam( "target", shaderGenerator.FPTarget );
+			fs.Load();
+
+			fragmentProgramUsage.Program = fs;
+			fragmentProgramUsage.Params = fs.CreateParameters();
+
+			FixedFunctionPrograms newPrograms = language2State2Declaration2ProgramsMap[ generatorName ][ state ][ vertexBufferDeclaration ];
+			newPrograms.VertexProgramUsage = vertexProgramUsage;
+			newPrograms.FragmentProgramUsage = fragmentProgramUsage;
+
+			programsToDeleteAtTheEnd.Add( newPrograms );
+			return newPrograms;		
 		}
 
 		#endregion Methods

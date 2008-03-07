@@ -51,6 +51,23 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 	/// </summary>
 	struct GeneralFixedFunctionState
 	{
+		#region Factory
+
+		public static GeneralFixedFunctionState Create()
+		{
+			GeneralFixedFunctionState gffs;
+
+			gffs.NormalizeNormals = false;
+			gffs.EnableLighting = true;
+			gffs.FogMode = FogMode.None;
+			gffs.Shading = Shading.Gouraud;
+			gffs.AlphaRejectFunction = CompareFunction.AlwaysPass;
+
+			return gffs;
+		}
+
+		#endregion Factory
+
 		#region Fields
 
 		/// <summary>
@@ -136,6 +153,5 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		public Shading Shading;
 
 		#endregion Fields
-
 	}
 }
