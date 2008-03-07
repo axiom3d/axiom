@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
 
 using Axiom.Graphics;
 using Axiom.RenderSystems.Xna.HLSL;
@@ -45,7 +46,73 @@ using XFG = Microsoft.Xna.Framework.Graphics;
 
 namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 {
-	class VertexBufferDeclaration
+	class VertexBufferDeclaration : IComparable<VertexBufferDeclaration>
 	{
+		#region Fields and Properties
+
+		protected List<VertexBufferElement> vertexBufferElements;
+		public IEnumerable<VertexBufferElement> VertexBufferElements
+		{
+			get
+			{
+				return vertexBufferElements;
+			}
+			set
+			{
+				vertexBufferElements = (List<VertexBufferElement>)value;
+			}
+		}
+
+		public bool HasColor
+		{
+			get
+			{
+				return ( GetVertexElementSemanticCount( VertexElementSemantic.Diffuse ) > 0 );
+			}
+		}
+
+		public bool HasTexCoord
+		{
+			get
+			{
+				return ( GetVertexElementSemanticCount( VertexElementSemantic.TexCoords ) > 0 );
+			}
+		}
+
+		public ushort TexCoordCount
+		{
+			get
+			{
+				return GetVertexElementSemanticCount( VertexElementSemantic.TexCoords );
+			}
+		}
+
+		#endregion Fields and Properties
+
+		#region Methods
+
+		public ushort GetVertexElementSemanticCount( VertexElementSemantic semantic )
+		{
+			ushort count = 0;
+			foreach ( VertexBufferElement vbe in vertexBufferElements )
+			{
+				if ( vbe.VertexElementSemantic == semantic )
+				{
+					count++;
+				}
+			}
+			return count;
+		}
+
+		#endregion Methods
+
+		#region IComparable<VertexBufferDeclaration> Implementation
+
+		public int CompareTo( VertexBufferDeclaration other )
+		{
+			throw new NotImplementedException();
+		}
+
+		#endregion IComparable<VertexBufferDeclaration> Implementation
 	}
 }

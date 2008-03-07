@@ -67,7 +67,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 	{
 		#region Fields and Properties
 
-		protected GeneralFixedFunctionState generalFFState;
+		protected GeneralFixedFunctionState generalFFState = GeneralFixedFunctionState.Create();
 		public GeneralFixedFunctionState GeneralFixedFunctionState
 		{
 			get
@@ -76,7 +76,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			}
 		}
 
-		protected List<LightType> lights;
+		protected List<LightType> lights = new List<LightType>();
 		public IList<LightType> Lights
 		{
 			get
@@ -89,7 +89,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			}
 		}
 
-		protected List<TextureLayerState> textureLayerStates;
+		protected List<TextureLayerState> textureLayerStates = new List<TextureLayerState>();
 		public IList<TextureLayerState> TextureLayerStates
 		{
 			get
