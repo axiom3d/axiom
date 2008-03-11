@@ -306,9 +306,11 @@ namespace Axiom.RenderSystems.OpenGL
 			if ( !_isExternalGLControl )
 			{
 				// Don't use wglew as if this is the first window, we won't have initialised yet
-				IntPtr wglSwapIntervalEXT = Wgl.wglGetProcAddress( "wglSwapIntervalEXT" );
-				if ( wglSwapIntervalEXT != IntPtr.Zero )
-					Wgl.wglSwapIntervalEXT( wglSwapIntervalEXT, vsync ? 1 : 0 );
+				//IntPtr wglSwapIntervalEXT = Wgl.wglGetProcAddress( "wglSwapIntervalEXT" );
+				//if ( wglSwapIntervalEXT != IntPtr.Zero )
+				//Wgl.wglSwapIntervalEXT( wglSwapIntervalEXT, vsync );
+				if ( Wgl.IsExtensionSupported( "wglSwapIntervalEXT" ) )
+					Wgl.wglSwapIntervalEXT( vsync ? 1 : 0 ); // Tao 2.0
 			}
 
 			if ( old_context != IntPtr.Zero )
@@ -418,8 +420,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void SwapBuffers( bool waitForVSync )
 		{
-			//int sync = waitForVSync ? 1: 0;
-			//Wgl.wglSwapIntervalEXT((uint)sync);
+			int sync = waitForVSync ? 1: 0;
+			Wgl.wglSwapIntervalEXT( sync );
 			if ( !_isExternalGLControl )
 			{
 				// swap buffers

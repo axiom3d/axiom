@@ -396,7 +396,8 @@ namespace Axiom.Plugins.DevILCodecs
 
 				// Let DevIL allocate the memory for us, then do the conversion ourselves
 				ifmt = Convert( fmt );
-				Il.ilTexImage( src.Width, src.Height, src.Depth, (byte)ifmt.Channels, ifmt.Format, ifmt.Type, null );
+				Il.ilTexImage( src.Width, src.Height, src.Depth, (byte)ifmt.Channels, ifmt.Format, ifmt.Type, IntPtr.Zero ); // TAO 2.0
+				//Il.ilTexImage( src.Width, src.Height, src.Depth, (byte)ifmt.Channels, ifmt.Format, ifmt.Type, null );
 				IntPtr data = Il.ilGetData();
 				PixelBox dst = new PixelBox( src.Width, src.Height, src.Depth, fmt, data );
 				PixelConverter.BulkPixelConversion( src, dst );

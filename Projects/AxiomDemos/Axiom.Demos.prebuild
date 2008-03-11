@@ -43,7 +43,7 @@
 
 			<ReferencePath>../../../../Lib/Managed/XPlatform/Axiom/debug</ReferencePath>
 			<ReferencePath>../../../../Lib/Managed/XPlatform/ICSharpCode.SharpZipLib/0.84.0.0</ReferencePath>
-			<ReferencePath>../../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
+			<ReferencePath>../../../../Lib/Managed/XPlatform/Tao/2.0.0.0</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
@@ -74,7 +74,7 @@
 
 			<ReferencePath>../../../../../Lib/Managed/XPlatform/Axiom/debug</ReferencePath>
 			<ReferencePath>../../../../../Lib/Managed/XPlatform/ICSharpCode.SharpZipLib/0.84.0.0</ReferencePath>
-			<ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
+			<ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/2.0.0.0</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />
@@ -120,7 +120,7 @@
 
 			<ReferencePath>../../../../../Lib/Managed/XPlatform/Axiom/debug</ReferencePath>
 			<ReferencePath>../../../../../Lib/Managed/XPlatform/ICSharpCode.SharpZipLib/0.84.0.0</ReferencePath>
-			<ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
+			<ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/2.0.0.0</ReferencePath>
 
 			<Reference name="System" />
 			<Reference name="System.Data" />

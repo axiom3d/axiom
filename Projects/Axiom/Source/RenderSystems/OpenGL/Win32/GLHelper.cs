@@ -111,20 +111,26 @@ namespace Axiom.RenderSystems.OpenGL
 			if ( format != 0 )
 				Gdi.SetPixelFormat( hdc, format, ref pfd );
 
+
 			IntPtr hrc = Wgl.wglCreateContext( hdc );
 			if ( hrc != IntPtr.Zero )
 			{
 				// if wglMakeCurrent fails, wglGetProcAddress will return null
 				Wgl.wglMakeCurrent( hdc, hrc );
+				Wgl.ReloadFunctions(); // Tao 2.0
 
-				IntPtr wglGetExtensionsStringARB = Wgl.wglGetProcAddress( "wglGetExtensionsStringARB" );
 				// check for pixel format and multisampling support
-				if ( wglGetExtensionsStringARB != IntPtr.Zero )
-				{
-					string exts = Wgl.wglGetExtensionsStringARB( wglGetExtensionsStringARB, hdc );
-					_hasPixelFormatARB = exts.Contains( "WGL_ARB_pixel_format" );
-					_hasMultisample = exts.Contains( "WGL_ARB_multisample" );
-				}
+	
+				//IntPtr wglGetExtensionsStringARB = Wgl.wglGetProcAddress( "wglGetExtensionsStringARB" );
+				//if ( wglGetExtensionsStringARB != IntPtr.Zero )
+				//{
+				//    string exts = Wgl.wglGetExtensionsStringARB( wglGetExtensionsStringARB, hdc );
+				//    _hasPixelFormatARB = exts.Contains( "WGL_ARB_pixel_format" );
+				//    _hasMultisample = exts.Contains( "WGL_ARB_multisample" );
+				//}
+
+				_hasPixelFormatARB = Wgl.IsExtensionSupported( "WGL_ARB_pixel_format" );
+				_hasMultisample = Wgl.IsExtensionSupported( "WGL_ARB_multisample" );
 
 				if ( _hasPixelFormatARB && _hasMultisample )
 				{
@@ -145,18 +151,22 @@ namespace Axiom.RenderSystems.OpenGL
 				        0
 				    };
 					int[] formats = new int[ 256 ];
-					uint count;
+					int[] count = new int[ 256 ]; // Tao 2.0
+					//int count;
 					// cheating here.  wglChoosePixelFormatARB proc address needed later on
 					// when a valid GL context does not exist and glew is not initialized yet.
 					_wglChoosePixelFormatARB = Wgl.wglGetProcAddress( "wglChoosePixelFormatARB" );
-					if ( Wgl.wglChoosePixelFormatARB( _wglChoosePixelFormatARB, hdc, iattr, null, 256, formats, out count ) != 0 )
+					if ( Wgl.wglChoosePixelFormatARB( hdc, iattr, null, 256, formats, count ) ) // Tao 2.0
+					//if ( Wgl.wglChoosePixelFormatARB( _wglChoosePixelFormatARB, hdc, iattr, null, 256, formats, out count ) != 0 )
 					{
 						// determine what multisampling levels are offered
 						int query = Wgl.WGL_SAMPLES_ARB, samples;
-						for ( int i = 0; i < count; ++i )
+						for ( int i = 0; i < count[ 0 ]; ++i ) // Tao 2.0
+						//for ( int i = 0; i < count[ 0 ]; ++i )
 						{
 							IntPtr wglGetPixelFormatAttribivARB = Wgl.wglGetProcAddress( "wglGetPixelFormatAttribivARB" );
-							if ( Wgl.wglGetPixelFormatAttribivARB( wglGetPixelFormatAttribivARB, hdc, formats[ i ], 0, 1, ref query, out samples ) != 0 )
+							if ( Wgl.wglGetPixelFormatAttribivARB( hdc, formats[ i ], 0, 1, ref query, out samples ) ) // Tao 2.0
+							//if ( Wgl.wglGetPixelFormatAttribivARB( wglGetPixelFormatAttribivARB, hdc, formats[ i ], 0, 1, ref query, out samples ) != 0 )
 							{
 								if ( !_fsaaLevels.Contains( samples ) )
 									_fsaaLevels.Add( samples );
@@ -273,12 +283,15 @@ namespace Axiom.RenderSystems.OpenGL
 					0
 				};
 
-				int nformats;
+				int[] nformats = new int[1];
+				//int nformats;
 				Debug.Assert( _wglChoosePixelFormatARB != null, "failed to get proc address for ChoosePixelFormatARB" );
 				// ChoosePixelFormatARB proc address was obtained when setting up a dummy GL context in initialiseWGL()
 				// since glew hasn't been initialized yet, we have to cheat and use the previously obtained address
-				int result = Wgl.wglChoosePixelFormatARB( _wglChoosePixelFormatARB, hdc, iattr, null, 1, format, out nformats );
-				if ( result == 0 || nformats <= 0 )
+				bool result = Wgl.wglChoosePixelFormatARB(  hdc, iattr, null, 1, format, nformats ); // Tao 2.0
+				//int result = Wgl.wglChoosePixelFormatARB( _wglChoosePixelFormatARB, hdc, iattr, null, 1, format, out nformats );
+				if ( !result || nformats[0] <= 0 ) // Tao 2.0
+				//if ( result == 0 || nformats <= 0 )
 					return false;
 			}
 			else

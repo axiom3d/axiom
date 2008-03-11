@@ -51,12 +51,14 @@
 			<include name="${Tao.OpenGl.dll}"/>
 			<include if="${platform::is-unix()}" name="${Tao.OpenGl.dll.configs}"/>
 
+      <!--
 			<include name="${Tao.OpenGl.ExtensionLoader.dll}"/>
 			<include if="${platform::is-unix()}" name="${Tao.OpenGl.ExtensionLoader.dll.configs}"/>
 
 			<include name="${Tao.OpenGl.Glu.dll}"/>
 			<include if="${platform::is-unix()}" name="${Tao.OpenGl.Glu.dll.configs}"/>
-
+      -->
+      
 			<include if="${platform::is-win32()}" name="${Tao.Platform.Windows.dll}"/>
 
 			<include unless="${platform::is-win32()}" name="${Tao.Sdl.dll}"/>

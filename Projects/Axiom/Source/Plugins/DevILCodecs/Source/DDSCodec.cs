@@ -114,7 +114,14 @@ namespace Axiom.Plugins.DevILCodecs
                 buffer = new byte[ dxtSize ];
 
                 // get the data into the buffer
-                Il.ilGetDXTCData( buffer, dxtSize, dxtFormat );
+				unsafe
+				{
+					fixed ( byte* bufferPtr = &buffer[ 0 ] )
+					{
+						Il.ilGetDXTCData( (IntPtr)bufferPtr, dxtSize, dxtFormat ); // TAO 2.0
+					}
+				}
+				//Il.ilGetDXTCData( buffer, dxtSize, dxtFormat );
 
                 // this data is still compressed
                 data.size = dxtSize;

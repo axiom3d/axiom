@@ -83,12 +83,12 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 			Gl.glBindProgramNV( programType, programId );
 
 			// load the ASM source into an NV program
-			//Gl.glLoadProgramNV( programType, programId, source.Length, System.Text.Encoding.ASCII.GetBytes( source ) ); // TAO 2.0
-			Gl.glLoadProgramNV( programType, programId, source.Length, source );
+			Gl.glLoadProgramNV( programType, programId, source.Length, System.Text.Encoding.ASCII.GetBytes( source ) ); // TAO 2.0
+			//Gl.glLoadProgramNV( programType, programId, source.Length, source );
 
 			// get the error string from the NV program loader
-			//string error = Gl.glGetString( Gl.GL_PROGRAM_ERROR_STRING_NV ); // TAO 2.0
-			string error = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_PROGRAM_ERROR_STRING_NV ) );
+			string error = Gl.glGetString( Gl.GL_PROGRAM_ERROR_STRING_NV ); // TAO 2.0
+			//string error = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_PROGRAM_ERROR_STRING_NV ) );
 
 			// if there was an error, report it
 			if ( error != null && error.Length > 0 )
@@ -228,8 +228,8 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 						GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
 
 						// send the params 4 at a time
-						//Gl.glProgramNamedParameter4fvNV( programId, name.Length, System.Text.Encoding.ASCII.GetBytes( name ), entry.val ); // TAO 2.0
-						Gl.glProgramNamedParameter4fvNV( programId, name.Length, name, entry.val );
+						Gl.glProgramNamedParameter4fvNV( programId, name.Length, System.Text.Encoding.ASCII.GetBytes( name ), entry.val ); // TAO 2.0
+						//Gl.glProgramNamedParameter4fvNV( programId, name.Length, name, entry.val );
 					}
 				}
 			}
