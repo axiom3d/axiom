@@ -9,6 +9,7 @@
 
 	<!-- default configuration -->
 	<property name="project.config" value="debug" />
+  
 	<!-- debug|release -->
 	<property name="nant.console.name" value="NAnt" />
 	<property name="build.defines" value="" />
@@ -53,7 +54,6 @@
 		build/mono-1.0.unix/Axiom3D-1.06-debug
 	-->
 	<target name="debug" description="Perform a 'debug' build">
-		<property name="project.config" value="debug" />
 		<call target="set-version" />
 		<property name="build.debug" value="true" />
 		<!--	<property name="build.dir" value="${project::get-base-directory()}/build/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" /> -->
@@ -62,12 +62,11 @@
 	</target>
 
 	<target name="release" description="Perform a 'release' build">
-		<property name="project.config" value="release" />
 		<call target="set-version" />
 		<property name="build.debug" value="false" />
 		<!--	<property name="build.dir" value="${project::get-base-directory()}/build/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version.full}" /> -->
 		<property name="build.dir" value="${top.build.dir}/${project.config}" />
-		<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version.full}" />
+		<property name="dist.dir" value="${top.dist.dir}/${framework::get-target-framework()}.${platform::get-name()}/${project.name}-${project.version}-${project.config}" />
 	</target>
 
 	<target name="set-version" description="sets the version string">

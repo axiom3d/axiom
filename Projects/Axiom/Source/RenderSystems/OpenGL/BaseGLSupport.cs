@@ -187,12 +187,12 @@ namespace Axiom.RenderSystems.OpenGL
 				GlExtensionLoader.LoadAllExtensions();
 
 				// get the OpenGL version string and vendor name
-				//_glVersion = Gl.glGetString( Gl.GL_VERSION ); // TAO 2.0
-				_glVersion = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_VERSION ) );
-				//_videoCard = Gl.glGetString( Gl.GL_RENDERER ); // TAO 2.0
-				_videoCard = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_RENDERER ) );
-				//_vendor = Gl.glGetString( Gl.GL_VENDOR ); // TAO 2.0
-				_vendor = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_VENDOR ) );
+				_glVersion = Gl.glGetString( Gl.GL_VERSION ); // TAO 2.0
+				//_glVersion = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_VERSION ) );
+				_videoCard = Gl.glGetString( Gl.GL_RENDERER ); // TAO 2.0
+				//_videoCard = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_RENDERER ) );
+				_vendor = Gl.glGetString( Gl.GL_VENDOR ); // TAO 2.0
+				//_vendor = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_VENDOR ) );
 
 				// parse out the first piece of the vendor string if there are spaces in it
 				if ( _vendor.IndexOf( " " ) != -1 )
@@ -203,8 +203,8 @@ namespace Axiom.RenderSystems.OpenGL
 				// create a new extension list
 				_extensionList = new StringCollection();
 
-				//string allExt = Gl.glGetString( Gl.GL_EXTENSIONS ); // TAO 2.0
-				string allExt = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_EXTENSIONS ) );
+				string allExt = Gl.glGetString( Gl.GL_EXTENSIONS ); // TAO 2.0
+				//string allExt = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_EXTENSIONS ) );
 				string[] splitExt = allExt.Split( Char.Parse( " " ) );
 
 				// store the parsed extension list

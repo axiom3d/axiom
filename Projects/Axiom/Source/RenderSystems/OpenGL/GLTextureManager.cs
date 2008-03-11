@@ -185,8 +185,8 @@ namespace Axiom.RenderSystems.OpenGL
 				default:
 					return false;
 			}
-			//String pcRenderer = Gl.glGetString( Gl.GL_RENDERER ); // TAO 2.0
-			String pcRenderer = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_RENDERER ) );
+			String pcRenderer = Gl.glGetString( Gl.GL_RENDERER ); // TAO 2.0
+			//String pcRenderer = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_RENDERER ) );
 
 			foreach ( String str in supportedCards )
 			{

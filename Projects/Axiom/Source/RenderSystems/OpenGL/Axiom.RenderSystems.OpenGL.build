@@ -56,8 +56,10 @@
         <include name="System.Windows.Forms.dll"/>
         <include name="System.Xml.dll"/>
 				<include name="${Tao.OpenGl.dll}"/>
+        <!--
 				<include name="${Tao.OpenGl.ExtensionLoader.dll}"/>
 				<include name="${Tao.OpenGl.Glu.dll}"/>
+        -->
 				<include name="${Tao.Sdl.dll}"/>
 			 </references>
 		</csc>
@@ -99,8 +101,10 @@
         <include name="System.Drawing.dll"/>
         <include name="System.Xml.dll"/>
         <include name="${Tao.OpenGl.dll}"/>
+        <!--
         <include name="${Tao.OpenGl.ExtensionLoader.dll}"/>
         <include name="${Tao.OpenGl.Glu.dll}"/>
+        -->
         <include name="System.Windows.Forms.dll"/>
         <include name="${Tao.Platform.Windows.dll}"/>
       </references>

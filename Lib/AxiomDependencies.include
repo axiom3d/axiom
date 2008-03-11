@@ -53,7 +53,7 @@
 	  The following section is used to easily modify the version of the dependency used.
 	-->
 	<property name="version.ICSharpCode.SharpZipLib" value="0.84.0.0"  dynamic="false" />
-	<property name="version.Tao" 					 value="1.5.0.3"   dynamic="false" />
+	<property name="version.Tao" 					 value="2.0.0.0"   dynamic="false" />
 	<property name="version.ManagedDX"				 value="1.0.2902.0" dynamic="false" />
 
 	<property name="libs.managed.ICSharpCode.SharpZipLib.dir"			value="${libs.managed.portable.dir}/ICSharpCode.SharpZipLib/${version.ICSharpCode.SharpZipLib}"	/>
@@ -69,8 +69,10 @@
 	<property name="Tao.Cg.dll" value="${libs.managed.Tao.dir}/Tao.Cg.dll" dynamic="false" />
 	<property name="Tao.DevIl.dll"  value="${libs.managed.Tao.dir}/Tao.DevIl.dll" dynamic="false" />
 	<property name="Tao.OpenGl.dll" value="${libs.managed.Tao.dir}/Tao.OpenGl.dll" dynamic="false" />
+  <!--
 	<property name="Tao.OpenGl.ExtensionLoader.dll" value="${libs.managed.Tao.dir}/Tao.OpenGl.ExtensionLoader.dll" dynamic="false" />
 	<property name="Tao.OpenGl.Glu.dll" value="${libs.managed.Tao.dir}/Tao.OpenGl.Glu.dll" dynamic="false" />
+  -->
 	<property name="Tao.Sdl.dll" value="${libs.managed.Tao.dir}/Tao.Sdl.dll" dynamic="false" />
 
 	<!-- DLL-mapping config files for Mono.  
@@ -79,8 +81,10 @@
 	<property name="Tao.Cg.dll.configs" value="${libs.managed.Tao.dir}/Tao.Cg.dll.config*" />
 	<property name="Tao.DevIl.dll.configs" value="${libs.managed.Tao.dir}/Tao.DevIl.dll.config*" />
 	<property name="Tao.OpenGl.dll.configs" value="${libs.managed.Tao.dir}/Tao.OpenGl.dll.config*" />
+  <!--
 	<property name="Tao.OpenGl.ExtensionLoader.dll.configs" value="${libs.managed.Tao.dir}/Tao.OpenGl.ExtensionLoader.dll.config*" />
 	<property name="Tao.OpenGl.Glu.dll.configs" value="${libs.managed.Tao.dir}/Tao.OpenGl.Glu.dll.config*" />
+  -->
 	<property name="Tao.Sdl.dll.configs" value="${libs.managed.Tao.dir}/Tao.Sdl.dll.config*" />
 
 	<!-- Windows native libraries -->

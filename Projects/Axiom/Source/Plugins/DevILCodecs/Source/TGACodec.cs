@@ -114,7 +114,14 @@ namespace Axiom.Plugins.DevILCodecs
             {
                 // if so (probably), reverse b and r.  this is slower, but it works.
                 int newFormat = ( format == Il.IL_BGR ) ? Il.IL_RGB : Il.IL_RGBA;
-                Il.ilCopyPixels( 0, 0, 0, data.width, data.height, 1, newFormat, Il.IL_UNSIGNED_BYTE, buffer );
+				unsafe
+				{
+					fixed ( byte* bufferPtr = &buffer[ 0 ] )
+					{
+						Il.ilCopyPixels( 0, 0, 0, data.width, data.height, 1, newFormat, Il.IL_UNSIGNED_BYTE, (IntPtr)bufferPtr ); // TAO 2.0
+					}
+				}
+				//Il.ilCopyPixels( 0, 0, 0, data.width, data.height, 1, newFormat, Il.IL_UNSIGNED_BYTE, buffer );
                 format = newFormat;
             }
             else

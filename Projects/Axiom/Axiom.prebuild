@@ -43,7 +43,7 @@
       </Configuration>
 
       <ReferencePath>../../../../Lib/Managed/XPlatform/ICSharpCode.SharpZipLib/0.84.0.0</ReferencePath>
-      <ReferencePath>../../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
+      <ReferencePath>../../../../Lib/Managed/XPlatform/Tao/2.0.0.0</ReferencePath>
 
       <Reference name="System" />
       <Reference name="System.Data" />
@@ -79,7 +79,7 @@
         </Options>
       </Configuration>
 
-      <ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
+      <ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/2.0.0.0</ReferencePath>
 
       <Reference name="System" />
       <Reference name="System.Data" />
@@ -114,7 +114,7 @@
         </Options>
       </Configuration>
 
-      <ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
+      <ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/2.0.0.0</ReferencePath>
 
       <Reference name="System" />
       <Reference name="System.Data" />
@@ -152,7 +152,7 @@
         </Options>
       </Configuration>
 
-      <ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
+      <ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/2.0.0.0</ReferencePath>
 
       <Reference name="System" />
       <Reference name="System.Data" />
@@ -185,7 +185,7 @@
       </Configuration>
 
 
-      <ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
+      <ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/2.0.0.0</ReferencePath>
 
       <Reference name="System" />
       <Reference name="System.Data" />
@@ -194,9 +194,7 @@
       <Reference name="System.Xml" />
       <Reference name="Axiom" localCopy="true"/>
       <Reference name="Tao.OpenGl" localCopy="true" />
-      <Reference name="Tao.OpenGl.Glu" localCopy="true" />
-      <Reference name="Tao.OpenGl.ExtensionLoader" localCopy="true" />
-
+      
       <Reference name="Tao.Sdl" localCopy="true" />
 
       <Files>
@@ -231,7 +229,7 @@
       </Configuration>
 
 
-      <ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
+      <ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/2.0.0.0</ReferencePath>
 
       <Reference name="System" />
       <Reference name="System.Data" />
@@ -240,8 +238,6 @@
       <Reference name="System.Xml" />
       <Reference name="Axiom" localCopy="true"/>
       <Reference name="Tao.OpenGl" localCopy="true" />
-      <Reference name="Tao.OpenGl.Glu" localCopy="true" />
-      <Reference name="Tao.OpenGl.ExtensionLoader" localCopy="true" />
 
       <Reference name="Tao.Platform.Windows" localCopy="true" />
 
@@ -278,7 +274,7 @@
       </Configuration>
 
 
-      <ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
+      <ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/2.0.0.0</ReferencePath>
 
       <Reference name="System" />
       <Reference name="System.Data" />
@@ -287,6 +283,7 @@
       <Reference name="System.Xml" />
       <Reference name="Axiom" localCopy="true"/>
       <Reference name="Tao.OpenGl" localCopy="true" />
+      
       <Reference name="Tao.Platform.X11" localCopy="true" />
 
       <Files>
@@ -320,7 +317,7 @@
         </Options>
       </Configuration>
 
-      <ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/1.5.0.3</ReferencePath>
+      <ReferencePath>../../../../../Lib/Managed/XPlatform/Tao/2.0.0.0</ReferencePath>
 
       <Reference name="System" />
       <Reference name="System.Xml" />

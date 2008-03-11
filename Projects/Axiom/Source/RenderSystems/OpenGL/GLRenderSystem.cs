@@ -171,6 +171,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// create 
 			_glSupport = new GLSupport();
+			_glSupport.Start();
 
 			viewMatrix = Matrix4.Identity;
 			worldMatrix = Matrix4.Identity;
@@ -1484,8 +1485,6 @@ namespace Axiom.RenderSystems.OpenGL
 		public override RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
 		{
 			HighLevelGpuProgramManager.Instance.AddFactory( new GLSL.GLSLProgramFactory() );
-
-			_glSupport.Start();
 
 			RenderWindow autoWindow = _glSupport.CreateWindow( autoCreateWindow, this, windowTitle );
 
@@ -3080,7 +3079,8 @@ namespace Axiom.RenderSystems.OpenGL
 			// Must reset depth/colour write mask to according with user desired, otherwise,
 			// clearFrameBuffer would be wrong because the value we are recorded may be
 			// difference with the really state stored in GL context.
-			Gl.glDepthMask( depthWrite );
+			Gl.glDepthMask( depthWrite?1:0 ); // Tao 2.0
+			//Gl.glDepthMask( depthWrite );
 			Gl.glColorMask( colorWrite[ 0 ], colorWrite[ 1 ], colorWrite[ 2 ], colorWrite[ 3 ] );
 			Gl.glStencilMask( stencilMask );
 		}
