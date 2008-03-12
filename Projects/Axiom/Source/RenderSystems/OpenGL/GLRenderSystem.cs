@@ -171,7 +171,6 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// create 
 			_glSupport = new GLSupport();
-			_glSupport.Start();
 
 			viewMatrix = Matrix4.Identity;
 			worldMatrix = Matrix4.Identity;
@@ -1485,6 +1484,8 @@ namespace Axiom.RenderSystems.OpenGL
 		public override RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
 		{
 			HighLevelGpuProgramManager.Instance.AddFactory( new GLSL.GLSLProgramFactory() );
+
+			_glSupport.Start();
 
 			RenderWindow autoWindow = _glSupport.CreateWindow( autoCreateWindow, this, windowTitle );
 

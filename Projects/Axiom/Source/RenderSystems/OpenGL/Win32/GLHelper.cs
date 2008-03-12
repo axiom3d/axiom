@@ -69,6 +69,9 @@ namespace Axiom.RenderSystems.OpenGL
 		public GLSupport()
 			: base()
 		{
+			// immediately test WGL_ARB_pixel_format and FSAA support
+			// so we can set configuration options appropriately
+			_initializeWgl();
 		}
 
 		private void _initializeWgl()
@@ -307,7 +310,6 @@ namespace Axiom.RenderSystems.OpenGL
 		public override void Start()
 		{
 			LogManager.Instance.Write( "*** Starting Win32GL RenderSystem ***" );
-			_initializeWgl();
 		}
 
 		public override void Stop()
@@ -370,10 +372,6 @@ namespace Axiom.RenderSystems.OpenGL
 						// add a new row to the display settings table
 						optVideoMode.PossibleValues.Add( i, query );
 					}
-					//if ( optVideoMode.PossibleValues.Count == 1 )
-					//{
-					//    optVideoMode.Value = query;
-					//}
 				}
 				// grab the current display settings
 				more = User.EnumDisplaySettings( null, i++, out setting );
