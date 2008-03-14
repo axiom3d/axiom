@@ -390,6 +390,16 @@ namespace Axiom.Demos
                 viewport.ShowOverlays = !viewport.ShowOverlays;
             }
 
+			if ( input.IsKeyPressed( KeyCodes.Comma ) )
+			{
+				Root.Instance.MaxFramesPerSecond = 60;
+			}
+
+			if ( input.IsKeyPressed( KeyCodes.Period ) )
+			{
+				Root.Instance.MaxFramesPerSecond = 0;
+			}
+
 			//if ( !input.IsMousePressed( MouseButtons.Left ) )
 			//{
 			//    float cameraYaw = -input.RelativeMouseX * .13f;

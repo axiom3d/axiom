@@ -396,15 +396,19 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( microsecondsPerFrame == 0 )
-					return 0;
-				else
-					return (int)( 1000000f / microsecondsPerFrame );
+				return (int)( ( microsecondsPerFrame == 0 ) ? microsecondsPerFrame : ( 1000000.0f / microsecondsPerFrame ) );
 			}
 			set
 			{
-				microsecondsPerTick = 1000000.0f / (float)Stopwatch.Frequency;
-				microsecondsPerFrame = 1000000.0f / (float)value;
+				if ( value != 0 )
+				{
+					microsecondsPerTick = 1000000.0f / (float)Stopwatch.Frequency;
+					microsecondsPerFrame = 1000000.0f / (float)value;
+				}
+				else // Disable MaxFPS
+				{
+					microsecondsPerFrame = 0;
+				}
 			}
 		}
 
