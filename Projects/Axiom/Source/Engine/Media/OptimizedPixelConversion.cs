@@ -84,7 +84,7 @@ namespace Axiom.Media
 	///<summary>
 	///    A class to convert/copy pixels of the same or different formats
 	///</summary>
-	public class PixelConversionLoops
+	public static class OptimizedPixelConversion
 	{
 
 		#region PixelFormat.A8R8G8B8 Converters

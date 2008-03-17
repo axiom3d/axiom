@@ -52,7 +52,7 @@ namespace Axiom.Media
 	{
 
 		///<summary>
-		///    A class to convert/copy pixels of the same or different formats
+		/// Description of Pixel Formats.
 		///</summary>
 		public class PixelFormatDescription
 		{
@@ -857,23 +857,20 @@ namespace Axiom.Media
 			}
 		}
 
-		//           /** Unpack a color value from memory
-		//           	@param color	The color is returned here
-		//           	@param pf		Pixelformat in which to read the color
-		//           	@param src		Source memory location
-		//           */
-		//   		protected static void UnpackColor(ref System.Drawing.Color color, PixelFormat pf,  IntPtr src) {
-		//   			UnpackColor(color.r, color.g, color.b, color.a, pf, src);
-		//   		}
-
-		/** Unpack a color value from memory
-		  @param r,g,b,a	The color is returned here (as byte)
-		  @param pf		Pixelformat in which to read the color
-		  @param src		Source memory location
-		  @remarks 	This function returns the color components in 8 bit precision,
-			  this will lose precision when coming from A2R10G10B10 or floating
-			  point formats.  
-		*/
+		/// <summary>
+		/// Unpack a color value from memory
+		/// </summary>
+		/// <param name="r">The color is returned here (as byte)</param>
+		/// <param name="g">The color is returned here (as byte)</param>
+		/// <param name="b">The color is returned here (as byte)</param>
+		/// <param name="a">The color is returned here (as byte)</param>
+		/// <param name="pf">Pixelformat in which to read the color</param>
+		/// <param name="src">Source memory location</param>
+		/// <remarks>
+		/// This function returns the color components in 8 bit precision,
+		/// this will lose precision when coming from A2R10G10B10 or floating
+		/// point formats.
+		/// </remarks>
 		unsafe protected static void UnpackColor( ref byte r, ref byte g, ref byte b, ref byte a,
 												 PixelFormat pf, byte* src )
 		{
@@ -1081,7 +1078,6 @@ namespace Axiom.Media
 				return;
 			}
 
-			// TODO : Implement  X8* Conversions
 
 			// Converting to X8R8G8B8 is exactly the same as converting to
 			// A8R8G8B8. (same with X8B8G8R8 and A8B8G8R8)
@@ -1107,7 +1103,7 @@ namespace Axiom.Media
 				return;
 			}
 
-			if ( PixelConversionLoops.DoOptimizedConversion( src, dst ) )
+			if ( OptimizedPixelConversion.DoOptimizedConversion( src, dst ) )
 				// If so, good
 				return;
 
