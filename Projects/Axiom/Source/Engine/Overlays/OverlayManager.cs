@@ -193,11 +193,6 @@ namespace Axiom.Overlays
 			ResourceGroupManager.Instance.RegisterScriptLoader( this );
 		}
 
-		~OverlayManager()
-		{
-			Dispose();
-		}
-
 		#endregion Construction and Destruction
 
 		#region Methods

@@ -187,7 +187,6 @@ namespace Axiom.RenderSystems.OpenGL
 			string baseName = Name.Substring( 0, Name.LastIndexOf( '.' ) );
 			string ext = Name.Substring( Name.LastIndexOf( '.' ) + 1);
 
-			List<Image> images = new List<Image>();
 			Image image;
 			Stream stream;
 
@@ -210,8 +209,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 				// Call internal _loadImages, not loadImage since that's external and 
 				// will determine load status etc again
-				images.Add( image );
-				LoadImages( images );
+				LoadImages( new Image[] { image } );
 			}
 			else if ( TextureType == TextureType.CubeMap )
 			{
@@ -224,12 +222,12 @@ namespace Axiom.RenderSystems.OpenGL
 
 					// Call internal _loadImages, not loadImage since that's external and 
 					// will determine load status etc again
-					images.Add( image );
-					LoadImages( images );
+					LoadImages( new Image[] { image } );
 				}
 				else
 				{
 					string[] postfixes = { "_rt", "_lf", "_up", "_dn", "_fr", "_bk" };
+					List<Image> images = new List<Image>();
 
 					for ( int i = 0; i < 6; i++ )
 					{
@@ -243,7 +241,7 @@ namespace Axiom.RenderSystems.OpenGL
 					} // for
 
 					// load all 6 images
-					LoadImages( images );
+					LoadImages( images.ToArray() );
 				}
 			}
 			else
