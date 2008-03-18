@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using Axiom.Demos.Configuration;
 
 #endregion Namespace Declarations
 
@@ -31,6 +32,7 @@ namespace Axiom.Demos.Browser.WinForm
 
         private Root engine;
 		DemoConfigDialog dlg;
+		EngineConfig config;
 
         private bool _configure( )
         {
@@ -40,6 +42,8 @@ namespace Axiom.Demos.Browser.WinForm
             _setupResources();
 
 			dlg = new DemoConfigDialog();
+			dlg.LoadRenderSystemConfig += new ConfigDialog.LoadRenderSystemConfigEventHandler( LoadRenderSystemConfiguration );
+			dlg.SaveRenderSystemConfig += new ConfigDialog.SaveRenderSystemConfigEventHandler( SaveRenderSystemConfiguration );
 			dlg.LoadDemos( Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location ) + System.IO.Path.DirectorySeparatorChar + @"Axiom.Demos.dll" );
             DialogResult result = dlg.ShowDialog();
 			if ( result == DialogResult.Cancel )
@@ -52,6 +56,49 @@ namespace Axiom.Demos.Browser.WinForm
             return true;
         }
 
+		void SaveRenderSystemConfiguration( object sender, RenderSystem rs )
+		{
+			string renderSystemId = rs.GetType().FullName;
+
+			EngineConfig.RenderSystemConfigRow rsConfigRow = config.RenderSystemConfig.FindByRenderSystemId( renderSystemId );
+			if ( rsConfigRow == null )
+			{
+				rsConfigRow = config.RenderSystemConfig.AddRenderSystemConfigRow( rs.GetType().FullName );
+			}
+
+			EngineConfig.ConfigOptionDataTable codt = ( (EngineConfig.ConfigOptionDataTable)config.Tables[ "ConfigOption" ] );
+			foreach ( ConfigOption opt in rs.ConfigOptions )
+			{
+				EngineConfig.ConfigOptionRow coRow = codt.FindByRenderSystemIdName( renderSystemId, opt.Name );
+				if ( coRow == null )
+				{
+					coRow = codt.NewConfigOptionRow();
+					coRow.RenderSystemId = renderSystemId;
+					coRow.Name = opt.Name;
+					codt.AddConfigOptionRow( coRow );
+				}
+				coRow.Value = opt.Value;
+			}
+			config.AcceptChanges();
+			config.WriteXml( CONFIG_FILE );
+		}
+
+		void LoadRenderSystemConfiguration( object sender, RenderSystem rs )
+		{
+			string renderSystemId = rs.GetType().FullName;
+
+			EngineConfig.RenderSystemConfigRow rsConfigRow = config.RenderSystemConfig.FindByRenderSystemId( renderSystemId );
+			if ( rsConfigRow != null )
+			{
+				foreach ( EngineConfig.ConfigOptionRow row in rsConfigRow.GetConfigOptionRows() )
+				{
+					if ( rs.ConfigOptions.ContainsKey( row.Name ) )
+						rs.ConfigOptions[ row.Name ].Value = row.Value;
+				}
+			}
+
+		}
+
         /// <summary>
         ///		Loads default resource configuration if one exists.
         /// </summary>
@@ -61,16 +108,16 @@ namespace Axiom.Demos.Browser.WinForm
 
             if ( File.Exists( resourceConfigPath ) )
             {
-                EngineConfig config = new EngineConfig();
+				config = new EngineConfig();
 
                 // load the config file
                 // relative from the location of debug and releases executables
                 config.ReadXml( CONFIG_FILE );
 
                 // interrogate the available resource paths
-                foreach ( EngineConfig.FilePathRow row in config.FilePath )
+				foreach ( EngineConfig.FilePathRow row in config.FilePath )
                 {
-                    ResourceGroupManager.Instance.AddResourceLocation( row.src, row.type );
+                    ResourceGroupManager.Instance.AddResourceLocation( row.src, row.type, row.group );
                 }
             }
         }

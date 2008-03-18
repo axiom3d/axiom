@@ -14,6 +14,20 @@ namespace Axiom.Demos
 {
     public class ConfigDialog : Form, IMessageFilter
     {
+		// A delegate type for hooking up loaded notifications.
+		public delegate void LoadRenderSystemConfigEventHandler( object sender, RenderSystem rs );
+
+		// A delegate type for hooking up save notifications.
+		public delegate void SaveRenderSystemConfigEventHandler( object sender, RenderSystem rs );
+
+		// An event that clients can use to be notified whenever a
+		// RenderSystem is loaded.
+		public event LoadRenderSystemConfigEventHandler LoadRenderSystemConfig;
+
+		// An event that clients can use to be notified whenever a
+		// RenderSystem Configuration needs to be saved.
+		public event SaveRenderSystemConfigEventHandler SaveRenderSystemConfig;
+
 		const int WM_KEYDOWN = 0x100;
 
 		protected Container components = null;
@@ -27,6 +41,7 @@ namespace Axiom.Demos
 		protected Button cmdOk;
 		protected SWF.Panel pnlBackground;
 		protected ComboBox cboRenderSystems;
+
 
 		private string _logoResourceName = "AxiomLogo.png";
 		public string LogoResourceName
@@ -258,9 +273,7 @@ namespace Axiom.Demos
                system.ConfigOptions[ opt.Name ] = opt;
             }
 
-            //Root.Instance.RenderSystem = ( (RenderSystemNamespaceExtender)Vfs.Instance[ "/Axiom/RenderSystems/" ] ).GetObject<RenderSystem>( "OpenGL" );
-
-            //TODO: Use ConfigurationSectionHandler to save config out to config file.
+			SaveRenderSystemConfig( this, system );
 
             this.DialogResult = DialogResult.OK;
             this.Close();
@@ -280,13 +293,12 @@ namespace Axiom.Demos
 
             foreach ( RenderSystem renderSystem in Root.Instance.RenderSystems )
             {
+				LoadRenderSystemConfig( this, renderSystem );
                 cboRenderSystems.Items.Add( renderSystem );
             }
 
             if ( cboRenderSystems.Items.Count > 0 )
                 cboRenderSystems.SelectedIndex = 0;
-
-            //TODO: Read configuration Settings from config file using ConfigurationSectionHandler
         }
 
         private void RenderSystems_SelectedIndexChanged( object sender, EventArgs e )
@@ -340,13 +352,11 @@ namespace Axiom.Demos
 			this.lstOptions.SelectedIndexChanged -= new System.EventHandler( this.lstOptions_SelectedIndexChanged );
 			for ( int index = 0; index < this.lstOptions.Items.Count; index++ )
 			{
-				//int index = lstOptions.SelectedIndex;
 				lstOptions.Items[ index ] = lstOptions.Items[ index ];
 			}
 			this.lstOptions.SelectedIndexChanged += new System.EventHandler( this.lstOptions_SelectedIndexChanged );				
 
 		}
-
 
 		#region IMessageFilter Members
 
