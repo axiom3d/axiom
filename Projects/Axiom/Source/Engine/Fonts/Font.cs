@@ -34,13 +34,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
+using SDI = System.Drawing.Imaging;
+using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 
 using Axiom.Core;
 using Axiom.Graphics;
 
 using ResourceHandle = System.UInt64;
-using System.IO;
+using Axiom.Media;
 
 #endregion Namespace Declarations
 
@@ -546,7 +550,7 @@ namespace Axiom.Fonts
 			// TODO : Revisit after checking current Imaging support in Mono.
 
 			// create a new bitamp with the size defined
-			System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap( BITMAP_WIDTH, BITMAP_HEIGHT, System.Drawing.Imaging.PixelFormat.Format24bppRgb );
+			System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap( BITMAP_WIDTH, BITMAP_HEIGHT, System.Drawing.Imaging.PixelFormat.Format32bppArgb );
 
 			// get a handles to the graphics context of the bitmap
 			System.Drawing.Graphics g = System.Drawing.Graphics.FromImage( bitmap );
@@ -622,6 +626,25 @@ namespace Axiom.Fonts
 				// draw the last horizontal line
 				g.DrawLine( linePen, 0, y + font.Height, BITMAP_WIDTH, y + font.Height );
 			}
+			
+			SDI.BitmapData bmd = bitmap.LockBits( new System.Drawing.Rectangle( 0, 0, BITMAP_WIDTH, BITMAP_HEIGHT ), SDI.ImageLockMode.ReadOnly, SDI.PixelFormat.Format32bppArgb );
+
+			byte[] imgData = new byte[ PixelUtil.GetNumElemBytes( PixelFormat.A8R8G8B8 ) * BITMAP_WIDTH * BITMAP_HEIGHT ];
+
+			GCHandle hBuff = GCHandle.Alloc( imgData, GCHandleType.Pinned );
+
+			Memory.Copy( bmd.Scan0, hBuff.AddrOfPinnedObject(), imgData.Length );
+
+			hBuff.Free();
+
+			Image img = new Image();
+			img.FromDynamicImage( imgData, BITMAP_WIDTH, BITMAP_HEIGHT, PixelFormat.A8R8G8B8 );
+
+			Texture tex = (Texture)resource;
+
+			List<Image> imgs = new List<Image>();
+			imgs.Add( img );
+			tex.LoadImages( imgs );
 
 			//bitmap.Save( "C:\\" + Name + ".png" );
 			//FileStream file = new FileStream( "C:\\" + Name + ".fontdef", FileMode.Create );
@@ -631,9 +654,9 @@ namespace Axiom.Fonts
 			//str.WriteLine( "\ttype\timage" );
 			//str.WriteLine( "\tsource\t{0}.png\n", Name );
 
-			//for ( int i = 0; i < END_CHAR-START_CHAR; i++ )
+			//for ( int i = 0; i < END_CHAR - START_CHAR; i++ )
 			//{
-			//    char c = (char)(i+START_CHAR);
+			//    char c = (char)( i + START_CHAR );
 			//    str.WriteLine( "\tglyph\t{0}\t{1:F6}\t{2:F6}\t{3:F6}\t{4:F6}", c, texCoordU1[ i ], texCoordV1[ i ], texCoordU2[ i ], texCoordV2[ i ] );
 			//}
 			//str.WriteLine( "}" );
