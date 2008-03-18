@@ -698,11 +698,7 @@ namespace Axiom.Core
             try
             {
                 // create a list with one texture to pass it in to the common loading method
-                List<Image> images = new List<Image>();
-                images.Add( image );
-
-                // load this image
-                LoadImages( images );
+                LoadImages( new Image[] { image } );
 
             }
             catch ( Exception ex )
@@ -748,11 +744,11 @@ namespace Axiom.Core
         /// in this vector, the faces of that image will be used. If there are multiple
         /// images in the vector each image will be loaded as a face.
         /// </param>
-        protected internal void LoadImages( List<Image> images )
+        protected internal void LoadImages( Image[] images )
         {
             int faces;
 
-            Debug.Assert( images.Count >= 1 );
+            Debug.Assert( images.Length >= 1 );
             if ( IsLoaded )
             {
                 LogManager.Instance.Write( "Unloading image: {0}", _name );
@@ -797,9 +793,9 @@ namespace Axiom.Core
             // Check if we're loading one image with multiple faces
             // or a vector of images representing the faces
             bool multiImage; // Load from multiple images?
-            if ( images.Count > 1 )
+            if ( images.Length > 1 )
             {
-                faces = images.Count;
+                faces = images.Length;
                 multiImage = true;
             }
             else
