@@ -252,17 +252,15 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 				else
 				{
-					List<Image> images = new List<Image>();
 
 					// find & load resource data intro stream to allow resource group changes if required
 					Stream strm = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this );
 					int pos = Name.LastIndexOf( "." );
 					String ext = Name.Substring( pos + 1 );
 
-					images.Add( Image.FromStream( strm, ext ) );
 					// Call internal LoadImages, not LoadImage since that's external and 
 					// will determine load status etc again
-					LoadImages( images );
+					LoadImages( new Image[] { Image.FromStream( strm, ext ) } );
 
 				}
 			}
@@ -330,7 +328,7 @@ namespace Axiom.RenderSystems.DirectX9
 					images.Add( Image.FromStream( strm, ext ) );
 				}
 
-				LoadImages( images );
+				LoadImages( images.ToArray() );
 			}
 
 			_textureLoadMeter.Exit();
@@ -381,17 +379,15 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 			else
 			{
-				List<Image> images = new List<Image>();
 
            		// find & load resource data intro stream to allow resource group changes if required
 				Stream strm = ResourceGroupManager.Instance.OpenResource( Name, Group, true, this);
 				int pos = Name.LastIndexOf(".");
 				String ext = Name.Substring( pos + 1 );
 
-				images.Add( Image.FromStream( strm, ext ) );
 				// Call internal LoadImages, not LoadImage since that's external and 
 				// will determine load status etc again
-				LoadImages( images );
+				LoadImages( new Image[] { Image.FromStream( strm, ext ) } );
 
 			}
 		}

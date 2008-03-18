@@ -102,11 +102,6 @@ namespace Axiom.Graphics
 
 		#endregion Singleton implementation
 
-		~HighLevelGpuProgramManager()
-		{
-			Dispose();
-		}
-
 		#region Fields
 
 		/// <summary>

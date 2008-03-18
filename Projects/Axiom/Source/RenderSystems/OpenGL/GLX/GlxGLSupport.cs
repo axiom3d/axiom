@@ -44,10 +44,13 @@ using Tao.OpenGl;
 using Axiom.Collections;
 
 #endregion Namespace Declarations
+
 namespace Axiom.RenderSystems.OpenGL
 {
 	class GLSupport : BaseGLSupport
 	{
+		public GLSupport() : base() { }
+
 		public override void Start()
 		{
 			LogManager.Instance.Write( "*** Starting GlxGL Subsystem ***" );

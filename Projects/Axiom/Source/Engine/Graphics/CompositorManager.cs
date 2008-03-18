@@ -154,11 +154,6 @@ namespace Axiom.Graphics
 
 		}
 
-		~CompositorManager()
-		{
-			Dispose();
-		}
-
 		#endregion Construction and Destruction
 
 		#region Methods
@@ -900,8 +895,11 @@ namespace Axiom.Graphics
 			{
 				if ( disposeManagedResources )
 				{
-					ResourceGroupManager.Instance.UnregisterScriptLoader( this );
-					ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
+					if ( ResourceGroupManager.Instance != null )
+					{
+						ResourceGroupManager.Instance.UnregisterScriptLoader( this );
+						ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
+					}
 					Singleton<CompositorManager>.Destroy();
 				}
 
