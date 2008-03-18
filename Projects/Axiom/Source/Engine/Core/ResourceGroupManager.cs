@@ -789,6 +789,12 @@ namespace Axiom.Core
         public void InitializeAllResourceGroups()
         {
             LogManager.Instance.Write( "Initializing all resource groups:" );
+
+			// Initialize Built-in groups first
+			InitializeResourceGroup( ResourceGroupManager.AutoDetectResourceGroupName );
+			if ( resourceGroups.ContainsKey( ResourceGroupManager.BootstrapResourceGroupName ) )
+				InitializeResourceGroup( ResourceGroupManager.BootstrapResourceGroupName );
+
             // Intialise all declared resource groups
             foreach ( KeyValuePair<string, ResourceGroup> pair in resourceGroups )
             {
