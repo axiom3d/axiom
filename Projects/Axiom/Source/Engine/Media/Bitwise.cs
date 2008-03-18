@@ -48,7 +48,7 @@ namespace Axiom.Media
 	///<summary>
 	///    Class for manipulating bit patterns.
 	///</summary>
-	public class Bitwise
+	public static class Bitwise
 	{
 
 		///<summary>
