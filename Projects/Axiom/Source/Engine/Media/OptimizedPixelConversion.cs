@@ -38,6 +38,8 @@ using System;
 using System.IO;
 
 using Axiom.Core;
+using System.Reflection;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -675,9 +677,28 @@ namespace Axiom.Media
 			unsafe void Convert( byte* input, byte* output, int offset );
 		}
 
-		private class PixelBoxConverter<T> where T : IPixelConverter, new()
+		private static Dictionary<int, IPixelConverter> _supportedConversions;
+
+		static OptimizedPixelConversion()
 		{
-			public void Conversion( PixelBox src, PixelBox dst )
+			_supportedConversions = new Dictionary<int, IPixelConverter>();
+			Type t = Assembly.GetExecutingAssembly().GetType( "Axiom.Media.OptimizedPixelConversion" );
+
+			foreach( Type converter in t.GetNestedTypes( BindingFlags.NonPublic ) )
+			{
+				object[] attribs = converter.GetCustomAttributes( typeof( PixelConverterAttribute ), false );
+				if ( attribs.Length != 0 )
+				{
+					PixelConverterAttribute attrib = (PixelConverterAttribute)attribs[ 0 ];
+					object instance = Assembly.GetExecutingAssembly().CreateInstance( converter.FullName );
+					_supportedConversions.Add( attrib.Id, (IPixelConverter)instance );
+				}
+			}
+		}
+
+		private static class PixelBoxConverter
+		{
+			public static void Convert(  PixelBox src, PixelBox dst, IPixelConverter pixelConverter )
 			{
 				unsafe
 				{
@@ -686,7 +707,6 @@ namespace Axiom.Media
 					int srcSliceSkip = src.SliceSkip;
 					int dstSliceSkip = dst.SliceSkip;
 					int k = src.Right - src.Left;
-					T pixelConverter = new T();
 
 					for ( int z = src.Front; z < src.Back; z++ )
 					{
@@ -706,129 +726,58 @@ namespace Axiom.Media
 			}
 		}
 
+		private enum SupportedConversion
+		{
+			A8R8G8B8toA8B8G8R8 = ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.A8B8G8R8,
+			A8R8G8B8toB8G8R8A8 = ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8A8,
+			A8R8G8B8toR8G8B8A8 = ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.R8G8B8A8,
+/*			A8B8G8R8( (int)PixelFormat.A8B8G8R8 << 8 ) + (int)PixelFormat.A8R8G8B8,
+		A8B8G8R8( (int)PixelFormat.A8B8G8R8 << 8 ) + (int)PixelFormat.B8G8R8A8,
+		A8B8G8R8( (int)PixelFormat.A8B8G8R8 << 8 ) + (int)PixelFormat.R8G8B8A8,
+		B8G8R8A8( (int)PixelFormat.B8G8R8A8 << 8 ) + (int)PixelFormat.A8R8G8B8,
+		B8G8R8A8( (int)PixelFormat.B8G8R8A8 << 8 ) + (int)PixelFormat.A8B8G8R8,
+		B8G8R8A8( (int)PixelFormat.B8G8R8A8 << 8 ) + (int)PixelFormat.R8G8B8A8,
+		R8G8B8A8( (int)PixelFormat.R8G8B8A8 << 8 ) + (int)PixelFormat.A8R8G8B8,
+		R8G8B8A8( (int)PixelFormat.R8G8B8A8 << 8 ) + (int)PixelFormat.A8B8G8R8,
+		( (int)PixelFormat.R8G8B8A8 << 8 ) + (int)PixelFormat.B8G8R8A8,
+		( (int)PixelFormat.A8B8G8R8 << 8 ) + (int)PixelFormat.L8,
+		( (int)PixelFormat.L8 << 8 ) + (int)PixelFormat.A8B8G8R8,
+		( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.L8,
+		( (int)PixelFormat.L8 << 8 ) + (int)PixelFormat.A8R8G8B8,
+		( (int)PixelFormat.B8G8R8A8 << 8 ) + (int)PixelFormat.L8,
+		( (int)PixelFormat.L8 << 8 ) + (int)PixelFormat.B8G8R8A8,
+		( (int)PixelFormat.L8 << 8 ) + (int)PixelFormat.L16,
+		( (int)PixelFormat.L16 << 8 ) + (int)PixelFormat.L8,
+		( (int)PixelFormat.B8G8R8 << 8 ) + (int)PixelFormat.R8G8B8,
+		( (int)PixelFormat.R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8,
+		( (int)PixelFormat.R8G8B8 << 8 ) + (int)PixelFormat.A8R8G8B8,
+		( (int)PixelFormat.B8G8R8 << 8 ) + (int)PixelFormat.A8R8G8B8,
+		( (int)PixelFormat.R8G8B8 << 8 ) + (int)PixelFormat.A8B8G8R8,
+		( (int)PixelFormat.B8G8R8 << 8 ) + (int)PixelFormat.A8B8G8R8,
+		( (int)PixelFormat.R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8A8,
+		( (int)PixelFormat.B8G8R8 << 8 ) + (int)PixelFormat.B8G8R8A8,
+		( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.R8G8B8,
+		( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8,
+		( (int)PixelFormat.X8R8G8B8 << 8 ) + (int)PixelFormat.A8R8G8B8,
+		( (int)PixelFormat.X8R8G8B8 << 8 ) + (int)PixelFormat.A8B8G8R8,
+		( (int)PixelFormat.X8R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8A8,
+		( (int)PixelFormat.X8R8G8B8 << 8 ) + (int)PixelFormat.R8G8B8A8,
+		( (int)PixelFormat.X8B8G8R8 << 8 ) + (int)PixelFormat.A8R8G8B8,
+		( (int)PixelFormat.X8B8G8R8 << 8 ) + (int)PixelFormat.A8B8G8R8,
+		( (int)PixelFormat.X8B8G8R8 << 8 ) + (int)PixelFormat.B8G8R8A8,
+		( (int)PixelFormat.X8B8G8R8 << 8 ) + (int)PixelFormat.R8G8B8A8
+*/		}
 
 		public static bool DoOptimizedConversion( PixelBox src, PixelBox dst )
 		{
-			switch ( ( (int)src.Format << 8 ) + (int)dst.Format )
+			int conversion = ( (int)src.Format << 8 ) + (int)dst.Format;
+
+			if ( _supportedConversions.ContainsKey( conversion ) )
 			{
-				case ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.A8B8G8R8:
-					( new PixelBoxConverter<A8R8G8B8toA8B8G8R8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8A8:
-					( new PixelBoxConverter<A8R8G8B8toB8G8R8A8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.R8G8B8A8:
-					( new PixelBoxConverter<A8R8G8B8toR8G8B8A8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.A8B8G8R8 << 8 ) + (int)PixelFormat.A8R8G8B8:
-					( new PixelBoxConverter<A8B8G8R8toA8R8G8B8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.A8B8G8R8 << 8 ) + (int)PixelFormat.B8G8R8A8:
-					( new PixelBoxConverter<A8B8G8R8toA8R8G8B8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.A8B8G8R8 << 8 ) + (int)PixelFormat.R8G8B8A8:
-					( new PixelBoxConverter<A8B8G8R8toR8G8B8A8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.B8G8R8A8 << 8 ) + (int)PixelFormat.A8R8G8B8:
-					( new PixelBoxConverter<B8G8R8A8toA8R8G8B8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.B8G8R8A8 << 8 ) + (int)PixelFormat.A8B8G8R8:
-					( new PixelBoxConverter<B8G8R8A8toA8B8G8R8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.B8G8R8A8 << 8 ) + (int)PixelFormat.R8G8B8A8:
-					( new PixelBoxConverter<B8G8R8A8toR8G8B8A8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.R8G8B8A8 << 8 ) + (int)PixelFormat.A8R8G8B8:
-					( new PixelBoxConverter<R8G8B8A8toA8R8G8B8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.R8G8B8A8 << 8 ) + (int)PixelFormat.A8B8G8R8:
-					( new PixelBoxConverter<R8G8B8A8toA8B8G8R8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.R8G8B8A8 << 8 ) + (int)PixelFormat.B8G8R8A8:
-					( new PixelBoxConverter<R8G8B8A8toB8G8R8A8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.A8B8G8R8 << 8 ) + (int)PixelFormat.L8:
-					( new PixelBoxConverter<A8B8G8R8toL8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.L8 << 8 ) + (int)PixelFormat.A8B8G8R8:
-					( new PixelBoxConverter<A8B8G8R8toA8R8G8B8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.L8:
-					( new PixelBoxConverter<A8R8G8B8toL8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.L8 << 8 ) + (int)PixelFormat.A8R8G8B8:
-					( new PixelBoxConverter<L8toA8R8G8B8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.B8G8R8A8 << 8 ) + (int)PixelFormat.L8:
-					( new PixelBoxConverter<B8G8R8A8toL8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.L8 << 8 ) + (int)PixelFormat.B8G8R8A8:
-					( new PixelBoxConverter<L8toB8G8R8A8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.L8 << 8 ) + (int)PixelFormat.L16:
-					( new PixelBoxConverter<L8toL16Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.L16 << 8 ) + (int)PixelFormat.L8:
-					( new PixelBoxConverter<L16toL8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.B8G8R8 << 8 ) + (int)PixelFormat.R8G8B8:
-					( new PixelBoxConverter<B8G8R8toR8G8B8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8:
-					( new PixelBoxConverter<R8G8B8toB8G8R8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.R8G8B8 << 8 ) + (int)PixelFormat.A8R8G8B8:
-					( new PixelBoxConverter<R8G8B8toA8R8G8B8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.B8G8R8 << 8 ) + (int)PixelFormat.A8R8G8B8:
-					( new PixelBoxConverter<B8G8R8toA8R8G8B8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.R8G8B8 << 8 ) + (int)PixelFormat.A8B8G8R8:
-					( new PixelBoxConverter<R8G8B8toA8B8G8R8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.B8G8R8 << 8 ) + (int)PixelFormat.A8B8G8R8:
-					( new PixelBoxConverter<B8G8R8toA8B8G8R8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8A8:
-					( new PixelBoxConverter<R8G8B8toB8G8R8A8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.B8G8R8 << 8 ) + (int)PixelFormat.B8G8R8A8:
-					( new PixelBoxConverter<B8G8R8toB8G8R8A8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.R8G8B8:
-					( new PixelBoxConverter<A8R8G8B8toR8G8B8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8:
-					( new PixelBoxConverter<A8R8G8B8toB8G8R8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.X8R8G8B8 << 8 ) + (int)PixelFormat.A8R8G8B8:
-					( new PixelBoxConverter<X8R8G8B8toA8R8G8B8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.X8R8G8B8 << 8 ) + (int)PixelFormat.A8B8G8R8:
-					( new PixelBoxConverter<X8R8G8B8toA8B8G8R8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.X8R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8A8:
-					( new PixelBoxConverter<X8R8G8B8toB8G8R8A8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.X8R8G8B8 << 8 ) + (int)PixelFormat.R8G8B8A8:
-					( new PixelBoxConverter<X8R8G8B8toR8G8B8A8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.X8B8G8R8 << 8 ) + (int)PixelFormat.A8R8G8B8:
-					( new PixelBoxConverter<X8B8G8R8toA8R8G8B8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.X8B8G8R8 << 8 ) + (int)PixelFormat.A8B8G8R8:
-					( new PixelBoxConverter<X8B8G8R8toA8B8G8R8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.X8B8G8R8 << 8 ) + (int)PixelFormat.B8G8R8A8:
-					( new PixelBoxConverter<X8B8G8R8toB8G8R8A8Converter>() ).Conversion( src, dst );
-					break;
-				case ( (int)PixelFormat.X8B8G8R8 << 8 ) + (int)PixelFormat.R8G8B8A8:
-					( new PixelBoxConverter<X8B8G8R8toR8G8B8A8Converter>() ).Conversion( src, dst );
-					break;
-				default:
-					return false;
+				PixelBoxConverter.Convert( src, dst, _supportedConversions[ conversion ] );
+				return true;
 			}
-			return true;
+			return false;
 		}
 	}
 }
