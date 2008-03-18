@@ -642,9 +642,7 @@ namespace Axiom.Fonts
 
 			Texture tex = (Texture)resource;
 
-			List<Image> imgs = new List<Image>();
-			imgs.Add( img );
-			tex.LoadImages( imgs );
+			tex.LoadImages( new Image[] { img } );
 
 			//bitmap.Save( "C:\\" + Name + ".png" );
 			//FileStream file = new FileStream( "C:\\" + Name + ".fontdef", FileMode.Create );
