@@ -840,16 +840,16 @@ namespace Axiom.Media
 						( (ushort*)dest )[ 2 ] = Bitwise.FloatToHalf( b );
 						( (ushort*)dest )[ 3 ] = Bitwise.FloatToHalf( a );
 						break;
-					//case PixelFormat.SHORT_RGBA:
-					//    ( (ushort*)dest )[ 0 ] = Bitwise.FloatToFixed( r, 16 );
-					//    ( (ushort*)dest )[ 1 ] = Bitwise.FloatToFixed( g, 16 );
-					//    ( (ushort*)dest )[ 2 ] = Bitwise.FloatToFixed( b, 16 );
-					//    ( (ushort*)dest )[ 3 ] = Bitwise.FloatToFixed( a, 16 );
-					//    break;
-					//case PixelFormat.BYTE_LA:
-					//    ( (byte*)dest )[ 0 ] = Bitwise.FloatToFixed( r, 8 );
-					//    ( (byte*)dest )[ 1 ] = Bitwise.FloatToFixed( a, 8 );
-					//    break;
+					case PixelFormat.SHORT_RGBA:
+						( (ushort*)dest )[ 0 ] = (ushort)Bitwise.FloatToFixed( r, 16 );
+						( (ushort*)dest )[ 1 ] = (ushort)Bitwise.FloatToFixed( g, 16 );
+						( (ushort*)dest )[ 2 ] = (ushort)Bitwise.FloatToFixed( b, 16 );
+						( (ushort*)dest )[ 3 ] = (ushort)Bitwise.FloatToFixed( a, 16 );
+					    break;
+					case PixelFormat.BYTE_LA:
+						( (byte*)dest )[ 0 ] = (byte)Bitwise.FloatToFixed( r, 8 );
+						( (byte*)dest )[ 1 ] = (byte)Bitwise.FloatToFixed( a, 8 );
+					    break;
 					default:
 						// Not yet supported
 						throw new Exception( "Pack to " + format + " not implemented, in PixelUtil.PackColor" );
@@ -968,16 +968,16 @@ namespace Axiom.Media
 						b = Bitwise.HalfToFloat( ( (ushort*)src )[ 2 ] );
 						a = Bitwise.HalfToFloat( ( (ushort*)src )[ 3 ] );
 						break;
-					//case PixelFormat.SHORT_RGBA:
-					//    r = Bitwise.FixedToFloat( ( (ushort*)src )[ 0 ], 16 );
-					//    g = Bitwise.FixedToFloat( ( (ushort*)src )[ 1 ], 16 );
-					//    b = Bitwise.FixedToFloat( ( (ushort*)src )[ 2 ], 16 );
-					//    a = Bitwise.FixedToFloat( ( (ushort*)src )[ 3 ], 16 );
-					//    break;
-					//case PixelFormat.BYTE_LA:
-					//    r = g = b = Bitwise.FixedToFloat( ( (byte*)src )[ 0 ], 8 );
-					//    a = Bitwise.FixedToFloat( ( (byte*)src )[ 1 ], 8 );
-					//    break;
+					case PixelFormat.SHORT_RGBA:
+					    r = Bitwise.FixedToFloat( ( (ushort*)src )[ 0 ], 16 );
+					    g = Bitwise.FixedToFloat( ( (ushort*)src )[ 1 ], 16 );
+					    b = Bitwise.FixedToFloat( ( (ushort*)src )[ 2 ], 16 );
+					    a = Bitwise.FixedToFloat( ( (ushort*)src )[ 3 ], 16 );
+					    break;
+					case PixelFormat.BYTE_LA:
+					    r = g = b = Bitwise.FixedToFloat( ( (byte*)src )[ 0 ], 8 );
+					    a = Bitwise.FixedToFloat( ( (byte*)src )[ 1 ], 8 );
+					    break;
 					default:
 						// Not yet supported
 						throw new Exception( "Unpack from " + pf + " not implemented, in PixelUtil.UnpackColor" );
@@ -1040,6 +1040,8 @@ namespace Axiom.Media
 					Memory.Copy( src.Data, dst.Data, src.Offset, dst.Offset, src.ConsecutiveSize );
 					return;
 				}
+
+				// TODO : Use OptimizedPixelConversion to elminate this duplicate code.
 				unsafe
 				{
 					byte* srcBytes = (byte*)src.Data.ToPointer();
@@ -1107,6 +1109,8 @@ namespace Axiom.Media
 				// If so, good
 				return;
 
+
+			// TODO : Use OptimizedPixelConversion to elminate this duplicate code.
 			unsafe
 			{
 				byte* srcBytes = (byte*)src.Data.ToPointer();
