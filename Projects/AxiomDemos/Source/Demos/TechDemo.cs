@@ -7,7 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Threading;
 
-using Axiom.Configuration;
+using Axiom.Demos.Configuration;
 using Axiom.Core;
 using Axiom.Input;
 using Axiom.Overlays;
