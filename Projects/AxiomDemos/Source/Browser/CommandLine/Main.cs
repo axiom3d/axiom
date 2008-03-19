@@ -8,7 +8,7 @@ using System.Threading;
 using Axiom.Demos;
 using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.Configuration;
+using Axiom.Demos.Configuration;
 using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
