@@ -45,7 +45,7 @@ using Axiom.Scripting;
 namespace Axiom.ParticleFX
 {
     /// <summary>
-    /// Summary description for ScaleAffector.
+	/// Summary description for RotationAffector.
     /// </summary>
     public class RotationAffector : ParticleAffector
     {

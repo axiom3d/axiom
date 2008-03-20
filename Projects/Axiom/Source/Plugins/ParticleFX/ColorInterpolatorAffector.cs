@@ -45,7 +45,7 @@ using Axiom.Scripting;
 namespace Axiom.ParticleFX
 {
     /// <summary>
-    /// Summary description for ColorFaderAffector.
+	/// Summary description for ColorInterpolatorAffector.
     /// </summary>
     public class ColorInterpolatorAffector : ParticleAffector
     {
