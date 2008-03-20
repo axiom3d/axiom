@@ -86,16 +86,15 @@ namespace Axiom.ParticleFX
 
                 if ( p.HasOwnDimensions == false )
                 {
-                    p.Height = system.DefaultHeight;
-                    p.Width = system.DefaultWidth;
+					newHigh = system.DefaultHeight + ds;
+					newWide = system.DefaultWidth + ds;
                 }
                 else
                 {
                     newWide = p.Width + ds;
                     newHigh = p.Height + ds;
-                    p.Width = newWide;
-                    p.Height = newHigh;
                 }
+				p.SetDimensions( newWide, newHigh );
             }
         }
 
