@@ -174,7 +174,9 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 			set
 			{
-				device.RenderState.Ambient = D3DHelper.ToColor( value );
+				System.Drawing.Color tmp =  D3DHelper.ToColor( value );
+				if ( device.RenderState.Ambient != tmp )
+					device.RenderState.Ambient = tmp;
 			}
 		}
 
@@ -182,15 +184,12 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return lightingEnabled;
+				return device.RenderState.Lighting;
 			}
 			set
 			{
-				if ( lightingEnabled != value )
-				{
-					device.RenderState.Lighting = lightingEnabled = value;
-				}
-
+				if ( device.RenderState.Lighting != value )
+					device.RenderState.Lighting = value;
 			}
 		}
 
@@ -205,7 +204,8 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 			set
 			{
-				device.RenderState.NormalizeNormals = value;
+				if ( device.RenderState.NormalizeNormals != value )
+					device.RenderState.NormalizeNormals = value;
 			}
 		}
 
@@ -217,7 +217,10 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 			set
 			{
-				device.RenderState.ShadeMode = D3DHelper.ConvertEnum( value );
+				D3D.ShadeMode tmp = D3DHelper.ConvertEnum( value );
+				if ( device.RenderState.ShadeMode != tmp )
+					device.RenderState.ShadeMode = tmp;
+				
 			}
 		}
 
@@ -229,7 +232,8 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 			set
 			{
-				device.RenderState.StencilEnable = value;
+				if ( device.RenderState.StencilEnable != value )
+					device.RenderState.StencilEnable = value;
 			}
 		}
 
@@ -759,9 +763,9 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( !_basicStatesInitialized )
 			{
 				// enable alpha blending and specular materials
-				//device.RenderState.AlphaBlendEnable = true;
+				device.RenderState.AlphaBlendEnable = true;
 				device.RenderState.SpecularEnable = true;
-				//device.RenderState.ZBufferEnable = true;
+				device.RenderState.ZBufferEnable = true;
 				_basicStatesInitialized = true;
 			}
 		}
@@ -1255,6 +1259,11 @@ namespace Axiom.RenderSystems.DirectX9
 			numCurrentLights = (int)Utility.Min( limit, lightList.Count );
 		}
 
+		/// <summary>
+		///   Convert the explicit portable encoding of color to a RenderSystem one.
+		/// </summary>
+		/// <param name="color">The color </param>
+		/// <returns>the RenderSystem specific int storage of the ColorEx version</returns>
 		public override int ConvertColor( ColorEx color )
 		{
 			return color.ToARGB();
@@ -1275,7 +1284,6 @@ namespace Axiom.RenderSystems.DirectX9
 			return colorEx;
 		}
 
-
 		public override void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest )
 		{
 			// set the render states after converting the incoming values to D3D.Blend
@@ -1286,9 +1294,11 @@ namespace Axiom.RenderSystems.DirectX9
 			else
 			{
 				SetRenderState( D3D.RenderStates.AlphaBlendEnable, true );
+				SetRenderState( D3D.RenderStates.SeparateAlphaBlendEnable, false );
 				device.RenderState.SourceBlend = D3DHelper.ConvertEnum( src );
 				device.RenderState.DestinationBlend = D3DHelper.ConvertEnum( dest );
 			}
+
 		}
 
 		/// <summary>
