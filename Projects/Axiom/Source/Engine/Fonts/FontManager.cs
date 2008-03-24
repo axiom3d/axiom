@@ -102,11 +102,6 @@ namespace Axiom.Fonts
 			ResourceGroupManager.Instance.RegisterResourceManager( ResourceType, this );
 		}
 
-		~FontManager()
-		{
-			Dispose();
-		}
-
 		#endregion Constructors and Destructor
 
 		#region Methods
@@ -288,7 +283,6 @@ namespace Axiom.Fonts
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
-			isDisposed = true;
 
 			// If it is available, make the call to the
 			// base class's Dispose(Boolean) method

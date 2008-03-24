@@ -60,20 +60,14 @@ namespace Axiom.Demos.Browser.WinForm
 		{
 			string renderSystemId = rs.GetType().FullName;
 
-			EngineConfig.RenderSystemConfigRow rsConfigRow = config.RenderSystemConfig.FindByRenderSystemId( renderSystemId );
-			if ( rsConfigRow == null )
-			{
-				rsConfigRow = config.RenderSystemConfig.AddRenderSystemConfigRow( rs.GetType().FullName );
-			}
-
 			EngineConfig.ConfigOptionDataTable codt = ( (EngineConfig.ConfigOptionDataTable)config.Tables[ "ConfigOption" ] );
 			foreach ( ConfigOption opt in rs.ConfigOptions )
 			{
-				EngineConfig.ConfigOptionRow coRow = codt.FindByRenderSystemIdName( renderSystemId, opt.Name );
+				EngineConfig.ConfigOptionRow coRow = codt.FindByNameRenderSystem(opt.Name, renderSystemId );
 				if ( coRow == null )
 				{
 					coRow = codt.NewConfigOptionRow();
-					coRow.RenderSystemId = renderSystemId;
+					coRow.RenderSystem = renderSystemId;
 					coRow.Name = opt.Name;
 					codt.AddConfigOptionRow( coRow );
 				}
@@ -87,10 +81,10 @@ namespace Axiom.Demos.Browser.WinForm
 		{
 			string renderSystemId = rs.GetType().FullName;
 
-			EngineConfig.RenderSystemConfigRow rsConfigRow = config.RenderSystemConfig.FindByRenderSystemId( renderSystemId );
-			if ( rsConfigRow != null )
+			EngineConfig.ConfigOptionDataTable codt = ( (EngineConfig.ConfigOptionDataTable)config.Tables[ "ConfigOption" ] );
+			foreach ( EngineConfig.ConfigOptionRow row in codt )
 			{
-				foreach ( EngineConfig.ConfigOptionRow row in rsConfigRow.GetConfigOptionRows() )
+				if ( row.RenderSystem == renderSystemId )
 				{
 					if ( rs.ConfigOptions.ContainsKey( row.Name ) )
 						rs.ConfigOptions[ row.Name ].Value = row.Value;

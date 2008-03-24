@@ -27,11 +27,7 @@ namespace Axiom.Demos.Configuration {
         
         private FilePathDataTable tableFilePath;
         
-        private RenderSystemConfigDataTable tableRenderSystemConfig;
-        
         private ConfigOptionDataTable tableConfigOption;
-        
-        private global::System.Data.DataRelation relationFK_RenderSystemConfig_ConfigOption;
         
         private global::System.Data.SchemaSerializationMode _schemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
         
@@ -62,9 +58,6 @@ namespace Axiom.Demos.Configuration {
                 if ((ds.Tables["FilePath"] != null)) {
                     base.Tables.Add(new FilePathDataTable(ds.Tables["FilePath"]));
                 }
-                if ((ds.Tables["RenderSystemConfig"] != null)) {
-                    base.Tables.Add(new RenderSystemConfigDataTable(ds.Tables["RenderSystemConfig"]));
-                }
                 if ((ds.Tables["ConfigOption"] != null)) {
                     base.Tables.Add(new ConfigOptionDataTable(ds.Tables["ConfigOption"]));
                 }
@@ -92,15 +85,6 @@ namespace Axiom.Demos.Configuration {
         public FilePathDataTable FilePath {
             get {
                 return this.tableFilePath;
-            }
-        }
-        
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.ComponentModel.Browsable(false)]
-        [global::System.ComponentModel.DesignerSerializationVisibility(global::System.ComponentModel.DesignerSerializationVisibility.Content)]
-        public RenderSystemConfigDataTable RenderSystemConfig {
-            get {
-                return this.tableRenderSystemConfig;
             }
         }
         
@@ -175,9 +159,6 @@ namespace Axiom.Demos.Configuration {
                 if ((ds.Tables["FilePath"] != null)) {
                     base.Tables.Add(new FilePathDataTable(ds.Tables["FilePath"]));
                 }
-                if ((ds.Tables["RenderSystemConfig"] != null)) {
-                    base.Tables.Add(new RenderSystemConfigDataTable(ds.Tables["RenderSystemConfig"]));
-                }
                 if ((ds.Tables["ConfigOption"] != null)) {
                     base.Tables.Add(new ConfigOptionDataTable(ds.Tables["ConfigOption"]));
                 }
@@ -217,19 +198,12 @@ namespace Axiom.Demos.Configuration {
                     this.tableFilePath.InitVars();
                 }
             }
-            this.tableRenderSystemConfig = ((RenderSystemConfigDataTable)(base.Tables["RenderSystemConfig"]));
-            if ((initTable == true)) {
-                if ((this.tableRenderSystemConfig != null)) {
-                    this.tableRenderSystemConfig.InitVars();
-                }
-            }
             this.tableConfigOption = ((ConfigOptionDataTable)(base.Tables["ConfigOption"]));
             if ((initTable == true)) {
                 if ((this.tableConfigOption != null)) {
                     this.tableConfigOption.InitVars();
                 }
             }
-            this.relationFK_RenderSystemConfig_ConfigOption = this.Relations["FK_RenderSystemConfig_ConfigOption"];
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -241,32 +215,12 @@ namespace Axiom.Demos.Configuration {
             this.SchemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
             this.tableFilePath = new FilePathDataTable();
             base.Tables.Add(this.tableFilePath);
-            this.tableRenderSystemConfig = new RenderSystemConfigDataTable();
-            base.Tables.Add(this.tableRenderSystemConfig);
             this.tableConfigOption = new ConfigOptionDataTable();
             base.Tables.Add(this.tableConfigOption);
-            global::System.Data.ForeignKeyConstraint fkc;
-            fkc = new global::System.Data.ForeignKeyConstraint("FK_RenderSystemConfig_ConfigOption", new global::System.Data.DataColumn[] {
-                        this.tableRenderSystemConfig.RenderSystemIdColumn}, new global::System.Data.DataColumn[] {
-                        this.tableConfigOption.RenderSystemIdColumn});
-            this.tableConfigOption.Constraints.Add(fkc);
-            fkc.AcceptRejectRule = global::System.Data.AcceptRejectRule.None;
-            fkc.DeleteRule = global::System.Data.Rule.Cascade;
-            fkc.UpdateRule = global::System.Data.Rule.Cascade;
-            this.relationFK_RenderSystemConfig_ConfigOption = new global::System.Data.DataRelation("FK_RenderSystemConfig_ConfigOption", new global::System.Data.DataColumn[] {
-                        this.tableRenderSystemConfig.RenderSystemIdColumn}, new global::System.Data.DataColumn[] {
-                        this.tableConfigOption.RenderSystemIdColumn}, false);
-            this.relationFK_RenderSystemConfig_ConfigOption.Nested = true;
-            this.Relations.Add(this.relationFK_RenderSystemConfig_ConfigOption);
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         private bool ShouldSerializeFilePath() {
-            return false;
-        }
-        
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        private bool ShouldSerializeRenderSystemConfig() {
             return false;
         }
         
@@ -329,8 +283,6 @@ namespace Axiom.Demos.Configuration {
         }
         
         public delegate void FilePathRowChangeEventHandler(object sender, FilePathRowChangeEvent e);
-        
-        public delegate void RenderSystemConfigRowChangeEventHandler(object sender, RenderSystemConfigRowChangeEvent e);
         
         public delegate void ConfigOptionRowChangeEventHandler(object sender, ConfigOptionRowChangeEvent e);
         
@@ -474,7 +426,9 @@ namespace Axiom.Demos.Configuration {
                 this.columngroup.AllowDBNull = false;
                 this.columngroup.Namespace = "";
                 this.columngroup.DefaultValue = ((string)("General"));
+                this.columnsrc.AllowDBNull = false;
                 this.columnsrc.Namespace = "";
+                this.columntype.AllowDBNull = false;
                 this.columntype.Namespace = "";
             }
             
@@ -599,248 +553,9 @@ namespace Axiom.Demos.Configuration {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class RenderSystemConfigDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
-            
-            private global::System.Data.DataColumn columnRenderSystemId;
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public RenderSystemConfigDataTable() {
-                this.TableName = "RenderSystemConfig";
-                this.BeginInit();
-                this.InitClass();
-                this.EndInit();
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            internal RenderSystemConfigDataTable(global::System.Data.DataTable table) {
-                this.TableName = table.TableName;
-                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
-                    this.CaseSensitive = table.CaseSensitive;
-                }
-                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
-                    this.Locale = table.Locale;
-                }
-                if ((table.Namespace != table.DataSet.Namespace)) {
-                    this.Namespace = table.Namespace;
-                }
-                this.Prefix = table.Prefix;
-                this.MinimumCapacity = table.MinimumCapacity;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            protected RenderSystemConfigDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
-                    base(info, context) {
-                this.InitVars();
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public global::System.Data.DataColumn RenderSystemIdColumn {
-                get {
-                    return this.columnRenderSystemId;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.ComponentModel.Browsable(false)]
-            public int Count {
-                get {
-                    return this.Rows.Count;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public RenderSystemConfigRow this[int index] {
-                get {
-                    return ((RenderSystemConfigRow)(this.Rows[index]));
-                }
-            }
-            
-            public event RenderSystemConfigRowChangeEventHandler RenderSystemConfigRowChanging;
-            
-            public event RenderSystemConfigRowChangeEventHandler RenderSystemConfigRowChanged;
-            
-            public event RenderSystemConfigRowChangeEventHandler RenderSystemConfigRowDeleting;
-            
-            public event RenderSystemConfigRowChangeEventHandler RenderSystemConfigRowDeleted;
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public void AddRenderSystemConfigRow(RenderSystemConfigRow row) {
-                this.Rows.Add(row);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public RenderSystemConfigRow AddRenderSystemConfigRow(string RenderSystemId) {
-                RenderSystemConfigRow rowRenderSystemConfigRow = ((RenderSystemConfigRow)(this.NewRow()));
-                object[] columnValuesArray = new object[] {
-                        RenderSystemId};
-                rowRenderSystemConfigRow.ItemArray = columnValuesArray;
-                this.Rows.Add(rowRenderSystemConfigRow);
-                return rowRenderSystemConfigRow;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public RenderSystemConfigRow FindByRenderSystemId(string RenderSystemId) {
-                return ((RenderSystemConfigRow)(this.Rows.Find(new object[] {
-                            RenderSystemId})));
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public virtual global::System.Collections.IEnumerator GetEnumerator() {
-                return this.Rows.GetEnumerator();
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public override global::System.Data.DataTable Clone() {
-                RenderSystemConfigDataTable cln = ((RenderSystemConfigDataTable)(base.Clone()));
-                cln.InitVars();
-                return cln;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            protected override global::System.Data.DataTable CreateInstance() {
-                return new RenderSystemConfigDataTable();
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            internal void InitVars() {
-                this.columnRenderSystemId = base.Columns["RenderSystemId"];
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            private void InitClass() {
-                this.columnRenderSystemId = new global::System.Data.DataColumn("RenderSystemId", typeof(string), null, global::System.Data.MappingType.Attribute);
-                base.Columns.Add(this.columnRenderSystemId);
-                this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
-                                this.columnRenderSystemId}, true));
-                this.columnRenderSystemId.AllowDBNull = false;
-                this.columnRenderSystemId.Unique = true;
-                this.columnRenderSystemId.Namespace = "http://tempuri.org/EngineConfig.xsd";
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public RenderSystemConfigRow NewRenderSystemConfigRow() {
-                return ((RenderSystemConfigRow)(this.NewRow()));
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            protected override global::System.Data.DataRow NewRowFromBuilder(global::System.Data.DataRowBuilder builder) {
-                return new RenderSystemConfigRow(builder);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            protected override global::System.Type GetRowType() {
-                return typeof(RenderSystemConfigRow);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e) {
-                base.OnRowChanged(e);
-                if ((this.RenderSystemConfigRowChanged != null)) {
-                    this.RenderSystemConfigRowChanged(this, new RenderSystemConfigRowChangeEvent(((RenderSystemConfigRow)(e.Row)), e.Action));
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e) {
-                base.OnRowChanging(e);
-                if ((this.RenderSystemConfigRowChanging != null)) {
-                    this.RenderSystemConfigRowChanging(this, new RenderSystemConfigRowChangeEvent(((RenderSystemConfigRow)(e.Row)), e.Action));
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e) {
-                base.OnRowDeleted(e);
-                if ((this.RenderSystemConfigRowDeleted != null)) {
-                    this.RenderSystemConfigRowDeleted(this, new RenderSystemConfigRowChangeEvent(((RenderSystemConfigRow)(e.Row)), e.Action));
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e) {
-                base.OnRowDeleting(e);
-                if ((this.RenderSystemConfigRowDeleting != null)) {
-                    this.RenderSystemConfigRowDeleting(this, new RenderSystemConfigRowChangeEvent(((RenderSystemConfigRow)(e.Row)), e.Action));
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public void RemoveRenderSystemConfigRow(RenderSystemConfigRow row) {
-                this.Rows.Remove(row);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedTableSchema(global::System.Xml.Schema.XmlSchemaSet xs) {
-                global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
-                global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
-                EngineConfig ds = new EngineConfig();
-                global::System.Xml.Schema.XmlSchemaAny any1 = new global::System.Xml.Schema.XmlSchemaAny();
-                any1.Namespace = "http://www.w3.org/2001/XMLSchema";
-                any1.MinOccurs = new decimal(0);
-                any1.MaxOccurs = decimal.MaxValue;
-                any1.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
-                sequence.Items.Add(any1);
-                global::System.Xml.Schema.XmlSchemaAny any2 = new global::System.Xml.Schema.XmlSchemaAny();
-                any2.Namespace = "urn:schemas-microsoft-com:xml-diffgram-v1";
-                any2.MinOccurs = new decimal(1);
-                any2.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
-                sequence.Items.Add(any2);
-                global::System.Xml.Schema.XmlSchemaAttribute attribute1 = new global::System.Xml.Schema.XmlSchemaAttribute();
-                attribute1.Name = "namespace";
-                attribute1.FixedValue = ds.Namespace;
-                type.Attributes.Add(attribute1);
-                global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
-                attribute2.Name = "tableTypeName";
-                attribute2.FixedValue = "RenderSystemConfigDataTable";
-                type.Attributes.Add(attribute2);
-                type.Particle = sequence;
-                global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
-                if (xs.Contains(dsSchema.TargetNamespace)) {
-                    global::System.IO.MemoryStream s1 = new global::System.IO.MemoryStream();
-                    global::System.IO.MemoryStream s2 = new global::System.IO.MemoryStream();
-                    try {
-                        global::System.Xml.Schema.XmlSchema schema = null;
-                        dsSchema.Write(s1);
-                        for (global::System.Collections.IEnumerator schemas = xs.Schemas(dsSchema.TargetNamespace).GetEnumerator(); schemas.MoveNext(); ) {
-                            schema = ((global::System.Xml.Schema.XmlSchema)(schemas.Current));
-                            s2.SetLength(0);
-                            schema.Write(s2);
-                            if ((s1.Length == s2.Length)) {
-                                s1.Position = 0;
-                                s2.Position = 0;
-                                for (; ((s1.Position != s1.Length) 
-                                            && (s1.ReadByte() == s2.ReadByte())); ) {
-                                    ;
-                                }
-                                if ((s1.Position == s1.Length)) {
-                                    return type;
-                                }
-                            }
-                        }
-                    }
-                    finally {
-                        if ((s1 != null)) {
-                            s1.Close();
-                        }
-                        if ((s2 != null)) {
-                            s2.Close();
-                        }
-                    }
-                }
-                xs.Add(dsSchema);
-                return type;
-            }
-        }
-        
-        /// <summary>
-        ///Represents the strongly named DataTable class.
-        ///</summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
-        [global::System.Serializable()]
-        [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
         public partial class ConfigOptionDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
-            private global::System.Data.DataColumn columnRenderSystemId;
+            private global::System.Data.DataColumn columnRenderSystem;
             
             private global::System.Data.DataColumn columnName;
             
@@ -877,9 +592,9 @@ namespace Axiom.Demos.Configuration {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public global::System.Data.DataColumn RenderSystemIdColumn {
+            public global::System.Data.DataColumn RenderSystemColumn {
                 get {
-                    return this.columnRenderSystemId;
+                    return this.columnRenderSystem;
                 }
             }
             
@@ -926,25 +641,15 @@ namespace Axiom.Demos.Configuration {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public ConfigOptionRow AddConfigOptionRow(RenderSystemConfigRow parentRenderSystemConfigRowByFK_RenderSystemConfig_ConfigOption, string Name, string Value) {
+            public ConfigOptionRow AddConfigOptionRow(string RenderSystem, string Name, string Value) {
                 ConfigOptionRow rowConfigOptionRow = ((ConfigOptionRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
-                        null,
+                        RenderSystem,
                         Name,
                         Value};
-                if ((parentRenderSystemConfigRowByFK_RenderSystemConfig_ConfigOption != null)) {
-                    columnValuesArray[0] = parentRenderSystemConfigRowByFK_RenderSystemConfig_ConfigOption[0];
-                }
                 rowConfigOptionRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowConfigOptionRow);
                 return rowConfigOptionRow;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public ConfigOptionRow FindByRenderSystemIdName(string RenderSystemId, string Name) {
-                return ((ConfigOptionRow)(this.Rows.Find(new object[] {
-                            RenderSystemId,
-                            Name})));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -966,27 +671,24 @@ namespace Axiom.Demos.Configuration {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             internal void InitVars() {
-                this.columnRenderSystemId = base.Columns["RenderSystemId"];
+                this.columnRenderSystem = base.Columns["RenderSystem"];
                 this.columnName = base.Columns["Name"];
                 this.columnValue = base.Columns["Value"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             private void InitClass() {
-                this.columnRenderSystemId = new global::System.Data.DataColumn("RenderSystemId", typeof(string), null, global::System.Data.MappingType.Attribute);
-                base.Columns.Add(this.columnRenderSystemId);
+                this.columnRenderSystem = new global::System.Data.DataColumn("RenderSystem", typeof(string), null, global::System.Data.MappingType.Attribute);
+                base.Columns.Add(this.columnRenderSystem);
                 this.columnName = new global::System.Data.DataColumn("Name", typeof(string), null, global::System.Data.MappingType.Attribute);
                 base.Columns.Add(this.columnName);
                 this.columnValue = new global::System.Data.DataColumn("Value", typeof(string), null, global::System.Data.MappingType.Attribute);
                 base.Columns.Add(this.columnValue);
-                this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
-                                this.columnRenderSystemId,
-                                this.columnName}, true));
-                this.columnRenderSystemId.AllowDBNull = false;
-                this.columnRenderSystemId.Namespace = "http://tempuri.org/EngineConfig.xsd";
+                this.columnRenderSystem.AllowDBNull = false;
+                this.columnRenderSystem.Namespace = "";
                 this.columnName.AllowDBNull = false;
-                this.columnName.Namespace = "http://tempuri.org/EngineConfig.xsd";
-                this.columnValue.Namespace = "http://tempuri.org/EngineConfig.xsd";
+                this.columnName.Namespace = "";
+                this.columnValue.Namespace = "";
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1131,12 +833,7 @@ namespace Axiom.Demos.Configuration {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             public string src {
                 get {
-                    try {
-                        return ((string)(this[this.tableFilePath.srcColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'src\' in table \'FilePath\' is DBNull.", e);
-                    }
+                    return ((string)(this[this.tableFilePath.srcColumn]));
                 }
                 set {
                     this[this.tableFilePath.srcColumn] = value;
@@ -1146,70 +843,10 @@ namespace Axiom.Demos.Configuration {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             public string type {
                 get {
-                    try {
-                        return ((string)(this[this.tableFilePath.typeColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'type\' in table \'FilePath\' is DBNull.", e);
-                    }
+                    return ((string)(this[this.tableFilePath.typeColumn]));
                 }
                 set {
                     this[this.tableFilePath.typeColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public bool IssrcNull() {
-                return this.IsNull(this.tableFilePath.srcColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public void SetsrcNull() {
-                this[this.tableFilePath.srcColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public bool IstypeNull() {
-                return this.IsNull(this.tableFilePath.typeColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public void SettypeNull() {
-                this[this.tableFilePath.typeColumn] = global::System.Convert.DBNull;
-            }
-        }
-        
-        /// <summary>
-        ///Represents strongly named DataRow class.
-        ///</summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
-        public partial class RenderSystemConfigRow : global::System.Data.DataRow {
-            
-            private RenderSystemConfigDataTable tableRenderSystemConfig;
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            internal RenderSystemConfigRow(global::System.Data.DataRowBuilder rb) : 
-                    base(rb) {
-                this.tableRenderSystemConfig = ((RenderSystemConfigDataTable)(this.Table));
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public string RenderSystemId {
-                get {
-                    return ((string)(this[this.tableRenderSystemConfig.RenderSystemIdColumn]));
-                }
-                set {
-                    this[this.tableRenderSystemConfig.RenderSystemIdColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public ConfigOptionRow[] GetConfigOptionRows() {
-                if ((this.Table.ChildRelations["FK_RenderSystemConfig_ConfigOption"] == null)) {
-                    return new ConfigOptionRow[0];
-                }
-                else {
-                    return ((ConfigOptionRow[])(base.GetChildRows(this.Table.ChildRelations["FK_RenderSystemConfig_ConfigOption"])));
                 }
             }
         }
@@ -1229,12 +866,12 @@ namespace Axiom.Demos.Configuration {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public string RenderSystemId {
+            public string RenderSystem {
                 get {
-                    return ((string)(this[this.tableConfigOption.RenderSystemIdColumn]));
+                    return ((string)(this[this.tableConfigOption.RenderSystemColumn]));
                 }
                 set {
-                    this[this.tableConfigOption.RenderSystemIdColumn] = value;
+                    this[this.tableConfigOption.RenderSystemColumn] = value;
                 }
             }
             
@@ -1260,16 +897,6 @@ namespace Axiom.Demos.Configuration {
                 }
                 set {
                     this[this.tableConfigOption.ValueColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public RenderSystemConfigRow RenderSystemConfigRow {
-                get {
-                    return ((RenderSystemConfigRow)(this.GetParentRow(this.Table.ParentRelations["FK_RenderSystemConfig_ConfigOption"])));
-                }
-                set {
-                    this.SetParentRow(value, this.Table.ParentRelations["FK_RenderSystemConfig_ConfigOption"]);
                 }
             }
             
@@ -1302,37 +929,6 @@ namespace Axiom.Demos.Configuration {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             public FilePathRow Row {
-                get {
-                    return this.eventRow;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public global::System.Data.DataRowAction Action {
-                get {
-                    return this.eventAction;
-                }
-            }
-        }
-        
-        /// <summary>
-        ///Row event argument class
-        ///</summary>
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
-        public class RenderSystemConfigRowChangeEvent : global::System.EventArgs {
-            
-            private RenderSystemConfigRow eventRow;
-            
-            private global::System.Data.DataRowAction eventAction;
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public RenderSystemConfigRowChangeEvent(RenderSystemConfigRow row, global::System.Data.DataRowAction action) {
-                this.eventRow = row;
-                this.eventAction = action;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public RenderSystemConfigRow Row {
                 get {
                     return this.eventRow;
                 }

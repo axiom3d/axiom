@@ -46,77 +46,77 @@ using System.Collections.Generic;
 
 namespace Axiom.Core
 {
-    /// <summary>
-    ///		A collection of billboards (faces which are always facing the camera) with the same (default) dimensions, material
-    ///		and which are fairly close proximity to each other.
-    ///	 </summary>
-    ///	 <remarks>
-    ///		Billboards are rectangles made up of 2 tris which are always facing the camera. They are typically used
-    ///		for special effects like particles. This class collects together a set of billboards with the same (default) dimensions,
-    ///		material and relative locality in order to process them more efficiently. The entire set of billboards will be
-    ///		culled as a whole (by default, although this can be changed if you want a large set of billboards
-    ///		which are spread out and you want them culled individually), individual Billboards have locations which are relative to the set (which itself derives it's
-    ///		position from the SceneNode it is attached to since it is a SceneObject), they will be rendered as a single rendering operation,
-    ///		and some calculations will be sped up by the fact that they use the same dimensions so some workings can be reused.
-    ///		<p/>
-    ///		A BillboardSet can be created using the SceneManager.CreateBillboardSet method. They can also be used internally
-    ///		by other classes to create effects.
-    /// </remarks>
-    public class BillboardSet : MovableObject, IRenderable
-    {
-        #region Fields
+	/// <summary>
+	///		A collection of billboards (faces which are always facing the camera) with the same (default) dimensions, material
+	///		and which are fairly close proximity to each other.
+	///	 </summary>
+	///	 <remarks>
+	///		Billboards are rectangles made up of 2 tris which are always facing the camera. They are typically used
+	///		for special effects like particles. This class collects together a set of billboards with the same (default) dimensions,
+	///		material and relative locality in order to process them more efficiently. The entire set of billboards will be
+	///		culled as a whole (by default, although this can be changed if you want a large set of billboards
+	///		which are spread out and you want them culled individually), individual Billboards have locations which are relative to the set (which itself derives it's
+	///		position from the SceneNode it is attached to since it is a SceneObject), they will be rendered as a single rendering operation,
+	///		and some calculations will be sped up by the fact that they use the same dimensions so some workings can be reused.
+	///		<p/>
+	///		A BillboardSet can be created using the SceneManager.CreateBillboardSet method. They can also be used internally
+	///		by other classes to create effects.
+	/// </remarks>
+	public class BillboardSet : MovableObject, IRenderable
+	{
+		#region Fields
 
-        /// <summary>Bounds of all billboards in this set</summary>
-        protected AxisAlignedBox aab = new AxisAlignedBox();
-        /// <summary>Origin of each billboard</summary>
-        protected BillboardOrigin originType = BillboardOrigin.Center;
+		/// <summary>Bounds of all billboards in this set</summary>
+		protected AxisAlignedBox aab = new AxisAlignedBox();
+		/// <summary>Origin of each billboard</summary>
+		protected BillboardOrigin originType = BillboardOrigin.Center;
 		protected BillboardRotationType rotationType = BillboardRotationType.Texcoord;
-        /// <summary>Default width/height of each billboard.</summary>
+		/// <summary>Default width/height of each billboard.</summary>
 		protected float defaultParticleWidth = 100;
 		protected float defaultParticleHeight = 100;
-        /// <summary>Name of the material to use</summary>
-        protected string materialName = "BaseWhite";
-        /// <summary>Reference to the material to use</summary>
-        protected Material material;
-        /// <summary></summary>
+		/// <summary>Name of the material to use</summary>
+		protected string materialName = "BaseWhite";
+		/// <summary>Reference to the material to use</summary>
+		protected Material material;
+		/// <summary></summary>
 		protected bool allDefaultSize = true;
 		protected bool allDefaultRotation = true;
-        /// <summary></summary>
-        protected bool autoExtendPool = true;
+		/// <summary></summary>
+		protected bool autoExtendPool = true;
 		/// <summary>True if particles follow the object the
 		/// ParticleSystem is attached to.</summary>
 		protected bool worldSpace = false;
 
-        // various collections for pooling billboards
+		// various collections for pooling billboards
 		protected List<Billboard> activeBillboards = new List<Billboard>();
 		protected List<Billboard> freeBillboards = new List<Billboard>();
 		protected List<Billboard> billboardPool = new List<Billboard>();
 
-        // Geometry data.
-        protected VertexData vertexData = null;
-        protected IndexData indexData = null;
+		// Geometry data.
+		protected VertexData vertexData = null;
+		protected IndexData indexData = null;
 
-        /// <summary>Indicates whether or not each billboard should be culled individually.</summary>
+		/// <summary>Indicates whether or not each billboard should be culled individually.</summary>
 		protected bool cullIndividual = false;
-        /// <summary>Type of billboard to render.</summary>
-        protected BillboardType billboardType = BillboardType.Point;
-        /// <summary>Common direction for billboard oriented with type Common.</summary>
+		/// <summary>Type of billboard to render.</summary>
+		protected BillboardType billboardType = BillboardType.Point;
+		/// <summary>Common direction for billboard oriented with type Common.</summary>
 		protected Vector3 commonDirection = Vector3.UnitZ;
 		/// <summary>Common up vector for billboard oriented with type Perpendicular.</summary>
 		protected Vector3 commonUpVector = Vector3.UnitY;
-        /// <summary>The local bounding radius of this object.</summary>
-        protected float boundingRadius;
+		/// <summary>The local bounding radius of this object.</summary>
+		protected float boundingRadius;
 
-        protected int numVisibleBillboards;
+		protected int numVisibleBillboards;
 
 		/// <summary>
 		///		Are tex coords fixed?  If not they have been modified.
 		/// </summary>
-        protected bool fixedTextureCoords;
+		protected bool fixedTextureCoords;
 
 		// Temporary matrix for checking billboard visible
-        protected Matrix4[] world = new Matrix4[ 1 ];
-        protected Sphere sphere = new Sphere();
+		protected Matrix4[] world = new Matrix4[ 1 ];
+		protected Sphere sphere = new Sphere();
 
 		// used to keep track of current index in GenerateVertices
 		protected int posIndex = 0;
@@ -136,7 +136,7 @@ namespace Axiom.Core
 
 		private bool buffersCreated = false;
 		private int poolSize = 0;
-        private bool externalData = false;
+		private bool externalData = false;
 		List<RectangleF> textureCoords = new List<RectangleF>();
 
 		protected HardwareVertexBuffer mainBuffer;
@@ -151,49 +151,49 @@ namespace Axiom.Core
 										   -0.5f,-0.5f,
 										   0.5f,-0.5f };
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Constructors
+		#region Constructors
 
-        /// <summary>
+		/// <summary>
 		///		Public constructor.  Should not be created manually, must be created using a SceneManager.
-        /// </summary>
-        internal BillboardSet( string name, int poolSize )
-        {
-            this.name = name;
-            this.PoolSize = poolSize;
+		/// </summary>
+		internal BillboardSet( string name, int poolSize )
+		{
+			this.name = name;
+			this.PoolSize = poolSize;
 
 			SetDefaultDimensions( 100, 100 );
 			this.MaterialName = "BaseWhite";
 			castShadows = false;
 			SetTextureStacksAndSlices( 1, 1 );
-        }
-        /// <summary>
+		}
+		/// <summary>
 		///		Public constructor.  Should not be created manually, must be created using a SceneManager.
-        /// </summary>
-        internal BillboardSet( string name, int poolSize, bool externalData )
-        {
-            this.name = name;
-            this.PoolSize = poolSize;
-            this.externalData = externalData;
+		/// </summary>
+		internal BillboardSet( string name, int poolSize, bool externalData )
+		{
+			this.name = name;
+			this.PoolSize = poolSize;
+			this.externalData = externalData;
 
 			SetDefaultDimensions( 100, 100 );
 			this.MaterialName = "BaseWhite";
 			castShadows = false;
 			SetTextureStacksAndSlices( 1, 1 );
-        }
+		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        /// <summary>
+		/// <summary>
 		///     Generate the vertices for all the billboards relative to the camera
 		///     Also take the opportunity to update the vertex colours
 		///     May as well do it here to save on loops elsewhere
-        ///	 </summary>
+		///	 </summary>
 		internal void BeginBillboards()
-        {
+		{
 			// Make sure we aren't calling this more than once
 			Debug.Assert( lockPtr == IntPtr.Zero );
 
@@ -218,7 +218,7 @@ namespace Axiom.Core
 
 			// Only calculate vertex offets et al if we're not point rendering
 			if ( !pointRendering )
-        {
+			{
 				// Get offsets for origin type
 				GetParametricOffsets( out leftOff, out rightOff, out topOff, out bottomOff );
 
@@ -237,8 +237,8 @@ namespace Axiom.Core
 										  defaultParticleWidth, defaultParticleHeight,
 										  ref camX, ref camY, vOffset );
 
-        }
-            }
+				}
+			}
 
 			// Init num visible
 			numVisibleBillboards = 0;
@@ -261,11 +261,11 @@ namespace Axiom.Core
 			{
 				// Have to generate axes & offsets per billboard
 				GenerateBillboardAxes( ref camX, ref camY, bb );
-        }
+			}
 
 			// If they're all the same size or we're point rendering
 			if ( allDefaultSize || pointRendering )
-        {
+			{
 				/* No per-billboard checking, just blast through.
 				   Saves us an if clause every billboard which may
 				   make a difference.
@@ -275,31 +275,31 @@ namespace Axiom.Core
 					( billboardType == BillboardType.OrientedSelf ||
 					 billboardType == BillboardType.PerpendicularSelf ||
 					 ( accurateFacing && billboardType != BillboardType.PerpendicularCommon ) ) )
-            {
+				{
 					GenerateVertexOffsets( leftOff, rightOff, topOff, bottomOff,
 										  defaultParticleWidth, defaultParticleHeight,
 										  ref camX, ref camY, vOffset );
-            }
+				}
 				GenerateVertices( vOffset, bb );
-        }
+			}
 			else // not all default size and not point rendering
-        {
+			{
 				Vector3[] vOwnOffset = new Vector3[ 4 ];
 				// If it has own dimensions, or self-oriented, gen offsets
 				if ( billboardType == BillboardType.OrientedSelf ||
 					billboardType == BillboardType.PerpendicularSelf ||
 					bb.HasOwnDimensions ||
 					( accurateFacing && billboardType != BillboardType.PerpendicularCommon ) )
-            {
+				{
 					// Generate using own dimensions
 					GenerateVertexOffsets( leftOff, rightOff, topOff, bottomOff,
 										  bb.Width, bb.Height,
 										  ref camX, ref camY, vOwnOffset );
 					// Create vertex data
 					GenerateVertices( vOwnOffset, bb );
-            }
+				}
 				else // Use default dimension, already computed before the loop, for faster creation
-            {
+				{
 					GenerateVertices( vOffset, bb );
 				}
 			}
@@ -308,50 +308,50 @@ namespace Axiom.Core
 		}
 
 		internal void EndBillboards()
-                {
+		{
 			// Make sure we aren't double unlocking
 			Debug.Assert( lockPtr != IntPtr.Zero );
 			mainBuffer.Unlock();
 			lockPtr = IntPtr.Zero;
-                }
+		}
 
 		protected void SetBounds( AxisAlignedBox box, float radius )
-                {
+		{
 			aab = box;
 			boundingRadius = radius;
-            }
+		}
 
-        /// <summary>
+		/// <summary>
 		///		Callback used by Billboards to notify their parent that they have been resized.
-        ///	 </summary>
+		///	 </summary>
 		protected internal void NotifyBillboardResized()
-        {
+		{
 			allDefaultSize = false;
-            }
+		}
 
 		/// <summary>
 		///		Callback used by Billboards to notify their parent that they have been resized.
 		/// </summary>
 		protected internal void NotifyBillboardRotated()
-            {
+		{
 			allDefaultRotation = false;
-        }
+		}
 
-        /// <summary>
+		/// <summary>
 		///		Notifies the billboardset that texture coordinates will be modified
 		///		for this set.
-        ///	 </summary>
+		///	 </summary>
 		protected internal void NotifyBillboardTextureCoordsModified()
-        {
+		{
 			fixedTextureCoords = false;
-            }
+		}
 
 		/// <summary>
 		///		Internal method for increasing pool size.
 		/// </summary>
 		/// <param name="size"></param>
 		protected virtual void IncreasePool( int size )
-                {
+		{
 			int oldSize = billboardPool.Count;
 
 			// expand the capacity a bit
@@ -360,16 +360,16 @@ namespace Axiom.Core
 			// add fresh Billboard objects to the new slots
 			for ( int i = oldSize; i < size; ++i )
 				billboardPool.Add( new Billboard() );
-        }
+		}
 
-        /// <summary>
+		/// <summary>
 		///		Determines whether the supplied billboard is visible in the camera or not.
-        ///	 </summary>
+		///	 </summary>
 		/// <param name="camera"></param>
 		/// <param name="billboard"></param>
 		/// <returns></returns>
 		protected bool IsBillboardVisible( Camera camera, Billboard billboard )
-        {
+		{
 			// if not culling each one, return true always
 			if ( !cullIndividual )
 				return true;
@@ -382,20 +382,20 @@ namespace Axiom.Core
 
 			// calculate the radius of the bounding sphere for the billboard
 			if ( billboard.HasOwnDimensions )
-                {
+			{
 				sphere.Radius = Utility.Max( billboard.Width, billboard.Height );
-                }
-                else
-                {
+			}
+			else
+			{
 				sphere.Radius = Utility.Max( defaultParticleWidth, defaultParticleHeight );
-            }
+			}
 
 			// finally, see if the sphere is visible in the camera
 			return camera.IsObjectVisible( sphere );
-        }
+		}
 
 		protected void SetTextureStacksAndSlices( int stacks, int slices )
-        {
+		{
 			if ( stacks == 0 )
 				stacks = 1;
 			if ( slices == 0 )
@@ -423,32 +423,32 @@ namespace Axiom.Core
 					r.Height = bottom - top;
 					textureCoords[ coordIndex ] = r;
 					++coordIndex;
-            }
-            }
+				}
+			}
 			Debug.Assert( coordIndex == stacks * slices );
-        }
+		}
 
-        /// <summary>
+		/// <summary>
 		///		Overloaded method.
-        ///	 </summary>
+		///	 </summary>
 		/// <param name="camera"></param>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		protected virtual void GenerateBillboardAxes( ref Vector3 x, ref Vector3 y )
-        {
+		{
 			GenerateBillboardAxes( ref x, ref y, null );
-        }
+		}
 
-        /// <summary>
+		/// <summary>
 		///		Generates billboard corners.
-        ///	 </summary>
+		///	 </summary>
 		/// <param name="camera"></param>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <param name="billboard"></param>
 		/// <remarks>Billboard param only required for type OrientedSelf</remarks>
 		protected virtual void GenerateBillboardAxes( ref Vector3 x, ref Vector3 y, Billboard bb )
-            {
+		{
 			// If we're using accurate facing, recalculate camera direction per BB
 			if ( accurateFacing &&
 				( billboardType == BillboardType.Point ||
@@ -458,26 +458,26 @@ namespace Axiom.Core
 				// cam -> bb direction
 				camDir = bb.Position - camPos;
 				camDir.Normalize();
-        }
+			}
 
 
 			switch ( billboardType )
-        {
+			{
 				case BillboardType.Point:
 					if ( accurateFacing )
-            {
+					{
 						// Point billboards will have 'up' based on but not equal to cameras
 						y = camQ * Vector3.UnitY;
 						x = camDir.Cross( y );
 						x.Normalize();
 						y = x.Cross( camDir ); // both normalised already
-            }
+					}
 					else
-            {
+					{
 						// Get camera axes for X and Y (depth is irrelevant)
 						x = camQ * Vector3.UnitX;
 						y = camQ * Vector3.UnitY;
-        }
+					}
 					break;
 
 				case BillboardType.OrientedCommon:
@@ -511,7 +511,7 @@ namespace Axiom.Core
 					x.Normalize();
 					y = bb.Direction.Cross( x ); // both should be normalised
 					break;
-        }
+			}
 
 
 #if NOT
@@ -567,88 +567,88 @@ namespace Axiom.Core
                     break;
             }
 #endif
-        }
+		}
 
-        /// <summary>
-        ///		Generate parametric offsets based on the origin.
-        /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <param name="top"></param>
-        /// <param name="bottom"></param>
+		/// <summary>
+		///		Generate parametric offsets based on the origin.
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <param name="top"></param>
+		/// <param name="bottom"></param>
 		protected void GetParametricOffsets( out float left, out float right, out float top, out float bottom )
-        {
-            left = 0.0f;
-            right = 0.0f;
-            top = 0.0f;
-            bottom = 0.0f;
+		{
+			left = 0.0f;
+			right = 0.0f;
+			top = 0.0f;
+			bottom = 0.0f;
 
-            switch ( originType )
-            {
-                case BillboardOrigin.TopLeft:
-                    left = 0.0f;
-                    right = 1.0f;
-                    top = 0.0f;
+			switch ( originType )
+			{
+				case BillboardOrigin.TopLeft:
+					left = 0.0f;
+					right = 1.0f;
+					top = 0.0f;
 					bottom = -1.0f;
-                    break;
+					break;
 
-                case BillboardOrigin.TopCenter:
-                    left = -0.5f;
-                    right = 0.5f;
-                    top = 0.0f;
-                    bottom = 1.0f;
-                    break;
+				case BillboardOrigin.TopCenter:
+					left = -0.5f;
+					right = 0.5f;
+					top = 0.0f;
+					bottom = 1.0f;
+					break;
 
-                case BillboardOrigin.TopRight:
-                    left = -1.0f;
-                    right = 0.0f;
-                    top = 0.0f;
+				case BillboardOrigin.TopRight:
+					left = -1.0f;
+					right = 0.0f;
+					top = 0.0f;
 					bottom = -1.0f;
-                    break;
+					break;
 
-                case BillboardOrigin.CenterLeft:
-                    left = 0.0f;
-                    right = 1.0f;
+				case BillboardOrigin.CenterLeft:
+					left = 0.0f;
+					right = 1.0f;
 					top = 0.5f;
 					bottom = -0.5f;
-                    break;
+					break;
 
-                case BillboardOrigin.Center:
-                    left = -0.5f;
-                    right = 0.5f;
+				case BillboardOrigin.Center:
+					left = -0.5f;
+					right = 0.5f;
 					top = 0.5f;
 					bottom = -0.5f;
-                    break;
+					break;
 
-                case BillboardOrigin.CenterRight:
-                    left = -1.0f;
-                    right = 0.0f;
+				case BillboardOrigin.CenterRight:
+					left = -1.0f;
+					right = 0.0f;
 					top = 0.5f;
 					bottom = -0.5f;
-                    break;
+					break;
 
-                case BillboardOrigin.BottomLeft:
-                    left = 0.0f;
-                    right = 1.0f;
+				case BillboardOrigin.BottomLeft:
+					left = 0.0f;
+					right = 1.0f;
 					top = 1.0f;
-                    bottom = 0.0f;
-                    break;
+					bottom = 0.0f;
+					break;
 
-                case BillboardOrigin.BottomCenter:
-                    left = -0.5f;
-                    right = 0.5f;
+				case BillboardOrigin.BottomCenter:
+					left = -0.5f;
+					right = 0.5f;
 					top = 1.0f;
-                    bottom = 0.0f;
-                    break;
+					bottom = 0.0f;
+					break;
 
-                case BillboardOrigin.BottomRight:
-                    left = -1.0f;
-                    right = 0.0f;
+				case BillboardOrigin.BottomRight:
+					left = -1.0f;
+					right = 0.0f;
 					top = 1.0f;
-                    bottom = 0.0f;
-                    break;
-            }
-        }
+					bottom = 0.0f;
+					break;
+			}
+		}
 
 		protected void GenerateVertices( Vector3[] offsets, Billboard bb )
 		{
@@ -660,7 +660,7 @@ namespace Axiom.Core
 			if ( pointRendering )
 			{
 				unsafe
-        {
+				{
 					float* posPtr = (float*)lockPtr.ToPointer();
 					int* colPtr = (int*)posPtr;
 
@@ -675,8 +675,8 @@ namespace Axiom.Core
 			}
 			else if ( allDefaultRotation || bb.Rotation == 0 )
 			{
-            unsafe
-            {
+				unsafe
+				{
 					float* posPtr = (float*)lockPtr.ToPointer();
 					int* colPtr = (int*)posPtr;
 					float* texPtr = (float*)posPtr;
@@ -737,7 +737,7 @@ namespace Axiom.Core
 				Vector3 pt;
 
 				unsafe
-                {
+				{
 					float* posPtr = (float*)lockPtr.ToPointer();
 					int* colPtr = (int*)posPtr;
 					float* texPtr = (float*)posPtr;
@@ -790,9 +790,9 @@ namespace Axiom.Core
 					texPtr[ ptrOffset++ ] = r.Right;
 					texPtr[ ptrOffset++ ] = r.Bottom;
 				}
-                }
-                else
-                {
+			}
+			else
+			{
 				float cos_rot = Utility.Cos( bb.rotationInRadians );
 				float sin_rot = Utility.Sin( bb.rotationInRadians );
 
@@ -807,17 +807,17 @@ namespace Axiom.Core
 				float sin_rot_h = sin_rot * height;
 
 				unsafe
-                {
+				{
 					float* posPtr = (float*)lockPtr.ToPointer();
 					int* colPtr = (int*)posPtr;
 					float* texPtr = (float*)posPtr;
 
 					// Left-top
-                    // Positions
+					// Positions
 					posPtr[ ptrOffset++ ] = offsets[ 0 ].x + bb.Position.x;
 					posPtr[ ptrOffset++ ] = offsets[ 0 ].y + bb.Position.y;
 					posPtr[ ptrOffset++ ] = offsets[ 0 ].z + bb.Position.z;
-                    // Color
+					// Color
 					colPtr[ ptrOffset++ ] = color;
 					// Texture coords
 					texPtr[ ptrOffset++ ] = mid_u - cos_rot_w + sin_rot_h;
@@ -855,46 +855,46 @@ namespace Axiom.Core
 					// Texture coords
 					texPtr[ ptrOffset++ ] = mid_u + cos_rot_w - sin_rot_h;
 					texPtr[ ptrOffset++ ] = mid_v + sin_rot_w + cos_rot_h;
-                }
-            }
-        }
+				}
+			}
+		}
 
-        /// <summary>
-        ///		Generates vertex offsets.
-        /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <param name="top"></param>
-        /// <param name="bottom"></param>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="destVec"></param>
-        /// <remarks>
-        ///		Takes in parametric offsets as generated from GetParametericOffsets, width and height values
-        ///		and billboard x and y axes as generated from GenerateBillboardAxes. 
-        ///		Fills output array of 4 vectors with vector offsets
-        ///		from origin for left-top, right-top, left-bottom, right-bottom corners.
-        /// </remarks>
-        protected void GenerateVertexOffsets( float left, float right, float top, float bottom, float width, float height, ref Vector3 x, ref Vector3 y, Vector3[] destVec )
-        {
-            Vector3 vLeftOff, vRightOff, vTopOff, vBottomOff;
-            /* Calculate default offsets. Scale the axes by
-               parametric offset and dimensions, ready to be added to
-               positions.
-            */
-            vLeftOff = x * ( left * width );
-            vRightOff = x * ( right * width );
-            vTopOff = y * ( top * height );
-            vBottomOff = y * ( bottom * height );
+		/// <summary>
+		///		Generates vertex offsets.
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <param name="top"></param>
+		/// <param name="bottom"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="destVec"></param>
+		/// <remarks>
+		///		Takes in parametric offsets as generated from GetParametericOffsets, width and height values
+		///		and billboard x and y axes as generated from GenerateBillboardAxes. 
+		///		Fills output array of 4 vectors with vector offsets
+		///		from origin for left-top, right-top, left-bottom, right-bottom corners.
+		/// </remarks>
+		protected void GenerateVertexOffsets( float left, float right, float top, float bottom, float width, float height, ref Vector3 x, ref Vector3 y, Vector3[] destVec )
+		{
+			Vector3 vLeftOff, vRightOff, vTopOff, vBottomOff;
+			/* Calculate default offsets. Scale the axes by
+			   parametric offset and dimensions, ready to be added to
+			   positions.
+			*/
+			vLeftOff = x * ( left * width );
+			vRightOff = x * ( right * width );
+			vTopOff = y * ( top * height );
+			vBottomOff = y * ( bottom * height );
 
-            // Make final offsets to vertex positions
-            destVec[ 0 ] = vLeftOff + vTopOff;
-            destVec[ 1 ] = vRightOff + vTopOff;
-            destVec[ 2 ] = vLeftOff + vBottomOff;
-            destVec[ 3 ] = vRightOff + vBottomOff;
-        }
+			// Make final offsets to vertex positions
+			destVec[ 0 ] = vLeftOff + vTopOff;
+			destVec[ 1 ] = vRightOff + vTopOff;
+			destVec[ 2 ] = vLeftOff + vBottomOff;
+			destVec[ 3 ] = vRightOff + vBottomOff;
+		}
 
 		/// <summary>
 		///		Overloaded method.
@@ -1178,16 +1178,16 @@ namespace Axiom.Core
 		///		when the pool has expired will simply fail silently, returning a null pointer.
 		/// </remarks>
 		public bool AutoExtend
-        {
-            get
-            {
+		{
+			get
+			{
 				return autoExtendPool;
 			}
 			set
 			{
 				autoExtendPool = value;
-            }
-        }
+			}
+		}
 
 		/// <summary>
 		///		Adjusts the size of the pool of billboards available in this set.
@@ -1200,9 +1200,9 @@ namespace Axiom.Core
 		///		goes for auto-extension, try to avoid it by estimating the pool size correctly up-front.
 		/// </remarks>
 		public int PoolSize
-        {
-            get
-            {
+		{
+			get
+			{
 				return billboardPool.Count;
 			}
 			set
@@ -1225,7 +1225,7 @@ namespace Axiom.Core
 				poolSize = value;
 				DestroyBuffers();
 			}
-            }
+		}
 #if OLD
                     // 4 vertices per billboard, 3 components = 12
                     // 1 int value per vertex
@@ -1359,24 +1359,24 @@ namespace Axiom.Core
 		///		it could mean the center of the bottom edge (e.g. a tree which is positioned on the ground),
 		/// </remarks>
 		public BillboardOrigin BillboardOrigin
-        {
-            get
-            {
+		{
+			get
+			{
 				return originType;
 			}
 			set
 			{
 				originType = value;
-            }
-        }
+			}
+		}
 
 		/// <summary>
 		///		Gets/Sets the name of the material to use for this billboard set.
 		/// </summary>
 		public string MaterialName
-        {
-            get
-            {
+		{
+			get
+			{
 				return materialName;
 			}
 			set
@@ -1395,12 +1395,12 @@ namespace Axiom.Core
 				{
 					throw new AxiomException( "Material '{0}' could not be found to be set as the material for BillboardSet '{0}'.", materialName, this.name );
 				}
-            }
-        }
+			}
+		}
 
-        /// <summary>
+		/// <summary>
 		///		Sets whether culling tests billboards in this individually as well as in a group.
-        /// </summary>
+		/// </summary>
 		///	 <remarks>
 		///		Billboard sets are always culled as a whole group, based on a bounding box which 
 		///		encloses all billboards in the set. For fairly localised sets, this is enough. However, you
@@ -1419,20 +1419,20 @@ namespace Axiom.Core
 		///		fine-grained culling so unnecessary rendering is avoided.
 		/// </remarks>
 		public bool CullIndividual
-        {
-            get
-            {
+		{
+			get
+			{
 				return cullIndividual;
 			}
 			set
 			{
 				this.cullIndividual = value;
-            }
-        }
+			}
+		}
 
-        /// <summary>
+		/// <summary>
 		///		Gets/Sets the type of billboard to render.
-        /// </summary>
+		/// </summary>
 		///	 <remarks>
 		///		The default sort of billboard (Point), always has both x and y axes parallel to 
 		///		the camera's local axes. This is fine for 'point' style billboards (e.g. flares,
@@ -1454,40 +1454,40 @@ namespace Axiom.Core
 		}
 
 		public BillboardRotationType BillboardRotationType
-        {
-            get
-            {
+		{
+			get
+			{
 				return rotationType;
 			}
 			set
 			{
 				rotationType = value;
-            }
-        }
+			}
+		}
 
-        /// <summary>
+		/// <summary>
 		///		Use this to specify the common direction given to billboards of types OrientedCommon or PerpendicularCommon.
-        /// </summary>
+		/// </summary>
 		///	 <remarks>
 		///		Use OrientedCommon when you want oriented billboards but you know they are always going to 
 		///		be oriented the same way (e.g. rain in calm weather). It is faster for the system to calculate
 		///		the billboard vertices if they have a common direction.
 		/// </remarks>
 		public Vector3 CommonDirection
-        {
-            get
-            {
+		{
+			get
+			{
 				return commonDirection;
 			}
 			set
 			{
 				commonDirection = value;
-            }
-        }
+			}
+		}
 
-        /// <summary>
+		/// <summary>
 		///		Use this to determine the orientation given to billboards of types PerpendicularCommon or PerpendicularSelf.
-        /// </summary>
+		/// </summary>
 		///	 <remarks>
 		///		Billboards will be oriented with their Y axis coplanar with the up direction vector.
 		/// </remarks>
@@ -1504,31 +1504,31 @@ namespace Axiom.Core
 		}
 
 		public bool UseAccurateFacing
-        {
-            get
-            {
+		{
+			get
+			{
 				return accurateFacing;
 			}
 			set
 			{
 				accurateFacing = value;
-            }
-        }
+			}
+		}
 
-        /// <summary>
+		/// <summary>
 		///		Gets the list of active billboards.
-        /// </summary>
+		/// </summary>
 		public List<Billboard> Billboards
-        {
-            get
-            {
+		{
+			get
+			{
 				return activeBillboards;
-            }
-        }
+			}
+		}
 
-        /// <summary>
+		/// <summary>
 		///    Local bounding radius of this billboard set.
-        /// </summary>
+		/// </summary>
 		public override float BoundingRadius
 		{
 			get
@@ -1542,20 +1542,20 @@ namespace Axiom.Core
 		#region IRenderable Members
 
 		public bool CastsShadows
-        {
-            get
-            {
+		{
+			get
+			{
 				return false;
-            }
-        }
+			}
+		}
 
 		public Material Material
-        {
-            get
-            {
+		{
+			get
+			{
 				return material;
-            }
-        }
+			}
+		}
 
 		public Technique Technique
 		{
@@ -1565,8 +1565,8 @@ namespace Axiom.Core
 			}
 		}
 
-        public void GetRenderOperation( RenderOperation op )
-        {
+		public void GetRenderOperation( RenderOperation op )
+		{
 			op.vertexData = vertexData;
 			op.vertexData.vertexStart = 0;
 
@@ -1579,26 +1579,26 @@ namespace Axiom.Core
 			}
 			else
 			{
-            op.operationType = OperationType.TriangleList;
-            op.useIndices = true;
-            op.vertexData.vertexCount = numVisibleBillboards * 4;
-            op.indexData = indexData;
+				op.operationType = OperationType.TriangleList;
+				op.useIndices = true;
+				op.vertexData.vertexCount = numVisibleBillboards * 4;
+				op.indexData = indexData;
 				op.indexData.indexCount = numVisibleBillboards * 6;
-            op.indexData.indexStart = 0;
+				op.indexData.indexStart = 0;
 			}
-        }
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="matrices"></param>
-        public virtual void GetWorldTransforms( Matrix4[] matrices )
-        {
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="matrices"></param>
+		public virtual void GetWorldTransforms( Matrix4[] matrices )
+		{
 			// It's actually more natural to be in local space, which means 
 			// that the emitted particles move when the parent object moves.
 			// Sometimes you only want the emitter to move though, such as 
 			// when you are generating smoke
-            if ( worldSpace )
+			if ( worldSpace )
 				matrices[ 0 ] = Matrix4.Identity;
 			else
 				matrices[ 0 ] = parentNode.FullTransform;
@@ -1620,7 +1620,7 @@ namespace Axiom.Core
 		public bool UseIdentityProjection
 		{
 			get
-            {
+			{
 				return false;
 			}
 		}
@@ -1628,33 +1628,33 @@ namespace Axiom.Core
 		/// <summary>
 		/// 
 		/// </summary>
-        public bool UseIdentityView
-        {
-            get
-            {
-                return false;
-            }
-        }
+		public bool UseIdentityView
+		{
+			get
+			{
+				return false;
+			}
+		}
 
-        public virtual bool PolygonModeOverrideable
-        {
-            get
-            {
-                return true;
-            }
-        }
+		public virtual bool PolygonModeOverrideable
+		{
+			get
+			{
+				return true;
+			}
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="camera"></param>
-        /// <returns></returns>
-        public virtual float GetSquaredViewDepth( Camera camera )
-        {
-            Debug.Assert( parentNode != null, "BillboardSet must have a parent scene node to get the squared view depth." );
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="camera"></param>
+		/// <returns></returns>
+		public virtual float GetSquaredViewDepth( Camera camera )
+		{
+			Debug.Assert( parentNode != null, "BillboardSet must have a parent scene node to get the squared view depth." );
 
-            return parentNode.GetSquaredViewDepth( camera );
-        }
+			return parentNode.GetSquaredViewDepth( camera );
+		}
 
 		/// <summary>
 		/// 
@@ -1686,51 +1686,51 @@ namespace Axiom.Core
 			}
 		}
 
-        public Vector4 GetCustomParameter( int index )
-        {
-            if ( customParams[ index ] == null )
-            {
-                throw new Exception( "A parameter was not found at the given index" );
-            }
-            else
-            {
-                return (Vector4)customParams[ index ];
-            }
-        }
+		public Vector4 GetCustomParameter( int index )
+		{
+			if ( customParams[ index ] == null )
+			{
+				throw new Exception( "A parameter was not found at the given index" );
+			}
+			else
+			{
+				return (Vector4)customParams[ index ];
+			}
+		}
 
-        public void SetCustomParameter( int index, Vector4 val )
-        {
-            customParams[ index ] = val;
-        }
+		public void SetCustomParameter( int index, Vector4 val )
+		{
+			customParams[ index ] = val;
+		}
 
-        public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
-        {
-            if ( customParams[ entry.data ] != null )
-            {
-                gpuParams.SetConstant( entry.index, (Vector4)customParams[ entry.data ] );
-            }
-        }
+		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
+		{
+			if ( customParams[ entry.data ] != null )
+			{
+				gpuParams.SetConstant( entry.index, (Vector4)customParams[ entry.data ] );
+			}
+		}
 
-        #endregion
+		#endregion
 
 		#region Implementation of SceneObject
 
-        public override AxisAlignedBox BoundingBox
-        {
-            // cloning to prevent direct modification
-            get
-            {
-                return (AxisAlignedBox)aab.Clone();
-            }
-        }
+		public override AxisAlignedBox BoundingBox
+		{
+			// cloning to prevent direct modification
+			get
+			{
+				return (AxisAlignedBox)aab.Clone();
+			}
+		}
 
 		public bool NormalizeNormals
-        {
-            get
-            {
+		{
+			get
+			{
 				return false;
-            }
-        }
+			}
+		}
 
 		private static TimingMeter billboardNotifyMeter = MeterManager.GetMeter( "Notify Camera", "BillboardSet" );
 		private static TimingMeter notSelfMeter = MeterManager.GetMeter( "Not Self", "BillboardSet" );
@@ -1740,15 +1740,15 @@ namespace Axiom.Core
 		private static TimingMeter colBufferLockingMeter = MeterManager.GetMeter( "Lock Col Buffer", "BillboardSet" );
 		private static TimingMeter texLockingMeter = MeterManager.GetMeter( "Lock Tex", "BillboardSet" );
 
-        /// <summary>
-        ///		Generate the vertices for all the billboards relative to the camera
-        /// </summary>
-        /// <param name="camera"></param>
-        public override void NotifyCurrentCamera( Camera camera )
-        {
+		/// <summary>
+		///		Generate the vertices for all the billboards relative to the camera
+		/// </summary>
+		/// <param name="camera"></param>
+		public override void NotifyCurrentCamera( Camera camera )
+		{
 			billboardNotifyMeter.Enter();
 			// base.NotifyCurrentCamera(camera);
-            currentCamera = camera;
+			currentCamera = camera;
 			camQ = camera.DerivedOrientation;
 			camPos = camera.DerivedPosition;
 			if ( !worldSpace )
@@ -1886,29 +1886,29 @@ namespace Axiom.Core
 			}
 #endif
 			billboardNotifyMeter.Exit();
-        }
+		}
 
-        /// <summary>
+		/// <summary>
 		///		Sets the default dimensions of the billboards in this set.
-        /// </summary>
+		/// </summary>
 		///	 <remarks>
 		///		All billboards in a set are created with these default dimensions. The set will render most efficiently if
 		///		all the billboards in the set are the default size. It is possible to alter the size of individual
 		///		billboards at the expense of extra calculation. See the Billboard class for more info.
 		/// </remarks>
 		public void SetDefaultDimensions( float width, float height )
-        {
+		{
 			defaultParticleWidth = width;
 			defaultParticleHeight = height;
 		}
 
 		public void SetBillboardsInWorldSpace( bool worldSpace )
-            {
+		{
 			this.worldSpace = worldSpace;
-        }
+		}
 
-        public override void UpdateRenderQueue( RenderQueue queue )
-        {
+		public override void UpdateRenderQueue( RenderQueue queue )
+		{
 			if ( !externalData )
 			{
 				// TODO: Implement sorting of billboards
@@ -1923,12 +1923,12 @@ namespace Axiom.Core
 				EndBillboards();
 			}
 			// TODO: Ogre checks mRenderQueueIDSet
-            // add ourself to the render queue
+			// add ourself to the render queue
 			queue.AddRenderable( this, RenderQueue.DEFAULT_PRIORITY, renderQueueID );
 		}
 
 		public bool PointRenderingEnabled
-            {
+		{
 			get
 			{
 				return pointRendering;
@@ -1940,17 +1940,17 @@ namespace Axiom.Core
 				if ( enabled && !Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.PointSprites ) )
 				{
 					enabled = false;
-            }
+				}
 				if ( enabled != pointRendering )
-            {
+				{
 					pointRendering = true;
 					// Different buffer structure (1 or 4 verts per billboard)
 					DestroyBuffers();
 				}
-            }
-        }
+			}
+		}
 
 		#endregion
 
-    }
+	}
 }
