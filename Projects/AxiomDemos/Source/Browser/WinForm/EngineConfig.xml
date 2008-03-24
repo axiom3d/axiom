@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <EngineConfig xmlns="http://tempuri.org/EngineConfig.xsd">
-  <FilePath type="ZipFile" src="../../../../Media/Archives/AxiomCore.zip"/>
+  <FilePath type="ZipFile" src="../../../../Media/Archives/Axiom.Media.Core.zip" group="Bootstrap" />
   <FilePath type="Folder" src="../../../../Media/Textures"/>
   <FilePath type="Folder" src="../../../../Media/BrowserImages"/>
   <FilePath type="Folder" src="../../../../Media/Icons"/>

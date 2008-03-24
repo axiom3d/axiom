@@ -583,7 +583,7 @@ namespace Axiom.Core
 
         ~ResourceGroupManager()
         {
-			Dispose();
+			dispose( false );
         }
 
         #endregion Constructors and Destructor
