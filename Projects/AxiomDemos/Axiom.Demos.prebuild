@@ -53,7 +53,7 @@
 
 			<Files>
 				<Match pattern="Axiom.Demos.build" path="." buildAction="None" copyToOutput="Never"/>
-				<Match pattern="*.cs" path="."/>
+				<Match pattern="*.cs" path="." recurse="true"/>
 			</Files>
 		</Project>		
 
