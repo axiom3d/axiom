@@ -234,7 +234,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		{
 			get
 			{
-				throw new Exception( "The method or operation is not implemented." );
+				return 0;
 			}
 		}
 
