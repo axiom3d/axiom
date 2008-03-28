@@ -54,7 +54,6 @@
 			<Files>
 				<Match pattern="Axiom.Demos.build" path="." buildAction="None" copyToOutput="Never"/>
 				<Match pattern="*.cs" path="." recurse="true"/>
-        <Match pattern="*.xsd" path="." recurse="true"/>
       </Files>
 		</Project>		
 
