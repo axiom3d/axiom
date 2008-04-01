@@ -210,7 +210,7 @@ namespace Axiom.Core
             {
                 plugin.Start();
 
-                LogManager.Instance.Write("Loaded plugin {0} from {1}", plugin, GetAssemblyTitle(plugin));
+                LogManager.Instance.Write("Loaded plugin {0} from {1}", plugin, GetAssemblyTitle(plugin.GetType()));
                 return true;
             }
             catch (Exception ex)
