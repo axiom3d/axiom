@@ -161,7 +161,8 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-				throw new Exception( "The method or operation is not implemented." );
+				//TODO: SamplerCount is not implimented
+				return 0;
 			}
 		}
 
