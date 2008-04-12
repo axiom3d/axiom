@@ -75,98 +75,6 @@ namespace Axiom.Core
 
     public class WindowEventMonitor : IDisposable // Singleton<WindowMonitor>
     {
-        #region P/Invoke Declarations
-
-        enum WindowMessage
-        {
-            Create = 0x0001,
-            Destroy = 0x0002,
-            Move = 0x0003,
-            Size = 0x0005,
-            Activate = 0x0006,
-            Close = 0x0010,
-
-            GetMinMaxInfo = 0x0024,
-            SysKeyDown = 0x0104,
-            SysKeyUp = 0x0105,
-            EnterSizeMove = 0x0231,
-            ExitSizeMove = 0x0232
-        }
-
-        enum ActivateState
-        {
-            InActive = 0,
-            Active = 1,
-            ClickActive = 2
-        }
-
-        enum VirtualKeys
-        {
-            Shift = 0x10,
-            Control = 0x11,
-            Menu = 0x12
-        }
-
-        struct Msg
-        {
-            public int hWnd;
-            public int Message;
-            public int wParam;
-            public int lParam;
-            public int time;
-            public POINTAPI pt;
-        }
-
-        struct POINTAPI
-        {
-            public int x;
-            public int y;
-
-            // Just to get rid of Warning CS0649.
-            public POINTAPI( int x, int y )
-            {
-                this.x = x;
-                this.y = y;
-            }
-        }
-
-        /// <summary>
-        ///		PeekMessage option to remove the message from the queue after processing.
-        /// </summary>
-        const int PM_REMOVE = 0x0001;
-        const string USER_DLL = "user32.dll";
-
-        /// <summary>
-        ///		The PeekMessage function dispatches incoming sent messages, checks the thread message 
-        ///		queue for a posted message, and retrieves the message (if any exist).
-        /// </summary>
-        /// <param name="msg">A <see cref="Msg"/> structure that receives message information.</param>
-        /// <param name="handle"></param>
-        /// <param name="msgFilterMin"></param>
-        /// <param name="msgFilterMax"></param>
-        /// <param name="removeMsg"></param>
-        [DllImport( USER_DLL )]
-        private static extern int PeekMessage( out Msg msg, IntPtr handle, int msgFilterMin, int msgFilterMax, int removeMsg );
-
-        /// <summary>
-        ///		The TranslateMessage function translates virtual-key messages into character messages.
-        /// </summary>
-        /// <param name="msg">
-        ///		an MSG structure that contains message information retrieved from the calling thread's message queue 
-        ///		by using the GetMessage or <see cref="PeekMessage"/> function.
-        /// </param>
-        [DllImport( USER_DLL )]
-        private static extern void TranslateMessage( ref Msg msg );
-
-        /// <summary>
-        ///		The DispatchMessage function dispatches a message to a window procedure.
-        /// </summary>
-        /// <param name="msg">A <see cref="Msg"/> structure containing the message.</param>
-        [DllImport( USER_DLL )]
-        private static extern void DispatchMessage( ref Msg msg );
-
-        #endregion P/Invoke Declarations
-
         private Dictionary<RenderWindow, List<WindowEventListener>> _listeners = new Dictionary<RenderWindow, List<WindowEventListener>>();
         private List<RenderWindow> _windows = new List<RenderWindow>();
 
@@ -182,6 +90,9 @@ namespace Axiom.Core
                 return _instance;
             }
         }
+
+		public delegate void MessagePumpDelegate();
+		public MessagePumpDelegate MessagePump;
 
         /// <summary>
         /// Add a listener to listen to renderwindow events (multiple listener's per renderwindow is fine)
@@ -220,8 +131,8 @@ namespace Axiom.Core
         public void RegisterWindow( RenderWindow window )
         {
             _windows.Add( window );
-            _attachEventHandlers( window );
-        }
+			_listeners.Add( window, new List<WindowEventListener>() );
+		}
 
         /// <summary>
         /// Called by RenderWindows upon destruction for Ogre generated windows. You are free to remove your
@@ -231,217 +142,78 @@ namespace Axiom.Core
         public void UnregisterWindow( RenderWindow window )
         {
             _windows.Remove( window );
-            _detachEventHandlers( window );
-        }
+			_listeners[ window ].Clear();
+			_listeners.Remove( window );
+		}
 
-        /// <summary>
-        /// Internal winProc (RenderWindow's use this when creating the Win32 Window)
-        /// </summary>
-        /// <param name="m"></param>
-        public bool WinProc( Form frm, RenderWindow win, ref Message m )
+		public void WindowFocusChange( RenderWindow win, bool hasFocus )
         {
-            //Iterator of all listeners registered to this RenderWindow
-            List<WindowEventListener> winListeners = _listeners[ win ];
+			if ( _windows.Contains( win ) )
+			{
+				// Notify Window of focus change
+				win.IsActive = hasFocus;
 
-            switch ( (WindowMessage)m.Msg )
-            {
-                case WindowMessage.Activate:
-                    {
-                        bool active = ( (ActivateState)m.WParam ) != ActivateState.InActive;
-                        win.IsActive = active;
-                        foreach ( WindowEventListener listener in winListeners )
-                        {
-                            listener.WindowFocusChange( win );
-                        }
-                        break;
-                    }
-                case WindowMessage.SysKeyDown:
-                    switch ( (VirtualKeys)m.WParam )
-                    {
-                        case VirtualKeys.Control:
-                        case VirtualKeys.Shift:
-                        case VirtualKeys.Menu: //ALT
-                            //return true to bypass defProc and signal we processed the message
-                            return true;
-                    }
-                    break;
-                case WindowMessage.SysKeyUp:
-                    switch ( (VirtualKeys)m.WParam )
-                    {
-                        case VirtualKeys.Control:
-                        case VirtualKeys.Shift:
-                        case VirtualKeys.Menu: //ALT
-                            //return true to bypass defProc and signal we processed the message
-                            return true;
-                    }
-                    break;
-                case WindowMessage.EnterSizeMove:
-                    //log->logMessage("WM_ENTERSIZEMOVE");
-                    break;
-                case WindowMessage.ExitSizeMove:
-                    //log->logMessage("WM_EXITSIZEMOVE");
-                    break;
-                case WindowMessage.Move:
-                    //log->logMessage("WM_MOVE");
-                    win.WindowMovedOrResized();
-                    foreach ( WindowEventListener listener in winListeners )
-                    {
-                        listener.WindowMoved( win );
-                    }
-                    break;
-                case WindowMessage.Size:
-                    //log->logMessage("WM_SIZE");
-                    win.WindowMovedOrResized();
-                    foreach ( WindowEventListener listener in winListeners )
-                    {
-                        listener.WindowResized( win );
-                    }
-                    break;
-                case WindowMessage.GetMinMaxInfo:
-                    // Prevent the window from going smaller than some minimum size
-                    //((MINMAXINFO*)lParam)->ptMinTrackSize.x = 100;
-                    //((MINMAXINFO*)lParam)->ptMinTrackSize.y = 100;
-                    break;
-                case WindowMessage.Close:
-                    //log->logMessage("WM_CLOSE");
-                    win.Dispose();
-                    foreach ( WindowEventListener listener in winListeners )
-                    {
-                        listener.WindowClosed( win );
-                    }
-                    return true;
-            }
-            return false;
-        }
-
-        public void MessagePump()
-        {
-            Msg msg;
-
-            // pump those events!
-            while ( !( PeekMessage( out msg, IntPtr.Zero, 0, 0, PM_REMOVE ) == 0 ) )
-            {
-                TranslateMessage( ref msg );
-                DispatchMessage( ref msg );
-            }
-        }
-
-        private void _attachEventHandlers( RenderWindow window )
-        {
-			IntPtr winHandle = (IntPtr)window[ "WINDOW" ];
-			System.Windows.Forms.Control ctrl = System.Windows.Forms.Control.FromHandle( winHandle );
-            //System.Windows.Forms.Control ctrl = (System.Windows.Forms.Control)window[ "WINDOW" ];
-
-            ctrl.Resize += new EventHandler( _windowResize );
-            ctrl.Move += new EventHandler( _windowMove );
-            ctrl.ClientSizeChanged += new EventHandler( _windowResize );
-            ctrl.GotFocus += new EventHandler( _windowFocus );
-            ctrl.LostFocus += new EventHandler( _windowFocus );
-            ctrl.Disposed += new EventHandler( _windowClose );
-
-            _listeners.Add( window, new List<WindowEventListener>() );
-        }
-
-        private void _detachEventHandlers( RenderWindow window )
-        {
-			IntPtr winHandle = (IntPtr)window[ "WINDOW" ];
-			System.Windows.Forms.Control ctrl = System.Windows.Forms.Control.FromHandle( winHandle );
-			//System.Windows.Forms.Control ctrl = (System.Windows.Forms.Control)window[ "WINDOW" ];
-
-            ctrl.Resize -= new EventHandler( _windowResize );
-            ctrl.Move -= new EventHandler( _windowMove );
-            ctrl.ClientSizeChanged -= new EventHandler( _windowResize );
-            ctrl.GotFocus -= new EventHandler( _windowFocus );
-            ctrl.LostFocus -= new EventHandler( _windowFocus );
-            ctrl.Disposed -= new EventHandler( _windowClose );
-
-            _listeners[ window ].Clear();
-            _listeners.Remove( window );
-        }
-
-        private void _windowFocus( object sender, EventArgs e )
-        {
-            foreach ( RenderWindow win in _windows )
-            {
-                if ( IntPtr.ReferenceEquals( win[ "WINDOW" ], sender ) )
+                // Notify listeners of focus change
+                foreach ( WindowEventListener listener in _listeners[ win ] )
                 {
-                    // Notify Window of focus change
-                    //bool active = ( (ActivateState)e.WParam ) != ActivateState.InActive;
-                    //win.IsActive = active;
-
-                    // Notify listeners of focus change
-                    foreach ( WindowEventListener listener in _listeners[ win ] )
-                    {
-                        listener.WindowFocusChange( win );
-                    }
-
-                    return;
+                    listener.WindowFocusChange( win );
                 }
+
+                return;
+            }
+        }
+
+		public void WindowMoved( RenderWindow win )
+        {
+			if ( _windows.Contains( win ) )
+			{
+                // Notify Window of Move or Resize
+                win.WindowMovedOrResized();
+
+                // Notify listeners of Resize
+                foreach ( WindowEventListener listener in _listeners[ win ] )
+                {
+                    listener.WindowMoved( win );
+                }
+                return;
             }
 
             //throw new Exception( "The method or operation is not implemented." );
         }
 
-        private void _windowMove( object sender, EventArgs e )
+		public void WindowResized( RenderWindow win )
         {
-            foreach ( RenderWindow win in _windows )
-            {
-                if ( IntPtr.ReferenceEquals( win[ "WINDOW" ], sender ) )
-                {
-                    // Notify Window of Move or Resize
-                    win.WindowMovedOrResized();
+			if ( _windows.Contains( win ) )
+			{
+				// Notify Window of Move or Resize
+				win.WindowMovedOrResized();
 
-                    // Notify listeners of Resize
-                    foreach ( WindowEventListener listener in _listeners[ win ] )
-                    {
-                        listener.WindowMoved( win );
-                    }
-                    return;
-                }
-            }
-
-            //throw new Exception( "The method or operation is not implemented." );
-        }
-
-        private void _windowResize( object sender, EventArgs e )
-        {
-            foreach ( RenderWindow win in _windows )
-            {
-                if ( IntPtr.ReferenceEquals( win[ "WINDOW" ], sender ) )
-                {
-                    // Notify Window of Move or Resize
-                    win.WindowMovedOrResized();
-
-                    // Notify listeners of Resize
-                    foreach ( WindowEventListener listener in _listeners[ win ] )
-                    {
-                        listener.WindowResized( win );
-                    }
-                    return;
-                }
-            }
+				// Notify listeners of Resize
+				foreach ( WindowEventListener listener in _listeners[ win ] )
+				{
+					listener.WindowResized( win );
+				}
+				return;
+			}
 
 
             //throw new Exception( "The method or operation is not implemented." );
         }
 
-        private void _windowClose( object sender, EventArgs e )
+		public void WindowClosed( RenderWindow win )
         {
-            foreach ( RenderWindow win in _windows )
-            {
-                if ( IntPtr.ReferenceEquals( win[ "WINDOW" ], sender ) )
-                {
-                    // Notify Window of closure
-                    win.Dispose();
+			if ( _windows.Contains( win ) )
+			{
+				// Notify Window of closure
+				win.Dispose();
 
-                    // Notify listeners of close
-                    foreach ( WindowEventListener listener in _listeners[ win ] )
-                    {
-                        listener.WindowClosed( win );
-                    }
-                    return;
-                }
-            }
+				// Notify listeners of close
+				foreach ( WindowEventListener listener in _listeners[ win ] )
+				{
+					listener.WindowClosed( win );
+				}
+				return;
+			}
 
             //throw new Exception( "The method or operation is not implemented." );
         }

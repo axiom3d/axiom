@@ -74,6 +74,8 @@ namespace Axiom.Demos
 
             // set the near clipping plane to be very close
             camera.Near = 5;
+
+			camera.AutoAspectRatio = true;
         }
 
         /// <summary>

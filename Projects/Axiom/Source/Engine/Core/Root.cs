@@ -674,7 +674,8 @@ namespace Axiom.Core
 				// allow OS events to process (if the platform requires it
 				frameMeter.Enter();
 				eventMeter.Enter();
-				PlatformManager.Instance.DoEvents();
+				if ( WindowEventMonitor.Instance.MessagePump != null )
+					WindowEventMonitor.Instance.MessagePump();
 				eventMeter.Exit();
 
 				if ( suspendRendering )

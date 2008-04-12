@@ -1487,6 +1487,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 			_glSupport.Start();
 
+			WindowEventMonitor.Instance.MessagePump = WindowMessageHandling.MessagePump;
+
 			RenderWindow autoWindow = _glSupport.CreateWindow( autoCreateWindow, this, windowTitle );
 
 			this.CullingMode = this.cullingMode;

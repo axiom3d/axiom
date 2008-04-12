@@ -55,8 +55,14 @@ namespace Axiom.RenderSystems.OpenGL
 			this.Deactivate += new System.EventHandler( this.DefaultForm_Deactivate );
 			this.Activated += new System.EventHandler( this.DefaultForm_Activated );
 			this.Closing += new System.ComponentModel.CancelEventHandler( this.DefaultForm_Close );
+			this.Resize += new System.EventHandler( this.DefaultForm_Resize );
 		}
 
+		protected override void WndProc( ref Message m )
+		{
+			if ( !WindowMessageHandling.WndProc( renderWindow, ref m ) )
+				base.WndProc( ref m );
+		}
 		/// <summary>
 		/// 
 		/// </summary>
@@ -91,7 +97,7 @@ namespace Axiom.RenderSystems.OpenGL
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size( 5, 13 );
 			this.BackColor = System.Drawing.Color.Black;
-			this.ClientSize = new System.Drawing.Size( 292, 266 );
+			this.ClientSize = new System.Drawing.Size( 640, 480 );
 			this.Name = "DefaultForm";
 			this.Load += new System.EventHandler( this.DefaultForm_Load );
 			this.ResumeLayout( false );
@@ -106,7 +112,10 @@ namespace Axiom.RenderSystems.OpenGL
 		public void DefaultForm_Close( object source, System.ComponentModel.CancelEventArgs e )
 		{
 			// set the window to inactive
-			//window.IsActive = false;
+			if ( renderWindow != null )
+			{
+				renderWindow.IsActive = false;
+			}
 
 			// remove it from the list of render windows, which will halt the rendering loop
 			// since there should now be 0 windows left
@@ -115,7 +124,16 @@ namespace Axiom.RenderSystems.OpenGL
 
 		private void DefaultForm_Load( object sender, System.EventArgs e )
 		{
-			this.Icon = new System.Drawing.Icon( ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico" ) );
+			System.IO.Stream strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico", ResourceGroupManager.BootstrapResourceGroupName );
+			if ( strm != null )
+			{
+				this.Icon = new System.Drawing.Icon( strm );
+			}
+		}
+
+		private void DefaultForm_Resize( object sender, System.EventArgs e )
+		{
+			Root.Instance.SuspendRendering = this.WindowState == FormWindowState.Minimized;
 		}
 
 		/// <summary>
@@ -132,6 +150,5 @@ namespace Axiom.RenderSystems.OpenGL
 				renderWindow = value;
 			}
 		}
-
 	}
 }
