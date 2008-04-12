@@ -58,6 +58,11 @@ namespace Axiom.RenderSystems.DirectX9
 			this.Resize += new System.EventHandler( this.DefaultForm_Resize );
         }
 
+		protected override void WndProc( ref Message m )
+		{
+			if ( !Win32MessageHandling.WndProc( renderWindow, ref m ) )
+				base.WndProc( ref m );
+		}
         /// <summary>
         /// 
         /// </summary>

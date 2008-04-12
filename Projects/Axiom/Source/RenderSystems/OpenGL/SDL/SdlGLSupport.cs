@@ -142,7 +142,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <returns></returns>
 		public override RenderWindow NewWindow( string name, int width, int height, bool fullScreen, Axiom.Collections.NamedParameterList miscParams )
 		{
-            SdlWindow window = new SdlWindow();
+            SdlRenderWindow window = new SdlRenderWindow();
             window.Create( name, width, height, fullScreen, miscParams);
             return window;
         }

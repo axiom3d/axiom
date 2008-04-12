@@ -430,6 +430,7 @@ namespace Axiom.RenderSystems.DirectX9
 				newWin.Top = top;
 				newWin.Left = left;
 
+				newWin.RenderWindow = this;
 				_window = newWin;
 				_window.Show();
 

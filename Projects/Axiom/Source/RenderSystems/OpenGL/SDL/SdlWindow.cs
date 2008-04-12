@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
-//     <id value="$Id$"/>
+//     <id value="$Id:"/>
 // </file>
 #endregion SVN Version Information
 
@@ -38,182 +38,229 @@ using System;
 using Axiom.Core;
 using Axiom.Graphics;
 
-using Tao.OpenGl;
 using Tao.Sdl;
-using System.Collections.Generic;
-using Axiom.Media;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGL
 {
-    /// <summary>
-    /// Summary description for SdlWindow.
-    /// </summary>
-    public class SdlWindow : RenderWindow
-    {
-        #region Fields
+	internal class SdlWindow
+	{
+		#region Fields and Properties
 
-        private Sdl.SDL_Surface surface;
-		private IntPtr _hWindow;
-		//private SdlContext _glContext;
+		static private IntPtr _hWindow;
+		static private RenderWindow _renderWindow;
+		static private string _title;
+		static private int _top;
+		static private int _left;
+		static private int _width;
+		static private int _height;
+		static private int _colorDepth;
+		static private bool _fullScreen;
 
-        #endregion Fields
-
-        public SdlWindow()
-        {
-        }
-
-        #region RenderWindow Implementation
-
-		public override object this[ string attribute ]
+		public IntPtr Handle
 		{
 			get
 			{
-				switch ( attribute.ToLower() )
-				{
-					case "glcontext":
-						return null; //	_glContext;
-					case "window":
-						// Retrieve the Handle to the SDL Window
-						Sdl.SDL_SysWMinfo_Windows wmInfo;
-						Sdl.SDL_GetWMInfo( out wmInfo );
-						return new IntPtr( wmInfo.window );
-						//System.Windows.Forms.Control ctrl = System.Windows.Forms.Control.FromHandle( sdlWindowHandle );
-						//return ctrl;
-					default:
-						return null;
-				}
+				Sdl.SDL_SysWMinfo_Windows wmInfo;
+				Sdl.SDL_GetWMInfo( out wmInfo );
+				return new IntPtr( wmInfo.window );
 			}
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="colorDepth"></param>
-        /// <param name="fullScreen"></param>
-        /// <param name="left"></param>
-        /// <param name="top"></param>
-        /// <param name="depthBuffer"></param>
-        /// <param name="miscParams"></param>
-		public override void Create( string name, int width, int height, bool fullScreen, Axiom.Collections.NamedParameterList miscParams )
+		/// <summary>
+		///		Get/Set the RenderWindow associated with this form.
+		/// </summary>
+		public RenderWindow RenderWindow
 		{
-			string title = name;
-			int fsaa;
-
-			
-			this.Name = name;
-            this.Width = width;
-            this.Height = height;
-            this.ColorDepth = 32;
-
-			#region Parameter Handling
-			if ( miscParams != null )
+			get
 			{
-				foreach ( KeyValuePair<string, object> entry in miscParams )
+				return SdlWindow._renderWindow;
+			}
+			set
+			{
+				SdlWindow._renderWindow = value;
+			}
+		}
+
+		public int Top
+		{
+			get
+			{
+				return SdlWindow._top;
+			}
+			set
+			{
+				SdlWindow._top = value;
+				if ( _renderWindow != null )
+					_renderWindow.Reposition( _left, _top );
+			}
+		}
+
+		public int Left
+		{
+			get
+			{
+				return SdlWindow._left;
+			}
+			set
+			{
+				SdlWindow._left = value;
+				if ( _renderWindow != null )
+					_renderWindow.Reposition( _left, _top );
+			}
+		}
+
+		public int Width
+		{
+			get
+			{
+				return SdlWindow._width;
+			}
+			set
+			{
+				SdlWindow._width = value;
+				if ( _renderWindow != null )
+					_renderWindow.Resize( _width, _height );
+			}
+		}
+
+		public int Height
+		{
+			get
+			{
+				return SdlWindow._height;
+			}
+			set
+			{
+				SdlWindow._height = value;
+				if ( _renderWindow != null )
+					_renderWindow.Resize( _width, _height );
+			}
+		}
+
+		public int ColorDepth
+		{
+			get
+			{
+				return SdlWindow._colorDepth;
+			}
+			set
+			{
+				SdlWindow._colorDepth = value;
+			}
+		}
+
+		public bool FullScreen
+		{
+			get
+			{
+				return SdlWindow._fullScreen;
+			}
+			set
+			{
+				SdlWindow._fullScreen = value;
+			}
+		}
+
+		public string Title
+		{
+			get
+			{
+				return SdlWindow._title;
+			}
+			set
+			{
+				SdlWindow._title = value;
+				// set the window text for windowed mode
+				if ( ! FullScreen )
 				{
-					switch ( entry.Key )
+					Sdl.SDL_WM_SetCaption( Title, null );
+				}
+
+			}
+		}
+		#endregion Fields and Properties
+
+		#region Construction and Destruction
+
+		public SdlWindow()
+		{
+		}
+
+		#endregion Construction and Destruction
+
+		#region Methods
+
+		public void Show()
+		{
+			InitializeWindow();
+		}
+
+		public void Move( int top, int left )
+		{
+			SdlWindow._top = top;
+			SdlWindow._left = left;
+			InitializeWindow();
+		}
+
+		public void Resize( int width, int height )
+		{
+			SdlWindow._width = width;
+			SdlWindow._height = height;
+			InitializeWindow();
+		}
+
+		private void InitializeWindow()
+		{
+			int flags = Sdl.SDL_OPENGL | Sdl.SDL_HWPALETTE | Sdl.SDL_RESIZABLE;
+
+			// full screen?
+			if ( FullScreen )
+			{
+				flags |= Sdl.SDL_FULLSCREEN;
+			}
+
+			// set the video mode (and create the surface)
+			// TODO: Grab return val once changed to the right type
+			SdlWindow._hWindow = Sdl.SDL_SetVideoMode( Width, Height, ColorDepth, flags );
+
+			if ( _hWindow == IntPtr.Zero )
+				throw new Exception( "Failed to create SDL window :" + Sdl.SDL_GetError() );
+
+		}
+
+		internal void WndProc()
+		{
+            Sdl.SDL_Event sdlEvent;
+
+			while (Sdl.SDL_PollEvent(out sdlEvent) != 0)
+			{
+			    switch (sdlEvent.type)
+			    {
+			        case Sdl.SDL_KEYDOWN:
+			        case Sdl.SDL_KEYUP:						
+			        break;
+
+			        case Sdl.SDL_VIDEORESIZE:
+			        {
+						if ( _renderWindow != null )
+							_renderWindow.Resize( sdlEvent.resize.w, sdlEvent.resize.h );
+			        }
+			        break;
+
+			        case Sdl.SDL_QUIT: 
 					{
-						case "title":
-							title = entry.Value.ToString();
-							break;
-						case "left":
-							left = Int32.Parse( entry.Value.ToString() );
-							break;
-						case "top":
-							top = Int32.Parse( entry.Value.ToString() );
-							break;
-						case "fsaa":
-							fsaa = Int32.Parse( entry.Value.ToString() );
-							if ( fsaa > 1 )
-							{
-								// If FSAA is enabled in the parameters, enable the MULTISAMPLEBUFFERS
-								// and set the number of samples before the render window is created.
-								Sdl.SDL_GL_SetAttribute( Sdl.SDL_GL_MULTISAMPLEBUFFERS, 1 );
-								Sdl.SDL_GL_SetAttribute( Sdl.SDL_GL_MULTISAMPLESAMPLES, fsaa );
-							}
-							break;
-						case "colourDepth":
-						case "colorDepth":
-							ColorDepth = Int32.Parse( entry.Value.ToString() );
-							break;
-						default:
-							break;
+						if ( _renderWindow != null )
+							_renderWindow.Dispose();
 					}
-				}
+					break;
+			    }
 			}
-			#endregion Parameter Handling
 
-            int flags = Sdl.SDL_OPENGL | Sdl.SDL_HWPALETTE | Sdl.SDL_RESIZABLE;
-
-            // we want double buffering
-            Sdl.SDL_GL_SetAttribute( Sdl.SDL_GL_DOUBLEBUFFER, 1 );
-
-            // request good stencil size if 32-bit color
-            if ( ColorDepth == 32 && isDepthBuffered )
-            {
-                Sdl.SDL_GL_SetAttribute( Sdl.SDL_GL_STENCIL_SIZE, 8 );
-            }
-
-            // full screen?
-            if ( fullScreen )
-            {
-                flags |= Sdl.SDL_FULLSCREEN;
-            }
-
-            // set the video mode (and create the surface)
-            // TODO: Grab return val once changed to the right type
-            _hWindow = Sdl.SDL_SetVideoMode( width, height, ColorDepth, flags );
-
-			// lets get active!
-            IsActive = true;
-
-            // set the window text for windowed mode
-            if ( !fullScreen )
-            {
-                Sdl.SDL_WM_SetCaption( name, null );
-            }
-        }
-
-		public override bool IsClosed
-		{
-			get
-			{
-				return false;
-			}
-		}
-        public void Destroy()
-        {
-            //Sdl.SDL_FreeSurface(
-        }
-
-        public override void Reposition( int left, int right )
-        {
-
-        }
-
-        public override void Resize( int width, int height )
-        {
-
-        }
-
-        /// <summary>
-        ///		Update the render window.
-        /// </summary>
-        /// <param name="waitForVSync"></param>
-        public override void SwapBuffers( bool waitForVSync )
-        {
-            Sdl.SDL_GL_SwapBuffers();
-        }
-
-		public override void CopyContentsToMemory( PixelBox pb, FrameBuffer buffer )
-		{
-			throw new NotImplementedException();
 		}
 
-        #endregion RenderWindow Implementation
-    }
+		#endregion Methods
+
+	}
 }

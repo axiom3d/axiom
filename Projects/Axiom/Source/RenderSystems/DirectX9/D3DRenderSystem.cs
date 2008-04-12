@@ -532,6 +532,8 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			LogManager.Instance.Write( "D3D9 : Subsystem Initializing" );
 
+			WindowEventMonitor.Instance.MessagePump = Win32MessageHandling.MessagePump;
+
 			_activeDriver = D3DHelper.GetDriverInfo()[ ConfigOptions[ "Rendering Device" ].Value ];
 			if ( _activeDriver == null )
 				throw new ArgumentException( "Problems finding requested Direct3D driver!" );
