@@ -44,6 +44,9 @@ using Tao.Sdl;
 
 namespace Axiom.RenderSystems.OpenGL
 {
+	/// <summary>
+	/// Represents a OS Window, controlled by SDL
+	/// </summary>
 	internal class SdlWindow
 	{
 		#region Fields and Properties

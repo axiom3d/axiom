@@ -48,8 +48,11 @@ using Axiom.Media;
 namespace Axiom.RenderSystems.OpenGL
 {
     /// <summary>
-    /// Summary description for SdlWindow.
+    /// Implementation of the Axiom RenderWindow
     /// </summary>
+	/// <remarks>
+	/// Provides the rendering system with a visible drawing surface.
+	/// </remarks>
     public class SdlRenderWindow : RenderWindow
     {
         #region Fields
