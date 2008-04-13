@@ -43,6 +43,9 @@ using Tao.Sdl;
 
 namespace Axiom.RenderSystems.OpenGL
 {
+	/// <summary>
+	/// Abstractio layer for control of OpenGL through the SDL API
+	/// </summary>
 	class SdlDevice
 	{
 		#region Fields and Properties
@@ -103,8 +106,6 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 										
-								
-
 		#endregion Fields and PRoperties
 
 		#region Construction and Destruction
