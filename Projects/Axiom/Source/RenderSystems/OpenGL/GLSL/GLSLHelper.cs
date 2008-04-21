@@ -35,6 +35,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
+using Tao.OpenGl;
+using System.Text;
+using Axiom.Core;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGL.GLSL
@@ -63,19 +67,61 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <param name="forceInfoLog"></param>
 		public static void CheckForGLSLError( string error, int handle, bool forceInfoLog, bool forceException )
 		{
-			// TODO: Implement
+			int glErr;
+			bool errorsFound = false;
+			String msg = error;
+
+			// get all the GL errors
+			glErr = Gl.glGetError();
+			while ( glErr != Gl.GL_NO_ERROR )
+			{
+				msg += "\n" + Glu.gluErrorString( glErr );
+				glErr = Gl.glGetError();
+				errorsFound = true;
+			}
+
+
+			// if errors were found then put them in the Log and raise and exception
+			if ( errorsFound || forceInfoLog )
+			{
+				// if shader or program object then get the log message and send to the log manager
+				msg += LogObjectInfo( msg, handle );
+
+				if ( forceException )
+				{
+					throw new Exception( msg );
+				}
+			}
 		}
 
 		/// <summary>
-		///		If there is a message in GL info log then post it in the Ogre Log
+		///		If there is a message in GL info log then post it in the Axiom Log
 		/// </summary>
 		/// <param name="message">The info log message string is appended to this string.</param>
 		/// <param name="handle">The GL object handle that is used to retrieve the info log</param>
 		/// <returns></returns>
 		public static string LogObjectInfo( string message, int handle )
 		{
-			// TODO: Implement
-			return string.Empty;
+			StringBuilder logMessage = new StringBuilder( message );
+
+			if ( handle > 0 )
+			{
+				int infologLength = 0;
+
+				Gl.glGetObjectParameterivARB( handle, Gl.GL_OBJECT_INFO_LOG_LENGTH_ARB, out infologLength );
+
+				if ( infologLength > 0 )
+				{
+					int charsWritten = 0;
+
+					Gl.glGetInfoLogARB( handle, infologLength, out charsWritten, logMessage );
+					logMessage.Append("\n");
+					LogManager.Instance.Write( logMessage.ToString() );
+				}
+			}
+
+			return logMessage.ToString();
+
 		}
 	}
 }
