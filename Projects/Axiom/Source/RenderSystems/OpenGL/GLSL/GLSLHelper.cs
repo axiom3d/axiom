@@ -75,7 +75,8 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			glErr = Gl.glGetError();
 			while ( glErr != Gl.GL_NO_ERROR )
 			{
-				msg += "\n" + Glu.gluErrorString( glErr );
+				string errMsg = Glu.gluErrorString( glErr );
+				msg += "\n" + errMsg;
 				glErr = Gl.glGetError();
 				errorsFound = true;
 			}
@@ -85,7 +86,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			if ( errorsFound || forceInfoLog )
 			{
 				// if shader or program object then get the log message and send to the log manager
-				msg += LogObjectInfo( msg, handle );
+				LogObjectInfo( msg, handle );
 
 				if ( forceException )
 				{
@@ -102,7 +103,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <returns></returns>
 		public static string LogObjectInfo( string message, int handle )
 		{
-			StringBuilder logMessage = new StringBuilder( message );
+			StringBuilder logMessage = new StringBuilder();
 
 			if ( handle > 0 )
 			{
@@ -115,8 +116,12 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 					int charsWritten = 0;
 
 					Gl.glGetInfoLogARB( handle, infologLength, out charsWritten, logMessage );
-					logMessage.Append("\n");
-					LogManager.Instance.Write( logMessage.ToString() );
+					if ( charsWritten > 0 )
+					{
+						logMessage.Append( "\n" );
+						message += "\n" + logMessage.ToString();
+					}
+					LogManager.Instance.Write( message );
 				}
 			}
 
