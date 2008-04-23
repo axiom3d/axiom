@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 using Axiom.Core;
 using Axiom.Graphics;
@@ -87,7 +88,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <summary>
 		///		Holds programs attached to this object.
 		/// </summary>
-		protected ArrayList attachedGLSLPrograms = new ArrayList();
+		protected List<GpuProgram> attachedGLSLPrograms = new List<GpuProgram>();
 
 		#endregion Fields
 
@@ -99,20 +100,11 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		public GLSLProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
+			// Manually assign language now since we use it immediately
+			this.syntaxCode = "glsl";
+
 			// want scenemanager to pass on surface and light states to the rendersystem
-			// these can be accessed in GLSL
 			passSurfaceAndLightStates = true;
-
-			// only create a shader object if glsl is supported
-			if ( IsSupported )
-			{
-				GLSLHelper.CheckForGLSLError( "GL Errors before creating shader object.", 0 );
-
-				// create shader object
-				glHandle = Gl.glCreateShaderObjectARB( type == GpuProgramType.Vertex ? Gl.GL_VERTEX_SHADER_ARB : Gl.GL_FRAGMENT_SHADER_ARB );
-
-				GLSLHelper.CheckForGLSLError( "GL Errors creating shader object.", 0 );
-			}
 		}
 
 		#endregion Constructor
@@ -183,7 +175,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 				// bug in ATI GLSL linker : modules without main function must be recompiled each time 
 				// they are linked to a different program object
 				// don't check for compile errors since there won't be any
-				// *** minor inconvenience until ATI fixes there driver
+				// *** minor inconvenience until ATI fixes thier driver
 				childShader.Compile( false );
 				childShader.AttachToProgramObject( programObject );
 			}
@@ -219,7 +211,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
 				if ( isCompiled )
 				{
-					GLSLHelper.LogObjectInfo( Name + " : GLGL compiled ", glHandle );
+					GLSLHelper.LogObjectInfo( Name + " : GLSL compiled ", glHandle );
 				}
 			}
 
@@ -248,10 +240,21 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// </summary>
 		protected override void LoadFromSource()
 		{
+			// only create a shader object if glsl is supported
+			if ( IsSupported )
+			{
+				GLSLHelper.CheckForGLSLError( "GL Errors before creating shader object.", 0 );
+
+				// create shader object
+				glHandle = Gl.glCreateShaderObjectARB( type == GpuProgramType.Vertex ? Gl.GL_VERTEX_SHADER_ARB : Gl.GL_FRAGMENT_SHADER_ARB );
+
+				GLSLHelper.CheckForGLSLError( "GL Errors creating shader object.", 0 );
+			}
+
 			Gl.glShaderSourceARB( glHandle, 1, new string[] { source }, null );
 
 			// check for load errors
-			GLSLHelper.CheckForGLSLError( "Cannot load GLGL high-level shader source " + Name, 0 );
+			GLSLHelper.CheckForGLSLError( "Cannot load GLSL high-level shader source " + Name, 0 );
 
 			Compile();
 		}
