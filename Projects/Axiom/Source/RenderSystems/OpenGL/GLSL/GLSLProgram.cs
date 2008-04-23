@@ -165,7 +165,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		public void AttachToProgramObject( int programObject )
 		{
 			Gl.glAttachObjectARB( programObject, glHandle );
-			GLSLHelper.CheckForGLSLError( "Error attaching " + this.Name + " shader object to GLSL Program Object.", programObject );
+			GLSLHelper.CheckForGLSLError( "GLSL : Error attaching " + this.Name + " shader object to GLSL Program Object.", programObject );
 
 			// atach child objects
 			for ( int i = 0; i < attachedGLSLPrograms.Count; i++ )
@@ -207,11 +207,11 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			// force exception if not compiled
 			if ( checkErrors )
 			{
-				GLSLHelper.CheckForGLSLError( "Cannot compile GLSL high-level shader: " + Name + " ", glHandle, !isCompiled, !isCompiled );
+				GLSLHelper.CheckForGLSLError( "GLSL : Cannot compile GLSL high-level shader: " + Name + ".", glHandle, !isCompiled, !isCompiled );
 
 				if ( isCompiled )
 				{
-					GLSLHelper.LogObjectInfo( Name + " : GLSL compiled ", glHandle );
+					GLSLHelper.LogObjectInfo( "GLSL : " + Name + " : compiled.", glHandle );
 				}
 			}
 
@@ -243,18 +243,18 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			// only create a shader object if glsl is supported
 			if ( IsSupported )
 			{
-				GLSLHelper.CheckForGLSLError( "GL Errors before creating shader object.", 0 );
+				GLSLHelper.CheckForGLSLError( "GLSL : GL Errors before creating shader object.", 0 );
 
 				// create shader object
 				glHandle = Gl.glCreateShaderObjectARB( type == GpuProgramType.Vertex ? Gl.GL_VERTEX_SHADER_ARB : Gl.GL_FRAGMENT_SHADER_ARB );
 
-				GLSLHelper.CheckForGLSLError( "GL Errors creating shader object.", 0 );
+				GLSLHelper.CheckForGLSLError( "GLSL : GL Errors creating shader object.", 0 );
 			}
 
 			Gl.glShaderSourceARB( glHandle, 1, new string[] { source }, null );
 
 			// check for load errors
-			GLSLHelper.CheckForGLSLError( "Cannot load GLSL high-level shader source " + Name, 0 );
+			GLSLHelper.CheckForGLSLError( "GLSL : Cannot load GLSL high-level shader source " + Name + ".", glHandle );
 
 			Compile();
 		}
