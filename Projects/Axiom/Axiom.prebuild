@@ -50,7 +50,6 @@
       <Reference name="System.Drawing" />
       <Reference name="System.Windows.Forms" />
       <Reference name="System.Xml" />
-      <Reference name="Tao.DevIl" localCopy="true" />
       <Reference name="ICSharpCode.SharpZipLib" localCopy="true" />
 
       <Files>
@@ -322,7 +321,7 @@
       <Reference name="System" />
       <Reference name="System.Xml" />
       <Reference name="Axiom" localCopy="true"/>
-      <Reference name="Tao.DevIL" localCopy="true" />
+      <Reference name="Tao.DevIl" localCopy="true" />
 
       <Files>
         <Match pattern="*.cs" path="Source" />
