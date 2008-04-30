@@ -327,12 +327,22 @@ namespace Axiom.Serialization
 					if ( line == "}" )
 					{
 						// end of material
+						// if texture aliases were found, pass them to the material
+						// to update texture names used in Texture unit states
+						if ( scriptContext.textureAliases.Count != 0 )
+						{
+							// request material to update all texture names in TUS's
+							// that use texture aliases in the list
+							scriptContext.material.ApplyTextureAliases( scriptContext.textureAliases, true );
+						}
+
 						scriptContext.section = MaterialScriptSection.None;
 						scriptContext.material = null;
 						// reset all levels for the next material
 						scriptContext.passLev = -1;
 						scriptContext.stateLev = -1;
 						scriptContext.techLev = -1;
+						scriptContext.textureAliases.Clear();
 					}
 					else
 					{
@@ -737,6 +747,7 @@ namespace Axiom.Serialization
 		}
 
 		[MaterialAttributeParser( "texture_alias", MaterialScriptSection.Pass )]
+		[MaterialAttributeParser( "texture_alias", MaterialScriptSection.TextureUnit )]
 		protected static bool ParseTextureAlias( string parameters, MaterialScriptContext context )
 		{
 			Debug.Assert( context.textureUnit != null );
@@ -751,6 +762,30 @@ namespace Axiom.Serialization
 			}
 			// update section
 			context.textureUnit.TextureNameAlias = values[ 0 ];
+
+			return false;
+		}
+
+		[MaterialAttributeParser( "set_texture_alias", MaterialScriptSection.Material )]
+		protected static bool ParseSetTextureAlias( string parameters, MaterialScriptContext context )
+		{
+			// get the texture alias
+			string[] values = parameters.Split( new char[] { ' ', '\t' } );
+
+			if ( values.Length != 2 )
+			{
+				LogParseError( context, "Invalid set_texture_alias entry - expected 2 parameters." );
+				return true;
+			}
+			// update section
+			if ( context.textureAliases.ContainsKey( values[ 0 ] ) )
+			{
+				context.textureAliases[ values[ 0 ] ] = values[ 1 ];
+			}
+			else
+			{
+				context.textureAliases.Add( values[ 0 ], values[ 1 ] );
+			}
 
 			return false;
 		}
@@ -2528,6 +2563,8 @@ namespace Axiom.Serialization
 		// Error reporting state
 		public int lineNo;
 		public string filename;
+
+		public Dictionary<string, string> textureAliases = new Dictionary<string, string>();
 	}
 
 	/// <summary>

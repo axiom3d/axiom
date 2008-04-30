@@ -39,6 +39,7 @@ using System.Diagnostics;
 
 using Axiom.Configuration;
 using Axiom.Core;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -2683,6 +2684,21 @@ namespace Axiom.Graphics
 
 			// clear out the dirty list
 			_dirtyList.Clear();
+		}
+
+		public bool ApplyTextureAliases( Dictionary<string, string> aliasList, bool apply )
+		{
+			// iterate through all TextureUnitStates and apply texture aliases
+			bool testResult = false;
+
+			foreach ( TextureUnitState tus in textureUnitStates)
+			{
+				if ( tus.ApplyTextureAliases( aliasList, apply ) )
+					testResult = true;
+			}
+
+			return testResult;
+			
 		}
 
 		#endregion
