@@ -96,7 +96,6 @@ namespace Axiom.Graphics
 		} 
 		#endregion BindingDelegate Property
 			
-
 		#endregion Fields and Properties
 
 		#region Construction and Destruction

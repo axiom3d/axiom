@@ -45,6 +45,7 @@ using Axiom.Math;
 
 using ResourceHandle = System.UInt64;
 using Real = System.Single;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -1312,6 +1313,22 @@ namespace Axiom.Graphics
 			}
 			_compilationRequired = true;
 		}
+
+		public bool ApplyTextureAliases( Dictionary<string, string> aliasList, bool apply )
+		{
+			// iterate through all techniques and apply texture aliases
+			bool testResult = false;
+
+			foreach ( Technique t in _techniques)
+			{
+				if ( t.ApplyTextureAliases( aliasList, apply ) )
+					testResult = true;
+			}
+
+			return testResult;
+			
+		}
+
 
 		#endregion
 

@@ -1244,6 +1244,21 @@ namespace Axiom.Graphics
 			}
 		}
 
+		public bool ApplyTextureAliases( Dictionary<string, string> aliasList, bool apply )
+		{
+			// iterate through all passes and apply texture aliases
+			bool testResult = false;
+
+			foreach ( Pass p in _passes)
+			{
+				if ( p.ApplyTextureAliases( aliasList, apply ) )
+					testResult = true;
+			}
+
+			return testResult;
+			
+		}
+
 		/// <summary>
 		///    Unloads resources used by this Technique.
 		/// </summary>
