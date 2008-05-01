@@ -131,7 +131,7 @@ namespace Axiom.Serialization
 		/// <returns></returns>
 		protected bool InvokeParser( string line, Hashtable parsers )
 		{
-            string[] splitCmd = StringConverter.Split( line, new char[] { ' ', '\t' }, 2 );
+			string[] splitCmd = StringConverter.Split( line, new char[] { ' ', '\t' }, 2 );
 
 			// find attribute parser
 			if ( parsers.ContainsKey( splitCmd[ 0 ] ) )
@@ -144,13 +144,13 @@ namespace Axiom.Serialization
 				}
 
 				//MaterialAttributeParserHandler handler = (MaterialAttributeParserHandler)parsers[ splitCmd[ 0 ] ];
-                MethodInfo handler = (MethodInfo)parsers[splitCmd[0]];
+				MethodInfo handler = (MethodInfo)parsers[ splitCmd[ 0 ] ];
 
 				// Use parser, make sure we have 2 params before using splitCmd[1]
 				// MONO: Does not like mangling the above and below lines into a single line (frankly, i don't blame it, but csc takes it).
 				// i.e. (((MaterialAttributeParserHandler)parsers[splitCmd[0]]))(cmd, scriptContext);
 				//return handler( cmd, scriptContext );
-                return (bool)handler.Invoke(null, new object[] { cmd, scriptContext });
+				return (bool)handler.Invoke( null, new object[] { cmd, scriptContext } );
 			}
 			else
 			{
@@ -201,7 +201,7 @@ namespace Axiom.Serialization
 					hgp.SourceFile = def.source;
 
 					// set custom parameters
-					foreach ( KeyValuePair<string,string> entry in def.customParameters )
+					foreach ( KeyValuePair<string, string> entry in def.customParameters )
 					{
 						string param = entry.Key;
 						string val = entry.Value;
@@ -250,9 +250,9 @@ namespace Axiom.Serialization
 						string cmd = splitCmd.Length >= 2 ? splitCmd[ 1 ] : string.Empty;
 
 						//MaterialAttributeParserHandler handler = (MaterialAttributeParserHandler)programDefaultParamAttribParsers[ splitCmd[ 0 ] ];
-                        MethodInfo handler = (MethodInfo)programDefaultParamAttribParsers[splitCmd[0]];
+						MethodInfo handler = (MethodInfo)programDefaultParamAttribParsers[ splitCmd[ 0 ] ];
 						// Use parser, make sure we have 2 params before using splitCmd[1]
-                        handler.Invoke(null, new object[] { cmd, scriptContext });
+						handler.Invoke( null, new object[] { cmd, scriptContext } );
 						//handler( cmd, scriptContext );
 					}
 				}
@@ -431,7 +431,7 @@ namespace Axiom.Serialization
 						// do this manually because we want to call a custom
 						// routine when the parser is not found
 						// First, split line on first divisor only
-                        string[] splitCmd = StringConverter.Split( line, new char[] { ' ', '\t' }, 2 );
+						string[] splitCmd = StringConverter.Split( line, new char[] { ' ', '\t' }, 2 );
 
 						// find attribute parser
 						if ( programAttribParsers.ContainsKey( splitCmd[ 0 ] ) )
@@ -440,8 +440,8 @@ namespace Axiom.Serialization
 							string cmd = splitCmd.Length >= 2 ? splitCmd[ 1 ] : string.Empty;
 
 							//MaterialAttributeParserHandler handler = (MaterialAttributeParserHandler)programAttribParsers[ splitCmd[ 0 ] ];
-                            MethodInfo handler = (MethodInfo)programAttribParsers[splitCmd[0]];
-                            return (bool)handler.Invoke(null, new object[] { cmd, scriptContext });
+							MethodInfo handler = (MethodInfo)programAttribParsers[ splitCmd[ 0 ] ];
+							return (bool)handler.Invoke( null, new object[] { cmd, scriptContext } );
 							//return handler( cmd, scriptContext );
 						}
 						else
@@ -536,7 +536,7 @@ namespace Axiom.Serialization
 					if ( parserList != null )
 					{
 						//parserList.Add( parserAtt.Name, Delegate.CreateDelegate( typeof( MaterialAttributeParserHandler ), method ) );
-                        parserList.Add(parserAtt.Name, method);
+						parserList.Add( parserAtt.Name, method );
 					}
 				} // for
 			} // for
@@ -574,21 +574,50 @@ namespace Axiom.Serialization
 		[MaterialAttributeParser( "material", MaterialScriptSection.None )]
 		protected static bool ParseMaterial( string parameters, MaterialScriptContext context )
 		{
+			// check params for reference to parent material to copy from
+			// syntax: material name : parentMaterialName
+			// check params for a colon after the first name and extract the parent name
+			string[] values = parameters.Split(  new char[] { ':' } );
+			Material basematerial = null;
 
 			// create a brand new material
-			string materialName = parameters;
+			if ( values.Length >= 2 )
+			{
+				// if a second parameter exists then assume its the name of the base material
+				// that this new material should clone from
+				values[ 1 ] = values[ 1 ].Trim();
+				// make sure base material exists
+				basematerial = (Material)MaterialManager.Instance.GetByName( values[ 1 ] );
+				// if it doesn't exist then report error in log and just create a new material
+				if ( basematerial == null )
+				{
+					LogParseError( context, "parent material:" + values[ 1 ] + " not found for new material:" + values[ 0 ] );
+				}
+			}
+
+			string materialName = values[ 0 ].Trim();
 			string sourceFileForAlreadyExistingMaterial = (string)materialSourceFiles[ materialName ];
 			if ( sourceFileForAlreadyExistingMaterial != null )
 			{//if a material by this name was already created
 				throw new ArgumentException( string.Format( "A material with name {0} was already created from material script file {1} and a duplicate from {2} cannot be created. "
-					+ "You may need to qualify the material names to prevent this name collision", materialName, sourceFileForAlreadyExistingMaterial, context.filename ) );
+					+ "You may need to qualify the material names to prevent this name collision.", materialName, sourceFileForAlreadyExistingMaterial, context.filename ) );
 			}
+
 			context.material = (Material)MaterialManager.Instance.Create( materialName, context.groupName );
 			materialSourceFiles.Add( materialName, context.filename );
 
+			if ( basematerial != null )
+			{
+				// copy parent material details to new material
+				basematerial.CopyTo( context.material, false );
+			}
+			else
+			{
+				// remove pre-created technique from defaults
+				context.material.RemoveAllTechniques();
+			}
 
-			// remove pre-created technique from defaults
-			context.material.RemoveAllTechniques();
+			context.material.Origin = context.filename;
 
 			// update section
 			context.section = MaterialScriptSection.Material;
@@ -934,11 +963,11 @@ namespace Axiom.Serialization
 		{
 			string[] values = parameters.Split( new char[] { ' ', '\t' } );
 
-			float constantBias = float.Parse( values[0] );
+			float constantBias = float.Parse( values[ 0 ] );
 			float slopeScaleBias = 0.0f;
 			if ( values.Length > 1 )
 			{
-				slopeScaleBias = float.Parse( values[1] );
+				slopeScaleBias = float.Parse( values[ 1 ] );
 			}
 
 			context.pass.SetDepthBias( constantBias, slopeScaleBias );
@@ -2535,7 +2564,7 @@ namespace Axiom.Serialization
 		public bool supportsSkeletalAnimation;
 		public bool supportsMorphAnimation;
 		public ushort poseAnimationCount;
-		public List< KeyValuePair<string, string>> customParameters = new List<KeyValuePair<string,string>>();
+		public List<KeyValuePair<string, string>> customParameters = new List<KeyValuePair<string, string>>();
 	}
 
 	/// <summary>

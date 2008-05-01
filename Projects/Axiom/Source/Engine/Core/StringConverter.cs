@@ -96,7 +96,7 @@ namespace Axiom.Core
 
 		public static string[] Split( string s, char[] separators )
 		{
-			return s.Split( separators, -1, StringSplitOptions.None );
+			return s.Split( separators, 0, StringSplitOptions.None );
 		}
 
 		public static string[] Split( string s, char[] separators, int count )
