@@ -2013,8 +2013,8 @@ namespace Axiom.Graphics
 						else
 						{
 							// if more than one frame, then assume animated frames
-							if ( frames.Length > 1 )
-								SetAnimatedTextureName( aliasList[ textureNameAlias ], frames.Length, animDuration );
+							if ( numFrames > 1 )
+								SetAnimatedTextureName( aliasList[ textureNameAlias ], numFrames, animDuration );
 							else
 								SetTextureName( aliasList[ textureNameAlias ], textureType, textureSrcMipmaps );
 						}
