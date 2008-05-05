@@ -57,6 +57,18 @@ namespace Axiom.Math
 
 		#endregion Fields
 
+		private static readonly Vector2 zeroVector = new Vector2( 0.0f, 0.0f );
+		/// <summary>
+		///		Gets a Vector2 with all components set to 0.
+		/// </summary>
+		public static Vector2 Zero
+		{
+			get
+			{
+				return zeroVector;
+			}
+		}
+
 		#region Constructors
 
 		/// <summary>

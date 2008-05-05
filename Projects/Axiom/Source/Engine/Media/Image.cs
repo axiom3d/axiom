@@ -461,7 +461,7 @@ namespace Axiom.Media
 			int size = width * height * depth * PixelUtil.GetNumElemBytes( format );
 			byte[] buffer = new byte[ size ];
 			stream.Read( buffer, 0, size );
-			return (new Image()).FromDynamicImage( buffer, width, height, depth, format );
+			return ( new Image() ).FromDynamicImage( buffer, width, height, depth, format );
 		}
 		/// <summary>
 		///    Loads raw image data from a byte array.
@@ -506,8 +506,8 @@ namespace Axiom.Media
 				this.flags |= ImageFlags.Volume;
 			if ( numFaces == 6 )
 				this.flags |= ImageFlags.CubeMap;
-			if(numFaces != 6 && numFaces != 1)
-				throw new Exception("Number of faces currently must be 6 or 1.");
+			if ( numFaces != 6 && numFaces != 1 )
+				throw new Exception( "Number of faces currently must be 6 or 1." );
 
 			this.size = calculateSize( numMipMaps, numFaces, width, height, depth, format );
 
@@ -595,6 +595,11 @@ namespace Axiom.Media
 			MemoryStream wrapper = new MemoryStream( buffer );
 
 			pCodec.EncodeToFile( wrapper, filename, imgData );
+		}
+
+		public ColorEx GetColorAt( int x, int y, int z )
+		{
+			return PixelConverter.UnpackColor( Format, new IntPtr( this.bufPtr.ToInt32() + BitsPerPixel * ( z * Width * Height + Width * y + x ) ) );
 		}
 
 		/// <summary>

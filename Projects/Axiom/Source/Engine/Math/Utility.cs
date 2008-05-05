@@ -274,6 +274,16 @@ namespace Axiom.Math
             return lhs < rhs ? lhs : rhs;
         }
 
+		/// <summary>
+		/// Returns the smallest integer greater than or equal to the specified value.
+		/// </summary>
+		/// <param name="number"></param>
+		/// <returns></returns>
+		public static Real Ceiling( Real number )
+		{
+			return (Real)System.Math.Ceiling( number );
+		}
+
         /// <summary>
         ///    Returns a random value between the specified min and max values.
         /// </summary>
