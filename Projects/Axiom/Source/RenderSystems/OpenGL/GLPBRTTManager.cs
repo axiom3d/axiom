@@ -78,7 +78,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override bool CheckFormat( PixelFormat format )
 		{
-			throw new Exception( "The method or operation is not implemented." );
+			return true;
 		}
 
 		public override void Bind( RenderTarget target )
