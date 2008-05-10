@@ -37,6 +37,7 @@ using System;
 
 using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Media;
 
 #endregion Namespace Declarations
 
@@ -45,19 +46,65 @@ namespace Axiom.RenderSystems.OpenGL
 	internal class GLPBRenderTexture : GLRenderTexture
 	{
 		#region Fields and Properties
-		#endregion Fields and PRoperties
+
+		protected GLPBRTTManager manager;
+		protected PixelComponentType pbFormat;
+
+		#endregion Fields and Properties
 
 		#region Construction and Destruction
 
 		public GLPBRenderTexture( GLPBRTTManager manager, string name, GLSurfaceDesc target )
 			: base( name, target )
 		{
+			this.manager = manager;
 
+			pbFormat = PixelUtil.GetComponentType( target.Buffer.Format );
+			manager.RequestPBuffer( pbFormat, Width, Height );
 		}
 
 		#endregion Construction and Destruction
 
+		#region GLRenderTexture Implementation
+
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					manager.ReleasePBuffer( pbFormat );
+				}
+			}
+			base.dispose( disposeManagedResources );
+		}
+		
+		#endregion GLRenderTexture Implementation
+
 		#region Methods
+
+		public override object this[ string attribute ]
+		{
+			get
+			{
+				switch ( attribute.ToUpper() )
+				{
+					case "TARGET":
+						GLSurfaceDesc target = new GLSurfaceDesc();
+						target.Buffer = (GLHardwarePixelBuffer)this.pixelBuffer;
+						target.ZOffset = this.zOffset;
+						return target;
+						break;
+					case "GLCONTEXT":
+						// Get PBuffer for our internal format
+						return manager.GetContextFor( pbFormat, Width, Height );
+						break;
+					default:
+						return base[ attribute ];
+						break;
+				}
+			}
+		}
 		#endregion Methods
 	}
 }

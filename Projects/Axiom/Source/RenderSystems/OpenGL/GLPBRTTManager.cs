@@ -119,7 +119,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// Release PBuffer for a certain pixel format
 		/// </summary>
 		/// <param name="pcType"></param>
-		void releasePBuffer( PixelComponentType pcType )
+		public void ReleasePBuffer( PixelComponentType pcType )
 		{
 			throw new Exception( "The method or operation is not implemented." );
 		}
@@ -131,7 +131,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="width"></param>
 		/// <param name="height"></param>
 		/// <returns></returns>
-		GLContext getContextFor( PixelComponentType pcType, int width, int height )
+		public GLContext GetContextFor( PixelComponentType pcType, int width, int height )
 		{
 			throw new Exception( "The method or operation is not implemented." );
 		}
