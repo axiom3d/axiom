@@ -81,5 +81,41 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#endregion GLRTTManager Implementation
 
+		#region Methods
+
+		/// <summary>
+		/// Create PBuffer for a certain pixel format and size
+		/// </summary>
+		/// <param name="pcType"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		public void RequestPBuffer( PixelComponentType pcType, int width, int height )
+		{
+			throw new Exception( "The method or operation is not implemented." );
+		}
+
+		/// <summary>
+		/// Release PBuffer for a certain pixel format
+		/// </summary>
+		/// <param name="pcType"></param>
+		void releasePBuffer( PixelComponentType pcType )
+		{
+			throw new Exception( "The method or operation is not implemented." );
+		}
+
+		/// <summary>
+		/// Get GL rendering context for a certain component type and size.
+		/// </summary>
+		/// <param name="pcType"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <returns></returns>
+		GLContext getContextFor( PixelComponentType pcType, int width, int height )
+		{
+			throw new Exception( "The method or operation is not implemented." );
+		}
+
+		#endregion Methods
+
 	}
 }
