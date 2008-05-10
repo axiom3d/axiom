@@ -48,11 +48,23 @@ namespace Axiom.RenderSystems.OpenGL
 {
 	internal class GLPBRTTManager : GLRTTManager
 	{
+		#region Fields and Properties
+
+		private BaseGLSupport _glSupport;
+		private GLContext _mainGLContext;
+		private RenderTarget _mainWindow;
+
+		#endregion Fields and Properties
+
 		#region Construction and Destruction
 
 		internal GLPBRTTManager( BaseGLSupport glSupport, RenderTarget target )
 			: base( glSupport )
 		{
+			_glSupport = glSupport;
+			_mainWindow = target;
+
+			_mainGLContext = (GLContext)target.GetCustomAttribute( "GLCONTEXT" );
 		}
 
 		#endregion Construction and Destruction
@@ -61,7 +73,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override RenderTexture CreateRenderTexture( string name, GLSurfaceDesc target )
 		{
-			throw new Exception( "The method or operation is not implemented." );
+			return new GLPBRenderTexture( this, name, target );
 		}
 
 		public override bool CheckFormat( PixelFormat format )
@@ -71,7 +83,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void Bind( RenderTarget target )
 		{
-			throw new Exception( "The method or operation is not implemented." );
+			// Nothing to do here
+			// Binding of context is done by GL subsystem, as contexts are also used for RenderWindows
 		}
 
 		public override void Unbind( RenderTarget target )
@@ -79,6 +92,14 @@ namespace Axiom.RenderSystems.OpenGL
 			throw new Exception( "The method or operation is not implemented." );
 		}
 
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( disposeManagedResources )
+			{
+				
+			}
+			base.dispose( disposeManagedResources );
+		}
 		#endregion GLRTTManager Implementation
 
 		#region Methods
