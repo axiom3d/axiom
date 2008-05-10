@@ -170,6 +170,24 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
+		public void CopyFromFrameBuffer( int zOffset )
+		{
+			Gl.glBindTexture( _target, _textureId );
+			switch ( _target )
+			{
+				case Gl.GL_TEXTURE_1D:
+					Gl.glCopyTexSubImage1D( _faceTarget, _level, 0, 0, 0, Width );
+					break;
+				case Gl.GL_TEXTURE_2D:
+				case Gl.GL_TEXTURE_CUBE_MAP:
+					Gl.glCopyTexSubImage2D( _faceTarget, _level, 0, 0, 0, 0, Width, Height );
+					break;
+				case Gl.GL_TEXTURE_3D:
+					Gl.glCopyTexSubImage3D( _faceTarget, _level, 0, 0, zOffset, 0, 0, Width, Height );
+					break;
+			}
+		}
+
 		public override void BlitFromMemory( PixelBox src, BasicBox dstBox )
 		{
 			/// Fall back to normal GLHardwarePixelBuffer.BlitFromMemory in case 

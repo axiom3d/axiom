@@ -48,11 +48,25 @@ namespace Axiom.RenderSystems.OpenGL
 {
 	internal class GLPBRTTManager : GLRTTManager
 	{
+		#region Inner Classes and Structures
+		/// <summary>
+		/// Provides Usage counting for PixelBuffers
+		/// </summary>
+		struct PixelBufferUsage
+		{
+			public GLPBuffer PixelBuffer;
+			public uint InUseCount;
+		};
+
+		#endregion Inner Classes and Structures
+
 		#region Fields and Properties
 
 		private BaseGLSupport _glSupport;
 		private GLContext _mainGLContext;
 		private RenderTarget _mainWindow;
+
+		private PixelBufferUsage[] pBuffers = new PixelBufferUsage[ (int)PixelComponentType.Count ];
 
 		#endregion Fields and Properties
 
@@ -89,17 +103,29 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void Unbind( RenderTarget target )
 		{
-			throw new Exception( "The method or operation is not implemented." );
+			// Copy on unbind
+			GLSurfaceDesc surface;
+			surface.Buffer = null;
+			surface = (GLSurfaceDesc)target.GetCustomAttribute( "TARGET" );
+			if ( surface.Buffer != null )
+				( (GLTextureBuffer)surface.Buffer ).CopyFromFrameBuffer( surface.ZOffset );
 		}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( disposeManagedResources )
+			if ( !isDisposed )
 			{
-				
+				if ( disposeManagedResources )
+				{
+					for ( int i = 0; i < (int)PixelComponentType.Count; i++ )
+					{
+						pBuffers[ i ].PixelBuffer = null;
+					}
+				}
 			}
 			base.dispose( disposeManagedResources );
 		}
+
 		#endregion GLRTTManager Implementation
 
 		#region Methods
@@ -121,7 +147,11 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="pcType"></param>
 		public void ReleasePBuffer( PixelComponentType pcType )
 		{
-			throw new Exception( "The method or operation is not implemented." );
+			--pBuffers[ (int)pcType ].InUseCount;
+			if ( pBuffers[ (int)pcType ].InUseCount == 0 )
+			{
+				pBuffers[ (int)pcType ].PixelBuffer = null;
+			}
 		}
 
 		/// <summary>
