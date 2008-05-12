@@ -213,10 +213,30 @@ namespace Axiom.Demos
         {
             base.OnFrameStarted( source, e );
 
-            if ( input.IsKeyPressed( KeyCodes.O ) )
-            {
-                ChangeShadowTechnique();
-            }
+			if ( input.IsKeyPressed( KeyCodes.O ) && toggleDelay < 0 )
+			{
+				ChangeShadowTechnique();
+
+				// show briefly on the screen
+				debugText = string.Format( "Using {0} Technique.", shadowTechniqueDescriptions[ currentShadowTechnique ] );
+
+				// show for 2 seconds
+				debugTextDelay = 2.0f;
+
+				toggleDelay = 1;
+			}
+
+			if ( input.IsKeyPressed( KeyCodes.M ) && toggleDelay < 0 )
+			{
+				scene.ShowDebugShadows = !scene.ShowDebugShadows;
+				toggleDelay = 1;
+
+				// show briefly on the screen
+				debugText = string.Format( "Debug shadows {0}.", scene.ShowDebugShadows ? "on" : "off" );
+
+				// show for 2 seconds
+				debugTextDelay = 2.0f;
+			}
 
             animState.AddTime( e.TimeSinceLastFrame );
         }
