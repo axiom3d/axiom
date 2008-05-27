@@ -804,17 +804,6 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///    Parses a 3D mesh which will be used in the overlay.
-		/// </summary>
-		/// <param name="script"></param>
-		/// <param name="meshName"></param>
-		/// <param name="entityName"></param>
-		/// <param name="overlay"></param>
-		public void ParseNewMesh( TextReader script, string meshName, string entityName, Overlay overlay )
-		{
-		}
-
-		/// <summary>
 		///    Parses an individual .overlay file.
 		/// </summary>
 		/// <param name="data"></param>
@@ -951,19 +940,6 @@ namespace Axiom.Overlays
 						}
 						else if ( ParseChildren( script, line, overlay, isTemplate, null ) )
 						{
-						}
-						else if ( parms[ 0 ] == "entity" ) // Multiverse Extension?
-						{
-							// 3D element
-							if ( parms.Length != 3 )
-							{
-								LogManager.Instance.Write( string.Format( "Bad entity line: {0} in {1}, expected format - entity meshName(entityName)'", line, overlay.Name ) );
-							} // if parms...
-							else
-							{
-								ParseHelper.SkipToNextOpenBrace( script );
-								ParseNewMesh( script, parms[ 1 ], parms[ 2 ], overlay );
-							}
 						}
 						else
 						{
