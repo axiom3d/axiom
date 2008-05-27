@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -51,6 +52,7 @@ using Axiom.Media;
 using Axiom.Overlays;
 using Axiom.ParticleSystems;
 using Axiom.Graphics;
+
 
 #endregion Namespace Declarations
 
@@ -108,7 +110,7 @@ namespace Axiom.Core
 
 				ResourceGroupManager.Instance.Initialize();
 
-				sceneManagerList = SceneManagerEnumerator.Instance;
+				sceneManagerEnumerator = SceneManagerEnumerator.Instance;
 
 				MaterialManager mat = MaterialManager.Instance;
 				MeshManager mesh = MeshManager.Instance;
@@ -161,7 +163,7 @@ namespace Axiom.Core
 		/// <summary>
 		///     List of available scene managers.
 		/// </summary>
-		private SceneManagerEnumerator sceneManagerList;
+		private SceneManagerEnumerator sceneManagerEnumerator;
 		/// <summary>
 		///     List of available render systems.
 		/// </summary>
@@ -313,8 +315,12 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// The current SceneManager in use by the engine.
+		///		Gets the scene manager currently being used to render a frame.
 		/// </summary>
+		/// <remarks>
+		///		This is only intended for internal use; it is only valid during the
+		///		rendering of a frame.		
+		///</remarks>
 		public SceneManager SceneManager
 		{
 			get
@@ -328,14 +334,23 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///		
+		///		Gets a list over all the existing SceneManager instances.
 		/// </summary>
-		public SceneManagerEnumerator SceneManagers
+		public SceneManagerCollection SceneManagerList
 		{
 			get
 			{
-				return sceneManagerList;
+				return sceneManagerEnumerator.SceneManagerList;
 			}
+		}
+
+		/// <summary>
+		///		Gets a list of all types of SceneManager available for construction, 
+		///		providing some information about each one.
+		/// </summary>
+		public List<SceneManagerMetaData> MetaDataList
+		{
+			get { return sceneManagerEnumerator.MetaDataList; }
 		}
 
 		/// <summary>
@@ -363,7 +378,7 @@ namespace Axiom.Core
 				activeRenderSystem = value;
 
 				// Tell scene managers
-				SceneManagerEnumerator.Instance.SetRenderSystem( activeRenderSystem );
+				SceneManagerEnumerator.Instance.RenderSytem = activeRenderSystem;
 			}
 		}
 
@@ -404,7 +419,7 @@ namespace Axiom.Core
 				{
 					microsecondsPerTick = 1000000.0f / (float)Stopwatch.Frequency;
 					microsecondsPerFrame = 1000000.0f / (float)value;
-				}
+				} 
 				else // Disable MaxFPS
 				{
 					microsecondsPerFrame = 0;
@@ -430,6 +445,105 @@ namespace Axiom.Core
 		#endregion
 
 		/// <summary>
+		///		Registers a new SceneManagerFactory, a factory object for creating instances
+		///		of specific SceneManagers. 
+		/// </summary>
+		/// <remarks>
+		///		Plugins should call this to register as new SceneManager providers.
+		/// </remarks>
+		/// <param name="factory"></param>
+		public void AddSceneManagerFactory( SceneManagerFactory factory )
+		{
+			sceneManagerEnumerator.AddFactory( factory );
+		}
+
+		/// <summary>
+		///		Unregisters a SceneManagerFactory.
+		/// </summary>
+		/// <param name="factory"></param>
+		public void RemoveSceneManagerFactory( SceneManagerFactory factory )
+		{
+			sceneManagerEnumerator.RemoveFactory( factory );
+		}
+
+		/// <summary>
+		///		Gets more information about a given type of SceneManager.
+		/// </summary>
+		/// <remarks>
+		///		The metadata returned tells you a few things about a given type 
+		///		of SceneManager, which can be created using a factory that has been
+		///		registered already.
+		/// </remarks>
+		/// <param name="typeName">
+		///		The type name of the SceneManager you want to enquire on.
+		/// 	If you don't know the typeName already, you can iterate over the 
+		///		metadata for all types using getMetaDataIterator.
+		/// </param>
+		public SceneManagerMetaData GetSceneManagerMetaData( string typeName )
+		{
+			return sceneManagerEnumerator.GetMetaData( typeName );
+		}
+
+		/// <summary>
+		///		Creates a <see cref="SceneManager"/> instance of a given type.
+		/// </summary>
+		/// <remarks>
+		///		You can use this method to create a SceneManager instance of a 
+		///		given specific type. You may know this type already, or you may
+		///		have discovered it by looking at the results from <see cref="Root.GetSceneManagerMetaData"/>.
+		/// </remarks>
+		/// <param name="typeName">String identifying a unique SceneManager type.</param>
+		/// <param name="instanceName">
+		///		Optional name to given the new instance that is created.
+		///		If you leave this blank, an auto name will be assigned.
+		/// </param>
+		/// <returns></returns>
+		public SceneManager CreateSceneManager( string typeName, string instanceName )
+		{
+			return sceneManagerEnumerator.CreateSceneManager( typeName, instanceName );
+		}
+
+		/// <summary>
+		///		Creates a <see cref="SceneManager"/> instance based on scene type support.
+		/// </summary>
+		/// <remarks>
+		///		Creates an instance of a <see cref="SceneManager"/> which supports the scene types
+		///		identified in the parameter. If more than one type of SceneManager 
+		///		has been registered as handling that combination of scene types, 
+		///		in instance of the last one registered is returned.	
+		/// </remarks>
+		/// <param name="sceneType"> A mask containing one or more <see cref="SceneType"/> flags.</param>
+		/// <param name="instanceName">
+		///		Optional name to given the new instance that is
+		///		created. If you leave this blank, an auto name will be assigned.
+		/// </param>
+		/// <returns></returns>
+		public SceneManager CreateSceneManager( SceneType sceneType, string instanceName )
+		{
+			return sceneManagerEnumerator.CreateSceneManager( sceneType, instanceName );
+		}
+
+		/// <summary>
+		///		Destroys an instance of a SceneManager.
+		/// </summary>
+		/// <param name="instance"></param>
+		public void DestroySceneManager( SceneManager instance )
+		{
+			sceneManagerEnumerator.DestroySceneManager( instance );
+		}
+
+		/// <summary>
+		///		Gets an existing SceneManager instance that has already been created,
+		///		identified by the instance name.
+		/// </summary>
+		/// <param name="instanceName">The name of the instance to retrieve.</param>
+		/// <returns></returns>
+		public SceneManager GetSceneManager( string instanceName )
+		{
+			return sceneManagerEnumerator.GetSceneManager( instanceName );
+		}
+
+		/// <summary>
 		///    Initializes the renderer.
 		/// </summary>
 		/// <remarks>
@@ -446,11 +560,6 @@ namespace Axiom.Core
 		public RenderWindow Initialize( bool autoCreateWindow )
 		{
 			return Initialize( autoCreateWindow, "Axiom Render Window" );
-		}
-
-		public SceneManager SetSceneManager( SceneType type )
-		{
-			return this.SceneManager = sceneManagerList[ type ];
 		}
 
 		/// <summary>

@@ -59,13 +59,13 @@ namespace Axiom.Collections
 	/// sorting is not in-place, it requires additional storage, so it trades
 	/// memory for speed. The overhead of copying means that it is only faster
 	/// for fairly large datasets, so you are advised to only use it for collections
-	/// of at least a few hundred items.
+	/// of at least a few thousand items.
 	/// <para/>
-	/// This is a template class to allow it to deal with a variety of containers, 
+	/// This is a generic class to allow it to deal with a variety of containers, 
 	/// and a variety of value types to sort on. In addition to providing the
 	/// container and value type on construction, you also need to supply a 
 	/// functor object which will retrieve the value to compare on for each item
-	/// in the list. For example, if you had an <see cref="List<>" /> of instances
+	/// in the list. For example, if you had an <see cref="IList<T>" /> of instances
 	/// of an object of class 'Bibble', and you wanted to sort on 
 	/// Bibble.Doobrie, you'd have to create a delegate like this:
 	/// <code>
@@ -81,7 +81,7 @@ namespace Axiom.Collections
 	/// the value type in the container, and the type of the value you want to 
 	/// sort by. You can then call the sort function. E.g.
 	/// <code>
-	/// RadixSort<BibbleList, Bibble, float> radixSorter;
+	/// RadixSortSingle<BibbleList, Bibble> radixSorter;
 	/// 
 	/// radixSorter.sort(myBibbleList, BibbleSortDelegate.Doobrie);
 	/// </code>
@@ -285,6 +285,47 @@ namespace Axiom.Collections
 		#endregion Methods
 	}
 
+	/// <summary>
+	/// Class for performing a radix sort (fast comparison-less sort based on 
+	/// byte value) on various standard containers. 
+	/// </summary>
+	/// <remarks>
+	/// A radix sort is a very fast sort algorithm. It only uses a single comparison
+	/// and thus is able to break the theoretical minimum O(N*logN) complexity. 
+	/// Radix sort is complexity O(k*N), where k is a constant. Note that radix
+	/// sorting is not in-place, it requires additional storage, so it trades
+	/// memory for speed. The overhead of copying means that it is only faster
+	/// for fairly large datasets, so you are advised to only use it for collections
+	/// of at least a few thousand items.
+	/// <para/>
+	/// This is a generic class to allow it to deal with a variety of containers, 
+	/// and a variety of value types to sort on. In addition to providing the
+	/// container and value type on construction, you also need to supply a 
+	/// functor object which will retrieve the value to compare on for each item
+	/// in the list. For example, if you had an <see cref="IList<T>" /> of instances
+	/// of an object of class 'Bibble', and you wanted to sort on 
+	/// Bibble.Doobrie, you'd have to create a delegate like this:
+	/// <code>
+	/// class BibbleSortDelegate
+	/// {
+	///		static int Doobrie( Bibble val)
+	///		{
+	///			return val.Doobrie;
+	///		}
+	///	}
+	/// </code>		
+	/// Then, you need to declare a RadixSort class which names the container type, 
+	/// the value type in the container, and the type of the value you want to 
+	/// sort by. You can then call the sort function. E.g.
+	/// <code>
+	/// RadixSortInt32<BibbleList, Bibble> radixSorter;
+	/// 
+	/// radixSorter.sort(myBibbleList, BibbleSortDelegate.Doobrie);
+	/// </code>
+	/// You should try to reuse RadixSort instances, since repeated allocation of the 
+	/// internal storage is then avoided.
+	/// 
+	/// </remarks>
 	public class RadixSortInt32<TContainer, TContainerValueType>
 		where TContainer : IList<TContainerValueType>
 	{
@@ -482,6 +523,47 @@ namespace Axiom.Collections
 		#endregion Methods
 	}
 
+	/// <summary>
+	/// Class for performing a radix sort (fast comparison-less sort based on 
+	/// byte value) on various standard containers. 
+	/// </summary>
+	/// <remarks>
+	/// A radix sort is a very fast sort algorithm. It only uses a single comparison
+	/// and thus is able to break the theoretical minimum O(N*logN) complexity. 
+	/// Radix sort is complexity O(k*N), where k is a constant. Note that radix
+	/// sorting is not in-place, it requires additional storage, so it trades
+	/// memory for speed. The overhead of copying means that it is only faster
+	/// for fairly large datasets, so you are advised to only use it for collections
+	/// of at least a few thousand items.
+	/// <para/>
+	/// This is a generic class to allow it to deal with a variety of containers, 
+	/// and a variety of value types to sort on. In addition to providing the
+	/// container and value type on construction, you also need to supply a 
+	/// functor object which will retrieve the value to compare on for each item
+	/// in the list. For example, if you had an <see cref="IList<T>" /> of instances
+	/// of an object of class 'Bibble', and you wanted to sort on 
+	/// Bibble.Doobrie, you'd have to create a delegate like this:
+	/// <code>
+	/// class BibbleSortDelegate
+	/// {
+	///		static uint Doobrie( Bibble val)
+	///		{
+	///			return val.Doobrie;
+	///		}
+	///	}
+	/// </code>		
+	/// Then, you need to declare a RadixSort class which names the container type, 
+	/// the value type in the container, and the type of the value you want to 
+	/// sort by. You can then call the sort function. E.g.
+	/// <code>
+	/// RadixSortUInt32<BibbleList, Bibble> radixSorter;
+	/// 
+	/// radixSorter.sort(myBibbleList, BibbleSortDelegate.Doobrie);
+	/// </code>
+	/// You should try to reuse RadixSort instances, since repeated allocation of the 
+	/// internal storage is then avoided.
+	/// 
+	/// </remarks>
 	public class RadixSortUInt32<TContainer, TContainerValueType>
 		where TContainer : IList<TContainerValueType>
 	{

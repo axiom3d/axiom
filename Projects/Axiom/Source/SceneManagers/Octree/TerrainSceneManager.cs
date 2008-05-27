@@ -51,7 +51,6 @@ namespace Axiom.SceneManagers.Octree
     /// </summary>
     public class TerrainSceneManager : OctreeSceneManager
     {
-
         #region Fields
 
         protected TerrainRenderable[ , ] tiles;
@@ -64,11 +63,17 @@ namespace Axiom.SceneManagers.Octree
 
         #endregion Fields
 
-        public TerrainSceneManager()
-        {
-        }
+		public TerrainSceneManager( string name )
+			: base( name )
+		{
+		}
 
         #region SceneManager members
+
+		public override string TypeName
+		{
+			get { return "TerrainSceneManager"; }
+		}
 
         public override void ClearScene()
         {
@@ -78,7 +83,6 @@ namespace Axiom.SceneManagers.Octree
             terrainMaterial = null;
             terrainRoot = null;
         }
-
 
         public override void LoadWorldGeometry( string fileName )
         {
@@ -358,4 +362,40 @@ namespace Axiom.SceneManagers.Octree
 
         #endregion SceneManager members
     }
+
+	/// <summary>
+	///		Factory for <see cref="TerrainSceneManager"/>.
+	/// </summary>
+	class TerrainSceneManagerFactory : SceneManagerFactory
+	{
+		public TerrainSceneManagerFactory()
+		{
+
+		}
+
+		#region Methods
+		
+		protected override void InitMetaData()
+		{
+			metaData.sceneTypeMask = SceneType.ExteriorClose;
+			metaData.typeName = "TerrainSceneManager";
+			metaData.worldGeometrySupported = true;
+			metaData.description = "Scene manager which generally organises the scene on " +
+			"the basis of an octree, but also supports terrain world geometry. ";
+
+		}
+
+		public override SceneManager CreateInstance( string name )
+		{
+			return new TerrainSceneManager( name );
+		}
+
+		public override void DestroyInstance( SceneManager instance )
+		{
+			instance.ClearScene();
+		}
+		
+		#endregion
+	}    
+    
 }
