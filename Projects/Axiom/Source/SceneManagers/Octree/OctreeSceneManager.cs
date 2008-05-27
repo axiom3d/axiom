@@ -89,24 +89,31 @@ namespace Axiom.SceneManagers.Octree
                 return white;
             }
         }
+        
+		public override string TypeName
+		{
+			get { return "OctreeSceneManager"; }
+		}
 
-        #endregion
+		#endregion
 
-        public OctreeSceneManager()
-        {
-            Vector3 Min = new Vector3( -500f, -500f, -500f );
-            Vector3 Max = new Vector3( 500f, 500f, 500f );
-            int depth = 5;
+		public OctreeSceneManager( string name )
+			: base( name )
+		{
+			Vector3 Min = new Vector3(-500f, -500f, -500f);
+			Vector3 Max = new Vector3(500f, 500f, 500f);
+			int depth = 5;
 
-            AxisAlignedBox box = new AxisAlignedBox( Min, Max );
+			AxisAlignedBox box = new AxisAlignedBox(Min, Max);
 
-            Init( box, depth );
-        }
+			Init(box, depth);
+		}
 
-        public OctreeSceneManager( AxisAlignedBox box, int max_depth )
-        {
-            Init( box, max_depth );
-        }
+		public OctreeSceneManager(string name, AxisAlignedBox box, int max_depth)
+			: base(name)
+		{
+			Init(box, max_depth);
+		}
 
         public Intersection Intersect( AxisAlignedBox box1, AxisAlignedBox box2 )
         {
@@ -673,4 +680,30 @@ namespace Axiom.SceneManagers.Octree
             return true;//TODO: Implement
         }
     }
+
+	class OctreeSceneManagerFactory : SceneManagerFactory
+	{
+		public OctreeSceneManagerFactory()
+		{
+
+		}
+
+		protected override void InitMetaData()
+		{
+			metaData.typeName = "OctreeSceneManager";
+			metaData.description = "Scene manager organising the scene on the basis of an octree.";
+			metaData.sceneTypeMask = SceneType.Generic; 
+			metaData.worldGeometrySupported = false;
+		}
+
+		public override SceneManager CreateInstance(string name)
+		{
+			return new OctreeSceneManager(name);
+		}
+
+		public override void DestroyInstance(SceneManager instance)
+		{
+			instance.ClearScene();
+		}
+	}
 }

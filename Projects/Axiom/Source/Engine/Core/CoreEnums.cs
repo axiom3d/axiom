@@ -65,13 +65,14 @@ namespace Axiom.Core
 	///    The different types of scenes types that can be handled by the engine.  The various types can
 	///    be altered by plugin functionality (i.e. BSP for interior, Octree for Exterior, etc).
 	/// </summary>
+	[Flags]
 	public enum SceneType
 	{
-		Generic,
-		ExteriorClose,
-		ExteriorFar,
-		Interior,
-		Overhead
+		Generic = 1,
+		ExteriorClose = 2,
+		ExteriorFar = 4,
+		Interior = 8,
+		Overhead = 16
 	}
 
     /// <summary>

@@ -41,19 +41,28 @@ using Axiom.Core;
 
 namespace Axiom.SceneManagers.Octree
 {
-    public class OctreePlugin : IPlugin
-    {
-        public void Start()
-        {
-            //SceneManagerEnumerator.Instance.SetSceneManager(SceneType.Generic, new OctreeSceneManager());
-            SceneManagerEnumerator.Instance.SetSceneManager( SceneType.ExteriorClose, new TerrainSceneManager() );
-        }
+	public class OctreePlugin : IPlugin
+	{
+		public void Start()
+		{
+			_octreeSMFactory = new OctreeSceneManagerFactory();
+			_terrainSMFactory = new TerrainSceneManagerFactory();
 
-        public void Stop()
-        {
-        }
-    }
+			Root.Instance.AddSceneManagerFactory(_octreeSMFactory);
+			Root.Instance.AddSceneManagerFactory(_terrainSMFactory);
+		}
+
+		public void Stop()
+		{
+			Root.Instance.RemoveSceneManagerFactory(_octreeSMFactory);
+			Root.Instance.RemoveSceneManagerFactory(_terrainSMFactory);
+		}
+
+		OctreeSceneManagerFactory _octreeSMFactory;
+		TerrainSceneManagerFactory _terrainSMFactory;
+	}
 }
+
 
 
 

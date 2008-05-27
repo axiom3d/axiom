@@ -37,7 +37,7 @@ namespace Axiom.Demos
         protected bool showDebugOverlay = true;
         protected float statDelay = 0.0f;
         protected float debugTextDelay = 0.0f;
-		protected string debugText = "";
+        protected string debugText = "";
         protected float toggleDelay = 0.0f;
         protected Vector3 camVelocity = Vector3.Zero;
         protected Vector3 camAccel = Vector3.Zero;
@@ -75,7 +75,7 @@ namespace Axiom.Demos
             // set the near clipping plane to be very close
             camera.Near = 5;
 
-			camera.AutoAspectRatio = true;
+            camera.AutoAspectRatio = true;
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace Axiom.Demos
         protected virtual void ChooseSceneManager()
         {
             // Get the SceneManager, a generic one by default
-            scene = engine.SceneManagers.GetSceneManager( SceneType.Generic );
+            scene = engine.CreateSceneManager( SceneType.Generic, "TechDemoSMInstance" );
             scene.ClearScene();
         }
 
@@ -133,8 +133,8 @@ namespace Axiom.Demos
             engine = Root.Instance;
 
             // add event handlers for frame events
-			engine.FrameStarted += new FrameEvent( OnFrameStarted );
-			engine.FrameEnded += new FrameEvent( OnFrameEnded );
+            engine.FrameStarted += new FrameEvent( OnFrameStarted );
+            engine.FrameEnded += new FrameEvent( OnFrameEnded );
 
             // allow for setting up resource gathering
             //SetupResources();
@@ -149,7 +149,7 @@ namespace Axiom.Demos
             //}
             window = Root.Instance.Initialize( true, "Axiom Engine Demo Window" );
 
-			ResourceGroupManager.Instance.InitializeAllResourceGroups();
+            ResourceGroupManager.Instance.InitializeAllResourceGroups();
 
             ShowDebugOverlay( showDebugOverlay );
 
@@ -242,7 +242,7 @@ namespace Axiom.Demos
             Root.Instance.RenderSystem.DetachRenderTarget( window );
             window.Dispose();
 
-			engine.Dispose();
+            engine.Dispose();
         }
 
         #endregion Public Methods
@@ -392,28 +392,28 @@ namespace Axiom.Demos
                 viewport.ShowOverlays = !viewport.ShowOverlays;
             }
 
-			if ( input.IsKeyPressed( KeyCodes.Comma ) )
-			{
-				Root.Instance.MaxFramesPerSecond = 60;
-			}
+            if ( input.IsKeyPressed( KeyCodes.Comma ) )
+            {
+                Root.Instance.MaxFramesPerSecond = 60;
+            }
 
-			if ( input.IsKeyPressed( KeyCodes.Period ) )
-			{
-				Root.Instance.MaxFramesPerSecond = 0;
-			}
+            if ( input.IsKeyPressed( KeyCodes.Period ) )
+            {
+                Root.Instance.MaxFramesPerSecond = 0;
+            }
 
-			//if ( !input.IsMousePressed( MouseButtons.Left ) )
-			//{
-			//    float cameraYaw = -input.RelativeMouseX * .13f;
-			//    float cameraPitch = -input.RelativeMouseY * .13f;
+            //if ( !input.IsMousePressed( MouseButtons.Left ) )
+            //{
+            //    float cameraYaw = -input.RelativeMouseX * .13f;
+            //    float cameraPitch = -input.RelativeMouseY * .13f;
 
-			//    camera.Yaw( cameraYaw );
-			//    camera.Pitch( cameraPitch );
-			//}
-			//else
-			//{
-			//    cameraVector.x += input.RelativeMouseX * 0.13f;
-			//}
+            //    camera.Yaw( cameraYaw );
+            //    camera.Pitch( cameraPitch );
+            //}
+            //else
+            //{
+            //    cameraVector.x += input.RelativeMouseX * 0.13f;
+            //}
 
             camVelocity += ( camAccel * scaleMove * camSpeed );
 

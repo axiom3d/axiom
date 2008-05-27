@@ -24,7 +24,7 @@ namespace Axiom.Demos
 
         protected override void ChooseSceneManager()
         {
-            scene = SceneManagerEnumerator.Instance.GetSceneManager( SceneType.ExteriorClose );
+            scene = engine.CreateSceneManager( SceneType.ExteriorClose, "TechDemoSMInstance" );
         }
 
         protected override void CreateCamera()

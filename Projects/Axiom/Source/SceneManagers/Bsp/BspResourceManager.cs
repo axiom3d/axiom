@@ -148,7 +148,7 @@ namespace Axiom.SceneManagers.Bsp
         /// </summary>
         protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
         {
-            return new BspLevel( this, name, handle, group, isManual, loader );
+            return new BspLevel( this, name, handle, group, isManual, loader, createParams );
         }
 
         #endregion ResourceMAnager Implementation

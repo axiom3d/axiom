@@ -74,6 +74,7 @@ namespace Axiom.SceneManagers.Bsp
 
         #region Protected members
 
+		protected NameValuePairList createParam;
         protected BspNode[] nodes;
         protected int numLeaves;
         protected int leafStart;
@@ -225,10 +226,11 @@ namespace Axiom.SceneManagers.Bsp
         ///		Default constructor - used by BspResourceManager (do not call directly).
         /// </summary>
         /// <param name="name"></param>
-        public BspLevel( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+        public BspLevel( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
             : base( parent, name, handle, group, isManual, loader )
         {
             this.objectToNodeMap = new Bsp.Collections.Map();
+            this.createParam = createParams;
         }
         #endregion
 
@@ -236,25 +238,30 @@ namespace Axiom.SceneManagers.Bsp
 
         public void Load( Stream stream )
         {
-            Hashtable options = SceneManagerEnumerator.Instance.GetSceneManager( SceneType.Interior ).Options;
+			if ( createParam.ContainsKey( "SetYAxisUp" ) )			
+				bool.TryParse( createParam[ "SetYAxisUp" ], out bspOptions.setYAxisUp);            
 
-            if ( options.ContainsKey( "SetYAxisUp" ) )
-                bspOptions.setYAxisUp = (bool)options[ "SetYAxisUp" ];
+			if ( createParam.ContainsKey( "Scale" ) )			
+				float.TryParse( createParam[ "Scale" ], out bspOptions.scale );				
 
-            if ( options.ContainsKey( "Scale" ) )
-                bspOptions.scale = (float)options[ "Scale" ];
+			Vector3 move = Vector3.Zero;
+			if ( createParam.ContainsKey( "MoveX" ) )			
+				 float.TryParse( createParam[ "MoveX" ], out move.x );			
+			
+			if ( createParam.ContainsKey("MoveY" ) ) 			
+				float.TryParse( createParam["MoveY"], out move.y );			
+			
+			if ( createParam.ContainsKey( "MoveZ" ) ) 			
+				float.TryParse( createParam["MoveZ"], out move.z );		
 
-            if ( options.ContainsKey( "Move" ) )
-                bspOptions.move = (Vector3)options[ "Move" ];
+			if ( createParam.ContainsKey( "UseLightmaps" ) )			
+				 bool.TryParse( createParam[ "UseLightmaps" ], out bspOptions.useLightmaps );			
 
-            if ( options.ContainsKey( "UseLightmaps" ) )
-                bspOptions.useLightmaps = (bool)options[ "UseLightmaps" ];
-
-            if ( options.ContainsKey( "AmbientEnabled" ) )
-                bspOptions.ambientEnabled = (bool)options[ "AmbientEnabled" ];
-
-            if ( options.ContainsKey( "AmbientRatio" ) )
-                bspOptions.ambientRatio = (float)options[ "AmbientRatio" ];
+			if ( createParam.ContainsKey( "AmbientEnabled" ) )
+				 bool.TryParse( createParam[ "AmbientEnabled" ], out bspOptions.ambientEnabled );
+				 
+			if ( createParam.ContainsKey( "AmbientRatio") )
+				 float.TryParse( createParam[ "AmbientRatio" ], out bspOptions.ambientRatio );
 
             Quake3Level q3 = new Quake3Level( bspOptions );
 
@@ -1025,26 +1032,31 @@ namespace Axiom.SceneManagers.Bsp
         ///		Generic load - called by <see cref="Plugin_BSPSceneManager.BspResourceManager"/>.
         /// </summary>
         protected override void load()
-        {
-            Hashtable options = SceneManagerEnumerator.Instance.GetSceneManager( SceneType.Interior ).Options;
+		{
+            if ( createParam.ContainsKey( "SetYAxisUp" ) )			
+				bool.TryParse( createParam[ "SetYAxisUp" ], out bspOptions.setYAxisUp);            
 
-            if ( options.ContainsKey( "SetYAxisUp" ) )
-                bspOptions.setYAxisUp = (bool)options[ "SetYAxisUp" ];
+			if ( createParam.ContainsKey( "Scale" ) )			
+				float.TryParse( createParam[ "Scale" ], out bspOptions.scale );				
 
-            if ( options.ContainsKey( "Scale" ) )
-                bspOptions.scale = (float)options[ "Scale" ];
+			Vector3 move = Vector3.Zero;
+			if ( createParam.ContainsKey( "MoveX" ) )			
+				 float.TryParse( createParam[ "MoveX" ], out move.x );			
+			
+			if ( createParam.ContainsKey("MoveY" ) ) 			
+				float.TryParse( createParam["MoveY"], out move.y );			
+			
+			if ( createParam.ContainsKey( "MoveZ" ) ) 			
+				float.TryParse( createParam["MoveZ"], out move.z );		
 
-            if ( options.ContainsKey( "Move" ) )
-                bspOptions.move = (Vector3)options[ "Move" ];
+			if ( createParam.ContainsKey( "UseLightmaps" ) )			
+				 bool.TryParse( createParam[ "UseLightmaps" ], out bspOptions.useLightmaps );			
 
-            if ( options.ContainsKey( "UseLightmaps" ) )
-                bspOptions.useLightmaps = (bool)options[ "UseLightmaps" ];
-
-            if ( options.ContainsKey( "AmbientEnabled" ) )
-                bspOptions.ambientEnabled = (bool)options[ "AmbientEnabled" ];
-
-            if ( options.ContainsKey( "AmbientRatio" ) )
-                bspOptions.ambientRatio = (float)options[ "AmbientRatio" ];
+			if ( createParam.ContainsKey( "AmbientEnabled" ) )
+				 bool.TryParse( createParam[ "AmbientEnabled" ], out bspOptions.ambientEnabled );
+				 
+			if ( createParam.ContainsKey( "AmbientRatio") )
+				 float.TryParse( createParam[ "AmbientRatio" ], out bspOptions.ambientRatio );
 
             Quake3Level q3 = new Quake3Level( bspOptions );
 

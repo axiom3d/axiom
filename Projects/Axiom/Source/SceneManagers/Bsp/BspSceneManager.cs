@@ -113,10 +113,18 @@ namespace Axiom.SceneManagers.Bsp
                 showNodeAABs = value;
             }
         }
+        
+		public override string TypeName
+		{
+			get { return "BspSceneManager"; }
+		}
+		
         #endregion
 
         #region Constructor
-        public BspSceneManager()
+        
+        public BspSceneManager( string name ):
+			base( name )
         {
             // Set features for debugging render
             showNodeAABs = false;
@@ -179,6 +187,9 @@ namespace Axiom.SceneManagers.Bsp
                 }
 
                 optionList[ "Move" ] = move;
+                optionList[ "MoveX" ] = move.x;
+                optionList[ "MoveY" ] = move.y;
+                optionList[ "MoveZ" ] = move.z;
 
                 if ( table.Columns[ "UseLightmaps" ] != null )
                 {
@@ -220,7 +231,12 @@ namespace Axiom.SceneManagers.Bsp
                 optionList[ "Scale" ] = 1f;
 
             if ( !optionList.ContainsKey( "Move" ) )
+            {
                 optionList[ "Move" ] = Vector3.Zero;
+				optionList[ "MoveX" ] = 0;
+				optionList[ "MoveY" ] = 0;
+				optionList[ "MoveZ" ] = 0;
+            }
 
             if ( !optionList.ContainsKey( "UseLightmaps" ) )
                 optionList[ "UseLightmaps" ] = true;
@@ -236,8 +252,15 @@ namespace Axiom.SceneManagers.Bsp
             if ( spotlightFrustum == null )
                 spotlightFrustum = new SpotlightFrustum();
 
+			NameValuePairList paramList = new NameValuePairList();
+
+			foreach ( DictionaryEntry option in optionList) 
+			{
+				paramList.Add( option.Key.ToString(), option.Value.ToString() );
+			}
+			
             // Load using resource manager
-            level = (BspLevel)BspResourceManager.Instance.Load( (string)optionList[ "Map" ], ResourceGroupManager.Instance.WorldResourceGroupName );
+            level = (BspLevel)BspResourceManager.Instance.Load( (string)optionList[ "Map" ], ResourceGroupManager.Instance.WorldResourceGroupName, false, null, paramList );
 
             // Init static render operation
             renderOp.vertexData = level.VertexData;
@@ -1724,4 +1747,37 @@ namespace Axiom.SceneManagers.Bsp
         }
         #endregion
     }
+
+	/// <summary>
+	///		Factory for the BspSceneManager.
+	/// </summary>
+	class BspSceneManagerFactory : SceneManagerFactory
+	{
+		public BspSceneManagerFactory()
+		{
+
+		}
+		
+		#region Methods
+		
+		protected override void InitMetaData()
+		{
+			metaData.typeName = "BspSceneManager";
+			metaData.description = "Scene manager for loading Quake3 .bsp files.";
+			metaData.sceneTypeMask = SceneType.Interior;
+			metaData.worldGeometrySupported = true;
+		}
+
+		public override SceneManager CreateInstance( string name )
+		{
+			return new BspSceneManager( name );
+		}
+
+		public override void DestroyInstance( SceneManager instance )
+		{
+			instance.ClearScene();
+		}
+		
+		#endregion
+	}
 }
