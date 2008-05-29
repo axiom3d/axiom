@@ -529,8 +529,8 @@ namespace Axiom.Math
 			}
 			else
 			{
-				Maximum.Ceil( point );
-				Minimum.Floor( point );
+				maxVector.Ceil( point );
+				minVector.Floor( point );
 				UpdateCorners();
 			}
 		}
