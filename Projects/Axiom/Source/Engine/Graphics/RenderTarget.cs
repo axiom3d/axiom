@@ -98,7 +98,8 @@ namespace Axiom.Graphics
 			}
 		}
 
-		public ViewportUpdateEventArgs( RenderTarget source, Viewport viewport ) : base( source )
+		public ViewportUpdateEventArgs( RenderTarget source, Viewport viewport )
+			: base( source )
 		{
 			this.viewport = viewport;
 		}
@@ -571,11 +572,47 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public virtual Viewport AddViewport( Camera camera, float left, float top, float width, float height, int zOrder )
 		{
+			if ( _viewportList.ContainsKey( zOrder ) )
+				throw new AxiomException( String.Format( "Can't create another viewport for {0} with Z-Order {1} because a viewport exists with this Z-Order already.", _name, zOrder ) );
+
 			// create a new camera and add it to our internal collection
 			Viewport viewport = new Viewport( camera, this, left, top, width, height, zOrder );
 			this._viewportList.Add( viewport );
 
+			OnViewportAdded( viewport );
+
 			return viewport;
+		}
+
+		/// <summary>
+		///      Removes a viewport at a given ZOrder.
+		/// </summary>
+		/// <param name="zOrder">
+		///      The <see cref="Viewport.ZOrder"/> of the viewport to be removed.
+		///</param>
+		public virtual void RemoveViewport( int zOrder )
+		{
+			if ( _viewportList.ContainsKey( zOrder ) )
+			{
+				Viewport viewport = _viewportList[ zOrder ];
+
+				OnViewportRemoved( viewport );
+
+				_viewportList.Remove( zOrder );
+			}
+		}
+
+		/// <summary>
+		///       Removes all viewports on this target.
+		/// </summary>
+		public virtual void RemoveAllViewports()
+		{
+			foreach ( KeyValuePair<int, Viewport> pair in _viewportList )
+			{
+				OnViewportRemoved( pair.Value );
+			}
+
+			_viewportList.Clear();
 		}
 
 		#endregion Viewport Management
@@ -1013,15 +1050,18 @@ namespace Axiom.Graphics
 		{
 			if ( !isDisposed )
 			{
-				// Delete viewports
-				while ( _viewportList.Count > 0 )
+				if ( disposeManagedResources )
 				{
-					Viewport vp = _viewportList[ _viewportList.Keys[ 0 ] ];
-					OnViewportRemoved( vp );
-					this._viewportList.Remove( _viewportList.Keys[ 0 ] );
+					// Delete viewports
+					while ( _viewportList.Count > 0 )
+					{
+						Viewport vp = _viewportList[ _viewportList.Keys[ 0 ] ];
+						OnViewportRemoved( vp );
+						this._viewportList.Remove( _viewportList.Keys[ 0 ] );
+					}
+					// Write final performance stats
+					LogManager.Instance.Write( "Final Stats [{0}]: FPS <A,B,W> : {1:#.00} {2:#.00} {3:#.00}", this.Name, this._statistics.AvgerageFPS, this._statistics.BestFPS, this._statistics.WorstFPS );
 				}
-				// Write final performance stats
-				LogManager.Instance.Write( "Final Stats [{0}]: FPS <A,B,W> : {1:#.00} {2:#.00} {3:#.00}", this.Name, this._statistics.AvgerageFPS, this._statistics.BestFPS, this._statistics.WorstFPS );
 			}
 			isDisposed = true;
 		}

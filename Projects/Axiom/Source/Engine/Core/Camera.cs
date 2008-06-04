@@ -1297,7 +1297,7 @@ namespace Axiom.Core
 			float centeredScreenX = ( screenX - 0.5f );
 			float centeredScreenY = ( 0.5f - screenY );
 
-			float normalizedSlope = Utility.Tan( Utility.DegreesToRadians( FieldOfView * 0.5f ) );
+			float normalizedSlope = Utility.Tan( FieldOfView * 0.5f );
 			float viewportYToWorldY = normalizedSlope * Near * 2;
 			float viewportXToWorldX = viewportYToWorldY * AspectRatio;
 
