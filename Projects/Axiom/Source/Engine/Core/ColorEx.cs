@@ -275,6 +275,16 @@ namespace Axiom.Core
 		#endregion
 
 		#region Operators
+
+		public static ColorEx operator *( ColorEx left, ColorEx right )
+		{
+			return new ColorEx(
+				left.a * right.a,
+				left.r * right.r,
+				left.g * right.g,
+				left.b * right.b );
+		}
+
 		public static ColorEx operator *( ColorEx left, float scalar )
 		{
 			return new ColorEx(
@@ -284,6 +294,24 @@ namespace Axiom.Core
 				left.b * scalar );
 		}
 
+
+		public static ColorEx operator /( ColorEx left, ColorEx right )
+		{
+			return new ColorEx(
+				left.a / right.a,
+				left.r / right.r,
+				left.g / right.g,
+				left.b / right.b );
+		}
+		public static ColorEx operator /( ColorEx left, float scalar )
+		{
+			return new ColorEx(
+				left.a / scalar,
+				left.r / scalar,
+				left.g / scalar,
+				left.b / scalar );
+		}
+
 		public static ColorEx operator -( ColorEx left, ColorEx right )
 		{
 			return new ColorEx(
@@ -291,6 +319,15 @@ namespace Axiom.Core
 				left.r - right.r,
 				left.g - right.g,
 				left.b - right.b );
+		}
+
+		public static ColorEx operator +( ColorEx left, ColorEx right )
+		{
+			return new ColorEx(
+				left.a + right.a,
+				left.r + right.r,
+				left.g + right.g,
+				left.b + right.b );
 		}
 
 		#endregion Operators
