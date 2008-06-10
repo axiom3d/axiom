@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using IO = System.IO;
 using System.Windows.Forms;
 
 using Axiom.Core;
@@ -124,11 +125,17 @@ namespace Axiom.RenderSystems.OpenGL
 
 		private void DefaultForm_Load( object sender, System.EventArgs e )
 		{
-			System.IO.Stream strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico", ResourceGroupManager.BootstrapResourceGroupName );
-			if ( strm != null )
-			{
-				this.Icon = new System.Drawing.Icon( strm );
-			}
+            try
+            {
+                IO.Stream strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico", ResourceGroupManager.BootstrapResourceGroupName );
+			    if ( strm != null )
+			    {
+				    this.Icon = new System.Drawing.Icon( strm );
+			    }
+            }
+            catch ( IO.FileNotFoundException )
+            {
+            }
 		}
 
 		private void DefaultForm_Resize( object sender, System.EventArgs e )
