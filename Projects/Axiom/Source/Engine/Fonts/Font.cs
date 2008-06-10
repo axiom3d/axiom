@@ -407,7 +407,7 @@ namespace Axiom.Fonts
 		/// <summary>Returns the size in pixels of a box that could contain the whole string.</summary>
 		Pair<int> StrBBox( string text, float char_height, RenderWindow window )
 		{
-			Pair<int> ret = new Pair<int>( 0, 0 );
+			int height = 0, width = 0;
 			float vsX, vsY, veX, veY;
 			int w, h;
 
@@ -422,12 +422,12 @@ namespace Axiom.Fonts
 				vsY = char_height;
 				vsX = GetGlyphAspectRatio( text[ i ] ) * char_height;
 
-				ret.second += (int)( vsX * w );
-				if ( vsY * h > ret.first || ( ( i == 0 ) && text[ i - 1 ] == '\n' ) )
-					ret.first += (int)( vsY * h );
+				width += (int)( vsX * w );
+				if ( vsY * h > height || ( ( i == 0 ) && text[ i - 1 ] == '\n' ) )
+					height += (int)( vsY * h );
 			}
 
-			return ret;
+			return new Pair<int>( height, width );
 		}
 
 		/// <summary>
