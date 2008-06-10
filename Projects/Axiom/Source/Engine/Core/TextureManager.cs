@@ -442,10 +442,10 @@ namespace Axiom.Core
 			// does this texture exist already?
 			Tuple<Resource, bool> result = CreateOrRetrieve( name, group );
 
-			Texture texture = (Texture)result.first;
+			Texture texture = (Texture)result.First;
 
 			// was it created?
-			if ( result.second == true )
+			if ( result.Second == true )
 			{
 				texture.TextureType = type;
 				texture.MipmapCount = ( numMipMaps == -1 ) ? _defaultMipmapCount : numMipMaps;

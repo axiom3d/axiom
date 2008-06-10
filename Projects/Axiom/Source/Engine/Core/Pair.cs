@@ -48,11 +48,57 @@ namespace Axiom.Core
 	/// 	(similar to std::pair, minus the templates).
 	/// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Pair<T> : Tuple< T, T >
+    public class Pair<T> : IEquatable<Pair<T>>
     {
-        public Pair( T first, T second ): base (first, second )
+		private Tuple<T, T> data;
+
+		public T First
+		{
+			get
+			{
+				return data.First;
+			}
+			set
+			{
+				data = new Tuple<T, T>( value, data.Second );
+			}
+		}
+
+		public T Second
+		{
+			get
+			{
+				return data.Second;
+			}
+			set
+			{
+				data = new Tuple<T, T>( data.First, value );
+			}
+		}
+
+        public Pair( T first, T second )
         {
+			data = new Tuple<T, T>( first, second );
         }
 
-    }
+
+		#region IEquatable<Pair<T>> Implementation
+
+		public bool Equals( Pair<T> other )
+		{
+			return this.data.Equals( other.data );
+		}
+
+
+		public override bool Equals( object other )
+		{
+			if ( other is Pair<T> )
+			{
+				return this.Equals( (Pair<T>)other );
+			}
+			return false;
+		}
+
+		#endregion IEquatable<Pair<T>> Implementation
+	}
 }

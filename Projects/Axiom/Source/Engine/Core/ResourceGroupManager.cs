@@ -2066,9 +2066,9 @@ namespace Axiom.Core
             // Note we respect original ordering
             foreach ( Tuple<IScriptLoader, List<FileInfoList>> slfli in scriptLoaderFileList )
             {
-                IScriptLoader su = slfli.first;
+                IScriptLoader su = slfli.First;
                 // Iterate over each list
-                foreach ( FileInfoList flli in slfli.second )
+                foreach ( FileInfoList flli in slfli.Second )
                 {
                     // Iterate over each item in the list
                     foreach ( FileInfo fii in flli )
