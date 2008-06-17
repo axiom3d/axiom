@@ -39,6 +39,7 @@ using System.Runtime.InteropServices;
 
 using Axiom.Core;
 using System.Diagnostics;
+using Axiom.Utilities;
 
 #endregion Namespace Declarations
 
@@ -393,11 +394,13 @@ namespace Axiom.Media
 		/// <param name="fileName">Full path to the image file on disk.</param>
 		public static Image FromFile( string fileName )
 		{
+            Contract.RequiresNotEmpty( fileName, "fileName" );
+
 			int pos = fileName.LastIndexOf( "." );
 
 			if ( pos == -1 )
 			{
-				throw new AxiomException( "Unable to load image file '{0}' due to invalid extension.", fileName );
+				throw new AxiomException( "Unable to load image file '{0}' due to missing extension.", fileName );
 			}
 
 			// grab the extension from the filename
@@ -407,9 +410,13 @@ namespace Axiom.Media
 			ICodec codec = CodecManager.Instance.GetCodec( ext );
 
 			Stream encoded = ResourceGroupManager.Instance.OpenResource( fileName );
-			MemoryStream decoded = new MemoryStream();
+            if ( encoded == null )
+            {
+                throw new FileNotFoundException (fileName);
+            }
 
 			// decode the image data
+			MemoryStream decoded = new MemoryStream();
 			ImageCodec.ImageData data = (ImageCodec.ImageData)codec.Decode( encoded, decoded );
 			encoded.Close();
 
