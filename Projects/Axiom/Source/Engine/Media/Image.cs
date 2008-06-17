@@ -208,6 +208,9 @@ namespace Axiom.Media
         /// <param name="fileName">Full path to the image file on disk.</param>
         public static Image FromFile( string fileName )
         {
+            if ( fileName == null || fileName.Length == 0 )
+                throw new ArgumentException( "fileName cannot be null or empty." );
+
             int pos = fileName.LastIndexOf( "." );
 
             if ( pos == -1 )
@@ -220,12 +223,12 @@ namespace Axiom.Media
 
             // find a registered codec for this type
             ICodec codec = CodecManager.Instance.GetCodec( ext );
-
-            // TODO: Need ArchiveManager
             Stream encoded = ResourceManager.FindCommonResourceData( fileName );
-            MemoryStream decoded = new MemoryStream();
+            if ( encoded == null || fileName.Length == 0 )
+                throw new FileNotFoundException( fileName );
 
             // decode the image data
+            MemoryStream decoded = new MemoryStream();
             ImageCodec.ImageData data = (ImageCodec.ImageData)codec.Decode( encoded, decoded );
 
             Image image = new Image();
