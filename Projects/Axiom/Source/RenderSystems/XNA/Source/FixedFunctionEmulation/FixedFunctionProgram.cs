@@ -45,7 +45,7 @@ using XFG = Microsoft.Xna.Framework.Graphics;
 
 namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 {
-	class FixedFunctionPrograms
+	abstract partial class FixedFunctionPrograms
 	{
 		#region Fields and Properties
 
@@ -76,6 +76,19 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			}
 		}
 
+		protected FixedFunctionState fixedFunctionState;
+		public FixedFunctionState FixedFunctionState
+		{
+			get
+			{
+				return fixedFunctionState;
+			}
+			set
+			{
+				fixedFunctionState = value;
+			}
+		}
+
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
@@ -83,6 +96,12 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		{
 		}
 		#endregion Construction and Destruction
+
+		#region Methods
+
+		public abstract void SetFixedFunctionProgramParameters( FixedFunctionPrograms.FixedFunctionProgramsParameters parameters );
+
+		#endregion Methods
 
 	}
 }

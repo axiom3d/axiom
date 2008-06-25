@@ -62,6 +62,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			gffs.FogMode = FogMode.None;
 			gffs.Shading = Shading.Gouraud;
 			gffs.AlphaRejectFunction = CompareFunction.AlwaysPass;
+            gffs.lightTypeCount = new uint[(uint)(LightType.Spotlight) + 1];
 
 			return gffs;
 		}
@@ -152,6 +153,19 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		/// </remarks>
 		public Shading Shading;
 
+        private uint[] lightTypeCount;
+
 		#endregion Fields
-	}
+
+        internal void ResetLightTypeCounts()
+        {
+            for ( int index = 0; index < lightTypeCount.Length; index++ )
+                lightTypeCount[ index ] = 0;
+        }
+
+        internal void IncrementLightTypeCount( LightType lightType )
+        {
+            lightTypeCount[ (uint)lightType ]++;
+        }
+    }
 }

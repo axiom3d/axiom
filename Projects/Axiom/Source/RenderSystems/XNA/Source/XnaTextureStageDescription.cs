@@ -51,7 +51,7 @@ namespace Axiom.RenderSystems.Xna
 	internal struct XnaTextureStageDescription
 	{
 		/// the type of the texture
-		public XnaTextureType texType;
+		public TextureType texType;
 		/// wich texCoordIndex to use
 		public int coordIndex;
 		/// type of auto tex. calc. used
