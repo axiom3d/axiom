@@ -72,9 +72,12 @@ using System.Security.Permissions;
 [assembly: AssemblyVersion( "0.7.1.0" )]
 #endif
 
+#if !(XBOX || XBOX360 || SILVERLIGHT)
 [assembly: AssemblyFileVersion( "0.7.1.0" )]
 
 [assembly: SecurityPermission( SecurityAction.RequestMinimum )]
+#endif
+
 
 [assembly: AssemblyDelaySign( false )]
 [assembly: AssemblyKeyFile( "" )]
