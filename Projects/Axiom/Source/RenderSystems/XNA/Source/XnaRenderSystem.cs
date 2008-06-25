@@ -48,6 +48,7 @@ using Axiom.Overlays;
 
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
+using Axiom.Collections;
 
 #endregion Namespace Declarations
 
@@ -77,12 +78,17 @@ namespace Axiom.RenderSystems.Xna
 		/// Saved last view matrix
 		protected Matrix4 _viewMatrix = Matrix4.Identity;
 		bool _isFirstFrame = true;
+
 		// stores texture stage info locally for convenience
 		internal XnaTextureStageDescription[] texStageDesc = new XnaTextureStageDescription[ Config.MaxTextureLayers ];
 		protected XnaGpuProgramManager gpuProgramMgr;
 		int numLastStreams = 0;
 
-		XnaFixedFunctionEmulation _ffEmulator;
+		// Fixed Function Emulation
+		FixedFunctionEmulation.ShaderManager _shaderManager;
+		FixedFunctionEmulation.HLSLShaderGenerator _hlslShaderGenerator;
+		FixedFunctionEmulation.FixedFunctionState _fixedFunctionState;
+		FixedFunctionEmulation.FixedFunctionPrograms.FixedFunctionProgramsParameters _ffProgramParameters;
 
 		protected int primCount;
 		// protected int renderCount = 0;
@@ -97,7 +103,7 @@ namespace Axiom.RenderSystems.Xna
 			{
 				texStageDesc[ i ].autoTexCoordType = TexCoordCalcMethod.None;
 				texStageDesc[ i ].coordIndex = 0;
-				texStageDesc[ i ].texType = XnaTextureType.Normal;
+				texStageDesc[ i ].texType = TextureType.OneD;
 				texStageDesc[ i ].tex = null;
 			}
 
@@ -502,6 +508,7 @@ namespace Axiom.RenderSystems.Xna
 			set
 			{
 				_ambientLight = value;
+				_ffProgramParameters.LightAmbient = value;
 			}
 		}
 
@@ -545,7 +552,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-		public override Axiom.Graphics.CompareFunction DepthFunction
+		public override CompareFunction DepthFunction
 		{
 			get
 			{
@@ -589,6 +596,7 @@ namespace Axiom.RenderSystems.Xna
 			{
 
 				_lightingEnabled = value;
+				_ffProgramParameters.LightingEnabled = value;
 			}
 		}
 
@@ -605,7 +613,7 @@ namespace Axiom.RenderSystems.Xna
 		}
 
 		private Matrix4 _projectionMatrix;
-		public override Axiom.Math.Matrix4 ProjectionMatrix
+		public override Matrix4 ProjectionMatrix
 		{
 			get
 			{
@@ -622,10 +630,7 @@ namespace Axiom.RenderSystems.Xna
 					mat.M22 = -mat.M22;
 				}
 
-				//todo set the projection matrix in effect
-				//_effect.Projection = mat;
-
-				//_effect.CommitChanges();
+				_ffProgramParameters.ProjectionMatrix = value;
 
 			}
 		}
@@ -686,7 +691,7 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-		public override Axiom.Math.Matrix4 ViewMatrix
+		public override Matrix4 ViewMatrix
 		{
 			get
 			{
@@ -702,7 +707,7 @@ namespace Axiom.RenderSystems.Xna
 				_viewMatrix.m22 = -_viewMatrix.m22;
 				_viewMatrix.m23 = -_viewMatrix.m23;
 
-				//_effect.View = _makeXnaMatrix( _viewMatrix );
+				_ffProgramParameters.ViewMatrix = _viewMatrix;
 			}
 		}
 
@@ -716,6 +721,7 @@ namespace Axiom.RenderSystems.Xna
 			set
 			{
 				_worldMatrix = value;
+				_ffProgramParameters.WorldMatrix = _worldMatrix;
 			}
 		}
 
@@ -1133,8 +1139,6 @@ namespace Axiom.RenderSystems.Xna
 				newWindow.RenderWindow = renderWindow;
 			}
 
-			_ffEmulator = new XnaFixedFunctionEmulation( this, _device );
-
 			return renderWindow;
 		}
 
@@ -1222,8 +1226,6 @@ namespace Axiom.RenderSystems.Xna
 			// class base implementation first
 			base.Render( op );
 
-			_ffEmulator.Begin( op );
-
 			XnaVertexDeclaration vertDecl = (XnaVertexDeclaration)op.vertexData.vertexDeclaration;
 
 			// set the vertex declaration and buffer binding
@@ -1266,16 +1268,15 @@ namespace Axiom.RenderSystems.Xna
 				XnaHardwareIndexBuffer idxBuffer = (XnaHardwareIndexBuffer)op.indexData.indexBuffer;
 				_device.Indices = idxBuffer.XnaIndexBuffer;
 
-				_ffEmulator.DrawIndexedPrimitives( primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount, op.indexData.indexStart, primCount );
+				_device.DrawIndexedPrimitives( primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount, op.indexData.indexStart, primCount );
 
 			}
 			else
 			{
 				// draw vertices without indices
-				_ffEmulator.DrawPrimitives( primType, op.vertexData.vertexStart, primCount );
+				_device.DrawPrimitives( primType, op.vertexData.vertexStart, primCount );
 			}
 
-			_ffEmulator.End();
 			//crap hack, set the sources back to null to allow accessing vertices and indices buffers
 			_device.Vertices[ 0 ].SetSource( null, 0, 0 );
 			_device.Vertices[ 1 ].SetSource( null, 0, 0 );
@@ -1337,22 +1338,17 @@ namespace Axiom.RenderSystems.Xna
 			else
 			{
 				// enable fog
-				XFG.Color col = new XFG.Color( (byte)( color.r * 255.0f ), (byte)( color.g * 255.0f ), (byte)( color.b * 255.0f ), (byte)( color.a * 255.0f ) );
-				//color.ToXnaColor();
+				XFG.Color col = XnaHelper.Convert( color );
 
 				_device.RenderState.FogEnable = true;
 				_device.RenderState.FogVertexMode = XnaHelper.Convert( mode );
-				_device.RenderState.FogTableMode = XnaHelper.Convert( mode );// XFG.FogMode.Linear;
+				_device.RenderState.FogTableMode = XnaHelper.Convert( mode );
 				_device.RenderState.FogColor = col;
 				_device.RenderState.FogStart = start;
 				_device.RenderState.FogEnd = end;
 				_device.RenderState.FogDensity = density;
 				_device.RenderState.RangeFogEnable = true;
 
-				/*  effect2.FogEnabled = true;
-				  effect2.FogColor = new XNA.Vector3(col.R, col.G, col.B);// col;
-				  effect2.FogEnd = end;
-				  effect2.FogStart = start;*/
 			}
 		}
 
@@ -1410,21 +1406,7 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess )
 		{
-			XFG.Color col = new XFG.Color( (byte)( ambient.r * 255.0f ), (byte)( ambient.g * 255.0f ), (byte)( ambient.b * 255.0f ), (byte)( ambient.a * 255.0f ) );
-			//ambient.ToXnaColor();
-			//_effect.AmbientLightColor = new XNA.Vector4( col.R, col.G, col.B, col.A );
-
-
-			/*   effect2.AmbientLightColor =new XNA.Vector3(col.R,col.G,col.B);
-			   col = diffuse.ToXnaColor();
-			   effect2.DiffuseColor = new XNA.Vector3(col.R, col.G, col.B);
-			   col = specular.ToXnaColor();
-			   effect2.SpecularColor = new XNA.Vector3(col.R, col.G, col.B);
-			   col = emissive.ToXnaColor();
-			   effect2.EmissiveColor = new XNA.Vector3(col.R, col.G, col.B);
-			   effect2.SpecularPower = shininess;*/
-
-			//todo
+			// No Implementation 
 		}
 
 		public override void SetTexture( int stage, bool enabled, string textureName )
@@ -1439,7 +1421,7 @@ namespace Axiom.RenderSystems.Xna
 
 				// set stage description
 				texStageDesc[ stage ].tex = texture.DXTexture;
-				texStageDesc[ stage ].texType = XnaHelper.Convert( texture.TextureType );
+				texStageDesc[ stage ].texType = texture.TextureType;
 			}
 			else
 			{
@@ -1456,8 +1438,9 @@ namespace Axiom.RenderSystems.Xna
 				texStageDesc[ stage ].tex = null;
 				texStageDesc[ stage ].autoTexCoordType = TexCoordCalcMethod.None;
 				texStageDesc[ stage ].coordIndex = 0;
-				texStageDesc[ stage ].texType = XnaTextureType.Normal;
+				texStageDesc[ stage ].texType = TextureType.OneD;
 			}
+			_ffProgramParameters.SetTextureEnabled( stage, enabled );
 		}
 
 		public override void SetTextureAddressingMode( int stage, TextureAddressing texAddressingMode )
@@ -1594,151 +1577,12 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void SetTextureMatrix( int stage, Axiom.Math.Matrix4 xform )
 		{
-			/*
-			XNA.Matrix d3dMat = XNA.Matrix.Identity;
-			Matrix4 newMat = xform;
-
-			//If envmap is applied, but device doesn't support spheremap,
-			//then we have to use texture transform to make the camera space normal
-			//reference the envmap properly. This isn't exactly the same as spheremap
-			//(it looks nasty on flat areas because the camera space normals are the same)
-			//but it's the best approximation we have in the absence of a proper spheremap 
-			if ( texStageDesc[ stage ].autoTexCoordType == TexCoordCalcMethod.EnvironmentMap )
-			{
-				if ( _capabilities.VertexProcessingCapabilities.SupportsTextureGenerationSphereMap )
-				{
-					// inverts the texture for a spheremap
-					Matrix4 matEnvMap = Matrix4.Identity;
-					matEnvMap.m11 = -1.0f;
-
-					// concatenate 
-					newMat = newMat * matEnvMap;
-				}
-				else
-				{
-						 //If envmap is applied, but device doesn't support spheremap,
-						 //then we have to use texture transform to make the camera space normal
-						 //reference the envmap properly. This isn't exactly the same as spheremap
-						 //(it looks nasty on flat areas because the camera space normals are the same)
-						 //but it's the best approximation we have in the absence of a proper spheremap 
-						 
-					// concatenate with the xForm
-					newMat = newMat * Matrix4.ClipSpace2DToImageSpace;
-				}
-			}
-
-			// If this is a cubic reflection, we need to modify using the view matrix
-
-			if ( texStageDesc[ stage ].autoTexCoordType == TexCoordCalcMethod.EnvironmentMapReflection )
-			{
-				// get the current view matrix
-				XNA.Matrix viewMatrix = this._viewMatrix;
-
-				// Get transposed 3x3, ie since D3D is transposed just copy
-				// We want to transpose since that will invert an orthonormal matrix ie rotation
-				Matrix4 viewTransposed = Matrix4.Identity;
-				viewTransposed.m00 = viewMatrix.M11;
-				viewTransposed.m01 = viewMatrix.M12;
-				viewTransposed.m02 = viewMatrix.M13;
-				viewTransposed.m03 = 0.0f;
-
-				viewTransposed.m10 = viewMatrix.M21;
-				viewTransposed.m11 = viewMatrix.M22;
-				viewTransposed.m12 = viewMatrix.M23;
-				viewTransposed.m13 = 0.0f;
-
-				viewTransposed.m20 = viewMatrix.M31;
-				viewTransposed.m21 = viewMatrix.M32;
-				viewTransposed.m22 = viewMatrix.M33;
-				viewTransposed.m23 = 0.0f;
-
-				viewTransposed.m30 = viewMatrix.M41;
-				viewTransposed.m31 = viewMatrix.M42;
-				viewTransposed.m32 = viewMatrix.M43;
-				viewTransposed.m33 = 1.0f;
-
-				// concatenate
-				newMat = newMat * viewTransposed;
-			}
-
-			if ( texStageDesc[ stage ].autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture )
-			{
-				// Derive camera space to projector space transform
-				// To do this, we need to undo the camera view matrix, then 
-				// apply the projector view & projection matrices
-				newMat = _viewMatrix.Inverse() * newMat;
-				newMat = texStageDesc[ stage ].frustum.ViewMatrix * newMat;
-				newMat = texStageDesc[ stage ].frustum.ProjectionMatrix * newMat;
-
-				if ( texStageDesc[ stage ].frustum.ProjectionType == Projection.Perspective )
-				{
-					newMat = ProjectionClipSpace2DToImageSpacePerspective * newMat;
-				}
-				else
-				{
-					newMat = ProjectionClipSpace2DToImageSpaceOrtho * newMat;
-				}
-
-			}
-
-			// convert to D3D format
-			d3dMat = _makeXnaMatrix( newMat );
-
-			// need this if texture is a cube map, to invert D3D's z coord
-			if ( texStageDesc[ stage ].autoTexCoordType != TexCoordCalcMethod.None )
-			{
-				d3dMat.M13 = -d3dMat.M13;
-				d3dMat.M23 = -d3dMat.M23;
-				d3dMat.M33 = -d3dMat.M33;
-				d3dMat.M43 = -d3dMat.M43;
-			}
-
-			//TODO
-			// D3D.TransformType d3dTransType = (D3D.TransformType)((int)(D3D.TransformType.Texture0) + stage);
-
-			 // set the matrix if it is not the identity
-			 if (!D3DHelper.IsIdentity(ref d3dMat))
-			 {
-				 // tell D3D the dimension of tex. coord
-				 int texCoordDim = 0;
-				 if (texStageDesc[stage].autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture)
-				 {
-					 texCoordDim = (int)D3D.TextureTransform.Projected | (int)D3D.TextureTransform.Count3;
-				 }
-				 else
-				 {
-					 switch (texStageDesc[stage].texType)
-					 {
-						 case D3DTexType.Normal:
-							 texCoordDim = (int)D3D.TextureTransform.Count2;
-							 break;
-						 case D3DTexType.Cube:
-						 case D3DTexType.Volume:
-							 texCoordDim = (int)D3D.TextureTransform.Count3;
-							 break;
-					 }
-				 }
-
-				 // note: int values of D3D.TextureTransform correspond directly with tex dimension, so direct conversion is possible
-				 // i.e. Count1 = 1, Count2 = 2, etc
-				 device.Textures[stage].TextureTransform = (D3D.TextureTransform)texCoordDim;
-
-				 // set the manually calculated texture matrix
-				 device.SetTransform(d3dTransType, d3dMat);
-			 }
-			 else
-			 {
-				 // disable texture transformation
-				 device.TextureState[stage].TextureTransform = D3D.TextureTransform.Disable;
-
-				 // set as the identity matrix
-				 device.SetTransform(d3dTransType, DX.Matrix.Identity);
-			 }*/
+			_ffProgramParameters.SetTextureMatrix( stage, xform );
 		}
 
 		public override void SetTextureUnitFiltering( int stage, FilterType type, Axiom.Graphics.FilterOptions filter )
 		{
-			XnaTextureType texType = texStageDesc[ stage ].texType;
+			XnaTextureType texType = XnaHelper.Convert(texStageDesc[ stage ].texType);
 			XFG.TextureFilter texFilter = XnaHelper.Convert( type, filter, _capabilities, texType );
 
 			switch ( type )
@@ -1824,9 +1668,20 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-		public override void UseLights( Axiom.Collections.LightList lightList, int limit )
+		public override void UseLights( LightList lights, int limit )
 		{
-			//throw new Exception("The method or operation is not implemented.");
+			int currentLightCount = lights.Count > limit ? lights.Count : limit;
+
+			List<Light> lightList = new List<Light>();
+			_fixedFunctionState.GeneralFixedFunctionState.ResetLightTypeCounts();
+			for ( int index = 0; index < currentLightCount; index++ )
+			{
+				Light light = lights[ index ];
+				lightList.Add( light );
+				_fixedFunctionState.GeneralFixedFunctionState.IncrementLightTypeCount( light.Type );
+			}
+			_ffProgramParameters.Lights = lightList;
+
 		}
 
 		#endregion Methods
