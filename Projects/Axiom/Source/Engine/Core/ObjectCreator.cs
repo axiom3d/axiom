@@ -196,7 +196,7 @@ namespace Axiom.Core
                     typeFound = (type.GetInterfaces()[i] == baseType);
                 }
 
-                if (typefound)
+                if (typeFound)
                 {
 					types.Add( new ObjectCreator( assembly, type ) );
                 }
