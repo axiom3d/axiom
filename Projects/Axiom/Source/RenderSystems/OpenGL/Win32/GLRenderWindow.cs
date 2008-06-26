@@ -388,11 +388,14 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void WindowMovedOrResized()
 		{
-			SWF.Control ctrl = SWF.Form.FromHandle( _hWindow );
-			this.top = ctrl.Top;
-			this.left = ctrl.Left;
-			this.Width = ctrl.ClientRectangle.Width;
-			this.Height = ctrl.ClientRectangle.Height;
+            if ( _hWindow != IntPtr.Zero )
+            {
+                SWF.Control ctrl = SWF.Form.FromHandle( _hWindow );
+                this.top = ctrl.Top;
+                this.left = ctrl.Left;
+                this.Width = ctrl.ClientRectangle.Width;
+                this.Height = ctrl.ClientRectangle.Height;
+            }
 
 			// Update dimensions incase changed
 			foreach ( KeyValuePair<int, Viewport> entry in this.viewportList )
