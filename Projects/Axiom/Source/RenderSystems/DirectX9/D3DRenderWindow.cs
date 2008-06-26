@@ -432,7 +432,6 @@ namespace Axiom.RenderSystems.DirectX9
 
 				newWin.RenderWindow = this;
 				_window = newWin;
-				_window.Show();
 
 				WindowEventMonitor.Instance.RegisterWindow( this );
 			}
@@ -455,6 +454,8 @@ namespace Axiom.RenderSystems.DirectX9
 			LogManager.Instance.Write( "D3D9 : Created D3D9 Rendering Window '{0}' : {1}x{2}, {3}bpp", Name, Width, Height, ColorDepth );
 
 			CreateD3DResources();
+
+            _window.Show();
 
 			IsActive = true;
 			_isClosed = false;
