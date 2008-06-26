@@ -85,10 +85,10 @@ namespace Axiom.RenderSystems.Xna
 		int numLastStreams = 0;
 
 		// Fixed Function Emulation
-		FixedFunctionEmulation.ShaderManager _shaderManager;
-		FixedFunctionEmulation.HLSLShaderGenerator _hlslShaderGenerator;
-		FixedFunctionEmulation.FixedFunctionState _fixedFunctionState;
-		FixedFunctionEmulation.FixedFunctionPrograms.FixedFunctionProgramsParameters _ffProgramParameters;
+		FixedFunctionEmulation.ShaderManager _shaderManager = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.ShaderManager();
+		FixedFunctionEmulation.HLSLShaderGenerator _hlslShaderGenerator = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.HLSLShaderGenerator();
+		FixedFunctionEmulation.FixedFunctionState _fixedFunctionState = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.FixedFunctionState();
+		FixedFunctionEmulation.FixedFunctionPrograms.FixedFunctionProgramsParameters _ffProgramParameters = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.FixedFunctionPrograms.FixedFunctionProgramsParameters();
 
 		protected int primCount;
 		// protected int renderCount = 0;
@@ -1670,7 +1670,7 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void UseLights( LightList lights, int limit )
 		{
-			int currentLightCount = lights.Count > limit ? lights.Count : limit;
+			int currentLightCount = lights.Count < limit ? lights.Count : limit;
 
 			List<Light> lightList = new List<Light>();
 			_fixedFunctionState.GeneralFixedFunctionState.ResetLightTypeCounts();
@@ -1681,7 +1681,6 @@ namespace Axiom.RenderSystems.Xna
 				_fixedFunctionState.GeneralFixedFunctionState.IncrementLightTypeCount( light.Type );
 			}
 			_ffProgramParameters.Lights = lightList;
-
 		}
 
 		#endregion Methods

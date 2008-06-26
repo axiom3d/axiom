@@ -229,7 +229,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 			public void SetTextureMatrix( int index, Matrix4 matrix )
 			{
-				while ( index + 1 < textureMatricies.Count )
+				while ( index >= textureMatricies.Count )
 					textureMatricies.Add( Matrix4.Identity );
 
 				textureMatricies[ index ] = matrix;
@@ -237,7 +237,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 			public void SetTextureEnabled( int index, bool value )
 			{
-				while ( index + 1 < textureEnabled.Count )
+				while ( index >= textureEnabled.Count )
 					textureEnabled.Add( false );
 
 				textureEnabled[ index ] = value;
