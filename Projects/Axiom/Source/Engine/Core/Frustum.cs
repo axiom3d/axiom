@@ -490,11 +490,24 @@ namespace Axiom.Core
 		/// Are we using a custom view matrix?
 		/// </summary>
 		bool _customViewMatrix;
-
+        public bool IsCustomViewMatrixEnabled
+        {
+            get
+            {
+                return _customViewMatrix;
+            }
+        }
 		/// <summary>
 		/// Are we using a custom projection matrix?
 		/// </summary>
 		bool _customProjectionMatrix;
+        public bool IsCustomProjectionMatrixEnabled
+        {
+            get
+            {
+                return _customProjectionMatrix;
+            }
+        }
 
 		/// <summary>
 		///     Bounding box of this frustum.
