@@ -153,7 +153,7 @@ namespace Axiom.Overlays
         }
         public virtual void RemoveChild( string name )
         {
-            Debug.Assert( !children.ContainsKey( name ), string.Format( "Child with name '{0}' not found.", name ) );
+            Debug.Assert( children.ContainsKey( name ), string.Format( "Child with name '{0}' not found.", name ) );
 
             OverlayElement element = GetChild( name );
             children.Remove( name );
