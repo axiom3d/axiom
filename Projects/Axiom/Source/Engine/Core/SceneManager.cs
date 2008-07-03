@@ -4241,7 +4241,10 @@ namespace Axiom.Core
         /// </summary>
         public string Name
         {
-            get { return name; }
+            get
+            {
+                return name;
+            }
         }
 
         /// <summary>
@@ -4654,18 +4657,17 @@ namespace Axiom.Core
                 Texture shadowTex = (Texture)TextureManager.Instance[ targName ];
                 if ( shadowTex == null )
                 {
-                    shadowTex =
-                        TextureManager.Instance.CreateManual( targName, ResourceGroupManager.InternalResourceGroupName, TextureType.TwoD,
-                                                             size, size, 0, format,
-                                                             TextureUsage.RenderTarget );
+                    shadowTex = TextureManager.Instance.CreateManual( targName, ResourceGroupManager.InternalResourceGroupName, TextureType.TwoD,
+                                                                      size, size, 0, format,
+                                                                      TextureUsage.RenderTarget );
                 }
                 else if ( shadowTex.Width != size ||
-                           shadowTex.Height != size ||
-                           shadowTex.Format != format )
+                          shadowTex.Height != size ||
+                          shadowTex.Format != format )
                 {
                     LogManager.Instance.Write( "Warning: shadow texture #{0} is shared " +
                                                "between scene managers but the sizes / formats " +
-                                               "do not agree. Consider rationalising your scene manager " +
+                                               "do not agree. Consider rationalizing your scene manager " +
                                                "shadow texture settings.", t );
                 }
                 shadowTex.Load();
@@ -5524,15 +5526,24 @@ namespace Axiom.Core
                     Camera cam = shadowTex.GetBuffer().GetRenderTarget().GetViewport( 0 ).Camera;
 
                     // Hook up receiver texture
-                    Pass targetPass = shadowTextureCustomReceiverPass != null ?
-                        shadowTextureCustomReceiverPass : shadowReceiverPass;
-                    targetPass.GetTextureUnitState( 0 ).SetTextureName( shadowTex.Name );
-                    // Hook up projection frustum
-                    targetPass.GetTextureUnitState( 0 ).SetProjectiveTexturing( true, cam );
+                    Pass targetPass = shadowTextureCustomReceiverPass != null ? shadowTextureCustomReceiverPass : shadowReceiverPass;
+                    TextureUnitState textureUnit = targetPass.GetTextureUnitState( 0 );
+                    textureUnit.SetTextureName( shadowTex.Name );
+
+                    // Hook up projection frustum if fixed-function, but also need to
+                    // disable it explicitly for program pipeline.
+                    textureUnit.SetProjectiveTexturing( !targetPass.HasVertexProgram, cam );
+
+                    // clamp to border color in case this is a custom material
+                    textureUnit.TextureAddressing = TextureAddressing.Border;
+                    textureUnit.TextureBorderColor = ColorEx.White;
+
                     autoParamDataSource.TextureProjector = cam;
 
                     // if this light is a spotlight, we need to add the spot fader layer
-                    if ( light.Type == LightType.Spotlight )
+                    // BUT not if using a custom projection matrix, since then it will be
+                    // inappropriately shaped most likely
+                    if ( light.Type == LightType.Spotlight && !cam.IsCustomProjectionMatrixEnabled )
                     {
                         // remove all TUs except 0 & 1 
                         // (only an issue if additive shadows have been used)
@@ -5541,12 +5552,11 @@ namespace Axiom.Core
 
                         // Add spot fader if not present already
                         if ( targetPass.TextureUnitStageCount == 2 &&
-                            targetPass.GetTextureUnitState( 1 ).TextureName == "spot_shadow_fade.png" )
+                             targetPass.GetTextureUnitState( 1 ).TextureName == "spot_shadow_fade.png" )
                         {
                             // Just set 
-                            TextureUnitState tex =
-                                targetPass.GetTextureUnitState( 1 );
-                            tex.SetProjectiveTexturing( true, cam );
+                            TextureUnitState tex = targetPass.GetTextureUnitState( 1 );
+                            tex.SetProjectiveTexturing( !targetPass.HasVertexProgram, cam );
                         }
                         else
                         {
@@ -5554,9 +5564,8 @@ namespace Axiom.Core
                             while ( targetPass.TextureUnitStageCount > 1 )
                                 targetPass.RemoveTextureUnitState( 1 );
 
-                            TextureUnitState tex =
-                                targetPass.CreateTextureUnitState( "spot_shadow_fade.png" );
-                            tex.SetProjectiveTexturing( true, cam );
+                            TextureUnitState tex = targetPass.CreateTextureUnitState( "spot_shadow_fade.png" );
+                            tex.SetProjectiveTexturing( !targetPass.HasVertexProgram, cam );
                             tex.SetColorOperation( LayerBlendOperation.Add );
                             tex.TextureAddressing = TextureAddressing.Clamp;
                         }
@@ -5578,8 +5587,8 @@ namespace Axiom.Core
                     // fireShadowTexturesPreReceiver(light, cam);
 
                     RenderTextureShadowReceiverQueueGroupObjects( group );
+                    shadowTex.GetBuffer().GetRenderTarget().WriteContentsToFile( "ShadowTexture-" + sti.ToString() + ".jpg" );
                     ++sti;
-
                 } // for each light
 
                 illuminationStage = IlluminationRenderStage.None;
