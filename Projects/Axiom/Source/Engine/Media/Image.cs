@@ -666,171 +666,175 @@ namespace Axiom.Media
 			return ( flags & flag ) > 0;
 		}
 
-		/*
-				/// <summary>
-				/// Scale a 1D, 2D or 3D image volume.
-				/// </summary>
-				/// <param name="src">PixelBox containing the source pointer, dimensions and format</param>
-				/// <param name="dst">PixelBox containing the destination pointer, dimensions and format</param>
-				/// <remarks>
-				/// This function can do pixel format conversion in the process.
-				/// dst and src can point to the same PixelBox object without any problem
-				/// </remarks>
-				public static void Scale( PixelBox src, PixelBox dst )
-				{
-					Scale( src, dst, ImageFilter.Bilinear );
-				}
+		/// <summary>
+		/// Scale a 1D, 2D or 3D image volume.
+		/// </summary>
+		/// <param name="src">PixelBox containing the source pointer, dimensions and format</param>
+		/// <param name="dst">PixelBox containing the destination pointer, dimensions and format</param>
+		/// <remarks>
+		/// This function can do pixel format conversion in the process.
+		/// dst and src can point to the same PixelBox object without any problem
+		/// </remarks>
+		public static void Scale( PixelBox src, PixelBox dst )
+		{
+			Scale( src, dst, ImageFilter.Bilinear );
+		}
 
-				/// <summary>
-				/// Scale a 1D, 2D or 3D image volume.
-				/// </summary>
-				/// <param name="src">PixelBox containing the source pointer, dimensions and format</param>
-				/// <param name="dst">PixelBox containing the destination pointer, dimensions and format</param>
-				/// <param name="filter">Which filter to use</param>
-				/// <remarks>
-				/// This function can do pixel format conversion in the process.
-				/// dst and src can point to the same PixelBox object without any problem
-				/// </remarks>
-				public static void Scale( PixelBox src, PixelBox dst, ImageFilter filter )
-				{
-					// TODO : Debug.Assert( PixelUtil.IsAccessible( src.format ) );
-					// TODO : Debug.Assert( PixelUtil.IsAccessible( scaled.format ) );
-					MemoryStream buf; // For auto-delete
-					PixelBox temp;
-					switch ( filter )
+		/// <summary>
+		/// Scale a 1D, 2D or 3D image volume.
+		/// </summary>
+		/// <param name="src">PixelBox containing the source pointer, dimensions and format</param>
+		/// <param name="dst">PixelBox containing the destination pointer, dimensions and format</param>
+		/// <param name="filter">Which filter to use</param>
+		/// <remarks>
+		/// This function can do pixel format conversion in the process.
+		/// dst and src can point to the same PixelBox object without any problem
+		/// </remarks>
+		public static void Scale( PixelBox src, PixelBox scaled, ImageFilter filter )
+		{
+			// TODO : Debug.Assert( PixelUtil.IsAccessible( src.format ) );
+			// TODO : Debug.Assert( PixelUtil.IsAccessible( scaled.format ) );
+			byte[] buf; // For auto-delete
+			PixelBox temp;
+			switch ( filter )
+			{
+				default:
+				case ImageFilter.Nearest:
+					if ( src.Format == scaled.Format )
 					{
-						default:
-						case ImageFilter.Nearest:
-							if ( src.format == scaled.format )
+						// No intermediate buffer needed
+						temp = scaled;
+					}
+					else
+					{
+                        
+                        
+                        // Allocate temporary buffer of destination size in source format 
+						temp = new PixelBox( scaled.Width, scaled.Height, scaled.Depth, src.Format );
+                        buf = new byte[ temp.ConsecutiveSize ];
+                        temp.Data = GCHandle.Alloc( buf, GCHandleType.Pinned ).AddrOfPinnedObject();
+					}
+
+					// super-optimized: no conversion
+					( new NearestResampler( PixelUtil.GetNumElemBytes( src.Format ) ) ).Scale( src, temp );
+
+					if ( temp.Data != scaled.Data )
+					{
+						// Blit temp buffer
+						PixelConverter.BulkPixelConversion( temp, scaled );
+					}
+					break;
+
+				case ImageFilter.Linear:
+				case ImageFilter.Bilinear:
+					switch ( src.Format )
+					{
+						case PixelFormat.L8:
+						case PixelFormat.A8:
+						case PixelFormat.BYTE_LA:
+						case PixelFormat.R8G8B8:
+						case PixelFormat.B8G8R8:
+						case PixelFormat.R8G8B8A8:
+						case PixelFormat.B8G8R8A8:
+						case PixelFormat.A8B8G8R8:
+						case PixelFormat.A8R8G8B8:
+						case PixelFormat.X8B8G8R8:
+						case PixelFormat.X8R8G8B8:
+							if ( src.Format == scaled.Format )
 							{
 								// No intermediate buffer needed
 								temp = scaled;
 							}
 							else
 							{
-								// Allocate temporary buffer of destination size in source format 
-								temp = new PixelBox( scaled.getWidth(), scaled.getHeight(), scaled.getDepth(), src.format );
-								buf.bind( new MemoryDataStream( temp.getConsecutiveSize() ) );
-								temp.data = buf->getPtr();
+								// Allocate temp buffer of destination size in source format 
+								temp = new PixelBox( scaled.Width, scaled.Height, scaled.Depth, src.Format );
+                                buf = new byte[ temp.ConsecutiveSize ];
+                                temp.Data = GCHandle.Alloc( buf, GCHandleType.Pinned ).AddrOfPinnedObject();
+                            }
+							// super-optimized: byte-oriented math, no conversion
+							switch ( PixelUtil.GetNumElemBytes( src.Format ) )
+							{
+								case 1:
+									( new LinearResampler<Byte>( 1 ) ).Scale( src, temp );
+									break;
+								case 2:
+									( new LinearResampler<Byte>( 2 ) ).Scale( src, temp );
+									break;
+								case 3:
+									( new LinearResampler<Byte>( 3 ) ).Scale( src, temp );
+									break;
+								case 4:
+									( new LinearResampler<Byte>( 4 ) ).Scale( src, temp );
+									break;
+								default:
+                                    throw new NotSupportedException( String.Format( "Scaling of images using {0} byte format is not supported.", PixelUtil.GetNumElemBytes( src.Format ) ) );
+                                    break;
 							}
-
-							// super-optimized: no conversion
-							( new NearestResampler( PixelUtil.GetNumElemBytes( src.format ) ) ).Scale( src, temp );
-
-							if ( temp.data != scaled.data )
+							if ( temp.Data != scaled.Data )
 							{
 								// Blit temp buffer
 								PixelConverter.BulkPixelConversion( temp, scaled );
 							}
 							break;
-
-						case ImageFilter.Linear:
-						case ImageFilter.Bilinear:
-							switch ( src.format )
-							{
-								case PixelFormat.L8:
-								case PixelFormat.A8:
-								case PixelFormat.BYTE_LA:
-								case PixelFormat.R8G8B8:
-								case PixelFormat.B8G8R8:
-								case PixelFormat.R8G8B8A8:
-								case PixelFormat.B8G8R8A8:
-								case PixelFormat.A8B8G8R8:
-								case PixelFormat.A8R8G8B8:
-								case PixelFormat.X8B8G8R8:
-								case PixelFormat.X8R8G8B8:
-									if ( src.format == scaled.format )
-									{
-										// No intermediate buffer needed
-										temp = scaled;
-									}
-									else
-									{
-										// Allocate temp buffer of destination size in source format 
-										temp = new PixelBox( scaled.getWidth(), scaled.getHeight(), scaled.getDepth(), src.format );
-										buf.bind( new MemoryStream( temp.getConsecutiveSize() ) );
-										temp.data = buf->getPtr();
-									}
-									// super-optimized: byte-oriented math, no conversion
-									switch ( PixelUtil.GetNumElemBytes( src.format ) )
-									{
-										case 1:
-											( new LinearResampler<Byte>( 1 ) ).Scale( src, temp );
-											break;
-										case 2:
-											( new LinearResampler<Byte>( 2 ) ).Scale( src, temp );
-											break;
-										case 3:
-											( new LinearResampler<Byte>( 3 ) ).Scale( src, temp );
-											break;
-										case 4:
-											( new LinearResampler<Byte>( 4 ) ).Scale( src, temp );
-											break;
-										default:
-											// never reached
-											Debug.Assert( false );
-									}
-									if ( temp.data != scaled.data )
-									{
-										// Blit temp buffer
-										PixelUtil.BulkPixelConversion( temp, scaled );
-									}
-									break;
-								case PixelFormat.FLOAT32_RGB:
-								case PixelFormat.FLOAT32_RGBA:
-									if ( scaled.format == PixelFormat.FLOAT32_RGB || scaled.format == PixelFormat.FLOAT32_RGBA )
-									{
-										// float32 to float32, avoid unpack/repack overhead
-										( new LinearResampler<float>( 32 ) ).Scale( src, scaled );
-										break;
-									}
-								// else, fall through
-								default:
-									// non-optimized: floating-point math, performs conversion but always works
-									( new LinearResampler<float>() ).Scale( src, scaled );
-							}
-							break;
+						case PixelFormat.FLOAT32_RGB:
+						case PixelFormat.FLOAT32_RGBA:
+                            if ( scaled.Format == PixelFormat.FLOAT32_RGB || scaled.Format == PixelFormat.FLOAT32_RGBA )
+                            {
+                                // float32 to float32, avoid unpack/repack overhead
+                                ( new LinearResampler<float>( 32 ) ).Scale( src, scaled );
+                            }
+                            else
+                            {
+                                ( new LinearResampler<float>() ).Scale( src, scaled );
+                            }
+                            break;
+						default:
+							// non-optimized: floating-point math, performs conversion but always works
+							( new LinearResampler<float>() ).Scale( src, scaled );
+                            break;
 					}
-				}
+					break;
+			}
+		}
 
-				/// <summary>
-				/// Resize a 2D image, applying the appropriate filter.
-				/// </summary>
-				/// <param name="width"></param>
-				/// <param name="height"></param>
-				public void Resize( int width, int height )
-				{
-					Resize( width, height, ImageFilter.Bilinear );
-				}
+		/// <summary>
+		/// Resize a 2D image, applying the appropriate filter.
+		/// </summary>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		public void Resize( int width, int height )
+		{
+			Resize( width, height, ImageFilter.Bilinear );
+		}
 
-				/// <summary>
-				/// Resize a 2D image, applying the appropriate filter.
-				/// </summary>
-				/// <param name="width"></param>
-				/// <param name="height"></param>
-				/// <param name="filter"></param>
-				public void Resize( int width, int height, ImageFilter filter )
-				{
-					// resizing dynamic images is not supported
-					//TODO : Debug.Assert( this._bAutoDelete);
-					Debug.Assert( this.Depth == 1 );
+		/// <summary>
+		/// Resize a 2D image, applying the appropriate filter.
+		/// </summary>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="filter"></param>
+		public void Resize( int width, int height, ImageFilter filter )
+		{
+			// resizing dynamic images is not supported
+			//TODO : Debug.Assert( this._bAutoDelete);
+			Debug.Assert( this.Depth == 1 );
 
-					// reassign buffer to temp image, make sure auto-delete is true
-					Image temp;
-					temp.FromDynamicImage( buffer, width, height, 1, format, true );
-					// do not delete[] m_pBuffer!  temp will destroy it
+			// reassign buffer to temp image, make sure auto-delete is true
+			Image temp = new Image();
+			temp.FromDynamicImage( buffer, width, height, 1, format );
+			// do not delete[] m_pBuffer!  temp will destroy it
 
-					// set new dimensions, allocate new buffer
-					width = width;
-					height = height;
-					size = PixelUtil.GetMemorySize( Width, Height, 1, Format );
-					buffer = new byte[ size ];
-					numMipmaps = 0; // Loses precomputed mipmaps
+			// set new dimensions, allocate new buffer
+			width = width;
+			height = height;
+			size = PixelUtil.GetMemorySize( Width, Height, 1, Format );
+			buffer = new byte[ size ];
+			numMipMaps = 0; // Loses precomputed mipmaps
 
-					// scale the image from temp into our resized buffer
-					Scale( temp.GetPixelBox( 0, 0 ), GetPixelBox( 0, 0 ), filter );
-				}
-		*/
+			// scale the image from temp into our resized buffer
+			Scale( temp.GetPixelBox( 0, 0 ), GetPixelBox( 0, 0 ), filter );
+		}
 
 		protected int calculateSize( int mipmaps, int faces, int width, int height, int depth, PixelFormat format )
 		{
@@ -927,7 +931,8 @@ namespace Axiom.Media
 
 		#endregion IDisposable Implementation
 
-	}
+
+    }
 }
 
 
