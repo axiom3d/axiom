@@ -716,7 +716,7 @@ namespace Axiom.Media
 					}
 
 					// super-optimized: no conversion
-					( new NearestResampler( PixelUtil.GetNumElemBytes( src.Format ) ) ).Scale( src, temp );
+					NearestResampler.Scale( src, temp );
 
 					if ( temp.Data != scaled.Data )
 					{
