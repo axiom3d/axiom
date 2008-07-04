@@ -74,6 +74,10 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			{
 				return generalFFState;
 			}
+            set
+            {
+                generalFFState = value;
+            }
 		}
 
 		protected List<LightType> lights = new List<LightType>();

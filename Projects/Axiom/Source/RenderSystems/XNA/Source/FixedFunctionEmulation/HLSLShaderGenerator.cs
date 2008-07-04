@@ -102,7 +102,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 					case VertexElementType.Color:
 					case VertexElementType.Color_ABGR:
 					case VertexElementType.Color_ARGB:
-						parameterType = "unsigned int";
+                        parameterType = "int"; //"unsigned int";//unsigned not recognized
 						break;
 					case VertexElementType.Short1:
 						parameterType = "short";
@@ -117,7 +117,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 						parameterType = "short4";
 						break;
 					case VertexElementType.UByte4:
-						parameterType = "char4";
+                        parameterType = "float4";//char4";//char4 not supported ??
 						break;
 
 				}
@@ -234,7 +234,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 			shaderSource = shaderSource + "struct VS_OUTPUT\n";
 			shaderSource = shaderSource + "{\n";
-			shaderSource = shaderSource + "float4 Pos : SV_POSITION;\n";
+            shaderSource = shaderSource + "float4 Pos : POSITION;\n";//"float4 Pos : SV_POSITION;\n"; //SV not recognised
 			if ( bHasTexcoord )
 			{
 				shaderSource = shaderSource + "float2 tCord : TEXCOORD;\n";
@@ -245,7 +245,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 			if ( fixedFunctionState.GeneralFixedFunctionState.FogMode != FogMode.None )
 			{
-				shaderSource = shaderSource + "float fogDist : FOGDISTANCE;\n";
+                shaderSource = shaderSource + "float fogDist;\n"; //"float fogDist : FOGDISTANCE;\n";
 			}
 
 			shaderSource = shaderSource + "};\n";
@@ -381,10 +381,11 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			{
 				if ( bHasColor )
 				{
-					shaderSource = shaderSource + "output.Color.x = ((input.DiffuseColor0 >> 24) & 0xFF) / 255.0f;\n";
+                    shaderSource = shaderSource + "output.Color = ((input.DiffuseColor0)) / 255.0f;\n";
+					/*shaderSource = shaderSource + "output.Color.x = ((input.DiffuseColor0 >> 24) & 0xFF) / 255.0f;\n";
 					shaderSource = shaderSource + "output.Color.y = ((input.DiffuseColor0 >> 16) & 0xFF) / 255.0f;\n";
 					shaderSource = shaderSource + "output.Color.z = ((input.DiffuseColor0 >> 8) & 0xFF) / 255.0f;\n";
-					shaderSource = shaderSource + "output.Color.w = (input.DiffuseColor0 & 0xFF) / 255.0f;\n";
+					shaderSource = shaderSource + "output.Color.w = (input.DiffuseColor0 & 0xFF) / 255.0f;\n";*/
 				}
 				else
 				{
@@ -415,7 +416,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			if ( bHasTexcoord )
 			{
 				shaderSource = shaderSource + "sampler tex0 : register(s0);\n";
-				shaderSource = shaderSource + "float4 " + fragmentProgramName + "( VS_OUTPUT input ) : SV_Target\n";
+                shaderSource = shaderSource + "float4 " + fragmentProgramName + "( VS_OUTPUT input ) : COLOR\n";// "( VS_OUTPUT input ) : SV_Target\n";
 				shaderSource = shaderSource + "{\n";
 				shaderSource = shaderSource + "float4 texCordWithMatrix = float4(input.tCord.x, input.tCord.y, 0, 1);\n";
 				shaderSource = shaderSource + "texCordWithMatrix = mul( texCordWithMatrix, TextureMatrix );\n";
@@ -426,7 +427,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			{
 				shaderSource = shaderSource + "float4 " + fragmentProgramName + "( VS_OUTPUT input ) : SV_Target\n";
 				shaderSource = shaderSource + "{\n";
-				shaderSource = shaderSource + "float4 finalColor = input.colorD + input.colorS;\n";
+                shaderSource = shaderSource + "float4 finalColor = input.Color + input.ColorSpec;\n"; //"float4 finalColor = input.colorD + input.colorS;\n";
 			}
 
 			switch ( fixedFunctionState.GeneralFixedFunctionState.FogMode )

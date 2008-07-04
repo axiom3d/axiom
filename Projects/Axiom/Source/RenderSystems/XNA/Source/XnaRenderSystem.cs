@@ -88,7 +88,8 @@ namespace Axiom.RenderSystems.Xna
 		FixedFunctionEmulation.ShaderManager _shaderManager = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.ShaderManager();
 		FixedFunctionEmulation.HLSLShaderGenerator _hlslShaderGenerator = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.HLSLShaderGenerator();
 		FixedFunctionEmulation.FixedFunctionState _fixedFunctionState = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.FixedFunctionState();
-		FixedFunctionEmulation.FixedFunctionPrograms.FixedFunctionProgramsParameters _ffProgramParameters = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.FixedFunctionPrograms.FixedFunctionProgramsParameters();
+        FixedFunctionEmulation.HLSLFixedFunctionProgram _fixedFunctionProgram;//= new Axiom.RenderSystems.Xna.FixedFunctionEmulation.HLSLFixedFunctionProgram();
+        FixedFunctionEmulation.FixedFunctionPrograms.FixedFunctionProgramsParameters _ffProgramParameters = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.FixedFunctionPrograms.FixedFunctionProgramsParameters();
 
 		protected int primCount;
 		// protected int renderCount = 0;
@@ -106,6 +107,7 @@ namespace Axiom.RenderSystems.Xna
 				texStageDesc[ i ].texType = TextureType.OneD;
 				texStageDesc[ i ].tex = null;
 			}
+            _shaderManager.RegisterGenerator(_hlslShaderGenerator);
 
 		}
 
@@ -901,7 +903,6 @@ namespace Axiom.RenderSystems.Xna
 			_device.Clear( flags, col, depth, stencil );
 		}
 
-		//never used ?
 		public override int ConvertColor( ColorEx color )
 		{
 			return color.ToARGB();
@@ -1226,6 +1227,68 @@ namespace Axiom.RenderSystems.Xna
 			// class base implementation first
 			base.Render( op );
 
+
+            bool needToUnmapVS = true;
+            bool needToUnmapFS = true;
+
+
+            Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferDeclaration vbd =
+                 new Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferDeclaration();
+            List<Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferElement> lvbe
+                = new List<Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferElement>(op.vertexData.vertexDeclaration.ElementCount);
+            for (int i = 0; i < op.vertexData.vertexDeclaration.ElementCount; i++)
+            {
+                Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferElement element = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferElement();
+                element.VertexElementIndex = (ushort)op.vertexData.vertexDeclaration.GetElement(i).Index;
+                element.VertexElementSemantic = op.vertexData.vertexDeclaration.GetElement(i).Semantic;
+                element.VertexElementType = op.vertexData.vertexDeclaration.GetElement(i).Type;
+                lvbe.Add(element);
+            }
+            vbd.VertexBufferElements = lvbe;
+
+            _fixedFunctionState = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.FixedFunctionState();
+
+            for (int i = 0; i < Config.MaxTextureLayers; i++)
+            {
+                Axiom.RenderSystems.Xna.FixedFunctionEmulation.TextureLayerState tls
+                = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.TextureLayerState();
+
+                tls.TextureType = texStageDesc[i].texType;
+                tls.TexCoordCalcMethod = texStageDesc[i].autoTexCoordType;
+                tls.CoordIndex = texStageDesc[i].coordIndex;
+                //TextureLayerStateList 
+                //opState->mTextureLayerStateList.push_back(textureLayerState);
+                _fixedFunctionState.TextureLayerStates.Add(tls);
+            }
+
+            Axiom.RenderSystems.Xna.FixedFunctionEmulation.GeneralFixedFunctionState tr;
+            tr = Axiom.RenderSystems.Xna.FixedFunctionEmulation.GeneralFixedFunctionState.Create();
+            tr.EnableLighting = _ffProgramParameters.LightingEnabled;
+            tr.FogMode = _ffProgramParameters.FogMode;
+            _ffProgramParameters.Lights = new List<Light>();
+            _fixedFunctionState.GeneralFixedFunctionState = tr;
+
+
+            //_fixedFunctionState.GeneralFixedFunctionState.
+            if (_fixedFunctionProgram == null)
+                _fixedFunctionProgram =(FixedFunctionEmulation.HLSLFixedFunctionProgram)
+                    _shaderManager.GetShaderPrograms("hlsl", vbd, _fixedFunctionState);
+
+            //_ffProgramParameters.LightingEnabled = false;
+
+            _fixedFunctionProgram.SetFixedFunctionProgramParameters(_ffProgramParameters);
+
+            // Bind Vertex Program
+            //BindGpuProgram(fixedFuncPrograms.VertexProgramUsage.Program);//->getVertexProgramUsage()->getProgram().get());
+            _device.VertexShader = ((XnaVertexProgram)_fixedFunctionProgram.VertexProgramUsage.Program.BindingDelegate).VertexShader;
+            BindGpuProgramParameters(GpuProgramType.Vertex, _fixedFunctionProgram.VertexProgramUsage.Params);
+
+            // Bind Fragment Program 
+            //BindGpuProgram(fixedFuncPrograms.FragmentProgramUsage.Program);
+            _device.PixelShader = ((XnaFragmentProgram)_fixedFunctionProgram.FragmentProgramUsage.Program.BindingDelegate).PixelShader;
+            BindGpuProgramParameters(GpuProgramType.Fragment, _fixedFunctionProgram.FragmentProgramUsage.Params);
+
+
 			XnaVertexDeclaration vertDecl = (XnaVertexDeclaration)op.vertexData.vertexDeclaration;
 
 			// set the vertex declaration and buffer binding
@@ -1282,6 +1345,16 @@ namespace Axiom.RenderSystems.Xna
 			_device.Vertices[ 1 ].SetSource( null, 0, 0 );
 			_device.Vertices[ 2 ].SetSource( null, 0, 0 );
 			_device.Indices = null;
+
+            if (needToUnmapVS)
+            {
+                UnbindGpuProgram(GpuProgramType.Vertex);
+            }
+
+            if (needToUnmapFS)
+            {
+                UnbindGpuProgram(GpuProgramType.Fragment);
+            } 	
 
 		}
 

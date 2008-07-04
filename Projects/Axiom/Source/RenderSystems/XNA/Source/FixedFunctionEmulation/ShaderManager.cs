@@ -66,8 +66,8 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		#region Fields and Properties
 
 		protected ShaderGeneratorMap shaderGeneratorMap = new ShaderGeneratorMap();
-		protected Language2State2Declaration2ProgramsMap language2State2Declaration2ProgramsMap;
-		protected List<FixedFunctionPrograms> programsToDeleteAtTheEnd;
+		protected Language2State2Declaration2ProgramsMap language2State2Declaration2ProgramsMap=new Language2State2Declaration2ProgramsMap();
+		protected List<FixedFunctionPrograms> programsToDeleteAtTheEnd=new List<FixedFunctionPrograms>();
 
 		#endregion Fields and Properties
 
@@ -161,12 +161,18 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			fragmentProgramUsage.Program = fs;
 			fragmentProgramUsage.Params = fs.CreateParameters();
 
-			FixedFunctionPrograms newPrograms = language2State2Declaration2ProgramsMap[ generatorName ][ state ][ vertexBufferDeclaration ];
-			newPrograms.VertexProgramUsage = vertexProgramUsage;
-			newPrograms.FragmentProgramUsage = fragmentProgramUsage;
+	
 
-			programsToDeleteAtTheEnd.Add( newPrograms );
-			return newPrograms;		
+	
+            FixedFunctionPrograms newPrograms = new HLSLFixedFunctionProgram();// shaderGenerator.createFixedFuncPrograms();
+            //language2State2Declaration2ProgramsMap.Add(newPrograms.
+            //language2State2Declaration2ProgramsMap[generatorName][state][vertexBufferDeclaration] = newPrograms;
+            newPrograms.VertexProgramUsage = vertexProgramUsage;
+            newPrograms.FragmentProgramUsage = fragmentProgramUsage;
+            newPrograms.FixedFunctionState = state;
+
+            programsToDeleteAtTheEnd.Add(newPrograms);
+            return newPrograms;		
 		}
 
 		#endregion Methods

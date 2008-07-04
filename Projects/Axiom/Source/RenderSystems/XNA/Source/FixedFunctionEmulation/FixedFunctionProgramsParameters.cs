@@ -209,6 +209,13 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			}
 
 			protected List<bool> textureEnabled = new List<bool>();
+            public List<bool> TextureEnabled
+            {
+                get
+                {
+                    return textureEnabled;
+                }
+            }
 
 			#endregion Fields and Properties
 

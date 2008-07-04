@@ -50,7 +50,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		#region Fields and Properties
 
 		// Vertex program details
-		protected GpuProgramUsage vertexProgramUsage;
+        protected GpuProgramUsage vertexProgramUsage;
 		public GpuProgramUsage VertexProgramUsage
 		{
 			get
