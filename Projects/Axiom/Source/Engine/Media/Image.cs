@@ -692,9 +692,10 @@ namespace Axiom.Media
 		/// </remarks>
 		public static void Scale( PixelBox src, PixelBox scaled, ImageFilter filter )
 		{
-			// TODO : Debug.Assert( PixelUtil.IsAccessible( src.format ) );
-			// TODO : Debug.Assert( PixelUtil.IsAccessible( scaled.format ) );
-			byte[] buf; // For auto-delete
+            Contract.Requires( PixelUtil.IsAccessible( src.Format ) );
+            Contract.Requires( PixelUtil.IsAccessible( scaled.Format ) );
+
+            byte[] buf; // For auto-delete
 			PixelBox temp;
 			switch ( filter )
 			{
@@ -707,8 +708,6 @@ namespace Axiom.Media
 					}
 					else
 					{
-                        
-                        
                         // Allocate temporary buffer of destination size in source format 
 						temp = new PixelBox( scaled.Width, scaled.Height, scaled.Depth, src.Format );
                         buf = new byte[ temp.ConsecutiveSize ];
@@ -752,6 +751,7 @@ namespace Axiom.Media
                                 buf = new byte[ temp.ConsecutiveSize ];
                                 temp.Data = GCHandle.Alloc( buf, GCHandleType.Pinned ).AddrOfPinnedObject();
                             }
+
 							// super-optimized: byte-oriented math, no conversion
 							switch ( PixelUtil.GetNumElemBytes( src.Format ) )
 							{
