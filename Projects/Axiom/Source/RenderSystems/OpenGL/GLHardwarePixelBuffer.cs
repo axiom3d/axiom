@@ -196,14 +196,10 @@ namespace Axiom.RenderSystems.OpenGL
 				// Scale to destination size. Use DevIL and not iluScale because ILU screws up for 
 				// floating point textures and cannot cope with 3D images.
 				// This also does pixel format conversion if needed
+				allocateBuffer();
+				scaled = _buffer.GetSubVolume( dstBox );
 
-				//TODO Implement Image.Scale
-				throw new Exception( "Image scaling not yet implemented" );
-
-				//allocateBuffer();
-				//scaled = _buffer.GetSubVolume( dstBox );
-
-				//Image.Scale( src, scaled, ImageFilter.BiLinear );
+				Image.Scale( src, scaled, ImageFilter.Bilinear );
 			}
 			else if ( GLPixelUtil.GetGLOriginFormat( src.Format ) == 0 )
 			{

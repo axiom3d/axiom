@@ -508,9 +508,9 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 				else
 				{
-					D3D.Box srcBox = ToD3DBoxExtent( converted );
-					D3D.Box destBox = ToD3DBox( dstBox );
-					Debug.Assert( false, "Volume textures not yet supported" );
+                    throw new NotSupportedException( "BlitFromMemory on Volume Textures not supported." );
+					//D3D.Box srcBox = ToD3DBoxExtent( converted );
+					//D3D.Box destBox = ToD3DBox( dstBox );
 					//D3D.VolumeLoader.FromStream(volume, destBox, converted.Data, converted.RowPitch * converted.SlicePitch * formatBytes, srcBox, Filter.None, 0);
 					//D3D.VolumeLoader.FromStream( volume, destBox, buf, srcBox, D3D.Filter.None, 0 );
 				}

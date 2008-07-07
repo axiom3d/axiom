@@ -38,25 +38,25 @@ namespace Axiom.Demos
 		};
 
         string[] shadowTechniqueDescriptions = new string[] { 
+			"Texture Shadows (Modulative)",
+			"Texture Shadows (Additive)",
 			"Stencil Shadows (Additive)",
 			"Stencil Shadows (Modulative)",
-			"Texture Shadows (Modulative)",
 			"None"
 		};
 
         ShadowTechnique[] shadowTechniques = new ShadowTechnique[] { 
+			ShadowTechnique.TextureModulative,
+			ShadowTechnique.TextureAdditive,
 			ShadowTechnique.StencilAdditive,
 			ShadowTechnique.StencilModulative,
-			ShadowTechnique.TextureModulative,
 			ShadowTechnique.None
 		};
 
-        int currentShadowTechnique = 0;
+        int currentShadowTechnique = -1;
 
         protected override void CreateScene()
         {
-            scene.ShadowTechnique = ShadowTechnique.StencilAdditive;
-
             // set ambient light off
             scene.AmbientLight = ColorEx.Black;
 
@@ -92,8 +92,7 @@ namespace Axiom.Demos
             lightNode.AttachObject( bbs );
 
             // create controller, after this is will get updated on its own
-            WaveformControllerFunction func =
-                new WaveformControllerFunction( WaveformType.Sine, 0.75f, 0.5f );
+            WaveformControllerFunction func = new WaveformControllerFunction( WaveformType.Sine, 0.75f, 0.5f );
 
             LightWibbler val = new LightWibbler( light, bb, minLightColor, maxLightColor, minFlareSize, maxFlareSize );
             ControllerManager.Instance.CreateController( val, func );
@@ -184,8 +183,7 @@ namespace Axiom.Demos
             scene.SetSkyBox( true, "Skybox/Stormy", 3000 );
 
             Plane plane = new Plane( Vector3.UnitY, -100 );
-            MeshManager.Instance.CreatePlane(
-				"MyPlane", ResourceGroupManager.DefaultResourceGroupName, plane, 1500, 1500, 20, 20, true, 1, 5, 5, Vector3.UnitZ );
+            MeshManager.Instance.CreatePlane( "MyPlane", ResourceGroupManager.DefaultResourceGroupName, plane, 1500, 1500, 20, 20, true, 1, 5, 5, Vector3.UnitZ );
 
             Entity planeEnt = scene.CreateEntity( "Plane", "MyPlane" );
             planeEnt.MaterialName = "Examples/Rockwall";
@@ -207,6 +205,9 @@ namespace Axiom.Demos
 
             // incase infinite far distance is not supported
             camera.Far = 100000;
+
+            ChangeShadowTechnique();
+
         }
 
         protected override void OnFrameStarted( object source, FrameEventArgs e )
