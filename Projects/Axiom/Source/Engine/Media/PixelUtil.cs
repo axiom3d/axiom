@@ -114,6 +114,13 @@ namespace Axiom.Media
 				return width * height * depth * GetNumElemBytes( format );
 			}
 		}
+        public static bool IsAccessible( PixelFormat format )
+        {
+            if ( format == PixelFormat.Unknown )
+                return false;
+            PixelFormatFlags flags = PixelConverter.GetDescriptionFor( format ).flags;
+            return !( ( flags & PixelFormatFlags.Compressed ) > 0 || ( flags & PixelFormatFlags.Depth ) > 0 );
+        }
 
 		public static bool IsCompressed( PixelFormat format )
 		{
@@ -245,6 +252,5 @@ namespace Axiom.Media
 
 			return format;
 		}
-
-	}
+    }
 }
