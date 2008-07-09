@@ -223,7 +223,13 @@ namespace Axiom.Media
 			}
 		}
 
-
+        public int RowSpan
+        {
+            get
+            {
+                return width * PixelUtil.GetNumElemBytes( format );
+            }
+        }
 
 		#endregion Fields and Properties
 
@@ -852,6 +858,43 @@ namespace Axiom.Media
 			return size;
 
 		}
+
+        /// <summary>
+        /// Little utility function that crops an image
+        /// (Doesn't alter the source image, returns a cropped representation)
+        /// </summary>
+        /// <param name="source">The source image</param>
+        /// <param name="offsetX">The X offset from the origin</param>
+        /// <param name="offsetY">The Y offset from the origin</param>
+        /// <param name="width">The width to crop to</param>
+        /// <param name="height">The height to crop to</param>
+        /// <returns>Returns the cropped representation of the source image if the parameters are valid, otherwise, returns the source image.</returns>
+        public Image CropImage( Image source, uint offsetX, uint offsetY, int width, int height )
+        {
+            if ( offsetX + width > source.Width )
+                return source;
+            else if ( offsetY + height > source.Height )
+                return source;
+
+            int bpp = PixelUtil.GetNumElemBytes( source.Format );
+
+            byte[] srcData = source.Data;
+            byte[] dstData = new byte[ width * height * bpp ];
+
+            int srcPitch = source.RowSpan;
+            int dstPitch = width * bpp;
+
+            for ( int row = 0; row < height; row++ )
+            {
+                for ( int col = 0; col < width * bpp; col++ )
+                {
+                    dstData[ ( row * dstPitch ) + col ] = srcData[ ( ( row + offsetY ) * srcPitch ) + ( offsetX * bpp ) + col ];
+                }
+            }
+
+            return (new Image()).FromDynamicImage( dstData, width, height, source.Format);
+        }
+
 		#endregion Methods
 
 		#region IDisposable Implementation
@@ -930,8 +973,6 @@ namespace Axiom.Media
 		}
 
 		#endregion IDisposable Implementation
-
-
     }
 }
 
