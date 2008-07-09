@@ -358,7 +358,9 @@ namespace Axiom.Graphics
 		public virtual RenderTarget DetachRenderTarget( RenderTarget target )
 		{
 			// TODO: Remove prioritized render targets
-			prioritizedRenderTargets.Remove( target );
+            renderTargets.Remove( target.Name );
+            prioritizedRenderTargets.Remove( target );
+
 			return target;
 		}
 
@@ -387,9 +389,9 @@ namespace Axiom.Graphics
 		public virtual void InitRenderTargets()
 		{
 			// init stats for each render target
-			foreach ( RenderTarget target in prioritizedRenderTargets )
+			foreach ( KeyValuePair<string,RenderTarget> item in renderTargets )
 			{
-				target.ResetStatistics();
+				item.Value.ResetStatistics();
 			}
 		}
 
@@ -425,10 +427,9 @@ namespace Axiom.Graphics
 		/// <param name="camera">Camera being removed.</param>
 		internal virtual void NotifyCameraRemoved( Camera camera )
 		{
-			for ( int i = 0; i < prioritizedRenderTargets.Count; i++ )
+			foreach ( KeyValuePair<string, RenderTarget> item in renderTargets )
 			{
-				RenderTarget target = prioritizedRenderTargets[ i ];
-				target.NotifyCameraRemoved( camera );
+				item.Value.NotifyCameraRemoved( camera );
 			}
 		}
 
@@ -627,12 +628,28 @@ namespace Axiom.Graphics
 		public virtual void RemoveRenderTargets()
 		{
 			// destroy each render window
-			while ( prioritizedRenderTargets.Count > 0 )
+            RenderTarget primary = null;
+			foreach ( KeyValuePair<string,RenderTarget> item in renderTargets )
 			{
-				RenderTarget target = prioritizedRenderTargets[ 0 ];
+                RenderTarget target = item.Value;
+                //if ( primary == null && item.Value.IsPrimary )
+                //{
+                //  primary = target;
+                //}
+                //else
+                //{
 				DetachRenderTarget( target );
 				target.Dispose();
+                //}
 			}
+            if ( primary != null )
+            {
+                DetachRenderTarget( primary );
+                primary.Dispose();
+            }
+
+            renderTargets.Clear();
+            prioritizedRenderTargets.Clear();
 		}
 
 		/// <summary>
