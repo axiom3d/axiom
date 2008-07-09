@@ -1060,7 +1060,8 @@ namespace Axiom.Graphics
 						this._viewportList.Remove( _viewportList.Keys[ 0 ] );
 					}
 					// Write final performance stats
-					LogManager.Instance.Write( "Final Stats [{0}]: FPS <A,B,W> : {1:#.00} {2:#.00} {3:#.00}", this.Name, this._statistics.AvgerageFPS, this._statistics.BestFPS, this._statistics.WorstFPS );
+                    if ( LogManager.Instance != null )
+					    LogManager.Instance.Write( "Final Stats [{0}]: FPS <A,B,W> : {1:#.00} {2:#.00} {3:#.00}", this.Name, this._statistics.AvgerageFPS, this._statistics.BestFPS, this._statistics.WorstFPS );
 				}
 			}
 			isDisposed = true;
