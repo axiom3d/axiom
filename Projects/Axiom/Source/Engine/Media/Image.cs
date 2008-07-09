@@ -223,6 +223,9 @@ namespace Axiom.Media
 			}
 		}
 
+        /// <summary>
+        /// Width of the image in bytes
+        /// </summary>
         public int RowSpan
         {
             get
