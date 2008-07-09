@@ -41,6 +41,7 @@ using System.Text;
 using Axiom.Graphics;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using Axiom.Utilities;
 
 #endregion Namespace Declarations
 
@@ -83,6 +84,9 @@ namespace Axiom.Core
         }
 
         private static readonly WindowEventMonitor _instance = new WindowEventMonitor();
+        /// <summary>
+        /// Singleton Instance of the class
+        /// </summary>
         public static WindowEventMonitor Instance
         {
             get
@@ -91,6 +95,9 @@ namespace Axiom.Core
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
 		public delegate void MessagePumpDelegate();
 		public MessagePumpDelegate MessagePump;
 
@@ -103,6 +110,9 @@ namespace Axiom.Core
         /// <param name="listener">Your callback listener</param>
         public void RegisterListener( RenderWindow window, WindowEventListener listener )
         {
+            Contract.RequiresNotNull( window, "window" );
+            Contract.RequiresNotNull( listener, "listener" );
+
             if ( !_listeners.ContainsKey( window ) )
             {
                 _listeners.Add( window, new List<WindowEventListener>() );
@@ -117,6 +127,9 @@ namespace Axiom.Core
         /// <param name="listener">The listener registered</param>
         public void UnregisterListener( RenderWindow window, WindowEventListener listener )
         {
+            Contract.RequiresNotNull( window, "window" );
+            Contract.RequiresNotNull( listener, "listener" );
+
             if ( _listeners.ContainsKey( window ) )
             {
                 _listeners[ window ].Remove( listener );
@@ -130,6 +143,8 @@ namespace Axiom.Core
         /// <param name="window">The RenderWindow to monitor</param>
         public void RegisterWindow( RenderWindow window )
         {
+            Contract.RequiresNotNull( window, "window" );
+
             _windows.Add( window );
 			_listeners.Add( window, new List<WindowEventListener>() );
 		}
@@ -141,81 +156,108 @@ namespace Axiom.Core
         /// <param name="window">The RenderWindow to remove from list</param>
         public void UnregisterWindow( RenderWindow window )
         {
-            _windows.Remove( window );
-			_listeners[ window ].Clear();
-			_listeners.Remove( window );
+            Contract.RequiresNotNull( window, "window" );
+
+            if ( _windows.Contains( window ) )
+            {
+                _windows.Remove( window );
+            }
+
+            if ( _listeners.ContainsKey( window ) )
+            {
+                _listeners[ window ].Clear();
+                _listeners.Remove( window );
+            }
 		}
 
-		public void WindowFocusChange( RenderWindow win, bool hasFocus )
+        /// <summary>
+        /// Window has either gained or lost the focus
+        /// </summary>
+        /// <param name="window">RenderWindow that caused the event</param>
+        /// <param name="hasFocus">True if window has focus</param>
+		public void WindowFocusChange( RenderWindow window, bool hasFocus )
         {
-			if ( _windows.Contains( win ) )
+            Contract.RequiresNotNull( window, "window" );
+
+			if ( _windows.Contains( window ) )
 			{
 				// Notify Window of focus change
-				win.IsActive = hasFocus;
+				window.IsActive = hasFocus;
 
                 // Notify listeners of focus change
-                foreach ( WindowEventListener listener in _listeners[ win ] )
+                foreach ( WindowEventListener listener in _listeners[ window ] )
                 {
-                    listener.WindowFocusChange( win );
+                    listener.WindowFocusChange( window );
                 }
 
                 return;
             }
         }
 
-		public void WindowMoved( RenderWindow win )
+        /// <summary>
+        /// Window has moved position
+        /// </summary>
+        /// <param name="window">RenderWindow that caused the event</param>
+		public void WindowMoved( RenderWindow window )
         {
-			if ( _windows.Contains( win ) )
+            Contract.RequiresNotNull( window, "window" );
+
+			if ( _windows.Contains( window ) )
 			{
                 // Notify Window of Move or Resize
-                win.WindowMovedOrResized();
+                window.WindowMovedOrResized();
 
                 // Notify listeners of Resize
-                foreach ( WindowEventListener listener in _listeners[ win ] )
+                foreach ( WindowEventListener listener in _listeners[ window ] )
                 {
-                    listener.WindowMoved( win );
+                    listener.WindowMoved( window );
                 }
                 return;
             }
-
-            //throw new Exception( "The method or operation is not implemented." );
         }
 
-		public void WindowResized( RenderWindow win )
+        /// <summary>
+        /// Window has changed size
+        /// </summary>
+        /// <param name="win">RenderWindow that caused the event</param>
+		public void WindowResized( RenderWindow window )
         {
-			if ( _windows.Contains( win ) )
+            Contract.RequiresNotNull( window, "window" );
+
+			if ( _windows.Contains( window ) )
 			{
 				// Notify Window of Move or Resize
-				win.WindowMovedOrResized();
+				window.WindowMovedOrResized();
 
 				// Notify listeners of Resize
-				foreach ( WindowEventListener listener in _listeners[ win ] )
+				foreach ( WindowEventListener listener in _listeners[ window ] )
 				{
-					listener.WindowResized( win );
+					listener.WindowResized( window );
 				}
 				return;
 			}
-
-
-            //throw new Exception( "The method or operation is not implemented." );
         }
 
-		public void WindowClosed( RenderWindow win )
+        /// <summary>
+        /// Window has closed
+        /// </summary>
+        /// <param name="window">RenderWindow that caused the event</param>
+		public void WindowClosed( RenderWindow window )
         {
-			if ( _windows.Contains( win ) )
+            Contract.RequiresNotNull( window, "window" );
+
+			if ( _windows.Contains( window ) )
 			{
 				// Notify Window of closure
-				win.Dispose();
+				window.Dispose();
 
 				// Notify listeners of close
-				foreach ( WindowEventListener listener in _listeners[ win ] )
+				foreach ( WindowEventListener listener in _listeners[ window ] )
 				{
-					listener.WindowClosed( win );
+					listener.WindowClosed( window );
 				}
 				return;
 			}
-
-            //throw new Exception( "The method or operation is not implemented." );
         }
 
         #region Singleton<WindowManager> Members
