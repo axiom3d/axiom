@@ -14,6 +14,7 @@ using Axiom.Overlays;
 using Axiom.Math;
 using Axiom.Graphics;
 using MouseButtons = Axiom.Input.MouseButtons;
+using Axiom.Utilities;
 
 #endregion Namespace Declarations
 
@@ -147,7 +148,11 @@ namespace Axiom.Demos
 
             //    return false;
             //}
+
             window = Root.Instance.Initialize( true, "Axiom Engine Demo Window" );
+
+            TechDemoListener rwl = new TechDemoListener( window );
+            WindowEventMonitor.Instance.RegisterListener( window, rwl );
 
             ResourceGroupManager.Instance.InitializeAllResourceGroups();
 
@@ -249,11 +254,12 @@ namespace Axiom.Demos
 
         #region Event Handlers
 
-        protected virtual void OnFrameEnded( Object source, FrameEventArgs e )
+        protected virtual bool OnFrameEnded( Object source, FrameEventArgs e )
         {
+            return true;
         }
 
-        protected virtual void OnFrameStarted( Object source, FrameEventArgs e )
+        protected virtual bool OnFrameStarted( Object source, FrameEventArgs e )
         {
             float scaleMove = 200 * e.TimeSinceLastFrame;
 
@@ -269,8 +275,7 @@ namespace Axiom.Demos
             if ( input.IsKeyPressed( KeyCodes.Escape ) )
             {
                 Root.Instance.QueueEndRendering();
-
-                return;
+                return false;
             }
 
             if ( input.IsKeyPressed( KeyCodes.A ) )
@@ -402,19 +407,20 @@ namespace Axiom.Demos
                 Root.Instance.MaxFramesPerSecond = 0;
             }
 
-            //if ( !input.IsMousePressed( MouseButtons.Left ) )
-            //{
-            //    float cameraYaw = -input.RelativeMouseX * .13f;
-            //    float cameraPitch = -input.RelativeMouseY * .13f;
+#if !DEBUG
+            if ( !input.IsMousePressed( MouseButtons.Left ) )
+            {
+                float cameraYaw = -input.RelativeMouseX * .13f;
+                float cameraPitch = -input.RelativeMouseY * .13f;
 
-            //    camera.Yaw( cameraYaw );
-            //    camera.Pitch( cameraPitch );
-            //}
-            //else
-            //{
-            //    cameraVector.x += input.RelativeMouseX * 0.13f;
-            //}
-
+                camera.Yaw( cameraYaw );
+                camera.Pitch( cameraPitch );
+            }
+            else
+            {
+                cameraVector.x += input.RelativeMouseX * 0.13f;
+            }
+#endif
             camVelocity += ( camAccel * scaleMove * camSpeed );
 
             // move the camera based on the accumulated movement vector
@@ -450,6 +456,8 @@ namespace Axiom.Demos
 
             OverlayElement element = OverlayElementManager.Instance.GetElement( "Core/DebugText" );
             element.Text = debugText;
+
+            return true;
         }
 
         protected void UpdateStats()
@@ -473,4 +481,60 @@ namespace Axiom.Demos
 
         #endregion Event Handlers
     }
+
+    public class TechDemoListener : IWindowEventListener
+    {
+        private RenderWindow _mw;
+        public TechDemoListener( RenderWindow mainWindow )
+        {
+            Contract.RequiresNotNull( mainWindow, "mainWindow" );
+
+            _mw = mainWindow;
+        }
+
+        /// <summary>
+        /// Window has moved position
+        /// </summary>
+        /// <param name="rw">The RenderWindow which created this event</param>
+        public void WindowMoved( RenderWindow rw )
+        {
+        }
+
+        /// <summary>
+        /// Window has resized
+        /// </summary>
+        /// <param name="rw">The RenderWindow which created this event</param>
+        public void WindowResized( RenderWindow rw )
+        {
+        }
+
+        /// <summary>
+        /// Window has closed
+        /// </summary>
+        /// <param name="rw">The RenderWindow which created this event</param>
+        public void WindowClosed( RenderWindow rw )
+        {
+            Contract.RequiresNotNull( rw, "RenderWindow" );
+
+            // Only do this for the Main Window
+            if ( rw == _mw )
+            {
+                Root.Instance.QueueEndRendering();
+            }
+        }
+
+        /// <summary>
+        /// Window lost/regained the focus
+        /// </summary>
+        /// <param name="rw">The RenderWindow which created this event</param>
+        public void WindowFocusChange( RenderWindow rw )
+        {
+            Contract.RequiresNotNull( rw, "RenderWindow" );
+
+            if ( !rw.IsActive )
+                rw.IsActive = true;
+        }
+
+    }
+
 }

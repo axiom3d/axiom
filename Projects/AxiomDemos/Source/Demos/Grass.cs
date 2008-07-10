@@ -364,23 +364,17 @@ namespace Axiom.Demos
 			m_AnimState = scene.CreateAnimationState( "LightTrack" );
 			m_AnimState.IsEnabled = true;
 
-
-
-
-
-
-
 		}
 
-		protected override void OnFrameStarted( object source, FrameEventArgs e )
+		protected override bool OnFrameStarted( object source, FrameEventArgs e )
 		{
 
-			base.OnFrameStarted( source, e );
-			m_AnimState.AddTime( e.TimeSinceLastFrame );
+            if ( base.OnFrameStarted( source, e ) == false )
+                return false;
 
+            m_AnimState.AddTime( e.TimeSinceLastFrame );
 
-
-			float xinc = Math.Utility.PI * 0.4f;
+            float xinc = Math.Utility.PI * 0.4f;
 			float zinc = Math.Utility.PI * 0.55f;
 			float xpos = Math.Utility.RangeRandom( -Math.Utility.PI, Math.Utility.PI );
 			float zpos = Math.Utility.RangeRandom( -Math.Utility.PI, Math.Utility.PI );
@@ -390,7 +384,6 @@ namespace Axiom.Demos
 
 			// Update vertex program parameters by binding a value to each renderable
 			Vector4 offset = new Vector4( 0, 0, 0, 0 );
-
 
 			foreach ( Axiom.Core.StaticGeometry.Region reg in m_StaticGeom.RegionMap.Values )
 			{
@@ -412,6 +405,8 @@ namespace Axiom.Demos
 					}
 				}
 			}
+
+            return true;
 
 		}//end function
 

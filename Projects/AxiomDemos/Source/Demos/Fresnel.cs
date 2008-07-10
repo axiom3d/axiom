@@ -185,7 +185,7 @@ namespace Axiom.Demos
             }
         }
 
-        protected override void OnFrameStarted( object source, FrameEventArgs e )
+        protected override bool OnFrameStarted( object source, FrameEventArgs e )
         {
             animTime += e.TimeSinceLastFrame;
 
@@ -211,7 +211,7 @@ namespace Axiom.Demos
                 fishLastPosition[ i ] = newPos;
             }
 
-            base.OnFrameStarted( source, e );
+            return base.OnFrameStarted( source, e );
         }
 
 

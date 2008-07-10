@@ -195,12 +195,12 @@ namespace Axiom.RenderSystems.DirectX9
 					break;
 				case WindowMessage.Move:
 					//log->logMessage("WM_MOVE");
-					win.WindowMovedOrResized();
+					//win.WindowMovedOrResized();
 					WindowEventMonitor.Instance.WindowMoved( win );
 					break;
 				case WindowMessage.Size:
 					//log->logMessage("WM_SIZE");
-					win.WindowMovedOrResized();
+					//win.WindowMovedOrResized();
 					WindowEventMonitor.Instance.WindowResized( win );
 					break;
 				case WindowMessage.GetMinMaxInfo:
@@ -210,9 +210,8 @@ namespace Axiom.RenderSystems.DirectX9
 					break;
 				case WindowMessage.Close:
 					//log->logMessage("WM_CLOSE");
-					win.Dispose();
 					WindowEventMonitor.Instance.WindowClosed( win );
-					return true;
+                    break;
 			}
 			return false;
 		}

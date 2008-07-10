@@ -739,8 +739,7 @@ namespace Axiom.RenderSystems.DirectX9
 					if ( _window != null && !_isExternal )
 					{
 						WindowEventMonitor.Instance.UnregisterWindow( this );
-						( (SWF.Form)_window ).Close();
-
+						( (SWF.Form)_window ).Dispose();
 					}
 				}
 

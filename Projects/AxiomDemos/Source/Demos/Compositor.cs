@@ -13,14 +13,14 @@ namespace Axiom.Demos
 	{
 		private SceneNode _spinny;
 
-		protected override void OnFrameStarted( object source, Axiom.Core.FrameEventArgs e )
+		protected override bool OnFrameStarted( object source, Axiom.Core.FrameEventArgs e )
 		{
-			base.OnFrameStarted( source, e );
-
 			if (_spinny !=null)
 				_spinny.Yaw( 10 * e.TimeSinceLastFrame );
 
+            return base.OnFrameStarted( source, e );
 		}
+
 		protected override void CreateScene()
 		{
 			scene.ShadowTechnique = ShadowTechnique.TextureModulative;

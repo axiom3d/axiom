@@ -87,11 +87,11 @@ namespace Axiom.Demos
             window.GetViewport( 0 ).BackgroundColor = ColorEx.White;
         }
 
-        protected override void OnFrameStarted( object source, FrameEventArgs e )
+        protected override bool OnFrameStarted( object source, FrameEventArgs e )
         {
             rotNode.Yaw( e.TimeSinceLastFrame * 30 );
 
-            base.OnFrameStarted( source, e );
+            return base.OnFrameStarted( source, e );
         }
     }
 }

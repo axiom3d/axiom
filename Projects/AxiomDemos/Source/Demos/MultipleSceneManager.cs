@@ -77,7 +77,7 @@ namespace Axiom.Demos
 			second = temp;
 		}
 
-		protected override void OnFrameStarted( object source, Axiom.Core.FrameEventArgs e )
+		protected override bool OnFrameStarted( object source, Axiom.Core.FrameEventArgs e )
 		{
 			input.Capture();
 
@@ -85,7 +85,7 @@ namespace Axiom.Demos
 			if ( input.IsKeyPressed( KeyCodes.Escape ) )
 			{
 				engine.QueueEndRendering();
-				return;
+				return false;
 			}
 			else if ( input.IsKeyPressed( KeyCodes.V ) )
 			{
@@ -107,6 +107,7 @@ namespace Axiom.Demos
 					SetupViewport( window, _primary );
 			}
 
+            return true;
 		}
 	}
 }

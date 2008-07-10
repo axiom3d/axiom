@@ -72,10 +72,13 @@ namespace Axiom.Demos
             waterNode.Translate( new Vector3( 1000, 0, 1000 ) );
         }
 
-        protected override void OnFrameStarted( object source, FrameEventArgs e )
+        protected override bool OnFrameStarted( object source, FrameEventArgs e )
         {
             float moveScale;
             float waterFlow;
+
+            if ( base.OnFrameStarted( source, e ) == false )
+                return false;
 
             moveScale = 10 * e.TimeSinceLastFrame;
             waterFlow = FLOW_SPEED * e.TimeSinceLastFrame;
@@ -103,7 +106,7 @@ namespace Axiom.Demos
                 waterNode.Translate( new Vector3( 0, flowUp ? waterFlow : -waterFlow, 0 ) );
             }
 
-            base.OnFrameStarted( source, e );
+            return true;
         }
 
     }

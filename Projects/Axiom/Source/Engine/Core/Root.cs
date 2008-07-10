@@ -1232,7 +1232,7 @@ namespace Axiom.Core
 	/// <summary>
 	///		A delegate for defining frame events.
 	/// </summary>
-	public delegate void FrameEvent( object source, FrameEventArgs e );
+	public delegate bool FrameEvent( object source, FrameEventArgs e );
 
 	/// <summary>
 	///		Used to supply info to the FrameStarted and FrameEnded events.
