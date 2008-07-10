@@ -247,15 +247,20 @@ namespace Axiom.RenderSystems.OpenGL
 
 			        case Sdl.SDL_VIDEORESIZE:
 			        {
-						if ( _renderWindow != null )
-							_renderWindow.Resize( sdlEvent.resize.w, sdlEvent.resize.h );
+                        if ( _renderWindow != null )
+                        {
+                            _renderWindow.Resize( sdlEvent.resize.w, sdlEvent.resize.h );
+                            WindowEventMonitor.Instance.WindowResized( _renderWindow );
+                        }
 			        }
 			        break;
 
 			        case Sdl.SDL_QUIT: 
 					{
-						if ( _renderWindow != null )
-							_renderWindow.Dispose();
+                        if ( _renderWindow != null )
+                        {
+                            WindowEventMonitor.Instance.WindowClosed( _renderWindow );
+                        }
 					}
 					break;
 			    }
