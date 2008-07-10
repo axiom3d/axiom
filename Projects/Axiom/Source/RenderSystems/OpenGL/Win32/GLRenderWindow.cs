@@ -258,6 +258,8 @@ namespace Axiom.RenderSystems.OpenGL
 					form.Text = title;
 				}
 
+                WindowEventMonitor.Instance.RegisterWindow( this );
+
 				form.RenderWindow = this;
 				_hWindow = form.Handle;
 				form.Show();
