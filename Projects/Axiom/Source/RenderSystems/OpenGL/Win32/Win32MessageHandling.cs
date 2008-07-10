@@ -200,7 +200,7 @@ namespace Axiom.RenderSystems.OpenGL
 					break;
 				case WindowMessage.Size:
 					//log->logMessage("WM_SIZE");
-					win.WindowMovedOrResized();
+					//win.WindowMovedOrResized();
 					WindowEventMonitor.Instance.WindowResized( win );
 					break;
 				case WindowMessage.GetMinMaxInfo:
@@ -210,7 +210,7 @@ namespace Axiom.RenderSystems.OpenGL
 					break;
 				case WindowMessage.Close:
 					//log->logMessage("WM_CLOSE");
-					win.Dispose();
+					//win.Dispose();
 					WindowEventMonitor.Instance.WindowClosed( win );
 					return true;
 			}
