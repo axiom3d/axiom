@@ -88,9 +88,10 @@ namespace Axiom.Demos
         }
 
 
-        protected override void OnFrameStarted( object source, FrameEventArgs e )
+        protected override bool OnFrameStarted( object source, FrameEventArgs e )
         {
-            base.OnFrameStarted( source, e );
+            if ( base.OnFrameStarted( source, e ) == false )
+                return false;
 
             objectsVisible = 0;
 
@@ -163,6 +164,8 @@ namespace Axiom.Demos
 
             // report the number of objects within the frustum
             debugText = string.Format( "Objects visible: {0}", objectsVisible );
+
+            return true;
         }
 
     }

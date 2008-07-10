@@ -47,7 +47,7 @@ using Axiom.Utilities;
 
 namespace Axiom.Core
 {
-    public interface WindowEventListener
+    public interface IWindowEventListener
     {
         /// <summary>
         /// Window has moved position
@@ -76,7 +76,7 @@ namespace Axiom.Core
 
     public class WindowEventMonitor : IDisposable // Singleton<WindowMonitor>
     {
-        private Dictionary<RenderWindow, List<WindowEventListener>> _listeners = new Dictionary<RenderWindow, List<WindowEventListener>>();
+        private Dictionary<RenderWindow, List<IWindowEventListener>> _listeners = new Dictionary<RenderWindow, List<IWindowEventListener>>();
         private List<RenderWindow> _windows = new List<RenderWindow>();
 
         private WindowEventMonitor()
@@ -108,14 +108,14 @@ namespace Axiom.Core
         /// </summary>
         /// <param name="window">The RenderWindow you are interested in monitoring</param>
         /// <param name="listener">Your callback listener</param>
-        public void RegisterListener( RenderWindow window, WindowEventListener listener )
+        public void RegisterListener( RenderWindow window, IWindowEventListener listener )
         {
             Contract.RequiresNotNull( window, "window" );
             Contract.RequiresNotNull( listener, "listener" );
 
             if ( !_listeners.ContainsKey( window ) )
             {
-                _listeners.Add( window, new List<WindowEventListener>() );
+                _listeners.Add( window, new List<IWindowEventListener>() );
             }
             _listeners[ window ].Add( listener );
         }
@@ -125,7 +125,7 @@ namespace Axiom.Core
         /// </summary>
         /// <param name="window">The RenderWindow you registered with</param>
         /// <param name="listener">The listener registered</param>
-        public void UnregisterListener( RenderWindow window, WindowEventListener listener )
+        public void UnregisterListener( RenderWindow window, IWindowEventListener listener )
         {
             Contract.RequiresNotNull( window, "window" );
             Contract.RequiresNotNull( listener, "listener" );
@@ -146,7 +146,7 @@ namespace Axiom.Core
             Contract.RequiresNotNull( window, "window" );
 
             _windows.Add( window );
-			_listeners.Add( window, new List<WindowEventListener>() );
+			_listeners.Add( window, new List<IWindowEventListener>() );
 		}
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace Axiom.Core
 				window.IsActive = hasFocus;
 
                 // Notify listeners of focus change
-                foreach ( WindowEventListener listener in _listeners[ window ] )
+                foreach ( IWindowEventListener listener in _listeners[ window ] )
                 {
                     listener.WindowFocusChange( window );
                 }
@@ -208,7 +208,7 @@ namespace Axiom.Core
                 window.WindowMovedOrResized();
 
                 // Notify listeners of Resize
-                foreach ( WindowEventListener listener in _listeners[ window ] )
+                foreach ( IWindowEventListener listener in _listeners[ window ] )
                 {
                     listener.WindowMoved( window );
                 }
@@ -230,7 +230,7 @@ namespace Axiom.Core
 				window.WindowMovedOrResized();
 
 				// Notify listeners of Resize
-				foreach ( WindowEventListener listener in _listeners[ window ] )
+				foreach ( IWindowEventListener listener in _listeners[ window ] )
 				{
 					listener.WindowResized( window );
 				}
@@ -252,7 +252,7 @@ namespace Axiom.Core
 				window.Dispose();
 
 				// Notify listeners of close
-				foreach ( WindowEventListener listener in _listeners[ window ] )
+				foreach ( IWindowEventListener listener in _listeners[ window ] )
 				{
 					listener.WindowClosed( window );
 				}
@@ -264,7 +264,7 @@ namespace Axiom.Core
 
         public void Dispose()
         {
-            foreach ( List<WindowEventListener> list in _listeners.Values )
+            foreach ( List<IWindowEventListener> list in _listeners.Values )
             {
                 list.Clear();
             }

@@ -678,9 +678,10 @@ namespace Axiom.Demos
         /// <param name="source"></param>
         /// <param name="e"></param>
         /// <returns></returns>
-        protected override void OnFrameStarted( object source, FrameEventArgs e )
+        protected override bool OnFrameStarted( object source, FrameEventArgs e )
         {
-            base.OnFrameStarted( source, e );
+            if ( base.OnFrameStarted( source, e ) == false )
+                return false;
 
             tm += e.TimeSinceLastFrame / timeDensity;
 
@@ -778,6 +779,8 @@ namespace Axiom.Demos
             updateInfoDensity();
             updateInfoDisplacement();
             updateInfoTimeDensity();
+
+            return true;
         }
 
         /// <summary>

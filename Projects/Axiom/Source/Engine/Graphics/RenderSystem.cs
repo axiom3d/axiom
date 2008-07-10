@@ -273,7 +273,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return prioritizedRenderTargets.Count;
+				return renderTargets.Count;
 			}
 		}
 

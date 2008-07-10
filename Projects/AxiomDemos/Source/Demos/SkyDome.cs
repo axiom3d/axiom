@@ -22,9 +22,10 @@ namespace Axiom.Demos
 
         #endregion Fields
 
-        protected override void OnFrameStarted( Object source, FrameEventArgs e )
+        protected override bool OnFrameStarted( Object source, FrameEventArgs e )
         {
-            base.OnFrameStarted( source, e );
+            if ( base.OnFrameStarted( source, e ) == false )
+                return false;
 
             bool updateSky = false;
 
@@ -65,6 +66,8 @@ namespace Axiom.Demos
             {
                 scene.SetSkyDome( true, "Examples/CloudySky", curvature, tiling );
             }
+
+            return true;
         }
 
         #region Methods

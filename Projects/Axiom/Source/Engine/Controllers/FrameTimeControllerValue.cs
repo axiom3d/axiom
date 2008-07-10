@@ -44,20 +44,20 @@ namespace Axiom.Controllers
     /// <summary>
     /// Summary description for FrameTimeControllerValue.
     /// </summary>
-	public sealed class FrameTimeControllerValue : IControllerValue<float>
+    public sealed class FrameTimeControllerValue : IControllerValue<float>
     {
         /// <summary>
         ///		Stores the value of the time elapsed since the last frame.
         /// </summary>
         private float frameTime;
 
-		private float frameDelay;
+        private float frameDelay;
         /// <summary>
         ///		Float value that should be used to scale controller time.
         /// </summary>
         private float timeFactor;
 
-		private float elapsedTime;
+        private float elapsedTime;
 
         public FrameTimeControllerValue()
         {
@@ -68,8 +68,8 @@ namespace Axiom.Controllers
 
             // default to 1 for standard timing
             timeFactor = 1;
-			frameDelay = 0;
-			elapsedTime = 0;
+            frameDelay = 0;
+            elapsedTime = 0;
         }
 
         #region IControllerValue Members
@@ -77,7 +77,7 @@ namespace Axiom.Controllers
         /// <summary>
         ///		Gets a time scaled value to use for controller functions.
         /// </summary>
-		float IControllerValue<float>.Value
+        float IControllerValue<float>.Value
         {
             get
             {
@@ -106,36 +106,36 @@ namespace Axiom.Controllers
             }
             set
             {
-				if ( value >= 0 )
-				{
-                timeFactor = value;
-					frameDelay = 0;
-				}
-			}
-		}
+                if ( value >= 0 )
+                {
+                    timeFactor = value;
+                    frameDelay = 0;
+                }
+            }
+        }
 
-		public float FrameDelay
-		{
-			get
-			{
-				return frameDelay;
-			}
-			set
-			{
-				timeFactor = 0;
-				frameDelay = value;
-			}
-		}
+        public float FrameDelay
+        {
+            get
+            {
+                return frameDelay;
+            }
+            set
+            {
+                timeFactor = 0;
+                frameDelay = value;
+            }
+        }
 
-		public float ElapsedTime
-		{
-			get
-			{
-				return elapsedTime;
-			}
-			set
-			{
-				elapsedTime = value;
+        public float ElapsedTime
+        {
+            get
+            {
+                return elapsedTime;
+            }
+            set
+            {
+                elapsedTime = value;
             }
         }
 
@@ -148,21 +148,23 @@ namespace Axiom.Controllers
         /// <param name="source"></param>
         /// <param name="e"></param>
         /// <returns></returns>
-        private void RenderSystem_FrameStarted( object source, FrameEventArgs e )
+        private bool RenderSystem_FrameStarted( object source, FrameEventArgs e )
         {
-			if ( frameDelay != 0 )
-			{
-				// Fixed frame time
-				frameTime = frameDelay;
-				timeFactor = frameDelay / e.TimeSinceLastFrame;
-			}
-			else
-			{
-				// Save the time value after applying time factor
-            frameTime = timeFactor * e.TimeSinceLastFrame;
+            if ( frameDelay != 0 )
+            {
+                // Fixed frame time
+                frameTime = frameDelay;
+                timeFactor = frameDelay / e.TimeSinceLastFrame;
+            }
+            else
+            {
+                // Save the time value after applying time factor
+                frameTime = timeFactor * e.TimeSinceLastFrame;
+            }
+            // Accumulate the elapsed time
+            elapsedTime += frameTime;
+
+            return true;
         }
-			// Accumulate the elapsed time
-			elapsedTime += frameTime;
-		}
     }
 }

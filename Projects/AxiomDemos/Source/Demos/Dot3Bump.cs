@@ -170,9 +170,10 @@ namespace Axiom.Demos
 			camera.LookAt( new Vector3( 0, 0, 0 ) );
 		}
 
-		protected override void OnFrameStarted( object source, FrameEventArgs e )
+		protected override bool OnFrameStarted( object source, FrameEventArgs e )
 		{
-			base.OnFrameStarted( source, e );
+            if ( base.OnFrameStarted( source, e ) == false )
+                return false;
 
 			if ( timeDelay > 0.0f )
 			{
@@ -217,6 +218,8 @@ namespace Axiom.Demos
 			{
 				lightPivots[ i ].Rotate( Vector3.UnitZ, lightSpeeds[ i ] * e.TimeSinceLastFrame );
 			}
+
+            return true;
 		}
 
 

@@ -244,10 +244,8 @@ namespace Axiom.Demos
 			animNode.AttachObject( bbs );
 		}
 
-		protected override void OnFrameStarted( object source, FrameEventArgs e )
+		protected override bool OnFrameStarted( object source, FrameEventArgs e )
 		{
-			base.OnFrameStarted( source, e );
-
 			// move the billboards around a bit
 			//redYellowLightsNode.Yaw( 10 * e.TimeSinceLastFrame );
 			//greenBlueLightsNode.Pitch( 20 * e.TimeSinceLastFrame );
@@ -255,6 +253,7 @@ namespace Axiom.Demos
 			{
 				anim.AddTime( e.TimeSinceLastFrame );
 			}
+            return 	base.OnFrameStarted( source, e );
 		}
 
 		#endregion

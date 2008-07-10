@@ -20,9 +20,10 @@ namespace Axiom.Demos
         protected ParticleSystem thrusters = null;
         #endregion Fields
 
-        protected override void OnFrameStarted( Object source, FrameEventArgs e )
+        protected override bool OnFrameStarted( Object source, FrameEventArgs e )
         {
-            base.OnFrameStarted( source, e );
+            if ( base.OnFrameStarted( source, e ) == false )
+                return false;
 
             if ( input.IsKeyPressed( KeyCodes.N ) )
             {
@@ -51,6 +52,8 @@ namespace Axiom.Demos
                 thrusters.GetEmitter( 1 ).ParticleVelocity = defaultVelocity - 1;
                 defaultVelocity -= 1;
             }
+
+            return true;
         }
 
         #region Methods

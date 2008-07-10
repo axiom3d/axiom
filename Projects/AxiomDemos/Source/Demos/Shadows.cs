@@ -210,9 +210,10 @@ namespace Axiom.Demos
 
         }
 
-        protected override void OnFrameStarted( object source, FrameEventArgs e )
+        protected override bool OnFrameStarted( object source, FrameEventArgs e )
         {
-            base.OnFrameStarted( source, e );
+            if ( base.OnFrameStarted( source, e ) == false )
+                return false;
 
 			if ( input.IsKeyPressed( KeyCodes.O ) && toggleDelay < 0 )
 			{
@@ -240,6 +241,8 @@ namespace Axiom.Demos
 			}
 
             animState.AddTime( e.TimeSinceLastFrame );
+
+            return true;
         }
 
         /// <summary>
