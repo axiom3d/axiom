@@ -161,6 +161,9 @@ namespace Axiom.RenderSystems.OpenGL
 			_window.Height = height;
 			_window.RenderWindow = this;
 			_window.Show();
+
+            WindowEventMonitor.Instance.RegisterWindow( this );
+
 			// lets get active!
             IsActive = true;
 			
