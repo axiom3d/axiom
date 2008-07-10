@@ -328,6 +328,7 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				throw new Exception( "Cannot create secondary windows when the primary is full screen." );
 			}
+
 			if ( _primaryWindow != null && isFullScreen )
 			{
 				throw new ArgumentException( "Cannot create full screen secondary windows." );
@@ -347,9 +348,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 			// Make sure we don't already have a render target of the 
 			// same name as the one supplied
-			foreach ( RenderTarget target in prioritizedRenderTargets )
+			if ( renderTargets.ContainsKey( name) )
 			{
-				if ( target.Name == name )
 					throw new Exception( String.Format( "A render target of the same name '{0}' already exists." +
 										 "You cannot create a new window with this name.", name ) );
 			}
