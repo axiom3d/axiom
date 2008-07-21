@@ -43,6 +43,7 @@ using System;
 using System.Diagnostics;
 
 using Axiom.Math.Collections;
+using Axiom.Utilities;
 
 #endregion Namespace Declarations
 
@@ -180,7 +181,7 @@ namespace Axiom.Math
             // This will cause a change in velocity for interpolation.
 
             // What segment this is in?
-            float segment = t * pointList.Count;
+            float segment = t * ( pointList.Count - 1 );
             int segIndex = (int)segment;
 
             // apportion t
@@ -198,7 +199,8 @@ namespace Axiom.Math
         /// <returns>An interpolated point along the spline.</returns>
         public Quaternion Interpolate( int index, float t, bool useShortestPath )
         {
-            Debug.Assert( index >= 0 && index < pointList.Count, "Spline point index overrun." );
+            Contract.Requires( index >= 0, "index", "Spline point index underrun." );
+            Contract.Requires( index < pointList.Count, "index", "Spline point index overrun." );
 
             if ( ( index + 1 ) == pointList.Count )
             {
