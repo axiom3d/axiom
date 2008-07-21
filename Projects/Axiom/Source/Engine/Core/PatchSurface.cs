@@ -118,7 +118,7 @@ namespace Axiom.Core
         /// <summary>
         ///     List of control points.
         /// </summary>
-        protected Vector3List controlPoints = new Vector3List();
+        protected List<Vector3> controlPoints = new List<Vector3>();
 
         protected HardwareVertexBuffer vertexBuffer;
         protected HardwareIndexBuffer indexBuffer;
