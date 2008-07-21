@@ -726,48 +726,6 @@ namespace Axiom.Media
 			}
 		}
 
-		private enum SupportedConversion
-		{
-			A8R8G8B8toA8B8G8R8 = ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.A8B8G8R8,
-			A8R8G8B8toB8G8R8A8 = ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8A8,
-			A8R8G8B8toR8G8B8A8 = ( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.R8G8B8A8,
-/*			A8B8G8R8( (int)PixelFormat.A8B8G8R8 << 8 ) + (int)PixelFormat.A8R8G8B8,
-		A8B8G8R8( (int)PixelFormat.A8B8G8R8 << 8 ) + (int)PixelFormat.B8G8R8A8,
-		A8B8G8R8( (int)PixelFormat.A8B8G8R8 << 8 ) + (int)PixelFormat.R8G8B8A8,
-		B8G8R8A8( (int)PixelFormat.B8G8R8A8 << 8 ) + (int)PixelFormat.A8R8G8B8,
-		B8G8R8A8( (int)PixelFormat.B8G8R8A8 << 8 ) + (int)PixelFormat.A8B8G8R8,
-		B8G8R8A8( (int)PixelFormat.B8G8R8A8 << 8 ) + (int)PixelFormat.R8G8B8A8,
-		R8G8B8A8( (int)PixelFormat.R8G8B8A8 << 8 ) + (int)PixelFormat.A8R8G8B8,
-		R8G8B8A8( (int)PixelFormat.R8G8B8A8 << 8 ) + (int)PixelFormat.A8B8G8R8,
-		( (int)PixelFormat.R8G8B8A8 << 8 ) + (int)PixelFormat.B8G8R8A8,
-		( (int)PixelFormat.A8B8G8R8 << 8 ) + (int)PixelFormat.L8,
-		( (int)PixelFormat.L8 << 8 ) + (int)PixelFormat.A8B8G8R8,
-		( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.L8,
-		( (int)PixelFormat.L8 << 8 ) + (int)PixelFormat.A8R8G8B8,
-		( (int)PixelFormat.B8G8R8A8 << 8 ) + (int)PixelFormat.L8,
-		( (int)PixelFormat.L8 << 8 ) + (int)PixelFormat.B8G8R8A8,
-		( (int)PixelFormat.L8 << 8 ) + (int)PixelFormat.L16,
-		( (int)PixelFormat.L16 << 8 ) + (int)PixelFormat.L8,
-		( (int)PixelFormat.B8G8R8 << 8 ) + (int)PixelFormat.R8G8B8,
-		( (int)PixelFormat.R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8,
-		( (int)PixelFormat.R8G8B8 << 8 ) + (int)PixelFormat.A8R8G8B8,
-		( (int)PixelFormat.B8G8R8 << 8 ) + (int)PixelFormat.A8R8G8B8,
-		( (int)PixelFormat.R8G8B8 << 8 ) + (int)PixelFormat.A8B8G8R8,
-		( (int)PixelFormat.B8G8R8 << 8 ) + (int)PixelFormat.A8B8G8R8,
-		( (int)PixelFormat.R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8A8,
-		( (int)PixelFormat.B8G8R8 << 8 ) + (int)PixelFormat.B8G8R8A8,
-		( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.R8G8B8,
-		( (int)PixelFormat.A8R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8,
-		( (int)PixelFormat.X8R8G8B8 << 8 ) + (int)PixelFormat.A8R8G8B8,
-		( (int)PixelFormat.X8R8G8B8 << 8 ) + (int)PixelFormat.A8B8G8R8,
-		( (int)PixelFormat.X8R8G8B8 << 8 ) + (int)PixelFormat.B8G8R8A8,
-		( (int)PixelFormat.X8R8G8B8 << 8 ) + (int)PixelFormat.R8G8B8A8,
-		( (int)PixelFormat.X8B8G8R8 << 8 ) + (int)PixelFormat.A8R8G8B8,
-		( (int)PixelFormat.X8B8G8R8 << 8 ) + (int)PixelFormat.A8B8G8R8,
-		( (int)PixelFormat.X8B8G8R8 << 8 ) + (int)PixelFormat.B8G8R8A8,
-		( (int)PixelFormat.X8B8G8R8 << 8 ) + (int)PixelFormat.R8G8B8A8
-*/		}
-
 		public static bool DoOptimizedConversion( PixelBox src, PixelBox dst )
 		{
 			int conversion = ( (int)src.Format << 8 ) + (int)dst.Format;
