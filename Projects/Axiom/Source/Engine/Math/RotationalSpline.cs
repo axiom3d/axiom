@@ -44,6 +44,7 @@ using System.Diagnostics;
 
 using Axiom.Math.Collections;
 using Axiom.Utilities;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -66,67 +67,16 @@ namespace Axiom.Math
     ///		generate an extra quaternion in between each actual quaternion which when take with 
     ///		the original quaternion forms the 'tangent' of that quaternion.
     /// </remarks>
-    public sealed class RotationalSpline
+    public sealed class RotationalSpline: Spline<Quaternion>
     {
-        #region Member variables
-
-        readonly private Matrix4 hermitePoly = new Matrix4( 2, -2, 1, 1,
-            -3, 3, -2, -1,
-            0, 0, 1, 0,
-            1, 0, 0, 0 );
-
-        /// <summary>Collection of control points.</summary>
-        private QuaternionCollection pointList;
-        /// <summary>Collection of generated tangents for the spline controls points.</summary>
-        private QuaternionCollection tangentList;
-        /// <summary>Specifies whether or not to recalculate tangents as each control point is added.</summary>
-        private bool autoCalculateTangents;
-
-        #endregion
-
         #region Constructors
 
         /// <summary>
         ///		Creates a new Rotational Spline.
         /// </summary>
         public RotationalSpline()
+            : base()
         {
-            // intialize the vector collections
-            pointList = new QuaternionCollection();
-            tangentList = new QuaternionCollection();
-
-            // do not auto calculate tangents by default
-            autoCalculateTangents = false;
-        }
-
-        #endregion
-
-        #region Public properties
-
-        /// <summary>
-        ///		Specifies whether or not to recalculate tangents as each control point is added.
-        /// </summary>
-        public bool AutoCalculate
-        {
-            get
-            {
-                return autoCalculateTangents;
-            }
-            set
-            {
-                autoCalculateTangents = value;
-            }
-        }
-
-        /// <summary>
-        ///    Gets the number of control points in this spline.
-        /// </summary>
-        public int PointCount
-        {
-            get
-            {
-                return pointList.Count;
-            }
         }
 
         #endregion
@@ -134,33 +84,26 @@ namespace Axiom.Math
         #region Public methods
 
         /// <summary>
-        ///    Adds a control point to the end of the spline.
+        ///		Returns an interpolated point based on a parametric value over the whole series.
         /// </summary>
-        /// <param name="point"></param>
-        public void AddPoint( Quaternion point )
-        {
-            pointList.Add( point );
-
-            // recalc tangents if necessary
-            if ( autoCalculateTangents )
-                RecalculateTangents();
-        }
-
-        /// <summary>
-        ///    Removes all current control points from this spline.
-        /// </summary>
-        public void Clear()
-        {
-            pointList.Clear();
-            tangentList.Clear();
-        }
-
-        public Quaternion Interpolate( float t )
+        /// <remarks>
+        ///		Given a t value between 0 and 1 representing the parametric distance along the
+        ///		whole length of the spline, this method returns an interpolated point.
+        /// </remarks>
+        /// <param name="t">Parametric value.</param>
+        /// <returns>An interpolated point along the spline.</returns>
+        public override Quaternion Interpolate( float t )
         {
             return Interpolate( t, true );
         }
 
-        public Quaternion Interpolate( int index, float t )
+        /// <summary>
+        ///		Interpolates a single segment of the spline given a parametric value.
+        /// </summary>
+        /// <param name="index">The point index to treat as t=0. index + 1 is deemed to be t=1</param>
+        /// <param name="t">Parametric value</param>
+        /// <returns>An interpolated point along the spline.</returns>
+        public override Quaternion Interpolate( int index, float t )
         {
             return Interpolate( index, t, true );
         }
@@ -237,7 +180,7 @@ namespace Axiom.Math
         ///		If you tell the spline not to update on demand by setting AutoCalculate to false,
         ///		then you must call this after completing your updates to the spline points.
         /// </remarks>
-        public void RecalculateTangents()
+        public override void RecalculateTangents()
         {
             // Just like Catmull-Rom, just more hardcore
             // BLACKBOX: Don't know how to derive this formula yet

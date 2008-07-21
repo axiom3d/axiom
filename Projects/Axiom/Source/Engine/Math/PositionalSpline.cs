@@ -44,6 +44,7 @@ using System.Diagnostics;
 
 using Axiom.Math.Collections;
 using Axiom.Utilities;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -60,107 +61,22 @@ namespace Axiom.Math
     ///		Derivation of the hermite polynomial can be found here: 
     ///		<a href="http://www.cs.unc.edu/~hoff/projects/comp236/curves/papers/hermite.html">Hermite splines.</a>
     /// </remarks>
-    public sealed class PositionalSpline
+    public sealed class PositionalSpline: Spline<Vector3>
     {
-        #region Member variables
-
-        readonly private Matrix4 hermitePoly = new Matrix4(
-            2, -2, 1, 1,
-            -3, 3, -2, -1,
-            0, 0, 1, 0,
-            1, 0, 0, 0 );
-
-        /// <summary>Collection of control points.</summary>
-        private Vector3List pointList;
-        /// <summary>Collection of generated tangents for the spline controls points.</summary>
-        private Vector3List tangentList;
-        /// <summary>Specifies whether or not to recalculate tangents as each control point is added.</summary>
-        private bool autoCalculateTangents;
-
-        #endregion
-
         #region Constructors
 
         /// <summary>
         ///		Creates a new Positional Spline.
         /// </summary>
         public PositionalSpline()
+            : base()
         {
-            // intialize the vector collections
-            pointList = new Vector3List();
-            tangentList = new Vector3List();
-
-            // do not auto calculate tangents by default
-            autoCalculateTangents = false;
-        }
-
-        #endregion
-
-        #region Public properties
-
-        /// <summary>
-        ///		Specifies whether or not to recalculate tangents as each control point is added.
-        /// </summary>
-        public bool AutoCalculate
-        {
-            get
-            {
-                return autoCalculateTangents;
-            }
-            set
-            {
-                autoCalculateTangents = value;
-            }
-        }
-
-        /// <summary>
-        ///    Gets the number of control points in this spline.
-        /// </summary>
-        public int PointCount
-        {
-            get
-            {
-                return pointList.Count;
-            }
         }
 
         #endregion
 
         #region Public methods
 
-        /// <summary>
-        ///    Adds a new control point to the end of this spline.
-        /// </summary>
-        /// <param name="point"></param>
-        public void AddPoint( Vector3 point )
-        {
-            pointList.Add( point );
-
-            // recalc tangents if necessary
-            if ( autoCalculateTangents )
-                RecalculateTangents();
-        }
-
-        /// <summary>
-        ///    Removes all current control points from this spline.
-        /// </summary>
-        public void Clear()
-        {
-            pointList.Clear();
-            tangentList.Clear();
-        }
-
-        /// <summary>
-        ///     Returns the point at the specified index.
-        /// </summary>
-        /// <param name="index">Index at which to retreive a point.</param>
-        /// <returns>Vector3 containing the point data.</returns>
-        public Vector3 GetPoint( int index )
-        {
-            Contract.Requires( index < pointList.Count );
-
-            return pointList[ index ];
-        }
 
         /// <summary>
         ///		Returns an interpolated point based on a parametric value over the whole series.
@@ -171,7 +87,7 @@ namespace Axiom.Math
         /// </remarks>
         /// <param name="t">Parametric value.</param>
         /// <returns>An interpolated point along the spline.</returns>
-        public Vector3 Interpolate( float t )
+        public override Vector3 Interpolate( float t )
         {
             // This does not take into account that points may not be evenly spaced.
             // This will cause a change in velocity for interpolation.
@@ -193,7 +109,7 @@ namespace Axiom.Math
         /// <param name="index">The point index to treat as t=0. index + 1 is deemed to be t=1</param>
         /// <param name="t">Parametric value</param>
         /// <returns>An interpolated point along the spline.</returns>
-        public Vector3 Interpolate( int index, float t )
+        public override Vector3 Interpolate( int index, float t )
         {
             Contract.Requires( index >= 0, "index", "Spline point index underrun." );
             Contract.Requires( index < pointList.Count, "index", "Spline point index overrun." );
@@ -259,7 +175,7 @@ namespace Axiom.Math
         ///		If you tell the spline not to update on demand by setting AutoCalculate to false,
         ///		then you must call this after completing your updates to the spline points.
         /// </remarks>
-        public void RecalculateTangents()
+        public override void RecalculateTangents()
         {
             // Catmull-Rom approach
             // tangent[i] = 0.5 * (point[i+1] - point[i-1])
