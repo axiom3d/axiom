@@ -45,7 +45,7 @@ namespace Axiom.Core
 
     /// <summary>
 	/// 	A simple container class for returning a pair of objects from a method call 
-	/// 	(similar to std::pair, minus the templates).
+	/// 	(similar to std::pair).
 	/// </summary>
     /// <typeparam name="T"></typeparam>
     public class Pair<T> : IEquatable<Pair<T>>

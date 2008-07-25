@@ -65,15 +65,15 @@ namespace Axiom.Core
     #endregion
 
     /// <summary>
-    ///		Manages the organisation and rendering of a 'scene' i.e. a collection 
+    ///		Manages the organization and rendering of a 'scene' i.e. a collection 
     ///		of objects and potentially world geometry.
     /// </summary>
     /// <remarks>
     ///		This class defines the interface and the basic behaviour of a 
     ///		'Scene Manager'. A SceneManager organises the culling and rendering of
     ///		the scene, in conjunction with the <see cref="RenderQueue"/>. This class is designed 
-    ///		to be extended through subclassing in order to provide more specialised
-    ///		scene organisation structures for particular needs. The default 
+    ///		to be extended through subclassing in order to provide more specialized
+    ///		scene organization structures for particular needs. The default 
     ///		SceneManager culls based on a hierarchy of node bounding boxes, other
     ///		implementations can use an octree (<see cref="OctreeSceneManager"/>), a BSP
     ///		tree (<see cref="BspSceneManager"/>), and many other options. New SceneManager
@@ -83,7 +83,7 @@ namespace Axiom.Core
     ///		There is a distinction between 'objects' (which subclass <see cref="MovableObject"/>, 
     ///		and are movable, discrete objects in the world), and 'world geometry',
     ///		which is large, generally static geometry. World geometry tends to 
-    ///		influence the SceneManager organisational structure (e.g. lots of indoor
+    ///		influence the SceneManager organizational structure (e.g. lots of indoor
     ///		static geometry might result in a spatial tree structure) and as such
     ///		world geometry is generally tied to a given SceneManager implementation,
     ///		whilst MovableObject instances can be used with any SceneManager.
