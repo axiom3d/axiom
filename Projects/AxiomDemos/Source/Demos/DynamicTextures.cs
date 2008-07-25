@@ -282,21 +282,21 @@ namespace Axiom.Demos
 		// GUI updaters
 		void updateInfoParamK()
 		{
-			OverlayElementManager.Instance.GetElement( "Example/DynTex/Param_K" ).Text = String.Format( "[1/2]k: {0}", TOFLOAT( k ) );
+            OverlayManager.Instance.Elements.GetElement( "Example/DynTex/Param_K" ).Text = String.Format( "[1/2]k: {0}", TOFLOAT( k ) );
 		}
 		void updateInfoParamF()
 		{
-			OverlayElementManager.Instance.GetElement( "Example/DynTex/Param_F" ).Text = String.Format( "[3/4]F: {0}", TOFLOAT( F ) );
+            OverlayManager.Instance.Elements.GetElement( "Example/DynTex/Param_F" ).Text = String.Format( "[3/4]F: {0}", TOFLOAT( F ) );
 		}
 		void updateInfoParamA0()
 		{
 			// Diffusion rate for chemical 1
-			OverlayElementManager.Instance.GetElement( "Example/DynTex/Param_A0" ).Text = String.Format( "[5/6]Diffusion 1: {0}", TOFLOAT( hdiv0 ) );
+            OverlayManager.Instance.Elements.GetElement( "Example/DynTex/Param_A0" ).Text = String.Format( "[5/6]Diffusion 1: {0}", TOFLOAT( hdiv0 ) );
 		}
 		void updateInfoParamA1()
 		{
 			// Diffusion rate for chemical 2
-			OverlayElementManager.Instance.GetElement( "Example/DynTex/Param_A1" ).Text = String.Format( "[7/8]Diffusion 2: {0}", TOFLOAT( hdiv1 ) );
+            OverlayManager.Instance.Elements.GetElement( "Example/DynTex/Param_A1" ).Text = String.Format( "[7/8]Diffusion 2: {0}", TOFLOAT( hdiv1 ) );
 		}
 
 

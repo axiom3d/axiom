@@ -78,7 +78,7 @@ namespace Axiom.Demos
         protected override void CreateScene()
         {
             RAND = new Random( 0 ); // najak: use a time-based seed
-            GuiMgr = OverlayElementManager.Instance;
+            GuiMgr = OverlayManager.Instance.Elements;
             scene.AmbientLight = new ColorEx( 0.75f, 0.75f, 0.75f ); // default Ambient Light
 
             // Customize Controls - speed up camera and slow down the input update rate

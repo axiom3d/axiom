@@ -454,7 +454,7 @@ namespace Axiom.Demos
                 debugTextDelay -= e.TimeSinceLastFrame;
             }
 
-            OverlayElement element = OverlayElementManager.Instance.GetElement( "Core/DebugText" );
+            OverlayElement element = OverlayManager.Instance.Elements.GetElement( "Core/DebugText" );
             element.Text = debugText;
 
             return true;
@@ -463,19 +463,19 @@ namespace Axiom.Demos
         protected void UpdateStats()
         {
             // TODO: Replace with CEGUI
-            OverlayElement element = OverlayElementManager.Instance.GetElement( "Core/CurrFps" );
+            OverlayElement element = OverlayManager.Instance.Elements.GetElement( "Core/CurrFps" );
             element.Text = string.Format( "Current FPS: {0:#.00}", Root.Instance.CurrentFPS );
 
-            element = OverlayElementManager.Instance.GetElement( "Core/BestFps" );
+            element = OverlayManager.Instance.Elements.GetElement( "Core/BestFps" );
             element.Text = string.Format( "Best FPS: {0:#.00}", Root.Instance.BestFPS );
 
-            element = OverlayElementManager.Instance.GetElement( "Core/WorstFps" );
+            element = OverlayManager.Instance.Elements.GetElement( "Core/WorstFps" );
             element.Text = string.Format( "Worst FPS: {0:#.00}", Root.Instance.WorstFPS );
 
-            element = OverlayElementManager.Instance.GetElement( "Core/AverageFps" );
+            element = OverlayManager.Instance.Elements.GetElement( "Core/AverageFps" );
             element.Text = string.Format( "Average FPS: {0:#.00}", Root.Instance.AverageFPS );
 
-            element = OverlayElementManager.Instance.GetElement( "Core/NumTris" );
+            element = OverlayManager.Instance.Elements.GetElement( "Core/NumTris" );
             element.Text = string.Format( "Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered );
         }
 
