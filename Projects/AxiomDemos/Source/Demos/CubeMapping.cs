@@ -579,7 +579,7 @@ namespace Axiom.Demos
             PrepareEntity( meshes[ currentMeshIndex ] );
 
             // update the UI
-            OverlayElementManager.Instance.GetElement( "Example/CubeMapping/Material" ).Text =
+            OverlayManager.Instance.Elements.GetElement( "Example/CubeMapping/Material" ).Text =
                 string.Format( "[M] Material: {0}", blendModes[ currentLbxIndex ] );
         }
 
@@ -627,7 +627,7 @@ namespace Axiom.Demos
             scene.SetSkyBox( true, SKYBOX_MATERIAL, 2000.0f );
 
             // update the UI
-            OverlayElementManager.Instance.GetElement( "Example/CubeMapping/CubeMap" ).Text =
+            OverlayManager.Instance.Elements.GetElement( "Example/CubeMapping/CubeMap" ).Text =
                 string.Format( "[C] CubeMap: {0}", cubeMapName );
         }
 
@@ -638,7 +638,7 @@ namespace Axiom.Demos
         {
             noiseOn = !noiseOn;
 
-            OverlayElementManager.Instance.GetElement( "Example/CubeMapping/Noise" ).Text =
+            OverlayManager.Instance.Elements.GetElement( "Example/CubeMapping/Noise" ).Text =
                 string.Format( "[N] Noise: {0}", noiseOn ? "on" : "off" );
         }
 
@@ -655,21 +655,21 @@ namespace Axiom.Demos
             string meshName = meshes[ currentMeshIndex ];
             PrepareEntity( meshName );
 
-            OverlayElementManager.Instance.GetElement( "Example/CubeMapping/Object" ).Text =
+            OverlayManager.Instance.Elements.GetElement( "Example/CubeMapping/Object" ).Text =
                 string.Format( "[O] Object: {0}", meshName );
         }
 
         void updateInfoDisplacement()
         {
-            OverlayElementManager.Instance.GetElement( "Example/CubeMapping/Displacement" ).Text = string.Format( "[1/2] Displacement: {0}", displacement );
+            OverlayManager.Instance.Elements.GetElement( "Example/CubeMapping/Displacement" ).Text = string.Format( "[1/2] Displacement: {0}", displacement );
         }
         void updateInfoDensity()
         {
-            OverlayElementManager.Instance.GetElement( "Example/CubeMapping/Density" ).Text = string.Format( "[3/4] Noise density: {0}", density );
+            OverlayManager.Instance.Elements.GetElement( "Example/CubeMapping/Density" ).Text = string.Format( "[3/4] Noise density: {0}", density );
         }
         void updateInfoTimeDensity()
         {
-            OverlayElementManager.Instance.GetElement( "Example/CubeMapping/TimeDensity" ).Text = string.Format( "[5/6] Time density: {0}", timeDensity );
+            OverlayManager.Instance.Elements.GetElement( "Example/CubeMapping/TimeDensity" ).Text = string.Format( "[5/6] Time density: {0}", timeDensity );
         }
 
         /// <summary>
@@ -797,7 +797,7 @@ namespace Axiom.Demos
                 ToggleNoise();
                 ToggleMesh();
                 ToggleBlending();
-                OverlayElementManager.Instance.GetElement( "Example/CubeMapping/CubeMap" ).Text =
+                OverlayManager.Instance.Elements.GetElement( "Example/CubeMapping/CubeMap" ).Text =
                                 string.Format( "[C] CubeMap: {0}", cubeMaps[ currentCubeIndex ] );
                 return true;
             }
