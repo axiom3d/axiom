@@ -381,7 +381,11 @@ namespace Axiom.Overlays
 			{
 				overlay.ZOrder = int.Parse( parms[ 1 ] );
 			}
-			else
+            if ( parms[ 0 ].ToLower() == "visible" )
+            {
+                overlay.IsVisible = StringConverter.ParseBool( parms[ 1 ] );
+            }
+            else
 			{
 				ParseHelper.LogParserError( parms[ 0 ], overlay.Name, "Invalid overlay attribute." );
 			}

@@ -108,11 +108,11 @@ namespace Axiom.Overlays
         /// <summary>
         /// returns all elemnt instances
         /// </summary>
-        public IEnumerator<OverlayElement> Instances
+        public IEnumerable<OverlayElement> Instances
         {
             get
             {
-                return _elementInstances.Values.GetEnumerator();
+                return _elementInstances.Values;
             }
         }
 
@@ -124,11 +124,11 @@ namespace Axiom.Overlays
         /// <summary>
         /// returns all element templates
         /// </summary>
-        public IEnumerator<OverlayElement> Templates
+        public IEnumerable<OverlayElement> Templates
         {
             get
             {
-                return _elementTemplates.Values.GetEnumerator();
+                return _elementTemplates.Values;
             }
         }
 
