@@ -902,6 +902,10 @@ namespace Axiom.Overlays
             {
                 return isVisible;
             }
+            set
+            {
+                isVisible = value;
+            }
         }
 
         /// <summary>
@@ -1441,6 +1445,14 @@ namespace Axiom.Overlays
             OverlayElement element = (OverlayElement)objects[ 0 ];
 
             element.Height = StringConverter.ParseFloat( parms[ 0 ] );
+        }
+
+        [ParserCommand( "visible", "OverlayElement" )]
+        public static void ParseVisible( string[] parms, params object[] objects )
+        {
+            OverlayElement element = (OverlayElement)objects[ 0 ];
+
+            element.isVisible = StringConverter.ParseBool( parms[ 0 ] );
         }
 
         [ParserCommand( "caption", "OverlayElement" )]

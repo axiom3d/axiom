@@ -462,6 +462,10 @@ namespace Axiom.Overlays
             {
                 return isVisible;
             }
+            set
+            {
+                isVisible = value;
+            }
         }
 
         public bool IsInitialized
