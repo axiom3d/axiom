@@ -40,6 +40,7 @@ using System.Diagnostics;
 using Axiom.Core;
 using Axiom.Overlays.Elements;
 using System.Collections.Generic;
+using Axiom.Utilities;
 
 #endregion Namespace Declarations
 
@@ -273,11 +274,7 @@ namespace Axiom.Overlays
         /// <returns></returns>
         public OverlayElement GetElement( string name )
         {
-            Dictionary<string, OverlayElement> elements = GetElementTable( false );
-
-            Debug.Assert( elements[ name ] != null, string.Format( "OverlayElement with the name'{0}' was not found.", name ) );
-
-            return (OverlayElement)elements[ name ];
+            return GetElement( name, false );
         }
 
         /// <summary>
@@ -288,11 +285,17 @@ namespace Axiom.Overlays
         /// <returns></returns>
         public OverlayElement GetElement( string name, bool isTemplate )
         {
+            Contract.RequiresNotEmpty( name, "name" );
+            
             Dictionary<string, OverlayElement> elements = GetElementTable( isTemplate );
 
-            Debug.Assert( elements[ name ] != null, string.Format( "OverlayElement with the name'{0}' was not found.", name ) );
-
-            return (OverlayElement)elements[ name ];
+            if ( !elements.ContainsKey( name ) )
+            {
+                LogManager.Instance.Write( string.Format( "OverlayElement with the name'{0}' was not found.", name ) );
+                return null;
+            }
+            else
+                return (OverlayElement)elements[ name ];
         }
 
         /// <summary>
