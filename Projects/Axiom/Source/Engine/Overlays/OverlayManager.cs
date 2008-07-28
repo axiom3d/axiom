@@ -380,8 +380,8 @@ namespace Axiom.Overlays
 			if ( parms[ 0 ].ToLower() == "zorder" )
 			{
 				overlay.ZOrder = int.Parse( parms[ 1 ] );
-			}
-            if ( parms[ 0 ].ToLower() == "visible" )
+			} 
+            else if ( parms[ 0 ].ToLower() == "visible" )
             {
                 overlay.IsVisible = StringConverter.ParseBool( parms[ 1 ] );
             }
