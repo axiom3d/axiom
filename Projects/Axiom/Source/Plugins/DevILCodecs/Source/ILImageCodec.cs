@@ -141,6 +141,23 @@ namespace Axiom.Plugins.DevILCodecs
 
 			format = Il.ilGetInteger( Il.IL_IMAGE_FORMAT );
 			int imageType = Il.ilGetInteger( Il.IL_IMAGE_TYPE );
+
+            // Convert image if imageType is incompatible with us (double or long)
+            if ( imageType != Il.IL_BYTE && imageType != Il.IL_UNSIGNED_BYTE &&
+                imageType != Il.IL_FLOAT &&
+                imageType != Il.IL_UNSIGNED_SHORT && imageType != Il.IL_SHORT )
+            {
+                Il.ilConvertImage( format, Il.IL_FLOAT );
+                imageType = Il.IL_FLOAT;
+            }
+            // Converted paletted images
+            if ( format == Il.IL_COLOR_INDEX )
+            {
+                Il.ilConvertImage( Il.IL_BGRA, Il.IL_UNSIGNED_BYTE );
+                format = Il.IL_BGRA;
+                imageType = Il.IL_UNSIGNED_BYTE;
+            }
+
 			bytesPerPixel = Il.ilGetInteger( Il.IL_IMAGE_BYTES_PER_PIXEL );
 
 			// populate the image data
