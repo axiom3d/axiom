@@ -268,7 +268,7 @@ namespace Axiom.Media
 		}
 
 		/// <summary>
-		///    Performs gamma adjusment on this image.
+		///    Performs gamma adjustment on this image.
 		/// </summary>
 		/// <remarks>
 		///    Basic algo taken from Titan Engine, copyright (c) 2000 Ignacio 
@@ -525,7 +525,7 @@ namespace Axiom.Media
 			if ( numFaces != 6 && numFaces != 1 )
 				throw new Exception( "Number of faces currently must be 6 or 1." );
 
-			this.size = calculateSize( numMipMaps, numFaces, width, height, depth, format );
+			this.size = CalculateSize( numMipMaps, numFaces, width, height, depth, format );
 
 			SetBuffer( buffer );
 
@@ -845,7 +845,7 @@ namespace Axiom.Media
 			Scale( temp.GetPixelBox( 0, 0 ), GetPixelBox( 0, 0 ), filter );
 		}
 
-		protected int calculateSize( int mipmaps, int faces, int width, int height, int depth, PixelFormat format )
+		public static int CalculateSize( int mipmaps, int faces, int width, int height, int depth, PixelFormat format )
 		{
 			int size = 0;
 			for ( int mip = 0; mip <= mipmaps; ++mip )
