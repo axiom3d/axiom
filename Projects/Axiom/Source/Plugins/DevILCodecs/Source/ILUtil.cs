@@ -307,10 +307,11 @@ namespace Axiom.Plugins.DevILCodecs
 				Memory.Copy( Il.ilGetData(), dst.Data, Il.ilGetInteger( Il.IL_IMAGE_SIZE_OF_DATA ) );
 				return;
 			}
-			// Try if buffer is in a known Axiom format so we can use Axiom its conversion routines
-			PixelFormat bufFmt = Convert( (int)ilfmt, (int)iltp );
 
+			// Try if buffer is in a known Axiom format so we can use its conversion routines
+			PixelFormat bufFmt = Convert( (int)ilfmt, (int)iltp );
 			ifmt = Convert( bufFmt );
+
 			if ( ifmt.Format == ilfmt && ILabs( ifmt.Type ) == ILabs( iltp ) )
 			{
 				// IL format matches another Axiom format
