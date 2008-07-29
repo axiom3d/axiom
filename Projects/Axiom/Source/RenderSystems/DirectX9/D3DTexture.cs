@@ -261,6 +261,7 @@ namespace Axiom.RenderSystems.DirectX9
 					// Call internal LoadImages, not LoadImage since that's external and 
 					// will determine load status etc again
 					LoadImages( new Image[] { Image.FromStream( strm, ext ) } );
+                    strm.Close();
 
 				}
 			}
