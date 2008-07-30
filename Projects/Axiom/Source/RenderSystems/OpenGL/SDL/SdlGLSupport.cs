@@ -101,7 +101,7 @@ namespace Axiom.RenderSystems.OpenGL
             ConfigOption optColorDepth = new ConfigOption( "Color Depth", "", false );
             ConfigOption optFSAA = new ConfigOption( "FSAA", "0", false );
             ConfigOption optVSync = new ConfigOption( "VSync", "No", false );
-            ConfigOption optRTTMode = new ConfigOption( "RTT Mode", "FBO", false );
+            ConfigOption optRTTMode = new ConfigOption( "RTT Preferred Mode", "FBO", false );
 
             // Full Screen
             optFullScreen.PossibleValues.Add( 0, "Yes" );
