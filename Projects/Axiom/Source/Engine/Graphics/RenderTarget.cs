@@ -585,11 +585,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///      Removes a viewport at a given ZOrder.
+		/// Removes a viewport at a given ZOrder.
 		/// </summary>
 		/// <param name="zOrder">
-		///      The <see cref="Viewport.ZOrder"/> of the viewport to be removed.
-		///</param>
+		/// The <see cref="Viewport.ZOrder"/> of the viewport to be removed.
+		/// </param>
 		public virtual void RemoveViewport( int zOrder )
 		{
 			if ( _viewportList.ContainsKey( zOrder ) )
@@ -603,7 +603,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///       Removes all viewports on this target.
+		/// Removes all viewports on this target.
 		/// </summary>
 		public virtual void RemoveAllViewports()
 		{
