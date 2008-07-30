@@ -309,6 +309,8 @@ namespace Axiom.RenderSystems.DirectX9
 				SetFinalAttributes( desc.Width, desc.Height, 1, D3DHelper.ConvertEnum( desc.Format ) );
 
 				internalResourcesCreated = true;
+
+                stream.Close();
 			}
 			else
 			{
@@ -327,6 +329,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 					Stream strm = ResourceGroupManager.Instance.OpenResource( fullName, Group, true, this );
 					images.Add( Image.FromStream( strm, ext ) );
+                    strm.Close();
 				}
 
 				LoadImages( images.ToArray() );
@@ -377,6 +380,8 @@ namespace Axiom.RenderSystems.DirectX9
 				SetFinalAttributes( desc.Width, desc.Height, desc.Depth, D3DHelper.ConvertEnum( desc.Format ) );
 
 				internalResourcesCreated = true;
+
+                stream.Close();
 			}
 			else
 			{
@@ -390,6 +395,7 @@ namespace Axiom.RenderSystems.DirectX9
 				// will determine load status etc again
 				LoadImages( new Image[] { Image.FromStream( strm, ext ) } );
 
+                strm.Close();
 			}
 		}
 
