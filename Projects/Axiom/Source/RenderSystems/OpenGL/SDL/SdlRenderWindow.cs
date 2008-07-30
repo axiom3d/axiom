@@ -159,6 +159,7 @@ namespace Axiom.RenderSystems.OpenGL
 			_window.FullScreen = fullScreen;
 			_window.Width = width;
 			_window.Height = height;
+            _window.Title = title;
 			_window.RenderWindow = this;
 			_window.Show();
 

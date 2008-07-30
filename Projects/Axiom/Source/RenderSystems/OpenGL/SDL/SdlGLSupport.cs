@@ -43,6 +43,8 @@ using Axiom.Graphics;
 using Tao.OpenGl;
 using Tao.Sdl;
 using Axiom.Collections;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 #endregion Namespace Declarations
 
@@ -53,6 +55,13 @@ namespace Axiom.RenderSystems.OpenGL
     /// </summary>
 	internal class GLSupport : BaseGLSupport
     {
+        #region Fields and Properties
+
+        private List<Sdl.SDL_Rect> _deviceModes = new List<Sdl.SDL_Rect>();
+        private List<int> _fsaaLevels = new List<int>();
+
+        #endregion Fields and Properties
+
         public GLSupport()
             : base()
         {
@@ -86,19 +95,26 @@ namespace Axiom.RenderSystems.OpenGL
         /// </summary>
         public override void AddConfig()
         {
-            ConfigOption option;
+            ConfigOption optFullScreen = new ConfigOption( "Full Screen", "No", false );
+            ConfigOption optVideoMode = new ConfigOption( "Video Mode", "800 x 600", false );
+            ConfigOption optDisplayFrequency = new ConfigOption( "Display Frequency", "", false );
+            ConfigOption optColorDepth = new ConfigOption( "Color Depth", "", false );
+            ConfigOption optFSAA = new ConfigOption( "FSAA", "0", false );
+            ConfigOption optVSync = new ConfigOption( "VSync", "No", false );
+            ConfigOption optRTTMode = new ConfigOption( "RTT Mode", "FBO", false );
 
             // Full Screen
-            option = new ConfigOption( "Full Screen", "No", false );
-            option.PossibleValues.Add(0, "Yes" );
-            option.PossibleValues.Add(1, "No" );
-            ConfigOptions.Add( option );
+            optFullScreen.PossibleValues.Add( 0, "Yes" );
+            optFullScreen.PossibleValues.Add( 1, "No" );
+
 
             // Video Mode
+            #region Video Modes
             // get the available OpenGL resolutions
             Sdl.SDL_Rect[] modes = Sdl.SDL_ListModes( IntPtr.Zero, Sdl.SDL_FULLSCREEN | Sdl.SDL_OPENGL );
+            _deviceModes = new List<Sdl.SDL_Rect>( modes );
 
-            option = new ConfigOption( "Video Mode", "800 x 600", false );
+            optVideoMode = new ConfigOption( "Video Mode", "800 x 600", false );
             // add the resolutions to the config
             foreach ( Sdl.SDL_Rect mode in modes )
             {
@@ -110,25 +126,54 @@ namespace Axiom.RenderSystems.OpenGL
                 {
                     string query = string.Format( "{0} x {1}", width, height);
 
-                    if ( !option.PossibleValues.Values.Contains( query ) )
+                    if ( !optVideoMode.PossibleValues.Values.Contains( query ) )
                     {
                         // add a new row to the display settings table
-                        option.PossibleValues.Add( option.PossibleValues.Count, query );
+                        optVideoMode.PossibleValues.Add( optVideoMode.PossibleValues.Count, query );
                     }
-                    if ( option.PossibleValues.Count == 1 )
+                    if ( optVideoMode.PossibleValues.Count == 1 )
                     {
-                        option.Value = query;
+                        optVideoMode.Value = query;
                     }
                 }
             }
-            ConfigOptions.Add( option );
 
-            option = new ConfigOption( "FSAA", "0", false );
-            option.PossibleValues.Add(0, "0" );
-            option.PossibleValues.Add(1, "2" );
-            option.PossibleValues.Add(2, "4" );
-            option.PossibleValues.Add(3, "6" );
-            ConfigOptions.Add( option );
+            #endregion
+
+            // FSAA
+            foreach ( int level in _fsaaLevels )
+            {
+                optFSAA.PossibleValues.Add( level, level.ToString() );
+            }
+
+
+            // VSync
+            optVSync.PossibleValues.Add( 0, "Yes" );
+            optVSync.PossibleValues.Add( 1, "No" );
+
+            // RTTMode
+            optRTTMode.PossibleValues.Add( 0, "FBO" );
+            optRTTMode.PossibleValues.Add( 1, "PBuffer" );
+            optRTTMode.PossibleValues.Add( 2, "Copy" );
+
+            optFullScreen.ConfigValueChanged += new ConfigOption<string>.ValueChanged( _configOptionChanged );
+            optVideoMode.ConfigValueChanged += new ConfigOption<string>.ValueChanged( _configOptionChanged );
+            optDisplayFrequency.ConfigValueChanged += new ConfigOption<string>.ValueChanged( _configOptionChanged );
+            optFSAA.ConfigValueChanged += new ConfigOption<string>.ValueChanged( _configOptionChanged );
+            optVSync.ConfigValueChanged += new ConfigOption<string>.ValueChanged( _configOptionChanged );
+            optColorDepth.ConfigValueChanged += new ConfigOption<string>.ValueChanged( _configOptionChanged );
+            optRTTMode.ConfigValueChanged += new ConfigOption<string>.ValueChanged( _configOptionChanged );
+
+            ConfigOptions.Add( optVideoMode );
+            ConfigOptions.Add( optColorDepth );
+            ConfigOptions.Add( optDisplayFrequency );
+            ConfigOptions.Add( optFullScreen );
+            ConfigOptions.Add( optFSAA );
+            ConfigOptions.Add( optVSync );
+            ConfigOptions.Add( optRTTMode );
+
+            _refreshConfig();
+
         }
 
 		/// <summary>
@@ -179,19 +224,21 @@ namespace Axiom.RenderSystems.OpenGL
 				ConfigOption opt;
 
 				opt = ConfigOptions[ "Color Depth" ];
-				if ( opt != null )
+				if ( opt != null && opt.Value != null && opt.Value.Length > 0 )
 					miscParams.Add( "colorDepth", opt.Value );
 
 				opt = ConfigOptions[ "VSync" ];
-				if ( opt != null )
+                if ( opt != null && opt.Value != null && opt.Value.Length > 0 )
 				{
 					miscParams.Add( "vsync", opt.Value );
 					//TODO : renderSystem.WaitForVerticalBlank = (bool)opt.Value;
 				}
 
 				opt = ConfigOptions[ "FSAA" ];
-				if ( opt != null )
+                if ( opt != null && opt.Value != null && opt.Value.Length > 0 )
 					miscParams.Add( "fsaa", opt.Value );
+
+                miscParams.Add( "title", windowTitle );
 
                 // create the window with the default form as the target
                 autoWindow = renderSystem.CreateRenderWindow( windowTitle, width, height, fullScreen, miscParams );
@@ -201,5 +248,75 @@ namespace Axiom.RenderSystems.OpenGL
         }
 
         #endregion BaseGLSupport Members
+
+        #region Methods
+
+        private void _configOptionChanged( string name, string value )
+        {
+            LogManager.Instance.Write( "OpenGL : RenderSystem Option: {0} = {1}", name, value );
+
+            if ( name == "Video Mode" )
+                _refreshConfig();
+
+            if ( name == "Full Screen" )
+            {
+                ConfigOption opt = ConfigOptions[ "Display Frequency" ];
+                if ( value == "No" )
+                {
+                    opt.Value = "N/A";
+                    opt.Immutable = true;
+                }
+                else
+                {
+                    opt.Immutable = false;
+                    opt.Value = opt.PossibleValues.Values[ opt.PossibleValues.Count - 1 ];
+                }
+            }
+        }
+
+        private void _refreshConfig()
+        {
+
+            ConfigOption optVideoMode = ConfigOptions[ "Video Mode" ];
+            ConfigOption optColorDepth = ConfigOptions[ "Color Depth" ];
+            ConfigOption optDisplayFrequency = ConfigOptions[ "Display Frequency" ];
+            ConfigOption optFullScreen = ConfigOptions[ "Full Screen" ];
+
+            string val = optVideoMode.Value;
+
+            int pos = val.IndexOf( 'x' );
+            if ( pos == -1 )
+                throw new Exception( "Invalid Video Mode provided" );
+            int width = Int32.Parse( val.Substring( 0, pos ) );
+            int height = Int32.Parse( val.Substring( pos + 1 ) );
+
+            optColorDepth.PossibleValues.Clear();
+            IntPtr videoInfoPtr = Sdl.SDL_GetVideoInfo();
+            Sdl.SDL_VideoInfo videoInfo = (Sdl.SDL_VideoInfo)Marshal.PtrToStructure( videoInfoPtr, typeof( Sdl.SDL_VideoInfo ) );
+            IntPtr pixelFormatPtr = videoInfo.vfmt;
+            Sdl.SDL_PixelFormat pixelFormat = (Sdl.SDL_PixelFormat)Marshal.PtrToStructure( pixelFormatPtr, typeof( Sdl.SDL_PixelFormat ) );
+            for ( int bpp = pixelFormat.BitsPerPixel, index = 0; bpp > 0; bpp -= 8, index++ )
+            {
+                if ( Sdl.SDL_VideoModeOK( width, height, bpp, 0 ) != 0 )
+                    optColorDepth.PossibleValues.Add( index, bpp.ToString() );
+            }
+
+            if ( optFullScreen.Value == "No" )
+            {
+                optDisplayFrequency.Value = "N/A";
+                optDisplayFrequency.Immutable = true;
+            }
+            else
+            {
+                optDisplayFrequency.Immutable = false;
+                optDisplayFrequency.Value = optDisplayFrequency.PossibleValues.Values[ optDisplayFrequency.PossibleValues.Count - 1 ];
+            }
+            if ( optColorDepth.PossibleValues.Values.Count > 0 )
+                optColorDepth.Value = optColorDepth.PossibleValues.Values[ optColorDepth.PossibleValues.Values.Count - 1 ];
+            if ( optDisplayFrequency.Value != "N/A" )
+                optDisplayFrequency.Value = optDisplayFrequency.PossibleValues.Values[ optDisplayFrequency.PossibleValues.Count - 1 ];
+        }
+
+        #endregion Methods
     }
 }
