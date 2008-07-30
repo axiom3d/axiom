@@ -2879,20 +2879,19 @@ namespace Axiom.RenderSystems.OpenGL
 					int buffers;
 					Gl.glGetIntegerv( Gl.GL_MAX_DRAW_BUFFERS_ARB, out buffers );
 					_rsCapabilities.MultiRenderTargetCount = (int)Utility.Min( buffers, Config.MaxMultipleRenderTargets );
-					if ( !_glSupport.CheckMinVersion( "2.0" ) )
-					{
-						//TODO: Before GL version 2.0, we need to get one of the extensions
-						// borrillis - This check moved inside GLFrameBufferObject where Gl.glDrawBuffers is called
-						//if ( _glSupport.CheckExtension( "GL_ARB_draw_buffers" ) )
-						//    Gl.glDrawBuffers = Gl.glDrawBuffersARB;
-						//else if ( _glSupport.CheckExtension( "GL_ATI_draw_buffers" ) )
-						//    Gl.glDrawBuffers = Gl.glDrawBuffersATI;
-					}
+					// borrillis - This check moved inside GLFrameBufferObject where Gl.glDrawBuffers is called
+					//if ( !_glSupport.CheckMinVersion( "2.0" ) )
+					//{
+					//    //TODO: Before GL version 2.0, we need to get one of the extensions
+					//	if ( _glSupport.CheckExtension( "GL_ARB_draw_buffers" ) )
+					//	    Gl.glDrawBuffers = Gl.glDrawBuffersARB;
+					//	else if ( _glSupport.CheckExtension( "GL_ATI_draw_buffers" ) )
+					//	    Gl.glDrawBuffers = Gl.glDrawBuffersATI;
+					//}
 				}
 				// Create FBO manager
 				LogManager.Instance.Write( "GL: Using GL_EXT_framebuffer_object for rendering to textures (best)" );
-				//rttManager = new GLFBORTTManager(_glSupport, _glSupport.Vendor == "ATI");
-				rttManager = new GLFBORTTManager( _glSupport, false );
+				rttManager = new GLFBORTTManager(_glSupport, _glSupport.Vendor == "ATI");
 				_rsCapabilities.SetCapability( Capabilities.HardwareRenderToTexture );
 			}
 			else
