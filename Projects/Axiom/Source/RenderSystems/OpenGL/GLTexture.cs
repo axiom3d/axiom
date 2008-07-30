@@ -188,7 +188,7 @@ namespace Axiom.RenderSystems.OpenGL
 			string ext = Name.Substring( Name.LastIndexOf( '.' ) + 1);
 
 			Image image;
-			Stream stream;
+			Stream stream = null;
 
 			if (   TextureType == TextureType.TwoD
 				|| TextureType == TextureType.OneD
@@ -248,6 +248,9 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				throw new NotImplementedException( "Unknown texture type." );
 			}
+
+            if ( stream != null )
+                stream.Close();
 		}
 
 		/// <summary>
