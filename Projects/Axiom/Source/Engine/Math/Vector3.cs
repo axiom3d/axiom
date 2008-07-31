@@ -464,15 +464,24 @@ namespace Axiom.Math
 			return new Vector3( this.x + x, this.y + y, this.z + z );
 		}
 
-		/// <summary>
-		///		Performs a Dot Product operation on 2 vectors, which produces the angle between them.
-		/// </summary>
-		/// <param name="vector">The vector to perform the Dot Product against.</param>
-		/// <returns>The angle between the 2 vectors.</returns>
-		public float Dot( Vector3 vector )
-		{
-			return (float)x * vector.x + y * vector.y + z * vector.z;
-		}
+        /// <summary>
+        /// Performs a Dot Product operation on 2 vectors.
+        /// </summary>
+        /// <remarks>
+        /// A dot product of two vectors v1 and v2 equals to |v1|*|v2|*cos(fi)
+        /// where fi is the angle between the vectors and |v1| and |v2| are the vector lengths.
+        /// For unit vectors (whose length is one) the dot product will obviously be just cos(fi).
+        /// For example, if the unit vectors are parallel the result is cos(0) = 1.0f,
+        /// if they are perpendicular the result is cos(PI/2) = 0.0f.
+        /// The dot product may be calculated on vectors with any length however.
+        /// A zero vector is treated as perpendicular to any vector (result is 0.0f).
+        /// </remarks>
+        /// <param name="vector">The vector to perform the Dot Product against.</param>
+        /// <returns>Products of vector lengths and cosine of the angle between them. </returns>
+        public float Dot( Vector3 vector )
+        {
+            return x * vector.x + y * vector.y + z * vector.z;
+        }
 
 		/// <summary>
 		///		Performs a Cross Product operation on 2 vectors, which returns a vector that is perpendicular
