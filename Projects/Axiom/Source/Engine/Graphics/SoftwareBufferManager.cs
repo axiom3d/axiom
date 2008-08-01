@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -44,7 +45,6 @@ namespace Axiom.Graphics
     /// <summary>
     /// 	Summary description for SoftwareBufferManager.
     /// </summary>
-    // TODO: Switch to using GCHandle for array pointer after resolving stack overflow in TerrainSceneManager.
     public class SoftwareBufferManager : HardwareBufferManager
     {
         #region Methods
@@ -117,7 +117,6 @@ namespace Axiom.Graphics
         ///     Holds the buffer data.
         /// </summary>
         protected byte[] data;
-        protected GCHandle handle;
 
         #endregion Fields
 
@@ -184,7 +183,7 @@ namespace Axiom.Graphics
 
         public override void UnlockImpl()
         {
-            handle.Free();
+            Memory.UnpinObject( data );
         }
 
         public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
@@ -213,12 +212,10 @@ namespace Axiom.Graphics
         /// </remarks>
         public IntPtr GetDataPointer( int offset )
         {
-            if ( !handle.IsAllocated )
-                handle = GCHandle.Alloc( data, GCHandleType.Pinned );
-            IntPtr result;
+            IntPtr result = Memory.PinObject( data );
             unsafe
             {
-                result = (IntPtr)( (byte*)handle.AddrOfPinnedObject() + offset );
+                result = (IntPtr)( (byte*)result + offset );
             }
             return result;
 
@@ -226,7 +223,7 @@ namespace Axiom.Graphics
 
         public override void Dispose()
         {
-            if ( isLocked || handle.IsAllocated )
+            if ( isLocked )
                 Unlock();
             data = null;
         }
@@ -244,7 +241,6 @@ namespace Axiom.Graphics
         ///     Holds the buffer data.
         /// </summary>
         protected byte[] data;
-        protected GCHandle handle;
 
         #endregion
 
@@ -312,7 +308,7 @@ namespace Axiom.Graphics
 
         public override void UnlockImpl()
         {
-            handle.Free();
+            Memory.UnpinObject( data );
         }
 
         public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
@@ -341,20 +337,17 @@ namespace Axiom.Graphics
         /// </remarks>
         public IntPtr GetDataPointer( int offset )
         {
-            if ( !handle.IsAllocated )
-                handle = GCHandle.Alloc( data, GCHandleType.Pinned );
-            IntPtr result;
+            IntPtr result = Memory.PinObject( data );
             unsafe
             {
-                result = (IntPtr)( (byte*)handle.AddrOfPinnedObject() + offset );
+                result = (IntPtr)( (byte*)result + offset );
             }
             return result;
-
         }
 
         public override void Dispose()
         {
-            if ( isLocked || handle.IsAllocated )
+            if ( isLocked )
                 Unlock();
             data = null;
         }

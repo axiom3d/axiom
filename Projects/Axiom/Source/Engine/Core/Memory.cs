@@ -130,6 +130,20 @@ namespace Axiom.Core
 			return handle.AddrOfPinnedObject();
 		}
 
+        public static void UnpinObject( object obj )
+        {
+            if ( _pinnedReferences.ContainsKey( obj ) )
+            {
+                GCHandle handle = _pinnedReferences[ obj ];
+                handle.Free();
+                _pinnedReferences.Remove( obj );
+            }
+            else
+            {
+                LogManager.Instance.Write( "MemoryManager : Attempted to unpin memory that wasn't pinned." );
+            }
+        }
+
 		#endregion Pinned Object Access
 	}
 }
