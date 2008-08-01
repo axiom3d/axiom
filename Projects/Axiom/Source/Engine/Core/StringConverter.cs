@@ -34,6 +34,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 
@@ -43,6 +45,23 @@ using Axiom.Math;
 
 namespace Axiom.Core
 {
+	internal class CaseInsensitiveStringComparer : IEqualityComparer<string>
+	{
+		#region IEqualityComparer<string> Members
+
+		public bool Equals( string x, string y )
+		{
+			return x.ToLower() == y.ToLower();
+		}
+
+		public int GetHashCode( string obj )
+		{
+			return obj.ToLower().GetHashCode();
+		}
+
+		#endregion
+	}
+
     /// <summary>
     ///     Helper class for going back and forth between strings and various types.
     /// </summary>
@@ -69,6 +88,133 @@ namespace Axiom.Core
         #endregion Constructor
 
         #region Static Methods
+
+		#region String.Split() replacements
+
+#if !XBOX360 && !SILVERLIGHT
+
+		public static string[] Split( string s, char[] separators )
+		{
+			return s.Split( separators, -1, StringSplitOptions.None );
+		}
+
+		public static string[] Split( string s, char[] separators, int count )
+		{
+			return s.Split( separators, count, StringSplitOptions.None );
+		}
+
+#else
+
+		public static string[] Split( string s, char[] separators )
+		{
+			return s.Split( separators );
+		}
+
+		/// <summary>
+		/// Splits a string into an Array
+		/// </summary>
+		/// <param name="s">The String to split</param>
+		/// <param name="separators">Array of seperators to break the string at</param>
+		/// <param name="count">number of elements to return in the array</param>
+		/// <returns>An array containing the split strings</returns>
+		/// <remarks> Adapted from code supplied by andris11
+		/// <para>
+		/// If the number of seperators is greater than the count parameter
+		/// then the last element will contain the remainder of the string.
+		/// </para>
+		/// </remarks>
+		public static string[] Split( string s, char[] separators, int count ) //, StringSplitOptions options )
+		{
+			List<string> results;
+			string[] _strings;
+			bool removeEmptyEntries;
+			bool separatorFound = false;
+
+			//special cases 
+			Debug.Assert( s != null, "String instance not set." );
+
+			if ( count == 0 )
+			{
+				_strings = new string[] { };
+				return _strings;
+			}
+
+			removeEmptyEntries = false; //( options & StringSplitOptions.RemoveEmptyEntries ) == StringSplitOptions.RemoveEmptyEntries;
+			if ( s == String.Empty )
+			{
+				_strings = removeEmptyEntries ? new string[] { } : new string[ 1 ] { s }; //keep same instance 
+				return _strings;
+			}
+
+			//init 
+			StringBuilder str = new StringBuilder( s.Length );
+			results = new List<string>( s.Length > 10 ? 10 : s.Length );
+
+			if ( separators == null || separators.Length == 0 )
+				separators = new char[] { ' ' };
+
+			//parse 
+			//TODO: how to handle \n chars? see MSDN examples of String.Split() 
+
+			for ( int i = 0; i < s.Length; ++i )
+			{
+				bool isSeparator = false;
+
+				foreach ( char sep in separators ) //using foreach with arrays is optimised (.NET2.0) 
+				{
+					if ( s[ i ] == sep )
+					{
+						isSeparator = true;
+						break;
+					}
+				}
+
+				if ( isSeparator )
+				{
+					separatorFound = true; //so at least one separator was found 
+
+					if ( !( removeEmptyEntries && str.Length == 0 ) )
+					{
+						results.Add( str.ToString() );
+						str.Length = 0;
+					}
+
+				}
+				else
+				{
+					str.Append( s[ i ] );
+				}
+
+				if ( count > 0 && results.Count == count - 1 )
+				{
+					str.Append( s.Substring( i+1 ) );
+					break; //limit reached 
+				}
+
+			}
+
+			if ( !( count > 0 && results.Count == count ) )
+			{
+				if ( !( removeEmptyEntries && str.Length == 0 ) )
+				{
+					results.Add( str.ToString() );
+				}
+			}
+
+			//result 
+			if ( !separatorFound )
+			{
+				//no separator found, return just the same string 
+				return new string[ 1 ] { s }; //keep same instance, see MSDN 
+			}
+			else
+			{
+				return results.ToArray();
+			}
+		}
+
+#endif
+		#endregion
 
         /// <summary>
         ///		Parses a boolean type value 

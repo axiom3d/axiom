@@ -39,6 +39,7 @@ using System.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
+using System.Runtime.InteropServices;
 
 #endregion Namespace Declarations
 
@@ -330,7 +331,7 @@ namespace Axiom.SceneManagers.Octree
 
             float[] vertex = new float[ 1 ];
 
-            IntPtr ptr = System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement( vertex, 0 );
+            IntPtr ptr = Memory.PinObject( vertex );
 
             int offset = ( x * 3 + z * options.size * 3 + n ) * 4;
 

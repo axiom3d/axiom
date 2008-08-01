@@ -129,9 +129,11 @@ namespace Axiom.Math.Collections
 
         #region Implementation (data)
         private Vector3[] m_array;
-        private int m_count = 0;
+        private int m_count; // defaults to 0
+#if !(XBOX || XBOX360 || SILVERLIGHT)
         [NonSerialized]
-        private int m_version = 0;
+#endif
+        private int m_version; // defaults to 0
         #endregion
 
         #region Static Wrappers
@@ -215,7 +217,7 @@ namespace Axiom.Math.Collections
 
         protected Vector3List( Tag t )
         {
-            m_array = null;
+            //m_array = null; //[FXCop Optimization : Do not initialize unnecessarily]
         }
         #endregion
 
@@ -580,7 +582,11 @@ namespace Axiom.Math.Collections
         {
             int max = ( allowEqualEnd ) ? ( m_count ) : ( m_count - 1 );
             if ( i < 0 || i > max )
+#if !(XBOX || XBOX360 || SILVERLIGHT )
                 throw new System.ArgumentOutOfRangeException( "Index was out of range.  Must be non-negative and less than the size of the collection.", (object)i, "Specified argument was out of the range of valid values." );
+#else
+                throw new System.ArgumentOutOfRangeException("Index was out of range.  Must be non-negative and less than the size of the collection.", "Specified argument was out of the range of valid values.");
+#endif
         }
 
         private void EnsureCapacity( int min )

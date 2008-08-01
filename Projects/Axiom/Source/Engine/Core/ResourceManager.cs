@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
@@ -69,12 +69,12 @@ namespace Axiom.Core
         /// <summary>
         ///		A cached list of all resources in memory.
         ///	</summary>
-        protected Hashtable resourceList = System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
-        protected Hashtable resourceHandleMap = new Hashtable();
+        protected Dictionary<string,Resource> resourceList = new Dictionary<string,Resource>( new CaseInsensitiveStringComparer() );
+        protected Dictionary<int,Resource> resourceHandleMap = new Dictionary<int,Resource>();
         /// <summary>
         ///		A lookup table used to find a common archive associated with a filename.
         ///	</summary>
-        protected Hashtable filePaths = System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
+		protected Dictionary<string, Archive> filePaths = new Dictionary<string, Archive>( new CaseInsensitiveStringComparer() );
         /// <summary>
         ///		A cached list of archives specific to a resource type.
         ///	</summary>
@@ -82,7 +82,7 @@ namespace Axiom.Core
         /// <summary>
         ///		A lookup table used to find a archive associated with a filename.
         ///	</summary>
-        static protected Hashtable commonFilePaths = System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
+		static protected Dictionary<string, Archive> commonFilePaths = new Dictionary<string, Archive>( new CaseInsensitiveStringComparer() );
         /// <summary>
         ///		A cached list of archives common to all resource types.
         ///	</summary>
@@ -272,9 +272,9 @@ namespace Axiom.Core
             AddCommonArchive( path, "Folder" );
         }
 
-        public static StringCollection GetAllCommonNamesLike( string startPath, string extension )
+        public static IList<String> GetAllCommonNamesLike( string startPath, string extension )
         {
-            StringCollection allFiles = new StringCollection();
+            List<String> allFiles = new List<String>();
 
             for ( int i = 0; i < commonArchives.Count; i++ )
             {
@@ -359,7 +359,7 @@ namespace Axiom.Core
             Resource resource = null;
 
             // find the resource in the Hashtable and return it
-            if ( resourceHandleMap[ handle ] != null )
+            if ( resourceHandleMap.ContainsKey( handle ) )
             {
                 resource = (Resource)resourceHandleMap[ handle ];
                 resource.Touch();
@@ -380,7 +380,7 @@ namespace Axiom.Core
             Resource resource = null;
 
             // find the resource in the Hashtable and return it
-            if ( resourceList[ name ] != null )
+            if ( resourceList.ContainsKey( name ) )
             {
                 resource = (Resource)resourceList[ name ];
             }

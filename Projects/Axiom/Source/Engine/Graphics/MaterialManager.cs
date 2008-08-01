@@ -35,7 +35,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-using System.Collections.Specialized;
 using System.IO;
 using System.Reflection;
 
@@ -327,18 +326,18 @@ namespace Axiom.Graphics
         /// <returns></returns>
         public override Resource Create( string name )
         {
-            if ( resourceList[ name ] != null )
+			Material material = GetByName( name );
+
+			if ( material == null )
             {
-                //TODO: Add Logging - Instead of throwing an exception, log an warning
-                //throw new AxiomException( string.Format( "Cannot create a duplicate material named '{0}'.", name ) );
-                return (Material)resourceList[ name ];
+				// create a material
+				material = new Material( name );
+				Add( material );
+			}
+			else
+			{
+				LogManager.Instance.Write("MaterialManager : Warning : Cannot create a duplicate material named '{0}'.", name );
             }
-
-
-            // create a material
-            Material material = new Material( name );
-
-            Add( material );
 
             return material;
         }

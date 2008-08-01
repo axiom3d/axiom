@@ -34,7 +34,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Drawing;
 using System.Text;
 
 using Axiom.Core;
@@ -97,7 +96,7 @@ namespace Axiom.Fonts
         protected float[] texCoordV2 = new float[ END_CHAR - START_CHAR ];
         protected float[] aspectRatio = new float[ END_CHAR - START_CHAR ];
 
-        protected bool showLines = false;
+        protected bool showLines; //defaults to false
 
         #endregion
 

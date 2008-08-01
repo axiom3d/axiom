@@ -36,7 +36,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-using System.Drawing;
 using System.Reflection;
 
 using Axiom.Collections;
@@ -330,7 +329,7 @@ namespace Axiom.Overlays
                 {
                     AttributeParserAttribute parserAtt = parserAtts[ j ];
 
-                    attribParsers.Add( parserAtt.Name, Delegate.CreateDelegate( typeof( AttributeParserMethod ), method ) );
+                    attribParsers.Add( parserAtt.Name, Delegate.CreateDelegate( typeof( AttributeParserMethod ), null, method ) );
                 } // for
             } // for
         }

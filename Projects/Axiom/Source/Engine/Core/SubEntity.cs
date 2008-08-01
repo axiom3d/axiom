@@ -295,7 +295,7 @@ namespace Axiom.Core
         {
             if ( parent.numBoneMatrices == 0 )
             {
-                matrices[ 0 ] = parent.ParentFullTransform;
+                matrices[ 0 ] = parent.ParentNodeFullTransform;
             }
             else
             {

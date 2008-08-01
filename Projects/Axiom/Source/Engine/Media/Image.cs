@@ -223,6 +223,7 @@ namespace Axiom.Media
 
             // find a registered codec for this type
             ICodec codec = CodecManager.Instance.GetCodec( ext );
+            // TODO: Need ArchiveManager
             Stream encoded = ResourceManager.FindCommonResourceData( fileName );
             if ( encoded == null || fileName.Length == 0 )
                 throw new FileNotFoundException( fileName );

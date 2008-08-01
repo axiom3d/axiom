@@ -34,14 +34,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Collections.Specialized;
 
+using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Graphics;
 
 using Tao.OpenGl;
-using Axiom.Collections;
 
 #endregion Namespace Declarations
 
@@ -50,14 +50,14 @@ namespace Axiom.RenderSystems.OpenGL
     /// <summary>
     /// Summary description for GLHelper.
     /// </summary>
-    public abstract class BaseGLSupport
+    internal abstract class BaseGLSupport
     {
         #region Fields
 
         /// <summary>
         ///		Collection of extensions supported by the current hardware.
         /// </summary>
-        private static StringCollection extensionList;
+        private static List<String> extensionList;
         /// <summary>
         ///		OpenGL version string.
         /// </summary>
@@ -95,7 +95,7 @@ namespace Axiom.RenderSystems.OpenGL
         /// <summary>
         ///		Gets a collection of strings listing all the available extensions.
         /// </summary>
-        public StringCollection Extensions
+        public List<String> Extensions
         {
             get
             {
@@ -182,7 +182,7 @@ namespace Axiom.RenderSystems.OpenGL
                 }
 
                 // create a new extension list
-                extensionList = new StringCollection();
+                extensionList = new List<String>();
 
                 string allExt = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_EXTENSIONS ) );
                 string[] splitExt = allExt.Split( Char.Parse( " " ) );

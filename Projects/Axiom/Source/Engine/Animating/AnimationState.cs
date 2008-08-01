@@ -58,7 +58,8 @@ namespace Axiom.Animating
     ///		This class implements the IControllerValue interface to enable automatic update of
     ///		animation state through controllers.
     /// </remarks>
-    public class AnimationState : IControllerValue, IComparable {
+    public class AnimationState : IControllerValue, IComparable
+    {
         #region Member variables
 
         /// <summary>Name of this animation track.</summary>
@@ -73,7 +74,7 @@ namespace Axiom.Animating
         protected float weight;
         /// <summary></summary>
         protected bool isEnabled;
-		protected bool lookAt = false;
+		protected bool lookAt;
 		protected bool loop;
 
         #endregion
@@ -88,7 +89,8 @@ namespace Axiom.Animating
         /// <param name="length"></param>
         /// <param name="weight"></param>
         /// <param name="isEnabled"></param>
-        internal AnimationState(string animationName, float time, float length, float weight, bool isEnabled) {
+        internal AnimationState( string animationName, float time, float length, float weight, bool isEnabled )
+        {
             this.animationName = animationName;
             this.time = time;
             this.weight = weight;
@@ -105,34 +107,50 @@ namespace Axiom.Animating
         /// <param name="animationName"></param>
         /// <param name="time"></param>
         /// <param name="length"></param>
-        internal AnimationState(string animationName, float time, float length) {
-            this.animationName = animationName;
-            this.time = time;
-            this.Length = length;
-            this.weight = 1.0f;
-            this.isEnabled = false;
-			this.loop = true;
+        internal AnimationState( string animationName, float time, float length ) : this( animationName, time, length, 1.0f, false )
+        {
         }
 
         #endregion
 
         #region Properties
 
-		public bool FaceDirectionOfMotion { get { return lookAt; } set { lookAt = value; } }
+        public bool FaceDirectionOfMotion
+        {
+            get
+            {
+                return lookAt;
+            }
+            set
+            {
+                lookAt = value;
+            }
+        }
 
         /// <summary>
         ///		Gets the name of the animation to which this state applies
         /// </summary>
-        public string Name {
-            get { return animationName; }
-            set { animationName = value; }
+        public string Name
+        {
+            get
+            {
+                return animationName;
+            }
+            set
+            {
+                animationName = value;
+        }
         }
 
         /// <summary>
         ///		Gets/Sets the time position for this animation.
         /// </summary>
-        public float Time {
-            get { return time; }
+        public float Time
+        {
+            get
+            {
+                return time;
+            }
             set 
 			{ 
 				time = value;
@@ -158,9 +176,14 @@ namespace Axiom.Animating
         /// <summary>
         ///		Gets/Sets the total length of this animation (may be shorter than whole animation)
         /// </summary>
-        public float Length {
-            get { return length; }
-            set { 
+        public float Length
+        {
+            get
+            {
+                return length;
+            }
+            set
+            {
                 length = value; 
 
                 // update the inverse length of the animation
@@ -174,23 +197,43 @@ namespace Axiom.Animating
         /// <summary>
         /// Gets/Sets the weight (influence) of this animation
         /// </summary>
-        public float Weight {
-            get { return weight; }
-            set { weight = value; }
+        public float Weight
+        {
+            get
+            {
+                return weight;
+            }
+            set
+            {
+                weight = value;
+        }
         }
 
         /// <summary>
         ///		Gets/Sets whether this animation is enabled or not.
         /// </summary>
-        public bool IsEnabled {
-            get { return isEnabled; }
-            set { isEnabled = value; }
+        public bool IsEnabled
+        {
+            get
+            {
+                return isEnabled;
+            }
+            set
+            {
+                isEnabled = value;
+        }
         }
 		public bool Loop 
 		{
-			get { return loop; }
-			set { loop = value; }
+            get
+            {
+                return loop;
+            }
+            set
+            {
+                loop = value;
 		}
+        }
         #endregion
 
         #region Public methods
@@ -199,7 +242,8 @@ namespace Axiom.Animating
         ///		Modifies the time position, adjusting for animation length.
         /// </summary>
         /// <param name="offset">Offset from the current time position.</param>
-        public void AddTime(float offset) {
+        public void AddTime( float offset )
+        {
 			this.Time = (time += offset);
         }
 
@@ -217,7 +261,8 @@ namespace Axiom.Animating
         ///     Copies the details of this AnimationState instance to another instance.
         /// </summary>
         /// <param name="target">Target instance to copy our details to.</param>
-        public void CopyTo(AnimationState target) {
+        public void CopyTo( AnimationState target )
+        {
             target.time = time;
             target.inverseLength = inverseLength;
             target.length = length;
@@ -245,9 +290,16 @@ namespace Axiom.Animating
         /// <summary>
         ///		Gets/Sets the value to be used in a ControllerFunction.
         /// </summary>
-        public float Value {
-            get { return time * inverseLength;	}
-            set {	time = value * length; }
+        public float Value
+        {
+            get
+            {
+                return time * inverseLength;
+            }
+            set
+            {
+                time = value * length;
+        }
         }
         #endregion
 
@@ -287,7 +339,8 @@ namespace Axiom.Animating
         ///    Done mainly to quash warnings, no real need for it.
         /// </remarks>
         /// <returns></returns>
-        public override int GetHashCode() {
+        public override int GetHashCode()
+        {
             return animationName.GetHashCode();
         }
 
@@ -300,18 +353,21 @@ namespace Axiom.Animating
         /// </summary>
         /// <param name="obj"></param>
         /// <returns>0 if they are the same, -1 otherwise.</returns>
-        public int CompareTo(object obj) {
+        public int CompareTo( object obj )
+        {
             AnimationState other = obj as AnimationState;
 
             if (animationName == other.animationName &&
                 isEnabled == other.isEnabled &&
                 time == other.time &&
                 weight == other.weight &&
-                length == other.length) {
+                length == other.length )
+            {
 
                 return 0;
             }
-            else {
+            else
+            {
                 return -1;
             }
         }
