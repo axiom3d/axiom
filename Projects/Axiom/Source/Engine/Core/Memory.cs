@@ -34,6 +34,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 #endregion Namespace Declarations
 
@@ -55,6 +57,7 @@ namespace Axiom.Core
 
         #endregion Constructor
 
+		#region Copy Method
         /// <summary>
         ///		Method for copying data from one IntPtr to another.
         /// </summary>
@@ -88,6 +91,7 @@ namespace Axiom.Core
                 }
             }
         }
+		#endregion Copy Method
 
         /// <summary>
         ///     Sets the memory to 0 starting at the specified offset for the specified byte length.
@@ -107,5 +111,38 @@ namespace Axiom.Core
                 }
             }
         }
+		#region Pinned Object Access
+
+		private static Dictionary<object, GCHandle> _pinnedReferences = new Dictionary<object, GCHandle>();
+		public static IntPtr PinObject( object obj )
+		{
+			GCHandle handle;
+			if ( _pinnedReferences.ContainsKey( obj ) )
+			{
+				handle = _pinnedReferences[ obj ];
+			}
+			else
+			{
+				handle = GCHandle.Alloc( obj, GCHandleType.Pinned );
+				_pinnedReferences.Add( obj, handle );
+			}
+			return handle.AddrOfPinnedObject();
+		}
+
+        public static void UnpinObject( object obj )
+        {
+            if ( _pinnedReferences.ContainsKey( obj ) )
+            {
+                GCHandle handle = _pinnedReferences[ obj ];
+                handle.Free();
+                _pinnedReferences.Remove( obj );
+            }
+            else
+            {
+                LogManager.Instance.Write( "MemoryManager : Attempted to unpin memory that wasn't pinned." );
+            }
+        }
+
+		#endregion Pinned Object Access
     }
 }

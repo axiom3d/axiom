@@ -316,7 +316,7 @@ namespace Axiom.Graphics
         /// </param>
         public void WriteData( int offset, int length, System.Array data )
         {
-            IntPtr dataPtr = Marshal.UnsafeAddrOfPinnedArrayElement( data, 0 );
+            IntPtr dataPtr = Memory.PinObject( data );
 
             WriteData( offset, length, dataPtr );
         }
@@ -337,7 +337,7 @@ namespace Axiom.Graphics
         /// </param>
         public void WriteData( int offset, int length, System.Array data, bool discardWholeBuffer )
         {
-            IntPtr dataPtr = Marshal.UnsafeAddrOfPinnedArrayElement( data, 0 );
+			IntPtr dataPtr = Memory.PinObject( data );
 
             WriteData( offset, length, dataPtr, discardWholeBuffer );
         }

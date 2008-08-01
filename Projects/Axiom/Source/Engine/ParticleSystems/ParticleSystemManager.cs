@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -530,7 +530,7 @@ namespace Axiom.ParticleSystems
         /// </summary>
         private void ParseAllSources()
         {
-            StringCollection particleFiles = ResourceManager.GetAllCommonNamesLike( "", ".particle" );
+            IList<String> particleFiles = ResourceManager.GetAllCommonNamesLike( "", ".particle" );
 
             foreach ( string file in particleFiles )
             {
@@ -700,7 +700,7 @@ namespace Axiom.ParticleSystems
         /// <param name="emitter"></param>
         private void ParseEmitterAttrib( string line, ParticleEmitter emitter )
         {
-            string[] values = line.Split( new char[] { ' ' }, 2 );
+            string[] values = StringConverter.Split( line, new char[] { ' ' }, 2 );
 
             if ( !( emitter.SetParam( values[ 0 ], values[ 1 ] ) ) )
             {
@@ -716,7 +716,7 @@ namespace Axiom.ParticleSystems
         /// <param name="affector"></param>
         private void ParseAffectorAttrib( string line, ParticleAffector affector )
         {
-            string[] values = line.Split( new char[] { ' ' }, 2 );
+			string[] values = StringConverter.Split( line, new char[] { ' ' }, 2 );
 
             if ( !( affector.SetParam( values[ 0 ], values[ 1 ] ) ) )
             {
@@ -857,7 +857,7 @@ namespace Axiom.ParticleSystems
                     {
                         // this method should parse a material attribute
                         case PARTICLE:
-                            attribParsers.Add( parserAtt.Name, Delegate.CreateDelegate( typeof( ParticleSystemAttributeParser ), method ) );
+                            attribParsers.Add( parserAtt.Name, Delegate.CreateDelegate( typeof( ParticleSystemAttributeParser ), null, method ) );
                             break;
 
                     } // switch

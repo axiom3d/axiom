@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.IO;
 
 using Axiom.Core;
@@ -92,7 +92,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///    Collection of syntax codes that this program manager supports.
         /// </summary>
-        protected StringCollection syntaxCodes = new StringCollection();
+        protected List<String> syntaxCodes = new List<String>();
 
         #endregion
 

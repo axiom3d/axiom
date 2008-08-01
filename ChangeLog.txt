@@ -1,3 +1,158 @@
+01-30-2008 - Borrillis
+- Added missing VertexElementTypes Color_ARGB & Color_ABGR which was causng some mesh load problems with meshes created with oFusion
+- hobbiton merged to trunk
+
+10-23-2007 - Borrillis
+- hobbiton merged to trunk
+
+10-23-2007 - Borrillis
+- Fixed PagingLandscape to build and run properly
+- Corrected WorldOrientation/WorldPosition implementation in Node
+
+10-12-2007 - Borrillis
+- Fix for compile error on SDL/Mono
+- Corrected Alpha setting for RenderWindows in GL
+
+08-30-2007 - Borrillis
+- Fixed nAnt builds on mono/linux
+
+08-01-2007 - Borrillis
+hobbiton merged to trunk
+
+07-30-2007 - Borrillis
+- Updated Fix for Serializer.IsEOF [1710556]
+- Updated Build numbers
+
+03-12-2007 - Borrillis
+- Reverted GCHandle usage in SoftwareBufferManager.cs as it does not lock the buffer properly.
+- Fixed up the Axiom.prebuild to remove some extraneous references.
+- Updated ConfigDialog from crickhollow to fix some refresh bugs
+- Removed some extra comments.
+[ 1582151 ] VertexDeclaration.FindElementBySource returns empty list
+[ 1511228 ] SceneManager.CreateEntity bug
+
+01-02-2007 - Borrillis
+hobbiton merged to trunk
+
+12-29-2006 - Borrillis
+- Updated NAnt to 0.85 final release
+
+12-27-2006 - Borrillis
+[AxiomDemos]
+- Completed build system changes
+[YAT]
+- Completed build system changes
+[Chess]
+- Completed build system changes
+
+- Added CeGui Libs to Build System
+- Added CeGui build include
+- Fixed Chess and YAT builds for media
+- Move Chronos to Top level and started fitting it into the Build system
+
+
+12-22-2006 - Borrillis
+- Updated Prebuild and Nant scripts for AxiomDemos
+- Renamed Prebuild.xml to [project].prebuild for more clarity
+
+12-21-2006 - Borrillis
+- Fixups for build changes for Axiom Project only
+- Renamed Axiom3D folder to Axiom
+- Started moving AxiomDemos into new build system
+
+12-19-2006 - Borrillis
+- Rearranged Sources Directory, removed folder hiearchy and added a projects.html file for descriptions of the projects.
+- Added version numbers to Lib folder hierachy to support multiple versions in the BuildSystem
+  Updated all projects to build properly
+- Renamed Source to Projects for more clarity  
+
+12-17-2006 - c0d3g33k
+- Bringing build system and project layout changes over from the hobbiton_reloaded branch.  
+  Don't know if everything works, but demos seem to build and run fine.
+
+12-16-2006 - Borrillis
+[Axiom Chess]
+- Updated for latest Hobbiton
+- Added script files
+- Updated for latest CeGui
+
+- Updated Prebuild with custom build
+- Added Chronos World Editor Source
+
+12-15-2006 - Borrillis
+YAT Changes:
+- Minor Enhancements to Config Dialog
+- Reorgonized Media Files
+- Media is now copied to output directory
+- DevIL.dll is copied to output directory
+- Needs updated Prebuild to handle exclusions correctly
+[ hobbiton ] 
+- Fixed Resource Not Found error when loading auto window
+
+- Added Samples Project. MultipleRenderWindow Sample and any other Samples posted to the Wiki will go here.
+
+12-13-2006 - Borrillis
+- Fixed Node removal, was causing a stack overflow in Axiom Chess
+- Changed Resource Loading to return null if a resource was not found instead of throwing an Exception
+- Added null check for lighting pass in SceneManager
+- Added set on FragmentProgramName in Pass
+- Added some sanity checks in MaterialSerializer
+- Added Scale to Skeleton Reader
+- Fixed Compiler error in SdlTimer
+
+12-12-2006 - Borrillis
+- Modified Win32Timer and SDLTimer to use System.Diagnostics.Stopwatch instead of P/Invokes
+- Updated TechDemo to display 2 digits after the decimal for FPS.
+
+12-05-2006 - Borrillis
+- Fixed Materials for Water Demo
+- Fixed Materials for ParticleFX Demos
+- Minor math optimizations
+- Added new constructor to AxiomException to include original Exception
+- Merged Many changes from trunk
+- Added NameValuePairList
+- Added ResourceGroupManager
+- Split RenderPriorityGroup and RenderQueueGroup into own files
+- Updated ParticleSystems and Billboards
+- Added ParticleSystemRenderer and ParticleSystemRendererFactory
+- Added ParticleVisualData
+
+10-17-2006 - Borrillis
+-Added Physics code to related_projects
+
+9-28-2006 - jendave
+- rearranged Prebuild to support autotools
+
+9-27-2006 - jendave
+- Updated Prebuild
+
+9-26-2006 - Borrillis	
+- Added Chess sample application
+- Added support for building the documentation with Sandcastle.
+- Added SharpDevelop 2.x solution batch
+
+9-22-2006 - c0d3g33k
+Intermediate build system changes.  NOTE: These are transitory changes so don't reflect the permanent state of things.  Everything still works, but build files and build support files will continue to change and move around until the build revamp is complete.
+
+Current changes:
+
+- pull unused targets out of main build
+- pull framework support targets into an include file for eventual use by other builds.
+- modifications to main build file and demos build file.
+
+9-22-2006 - jendave
+- Updated build and prebuild files for all projects
+
+9-21-2006 - jendave
+- Updated Prebuild
+
+9-18-2006 - Borrillis
+- Released RC1
+- Updated build files
+- Fixed Compile error in OpenGL SDL Renderer from Configuration changes
+- Removed unused directory in Media
+- Updated build system for distributions
+
 9-16-2006 - Borrillis
 - Fixed most of the problems with the CubeMapping demo, more remain.
 - Updated Renderer Configuration handling

@@ -90,7 +90,7 @@ namespace Axiom.Overlays.Elements
         internal Panel( string name )
             : base( name )
         {
-            this.IsTransparent = false;
+            //this.IsTransparent = false; //[FXCop Optimization : Do not initialize unnecessarily], Defaults to false, left here for clarity
             // initialize the default tiling to 1 for all layers
             for ( int i = 0; i < Config.MaxTextureLayers; i++ )
             {
@@ -99,7 +99,7 @@ namespace Axiom.Overlays.Elements
             }
 
             // Defer creation of texcoord buffer until we know how big it needs to be
-            this.numTexCoordsInBuffer = 0;
+            //this.numTexCoordsInBuffer = 0; //[FXCop Optimization : Do not initialize unnecessarily], Defaults to 0, left here for clarity
         }
 
         #endregion

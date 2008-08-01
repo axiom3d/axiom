@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <project name="Axiom" default="build">
 <!--
-	Member of the core Axiom3D build
+	Member of the core Axiom build
 	Axiom references should refer to the build dir listed below
 	
 	Required properties:
-		* axiom3d.build.dir			- (path) root level to build to
+		* axiom.build.dir			- (path) root level to build to
 		* build.debug				- (true|false) debug build?
 		* current.build.defines 	- framework-specific build defines
 -->

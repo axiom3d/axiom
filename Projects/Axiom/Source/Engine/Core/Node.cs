@@ -386,7 +386,7 @@ namespace Axiom.Core
                 case TransformSpace.World:
                     if ( parent != null )
                     {
-                        position += parent.DerivedOrientation.Inverse() * translate;
+                        position += ( parent.DerivedOrientation.Inverse() * translate ) / parent.DerivedScale;
                     }
                     else
                     {
@@ -396,7 +396,7 @@ namespace Axiom.Core
                     break;
 
                 case TransformSpace.Parent:
-                    position = position + translate;
+                    position += translate;
                     break;
             }
 
@@ -952,7 +952,7 @@ namespace Axiom.Core
         ///	to update it's complete transformation based on it's parents
         ///	derived transform.
         /// </summary>
-        // TODO This was previously protected.  Was made internal to allow access to custom collections.
+        // TODO This was previously protected.  Was made internal to allow access from custom collections.
         virtual internal void UpdateFromParent()
         {
             if ( parent != null )
@@ -961,24 +961,21 @@ namespace Axiom.Core
                 Quaternion parentOrientation = parent.DerivedOrientation;
                 derivedOrientation = parentOrientation * orientation;
 
-                // change position vector based on parent's orientation
-                derivedPosition = parentOrientation * position;
-
                 // update scale
+                Vector3 parentScale = parent.DerivedScale;
                 if ( inheritsScale )
                 {
-                    // set out own position by parent scale
-                    Vector3 parentScale = parent.DerivedScale;
-                    derivedPosition = derivedPosition * parentScale;
-
                     // set own scale, just combine as equivalent axes, no shearing
-                    derivedScale = scale * parentScale;
+                    derivedScale = parentScale * scale;
                 }
                 else
                 {
                     // do not inherit parents scale
                     derivedScale = scale;
                 }
+
+                // Change position vector based on parent's orientation & scale
+                derivedPosition = parentOrientation * ( parentScale * position );
 
                 // add parents positition to local altered position
                 derivedPosition += parent.DerivedPosition;

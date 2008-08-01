@@ -1653,6 +1653,14 @@ namespace Axiom.RenderSystems.OpenGL
                     default:
                         break;
                 } // switch
+
+                if ( !caps.CheckCap( Capabilities.VertexBuffer ) )
+                {
+                    // We didn't lock the Vertex buffer, but by getting the DataPointer the memory is pinned, this will free 
+                    // it up for the Garbage Collector to manage again
+                    ( (SoftwareVertexBuffer)vertexBuffer ).Unlock();
+                }
+
             } // for
 
             // reset to texture unit 0
@@ -1718,6 +1726,13 @@ namespace Axiom.RenderSystems.OpenGL
                 //					op.indexData.indexCount,
                 //					indexType, indexPtr);
                 Gl.glDrawElements( primType, op.indexData.indexCount, indexType, indexPtr );
+
+                if ( !caps.CheckCap( Capabilities.VertexBuffer ) )
+                {
+                    // We didn't lock the Index buffer, but by getting the DataPointer the memory is pinned, this will free 
+                    // it up for the Garbage Collector to manage again
+                    ( (SoftwareIndexBuffer)op.indexData.indexBuffer ).Unlock();
+                }
             }
             else
             {
