@@ -336,10 +336,8 @@ namespace Axiom.Graphics
 			}
 			else
 			{
-				//TODO: Add Logging - Instead of throwing an exception, log a warning
-				//throw new AxiomException( string.Format( "Cannot create a duplicate material named '{0}'.", name ) );
+				LogManager.Instance.Write("MaterialManager : Warning : Cannot create a duplicate material named '{0}'.", name );
 			}
-
 
             return material;
         }

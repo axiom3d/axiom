@@ -331,8 +331,7 @@ namespace Axiom.SceneManagers.Octree
 
             float[] vertex = new float[ 1 ];
 
-            GCHandle handle = GCHandle.Alloc( vertex, GCHandleType.Pinned );
-            IntPtr ptr = handle.AddrOfPinnedObject();
+            IntPtr ptr = Memory.PinObject( vertex );
 
             int offset = ( x * 3 + z * options.size * 3 + n ) * 4;
 
