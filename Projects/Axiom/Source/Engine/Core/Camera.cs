@@ -1234,7 +1234,7 @@ namespace Axiom.Core
 
 			if ( ProjectionType == Projection.Perspective )
 			{
-				Vector3 pos = Position;
+				Vector3 pos = GetPositionForViewUpdate();
 
 				windowClipPlanes.Add( new Plane( pos, vwBottomLeft, vwUpLeft ) );
 				windowClipPlanes.Add( new Plane( pos, vwUpLeft, vwUpRight ) );
