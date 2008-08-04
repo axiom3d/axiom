@@ -40,6 +40,7 @@ using System.Diagnostics;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -68,11 +69,21 @@ namespace Axiom.Overlays
     {
         #region Member variables
 
-        protected Hashtable children = new Hashtable();
-        protected ArrayList childList = new ArrayList();
-        protected Hashtable childContainers = new Hashtable();
-
+        protected Dictionary<string, OverlayElement> children = new Dictionary<string, OverlayElement>();
+        protected List<OverlayElement> childList = new List<OverlayElement>();
+        protected Dictionary<string, OverlayElement> childContainers = new Dictionary<string, OverlayElement>();
         protected bool childrenProcessEvents;
+
+        /// <summary>
+        /// Gets the children OverlayElements as a Key-Value collection
+        /// </summary>
+        public IDictionary<string, OverlayElement> Children
+        {
+            get
+            {
+                return children;
+            }
+        }
 
         #endregion
 
