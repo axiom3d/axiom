@@ -339,9 +339,9 @@ namespace Axiom.Demos
                     camera.PolygonMode = PolygonMode.Points;
                 }
 
-                Console.WriteLine( "Rendering mode changed to '{0}'.", camera.PolygonMode );
+                SetDebugText( String.Format( "Rendering mode changed to '{0}'.", camera.PolygonMode ) );
 
-                toggleDelay = 1;
+                toggleDelay = .3f;
             }
 
             if ( input.IsKeyPressed( KeyCodes.T ) && toggleDelay < 0 )
@@ -363,64 +363,78 @@ namespace Axiom.Demos
                         break;
                 }
 
-                Console.WriteLine( "Texture Filtering changed to '{0}'.", filtering );
+                SetDebugText( String.Format( "Texture Filtering changed to '{0}'.", filtering ) );
 
                 // set the new default
                 MaterialManager.Instance.SetDefaultTextureFiltering( filtering );
                 MaterialManager.Instance.DefaultAnisotropy = aniso;
 
-                toggleDelay = 1;
+                toggleDelay = .3f;
             }
 
-            if ( input.IsKeyPressed( KeyCodes.P ) )
+            if ( input.IsKeyPressed( KeyCodes.P ) && toggleDelay < 0 )
             {
                 string[] temp = Directory.GetFiles( Environment.CurrentDirectory, "screenshot*.jpg" );
                 string fileName = string.Format( "screenshot{0}.jpg", temp.Length + 1 );
 
                 TakeScreenshot( fileName );
 
-                // show briefly on the screen
-                debugText = string.Format( "Wrote screenshot '{0}'.", fileName );
+                // show on the screen for some seconds
+                SetDebugText( string.Format( "Wrote screenshot '{0}'.", fileName ) );
 
-                // show for 2 seconds
-                debugTextDelay = 2.0f;
+                toggleDelay = .3f;
             }
 
-            if ( input.IsKeyPressed( KeyCodes.B ) )
+            if ( input.IsKeyPressed( KeyCodes.B ) && toggleDelay < 0 )
             {
                 scene.ShowBoundingBoxes = !scene.ShowBoundingBoxes;
+
+                SetDebugText( String.Format( "Bounding boxes {0}.", scene.ShowBoundingBoxes ? "visible" : "hidden" ) );
+
+                toggleDelay = .3f;
             }
 
-            if ( input.IsKeyPressed( KeyCodes.F ) )
+            if ( input.IsKeyPressed( KeyCodes.F ) && toggleDelay < 0 )
             {
                 // hide all overlays, includes ones besides the debug overlay
                 viewport.ShowOverlays = !viewport.ShowOverlays;
+                toggleDelay = .3f;
             }
 
-            if ( input.IsKeyPressed( KeyCodes.Comma ) )
+            if ( input.IsKeyPressed( KeyCodes.Comma ) && toggleDelay < 0 )
             {
                 Root.Instance.MaxFramesPerSecond = 60;
+
+                SetDebugText( String.Format( "Limiting framerate to {0} FPS.", Root.Instance.MaxFramesPerSecond ) );
+
+                toggleDelay = .3f;
             }
 
-            if ( input.IsKeyPressed( KeyCodes.Period ) )
+            if ( input.IsKeyPressed( KeyCodes.Period ) && toggleDelay < 0 )
             {
                 Root.Instance.MaxFramesPerSecond = 0;
+
+                SetDebugText( String.Format( "Framerate limit OFF.", Root.Instance.MaxFramesPerSecond ) );
+
+                toggleDelay = .3f;
             }
 
 #if !DEBUG
-            if ( !input.IsMousePressed( MouseButtons.Left ) )
-            {
-                float cameraYaw = -input.RelativeMouseX * .13f;
-                float cameraPitch = -input.RelativeMouseY * .13f;
+			if ( !input.IsMousePressed( MouseButtons.Left ) )
+			{
+				float cameraYaw = -input.RelativeMouseX * .13f;
+				float cameraPitch = -input.RelativeMouseY * .13f;
 
-                camera.Yaw( cameraYaw );
-                camera.Pitch( cameraPitch );
-            }
-            else
-            {
-                cameraVector.x += input.RelativeMouseX * 0.13f;
-            }
+				camera.Yaw( cameraYaw );
+				camera.Pitch( cameraPitch );
+			}
+			else
+			{
+				// TODO unused
+				cameraVector.x += input.RelativeMouseX * 0.13f;
+			}
 #endif
+
             camVelocity += ( camAccel * scaleMove * camSpeed );
 
             // move the camera based on the accumulated movement vector
@@ -477,6 +491,26 @@ namespace Axiom.Demos
 
             element = OverlayManager.Instance.Elements.GetElement( "Core/NumTris" );
             element.Text = string.Format( "Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered );
+        }
+
+        /// <summary>
+        /// Show a text message on screen for two seconds.
+        /// </summary>
+        /// <param name="text"></param>
+        protected void SetDebugText( string text )
+        {
+            SetDebugText( text, 2.0f );
+        }
+
+        /// <summary>
+        /// Show a text message on screen for the specified amount of time.
+        /// </summary>
+        /// <param name="text">Text to show</param>
+        /// <param name="delay">Duration in seconds</param>
+        protected void SetDebugText( string text, float delay )
+        {
+            debugText = text;
+            debugTextDelay = delay;
         }
 
         #endregion Event Handlers
