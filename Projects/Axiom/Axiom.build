@@ -74,7 +74,7 @@
 	
 		<property name="project.version.major"     value="0" unless="${property::exists('project.version.major')}"/>
 		<property name="project.version.minor" 	   value="7" unless="${property::exists('project.version.minor')}"/>
-		<property name="project.version.increment" value="3" unless="${property::exists('project.version.increment')}"/>
+		<property name="project.version.increment" value="4" unless="${property::exists('project.version.increment')}"/>
 		<property name="project.version.build"     value="${if(project.config=='release','0',build.number)}" />
 		
 		<property name="project.version"           value="${project.version.major}.${project.version.minor}.${project.version.increment}.${project.version.build}" />
