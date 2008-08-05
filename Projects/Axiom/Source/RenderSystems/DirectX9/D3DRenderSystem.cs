@@ -814,7 +814,7 @@ namespace Axiom.RenderSystems.DirectX9
 				// Bind render targets
 				device.SetRenderTarget( 0, back );
 				// TODO: FIXME: Support multiple render targets
-				//uint count = caps.NumMultiRenderTargets;
+				//uint count = d3dCaps.NumberSimultaneousRts;
 				//for (int i = 0; i < count; ++i) {
 				//    device.SetRenderTarget(i, back[i]);
 				//}
