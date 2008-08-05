@@ -107,10 +107,14 @@ namespace Axiom.Math
 
 		// NOTE: This is different from what is in OGRE. Not sure why this is the case ATM, however, do not change it.
 		private readonly static Matrix4 clipSpace2dToImageSpace = new Matrix4(
-			0.5f, 0, 0, -0.5f,
-			0, -0.5f, 0, -0.5f,
-			0, 0, 0, 1,
-			0, 0, 0, 1 );
+            //0.5f, 0, 0, -0.5f,
+            //0, -0.5f, 0, -0.5f,
+            //0, 0, 0, 1,
+            //0, 0, 0, 1 );
+        0.5f,    0,  0, 0.5f, 
+          0, -0.5f,  0, 0.5f, 
+          0,    0,  1,   0,
+          0,    0,  0,   1);
 
 		#endregion
 
@@ -453,7 +457,7 @@ namespace Axiom.Math
 		{
 			Vector3 result = new Vector3();
 
-			float inverseW = 1.0f / ( matrix.m30 + matrix.m31 + matrix.m32 + matrix.m33 );
+            float inverseW = 1.0f / ( matrix.m30 * vector.x + matrix.m31 * vector.y + matrix.m32 * vector.z + matrix.m33 );
 
 			result.x = ( ( matrix.m00 * vector.x ) + ( matrix.m01 * vector.y ) + ( matrix.m02 * vector.z ) + matrix.m03 ) * inverseW;
 			result.y = ( ( matrix.m10 * vector.x ) + ( matrix.m11 * vector.y ) + ( matrix.m12 * vector.z ) + matrix.m13 ) * inverseW;
