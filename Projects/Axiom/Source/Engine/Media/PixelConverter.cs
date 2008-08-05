@@ -1029,6 +1029,8 @@ namespace Axiom.Media
 		{
 			Debug.Assert( src.Width == dst.Width && src.Height == dst.Height && src.Depth == dst.Depth );
 
+            LogManager.Instance.Write( "Converting image from {0} to {1}", PixelUtil.GetFormatName( src.Format ), PixelUtil.GetFormatName( dst.Format ) );
+
 			// Check for compressed formats, we don't support decompression, compression or recoding
 			if ( PixelBox.Compressed( src.Format ) || PixelBox.Compressed( dst.Format ) )
 			{
