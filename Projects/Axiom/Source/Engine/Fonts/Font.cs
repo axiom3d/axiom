@@ -565,8 +565,9 @@ namespace Axiom.Fonts
 			g.Clear( System.Drawing.Color.Transparent );
 
 			// nice smooth text
-			g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-			g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
 
 			// used for calculating position in the image for rendering the characters
 			int x, y, maxHeight;
