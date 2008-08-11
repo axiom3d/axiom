@@ -53,11 +53,11 @@
 	  The following section is used to easily modify the version of the dependency used.
 	-->
 	<property name="version.ICSharpCode.SharpZipLib" value="0.84.0.0"  dynamic="false" />
-	<property name="version.Tao" 					 value="2.0.0.0"   dynamic="false" />
+	<property name="version.Tao" 					 value="2.1.0.0"   dynamic="false" />
 	<property name="version.ManagedDX"				 value="1.0.2902.0" dynamic="false" />
 
 	<property name="libs.managed.ICSharpCode.SharpZipLib.dir"			value="${libs.managed.portable.dir}/ICSharpCode.SharpZipLib/${version.ICSharpCode.SharpZipLib}"	/>
-	<property name="libs.managed.Tao.dir"			 					value="${libs.managed.portable.dir}/Tao/${version.Tao}" />
+	<property name="libs.managed.Tao.dir"			 					value="${libs.managed.portable.dir}/Tao/${version.Tao}/bin" />
 
 	<!-- Windows only managed assemblies --> 
 	<property name="Tao.Platform.Windows.dll" value="${libs.managed.Tao.dir}/Tao.Platform.Windows.dll" dynamic="false" />

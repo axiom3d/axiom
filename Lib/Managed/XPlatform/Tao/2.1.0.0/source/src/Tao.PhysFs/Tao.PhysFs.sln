@@ -1,0 +1,25 @@
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tao.PhysFs", "Tao.PhysFs.csproj", "{6B39535D-B2C1-414C-94A4-BBB70EF8EB0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhysFsExamples", "..\..\examples\PhysFsExamples\PhysFsExamples.csproj", "{8937F640-29DA-43B3-887E-88F5A855F01B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6B39535D-B2C1-414C-94A4-BBB70EF8EB0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B39535D-B2C1-414C-94A4-BBB70EF8EB0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B39535D-B2C1-414C-94A4-BBB70EF8EB0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B39535D-B2C1-414C-94A4-BBB70EF8EB0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8937F640-29DA-43B3-887E-88F5A855F01B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8937F640-29DA-43B3-887E-88F5A855F01B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8937F640-29DA-43B3-887E-88F5A855F01B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8937F640-29DA-43B3-887E-88F5A855F01B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

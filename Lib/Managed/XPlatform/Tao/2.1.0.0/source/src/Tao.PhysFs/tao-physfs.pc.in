@@ -1,0 +1,9 @@
+prefix=@prefix@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+
+Name: Tao.PhysFs
+Description: PhysFs section of the Tao framework
+Version: @TAOPHYSFS_VERSION@
+Requires:
+Libs: -r:${libdir}/mono/tao-physfs-@TAOPHYSFS_MAJOR@/Tao.PhysFs.dll

@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+
+Name: Tao.Cg
+Description: CG portion of the Tao framework
+Version: @TAOCG_VERSION@
+Requires:
+Libs: -r:${libdir}/mono/tao-cg-@TAOCG_MAJOR@/Tao.Cg.dll
+

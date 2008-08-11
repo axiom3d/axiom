@@ -1,0 +1,288 @@
+<?xml version="1.0" ?>
+<project name="TaoFramework" default="package">
+    <!--
+    Targets:
+    buildrelease: builds release versions of libraries and examples.
+    package: creates release zip file for .NET and Mono.
+    -->
+    <echo message="Using '${nant.settings.currentframework}' Framework"/>
+
+    <!-- global project settings -->
+    <property name="project.config" value="Release" />
+    <property name="project.version" value="2.1.0" />
+    <property name="src.dir" value="src" />
+    <property name="examples.dir" value="examples" />
+    <property name="tests.dir" value="tests" />
+    <property name="dist.dir" value="dist" />
+    <property name="source.dir" value="source" />
+    <property name="bin.dir" value="bin" />
+    <property name="obj.dir" value="obj" />
+    <property name="lib.dir" value="lib" />
+    <property name="doc.dir" value="doc" />
+    <property name="dmg.dir" value="TaoFramework-${project.version}" />
+    <property name="is-osx" value="false"/>
+    <property name="gacdir" value="" overwrite="false" />
+    <property name="gacutil-package" value="" overwrite="false" />
+    <property name="pkgconfig" value="/usr/lib/pkgconfig" overwrite="false" />
+
+    <target name="net-2.0" description="Sets framework to .NET 2.0">
+	<property name="nant.settings.currentframework" value="net-2.0" />
+    </target>
+
+    <target name="mono-2.0" description="Sets framework to mono 2.0">
+	<call target="check-osx" />
+	<property name="nant.settings.currentframework" value="mono-2.0" />
+    </target>
+
+    <target name="check-osx" description="Checks if running on OSX">
+	<if test="${file::exists('/System/Library/Frameworks/Cocoa.framework/Cocoa')}">
+	    <property name="is-osx" value="true" />
+	</if>
+    </target>
+
+    <target name="clean" description="Clean project">
+	<delete dir="${bin.dir}" failonerror="false" />
+	<delete dir="${obj.dir}" failonerror="false" />
+	<delete dir="${dist.dir}" failonerror="false" />
+	<nant buildfile="${src.dir}/Tao.DevIl/Tao.DevIl.build" target="clean" />
+	<nant buildfile="${src.dir}/Tao.Ode/Tao.Ode.build" target="clean" />
+	<nant buildfile="${src.dir}/Tao.PhysFs/Tao.PhysFs.build" target="clean" />
+	<nant buildfile="${src.dir}/Tao.Sdl/Tao.Sdl.build" target="clean" />
+	<nant buildfile="${src.dir}/Tao.Lua/Tao.Lua.build" target="clean" />
+	<nant buildfile="${src.dir}/Tao.FFmpeg/Tao.FFmpeg.build" target="clean" />
+	<nant buildfile="${src.dir}/Tao.FreeType/Tao.FreeType.build" target="clean" />
+	<nant buildfile="${src.dir}/Tao.OpenGl/Tao.OpenGl.build" target="clean" />
+    </target>
+
+    <target name="install" description="Build and install into GAC">
+	<property name="tao.base.dir" value="${project::get-base-directory()}" />
+	<nant buildfile="${src.dir}/Tao.OpenGl/Tao.OpenGl.build" target="install" />
+	<nant buildfile="${src.dir}/Tao.DevIl/Tao.DevIl.build" target="install" />
+	<nant buildfile="${src.dir}/Tao.Ode/Tao.Ode.build" target="install" />
+	<nant buildfile="${src.dir}/Tao.PhysFs/Tao.PhysFs.build" target="install" />
+	<nant buildfile="${src.dir}/Tao.Sdl/Tao.Sdl.build" target="install" />
+	<nant buildfile="${src.dir}/Tao.Lua/Tao.Lua.build" target="install" />
+	<nant buildfile="${src.dir}/Tao.FFmpeg/Tao.FFmpeg.build" target="install" />
+    </target>
+
+    <target name="package-no-doc" depends="build-release" description="Package without docs">
+	<call target="copyfiles" />
+	<call target="zip" />
+    </target>
+
+    <target name="build-release" depends="clean" description="Build Assemblies">
+	<nant buildfile="${src.dir}/Tao.DevIl/Tao.DevIl.build" target="${nant.settings.currentframework} build-release" />
+	<nant buildfile="${src.dir}/Tao.Ode/Tao.Ode.build" target="${nant.settings.currentframework} build-release" />
+	<nant buildfile="${src.dir}/Tao.PhysFs/Tao.PhysFs.build" target="${nant.settings.currentframework} build-release" />
+	<nant buildfile="${src.dir}/Tao.Sdl/Tao.Sdl.build" target="${nant.settings.currentframework} build-release" />
+	<nant buildfile="${src.dir}/Tao.Lua/Tao.Lua.build" target="${nant.settings.currentframework} build-release" />
+	<nant buildfile="${src.dir}/Tao.FFmpeg/Tao.FFmpeg.build" target="${nant.settings.currentframework} build-release" />
+	<nant buildfile="${src.dir}/Tao.FreeType/Tao.FreeType.build" target="${nant.settings.currentframework} build-release" />
+	<nant buildfile="${src.dir}/Tao.OpenGl/Tao.OpenGl.build" target="${nant.settings.currentframework} build-release" />
+    </target>
+
+    <target name="package" depends="clean" description="Package">
+	<nant buildfile="${src.dir}/Tao.DevIl/Tao.DevIl.build" target="${nant.settings.currentframework} package" />
+	<nant buildfile="${src.dir}/Tao.Ode/Tao.Ode.build" target="${nant.settings.currentframework} package" />
+	<nant buildfile="${src.dir}/Tao.PhysFs/Tao.PhysFs.build" target="${nant.settings.currentframework} package" />
+	<nant buildfile="${src.dir}/Tao.Sdl/Tao.Sdl.build" target="${nant.settings.currentframework} package" />
+	<nant buildfile="${src.dir}/Tao.Lua/Tao.Lua.build" target="${nant.settings.currentframework} package" />
+	<nant buildfile="${src.dir}/Tao.FFmpeg/Tao.FFmpeg.build" target="${nant.settings.currentframework} package" />
+	<nant buildfile="${src.dir}/Tao.FreeType/Tao.FreeType.build" target="${nant.settings.currentframework} package" />
+	<nant buildfile="${src.dir}/Tao.OpenGl/Tao.OpenGl.build" target="${nant.settings.currentframework} package" />
+	<call target="copyfiles" />
+	<call target="zip" />
+    </target>
+
+    <target name="package-debug" description="Package Debug Mode" depends="clean">
+	<property name="project.config" value="Debug" />
+	<nant buildfile="${src.dir}/Tao.DevIl/Tao.DevIl.build" target="${nant.settings.currentframework} clean build-debug" />
+	<nant buildfile="${src.dir}/Tao.Ode/Tao.Ode.build" target="${nant.settings.currentframework} clean build-debug" />
+	<nant buildfile="${src.dir}/Tao.PhysFs/Tao.PhysFs.build" target="${nant.settings.currentframework} clean build-debug" />
+	<nant buildfile="${src.dir}/Tao.Sdl/Tao.Sdl.build" target="${nant.settings.currentframework} clean build-debug" />
+	<nant buildfile="${src.dir}/Tao.Lua/Tao.Lua.build" target="${nant.settings.currentframework} clean build-debug" />
+	<nant buildfile="${src.dir}/Tao.FFmpeg/Tao.FFmpeg.build" target="${nant.settings.currentframework} build-debug" />
+	<nant buildfile="${src.dir}/Tao.FreeType/Tao.FreeType.build" target="${nant.settings.currentframework} build-debug" />
+	<nant buildfile="${src.dir}/Tao.OpenGl/Tao.OpenGl.build" target="${nant.settings.currentframework} clean build-debug" />
+	<call target="copyfiles" />
+    </target>
+
+    <!-- copy project files -->
+    <target name="copyfiles">
+	<if test="${project.config=='Release'}">
+	    <copy todir="${dist.dir}/${string::to-lower(project::get-name())}-${project.version}/${source.dir}">
+		<fileset>
+		    <include name="**" />
+		    <exclude name="**/${obj.dir}/**" />
+		    <exclude name="**/${bin.dir}/**" />
+		    <exclude name="**/*j.user" />
+		    <exclude name="**.suo" />
+		    <exclude name="**/*.mdp" />
+		    <exclude name="**/*.mds" />
+		    <exclude name="**/*.cmbx" />
+		    <exclude name="**/*.old" />
+		    <exclude name="**/*.prjx" />
+		    <exclude name="**/Makefile" />
+		    <exclude name="**/configure" />
+		    <exclude name="**/*.stackdump" />
+		    <exclude name="**/*.lnk" />
+		    <exclude name="**/config.status" />
+		    <exclude name="**/config.log" />
+		    <exclude name="**/aclocal.m4" />
+		    <exclude name="**/doc/**" />
+		    <exclude name="**/dist/**" />
+		    <exclude name="**/autom4te.cache/**" />
+		    <exclude name="**/Debug/**" />
+		    <exclude name="**/Release/**" />
+		    <exclude name="**.swp" />
+		    <exclude name="**.bak" />
+		    <exclude name="**.project" />
+		    <exclude name="**/.auto/**" />
+		</fileset>
+	    </copy>
+	</if>
+
+	<copy todir="${dist.dir}/${string::to-lower(project::get-name())}-${project.version}/${doc.dir}" flatten="true">
+	    <fileset basedir="${src.dir}">
+		<include name="**/*.chm"/>
+	    </fileset>
+	</copy>
+
+	<if test="${platform::is-unix()}">
+	    <foreach item="Folder" property="foldername">
+		<echo message="${foldername}"/>
+		<in>
+		    <items>
+			<include name="${src.dir}/*"/>
+		    </items>
+		</in>
+		<do>
+		    <copy todir="${dist.dir}/${string::to-lower(project::get-name())}-${project.version}/${doc.dir}" >
+			<fileset basedir="${foldername}/${bin.dir}/${project.config}/doc">
+			    <include name="**" />
+			    <exclude name="*.chm"/>
+			</fileset>
+		    </copy>
+		</do>
+	    </foreach>
+	</if>
+	<copy todir="${dist.dir}/${string::to-lower(project::get-name())}-${project.version}/bin" flatten="true">
+	    <fileset basedir="${src.dir}">
+		<include name="**/*.dll"/>
+		<include name="**/*.xml"/>
+		<exclude name="**/prebuild.xml"/>
+		<exclude name="**/nunit.framework.dll"/>
+		<exclude name="**/*Bind*"/>
+	    </fileset>
+	</copy>
+	<if test="${platform::is-unix()}">
+	    <copy todir="${dist.dir}/${string::to-lower(project::get-name())}-${project.version}/bin" flatten="true">
+		<fileset basedir="${src.dir}">
+		    <include name="**/*.config"/>
+		    <exclude name="**/app.config"/>
+		</fileset>
+	    </copy>
+	</if>
+	<if test="${platform::is-win32()}">
+	    <copy todir="${dist.dir}/${string::to-lower(project::get-name())}-${project.version}/lib">
+		<fileset basedir="${project::get-base-directory()}/${lib.dir}/win32deps">
+		    <include name="**"/>
+		</fileset>
+	    </copy>
+	</if>
+	<copy todir="${dist.dir}/${string::to-lower(project::get-name())}-${project.version}/${examples.dir}" flatten="true">
+	    <fileset>
+		<include name="${examples.dir}/**/*.sh" />
+		<include name="${examples.dir}/**/*.exe" />
+		<include name="${src.dir}/**/*.dll" />
+		<exclude name="**/nunit.framework.dll"/>
+		<exclude name="**/app.config"/>
+		<exclude name="**/*Bind*"/>
+	    </fileset>
+	</copy>
+	<if test="${platform::is-unix()}">
+	    <copy todir="${dist.dir}/${string::to-lower(project::get-name())}-${project.version}/${examples.dir}" flatten="true">
+		<fileset basedir="${src.dir}">
+		    <include name="**/*.config"/>
+		    <exclude name="**/app.config"/>
+		</fileset>
+	    </copy>
+	</if>
+	<copy todir="${dist.dir}/${string::to-lower(project::get-name())}-${project.version}/${examples.dir}/Data" flatten="true">
+	    <fileset>
+		<include name="${examples.dir}/**/Data/**" />
+	    </fileset>
+	</copy>
+	<if test="${is-osx}">
+	    <property name="examples.path" value="${dist.dir}/${string::to-lower(project::get-name())}-${project.version}/${examples.dir}"/>
+	    <exec program="macpack" commandline="-m:2 -o:${examples.path}  -m cocoa -r:${examples.path}/Tao.Sdl.dll -r:${examples.path}/Tao.Sdl.dll.config -r:examples/SdlExamples/Data -i:other/Tao_Logos/tao.icns  -n:SdlExamples -a:${examples.path}/SdlExamples.exe" />
+	    <exec program="macpack" commandline="-m:2 -o:${examples.path}  -m cocoa -r:${examples.path}/Tao.OpenGl.dll -r:${examples.path}/Tao.OpenGl.dll.config -r:${examples.path}/Tao.Cg.dll -r:${examples.path}/Tao.Cg.dll.config -r:${examples.path}/Tao.FreeGlut.dll -r:${examples.path}/Tao.FreeGlut.dll.config -r:examples/CgExamples/Data -i:other/Tao_Logos/tao.icns  -n:CgExamples -a:${examples.path}/CgExamples.exe" />
+	    <exec program="macpack" commandline="-m:2 -o:${examples.path}  -m cocoa -r:${examples.path}/Tao.OpenGl.dll -r:${examples.path}/Tao.OpenGl.dll.config -r:${examples.path}/Tao.Platform.Windows.dll -r:${examples.path}/Tao.Platform.Windows.dll.config -r:${examples.path}/Tao.FreeGlut.dll -r:${examples.path}/Tao.FreeGlut.dll.config -r:examples/NeHe/Data -i:other/Tao_Logos/tao.icns  -n:NeHe -a:${examples.path}/NeHe.exe" />
+	    <exec program="macpack" commandline="-m:2 -o:${examples.path}  -m cocoa -r:${examples.path}/Tao.OpenGl.dll -r:${examples.path}/Tao.OpenGl.dll.config -r:${examples.path}/Tao.FreeGlut.dll -r:${examples.path}/Tao.FreeGlut.dll.config -r:examples/FreeGlutExamples/Data -i:other/Tao_Logos/tao.icns  -n:FreeGlutExamples -a:${examples.path}/FreeGlutExamples.exe" />
+	    <exec program="macpack" commandline="-m:2 -o:${examples.path}  -m cocoa -r:${examples.path}/Tao.OpenGl.dll -r:${examples.path}/Tao.OpenGl.dll.config -r:${examples.path}/Tao.FreeGlut.dll -r:${examples.path}/Tao.FreeGlut.dll.config -r:examples/GeWangExamples/Data -i:other/Tao_Logos/tao.icns  -n:GeWangExamples -a:${examples.path}/GeWangExamples.exe" />
+	    <exec program="macpack" commandline="-m:2 -o:${examples.path}  -m cocoa -r:${examples.path}/Tao.OpenGl.dll -r:${examples.path}/Tao.OpenGl.dll.config -r:${examples.path}/Tao.Glfw.dll -r:${examples.path}/Tao.Glfw.dll.config -r:examples/GlfwExamples/Data -i:other/Tao_Logos/tao.icns  -n:GlfwExamples -a:${examples.path}/GlfwExamples.exe" />
+	    <exec program="macpack" commandline="-m:2 -o:${examples.path}  -m cocoa -r:${examples.path}/Tao.OpenGl.dll -r:${examples.path}/Tao.OpenGl.dll.config -r:${examples.path}/Tao.FreeGlut.dll -r:${examples.path}/Tao.FreeGlut.dll.config -r:examples/NateRobins/Data -i:other/Tao_Logos/tao.icns  -n:NateRobins -a:${examples.path}/NateRobins.exe" />
+	    <exec program="macpack" commandline="-m:2 -o:${examples.path}  -m cocoa -r:${examples.path}/Tao.OpenGl.dll -r:${examples.path}/Tao.OpenGl.dll.config -r:${examples.path}/Tao.FreeGlut.dll -r:${examples.path}/Tao.FreeGlut.dll.config -r:${examples.path}/Tao.OpenAl.dll -r:${examples.path}/Tao.OpenAl.dll.config -r:examples/OpenAlExamples/Data -i:other/Tao_Logos/tao.icns  -n:OpenAlExamples -a:${examples.path}/OpenAlExamples.exe" />
+	    <exec program="macpack" commandline="-m:2 -o:${examples.path}  -m cocoa -r:${examples.path}/Tao.OpenGl.dll -r:${examples.path}/Tao.OpenGl.dll.config -r:${examples.path}/Tao.FreeGlut.dll -r:${examples.path}/Tao.FreeGlut.dll.config -r:examples/Redbook/Data -i:other/Tao_Logos/tao.icns  -n:Redbook -a:${examples.path}/Redbook.exe" />
+	    <exec program="macpack" commandline="-m:2 -o:${examples.path}  -m cocoa -r:${examples.path}/Tao.DevIl.dll -r:${examples.path}/Tao.Devil.dll.config -r:examples/DevIlExamples/Data -i:other/Tao_Logos/tao.icns  -n:DevIlExamples -a:${examples.path}/DevIlExamples.exe" />
+	    <exec program="macpack" commandline="-m:2 -o:${examples.path}  -m cocoa -r:${examples.path}/Tao.FFMpeg.dll -r:${examples.path}/Tao.FFmpeg.dll.config -r:examples/FFmpegExamples/Data -i:other/Tao_Logos/tao.icns  -n:FFmpegExamples -a:${examples.path}/FFmpegExamples.exe" />
+	    <exec program="macpack" commandline="-m:2 -o:${examples.path}  -m cocoa -r:${examples.path}/Tao.Lua.dll -r:${examples.path}/Tao.Lua.dll.config -r:examples/LuaFunctions/Data -i:other/Tao_Logos/tao.icns  -n:LuaFunctions -a:${examples.path}/LuaFunctions.exe" />
+	    <exec program="macpack" commandline="-m:2 -o:${examples.path}  -m cocoa -r:${examples.path}/Tao.Lua.dll -r:${examples.path}/Tao.Lua.dll.config -r:examples/LuaSimple/Data -i:other/Tao_Logos/tao.icns  -n:LuaSimple -a:${examples.path}/LuaSimple.exe" />
+	    <exec program="macpack" commandline="-m:2 -o:${examples.path}  -m cocoa -r:${examples.path}/Tao.Ode.dll -r:${examples.path}/Tao.Ode.dll.config -r:examples/OdeExamples/Data -i:other/Tao_Logos/tao.icns  -n:OdeExamples -a:${examples.path}/OdeExamples.exe" />
+	    <exec program="macpack" commandline="-m:2 -o:${examples.path}  -m cocoa -r:${examples.path}/Tao.PhysFs.dll -r:${examples.path}/Tao.PhysFs.dll.config -r:examples/PhyFsExamples/Data -i:other/Tao_Logos/tao.icns  -n:PhysFsExamples -a:${examples.path}/PhysFsExamples.exe" />
+	    <exec program="macpack" commandline="-m:2 -o:${examples.path}  -m cocoa -r:${examples.path}/Tao.FFmpeg.dll -r:${examples.path}/Tao.FFmpeg.dll.config -r:${examples.path}/Tao.OpenAl.dll  -r:${examples.path}/Tao.OpenAl.dll.config -i:other/Tao_Logos/tao.icns  -n:TaoMediaPlayer -a:${examples.path}/TaoMediaPlayer.exe" />
+	    <move todir="${dist.dir}/${string::to-lower(project::get-name())}-${project.version}/">
+		<fileset basedir="${dist.dir}/${string::to-lower(project::get-name())}-${project.version}/${examples.dir}">
+		    <include name="CgExamples.app/**"/>
+		    <include name="SdlExamples.app/**"/>
+		    <include name="FreeGlutExamples.app/**"/>
+		    <include name="GeWangExamples.app/**"/>
+		    <include name="GlfwExamples.app/**"/>
+		    <include name="NeHe.app/**"/>
+		    <include name="Redbook.app/**"/>
+		    <include name="NateRobins.app/**"/>
+		    <include name="OpenAlExamples.app/**"/>
+		    <include name="DevIlExamples.app/**"/>
+		    <include name="FFmpegExamples.app/**"/>
+		    <include name="LuaFunctions.app/**"/>
+		    <include name="LuaSimple.app/**"/>
+		    <include name="OdeExamples.app/**"/>
+		    <include name="PhysFsExamples.app/**"/>
+		    <include name="TaoMediaPlayer.app/**"/>
+		</fileset>
+	    </move>
+	    <delete dir="${examples.path}"/>
+	</if>
+    </target>
+
+    <!-- create zip file -->
+    <target name="zip" description="zip/gzip files">
+	<property name="project.zip-path" value="${project::get-base-directory()}/${dist.dir}/${string::to-lower(project::get-name())}-${project.version}"/>
+	<if test="${platform::is-unix() and not is-osx}">
+	    <tar destfile="${project.zip-path}.tar.gz" compression="GZip">
+		<fileset basedir="${dist.dir}">
+		    <include name="${project.zip-path}/**" />
+		</fileset>
+	    </tar>
+	</if>
+	<if test="${platform::is-win32()}">
+	    <zip zipfile="${project.zip-path}.zip">
+		<fileset basedir="${dist.dir}">
+		    <include name="${project.zip-path}/**" />
+		</fileset>
+	    </zip>
+	</if>
+	<echo message="Created '${project::get-name()}' packages at ${project.zip-path}" />
+    </target>
+
+    <target name="create-installer" depends="package" description="Create Installer file">
+	<if test="${platform::is-unix() and not is-osx}">
+	</if>
+	<if test="${platform::is-win32()}">
+	    <exec program="C:\Program Files\NSIS\makensis.exe" commandline="other/win32installer/TaoFramework.nsi" />
+	</if>
+	<if test="${is-osx}">
+	    <exec program="hdiutil" commandline="create -srcfolder ${dist.dir}/${string::to-lower(project::get-name())}-${project.version} ${dist.dir}/${dmg.dir}" />
+	</if>
+    </target>
+</project>

@@ -1,0 +1,128 @@
+2008-05-01T00:00 
+	* Tao.Sdl - fixed SDL_overlay struct.
+	* Tao.Sdl - Added non-CLS compliant methods
+	* Tao.Sdl - updated to SDL 1.2.13
+	* Tao.Cg - Updated to Cg 2.0
+	* Added Tao.FFmpeg, Tao.FreeType, Tao.Platform.X11
+	* Fixed uninstall issues with the Windows Installer.
+	* Added make build system.
+	* Removed prebuild from the build system (still used for GAC functionality).
+	* Examples are now OSX bundles.
+	* Sdl, OpenGl, Cg, FreeGlut (GLUT actually) work on OSX but the others do not have installers. OpenAl has partial support.
+	* Tao.Lua - Updated to 5.1.3
+	* Added TaoMediaPlayer as an example for Tao.FFmpeg.
+	* Tao.Ode - updated to 0.9.
+	* Tao.OpenGl - Optimized cold boot time, by using reflection to reduce jitted LOC. 
+	* Tao.OpenGl - Simplified and optimized extension loading (now works on OSX, too). 
+	* Tao.OpenGl - Improved call speed for functions that take typed arrays as parameters (e.g. int[], short[], etc.) 
+	* Tao.OpenGl - Added ref/out overloads for functions taking pointers. 
+	* Tao.OpenGl - Added non-CLS compliant overloads for functions with unsigned parameters (e.g. uint, ushort etc.) 
+	* Tao.OpenGl - Reduced the total number of overloads by simplifying the generation process. 
+	* Tao.OpenGl - Fixed several bugs in the typemaps (GLbool -> bool, void* (return) -> IntPtr). 
+	* NAnt build extended with install function (previously just for package building)
+	* pkg-config files (important for distro's! since for example OpenSUSE uses Tao.OpenGL.pc, while Debian uses tao-opengl.pc, hopefully everyone will now start using the later one)
+	* OpenAL EFX support
+	* WGl extensions repaired
+
+2007-04-10T14:52  C.J. Adams-Collier <cjac@colliertech.org>
+	* other/Prebuild/Prebuild.exe, other/Prebuild/prebuild-1.7.xsd
+	* updated to new binary from Prebuild-cjac
+
+2007-02-10T06:00  David Hudson <jendave@yahoo.com>
+	* Updated Tao.Sdl to Sdl_gfx 2.0.16
+
+2007-01-18T18:30  Rob Loach <http://www.robloach.net>
+	* Tao.Lua updated to Lua 5.1.1
+	* Glfw.glfwGetJoystickPos argument fix
+	* Documentation
+
+2006-11-04T00:26  C.J. Adams-Collier  <cjcollier@colliertech.org>
+	* other/Prebuild/Prebuild.exe
+	- new version places AssemblyInfo.cs into Properties/ directory
+	* src/Tao.OpenAl/prebuild.xml
+	- added regex to skip AssemblyInfo.cs, since it's now auto-included
+	* src/Tao.OpenGl/prebuild.xml
+	- moved examples to ../Examples
+	* src/Examples/prebuild.xml
+	- this is where the examples now live
+	* src/Examples/Properties/AssemblyInfo.cs
+	- generated AssemblyInfo.cs for those who don't generate their own
+	* prebuild.xml
+	- now including src/Examples/prebuild.xml
+
+2006-11-03T18:36  C.J. Adams-Collier  <cjcollier@colliertech.org>
+	* make.sh
+	- Added install-data-local so that the .dlls get installed; hacky
+	* src/Tao.(GlBindGen,OpenAl)/(INSTALL,COPYING)
+	- Added.  empty	
+	* src/Tao.OpenGl/Tao.OpenAl.snk
+	- symlink to src/Tao.OpenAl/Tao.OpenAl.snk
+
+2006-11-03T18:04  C.J. Adams-Collier  <cjcollier@colliertech.org>
+	* prj2make.sh
+	- removed GlGenerator
+	* src/Tao.OpenAl/AUTHORS
+	- added Randy, Rob, Dave and myself
+	* src/Tao.OpenAl/prebuild.xml
+	- created.  You'll see more of these as I pull the non-OpenGl bits
+	out of OpenGl's prebuild.xml file
+	* src/Tao.OpenAl/(NEWS, README)
+	* created; empty
+	- src/Tao.(DevIl,Lua,OpenGl,Ode)/prebuild.xml
+	* removed XmlDocFile from its comment
+	- src/Tao.OpenGl/prebuild.xml
+	* not matching AssemblyInfo.cs from non-self packages
+	- prebuild.xml
+	* Added Tao.OpenAl
+	
+
+
+2006-10-08  C.J. Adams-Collier  <cjcollier@colliertech.org>
+	* prj2make.sh
+	- added this file.  This will be used by the build verification
+	  tests (http://taobvt.colliertech.org) to verify the msvc build
+	- note that the build currently fails.  This is better than the
+	  "always fail" case that's currently happening, though.
+	
+2006-10-07  C.J. Adams-Collier  <cjcollier@colliertech.org>
+	* src/Tao.DevIl/prebuild.xml, src/Tao.Ode/prebuild.xml,
+	  src/Tao.OpenGl/prebuild.xml, src/Tao.Lua/prebuild.xml -
+	  commented <KeyFile> and <XmlDocFile> elements that were causing
+	  nant build failure * build.sh - removed GlGenerator from the
+	  list to build due to a "File Not Found" error - removed copy
+	  commands for builds and docs that are broken
+	
+2006-10-05  C.J. Adams-Collier  <cjcollier@colliertech.org>
+	* clean.sh - created - supposedly reverses make.sh *
+	CodingStandards - A place for proposed coding standards (patch
+	formats, etc)
+
+2006-09-28  C.J. Adams-Collier  <cjcollier@colliertech.org>
+	* make.sh
+	- cleared up directory changing stuff
+	* src/Tao.OpenGl/prebuild.xml
+	- commented out examples that don't build due to marshaling errors
+
+2006-09-28T16:20  C.J. Adams-Collier  <cjcollier@colliertech.org>
+	* make.sh
+	- cleaned up some of the repetition
+	- fixed a case error
+
+2006-09-28T12:53  C.J. Adams-Collier  <cjcollier@colliertech.org>
+	* make.sh
+	- configure now uses args passed to "./make.sh"
+
+2006-09-28  C.J. Adams-Collier  <cjcollier@colliertech.org>
+        turned on exec bit for shell scripts, got rid of \r\n newlines
+
+
+Tao.Ode 0.6.0.0 - July 25, 2006:
+	Update to ODE 0.6 and conversion to .NET 2.0 essentially complete.
+	The ODE 0.6 release consists of many bug fixes and
+	improvements since the 0.5 release.
+	There are also many documented and undocumented changes in the API.
+	Notable changes: CCylinder renamed to Capsule
+			 Support for geom offsets added
+	This update also includes a patch from Markus Ewald to fix a bug in
+	dGeomSetRotation and inspired related changes.  Thanks Markus.
+

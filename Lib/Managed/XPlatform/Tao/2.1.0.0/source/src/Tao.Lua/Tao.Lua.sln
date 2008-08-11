@@ -1,0 +1,31 @@
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tao.Lua", "Tao.Lua.csproj", "{11D88031-4650-43D5-B626-4C3E9A276923}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuaFunctions", "..\..\examples\LuaFunctions\LuaFunctions.csproj", "{1130F7D5-1CB1-4619-837F-D4325D723D53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuaSimple", "..\..\examples\LuaSimple\LuaSimple.csproj", "{FD17B662-5A37-4FCD-A5AF-B654FA001E89}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{11D88031-4650-43D5-B626-4C3E9A276923}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11D88031-4650-43D5-B626-4C3E9A276923}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11D88031-4650-43D5-B626-4C3E9A276923}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11D88031-4650-43D5-B626-4C3E9A276923}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1130F7D5-1CB1-4619-837F-D4325D723D53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1130F7D5-1CB1-4619-837F-D4325D723D53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1130F7D5-1CB1-4619-837F-D4325D723D53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1130F7D5-1CB1-4619-837F-D4325D723D53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD17B662-5A37-4FCD-A5AF-B654FA001E89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD17B662-5A37-4FCD-A5AF-B654FA001E89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD17B662-5A37-4FCD-A5AF-B654FA001E89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD17B662-5A37-4FCD-A5AF-B654FA001E89}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

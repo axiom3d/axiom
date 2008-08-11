@@ -1,0 +1,31 @@
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tao.Sdl.Tests", "..\..\tests\Sdl\Tao.Sdl.Tests.csproj", "{FCDF610D-8D0C-41E1-AE18-4915FC461560}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tao.Sdl", "Tao.Sdl.csproj", "{DD8BE6C6-C237-4C82-B521-754900077769}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SdlExamples", "..\..\examples\SdlExamples\SdlExamples.csproj", "{BD901EFF-3281-40FB-9B1B-6A3D3663842E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FCDF610D-8D0C-41E1-AE18-4915FC461560}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCDF610D-8D0C-41E1-AE18-4915FC461560}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCDF610D-8D0C-41E1-AE18-4915FC461560}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCDF610D-8D0C-41E1-AE18-4915FC461560}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD8BE6C6-C237-4C82-B521-754900077769}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD8BE6C6-C237-4C82-B521-754900077769}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD8BE6C6-C237-4C82-B521-754900077769}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD8BE6C6-C237-4C82-B521-754900077769}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD901EFF-3281-40FB-9B1B-6A3D3663842E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD901EFF-3281-40FB-9B1B-6A3D3663842E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD901EFF-3281-40FB-9B1B-6A3D3663842E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD901EFF-3281-40FB-9B1B-6A3D3663842E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

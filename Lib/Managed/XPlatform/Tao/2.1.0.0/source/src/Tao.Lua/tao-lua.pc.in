@@ -1,0 +1,9 @@
+prefix=@prefix@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+
+Name: Tao.Lua
+Description: Lua portion of the Tao framework
+Version: @TAOLUA_VERSION@
+Requires:
+Libs: -r:${libdir}/mono/tao-lua-@TAOLUA_MAJOR@/Tao.Lua.dll

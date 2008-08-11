@@ -1,0 +1,73 @@
+<?xml version="1.0" ?>
+<project name="NeHe" default="build">
+    <target name="build">
+        <echo message="Build Directory is ${project::get-base-directory()}/${build.dir}" />
+        <mkdir dir="${project::get-base-directory()}/${build.dir}" />
+        <copy todir="${project::get-base-directory()}/${build.dir}" flatten="true">
+            <fileset basedir="${project::get-base-directory()}">
+                <include name="../../src/Tao.FreeGlut/${build.dir}/Tao.FreeGlut.dll" />
+                <include name="../../src/Tao.OpenGl/${build.dir}/Tao.OpenGl.dll" />
+                <include name="../../src/Tao.Platform.Windows/${build.dir}/Tao.Platform.Windows.dll" />
+            </fileset>
+        </copy>
+        <copy todir="${project::get-base-directory()}/${build.dir}">
+            <fileset basedir=".">
+            </fileset>
+        </copy>
+        <csc target="winexe" debug="${build.debug}" keyfile="../../src/Tao.OpenGl/Tao.OpenGl.snk" unsafe="False" define="DEBUG;TRACE;WIN32" main="NeHe.Program" output="${project::get-base-directory()}/${build.dir}/${project::get-name()}.exe" win32icon="App.ico">
+            <resources prefix="NeHe" dynamicprefix="true" >
+                <include name="NeHe.resx" />
+            </resources>
+            <sources failonempty="true">
+                <include name="NeHe.cs" />
+                <include name="Lesson01.cs" />
+                <include name="Lesson02.cs" />
+                <include name="Lesson03.cs" />
+                <include name="Lesson04.cs" />
+                <include name="Lesson05.cs" />
+                <include name="Lesson06.cs" />
+                <include name="Lesson07.cs" />
+                <include name="Lesson08.cs" />
+                <include name="Lesson09.cs" />
+                <include name="Lesson10.cs" />
+                <include name="Lesson11.cs" />
+                <include name="Lesson12.cs" />
+                <include name="Lesson13.cs" />
+                <include name="Lesson14.cs" />
+                <include name="Lesson15.cs" />
+                <include name="Lesson16.cs" />
+                <include name="Lesson17.cs" />
+                <include name="Lesson18.cs" />
+                <include name="Lesson19.cs" />
+                <include name="Lesson20.cs" />
+                <include name="Lesson21.cs" />
+                <include name="Lesson23.cs" />
+                <include name="Lesson25.cs" />
+                <include name="Lesson26.cs" />
+                <include name="Lesson34.cs" />
+                <include name="NeHe.Designer.cs" />
+                <include name="Program.cs" />
+                <include name="Properties/AssemblyInfo.cs" />
+            </sources>
+            <references basedir="${project::get-base-directory()}">
+                <lib>
+                    <include name="${project::get-base-directory()}" />
+                    <include name="${project::get-base-directory()}/${build.dir}" />
+                </lib>
+                <include name="System.dll" />
+                <include name="System.Windows.Forms.dll" />
+                <include name="System.Data.dll" />
+                <include name="System.Drawing.dll" />
+                <include name="../../src/Tao.FreeGlut/${build.dir}/Tao.FreeGlut.dll" />
+                <include name="../../src/Tao.OpenGl/${build.dir}/Tao.OpenGl.dll" />
+                <include name="../../src/Tao.Platform.Windows/${build.dir}/Tao.Platform.Windows.dll" />
+            </references>
+        </csc>
+    </target>
+    <target name="clean">
+        <delete dir="${bin.dir}" failonerror="false" />
+        <delete dir="${obj.dir}" failonerror="false" />
+    </target>
+    <target name="doc" description="Creates documentation.">
+    </target>
+</project>

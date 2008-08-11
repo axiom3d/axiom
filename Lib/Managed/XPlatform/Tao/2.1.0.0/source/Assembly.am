@@ -1,0 +1,43 @@
+# Generic assembly building automake rules
+
+pkgconfigdir = $(libdir)/pkgconfig
+
+# We need to install the .config file ourselves because of a gacutil
+# bug (https://bugzilla.novell.com/show_bug.cgi?id=363341)
+monodir = $(libdir)/mono/$(SHORTNAME)-$(MAJOR)
+mono_DATA = $(CONFIGFILE)
+
+noinst_DATA = $(ASSEMBLY).dll $(SHORTNAME).pc
+
+EXTRA_DIST = $(SOURCES) $(ASSEMBLY).csproj $(CONFIGFILE) $(KEYFILE)
+CLEANFILES = $(ASSEMBLY).dll $(ASSEMBLY).xml
+DISTCLEANFILES = $(SHORTNAME).pc
+
+# FIXME: doc generation is disabled for Tao.OpenGl because of a gmcs bug
+# (see also src/Makefile.am)
+$(ASSEMBLY).dll: $(RESOURCES) $(SOURCES) $(BINARY_LIBS) $(KEYFILE)
+	$(CSC) -out:$@ -target:library -unsafe \
+	  $(addprefix -pkg:, $(PACKAGES)) \
+	  $(addprefix -r:$(srcdir)/, $(BINARY_LIBS)) \
+	  $(addprefix -r:, $(SYSTEM_LIBS)) \
+	  $(addprefix $(srcdir)/, $(SOURCES)) \
+	  $$([ $(ASSEMBLY) = Tao.OpenGl ] || echo -doc:$(ASSEMBLY).xml) \
+	  $(addprefix -keyfile:$(srcdir)/, $(KEYFILE))
+
+# FIXME: gacutil's -package flag is broken and messes the symlink path so
+# we do not use it yet
+install-data-local: $(ASSEMBLY).dll
+	$(GACUTIL) -i $(ASSEMBLY).dll -package $(SHORTNAME)-$(MAJOR) \
+	  -f -root $(DESTDIR)$(libdir)
+	$(INSTALL) -d $(DESTDIR)$(pkgconfigdir)
+	$(INSTALL) -m 644 $(SHORTNAME).pc \
+	  $(DESTDIR)$(pkgconfigdir)/$(SHORTNAME)-$(MAJOR).pc
+	ln -sf $(SHORTNAME)-$(MAJOR).pc \
+	  $(DESTDIR)$(pkgconfigdir)/$(SHORTNAME).pc
+
+uninstall-local:
+	$(GACUTIL) -u $(ASSEMBLY), Version=$(VERSION) \
+	  -package $(SHORTNAME)-$(MAJOR) || true
+	rm -f $(DESTDIR)$(pkgconfigdir)/$(SHORTNAME)-$(MAJOR).pc
+	rm -f $(DESTDIR)$(pkgconfigdir)/$(SHORTNAME).pc
+
