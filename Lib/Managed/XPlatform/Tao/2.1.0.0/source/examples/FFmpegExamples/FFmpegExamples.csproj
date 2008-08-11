@@ -1,0 +1,136 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6A86C66C-2A58-4BBF-BA13-B54515052BAE}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>App.ico</ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>FFmpegExamples</AssemblyName>
+    <AssemblyOriginatorKeyFile>Tao.FFmpeg.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FFmpegExamples</RootNamespace>
+    <StartupObject>FFmpegExamples.Program</StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE;WIN32</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>True</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>
+    </NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;WIN32</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>False</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>
+    </NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <Name>System</Name>
+      <HintPath>\System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+      <HintPath>\System.Windows.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+      <HintPath>\System.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+      <HintPath>\System.Drawing.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Tao.FFmpeg\Tao.FFmpeg.csproj">
+      <Name>Tao.FFmpeg</Name>
+      <Project>{ABF4DD1F-C5CE-40E1-86B2-AA82127B1927}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Player.resx">
+      <DependentUpon>Player.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Player.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="AudioStream.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Decoder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Player.Designer.cs">
+      <DependentUpon>Player.cs</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Program.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Tao.FFmpeg.snk" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

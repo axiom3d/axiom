@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+
+Name: Tao.Platform.Windows
+Description: Windows-specific section of the Tao framework
+Version: @TAOWINDOWS_VERSION@
+Requires:
+Libs: -r:${libdir}/mono/tao-platform-windows-@TAOWINDOWS_MAJOR@/Tao.Platform.Windows.dll
+

@@ -1,0 +1,174 @@
+Name:           taoframework  
+Version:        2.0.0.svn20080420  
+Release:        1  
+License:        GPL  
+BuildRoot:      %{_tmppath}/%{name}-%{version}-build  
+BuildArch:      noarch  
+Group:          Development/Libraries/Mono  
+Summary:        The Tao Framework for Mono  
+Source:         %{name}-%{version}.tar.gz  
+  
+%if 0%{?suse_version} >= 1 || 0%{?sles_version} >= 1  
+BuildRequires:  pkg-config nant mono-core mono-devel  
+%else  
+%if 0%{?mandriva_version} >= 2006  
+BuildRequires:  pkgconfig mono nant  
+%else  
+BuildRequires:  pkgconfig nant mono-core mono-devel  
+%endif  
+%endif  
+  
+%description  
+The Tao Framework for .NET is a collection of bindings to facilitate cross-platform media application development utilizing the .NET and Mono platforms.  
+  
+%package opengl  
+Group:          Development/Libraries/Mono  
+Summary:        The Tao Framework for Mono, OpenGL Bindings  
+  
+%description opengl  
+The Tao Framework for .NET is a collection of bindings to facilitate cross-platform media application development utilizing the .NET and Mono platforms.  
+  
+This package contains OpenGL Bindings  
+  
+%package openal  
+Group:          Development/Libraries/Mono  
+Summary:        The Tao Framework for Mono, OpenAL Bindings  
+  
+%description openal  
+The Tao Framework for .NET is a collection of bindings to facilitate cross-platform media application development utilizing the .NET and Mono platforms.  
+  
+This package contains OpenAL Bindings  
+  
+%package freeglut  
+Group:          Development/Libraries/Mono  
+Summary:        The Tao Framework for Mono, freeglut Bindings  
+  
+%description freeglut  
+The Tao Framework for .NET is a collection of bindings to facilitate cross-platform media application development utilizing the .NET and Mono platforms.  
+  
+This package contains freeglut Bindings  
+  
+%package devil  
+Group:          Development/Libraries/Mono  
+Summary:        The Tao Framework for Mono, DevIL Bindings  
+  
+%description devil  
+The Tao Framework for .NET is a collection of bindings to facilitate cross-platform media application development utilizing the .NET and Mono platforms.  
+  
+This package contains DevIL Bindings  
+  
+%package ffmpeg  
+Group:          Development/Libraries/Mono  
+Summary:        The Tao Framework for Mono, FFmpeg Bindings  
+  
+%description ffmpeg  
+The Tao Framework for .NET is a collection of bindings to facilitate cross-platform media application development utilizing the .NET and Mono platforms.  
+  
+This package contains FFmpeg Bindings  
+  
+%package lua  
+Group:          Development/Libraries/Mono  
+Summary:        The Tao Framework for Mono, Lua Bindings  
+  
+%description lua  
+The Tao Framework for .NET is a collection of bindings to facilitate cross-platform media application development utilizing the .NET and Mono platforms.  
+  
+This package contains Lua Bindings  
+  
+%package ode  
+Group:          Development/Libraries/Mono  
+Summary:        The Tao Framework for Mono, ODE Bindings  
+  
+%description ode  
+The Tao Framework for .NET is a collection of bindings to facilitate cross-platform media application development utilizing the .NET and Mono platforms.  
+  
+This package contains ODE Bindings  
+  
+%package physfs  
+Group:          Development/Libraries/Mono  
+Summary:        The Tao Framework for Mono, PhysicsFS Bindings  
+Requires:       physfs  
+  
+%description physfs  
+The Tao Framework for .NET is a collection of bindings to facilitate cross-platform media application development utilizing the .NET and Mono platforms.  
+  
+This package contains PhysicsFS Bindings  
+  
+%package sdl  
+Group:          Development/Libraries/Mono  
+Summary:        The Tao Framework for Mono, SDL Bindings  
+Requires:       SDL  
+  
+%description sdl  
+The Tao Framework for .NET is a collection of bindings to facilitate cross-platform media application development utilizing the .NET and Mono platforms.  
+  
+This package contains SDL Bindings  
+  
+%prep  
+%setup -c  
+  
+%build  
+nant mono-2.0 build-release  
+  
+%install  
+nant mono-2.0 install -D:gacdir="$RPM_BUILD_ROOT%{_prefix}" -D:pkgconfig="$RPM_BUILD_ROOT%{_prefix}/lib/pkgconfig"  
+  
+%clean  
+rm -rf "$RPM_BUILD_ROOT"  
+  
+%files opengl  
+%defattr(-,root,root)  
+%{_prefix}/lib/mono/tao-opengl/Tao.OpenGl.dll  
+%{_prefix}/lib/mono/tao-platform-x11/Tao.Platform.X11.dll  
+%{_prefix}/lib/mono/gac/Tao.OpenGl  
+%{_prefix}/lib/mono/gac/Tao.Platform.X11  
+%{_prefix}/lib/pkgconfig/tao-opengl.pc  
+%{_prefix}/lib/pkgconfig/tao-platform-x11.pc  
+  
+%files openal  
+%defattr(-,root,root)  
+%{_prefix}/lib/mono/tao-openal/Tao.OpenAl.dll  
+%{_prefix}/lib/mono/gac/Tao.OpenAl  
+%{_prefix}/lib/pkgconfig/tao-openal.pc  
+  
+%files freeglut  
+%defattr(-,root,root)  
+%{_prefix}/lib/mono/tao-freeglut/Tao.FreeGlut.dll  
+%{_prefix}/lib/mono/gac/Tao.FreeGlut  
+%{_prefix}/lib/pkgconfig/tao-freeglut.pc  
+  
+%files devil  
+%defattr(-,root,root)  
+%{_prefix}/lib/mono/tao-devil/Tao.DevIl.dll  
+%{_prefix}/lib/mono/gac/Tao.DevIl  
+%{_prefix}/lib/pkgconfig/tao-devil.pc  
+  
+%files ffmpeg  
+%defattr(-,root,root)  
+%{_prefix}/lib/mono/tao-ffmpeg/Tao.FFmpeg.dll  
+%{_prefix}/lib/mono/gac/Tao.FFmpeg  
+%{_prefix}/lib/pkgconfig/tao-ffmpeg.pc  
+  
+%files lua  
+%defattr(-,root,root)  
+%{_prefix}/lib/mono/tao-lua/Tao.Lua.dll  
+%{_prefix}/lib/mono/gac/Tao.Lua  
+%{_prefix}/lib/pkgconfig/tao-lua.pc  
+  
+%files ode  
+%defattr(-,root,root)  
+%{_prefix}/lib/mono/tao-ode/Tao.Ode.dll  
+%{_prefix}/lib/mono/gac/Tao.Ode  
+%{_prefix}/lib/pkgconfig/tao-ode.pc  
+  
+%files physfs  
+%defattr(-,root,root)  
+%{_prefix}/lib/mono/tao-physfs/Tao.PhysFs.dll  
+%{_prefix}/lib/mono/gac/Tao.PhysFs  
+%{_prefix}/lib/pkgconfig/tao-physfs.pc  
+  
+%files sdl  
+%defattr(-,root,root)  
+%{_prefix}/lib/mono/tao-sdl/Tao.Sdl.dll  
+%{_prefix}/lib/mono/gac/Tao.Sdl  
+%{_prefix}/lib/pkgconfig/tao-sdl.pc  

@@ -1,0 +1,4 @@
+- add library Post-process support (for use on windows)
+
+- Generate .config files at configure time (sam)
+

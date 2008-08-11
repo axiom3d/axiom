@@ -1,0 +1,8 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+
+Name: @Name@
+Description: @Description@
+Version: @Version@
+Libs: -r:${libdir}/mono/@Name@/@File@

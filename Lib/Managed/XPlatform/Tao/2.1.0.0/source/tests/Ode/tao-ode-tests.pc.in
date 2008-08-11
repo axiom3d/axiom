@@ -1,0 +1,8 @@
+prefix=@prefix@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+
+Name: Tao.Ode.Tests
+Description: Unit tests for the Ode portion of the Tao framework
+Version: @TAOODE_VERSION@
+Libs: -r:${libdir}/mono/tao-ode-tests-@TAOODE_MAJOR@/Tao.Ode.Tests.dll

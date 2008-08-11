@@ -1,0 +1,101 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1130F7D5-1CB1-4619-837F-D4325D723D53}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>App.ico</ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>LuaFunctions</AssemblyName>
+    <AssemblyOriginatorKeyFile>Tao.Lua.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LuaFunctions</RootNamespace>
+    <StartupObject>LuaFunctions.Functions</StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE;WIN32</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>True</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>
+    </NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;WIN32</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>False</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>
+    </NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <Name>System</Name>
+      <HintPath>\System.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Tao.Lua\Tao.Lua.csproj">
+      <Name>Tao.Lua</Name>
+      <Project>{11D88031-4650-43D5-B626-4C3E9A276923}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Data\LuaFunctions.lua">
+      <SubType>Code</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="Functions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Tao.Lua.snk" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

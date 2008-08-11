@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<project>
+    <target name="build" depends="build-settings">
+        <echo message="Build Directory is ${project::get-base-directory()}/${build.dir}" />
+        <mkdir dir="${project::get-base-directory()}/${build.dir}" />
+        <csc target="library" debug="${build.debug}" keyfile="${proj.keyfile}" unsafe="True" define="DEBUG;TRACE;WIN32" main="" output="${project::get-base-directory()}/${build.dir}/${project::get-name()}.dll">
+	    <resources prefix="${project::get-name()}" dynamicprefix="true" >
+		<!-- doc="${project::get-base-directory()}/${build.dir}/${project::get-name()}.xml" -->
+            </resources>
+            <sources failonempty="true">
+                <include name="*.cs" />
+                <include name="Properties/AssemblyInfo.cs" />
+            </sources>
+            <references refid="proj.references" />
+        </csc>
+    </target>
+
+    <target name="clean">
+        <delete dir="${bin.dir}" failonerror="false" />
+        <delete dir="${obj.dir}" failonerror="false" />
+    </target>
+
+    <target name="install">
+	<property name="package.version" value="${assemblyname::get-version(assemblyname::get-assembly-name(project::get-base-directory()+'/'+build.dir+'/'+project::get-name()+'.dll'))}" />
+	<property name="package.name" value="${string::to-lower(string::replace(project::get-name(),'.','-'))}" overwrite="true" />			
+
+      <copy if="${platform::is-unix() and not is-osx}" todir="${project::get-base-directory()}/${build.dir}" file="${project::get-base-directory()}/${project::get-name()}.dll.config" />
+      <exec program="gacutil" workingdir="${project::get-base-directory()}/${build.dir}">
+	<arg line="/i ${project::get-name()}.dll /f" />
+	<arg if="${platform::is-unix()}" line="/package ${gacutil-package}${package.name}" />
+	<arg if="${platform::is-unix() and gacdir!=''}" line="/gacdir ${gacdir}" />
+      </exec>
+      <copy if="${platform::is-unix() and pkgconfig!=''}" tofile="${pkgconfig}/${package.name}.pc" file="${tao.base.dir}/template.pc" >
+	<filterchain>
+	  <replacetokens>
+	    <token key="Name" value="${package.name}" />
+	    <token key="File" value="${project::get-name()}.dll" />
+	    <token key="Version" value="${package.version}" />
+	    <token key="Description" value="Part of the Tao Framework C# bindings" />
+	  </replacetokens>
+	</filterchain>
+      </copy>
+    </target>
+
+    <target name="doc" description="Creates documentation.">
+        <property name="doc.target" value="" />
+        <if test="${platform::is-unix()}">
+            <property name="doc.target" value="Web" />
+        </if>
+        <ndoc failonerror="false" verbose="true">
+            <assemblies basedir="${project::get-base-directory()}">
+                <include name="${build.dir}/${project::get-name()}.dll" />
+            </assemblies>
+            <summaries basedir="${project::get-base-directory()}">
+                <include name="${build.dir}/${project::get-name()}.xml"/>
+            </summaries>
+            <referencepaths basedir="${project::get-base-directory()}">
+                <include name="${build.dir}" />
+            </referencepaths>
+            <documenters>
+                <documenter name="MSDN">
+                    <property name="OutputDirectory" value="${project::get-base-directory()}/${build.dir}/doc/${project::get-name()}" />
+                    <property name="OutputTarget" value="${doc.target}" />
+                    <property name="HtmlHelpName" value="${project::get-name()}" />
+                    <property name="IncludeFavorites" value="False" />
+                    <property name="Title" value="${project::get-name()} SDK Documentation" />
+                    <property name="SplitTOCs" value="False" />
+                    <property name="DefaulTOC" value="" />
+                    <property name="ShowVisualBasic" value="True" />
+                    <property name="AutoDocumentConstructors" value="True" />
+                    <property name="ShowMissingSummaries" value="${build.debug}" />
+                    <property name="ShowMissingRemarks" value="${build.debug}" />
+                    <property name="ShowMissingParams" value="${build.debug}" />
+                    <property name="ShowMissingReturns" value="${build.debug}" />
+                    <property name="ShowMissingValues" value="${build.debug}" />
+                    <property name="DocumentInternals" value="False" />
+                    <property name="DocumentPrivates" value="False" />
+                    <property name="DocumentProtected" value="True" />
+                    <property name="DocumentEmptyNamespaces" value="${build.debug}" />
+                    <property name="IncludeAssemblyVersion" value="True" />
+                </documenter>
+            </documenters>
+        </ndoc>
+    </target>
+</project>

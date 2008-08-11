@@ -1,0 +1,190 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{261D4F4E-AC44-4C48-BAA7-10E27B9F8F21}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>App.ico</ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>Tao.GlBindGen</AssemblyName>
+    <AssemblyOriginatorKeyFile>Tao.GlBindGen.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Tao.GlBindGen</RootNamespace>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE;WIN32</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>True</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>
+    </NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;WIN32</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>False</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>
+    </NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <Name>System</Name>
+      <HintPath>\System.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BindStreamWriter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IBind.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ISpecReader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ISpecWriter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Main.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Settings.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GL2\Generator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Glu\Generator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Glx\Generator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Bind.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Bind.Designer.cs">
+      <DependentUpon>Bind.settings</DependentUpon>
+      <SubType>Code</SubType>
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Structures\Constant.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Structures\Delegate.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Structures\Enum.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Structures\Function.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Structures\Parameter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Structures\Type.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Wgl\Generator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <None Include="app.config">
+    </None>
+    <None Include="Specifications\GL2\enum.spec">
+    </None>
+    <None Include="Specifications\GL2\enumext.spec">
+    </None>
+    <None Include="Specifications\GL2\gl.spec">
+    </None>
+    <None Include="Specifications\Glu\enumglu.spec">
+    </None>
+    <None Include="Specifications\Glu\glu.spec">
+    </None>
+    <None Include="Specifications\Glx\glx.spec">
+    </None>
+    <None Include="Specifications\Glx\glxenum.spec">
+    </None>
+    <None Include="Specifications\Glx\glxenumext.spec">
+    </None>
+    <None Include="Specifications\Glx\glxext.spec">
+    </None>
+    <None Include="Specifications\Wgl\wgl.spec">
+    </None>
+    <None Include="Specifications\Wgl\wglenum.spec">
+    </None>
+    <None Include="Specifications\Wgl\wglenumext.spec">
+    </None>
+    <None Include="Specifications\Wgl\wglext.spec">
+    </None>
+    <None Include="Specifications\csharp.tm">
+    </None>
+    <None Include="Specifications\GL2\gl.tm">
+    </None>
+    <None Include="Specifications\Glu\glu.tm">
+    </None>
+    <None Include="Specifications\Glx\glx.tm">
+    </None>
+    <None Include="Specifications\Wgl\wgl.tm">
+    </None>
+    <None Include="Properties\Bind.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Bind.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Tao.GlBindGen.snk" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

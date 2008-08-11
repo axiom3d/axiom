@@ -1,0 +1,110 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{DD8BE6C6-C237-4C82-B521-754900077769}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>Tao.Sdl</AssemblyName>
+    <AssemblyOriginatorKeyFile>Tao.Sdl.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Tao.Sdl</RootNamespace>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE;WIN32</DefineConstants>
+    <DocumentationFile>Tao.Sdl.xml</DocumentationFile>
+    <DebugSymbols>True</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>
+    </NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;WIN32</DefineConstants>
+    <DocumentationFile>Tao.Sdl.xml</DocumentationFile>
+    <DebugSymbols>False</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>
+    </NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <Name>System</Name>
+      <HintPath>\System.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Tao.Sdl.dll.config" />
+    <None Include="Tao.Sdl.snk">
+    </None>
+    <Compile Include="Sdl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SdlGfx.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SdlImage.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SdlMixer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SdlNet.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SdlTtf.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Smpeg.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>
