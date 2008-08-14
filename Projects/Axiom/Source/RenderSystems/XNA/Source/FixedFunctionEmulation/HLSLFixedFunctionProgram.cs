@@ -60,7 +60,6 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             _setProgramMatrix4Parameter(GpuProgramType.Vertex, "World", parameters.WorldMatrix);
             _setProgramMatrix4Parameter(GpuProgramType.Vertex, "View", parameters.ViewMatrix);
             _setProgramMatrix4Parameter(GpuProgramType.Vertex, "Projection", parameters.ProjectionMatrix);
-
             _setProgramMatrix4Parameter(GpuProgramType.Vertex, "ViewIT", parameters.ViewMatrix.Inverse().Transpose());
 
 
@@ -68,7 +67,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             WorldViewIT = WorldViewIT.Inverse().Transpose();
             _setProgramMatrix4Parameter(GpuProgramType.Vertex, "WorldViewIT", WorldViewIT);
 
-
+            #region shaderLights
             if (parameters.LightingEnabled && parameters.Lights.Count > 0)
             {
                 _setProgramColorParameter(GpuProgramType.Vertex, "BaseLightAmbient", parameters.LightAmbient);
@@ -141,6 +140,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                     } // end of - switch (curLight->getType())
                 } // end of - for(size_t i = 0 ; i < params.getLights().size() ; i++) 
             } // end of -  if (params.getLightingEnabled())
+            #endregion
 
             switch (parameters.FogMode)
             {

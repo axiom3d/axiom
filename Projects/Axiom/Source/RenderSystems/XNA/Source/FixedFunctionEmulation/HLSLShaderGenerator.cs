@@ -48,7 +48,10 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 {
 	class HLSLShaderGenerator : ShaderGenerator
 	{
-		#region Construction and Destruction
+        internal class TextureCoordType : Dictionary<int, VertexElementType>
+        {}
+        protected TextureCoordType texCordVecType = new TextureCoordType();
+        #region Construction and Destruction
 
 		public HLSLShaderGenerator()
 		{
@@ -57,20 +60,24 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			vpTarget = "vs_3_0";
 			fpTarget = "ps_3_0";
 		}
+        
 
 		#endregion Construction and Destruction
 
 		#region ShaderGenerator Implentation
 
 		public override string GetShaderSource( string vertexProgramName, string fragmentProgramName, VertexBufferDeclaration vertexBufferDeclaration, FixedFunctionState fixedFunctionState )
-		{
-			bool bHasColor = vertexBufferDeclaration.HasColor;
+        {
+            bool bHasColor = vertexBufferDeclaration.HasColor;
+            bool bHasNormal = false;
 			bool bHasTexcoord = vertexBufferDeclaration.HasTexCoord;
-
+            uint texcoordCount = vertexBufferDeclaration.TexCoordCount;
+            
+            
 			String shaderSource = "";
 
-			shaderSource = shaderSource + "struct VS_INPUT { ";
-
+			shaderSource = shaderSource + "struct VS_INPUT\n{\n";
+            
 			ushort[] semanticCount = new ushort[ 100 ];
 
 			IEnumerable<VertexBufferElement> vertexBufferElements = vertexBufferDeclaration.VertexBufferElements;
@@ -80,7 +87,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 				VertexElementType type = element.VertexElementType;
 
 				String thisElementSemanticCount = semanticCount[ (int)semantic ].ToString();
-				semanticCount[ (int)semantic ]++;
+                semanticCount[(int)semantic]++;
 				String parameterType = "";
 				String parameterName = "";
 				String parameterShaderTypeName = "";
@@ -117,7 +124,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 						parameterType = "short4";
 						break;
 					case VertexElementType.UByte4:
-                        parameterType = "float4";//char4";//char4 not supported ??
+                        parameterType = "float4";
 						break;
 
 				}
@@ -139,6 +146,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 					case VertexElementSemantic.Normal:
 						parameterName = "Normal";
 						parameterShaderTypeName = "NORMAL";
+                        bHasNormal = true;
 						break;
 					case VertexElementSemantic.Diffuse:
 						parameterName = "DiffuseColor";
@@ -152,6 +160,8 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 						break;
 					case VertexElementSemantic.TexCoords:
 						parameterName = "Texcoord";
+                        if (!texCordVecType.ContainsKey((int)semanticCount[(int)semantic] - 1))
+                            texCordVecType.Add((int)semanticCount[(int)semantic] - 1, type);//[semanticCount[(int)semantic] - 1] = type;
 						parameterShaderTypeName = "TEXCOORD";
 						break;
 					case VertexElementSemantic.Binormal:
@@ -164,20 +174,26 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 						break;
 				}
 
-
-
-				shaderSource = shaderSource + parameterType + " " + parameterName + thisElementSemanticCount + " : " + parameterShaderTypeName + thisElementSemanticCount + ";\n";
+                shaderSource = shaderSource + "\t"+ parameterType + " " + parameterName + thisElementSemanticCount + " : " + parameterShaderTypeName + thisElementSemanticCount + ";\n";
 			}
 
-			shaderSource = shaderSource + " };";
+			shaderSource = shaderSource + "};\n\n";
 
 
 
-			shaderSource = shaderSource + "float4x4  World;\n";
-			shaderSource = shaderSource + "float4x4  View;\n";
-			shaderSource = shaderSource + "float4x4  Projection;\n";
-			shaderSource = shaderSource + "float4x4  ViewIT;\n";
-			shaderSource = shaderSource + "float4x4  WorldViewIT;\n";
+            shaderSource = shaderSource + "float4x4  World;\n";
+            shaderSource = shaderSource + "float4x4  View;\n";
+            shaderSource = shaderSource + "float4x4  Projection;\n";
+            shaderSource = shaderSource + "float4x4  ViewIT;\n";
+            shaderSource = shaderSource + "float4x4  WorldViewIT;\n";
+
+
+            
+            for(uint i = 0 ; i < fixedFunctionState.TextureLayerStates.Count; i++)
+    		{
+	    		String layerCounter = Convert.ToString(i);
+                shaderSource = shaderSource + "float4x4  TextureMatrix" + layerCounter + ";\n";
+		    }
 
 			switch ( fixedFunctionState.GeneralFixedFunctionState.FogMode )
 			{
@@ -185,17 +201,17 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 					break;
 				case FogMode.Exp:
 				case FogMode.Exp2:
-					shaderSource = shaderSource + "float FogDensity;\n";
+                    shaderSource = shaderSource + "float FogDensity;\n";
 					break;
 				case FogMode.Linear:
-					shaderSource = shaderSource + "float FogStart;\n";
-					shaderSource = shaderSource + "float FogEnd;\n";
+                    shaderSource = shaderSource + "float FogStart;\n";
+                    shaderSource = shaderSource + "float FogEnd;\n";
 					break;
 			}
 
 			if ( fixedFunctionState.GeneralFixedFunctionState.EnableLighting )
 			{
-				shaderSource = shaderSource + "float4 BaseLightAmbient;\n";
+                shaderSource = shaderSource + "float4 BaseLightAmbient;\n";
 
 				for ( int i = 0; i < fixedFunctionState.Lights.Count; i++ )
 				{
@@ -203,85 +219,201 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 					switch ( fixedFunctionState.Lights[ i ] )
 					{
 						case LightType.Point:
-							shaderSource = shaderSource + "float3 " + prefix + "Position;\n";
-							shaderSource = shaderSource + "float4 " + prefix + "Ambient;\n";
-							shaderSource = shaderSource + "float4 " + prefix + "Diffuse;\n";
-							shaderSource = shaderSource + "float4 " + prefix + "Specular;\n";
-							shaderSource = shaderSource + "float  " + prefix + "Range;\n";
-							shaderSource = shaderSource + "float3 " + prefix + "Attenuation;\n";
+                            shaderSource = shaderSource + "float3 " + prefix + "Position;\n";
+                            shaderSource = shaderSource + "float4 " + prefix + "Ambient;\n";
+                            shaderSource = shaderSource + "float4 " + prefix + "Diffuse;\n";
+                            shaderSource = shaderSource + "float4 " + prefix + "Specular;\n";
+                            shaderSource = shaderSource + "float  " + prefix + "Range;\n";
+                            shaderSource = shaderSource + "float3 " + prefix + "Attenuation;\n";
 							break;
 						case LightType.Directional:
-							shaderSource = shaderSource + "float3 " + prefix + "Direction;\n";
-							shaderSource = shaderSource + "float4 " + prefix + "Ambient;\n";
-							shaderSource = shaderSource + "float4 " + prefix + "Diffuse;\n";
-							shaderSource = shaderSource + "float4 " + prefix + "Specular;\n";
+                            shaderSource = shaderSource + "float3 " + prefix + "Direction;\n";
+                            shaderSource = shaderSource + "float4 " + prefix + "Ambient;\n";
+                            shaderSource = shaderSource + "float4 " + prefix + "Diffuse;\n";
+                            shaderSource = shaderSource + "float4 " + prefix + "Specular;\n";
 							break;
 						case LightType.Spotlight:
-							shaderSource = shaderSource + "float3 " + prefix + "Direction;\n";
-							shaderSource = shaderSource + "float3 " + prefix + "Position;\n";
-							shaderSource = shaderSource + "float4 " + prefix + "Ambient;\n";
-							shaderSource = shaderSource + "float4 " + prefix + "Diffuse;\n";
-							shaderSource = shaderSource + "float4 " + prefix + "Specular;\n";
-							shaderSource = shaderSource + "float3 " + prefix + "Attenuation;\n";
-							shaderSource = shaderSource + "float3 " + prefix + "Spot;\n";
+                            shaderSource = shaderSource + "float3 " + prefix + "Direction;\n";
+                            shaderSource = shaderSource + "float3 " + prefix + "Position;\n";
+                            shaderSource = shaderSource + "float4 " + prefix + "Ambient;\n";
+                            shaderSource = shaderSource + "float4 " + prefix + "Diffuse;\n";
+                            shaderSource = shaderSource + "float4 " + prefix + "Specular;\n";
+                            shaderSource = shaderSource + "float3 " + prefix + "Attenuation;\n";
+                            shaderSource = shaderSource + "float3 " + prefix + "Spot;\n";
 							break;
 					}
 				}
-
 			}
 
-
-
-			shaderSource = shaderSource + "struct VS_OUTPUT\n";
+			shaderSource = shaderSource + "\nstruct VS_OUTPUT\n";
 			shaderSource = shaderSource + "{\n";
-            shaderSource = shaderSource + "float4 Pos : POSITION;\n";//"float4 Pos : SV_POSITION;\n"; //SV not recognised
-			if ( bHasTexcoord )
-			{
-				shaderSource = shaderSource + "float2 tCord : TEXCOORD;\n";
-			}
+            shaderSource = shaderSource + "\tfloat4 Pos : POSITION;\n";//"float4 Pos : SV_POSITION;\n"; //SV not recognised
 
-			shaderSource = shaderSource + "float4 Color : COLOR0;\n";
-			shaderSource = shaderSource + "float4 ColorSpec : COLOR1;\n";
+            for (int i = 0; i < fixedFunctionState.TextureLayerStates.Count; i++)
+		    {
+			    String layerCounter = Convert.ToString(i);
+
+               // TextureLayerState curTextureLayerState = (TextureLayerState)fixedFunctionState.TextureLayerStates[i];
+                
+                if(texCordVecType.ContainsKey(i))
+                switch (texCordVecType[i])
+			    {
+			    case VertexElementType.Float1:
+                    shaderSource = shaderSource + "\tfloat1 Texcoord" + layerCounter + " : TEXCOORD" + layerCounter + ";\n";
+				    break;
+                case VertexElementType.Float2:
+                    shaderSource = shaderSource + "\tfloat2 Texcoord" + layerCounter + " : TEXCOORD" + layerCounter + ";\n";
+				    break;
+                case VertexElementType.Float3:
+                    shaderSource = shaderSource + "\tfloat3 Texcoord" + layerCounter + " : TEXCOORD" + layerCounter + ";\n";
+				    break;
+			    }
+
+		    }
+
+            shaderSource = shaderSource + "\tfloat4 Color : COLOR0;\n";
+            shaderSource = shaderSource + "\tfloat4 ColorSpec : COLOR1;\n";
 
 			if ( fixedFunctionState.GeneralFixedFunctionState.FogMode != FogMode.None )
 			{
-                shaderSource = shaderSource + "float fogDist;\n"; //"float fogDist : FOGDISTANCE;\n";
+                shaderSource = shaderSource + "\tfloat fogDist : COLOR2;\n"; //"float fogDist : FOGDISTANCE;\n";
 			}
 
 			shaderSource = shaderSource + "};\n";
 
-			shaderSource = shaderSource + "VS_OUTPUT " + vertexProgramName + "( VS_INPUT input )\n";
+			shaderSource = shaderSource + "\nVS_OUTPUT " + vertexProgramName + "( VS_INPUT input )\n";
 			shaderSource = shaderSource + "{\n";
-			shaderSource = shaderSource + "VS_OUTPUT output = (VS_OUTPUT)0;\n";
-			shaderSource = shaderSource + "float4 worldPos = mul( World, float4( input.Position0 , 1 ));\n";
-			shaderSource = shaderSource + "float4 cameraPos = mul( View, worldPos );\n";
-			shaderSource = shaderSource + "output.Pos = mul( Projection, cameraPos );\n";
+            shaderSource = shaderSource + "\tVS_OUTPUT output = (VS_OUTPUT)0;\n";
+            shaderSource = shaderSource + "\tfloat4 worldPos = mul( World, float4( input.Position0 , 1 ));\n";
+            shaderSource = shaderSource + "\tfloat4 cameraPos = mul( View, worldPos );\n";
+            shaderSource = shaderSource + "\toutput.Pos = mul( Projection, cameraPos );\n";
 
 
-			if ( bHasTexcoord )
-			{
-				shaderSource = shaderSource + "output.tCord = input.Texcoord0;\n";
-			}
+            if (bHasNormal)
+            {
+                shaderSource = shaderSource + "\tfloat3 Normal = input.Normal0;\n";
+            }
+            else
+            {
+                shaderSource = shaderSource + "\tfloat3 Normal = float3(0.0, 0.0, 0.0);\n";
+            }
+		
 
-			shaderSource = shaderSource + "output.ColorSpec = float4(0.0, 0.0, 0.0, 0.0);\n";
+            for(int i = 0 ; i < fixedFunctionState.TextureLayerStates.Count; i++)
+            {
+                TextureLayerState curTextureLayerState = fixedFunctionState.TextureLayerStates[i];
+			    String layerCounter = Convert.ToString(i);
+			    String coordIdx = Convert.ToString(curTextureLayerState.CoordIndex);
+
+			    shaderSource = shaderSource + "\t{\n";
+
+                switch (curTextureLayerState.TexCoordCalcMethod)
+                {
+                    case TexCoordCalcMethod.None:
+                        if (curTextureLayerState.CoordIndex < texcoordCount)
+                        {
+                            shaderSource = shaderSource + "TextureMatrix" + layerCounter + "=float4x4(1.0,0.0,0.0,0.0, 0.0,1.0,0.0,0.0, 0.0,0.0,1.0,0.0, 0.0,0.0,0.0,1.0);\n";
+                            if (texCordVecType.ContainsKey(i))
+                                switch (texCordVecType[i])
+                                {
+
+                                    case VertexElementType.Float1:
+                                        shaderSource = shaderSource + "\t\toutput.Texcoord" + layerCounter + " = input.Texcoord" + coordIdx + ";\n";
+                                        break;
+                                    case VertexElementType.Float2:
+                                        shaderSource = shaderSource + "\t\tfloat4 texCordWithMatrix = float4(input.Texcoord" + coordIdx + ".x, input.Texcoord" + coordIdx + ".y, 0, 1);\n";
+                                        shaderSource = shaderSource + "\t\ttexCordWithMatrix = mul(texCordWithMatrix, TextureMatrix" + layerCounter + " );\n";
+                                        shaderSource = shaderSource + "\t\toutput.Texcoord" + layerCounter + " = texCordWithMatrix.xy;\n";
+                                        break;
+                                    case VertexElementType.Float3:
+                                        shaderSource = shaderSource + "\t\toutput.Texcoord" + layerCounter + " = input.Texcoord" + coordIdx + ";\n";
+                                        break;
+                                }
+
+                        }
+                        else
+                        {
+                            if (texCordVecType.ContainsKey(i))
+                                switch (texCordVecType[i])
+                                {
+                                    case VertexElementType.Float1:
+                                        shaderSource = shaderSource + "\t\toutput.Texcoord" + layerCounter + " = 0.0;\n"; // so no error
+                                        break;
+                                    case VertexElementType.Float2:
+                                        shaderSource = shaderSource + "\t\toutput.Texcoord" + layerCounter + " = float2(0.0, 0.0);\n"; // so no error
+                                        break;
+                                    case VertexElementType.Float3:
+                                        shaderSource = shaderSource + "\t\toutput.Texcoord" + layerCounter + " = float3(0.0, 0.0, 0.0);\n"; // so no error
+                                        break;
+                                }
+                        }
+                        break;
+
+                    case TexCoordCalcMethod.EnvironmentMap:
+                        //shaderSource = shaderSource + "float3 ecPosition3 = cameraPos.xyz/cameraPos.w;\n";
+                        shaderSource = shaderSource + "\t\tfloat3 u = normalize(cameraPos.xyz);\n";
+                        shaderSource = shaderSource + "\t\tfloat3 r = reflect(u, Normal);\n";
+                        shaderSource = shaderSource + "\t\tfloat  m = 2.0 * sqrt(r.x * r.x + r.y * r.y + (r.z + 1.0) * (r.z + 1.0));\n";
+                        shaderSource = shaderSource + "\t\toutput.Texcoord" + layerCounter + " = float2 (r.x / m + 0.5, r.y / m + 0.5);\n";
+                        break;
+                    case TexCoordCalcMethod.EnvironmentMapPlanar:
+                        break;
+                    case TexCoordCalcMethod.EnvironmentMapReflection:
+                        //assert(curTextureLayerState.getTextureType() == TEX_TYPE_CUBE_MAP);
+                        shaderSource = shaderSource + "\t{\n";
+                        shaderSource = shaderSource + "\t\tfloat4 worldNorm = mul(float4(Normal, 0), World);\n";
+                        shaderSource = shaderSource + "\t\tfloat4 viewNorm = mul(worldNorm, View);\n";
+                        shaderSource = shaderSource + "\t\tviewNorm = normalize(viewNorm);\n";
+                        shaderSource = shaderSource + "\t\toutput.Texcoord" + layerCounter + " = reflect(viewNorm.xyz, float3(0.0,0.0,-1.0));\n";
+                        shaderSource = shaderSource + "\t}\n";
+                        break;
+                    case TexCoordCalcMethod.EnvironmentMapNormal:
+                        break;
+                    case TexCoordCalcMethod.ProjectiveTexture:
+                        if (texCordVecType.ContainsKey(i))
+                            switch (texCordVecType[i])
+                            {
+                                case VertexElementType.Float1:
+                                    shaderSource = shaderSource + "\t{\n";
+                                    shaderSource = shaderSource + "\t\tfloat4 cameraPosNorm = normalize(cameraPos);\n";
+                                    shaderSource = shaderSource + "\t\toutput.Texcoord" + layerCounter + ".x = 0.5 + cameraPosNorm.x;\n";
+                                    shaderSource = shaderSource + "\t}\n";
+                                    break;
+                                case VertexElementType.Float2:
+                                case VertexElementType.Float3:
+                                    shaderSource = shaderSource + "\t{\n";
+                                    shaderSource = shaderSource + "\t\tfloat4 cameraPosNorm = normalize(cameraPos);\n";
+                                    shaderSource = shaderSource + "\t\toutput.Texcoord" + layerCounter + ".x = 0.5 + cameraPosNorm.x;\n";
+                                    shaderSource = shaderSource + "\t\toutput.Texcoord" + layerCounter + ".y = 0.5 - cameraPosNorm.y;\n";
+                                    shaderSource = shaderSource + "\t}\n";
+                                    break;
+                            }
+                        break;
+                }
+                shaderSource = shaderSource + "\t}\n";
+            }
+
+
+			
+            shaderSource = shaderSource + "\toutput.ColorSpec = float4(0.0, 0.0, 0.0, 0.0);\n";
 
 
 			if ( fixedFunctionState.GeneralFixedFunctionState.EnableLighting && fixedFunctionState.Lights.Count > 0 )
 			{
-				shaderSource = shaderSource + "output.Color = BaseLightAmbient;\n";
+				shaderSource = shaderSource + "\t\toutput.Color = BaseLightAmbient;\n";
 				if ( bHasColor )
 				{
-					shaderSource = shaderSource + "output.Color.x = ((input.DiffuseColor0 >> 24) & 0xFF) / 255.0f;\n";
-					shaderSource = shaderSource + "output.Color.y = ((input.DiffuseColor0 >> 16) & 0xFF) / 255.0f;\n";
-					shaderSource = shaderSource + "output.Color.z = ((input.DiffuseColor0 >> 8) & 0xFF) / 255.0f;\n";
-					shaderSource = shaderSource + "output.Color.w = (input.DiffuseColor0 & 0xFF) / 255.0f;\n";
+					shaderSource = shaderSource + "\t\toutput.Color.x = ((input.DiffuseColor0 >> 24) & 0xFF) / 255.0f;\n";
+					shaderSource = shaderSource + "\t\toutput.Color.y = ((input.DiffuseColor0 >> 16) & 0xFF) / 255.0f;\n";
+					shaderSource = shaderSource + "\t\toutput.Color.z = ((input.DiffuseColor0 >> 8) & 0xFF) / 255.0f;\n";
+					shaderSource = shaderSource + "\t\toutput.Color.w = (input.DiffuseColor0 & 0xFF) / 255.0f;\n";
 				}
 
 
-				shaderSource = shaderSource + "float3 N = mul((float3x3)WorldViewIT, input.Normal0);\n";
-				shaderSource = shaderSource + "float3 V = -normalize(cameraPos);\n";
+				shaderSource = shaderSource + "\t\tfloat3 N = mul((float3x3)WorldViewIT, input.Normal0);\n";
+				shaderSource = shaderSource + "\t\tfloat3 V = -normalize(cameraPos);\n";
 
-				shaderSource = shaderSource + "#define fMaterialPower 16.f\n";
+				shaderSource = shaderSource + "\t\t#define fMaterialPower 16.f\n";
 
 				for ( int i = 0; i < fixedFunctionState.Lights.Count; i++ )
 				{
@@ -375,13 +507,12 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 							break;
 					}
 				}
-
 			}
 			else
 			{
 				if ( bHasColor )
 				{
-                    shaderSource = shaderSource + "output.Color = ((input.DiffuseColor0)) / 255.0f;\n";
+                    shaderSource = shaderSource + "\toutput.Color = ((input.DiffuseColor0)) / 255.0f;\n";
 					/*shaderSource = shaderSource + "output.Color.x = ((input.DiffuseColor0 >> 24) & 0xFF) / 255.0f;\n";
 					shaderSource = shaderSource + "output.Color.y = ((input.DiffuseColor0 >> 16) & 0xFF) / 255.0f;\n";
 					shaderSource = shaderSource + "output.Color.z = ((input.DiffuseColor0 >> 8) & 0xFF) / 255.0f;\n";
@@ -389,78 +520,225 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 				}
 				else
 				{
-					shaderSource = shaderSource + "output.Color = float4(1.0, 1.0, 1.0, 1.0);\n";
+					shaderSource = shaderSource + "\toutput.Color = float4(1.0, 1.0, 1.0, 1.0);\n";
 				}
 			}
 
-			switch ( fixedFunctionState.GeneralFixedFunctionState.FogMode )
-			{
-				case FogMode.None:
-					break;
-				case FogMode.Exp:
-				case FogMode.Exp2:
-				case FogMode.Linear:
-					shaderSource = shaderSource + "output.fogDist = length(cameraPos.xyz);\n";
-					break;
-			}
+            switch (fixedFunctionState.GeneralFixedFunctionState.FogMode)
+            {
+                case FogMode.None:
+                    break;
+                case FogMode.Exp:
+                    shaderSource = shaderSource + "\t#define E 2.71828\n";
+                    shaderSource = shaderSource + "\toutput.fogDist = 1.0 / pow( E, output.fogDist*FogDensity );\n";
+                    shaderSource = shaderSource + "\toutput.fogDist = clamp( output.fogDist, 0, 1 );\n";
+                    break;
+                case FogMode.Exp2:
+                    shaderSource = shaderSource + "\t#define E 2.71828\n";
+                    shaderSource = shaderSource + "\toutput.fogDist = 1.0 / pow( E, output.fogDist*output.fogDist*FogDensity*FogDensity );\n";
+                    shaderSource = shaderSource + "\toutput.fogDist = clamp( output.fogDist, 0, 1 );\n";
+                    break;
+                case FogMode.Linear:
+                    shaderSource = shaderSource + "\toutput.fogDist = (FogEnd - output.fogDist)/(FogEnd - FogStart);\n";
+                    shaderSource = shaderSource + "\toutput.fogDist = clamp( output.fogDist, 0, 1 );\n";
+                    break;
+            }
+			shaderSource = shaderSource + "\treturn output;\n}\n\n";
 
-			shaderSource = shaderSource + "return output;}\n";
 
+
+
+
+
+
+
+
+
+
+            /////////////////////////////////////
 			// here starts the fragment shader
+            /////////////////////////////////////
 
-			shaderSource = shaderSource + "float4x4  TextureMatrix;\n";
+            for(int i = 0 ; i < fixedFunctionState.TextureLayerStates.Count; i++)
+		    {
+                String layerCounter = Convert.ToString(i);
+			    shaderSource = shaderSource + "sampler Texture" + layerCounter + " : register(s" + layerCounter + ");\n";
+		    }
 			shaderSource = shaderSource + "float4  FogColor;\n";
 
 
+            shaderSource = shaderSource + "\nfloat4 " + fragmentProgramName + "( VS_OUTPUT input ) : COLOR\n";// SV_Target\n";
+		    shaderSource = shaderSource + "{\n";
 
-			if ( bHasTexcoord )
+		    shaderSource = shaderSource + "\tfloat4 finalColor= input.Color + input.ColorSpec;\n";
+
+           
+            for (int i = 0; i < fixedFunctionState.TextureLayerStates.Count; i++)
+            {
+                shaderSource = shaderSource + "\t{\n\tfloat4 texColor=float4(1.0,1.0,1.0,1.0);\n";
+                TextureLayerState curTextureLayerState = fixedFunctionState.TextureLayerStates[i];
+                String layerCounter = Convert.ToString(i);
+               
+                switch (curTextureLayerState.TextureType)
+                {
+                    case TextureType.OneD:
+                        {
+                            if (texCordVecType.ContainsKey(i))
+                                switch (texCordVecType[i])
+                                {
+                                    case VertexElementType.Float1:
+                                        shaderSource = shaderSource + "\t\texColor = tex1D(Texture" + layerCounter + ", input.Texcoord" + layerCounter + ");\n";
+                                        break;
+                                    case VertexElementType.Float2:
+                                        shaderSource = shaderSource + "\t\ttexColor = tex1D(Texture" + layerCounter + ", input.Texcoord" + layerCounter + ".x);\n";
+                                        break;
+                                }
+                        }
+                        break;
+                    case TextureType.TwoD:
+                        {
+                            if (texCordVecType.ContainsKey(i))
+                                switch (texCordVecType[i])
+                                {
+                                    case VertexElementType.Float1:
+                                        shaderSource = shaderSource + "\t\ttexColor  = tex2D(Texture" + layerCounter + ", float2(input.Texcoord" + layerCounter + ", 0.0));\n";
+                                        break;
+                                    case VertexElementType.Float2:
+                                        shaderSource = shaderSource + "\t\ttexColor  = tex2D(Texture" + layerCounter + ", input.Texcoord" + layerCounter + ");\n";
+                                        break;
+                                }
+                        }
+
+                        break;
+                    case TextureType.CubeMap:
+                    case TextureType.ThreeD:
+                        if (texCordVecType.ContainsKey(i))
+                            switch (texCordVecType[i])
+                            {
+                                case VertexElementType.Float1:
+                                    shaderSource = shaderSource + "\t\ttexColor  = tex3D(Texture" + layerCounter + ", float3(input.Texcoord" + layerCounter + ", 0.0, 0.0));\n";
+                                    break;
+                                case VertexElementType.Float2:
+                                    shaderSource = shaderSource + "\t\ttexColor  = tex3D(Texture" + layerCounter + ", float3(input.Texcoord" + layerCounter + ".x, input.Texcoord" + layerCounter + ".y, 0.0));\n";
+                                    break;
+                                case VertexElementType.Float3:
+                                    shaderSource = shaderSource + "\t\ttexColor  = tex3D(Texture" + layerCounter + ", input.Texcoord" + layerCounter + ");\n";
+                                    break;
+                            }
+                        break;
+                }
+
+
+               
+                LayerBlendModeEx blend = curTextureLayerState.LayerBlendModeEx;
+                switch (blend.source1)
+                {
+                    case LayerBlendSource.Current:
+                        shaderSource = shaderSource + "\t\tfloat4 source1 = finalColor;\n";
+                        break;
+                    case LayerBlendSource.Texture:
+                        shaderSource = shaderSource + "\t\tfloat4 source1 = texColor;\n";
+                        break;
+                    case LayerBlendSource.Diffuse:
+                        shaderSource = shaderSource + "\t\tfloat4 source1 = input.Color;\n";
+                        break;
+                    case LayerBlendSource.Specular:
+                        shaderSource = shaderSource + "\t\tfloat4 source1 = input.ColorSpec;\n";
+                        break;
+                    case LayerBlendSource.Manual:
+                        shaderSource = shaderSource + "\t\tfloat4 source1 = Texture" + layerCounter + "_colourArg1;\n";
+                        break;
+                }
+                switch (blend.source2)
+                {
+                    case LayerBlendSource.Current:
+                        shaderSource = shaderSource + "\t\tfloat4 source2 = finalColor;\n";
+                        break;
+                    case LayerBlendSource.Texture:
+                        shaderSource = shaderSource + "\t\tfloat4 source2 = texColor;\n";
+                        break;
+                    case LayerBlendSource.Diffuse:
+                        shaderSource = shaderSource + "\t\tfloat4 source2 = input.Color;\n";
+                        break;
+                    case LayerBlendSource.Specular:
+                        shaderSource = shaderSource + "\t\tfloat4 source2 = input.ColorSpec;\n";
+                        break;
+                    case LayerBlendSource.Manual:
+                        shaderSource = shaderSource + "\t\tfloat4 source2 = Texture" + layerCounter + "_colourArg2;\n";
+                        break;
+                }
+
+                switch (blend.operation)
+                {
+                    case LayerBlendOperationEx.Source1:
+                        shaderSource = shaderSource + "\t\tfinalColor = source1;\n";
+                        break;
+                    case LayerBlendOperationEx.Source2:
+                        shaderSource = shaderSource + "\t\tfinalColor = source2;\n";
+                        break;
+                    case LayerBlendOperationEx.Modulate:
+                        shaderSource = shaderSource + "\t\tfinalColor = source1 * source2;\n";
+                        break;
+                    case LayerBlendOperationEx.ModulateX2:
+                        shaderSource = shaderSource + "\t\tfinalColor = source1 * source2 * 2.0;\n";
+                        break;
+                    case LayerBlendOperationEx.ModulateX4:
+                        shaderSource = shaderSource + "\t\tfinalColor = source1 * source2 * 4.0;\n";
+                        break;
+                    case LayerBlendOperationEx.Add:
+                        shaderSource = shaderSource + "\t\tfinalColor = source1 + source2;\n";
+                        break;
+                    case LayerBlendOperationEx.AddSigned:
+                        shaderSource = shaderSource + "\t\tfinalColor = source1 + source2 - 0.5;\n";
+                        break;
+                    case LayerBlendOperationEx.AddSmooth:
+                        shaderSource = shaderSource + "\t\tfinalColor = source1 + source2 - (source1 * source2);\n";
+                        break;
+                    case LayerBlendOperationEx.Subtract:
+                        shaderSource = shaderSource + "\t\tfinalColor = source1 - source2;\n";
+                        break;
+                    case LayerBlendOperationEx.BlendDiffuseAlpha:
+                        shaderSource = shaderSource + "\t\tfinalColor = source1 * input.Color.w + source2 * (1.0 - input.Color.w);\n";
+                        break;
+                    case LayerBlendOperationEx.BlendTextureAlpha:
+                        shaderSource = shaderSource + "\t\tfinalColor = source1 * texColor.w + source2 * (1.0 - texColor.w);\n";
+                        break;
+                    case LayerBlendOperationEx.BlendCurrentAlpha:
+                        shaderSource = shaderSource + "\t\tfinalColor = source1 * finalColor.w + source2 * (1.0 - finalColor.w);\n";
+                        break;
+                    case LayerBlendOperationEx.BlendManual:
+                        shaderSource = shaderSource + "\t\tfinalColor = source1 * " + Convert.ToString(blend.blendFactor) +
+                                                        " + source2 * (1.0 - " + Convert.ToString(blend.blendFactor) + ");\n";
+                        break;
+                    case LayerBlendOperationEx.DotProduct:
+                        shaderSource = shaderSource + "\t\tfinalColor = product(source1,source2);\n";
+                        break;
+                    //case LayerBlendOperationEx.. LBX_BLEND_DIFFUSE_COLOUR:
+                    //  shaderSource = shaderSource + "finalColor = source1 * input.Color + source2 * (float4(1.0,1.0,1.0,1.0) - input.Color);\n";
+                    //break;
+                }
+                shaderSource = shaderSource + "finalColor=finalColor*texColor;\n";
+
+                shaderSource = shaderSource + "\t}\n";
+            }
+       
+            if ( fixedFunctionState.GeneralFixedFunctionState.FogMode != FogMode.None )
 			{
-				shaderSource = shaderSource + "sampler tex0 : register(s0);\n";
-                shaderSource = shaderSource + "float4 " + fragmentProgramName + "( VS_OUTPUT input ) : COLOR\n";// "( VS_OUTPUT input ) : SV_Target\n";
-				shaderSource = shaderSource + "{\n";
-				shaderSource = shaderSource + "float4 texCordWithMatrix = float4(input.tCord.x, input.tCord.y, 0, 1);\n";
-				shaderSource = shaderSource + "texCordWithMatrix = mul( texCordWithMatrix, TextureMatrix );\n";
-				shaderSource = shaderSource + "\n";
-				shaderSource = shaderSource + "float4 finalColor = tex2D(tex0,texCordWithMatrix.xy)  * input.Color + input.ColorSpec;\n";
-			}
-			else
-			{
-				shaderSource = shaderSource + "float4 " + fragmentProgramName + "( VS_OUTPUT input ) : SV_Target\n";
-				shaderSource = shaderSource + "{\n";
-                shaderSource = shaderSource + "float4 finalColor = input.Color + input.ColorSpec;\n"; //"float4 finalColor = input.colorD + input.colorS;\n";
+                //just for testing for now...
+                shaderSource = shaderSource + "\tinput.fogDist=1.0;\n";
+                shaderSource = shaderSource + "\tFogColor=float4(1.0,1.0,1.0,1.0);\n";
+                
+                shaderSource = shaderSource + "\tfinalColor = input.fogDist * finalColor + (1.0 - input.fogDist)*FogColor;\n";
 			}
 
-			switch ( fixedFunctionState.GeneralFixedFunctionState.FogMode )
-			{
-				case FogMode.None:
-					break;
-				case FogMode.Exp:
-					shaderSource = shaderSource + "#define E 2.71828\n";
-					shaderSource = shaderSource + "input.fogDist = 1.0 / pow( E, input.fogDist*FogDensity );\n";
-					shaderSource = shaderSource + "input.fogDist = clamp( input.fogDist, 0, 1 );\n";
-					break;
-				case FogMode.Exp2:
-					shaderSource = shaderSource + "#define E 2.71828\n";
-					shaderSource = shaderSource + "input.fogDist = 1.0 / pow( E, input.fogDist*input.fogDist*FogDensity*FogDensity );\n";
-					shaderSource = shaderSource + "input.fogDist = clamp( input.fogDist, 0, 1 );\n";
-					break;
-				case FogMode.Linear:
-					shaderSource = shaderSource + "input.fogDist = (FogEnd - input.fogDist)/(FogEnd - FogStart);\n";
-					shaderSource = shaderSource + "input.fogDist = clamp( input.fogDist, 0, 1 );\n";
-					break;
-			}
+			shaderSource = shaderSource + "\treturn finalColor;\n}\n";
 
-			if ( fixedFunctionState.GeneralFixedFunctionState.FogMode != FogMode.None )
-			{
-
-				shaderSource = shaderSource + "finalColor.xyz = input.fogDist * finalColor.xyz + (1.0 - input.fogDist)*FogColor.xyz;\n";
-
-			}
-
-			shaderSource = shaderSource + "return finalColor;\n}";
-			return shaderSource;
+            
+            
+            
+            return shaderSource;
 		}
 
 		#endregion ShaderGenerator Implementation
-	}
+    }
 }
