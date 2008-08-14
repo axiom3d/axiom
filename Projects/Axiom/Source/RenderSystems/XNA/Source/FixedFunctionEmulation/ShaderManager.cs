@@ -75,6 +75,14 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 		public ShaderManager()
 		{
+            //just delete the previously created shader txt file, will be removed when everything works!
+            string[] files = System.IO.Directory.GetFiles(System.IO.Directory.GetCurrentDirectory(),"*.txt");
+            foreach (string str in files)
+            {
+                if (str.StartsWith(System.IO.Directory.GetCurrentDirectory()+"\\shader") == true)
+                    System.IO.File.Delete(str);
+            }
+
 		}
 
 		#endregion Construction and Destruction
@@ -93,14 +101,17 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 		public FixedFunctionPrograms GetShaderPrograms( String generatorName, VertexBufferDeclaration vertexBufferDeclaration, FixedFunctionState state )
 		{
-
+            //Problem here
+             
 			// Search the maps for a matching program
 			State2Declaration2ProgramsMap languageMaps;
 			language2State2Declaration2ProgramsMap.TryGetValue( generatorName, out languageMaps );
 			if ( languageMaps != null )
 			{
+
 				VertexBufferDeclaration2FixedFunctionProgramsMap fixedFunctionStateMaps;
-				languageMaps.TryGetValue( state, out fixedFunctionStateMaps );
+                //seems like it cannot compare states into the map ??
+                languageMaps.TryGetValue( state, out fixedFunctionStateMaps );
 				if ( fixedFunctionStateMaps != null )
 				{
 					FixedFunctionPrograms programs;
@@ -162,20 +173,87 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			fragmentProgramUsage.Params = fs.CreateParameters();
 
 	
-
-	
+            //ok, have to record the new program in the map only if it has not been created before
             FixedFunctionPrograms newPrograms = new HLSLFixedFunctionProgram();// shaderGenerator.createFixedFuncPrograms();
-            //language2State2Declaration2ProgramsMap.Add(newPrograms.
-            //language2State2Declaration2ProgramsMap[generatorName][state][vertexBufferDeclaration] = newPrograms;
-            newPrograms.VertexProgramUsage = vertexProgramUsage;
-            newPrograms.FragmentProgramUsage = fragmentProgramUsage;
-            newPrograms.FixedFunctionState = state;
+            newPrograms.FixedFunctionState=state;
+            newPrograms.FragmentProgramUsage=fragmentProgramUsage;
+            newPrograms.VertexProgramUsage= vertexProgramUsage;
 
-            programsToDeleteAtTheEnd.Add(newPrograms);
+            
+
+
+            //add the new program in the map
+            //sorry its the only way I found! :S
+            //prepare first the maps
+            VertexBufferDeclaration2FixedFunctionProgramsMap vbd2ffpm = new VertexBufferDeclaration2FixedFunctionProgramsMap();
+            vbd2ffpm.Add(vertexBufferDeclaration, newPrograms);
+            State2Declaration2ProgramsMap s2d2pm = new State2Declaration2ProgramsMap();
+            s2d2pm.Add(state, vbd2ffpm);
+            Language2State2Declaration2ProgramsMap l2s2d2pm = new Language2State2Declaration2ProgramsMap();
+            l2s2d2pm.Add(generatorName, s2d2pm);
+
+
+            //
+            //then check the map to find where to put the new program
+            State2Declaration2ProgramsMap languageMaps;
+            VertexBufferDeclaration2FixedFunctionProgramsMap fixedFunctionStateMaps;
+            FixedFunctionPrograms programs;
+            if (language2State2Declaration2ProgramsMap.TryGetValue(generatorName, out languageMaps))
+            {
+                if (languageMaps.TryGetValue(state, out fixedFunctionStateMaps))
+                {
+                    if (!fixedFunctionStateMaps.TryGetValue(vertexBufferDeclaration, out programs))
+                    {
+                        fixedFunctionStateMaps.Add(vertexBufferDeclaration, newPrograms);
+                       
+                    }
+                    else
+                    {
+                        programs = newPrograms;
+                    }
+                }
+                else
+                {
+                    languageMaps.Add(state, vbd2ffpm);
+                }
+            }
+            else
+            {
+                language2State2Declaration2ProgramsMap.Add(generatorName, s2d2pm);
+                programsToDeleteAtTheEnd.Add(newPrograms);
+                saveShader(shaderSource);
+            }
+          
+
+            //language2State2Declaration2ProgramsMap[generatorName][state][vertexBufferDeclaration] = newPrograms;
+ 
+            
+            //newPrograms.VertexProgramUsage = vertexProgramUsage;
+            //newPrograms.FragmentProgramUsage = fragmentProgramUsage;
+            //newPrograms.FixedFunctionState = state;
+
+           // programsToDeleteAtTheEnd.Add(newPrograms);
             return newPrograms;		
 		}
+
+        public void saveShader(string shaderSource)
+        {
+            //save the shader just to understand and learn why it bugs :)
+            string str = "shaderCheck.txt";
+            int w = 0;
+            while (System.IO.File.Exists(str))
+            {
+                str = "shaderCheck" + Convert.ToString(w) + ".txt";
+                w++;
+            }
+            System.IO.StreamWriter sw = new System.IO.StreamWriter(str);
+            sw.Write(shaderSource);
+            sw.Flush();
+            sw.Close();
+        }
 
 		#endregion Methods
 
 	}
+
 }

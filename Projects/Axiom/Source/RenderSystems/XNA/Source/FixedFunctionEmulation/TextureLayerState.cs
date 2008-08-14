@@ -46,14 +46,28 @@ using System.Collections.Generic;
 
 namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 {
-	struct TextureLayerState
+	public struct TextureLayerState
 	{
 		#region Fields
 
 		public TextureType TextureType;
 		public TexCoordCalcMethod TexCoordCalcMethod;
-		public LayerBlendOperationEx LayerBlendOperationEx;
+		//public LayerBlendOperationEx LayerBlendOperationEx;
+        public LayerBlendModeEx LayerBlendModeEx;
         public int CoordIndex;
 		#endregion Fields
+
+        public LayerBlendModeEx LayerBlendMode
+        {
+            get
+            {
+                return LayerBlendModeEx;
+            }
+            set
+            {
+                LayerBlendModeEx = value;
+
+            }
+        }
 	}
 }
