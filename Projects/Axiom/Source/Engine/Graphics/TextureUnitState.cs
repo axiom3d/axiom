@@ -2098,7 +2098,7 @@ namespace Axiom.Graphics
         /// <returns></returns>
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return blendType.GetHashCode() ^ operation.GetHashCode() ^ source1.GetHashCode() ^ source2.GetHashCode() ^ colorArg1.GetHashCode() ^ colorArg2.GetHashCode() ^ alphaArg1.GetHashCode() ^ alphaArg2.GetHashCode() ^ blendFactor.GetHashCode();
         }
 
         #endregion Object overloads
