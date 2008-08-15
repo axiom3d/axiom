@@ -106,9 +106,28 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 		#endregion Methods
 
-		#region IComparable<VertexBufferDeclaration> Implementation
+        #region Object Implementation
 
-		public int CompareTo( VertexBufferDeclaration other )
+        public override bool Equals( object obj )
+        {
+            return obj.GetHashCode() == GetHashCode();
+        }
+
+        public override int GetHashCode()
+        {
+            int hashcode = 0;
+            foreach ( VertexBufferElement vbe in vertexBufferElements )
+            {
+                hashcode ^= vbe.VertexElementIndex ^ vbe.VertexElementSemantic.GetHashCode() ^ vbe.VertexElementType.GetHashCode();
+            }
+            return hashcode;
+        } 
+
+        #endregion Object Implementation
+
+        #region IComparable<VertexBufferDeclaration> Implementation
+
+        public int CompareTo( VertexBufferDeclaration other )
 		{
 			throw new NotImplementedException();
 		}

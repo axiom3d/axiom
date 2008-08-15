@@ -108,19 +108,26 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			language2State2Declaration2ProgramsMap.TryGetValue( generatorName, out languageMaps );
 			if ( languageMaps != null )
 			{
+                VertexBufferDeclaration2FixedFunctionProgramsMap fixedFunctionStateMaps;
+                //var stateEnumerator = languageMaps.Keys.GetEnumerator();
+                //stateEnumerator.MoveNext();
+                //VertexBufferDeclaration2FixedFunctionProgramsMap fixedFunctionStateMaps = languageMaps[ stateEnumerator.Current ];
+                //var programEnumerator = fixedFunctionStateMaps.Keys.GetEnumerator();
+                //programEnumerator.MoveNext();
+                //FixedFunctionPrograms programs = fixedFunctionStateMaps[ programEnumerator.Current ];
 
-				VertexBufferDeclaration2FixedFunctionProgramsMap fixedFunctionStateMaps;
                 //seems like it cannot compare states into the map ??
+                bool test = languageMaps.ContainsKey( state );
                 languageMaps.TryGetValue( state, out fixedFunctionStateMaps );
-				if ( fixedFunctionStateMaps != null )
-				{
-					FixedFunctionPrograms programs;
-					fixedFunctionStateMaps.TryGetValue( vertexBufferDeclaration, out programs );
+                if ( fixedFunctionStateMaps != null )
+                {
+                    FixedFunctionPrograms programs;
+                    fixedFunctionStateMaps.TryGetValue( vertexBufferDeclaration, out programs );
 					if ( programs != null )
 					{
 						return programs;
 					}
-				}
+                }
 			}
 
 			// If we are here, then one did not exist.
@@ -180,49 +187,35 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             newPrograms.VertexProgramUsage= vertexProgramUsage;
 
             
-
-
-            //add the new program in the map
-            //sorry its the only way I found! :S
-            //prepare first the maps
-            VertexBufferDeclaration2FixedFunctionProgramsMap vbd2ffpm = new VertexBufferDeclaration2FixedFunctionProgramsMap();
-            vbd2ffpm.Add(vertexBufferDeclaration, newPrograms);
-            State2Declaration2ProgramsMap s2d2pm = new State2Declaration2ProgramsMap();
-            s2d2pm.Add(state, vbd2ffpm);
-            Language2State2Declaration2ProgramsMap l2s2d2pm = new Language2State2Declaration2ProgramsMap();
-            l2s2d2pm.Add(generatorName, s2d2pm);
-
-
-            //
             //then check the map to find where to put the new program
             State2Declaration2ProgramsMap languageMaps;
             VertexBufferDeclaration2FixedFunctionProgramsMap fixedFunctionStateMaps;
-            FixedFunctionPrograms programs;
-            if (language2State2Declaration2ProgramsMap.TryGetValue(generatorName, out languageMaps))
+
+            if (!language2State2Declaration2ProgramsMap.ContainsKey(generatorName))
             {
-                if (languageMaps.TryGetValue(state, out fixedFunctionStateMaps))
-                {
-                    if (!fixedFunctionStateMaps.TryGetValue(vertexBufferDeclaration, out programs))
-                    {
-                        fixedFunctionStateMaps.Add(vertexBufferDeclaration, newPrograms);
-                       
-                    }
-                    else
-                    {
-                        programs = newPrograms;
-                    }
-                }
-                else
-                {
-                    languageMaps.Add(state, vbd2ffpm);
-                }
+                languageMaps = new State2Declaration2ProgramsMap();
+                language2State2Declaration2ProgramsMap.Add( generatorName, languageMaps );
             }
             else
             {
-                language2State2Declaration2ProgramsMap.Add(generatorName, s2d2pm);
-                programsToDeleteAtTheEnd.Add(newPrograms);
-                saveShader(shaderSource);
+                languageMaps = language2State2Declaration2ProgramsMap[ generatorName];
             }
+
+            if ( !languageMaps.ContainsKey( state ) )
+            {
+                fixedFunctionStateMaps = new VertexBufferDeclaration2FixedFunctionProgramsMap();
+                languageMaps.Add( state, fixedFunctionStateMaps );
+            }
+            else
+            {
+                fixedFunctionStateMaps = languageMaps[ state ];
+            }
+
+            if ( !fixedFunctionStateMaps.ContainsKey( vertexBufferDeclaration ) )
+            {
+                fixedFunctionStateMaps.Add( vertexBufferDeclaration, newPrograms );
+            }
+
           
 
             //language2State2Declaration2ProgramsMap[generatorName][state][vertexBufferDeclaration] = newPrograms;
@@ -232,7 +225,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             //newPrograms.FragmentProgramUsage = fragmentProgramUsage;
             //newPrograms.FixedFunctionState = state;
 
-           // programsToDeleteAtTheEnd.Add(newPrograms);
+            programsToDeleteAtTheEnd.Add(newPrograms);
             return newPrograms;		
 		}
 
