@@ -167,5 +167,17 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
         {
             lightTypeCount[ (uint)lightType ]++;
         }
+
+        #region Object Implementation
+        public override bool Equals( object obj )
+        {
+            return obj.GetHashCode() == GetHashCode();
+        }
+
+        public override int GetHashCode()
+        {
+            return NormalizeNormals.GetHashCode() ^ EnableLighting.GetHashCode() ^ FogMode.GetHashCode() ^ Shading.GetHashCode() ^ AlphaRejectFunction.GetHashCode() ^ lightTypeCount.Length;
+        }
+        #endregion
     }
 }

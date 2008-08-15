@@ -41,6 +41,7 @@ using Axiom.RenderSystems.Xna.HLSL;
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -169,8 +170,6 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                     _setProgramMatrix4Parameter(GpuProgramType.Vertex, "TextureMatrix" + Axiom.Core.StringConverter.ToString(i), parameters.TextureMatricies[i]);
                 }
             }
-
-
         }
 
         public void _setProgramParameter(GpuProgramType type, String paramName, Object value, int sizeInBytes)
@@ -191,37 +190,47 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
         {
             try
             {
-                if (value.GetType() == typeof(Axiom.Math.Matrix4))
+                programParameters.AutoAddParamName = true;
+
+
+                if (value is Axiom.Math.Matrix4)
                 {
                     //if (paramName != "ViewIT" && paramName != "WorldViewIT")
                         programParameters.SetConstant(programParameters.GetParamIndex(paramName), (Axiom.Math.Matrix4)value);
-                }
-                if (value.GetType() == typeof(Axiom.Core.ColorEx))
+                } 
+                else if (value is Axiom.Core.ColorEx)
                 {
                     programParameters.SetConstant(programParameters.GetParamIndex(paramName), (Axiom.Core.ColorEx)value);
                 }
-                if (value.GetType() == typeof(Axiom.Math.Vector3))
+                else if (value is Axiom.Math.Vector3)
                 {
                     programParameters.SetConstant(programParameters.GetParamIndex(paramName), (Axiom.Math.Vector3)value);
                 }
-                if (value.GetType() == typeof(Axiom.Math.Vector4))
+                else if (value is Axiom.Math.Vector4)
                 {
                     programParameters.SetConstant(programParameters.GetParamIndex(paramName), (Axiom.Math.Vector4)value);
                 }
-                if (value.GetType() == typeof(float[]))
+                else if (value is float[])
                 {
                     programParameters.SetConstant(programParameters.GetParamIndex(paramName), (float[])value);
                 }
-                if (value.GetType() == typeof(int[]))
+                else if ( value is int[] )
                 {
                     programParameters.SetConstant(programParameters.GetParamIndex(paramName), (int[])value);
                 }
+                else if ( value is float )
+                {
+                    programParameters.SetConstant( programParameters.GetParamIndex( paramName ), new float[] { (float)value } );
+                }
                 else
                 {
-                    programParameters.SetConstant(programParameters.GetParamIndex(paramName),(float[])value);
+                    programParameters.SetConstant( programParameters.GetParamIndex( paramName ), (float[])value );
                 }
             }
-            catch (Exception e) { }
+            catch ( Exception e )
+            {
+                LogManager.Instance.Write( LogManager.BuildExceptionString( e ) );
+            }
 
            /* GpuConstantDefinition def = programParameters.GetFloatConstant(GetParamIndex(paramName));//.->getConstantDefinition(paramName);
 		    if (def.isFloat())

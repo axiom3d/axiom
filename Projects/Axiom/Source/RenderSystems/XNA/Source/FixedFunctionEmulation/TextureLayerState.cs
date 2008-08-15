@@ -69,5 +69,17 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
             }
         }
-	}
+
+        #region Object Implementation
+        public override bool Equals( object obj )
+        {
+            return obj.GetHashCode() == GetHashCode();
+        }
+
+        public override int GetHashCode()
+        {
+            return TextureType.GetHashCode() ^ TexCoordCalcMethod.GetHashCode() ^ LayerBlendModeEx.GetHashCode() ^ CoordIndex.GetHashCode();
+        }
+        #endregion Object Implementation
+    }
 }

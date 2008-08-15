@@ -119,10 +119,29 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		#region Methods
 		#endregion Methods
 
+        #region Object Overrides
 
-		#region IComparable<FixedFunctionState> Implementation
+        public override bool Equals( object obj )
+        {
+            return obj.GetHashCode() == GetHashCode();
+        }
 
-		public int CompareTo( FixedFunctionState other )
+        public override int GetHashCode()
+        {
+            int hashCode = generalFFState.GetHashCode();
+            foreach( TextureLayerState tls in textureLayerStates )
+                hashCode ^= tls.GetHashCode();
+            foreach( LightType light in lights )
+                hashCode ^= light.GetHashCode();
+
+            return hashCode;
+        }
+
+        #endregion
+
+        #region IComparable<FixedFunctionState> Implementation
+
+        public int CompareTo( FixedFunctionState other )
 		{
 			throw new NotImplementedException();
 		}
