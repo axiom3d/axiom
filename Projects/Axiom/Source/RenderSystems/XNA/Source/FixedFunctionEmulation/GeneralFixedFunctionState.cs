@@ -176,7 +176,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
         public override int GetHashCode()
         {
-            return NormalizeNormals.GetHashCode() ^ EnableLighting.GetHashCode() ^ FogMode.GetHashCode() ^ Shading.GetHashCode() ^ AlphaRejectFunction.GetHashCode() ^ lightTypeCount.Length;
+            return NormalizeNormals.GetHashCode() ^ EnableLighting.GetHashCode() ^ FogMode.GetHashCode() ^ Shading.GetHashCode() ^ AlphaRejectFunction.GetHashCode() ^ lightTypeCount[ 0 ].GetHashCode() ^ lightTypeCount[ 1 ].GetHashCode() ^ lightTypeCount[ 2 ].GetHashCode();
         }
         #endregion
     }
