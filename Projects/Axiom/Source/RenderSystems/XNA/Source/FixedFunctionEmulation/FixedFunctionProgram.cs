@@ -40,6 +40,7 @@ using Axiom.RenderSystems.Xna.HLSL;
 
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -100,6 +101,114 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		#region Methods
 
 		public abstract void SetFixedFunctionProgramParameters( FixedFunctionPrograms.FixedFunctionProgramsParameters parameters );
+
+        protected void _setProgramParameter( GpuProgramType type, String paramName, Object value, int sizeInBytes )
+        {
+            switch ( type )
+            {
+                case GpuProgramType.Vertex:
+                    _updateParameter( vertexProgramUsage.Params, paramName, value, sizeInBytes );
+                    break;
+                case GpuProgramType.Fragment:
+                    _updateParameter( fragmentProgramUsage.Params, paramName, value, sizeInBytes );
+                    break;
+
+            }
+        }
+
+        protected void _updateParameter( GpuProgramParameters programParameters, String paramName, Object value, int sizeInBytes )
+        {
+            try
+            {
+                programParameters.AutoAddParamName = true;
+
+
+                if ( value is Axiom.Math.Matrix4 )
+                {
+                    //if (paramName != "ViewIT" && paramName != "WorldViewIT")
+                    programParameters.SetConstant( programParameters.GetParamIndex( paramName ), (Axiom.Math.Matrix4)value );
+                }
+                else if ( value is Axiom.Core.ColorEx )
+                {
+                    programParameters.SetConstant( programParameters.GetParamIndex( paramName ), (Axiom.Core.ColorEx)value );
+                }
+                else if ( value is Axiom.Math.Vector3 )
+                {
+                    programParameters.SetConstant( programParameters.GetParamIndex( paramName ), (Axiom.Math.Vector3)value );
+                }
+                else if ( value is Axiom.Math.Vector4 )
+                {
+                    programParameters.SetConstant( programParameters.GetParamIndex( paramName ), (Axiom.Math.Vector4)value );
+                }
+                else if ( value is float[] )
+                {
+                    programParameters.SetConstant( programParameters.GetParamIndex( paramName ), (float[])value );
+                }
+                else if ( value is int[] )
+                {
+                    programParameters.SetConstant( programParameters.GetParamIndex( paramName ), (int[])value );
+                }
+                else if ( value is float )
+                {
+                    programParameters.SetConstant( programParameters.GetParamIndex( paramName ), new float[] { (float)value } );
+                }
+                else
+                {
+                    programParameters.SetConstant( programParameters.GetParamIndex( paramName ), (float[])value );
+                }
+            }
+            catch ( Exception e )
+            {
+                LogManager.Instance.Write( LogManager.BuildExceptionString( e ) );
+            }
+
+            /* GpuConstantDefinition def = programParameters.GetFloatConstant(GetParamIndex(paramName));//.->getConstantDefinition(paramName);
+             if (def.isFloat())
+             {
+                 memcpy((programParameters->getFloatPointer(def.physicalIndex)), value, sizeInBytes);
+             }
+             else
+             {
+                 memcpy((programParameters->getIntPointer(def.physicalIndex)), value, sizeInBytes);
+             }*/
+        }
+
+        protected void _setProgramParameter( GpuProgramType type, String paramName, int value )
+        {
+            _setProgramParameter( type, paramName, value, sizeof( int ) );
+        }
+
+        protected void _setProgramParameter( GpuProgramType type, String paramName, float value )
+        {
+            _setProgramParameter( type, paramName, value, sizeof( float ) );
+        }
+
+        protected void _setProgramParameter( GpuProgramType type, String paramName, Axiom.Math.Matrix4 value )
+        {
+            unsafe
+            {
+                _setProgramParameter( type, paramName, value, sizeof( Axiom.Math.Matrix4 ) );
+            }
+        }
+
+        protected void _setProgramParameter( GpuProgramType type, String paramName, Axiom.Core.ColorEx value )
+        {
+            float[] valueAsFloat4 = new float[ 4 ];
+            valueAsFloat4[ 0 ] = value.a;
+            valueAsFloat4[ 1 ] = value.r;
+            valueAsFloat4[ 2 ] = value.g;
+            valueAsFloat4[ 3 ] = value.b;
+            _setProgramParameter( type, paramName, valueAsFloat4[ 0 ], sizeof( float ) * 4 );
+        }
+
+        protected void _setProgramParameter( GpuProgramType type, String paramName, Microsoft.Xna.Framework.Vector3 value )
+        {
+            float[] valueAsFloat3 = new float[ 3 ];
+            valueAsFloat3[ 0 ] = value.X;
+            valueAsFloat3[ 1 ] = value.Y;
+            valueAsFloat3[ 2 ] = value.Z;
+            _setProgramParameter( type, paramName, valueAsFloat3, sizeof( float ) * 3 );
+        }
 
 		#endregion Methods
 
