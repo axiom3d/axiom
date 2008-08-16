@@ -100,24 +100,13 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		}
 
 		public FixedFunctionPrograms GetShaderPrograms( String generatorName, VertexBufferDeclaration vertexBufferDeclaration, FixedFunctionState state )
-		{
-            //Problem here
-             
+		{             
 			// Search the maps for a matching program
 			State2Declaration2ProgramsMap languageMaps;
 			language2State2Declaration2ProgramsMap.TryGetValue( generatorName, out languageMaps );
 			if ( languageMaps != null )
 			{
                 VertexBufferDeclaration2FixedFunctionProgramsMap fixedFunctionStateMaps;
-                //var stateEnumerator = languageMaps.Keys.GetEnumerator();
-                //stateEnumerator.MoveNext();
-                //VertexBufferDeclaration2FixedFunctionProgramsMap fixedFunctionStateMaps = languageMaps[ stateEnumerator.Current ];
-                //var programEnumerator = fixedFunctionStateMaps.Keys.GetEnumerator();
-                //programEnumerator.MoveNext();
-                //FixedFunctionPrograms programs = fixedFunctionStateMaps[ programEnumerator.Current ];
-
-                //seems like it cannot compare states into the map ??
-                bool test = languageMaps.ContainsKey( state );
                 languageMaps.TryGetValue( state, out fixedFunctionStateMaps );
                 if ( fixedFunctionStateMaps != null )
                 {
@@ -181,7 +170,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 	
             //ok, have to record the new program in the map only if it has not been created before
-            FixedFunctionPrograms newPrograms = new HLSLFixedFunctionProgram();// shaderGenerator.createFixedFuncPrograms();
+            FixedFunctionPrograms newPrograms = shaderGenerator.CreateFixedFunctionPrograms();
             newPrograms.FixedFunctionState=state;
             newPrograms.FragmentProgramUsage=fragmentProgramUsage;
             newPrograms.VertexProgramUsage= vertexProgramUsage;
@@ -215,15 +204,6 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             {
                 fixedFunctionStateMaps.Add( vertexBufferDeclaration, newPrograms );
             }
-
-          
-
-            //language2State2Declaration2ProgramsMap[generatorName][state][vertexBufferDeclaration] = newPrograms;
- 
-            
-            //newPrograms.VertexProgramUsage = vertexProgramUsage;
-            //newPrograms.FragmentProgramUsage = fragmentProgramUsage;
-            //newPrograms.FixedFunctionState = state;
 
             programsToDeleteAtTheEnd.Add(newPrograms);
             return newPrograms;		
