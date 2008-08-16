@@ -46,7 +46,7 @@ using XFG = Microsoft.Xna.Framework.Graphics;
 
 namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 {
-	class VertexBufferDeclaration : IComparable<VertexBufferDeclaration>
+	class VertexBufferDeclaration 
 	{
 		#region Fields and Properties
 
@@ -125,13 +125,5 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
         #endregion Object Implementation
 
-        #region IComparable<VertexBufferDeclaration> Implementation
-
-        public int CompareTo( VertexBufferDeclaration other )
-		{
-			throw new NotImplementedException();
-		}
-
-		#endregion IComparable<VertexBufferDeclaration> Implementation
 	}
 }
