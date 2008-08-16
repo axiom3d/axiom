@@ -57,9 +57,57 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		#region Nested Types
 
 		internal class ShaderGeneratorMap : Dictionary<String, ShaderGenerator> {}
-		protected class VertexBufferDeclaration2FixedFunctionProgramsMap : Dictionary<VertexBufferDeclaration, FixedFunctionPrograms> {}
-		protected class State2Declaration2ProgramsMap : Dictionary<FixedFunctionState, VertexBufferDeclaration2FixedFunctionProgramsMap> {}
-		protected class Language2State2Declaration2ProgramsMap : Dictionary<String, State2Declaration2ProgramsMap> {}
+        protected class VertexBufferDeclaration2FixedFunctionProgramsMap : Dictionary<VertexBufferDeclaration, FixedFunctionPrograms>
+        {
+            public FixedFunctionPrograms this[ VertexBufferDeclaration key ]
+            {
+                get
+                {
+                    if ( !ContainsKey( key ) )
+                    {
+                        Add( key, null );
+                    }
+                    return base[ key ];
+                }
+                set
+                {
+                    if ( !ContainsKey( key ) )
+                        Add( key, value );
+                    else
+                        base[ key ] = value;
+                }
+            }
+        }
+
+		protected class State2Declaration2ProgramsMap : Dictionary<FixedFunctionState, VertexBufferDeclaration2FixedFunctionProgramsMap> 
+        {
+            public VertexBufferDeclaration2FixedFunctionProgramsMap this[ FixedFunctionState key ]
+            {
+                get
+                {
+                    if ( !ContainsKey( key ) )
+                    {
+                        Add( key, new VertexBufferDeclaration2FixedFunctionProgramsMap() );
+                    }
+                    return base[ key ];
+                }
+            }
+        }
+
+		protected class Language2State2Declaration2ProgramsMap : Dictionary<String, State2Declaration2ProgramsMap> 
+        {
+            public State2Declaration2ProgramsMap this[ String key ]
+            {
+                get
+                {
+                    if ( !ContainsKey( key ) )
+                    {
+                        Add( key, new State2Declaration2ProgramsMap() );
+                    }
+                    return base[ key ];
+                }
+            }
+        }
 
 		#endregion Nested Types
 
@@ -102,26 +150,31 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		public FixedFunctionPrograms GetShaderPrograms( String generatorName, VertexBufferDeclaration vertexBufferDeclaration, FixedFunctionState state )
 		{             
 			// Search the maps for a matching program
-			State2Declaration2ProgramsMap languageMaps;
-			language2State2Declaration2ProgramsMap.TryGetValue( generatorName, out languageMaps );
-			if ( languageMaps != null )
-			{
+            State2Declaration2ProgramsMap languageMaps;
+            language2State2Declaration2ProgramsMap.TryGetValue( generatorName, out languageMaps );
+            if ( languageMaps != null )
+            {
                 VertexBufferDeclaration2FixedFunctionProgramsMap fixedFunctionStateMaps;
                 languageMaps.TryGetValue( state, out fixedFunctionStateMaps );
                 if ( fixedFunctionStateMaps != null )
                 {
                     FixedFunctionPrograms programs;
                     fixedFunctionStateMaps.TryGetValue( vertexBufferDeclaration, out programs );
-					if ( programs != null )
-					{
-						return programs;
-					}
+                    if ( programs != null )
+                    {
+                        return programs;
+                    }
                 }
-			}
+            }
 
+            //FixedFunctionPrograms programs = language2State2Declaration2ProgramsMap[ generatorName ][ state ][ vertexBufferDeclaration ];
 			// If we are here, then one did not exist.
 			// Create it.
-			return createShaderPrograms( generatorName, vertexBufferDeclaration, state );
+            //if ( programs == null )
+            //    programs = createShaderPrograms( generatorName, vertexBufferDeclaration, state );
+            //return programs;
+
+            return createShaderPrograms( generatorName, vertexBufferDeclaration, state );
 		}
 
 		protected FixedFunctionPrograms createShaderPrograms( String generatorName, VertexBufferDeclaration vertexBufferDeclaration, FixedFunctionState state )
@@ -147,7 +200,8 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			vs = HighLevelGpuProgramManager.Instance.CreateProgram( "VS_" + shaderCount.ToString(), 
 																	//ResourceGroupManager.DefaultResourceGroupName,
 																	shaderGenerator.Language,
-																	GpuProgramType.Vertex );	
+																	GpuProgramType.Vertex );
+            LogManager.Instance.Write( "Created VertexShader {0}", "VS_" + shaderCount.ToString() );
 			vs.Source = shaderSource;
 			vs.SetParam( "entry_point", vertexProgramName );
 			vs.SetParam( "target", shaderGenerator.VPTarget );
@@ -159,8 +213,9 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			fs = HighLevelGpuProgramManager.Instance.CreateProgram( "FS_" + shaderCount.ToString(), 
 																	//ResourceGroupManager.DefaultResourceGroupName,
 																	shaderGenerator.Language,
-																	GpuProgramType.Fragment );	
-			fs.Source = shaderSource;
+																	GpuProgramType.Fragment );
+            LogManager.Instance.Write( "Created FragmentProgram {0}", "FS_" + shaderCount.ToString() );
+            fs.Source = shaderSource;
 			fs.SetParam( "entry_point", fragmentProgramName );
 			fs.SetParam( "target", shaderGenerator.FPTarget );
 			fs.Load();
@@ -177,35 +232,9 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
             
             //then check the map to find where to put the new program
-            State2Declaration2ProgramsMap languageMaps;
-            VertexBufferDeclaration2FixedFunctionProgramsMap fixedFunctionStateMaps;
-
-            if (!language2State2Declaration2ProgramsMap.ContainsKey(generatorName))
-            {
-                languageMaps = new State2Declaration2ProgramsMap();
-                language2State2Declaration2ProgramsMap.Add( generatorName, languageMaps );
-            }
-            else
-            {
-                languageMaps = language2State2Declaration2ProgramsMap[ generatorName];
-            }
-
-            if ( !languageMaps.ContainsKey( state ) )
-            {
-                fixedFunctionStateMaps = new VertexBufferDeclaration2FixedFunctionProgramsMap();
-                languageMaps.Add( state, fixedFunctionStateMaps );
-            }
-            else
-            {
-                fixedFunctionStateMaps = languageMaps[ state ];
-            }
-
-            if ( !fixedFunctionStateMaps.ContainsKey( vertexBufferDeclaration ) )
-            {
-                fixedFunctionStateMaps.Add( vertexBufferDeclaration, newPrograms );
-            }
-
+            language2State2Declaration2ProgramsMap[ generatorName ][ state ][ vertexBufferDeclaration ] = newPrograms;
             programsToDeleteAtTheEnd.Add(newPrograms);
+
             return newPrograms;		
 		}
 
