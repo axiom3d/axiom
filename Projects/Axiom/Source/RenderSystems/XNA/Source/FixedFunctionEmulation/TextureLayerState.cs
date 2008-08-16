@@ -71,6 +71,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
         }
 
         #region Object Implementation
+
         public override bool Equals( object obj )
         {
             return obj.GetHashCode() == GetHashCode();
@@ -80,6 +81,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
         {
             return TextureType.GetHashCode() ^ TexCoordCalcMethod.GetHashCode() ^ LayerBlendModeEx.GetHashCode() ^ CoordIndex.GetHashCode();
         }
+
         #endregion Object Implementation
     }
 }

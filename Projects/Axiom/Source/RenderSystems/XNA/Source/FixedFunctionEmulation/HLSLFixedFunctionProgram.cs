@@ -56,22 +56,22 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             fixedFunctionState = new FixedFunctionState();
         }
 
-        public override void SetFixedFunctionProgramParameters(Axiom.RenderSystems.Xna.FixedFunctionEmulation.FixedFunctionPrograms.FixedFunctionProgramsParameters parameters)
+        public override void SetFixedFunctionProgramParameters( FixedFunctionPrograms.FixedFunctionProgramsParameters parameters)
         {
-            _setProgramMatrix4Parameter(GpuProgramType.Vertex, "World", parameters.WorldMatrix);
-            _setProgramMatrix4Parameter(GpuProgramType.Vertex, "View", parameters.ViewMatrix);
-            _setProgramMatrix4Parameter(GpuProgramType.Vertex, "Projection", parameters.ProjectionMatrix);
-            _setProgramMatrix4Parameter(GpuProgramType.Vertex, "ViewIT", parameters.ViewMatrix.Inverse().Transpose());
+            _setProgramParameter(GpuProgramType.Vertex, "World", parameters.WorldMatrix);
+            _setProgramParameter(GpuProgramType.Vertex, "View", parameters.ViewMatrix);
+            _setProgramParameter(GpuProgramType.Vertex, "Projection", parameters.ProjectionMatrix);
+            _setProgramParameter(GpuProgramType.Vertex, "ViewIT", parameters.ViewMatrix.Inverse().Transpose());
 
 
             Axiom.Math.Matrix4 WorldViewIT = parameters.ViewMatrix * parameters.WorldMatrix;
             WorldViewIT = WorldViewIT.Inverse().Transpose();
-            _setProgramMatrix4Parameter(GpuProgramType.Vertex, "WorldViewIT", WorldViewIT);
+            _setProgramParameter(GpuProgramType.Vertex, "WorldViewIT", WorldViewIT);
 
             #region shaderLights
             if (parameters.LightingEnabled && parameters.Lights.Count > 0)
             {
-                _setProgramColorParameter(GpuProgramType.Vertex, "BaseLightAmbient", parameters.LightAmbient);
+                _setProgramParameter(GpuProgramType.Vertex, "BaseLightAmbient", parameters.LightAmbient);
 
                 uint pointLightCount = 0;
                 uint directionalLightCount = 0;
@@ -97,45 +97,45 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                             break;
                     }
 
-                    _setProgramColorParameter(GpuProgramType.Vertex, prefix + "Ambient", Axiom.Core.ColorEx.Black);
-                    _setProgramColorParameter(GpuProgramType.Vertex, prefix + "Diffuse", curLight.Diffuse);
-                    _setProgramColorParameter(GpuProgramType.Vertex, prefix + "Specular", curLight.Specular);
+                    _setProgramParameter(GpuProgramType.Vertex, prefix + "Ambient", Axiom.Core.ColorEx.Black);
+                    _setProgramParameter(GpuProgramType.Vertex, prefix + "Diffuse", curLight.Diffuse);
+                    _setProgramParameter(GpuProgramType.Vertex, prefix + "Specular", curLight.Specular);
 
                     switch (curLight.Type)
                     {
                         case LightType.Point:
                             {
-                                _setProgramVector3Parameter(GpuProgramType.Vertex, prefix + "Position", new Microsoft.Xna.Framework.Vector3(curLight.Position.x, curLight.Position.y, curLight.Position.z));
-                                _setProgramFloatParameter(GpuProgramType.Vertex, prefix + "Range", curLight.AttenuationRange);
+                                _setProgramParameter(GpuProgramType.Vertex, prefix + "Position", new Microsoft.Xna.Framework.Vector3(curLight.Position.x, curLight.Position.y, curLight.Position.z));
+                                _setProgramParameter(GpuProgramType.Vertex, prefix + "Range", curLight.AttenuationRange);
 
-                                Axiom.Math.Vector3 attenuation = new Axiom.Math.Vector3();
-                                attenuation[0] = curLight.AttenuationConstant;
-                                attenuation[1] = curLight.AttenuationLinear;
-                                attenuation[2] = curLight.AttenuationQuadratic;
-                                _setProgramVector3Parameter(GpuProgramType.Vertex, prefix + "Attenuation", new Microsoft.Xna.Framework.Vector3(attenuation.x, attenuation.y, attenuation.z));
+                                Axiom.Math.Vector3 attenuation;
+                                attenuation.x = curLight.AttenuationConstant;
+                                attenuation.y = curLight.AttenuationLinear;
+                                attenuation.z = curLight.AttenuationQuadratic;
+                                _setProgramParameter(GpuProgramType.Vertex, prefix + "Attenuation", new Microsoft.Xna.Framework.Vector3(attenuation.x, attenuation.y, attenuation.z));
                             }
                             break;
                         case LightType.Directional:
-                            _setProgramVector3Parameter(GpuProgramType.Vertex, prefix + "Direction", new Microsoft.Xna.Framework.Vector3(curLight.Direction.x, curLight.Direction.y, curLight.Direction.z));
+                            _setProgramParameter(GpuProgramType.Vertex, prefix + "Direction", new Microsoft.Xna.Framework.Vector3(curLight.Direction.x, curLight.Direction.y, curLight.Direction.z));
 
                             break;
                         case LightType.Spotlight:
                             {
 
-                                _setProgramVector3Parameter(GpuProgramType.Vertex, prefix + "Direction", new Microsoft.Xna.Framework.Vector3(curLight.Direction.x, curLight.Direction.y, curLight.Direction.z));
-                                _setProgramVector3Parameter(GpuProgramType.Vertex, prefix + "Position", new Microsoft.Xna.Framework.Vector3(curLight.Position.x, curLight.Position.y, curLight.Position.z));
+                                _setProgramParameter(GpuProgramType.Vertex, prefix + "Direction", new Microsoft.Xna.Framework.Vector3(curLight.Direction.x, curLight.Direction.y, curLight.Direction.z));
+                                _setProgramParameter(GpuProgramType.Vertex, prefix + "Position", new Microsoft.Xna.Framework.Vector3(curLight.Position.x, curLight.Position.y, curLight.Position.z));
 
-                                Axiom.Math.Vector3 attenuation = new Axiom.Math.Vector3();
-                                attenuation[0] = curLight.AttenuationConstant;
-                                attenuation[1] = curLight.AttenuationLinear;
-                                attenuation[2] = curLight.AttenuationQuadratic;
-                                _setProgramVector3Parameter(GpuProgramType.Vertex, prefix + "Attenuation", new Microsoft.Xna.Framework.Vector3(attenuation.x, attenuation.y, attenuation.z));
+                                Axiom.Math.Vector3 attenuation;
+                                attenuation.x = curLight.AttenuationConstant;
+                                attenuation.y = curLight.AttenuationLinear;
+                                attenuation.z = curLight.AttenuationQuadratic;
+                                _setProgramParameter(GpuProgramType.Vertex, prefix + "Attenuation", new Microsoft.Xna.Framework.Vector3(attenuation.x, attenuation.y, attenuation.z));
 
-                                Axiom.Math.Vector3 spot = new Axiom.Math.Vector3();
-                                spot[0] = curLight.SpotlightInnerAngle;//.valueRadians() ;
-                                spot[1] = curLight.SpotlightOuterAngle;//..valueRadians();
-                                spot[2] = curLight.SpotlightFalloff;
-                                _setProgramVector3Parameter(GpuProgramType.Vertex, prefix + "Spot", new Microsoft.Xna.Framework.Vector3(spot.x, spot.y, spot.z));
+                                Axiom.Math.Vector3 spot;
+                                spot.x = curLight.SpotlightInnerAngle;//.valueRadians() ;
+                                spot.y = curLight.SpotlightOuterAngle;//..valueRadians();
+                                spot.z = curLight.SpotlightFalloff;
+                                _setProgramParameter(GpuProgramType.Vertex, prefix + "Spot", new Microsoft.Xna.Framework.Vector3(spot.x, spot.y, spot.z));
                             }
                             break;
                     } // end of - switch (curLight->getType())
@@ -149,17 +149,17 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                     break;
                 case FogMode.Exp:
                 case FogMode.Exp2:
-                    _setProgramFloatParameter(GpuProgramType.Vertex, "FogDensity", parameters.FogDensity);
+                    _setProgramParameter(GpuProgramType.Vertex, "FogDensity", parameters.FogDensity);
                     break;
                 case FogMode.Linear:
-                    _setProgramFloatParameter(GpuProgramType.Vertex, "FogStart", parameters.FogStart);
-                    _setProgramFloatParameter(GpuProgramType.Vertex, "FogEnd", parameters.FogEnd);
+                    _setProgramParameter(GpuProgramType.Vertex, "FogStart", parameters.FogStart);
+                    _setProgramParameter(GpuProgramType.Vertex, "FogEnd", parameters.FogEnd);
                     break;
             }
 
             if (parameters.FogMode != FogMode.None)
             {
-                _setProgramColorParameter(GpuProgramType.Vertex, "FogColor", parameters.FogColor);
+                _setProgramParameter(GpuProgramType.Vertex, "FogColor", parameters.FogColor);
             }
 
 
@@ -167,12 +167,12 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             {
                 if (parameters.TextureEnabled[i])
                 {
-                    _setProgramMatrix4Parameter(GpuProgramType.Vertex, "TextureMatrix" + Axiom.Core.StringConverter.ToString(i), parameters.TextureMatricies[i]);
+                    _setProgramParameter(GpuProgramType.Vertex, "TextureMatrix" + Axiom.Core.StringConverter.ToString(i), parameters.TextureMatricies[i]);
                 }
             }
         }
 
-        public void _setProgramParameter(GpuProgramType type, String paramName, Object value, int sizeInBytes)
+        private void _setProgramParameter(GpuProgramType type, String paramName, Object value, int sizeInBytes)
         {
             switch (type)
             {
@@ -186,7 +186,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             }
         }
 
-        public void _updateParameter(GpuProgramParameters programParameters, String paramName, Object value, int sizeInBytes)
+        private void _updateParameter(GpuProgramParameters programParameters, String paramName, Object value, int sizeInBytes)
         {
             try
             {
@@ -196,7 +196,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                 if (value is Axiom.Math.Matrix4)
                 {
                     //if (paramName != "ViewIT" && paramName != "WorldViewIT")
-                        programParameters.SetConstant(programParameters.GetParamIndex(paramName), (Axiom.Math.Matrix4)value);
+                    programParameters.SetConstant(programParameters.GetParamIndex(paramName), (Axiom.Math.Matrix4)value);
                 } 
                 else if (value is Axiom.Core.ColorEx)
                 {
@@ -243,22 +243,25 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		    }*/
         }
 
-        public void _setProgramintParameter(GpuProgramType type, String paramName, int value)
+        private void _setProgramParameter(GpuProgramType type, String paramName, int value)
         {
             _setProgramParameter(type, paramName, value, sizeof(int));
         }
 
-        public void _setProgramFloatParameter(GpuProgramType type, String paramName, float value)
+        private void _setProgramParameter(GpuProgramType type, String paramName, float value)
         {
             _setProgramParameter(type, paramName, value, sizeof(float));
         }
 
-        unsafe public void _setProgramMatrix4Parameter(GpuProgramType type, String paramName, Axiom.Math.Matrix4 value)
+        private void _setProgramParameter(GpuProgramType type, String paramName, Axiom.Math.Matrix4 value)
         {
-            _setProgramParameter(type, paramName, value, sizeof(Axiom.Math.Matrix4));
+            unsafe
+            {
+                _setProgramParameter( type, paramName, value, sizeof( Axiom.Math.Matrix4 ) );
+            }
         }
 
-        public void _setProgramColorParameter(GpuProgramType type, String paramName, Axiom.Core.ColorEx value)
+        private void _setProgramParameter(GpuProgramType type, String paramName, Axiom.Core.ColorEx value)
         {
             float[] valueAsFloat4=new float[4];
 		    valueAsFloat4[0] = value.a;
@@ -268,7 +271,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		    _setProgramParameter(type, paramName, valueAsFloat4[0], sizeof(float) * 4);
         }
 
-        public void _setProgramVector3Parameter(GpuProgramType type, String paramName, Microsoft.Xna.Framework.Vector3 value)
+        private void _setProgramParameter(GpuProgramType type, String paramName, Microsoft.Xna.Framework.Vector3 value)
         {
             float[] valueAsFloat3=new float[3];
 		    valueAsFloat3[0] = value.X;

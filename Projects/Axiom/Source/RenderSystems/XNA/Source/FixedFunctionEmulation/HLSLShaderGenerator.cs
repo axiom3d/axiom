@@ -124,7 +124,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 						parameterType = "short4";
 						break;
 					case VertexElementType.UByte4:
-                        parameterType = "float4";
+                        parameterType = "char4";
 						break;
 
 				}
