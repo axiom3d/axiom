@@ -739,6 +739,11 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             return shaderSource;
 		}
 
+        public override FixedFunctionPrograms CreateFixedFunctionPrograms()
+        {
+            return new HLSLFixedFunctionProgram();
+        }
+
 		#endregion ShaderGenerator Implementation
     }
 }
