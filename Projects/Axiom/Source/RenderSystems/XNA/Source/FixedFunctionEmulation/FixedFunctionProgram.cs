@@ -161,16 +161,6 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             {
                 LogManager.Instance.Write( LogManager.BuildExceptionString( e ) );
             }
-
-            /* GpuConstantDefinition def = programParameters.GetFloatConstant(GetParamIndex(paramName));//.->getConstantDefinition(paramName);
-             if (def.isFloat())
-             {
-                 memcpy((programParameters->getFloatPointer(def.physicalIndex)), value, sizeInBytes);
-             }
-             else
-             {
-                 memcpy((programParameters->getIntPointer(def.physicalIndex)), value, sizeInBytes);
-             }*/
         }
 
         protected void _setProgramParameter( GpuProgramType type, String paramName, int value )
@@ -193,20 +183,13 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
         protected void _setProgramParameter( GpuProgramType type, String paramName, Axiom.Core.ColorEx value )
         {
-            float[] valueAsFloat4 = new float[ 4 ];
-            valueAsFloat4[ 0 ] = value.a;
-            valueAsFloat4[ 1 ] = value.r;
-            valueAsFloat4[ 2 ] = value.g;
-            valueAsFloat4[ 3 ] = value.b;
+            float[] valueAsFloat4 = new float[] { value.a, value.r, value.g, value.b };
             _setProgramParameter( type, paramName, valueAsFloat4[ 0 ], sizeof( float ) * 4 );
         }
 
         protected void _setProgramParameter( GpuProgramType type, String paramName, Microsoft.Xna.Framework.Vector3 value )
         {
-            float[] valueAsFloat3 = new float[ 3 ];
-            valueAsFloat3[ 0 ] = value.X;
-            valueAsFloat3[ 1 ] = value.Y;
-            valueAsFloat3[ 2 ] = value.Z;
+            float[] valueAsFloat3 = new float[] { value.X, value.Y, value.Z };
             _setProgramParameter( type, paramName, valueAsFloat3, sizeof( float ) * 3 );
         }
 
