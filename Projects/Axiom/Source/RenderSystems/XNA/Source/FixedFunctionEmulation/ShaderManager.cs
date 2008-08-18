@@ -166,14 +166,8 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                     }
                 }
             }
-
-            //FixedFunctionPrograms programs = language2State2Declaration2ProgramsMap[ generatorName ][ state ][ vertexBufferDeclaration ];
 			// If we are here, then one did not exist.
 			// Create it.
-            //if ( programs == null )
-            //    programs = createShaderPrograms( generatorName, vertexBufferDeclaration, state );
-            //return programs;
-
             return createShaderPrograms( generatorName, vertexBufferDeclaration, state );
 		}
 
@@ -184,7 +178,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 			ShaderGenerator shaderGenerator = shaderGeneratorMap[generatorName];
 			String shaderSource = shaderGenerator.GetShaderSource( vertexProgramName, fragmentProgramName, vertexBufferDeclaration,	state );
-
+            saveShader(shaderSource);
 		
 			// Vertex program details
 			GpuProgramUsage vertexProgramUsage = new GpuProgramUsage(GpuProgramType.Vertex);
@@ -224,14 +218,13 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			fragmentProgramUsage.Params = fs.CreateParameters();
 
 	
-            //ok, have to record the new program in the map only if it has not been created before
             FixedFunctionPrograms newPrograms = shaderGenerator.CreateFixedFunctionPrograms();
             newPrograms.FixedFunctionState=state;
             newPrograms.FragmentProgramUsage=fragmentProgramUsage;
             newPrograms.VertexProgramUsage= vertexProgramUsage;
 
             
-            //then check the map to find where to put the new program
+            //then save the new program
             language2State2Declaration2ProgramsMap[ generatorName ][ state ][ vertexBufferDeclaration ] = newPrograms;
             programsToDeleteAtTheEnd.Add(newPrograms);
 

@@ -122,10 +122,8 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             {
                 programParameters.AutoAddParamName = true;
 
-
                 if ( value is Axiom.Math.Matrix4 )
                 {
-                    //if (paramName != "ViewIT" && paramName != "WorldViewIT")
                     programParameters.SetConstant( programParameters.GetParamIndex( paramName ), (Axiom.Math.Matrix4)value );
                 }
                 else if ( value is Axiom.Core.ColorEx )

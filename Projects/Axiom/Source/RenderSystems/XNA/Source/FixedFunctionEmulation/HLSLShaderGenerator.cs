@@ -109,7 +109,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 					case VertexElementType.Color:
 					case VertexElementType.Color_ABGR:
 					case VertexElementType.Color_ARGB:
-                        parameterType = "int"; //"unsigned int";//unsigned not recognized
+                        parameterType = "float4"; //"unsigned int";//unsigned not recognized
 						break;
 					case VertexElementType.Short1:
 						parameterType = "short";
@@ -124,7 +124,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 						parameterType = "short4";
 						break;
 					case VertexElementType.UByte4:
-                        parameterType = "char4";
+                        parameterType = "float4";
 						break;
 
 				}
@@ -160,8 +160,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 						break;
 					case VertexElementSemantic.TexCoords:
 						parameterName = "Texcoord";
-                        if (!texCordVecType.ContainsKey((int)semanticCount[(int)semantic] - 1))
-                            texCordVecType.Add((int)semanticCount[(int)semantic] - 1, type);//[semanticCount[(int)semantic] - 1] = type;
+                        texCordVecType[(int)semanticCount[(int)semantic]-1] = type;
 						parameterShaderTypeName = "TEXCOORD";
 						break;
 					case VertexElementSemantic.Binormal:
@@ -201,7 +200,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 					break;
 				case FogMode.Exp:
 				case FogMode.Exp2:
-                    shaderSource = shaderSource + "float FogDensity;\n";
+                    shaderSource = shaderSource + "float FogDensity=0.1f;\n";
 					break;
 				case FogMode.Linear:
                     shaderSource = shaderSource + "float FogStart;\n";
@@ -249,25 +248,30 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			shaderSource = shaderSource + "{\n";
             shaderSource = shaderSource + "\tfloat4 Pos : POSITION;\n";//"float4 Pos : SV_POSITION;\n"; //SV not recognised
 
+           
             for (int i = 0; i < fixedFunctionState.TextureLayerStates.Count; i++)
 		    {
 			    String layerCounter = Convert.ToString(i);
 
-               // TextureLayerState curTextureLayerState = (TextureLayerState)fixedFunctionState.TextureLayerStates[i];
-                
-                if(texCordVecType.ContainsKey(i))
-                switch (texCordVecType[i])
-			    {
-			    case VertexElementType.Float1:
-                    shaderSource = shaderSource + "\tfloat1 Texcoord" + layerCounter + " : TEXCOORD" + layerCounter + ";\n";
-				    break;
-                case VertexElementType.Float2:
+                if (texCordVecType.ContainsKey(i))
+                    switch (texCordVecType[i])
+                    {
+                        case VertexElementType.Float1:
+                            shaderSource = shaderSource + "\tfloat1 Texcoord" + layerCounter + " : TEXCOORD" + layerCounter + ";\n";
+                            break;
+                        case VertexElementType.Float2:
+                            shaderSource = shaderSource + "\tfloat2 Texcoord" + layerCounter + " : TEXCOORD" + layerCounter + ";\n";
+                            break;
+                        case VertexElementType.Float3:
+                            shaderSource = shaderSource + "\tfloat3 Texcoord" + layerCounter + " : TEXCOORD" + layerCounter + ";\n";
+                            break;
+
+                    }
+                else
+                {
+                    //fix sometimes there are more texture layer states than textures ?? (water demo)
                     shaderSource = shaderSource + "\tfloat2 Texcoord" + layerCounter + " : TEXCOORD" + layerCounter + ";\n";
-				    break;
-                case VertexElementType.Float3:
-                    shaderSource = shaderSource + "\tfloat3 Texcoord" + layerCounter + " : TEXCOORD" + layerCounter + ";\n";
-				    break;
-			    }
+                }
 
 		    }
 
@@ -298,9 +302,8 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                 shaderSource = shaderSource + "\tfloat3 Normal = float3(0.0, 0.0, 0.0);\n";
             }
 		
-
-            for(int i = 0 ; i < fixedFunctionState.TextureLayerStates.Count; i++)
-            {
+           for(int i = 0 ; i < fixedFunctionState.TextureLayerStates.Count; i++)
+           {
                 TextureLayerState curTextureLayerState = fixedFunctionState.TextureLayerStates[i];
 			    String layerCounter = Convert.ToString(i);
 			    String coordIdx = Convert.ToString(curTextureLayerState.CoordIndex);
@@ -312,11 +315,10 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                     case TexCoordCalcMethod.None:
                         if (curTextureLayerState.CoordIndex < texcoordCount)
                         {
-                            shaderSource = shaderSource + "TextureMatrix" + layerCounter + "=float4x4(1.0,0.0,0.0,0.0, 0.0,1.0,0.0,0.0, 0.0,0.0,1.0,0.0, 0.0,0.0,0.0,1.0);\n";
+                            //shaderSource = shaderSource + "TextureMatrix" + layerCounter + "=float4x4(1.0,0.0,0.0,0.0, 0.0,1.0,0.0,0.0, 0.0,0.0,1.0,0.0, 0.0,0.0,0.0,1.0);\n";
                             if (texCordVecType.ContainsKey(i))
                                 switch (texCordVecType[i])
                                 {
-
                                     case VertexElementType.Float1:
                                         shaderSource = shaderSource + "\t\toutput.Texcoord" + layerCounter + " = input.Texcoord" + coordIdx + ";\n";
                                         break;
@@ -357,7 +359,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                         shaderSource = shaderSource + "\t\toutput.Texcoord" + layerCounter + " = float2 (r.x / m + 0.5, r.y / m + 0.5);\n";
                         break;
                     case TexCoordCalcMethod.EnvironmentMapPlanar:
-                        break;
+                   
                     case TexCoordCalcMethod.EnvironmentMapReflection:
                         //assert(curTextureLayerState.getTextureType() == TEX_TYPE_CUBE_MAP);
                         shaderSource = shaderSource + "\t{\n";
@@ -368,7 +370,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                         shaderSource = shaderSource + "\t}\n";
                         break;
                     case TexCoordCalcMethod.EnvironmentMapNormal:
-                        break;
+
                     case TexCoordCalcMethod.ProjectiveTexture:
                         if (texCordVecType.ContainsKey(i))
                             switch (texCordVecType[i])
@@ -403,14 +405,15 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 				shaderSource = shaderSource + "\t\toutput.Color = BaseLightAmbient;\n";
 				if ( bHasColor )
 				{
-					shaderSource = shaderSource + "\t\toutput.Color.x = ((input.DiffuseColor0 >> 24) & 0xFF) / 255.0f;\n";
+                    shaderSource = shaderSource + "\t\toutput.Color.x = input.DiffuseColor0  / 255.0f;\n";
+					/*shaderSource = shaderSource + "\t\toutput.Color.x = ((input.DiffuseColor0 >> 24) & 0xFF) / 255.0f;\n";
 					shaderSource = shaderSource + "\t\toutput.Color.y = ((input.DiffuseColor0 >> 16) & 0xFF) / 255.0f;\n";
 					shaderSource = shaderSource + "\t\toutput.Color.z = ((input.DiffuseColor0 >> 8) & 0xFF) / 255.0f;\n";
-					shaderSource = shaderSource + "\t\toutput.Color.w = (input.DiffuseColor0 & 0xFF) / 255.0f;\n";
+					shaderSource = shaderSource + "\t\toutput.Color.w = (input.DiffuseColor0 & 0xFF) / 255.0f;\n";*/
 				}
 
-
-				shaderSource = shaderSource + "\t\tfloat3 N = mul((float3x3)WorldViewIT, input.Normal0);\n";
+            
+				shaderSource = shaderSource + "\t\tfloat3 N = mul((float3x3)WorldViewIT, Normal);\n";
 				shaderSource = shaderSource + "\t\tfloat3 V = -normalize(cameraPos);\n";
 
 				shaderSource = shaderSource + "\t\t#define fMaterialPower 16.f\n";
@@ -475,33 +478,33 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 							shaderSource = shaderSource + "  float3 PosDiff = " + prefix + "Position-(float3)mul(World,input.Position0);\n";
 							shaderSource = shaderSource + "   float3 L = mul((float3x3)ViewIT, normalize((PosDiff)));\n";
 							shaderSource = shaderSource + "   float NdotL = dot(N, L);\n";
-							shaderSource = shaderSource + "   Out.Color = " + prefix + "Ambient;\n";
-							shaderSource = shaderSource + "   Out.ColorSpec = 0;\n";
+                            shaderSource = shaderSource + "   output.Color = " + prefix + "Ambient;\n";
+                            shaderSource = shaderSource + "   output.ColorSpec = 0;\n";
 							shaderSource = shaderSource + "   float fAttenSpot = 1.f;\n";
 							shaderSource = shaderSource + "   if(NdotL >= 0.f)\n";
 							shaderSource = shaderSource + "   {\n";
 							shaderSource = shaderSource + "      //compute diffuse color\n";
-							shaderSource = shaderSource + "      Out.Color += NdotL * " + prefix + "Diffuse;\n";
+                            shaderSource = shaderSource + "      output.Color += NdotL * " + prefix + "Diffuse;\n";
 							shaderSource = shaderSource + "      //add specular component\n";
 							shaderSource = shaderSource + "       float3 H = normalize(L + V);   //half vector\n";
-							shaderSource = shaderSource + "       Out.ColorSpec = pow(max(0, dot(H, N)), fMaterialPower) * " + prefix + "Specular;\n";
+                            shaderSource = shaderSource + "       output.ColorSpec = pow(max(0, dot(H, N)), fMaterialPower) * " + prefix + "Specular;\n";
 							shaderSource = shaderSource + "      float LD = length(PosDiff);\n";
-							shaderSource = shaderSource + "      if(LD > lights[i].fRange)\n";
+							/*shaderSource = shaderSource + "      if(LD > lights[i].fRange)\n";
 							shaderSource = shaderSource + "      {\n";
 							shaderSource = shaderSource + "         fAttenSpot = 0.f;\n";
 							shaderSource = shaderSource + "      }\n";
 							shaderSource = shaderSource + "      else\n";
 							shaderSource = shaderSource + "      {\n";
 							shaderSource = shaderSource + "         fAttenSpot *= 1.f/(" + prefix + "Attenuation.x + " + prefix + "Attenuation.y*LD + " + prefix + "Attenuation.z*LD*LD);\n";
-							shaderSource = shaderSource + "      }\n";
+							shaderSource = shaderSource + "      }\n";*/
 							shaderSource = shaderSource + "      //spot cone computation\n";
 							shaderSource = shaderSource + "      float3 L2 = mul((float3x3)ViewIT, -normalize(" + prefix + "Direction));\n";
 							shaderSource = shaderSource + "      float rho = dot(L, L2);\n";
 							shaderSource = shaderSource + "      fAttenSpot *= pow(saturate((rho - " + prefix + "Spot.y)/(" + prefix + "Spot.x - " + prefix + "Spot.y)), " + prefix + "Spot.z);\n";
-							shaderSource = shaderSource + "		Color *= fAttenSpot;\n";
-							shaderSource = shaderSource + "		ColorSpec *= fAttenSpot;\n";
-							shaderSource = shaderSource + "    output.Color += Color;\n";
-							shaderSource = shaderSource + "    output.ColorSpec += ColorSpec;\n";
+                            shaderSource = shaderSource + "		output.Color *= fAttenSpot;\n";
+                            shaderSource = shaderSource + "		output.ColorSpec *= fAttenSpot;\n";
+                            shaderSource = shaderSource + "    output.Color += output.Color;\n";
+                            shaderSource = shaderSource + "    output.ColorSpec += output.ColorSpec;\n";
 							shaderSource = shaderSource + "   }\n";
 							shaderSource = shaderSource + "}\n";
 							break;
@@ -512,7 +515,8 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			{
 				if ( bHasColor )
 				{
-                    shaderSource = shaderSource + "\toutput.Color = ((input.DiffuseColor0)) / 255.0f;\n";
+                    shaderSource = shaderSource + "\toutput.Color = 0;\n";//((input.DiffuseColor0)) / 255.0f;\n";
+                    
 					/*shaderSource = shaderSource + "output.Color.x = ((input.DiffuseColor0 >> 24) & 0xFF) / 255.0f;\n";
 					shaderSource = shaderSource + "output.Color.y = ((input.DiffuseColor0 >> 16) & 0xFF) / 255.0f;\n";
 					shaderSource = shaderSource + "output.Color.z = ((input.DiffuseColor0 >> 8) & 0xFF) / 255.0f;\n";
@@ -713,19 +717,16 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                     case LayerBlendOperationEx.DotProduct:
                         shaderSource = shaderSource + "\t\tfinalColor = product(source1,source2);\n";
                         break;
-                    //case LayerBlendOperationEx.. LBX_BLEND_DIFFUSE_COLOUR:
-                    //  shaderSource = shaderSource + "finalColor = source1 * input.Color + source2 * (float4(1.0,1.0,1.0,1.0) - input.Color);\n";
-                    //break;
                 }
-                shaderSource = shaderSource + "finalColor=finalColor*texColor;\n";
+                //shaderSource = shaderSource + "finalColor=finalColor*texColor;\n";
 
                 shaderSource = shaderSource + "\t}\n";
             }
        
             if ( fixedFunctionState.GeneralFixedFunctionState.FogMode != FogMode.None )
 			{
-                //just for testing for now...
-                shaderSource = shaderSource + "\tinput.fogDist=1.0;\n";
+                //just to test for now...
+                shaderSource = shaderSource + "\tinput.fogDist=0.5;\n";
                 shaderSource = shaderSource + "\tFogColor=float4(1.0,1.0,1.0,1.0);\n";
                 
                 shaderSource = shaderSource + "\tfinalColor = input.fogDist * finalColor + (1.0 - input.fogDist)*FogColor;\n";

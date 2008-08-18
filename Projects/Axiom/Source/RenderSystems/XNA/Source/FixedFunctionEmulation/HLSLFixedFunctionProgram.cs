@@ -68,7 +68,8 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             WorldViewIT = WorldViewIT.Inverse().Transpose();
             _setProgramParameter(GpuProgramType.Vertex, "WorldViewIT", WorldViewIT);
 
-            #region shaderLights
+            #region shader Lights parameters
+            if(parameters.Lights!=null)
             if (parameters.LightingEnabled && parameters.Lights.Count > 0)
             {
                 _setProgramParameter(GpuProgramType.Vertex, "BaseLightAmbient", parameters.LightAmbient);
@@ -133,7 +134,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
                                 Axiom.Math.Vector3 spot;
                                 spot.x = curLight.SpotlightInnerAngle;//.valueRadians() ;
-                                spot.y = curLight.SpotlightOuterAngle;//..valueRadians();
+                                spot.y = curLight.SpotlightOuterAngle;//.valueRadians();
                                 spot.z = curLight.SpotlightFalloff;
                                 _setProgramParameter(GpuProgramType.Vertex, prefix + "Spot", new Microsoft.Xna.Framework.Vector3(spot.x, spot.y, spot.z));
                             }
@@ -162,8 +163,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                 _setProgramParameter(GpuProgramType.Vertex, "FogColor", parameters.FogColor);
             }
 
-
-            for(int i = 0 ; i < parameters.TextureMatricies.Count && i <fixedFunctionState.TextureLayerStates.Count; i++)
+            for (int i = 0; i < parameters.TextureMatricies.Count && i < fixedFunctionState.TextureLayerStates.Count; i++)
             {
                 if (parameters.TextureEnabled[i])
                 {

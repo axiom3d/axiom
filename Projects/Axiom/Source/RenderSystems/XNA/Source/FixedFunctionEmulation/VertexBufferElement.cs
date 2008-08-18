@@ -50,6 +50,14 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		public VertexElementType VertexElementType;
 		public ushort VertexElementIndex;
 
+        public override bool Equals(object obj)
+        {
+            return obj.GetHashCode() == GetHashCode();
+        }
+        public override int GetHashCode()
+        {
+            return VertexElementSemantic.GetHashCode() ^ VertexElementType.GetHashCode() ^ VertexElementIndex.GetHashCode();
+        }
 		#endregion Fields
 	}
 }

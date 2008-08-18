@@ -60,6 +60,9 @@ namespace Axiom.RenderSystems.Xna
 		public Frustum frustum;
 		/// texture 
 		public XFG.Texture tex;
+
+        //keep the blending 
+        public LayerBlendModeEx layerBlendMode;
 	}
 
 }

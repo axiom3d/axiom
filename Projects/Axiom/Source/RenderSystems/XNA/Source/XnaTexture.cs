@@ -58,6 +58,7 @@ namespace Axiom.RenderSystems.Xna
         #region Fields
 
         public XFG.RenderTarget2D testtarget;
+        public XFG.ResolveTexture2D testresolvetarget;
         /// <summary>
         ///     Direct3D device reference.
         /// </summary>
@@ -156,6 +157,13 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         ///		Gets the D3D Texture that is contained withing this Texture.
         /// </summary>
+        public XFG.ResolveTexture2D renderTargetresolve
+        {
+            get
+            {
+                return testresolvetarget;
+            }
+        }
         public XFG.RenderTarget2D renderTarget
         {
             get
@@ -257,8 +265,8 @@ namespace Axiom.RenderSystems.Xna
             // create a blank texture
             this.CreateNormalTexture();
             // set gamma prior to blitting
-            Image.ApplyGamma( image.Data, this.gamma, image.Size, image.BitsPerPixel );
-            this.BlitImageToNormalTexture( image );
+           // Image.ApplyGamma( image.Data, this.gamma, image.Size, image.BitsPerPixel );
+            //this.BlitImageToNormalTexture( image );
             isLoaded = true;
         }
 
@@ -543,8 +551,8 @@ namespace Axiom.RenderSystems.Xna
 
             if ( usage == TextureUsage.RenderTarget )
             {
-                testtarget = new XFG.RenderTarget2D(device, srcWidth, srcHeight, numMips,
-                                                                                    d3dPixelFormat);
+                //testresolvetarget = new Microsoft.Xna.Framework.Graphics.ResolveTexture2D(device, srcWidth, srcHeight, numMipMaps, d3dPixelFormat);
+                testtarget  = new XFG.RenderTarget2D(device, srcWidth, srcHeight, numMips,d3dPixelFormat);
                
                 CreateDepthStencil();
             }
@@ -920,23 +928,27 @@ namespace Axiom.RenderSystems.Xna
 
         public void CopyToTexture( Axiom.Core.Texture target )
         {
-            // TODO: Check usage and format, need Usage property on Texture
-
+            //seems to work, saving the texture as file shows the render texture as it should be
             XnaTexture texture = (XnaTexture)target;
-
             
             if ( target.TextureType == TextureType.TwoD )
             {
-             
-                   
-                    device.SetRenderTarget(0, null);
-                    //device.ResolveBackBuffer((XFG.Graphics.ResolveTexture2D)texture.normTexture);//(res,0);
-                    //texture.NormalTexture = testtarget.GetTexture();
-                    texture.texture= testtarget.GetTexture();
 
-                   
+                 device.SetRenderTarget(0, null);
+                 texture.texture= testtarget.GetTexture();
+                 //texture.texture.Save("test.jpg", Microsoft.Xna.Framework.Graphics.ImageFileFormat.Jpg);
+                
+                
+                //resolve backbuffer test
+                /*testresolvetarget = new Microsoft.Xna.Framework.Graphics.ResolveTexture2D(
+                    device, device.DepthStencilBuffer.Width, device.DepthStencilBuffer.Height, 1, Microsoft.Xna.Framework.Graphics.SurfaceFormat.Color);
+                
+                device.ResolveBackBuffer(testresolvetarget);
+                texture.normTexture = testresolvetarget;
+               
+                texture.normTexture.Save("test.jpg", Microsoft.Xna.Framework.Graphics.ImageFileFormat.Jpg); */
             }
-            else
+            //else
             {
                 // TODO: Cube render targets
             }
