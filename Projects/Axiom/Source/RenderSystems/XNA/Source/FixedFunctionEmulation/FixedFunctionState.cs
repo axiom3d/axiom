@@ -133,7 +133,8 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                 hashCode ^= tls.GetHashCode();
             foreach( LightType light in lights )
                 hashCode ^= light.GetHashCode();
-
+            hashCode ^= textureLayerStates.Count;
+            //hashCode ^= lights.Count;
             return hashCode;
         }
 

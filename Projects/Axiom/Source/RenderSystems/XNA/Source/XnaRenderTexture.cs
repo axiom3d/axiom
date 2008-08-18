@@ -86,7 +86,6 @@ namespace Axiom.RenderSystems.Xna
             }
 
             return new NotSupportedException( "There is no Xna RenderTexture custom attribute named " + attribute );
-
         }
 
         public override bool RequiresTextureFlipping

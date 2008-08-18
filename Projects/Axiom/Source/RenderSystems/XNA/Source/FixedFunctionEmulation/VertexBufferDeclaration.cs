@@ -118,7 +118,8 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             int hashcode = 0;
             foreach ( VertexBufferElement vbe in vertexBufferElements )
             {
-                hashcode ^= vbe.VertexElementIndex ^ vbe.VertexElementSemantic.GetHashCode() ^ vbe.VertexElementType.GetHashCode();
+                hashcode ^= vbe.GetHashCode();
+                //hashcode ^= vbe.VertexElementIndex ^ vbe.VertexElementSemantic.GetHashCode() ^ vbe.VertexElementType.GetHashCode();
             }
             return hashcode;
         } 
