@@ -230,7 +230,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
                     // cascade into the struct members
                     for ( int i = 0; i < constant.StructureMemberCount; i++ )
                     {
-                        //ProcessParamElement( constant, prefix, i, parms );
+                        ProcessParamElement( parent, prefix, i, parms );
                     }
                 }
                 else

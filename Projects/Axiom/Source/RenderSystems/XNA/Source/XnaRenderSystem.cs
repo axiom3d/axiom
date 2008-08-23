@@ -109,7 +109,6 @@ namespace Axiom.RenderSystems.Xna
 				texStageDesc[ i ].tex = null;
 			}
             _shaderManager.RegisterGenerator(_hlslShaderGenerator);
-
 		}
 
 		#endregion Construction and Destruction
@@ -501,7 +500,7 @@ namespace Axiom.RenderSystems.Xna
 
 		#region Properties
 
-		private ColorEx _ambientLight;
+		private ColorEx _ambientLight=ColorEx.White;
 		public override ColorEx AmbientLight
 		{
 			get
@@ -1251,7 +1250,6 @@ namespace Axiom.RenderSystems.Xna
                 vbd.VertexBufferElements = lvbe;
 
                 //_fixedFunctionState = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.FixedFunctionState();
-                int j = 0;
                 for (int i = 0; i < Config.MaxTextureLayers; i++)
                 {
                     Axiom.RenderSystems.Xna.FixedFunctionEmulation.TextureLayerState tls
@@ -1264,59 +1262,46 @@ namespace Axiom.RenderSystems.Xna
                         tls.CoordIndex = texStageDesc[i].coordIndex;
 
                         tls.LayerBlendMode = texStageDesc[i].layerBlendMode;
-                        //trying some blending stuff
-                        tls.LayerBlendMode = new LayerBlendModeEx();
+                        //trying some blending stuff for bsp level, seems like the bsp plugin is mixing up some blending
+                        /*tls.LayerBlendMode = new LayerBlendModeEx();
                         tls.LayerBlendMode.blendType = LayerBlendType.Color;
                         tls.LayerBlendMode.blendFactor = _device.RenderState.BlendFactor.A;
                         tls.LayerBlendMode.operation = LayerBlendOperationEx.Modulate;
                         tls.LayerBlendMode.source1 = LayerBlendSource.Texture;
-                        tls.LayerBlendMode.source2 = LayerBlendSource.Texture;
-                        //tls.LayerBlendMode.alphaArg1 = _device.RenderState.DestinationBlend;
-                        //tls.LayerBlendMode.alphaArg2 =0.0f;
-                        //tls.LayerBlendMode.colorArg1 = ColorEx.Blue;
-                        //tls.LayerBlendMode.colorArg2 = ColorEx.Red;
-                        
+                        tls.LayerBlendMode.source2 = LayerBlendSource.Texture;*/
                         //TextureLayerStateList
-                        _fixedFunctionState.TextureLayerStates.Add(tls); j++;
+                        _fixedFunctionState.TextureLayerStates.Add(tls);
                     }
                 }
 
   
-                Axiom.RenderSystems.Xna.FixedFunctionEmulation.GeneralFixedFunctionState tr;
-                tr = _fixedFunctionState.GeneralFixedFunctionState;
-                // Axiom.RenderSystems.Xna.FixedFunctionEmulation.GeneralFixedFunctionState.Create();
-                tr.EnableLighting = _ffProgramParameters.LightingEnabled;
-                tr.FogMode = _ffProgramParameters.FogMode;
-                _fixedFunctionState.GeneralFixedFunctionState = tr;
+                Axiom.RenderSystems.Xna.FixedFunctionEmulation.GeneralFixedFunctionState gff;
+                gff = _fixedFunctionState.GeneralFixedFunctionState;
 
-                //lights desactivated for now
+
+                gff.EnableLighting = _ffProgramParameters.LightingEnabled;//= true;
+                gff.FogMode = _ffProgramParameters.FogMode;
+                _fixedFunctionState.GeneralFixedFunctionState = gff;
+
+                //lights
                 if (_ffProgramParameters.Lights!=null)
-                    if (_ffProgramParameters.Lights.Count > 1)
-                        foreach(Light l in _ffProgramParameters.Lights)
-                            _fixedFunctionState.Lights.Add(l.Type);
+                    foreach(Light l in _ffProgramParameters.Lights)
+                        _fixedFunctionState.Lights.Add(l.Type);
    
-
-                //quick fix, lightAmbient is not set to a color automatically
-                if (_ffProgramParameters.LightAmbient == null)
-                    _ffProgramParameters.LightAmbient = ColorEx.White;
-
-
-                //if (_fixedFunctionProgram == null)
-                    _fixedFunctionProgram = (FixedFunctionEmulation.HLSLFixedFunctionProgram)
-                        _shaderManager.GetShaderPrograms("hlsl", vbd, _fixedFunctionState);
+                
+                _fixedFunctionProgram = (FixedFunctionEmulation.HLSLFixedFunctionProgram)
+                                                         _shaderManager.GetShaderPrograms("hlsl", vbd, _fixedFunctionState);
 
                 _fixedFunctionProgram.SetFixedFunctionProgramParameters(_ffProgramParameters);
 
                 //Bind Vertex Program
-                 _device.VertexShader = ((XnaVertexProgram)_fixedFunctionProgram.VertexProgramUsage.Program.BindingDelegate).VertexShader;
+                _device.VertexShader = ((XnaVertexProgram)_fixedFunctionProgram.VertexProgramUsage.Program.BindingDelegate).VertexShader;
                 BindGpuProgramParameters(GpuProgramType.Vertex, _fixedFunctionProgram.VertexProgramUsage.Params);
                 // Bind Fragment Program 
                 _device.PixelShader = ((XnaFragmentProgram)_fixedFunctionProgram.FragmentProgramUsage.Program.BindingDelegate).PixelShader;
                 BindGpuProgramParameters(GpuProgramType.Fragment, _fixedFunctionProgram.FragmentProgramUsage.Params);   
             }
             /*---------------------------------------------------------------------------------------------------------*/
-
-
 
 
 
@@ -1398,9 +1383,9 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void SetAlphaRejectSettings( int stage, Axiom.Graphics.CompareFunction func, byte val )
 		{
-            /*_device.RenderState.AlphaTestEnable = ( func != Axiom.Graphics.CompareFunction.AlwaysPass );
+            _device.RenderState.AlphaTestEnable = ( func != Axiom.Graphics.CompareFunction.AlwaysPass );
 			_device.RenderState.AlphaFunction = XnaHelper.Convert( func );
-			_device.RenderState.ReferenceAlpha = val;*/
+			_device.RenderState.ReferenceAlpha = val;
 		}
 
 		public override void SetColorBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )

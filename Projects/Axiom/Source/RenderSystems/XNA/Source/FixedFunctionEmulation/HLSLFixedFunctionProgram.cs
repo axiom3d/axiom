@@ -72,7 +72,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             if(parameters.Lights!=null)
             if (parameters.LightingEnabled && parameters.Lights.Count > 0)
             {
-                _setProgramParameter(GpuProgramType.Vertex, "BaseLightAmbient", parameters.LightAmbient);
+                _setProgramParameter(GpuProgramType.Vertex, "BaseLightAmbient",parameters.LightAmbient);
 
                 uint pointLightCount = 0;
                 uint directionalLightCount = 0;
