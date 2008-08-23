@@ -118,7 +118,8 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
         protected void _updateParameter( GpuProgramParameters programParameters, String paramName, Object value, int sizeInBytes )
         {
-            try
+            //I think its safe now! about 30 frames more!
+            //try
             {
                 programParameters.AutoAddParamName = true;
 
@@ -155,9 +156,9 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                     programParameters.SetConstant( programParameters.GetParamIndex( paramName ), (float[])value );
                 }
             }
-            catch ( Exception e )
+            //catch ( Exception e )
             {
-                LogManager.Instance.Write( LogManager.BuildExceptionString( e ) );
+            //    LogManager.Instance.Write( LogManager.BuildExceptionString( e ) );
             }
         }
 
@@ -181,13 +182,13 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
         protected void _setProgramParameter( GpuProgramType type, String paramName, Axiom.Core.ColorEx value )
         {
-            float[] valueAsFloat4 = new float[] { value.a, value.r, value.g, value.b };
-            _setProgramParameter( type, paramName, valueAsFloat4[ 0 ], sizeof( float ) * 4 );
+            float[] valueAsFloat4 = new float[] { value.r, value.g, value.b, value.a };
+            _setProgramParameter( type, paramName, valueAsFloat4, sizeof( float ) * 4 );
         }
 
         protected void _setProgramParameter( GpuProgramType type, String paramName, Microsoft.Xna.Framework.Vector3 value )
         {
-            float[] valueAsFloat3 = new float[] { value.X, value.Y, value.Z };
+            float[] valueAsFloat3 = new float[] { value.Z, value.Y, value.X };
             _setProgramParameter( type, paramName, valueAsFloat3, sizeof( float ) * 3 );
         }
 

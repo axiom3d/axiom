@@ -265,8 +265,8 @@ namespace Axiom.RenderSystems.Xna
             // create a blank texture
             this.CreateNormalTexture();
             // set gamma prior to blitting
-           // Image.ApplyGamma( image.Data, this.gamma, image.Size, image.BitsPerPixel );
-            //this.BlitImageToNormalTexture( image );
+            Image.ApplyGamma( image.Data, this.gamma, image.Size, image.BitsPerPixel );
+            this.BlitImageToNormalTexture( image );
             isLoaded = true;
         }
 
@@ -570,70 +570,12 @@ namespace Axiom.RenderSystems.Xna
             }
         }
 
-        private void BlitImageToNormalTexture( Image image )//TODO
+        private void BlitImageToNormalTexture( Image image )
         {
-            XFG.SurfaceFormat srcFormat = ConvertFormat( image.Format );
-            XFG.DepthFormat dstFormat = (XFG.DepthFormat)ChooseD3DFormat();
+           //theses bsp lightmap look very weird they aren't drawn yet anyway
+           CopyMemoryToSurface( image.Data, normTexture );
+           normTexture.GenerateMipMaps(GetBestFilterMethod());
 
-            // this surface will hold our temp conversion image
-            // We need this in all cases because we can't lock 
-            // the main texture surfaces in all cards
-            // Also , this cannot be the temp texture because we'd like D3DX to resize it for us
-            // with the D3DxLoadSurfaceFromSurface
-            XFG.Texture2D  srcSurface;
-            srcSurface = new XFG.Texture2D(
-                device,
-                image.Width,
-                image.Height,
-                0, XFG.TextureUsage.None, (XFG.SurfaceFormat)dstFormat);
-            /*srcSurface = new XFG.Graphics.DepthStencilBuffer(
-                device,
-                image.Width,
-                image.Height, dstFormat);
-            */
-            // copy the buffer to our surface, 
-            // copyMemoryToSurface will do color conversion and flipping
-            CopyMemoryToSurface( image.Data, normTexture );
-
-            // Now we need to copy the source surface (where our image is) to the texture
-            // This will be a temp texture for s/w filtering and the final one for h/w filtering
-            // This will perform any size conversion (inc stretching)
-            XFG.RenderTarget2D dstSurface;
-          //  D3D.Surface dstSurface;
-
-            if ( tempNormTexture != null )
-            {
-                // s/w mipmaps, use temp texture
-               //tempNormTexture.GetData<XFG.RenderTarget>(dstSurface);
-               // dstSurface = tempNormTexture. GetSurfaceLevel(0);
-            }
-            else
-            {
-                // h/w mipmaps, use the final texture
-               // normTexture.GetData<XFG.RenderTarget>(dstSurface);
-                //dstSurface = normTexture.GetSurfaceLevel( 0 );
-            }
-
-            // copy surfaces
-            //D3D.SurfaceLoader.FromSurface( dstSurface, srcSurface, D3D.Filter.Triangle | D3D.Filter.Dither, 0 );
-
-            if ( tempNormTexture != null )
-            {
-                //Software filtering
-                //Now update the texture & filter the results
-                //we will use D3DX to create the mip map levels
-                //D3D.TextureLoader.FilterTexture( tempNormTexture, 0, D3D.Filter.Box );
-                //device.UpdateTexture( tempNormTexture, normTexture );
-            }
-            else
-            {
-                //Hardware mipmapping
-                //use best filtering method supported by hardware
-                //texture.AutoGenerateFilterType = GetBestFilterMethod();
-                //normTexture.GenerateMipMaps(XFG.Graphics.TextureFilter.Point);
-            }
-
-            //dstSurface.Dispose();
         }
 
       unsafe  private void CopyMemoryToSurface( byte[] buffer, XFG.Texture2D surface )
@@ -658,7 +600,9 @@ namespace Axiom.RenderSystems.Xna
 
             // lock our surface to acces raw memory
             //DX.GraphicsStream stream = surface.LockRectangle( D3D.LockFlags.NoSystemLock, out pitch );
-            XFG.Color[] stream=new XFG.Color[surface.Width*surface.Height];
+            //XFG.Color[] stream=new XFG.Color[surface.Width*surface.Height];
+            XFG.Color[] stream = new XFG.Color[surface.Width * surface.Height];
+          
             //surface.GetData<XFG.Graphics.Color>(stream);
             int Position;
             // loop through data and do conv.
@@ -703,7 +647,6 @@ namespace Axiom.RenderSystems.Xna
                     // Use bit concersion function
                     // NOTE: we use a 32-bit value to manipulate
                     // Will be reduced to size later
-
                     // Red
                     out32 = ConvertBitPattern( data32, 0xFF000000, rMask );
                     // Green
@@ -719,37 +662,44 @@ namespace Axiom.RenderSystems.Xna
 
                     // Assign results to surface pixel
                     // Write up to 4 bytes
-                    // Surfaces are little-endian (low byte first)
-
-                   
+                    // Surfaces are little-endian (low byte first) 
                     XFG.Color col=new XFG.Color(255,255,255,255);
                     if ( rgbBitCount >= 8 )
                     {
-                        //col= ... TODO
-                    
+                        col = new XFG.Color((byte)(data32 >> 8), 0, 0, 0);
+
                     }
                     if ( rgbBitCount >= 16 )
                     {
-                    
+                        col = new XFG.Color(col.R, (byte)(data32 >> 16), 0, 0);
+
                     }
                     if ( rgbBitCount >= 24 )
                     {
-                        
+                        col = new XFG.Color(col.R, col.G, (byte)(data32 >> 24), 0);
+
                     
                     }
                     if ( rgbBitCount >= 32 )
                     {
-                
+                        col = new XFG.Color(col.R, col.G, col.B,(byte)(data32));
                     }
                 
                     Position = iRow +srcWidth* iCol;
-                    stream[Position] = col; //Position++;
+                    stream[Position] = col;
                 } // for( iCol...
             } // for( iRow...
-            // unlock the surface
-            //surface.UnlockRectangle();
+            
             surface.SetData<XFG.Color>(stream);
-            surface.Save("test1.jpg", XFG.ImageFileFormat.Jpg);
+            
+            /*string str="test.jpg";
+            int i = 0;
+            while (System.IO.File.Exists(str))
+            {
+              str = "test" + i.ToString() + ".jpg";
+              i++;
+            }
+            surface.Save(str, XFG.ImageFileFormat.Jpg);*/
         }
 
         private uint ConvertBitPattern( uint srcValue, uint srcBitMask, uint destBitMask )

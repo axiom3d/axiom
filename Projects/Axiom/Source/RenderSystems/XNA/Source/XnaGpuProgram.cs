@@ -146,7 +146,8 @@ namespace Axiom.RenderSystems.Xna
 			string errors;
 
 			// load the shader from the source string
-			XFG.CompiledShader microcode = XFG.ShaderCompiler.AssembleFromSource( source, null, null, XFG.CompilerOptions.Debug, XNA.TargetPlatform.Windows );
+            //dont need to debug, slighty faster
+            XFG.CompiledShader microcode = XFG.ShaderCompiler.AssembleFromSource(source, null, null, XFG.CompilerOptions.None, XNA.TargetPlatform.Windows);
 			errors = microcode.ErrorsAndWarnings;
 			if ( errors != null && errors.Length != 0 )
 			{
