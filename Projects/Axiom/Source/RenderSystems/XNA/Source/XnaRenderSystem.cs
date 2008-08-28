@@ -1231,8 +1231,8 @@ namespace Axiom.RenderSystems.Xna
 
             if(_device.VertexShader==null || _device.PixelShader==null)
             {
-                needToUnmapVS = true;
-                needToUnmapFS = true;
+               //needToUnmapVS = true;
+                //needToUnmapFS = true;
 
                 Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferDeclaration vbd =
                      new Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferDeclaration();
@@ -1262,15 +1262,17 @@ namespace Axiom.RenderSystems.Xna
                         tls.CoordIndex = texStageDesc[i].coordIndex;
 
                         tls.LayerBlendMode = texStageDesc[i].layerBlendMode;
-                        //trying some blending stuff for bsp level, seems like the bsp plugin is mixing up some blending
+                        //uncomment this to see the BSP demo lightmaps to check
                         /*tls.LayerBlendMode = new LayerBlendModeEx();
                         tls.LayerBlendMode.blendType = LayerBlendType.Color;
                         tls.LayerBlendMode.blendFactor = _device.RenderState.BlendFactor.A;
                         tls.LayerBlendMode.operation = LayerBlendOperationEx.Modulate;
                         tls.LayerBlendMode.source1 = LayerBlendSource.Texture;
-                        tls.LayerBlendMode.source2 = LayerBlendSource.Texture;*/
+                        tls.LayerBlendMode.source2 = LayerBlendSource.Diffuse;*/
                         //TextureLayerStateList
                         _fixedFunctionState.TextureLayerStates.Add(tls);
+                        //grrr for the render to texture demo, the render texture definitly shows up here, must be a problem of blending
+                        //texStageDesc[i].tex.Save("tex" + i.ToString() + ".jpg", Microsoft.Xna.Framework.Graphics.ImageFileFormat.Jpg);
                     }
                 }
 
@@ -1294,12 +1296,21 @@ namespace Axiom.RenderSystems.Xna
 
                 _fixedFunctionProgram.SetFixedFunctionProgramParameters(_ffProgramParameters);
 
+        
                 //Bind Vertex Program
-                _device.VertexShader = ((XnaVertexProgram)_fixedFunctionProgram.VertexProgramUsage.Program.BindingDelegate).VertexShader;
-                BindGpuProgramParameters(GpuProgramType.Vertex, _fixedFunctionProgram.VertexProgramUsage.Params);
+                if (_device.VertexShader == null)
+                {
+                    _device.VertexShader = ((XnaVertexProgram)_fixedFunctionProgram.VertexProgramUsage.Program.BindingDelegate).VertexShader;
+                    BindGpuProgramParameters(GpuProgramType.Vertex, _fixedFunctionProgram.VertexProgramUsage.Params);
+                    needToUnmapVS = true;
+                }
                 // Bind Fragment Program 
-                _device.PixelShader = ((XnaFragmentProgram)_fixedFunctionProgram.FragmentProgramUsage.Program.BindingDelegate).PixelShader;
-                BindGpuProgramParameters(GpuProgramType.Fragment, _fixedFunctionProgram.FragmentProgramUsage.Params);   
+                if (_device.PixelShader == null)
+                {
+                    _device.PixelShader = ((XnaFragmentProgram)_fixedFunctionProgram.FragmentProgramUsage.Program.BindingDelegate).PixelShader;
+                    BindGpuProgramParameters(GpuProgramType.Fragment, _fixedFunctionProgram.FragmentProgramUsage.Params);
+                    needToUnmapFS = true;
+                }
             }
             /*---------------------------------------------------------------------------------------------------------*/
 
@@ -1518,7 +1529,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			XnaTexture texture = (XnaTexture)TextureManager.Instance.GetByName( textureName );
 			if ( enabled && texture != null )
-			{  
+			{
                 _device.Textures[stage] = texture.DXTexture;
 				// set stage description
 				texStageDesc[ stage ].tex = texture.DXTexture;
@@ -1631,9 +1642,9 @@ namespace Axiom.RenderSystems.Xna
 				// set the render target and depth stencil for the surfaces belonging to the viewport
 				
                 //dont know why the depthstencil buffer is disposing itself, have to keep it
-                //if (depth.IsDisposed)_device.DepthStencilBuffer = oriDSB;
+                if (depth.IsDisposed)_device.DepthStencilBuffer = oriDSB;
 				
-                _device.DepthStencilBuffer = depth;
+                else _device.DepthStencilBuffer = depth;
 
 				// set the culling mode, to make adjustments required for viewports
 				// that may need inverted vertex winding or texture flipping

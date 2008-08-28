@@ -353,21 +353,19 @@ namespace Axiom.RenderSystems.Xna
 
                 images[ 0 ] = Image.FromFile( cubeFaceNames[ 0 ] );
                 SetSrcAttributes( images[ 0 ].Width, images[ 0 ].Height, 1, images[ 0 ].Format );
+                SetFinalAttributes(images[0].Width, images[0].Height, 1, images[0].Format);
 
                 // create the memory for the cube texture
                 CreateCubeTexture();
-
-                //                for(int i = 0; i < 6; i++) {
-                //                    if(i > 0) {
-                //                        images[i] = Image.FromFile(cubeFaceNames[i]);
-                //                    }
-                //
-                //                    // apply gamma first
-                //                    Image.ApplyGamma(images[i].Data, this.Gamma, images[i].Size, images[i].BitsPerPixel);
-                //                }
-
-                // load each face texture into the cube face of the cube texture
-                BlitImagesToCubeTex();
+                //BlitImagesToCubeTex();
+                for (int i = 0; i < 6; i++)
+                {
+                    Stream stream = TextureManager.FindCommonResourceData(cubeFaceNames[i]);
+                    XFG.Texture2D temp = XFG.Texture2D.FromFile(device, stream);
+                    XFG.Color[] cols = new XFG.Color[temp.Width * temp.Height];
+                    temp.GetData<XFG.Color>(cols);
+                    cubeTexture.SetData<XFG.Color>((Microsoft.Xna.Framework.Graphics.CubeMapFace)i, cols);
+                }
             }
 
             isLoaded = true;
@@ -448,9 +446,10 @@ namespace Axiom.RenderSystems.Xna
                  //(usage == TextureUsage.RenderTarget) ? XFG..ResourceManagementMode.Manual : XFG.ResourceManagementMode.Automatic);
 
             // set the final texture attributes
-            Stream stream = TextureManager.Instance.FindResourceData(name);
-            XFG.TextureInformation desc = XFG.TextureCube.GetTextureInformation(stream);
-            SetFinalAttributes(desc.Width, desc.Height, 1, ConvertFormat(desc.Format));
+            //Stream stream = TextureManager.Instance.FindResourceData(cubeFaceNames[i]);
+            
+           // XFG.TextureInformation desc = XFG.TextureCube.GetTextureInformation(stream);
+           // SetFinalAttributes(desc.Width, desc.Height, 1, ConvertFormat(desc.Format));
 
             // store base reference to the texture
             texture = cubeTexture;
@@ -572,9 +571,11 @@ namespace Axiom.RenderSystems.Xna
 
         private void BlitImageToNormalTexture( Image image )
         {
-           //theses bsp lightmap look very weird they aren't drawn yet anyway
-           CopyMemoryToSurface( image.Data, normTexture );
-           normTexture.GenerateMipMaps(GetBestFilterMethod());
+           //theses bsp lightmaps look very weird
+           //they show up but have to be fixed, need to stretch somehow
+           CopyMemoryToSurface(image.Data, normTexture);
+           texture = normTexture;
+           texture.GenerateMipMaps(GetBestFilterMethod());
 
         }
 
@@ -599,11 +600,8 @@ namespace Axiom.RenderSystems.Xna
             GetColorMasks( surface.Format, out rMask, out gMask, out bMask, out aMask, out rgbBitCount );
 
             // lock our surface to acces raw memory
-            //DX.GraphicsStream stream = surface.LockRectangle( D3D.LockFlags.NoSystemLock, out pitch );
-            //XFG.Color[] stream=new XFG.Color[surface.Width*surface.Height];
             XFG.Color[] stream = new XFG.Color[surface.Width * surface.Height];
           
-            //surface.GetData<XFG.Graphics.Color>(stream);
             int Position;
             // loop through data and do conv.
             pBuf8 = 0;
@@ -691,7 +689,8 @@ namespace Axiom.RenderSystems.Xna
             } // for( iRow...
             
             surface.SetData<XFG.Color>(stream);
-            
+
+            //uncomment to check the resulting image conversion  
             /*string str="test.jpg";
             int i = 0;
             while (System.IO.File.Exists(str))
@@ -807,6 +806,7 @@ namespace Axiom.RenderSystems.Xna
                 // get a reference to the current cube surface for this iteration
                 XFG.Texture2D dstSurface;
                 
+                
                 //D3D.Surface dstSurface;
 
                 // Now we need to copy the source surface (where our image is) to 
@@ -881,7 +881,7 @@ namespace Axiom.RenderSystems.Xna
             //seems to work, saving the texture as file shows the render texture as it should be
             XnaTexture texture = (XnaTexture)target;
             
-            if ( target.TextureType == TextureType.TwoD )
+            //if ( target.TextureType == TextureType.TwoD )
             {
 
                  device.SetRenderTarget(0, null);
