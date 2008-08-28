@@ -182,13 +182,13 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
         protected void _setProgramParameter( GpuProgramType type, String paramName, Axiom.Core.ColorEx value )
         {
-            float[] valueAsFloat4 = new float[] { value.r, value.g, value.b, value.a };
-            _setProgramParameter( type, paramName, valueAsFloat4, sizeof( float ) * 4 );
+            //float[] valueAsFloat4 = new float[] { value.r, value.g, value.b, value.a };
+            _setProgramParameter( type, paramName,value/* valueAsFloat4*/, sizeof( float ) * 4 );
         }
 
         protected void _setProgramParameter( GpuProgramType type, String paramName, Microsoft.Xna.Framework.Vector3 value )
         {
-            float[] valueAsFloat3 = new float[] { value.Z, value.Y, value.X };
+            float[] valueAsFloat3 = new float[] { value.X, value.Y, value.Z };
             _setProgramParameter( type, paramName, valueAsFloat3, sizeof( float ) * 3 );
         }
 

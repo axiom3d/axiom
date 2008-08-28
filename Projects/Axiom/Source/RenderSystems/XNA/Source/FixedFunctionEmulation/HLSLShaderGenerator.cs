@@ -552,12 +552,6 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 				if ( bHasColor )
 				{
                     shaderSource = shaderSource + "\toutput.Color += input.DiffuseColor0;\n";
-                    //shaderSource = shaderSource + "\toutput.Color = 0;\n";//((input.DiffuseColor0)) / 255.0f;\n";
-                    
-					/*shaderSource = shaderSource + "output.Color.x = ((input.DiffuseColor0 >> 24) & 0xFF) / 255.0f;\n";
-					shaderSource = shaderSource + "output.Color.y = ((input.DiffuseColor0 >> 16) & 0xFF) / 255.0f;\n";
-					shaderSource = shaderSource + "output.Color.z = ((input.DiffuseColor0 >> 8) & 0xFF) / 255.0f;\n";
-					shaderSource = shaderSource + "output.Color.w = (input.DiffuseColor0 & 0xFF) / 255.0f;\n";*/
 				}
 				else
 				{
@@ -616,6 +610,10 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
            
             for (int i = 0; i < fixedFunctionState.TextureLayerStates.Count; i++)
             {
+                //this is just to debug in the the render to texture demo
+                //if (fixedFunctionState.TextureLayerStates.Count > 1) i = 1;
+
+
                 shaderSource = shaderSource + "\t{\n\tfloat4 texColor=float4(1.0,1.0,1.0,1.0);\n";
                 TextureLayerState curTextureLayerState = fixedFunctionState.TextureLayerStates[i];
                 String layerCounter = Convert.ToString(i);
@@ -634,6 +632,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                                         shaderSource = shaderSource + "\t\ttexColor = tex1D(Texture" + layerCounter + ", input.Texcoord" + layerCounter + ".x);\n";
                                         break;
                                 }
+                            else shaderSource = shaderSource + "\t\texColor = tex1D(Texture" + layerCounter + ", input.Texcoord" + layerCounter + ");\n";
                         }
                         break;
                     case TextureType.TwoD:
@@ -648,10 +647,15 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                                         shaderSource = shaderSource + "\t\ttexColor  = tex2D(Texture" + layerCounter + ", input.Texcoord" + layerCounter + ");\n";
                                         break;
                                 }
+                            else
+                            //envmap works now and correct the color of the overlay with the demo cellshading (was completly white before)
+                            shaderSource = shaderSource + "\t\ttexColor  = tex2D(Texture" + layerCounter + ", input.Texcoord" + layerCounter + ");\n";
                         }
 
                         break;
                     case TextureType.CubeMap:
+                        shaderSource = shaderSource + "\t\ttexColor  = texCUBE(Texture" + layerCounter + ", float3(input.Texcoord" + layerCounter + ".x, input.Texcoord" + layerCounter + ".y, 0.0));\n";
+                        break;
                     case TextureType.ThreeD:
                         if (texCordVecType.ContainsKey(i))
                             switch (texCordVecType[i])
@@ -666,6 +670,8 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                                     shaderSource = shaderSource + "\t\ttexColor  = tex3D(Texture" + layerCounter + ", input.Texcoord" + layerCounter + ");\n";
                                     break;
                             }
+                        else
+                            shaderSource = shaderSource + "\t\ttexColor  = tex3D(Texture" + layerCounter + ", input.Texcoord" + layerCounter + ");\n";
                         break;
                 }
 
@@ -755,16 +761,13 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                         shaderSource = shaderSource + "\t\tfinalColor = product(source1,source2);\n";
                         break;
                 }
-                //shaderSource = shaderSource + "finalColor=texColor;\n";
-                //shaderSource = shaderSource + "finalColor=finalColor*texColor;\n";
-
                 shaderSource = shaderSource + "\t}\n";
             }
        
             if ( fixedFunctionState.GeneralFixedFunctionState.FogMode != FogMode.None )
 			{
                 //just to test for now...
-               // shaderSource = shaderSource + "\tinput.fogDist=0.5;\n";
+                //shaderSource = shaderSource + "\tinput.fogDist=0.5;\n";
                 //shaderSource = shaderSource + "\tFogColor=float4(1.0,1.0,1.0,1.0);\n";
                 
                 shaderSource = shaderSource + "\tfinalColor = input.fogDist * finalColor + (1.0 - input.fogDist)*FogColor;\n";
