@@ -44,11 +44,10 @@ using System.Xml.XPath;
 namespace Axiom.Configuration
 {
     /// <summary>
-    /// Summary description for XConfig.
+    /// Summary description for Config.
     /// </summary>
     public class Config
     {
-        //public const string MediaPath = @"E:\GameProgramming\Resources\";
         public const int MaxTextureCoordSets = 6;
         public const int MaxTextureLayers = 16;
         public const int MaxBlendWeights = 4;
