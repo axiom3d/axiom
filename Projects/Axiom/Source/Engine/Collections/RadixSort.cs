@@ -83,7 +83,7 @@ namespace Axiom.Collections
 	/// <code>
 	/// RadixSortSingle<BibbleList, Bibble> radixSorter;
 	/// 
-	/// radixSorter.sort(myBibbleList, BibbleSortDelegate.Doobrie);
+	/// radixSorter.Sort(myBibbleList, BibbleSortDelegate.Doobrie);
 	/// </code>
 	/// You should try to reuse RadixSort instances, since repeated allocation of the 
 	/// internal storage is then avoided.
@@ -320,7 +320,7 @@ namespace Axiom.Collections
 	/// <code>
 	/// RadixSortInt32<BibbleList, Bibble> radixSorter;
 	/// 
-	/// radixSorter.sort(myBibbleList, BibbleSortDelegate.Doobrie);
+	/// radixSorter.Sort(myBibbleList, BibbleSortDelegate.Doobrie);
 	/// </code>
 	/// You should try to reuse RadixSort instances, since repeated allocation of the 
 	/// internal storage is then avoided.
@@ -558,7 +558,7 @@ namespace Axiom.Collections
 	/// <code>
 	/// RadixSortUInt32<BibbleList, Bibble> radixSorter;
 	/// 
-	/// radixSorter.sort(myBibbleList, BibbleSortDelegate.Doobrie);
+	/// radixSorter.Sort(myBibbleList, BibbleSortDelegate.Doobrie);
 	/// </code>
 	/// You should try to reuse RadixSort instances, since repeated allocation of the 
 	/// internal storage is then avoided.
