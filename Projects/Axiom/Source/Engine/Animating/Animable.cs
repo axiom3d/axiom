@@ -44,14 +44,38 @@ using Axiom.Math;
 			
 namespace Axiom.Animating
 {
+    /// <summary>
+    /// 
+    /// </summary>
 	public enum AnimableType
 	{
+        /// <summary>
+        /// 
+        /// </summary>
 		Int,
+        /// <summary>
+        /// 
+        /// </summary>
 		Float,
+        /// <summary>
+        /// 
+        /// </summary>
 		Vector2,
+        /// <summary>
+        /// 
+        /// </summary>
 		Vector3,
+        /// <summary>
+        /// 
+        /// </summary>
 		Vector4,
+        /// <summary>
+        /// 
+        /// </summary>
 		Quaternion,
+        /// <summary>
+        /// 
+        /// </summary>
 		ColorEx
 	}
 
@@ -77,6 +101,84 @@ namespace Axiom.Animating
 	///     are often comprised of multiple properties it helps to be able to deal
 	///     with all values through a single class.
 	///</remarks>
+
+#if CSHARP_30
+    public abstract class AnimableValue<T> where T : struct
+    {
+        #region Fields and Properties
+
+        protected T _value;
+        public virtual T Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                _value = value;
+            }
+        }
+
+        protected T _baseValue;
+        public virtual T BaseValue
+        {
+            get
+            {
+                return _baseValue;
+            }
+            set
+            {
+                _baseValue = value;
+            }
+        }
+
+        #endregion Fields and Properties
+
+        #region Methods
+
+        public void Reset()
+        {
+            _value = _baseValue;
+        }
+
+        public virtual void ApplyDelta( T delta )
+        {
+            throw new NotImplementedException();
+        }
+
+        public static T Interpolate( float time, T k1, T k2 ) 
+        {
+            return k1.Interpolate( k2, time);
+        }
+
+        public static T Multiply( T k, float v )
+        {
+            return k.Multiply( v );
+        }
+
+        /// Sets the current state as the 'base' value; used for delta animation
+        /// Any instantiated derived class must implement this guy
+        public abstract void SetCurrentStateAsBaseValue();
+
+        #endregion Methods
+    }
+
+    public static class Math
+    {
+        public static T Interpolate<T,K>( this T keyStart, T keyEnd, K stepping )
+        {
+            return default( T );
+        }
+
+        public static T Multiply<T, K>( this T operandA, K scalar )
+        {
+            return default( T );
+        }
+
+    }
+
+#endif
 
 	public abstract class AnimableValue
 	{
@@ -408,6 +510,9 @@ namespace Axiom.Animating
 
 	}
 
+    /// <summary>
+    /// Defines an interface to classes which have one or more AnimableValue instances to expose.
+    /// </summary>
 	public interface IAnimableObject
 	{
 		#region Methods
