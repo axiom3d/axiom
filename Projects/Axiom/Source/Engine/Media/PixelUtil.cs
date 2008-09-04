@@ -137,6 +137,11 @@ namespace Axiom.Media
 			return ( PixelConverter.GetDescriptionFor( format ).flags & PixelFormatFlags.HasAlpha ) > 0;
 		}
 
+        public static bool IsLuminance( PixelFormat format )
+        {
+            return ( PixelConverter.GetDescriptionFor( format ).flags & PixelFormatFlags.Luminance ) > 0;
+        }
+
 		public static bool IsNativeEndian( PixelFormat format )
 		{
 			return ( PixelConverter.GetDescriptionFor( format ).flags & PixelFormatFlags.NativeEndian ) > 0;
