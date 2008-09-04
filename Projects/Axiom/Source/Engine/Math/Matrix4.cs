@@ -107,14 +107,14 @@ namespace Axiom.Math
 
 		// NOTE: This is different from what is in OGRE. Not sure why this is the case ATM, however, do not change it.
 		private readonly static Matrix4 clipSpace2dToImageSpace = new Matrix4(
-            //0.5f, 0, 0, -0.5f,
-            //0, -0.5f, 0, -0.5f,
-            //0, 0, 0, 1,
-            //0, 0, 0, 1 );
-        0.5f,    0,  0, 0.5f, 
-          0, -0.5f,  0, 0.5f, 
-          0,    0,  1,   0,
-          0,    0,  0,   1);
+                //0.5f,  0.0f, 0.0f, -0.5f,
+                //0.0f, -0.5f, 0.0f, -0.5f,
+                //0.0f,  0.0f, 0.0f,  1.0f,
+                //0.0f,  0.0f, 0.0f,  1.0f );
+                0.5f, 0.0f, 0.0f, 0.5f,
+                0.0f, -0.5f, 0.0f, 0.5f,
+                0.0f, 0.0f, 1.0f, 0.0f,
+                0.0f, 0.0f, 0.0f, 1.0f );
 
 		#endregion
 
