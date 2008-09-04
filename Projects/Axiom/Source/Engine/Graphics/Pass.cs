@@ -657,7 +657,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// value against which alpha values will be tested [(0-255]
 		/// </summary>
-		public int AplhaRejectValue
+		public int AlphaRejectValue
 		{
 			get
 			{
