@@ -389,7 +389,7 @@ namespace Axiom.SceneManagers.Bsp
 
                     // Alpha mode, prefer 'most alphary'
                     CompareFunction currFunc = pass.AlphaRejectFunction;
-                    int currValue = pass.AplhaRejectValue;
+                    int currValue = pass.AlphaRejectValue;
                     if ( _pass[ p ].alphaFunc > currFunc
                         || ( _pass[ p ].alphaFunc == currFunc && _pass[ p ].alphaVal < currValue ) )
                     {
