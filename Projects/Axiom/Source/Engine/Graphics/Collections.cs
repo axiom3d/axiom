@@ -49,7 +49,7 @@ namespace Axiom.Graphics
     /// <summary>
     ///     Generics: List<TextureEffect>
     /// </summary>
-    public class TextureEffectList : List< TextureEffect> { }
+    public class TextureEffectList : List<TextureEffect> { }
 
     /// <summary>
     ///     Generics: List<RenderTexture>
