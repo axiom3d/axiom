@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
+using Axiom.Utilities;
 
 #endregion Namespace Declarations
 
@@ -47,98 +48,40 @@ namespace Axiom.Core
 	///		interpolation, because with the values always being cast back to a byte would lose
 	///		any small interpolated values (i.e. 223 - .25 as a byte is 223).
 	/// </summary>
-	public class ColorEx : IComparable
+	public struct ColorEx : IComparable
 	{
 		#region Member variables
 
-		//private float _a;
 		/// <summary>
 		///		Alpha value [0,1].
 		/// </summary>
 		public float a;
-		//{
-		//    get
-		//    {
-		//        return _a;
-		//    }
-		//    set
-		//    {
-		//        Debug.Assert( value >= 0.0f && value <= 1.0f );
-		//        _a = value;
-		//    }
-		//}
 
-		//private float _r;
 		/// <summary>
 		///		Red color component [0,1].
 		/// </summary>
 		public float r;
-		//{
-		//    get
-		//    {
-		//        return _r;
-		//    }
-		//    set
-		//    {
-		//        Debug.Assert( value >= 0.0f && value <= 1.0f );
-		//        _r = value;
-		//    }
-		//}
 
-		//private float _g;
 		/// <summary>
 		///		Green color component [0,1].
 		/// </summary>
 		public float g;
-		//{
-		//    get
-		//    {
-		//        return _g;
-		//    }
-		//    set
-		//    {
-		//        Debug.Assert( value >= 0.0f && value <= 1.0f );
-		//        _g = value;
-		//    }
-		//}
 
-		//private float _b;
 		/// <summary>
 		///		Blue color component [0,1].
 		/// </summary>
 		public float b;
-		//{
-		//    get
-		//    {
-		//        return _b;
-		//    }
-		//    set
-		//    {
-		//        Debug.Assert( value >= 0.0f && value <= 1.0f );
-		//        _b = value;
-		//    }
-		//}
-
 
 		#endregion
 
 		#region Constructors
 
 		/// <summary>
-		///		Default constructor.
+		///	Constructor taking RGB values
 		/// </summary>
-		public ColorEx()
-		{
-			// set the color components to a default of 1;
-			a = 1.0f;
-			r = 1.0f;
-			g = 1.0f;
-			b = 1.0f;
-		}
-
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
+        /// <param name="r">Red color component.</param>
+        /// <param name="g">Green color component.</param>
+        /// <param name="b">Blue color component.</param>
 		public ColorEx( float r, float g, float b )
 			: this( 1.0f, r, g, b )
 		{
@@ -153,10 +96,10 @@ namespace Axiom.Core
 		/// <param name="b">Blue color component.</param>
 		public ColorEx( float a, float r, float g, float b )
 		{
-			//Debug.Assert( a >= 0.0f && a <= 1.0f );
-			//Debug.Assert( r >= 0.0f && r <= 1.0f );
-			//Debug.Assert( g >= 0.0f && g <= 1.0f );
-			//Debug.Assert( b >= 0.0f && b <= 1.0f );
+            Contract.Requires( a >= 0.0f && a <= 1.0f );
+            Contract.Requires( r >= 0.0f && r <= 1.0f );
+            Contract.Requires( g >= 0.0f && g <= 1.0f );
+            Contract.Requires( b >= 0.0f && b <= 1.0f );
 
 			this.a = a;
 			this.r = r;
@@ -165,18 +108,16 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///		Copy constructor.
+		/// Copy constructor.
 		/// </summary>
+        /// <param name="other">The ColorEx instance to copy</param>
 		public ColorEx( ColorEx other )
 			: this()
 		{
-			if ( other != null )
-			{
-				this.a = other.a;
-				this.r = other.r;
-				this.g = other.g;
-				this.b = other.b;
-			}
+			this.a = other.a;
+			this.r = other.r;
+			this.g = other.g;
+			this.b = other.b;
 		}
 
 		#endregion Constructors
@@ -189,7 +130,12 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public ColorEx Clone()
 		{
-			return new ColorEx( a, r, g, b );
+            ColorEx retVal;
+            retVal.a = this.a;
+            retVal.r = this.r;
+            retVal.g = this.g;
+            retVal.b = this.g;
+            return retVal;
 		}
 
 		/// <summary>
@@ -261,74 +207,83 @@ namespace Axiom.Core
 			vals[ 3 ] = a;
 		}
 
-		/// <summary>
-		///		Static method used to create a new <code>ColorEx</code> instance based
-		///		on an existing <see cref="System.Drawing.Color"/> structure.
-		/// </summary>
-		/// <param name="color">.Net color structure to use as a basis.</param>
-		/// <returns>A new <code>ColorEx instance.</code></returns>
-		//public static ColorEx FromColor( System.Drawing.Color color )
-		//{
-		//    return new ColorEx( (float)color.A / 255.0f, (float)color.R / 255.0f, (float)color.G / 255.0f, (float)color.B / 255.0f );
-		//}
-
 		#endregion
 
 		#region Operators
 
-		public static ColorEx operator *( ColorEx left, ColorEx right )
+        public static bool operator ==( ColorEx left, ColorEx right )
+        {
+            return left.a == right.a && 
+                   left.b == right.b &&
+                   left.g == right.g &&
+                   left.r == right.r;
+        }
+
+        public static bool operator !=( ColorEx left, ColorEx right )
+        {
+            return !( left == right ); 
+        }
+
+        public static ColorEx operator *( ColorEx left, ColorEx right )
 		{
-			return new ColorEx(
-				left.a * right.a,
-				left.r * right.r,
-				left.g * right.g,
-				left.b * right.b );
+            ColorEx retVal = left;
+            retVal.a *= right.a;
+            retVal.r *= right.r;
+            retVal.g *= right.g;
+            retVal.b *= right.b;
+            return retVal;
 		}
 
 		public static ColorEx operator *( ColorEx left, float scalar )
 		{
-			return new ColorEx(
-				left.a * scalar,
-				left.r * scalar,
-				left.g * scalar,
-				left.b * scalar );
+            ColorEx retVal = left;
+            retVal.a *= scalar;
+            retVal.r *= scalar;
+            retVal.g *= scalar;
+            retVal.b *= scalar;
+			return retVal;
 		}
 
 
 		public static ColorEx operator /( ColorEx left, ColorEx right )
 		{
-			return new ColorEx(
-				left.a / right.a,
-				left.r / right.r,
-				left.g / right.g,
-				left.b / right.b );
-		}
+            ColorEx retVal = left;
+            retVal.a /= right.a;
+            retVal.r /= right.r;
+            retVal.g /= right.g;
+            retVal.b /= right.b;
+            return retVal;
+        }
+
 		public static ColorEx operator /( ColorEx left, float scalar )
 		{
-			return new ColorEx(
-				left.a / scalar,
-				left.r / scalar,
-				left.g / scalar,
-				left.b / scalar );
-		}
+            ColorEx retVal = left;
+            retVal.a /= scalar;
+            retVal.r /= scalar;
+            retVal.g /= scalar;
+            retVal.b /= scalar;
+            return retVal;
+        }
 
 		public static ColorEx operator -( ColorEx left, ColorEx right )
 		{
-			return new ColorEx(
-				left.a - right.a,
-				left.r - right.r,
-				left.g - right.g,
-				left.b - right.b );
-		}
+            ColorEx retVal = left;
+            retVal.a -= right.a;
+            retVal.r -= right.r;
+            retVal.g -= right.g;
+            retVal.b -= right.b;
+            return retVal;
+        }
 
 		public static ColorEx operator +( ColorEx left, ColorEx right )
 		{
-			return new ColorEx(
-				left.a + right.a,
-				left.r + right.r,
-				left.g + right.g,
-				left.b + right.b );
-		}
+            ColorEx retVal = left;
+            retVal.a += right.a;
+            retVal.r += right.r;
+            retVal.g += right.g;
+            retVal.b += right.b;
+            return retVal;
+        }
 
 		#endregion Operators
 
@@ -341,7 +296,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 0f, 1f, 1f, 1f );
+                ColorEx retVal;
+                retVal.a = 0f;
+                retVal.r = 1f;
+                retVal.g = 1f;
+                retVal.b = 1f;
+                return retVal;
 			}
 		}
 
@@ -352,7 +312,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.9411765f, 0.972549f, 1f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.9411765f;
+                retVal.g = 0.972549f;
+                retVal.b = 1.0f;
+                return retVal;
 			}
 		}
 
@@ -363,7 +328,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.9803922f, 0.9215686f, 0.8431373f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.9803922f;
+                retVal.g = 0.9215686f;
+                retVal.b = 0.8431373f;
+                return retVal;
 			}
 		}
 
@@ -374,7 +344,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0f, 1f, 1f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.0f;
+                retVal.g = 1.0f;
+                retVal.b = 1.0f;
+                return retVal;
 			}
 		}
 
@@ -385,7 +360,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.4980392f, 1f, 0.8313726f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.4980392f;
+                retVal.g = 1.0f;
+                retVal.b = 0.8313726f;
+                return retVal;
 			}
 		}
 
@@ -396,7 +376,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.9411765f, 1f, 1f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.9411765f;
+                retVal.g = 1.0f;
+                retVal.b = 1.0f;
+                return retVal;
 			}
 		}
 
@@ -407,7 +392,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.9607843f, 0.9607843f, 0.8627451f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.9607843f;
+                retVal.g = 0.9607843f;
+                retVal.b = 0.8627451f;
+                return retVal;
 			}
 		}
 
@@ -418,7 +408,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.8941177f, 0.7686275f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.8941177f;
+                retVal.b = 0.7686275f;
+                return retVal;
 			}
 		}
 
@@ -429,7 +424,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0f, 0f, 0f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.0f;
+                retVal.g = 0.0f;
+                retVal.b = 0.0f;
+                return retVal;
 			}
 		}
 
@@ -440,7 +440,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.9215686f, 0.8039216f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.9215686f;
+                retVal.b = 0.8039216f;
+                return retVal;
 			}
 		}
 
@@ -451,7 +456,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0f, 0f, 1f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.0f;
+                retVal.g = 0.0f;
+                retVal.b = 1.0f;
+                return retVal;
 			}
 		}
 
@@ -462,7 +472,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.5411765f, 0.1686275f, 0.8862745f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.5411765f;
+                retVal.g = 0.1686275f;
+                retVal.b = 0.8862745f;
+                return retVal;
 			}
 		}
 
@@ -473,7 +488,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.6470588f, 0.1647059f, 0.1647059f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.6470588f;
+                retVal.g = 0.1647059f;
+                retVal.b = 0.1647059f;
+                return retVal;
 			}
 		}
 
@@ -484,7 +504,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.8705882f, 0.7215686f, 0.5294118f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.8705882f;
+                retVal.g = 0.7215686f;
+                retVal.b = 0.5294118f;
+                return retVal;
 			}
 		}
 
@@ -495,7 +520,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.372549f, 0.6196079f, 0.627451f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.372549f;
+                retVal.g = 0.6196079f;
+                retVal.b = 0.627451f;
+                return retVal;
 			}
 		}
 
@@ -506,7 +536,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.4980392f, 1f, 0f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.4980392f;
+                retVal.g = 1.0f;
+                retVal.b = 0.0f;
+                return retVal;
 			}
 		}
 
@@ -517,7 +552,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.8235294f, 0.4117647f, 0.1176471f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.8235294f;
+                retVal.g = 0.4117647f;
+                retVal.b = 0.1176471f;
+                return retVal;
 			}
 		}
 
@@ -528,7 +568,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.4980392f, 0.3137255f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.4980392f;
+                retVal.b = 0.3137255f;
+                return retVal;
 			}
 		}
 
@@ -539,7 +584,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.3921569f, 0.5843138f, 0.9294118f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.3921569f;
+                retVal.g = 0.5843138f;
+                retVal.b = 0.9294118f;
+                return retVal;
 			}
 		}
 
@@ -550,7 +600,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.972549f, 0.8627451f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.972549f;
+                retVal.b = 0.8627451f;
+                return retVal;
 			}
 		}
 
@@ -561,7 +616,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.8627451f, 0.07843138f, 0.2352941f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.8627451f;
+                retVal.g = 0.07843138f;
+                retVal.b = 0.2352941f;
+                return retVal;
 			}
 		}
 
@@ -572,7 +632,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0f, 1f, 1f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.0f;
+                retVal.g = 1.0f;
+                retVal.b = 1.0f;
+                return retVal;
 			}
 		}
 
@@ -583,7 +648,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0f, 0f, 0.5450981f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.0f;
+                retVal.g = 0.0f;
+                retVal.b = 0.5450981f;
+                return retVal;
 			}
 		}
 
@@ -594,7 +664,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0f, 0.5450981f, 0.5450981f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.0f;
+                retVal.g = 0.5450981f;
+                retVal.b = 0.5450981f;
+                return retVal;
 			}
 		}
 
@@ -605,7 +680,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.7215686f, 0.5254902f, 0.04313726f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.7215686f;
+                retVal.g = 0.5254902f;
+                retVal.b = 0.04313726f;
+                return retVal;
 			}
 		}
 
@@ -616,7 +696,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.6627451f, 0.6627451f, 0.6627451f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.6627451f;
+                retVal.g = 0.6627451f;
+                retVal.b = 0.6627451f;
+                return retVal;
 			}
 		}
 
@@ -627,7 +712,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0f, 0.3921569f, 0f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.0f;
+                retVal.g = 0.3921569f;
+                retVal.b = 0.0f;
+                return retVal;
 			}
 		}
 
@@ -638,7 +728,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.7411765f, 0.7176471f, 0.4196078f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.7411765f;
+                retVal.g = 0.7176471f;
+                retVal.b = 0.4196078f;
+                return retVal;
 			}
 		}
 
@@ -649,7 +744,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.5450981f, 0f, 0.5450981f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.5450981f;
+                retVal.g = 0.0f;
+                retVal.b = 0.5450981f;
+                return retVal;
 			}
 		}
 
@@ -660,7 +760,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.3333333f, 0.4196078f, 0.1843137f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.3333333f;
+                retVal.g = 0.4196078f;
+                retVal.b = 0.1843137f;
+                return retVal;
 			}
 		}
 
@@ -671,7 +776,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.5490196f, 0f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.5490196f;
+                retVal.b = 0.0f;
+                return retVal;
 			}
 		}
 
@@ -682,7 +792,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.6f, 0.1960784f, 0.8f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.6f;
+                retVal.g = 0.1960784f;
+                retVal.b = 0.8f;
+                return retVal;
 			}
 		}
 
@@ -693,7 +808,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.5450981f, 0f, 0f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.5450981f;
+                retVal.g = 0.0f;
+                retVal.b = 0.0f;
+                return retVal;
 			}
 		}
 
@@ -704,7 +824,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.9137255f, 0.5882353f, 0.4784314f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.9137255f;
+                retVal.g = 0.5882353f;
+                retVal.b = 0.4784314f;
+                return retVal;
 			}
 		}
 
@@ -715,7 +840,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.5607843f, 0.7372549f, 0.5450981f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.5607843f;
+                retVal.g = 0.7372549f;
+                retVal.b = 0.5450981f;
+                return retVal;
 			}
 		}
 
@@ -726,7 +856,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.282353f, 0.2392157f, 0.5450981f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.282353f;
+                retVal.g = 0.2392157f;
+                retVal.b = 0.5450981f;
+                return retVal;
 			}
 		}
 
@@ -737,7 +872,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.1843137f, 0.3098039f, 0.3098039f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.1843137f;
+                retVal.g = 0.3098039f;
+                retVal.b = 0.3098039f;
+                return retVal;
 			}
 		}
 
@@ -748,7 +888,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0f, 0.8078431f, 0.8196079f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.0f;
+                retVal.g = 0.8078431f;
+                retVal.b = 0.8196079f;
+                return retVal;
 			}
 		}
 
@@ -759,7 +904,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.5803922f, 0f, 0.827451f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.5803922f;
+                retVal.g = 0.0f;
+                retVal.b = 0.827451f;
+                return retVal;
 			}
 		}
 
@@ -770,7 +920,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.07843138f, 0.5764706f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.07843138f;
+                retVal.b = 0.5764706f;
+                return retVal;
 			}
 		}
 
@@ -781,7 +936,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0f, 0.7490196f, 1f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.0f;
+                retVal.g = 0.7490196f;
+                retVal.b = 1.0f;
+                return retVal;
 			}
 		}
 
@@ -792,7 +952,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.4117647f, 0.4117647f, 0.4117647f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.4117647f;
+                retVal.g = 0.4117647f;
+                retVal.b = 0.4117647f;
+                return retVal;
 			}
 		}
 
@@ -803,7 +968,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.1176471f, 0.5647059f, 1f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.1176471f;
+                retVal.g = 0.5647059f;
+                retVal.b = 1.0f;
+                return retVal;
 			}
 		}
 
@@ -814,7 +984,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.6980392f, 0.1333333f, 0.1333333f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.6980392f;
+                retVal.g = 0.1333333f;
+                retVal.b = 0.1333333f;
+                return retVal;
 			}
 		}
 
@@ -825,7 +1000,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.9803922f, 0.9411765f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.9803922f;
+                retVal.b = 0.9411765f;
+                return retVal;
 			}
 		}
 
@@ -836,7 +1016,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.1333333f, 0.5450981f, 0.1333333f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.1333333f;
+                retVal.g = 0.5450981f;
+                retVal.b = 0.1333333f;
+                return retVal;
 			}
 		}
 
@@ -847,7 +1032,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0f, 1f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.0f;
+                retVal.b = 1.0f;
+                return retVal;
 			}
 		}
 
@@ -858,7 +1048,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.8627451f, 0.8627451f, 0.8627451f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.8627451f;
+                retVal.g = 0.8627451f;
+                retVal.b = 0.8627451f;
+                return retVal;
 			}
 		}
 
@@ -869,7 +1064,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.972549f, 0.972549f, 1f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.972549f;
+                retVal.g = 0.972549f;
+                retVal.b = 1.0f;
+                return retVal;
 			}
 		}
 
@@ -880,7 +1080,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.8431373f, 0f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.8431373f;
+                retVal.b = 0.0f;
+                return retVal;
 			}
 		}
 
@@ -891,7 +1096,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.854902f, 0.6470588f, 0.1254902f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.854902f;
+                retVal.g = 0.6470588f;
+                retVal.b = 0.1254902f;
+                return retVal;
 			}
 		}
 
@@ -902,7 +1112,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.5019608f, 0.5019608f, 0.5019608f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.5019608f;
+                retVal.g = 0.5019608f;
+                retVal.b = 0.5019608f;
+                return retVal;
 			}
 		}
 
@@ -913,7 +1128,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0f, 0.5019608f, 0f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.0f;
+                retVal.g = 0.5019608f;
+                retVal.b = 0.0f;
+                return retVal;
 			}
 		}
 
@@ -924,7 +1144,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.6784314f, 1f, 0.1843137f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.6784314f;
+                retVal.g = 1.0f;
+                retVal.b = 0.1843137f;
+                return retVal;
 			}
 		}
 
@@ -935,7 +1160,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.9411765f, 1f, 0.9411765f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.9411765f;
+                retVal.g = 1.0f;
+                retVal.b = 0.9411765f;
+                return retVal;
 			}
 		}
 
@@ -946,7 +1176,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.4117647f, 0.7058824f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.4117647f;
+                retVal.b = 0.7058824f;
+                return retVal;
 			}
 		}
 
@@ -957,7 +1192,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.8039216f, 0.3607843f, 0.3607843f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.8039216f;
+                retVal.g = 0.3607843f;
+                retVal.b = 0.3607843f;
+                return retVal;
 			}
 		}
 
@@ -968,7 +1208,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.2941177f, 0f, 0.509804f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.2941177f;
+                retVal.g = 0.0f;
+                retVal.b = 0.509804f;
+                return retVal;
 			}
 		}
 
@@ -979,7 +1224,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 1f, 0.9411765f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 1.0f;
+                retVal.b = 0.9411765f;
+                return retVal;
 			}
 		}
 
@@ -990,7 +1240,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.9411765f, 0.9019608f, 0.5490196f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.9411765f;
+                retVal.g = 0.9019608f;
+                retVal.b = 0.5490196f;
+                return retVal;
 			}
 		}
 
@@ -1001,7 +1256,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.9019608f, 0.9019608f, 0.9803922f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.9019608f;
+                retVal.g = 0.9019608f;
+                retVal.b = 0.9803922f;
+                return retVal;
 			}
 		}
 
@@ -1012,7 +1272,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.9411765f, 0.9607843f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.9411765f;
+                retVal.b = 0.9607843f;
+                return retVal;
 			}
 		}
 
@@ -1023,7 +1288,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.4862745f, 0.9882353f, 0f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.4862745f;
+                retVal.g = 0.9882353f;
+                retVal.b = 0.0f;
+                return retVal;
 			}
 		}
 
@@ -1034,7 +1304,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.9803922f, 0.8039216f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.9803922f;
+                retVal.b = 0.8039216f;
+                return retVal;
 			}
 		}
 
@@ -1045,7 +1320,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.6784314f, 0.8470588f, 0.9019608f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.6784314f;
+                retVal.g = 0.8470588f;
+                retVal.b = 0.9019608f;
+                return retVal;
 			}
 		}
 
@@ -1056,7 +1336,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.9411765f, 0.5019608f, 0.5019608f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.9411765f;
+                retVal.g = 0.5019608f;
+                retVal.b = 0.5019608f;
+                return retVal;
 			}
 		}
 
@@ -1067,7 +1352,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.8784314f, 1f, 1f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.8784314f;
+                retVal.g = 1.0f;
+                retVal.b = 1.0f;
+                return retVal;
 			}
 		}
 
@@ -1078,7 +1368,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.9803922f, 0.9803922f, 0.8235294f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.9803922f;
+                retVal.g = 0.9803922f;
+                retVal.b = 0.8235294f;
+                return retVal;
 			}
 		}
 
@@ -1089,7 +1384,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.5647059f, 0.9333333f, 0.5647059f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.5647059f;
+                retVal.g = 0.9333333f;
+                retVal.b = 0.5647059f;
+                return retVal;
 			}
 		}
 
@@ -1100,7 +1400,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.827451f, 0.827451f, 0.827451f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.827451f;
+                retVal.g = 0.827451f;
+                retVal.b = 0.827451f;
+                return retVal;
 			}
 		}
 
@@ -1111,7 +1416,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.7137255f, 0.7568628f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.7137255f;
+                retVal.b = 0.7568628f;
+                return retVal;
 			}
 		}
 
@@ -1122,7 +1432,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.627451f, 0.4784314f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.627451f;
+                retVal.b = 0.4784314f;
+                return retVal;
 			}
 		}
 
@@ -1133,7 +1448,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.1254902f, 0.6980392f, 0.6666667f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.1254902f;
+                retVal.g = 0.6980392f;
+                retVal.b = 0.6666667f;
+                return retVal;
 			}
 		}
 
@@ -1144,7 +1464,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.5294118f, 0.8078431f, 0.9803922f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.5294118f;
+                retVal.g = 0.8078431f;
+                retVal.b = 0.9803922f;
+                return retVal;
 			}
 		}
 
@@ -1155,7 +1480,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.4666667f, 0.5333334f, 0.6f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.4666667f;
+                retVal.g = 0.5333334f;
+                retVal.b = 0.6f;
+                return retVal;
 			}
 		}
 
@@ -1166,7 +1496,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.6901961f, 0.7686275f, 0.8705882f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.6901961f;
+                retVal.g = 0.7686275f;
+                retVal.b = 0.8705882f;
+                return retVal;
 			}
 		}
 
@@ -1177,7 +1512,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 1f, 0.8784314f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 1.0f;
+                retVal.b = 0.8784314f;
+                return retVal;
 			}
 		}
 
@@ -1188,7 +1528,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0f, 1f, 0f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.0f;
+                retVal.g = 1.0f;
+                retVal.b = 0.0f;
+                return retVal;
 			}
 		}
 
@@ -1199,7 +1544,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.1960784f, 0.8039216f, 0.1960784f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.1960784f;
+                retVal.g = 0.8039216f;
+                retVal.b = 0.1960784f;
+                return retVal;
 			}
 		}
 
@@ -1210,7 +1560,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.9803922f, 0.9411765f, 0.9019608f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.9803922f;
+                retVal.g = 0.9411765f;
+                retVal.b = 0.9019608f;
+                return retVal;
 			}
 		}
 
@@ -1221,7 +1576,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0f, 1f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.0f;
+                retVal.b = 1.0f;
+                return retVal;
 			}
 		}
 
@@ -1232,7 +1592,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.5019608f, 0f, 0f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.5019608f;
+                retVal.g = 0.0f;
+                retVal.b = 0.0f;
+                return retVal;
 			}
 		}
 
@@ -1243,7 +1608,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.4f, 0.8039216f, 0.6666667f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.4f;
+                retVal.g = 0.8039216f;
+                retVal.b = 0.6666667f;
+                return retVal;
 			}
 		}
 
@@ -1254,7 +1624,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0f, 0f, 0.8039216f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.0f;
+                retVal.g = 0.0f;
+                retVal.b = 0.8039216f;
+                return retVal;
 			}
 		}
 
@@ -1265,7 +1640,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.7294118f, 0.3333333f, 0.827451f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.7294118f;
+                retVal.g = 0.3333333f;
+                retVal.b = 0.827451f;
+                return retVal;
 			}
 		}
 
@@ -1276,7 +1656,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.5764706f, 0.4392157f, 0.8588235f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.5764706f;
+                retVal.g = 0.4392157f;
+                retVal.b = 0.8588235f;
+                return retVal;
 			}
 		}
 
@@ -1287,7 +1672,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.2352941f, 0.7019608f, 0.4431373f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.2352941f;
+                retVal.g = 0.7019608f;
+                retVal.b = 0.4431373f;
+                return retVal;
 			}
 		}
 
@@ -1298,7 +1688,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.4823529f, 0.4078431f, 0.9333333f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.4823529f;
+                retVal.g = 0.4078431f;
+                retVal.b = 0.9333333f;
+                return retVal;
 			}
 		}
 
@@ -1309,7 +1704,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0f, 0.9803922f, 0.6039216f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.0f;
+                retVal.g = 0.9803922f;
+                retVal.b = 0.6039216f;
+                return retVal;
 			}
 		}
 
@@ -1320,7 +1720,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.282353f, 0.8196079f, 0.8f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.282353f;
+                retVal.g = 0.8196079f;
+                retVal.b = 0.8f;
+                return retVal;
 			}
 		}
 
@@ -1331,7 +1736,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.7803922f, 0.08235294f, 0.5215687f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.7803922f;
+                retVal.g = 0.08235294f;
+                retVal.b = 0.5215687f;
+                return retVal;
 			}
 		}
 
@@ -1342,7 +1752,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.09803922f, 0.09803922f, 0.4392157f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.09803922f;
+                retVal.g = 0.09803922f;
+                retVal.b = 0.4392157f;
+                return retVal;
 			}
 		}
 
@@ -1353,7 +1768,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.9607843f, 1f, 0.9803922f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.9607843f;
+                retVal.g = 1.0f;
+                retVal.b = 0.9803922f;
+                return retVal;
 			}
 		}
 
@@ -1364,7 +1784,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.8941177f, 0.8823529f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.8941177f;
+                retVal.b = 0.8823529f;
+                return retVal;
 			}
 		}
 
@@ -1375,7 +1800,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.8941177f, 0.7098039f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.8941177f;
+                retVal.b = 0.7098039f;
+                return retVal;
 			}
 		}
 
@@ -1386,7 +1816,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.8705882f, 0.6784314f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.8705882f;
+                retVal.b = 0.6784314f;
+                return retVal;
 			}
 		}
 
@@ -1397,7 +1832,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0f, 0f, 0.5019608f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.0f;
+                retVal.g = 0.0f;
+                retVal.b = 0.5019608f;
+                return retVal;
 			}
 		}
 
@@ -1408,7 +1848,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.9921569f, 0.9607843f, 0.9019608f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.9921569f;
+                retVal.g = 0.9607843f;
+                retVal.b = 0.9019608f;
+                return retVal;
 			}
 		}
 
@@ -1419,7 +1864,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.5019608f, 0.5019608f, 0f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.5019608f;
+                retVal.g = 0.5019608f;
+                retVal.b = 0.0f;
+                return retVal;
 			}
 		}
 
@@ -1430,7 +1880,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.4196078f, 0.5568628f, 0.1372549f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.4196078f;
+                retVal.g = 0.5568628f;
+                retVal.b = 0.1372549f;
+                return retVal;
 			}
 		}
 
@@ -1441,7 +1896,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.6470588f, 0f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.6470588f;
+                retVal.b = 0.0f;
+                return retVal;
 			}
 		}
 
@@ -1452,7 +1912,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.2705882f, 0f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.2705882f;
+                retVal.b = 0.0f;
+                return retVal;
 			}
 		}
 
@@ -1463,7 +1928,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.854902f, 0.4392157f, 0.8392157f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.854902f;
+                retVal.g = 0.4392157f;
+                retVal.b = 0.8392157f;
+                return retVal;
 			}
 		}
 
@@ -1474,7 +1944,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.9333333f, 0.9098039f, 0.6666667f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.9333333f;
+                retVal.g = 0.9098039f;
+                retVal.b = 0.6666667f;
+                return retVal;
 			}
 		}
 
@@ -1485,7 +1960,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.5960785f, 0.9843137f, 0.5960785f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.5960785f;
+                retVal.g = 0.9843137f;
+                retVal.b = 0.5960785f;
+                return retVal;
 			}
 		}
 
@@ -1496,7 +1976,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.6862745f, 0.9333333f, 0.9333333f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.6862745f;
+                retVal.g = 0.9333333f;
+                retVal.b = 0.9333333f;
+                return retVal;
 			}
 		}
 
@@ -1507,7 +1992,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.8588235f, 0.4392157f, 0.5764706f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.8588235f;
+                retVal.g = 0.4392157f;
+                retVal.b = 0.5764706f;
+                return retVal;
 			}
 		}
 
@@ -1518,7 +2008,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.9372549f, 0.8352941f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.9372549f;
+                retVal.b = 0.8352941f;
+                return retVal;
 			}
 		}
 
@@ -1529,7 +2024,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.854902f, 0.7254902f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.854902f;
+                retVal.b = 0.7254902f;
+                return retVal;
 			}
 		}
 
@@ -1540,7 +2040,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.8039216f, 0.5215687f, 0.2470588f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.8039216f;
+                retVal.g = 0.5215687f;
+                retVal.b = 0.2470588f;
+                return retVal;
 			}
 		}
 
@@ -1551,7 +2056,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.7529412f, 0.7960784f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.7529412f;
+                retVal.b = 0.7960784f;
+                return retVal;
 			}
 		}
 
@@ -1562,7 +2072,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.8666667f, 0.627451f, 0.8666667f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.8666667f;
+                retVal.g = 0.627451f;
+                retVal.b = 0.8666667f;
+                return retVal;
 			}
 		}
 
@@ -1573,7 +2088,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.6901961f, 0.8784314f, 0.9019608f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.6901961f;
+                retVal.g = 0.8784314f;
+                retVal.b = 0.9019608f;
+                return retVal;
 			}
 		}
 
@@ -1584,7 +2104,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.5019608f, 0f, 0.5019608f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.5019608f;
+                retVal.g = 0.0f;
+                retVal.b = 0.5019608f;
+                return retVal;
 			}
 		}
 
@@ -1595,7 +2120,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0f, 0f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.0f;
+                retVal.b = 0.0f;
+                return retVal;
 			}
 		}
 
@@ -1606,7 +2136,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.7372549f, 0.5607843f, 0.5607843f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.7372549f;
+                retVal.g = 0.5607843f;
+                retVal.b = 0.5607843f;
+                return retVal;
 			}
 		}
 
@@ -1617,7 +2152,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.254902f, 0.4117647f, 0.8823529f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.254902f;
+                retVal.g = 0.4117647f;
+                retVal.b = 0.8823529f;
+                return retVal;
 			}
 		}
 
@@ -1628,7 +2168,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.5450981f, 0.2705882f, 0.07450981f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.5450981f;
+                retVal.g = 0.2705882f;
+                retVal.b = 0.07450981f;
+                return retVal;
 			}
 		}
 
@@ -1639,7 +2184,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.9803922f, 0.5019608f, 0.4470588f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.9803922f;
+                retVal.g = 0.5019608f;
+                retVal.b = 0.4470588f;
+                return retVal;
 			}
 		}
 
@@ -1650,7 +2200,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.9568627f, 0.6431373f, 0.3764706f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.9568627f;
+                retVal.g = 0.6431373f;
+                retVal.b = 0.3764706f;
+                return retVal;
 			}
 		}
 
@@ -1661,7 +2216,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.1803922f, 0.5450981f, 0.3411765f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.1803922f;
+                retVal.g = 0.5450981f;
+                retVal.b = 0.3411765f;
+                return retVal;
 			}
 		}
 
@@ -1672,7 +2232,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.9607843f, 0.9333333f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.9607843f;
+                retVal.b = 0.9333333f;
+                return retVal;
 			}
 		}
 
@@ -1683,7 +2248,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.627451f, 0.3215686f, 0.1764706f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.627451f;
+                retVal.g = 0.3215686f;
+                retVal.b = 0.1764706f;
+                return retVal;
 			}
 		}
 
@@ -1694,7 +2264,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.7529412f, 0.7529412f, 0.7529412f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.7529412f;
+                retVal.g = 0.7529412f;
+                retVal.b = 0.7529412f;
+                return retVal;
 			}
 		}
 
@@ -1705,7 +2280,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.5294118f, 0.8078431f, 0.9215686f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.5294118f;
+                retVal.g = 0.8078431f;
+                retVal.b = 0.9215686f;
+                return retVal;
 			}
 		}
 
@@ -1716,7 +2296,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.4156863f, 0.3529412f, 0.8039216f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.4156863f;
+                retVal.g = 0.3529412f;
+                retVal.b = 0.8039216f;
+                return retVal;
 			}
 		}
 
@@ -1727,7 +2312,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.4392157f, 0.5019608f, 0.5647059f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.4392157f;
+                retVal.g = 0.5019608f;
+                retVal.b = 0.5647059f;
+                return retVal;
 			}
 		}
 
@@ -1738,7 +2328,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.9803922f, 0.9803922f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.9803922f;
+                retVal.b = 0.9803922f;
+                return retVal;
 			}
 		}
 
@@ -1749,7 +2344,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0f, 1f, 0.4980392f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.0f;
+                retVal.g = 1.0f;
+                retVal.b = 0.4980392f;
+                return retVal;
 			}
 		}
 
@@ -1760,7 +2360,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.2745098f, 0.509804f, 0.7058824f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.2745098f;
+                retVal.g = 0.509804f;
+                retVal.b = 0.7058824f;
+                return retVal;
 			}
 		}
 
@@ -1771,7 +2376,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.8235294f, 0.7058824f, 0.5490196f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.8235294f;
+                retVal.g = 0.7058824f;
+                retVal.b = 0.5490196f;
+                return retVal;
 			}
 		}
 
@@ -1782,7 +2392,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0f, 0.5019608f, 0.5019608f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.0f;
+                retVal.g = 0.5019608f;
+                retVal.b = 0.5019608f;
+                return retVal;
 			}
 		}
 
@@ -1793,7 +2408,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.8470588f, 0.7490196f, 0.8470588f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.8470588f;
+                retVal.g = 0.7490196f;
+                retVal.b = 0.8470588f;
+                return retVal;
 			}
 		}
 
@@ -1804,7 +2424,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 0.3882353f, 0.2784314f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 0.3882353f;
+                retVal.b = 0.2784314f;
+                return retVal;
 			}
 		}
 
@@ -1815,7 +2440,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.2509804f, 0.8784314f, 0.8156863f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.2509804f;
+                retVal.g = 0.8784314f;
+                retVal.b = 0.8156863f;
+                return retVal;
 			}
 		}
 
@@ -1826,7 +2456,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.9333333f, 0.509804f, 0.9333333f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.9333333f;
+                retVal.g = 0.509804f;
+                retVal.b = 0.9333333f;
+                return retVal;
 			}
 		}
 
@@ -1837,7 +2472,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.9607843f, 0.8705882f, 0.7019608f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.9607843f;
+                retVal.g = 0.8705882f;
+                retVal.b = 0.7019608f;
+                return retVal;
 			}
 		}
 
@@ -1848,7 +2488,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 1f, 1f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 1.0f;
+                retVal.b = 1.0f;
+                return retVal;
 			}
 		}
 
@@ -1859,7 +2504,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.9607843f, 0.9607843f, 0.9607843f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.9607843f;
+                retVal.g = 0.9607843f;
+                retVal.b = 0.9607843f;
+                return retVal;
 			}
 		}
 
@@ -1870,7 +2520,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 1f, 1f, 0f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 1.0f;
+                retVal.g = 1.0f;
+                retVal.b = 0.0f;
+                return retVal;
 			}
 		}
 
@@ -1881,7 +2536,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return new ColorEx( 1f, 0.6039216f, 0.8039216f, 0.1960784f );
+                ColorEx retVal;
+                retVal.a = 1.0f;
+                retVal.r = 0.6039216f;
+                retVal.g = 0.8039216f;
+                retVal.b = 0.1960784f;
+                return retVal;
 			}
 		}
 
@@ -1938,6 +2598,14 @@ namespace Axiom.Core
 			return this.ToARGB();
 		}
 
+        public override bool Equals( object obj )
+        {
+            if ( typeof( object ) is ColorEx )
+                return this == (ColorEx)obj;
+            else
+                return false;
+        }
+
 		#endregion Object overloads
 
 		#region IComparable Members
@@ -1949,7 +2617,7 @@ namespace Axiom.Core
 		/// <returns>0 if they are equal, 1 if they are not.</returns>
 		public int CompareTo( object obj )
 		{
-			ColorEx other = obj as ColorEx;
+            ColorEx other = (ColorEx)obj;
 
 			if ( this.a == other.a &&
 				this.r == other.r &&
