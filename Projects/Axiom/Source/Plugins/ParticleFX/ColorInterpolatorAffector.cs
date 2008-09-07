@@ -57,10 +57,13 @@ namespace Axiom.ParticleFX
         public ColorInterpolatorAffector()
         {
             this.type = "ColourInterpolator";
+            ColorEx init;
+            init.a = init.r = init.g = 0.5f;
+            init.b = 0.0f;
 
             for ( int i = 0; i < MAX_STAGES; ++i )
             {
-				colorAdj[ i ] = new ColorEx( 0.5f, 0.5f, 0.5f, 0.0f );
+				colorAdj[ i ] = init;
                 timeAdj[ i ] = 1.0f;
             }
         }
