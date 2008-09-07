@@ -220,7 +220,6 @@ namespace Axiom.ParticleSystems
 			minTTL = float.NaN;
             position = Vector3.Zero;
 			colorFixed = ColorEx.White;
-			colorRangeStart = null;
             isEnabled = true;
 			durationFixed = 0;
 			durationMin = float.NaN;
@@ -464,7 +463,7 @@ namespace Axiom.ParticleSystems
         {
             get
             {
-				return ( colorRangeStart == null ) ? colorFixed : null;
+				return colorRangeStart;
             }
             set
             {
@@ -826,7 +825,7 @@ namespace Axiom.ParticleSystems
         /// <param name="color">
         ///    The color object that will be altered depending on the method of generating the particle color.
         /// </param>
-        protected virtual void GenerateEmissionColor( ColorEx color )
+        protected virtual void GenerateEmissionColor( ref ColorEx color )
         {
 			if ( colorRangeStart != null )
             {
@@ -1294,12 +1293,12 @@ namespace Axiom.ParticleSystems
 			public void Set( object target, string val )
 			{
 				ParticleEmitter emitter = target as ParticleEmitter;
-				emitter.Color = ( val == null ) ? null : StringConverter.ParseColor( val );
+                if ( val != null ) emitter.Color = StringConverter.ParseColor( val );
 			}
 			public string Get( object target )
 			{
 				ParticleEmitter emitter = target as ParticleEmitter;
-				return ( emitter.Color == null ) ? null : StringConverter.ToString( emitter.Color );
+				return StringConverter.ToString( emitter.Color );
 			}
 		}
 
@@ -1312,12 +1311,12 @@ namespace Axiom.ParticleSystems
             public void Set( object target, string val )
             {
                 ParticleEmitter emitter = target as ParticleEmitter;
-				emitter.ColorRangeStart = ( val == null ) ? null : StringConverter.ParseColor( val );
+                if ( val != null ) emitter.ColorRangeStart = StringConverter.ParseColor( val );
             }
             public string Get( object target )
             {
                 ParticleEmitter emitter = target as ParticleEmitter;
-				return ( emitter.ColorRangeStart == null ) ? null : StringConverter.ToString( emitter.ColorRangeStart );
+				return StringConverter.ToString( emitter.ColorRangeStart );
             }
         }
 
@@ -1331,12 +1330,12 @@ namespace Axiom.ParticleSystems
             public void Set( object target, string val )
             {
                 ParticleEmitter emitter = target as ParticleEmitter;
-				emitter.ColorRangeEnd = ( val == null ) ? null : StringConverter.ParseColor( val );
+				if ( val != null )emitter.ColorRangeEnd = StringConverter.ParseColor( val );
             }
             public string Get( object target )
             {
                 ParticleEmitter emitter = target as ParticleEmitter;
-				return ( emitter.ColorRangeEnd == null ) ? null : StringConverter.ToString( emitter.ColorRangeEnd );
+				return StringConverter.ToString( emitter.ColorRangeEnd );
             }
         }
 
