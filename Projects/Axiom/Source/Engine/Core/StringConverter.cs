@@ -243,7 +243,7 @@ namespace Axiom.Core
 		/// <param name="val"></param>
 		public static ColorEx ParseColor( string[] values )
 		{
-			ColorEx color = new ColorEx();
+			ColorEx color;
 			color.r = ParseFloat( values[ 0 ] );
 			color.g = ParseFloat( values[ 1 ] );
 			color.b = ParseFloat( values[ 2 ] );
@@ -258,7 +258,7 @@ namespace Axiom.Core
 		/// <param name="val"></param>
 		public static ColorEx ParseColor( string val )
 		{
-			ColorEx color = new ColorEx();
+			ColorEx color;
 			string[] vals = val.Split( ' ' );
 
 			color.r = ParseFloat( vals[ 0 ] );

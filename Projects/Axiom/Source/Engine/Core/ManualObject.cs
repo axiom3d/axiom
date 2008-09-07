@@ -1296,11 +1296,11 @@ namespace Axiom.Core
         /// </summary>
         protected class TempVertex
         {
-            public Vector3 position = new Vector3();
-            public Vector3 normal = new Vector3();
+            public Vector3 position = Vector3.Zero;
+            public Vector3 normal = Vector3.Zero;
             public Vector3[] texCoord = new Vector3[Axiom.Configuration.Config.MaxTextureCoordSets];
             public ushort[] texCoordDims = new ushort[Axiom.Configuration.Config.MaxTextureCoordSets];
-            public ColorEx color = new ColorEx();
+            public ColorEx color = ColorEx.White;
         }
 
         #endregion TempVertex

@@ -573,7 +573,7 @@ namespace Axiom.Core
             illuminationStage = IlluminationRenderStage.None;
             renderingNoShadowQueue = false;
             renderingMainGroup = false;
-            shadowColor = new ColorEx( 0.25f, 0.25f, 0.25f );
+            shadowColor.a = shadowColor.r = shadowColor.g = shadowColor.b = 0.25f;
             shadowDirLightExtrudeDist = 10000;
             shadowIndexBufferSize = 51200;
             shadowTextureOffset = 0.6f;
@@ -4394,7 +4394,7 @@ namespace Axiom.Core
             autoParamDataSource.FogParams = new Vector4( fogStart, fogEnd, fogScale, 0 );
 
             // set the time in the auto param data source
-            // autoParamDataSource.Time = ((float)Root.Instance.Timer.Milliseconds) / 1000f;
+            //autoParamDataSource.Time = ((float)Root.Instance.Timer.Milliseconds) / 1000f;
 
             // Set camera window clipping planes (if any)
             if ( targetRenderSystem.HardwareCapabilities.HasCapability( Capabilities.UserClipPlanes ) )
@@ -4436,8 +4436,7 @@ namespace Axiom.Core
             }
 
             // queue overlays and skyboxes for rendering
-            if ( viewport.ShowSkies && findVisibleObjects &&
-                illuminationStage != IlluminationRenderStage.RenderToTexture )
+            if ( viewport.ShowSkies && findVisibleObjects && illuminationStage != IlluminationRenderStage.RenderToTexture )
                 QueueSkiesForRendering( camera );
 
             // begin frame geometry count

@@ -2548,28 +2548,29 @@ namespace Axiom.Core
 		//TODO : Move this to StringConverter
 		public static ColorEx Parse_0_255_String( string parsableText )
 		{
+            ColorEx retVal;
 			if ( parsableText == null )
 				throw new ArgumentException( "The parsableText parameter cannot be null." );
 			string[] vals = parsableText.TrimStart( '(', '[', '<' ).TrimEnd( ')', ']', '>' ).Split( ',' );
 			if ( vals.Length < 3 )
 				throw new FormatException( string.Format( "Cannot parse the text '{0}' because it must of the form (r,g,b) or (r,g,b,a)",
 														parsableText ) );
-			float r, g, b, a;
+			//float r, g, b, a;
 			try
 			{
-				r = int.Parse( vals[ 0 ].Trim() ) / 255f;
-				g = int.Parse( vals[ 1 ].Trim() ) / 255f;
-				b = int.Parse( vals[ 2 ].Trim() ) / 255f;
+				retVal.r = int.Parse( vals[ 0 ].Trim() ) / 255f;
+				retVal.g = int.Parse( vals[ 1 ].Trim() ) / 255f;
+				retVal.b = int.Parse( vals[ 2 ].Trim() ) / 255f;
 				if ( vals.Length == 4 )
-					a = int.Parse( vals[ 3 ].Trim() ) / 255f;
+					retVal.a = int.Parse( vals[ 3 ].Trim() ) / 255f;
 				else
-					a = 1.0f;
+					retVal.a = 1.0f;
 			}
 			catch ( Exception e )
 			{
 				throw new FormatException( "The parts of the ColorEx in Parse_0_255 must be integers" );
 			}
-			return new ColorEx( a, r, g, b );
+			return retVal;
 		}
 
 		//TODO : Move this to StringConverter
