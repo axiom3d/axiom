@@ -94,7 +94,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			}
 
 
-			protected bool lightingEnabled;
+			protected bool lightingEnabled=false;
 			public bool LightingEnabled
 			{
 				get
@@ -108,7 +108,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			}
 
 
-			protected List<Light> lights;
+			protected List<Light> lights =new List<Light>();
 			public List<Light> Lights
 			{
 				get

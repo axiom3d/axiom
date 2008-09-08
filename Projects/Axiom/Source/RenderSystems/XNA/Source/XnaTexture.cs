@@ -58,7 +58,6 @@ namespace Axiom.RenderSystems.Xna
         #region Fields
 
         public XFG.RenderTarget2D testtarget;
-        public XFG.ResolveTexture2D testresolvetarget;
         /// <summary>
         ///     Direct3D device reference.
         /// </summary>
@@ -137,11 +136,9 @@ namespace Axiom.RenderSystems.Xna
             devParms = device.CreationParameters;
             
             // get the pixel format of the back buffer
-            using ( XFG.DepthStencilBuffer back = device.DepthStencilBuffer)
-            {
-                bbPixelFormat =  (XFG.SurfaceFormat)back.Format;
-            }
-            SetSrcAttributes( width, height, 1, format );
+            bbPixelFormat = device.DisplayMode.Format;
+
+            SetSrcAttributes(width, height, 1, format);
            
             // if render target, create the texture up front
             if ( usage == TextureUsage.RenderTarget )
@@ -157,13 +154,6 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         ///		Gets the D3D Texture that is contained withing this Texture.
         /// </summary>
-        public XFG.ResolveTexture2D renderTargetresolve
-        {
-            get
-            {
-                return testresolvetarget;
-            }
-        }
         public XFG.RenderTarget2D renderTarget
         {
             get
@@ -349,14 +339,15 @@ namespace Axiom.RenderSystems.Xna
             }
             else
             {
-                Image[] images = new Image[ 6 ];
+                Image image = new Image();
 
-                images[ 0 ] = Image.FromFile( cubeFaceNames[ 0 ] );
-                SetSrcAttributes( images[ 0 ].Width, images[ 0 ].Height, 1, images[ 0 ].Format );
-                SetFinalAttributes(images[0].Width, images[0].Height, 1, images[0].Format);
+                image= Image.FromFile( cubeFaceNames[ 0 ] );
+                SetSrcAttributes( image.Width, image.Height, 1, image.Format );
+                //SetFinalAttributes(image.Width, image.Height, 1, image.Format);
 
                 // create the memory for the cube texture
                 CreateCubeTexture();
+                
                 //BlitImagesToCubeTex();
                 for (int i = 0; i < 6; i++)
                 {
@@ -366,6 +357,8 @@ namespace Axiom.RenderSystems.Xna
                     temp.GetData<XFG.Color>(cols);
                     cubeTexture.SetData<XFG.Color>((Microsoft.Xna.Framework.Graphics.CubeMapFace)i, cols);
                 }
+                cubeTexture.GenerateMipMaps(GetBestFilterMethod());
+              
             }
 
             isLoaded = true;
@@ -381,14 +374,12 @@ namespace Axiom.RenderSystems.Xna
             Stream stream = TextureManager.Instance.FindResourceData( name );
 
             // load the cube texture from the image data stream directly
-            //volumeTexture = D3D.TextureLoader.FromVolumeStream( device, stream );
             volumeTexture = XFG.Texture3D.FromFile(device, stream);    
 
             // store off a base reference
             texture = volumeTexture;
 
             // set src and dest attributes to the same, we can't know
-            //D3D.VolumeDescription desc = volumeTexture.GetLevelDescription( 0 );
             stream.Position = 0;
             XFG.TextureInformation desc = XFG.Texture3D.GetTextureInformation(stream);
             SetSrcAttributes( desc.Width, desc.Height, desc.Depth, ConvertFormat( desc.Format ) );
@@ -493,7 +484,7 @@ namespace Axiom.RenderSystems.Xna
 
             // set the appropriate usage based on the usage of this texture
             XFG.TextureUsage d3dUsage =
-                ( usage == TextureUsage.RenderTarget ) ? XFG.TextureUsage.Tiled: 0;
+                ( usage == TextureUsage.RenderTarget ) ? XFG.TextureUsage.Tiled:0;
 
             // how many mips to use?  make sure its at least one
             int numMips = ( numMipMaps > 0 ) ? numMipMaps : 1;
@@ -543,16 +534,14 @@ namespace Axiom.RenderSystems.Xna
             texRequire.MipLevels = numMips;
             texRequire.Format = d3dPixelFormat;
             //D3D.TextureLoader.CheckTextureRequirements( device, d3dUsage, D3D.Pool.Default, out texRequire );
-           // numMips = texRequire.MipLevels;
-            d3dPixelFormat = XFG.SurfaceFormat.Color;
+            //numMips = texRequire.MipLevels;
+            d3dPixelFormat = texRequire.Format;// XFG.SurfaceFormat.Color;
 
        
 
             if ( usage == TextureUsage.RenderTarget )
             {
-                //testresolvetarget = new Microsoft.Xna.Framework.Graphics.ResolveTexture2D(device, srcWidth, srcHeight, numMipMaps, d3dPixelFormat);
-                testtarget  = new XFG.RenderTarget2D(device, srcWidth, srcHeight, numMips,d3dPixelFormat);
-               
+                testtarget  = new XFG.RenderTarget2D(device, srcWidth, srcHeight, numMips, Microsoft.Xna.Framework.Graphics.SurfaceFormat.Color);//d3dPixelFormat);
                 CreateDepthStencil();
             }
             else
@@ -562,7 +551,6 @@ namespace Axiom.RenderSystems.Xna
                             srcWidth,
                             srcHeight,
                             numMips, XFG.TextureUsage.None,
-//                            d3dUsage,
                             d3dPixelFormat);
                  
             
@@ -571,15 +559,27 @@ namespace Axiom.RenderSystems.Xna
 
         private void BlitImageToNormalTexture( Image image )
         {
-           //theses bsp lightmaps look very weird
-           //they show up but have to be fixed, need to stretch somehow
-           CopyMemoryToSurface(image.Data, normTexture);
-           texture = normTexture;
-           texture.GenerateMipMaps(GetBestFilterMethod());
+            //CopyMemoryToSurface(image.Data, normTexture);
+            XFG.Color[] cols = new XFG.Color[image.Width*image.Height];
 
+            int i,j = 0;
+            j=i = 0;
+            foreach (XFG.Color col in cols)
+            {
+                cols[j] = new Microsoft.Xna.Framework.Graphics.Color(image.Data[i+2], image.Data[i + 1], image.Data[i],0);
+                i += 3;
+                j++;
+            }
+            normTexture.SetData<XFG.Color>(cols);
+
+            //normTexture.Save("test" + zzz.ToString() + ".jpg", Microsoft.Xna.Framework.Graphics.ImageFileFormat.Jpg);
+            //zzz++;
+
+            texture = normTexture;
+            texture.GenerateMipMaps(GetBestFilterMethod());
         }
 
-      unsafe  private void CopyMemoryToSurface( byte[] buffer, XFG.Texture2D surface )
+        /*unsafe  private void CopyMemoryToSurface( byte[] buffer, XFG.Texture2D surface )
         {
             //throw new Exception("The method or operation is not implemented.");
             // Copy the image from the buffer to the temporary surface.
@@ -691,17 +691,17 @@ namespace Axiom.RenderSystems.Xna
             surface.SetData<XFG.Color>(stream);
 
             //uncomment to check the resulting image conversion  
-            /*string str="test.jpg";
+            string str="test.jpg";
             int i = 0;
             while (System.IO.File.Exists(str))
             {
               str = "test" + i.ToString() + ".jpg";
               i++;
             }
-            surface.Save(str, XFG.ImageFileFormat.Jpg);*/
-        }
+            surface.Save(str, XFG.ImageFileFormat.Jpg);
+        }*/
 
-        private uint ConvertBitPattern( uint srcValue, uint srcBitMask, uint destBitMask )
+       /*private uint ConvertBitPattern( uint srcValue, uint srcBitMask, uint destBitMask )
         {
             // Mask off irrelevant source value bits (if any)
             srcValue = srcValue & srcBitMask;
@@ -787,10 +787,41 @@ namespace Axiom.RenderSystems.Xna
                     throw new AxiomException("Unknown D3D pixel format, this should not happen !!!");
             }
         }
-
+        */
         private XFG.TextureFilter GetBestFilterMethod()
         {
-            // TODO : do it really :)
+            // those MUST be initialized !!!
+            Debug.Assert(device != null);
+            Debug.Assert(texture != null);
+
+            XFG.GraphicsDeviceCapabilities.FilterCaps filterCaps;
+            // Minification filter is used for mipmap generation
+            // Pick the best one supported for this tex type
+            switch (this.TextureType)
+            {
+                case TextureType.OneD: // Same as 2D
+                case TextureType.TwoD:
+                    filterCaps = devCaps.TextureFilterCapabilities;
+                    break;
+                case TextureType.ThreeD:
+                    filterCaps = devCaps.VertexTextureFilterCapabilities;
+                    break;
+                case TextureType.CubeMap:
+                    filterCaps = devCaps.CubeTextureFilterCapabilities;
+                    break;
+                default:
+                    return XFG.TextureFilter.Point;
+            }
+            if (filterCaps.SupportsMinifyGaussianQuad)
+                return XFG.TextureFilter.GaussianQuad;
+            if (filterCaps.SupportsMinifyPyramidalQuad)
+                return XFG.TextureFilter.PyramidalQuad;
+            if (filterCaps.SupportsMinifyAnisotropic)
+                return XFG.TextureFilter.Anisotropic;
+            if (filterCaps.SupportsMinifyLinear)
+                return XFG.TextureFilter.Linear;
+            if (filterCaps.SupportsMinifyPoint)
+                return XFG.TextureFilter.Point;
             return XFG.TextureFilter.Point;
         }
 
@@ -799,7 +830,7 @@ namespace Axiom.RenderSystems.Xna
         /// </summary>
         /// <param name="images"></param>
         /// <returns></returns>
-        private void BlitImagesToCubeTex() //TODO !
+        /*private void BlitImagesToCubeTex() //TODO !
         {
             for ( int i = 0; i < 6; i++ )
             {
@@ -851,7 +882,7 @@ namespace Axiom.RenderSystems.Xna
                 //cubeTexture.AutoGenerateFilterType = D3D.TextureFilter.Point;
                 cubeTexture.GenerateMipMaps(XFG.TextureFilter.Point);
             }
-        }
+        }*/
 
         /// <summary>
         /// 
@@ -881,24 +912,13 @@ namespace Axiom.RenderSystems.Xna
             //seems to work, saving the texture as file shows the render texture as it should be
             XnaTexture texture = (XnaTexture)target;
             
-            //if ( target.TextureType == TextureType.TwoD )
+            if ( target.TextureType == TextureType.TwoD )
             {
-
-                 device.SetRenderTarget(0, null);
+                device.SetRenderTarget(0, null);
                  texture.texture= testtarget.GetTexture();
                  //texture.texture.Save("test.jpg", Microsoft.Xna.Framework.Graphics.ImageFileFormat.Jpg);
-                
-                
-                //resolve backbuffer test
-                /*testresolvetarget = new Microsoft.Xna.Framework.Graphics.ResolveTexture2D(
-                    device, device.DepthStencilBuffer.Width, device.DepthStencilBuffer.Height, 1, Microsoft.Xna.Framework.Graphics.SurfaceFormat.Color);
-                
-                device.ResolveBackBuffer(testresolvetarget);
-                texture.normTexture = testresolvetarget;
-               
-                texture.normTexture.Save("test.jpg", Microsoft.Xna.Framework.Graphics.ImageFileFormat.Jpg); */
             }
-            //else
+            else
             {
                 // TODO: Cube render targets
             }
@@ -921,7 +941,9 @@ namespace Axiom.RenderSystems.Xna
                 case TextureType.CubeMap:
                     CreateCubeTexture();
                     break;
+                case TextureType.ThreeD:
 
+                    break;
                 default:
                     throw new Exception("Unknown texture type!");
             }

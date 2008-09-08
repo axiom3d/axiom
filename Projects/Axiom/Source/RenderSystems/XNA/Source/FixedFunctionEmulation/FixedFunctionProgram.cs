@@ -112,7 +112,6 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                 case GpuProgramType.Fragment:
                     _updateParameter( fragmentProgramUsage.Params, paramName, value, sizeInBytes );
                     break;
-
             }
         }
 
@@ -122,7 +121,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             //try
             {
                 programParameters.AutoAddParamName = true;
-
+                
                 if ( value is Axiom.Math.Matrix4 )
                 {
                     programParameters.SetConstant( programParameters.GetParamIndex( paramName ), (Axiom.Math.Matrix4)value );
@@ -133,7 +132,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                 }
                 else if ( value is Axiom.Math.Vector3 )
                 {
-                    programParameters.SetConstant( programParameters.GetParamIndex( paramName ), (Axiom.Math.Vector3)value );
+                    programParameters.SetConstant(programParameters.GetParamIndex(paramName),((Axiom.Math.Vector3)value));
                 }
                 else if ( value is Axiom.Math.Vector4 )
                 {
@@ -149,7 +148,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                 }
                 else if ( value is float )
                 {
-                    programParameters.SetConstant( programParameters.GetParamIndex( paramName ), new float[] { (float)value } );
+                    programParameters.SetConstant(programParameters.GetParamIndex(paramName), new float[] { (float)value, 0.0f, 0.0f,0.0f});
                 }
                 else
                 {
@@ -177,21 +176,22 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             unsafe
             {
                 _setProgramParameter( type, paramName, value, sizeof( Axiom.Math.Matrix4 ) );
-            }
+            }    
         }
 
         protected void _setProgramParameter( GpuProgramType type, String paramName, Axiom.Core.ColorEx value )
         {
-            //float[] valueAsFloat4 = new float[] { value.r, value.g, value.b, value.a };
-            _setProgramParameter( type, paramName,value/* valueAsFloat4*/, sizeof( float ) * 4 );
+            _setProgramParameter(type, paramName, value, sizeof(float) * 4);
         }
-
-        protected void _setProgramParameter( GpuProgramType type, String paramName, Microsoft.Xna.Framework.Vector3 value )
+        
+        protected void _setProgramParameter(GpuProgramType type, String paramName, Axiom.Math.Vector4 value)
         {
-            float[] valueAsFloat3 = new float[] { value.X, value.Y, value.Z };
-            _setProgramParameter( type, paramName, valueAsFloat3, sizeof( float ) * 3 );
+            _setProgramParameter(type, paramName, value, sizeof(float) * 4);
         }
-
+        protected void _setProgramParameter(GpuProgramType type, String paramName, Axiom.Math.Vector3 value)
+        {
+            _setProgramParameter(type, paramName, value, sizeof(float) * 3);
+        }
 		#endregion Methods
 
 	}
