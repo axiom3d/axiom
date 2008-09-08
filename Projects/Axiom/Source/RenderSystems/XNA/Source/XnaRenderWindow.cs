@@ -359,12 +359,33 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="stream">Stream to write the window contents to.</param>
 		public override void Save( Stream fileName )
 		{
-
 			XFG.ResolveTexture2D tex = new XFG.ResolveTexture2D
-				( device, this.width, this.height, 1, XFG.SurfaceFormat.Color );
+				( device, this.width, this.height, 1, XFG.SurfaceFormat.Bgr32 );
 			device.ResolveBackBuffer( tex );
-			//tex.Save(fileName, XFG.ImageFileFormat.Jpg);
+            //the easy way
+            //tex.Save(fileName, XFG.ImageFileFormat.Jpg);
 
+            //can't copy the byte[] straight,it gives bad image
+            XFG.Color[] cols=new XFG.Color[tex.Width*tex.Height];
+            tex.GetData<XFG.Color>(cols);
+            
+            byte[] bytes = new byte[tex.Width * tex.Height*3];
+            int i = 0;
+            foreach(XFG.Color col in cols)
+            {
+                bytes[i]   = col.R;
+                bytes[i+1] = col.G;
+                bytes[i+2] = col.B;
+                i += 3;
+            }
+            //flip it
+            Image image = Image.FromDynamicImage(bytes, tex.Width, tex.Height, PixelFormat.B8G8R8);
+            image.FlipAroundX();
+            
+            //
+            fileName.Write(image.Data, 0, image.Data.Length);
+
+            
 		}
 
 		private void OnResetDevice( object sender, EventArgs e )

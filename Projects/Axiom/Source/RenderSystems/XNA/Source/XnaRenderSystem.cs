@@ -1210,6 +1210,8 @@ namespace Axiom.RenderSystems.Xna
 			return dest;
 		}
 
+
+        XFG.BasicEffect ef;
 		public override void Render( RenderOperation op )
 		{
 			// don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800)
@@ -1218,11 +1220,8 @@ namespace Axiom.RenderSystems.Xna
 				return;
 			}
 
-			// class base implementation first
-			base.Render( op );
-
-
-
+            // class base implementation first
+            base.Render(op);
 
 
             /*---------------shaders generator part------*/
@@ -1231,9 +1230,6 @@ namespace Axiom.RenderSystems.Xna
 
             if(_device.VertexShader==null || _device.PixelShader==null)
             {
-               //needToUnmapVS = true;
-                //needToUnmapFS = true;
-
                 Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferDeclaration vbd =
                      new Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferDeclaration();
                 List<Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferElement> lvbe
@@ -1267,12 +1263,11 @@ namespace Axiom.RenderSystems.Xna
                         tls.LayerBlendMode.blendType = LayerBlendType.Color;
                         tls.LayerBlendMode.blendFactor = _device.RenderState.BlendFactor.A;
                         tls.LayerBlendMode.operation = LayerBlendOperationEx.Modulate;
-                        tls.LayerBlendMode.source1 = LayerBlendSource.Texture;
-                        tls.LayerBlendMode.source2 = LayerBlendSource.Diffuse;*/
+                        tls.LayerBlendMode.source1 = LayerBlendSource.Diffuse;
+                        tls.LayerBlendMode.source2 = LayerBlendSource.Texture;*/
                         //TextureLayerStateList
                         _fixedFunctionState.TextureLayerStates.Add(tls);
-                        //grrr for the render to texture demo, the render texture definitly shows up here, must be a problem of blending
-                        //texStageDesc[i].tex.Save("tex" + i.ToString() + ".jpg", Microsoft.Xna.Framework.Graphics.ImageFileFormat.Jpg);
+                      
                     }
                 }
 
@@ -1286,9 +1281,8 @@ namespace Axiom.RenderSystems.Xna
                 _fixedFunctionState.GeneralFixedFunctionState = gff;
 
                 //lights
-                if (_ffProgramParameters.Lights!=null)
-                    foreach(Light l in _ffProgramParameters.Lights)
-                        _fixedFunctionState.Lights.Add(l.Type);
+                foreach(Light l in _ffProgramParameters.Lights)
+                    _fixedFunctionState.Lights.Add(l.Type);
    
                 
                 _fixedFunctionProgram = (FixedFunctionEmulation.HLSLFixedFunctionProgram)
@@ -1296,25 +1290,31 @@ namespace Axiom.RenderSystems.Xna
 
                 _fixedFunctionProgram.SetFixedFunctionProgramParameters(_ffProgramParameters);
 
-        
                 //Bind Vertex Program
                 if (_device.VertexShader == null)
                 {
                     _device.VertexShader = ((XnaVertexProgram)_fixedFunctionProgram.VertexProgramUsage.Program.BindingDelegate).VertexShader;
                     BindGpuProgramParameters(GpuProgramType.Vertex, _fixedFunctionProgram.VertexProgramUsage.Params);
                     needToUnmapVS = true;
+                    
                 }
                 // Bind Fragment Program 
                 if (_device.PixelShader == null)
                 {
+
                     _device.PixelShader = ((XnaFragmentProgram)_fixedFunctionProgram.FragmentProgramUsage.Program.BindingDelegate).PixelShader;
                     BindGpuProgramParameters(GpuProgramType.Fragment, _fixedFunctionProgram.FragmentProgramUsage.Params);
                     needToUnmapFS = true;
                 }
+                
+            
+                //clear parameters lists for next frame
+                _fixedFunctionState.Lights.Clear();
+                _fixedFunctionState.TextureLayerStates.Clear();
             }
             /*---------------------------------------------------------------------------------------------------------*/
 
-
+            
 
 			XnaVertexDeclaration vertDecl = (XnaVertexDeclaration)op.vertexData.vertexDeclaration;
 
@@ -1357,13 +1357,11 @@ namespace Axiom.RenderSystems.Xna
 			{
 				XnaHardwareIndexBuffer idxBuffer = (XnaHardwareIndexBuffer)op.indexData.indexBuffer;
 				_device.Indices = idxBuffer.XnaIndexBuffer;
-
-				_device.DrawIndexedPrimitives( primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount, op.indexData.indexStart, primCount );
-
+                _device.DrawIndexedPrimitives(primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount, op.indexData.indexStart, primCount);       
 			}
 			else
 			{
-				// draw vertices without indices
+                // draw vertices without indices
 				_device.DrawPrimitives( primType, op.vertexData.vertexStart, primCount );
 			}
 
@@ -1375,7 +1373,7 @@ namespace Axiom.RenderSystems.Xna
 
 
             /*---------------shaders generator part------*/
-            if (needToUnmapVS)
+            if (needToUnmapVS )
             {
                 UnbindGpuProgram(GpuProgramType.Vertex);
             }
@@ -1385,10 +1383,6 @@ namespace Axiom.RenderSystems.Xna
                 UnbindGpuProgram(GpuProgramType.Fragment);
             }
             /*--------------------------------------------*/
-
-            //clear parameters lists for next frame
-            _fixedFunctionState.Lights.Clear();
-            _fixedFunctionState.TextureLayerStates.Clear();
 
 		}
 
