@@ -532,7 +532,19 @@ namespace Axiom.Fonts
 
 		protected override void unload()
 		{
-			_texture.Unload();
+            if ( _material != null )
+            {
+                MaterialManager.Instance.Remove( _material );
+                _material.Unload();
+                _material = null;
+            }
+
+            if ( _texture != null )
+            {
+                TextureManager.Instance.Remove( _texture );
+                _texture.Unload();
+                _texture = null;
+            }
 		}
 
 		protected override int calculateSize()
