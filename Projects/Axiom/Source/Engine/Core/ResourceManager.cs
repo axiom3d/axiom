@@ -524,9 +524,9 @@ namespace Axiom.Core
 		/// </remarks>
 		public virtual void ReloadAll()
 		{
-			foreach ( Resource res in _resources )
+			foreach ( DictionaryEntry res in _resources )
 			{
-				res.Reload();
+				((Resource)res.Value).Reload();
 			}
 		}
 
