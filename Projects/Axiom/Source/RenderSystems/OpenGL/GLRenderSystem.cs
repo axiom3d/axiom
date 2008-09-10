@@ -735,35 +735,37 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="viewport"></param>
 		public override void SetViewport( Viewport viewport )
 		{
-			if ( activeViewport != viewport || viewport.IsUpdated )
-			{
-				// store this viewport and it's target
-				activeViewport = viewport;
-				RenderTarget target = viewport.Target;
-				_setRenderTarget( target );
+            if ( activeViewport != viewport || viewport.IsUpdated )
+            {
+                // store this viewport and it's target
+                activeViewport = viewport;
+                RenderTarget target = viewport.Target;
+                _setRenderTarget( target );
 
-				int x, y, width, height;
+                int x, y, width, height;
 
-				// set viewport dimensions
-				width = viewport.ActualWidth;
-				height = viewport.ActualHeight;
-				x = viewport.ActualLeft;
-				// make up for the fact that GL's origin starts at the bottom left corner
-				y = activeRenderTarget.Height - viewport.ActualTop - height;
+                // set viewport dimensions
+                width = viewport.ActualWidth;
+                height = viewport.ActualHeight;
+                x = viewport.ActualLeft;
+                y = viewport.ActualTop;
 
-				// enable scissor testing (for viewports)
-				Gl.glEnable( Gl.GL_SCISSOR_TEST );
+                if ( target.RequiresTextureFlipping )
+                {
+                    // make up for the fact that GL's origin starts at the bottom left corner
+                    y = activeRenderTarget.Height - viewport.ActualTop - height;
+                }
 
-				// set the current GL viewport
-				Gl.glViewport( x, y, width, height );
+                // set the current GL viewport
+                Gl.glViewport( x, y, width, height );
 
-				// set the scissor area for the viewport
-				Gl.glScissor( x, y, width, height );
+                // set the scissor area for the viewport
+                Gl.glScissor( x, y, width, height );
 
-				// clear the updated flag
-				viewport.IsUpdated = false;
-			}
-		}
+                // clear the updated flag
+                viewport.IsUpdated = false;
+            }
+        }
 
 		public override void SetStencilBufferParams( CompareFunction function, int refValue, int mask, StencilOperation stencilFailOp, StencilOperation depthFailOp, StencilOperation passOp, bool twoSidedOperation )
 		{
@@ -1421,13 +1423,13 @@ namespace Axiom.RenderSystems.OpenGL
 					useAutoTextureMatrix = true;
 
 					// Set scale and translation matrix for projective textures
-					Matrix4 projectionBias = Matrix4.Zero;
-					projectionBias.m00 = 0.5f;
-					projectionBias.m11 = -0.5f;
-					projectionBias.m22 = 1.0f;
-					projectionBias.m03 = 0.5f;
-					projectionBias.m13 = 0.5f;
-					projectionBias.m33 = 1.0f;
+                    Matrix4 projectionBias = Matrix4.ClipSpace2DToImageSpace;
+                    //projectionBias.m00 = 0.5f;
+                    //projectionBias.m11 = -0.5f;
+                    //projectionBias.m22 = 1.0f;
+                    //projectionBias.m03 = 0.5f;
+                    //projectionBias.m13 = 0.5f;
+                    //projectionBias.m33 = 1.0f;
 
 					projectionBias = projectionBias * frustum.ProjectionMatrix;
 					projectionBias = projectionBias * frustum.ViewMatrix;
@@ -2077,7 +2079,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override ColorEx ConvertColor( int color )
 		{
-			ColorEx colorEx = new ColorEx();
+			ColorEx colorEx;
 			colorEx.a = (float)( ( color >> 24 ) % 256 ) / 255;
 			colorEx.r = (float)( ( color >> 16 ) % 256 ) / 255;
 			colorEx.g = (float)( ( color >> 8 ) % 256 ) / 255;
