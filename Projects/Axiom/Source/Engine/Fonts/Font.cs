@@ -42,9 +42,12 @@ using System.Text;
 
 using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Media;
 
 using ResourceHandle = System.UInt64;
-using Axiom.Media;
+using Real = System.Single;
+using CodePoint = System.UInt32;
+using UVRect = Axiom.Core.RectangleF;
 
 #endregion Namespace Declarations
 
@@ -81,10 +84,29 @@ namespace Axiom.Fonts
 	/// </ogre> 
 	/// 
 	public class Font : Resource, IManualResourceLoader
-	{
-		#region Constants
+    {
 
-		const int BITMAP_HEIGHT = 512;
+        #region Internal Classes and Structures
+
+        public struct GlyphInfo 
+		{
+			public CodePoint codePoint;
+			public UVRect uvRect;
+			public Real aspectRatio;
+
+            public GlyphInfo( CodePoint id, UVRect rect, Real aspect )
+            {
+                codePoint = id;
+                uvRect = rect;
+                aspectRatio = aspect;
+            }
+		}
+
+        #endregion Internal Classes and Structures
+
+        #region Constants
+
+        const int BITMAP_HEIGHT = 512;
 		const int BITMAP_WIDTH = 512;
 		const int START_CHAR = 33;
 		const int END_CHAR = 127;
@@ -92,6 +114,7 @@ namespace Axiom.Fonts
 		#endregion
 
 		#region Fields and Properties
+
 
 		#region FontType Property
 
@@ -264,91 +287,19 @@ namespace Axiom.Fonts
 
 		#endregion AntiAliasColor Property
 
-		// arrays for storing texture and display data for each character
-		#region texCoordU1 Property
+        #region Glyphs Property
 
-		private float[] _texCoordU1 = new float[ END_CHAR - START_CHAR ];
-		protected float[] texCoordU1
-		{
-			get
-			{
-				return _texCoordU1;
-			}
-			set
-			{
-				_texCoordU1 = value;
-			}
-		}
+        Dictionary<CodePoint, GlyphInfo> codePoints = new Dictionary<CodePoint, GlyphInfo>();
 
-		#endregion texCoordU1 Property
+        public IDictionary<CodePoint, GlyphInfo> Glyphs
+        {
+            get
+            {
+                return codePoints;
+            }
+        }
 
-		#region texCoordU2 Property
-
-		private float[] _texCoordU2 = new float[ END_CHAR - START_CHAR ];
-		protected float[] texCoordU2
-		{
-			get
-			{
-				return _texCoordU2;
-			}
-			set
-			{
-				_texCoordU2 = value;
-			}
-		}
-
-		#endregion texCoordU2 Property
-
-		#region texCoordV2 Property
-
-		private float[] _texCoordV1 = new float[ END_CHAR - START_CHAR ];
-		protected float[] texCoordV1
-		{
-			get
-			{
-				return _texCoordV1;
-			}
-			set
-			{
-				_texCoordV1 = value;
-			}
-		}
-
-		#endregion texCoordV2 Property
-
-		#region texCoordV2 Property
-
-		private float[] _texCoordV2 = new float[ END_CHAR - START_CHAR ];
-		protected float[] texCoordV2
-		{
-			get
-			{
-				return _texCoordV2;
-			}
-			set
-			{
-				_texCoordV2 = value;
-			}
-		}
-
-		#endregion texCoordV2 Property
-
-		#region aspectRatio Property
-
-		private float[] _aspectRatio = new float[ END_CHAR - START_CHAR ];
-		protected float[] aspectRatio
-		{
-			get
-			{
-				return _aspectRatio;
-			}
-			set
-			{
-				_aspectRatio = value;
-			}
-		}
-
-		#endregion aspectRatio Property
+        #endregion Glyphs Property
 
 		#region showLines Property
 
@@ -438,31 +389,63 @@ namespace Axiom.Fonts
 		/// <param name="u2"></param>
 		/// <param name="v1"></param>
 		/// <param name="v2"></param>
-		public void GetGlyphTexCoords( char c, out float u1, out float v1, out float u2, out float v2 )
+        [Obsolete( "Use Glyphs property" )]
+        public void GetGlyphTexCoords( CodePoint c, out Real u1, out Real v1, out Real u2, out Real v2 )
 		{
-			int idx = c - START_CHAR;
-			u1 = texCoordU1[ idx ];
-			v1 = texCoordV1[ idx ];
-			u2 = texCoordU2[ idx ];
-			v2 = texCoordV2[ idx ];
+            if ( codePoints.ContainsKey( c ) )
+            {
+                GlyphInfo glyph = codePoints[ c ];
+                u1 = glyph.uvRect.Top;
+                v1 = glyph.uvRect.Left;
+                u2 = glyph.uvRect.Bottom;
+                v2 = glyph.uvRect.Right;
+            }
+            else
+            {
+                u1 = v1 = u2 = v2 = 0.0f;
+            }
 		}
 
+        /// <summary>
+        /// Sets the texture coordinates of a glyph.
+        /// </summary>
+        /// <param name="c"></param>
+        /// <param name="u1"></param>
+        /// <param name="v1"></param>
+        /// <param name="u2"></param>
+        /// <param name="v2"></param>
+        /// <remarks>
+        /// You only need to call this if you're setting up a font loaded from a texture manually.
+        /// </remarks>
+        [Obsolete( "Use Glyphs property" )]
+        public void SetGlyphTexCoords( CodePoint c, Real u1, Real v1, Real u2, Real v2 )
+        {
+            SetGlyphTexCoords( c, u1, v1, u2, v2, ( u2 - u1 ) / ( v2 - v1 ) );
+        }
+
 		/// <summary>
-		/// 
+        /// Sets the texture coordinates of a glyph.
 		/// </summary>
 		/// <param name="c"></param>
 		/// <param name="u1"></param>
 		/// <param name="v1"></param>
 		/// <param name="u2"></param>
 		/// <param name="v2"></param>
-		public void SetGlyphTexCoords( char c, float u1, float v1, float u2, float v2 )
+        /// <remarks>
+        /// You only need to call this if you're setting up a font loaded from a texture manually.
+        /// <para>
+        /// Also sets the aspect ratio (width / height) of this character. textureAspect
+        /// is the width/height of the texture (may be non-square)
+        /// </para>
+        /// </remarks>
+        [Obsolete( "Use Glyphs property" )]
+        public void SetGlyphTexCoords( CodePoint c, Real u1, Real v1, Real u2, Real v2, Real aspect )
 		{
-			int idx = c - START_CHAR;
-			texCoordU1[ idx ] = u1;
-			texCoordV1[ idx ] = v1;
-			texCoordU2[ idx ] = u2;
-			texCoordV2[ idx ] = v2;
-			aspectRatio[ idx ] = ( u2 - u1 ) / ( v2 - v1 );
+            GlyphInfo glyph = new GlyphInfo( c, new UVRect(v1, u1, v2, u2), aspect );
+            if ( codePoints.ContainsKey( c ) )
+                codePoints[ c ] = glyph;
+            else
+                codePoints.Add( c, glyph );
 		}
 
 		/// <summary>
@@ -470,11 +453,15 @@ namespace Axiom.Fonts
 		/// </summary>
 		/// <param name="c"></param>
 		/// <returns></returns>
+        [Obsolete( "Use Glyphs property")]
 		public float GetGlyphAspectRatio( char c )
 		{
-			int idx = c - START_CHAR;
+            if ( codePoints.ContainsKey( c ) )
+            {
+                return codePoints[ c ].aspectRatio;
+            }
 
-			return aspectRatio[ idx ];
+			return 1.0f;
 		}
 
 
