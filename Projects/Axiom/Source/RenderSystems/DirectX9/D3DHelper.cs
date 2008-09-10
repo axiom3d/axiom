@@ -75,7 +75,12 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <returns>A new <code>ColorEx instance.</code></returns>
 		public static ColorEx FromColor( System.Drawing.Color color )
 		{
-			return new ColorEx( (float)color.A / 255.0f, (float)color.R / 255.0f, (float)color.G / 255.0f, (float)color.B / 255.0f );
+            ColorEx retVal;
+            retVal.a = (float)color.A / 255.0f;
+            retVal.r = (float)color.R / 255.0f;
+            retVal.g = (float)color.G / 255.0f;
+            retVal.b = (float)color.B / 255.0f ;
+            return retVal;
 		}
 
 		/// <summary>
