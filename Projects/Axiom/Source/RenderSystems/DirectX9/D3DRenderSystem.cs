@@ -1278,7 +1278,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <returns>ColorEx version of the RenderSystem specific int storage of color</returns>
 		public override ColorEx ConvertColor( int color )
 		{
-			ColorEx colorEx = new ColorEx();
+			ColorEx colorEx;
 			colorEx.a = (float)( ( color >> 24 ) % 256 ) / 255;
 			colorEx.r = (float)( ( color >> 16 ) % 256 ) / 255;
 			colorEx.g = (float)( ( color >> 8 ) % 256 ) / 255;
@@ -1895,7 +1895,10 @@ namespace Axiom.RenderSystems.DirectX9
 			// TODO: Verify byte ordering
 			if ( blendMode.operation == LayerBlendOperationEx.BlendManual )
 			{
-				device.RenderState.TextureFactor = ( new ColorEx( blendMode.blendFactor, 0, 0, 0 ) ).ToARGB();
+                ColorEx blend = ColorEx.Black;
+                blend.a = blendMode.blendFactor;
+
+				device.RenderState.TextureFactor = blend.ToARGB();
 			}
 
 			if ( blendMode.blendType == LayerBlendType.Color )
@@ -1910,16 +1913,17 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			// Now set up sources
-			System.Drawing.Color factor = System.Drawing.Color.FromArgb( device.RenderState.TextureFactor );
-			ColorEx manualD3D = D3DHelper.FromColor( factor );
+			ColorEx manualD3D = D3DHelper.FromColor( System.Drawing.Color.FromArgb( device.RenderState.TextureFactor ) );
 
 			if ( blendMode.blendType == LayerBlendType.Color )
 			{
-				manualD3D = new ColorEx( manualD3D.a, blendMode.colorArg1.r, blendMode.colorArg1.g, blendMode.colorArg1.b );
+                manualD3D.r = blendMode.colorArg1.r;
+                manualD3D.g = blendMode.colorArg1.g;
+                manualD3D.b = blendMode.colorArg1.b;
 			}
 			else if ( blendMode.blendType == LayerBlendType.Alpha )
 			{
-				manualD3D = new ColorEx( blendMode.alphaArg1, manualD3D.r, manualD3D.g, manualD3D.b );
+                manualD3D.a = blendMode.alphaArg1;
 			}
 
 			LayerBlendSource blendSource = blendMode.source1;
@@ -1963,12 +1967,15 @@ namespace Axiom.RenderSystems.DirectX9
 
 				if ( blendMode.blendType == LayerBlendType.Color )
 				{
-					manualD3D = new ColorEx( manualD3D.a, blendMode.colorArg2.r, blendMode.colorArg2.g, blendMode.colorArg2.b );
+                    manualD3D.r = blendMode.colorArg2.r;
+                    manualD3D.g = blendMode.colorArg2.g;
+                    manualD3D.b = blendMode.colorArg2.b;
+
 				}
 				else if ( blendMode.blendType == LayerBlendType.Alpha )
 				{
-					manualD3D = new ColorEx( blendMode.alphaArg2, manualD3D.r, manualD3D.g, manualD3D.b );
-				}
+                    manualD3D.a = blendMode.alphaArg1;
+                }
 			}
 		}
 
