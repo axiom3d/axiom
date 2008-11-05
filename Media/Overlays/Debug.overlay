@@ -139,4 +139,17 @@ Core/DebugOverlay
         height 80
         material Core/AxiomLogo
     }
+    
+    // XNA Logo panel
+    container Panel(Core/XNALogoPanel)
+    {
+        metrics_mode pixels
+        horz_align right
+        vert_align top
+        top 10
+        left -90
+        width 80
+        height 36
+        material Core/XNALogo
+    }
 }

@@ -44,6 +44,7 @@ using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
 #if !(XBOX || XBOX360 || SILVERLIGHT)
 using SWF = System.Windows.Forms;
+using Microsoft.Xna.Framework.Graphics;
 #endif
 
 #endregion Namespace Declarations
@@ -53,7 +54,7 @@ namespace Axiom.RenderSystems.Xna
 	/// <summary>
 	/// The Xna implementation of the RenderWindow class.
 	/// </summary>
-	public class XnaRenderWindow : RenderWindow
+	public class XnaRenderWindow : RenderWindow, IGraphicsDeviceService
 	{
 		#region Fields
 
@@ -416,5 +417,25 @@ namespace Axiom.RenderSystems.Xna
 		}
 
 		#endregion
-	}
+
+        #region IGraphicsDeviceService Members
+
+        public event EventHandler DeviceCreated;
+
+        public event EventHandler DeviceDisposing;
+
+        public event EventHandler DeviceReset;
+
+        public event EventHandler DeviceResetting;
+
+        public GraphicsDevice GraphicsDevice
+        {
+            get
+            {
+                return device;
+            }
+        }
+
+        #endregion
+    }
 }

@@ -41,6 +41,8 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 
+using Axiom.Xna.Content;
+
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
 
@@ -296,6 +298,9 @@ namespace Axiom.RenderSystems.Xna
         private void LoadNormalTexture()
         {
             Debug.Assert( textureType == TextureType.OneD || textureType == TextureType.TwoD );
+
+            AxiomContentManager acm = new AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "");
+            texture = acm.Load<XFG.Texture2D>( name );
 
             Stream stream = TextureManager.FindCommonResourceData(name);
 
@@ -1018,10 +1023,10 @@ namespace Axiom.RenderSystems.Xna
                 case PixelFormat.B8G8R8A8:
                 case PixelFormat.A8R8G8B8:
                     return XFG.SurfaceFormat.Color;
-                case PixelFormat.L4A4:
+                //case PixelFormat.L4A4:
                 case PixelFormat.A4L4:
                     return XFG.SurfaceFormat.LuminanceAlpha8;
-                case PixelFormat.B10G10R10A2:
+                //case PixelFormat.B10G10R10A2:
                 case PixelFormat.A2R10G10B10:
                     return XFG.SurfaceFormat.Bgra1010102;
             }

@@ -59,7 +59,7 @@ namespace Axiom.RenderSystems.Xna
 	/// <summary>
 	/// 
 	/// </summary>
-	public class XnaRenderSystem : RenderSystem
+	public class XnaRenderSystem : RenderSystem, IServiceProvider
 	{
 
 		public static readonly Matrix4 ProjectionClipSpace2DToImageSpacePerspective = new Matrix4(
@@ -1739,5 +1739,18 @@ namespace Axiom.RenderSystems.Xna
 		#endregion Methods
 
 		#endregion Axiom.Core.RenderSystem Implementation
-	}
+
+        #region IServiceProvider Members
+
+        public object GetService( Type serviceType )
+        {
+            if ( serviceType == typeof( Microsoft.Xna.Framework.Graphics.IGraphicsDeviceService ) )
+                return this.renderTargets[0];
+            else
+                return null;
+        }
+
+        #endregion
+
+    }
 }
