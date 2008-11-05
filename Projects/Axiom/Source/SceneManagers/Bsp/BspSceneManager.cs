@@ -952,7 +952,7 @@ namespace Axiom.SceneManagers.Bsp
             targetRenderSystem.ViewMatrix = camInProgress.ViewMatrix;
             targetRenderSystem.ProjectionMatrix = camInProgress.ProjectionMatrix;
 
-            ColorEx bspAmbient = null;
+            ColorEx bspAmbient = ColorEx.White;
 
             if ( level.BspOptions.ambientEnabled )
             {

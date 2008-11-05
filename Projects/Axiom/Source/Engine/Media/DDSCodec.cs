@@ -41,6 +41,8 @@ using System.IO;
 
 #if !(XBOX || XBOX360 || SILVERLIGHT)
 using Tao.DevIl;
+#else
+using Real = System.Single;
 #endif
 
 #endregion Namespace Declarations
@@ -381,62 +383,59 @@ namespace Axiom.Media
 		}
 
 		//clarabie - started this but now completely broken
-		/*
-		unsafe private void UnpackDXTColour(PixelFormat pf, ref DXTColourBlock block,
-			ColorEx* dst)
-		{
-			// Note - we assume all values have already been endian swapped
+        unsafe private void UnpackDXTColour( PixelFormat pf, DXTColourBlock block, ColorEx[] dst )
+        {
+            // Note - we assume all values have already been endian swapped
 
-			// Colour lookup table
-			ColorEx[] derivedColors = new ColorEx[4];
+            // Colour lookup table
+            ColorEx[] derivedColors = new ColorEx[ 4 ];
 
-			if(pf == PixelFormat.DXT1 && block.colour_0 <= block.colour_1)
-			{
-				// 1-bit alpha
-				PixelConverter.UnpackColor(derivedColors[0].r, derivedColors[0].g, derivedColors[0].b, derivedColors[0].a, PixelFormat.R5G6B5, (byte*)block.colour_0);
-				PixelConverter.UnpackColor(derivedColors[1].r, derivedColors[1].g, derivedColors[1].b, derivedColors[1].a, PixelFormat.R5G6B5, block.colour_1);
-				// one intermediate colour, half way between the other two
-				derivedColors[2] = (derivedColors[0] + derivedColors[1]) / 2;
-				// transparent colour
-				derivedColors[3] = new ColorEx(0f, 0f, 0f, 0f);
-			}
-			else
-			{
-				PixelConverter.UnpackColor(derivedColors[0].r, derivedColors[0].g, derivedColors[0].b, derivedColors[0].a, PixelFormat.R5G6B5, (byte*)block.colour_0);
-				PixelConverter.UnpackColor(derivedColors[1].r, derivedColors[1].g, derivedColors[1].b, derivedColors[1].a, PixelFormat.R5G6B5, block.colour_1);
-				// first interpolated colour, 1/3 of the way along
-				derivedColors[2] = (derivedColors[0] * 2 + derivedColors[1]) / 3;
-				// second interpolated colour, 2/3 of the way along
-				derivedColors[3] = (derivedColors[0] + derivedColors[1] * 2) / 3;
-			}
+            if ( pf == PixelFormat.DXT1 && block.colour_0 <= block.colour_1 )
+            {
+                // 1-bit alpha
+                PixelConverter.UnpackColor( out derivedColors[ 0 ].r, out derivedColors[ 0 ].g, out derivedColors[ 0 ].b, out derivedColors[ 0 ].a, PixelFormat.R5G6B5, (byte*)block.colour_0 );
+                PixelConverter.UnpackColor( out derivedColors[ 1 ].r, out derivedColors[ 1 ].g, out derivedColors[ 1 ].b, out derivedColors[ 1 ].a, PixelFormat.R5G6B5, (byte*)block.colour_1 );
+                // one intermediate colour, half way between the other two
+                derivedColors[ 2 ] = ( derivedColors[ 0 ] + derivedColors[ 1 ] ) / 2;
+                // transparent colour
+                derivedColors[ 3 ] = new ColorEx( 0f, 0f, 0f, 0f );
+            }
+            else
+            {
+                PixelConverter.UnpackColor( out derivedColors[ 0 ].r, out derivedColors[ 0 ].g, out derivedColors[ 0 ].b, out derivedColors[ 0 ].a, PixelFormat.R5G6B5, (byte*)block.colour_0 );
+                PixelConverter.UnpackColor( out derivedColors[ 1 ].r, out derivedColors[ 1 ].g, out derivedColors[ 1 ].b, out derivedColors[ 1 ].a, PixelFormat.R5G6B5, (byte*)block.colour_1 );
+                // first interpolated colour, 1/3 of the way along
+                derivedColors[ 2 ] = ( derivedColors[ 0 ] * 2 + derivedColors[ 1 ] ) / 3;
+                // second interpolated colour, 2/3 of the way along
+                derivedColors[ 3 ] = ( derivedColors[ 0 ] + derivedColors[ 1 ] * 2 ) / 3;
+            }
 
-			// Process 4x4 block of texels
-			for(ulong row = 0; row < 4; ++row)
-			{
-				for (ulong x = 0; x < 4; ++x)
-				{
-					// LSB come first
-					byte colIdx = (byte)(block.indexRow[row] >> (x * 2) & 0x3);
-					if (pf == PixelFormat.DXT1)
-					{
-						// Overwrite entire colour
-						dst[(row * 4) + x] = derivedColours[colIdx];
-					}
-					else
-					{
-						// alpha has already been read (alpha precedes colour)
-						ColourValue& col = pCol[(row * 4) + x];
-						col.r = derivedColours[colIdx].r;
-						col.g = derivedColours[colIdx].g;
-						col.b = derivedColours[colIdx].b;
-					}
-				}
+            // Process 4x4 block of texels
+            for ( byte row = 0; row < 4; ++row )
+            {
+                for ( byte x = 0; x < 4; ++x )
+                {
+                    // LSB come first
+                    byte colIdx = (byte)( block.indexRow[ row ] >> ( x * 2 ) & 0x3 );
+                    if ( pf == PixelFormat.DXT1 )
+                    {
+                        // Overwrite entire colour
+                        dst[ ( row * 4 ) + x ] = derivedColors[ colIdx ];
+                    }
+                    else
+                    {
+                        // alpha has already been read (alpha precedes colour)
+                        ColorEx col = dst[ ( row * 4 ) + x ];
+                        col.r = derivedColors[ colIdx ].r;
+                        col.g = derivedColors[ colIdx ].g;
+                        col.b = derivedColors[ colIdx ].b;
+                    }
+                }
 
-			}
+            }
 
 
-		}
-		*/
+        }
 
 		/// <summary>
 		///    Passthrough implementation, no special code needed.
