@@ -188,13 +188,13 @@ namespace Axiom.Media
             {
                 case PixelFormat.A8:
                 case PixelFormat.A4L4:
-                case PixelFormat.L4A4:
+                /*case PixelFormat.L4A4:*/
                 case PixelFormat.A4R4G4B4:
                 case PixelFormat.B4G4R4A4:
                 case PixelFormat.A8R8G8B8:
                 case PixelFormat.B8G8R8A8:
                 case PixelFormat.A2R10G10B10:
-                case PixelFormat.B10G10R10A2:
+                /*case PixelFormat.B10G10R10A2:*/
                     return true;
             }
 
@@ -364,7 +364,7 @@ namespace Axiom.Media
                 case PixelFormat.L8:
                 case PixelFormat.A8:
                 case PixelFormat.A4L4:
-                case PixelFormat.L4A4:
+                /*case PixelFormat.L4A4:*/
                 case PixelFormat.DXT1:
                     return 1;
                 case PixelFormat.R5G6B5:
@@ -382,7 +382,7 @@ namespace Axiom.Media
                 case PixelFormat.A8R8G8B8:
                 case PixelFormat.B8G8R8A8:
                 case PixelFormat.A2R10G10B10:
-                case PixelFormat.B10G10R10A2:
+                /*case PixelFormat.B10G10R10A2:*/
                     return 4;
                 default:
                     return 0xff;
