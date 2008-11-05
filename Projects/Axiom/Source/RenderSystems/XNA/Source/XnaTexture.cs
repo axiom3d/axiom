@@ -297,18 +297,12 @@ namespace Axiom.RenderSystems.Xna
         {
             Debug.Assert( textureType == TextureType.OneD || textureType == TextureType.TwoD );
 
-            Stream stream = TextureManager.Instance.FindResourceData( name );
-          
-            // use D3DX to load the image directly from the stream
-            normTexture = XFG.Texture2D.FromFile(device, stream);
-            // store a ref for the base texture interface
-            texture = normTexture;
-            stream.Position=0;
-            // set the image data attributes
-            XFG.TextureInformation desc = XFG.Texture2D.GetTextureInformation(stream);
-            SetSrcAttributes( desc.Width, desc.Height, 1, ConvertFormat( desc.Format ) );
-            SetFinalAttributes( desc.Width, desc.Height, 1, ConvertFormat( desc.Format ) );
+            Stream stream = TextureManager.FindCommonResourceData(name);
 
+            Image img = Image.FromStream(stream, name.Substring(name.Length - 3, 3));
+            LoadImage(img);
+            stream.Position = 0;
+            SetFinalAttributes(img.Width, img.Height, 1, img.Format);
             isLoaded = true;
         }
 
@@ -319,48 +313,34 @@ namespace Axiom.RenderSystems.Xna
         {
             Debug.Assert( this.TextureType == TextureType.CubeMap, "this.TextureType == TextureType.CubeMap" );
 
-            if ( name.EndsWith( ".dds" ) )
-            {
-                Stream stream = TextureManager.Instance.FindResourceData( name );
+            Image image = new Image();
 
-                // load the cube texture from the image data stream directly
-                cubeTexture = XFG.TextureCube.FromFile(device, stream);
-                //D3D.TextureLoader.FromCubeStream(device, stream);
+            image= Image.FromFile( cubeFaceNames[ 0 ] );
+            SetSrcAttributes( image.Width, image.Height, 1, image.Format );
+            //SetFinalAttributes(image.Width, image.Height, 1, image.Format);
 
-                // store off a base reference
-                texture = cubeTexture;
-
-                // set src and dest attributes to the same, we can't know
-               // D3D.SurfaceDescription desc = cubeTexture.GetLevelDescription( 0 );
-                stream.Position = 0;
-                XFG.TextureInformation desc = XFG.TextureCube.GetTextureInformation(stream);
-                SetSrcAttributes( desc.Width, desc.Height, 1, ConvertFormat( desc.Format ) );
-                SetFinalAttributes( desc.Width, desc.Height, 1, ConvertFormat( desc.Format ) );
-            }
-            else
-            {
-                Image image = new Image();
-
-                image= Image.FromFile( cubeFaceNames[ 0 ] );
-                SetSrcAttributes( image.Width, image.Height, 1, image.Format );
-                //SetFinalAttributes(image.Width, image.Height, 1, image.Format);
-
-                // create the memory for the cube texture
-                CreateCubeTexture();
+            // create the memory for the cube texture
+            CreateCubeTexture();
                 
-                //BlitImagesToCubeTex();
-                for (int i = 0; i < 6; i++)
-                {
-                    Stream stream = TextureManager.FindCommonResourceData(cubeFaceNames[i]);
-                    XFG.Texture2D temp = XFG.Texture2D.FromFile(device, stream);
-                    XFG.Color[] cols = new XFG.Color[temp.Width * temp.Height];
-                    temp.GetData<XFG.Color>(cols);
-                    cubeTexture.SetData<XFG.Color>((Microsoft.Xna.Framework.Graphics.CubeMapFace)i, cols);
-                }
-                cubeTexture.GenerateMipMaps(GetBestFilterMethod());
-              
+            //BlitImagesToCubeTex();
+            for (int face = 0; face < 6; face++)
+            {
+              Stream stream = TextureManager.FindCommonResourceData(cubeFaceNames[face]);
+              Image img = Image.FromStream(stream, cubeFaceNames[face].Substring(cubeFaceNames[face].Length - 3, 3));
+              XFG.Color[] cols = new XFG.Color[img.Width * img.Height];
+              int i, j = 0;
+              j = i = 0;
+              foreach (XFG.Color col in cols)
+              {
+                cols[j] = new Microsoft.Xna.Framework.Graphics.Color(img.Data[i + 2], img.Data[i + 1], img.Data[i], 0);
+                i += 3;
+                j++;
+              }
+              cubeTexture.SetData<XFG.Color>((Microsoft.Xna.Framework.Graphics.CubeMapFace)face, cols);
             }
-
+            
+            cubeTexture.GenerateMipMaps(GetBestFilterMethod());
+            
             isLoaded = true;
         }
 
@@ -369,6 +349,7 @@ namespace Axiom.RenderSystems.Xna
         /// </summary>
         private void LoadVolumeTexture()
         {
+#if !(XBOX || XBOX360 || SILVERLIGHT)
             Debug.Assert( this.TextureType == TextureType.ThreeD );
 
             Stream stream = TextureManager.Instance.FindResourceData( name );
@@ -384,6 +365,7 @@ namespace Axiom.RenderSystems.Xna
             XFG.TextureInformation desc = XFG.Texture3D.GetTextureInformation(stream);
             SetSrcAttributes( desc.Width, desc.Height, desc.Depth, ConvertFormat( desc.Format ) );
             SetFinalAttributes( desc.Width, desc.Height, desc.Depth, ConvertFormat( desc.Format ) );
+#endif
         }
 
         /// <summary>
@@ -488,10 +470,12 @@ namespace Axiom.RenderSystems.Xna
 
             // how many mips to use?  make sure its at least one
             int numMips = ( numMipMaps > 0 ) ? numMipMaps : 1;
+#if !(XBOX || XBOX360 || SILVERLIGHT)
             XFG.TextureCreationParameters texRequire = new XFG.TextureCreationParameters();  
             texRequire.Width = srcWidth;
             texRequire.Height = srcHeight;
-            
+#endif
+ 
 
             if ( devCaps.TextureCapabilities.SupportsMipMap && numMipMaps > 0 )
             {
@@ -505,12 +489,14 @@ namespace Axiom.RenderSystems.Xna
                     if ( usage != TextureUsage.RenderTarget )
                     {
                         // check texture requirements
+#if !(XBOX || XBOX360 || SILVERLIGHT)
                         texRequire.MipLevels = numMips;
                         texRequire.Format = d3dPixelFormat;
                         
                         //D3D.TextureLoader.CheckTextureRequirements( device, d3dUsage, D3D.Pool.SystemMemory, out texRequire );
                         numMips = texRequire.MipLevels;
                         d3dPixelFormat = texRequire.Format;
+#endif
 
                         // we must create a temp. texture in SYSTEM MEMORY if no auto gen. mip map is present
                         tempNormTexture = new XFG.Texture2D(
@@ -531,11 +517,13 @@ namespace Axiom.RenderSystems.Xna
             }
 
             // check texture requirements
+#if !(XBOX || XBOX360 || SILVERLIGHT)
             texRequire.MipLevels = numMips;
             texRequire.Format = d3dPixelFormat;
             //D3D.TextureLoader.CheckTextureRequirements( device, d3dUsage, D3D.Pool.Default, out texRequire );
             //numMips = texRequire.MipLevels;
             d3dPixelFormat = texRequire.Format;// XFG.SurfaceFormat.Color;
+#endif
 
        
 

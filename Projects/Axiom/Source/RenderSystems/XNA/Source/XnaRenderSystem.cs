@@ -38,8 +38,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+#if !(XBOX || XBOX360 || SILVERLIGHT )
 using System.Windows.Forms;
-
+#endif
 using Axiom.Core;
 using Axiom.Configuration;
 using Axiom.Graphics;
@@ -65,13 +66,13 @@ namespace Axiom.RenderSystems.Xna
 		   0.5f, 0, 0, -0.5f,
 		   0, -0.5f, 0, -0.5f,
 		   0, 0, 0, 1f,
-		   0, 0, 0, 1f );
+		   0, 0, 0, 1f);
 
 		public static readonly Matrix4 ProjectionClipSpace2DToImageSpaceOrtho = new Matrix4(
 			-0.5f, 0, 0, -0.5f,
 			0, 0.5f, 0, -0.5f,
 			0, 0, 0, 1f,
-			0, 0, 0, 1f );
+			0, 0, 0, 1f);
 
 		private XFG.GraphicsDevice _device;
 		private XFG.GraphicsDeviceCapabilities _capabilities;
@@ -80,18 +81,20 @@ namespace Axiom.RenderSystems.Xna
 		bool _isFirstFrame = true;
 
 		// stores texture stage info locally for convenience
-		internal XnaTextureStageDescription[] texStageDesc = new XnaTextureStageDescription[ Config.MaxTextureLayers ];
+		internal XnaTextureStageDescription[] texStageDesc = new XnaTextureStageDescription[Config.MaxTextureLayers];
 		protected XnaGpuProgramManager gpuProgramMgr;
 		int numLastStreams = 0;
 
 		// Fixed Function Emulation
+#if !(XBOX || XBOX360 || SILVERLIGHT)
 		FixedFunctionEmulation.ShaderManager _shaderManager = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.ShaderManager();
 		FixedFunctionEmulation.HLSLShaderGenerator _hlslShaderGenerator = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.HLSLShaderGenerator();
 		FixedFunctionEmulation.FixedFunctionState _fixedFunctionState = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.FixedFunctionState();
         FixedFunctionEmulation.HLSLFixedFunctionProgram _fixedFunctionProgram;//= new Axiom.RenderSystems.Xna.FixedFunctionEmulation.HLSLFixedFunctionProgram();
         FixedFunctionEmulation.FixedFunctionPrograms.FixedFunctionProgramsParameters _ffProgramParameters = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.FixedFunctionPrograms.FixedFunctionProgramsParameters();
+#endif
 
-       
+
 		protected int primCount;
 		// protected int renderCount = 0;
 
@@ -101,40 +104,42 @@ namespace Axiom.RenderSystems.Xna
 		{
 			_initConfigOptions();
 			// init the texture stage descriptions
-			for ( int i = 0; i < Config.MaxTextureLayers; i++ )
+			for (int i = 0; i < Config.MaxTextureLayers; i++)
 			{
-				texStageDesc[ i ].autoTexCoordType = TexCoordCalcMethod.None;
-				texStageDesc[ i ].coordIndex = 0;
-				texStageDesc[ i ].texType = TextureType.OneD;
-				texStageDesc[ i ].tex = null;
+				texStageDesc[i].autoTexCoordType = TexCoordCalcMethod.None;
+				texStageDesc[i].coordIndex = 0;
+				texStageDesc[i].texType = TextureType.OneD;
+				texStageDesc[i].tex = null;
 			}
-            _shaderManager.RegisterGenerator(_hlslShaderGenerator);
+#if !(XBOX || XBOX360 || SILVERLIGHT)
+			_shaderManager.RegisterGenerator(_hlslShaderGenerator);
+#endif
 		}
 
 		#endregion Construction and Destruction
 
 		#region Helper Methods
 
-		protected void _setVertexBufferBinding( VertexBufferBinding binding )
+		protected void _setVertexBufferBinding(VertexBufferBinding binding)
 		{
 			IEnumerator e = binding.Bindings;
 			// TODO: Optimize to remove enumeration if possible, although with so few iterations it may never make a difference
-			while ( e.MoveNext() )
+			while (e.MoveNext())
 			{
 				DictionaryEntry entry = (DictionaryEntry)e.Current;
 				XnaHardwareVertexBuffer buffer = (XnaHardwareVertexBuffer)entry.Value;
 
 				short stream = (short)entry.Key;
 
-				_device.Vertices[ stream ].SetSource( buffer.XnaVertexBuffer, 0, buffer.VertexSize );
+				_device.Vertices[stream].SetSource(buffer.XnaVertexBuffer, 0, buffer.VertexSize);
 
 				numLastStreams++;
 			}
 
 			// Unbind any unused sources
-			for ( int i = binding.BindingCount; i < numLastStreams; i++ )
+			for (int i = binding.BindingCount; i < numLastStreams; i++)
 			{
-				_device.Vertices[ i ].SetSource( null, 0, 0 );
+				_device.Vertices[i].SetSource(null, 0, 0);
 			}
 
 			numLastStreams = binding.BindingCount;
@@ -142,43 +147,44 @@ namespace Axiom.RenderSystems.Xna
 
 		private void _initConfigOptions()
 		{
-			ConfigOption optDevice = new ConfigOption( "Rendering Device", "", false );
-			ConfigOption optVideoMode = new ConfigOption( "Video Mode", "800 x 600 @ 32-bit colour", false );
-			ConfigOption optFullScreen = new ConfigOption( "Full Screen", "No", false );
-			ConfigOption optVSync = new ConfigOption( "VSync", "No", false );
-			ConfigOption optAA = new ConfigOption( "Anti aliasing", "None", false );
-			ConfigOption optFPUMode = new ConfigOption( "Floating-point mode", "Fastest", false );
+			ConfigOption optDevice = new ConfigOption("Rendering Device", "", false);
+			ConfigOption optVideoMode = new ConfigOption("Video Mode", "800 x 600 @ 32-bit colour", false);
+			ConfigOption optFullScreen = new ConfigOption("Full Screen", "No", false);
+			ConfigOption optVSync = new ConfigOption("VSync", "No", false);
+			ConfigOption optAA = new ConfigOption("Anti aliasing", "None", false);
+			ConfigOption optFPUMode = new ConfigOption("Floating-point mode", "Fastest", false);
 
 			optDevice.PossibleValues.Clear();
 			Driver driver = XnaHelper.GetDriverInfo();
 
-			foreach ( VideoMode mode in driver.VideoModes )
+			foreach (VideoMode mode in driver.VideoModes)
 			{
-				string query = string.Format( "{0} x {1} @ {2}-bit colour", mode.Width, mode.Height, mode.ColorDepth.ToString() );
+				string query = string.Format("{0} x {1} @ {2}-bit colour", mode.Width, mode.Height, mode.ColorDepth.ToString());
 				// add a new row to the display settings table
-				optVideoMode.PossibleValues.Add( query );
+				optVideoMode.PossibleValues.Add(query);
 			}
 
-			optFullScreen.PossibleValues.Add( "Yes" );
-			optFullScreen.PossibleValues.Add( "No" );
+			optFullScreen.PossibleValues.Add("Yes");
+			optFullScreen.PossibleValues.Add("No");
 
-			optVSync.PossibleValues.Add( "Yes" );
-			optVSync.PossibleValues.Add( "No" );
+			optVSync.PossibleValues.Add("Yes");
+			optVSync.PossibleValues.Add("No");
 
-			optAA.PossibleValues.Add( "None" );
+			optAA.PossibleValues.Add("None");
 
 			optFPUMode.PossibleValues.Clear();
-			optFPUMode.PossibleValues.Add( "Fastest" );
-			optFPUMode.PossibleValues.Add( "Consistent" );
+			optFPUMode.PossibleValues.Add("Fastest");
+			optFPUMode.PossibleValues.Add("Consistent");
 
-			ConfigOptions.Add( optDevice );
-			ConfigOptions.Add( optVideoMode );
-			ConfigOptions.Add( optFullScreen );
-			ConfigOptions.Add( optVSync );
-			ConfigOptions.Add( optAA );
-			ConfigOptions.Add( optFPUMode );
+			ConfigOptions.Add(optDevice);
+			ConfigOptions.Add(optVideoMode);
+			ConfigOptions.Add(optFullScreen);
+			ConfigOptions.Add(optVSync);
+			ConfigOptions.Add(optAA);
+			ConfigOptions.Add(optFPUMode);
 		}
 
+#if !(XBOX || XBOX360 || SILVERLIGHT)
 		private DefaultForm _createDefaultForm( string windowTitle, int top, int left, int width, int height, bool fullScreen )
 		{
 			DefaultForm form = new DefaultForm();
@@ -208,8 +214,9 @@ namespace Axiom.RenderSystems.Xna
 
 			return form;
 		}
+#endif
 
-		private void _checkCapabilities( XFG.GraphicsDevice device )
+		private void _checkCapabilities(XFG.GraphicsDevice device)
 		{
 			// get the number of possible texture units
 			caps.TextureUnitCount = _capabilities.MaxSimultaneousTextures;
@@ -221,65 +228,65 @@ namespace Axiom.RenderSystems.Xna
 			//XNA.TextureInformation surfaceDesc = surface.Description;
 			//surface.Dispose();
 
-			if ( surface.Format == XFG.DepthFormat.Depth24Stencil8 || surface.Format == XFG.DepthFormat.Depth24 )
+			if (surface.Format == XFG.DepthFormat.Depth24Stencil8 || surface.Format == XFG.DepthFormat.Depth24)
 			{
-				caps.SetCap( Capabilities.StencilBuffer );
+				caps.SetCap(Capabilities.StencilBuffer);
 				// always 8 here
 				caps.StencilBufferBits = 8;
 			}
 
 			// some cards, oddly enough, do not support this
-			if ( _capabilities.DeclarationTypeCapabilities.SupportsByte4 )
+			if (_capabilities.DeclarationTypeCapabilities.SupportsByte4)
 			{
-				caps.SetCap( Capabilities.VertexFormatUByte4 );
+				caps.SetCap(Capabilities.VertexFormatUByte4);
 			}
 
 			// Anisotropy?
-			if ( _capabilities.MaxAnisotropy > 1 )
+			if (_capabilities.MaxAnisotropy > 1)
 			{
-				caps.SetCap( Capabilities.AnisotropicFiltering );
+				caps.SetCap(Capabilities.AnisotropicFiltering);
 			}
 
 			// Hardware mipmapping?
-			if ( _capabilities.DriverCapabilities.CanAutoGenerateMipMap )
+			if (_capabilities.DriverCapabilities.CanAutoGenerateMipMap)
 			{
-				caps.SetCap( Capabilities.HardwareMipMaps );
+				caps.SetCap(Capabilities.HardwareMipMaps);
 			}
 
 			// blending between stages is definately supported
-			caps.SetCap( Capabilities.TextureBlending );
-			caps.SetCap( Capabilities.MultiTexturing );
+			caps.SetCap(Capabilities.TextureBlending);
+			caps.SetCap(Capabilities.MultiTexturing);
 
 			// Cube mapping?
-			if ( _capabilities.TextureCapabilities.SupportsCubeMap )
+			if (_capabilities.TextureCapabilities.SupportsCubeMap)
 			{
-				caps.SetCap( Capabilities.CubeMapping );
+				caps.SetCap(Capabilities.CubeMapping);
 			}
 
 			// Texture Compression
 			// We always support compression, Xna will decompress if device does not support
-			caps.SetCap( Capabilities.TextureCompression );
-			caps.SetCap( Capabilities.TextureCompressionDXT );
+			caps.SetCap(Capabilities.TextureCompression);
+			caps.SetCap(Capabilities.TextureCompressionDXT);
 
 			// D3D uses vertex buffers for everything
-			caps.SetCap( Capabilities.VertexBuffer );
+			caps.SetCap(Capabilities.VertexBuffer);
 
 			// Scissor test
-			if ( _capabilities.RasterCapabilities.SupportsScissorTest )
+			if (_capabilities.RasterCapabilities.SupportsScissorTest)
 			{
-				caps.SetCap( Capabilities.ScissorTest );
+				caps.SetCap(Capabilities.ScissorTest);
 			}
 
 			// 2 sided stencil
-			if ( _capabilities.StencilCapabilities.SupportsTwoSided )
+			if (_capabilities.StencilCapabilities.SupportsTwoSided)
 			{
-				caps.SetCap( Capabilities.TwoSidedStencil );
+				caps.SetCap(Capabilities.TwoSidedStencil);
 			}
 
 			// stencil wrap
-			if ( _capabilities.StencilCapabilities.SupportsIncrement && _capabilities.StencilCapabilities.SupportsDecrement )
+			if (_capabilities.StencilCapabilities.SupportsIncrement && _capabilities.StencilCapabilities.SupportsDecrement)
 			{
-				caps.SetCap( Capabilities.StencilWrap );
+				caps.SetCap(Capabilities.StencilWrap);
 			}
 
 			// Hardware Occlusion, none!
@@ -298,9 +305,9 @@ namespace Axiom.RenderSystems.Xna
 				 // TODO: Isn't there a better way to check for D3D occlusion query support?
 			 }*/
 
-			if ( _capabilities.MaxUserClipPlanes > 0 )
+			if (_capabilities.MaxUserClipPlanes > 0)
 			{
-				caps.SetCap( Capabilities.UserClipPlanes );
+				caps.SetCap(Capabilities.UserClipPlanes);
 			}
 
 			int vpMajor = _capabilities.VertexShaderVersion.Major;
@@ -309,7 +316,7 @@ namespace Axiom.RenderSystems.Xna
 			int fpMinor = _capabilities.PixelShaderVersion.Minor;
 
 			// check vertex program caps
-			switch ( vpMajor )
+			switch (vpMajor)
 			{
 				case 1:
 					caps.MaxVertexProgramVersion = "vs_1_1";
@@ -319,7 +326,7 @@ namespace Axiom.RenderSystems.Xna
 					caps.VertexProgramConstantIntCount = 0;
 					break;
 				case 2:
-					if ( vpMinor > 0 )
+					if (vpMinor > 0)
 					{
 						caps.MaxVertexProgramVersion = "vs_2_x";
 					}
@@ -350,29 +357,29 @@ namespace Axiom.RenderSystems.Xna
 			}
 
 			// check for supported vertex program syntax codes
-			if ( vpMajor >= 1 )
+			if (vpMajor >= 1)
 			{
-				caps.SetCap( Capabilities.VertexPrograms );
-				gpuProgramMgr.PushSyntaxCode( "vs_1_1" );
+				caps.SetCap(Capabilities.VertexPrograms);
+				gpuProgramMgr.PushSyntaxCode("vs_1_1");
 			}
-			if ( vpMajor >= 2 )
+			if (vpMajor >= 2)
 			{
-				if ( vpMajor > 2 || vpMinor > 0 )
+				if (vpMajor > 2 || vpMinor > 0)
 				{
-					gpuProgramMgr.PushSyntaxCode( "vs_2_x" );
+					gpuProgramMgr.PushSyntaxCode("vs_2_x");
 				}
-				gpuProgramMgr.PushSyntaxCode( "vs_2_0" );
+				gpuProgramMgr.PushSyntaxCode("vs_2_0");
 			}
-			if ( vpMajor >= 3 )
+			if (vpMajor >= 3)
 			{
-				gpuProgramMgr.PushSyntaxCode( "vs_3_0" );
+				gpuProgramMgr.PushSyntaxCode("vs_3_0");
 			}
 
 			// Fragment Program Caps
-			switch ( fpMajor )
+			switch (fpMajor)
 			{
 				case 1:
-					caps.MaxFragmentProgramVersion = string.Format( "ps_1_{0}", fpMinor );
+					caps.MaxFragmentProgramVersion = string.Format("ps_1_{0}", fpMinor);
 
 					caps.FragmentProgramConstantIntCount = 0;
 					// 8 4d float values, entered as floats but stored as fixed
@@ -380,7 +387,7 @@ namespace Axiom.RenderSystems.Xna
 					break;
 
 				case 2:
-					if ( fpMinor > 0 )
+					if (fpMinor > 0)
 					{
 						caps.MaxFragmentProgramVersion = "ps_2_x";
 						//16 integer params allowed
@@ -400,7 +407,7 @@ namespace Axiom.RenderSystems.Xna
 					break;
 
 				case 3:
-					if ( fpMinor > 0 )
+					if (fpMinor > 0)
 					{
 						caps.MaxFragmentProgramVersion = "ps_3_x";
 					}
@@ -421,42 +428,42 @@ namespace Axiom.RenderSystems.Xna
 			}
 
 			// Fragment Program syntax code checks
-			if ( fpMajor >= 1 )
+			if (fpMajor >= 1)
 			{
-				caps.SetCap( Capabilities.FragmentPrograms );
-				gpuProgramMgr.PushSyntaxCode( "ps_1_1" );
+				caps.SetCap(Capabilities.FragmentPrograms);
+				gpuProgramMgr.PushSyntaxCode("ps_1_1");
 
-				if ( fpMajor > 1 || fpMinor >= 2 )
+				if (fpMajor > 1 || fpMinor >= 2)
 				{
-					gpuProgramMgr.PushSyntaxCode( "ps_1_2" );
+					gpuProgramMgr.PushSyntaxCode("ps_1_2");
 				}
-				if ( fpMajor > 1 || fpMinor >= 3 )
+				if (fpMajor > 1 || fpMinor >= 3)
 				{
-					gpuProgramMgr.PushSyntaxCode( "ps_1_3" );
+					gpuProgramMgr.PushSyntaxCode("ps_1_3");
 				}
-				if ( fpMajor > 1 || fpMinor >= 4 )
+				if (fpMajor > 1 || fpMinor >= 4)
 				{
-					gpuProgramMgr.PushSyntaxCode( "ps_1_4" );
+					gpuProgramMgr.PushSyntaxCode("ps_1_4");
 				}
 			}
 
-			if ( fpMajor >= 2 )
+			if (fpMajor >= 2)
 			{
-				gpuProgramMgr.PushSyntaxCode( "ps_2_0" );
+				gpuProgramMgr.PushSyntaxCode("ps_2_0");
 
-				if ( fpMinor > 0 )
+				if (fpMinor > 0)
 				{
-					gpuProgramMgr.PushSyntaxCode( "ps_2_x" );
+					gpuProgramMgr.PushSyntaxCode("ps_2_x");
 				}
 			}
 
-			if ( fpMajor >= 3 )
+			if (fpMajor >= 3)
 			{
-				gpuProgramMgr.PushSyntaxCode( "ps_3_0" );
+				gpuProgramMgr.PushSyntaxCode("ps_3_0");
 
-				if ( fpMinor > 0 )
+				if (fpMinor > 0)
 				{
-					gpuProgramMgr.PushSyntaxCode( "ps_3_x" );
+					gpuProgramMgr.PushSyntaxCode("ps_3_x");
 				}
 			}
 
@@ -464,28 +471,28 @@ namespace Axiom.RenderSystems.Xna
 			// We have no capability for this, so we have to base this on our
 			// experience and reports from users
 			// Non-vertex program capable hardware does not appear to support it
-			if ( caps.CheckCap( Capabilities.VertexPrograms ) )
+			if (caps.CheckCap(Capabilities.VertexPrograms))
 			{
 				// GeForce4 Ti (and presumably GeForce3) does not
 				// render infinite projection properly, even though it does in GL
 				// So exclude all cards prior to the FX range from doing infinite
 				Driver driver = XnaHelper.GetDriverInfo();
 				XFG.GraphicsAdapter details = null;
-				foreach ( XFG.GraphicsAdapter ga in XFG.GraphicsAdapter.Adapters )
+				foreach (XFG.GraphicsAdapter ga in XFG.GraphicsAdapter.Adapters)
 				{
-					if ( ga.DeviceId == driver.AdapterNumber )
+					if (ga.DeviceId == driver.AdapterNumber)
 					{
 						details = ga;
 						break;
 					}
 				}
 
-				if ( details != null )
+				if (details != null)
 				{
 					// not nVidia or GeForceFX and above
-					if ( details.VendorId != 0x10DE || details.DeviceId >= 0x0301 )
+					if (details.VendorId != 0x10DE || details.DeviceId >= 0x0301)
 					{
-						caps.SetCap( Capabilities.InfiniteFarPlane );
+						caps.SetCap(Capabilities.InfiniteFarPlane);
 					}
 				}
 			}
@@ -500,7 +507,7 @@ namespace Axiom.RenderSystems.Xna
 
 		#region Properties
 
-		private ColorEx _ambientLight=ColorEx.White;
+		private ColorEx _ambientLight = ColorEx.White;
 		public override ColorEx AmbientLight
 		{
 			get
@@ -510,7 +517,9 @@ namespace Axiom.RenderSystems.Xna
 			set
 			{
 				_ambientLight = value;
+#if !(XBOX || XBOX360 || SILVERLIGHT)
 				_ffProgramParameters.LightAmbient = value;
+#endif
 			}
 		}
 
@@ -518,14 +527,14 @@ namespace Axiom.RenderSystems.Xna
 		{
 			get
 			{
-				throw new Exception( "The method or operation is not implemented." );
+				throw new Exception("The method or operation is not implemented.");
 			}
 			set
 			{
 				cullingMode = value;
 
 				bool flip = activeRenderTarget.RequiresTextureFlipping ^ invertVertexWinding;
-				_device.RenderState.CullMode = XnaHelper.Convert( value, flip );
+				_device.RenderState.CullMode = XnaHelper.Convert(value, flip);
 			}
 		}
 
@@ -533,7 +542,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			get
 			{
-				throw new Exception( "The method or operation is not implemented." );
+				throw new Exception("The method or operation is not implemented.");
 			}
 			set
 			{
@@ -545,7 +554,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			get
 			{
-				throw new Exception( "The method or operation is not implemented." );
+				throw new Exception("The method or operation is not implemented.");
 			}
 			set
 			{
@@ -557,11 +566,11 @@ namespace Axiom.RenderSystems.Xna
 		{
 			get
 			{
-				throw new Exception( "The method or operation is not implemented." );
+				throw new Exception("The method or operation is not implemented.");
 			}
 			set
 			{
-				_device.RenderState.DepthBufferFunction = XnaHelper.Convert( value );
+				_device.RenderState.DepthBufferFunction = XnaHelper.Convert(value);
 			}
 		}
 
@@ -569,7 +578,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			get
 			{
-				throw new Exception( "The method or operation is not implemented." );
+				throw new Exception("The method or operation is not implemented.");
 			}
 			set
 			{
@@ -596,7 +605,9 @@ namespace Axiom.RenderSystems.Xna
 			set
 			{
 				_lightingEnabled = value;
+#if !(XBOX || XBOX360 || SILVERLIGHT)
 				_ffProgramParameters.LightingEnabled = value;
+#endif
 			}
 		}
 
@@ -604,11 +615,11 @@ namespace Axiom.RenderSystems.Xna
 		{
 			get
 			{
-				throw new Exception( "The method or operation is not implemented." );
+				throw new Exception("The method or operation is not implemented.");
 			}
 			set
 			{
-				throw new Exception( "The method or operation is not implemented." );
+				throw new Exception("The method or operation is not implemented.");
 			}
 		}
 
@@ -623,14 +634,16 @@ namespace Axiom.RenderSystems.Xna
 			{
 				_projectionMatrix = value;
 
-				XNA.Matrix mat = XnaHelper.Convert( value );
+				XNA.Matrix mat = XnaHelper.Convert(value);
 
-				if ( activeRenderTarget.RequiresTextureFlipping )
+				if (activeRenderTarget.RequiresTextureFlipping)
 				{
 					mat.M22 = -mat.M22;
 				}
 
+#if !(XBOX || XBOX360 || SILVERLIGHT)
 				_ffProgramParameters.ProjectionMatrix = value;
+#endif
 
 			}
 		}
@@ -639,11 +652,11 @@ namespace Axiom.RenderSystems.Xna
 		{
 			get
 			{
-				throw new Exception( "The method or operation is not implemented." );
+				throw new Exception("The method or operation is not implemented.");
 			}
 			set
 			{
-				switch ( value )
+				switch (value)
 				{
 					case SceneDetailLevel.Points:
 						_device.RenderState.FillMode = XFG.FillMode.Point;
@@ -662,7 +675,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			get
 			{
-				throw new Exception( "The method or operation is not implemented." );
+				throw new Exception("The method or operation is not implemented.");
 			}
 			set
 			{
@@ -675,7 +688,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			get
 			{
-				throw new Exception( "The method or operation is not implemented." );
+				throw new Exception("The method or operation is not implemented.");
 			}
 			set
 			{
@@ -688,7 +701,7 @@ namespace Axiom.RenderSystems.Xna
 			get
 			{
 				// Xna considers the origin to be in the center of a pixel ?
-                return -0.5f;
+				return -0.5f;
 			}
 		}
 
@@ -707,8 +720,9 @@ namespace Axiom.RenderSystems.Xna
 				_viewMatrix.m21 = -_viewMatrix.m21;
 				_viewMatrix.m22 = -_viewMatrix.m22;
 				_viewMatrix.m23 = -_viewMatrix.m23;
-
+#if !(XBOX || XBOX360 || SILVERLIGHT)
 				_ffProgramParameters.ViewMatrix = _viewMatrix;
+#endif
 			}
 		}
 
@@ -722,7 +736,9 @@ namespace Axiom.RenderSystems.Xna
 			set
 			{
 				_worldMatrix = value;
+#if !(XBOX || XBOX360 || SILVERLIGHT)
 				_ffProgramParameters.WorldMatrix = _worldMatrix;
+#endif
 			}
 		}
 
@@ -730,7 +746,7 @@ namespace Axiom.RenderSystems.Xna
 
 		#region Methods
 
-		public override void ApplyObliqueDepthProjection( ref Axiom.Math.Matrix4 projMatrix, Axiom.Math.Plane plane, bool forGpuProgram )
+		public override void ApplyObliqueDepthProjection(ref Axiom.Math.Matrix4 projMatrix, Axiom.Math.Plane plane, bool forGpuProgram)
 		{
 			// Thanks to Eric Lenyel for posting this calculation at www.terathon.com
 			// Calculate the clip-space corner point opposite the clipping plane
@@ -742,32 +758,32 @@ namespace Axiom.RenderSystems.Xna
 				Vector4(Math::Sign(plane.normal.x), Math::Sign(plane.normal.y), 1.0f, 1.0f);
 			*/
 			Axiom.Math.Vector4 q = new Axiom.Math.Vector4();
-			q.x = System.Math.Sign( plane.Normal.x ) / projMatrix.m00;
-			q.y = System.Math.Sign( plane.Normal.y ) / projMatrix.m11;
+			q.x = System.Math.Sign(plane.Normal.x) / projMatrix.m00;
+			q.y = System.Math.Sign(plane.Normal.y) / projMatrix.m11;
 			q.z = 1.0f;
 
 			// flip the next bit from Lengyel since we're right-handed
-			if ( forGpuProgram )
+			if (forGpuProgram)
 			{
-				q.w = ( 1.0f - projMatrix.m22 ) / projMatrix.m23;
+				q.w = (1.0f - projMatrix.m22) / projMatrix.m23;
 			}
 			else
 			{
-				q.w = ( 1.0f + projMatrix.m22 ) / projMatrix.m23;
+				q.w = (1.0f + projMatrix.m22) / projMatrix.m23;
 			}
 
 			// Calculate the scaled plane vector
 			Axiom.Math.Vector4 clipPlane4d =
-				new Axiom.Math.Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D );
+				new Axiom.Math.Vector4(plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D);
 
-			Axiom.Math.Vector4 c = clipPlane4d * ( 1.0f / ( clipPlane4d.Dot( q ) ) );
+			Axiom.Math.Vector4 c = clipPlane4d * (1.0f / (clipPlane4d.Dot(q)));
 
 			// Replace the third row of the projection matrix
 			projMatrix.m20 = c.x;
 			projMatrix.m21 = c.y;
 
 			// flip the next bit from Lengyel since we're right-handed
-			if ( forGpuProgram )
+			if (forGpuProgram)
 			{
 				projMatrix.m22 = c.z;
 			}
@@ -782,13 +798,13 @@ namespace Axiom.RenderSystems.Xna
 		public override void BeginFrame()
 		{
 			// clear the device if need be
-			if ( activeViewport.ClearEveryFrame )
+			if (activeViewport.ClearEveryFrame)
 			{
-				ClearFrameBuffer( FrameBuffer.Color | FrameBuffer.Depth, activeViewport.BackgroundColor );
+				ClearFrameBuffer(FrameBuffer.Color | FrameBuffer.Depth, activeViewport.BackgroundColor);
 			}
 			// set initial render states if this is the first frame. we only want to do 
 			//	this once since renderstate changes are expensive
-			if ( _isFirstFrame )
+			if (_isFirstFrame)
 			{
 				// enable alpha blending and specular materials
 				_device.RenderState.AlphaBlendEnable = true;
@@ -798,131 +814,134 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-		public override void BindGpuProgram( GpuProgram program )
+		public override void BindGpuProgram(GpuProgram program)
 		{
-			switch ( program.Type )
+			switch (program.Type)
 			{
 				case GpuProgramType.Vertex:
-					_device.VertexShader = ( (XnaVertexProgram)program ).VertexShader;
+					_device.VertexShader = ((XnaVertexProgram)program).VertexShader;
 					break;
 
 				case GpuProgramType.Fragment:
-					_device.PixelShader = ( (XnaFragmentProgram)program ).PixelShader;
+					_device.PixelShader = ((XnaFragmentProgram)program).PixelShader;
 					break;
 			}
 		}
 
-		public override void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms )
+		public override void BindGpuProgramParameters(GpuProgramType type, GpuProgramParameters parms)
 		{
-			switch ( type )
+			switch (type)
 			{
-			case GpuProgramType.Vertex:
-				if ( parms.HasIntConstants )
-				{
-					for ( int index = 0; index < parms.IntConstantCount; index++ )
+				case GpuProgramType.Vertex:
+					if (parms.HasIntConstants)
 					{
-						GpuProgramParameters.IntConstantEntry entry = parms.GetIntConstant( index );
-
-						if ( entry.isSet )
+						for (int index = 0; index < parms.IntConstantCount; index++)
 						{
-							_device.SetVertexShaderConstant( index, entry.val );
+							GpuProgramParameters.IntConstantEntry entry = parms.GetIntConstant(index);
+
+							if (entry.isSet)
+							{
+								_device.SetVertexShaderConstant(index, entry.val);
+							}
 						}
 					}
-				}
-				if ( parms.HasFloatConstants )
-				{
-					for ( int index = 0; index < parms.FloatConstantCount; index++ )
+					if (parms.HasFloatConstants)
 					{
-						GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
-
-						if ( entry.isSet )
+						for (int index = 0; index < parms.FloatConstantCount; index++)
 						{
-							_device.SetVertexShaderConstant( index, entry.val );
+							GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant(index);
+
+							if (entry.isSet)
+							{
+								_device.SetVertexShaderConstant(index, entry.val);
+							}
 						}
 					}
-				}
-				break;
-			case GpuProgramType.Fragment:
-				if ( parms.HasIntConstants )
-				{
-                    for (int index = 0; index < parms.IntConstantCount; index++)
+					break;
+				case GpuProgramType.Fragment:
+					if (parms.HasIntConstants)
 					{
-						GpuProgramParameters.IntConstantEntry entry = parms.GetIntConstant( index );
-
-						if ( entry.isSet )
+						for (int index = 0; index < parms.IntConstantCount; index++)
 						{
-							_device.SetPixelShaderConstant( index, entry.val );
+							GpuProgramParameters.IntConstantEntry entry = parms.GetIntConstant(index);
+
+							if (entry.isSet)
+							{
+								_device.SetPixelShaderConstant(index, entry.val);
+							}
 						}
 					}
-				}
 
-				if ( parms.HasFloatConstants )
-				{
-					for ( int index = 0; index < parms.FloatConstantCount; index++ )
+					if (parms.HasFloatConstants)
 					{
-						GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant( index );
-
-						if ( entry.isSet )
+						for (int index = 0; index < parms.FloatConstantCount; index++)
 						{
-							_device.SetPixelShaderConstant( index, entry.val );
+							GpuProgramParameters.FloatConstantEntry entry = parms.GetFloatConstant(index);
+
+							if (entry.isSet)
+							{
+								_device.SetPixelShaderConstant(index, entry.val);
+							}
 						}
 					}
-				}
-				break;
+					break;
 			}
 		}
 
-		public override void ClearFrameBuffer( FrameBuffer buffers, ColorEx color, float depth, int stencil )
+		public override void ClearFrameBuffer(FrameBuffer buffers, ColorEx color, float depth, int stencil)
 		{
 			XFG.ClearOptions flags = 0; //ClearFlags 
 
-			if ( ( buffers & FrameBuffer.Color ) > 0 )
+			if ((buffers & FrameBuffer.Color) > 0)
 			{
 				flags |= XFG.ClearOptions.Target;
 			}
-			if ( ( buffers & FrameBuffer.Depth ) > 0 )
+			if ((buffers & FrameBuffer.Depth) > 0)
 			{
 				flags |= XFG.ClearOptions.DepthBuffer;
 			}
 			// Only try to clear the stencil buffer if supported
-			if ( ( buffers & FrameBuffer.Stencil ) > 0
-				&& caps.CheckCap( Capabilities.StencilBuffer ) )
+			if ((buffers & FrameBuffer.Stencil) > 0
+				&& caps.CheckCap(Capabilities.StencilBuffer))
 			{
 
 				flags |= XFG.ClearOptions.Stencil;
 			}
-			XFG.Color col = new XFG.Color( (byte)( color.r * 255.0f ), (byte)( color.g * 255.0f ), (byte)( color.b * 255.0f ), (byte)( color.a * 255.0f ) );
+			XFG.Color col = new XFG.Color((byte)(color.r * 255.0f), (byte)(color.g * 255.0f), (byte)(color.b * 255.0f), (byte)(color.a * 255.0f));
 			// color.ToXnaColor();
 
 			// clear the device using the specified params
-			_device.Clear( flags, col, depth, stencil );
+			_device.Clear(flags, col, depth, stencil);
 		}
 
-		public override int ConvertColor( ColorEx color )
+		public override int ConvertColor(ColorEx color)
 		{
 			return color.ToARGB();
 		}
 
-		public override RenderTexture CreateRenderTexture( string name, int width, int height )
+		public override RenderTexture CreateRenderTexture(string name, int width, int height)
 		{
-			XnaRenderTexture renderTexture = new XnaRenderTexture( name, width, height );
-			AttachRenderTarget( renderTexture );
+			XnaRenderTexture renderTexture = new XnaRenderTexture(name, width, height);
+			AttachRenderTarget(renderTexture);
 			return renderTexture;
 		}
 
-		public override RenderWindow CreateRenderWindow( string name, int width, int height, int colorDepth, bool isFullscreen, int left, int top, bool depthBuffer, bool vsync, object target )
+		public override RenderWindow CreateRenderWindow(string name, int width, int height, int colorDepth, bool isFullscreen, int left, int top, bool depthBuffer, bool vsync, object target)
 		{
-			if ( _device == null )
+			if (_device == null)
 			{
-				if ( isFullscreen )
+#if !(XBOX || XBOX360 || SILVERLIGHT )
+				if (isFullscreen)
 				{
-					_device = InitDevice( isFullscreen, depthBuffer, width, height, colorDepth, (Control)target );
+					_device = InitDevice(isFullscreen, depthBuffer, width, height, colorDepth, (Control)target);
 				}
 				else
 				{
-					_device = InitDevice( isFullscreen, depthBuffer, width, height, colorDepth, new Control() );
+					_device = InitDevice(isFullscreen, depthBuffer, width, height, colorDepth, new Control());
 				}
-
+#else
+				_device = InitDevice(isFullscreen, depthBuffer, width, height, colorDepth, new IntPtr());
+#endif
 			}
 
 			RenderWindow window = new XnaRenderWindow();
@@ -930,20 +949,26 @@ namespace Axiom.RenderSystems.Xna
 			window.Handle = target;
 
 			// create the window
-			window.Create( name, width, height, colorDepth, isFullscreen, left, top, depthBuffer, (Control)target, _device );
+			window.Create(name, width, height, colorDepth, isFullscreen, left, top, depthBuffer, target, _device);
 
 			// add the new render target
-			AttachRenderTarget( window );
+			AttachRenderTarget(window);
 
 			return window;
 		}
 
-		private XFG.GraphicsDevice InitDevice( bool isFullscreen, bool depthBuffer, int width, int height, int colorDepth, Control target )
+		private XFG.GraphicsDevice InitDevice(bool isFullscreen, bool depthBuffer, int width, int height, int colorDepth, object target)
 		{
-			if ( _device != null )
+			if (_device != null)
 			{
 				return _device;
 			}
+
+			IntPtr handle = new IntPtr(0);
+
+#if !(XBOX || XBOX360 || SILVERLIGHT )
+			handle = ((Control)target).Handle;
+#endif
 
 			XFG.GraphicsDevice newDevice;
 
@@ -955,7 +980,7 @@ namespace Axiom.RenderSystems.Xna
 			presentParams.BackBufferCount = 1;
 			presentParams.EnableAutoDepthStencil = depthBuffer;
 
-			if ( isFullscreen )
+			if (isFullscreen)
 			{
 				presentParams.BackBufferWidth = width;
 				presentParams.BackBufferHeight = height;
@@ -972,7 +997,7 @@ namespace Axiom.RenderSystems.Xna
 			presentParams.PresentationInterval = XFG.PresentInterval.Immediate;
 
 			// supports 16 and 32 bit color
-			if ( colorDepth == 16 )
+			if (colorDepth == 16)
 			{
 				presentParams.BackBufferFormat = XFG.SurfaceFormat.Bgr565;
 			}
@@ -981,26 +1006,26 @@ namespace Axiom.RenderSystems.Xna
 				presentParams.BackBufferFormat = XFG.SurfaceFormat.Color;
 			}
 
-			if ( colorDepth > 16 )
+			if (colorDepth > 16)
 			{
 				// check for 24 bit Z buffer with 8 bit stencil (optimal choice)
-				if ( !XFG.GraphicsAdapter.DefaultAdapter.CheckDeviceFormat(
+				if (!XFG.GraphicsAdapter.DefaultAdapter.CheckDeviceFormat(
 					 XFG.DeviceType.Hardware,
 					 presentParams.BackBufferFormat,
 					 XFG.TextureUsage.None,
 					 XFG.QueryUsages.None,
 					 XFG.ResourceType.DepthStencilBuffer,
-					 XFG.DepthFormat.Depth24Stencil8 ) )
+					 XFG.DepthFormat.Depth24Stencil8))
 				{
 					// doh, check for 32 bit Z buffer then
 
-					if ( !XFG.GraphicsAdapter.DefaultAdapter.CheckDeviceFormat(
+					if (!XFG.GraphicsAdapter.DefaultAdapter.CheckDeviceFormat(
 						 XFG.DeviceType.Hardware,
 						 presentParams.BackBufferFormat,
 						 XFG.TextureUsage.None,
 						 XFG.QueryUsages.None,
 						 XFG.ResourceType.DepthStencilBuffer,
-						 XFG.DepthFormat.Depth32 ) )
+						 XFG.DepthFormat.Depth32))
 					{
 						// float doh, just use 16 bit Z buffer
 						presentParams.AutoDepthStencilFormat = XFG.DepthFormat.Depth16;
@@ -1014,11 +1039,11 @@ namespace Axiom.RenderSystems.Xna
 				else
 				{
 					// <flair>Woooooooooo!</flair>
-					if ( !XFG.GraphicsAdapter.DefaultAdapter.CheckDepthStencilMatch(
+					if (!XFG.GraphicsAdapter.DefaultAdapter.CheckDepthStencilMatch(
 							XFG.DeviceType.Hardware,
 							presentParams.BackBufferFormat,
 							presentParams.BackBufferFormat,
-							XFG.DepthFormat.Depth24Stencil8 ) )
+							XFG.DepthFormat.Depth24Stencil8))
 					{
 						presentParams.AutoDepthStencilFormat = XFG.DepthFormat.Depth24Stencil8;
 					}
@@ -1038,14 +1063,14 @@ namespace Axiom.RenderSystems.Xna
 			try
 			{
 				// hardware vertex processing
-				newDevice = new XFG.GraphicsDevice (
+				newDevice = new XFG.GraphicsDevice(
 													 XFG.GraphicsAdapter.DefaultAdapter,
 													 XFG.DeviceType.Hardware,
-													 target.Handle,
-													 presentParams 
+						   handle,
+													 presentParams
 													);
 			}
-			catch ( Exception )
+			catch (Exception)
 			{
 				try
 				{
@@ -1053,19 +1078,19 @@ namespace Axiom.RenderSystems.Xna
 					newDevice = new XFG.GraphicsDevice(
 														XFG.GraphicsAdapter.DefaultAdapter,
 														XFG.DeviceType.Hardware,
-														target.Handle,
-														presentParams 
+							handle,
+														presentParams
 													   );
 				}
-				catch ( XFG.DeviceNotSupportedException )
+				catch (XFG.DeviceNotSupportedException)
 				{
 					// what the...ok, how bout software vertex procssing.  if this fails, then I don't even know how they are seeing
 					// anything at all since they obviously don't have a video card installed
 					newDevice = new XFG.GraphicsDevice(
 														XFG.GraphicsAdapter.DefaultAdapter,
 														XFG.DeviceType.Hardware,
-														target.Handle,
-														presentParams 
+							handle,
+														presentParams
 													   );
 				}
 			}
@@ -1075,14 +1100,14 @@ namespace Axiom.RenderSystems.Xna
 			_capabilities = newDevice.GraphicsDeviceCapabilities;
 
 			// by creating our texture manager, singleton TextureManager will hold our implementation
-			textureMgr = new XnaTextureManager( newDevice );
+			textureMgr = new XnaTextureManager(newDevice);
 
 			// by creating our Gpu program manager, singleton GpuProgramManager will hold our implementation
-			gpuProgramMgr = new XnaGpuProgramManager( newDevice );
+			gpuProgramMgr = new XnaGpuProgramManager(newDevice);
 
 			// intializes the HardwareBufferManager singleton
-			hardwareBufferManager = new XnaHardwareBufferManager( newDevice );
-			_checkCapabilities( newDevice );
+			hardwareBufferManager = new XnaHardwareBufferManager(newDevice);
+			_checkCapabilities(newDevice);
 
 
 			return newDevice;
@@ -1090,7 +1115,7 @@ namespace Axiom.RenderSystems.Xna
 
 		public override IHardwareOcclusionQuery CreateHardwareOcclusionQuery()
 		{
-			return new XnaHardwareOcclusionQuery( _device );
+			return new XnaHardwareOcclusionQuery(_device);
 		}
 
 		public override void EndFrame()
@@ -1098,71 +1123,77 @@ namespace Axiom.RenderSystems.Xna
 			// end the scene
 		}
 
-		public override RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
+		public override RenderWindow Initialize(bool autoCreateWindow, string windowTitle)
 		{
 			RenderWindow renderWindow = null;
 
-			if ( autoCreateWindow )
+			if (autoCreateWindow)
 			{
 				int width = 800;
 				int height = 600;
 				int bpp = 32;
 				bool fullScreen = false;
 
-				ConfigOption optVM = ConfigOptions[ "Video Mode" ];
+				ConfigOption optVM = ConfigOptions["Video Mode"];
 				string vm = optVM.Value;
-				width = int.Parse( vm.Substring( 0, vm.IndexOf( "x" ) ) );
-				height = int.Parse( vm.Substring( vm.IndexOf( "x" ) + 1, vm.IndexOf( "@" ) - ( vm.IndexOf( "x" ) + 1 ) ) );
-				bpp = int.Parse( vm.Substring( vm.IndexOf( "@" ) + 1, vm.IndexOf( "-" ) - ( vm.IndexOf( "@" ) + 1 ) ) );
+				width = int.Parse(vm.Substring(0, vm.IndexOf("x")));
+				height = int.Parse(vm.Substring(vm.IndexOf("x") + 1, vm.IndexOf("@") - (vm.IndexOf("x") + 1)));
+				bpp = int.Parse(vm.Substring(vm.IndexOf("@") + 1, vm.IndexOf("-") - (vm.IndexOf("@") + 1)));
 
 				//fullScreen = true;// (ConfigOptions["Full Screen"].Value == "Yes");
 
+				object target = null;
+
 				// create a default form window
-				DefaultForm newWindow = _createDefaultForm( windowTitle, 0, 0, width, height, fullScreen );
+#if !(XBOX || XBOX360 || SILVERLIGHT )
+				DefaultForm newWindow = _createDefaultForm(windowTitle, 0, 0, width, height, fullScreen);
+				target = newWindow;
+#endif
 
 				// create the render window
-				renderWindow = CreateRenderWindow( "Main Window", width, height, bpp, fullScreen, 0, 0, true, false, newWindow );
+				renderWindow = CreateRenderWindow("Main Window", width, height, bpp, fullScreen, 0, 0, true, false, target);
 
 				// use W buffer when in 16 bit color mode
 				//useWBuffer = (renderWindow.ColorDepth == 16);
-
+#if !(XBOX || XBOX360 || SILVERLIGHT )
 				newWindow.Target.Visible = false;
 
 				newWindow.Show();
 
 				// set the default form's renderwindow so it can access it internally
 				newWindow.RenderWindow = renderWindow;
+#endif
 			}
 
 			return renderWindow;
 		}
 
-		public override Axiom.Math.Matrix4 MakeOrthoMatrix( float fov, float aspectRatio, float near, float far, bool forGpuPrograms )
+		public override Axiom.Math.Matrix4 MakeOrthoMatrix(float fov, float aspectRatio, float near, float far, bool forGpuPrograms)
 		{
-			float thetaY = Utility.DegreesToRadians( fov / 2.0f );
-			float tanThetaY = Utility.Tan( thetaY );
+			float thetaY = Utility.DegreesToRadians(fov / 2.0f);
+			float tanThetaY = Utility.Tan(thetaY);
 			float tanThetaX = tanThetaY * aspectRatio;
 
 			float halfW = tanThetaX * near;
 			float halfH = tanThetaY * near;
 
-			float w = 1.0f / ( halfW );
-			float h = 1.0f / ( halfH );
+			float w = 1.0f / (halfW);
+			float h = 1.0f / (halfH);
 			float q = 0;
 
-			if ( far != 0 )
+			if (far != 0)
 			{
-				q = 1.0f / ( far - near );
+				q = 1.0f / (far - near);
 			}
 
 			Matrix4 dest = Matrix4.Zero;
 			dest.m00 = w;
 			dest.m11 = h;
 			dest.m22 = q;
-			dest.m23 = -near / ( far - near );
+			dest.m23 = -near / (far - near);
 			dest.m33 = 1;
 
-			if ( forGpuPrograms )
+			if (forGpuPrograms)
 			{
 				dest.m22 = -dest.m22;
 			}
@@ -1170,22 +1201,22 @@ namespace Axiom.RenderSystems.Xna
 			return dest;
 		}
 
-		public override Axiom.Math.Matrix4 MakeProjectionMatrix( float fov, float aspectRatio, float near, float far, bool forGpuProgram )
+		public override Axiom.Math.Matrix4 MakeProjectionMatrix(float fov, float aspectRatio, float near, float far, bool forGpuProgram)
 		{
-			float theta = Utility.DegreesToRadians( fov * 0.5f );
-			float h = 1 / Utility.Tan( theta );
+			float theta = Utility.DegreesToRadians(fov * 0.5f);
+			float h = 1 / Utility.Tan(theta);
 			float w = h / aspectRatio;
 			float q = 0;
 			float qn = 0;
 
-			if ( far == 0 )
+			if (far == 0)
 			{
 				q = 1 - Frustum.InfiniteFarPlaneAdjust;
-				qn = near * ( Frustum.InfiniteFarPlaneAdjust - 1 );
+				qn = near * (Frustum.InfiniteFarPlaneAdjust - 1);
 			}
 			else
 			{
-				q = far / ( far - near );
+				q = far / (far - near);
 				qn = -q * near;
 			}
 
@@ -1194,7 +1225,7 @@ namespace Axiom.RenderSystems.Xna
 			dest.m00 = w;
 			dest.m11 = h;
 
-			if ( forGpuProgram )
+			if (forGpuProgram)
 			{
 				dest.m22 = -q;
 				dest.m32 = -1.0f;
@@ -1211,120 +1242,123 @@ namespace Axiom.RenderSystems.Xna
 		}
 
 
-        XFG.BasicEffect ef;
-		public override void Render( RenderOperation op )
+		XFG.BasicEffect ef;
+		public override void Render(RenderOperation op)
 		{
 			// don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800)
-			if ( op.vertexData.vertexCount == 0 )
+			if (op.vertexData.vertexCount == 0)
 			{
 				return;
 			}
 
-            // class base implementation first
-            base.Render(op);
+			// class base implementation first
+			base.Render(op);
 
 
-            /*---------------shaders generator part------*/
-            bool needToUnmapVS = false;
-            bool needToUnmapFS = false;
+			/*---------------shaders generator part------*/
+#if !(XBOX || XBOX360 || SILVERLIGHT )
 
-            if(_device.VertexShader==null || _device.PixelShader==null)
-            {
-                Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferDeclaration vbd =
-                     new Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferDeclaration();
-                List<Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferElement> lvbe
-                    = new List<Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferElement>(op.vertexData.vertexDeclaration.ElementCount);
+			bool needToUnmapVS = false;
+			bool needToUnmapFS = false;
 
-                for (int i = 0; i < op.vertexData.vertexDeclaration.ElementCount; i++)
-                {
-                    Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferElement element = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferElement();
-                    element.VertexElementIndex = (ushort)op.vertexData.vertexDeclaration[i].Index;
-                    element.VertexElementSemantic = op.vertexData.vertexDeclaration[i].Semantic;
-                    element.VertexElementType = op.vertexData.vertexDeclaration[i].Type;
-                    lvbe.Add(element);
-                }
-                vbd.VertexBufferElements = lvbe;
+			if (_device.VertexShader == null || _device.PixelShader == null)
+			{
 
-                //_fixedFunctionState = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.FixedFunctionState();
-                for (int i = 0; i < Config.MaxTextureLayers; i++)
-                {
-                    Axiom.RenderSystems.Xna.FixedFunctionEmulation.TextureLayerState tls
-                                            = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.TextureLayerState();
-                   
-                    if (texStageDesc[i].tex != null)
-                    {
-                        tls.TextureType = texStageDesc[i].texType;
-                        tls.TexCoordCalcMethod = texStageDesc[i].autoTexCoordType;
-                        tls.CoordIndex = texStageDesc[i].coordIndex;
+				Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferDeclaration vbd =
+					 new Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferDeclaration();
+				List<Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferElement> lvbe
+					= new List<Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferElement>(op.vertexData.vertexDeclaration.ElementCount);
 
-                        tls.LayerBlendMode = texStageDesc[i].layerBlendMode;
-                        //uncomment this to see the BSP demo lightmaps to check
-                        /*tls.LayerBlendMode = new LayerBlendModeEx();
-                        tls.LayerBlendMode.blendType = LayerBlendType.Color;
-                        tls.LayerBlendMode.blendFactor = _device.RenderState.BlendFactor.A;
-                        tls.LayerBlendMode.operation = LayerBlendOperationEx.Modulate;
-                        tls.LayerBlendMode.source1 = LayerBlendSource.Diffuse;
-                        tls.LayerBlendMode.source2 = LayerBlendSource.Texture;*/
-                        //TextureLayerStateList
-                        _fixedFunctionState.TextureLayerStates.Add(tls);
-                      
-                    }
-                }
+				for (int i = 0; i < op.vertexData.vertexDeclaration.ElementCount; i++)
+				{
+					Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferElement element = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferElement();
+					element.VertexElementIndex = (ushort)op.vertexData.vertexDeclaration[i].Index;
+					element.VertexElementSemantic = op.vertexData.vertexDeclaration[i].Semantic;
+					element.VertexElementType = op.vertexData.vertexDeclaration[i].Type;
+					lvbe.Add(element);
+				}
+				vbd.VertexBufferElements = lvbe;
 
-  
-                Axiom.RenderSystems.Xna.FixedFunctionEmulation.GeneralFixedFunctionState gff;
-                gff = _fixedFunctionState.GeneralFixedFunctionState;
+				//_fixedFunctionState = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.FixedFunctionState();
+				for (int i = 0; i < Config.MaxTextureLayers; i++)
+				{
+					Axiom.RenderSystems.Xna.FixedFunctionEmulation.TextureLayerState tls
+											= new Axiom.RenderSystems.Xna.FixedFunctionEmulation.TextureLayerState();
+
+					if (texStageDesc[i].tex != null)
+					{
+						tls.TextureType = texStageDesc[i].texType;
+						tls.TexCoordCalcMethod = texStageDesc[i].autoTexCoordType;
+						tls.CoordIndex = texStageDesc[i].coordIndex;
+
+						tls.LayerBlendMode = texStageDesc[i].layerBlendMode;
+						//uncomment this to see the BSP demo lightmaps to check
+						/*tls.LayerBlendMode = new LayerBlendModeEx();
+						tls.LayerBlendMode.blendType = LayerBlendType.Color;
+						tls.LayerBlendMode.blendFactor = _device.RenderState.BlendFactor.A;
+						tls.LayerBlendMode.operation = LayerBlendOperationEx.Modulate;
+						tls.LayerBlendMode.source1 = LayerBlendSource.Diffuse;
+						tls.LayerBlendMode.source2 = LayerBlendSource.Texture;*/
+						//TextureLayerStateList
+						_fixedFunctionState.TextureLayerStates.Add(tls);
+
+					}
+				}
 
 
-                gff.EnableLighting = _ffProgramParameters.LightingEnabled;//= true;
-                gff.FogMode = _ffProgramParameters.FogMode;
-                _fixedFunctionState.GeneralFixedFunctionState = gff;
+				Axiom.RenderSystems.Xna.FixedFunctionEmulation.GeneralFixedFunctionState gff;
+				gff = _fixedFunctionState.GeneralFixedFunctionState;
 
-                //lights
-                foreach(Light l in _ffProgramParameters.Lights)
-                    _fixedFunctionState.Lights.Add(l.Type);
-   
-                
-                _fixedFunctionProgram = (FixedFunctionEmulation.HLSLFixedFunctionProgram)
-                                                         _shaderManager.GetShaderPrograms("hlsl", vbd, _fixedFunctionState);
 
-                _fixedFunctionProgram.SetFixedFunctionProgramParameters(_ffProgramParameters);
+				gff.EnableLighting = _ffProgramParameters.LightingEnabled;//= true;
+				gff.FogMode = _ffProgramParameters.FogMode;
+				_fixedFunctionState.GeneralFixedFunctionState = gff;
 
-                //Bind Vertex Program
-                if (_device.VertexShader == null)
-                {
-                    _device.VertexShader = ((XnaVertexProgram)_fixedFunctionProgram.VertexProgramUsage.Program.BindingDelegate).VertexShader;
-                    BindGpuProgramParameters(GpuProgramType.Vertex, _fixedFunctionProgram.VertexProgramUsage.Params);
-                    needToUnmapVS = true;
-                    
-                }
-                // Bind Fragment Program 
-                if (_device.PixelShader == null)
-                {
+				//lights
+				foreach (Light l in _ffProgramParameters.Lights)
+					_fixedFunctionState.Lights.Add(l.Type);
 
-                    _device.PixelShader = ((XnaFragmentProgram)_fixedFunctionProgram.FragmentProgramUsage.Program.BindingDelegate).PixelShader;
-                    BindGpuProgramParameters(GpuProgramType.Fragment, _fixedFunctionProgram.FragmentProgramUsage.Params);
-                    needToUnmapFS = true;
-                }
-                
-            
-                //clear parameters lists for next frame
-                _fixedFunctionState.Lights.Clear();
-                _fixedFunctionState.TextureLayerStates.Clear();
-            }
-            /*---------------------------------------------------------------------------------------------------------*/
 
-            
+				_fixedFunctionProgram = (FixedFunctionEmulation.HLSLFixedFunctionProgram)
+														 _shaderManager.GetShaderPrograms("hlsl", vbd, _fixedFunctionState);
+
+				_fixedFunctionProgram.SetFixedFunctionProgramParameters(_ffProgramParameters);
+
+				//Bind Vertex Program
+				if (_device.VertexShader == null)
+				{
+					_device.VertexShader = ((XnaVertexProgram)_fixedFunctionProgram.VertexProgramUsage.Program.BindingDelegate).VertexShader;
+					BindGpuProgramParameters(GpuProgramType.Vertex, _fixedFunctionProgram.VertexProgramUsage.Params);
+					needToUnmapVS = true;
+
+				}
+				// Bind Fragment Program 
+				if (_device.PixelShader == null)
+				{
+
+					_device.PixelShader = ((XnaFragmentProgram)_fixedFunctionProgram.FragmentProgramUsage.Program.BindingDelegate).PixelShader;
+					BindGpuProgramParameters(GpuProgramType.Fragment, _fixedFunctionProgram.FragmentProgramUsage.Params);
+					needToUnmapFS = true;
+				}
+
+
+				//clear parameters lists for next frame
+				_fixedFunctionState.Lights.Clear();
+				_fixedFunctionState.TextureLayerStates.Clear();
+			}
+			/*---------------------------------------------------------------------------------------------------------*/
+#endif
+
 
 			XnaVertexDeclaration vertDecl = (XnaVertexDeclaration)op.vertexData.vertexDeclaration;
 
 			// set the vertex declaration and buffer binding
 			_device.VertexDeclaration = vertDecl.XnaVertexDecl;
-			_setVertexBufferBinding( op.vertexData.vertexBufferBinding );
-            
+			_setVertexBufferBinding(op.vertexData.vertexBufferBinding);
+
 			XFG.PrimitiveType primType = 0;
 
-			switch ( op.operationType )
+			switch (op.operationType)
 			{
 				case OperationType.PointList:
 					primType = XFG.PrimitiveType.PointList;
@@ -1332,85 +1366,86 @@ namespace Axiom.RenderSystems.Xna
 					break;
 				case OperationType.LineList:
 					primType = XFG.PrimitiveType.LineList;
-					primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) / 2;
+					primCount = (op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount) / 2;
 					break;
 				case OperationType.LineStrip:
 					primType = XFG.PrimitiveType.LineStrip;
-					primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) - 1;
+					primCount = (op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount) - 1;
 					break;
 				case OperationType.TriangleList:
 					primType = XFG.PrimitiveType.TriangleList;
-					primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) / 3;
+					primCount = (op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount) / 3;
 					break;
 				case OperationType.TriangleStrip:
 					primType = XFG.PrimitiveType.TriangleStrip;
-					primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) - 2;
+					primCount = (op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount) - 2;
 					break;
 				case OperationType.TriangleFan:
 					primType = XFG.PrimitiveType.TriangleFan;
-					primCount = ( op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount ) - 2;
+					primCount = (op.useIndices ? op.indexData.indexCount : op.vertexData.vertexCount) - 2;
 					break;
 			} // switch(primType)
 
 			// are we gonna use indices?
-			if ( op.useIndices )
+			if (op.useIndices)
 			{
 				XnaHardwareIndexBuffer idxBuffer = (XnaHardwareIndexBuffer)op.indexData.indexBuffer;
 				_device.Indices = idxBuffer.XnaIndexBuffer;
-                _device.DrawIndexedPrimitives(primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount, op.indexData.indexStart, primCount);       
+				_device.DrawIndexedPrimitives(primType, op.vertexData.vertexStart, 0, op.vertexData.vertexCount, op.indexData.indexStart, primCount);
 			}
 			else
 			{
-                // draw vertices without indices
-				_device.DrawPrimitives( primType, op.vertexData.vertexStart, primCount );
+				// draw vertices without indices
+				_device.DrawPrimitives(primType, op.vertexData.vertexStart, primCount);
 			}
 
 			//crap hack, set the sources back to null to allow accessing vertices and indices buffers
-			_device.Vertices[ 0 ].SetSource( null, 0, 0 );
-			_device.Vertices[ 1 ].SetSource( null, 0, 0 );
-			_device.Vertices[ 2 ].SetSource( null, 0, 0 );
+			_device.Vertices[0].SetSource(null, 0, 0);
+			_device.Vertices[1].SetSource(null, 0, 0);
+			_device.Vertices[2].SetSource(null, 0, 0);
 			_device.Indices = null;
 
 
-            /*---------------shaders generator part------*/
-            if (needToUnmapVS )
-            {
-                UnbindGpuProgram(GpuProgramType.Vertex);
-            }
+#if !(XBOX || XBOX360 || SILVERLIGHT )
+			/*---------------shaders generator part------*/
+			if (needToUnmapVS)
+			{
+				UnbindGpuProgram(GpuProgramType.Vertex);
+			}
 
-            if (needToUnmapFS)
-            {
-                UnbindGpuProgram(GpuProgramType.Fragment);
-            }
-            /*--------------------------------------------*/
-
+			if (needToUnmapFS)
+			{
+				UnbindGpuProgram(GpuProgramType.Fragment);
+			}
+			/*--------------------------------------------*/
+#endif
 		}
 
-		public override void SetAlphaRejectSettings( int stage, Axiom.Graphics.CompareFunction func, byte val )
+		public override void SetAlphaRejectSettings(int stage, Axiom.Graphics.CompareFunction func, byte val)
 		{
-            _device.RenderState.AlphaTestEnable = ( func != Axiom.Graphics.CompareFunction.AlwaysPass );
-			_device.RenderState.AlphaFunction = XnaHelper.Convert( func );
+			_device.RenderState.AlphaTestEnable = (func != Axiom.Graphics.CompareFunction.AlwaysPass);
+			_device.RenderState.AlphaFunction = XnaHelper.Convert(func);
 			_device.RenderState.ReferenceAlpha = val;
 		}
 
-		public override void SetColorBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )
+		public override void SetColorBufferWriteEnabled(bool red, bool green, bool blue, bool alpha)
 		{
 			//todo
 			XFG.ColorWriteChannels val = 0;
 
-			if ( red )
+			if (red)
 			{
 				val |= XFG.ColorWriteChannels.Red;
 			}
-			if ( green )
+			if (green)
 			{
 				val |= XFG.ColorWriteChannels.Green;
 			}
-			if ( blue )
+			if (blue)
 			{
 				val |= XFG.ColorWriteChannels.Blue;
 			}
-			if ( alpha )
+			if (alpha)
 			{
 				val |= XFG.ColorWriteChannels.Alpha;
 			}
@@ -1418,63 +1453,65 @@ namespace Axiom.RenderSystems.Xna
 			_device.RenderState.ColorWriteChannels = val;
 		}
 
-		public override void SetDepthBufferParams( bool depthTest, bool depthWrite, Axiom.Graphics.CompareFunction depthFunction )
+		public override void SetDepthBufferParams(bool depthTest, bool depthWrite, Axiom.Graphics.CompareFunction depthFunction)
 		{
 			DepthCheck = depthTest;
 			DepthWrite = depthWrite;
 			DepthFunction = depthFunction;
 		}
 
-		public override void SetFog( Axiom.Graphics.FogMode mode, ColorEx color, float density, float start, float end )
+		public override void SetFog(Axiom.Graphics.FogMode mode, ColorEx color, float density, float start, float end)
 		{
-            _ffProgramParameters.FogColor = color;
-            _ffProgramParameters.FogDensity = density;
-            _ffProgramParameters.FogEnd = end;
-            _ffProgramParameters.FogStart = start;
-            _ffProgramParameters.FogMode = mode;
+#if !(XBOX || XBOX360 || SILVERLIGHT )
+			_ffProgramParameters.FogColor = color;
+			_ffProgramParameters.FogDensity = density;
+			_ffProgramParameters.FogEnd = end;
+			_ffProgramParameters.FogStart = start;
+			_ffProgramParameters.FogMode = mode;
+#endif
 
-            #region fog fixed function implementation
-            // disable fog if set to none
-            /*if ( mode == Axiom.Graphics.FogMode.None )
-            {
-                _device.RenderState.FogTableMode = XFG.FogMode.None;
-                _device.RenderState.FogEnable = false;
-            }
-            else
-            {
-                // enable fog
-                XFG.Color col = XnaHelper.Convert( color );
-                _device.RenderState.FogEnable = true;
-                _device.RenderState.FogVertexMode = XnaHelper.Convert( mode );
-                _device.RenderState.FogTableMode = XnaHelper.Convert( mode );
-                _device.RenderState.FogColor = XFG.Color.Blue;// new ColorEx.Blue();// col;
-                _device.RenderState.FogStart = start;
-                _device.RenderState.FogEnd = end;
-                _device.RenderState.FogDensity = density;
-                _device.RenderState.RangeFogEnable = true; 
-            }*/
-            #endregion
+			#region fog fixed function implementation
+			// disable fog if set to none
+			/*if ( mode == Axiom.Graphics.FogMode.None )
+			{
+				_device.RenderState.FogTableMode = XFG.FogMode.None;
+				_device.RenderState.FogEnable = false;
+			}
+			else
+			{
+				// enable fog
+				XFG.Color col = XnaHelper.Convert( color );
+				_device.RenderState.FogEnable = true;
+				_device.RenderState.FogVertexMode = XnaHelper.Convert( mode );
+				_device.RenderState.FogTableMode = XnaHelper.Convert( mode );
+				_device.RenderState.FogColor = XFG.Color.Blue;// new ColorEx.Blue();// col;
+				_device.RenderState.FogStart = start;
+				_device.RenderState.FogEnd = end;
+				_device.RenderState.FogDensity = density;
+				_device.RenderState.RangeFogEnable = true; 
+			}*/
+			#endregion
 
-        }
-
-		public override void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest )
-		{
-			_device.RenderState.SourceBlend = XnaHelper.Convert( src );
-			_device.RenderState.DestinationBlend = XnaHelper.Convert( dest );
-           
-            /*_device.RenderState.SeparateAlphaBlendEnabled=true;
-            _device.RenderState.AlphaBlendEnable = true;
-            _device.RenderState.BlendFunction = Microsoft.Xna.Framework.Graphics.BlendFunction.Add;
-            _device.RenderState.AlphaBlendOperation = Microsoft.Xna.Framework.Graphics.BlendFunction.Add;
-            _device.RenderState.AlphaSourceBlend = Microsoft.Xna.Framework.Graphics.Blend.Zero;
-            _device.RenderState.AlphaDestinationBlend = Microsoft.Xna.Framework.Graphics.Blend.Zero;*/
 		}
 
-		public override void SetScissorTest( bool enable, int left, int top, int right, int bottom )
+		public override void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest)
 		{
-			if ( enable )
+			_device.RenderState.SourceBlend = XnaHelper.Convert(src);
+			_device.RenderState.DestinationBlend = XnaHelper.Convert(dest);
+
+			/*_device.RenderState.SeparateAlphaBlendEnabled=true;
+			_device.RenderState.AlphaBlendEnable = true;
+			_device.RenderState.BlendFunction = Microsoft.Xna.Framework.Graphics.BlendFunction.Add;
+			_device.RenderState.AlphaBlendOperation = Microsoft.Xna.Framework.Graphics.BlendFunction.Add;
+			_device.RenderState.AlphaSourceBlend = Microsoft.Xna.Framework.Graphics.Blend.Zero;
+			_device.RenderState.AlphaDestinationBlend = Microsoft.Xna.Framework.Graphics.Blend.Zero;*/
+		}
+
+		public override void SetScissorTest(bool enable, int left, int top, int right, int bottom)
+		{
+			if (enable)
 			{
-				_device.ScissorRectangle = new XNA.Rectangle( left, top, right - left, bottom - top );
+				_device.ScissorRectangle = new XNA.Rectangle(left, top, right - left, bottom - top);
 				_device.RenderState.ScissorTestEnable = true;
 			}
 			else
@@ -1483,22 +1520,22 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-		public override void SetStencilBufferParams( Axiom.Graphics.CompareFunction function, int refValue, int mask, Axiom.Graphics.StencilOperation stencilFailOp, Axiom.Graphics.StencilOperation depthFailOp, Axiom.Graphics.StencilOperation passOp, bool twoSidedOperation )
+		public override void SetStencilBufferParams(Axiom.Graphics.CompareFunction function, int refValue, int mask, Axiom.Graphics.StencilOperation stencilFailOp, Axiom.Graphics.StencilOperation depthFailOp, Axiom.Graphics.StencilOperation passOp, bool twoSidedOperation)
 		{
 			// 2 sided operation?
-			if ( twoSidedOperation )
+			if (twoSidedOperation)
 			{
-				if ( !caps.CheckCap( Capabilities.TwoSidedStencil ) )
+				if (!caps.CheckCap(Capabilities.TwoSidedStencil))
 				{
-					throw new AxiomException( "2-sided stencils are not supported on this hardware!" );
+					throw new AxiomException("2-sided stencils are not supported on this hardware!");
 				}
 
 				_device.RenderState.TwoSidedStencilMode = true;
 
 				// use CCW version of the operations
-				_device.RenderState.CounterClockwiseStencilFail = XnaHelper.Convert( stencilFailOp, true );
-				_device.RenderState.CounterClockwiseStencilDepthBufferFail = XnaHelper.Convert( depthFailOp, true );
-				_device.RenderState.CounterClockwiseStencilPass = XnaHelper.Convert( passOp, true );
+				_device.RenderState.CounterClockwiseStencilFail = XnaHelper.Convert(stencilFailOp, true);
+				_device.RenderState.CounterClockwiseStencilDepthBufferFail = XnaHelper.Convert(depthFailOp, true);
+				_device.RenderState.CounterClockwiseStencilPass = XnaHelper.Convert(passOp, true);
 			}
 			else
 			{
@@ -1506,139 +1543,143 @@ namespace Axiom.RenderSystems.Xna
 			}
 
 			// configure standard version of the stencil operations
-			_device.RenderState.StencilFunction = XnaHelper.Convert( function );
+			_device.RenderState.StencilFunction = XnaHelper.Convert(function);
 			_device.RenderState.ReferenceStencil = refValue;
 			_device.RenderState.StencilMask = mask;
-			_device.RenderState.StencilFail = XnaHelper.Convert( stencilFailOp );
-			_device.RenderState.StencilDepthBufferFail = XnaHelper.Convert( depthFailOp );
-			_device.RenderState.StencilPass = XnaHelper.Convert( passOp );
+			_device.RenderState.StencilFail = XnaHelper.Convert(stencilFailOp);
+			_device.RenderState.StencilDepthBufferFail = XnaHelper.Convert(depthFailOp);
+			_device.RenderState.StencilPass = XnaHelper.Convert(passOp);
 		}
 
-		public override void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess )
+		public override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess)
 		{
 			// No Implementation 
 		}
 
-		public override void SetTexture( int stage, bool enabled, string textureName )
+		public override void SetTexture(int stage, bool enabled, string textureName)
 		{
-			XnaTexture texture = (XnaTexture)TextureManager.Instance.GetByName( textureName );
-			if ( enabled && texture != null )
+			XnaTexture texture = (XnaTexture)TextureManager.Instance.GetByName(textureName);
+			if (enabled && texture != null)
 			{
-                _device.Textures[stage] = texture.DXTexture;
+				_device.Textures[stage] = texture.DXTexture;
 				// set stage description
-				texStageDesc[ stage ].tex = texture.DXTexture;
-				texStageDesc[ stage ].texType = texture.TextureType;
+				texStageDesc[stage].tex = texture.DXTexture;
+				texStageDesc[stage].texType = texture.TextureType;
 			}
 			else
 			{
-				if ( texStageDesc[ stage ].tex != null )
+				if (texStageDesc[stage].tex != null)
 				{
-                    _device.Textures[stage] = null;
+					_device.Textures[stage] = null;
 				}
 				// set stage description to defaults
-				texStageDesc[ stage ].tex = null;
-				texStageDesc[ stage ].autoTexCoordType = TexCoordCalcMethod.None;
-				texStageDesc[ stage ].coordIndex = 0;
-				texStageDesc[ stage ].texType = TextureType.OneD;
+				texStageDesc[stage].tex = null;
+				texStageDesc[stage].autoTexCoordType = TexCoordCalcMethod.None;
+				texStageDesc[stage].coordIndex = 0;
+				texStageDesc[stage].texType = TextureType.OneD;
 			}
-			_ffProgramParameters.SetTextureEnabled( stage, enabled );
+#if !(XBOX || XBOX360 || SILVERLIGHT )
+			_ffProgramParameters.SetTextureEnabled(stage, enabled);
+#endif
 		}
 
-		public override void SetTextureAddressingMode( int stage, TextureAddressing texAddressingMode )
+		public override void SetTextureAddressingMode(int stage, TextureAddressing texAddressingMode)
 		{
-			XFG.TextureAddressMode xnaMode = XnaHelper.Convert( texAddressingMode );
+			XFG.TextureAddressMode xnaMode = XnaHelper.Convert(texAddressingMode);
 			// set the device sampler states accordingly
-			_device.SamplerStates[ stage ].AddressU = xnaMode;
-			_device.SamplerStates[ stage ].AddressV = xnaMode;
-			_device.SamplerStates[ stage ].AddressW = xnaMode;
+			_device.SamplerStates[stage].AddressU = xnaMode;
+			_device.SamplerStates[stage].AddressV = xnaMode;
+			_device.SamplerStates[stage].AddressW = xnaMode;
 		}
 
-		public override void SetTextureBlendMode( int stage, LayerBlendModeEx blendMode )
+		public override void SetTextureBlendMode(int stage, LayerBlendModeEx blendMode)
 		{
-            //if(blendMode.blendType== LayerBlendType.Alpha)
-            texStageDesc[stage].layerBlendMode = blendMode;
+			//if(blendMode.blendType== LayerBlendType.Alpha)
+			texStageDesc[stage].layerBlendMode = blendMode;
 
 		}
 
-        public override void SetTextureCoordCalculation(int stage, TexCoordCalcMethod method, Frustum frustum)
+		public override void SetTextureCoordCalculation(int stage, TexCoordCalcMethod method, Frustum frustum)
 		{
-			texStageDesc[ stage ].autoTexCoordType = method;
-			texStageDesc[ stage ].frustum = frustum;
+			texStageDesc[stage].autoTexCoordType = method;
+			texStageDesc[stage].frustum = frustum;
 		}
 
-		public override void SetTextureCoordSet( int stage, int index )
+		public override void SetTextureCoordSet(int stage, int index)
 		{
-			texStageDesc[ stage ].coordIndex = index;
+			texStageDesc[stage].coordIndex = index;
 		}
 
-		public override void SetTextureLayerAnisotropy( int stage, int maxAnisotropy )
+		public override void SetTextureLayerAnisotropy(int stage, int maxAnisotropy)
 		{
-			if ( maxAnisotropy > _capabilities.MaxAnisotropy )
+			if (maxAnisotropy > _capabilities.MaxAnisotropy)
 			{
 				maxAnisotropy = _capabilities.MaxAnisotropy;
 			}
 
-			if ( _device.SamplerStates[ stage ].MaxAnisotropy != maxAnisotropy )
+			if (_device.SamplerStates[stage].MaxAnisotropy != maxAnisotropy)
 			{
-				_device.SamplerStates[ stage ].MaxAnisotropy = maxAnisotropy;
+				_device.SamplerStates[stage].MaxAnisotropy = maxAnisotropy;
 			}
 		}
 
-		public override void SetTextureMatrix( int stage, Axiom.Math.Matrix4 xform )
+		public override void SetTextureMatrix(int stage, Axiom.Math.Matrix4 xform)
 		{
-            _ffProgramParameters.SetTextureMatrix(stage, xform);
+#if !(XBOX || XBOX360 || SILVERLIGHT )
+			_ffProgramParameters.SetTextureMatrix(stage, xform);
+#endif
 		}
 
-		public override void SetTextureUnitFiltering( int stage, FilterType type, Axiom.Graphics.FilterOptions filter )
+		public override void SetTextureUnitFiltering(int stage, FilterType type, Axiom.Graphics.FilterOptions filter)
 		{
-			XnaTextureType texType = XnaHelper.Convert(texStageDesc[ stage ].texType);
-			XFG.TextureFilter texFilter = XnaHelper.Convert( type, filter, _capabilities, texType );
+			XnaTextureType texType = XnaHelper.Convert(texStageDesc[stage].texType);
+			XFG.TextureFilter texFilter = XnaHelper.Convert(type, filter, _capabilities, texType);
 
-			switch ( type )
+			switch (type)
 			{
 				case FilterType.Min:
-					_device.SamplerStates[ stage ].MinFilter = texFilter;
+					_device.SamplerStates[stage].MinFilter = texFilter;
 					break;
 
 				case FilterType.Mag:
-					_device.SamplerStates[ stage ].MagFilter = texFilter;
+					_device.SamplerStates[stage].MagFilter = texFilter;
 					break;
 
 				case FilterType.Mip:
-					_device.SamplerStates[ stage ].MipFilter = texFilter;
+					_device.SamplerStates[stage].MipFilter = texFilter;
 					break;
 			}
 		}
 
 		XFG.DepthStencilBuffer oriDSB;
-		public override void SetViewport( Axiom.Core.Viewport viewport )
+		public override void SetViewport(Axiom.Core.Viewport viewport)
 		{
-			if ( activeViewport != viewport || viewport.IsUpdated )
+			if (activeViewport != viewport || viewport.IsUpdated)
 			{
 				// store this viewport and it's target
 				activeViewport = viewport;
 				activeRenderTarget = viewport.Target;
 
 				//save the original dephstencil buffer
-				if ( oriDSB == null )
+				if (oriDSB == null)
 				{
 					oriDSB = _device.DepthStencilBuffer;
 				}
 				// get the back buffer surface for this viewport
-                
-				XFG.RenderTarget2D back = (XFG.RenderTarget2D)activeRenderTarget.GetCustomAttribute( "XNABACKBUFFER" );
-                //XFG.ResolveTexture2D back = (XFG.ResolveTexture2D)activeRenderTarget.GetCustomAttribute("XNABACKBUFFER");
-                
-                _device.SetRenderTarget(0, back);
-                
-				XFG.DepthStencilBuffer depth = (XFG.DepthStencilBuffer)activeRenderTarget.GetCustomAttribute( "XNAZBUFFER" );
+
+				XFG.RenderTarget2D back = (XFG.RenderTarget2D)activeRenderTarget.GetCustomAttribute("XNABACKBUFFER");
+				//XFG.ResolveTexture2D back = (XFG.ResolveTexture2D)activeRenderTarget.GetCustomAttribute("XNABACKBUFFER");
+
+				_device.SetRenderTarget(0, back);
+
+				XFG.DepthStencilBuffer depth = (XFG.DepthStencilBuffer)activeRenderTarget.GetCustomAttribute("XNAZBUFFER");
 
 				// set the render target and depth stencil for the surfaces belonging to the viewport
-				
-                //dont know why the depthstencil buffer is disposing itself, have to keep it
-                if (depth.IsDisposed)_device.DepthStencilBuffer = oriDSB;
-				
-                else _device.DepthStencilBuffer = depth;
+
+				//dont know why the depthstencil buffer is disposing itself, have to keep it
+				if (depth.IsDisposed) _device.DepthStencilBuffer = oriDSB;
+
+				else _device.DepthStencilBuffer = depth;
 
 				// set the culling mode, to make adjustments required for viewports
 				// that may need inverted vertex winding or texture flipping
@@ -1664,9 +1705,9 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-		public override void UnbindGpuProgram( GpuProgramType type )
+		public override void UnbindGpuProgram(GpuProgramType type)
 		{
-			switch ( type )
+			switch (type)
 			{
 				case GpuProgramType.Vertex:
 					_device.VertexShader = null;
@@ -1678,19 +1719,21 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-		public override void UseLights( LightList lights, int limit )
+		public override void UseLights(LightList lights, int limit)
 		{
 			int currentLightCount = lights.Count < limit ? lights.Count : limit;
 
 			List<Light> lightList = new List<Light>();
+#if !(XBOX || XBOX360 || SILVERLIGHT )
 			_fixedFunctionState.GeneralFixedFunctionState.ResetLightTypeCounts();
-			for ( int index = 0; index < currentLightCount; index++ )
+			for (int index = 0; index < currentLightCount; index++)
 			{
-				Light light = lights[ index ];
-				lightList.Add( light );
-				_fixedFunctionState.GeneralFixedFunctionState.IncrementLightTypeCount( light.Type );
+				Light light = lights[index];
+				lightList.Add(light);
+				_fixedFunctionState.GeneralFixedFunctionState.IncrementLightTypeCount(light.Type);
 			}
 			_ffProgramParameters.Lights = lightList;
+#endif
 		}
 
 		#endregion Methods

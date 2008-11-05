@@ -63,7 +63,11 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		///     Microsode set externally, most likely from the HLSL compiler.
 		/// </summary>
+    
+#if !(XBOX || XBOX360 || SILVERLIGHT )
 		protected XFG.CompiledShader externalMicrocode;
+#endif
+
 		/// <summary>
 		///     Gets/Sets a prepared chunk of microcode to use during Load
 		///     rather than loading from file or a string.
@@ -72,7 +76,8 @@ namespace Axiom.RenderSystems.Xna
 		///     This is used by the HLSL compiler once it compiles down to low
 		///     level microcode, which can then be loaded into a low level GPU
 		///     program.
-		/// </remarks>
+		/// </remarks
+#if !(XBOX || XBOX360 || SILVERLIGHT )
 		internal XFG.CompiledShader ExternalMicrocode
 		{
 			get
@@ -84,14 +89,16 @@ namespace Axiom.RenderSystems.Xna
 				externalMicrocode = value;
 			}
 		}
+#endif
+    
+    #endregion ExternalMicrocode Property
 
-		#endregion ExternalMicrocode Property
-			
-		#endregion Fields and Properties
 
-		#region Constructor
+    #endregion Fields and Properties
 
-		public XnaGpuProgram( string name, GpuProgramType type, XFG.GraphicsDevice device, string syntaxCode )
+    #region Constructor
+
+    public XnaGpuProgram( string name, GpuProgramType type, XFG.GraphicsDevice device, string syntaxCode )
 			: base( name, type, syntaxCode )
 		{
 			this.device = device;
@@ -106,8 +113,10 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		/// <param name="microcode">
 		///     contains the assembler instructions for the program.
-		/// </param>
-		protected abstract void LoadFromMicrocode( XFG.CompiledShader microcode );
+    /// </param>
+#if !(XBOX || XBOX360 || SILVERLIGHT )
+    protected abstract void LoadFromMicrocode( XFG.CompiledShader microcode );
+#endif
 
 		#endregion Methods
 
@@ -118,6 +127,7 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		public override void Load()
 		{
+#if !(XBOX || XBOX360 || SILVERLIGHT )
 			if ( externalMicrocode.ShaderVersion != null )
 			{
 				// unload if needed
@@ -136,6 +146,7 @@ namespace Axiom.RenderSystems.Xna
 				// call base implementation
 				base.Load();
 			}
+#endif
 		}
 
 		/// <summary>
@@ -147,6 +158,7 @@ namespace Axiom.RenderSystems.Xna
 
 			// load the shader from the source string
             //dont need to debug, slighty faster
+#if !(XBOX || XBOX360 || SILVERLIGHT )
             XFG.CompiledShader microcode = XFG.ShaderCompiler.AssembleFromSource(source, null, null, XFG.CompilerOptions.None, XNA.TargetPlatform.Windows);
 			errors = microcode.ErrorsAndWarnings;
 			if ( errors != null && errors.Length != 0 )
@@ -157,6 +169,7 @@ namespace Axiom.RenderSystems.Xna
 
 			// load the code into a shader object (polymorphic)
 			LoadFromMicrocode( microcode );
+#endif
 		}
 
 		#endregion GpuProgram Members
@@ -207,11 +220,13 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="microcode">
 		///     contains the assembler instructions for the program.
 		/// </param>
+#if !(XBOX || XBOX360 || SILVERLIGHT )
 		protected override void LoadFromMicrocode( XFG.CompiledShader microcode )
 		{
 			// create the new vertex shader
 			vertexShader = new XFG.VertexShader( device, microcode.GetShaderCode() );
 		}
+#endif
 
 		#endregion XnaGpuProgram Memebers
 
@@ -280,11 +295,13 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="microcode">
 		///     contains the assembler instructions for the program.
 		/// </param>
+#if !(XBOX || XBOX360 || SILVERLIGHT )
 		protected override void LoadFromMicrocode( XFG.CompiledShader microcode )
 		{
 			// create a new pixel shader
 			pixelShader = new XFG.PixelShader( device, microcode.GetShaderCode() );
 		}
+#endif
 
 		#endregion XnaGpuProgram Members
 
