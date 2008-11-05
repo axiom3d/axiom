@@ -571,6 +571,7 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		/// <param name="mode"></param>
 		/// <returns></returns>
+#if !(XBOX || XBOX360 || SILVERLIGHT)
 		public static XFG.FogMode Convert( Axiom.Graphics.FogMode mode )
 		{
 			// convert the fog mode value
@@ -588,6 +589,7 @@ namespace Axiom.RenderSystems.Xna
 
 			return 0;
 		}
+#endif
 
 		/*     public static D3D.LockFlags Convert( BufferLocking locking )
 			 {

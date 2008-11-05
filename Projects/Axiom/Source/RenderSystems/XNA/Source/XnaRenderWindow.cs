@@ -42,7 +42,9 @@ using Axiom.Media;
 
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
+#if !(XBOX || XBOX360 || SILVERLIGHT)
 using SWF = System.Windows.Forms;
+#endif
 
 #endregion Namespace Declarations
 
@@ -95,6 +97,7 @@ namespace Axiom.RenderSystems.Xna
 			// mMiscParams[1] = D3DRenderSystem.Driver
 			// mMiscParams[2] = Axiom.Core.RenderWindow
 
+#if !(XBOX || XBOX360 || SILVERLIGHT)
 			SWF.Control targetControl = null;
 
 			/// get the Direct3D.Device params
@@ -102,6 +105,7 @@ namespace Axiom.RenderSystems.Xna
 			{
 				targetControl = (System.Windows.Forms.Control)miscParams[ 0 ];
 			}
+#endif
 
 			// CMH - 4/24/2004 - Start
 			if ( miscParams.Length > 1 && miscParams[ 1 ] != null )
@@ -137,6 +141,9 @@ namespace Axiom.RenderSystems.Xna
 			}
 			else
 			{
+        //clarabie - presentParams isn't even being used
+#if !(XBOX || XBOX360 || SILVERLIGHT)
+
 				XFG.PresentationParameters presentParams = new XFG.PresentationParameters();// (device.PresentationParameters);
 				presentParams.IsFullScreen = false;
 				presentParams.BackBufferCount = 1;
@@ -166,6 +173,7 @@ namespace Axiom.RenderSystems.Xna
 				// device.PresentationParameters.MultiSampleType,
 				// device.PresentationParameters.MultiSampleQuality
 				// );
+#endif
 			}
 			// CMH - End
 
@@ -220,12 +228,15 @@ namespace Axiom.RenderSystems.Xna
 		{
 			base.Dispose();
 
+
 			// if the control is a form, then close it
+#if !(XBOX || XBOX360 || SILVERLIGHT)
 			if ( targetHandle is SWF.Form )
 			{
 				SWF.Form form = targetHandle as SWF.Form;
 				form.Close();
 			}
+#endif
 
 			// dispopse of our back buffer if need be
 			if ( backBuffer != null && !backBuffer.IsDisposed )
@@ -289,14 +300,19 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="waitForVSync"></param>
 		public override void SwapBuffers( bool waitForVSync )
 		{
+      IntPtr handle = new IntPtr(0);
+#if !(XBOX || XBOX360 || SILVERLIGHT)
 			SWF.Control control = (SWF.Control)targetHandle;
 			while ( !( control is SWF.Form ) )
 			{
 				control = control.Parent;
 			}
+      handle = control.Handle;
+#else
+      handle = (IntPtr)targetHandle;
+#endif
 
-
-			device.Present( null, new XNA.Rectangle( 0, 0, 800, 600 ), control.Handle );
+			device.Present( null, new XNA.Rectangle( 0, 0, 800, 600 ), handle );
 			//            device.Present();
 			try
 			{
