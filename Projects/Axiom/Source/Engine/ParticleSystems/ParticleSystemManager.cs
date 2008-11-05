@@ -514,7 +514,7 @@ namespace Axiom.ParticleSystems
         ///		Since this method is dependent on other engine systems being started, this method will be called by the
         ///		engine when the render system is initialized.
         /// </remarks>
-        internal void Initialize()
+        public void Initialize()
         {
             // add ourself as a listener for the frame started event
             Root.Instance.FrameStarted += new FrameEvent( RenderSystem_FrameStarted );

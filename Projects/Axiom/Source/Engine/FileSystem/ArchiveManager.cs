@@ -65,7 +65,9 @@ namespace Axiom.FileSystem
                 instance = this;
 
                 // add zip and folder factories by default
+#if !(XBOX || XBOX360 || SILVERLIGHT )
                 instance.AddArchiveFactory( new ZipArchiveFactory() );
+#endif
                 instance.AddArchiveFactory( new FolderFactory() );
             }
         }

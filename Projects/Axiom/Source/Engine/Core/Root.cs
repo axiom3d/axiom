@@ -95,7 +95,7 @@ namespace Axiom.Core
 
                 // Initializes the Log Manager singleton
                 LogManager logMgr = new LogManager();
-
+				
                 // create a new default log
                 logMgr.CreateLog( logFileName, true, true );
 
@@ -108,15 +108,17 @@ namespace Axiom.Core
                 new MeshManager();
                 new SkeletonManager();
                 new ParticleSystemManager();
-                new PlatformManager();
+                //new PlatformManager();
 
                 // create a new timer
-                timer = PlatformManager.Instance.CreateTimer();
+				timer = new Timer();
 
                 new OverlayManager();
                 new OverlayElementManager();
                 new FontManager();
+#if !(XBOX || XBOX360 || SILVERLIGHT )
                 new ZipArchiveFactory();
+#endif
                 new CodecManager();
 
                 // register all build in codecs
@@ -554,7 +556,7 @@ namespace Axiom.Core
             while ( !queuedEnd )
             {
                 // allow OS events to process (if the platform requires it
-                PlatformManager.Instance.DoEvents();
+                //PlatformManager.Instance.DoEvents();
 
                 RenderOneFrame();
             }
@@ -706,10 +708,10 @@ namespace Axiom.Core
 
             Pass.ProcessPendingUpdates();
 
-            if ( PlatformManager.Instance != null )
-            {
-                PlatformManager.Instance.Dispose();
-            }
+            //if ( PlatformManager.Instance != null )
+            //{
+            //    PlatformManager.Instance.Dispose();
+            //}
             if ( LogManager.Instance != null )
             {
                 LogManager.Instance.Dispose();
