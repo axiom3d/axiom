@@ -35,6 +35,23 @@ material Core/AxiomLogo
 		}
 	}
 }
+material Core/XNALogo
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture XnaLogo.jpg
+			}
+		}
+	}
+}
 material Core/StatsBlockBorder
 {
 	technique
