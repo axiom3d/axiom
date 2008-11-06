@@ -1381,7 +1381,8 @@ namespace Axiom.Core
             }
 
             // Set up spot shadow fade texture (loaded from code data block)
-            Texture spotShadowFadeTex = TextureManager.Instance.GetByName( "spot_shadow_fade.png" );
+            //Texture spotShadowFadeTex = TextureManager.Instance.GetByName( "spot_shadow_fade.png" );
+			Texture spotShadowFadeTex = TextureManager.Instance.Load("spot_shadow_fade.png");
 
             if ( spotShadowFadeTex == null )
             {
@@ -1919,7 +1920,8 @@ namespace Axiom.Core
             targetRenderSystem.SetSceneBlending( pass.SourceBlendFactor, pass.DestBlendFactor );
 
             // set all required texture units for this pass, and disable ones not being used
-            for ( int i = 0; i < targetRenderSystem.Caps.TextureUnitCount; i++ )
+			// clarabie Nov 5/08 - changed this to use Config.MaxTextureLayers the same as the RenderSystem should use
+			for (int i = 0; i < Config.MaxTextureLayers; i++)
             {
                 if ( i < pass.NumTextureUnitStages )
                 {
