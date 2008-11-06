@@ -54,7 +54,7 @@ namespace Axiom.RenderSystems.Xna
 	/// <summary>
 	/// The Xna implementation of the RenderWindow class.
 	/// </summary>
-	public class XnaRenderWindow : RenderWindow, IGraphicsDeviceService
+	public class XnaRenderWindow : RenderWindow, XFG.IGraphicsDeviceService
 	{
 		#region Fields
 
@@ -164,17 +164,19 @@ namespace Axiom.RenderSystems.Xna
 
 				//swapChain =// XNA.SwapEffect.Discard
 				//new XFG.SwapChain( device, presentParams );
-				customAttributes[ "SwapChain" ] = swapChain;
-
-				stencilBuffer = new XFG.DepthStencilBuffer(
-					device,
-					width, height, XFG.DepthFormat.Depth24, XFG.MultiSampleType.None, 0 );
-
+				
 				//device.PresentationParameters.AutoDepthStencilFormat, 
 				// device.PresentationParameters.MultiSampleType,
 				// device.PresentationParameters.MultiSampleQuality
 				// );
 #endif
+
+				customAttributes["SwapChain"] = swapChain;
+
+				stencilBuffer = new XFG.DepthStencilBuffer(
+					device,
+					width, height, XFG.DepthFormat.Depth24, XFG.MultiSampleType.None, 0);
+
 			}
 			// CMH - End
 
@@ -310,7 +312,7 @@ namespace Axiom.RenderSystems.Xna
 			}
       handle = control.Handle;
 #else
-      handle = (IntPtr)targetHandle;
+      //handle = (IntPtr)targetHandle;
 #endif
 
 			device.Present( null, new XNA.Rectangle( 0, 0, 800, 600 ), handle );
@@ -428,7 +430,7 @@ namespace Axiom.RenderSystems.Xna
 
         public event EventHandler DeviceResetting;
 
-        public GraphicsDevice GraphicsDevice
+        public XFG.GraphicsDevice GraphicsDevice
         {
             get
             {
