@@ -46,7 +46,11 @@ namespace Axiom.Configuration
     {
         //public const string MediaPath = @"E:\GameProgramming\Resources\";
         public const int MaxTextureCoordSets = 6;
+#if !(XBOX360)
         public const int MaxTextureLayers = 8;
+#else
+		public const int MaxTextureLayers = 16;
+#endif
         public const int MaxBlendWeights = 4;
         public const int MaxSimultaneousLights = 8;
 
