@@ -301,8 +301,7 @@ namespace Axiom.RenderSystems.Xna
 
             AxiomContentManager acm = new AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "");
             texture = acm.Load<XFG.Texture2D>( name );
-            
-
+			
             //Stream stream = TextureManager.FindCommonResourceData(name);
 
             //Image img = Image.FromStream(stream, name.Substring(name.Length - 3, 3));
