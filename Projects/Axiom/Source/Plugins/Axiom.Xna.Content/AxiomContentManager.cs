@@ -22,6 +22,8 @@ namespace Axiom.Xna.Content
 
         protected override System.IO.Stream OpenStream( string assetName )
         {
+            if ( System.IO.Path.GetExtension( assetName ) != "xnb" )
+                assetName = System.IO.Path.GetFileNameWithoutExtension( assetName ) + ".xnb";
             return TextureManager.Instance.FindResourceData( assetName );
         }
     }
