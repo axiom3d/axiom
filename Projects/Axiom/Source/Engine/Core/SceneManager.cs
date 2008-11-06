@@ -1381,18 +1381,19 @@ namespace Axiom.Core
             }
 
             // Set up spot shadow fade texture (loaded from code data block)
-            //Texture spotShadowFadeTex = TextureManager.Instance.GetByName( "spot_shadow_fade.png" );
+#if !(XBOX || XBOX360 || SILVERLIGHT)
+            Texture spotShadowFadeTex = TextureManager.Instance.GetByName( "spot_shadow_fade.png" );
+			if (spotShadowFadeTex == null)
+			{
+				// Load the manual buffer into an image
+				System.IO.MemoryStream imgStream = new System.IO.MemoryStream(SpotShadowFadePng.SPOT_SHADOW_FADE_PNG);
+				Media.Image img = Media.Image.FromStream(imgStream, "png");
+				spotShadowFadeTex =
+					TextureManager.Instance.LoadImage("spot_shadow_fade.png", img, TextureType.TwoD);
+			}
+#else
 			Texture spotShadowFadeTex = TextureManager.Instance.Load("spot_shadow_fade.png");
-
-            if ( spotShadowFadeTex == null )
-            {
-                // Load the manual buffer into an image
-                System.IO.MemoryStream imgStream = new System.IO.MemoryStream( SpotShadowFadePng.SPOT_SHADOW_FADE_PNG );
-                Media.Image img = Media.Image.FromStream( imgStream, "png" );
-                spotShadowFadeTex =
-                    TextureManager.Instance.LoadImage( "spot_shadow_fade.png", img, TextureType.TwoD );
-            }
-
+#endif
             shadowMaterialInitDone = true;
         }
 

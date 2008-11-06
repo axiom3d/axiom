@@ -108,7 +108,9 @@ namespace Axiom.Core
                 new MeshManager();
                 new SkeletonManager();
                 new ParticleSystemManager();
-                //new PlatformManager();
+#if !(XBOX || XBOX360 || SILVERLIGHT)
+                new PlatformManager();
+#endif
 
                 // create a new timer
 				timer = new Timer();
