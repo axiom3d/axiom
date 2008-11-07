@@ -424,7 +424,10 @@ namespace Axiom.Core
                 MaterialManager.Instance.Initialize();
 
                 // init the particle system manager singleton
+				//clarabie - temporarily disabled because something's wrong here on the 360 with ParticleSystemManager.RegisterParsers
+#if !(XBOX || XBOX360 || SILVERLIGHT)
                 ParticleSystemManager.Instance.Initialize();
+#endif
 
                 // init font manager singletons
                 FontManager.Instance.ParseAllSources();
