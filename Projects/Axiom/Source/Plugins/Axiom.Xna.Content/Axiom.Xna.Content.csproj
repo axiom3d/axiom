@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AxiomContentManager.cs" />
+    <Compile Include="Pipeline\HlslProgramImporter.cs" />
     <Compile Include="XnaContentFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

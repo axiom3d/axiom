@@ -66,6 +66,8 @@ namespace Axiom.RenderSystems.Xna
     
 		protected byte[] shaderCode;
 
+
+
 		/// <summary>
 		///     Gets/Sets a prepared chunk of ShaderCode to use during Load
 		///     rather than loading from file or a string.
@@ -86,6 +88,7 @@ namespace Axiom.RenderSystems.Xna
 				shaderCode = value;
 			}
 		}
+
     
 		#endregion ShaderCode Property
 
@@ -110,6 +113,13 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		protected abstract void LoadFromShaderCode();
 
+
+
+
+
+
+
+
 		#endregion Methods
 
 		#region GpuProgram Members
@@ -126,6 +136,7 @@ namespace Axiom.RenderSystems.Xna
 				{
 					Unload();
 				}
+
 
 				// creates the shader from an external microcode source
 				// for example, a compiled HLSL program
@@ -145,6 +156,21 @@ namespace Axiom.RenderSystems.Xna
 		protected override void LoadFromSource()
 		{
 			//we should never get here
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		}
 
 		#endregion GpuProgram Members
@@ -197,6 +223,10 @@ namespace Axiom.RenderSystems.Xna
 			// create the new vertex shader
 			vertexShader = new XFG.VertexShader( device, shaderCode );
 		}
+
+
+
+
 
 		#endregion XnaGpuProgram Memebers
 
@@ -267,6 +297,12 @@ namespace Axiom.RenderSystems.Xna
 			// create a new pixel shader
 			pixelShader = new XFG.PixelShader( device, shaderCode );
 		}
+
+
+
+
+
+
 
 		#endregion XnaGpuProgram Members
 
