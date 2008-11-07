@@ -49,9 +49,7 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         ///     Factory for HLSL programs.
         /// </summary>
-#if !(XBOX || XBOX360 || SILVERLIGHT)
         private HLSL.HLSLProgramFactory factory = new HLSL.HLSLProgramFactory();
-#endif
 
         /// <summary>
         ///     Reference to the render system instance.
@@ -68,9 +66,7 @@ namespace Axiom.RenderSystems.Xna
             Axiom.Core.Root.Instance.RenderSystems.Add( "Xna", renderSystem );
 
             // register the HLSL program manager
-#if !(XBOX || XBOX360 || SILVERLIGHT)
             Axiom.Graphics.HighLevelGpuProgramManager.Instance.AddFactory( factory );
-#endif
         }
 
         public void Stop()
