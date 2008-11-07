@@ -96,7 +96,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
                 GpuProgramManager.Instance.CreateProgramFromString( name, "", type, target );
 
             // set the microcode for this program
-            ( (XnaGpuProgram)assemblerProgram ).ExternalMicrocode = microcode;
+            ( (XnaGpuProgram)assemblerProgram ).ShaderCode = microcode.GetShaderCode();
         }
 
         public override GpuProgramParameters CreateParameters()

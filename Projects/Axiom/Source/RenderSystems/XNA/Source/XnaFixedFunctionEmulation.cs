@@ -1,4 +1,4 @@
-//#define USE_BASICEFFECT
+#define USE_BASICEFFECT
 
 #region LGPL License
 /*
