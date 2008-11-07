@@ -29,6 +29,8 @@ namespace Axiom.Demos.Browser.CommandLine
 
         private Root engine;
 
+#if !(XBOX || XBOX360 || SILVERLIGHT)
+
         private bool _configure( )
         {
             // instantiate the Root singleton
@@ -44,6 +46,7 @@ namespace Axiom.Demos.Browser.CommandLine
 
             return true;
         }
+#endif
 
         /// <summary>
         ///		Loads default resource configuration if one exists.
@@ -70,9 +73,12 @@ namespace Axiom.Demos.Browser.CommandLine
 
         public void Run( )
         {
+#if !(XBOX || XBOX360 || SILVERLIGHT)
             ArrayList demoList = new ArrayList();
+#endif
             try
             {
+#if !(XBOX || XBOX360 || SILVERLIGHT)
                 if ( _configure( ) )
                 {
 
@@ -128,6 +134,12 @@ namespace Axiom.Demos.Browser.CommandLine
                     //}
 
                 }
+#else
+                            using ( TechDemo demo = (TechDemo)(new Axiom.Demos.SkyPlane()))
+                            {
+                                demo.Start();//show and start rendering
+                            }//dispose of it when done
+#endif
             }
             catch ( Exception caughtException )
             {

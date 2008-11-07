@@ -1,4 +1,4 @@
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectGuid>{4442B0F1-0C6F-4F4E-816E-07FF85FCC8FD}</ProjectGuid>
     <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -100,7 +100,7 @@
     <None Include="..\..\..\..\..\Lib\Native\Win32\cg.dll">
       <Link>cg.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>    
+    </None>
   </ItemGroup>
   <ItemGroup>
     <NestedContentProject Include="Media\Media.contentproj">
@@ -154,10 +154,6 @@
       <Project>{93E73DF8-82C0-4405-A380-20D2E4215562}</Project>
       <Name>Axiom.Platforms.Win32</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.csproj">
-      <Project>{E658B012-6FE5-4815-9CE5-CA0DF797055F}</Project>
-      <Name>Axiom.Plugins.ParticleFX</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\Source\RenderSystems\XNA\Axiom.RenderSystems.Xna.csproj">
       <Project>{5F595F67-FE05-4139-83B6-F7E1725DF2FD}</Project>
       <Name>Axiom.RenderSystems.Xna</Name>
@@ -165,10 +161,6 @@
     <ProjectReference Include="..\..\..\..\Axiom\Source\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.csproj">
       <Project>{0E4D6C8A-F64C-4124-9180-E2073E903979}</Project>
       <Name>Axiom.SceneManagers.Bsp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj">
-      <Project>{711332C0-E3F3-4050-A65D-2D60D3D7DF56}</Project>
-      <Name>Axiom.SceneManagers.Octree</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Demos\Axiom.Demos.csproj">
       <Project>{2C79BB9A-A133-4557-9E2D-CCCBAACB8D20}</Project>
