@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Axiom.Xna.Content</RootNamespace>
-    <AssemblyName>Axiom.Xna.Content</AssemblyName>
+    <AssemblyName>Axiom.Xna.Content.x86</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <XnaFrameworkVersion>v3.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
