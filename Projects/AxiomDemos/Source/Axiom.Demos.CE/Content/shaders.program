@@ -1,0 +1,19 @@
+vertex_program SimpleVertexShader hlsl
+{
+	source simple_vs.hlsl
+	entry_point main
+	target vs_2_0
+
+	default_params
+	{
+		param_named_auto worldViewProj worldviewproj_matrix
+		param_named_auto ambient ambient_light_colour
+	}
+}
+
+fragment_program SimplePixelShader hlsl
+{
+	source simple_ps.hlsl
+	entry_point main
+	target ps_2_0
+}
