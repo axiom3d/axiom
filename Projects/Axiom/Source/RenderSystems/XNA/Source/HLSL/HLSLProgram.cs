@@ -64,13 +64,19 @@ namespace Axiom.RenderSystems.Xna.HLSL
         /// <summary>
         ///     Holds the low level program instructions after the compile.
         /// </summary>
+#if !(XBOX || XBOX360 || SILVERLIGHT)
         protected XFG.CompiledShader microcode;
+#else
+		protected Axiom.HLSLReader.HLSLCompiledShader compiledShader;
+#endif
         /// <summary>
         ///     Holds information about shader constants.
         /// </summary>
         protected XFG.ShaderConstantTable constantTable;
 
+#if !(XBOX || XBOX360 || SILVERLIGHT)
 		private HLSLIncludeHandler _includeHandler = new HLSLIncludeHandler();
+#endif
 
         #endregion Fields
 
@@ -96,7 +102,11 @@ namespace Axiom.RenderSystems.Xna.HLSL
                 GpuProgramManager.Instance.CreateProgramFromString( name, "", type, target );
 
             // set the microcode for this program
+#if !(XBOX || XBOX360 || SILVERLIGHT)
             ( (XnaGpuProgram)assemblerProgram ).ShaderCode = microcode.GetShaderCode();
+#else
+			((XnaGpuProgram)assemblerProgram).ShaderCode = compiledShader.ShaderCode;
+#endif
         }
 
         public override GpuProgramParameters CreateParameters()
@@ -108,12 +118,12 @@ namespace Axiom.RenderSystems.Xna.HLSL
             return parms;
         }
 
-
         /// <summary>
         ///     Compiles the high level shader source to low level microcode.
         /// </summary>
         protected override void LoadFromSource()
         {
+#if !(XBOX || XBOX360 || SILVERLIGHT)
             string errors = null;
 
 			switch ( type )
@@ -141,7 +151,32 @@ namespace Axiom.RenderSystems.Xna.HLSL
             {
                 throw new AxiomException( "HLSL: Unable to compile high level shader {0}:\n{1}", name, errors );
             }
+#else
+			throw new AxiomException("HLSL: LoadFromSource not implemented on the 360");
+#endif
         }
+
+#if (XBOX || XBOX360 || SILVERLIGHT)
+		protected override void LoadHighLevelImpl()
+		{
+			if (!isHighLevelLoaded)
+			{
+				//get the CompiledShader from ContentManager
+				Axiom.Xna.Content.AxiomContentManager acm = new Axiom.Xna.Content.AxiomContentManager((XnaRenderSystem)Root.Instance.RenderSystem, "");
+				Axiom.HLSLReader.HLSLCompiledShaders compiledShaders = acm.Load<Axiom.HLSLReader.HLSLCompiledShaders>(fileName);
+				//find compiled shader with matching entry point
+				for (int i = 0; i < compiledShaders.CompiledShaders.Count; ++i)
+				{
+					if (compiledShaders.CompiledShaders[i].EntryPoint == entry)
+					{
+						compiledShader = compiledShaders.CompiledShaders[i];
+						break;
+					}
+				}
+				isHighLevelLoaded = true;
+			}
+		}
+#endif
 
         /// <summary>
         ///     Derives parameter names from the constant table.
@@ -158,7 +193,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
             {
                 // Recursively descend through the structure levels
                 // Since Xna has no nice 'leaf' method like Cg (sigh)
-                ProcessParamElement( new XFG.CompiledEffect(), "", i, parms );
+                ProcessParamElement( "", i, parms );
             }
         }
 
@@ -199,7 +234,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
         /// <param name="prefix"></param>
         /// <param name="index"></param>
         /// <param name="parms"></param>
-        protected void ProcessParamElement( XFG.CompiledEffect parent, string prefix, int index, GpuProgramParameters parms )
+        protected void ProcessParamElement( string prefix, int index, GpuProgramParameters parms )
         {
             XFG.ShaderConstant constant = constantTable.Constants[ index ];
             
@@ -230,7 +265,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
                     // cascade into the struct members
                     for ( int i = 0; i < constant.StructureMemberCount; i++ )
                     {
-                        ProcessParamElement( parent, prefix, i, parms );
+                        ProcessParamElement( prefix, i, parms );
                     }
                 }
                 else

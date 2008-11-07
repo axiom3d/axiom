@@ -299,16 +299,19 @@ namespace Axiom.RenderSystems.Xna
         {
             Debug.Assert( textureType == TextureType.OneD || textureType == TextureType.TwoD );
 
+#if (XBOX || XBOX360 || SILVERLIGHT)
             AxiomContentManager acm = new AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "");
             texture = acm.Load<XFG.Texture2D>( name );
-			
-            //Stream stream = TextureManager.FindCommonResourceData(name);
+			isLoaded = true;
+#else		
+            Stream stream = TextureManager.FindCommonResourceData(name);
 
-            //Image img = Image.FromStream(stream, name.Substring(name.Length - 3, 3));
-            //LoadImage(img);
-            //stream.Position = 0;
-            //SetFinalAttributes(img.Width, img.Height, 1, img.Format);
+            Image img = Image.FromStream(stream, name.Substring(name.Length - 3, 3));
+            LoadImage(img);
+            stream.Position = 0;
+            SetFinalAttributes(img.Width, img.Height, 1, img.Format);
             isLoaded = true;
+#endif
         }
 
         /// <summary>

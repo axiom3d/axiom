@@ -119,7 +119,7 @@ namespace Axiom.RenderSystems.Xna
 		/// </summary>
 		public override void Load()
 		{
-			if ( shaderCode.Length > 0 )
+			if ( shaderCode != null && shaderCode.Length > 0 )
 			{
 				// unload if needed
 				if ( isLoaded )
