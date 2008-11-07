@@ -133,10 +133,10 @@ namespace Axiom.RenderSystems.Xna
 		private static XFG.GraphicsDevice _device;
 		private static bool _initialized;
 
-#if USE_BASICEFFECT
+#if USE_BASICEFFECT || ( XBOX || XBOX360 )
 		private static Microsoft.Xna.Framework.Graphics.BasicEffect _effect;
 #else
-		private static HLSLProgram _defaultVSPosition;
+        private static HLSLProgram _defaultVSPosition;
 		private static HLSLProgram _defaultVSPositionTexture;
 		private static HLSLProgram _defaultVSPositionColor;
 		private static HLSLProgram _defaultVSPositionTextureColor;
@@ -169,11 +169,11 @@ namespace Axiom.RenderSystems.Xna
 					_rs = rs;
 					_device = device;
 
-#if USE_BASICEFFECT
+#if USE_BASICEFFECT || ( XBOX || XBOX360 )
 					_effect = new Microsoft.Xna.Framework.Graphics.BasicEffect( _device, null );
 #else
-					#region defaultVSPosition
-					_defaultVSPosition = (HLSLProgram)HighLevelGpuProgramManager.Instance.CreateProgram( "_defaultVSPosition", "hlsl", GpuProgramType.Vertex );
+                    #region defaultVSPosition
+                    _defaultVSPosition = (HLSLProgram)HighLevelGpuProgramManager.Instance.CreateProgram( "_defaultVSPosition", "hlsl", GpuProgramType.Vertex );
 					_defaultVSPosition.Source = "struct VS_INPUT { float4 Pos : POSITION0; };" +
 													   _vsSource;
 					_defaultVSPosition.SetParam( "entry_point", "VS" );
@@ -255,7 +255,7 @@ namespace Axiom.RenderSystems.Xna
 			// Need both Begin Emulate will return true if either are not present
 			bool emulationNeeded = ( _device.VertexShader == null || _device.PixelShader == null );
 
-#if USE_BASICEFFECT
+#if USE_BASICEFFECT || ( XBOX || XBOX360 )
 			_effect.Alpha = 1.0f;
 			_effect.World = XnaHelper.Convert( _rs.WorldMatrix );
 			_effect.View = XnaHelper.Convert( _rs.ViewMatrix );
@@ -272,7 +272,7 @@ namespace Axiom.RenderSystems.Xna
 			_effect.CommitChanges();
 			_effect.Begin();
 #else
-			bool bindTextureDefault = true;
+            bool bindTextureDefault = true;
 			bool bindTextureAndColorDefault = false;
 
 			if ( _device.VertexShader == null )
@@ -378,11 +378,11 @@ namespace Axiom.RenderSystems.Xna
 		}
 
 		public void End()
-		{
-#if USE_BASICEFFECT
+        {
+#if USE_BASICEFFECT || ( XBOX || XBOX360 )
 			_effect.End();
 #else
-			if ( _unBindVS )
+            if ( _unBindVS )
 			{
 				_rs.UnbindGpuProgram( GpuProgramType.Vertex );
 				_unBindVS = false;
@@ -397,8 +397,8 @@ namespace Axiom.RenderSystems.Xna
 		}
 
 		internal void DrawIndexedPrimitives( XFG.PrimitiveType primType, int vertexStart, int vertexCount, int indexStart, int indexCount, int primCount )
-		{
-#if USE_BASICEFFECT
+        {
+#if USE_BASICEFFECT || ( XBOX || XBOX360 )
 			foreach ( Microsoft.Xna.Framework.Graphics.EffectTechnique tech in _effect.Techniques )
 			{
 				foreach ( Microsoft.Xna.Framework.Graphics.EffectPass pass in tech.Passes )
@@ -409,13 +409,13 @@ namespace Axiom.RenderSystems.Xna
 				}
 			}
 #else
-			_device.DrawIndexedPrimitives( primType, vertexStart, vertexCount, indexStart, indexCount, primCount );
+            _device.DrawIndexedPrimitives( primType, vertexStart, vertexCount, indexStart, indexCount, primCount );
 #endif
 		}
 
 		internal void DrawPrimitives( XFG.PrimitiveType primType, int vertexStart, int primCount )
-		{
-#if USE_BASICEFFECT
+        {
+#if USE_BASICEFFECT || ( XBOX || XBOX360 )
 			foreach ( Microsoft.Xna.Framework.Graphics.EffectTechnique tech in _effect.Techniques )
 			{
 				foreach ( Microsoft.Xna.Framework.Graphics.EffectPass pass in tech.Passes )
@@ -426,7 +426,7 @@ namespace Axiom.RenderSystems.Xna
 				}
 			}
 #else
-			_device.DrawPrimitives( primType, vertexStart, primCount );
+            _device.DrawPrimitives( primType, vertexStart, primCount );
 #endif
 		}
 	}
