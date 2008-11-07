@@ -1,0 +1,19 @@
+material Simple
+{
+	technique
+	{
+		pass
+		{
+			vertex_program_ref SimpleVertexShader
+			{
+			}
+			fragment_program_ref SimplePixelShader
+			{
+			}
+			texture_unit
+			{
+				texture blue.png
+			}
+		}
+	}	
+}
