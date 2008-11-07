@@ -159,8 +159,8 @@ namespace Axiom.Demos
             CreateScene();
 
             // retreive and initialize the input system
-            input = PlatformManager.Instance.CreateInputReader();
-            input.Initialize( window, true, true, false, false );
+            //input = PlatformManager.Instance.CreateInputReader();
+            //input.Initialize( window, true, true, false, false );
 
             return true;
         }
@@ -257,6 +257,7 @@ namespace Axiom.Demos
             cameraScale = 100 * e.TimeSinceLastFrame;
 
             // TODO: Move this into an event queueing mechanism that is processed every frame
+            /*
             input.Capture();
 
             if ( input.IsKeyPressed( KeyCodes.Escape ) )
@@ -430,7 +431,7 @@ namespace Axiom.Demos
             {
                 debugTextDelay -= e.TimeSinceLastFrame;
             }
-
+            */
             OverlayElement element = OverlayElementManager.Instance.GetElement( "Core/DebugText" );
             element.Text = window.DebugText;
         }

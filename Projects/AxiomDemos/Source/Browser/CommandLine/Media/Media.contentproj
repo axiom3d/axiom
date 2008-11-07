@@ -398,6 +398,62 @@
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\..\..\Media\Fonts\Arial.fontdef">
+      <Link>Fonts\Arial.fontdef</Link>
+      <Name>Arial</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\..\Media\Fonts\Garamond.fontdef">
+      <Link>Fonts\Garamond.fontdef</Link>
+      <Name>Garamond</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\..\Media\Fonts\maiden.TTF">
+      <Link>Fonts\maiden.TTF</Link>
+      <Name>maiden</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\..\Media\Fonts\PalatinoLinotype.fontdef">
+      <Link>Fonts\PalatinoLinotype.fontdef</Link>
+      <Name>PalatinoLinotype</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Compile Include="..\..\..\..\..\..\Media\GpuPrograms\Bloom_ps20.fx">
+      <Link>GpuPrograms\Bloom_ps20.fx</Link>
+      <Name>Bloom_ps20</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <None Include="..\..\..\..\..\..\Media\GpuPrograms\Bloom_ps20.hlsl">
+      <Link>GpuPrograms\Bloom_ps20.hlsl</Link>
+      <Name>Bloom_ps20</Name>
+    </None>
+    <None Include="..\..\..\..\..\..\Media\GpuPrograms\Bloom_vs11.hlsl">
+      <Link>GpuPrograms\Bloom_vs11.hlsl</Link>
+      <Name>Bloom_vs11</Name>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\..\..\..\Media\Fonts\Arial.png">
+      <Link>Fonts\Arial.png</Link>
+      <Name>Arial</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Fonts\Garamond.png">
+      <Link>Fonts\Garamond.png</Link>
+      <Name>Garamond</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Fonts\PalatinoLinotype.png">
+      <Link>Fonts\PalatinoLinotype.png</Link>
+      <Name>PalatinoLinotype</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
