@@ -173,6 +173,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
 						break;
 					}
 				}
+                this.constantTable = new XFG.ShaderConstantTable( compiledShader.ShaderCode );
 				isHighLevelLoaded = true;
 			}
 		}
