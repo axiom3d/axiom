@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
+using System.ComponentModel;
 
 //clarabie - note this is a VertexShader processor - but once we get program definitions loading
 //properly from scripts, we'll have a single processor for both VS and PS
@@ -23,15 +24,47 @@ namespace Axiom.HLSLProcessor
 	[ContentProcessor(DisplayName = "Axiom HLSL Vertex Shader Processor")]
 	class HLSLVSProcessor : ContentProcessor<HLSLSourceCode, HLSLCompiledShaders>
 	{
+        [DisplayName( "Shader Profile" )]
+        [DefaultValue( ShaderProfile.VS_2_0 )]
+        [Description( "The profile to compile this shader with." )]
+        public ShaderProfile Profile
+        {
+            get
+            {
+                return shaderProfile;
+            }
+            set
+            {
+                shaderProfile = value;
+            }
+        }
+        private ShaderProfile shaderProfile = ShaderProfile.VS_2_0;
+
+        [DisplayName( "Entry Point" )]
+        [DefaultValue( "main" )]
+        [Description( "The name of the function used as the entry point for this shader." )]
+        public string EntryPoint
+        {
+            get
+            {
+                return entryPoint;
+            }
+            set
+            {
+                entryPoint = value;
+            }
+        }
+        private string entryPoint = "main";
+
 		public override HLSLCompiledShaders Process(HLSLSourceCode input, ContentProcessorContext context)
 		{
 			CompiledShader shader = ShaderCompiler.CompileFromSource(input.SourceCode, null, null,
-			CompilerOptions.None, "main", ShaderProfile.VS_2_0, context.TargetPlatform);
+			CompilerOptions.None, entryPoint, shaderProfile, context.TargetPlatform);
 			if(!shader.Success)
 			{
 				throw new InvalidContentException(shader.ErrorsAndWarnings);
 			}
-			HLSLCompiledShader compiledShader = new HLSLCompiledShader("main", shader.GetShaderCode());
+			HLSLCompiledShader compiledShader = new HLSLCompiledShader(entryPoint, shader.GetShaderCode());
 			HLSLCompiledShaders compiledShaders = new HLSLCompiledShaders();
 			compiledShaders.AddCompiledShader(compiledShader);
 			return compiledShaders;
