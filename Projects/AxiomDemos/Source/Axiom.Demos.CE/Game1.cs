@@ -280,79 +280,86 @@ namespace Axiom.Demos.CE
 
 		public Game1()
 		{
-			engine = new Root(CONFIG_FILE, "AxiomDemos.log");
-			Axiom.RenderSystems.Xna.Plugin renderSystemPlugin = new Axiom.RenderSystems.Xna.Plugin();
-			renderSystemPlugin.Start();
-			engine.RenderSystem = engine.RenderSystems[0];
-			ResourceManager.AddCommonArchive("Content", "Folder");
-			window = engine.Initialize(true);
-			
-			scene = engine.SceneManagers.GetSceneManager(SceneType.Generic);
-			scene.ClearScene();
-			// create a camera and initialize its position
-			camera = scene.CreateCamera("MainCamera");
-			camera.Position = new Axiom.Math.Vector3(0, 0, 500);
-			camera.LookAt(new Axiom.Math.Vector3(0, 0, -300));
-			// set the near clipping plane to be very close
-			camera.Near = 5;
+            try
+            {
+                engine = new Root( CONFIG_FILE, "AxiomDemos.log" );
+                Axiom.RenderSystems.Xna.Plugin renderSystemPlugin = new Axiom.RenderSystems.Xna.Plugin();
+                renderSystemPlugin.Start();
+                engine.RenderSystem = engine.RenderSystems[ 0 ];
+                ResourceManager.AddCommonArchive( "Content", "Folder" );
+                window = engine.Initialize( false );
+                window = Root.Instance.CreateRenderWindow( "Main", this.Window.ClientBounds.Width, this.Window.ClientBounds.Height, 32, true );
 
-			viewport = window.AddViewport(camera, 0, 0, 1.0f, 1.0f, 100);
-			viewport.BackgroundColor = ColorEx.Black;
+                scene = engine.SceneManagers.GetSceneManager( SceneType.Generic );
+                scene.ClearScene();
+                // create a camera and initialize its position
+                camera = scene.CreateCamera( "MainCamera" );
+                camera.Position = new Axiom.Math.Vector3( 0, 0, 500 );
+                camera.LookAt( new Axiom.Math.Vector3( 0, 0, -300 ) );
+                // set the near clipping plane to be very close
+                camera.Near = 5;
 
-			TextureManager.Instance.DefaultNumMipMaps = 5;
+                viewport = window.AddViewport( camera, 0, 0, 1.0f, 1.0f, 100 );
+                viewport.BackgroundColor = ColorEx.Black;
 
-			Content.RootDirectory = "Content";
+                TextureManager.Instance.DefaultNumMipMaps = 5;
 
-			// create a 3d line
-			GpuProgram program = GpuProgramManager.Instance.GetByName("SimpleVertexShader");
-			program.Load();
-			program = GpuProgramManager.Instance.GetByName("SimplePixelShader");
-			program.Load();
-			Line3d line = new Line3d(new Axiom.Math.Vector3(0, 0, 30), Axiom.Math.Vector3.UnitY, 50, ColorEx.Blue);
-			Material mat = MaterialManager.Instance.Load("Simple", 1);
-			mat.Load();
-			line.Material = mat;
+                Content.RootDirectory = "Content";
 
-			Triangle tri = new Triangle(
-				new Axiom.Math.Vector3(-25, 0, 0),
-				new Axiom.Math.Vector3(0, 50, 0),
-				new Axiom.Math.Vector3(25, 0, 0),
-				ColorEx.Red,
-				ColorEx.Blue,
-				ColorEx.Green);
+                // create a 3d line
+                GpuProgram program = GpuProgramManager.Instance.GetByName( "SimpleVertexShader" );
+                program.Load();
+                program = GpuProgramManager.Instance.GetByName( "SimplePixelShader" );
+                program.Load();
+                Line3d line = new Line3d( new Axiom.Math.Vector3( 0, 0, 30 ), Axiom.Math.Vector3.UnitY, 50, ColorEx.Blue );
+                Material mat = MaterialManager.Instance.Load( "Simple", 1 );
+                mat.Load();
+                line.Material = mat;
 
-			tri.Material = MaterialManager.Instance.GetByName("Simple");
+                Triangle tri = new Triangle(
+                    new Axiom.Math.Vector3( -25, 0, 0 ),
+                    new Axiom.Math.Vector3( 0, 50, 0 ),
+                    new Axiom.Math.Vector3( 25, 0, 0 ),
+                    ColorEx.Red,
+                    ColorEx.Blue,
+                    ColorEx.Green );
 
-			// create a node for the line
-			SceneNode node = scene.RootSceneNode.CreateChildSceneNode();
-			SceneNode lineNode = node.CreateChildSceneNode();
-			SceneNode triNode = node.CreateChildSceneNode();
-			triNode.Position = new Axiom.Math.Vector3(50, 0, 0);
+                tri.Material = MaterialManager.Instance.GetByName( "Simple" );
 
-			// add the line and triangle to the scene
-			lineNode.AttachObject(line);
-			triNode.AttachObject(tri);
+                // create a node for the line
+                SceneNode node = scene.RootSceneNode.CreateChildSceneNode();
+                SceneNode lineNode = node.CreateChildSceneNode();
+                SceneNode triNode = node.CreateChildSceneNode();
+                triNode.Position = new Axiom.Math.Vector3( 50, 0, 0 );
 
-			// create a node rotation controller value, which will mark the specified scene node as a target of the rotation
-			// we want to rotate along the Y axis for the triangle and Z for the line (just for the hell of it)
-			NodeRotationControllerValue rotate = new NodeRotationControllerValue(triNode, Axiom.Math.Vector3.UnitY);
-			NodeRotationControllerValue rotate2 = new NodeRotationControllerValue(lineNode, Axiom.Math.Vector3.UnitZ);
+                // add the line and triangle to the scene
+                lineNode.AttachObject( line );
+                triNode.AttachObject( tri );
 
-			// the multiply controller function will multiply the source controller value by the specified value each frame.
-			MultipyControllerFunction func = new MultipyControllerFunction(50);
+                // create a node rotation controller value, which will mark the specified scene node as a target of the rotation
+                // we want to rotate along the Y axis for the triangle and Z for the line (just for the hell of it)
+                NodeRotationControllerValue rotate = new NodeRotationControllerValue( triNode, Axiom.Math.Vector3.UnitY );
+                NodeRotationControllerValue rotate2 = new NodeRotationControllerValue( lineNode, Axiom.Math.Vector3.UnitZ );
 
-			// create a new controller, using the rotate and func objects created above.  there are 2 overloads to this method.  the one being
-			// used uses an internal FrameTimeControllerValue as the source value by default.  The destination value will be the node, which 
-			// is implemented to simply call Rotate on the specified node along the specified axis.  The function will mutiply the given value
-			// against the source value, which in this case is the current frame time.  The end result in this demo is that if 50 is specified in the 
-			// MultiplyControllerValue, then the node will rotate 50 degrees per second.  since the value is scaled by the frame time, the speed
-			// of the rotation will be consistent on all machines regardless of CPU speed.
-			ControllerManager.Instance.CreateController(rotate, func);
-			ControllerManager.Instance.CreateController(rotate2, func);
+                // the multiply controller function will multiply the source controller value by the specified value each frame.
+                MultipyControllerFunction func = new MultipyControllerFunction( 50 );
 
-			// place the camera in an optimal position
-			camera.Position = new Axiom.Math.Vector3(30, 30, 220);
+                // create a new controller, using the rotate and func objects created above.  there are 2 overloads to this method.  the one being
+                // used uses an internal FrameTimeControllerValue as the source value by default.  The destination value will be the node, which 
+                // is implemented to simply call Rotate on the specified node along the specified axis.  The function will mutiply the given value
+                // against the source value, which in this case is the current frame time.  The end result in this demo is that if 50 is specified in the 
+                // MultiplyControllerValue, then the node will rotate 50 degrees per second.  since the value is scaled by the frame time, the speed
+                // of the rotation will be consistent on all machines regardless of CPU speed.
+                ControllerManager.Instance.CreateController( rotate, func );
+                ControllerManager.Instance.CreateController( rotate2, func );
 
+                // place the camera in an optimal position
+                camera.Position = new Axiom.Math.Vector3( 30, 30, 220 );
+            }
+            catch ( Exception ex )
+            {
+                string msg = ex.Message;
+            }
 		}
 
 		/// <summary>
