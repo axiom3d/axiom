@@ -301,6 +301,7 @@ namespace Axiom.Demos.CE
                 camera.LookAt( new Axiom.Math.Vector3( 0, 0, -300 ) );
                 // set the near clipping plane to be very close
                 camera.Near = 5;
+                //camera.Far = 100000;
 
                 viewport = window.AddViewport( camera, 0, 0, 1.0f, 1.0f, 100 );
                 viewport.BackgroundColor = ColorEx.Black;
@@ -308,6 +309,16 @@ namespace Axiom.Demos.CE
                 TextureManager.Instance.DefaultNumMipMaps = 5;
 
                 Content.RootDirectory = "Content";
+
+                /*
+                SceneNode mainNode = scene.RootSceneNode.CreateChildSceneNode();
+                Entity entity = scene.CreateEntity("OgreHead", "ogrehead.mesh");
+                mainNode.AttachObject(entity);
+                //mainNode.Scale(new Axiom.Math.Vector3(0.01f, 0.01f, 0.01f));
+                entity.MaterialName = "Simple";
+                camera.MoveRelative(new Axiom.Math.Vector3(50, 0, 20));
+                camera.LookAt(new Axiom.Math.Vector3(0, 0, 0));
+                */
 
                 // create a 3d line
                 Line3d line = new Line3d( new Axiom.Math.Vector3( 0, 0, 30 ), Axiom.Math.Vector3.UnitY, 50, ColorEx.Blue );
@@ -349,6 +360,7 @@ namespace Axiom.Demos.CE
                 // of the rotation will be consistent on all machines regardless of CPU speed.
                 ControllerManager.Instance.CreateController( rotate, func );
                 ControllerManager.Instance.CreateController( rotate2, func );
+               
 
                 // place the camera in an optimal position
                 camera.Position = new Axiom.Math.Vector3( 30, 30, 220 );
