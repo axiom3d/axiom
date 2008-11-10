@@ -81,6 +81,18 @@ namespace Axiom.Core
         /// </summary>
         internal PlatformManager()
         {
+            // First look in current Executing assembly for a PlatformManager
+            if ( instance == null )
+            {
+                DynamicLoader platformMgr = new DynamicLoader();
+                IList<ObjectCreator> platforms = platformMgr.Find( typeof( IPlatformManager ) );
+                if ( platforms.Count != 0 )
+                {
+                    instance = platformMgr.Find( typeof( IPlatformManager ) )[ 0 ].CreateInstance<IPlatformManager>();
+                }
+            }
+
+            // Then look in external assemblies
             if ( instance == null )
             {
                 // find and load a platform manager assembly
@@ -92,7 +104,7 @@ namespace Axiom.Core
                 {
                     throw new PluginException( "A PlatformManager was not found in the execution path, and is required." );
                 }
-                else 
+                else
                 {
                     bool isWindows = IsWindowsOS;
                     string platform = IsWindowsOS ? "Win32" : "SDL";
@@ -115,18 +127,20 @@ namespace Axiom.Core
                     System.Diagnostics.Debug.WriteLine( String.Format( "Selected the PlatformManager contained in {0}.", file ) );
                 }
 
-				string path = Path.Combine( System.IO.Directory.GetCurrentDirectory(), file );
+                string path = Path.Combine( System.IO.Directory.GetCurrentDirectory(), file );
 
                 DynamicLoader platformMgr = new DynamicLoader( path );
-				IList<ObjectCreator> platforms = platformMgr.Find( typeof(IPlatformManager) );
+                IList<ObjectCreator> platforms = platformMgr.Find( typeof( IPlatformManager ) );
                 if ( platforms.Count != 0 )
                 {
-                    instance = platformMgr.Find( typeof(IPlatformManager) )[0].CreateInstance<IPlatformManager>();
+                    instance = platformMgr.Find( typeof( IPlatformManager ) )[ 0 ].CreateInstance<IPlatformManager>();
                 }
 
-                if ( instance == null )
-                    throw new PluginException( "The available Platform assembly did not contain any subclasses of PlatformManager, which is required." );
             }
+
+            // All else fails, yell loudly
+            if ( instance == null )
+                throw new PluginException( "The available Platform assembly did not contain any subclasses of PlatformManager, which is required." );
         }
 
         /// <summary>
