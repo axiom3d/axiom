@@ -6,17 +6,12 @@ void main
 	out float2 oUv : TEXCOORD0,
 
 	out float4 oColor : COLOR,
-
-
+	
 	uniform float4x4 worldViewProj,
 	uniform float4 ambient)
 
 {
-	
-	oPosition = mul(worldViewProj, position);
-
+	oPosition = mul(position, worldViewProj);
 	oUv = uv;
-	
 	oColor = ambient;
-
 }

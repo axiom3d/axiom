@@ -277,6 +277,9 @@ namespace Axiom.Demos.CE
 		protected Axiom.Core.Viewport viewport;
 		protected SceneManager scene;
 		protected RenderWindow window;
+        protected Axiom.Math.Vector3 camAccel = Axiom.Math.Vector3.Zero;
+        protected Axiom.Math.Vector3 camVelocity = Axiom.Math.Vector3.Zero;
+        protected float camSpeed = 2.5f;
 
 		public Game1()
 		{
@@ -307,14 +310,8 @@ namespace Axiom.Demos.CE
                 Content.RootDirectory = "Content";
 
                 // create a 3d line
-                GpuProgram program = GpuProgramManager.Instance.GetByName( "SimpleVertexShader" );
-                program.Load();
-                program = GpuProgramManager.Instance.GetByName( "SimplePixelShader" );
-                program.Load();
                 Line3d line = new Line3d( new Axiom.Math.Vector3( 0, 0, 30 ), Axiom.Math.Vector3.UnitY, 50, ColorEx.Blue );
-                Material mat = MaterialManager.Instance.Load( "Simple", 1 );
-                mat.Load();
-                line.Material = mat;
+                line.Material = MaterialManager.Instance.GetByName("Simple");
 
                 Triangle tri = new Triangle(
                     new Axiom.Math.Vector3( -25, 0, 0 ),
@@ -400,14 +397,43 @@ namespace Axiom.Demos.CE
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Update(GameTime gameTime)
 		{
-			// Allows the game to exit
-			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-				this.Exit();
+            GamePadState state = GamePad.GetState(PlayerIndex.One);
 
-			// TODO: Add your update logic here
-			engine.RenderOneFrame();
+            // Allows the game to exit
+            if(state.Buttons.Back == ButtonState.Pressed)
+                this.Exit();
 
-			base.Update(gameTime);
+            float dt = ((float)gameTime.ElapsedRealTime.Milliseconds) * 0.001f;
+            //clarabie - temporary. Something's wrong with the dt calculation above
+            //so forcing it to 0.033 (30 fps)
+            dt = 0.033f;
+
+            camAccel = Axiom.Math.Vector3.Zero; // reset acceleration zero
+            float scaleMove = 10 * dt; // motion scalar
+            float scaleTurn = 20 * dt; // turn rate scalar
+
+            camAccel.z = -1.0f * state.ThumbSticks.Left.Y;
+            camAccel.x = state.ThumbSticks.Left.X;
+
+            camVelocity += (camAccel * scaleMove * camSpeed);
+            camera.MoveRelative(camVelocity);
+
+            if (camAccel == Axiom.Math.Vector3.Zero)
+            {
+                camVelocity *= (1 - (4 * dt));
+            }
+
+            float yaw = -1.0f * scaleTurn * state.ThumbSticks.Right.X;
+            float pitch = scaleTurn * state.ThumbSticks.Right.Y;
+            if (yaw != 0)
+            {
+                camera.Yaw(yaw);
+            }
+            camera.Pitch(pitch);
+
+            engine.RenderOneFrame();
+
+            base.Update(gameTime); 
 		}
 
 		/// <summary>
@@ -421,6 +447,7 @@ namespace Axiom.Demos.CE
 			// TODO: Add your drawing code here
 
 			//base.Draw(gameTime);
+            //engine.RenderOneFrame();
 		}
 	}
 }

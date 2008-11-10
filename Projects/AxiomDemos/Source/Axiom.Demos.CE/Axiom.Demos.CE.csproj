@@ -42,9 +42,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Lib\Managed\XBox\Axiom\debug\Axiom.dll.dll</HintPath>
     </Reference>
-    <Reference Include="Axiom.RenderSystems.Xna.GS3.360, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Axiom.RenderSystems.Xna.CE, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Axiom\Source\RenderSystems\XNA\bin\Xbox 360\Debug\Axiom.RenderSystems.Xna.GS3.360.dll</HintPath>
+      <HintPath>..\..\..\Axiom\Source\RenderSystems\XNA\bin\Xbox 360\Debug\Axiom.RenderSystems.Xna.CE.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework">
       <Private>False</Private>

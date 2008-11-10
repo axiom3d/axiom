@@ -20,7 +20,7 @@
   <ItemGroup>
     <Reference Include="Axiom.HLSLProcessor, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Axiom\Source\Tools\XnaContentPipeline\HLSLProcessor\bin\Xbox 360\Debug\Axiom.HLSLProcessor.dll</HintPath>
+      <HintPath>..\..\..\..\Axiom\Source\Tools\XnaContentPipeline\HLSLProcessor\bin\Zune\Debug\Axiom.HLSLProcessor.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.EffectImporter, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
       <Private>False</Private>
