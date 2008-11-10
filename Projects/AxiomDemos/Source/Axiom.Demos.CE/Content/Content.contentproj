@@ -67,6 +67,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ogrehead.mesh">
+      <Name>ogrehead</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="shaders.program">
       <Name>shaders</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
