@@ -46,7 +46,6 @@ namespace Axiom.Xna.Content.Pipeline
         public override CompiledHlslProgram Process( HlslProgramImporterData input, ContentProcessorContext context )
         {
             CompiledHlslProgram compiledHlslProgram;
-
             compiledHlslProgram.CompiledShader = ShaderCompiler.CompileFromSource( input.ProgramSource, null, null, CompilerOptions.PackMatrixRowMajor, context.TargetPlatform );
 
             return compiledHlslProgram;

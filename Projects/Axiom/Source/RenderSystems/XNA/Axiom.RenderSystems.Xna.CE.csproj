@@ -36,15 +36,12 @@
     <NoStdLib>true</NoStdLib>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <XnaCompressContent>true</XnaCompressContent>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Axiom.dll, Version=0.7.1.39991, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Lib\Managed\XBox\Axiom\debug\Axiom.dll.dll</HintPath>
-    </Reference>
-    <Reference Include="Axiom.Xna.Content, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Plugins\Axiom.Xna.Content\bin\Xbox 360\Debug\Axiom.Xna.Content.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework">
       <Private>False</Private>
@@ -104,6 +101,10 @@
     </NestedContentProject>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Plugins\Axiom.Xna.Content\Axiom.Xna.Content.csproj">
+      <Project>{2EB463D1-8F80-4AC1-975A-6EA9BD697420}</Project>
+      <Name>Axiom.Xna.Content</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Tools\XnaContentPipeline\HLSLReader\Axiom.HLSLReader.csproj">
       <Project>{6055E9A1-0D81-40BA-A9FA-1DA282710EA1}</Project>
       <Name>Axiom.HLSLReader</Name>
