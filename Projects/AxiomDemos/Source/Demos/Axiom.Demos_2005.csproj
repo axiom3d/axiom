@@ -1,0 +1,171 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{45D70DA9-C44F-45B2-A158-D31FF279AA83}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>Axiom.Demos</AssemblyName>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>
+    </AppDesignerFolder>
+    <RootNamespace>Axiom.Demos</RootNamespace>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>True</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>False</Optimize>
+    <OutputPath>..\..\build\debug\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <WarningLevel>0</WarningLevel>
+    <NoWarn>
+    </NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>False</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>True</Optimize>
+    <OutputPath>..\..\build\release\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <WarningLevel>0</WarningLevel>
+    <NoWarn>
+    </NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Axiom.Demos.build">
+    </None>
+    <Compile Include="AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BezierPatch.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BSP.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CameraTrack.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CelShading.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CubeMapping.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dot3Bump.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EnvMapping.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Fresnel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FrustumCulling.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HardwareOcclusion.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Lights.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="OffsetMapping.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ParticleFX.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RenderToTexture.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Shadows.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SkeletalAnimation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SkyBox.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SkyDome.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SkyPlane.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Smoke.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TechDemo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Terrain.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TextureFX.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Transparency.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tutorial1.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Water.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Axiom\Source\Engine\Axiom_2005.csproj">
+      <Project>{254F7434-4CF4-4418-AAD9-289935EC5556}</Project>
+      <Name>Axiom_2005</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>
