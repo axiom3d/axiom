@@ -1,0 +1,122 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <ProjectGuid>{0CC816A6-62C5-416B-BFF5-DBB924A389E9}</ProjectGuid>
+    <ProjectTypeGuids>{2DF5C3F4-5A5F-47a9-8E94-23B4456F55E2};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">Xbox 360</Platform>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Axiom.RenderSystems.Xna</RootNamespace>
+    <AssemblyName>Axiom.RenderSystems.Xna.CE</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <XnaFrameworkVersion>v3.0</XnaFrameworkVersion>
+    <XnaPlatform>Xbox 360</XnaPlatform>
+    <XnaCrossPlatformGroupID>3be99489-4948-4da2-98a1-2a29a262bcbd</XnaCrossPlatformGroupID>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Xbox 360' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Xbox 360\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;XBOX;XBOX360</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <XnaCompressContent>true</XnaCompressContent>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Xbox 360\Release</OutputPath>
+    <DefineConstants>TRACE;XBOX;XBOX360</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <XnaCompressContent>true</XnaCompressContent>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Axiom.dll, Version=0.7.1.39991, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Lib\Managed\XBox\Axiom\debug\Axiom.dll.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Game">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="mscorlib">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Source\Driver.cs" />
+    <Compile Include="Source\DriverCollection.cs" />
+    <Compile Include="Source\HLSL\HLSLProgram.cs" />
+    <Compile Include="Source\HLSL\HLSLProgramFactory.cs" />
+    <Compile Include="Source\Plugin.cs" />
+    <Compile Include="Source\VideoMode.cs" />
+    <Compile Include="Source\VideoModeCollection.cs" />
+    <Compile Include="Source\XnaGpuProgram.cs" />
+    <Compile Include="Source\XnaGpuProgramManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Source\XnaHardwareBufferManager.cs" />
+    <Compile Include="Source\XnaHardwareIndexBuffer.cs" />
+    <Compile Include="Source\XnaHardwareOcclusionQuery.cs" />
+    <Compile Include="Source\XnaHardwareVertexBuffer.cs" />
+    <Compile Include="Source\XnaHelper.cs" />
+    <Compile Include="Source\XnaRenderSystem.cs" />
+    <Compile Include="Source\XnaRenderTexture.cs" />
+    <Compile Include="Source\XnaRenderWindow.cs" />
+    <Compile Include="Source\XnaTexture.cs" />
+    <Compile Include="Source\XnaTextureManager.cs" />
+    <Compile Include="Source\XnaTextureStageDescription.cs" />
+    <Compile Include="Source\XnaTextureType.cs" />
+    <Compile Include="Source\XnaVertexDeclaration.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <NestedContentProject Include="Content\Content.contentproj">
+      <Project>216e5cb9-7233-4da7-8923-b538e4131251</Project>
+      <Visible>False</Visible>
+    </NestedContentProject>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Plugins\Axiom.Xna.Content\Axiom.Xna.Content.csproj">
+      <Project>{2EB463D1-8F80-4AC1-975A-6EA9BD697420}</Project>
+      <Name>Axiom.Xna.Content</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Tools\XnaContentPipeline\HLSLReader\Axiom.HLSLReader.csproj">
+      <Project>{6055E9A1-0D81-40BA-A9FA-1DA282710EA1}</Project>
+      <Name>Axiom.HLSLReader</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
