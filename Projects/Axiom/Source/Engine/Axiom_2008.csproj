@@ -1,7 +1,7 @@
 ﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30428</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6436E2A4-0520-40CF-9481-0EB77946120A}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -95,11 +95,11 @@
     </Reference>
     <Reference Include="Tao.DevIl">
       <Name>Tao.DevIl</Name>
-      <HintPath>\Tao.DevIl.dll</HintPath>
+      <HintPath>..\..\..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.DevIl.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <Name>ICSharpCode.SharpZipLib</Name>
-      <HintPath>\ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>..\..\..\..\Lib\Managed\XPlatform\ICSharpCode.SharpZipLib\0.84.0.0\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -392,6 +392,7 @@
     <Compile Include="Core\TextureManager.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Core\Timer.cs" />
     <Compile Include="Core\Viewport.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -782,6 +783,9 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Utilities\Contract.cs" />
+    <Compile Include="Utilities\Exceptions.cs" />
+    <Compile Include="Utilities\Proclaim.cs" />
     <None Include="Axiom.Engine.build">
     </None>
   </ItemGroup>

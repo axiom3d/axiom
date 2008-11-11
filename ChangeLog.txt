@@ -1,3 +1,6 @@
+11-11-2008 - Borrillis
+- Fixed project files so they build properly
+
 11-10-2008 - Borrillis
 - Added project files for VS 2005 and VS 2008 ( V9 and v10 )
   No longer need Prebuild as both SharpDevelop and MonoDevelop understand at least one of these versions

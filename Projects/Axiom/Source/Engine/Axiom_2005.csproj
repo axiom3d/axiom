@@ -356,6 +356,7 @@
     <Compile Include="Core\TextureManager.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Core\Timer.cs" />
     <Compile Include="Core\Viewport.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -746,6 +747,9 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Utilities\Contract.cs" />
+    <Compile Include="Utilities\Exceptions.cs" />
+    <Compile Include="Utilities\Proclaim.cs" />
     <None Include="Axiom.Engine.build">
     </None>
   </ItemGroup>

@@ -989,31 +989,68 @@ namespace Axiom.RenderSystems.DirectX9
         {
             switch ( format )
             {
-                case PixelFormat.L8:
-                    return D3D.Format.L8;
-                case PixelFormat.A8:
+                case Axiom.Media.PixelFormat.A8:
                     return D3D.Format.A8;
-                case PixelFormat.B5G6R5:
-                case PixelFormat.R5G6B5:
-                    return D3D.Format.R5G6B5;
-                case PixelFormat.B4G4R4A4:
-                case PixelFormat.A4R4G4B4:
-                    return D3D.Format.A4R4G4B4;
-                case PixelFormat.B8G8R8:
-                case PixelFormat.R8G8B8:
-                    return D3D.Format.R8G8B8;
-                case PixelFormat.B8G8R8A8:
-                case PixelFormat.A8R8G8B8:
-                    return D3D.Format.A8R8G8B8;
-                case PixelFormat.L4A4:
-                case PixelFormat.A4L4:
+                case Axiom.Media.PixelFormat.L8:
+                    return D3D.Format.L8;
+                case Axiom.Media.PixelFormat.L16:
+                    return D3D.Format.L16;
+                case Axiom.Media.PixelFormat.A4L4:
                     return D3D.Format.A4L4;
-                case PixelFormat.B10G10R10A2:
-                case PixelFormat.A2R10G10B10:
+                case Axiom.Media.PixelFormat.A8L8:
+                    return D3D.Format.A8L8;	// Assume little endian here
+                case Axiom.Media.PixelFormat.R3G3B2:
+                    return D3D.Format.R3G3B2;
+                case Axiom.Media.PixelFormat.A1R5G5B5:
+                    return D3D.Format.A1R5G5B5;
+                case Axiom.Media.PixelFormat.A4R4G4B4:
+                    return D3D.Format.A4R4G4B4;
+                case Axiom.Media.PixelFormat.R5G6B5:
+                    return D3D.Format.R5G6B5;
+                case Axiom.Media.PixelFormat.R8G8B8:
+                    return D3D.Format.R8G8B8;
+                case Axiom.Media.PixelFormat.X8R8G8B8:
+                    return D3D.Format.X8R8G8B8;
+                case Axiom.Media.PixelFormat.A8R8G8B8:
+                    return D3D.Format.A8R8G8B8;
+                case Axiom.Media.PixelFormat.X8B8G8R8:
+                    return D3D.Format.X8B8G8R8;
+                case Axiom.Media.PixelFormat.A8B8G8R8:
+                    return D3D.Format.A8B8G8R8;
+                case Axiom.Media.PixelFormat.A2R10G10B10:
                     return D3D.Format.A2R10G10B10;
+                case Axiom.Media.PixelFormat.A2B10G10R10:
+                    return D3D.Format.A2B10G10R10;
+                case Axiom.Media.PixelFormat.FLOAT16_R:
+                    return D3D.Format.R16F;
+                case Axiom.Media.PixelFormat.FLOAT16_GR:
+                    return D3D.Format.G16R16F;
+                case Axiom.Media.PixelFormat.FLOAT16_RGBA:
+                    return D3D.Format.A16B16G16R16F;
+                case Axiom.Media.PixelFormat.FLOAT32_R:
+                    return D3D.Format.R32F;
+                case Axiom.Media.PixelFormat.FLOAT32_GR:
+                    return D3D.Format.G32R32F;
+                case Axiom.Media.PixelFormat.FLOAT32_RGBA:
+                    return D3D.Format.A32B32G32R32F;
+                case Axiom.Media.PixelFormat.SHORT_RGBA:
+                    return D3D.Format.A16B16G16R16;
+                case Axiom.Media.PixelFormat.SHORT_GR:
+                    return D3D.Format.G16R16;
+                case Axiom.Media.PixelFormat.DXT1:
+                    return D3D.Format.Dxt1;
+                case Axiom.Media.PixelFormat.DXT2:
+                    return D3D.Format.Dxt2;
+                case Axiom.Media.PixelFormat.DXT3:
+                    return D3D.Format.Dxt3;
+                case Axiom.Media.PixelFormat.DXT4:
+                    return D3D.Format.Dxt4;
+                case Axiom.Media.PixelFormat.DXT5:
+                    return D3D.Format.Dxt5;
+                default:
+                    return D3D.Format.Unknown;
             }
 
-            return D3D.Format.Unknown;
         }
 
         /// <summary>

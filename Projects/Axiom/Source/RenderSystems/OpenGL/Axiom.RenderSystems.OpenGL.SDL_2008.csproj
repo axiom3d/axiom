@@ -1,4 +1,4 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>9.0.30729</ProductVersion>
@@ -103,15 +103,15 @@
     </Reference>
     <Reference Include="Tao.OpenGl">
       <Name>Tao.OpenGl</Name>
-      <HintPath>\Tao.OpenGl.dll</HintPath>
+      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.OpenGl.dll</HintPath>
     </Reference>
     <Reference Include="Tao.OpenGl.Glu">
       <Name>Tao.OpenGl.Glu</Name>
-      <HintPath>\Tao.OpenGl.Glu.dll</HintPath>
+      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.OpenGl.Glu.dll</HintPath>
     </Reference>
     <Reference Include="Tao.OpenGl.ExtensionLoader">
       <Name>Tao.OpenGl.ExtensionLoader</Name>
-      <HintPath>\Tao.OpenGl.ExtensionLoader.dll</HintPath>
+      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.OpenGl.ExtensionLoader.dll</HintPath>
     </Reference>
     <Reference Include="Tao.Sdl, Version=1.2.11.0, Culture=neutral, PublicKeyToken=9c7a200e36c0094e">
       <SpecificVersion>False</SpecificVersion>
