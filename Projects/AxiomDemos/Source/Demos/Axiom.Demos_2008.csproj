@@ -1,0 +1,192 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C7286349-8DBA-4A39-991C-3D848AB10CCE}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>Axiom.Demos</AssemblyName>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>
+    </AppDesignerFolder>
+    <RootNamespace>Axiom.Demos</RootNamespace>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>True</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>False</Optimize>
+    <OutputPath>..\..\build\debug\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <WarningLevel>0</WarningLevel>
+    <NoWarn>
+    </NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>False</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>True</Optimize>
+    <OutputPath>..\..\build\release\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <WarningLevel>0</WarningLevel>
+    <NoWarn>
+    </NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <Name>System</Name>
+      <HintPath>\System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+      <HintPath>\System.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+      <HintPath>\System.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.Xml</Name>
+      <HintPath>\System.Xml.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Axiom.Demos.build">
+    </None>
+    <Compile Include="AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BezierPatch.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BSP.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CameraTrack.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CelShading.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CubeMapping.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Dot3Bump.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EnvMapping.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Fresnel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FrustumCulling.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HardwareOcclusion.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Lights.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="OffsetMapping.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ParticleFX.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RenderToTexture.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Shadows.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SkeletalAnimation.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SkyBox.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SkyDome.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SkyPlane.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Smoke.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TechDemo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Terrain.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TextureFX.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Transparency.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tutorial1.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Water.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Axiom\Source\Engine\Axiom_2008.csproj">
+      <Project>{6436E2A4-0520-40CF-9481-0EB77946120A}</Project>
+      <Name>Axiom_2008</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Axiom\Source\SceneManagers\Octree\Axiom.SceneManagers.Octree_2008.csproj">
+      <Project>{F3016FCF-2A53-483E-8679-4514D57B6ACD}</Project>
+      <Name>Axiom.SceneManagers.Octree_2008</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>
