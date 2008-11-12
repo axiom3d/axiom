@@ -46,39 +46,75 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="simple_ps.hlsl">
-      <Name>simple_ps</Name>
-      <Importer>HLSLImporter</Importer>
-      <Processor>HLSLPSProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="simple_vs.hlsl">
-      <Name>simple_vs</Name>
+    <Compile Include="ambient_vp.hlsl">
+      <Name>ambient_vp</Name>
       <Importer>HLSLImporter</Importer>
       <Processor>HLSLVSProcessor</Processor>
     </Compile>
+    <None Include="box.mesh">
+      <Name>box</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Compile Include="color_fp.hlsl">
+      <Name>color_fp</Name>
+      <Importer>HLSLImporter</Importer>
+      <Processor>HLSLPSProcessor</Processor>
+    </Compile>
+    <Compile Include="color_vp.hlsl">
+      <Name>color_vp</Name>
+      <Importer>HLSLImporter</Importer>
+      <Processor>HLSLVSProcessor</Processor>
+    </Compile>
+    <None Include="dragon.material">
+      <Name>dragon</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="dragon.mesh">
+      <Name>dragon</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="flare.material">
+      <Name>flare</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Compile Include="point_fp.hlsl">
+      <Name>point_fp</Name>
+      <Importer>HLSLImporter</Importer>
+      <Processor>HLSLPSProcessor</Processor>
+    </Compile>
+    <Compile Include="point_vp.hlsl">
+      <Name>point_vp</Name>
+      <Importer>HLSLImporter</Importer>
+      <Processor>HLSLVSProcessor</Processor>
+    </Compile>
+    <None Include="shaders.program">
+      <Name>shaders</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="blue.png">
-      <Name>blue</Name>
+    <Compile Include="body.jpg">
+      <Name>body</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="head4.jpg">
+      <Name>head4</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="legs.jpg">
+      <Name>legs</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ogrehead.mesh">
-      <Name>ogrehead</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="shaders.program">
-      <Name>shaders</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="simple.material">
-      <Name>simple</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Compile Include="Flare.png">
+      <Name>Flare</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
