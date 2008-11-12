@@ -1,6 +1,6 @@
-vertex_program SimpleVertexShader hlsl
+vertex_program AmbientVP hlsl
 {
-	source simple_vs.hlsl
+	source ambient_vp.hlsl
 	entry_point main
 	target vs_2_0
 
@@ -11,9 +11,47 @@ vertex_program SimpleVertexShader hlsl
 	}
 }
 
-fragment_program SimplePixelShader hlsl
+vertex_program ColorVP hlsl
 {
-	source simple_ps.hlsl
+	source color_vp.hlsl
+	entry_point main
+	target vs_2_0
+
+	default_params
+	{
+		param_named_auto worldViewProj worldviewproj_matrix
+	}
+}
+
+fragment_program ColorFP hlsl
+{
+	source color_fp.hlsl
 	entry_point main
 	target ps_2_0
+}
+
+vertex_program PointVP hlsl
+{
+	source point_vp.hlsl
+	entry_point main
+	target vs_2_0
+
+	default_params
+	{
+		param_named_auto worldViewProj worldviewproj_matrix
+		param_named_auto lightPosition light_position_object_space 0
+	}
+}
+
+fragment_program PointFP hlsl
+{
+	source point_fp.hlsl
+	entry_point main
+	target ps_2_0
+	
+	default_params
+	{
+		param_named_auto lightDiffuse light_diffuse_colour 0
+		param_named_auto lightAttenuation light_attenuation 0
+	}
 }
