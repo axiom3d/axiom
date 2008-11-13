@@ -40,7 +40,12 @@ namespace Axiom.Demos.CE
         protected SceneNode redLightNode;
         protected Axiom.Core.Light blueLight;
         protected SceneNode blueLightNode;
-
+        protected Axiom.Core.Light pointLight;
+        protected SceneNode pointLightNode;
+        protected Axiom.Core.Light dirLight;
+        protected SceneNode dirLightNode;
+        protected Axiom.Core.Light spotLight;
+        protected SceneNode spotLightNode;
 
 		public Game1()
 		{
@@ -84,7 +89,6 @@ namespace Axiom.Demos.CE
 
                 Axiom.Math.Vector3 redLightPos = new Axiom.Math.Vector3(78, -8, -70);
 
-                // red light in off state
                 redLight = scene.CreateLight("RedLight");
                 redLight.Position = redLightPos;
                 redLight.Type = LightType.Point;
@@ -101,7 +105,6 @@ namespace Axiom.Demos.CE
 
                 Axiom.Math.Vector3 blueLightPos = new Axiom.Math.Vector3(50, 70, 80);
 
-                // red light in off state
                 blueLight = scene.CreateLight("BlueLight");
                 blueLight.Position = blueLightPos;
                 blueLight.Type = LightType.Point;
@@ -113,6 +116,51 @@ namespace Axiom.Demos.CE
                 blueLightBillboardset.MaterialName = "Flare";
                 Billboard blueLightBillboard = blueLightBillboardset.CreateBillboard(blueLightPos, ColorEx.Blue);
                 blueLightNode.AttachObject(blueLightBillboardset);
+
+                pointLightNode = scene.RootSceneNode.CreateChildSceneNode();
+
+                pointLight = scene.CreateLight("PointLight");
+                pointLight.Type = LightType.Point;
+                pointLight.Diffuse = ColorEx.White;
+                pointLight.SetAttenuation(1000.0f, 0.0f, 0.005f, 0.0f);
+                pointLightNode.AttachObject(pointLight);
+
+                BillboardSet pointLightBillboardset = scene.CreateBillboardSet("PointLightBillboardSet", 5);
+                pointLightBillboardset.MaterialName = "Flare";
+                Billboard pointLightBillboard = pointLightBillboardset.CreateBillboard(Axiom.Math.Vector3.Zero, ColorEx.White);
+                pointLightNode.AttachObject(pointLightBillboardset);
+                pointLightNode.Visible = false;
+                pointLight.IsVisible = false;
+
+                dirLightNode = scene.RootSceneNode.CreateChildSceneNode();
+
+                dirLight = scene.CreateLight("DirLight");
+                dirLight.Type = LightType.Directional;
+                dirLight.Diffuse = ColorEx.White;
+                dirLightNode.AttachObject(dirLight);
+
+                BillboardSet dirLightBillboardset = scene.CreateBillboardSet("DirLightBillboardSet", 5);
+                dirLightBillboardset.MaterialName = "Flare";
+                Billboard dirLightBillboard = dirLightBillboardset.CreateBillboard(Axiom.Math.Vector3.Zero, ColorEx.White);
+                dirLightNode.AttachObject(dirLightBillboardset);
+                dirLightNode.Visible = false;
+                dirLight.IsVisible = false;
+
+                spotLightNode = scene.RootSceneNode.CreateChildSceneNode();
+
+                spotLight = scene.CreateLight("SpotLight");
+                spotLight.Type = LightType.Spotlight;
+                spotLight.Diffuse = ColorEx.White;
+                spotLight.SetAttenuation(1000.0f, 0.0f, 0.005f, 0.0f);
+                spotLight.SetSpotlightRange(15.0f, 20.0f);
+                spotLightNode.AttachObject(spotLight);
+
+                BillboardSet spotLightBillboardset = scene.CreateBillboardSet("SpotLightBillboardSet", 5);
+                spotLightBillboardset.MaterialName = "Flare";
+                Billboard spotLightBillboard = spotLightBillboardset.CreateBillboard(Axiom.Math.Vector3.Zero, ColorEx.White);
+                spotLightNode.AttachObject(spotLightBillboardset);
+                spotLightNode.Visible = false;
+                spotLight.IsVisible = false;
 
             }
             catch ( Exception ex )
@@ -199,8 +247,51 @@ namespace Axiom.Demos.CE
             redLightNode.Yaw(10 * dt);
             blueLightNode.Pitch(20 * dt);
 
+            //if A is pressed, hide all lights and show white point light at camera position
+            if(state.IsButtonDown(Buttons.A))
+            {
+                HideAllLights();
+                //change point light position
+                pointLightNode.Visible = true;
+                pointLight.IsVisible = true;
+                pointLightNode.Position = camera.Position;
+            }
+
+            //if X is pressed, hide all lights and show white directional light facing camera forward direction
+            if(state.IsButtonDown(Buttons.X))
+            {
+                HideAllLights();
+                dirLightNode.Visible = true;
+                dirLight.IsVisible = true;
+                dirLightNode.Position = camera.Position; //doesn't really matter for directional light
+                dirLight.Direction = camera.Direction; 
+            }
+
+            if(state.IsButtonDown(Buttons.Y))
+            {
+                HideAllLights();
+                spotLightNode.Visible = true;
+                spotLight.IsVisible = true;
+                spotLightNode.Position = camera.Position;
+                spotLight.Direction = camera.Direction;
+            }
+
             base.Update(gameTime); 
 		}
+
+        protected void HideAllLights()
+        {
+            redLightNode.Visible = false;
+            redLight.IsVisible = false;
+            blueLightNode.Visible = false;
+            blueLight.IsVisible = false;
+            pointLightNode.Visible = false;
+            pointLight.IsVisible = false;
+            dirLightNode.Visible = false;
+            dirLight.IsVisible = false;
+            spotLightNode.Visible = false;
+            spotLight.IsVisible = false;
+        }
 
 		/// <summary>
 		/// This is called when the game should draw itself.

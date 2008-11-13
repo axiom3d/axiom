@@ -51,10 +51,6 @@
       <Importer>HLSLImporter</Importer>
       <Processor>HLSLVSProcessor</Processor>
     </Compile>
-    <None Include="box.mesh">
-      <Name>box</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <Compile Include="color_fp.hlsl">
       <Name>color_fp</Name>
       <Importer>HLSLImporter</Importer>
@@ -62,6 +58,16 @@
     </Compile>
     <Compile Include="color_vp.hlsl">
       <Name>color_vp</Name>
+      <Importer>HLSLImporter</Importer>
+      <Processor>HLSLVSProcessor</Processor>
+    </Compile>
+    <Compile Include="dir_fp.hlsl">
+      <Name>dir_fp</Name>
+      <Importer>HLSLImporter</Importer>
+      <Processor>HLSLPSProcessor</Processor>
+    </Compile>
+    <Compile Include="dir_vp.hlsl">
+      <Name>dir_vp</Name>
       <Importer>HLSLImporter</Importer>
       <Processor>HLSLVSProcessor</Processor>
     </Compile>
@@ -91,6 +97,16 @@
       <Name>shaders</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Compile Include="spot_fp.hlsl">
+      <Name>spot_fp</Name>
+      <Importer>HLSLImporter</Importer>
+      <Processor>HLSLPSProcessor</Processor>
+    </Compile>
+    <Compile Include="spot_vp.hlsl">
+      <Name>spot_vp</Name>
+      <Importer>HLSLImporter</Importer>
+      <Processor>HLSLVSProcessor</Processor>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="body.jpg">
