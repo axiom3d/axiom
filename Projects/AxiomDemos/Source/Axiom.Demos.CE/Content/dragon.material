@@ -44,6 +44,50 @@ material Material #8
 				texture body.jpg
 			}
 		}
+		
+		pass dir_light
+		{
+			ambient 0 0 0 
+			
+			iteration once_per_light directional
+
+			scene_blend add
+			
+			vertex_program_ref DirVP
+			{
+			}
+			fragment_program_ref DirFP
+			{
+			}
+			
+			// Diffuse texture
+			texture_unit
+			{
+				texture body.jpg
+			}
+		}
+		
+		pass spot_light
+		{
+			ambient 0 0 0 
+			
+			iteration once_per_light spot
+
+			scene_blend add
+			
+			vertex_program_ref SpotVP
+			{
+			}
+			fragment_program_ref SpotFP
+			{
+			}
+			
+			// Diffuse texture
+			texture_unit
+			{
+				texture body.jpg
+			}
+		}
 	}
 }
 material Material #3
@@ -92,6 +136,50 @@ material Material #3
 				texture head4.jpg
 			}
 		}
+		
+		pass dir_light
+		{
+			ambient 0 0 0 
+			
+			iteration once_per_light directional
+
+			scene_blend add
+			
+			vertex_program_ref DirVP
+			{
+			}
+			fragment_program_ref DirFP
+			{
+			}
+			
+			// Diffuse texture
+			texture_unit
+			{
+				texture head4.jpg
+			}
+		}
+		
+		pass spot_light
+		{
+			ambient 0 0 0 
+			
+			iteration once_per_light spot
+
+			scene_blend add
+			
+			vertex_program_ref SpotVP
+			{
+			}
+			fragment_program_ref SpotFP
+			{
+			}
+			
+			// Diffuse texture
+			texture_unit
+			{
+				texture head4.jpg
+			}
+		}
 	}
 }
 material Material #9
@@ -131,6 +219,50 @@ material Material #9
 			{
 			}
 			fragment_program_ref PointFP
+			{
+			}
+			
+			// Diffuse texture
+			texture_unit
+			{
+				texture legs.jpg
+			}
+		}
+		
+		pass dir_light
+		{
+			ambient 0 0 0 
+			
+			iteration once_per_light directional
+
+			scene_blend add
+			
+			vertex_program_ref DirVP
+			{
+			}
+			fragment_program_ref DirFP
+			{
+			}
+			
+			// Diffuse texture
+			texture_unit
+			{
+				texture legs.jpg
+			}
+		}
+		
+		pass spot_light
+		{
+			ambient 0 0 0 
+			
+			iteration once_per_light spot
+
+			scene_blend add
+			
+			vertex_program_ref SpotVP
+			{
+			}
+			fragment_program_ref SpotFP
 			{
 			}
 			
