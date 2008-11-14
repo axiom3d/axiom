@@ -5586,7 +5586,6 @@ namespace Axiom.Core
                     // fireShadowTexturesPreReceiver(light, cam);
 
                     RenderTextureShadowReceiverQueueGroupObjects( group );
-                    shadowTex.GetBuffer().GetRenderTarget().WriteContentsToFile( "ShadowTexture-" + sti.ToString() + ".jpg" );
                     ++sti;
                 } // for each light
 
