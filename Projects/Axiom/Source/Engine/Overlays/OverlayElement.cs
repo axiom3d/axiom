@@ -228,28 +228,35 @@ namespace Axiom.Overlays
         }
 
         /// <summary>
-        ///    Internal method to notify the element when Zorder of parent overlay
-        ///    has changed.
+        /// Internal method to notify the element when Zorder of parent overlay
+        /// has changed.
         /// </summary>
+        /// <param name="zOrder">The z order.</param>
         /// <remarks>
-        ///    Overlays have explicit Z orders. OverlayElements do not, they inherit the 
-        ///    ZOrder of the overlay, and the Zorder is incremented for every container
-        ///    nested within this to ensure that containers are displayed behind contained
-        ///    items. This method is used internally to notify the element of a change in
-        ///    final zorder which is used to render the element.
+        /// Overlays have explicit Z orders. OverlayElements do not, they inherit the
+        /// ZOrder of the overlay, and the Zorder is incremented for every container
+        /// nested within this to ensure that containers are displayed behind contained
+        /// items. This method is used internally to notify the element of a change in
+        /// final zorder which is used to render the element.
         /// </remarks>
-        /// <param name="zOrder"></param>
         public virtual void NotifyZOrder( int zOrder )
         {
             this.zOrder = zOrder;
         }
 
 
+        /// <summary>
+        /// Notifies the world transforms.
+        /// </summary>
+        /// <param name="xform">The xform.</param>
         public virtual void NotifyWorldTransforms( Matrix4[] xform )
         {
             this.xform = xform;
         }
 
+        /// <summary>
+        /// Notifies the viewport.
+        /// </summary>
         public virtual void NotifyViewport()
         {
             switch ( metricsMode )
@@ -335,10 +342,10 @@ namespace Axiom.Overlays
         }
 
         /// <summary>
-        ///    
+        /// Sets the dimensions.
         /// </summary>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
         public void SetDimensions( float width, float height )
         {
             if ( metricsMode != MetricsMode.Relative )
@@ -379,10 +386,10 @@ namespace Axiom.Overlays
         }
 
         /// <summary>
-        ///    Sets the position of this element.
+        /// Sets the position of this element.
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="top"></param>
+        /// <param name="left">The left.</param>
+        /// <param name="top">The top.</param>
         public void SetPosition( float left, float top )
         {
             if ( metricsMode != MetricsMode.Relative )
@@ -492,10 +499,10 @@ namespace Axiom.Overlays
         }
 
         /// <summary>
-        ///  Returns true if xy is within the constraints of the component
+        /// Returns true if xy is within the constraints of the component
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
         /// <returns></returns>
         public virtual OverlayElement FindElementAt( float x, float y )
         {
@@ -506,6 +513,7 @@ namespace Axiom.Overlays
             }
             return ret;
         }
+
         /// <summary>
         ///    Updates this elements transform based on it's parent.
         /// </summary>
@@ -705,6 +713,7 @@ namespace Axiom.Overlays
             isDerivedOutOfDate = true;
             PositionsOutOfDate();
         }
+
         /// <summary>
         ///    Internal method which is triggered when the positions of the element get updated,
         ///    meaning the element should be rebuilding it's mesh positions. Abstract since
@@ -718,6 +727,7 @@ namespace Axiom.Overlays
         /// subclasses must implement this.
         /// </summary>
         protected abstract void UpdateTextureGeometry();
+
         /// <summary>
         ///    Internal method to put the contents onto the render queue.
         /// </summary>
@@ -743,6 +753,7 @@ namespace Axiom.Overlays
                 return this.sourceTemplate;
             }
         }
+
         /// <summary>
         ///    Sets the color on elements that support it.
         /// </summary>
