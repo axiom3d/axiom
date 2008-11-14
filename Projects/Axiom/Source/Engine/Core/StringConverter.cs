@@ -111,6 +111,24 @@ namespace Axiom.Core
 			return s.Split( separators );
 		}
 
+        /// <summary>
+        ///     Specifies whether applicable Overload:System.String.Split method overloads
+        ///     include or omit empty substrings from the return value.
+        /// </summary>
+        [Flags]
+        public enum StringSplitOptions
+        {
+            /// <summary>
+            ///     The return value includes array elements that contain an empty string
+            /// </summary>
+            None = 0,
+
+            /// <summary>
+            ///     The return value does not include array elements that contain an empty string
+            /// </summary>
+            RemoveEmptyEntries = 1,
+        }
+
 		/// <summary>
 		/// Splits a string into an Array
 		/// </summary>
@@ -124,7 +142,7 @@ namespace Axiom.Core
 		/// then the last element will contain the remainder of the string.
 		/// </para>
 		/// </remarks>
-		public static string[] Split( string s, char[] separators, int count ) //, StringSplitOptions options )
+		public static string[] Split( string s, char[] separators, int count , StringSplitOptions options )
 		{
 			List<string> results;
 			string[] _strings;
@@ -140,7 +158,7 @@ namespace Axiom.Core
 				return _strings;
 			}
 
-			removeEmptyEntries = false; //( options & StringSplitOptions.RemoveEmptyEntries ) == StringSplitOptions.RemoveEmptyEntries;
+			removeEmptyEntries = ( options & StringSplitOptions.RemoveEmptyEntries ) == StringSplitOptions.RemoveEmptyEntries;
 			if ( s == String.Empty )
 			{
 				_strings = removeEmptyEntries ? new string[] { } : new string[ 1 ] { s }; //keep same instance 
