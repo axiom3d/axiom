@@ -79,7 +79,6 @@ namespace Axiom.Demos
         {
             RAND = new Random( 0 ); // najak: use a time-based seed
             GuiMgr = OverlayManager.Instance.Elements;
-            scene.AmbientLight = new ColorEx( 0.75f, 0.75f, 0.75f ); // default Ambient Light
 
             // Customize Controls - speed up camera and slow down the input update rate
             this.camSpeed = 5.0f;
@@ -183,7 +182,7 @@ namespace Axiom.Demos
             // Local Variable declarations
             string[] modeList = new string[] { "Ambient", "SunLight", "Colors" }; // add "Motion"
             Light l;
-            scene.AmbientLight = new ColorEx( 0.05f, 0.05f, 0.05f ); // default is low ambient light
+            scene.AmbientLight = ColorEx.Gray; // default is low ambient light
 
             // Clear Current Lights and start over
             // TODO: Add ClearLights
@@ -208,7 +207,7 @@ namespace Axiom.Demos
                         l.Direction = new Vector3( 1f, -0.5f, 0f );
                         l.SetAttenuation( 10000f, 0, 0, 0 );
                     }
-                    scene.AmbientLight = new ColorEx( 0.1f, 0.1f, 0.1f ); // default is low ambient light
+                    scene.AmbientLight = ColorEx.White; // default is low ambient light
                     break;
 
                 case "Colors":
@@ -218,7 +217,7 @@ namespace Axiom.Demos
                     lightNode.Scale( new Vector3( lightScale, lightScale, lightScale ) );
 
                     // Create a Light
-                    AddLight( "Lt1", new Vector3( lightDist, lightHeight, lightDist ), new ColorEx( 1f, 1f, 0f, 0f ), LightType.Point );
+                    AddLight( "Lt1", new Vector3( lightDist, lightHeight, lightDist ), ColorEx.Red, LightType.Point );
                     AddLight( "Lt2", new Vector3( lightDist, lightHeight, 0 ), ColorEx.Purple, LightType.Point );
                     AddLight( "Lt3", new Vector3( 0, lightHeight, lightDist ), ColorEx.Blue, LightType.Point );
                     AddLight( "Lt4", new Vector3( 0, lightHeight, 0 ), ColorEx.DarkOrange, LightType.Point );
@@ -250,7 +249,7 @@ namespace Axiom.Demos
                     break;
 
                 default: // "Ambient" mode
-                    scene.AmbientLight = new ColorEx( 0.85f, 0.85f, 0.85f ); // set Ambient Light
+                    scene.AmbientLight = ColorEx.LightGray; // set Ambient Light
                     break;
             }
         }

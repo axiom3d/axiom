@@ -75,7 +75,7 @@ namespace Axiom.Demos
         protected override void CreateScene()
         {
             // set ambient light
-            scene.AmbientLight = new ColorEx( 1.0f, 0.5f, 0.5f, 0.5f );
+            scene.AmbientLight = ColorEx.Gray;
 
             // create a skydome
             scene.SetSkyDome( true, "Examples/CloudySky", 5, 8 );

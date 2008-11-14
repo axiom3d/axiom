@@ -65,7 +65,7 @@ namespace Axiom.Demos
             //viewport.ClearEveryFrame = false;
 
             // set ambient light
-            scene.AmbientLight = new ColorEx( 1.0f, 0.5f, 0.5f, 0.5f );
+            scene.AmbientLight = ColorEx.Gray;
 
             // create a skybox
             scene.SetSkyBox( true, "Skybox/Space", 50 );

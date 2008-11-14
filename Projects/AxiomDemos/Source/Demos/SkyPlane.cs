@@ -19,7 +19,7 @@ namespace Axiom.Demos
         protected override void CreateScene()
         {
             // set some ambient light
-            scene.AmbientLight = new ColorEx( 1.0f, 0.5f, 0.5f, 0.5f );
+            scene.AmbientLight = ColorEx.Gray;
 
             Plane plane = new Plane();
             // 5000 units from the camera
