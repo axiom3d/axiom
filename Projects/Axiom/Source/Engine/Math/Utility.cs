@@ -976,7 +976,7 @@ namespace Axiom.Math
 		/// <typeparam name="T"></typeparam>
 		/// <param name="v1"></param>
 		/// <param name="v2"></param>
-		public static void Swap<T>( T v1, T v2 )
+		public static void Swap<T>( ref T v1, ref T v2 )
 		{
 			T temp = v1;
 			v1 = v2;
