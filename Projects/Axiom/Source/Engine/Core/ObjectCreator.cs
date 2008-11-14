@@ -95,7 +95,9 @@ namespace Axiom.Core
 			Type type = _type;
 			Assembly assembly = _assembly;
 #if !( XBOX || XBOX360 || SILVERLIGHT )
-			if ( type.GetInterface( typeof( T ).Name ) != null )
+            // Check interfaces or Base type for casting purposes
+			if (    type.GetInterface( typeof( T ).Name ) != null
+                 || type.BaseType.Name == typeof( T ).Name )
 			{
 #else
             bool typeFound = false;
