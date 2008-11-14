@@ -41,7 +41,7 @@ namespace Axiom.Demos
         {
             viewport.BackgroundColor = ColorEx.White;
 
-            scene.AmbientLight = new ColorEx( 0.5f, 0.5f, 0.5f );
+            scene.AmbientLight = ColorEx.Gray;
 
             Light light = scene.CreateLight( "MainLight" );
             light.Position = new Vector3( 20, 80, 50 );

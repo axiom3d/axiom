@@ -16,7 +16,7 @@ namespace Axiom.Demos
     {
         protected override void CreateScene()
         {
-            scene.AmbientLight = new ColorEx( 0.5f, 0.5f, 0.5f );
+            scene.AmbientLight = ColorEx.Gray;
 
             scene.SetSkyDome( true, "Examples/CloudySky", 5, 8 );
 
@@ -24,6 +24,7 @@ namespace Axiom.Demos
                 ParticleSystemManager.Instance.CreateSystem( "SmokeSystem", "Examples/Smoke" );
 
             scene.RootSceneNode.CreateChildSceneNode().AttachObject( smokeSystem );
+
         }
     }
 }
