@@ -984,7 +984,7 @@ namespace Axiom.SceneManagers.Bsp
             targetRenderSystem.ViewMatrix = cameraInProgress.ViewMatrix;
             targetRenderSystem.ProjectionMatrix = cameraInProgress.ProjectionMatrix;
 
-            ColorEx bspAmbient = null;
+            ColorEx bspAmbient = ColorEx.White;
 
             if ( level.BspOptions.ambientEnabled )
             {
