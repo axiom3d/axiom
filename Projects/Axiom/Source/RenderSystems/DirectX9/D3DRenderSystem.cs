@@ -2139,10 +2139,10 @@ namespace Axiom.RenderSystems.DirectX9
 						-->                           -->
 						(u, v)                        (u, v, 1, 0)        (u, v, 0, 1)
 						*/
-						Utility.Swap( d3dMat.M31, d3dMat.M41 );
-						Utility.Swap( d3dMat.M32, d3dMat.M42 );
-						Utility.Swap( d3dMat.M33, d3dMat.M43 );
-						Utility.Swap( d3dMat.M34, d3dMat.M44 );
+                        Utility.Swap( ref d3dMat.M31, ref d3dMat.M41 );
+                        Utility.Swap( ref d3dMat.M32, ref d3dMat.M42 );
+                        Utility.Swap( ref d3dMat.M33, ref d3dMat.M43 );
+                        Utility.Swap( ref d3dMat.M34, ref d3dMat.M44 );
 					}
 				}
 				else
@@ -2165,10 +2165,10 @@ namespace Axiom.RenderSystems.DirectX9
 					switch ( texStageDesc[ stage ].texType )
 					{
 						case D3DTexType.Normal:
-							Utility.Swap( d3dMat.M13, d3dMat.M14 );
-							Utility.Swap( d3dMat.M23, d3dMat.M24 );
-							Utility.Swap( d3dMat.M33, d3dMat.M34 );
-							Utility.Swap( d3dMat.M43, d3dMat.M44 );
+                            Utility.Swap( ref d3dMat.M13, ref d3dMat.M14 );
+                            Utility.Swap( ref d3dMat.M23, ref d3dMat.M24 );
+                            Utility.Swap( ref d3dMat.M33, ref d3dMat.M34 );
+                            Utility.Swap( ref d3dMat.M43, ref d3dMat.M44 );
 
 							texCoordDim = D3D.TextureTransform.Projected | D3D.TextureTransform.Count3;
 							break;
