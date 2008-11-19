@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using Axiom.Math.Collections;
 
@@ -103,8 +104,8 @@ namespace Axiom.Math
         /// <summary>
         ///     Compares float values for equality, taking into consideration
         ///     that floating point values should never be directly compared using
-        ///     ==.  2 floats could be conceptually equal, but vary by a 
-        ///     .000001 which would fail in a direct comparison.  To circumvent that,
+        ///     the '==' operator.  2 floats could be conceptually equal, but vary by a 
+        ///     float.Epsilon which would fail in a direct comparison.  To circumvent that,
         ///     a tolerance value is used to see if the difference between the 2 floats
         ///     is less than the desired amount of accuracy.
         /// </summary>
@@ -114,28 +115,21 @@ namespace Axiom.Math
         /// <returns></returns>
         public static bool FloatEqual( float a, float b, float tolerance )
         {
-            if ( System.Math.Abs( b - a ) <= tolerance )
-            {
-                return true;
-            }
-
-            return false;
+            return ( System.Math.Abs( b - a ) <= tolerance );
         }
 
         /// <summary>
         ///     Compares float values for equality, taking into consideration
         ///     that floating point values should never be directly compared using
-        ///     ==.  2 floats could be conceptually equal, but vary by a 
-        ///     .000001 which would fail in a direct comparison.  To circumvent that,
-        ///     a tolerance value is used to see if the difference between the 2 floats
-        ///     is less than the desired amount of accuracy.
+        ///     the '==' operator.  2 floats could be conceptually equal, but vary by a 
+        ///     float.Epsilon which would fail in a direct comparison.
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
         public static bool FloatEqual( float a, float b )
         {
-            return FloatEqual( a, b, .00001f );
+        	return ( System.Math.Abs( b - a ) <= float.Epsilon );
         }
 
 		public static Real ParseReal( string value )
@@ -143,6 +137,12 @@ namespace Axiom.Math
 			return Real.Parse( value, new System.Globalization.CultureInfo( "en-US" ) );
 		}
 
+		/// <summary>
+		///     Returns the sign of a real number.
+		/// The result will be -1 for a negative number, 0 for zero and 1 for positive number.
+		/// </summary>
+		/// <param name="number"></param>
+		/// <returns></returns>
         public static int Sign( Real number )
         {
             return System.Math.Sign( number );
@@ -243,6 +243,17 @@ namespace Axiom.Math
         }
 
         /// <summary>
+        ///     Raise a number to a power.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns>The number x raised to power y</returns>
+        public static Real Pow( Real x, Real y )
+        {
+        	return (Real)System.Math.Pow( (double)x, (double)y );
+        }
+        
+        /// <summary>
         ///		Returns the absolute value of the supplied number.
         /// </summary>
         /// <param name="number"></param>
@@ -264,6 +275,27 @@ namespace Axiom.Math
         }
 
         /// <summary>
+        ///     Finds the first maximum value in the array and returns the index of it.
+        /// </summary>
+        /// <param name="values">Array of values containing one value at least.</param>
+        /// <returns></returns>
+        public static int Max( Real[] values )
+        {
+        	Debug.Assert(values != null && values.Length > 0);
+        	
+        	int maxIndex = 0;
+        	Real max = values[0];
+        	for (int i = 1; i < values.Length; i++)
+        		if (values[i] > max)
+        		{
+        			max = values[i];
+        			maxIndex = i;
+        		}
+        	
+        	return maxIndex;
+        }
+        
+        /// <summary>
         /// Returns the minumum of the two supplied values.
         /// </summary>
         /// <param name="lhs"></param>
@@ -274,6 +306,27 @@ namespace Axiom.Math
             return lhs < rhs ? lhs : rhs;
         }
 
+		/// <summary>
+        ///     Finds the first minimum value in the array and returns the index of it.
+        /// </summary>
+        /// <param name="values">Array of values containing one value at least.</param>
+        /// <returns></returns>
+        public static int Min( Real[] values )
+        {
+        	Debug.Assert(values != null && values.Length > 0);
+        	
+        	int minIndex = 0;
+        	Real min = values[0];
+        	for (int i = 1; i < values.Length; i++)
+        		if (values[i] < min)
+        		{
+        			min = values[i];
+        			minIndex = i;
+        		}
+        	
+        	return minIndex;
+        }
+  
 		/// <summary>
 		/// Returns the smallest integer greater than or equal to the specified value.
 		/// </summary>
@@ -493,6 +546,30 @@ namespace Axiom.Math
             return true;
         }
 
+        /// <summary>
+		///    Method delegate with a simple signature. 
+		///    Used to measure execution time of a method for instance.
+		/// </summary>
+		public delegate void SimpleMethodDelegate();
+		
+		/// <summary>
+		///     Measure the execution time of a method.
+		/// </summary>
+		/// <param name="method"></param>
+		/// <returns>The elapsed time in seconds.</returns>
+		public static float Measure( SimpleMethodDelegate method ) 
+		{
+			long start = System.Diagnostics.Stopwatch.GetTimestamp();
+			
+			method();
+			
+			double elapsed = (double)(System.Diagnostics.Stopwatch.GetTimestamp() - start);
+			double freq = (double)System.Diagnostics.Stopwatch.Frequency;
+
+			return (float)(elapsed / freq);
+		}
+	
+		
         #region Intersection Methods
 
         /// <summary>
@@ -1021,3 +1098,5 @@ namespace Axiom.Math
 
     #endregion Return result structures
 }
+
+ 	  	 
