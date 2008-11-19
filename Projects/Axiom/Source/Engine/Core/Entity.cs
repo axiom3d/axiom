@@ -512,7 +512,10 @@ namespace Axiom.Core
 					{
 						string defaultMaterial = ent.SubMesh.MaterialName;
 						if ( defaultMaterial != null && defaultMaterial != string.Empty )
+						{
 							ent.MaterialName = defaultMaterial;
+							break;
+						}
 					}
 				}
 				else

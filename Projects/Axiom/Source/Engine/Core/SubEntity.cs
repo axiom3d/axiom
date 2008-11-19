@@ -167,6 +167,15 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
+		/// Name of this SubEntity. 
+		/// It is the name of the associated SubMesh.
+		/// </summary>
+		public string Name
+		{
+			get { return subMesh.Name; }
+		}
+		
+		/// <summary>
 		///		Gets/Sets the name of the material used for this SubEntity.
 		/// </summary>
 		public string MaterialName
@@ -178,16 +187,17 @@ namespace Axiom.Core
 			set
 			{
 				if ( value == null )
-					throw new AxiomException( "Cannot set the subentity material to be null" );
+					throw new AxiomException( "Cannot set the subentity material to null." );
+				
 				materialName = value;
 
-				// load the material from the material manager (it should already exist
+				// load the material from the material manager (it should already exist)
 				material = (Material)MaterialManager.Instance[ materialName ];
 
 				if ( material == null )
 				{
 					LogManager.Instance.Write(
-						"Cannot assign material '{0}' to SubEntity '{1}' because the material doesn't exist.", materialName, parent.Name );
+						"Cannot assign material '{0}' to Entity.SubEntity '{1}.{2}' because the material doesn't exist.", materialName, parent.Name, this.Name );
 
 					// give it base white so we can continue
 					material = (Material)MaterialManager.Instance[ "BaseWhite" ];
