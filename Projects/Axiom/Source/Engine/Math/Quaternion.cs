@@ -585,18 +585,21 @@ namespace Axiom.Math
 		#region Public methods
 
 		#region Euler Angles
+		
 		public Vector3 ToEulerAnglesInDegrees()
 		{
 			float pitch, yaw, roll;
 			ToEulerAngles( out pitch, out yaw, out roll );
 			return new Vector3( Utility.RadiansToDegrees( pitch ), Utility.RadiansToDegrees( yaw ), Utility.RadiansToDegrees( roll ) );
 		}
+		
 		public Vector3 ToEulerAngles()
 		{
 			float pitch, yaw, roll;
 			ToEulerAngles( out pitch, out yaw, out roll );
 			return new Vector3( pitch, yaw, roll );
 		}
+		
 		public void ToEulerAnglesInDegrees( out float pitch, out float yaw, out float roll )
 		{
 			ToEulerAngles( out pitch, out yaw, out roll );
@@ -604,6 +607,7 @@ namespace Axiom.Math
 			yaw = Utility.RadiansToDegrees( yaw );
 			roll = Utility.RadiansToDegrees( roll );
 		}
+		
 		public void ToEulerAngles( out float pitch, out float yaw, out float roll )
 		{
 
@@ -638,6 +642,7 @@ namespace Axiom.Math
 			if ( roll <= float.Epsilon )
 				roll = 0f;
 		}
+		
 		public static Quaternion FromEulerAnglesInDegrees( float pitch, float yaw, float roll )
 		{
 			return FromEulerAngles( Utility.DegreesToRadians( pitch ), Utility.DegreesToRadians( yaw ), Utility.DegreesToRadians( roll ) );
@@ -831,7 +836,7 @@ namespace Axiom.Math
 		/// <param name="xAxis"></param>
 		/// <param name="yAxis"></param>
 		/// <param name="zAxis"></param>
-		public void FromAxes( Vector3 xAxis, Vector3 yAxis, Vector3 zAxis )
+		public static Quaternion FromAxes( Vector3 xAxis, Vector3 yAxis, Vector3 zAxis )
 		{
 			Matrix3 rotation = new Matrix3();
 
@@ -848,18 +853,20 @@ namespace Axiom.Math
 			rotation.m22 = zAxis.z;
 
 			// set this quaternions values from the rotation matrix built
-			FromRotationMatrix( rotation );
+			return FromRotationMatrix( rotation );
 		}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="matrix"></param>
-		public void FromRotationMatrix( Matrix3 matrix )
+		public static Quaternion FromRotationMatrix( Matrix3 matrix )
 		{
 			// Algorithm in Ken Shoemake's article in 1987 SIGGRAPH course notes
 			// article "Quaternion Calculus and Fast Animation".
 
+			Quaternion result = Quaternion.Zero;
+			
 			float trace = matrix.m00 + matrix.m11 + matrix.m22;
 
 			float root = 0.0f;
@@ -868,17 +875,17 @@ namespace Axiom.Math
 			{
 				// |this.w| > 1/2, may as well choose this.w > 1/2
 				root = Utility.Sqrt( trace + 1.0f );  // 2w
-				this.w = 0.5f * root;
+				result.w = 0.5f * root;
 
 				root = 0.5f / root;  // 1/(4w)
 
-				this.x = ( matrix.m21 - matrix.m12 ) * root;
-				this.y = ( matrix.m02 - matrix.m20 ) * root;
-				this.z = ( matrix.m10 - matrix.m01 ) * root;
+				result.x = ( matrix.m21 - matrix.m12 ) * root;
+				result.y = ( matrix.m02 - matrix.m20 ) * root;
+				result.z = ( matrix.m10 - matrix.m01 ) * root;
 			}
 			else
 			{
-				// |this.w| <= 1/2
+				// |result.w| <= 1/2
 
 				int i = 0;
 				if ( matrix.m11 > matrix.m00 )
@@ -893,18 +900,19 @@ namespace Axiom.Math
 
 				unsafe
 				{
-					fixed ( float* apkQuat = &this.x )
-					{
+					float* apkQuat = &result.x;
+
 						apkQuat[ i ] = 0.5f * root;
 						root = 0.5f / root;
 
-						this.w = ( matrix[ k, j ] - matrix[ j, k ] ) * root;
+					result.w = ( matrix[ k, j ] - matrix[ j, k ] ) * root;
 
 						apkQuat[ j ] = ( matrix[ j, i ] + matrix[ i, j ] ) * root;
 						apkQuat[ k ] = ( matrix[ k, i ] + matrix[ i, k ] ) * root;
 					}
 				}
-			}
+			
+			return result;
 		}
 
 		/// <summary>
