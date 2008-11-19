@@ -207,6 +207,33 @@ namespace Axiom.Overlays
         }
 
         /// <summary>
+        ///    Shows this overlay if it is not already visible.
+        /// </summary>
+        public void Show()
+        {
+            IsVisible = true;
+        }
+
+        /// <summary>
+        ///    Hides this overlay if it is currently being displayed.
+        /// </summary>
+        public void Hide()
+        {
+            IsVisible = false;
+        }
+
+        protected void Initialize()
+        {
+
+            // add 2d elements
+            for (int i = 0; i < elementList.Count; i++)
+            {
+                OverlayElementContainer container = (OverlayElementContainer)elementList[i];
+                container.Initialize();
+            }
+            this.isInitialised = true;
+        }
+        /// <summary>
         ///    Internal method to put the overlay contents onto the render queue.
         /// </summary>
         /// <param name="camera">Current camera being used in the render loop.</param>
@@ -329,13 +356,6 @@ namespace Axiom.Overlays
             // n/a
             return Vector3.Zero;
         }
-        /// <summary>
-        ///    Hides this overlay if it is currently being displayed.
-        /// </summary>
-        public void Hide()
-        {
-            isVisible = false;
-        }
 
         /// <summary>
         ///    Adds the passed in angle to the rotation applied to this overlay.
@@ -404,28 +424,6 @@ namespace Axiom.Overlays
         }
 
         /// <summary>
-        ///    Shows this overlay if it is not already visible.
-        /// </summary>
-        public void Show()
-        {
-            isVisible = true;
-            if ( !isInitialised )
-            {
-                Initialize();
-            }
-        }
-        protected void Initialize()
-        {
-
-            // add 2d elements
-            for ( int i = 0; i < elementList.Count; i++ )
-            {
-                OverlayElementContainer container = (OverlayElementContainer)elementList[ i ];
-                container.Initialize();
-            }
-            this.isInitialised = true;
-        }
-        /// <summary>
         ///    Internal lazy update method.
         /// </summary>
         protected void UpdateTransforms()
@@ -465,6 +463,10 @@ namespace Axiom.Overlays
             set
             {
                 isVisible = value;
+                if (isVisible && !isInitialised)
+                {
+                    Initialize();
+                }
             }
         }
 
@@ -598,3 +600,5 @@ namespace Axiom.Overlays
         #endregion
     }
 }
+
+ 	  	 
