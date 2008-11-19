@@ -87,7 +87,7 @@ namespace Axiom.Demos
 				engine.QueueEndRendering();
 				return false;
 			}
-			else if ( input.IsKeyPressed( KeyCodes.V ) )
+            else if ( input.IsKeyPressed( KeyCodes.V ) && toggleDelay < 0 )
 			{
 				_dual = !_dual;
 
@@ -95,9 +95,10 @@ namespace Axiom.Demos
 					DualViewport( window, _primary, _secondary );
 				else
 					SetupViewport( window, _primary );
+                toggleDelay = 1000f;
 			}
 
-			else if ( input.IsKeyPressed( KeyCodes.C ) )
+            else if ( input.IsKeyPressed( KeyCodes.C ) && toggleDelay < 0 )
 			{
 				Swap( ref _primary, ref _secondary );
 
@@ -105,7 +106,11 @@ namespace Axiom.Demos
 					DualViewport( window, _primary, _secondary );
 				else
 					SetupViewport( window, _primary );
+                toggleDelay = 1000f;
 			}
+
+            toggleDelay -= e.TimeSinceLastEvent;
+               
 
             return true;
 		}
