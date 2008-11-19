@@ -180,7 +180,7 @@ namespace Axiom.Core
 					Vector3 yVector = zAdjustVector.Cross( xVector );
 					yVector.Normalize();
 
-					orientation.FromAxes( xVector, yVector, zAdjustVector );
+					orientation = Quaternion.FromAxes( xVector, yVector, zAdjustVector );
 				}
 				else
 				{

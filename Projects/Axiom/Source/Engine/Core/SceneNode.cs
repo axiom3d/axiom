@@ -811,7 +811,7 @@ namespace Axiom.Core
 
             zAdjustVec.Normalize();
 
-            Quaternion targetOrientation = Quaternion.Identity;
+            Quaternion targetOrientation;
 
             if ( isYawFixed )
             {
@@ -821,7 +821,7 @@ namespace Axiom.Core
                 Vector3 yVec = zAdjustVec.Cross( xVec );
                 yVec.Normalize();
 
-                targetOrientation.FromAxes( xVec, yVec, zAdjustVec );
+                targetOrientation = Quaternion.FromAxes( xVec, yVec, zAdjustVec );
             }
             else
             {

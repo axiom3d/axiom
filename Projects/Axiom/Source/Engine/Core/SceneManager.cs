@@ -4436,8 +4436,11 @@ namespace Axiom.Core
             }
 
             // queue overlays and skyboxes for rendering
-            if ( viewport.ShowSkies && findVisibleObjects && illuminationStage != IlluminationRenderStage.RenderToTexture )
+            if ( viewport.ShowSkies && findVisibleObjects &&
+                illuminationStage != IlluminationRenderStage.RenderToTexture )
+			{
                 QueueSkiesForRendering( camera );
+			}
 
             // begin frame geometry count
             targetRenderSystem.BeginGeometryCount();
@@ -4897,9 +4900,7 @@ namespace Axiom.Core
                 up = dir.Cross( left );
                 up.Normalize();
                 // Derive quaternion from axes
-                Quaternion q = Quaternion.Zero;
-                q.FromAxes( left, up, dir );
-                texCam.Orientation = q;
+                texCam.Orientation = Quaternion.FromAxes( left, up, dir );
 
                 shadowView.BackgroundColor = ColorEx.White;
 

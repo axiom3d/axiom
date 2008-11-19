@@ -209,12 +209,17 @@ namespace Axiom.Math
 		}
 
 		/// <summary>
-		///		Gets/Sets the Translation portion of the matrix.
+		///		Gets/Sets the Scale portion of the matrix.
 		///		|Sx 0  0  0 |
 		///		| 0 Sy 0  0 |
 		///		| 0  0 Sz 0 |
 		///		| 0  0  0  0 |
 		/// </summary>
+		/// <remarks>
+		///     Note that the property reflects the real scale only when there isn't any rotation, 
+		/// i.e. the 3x3 rotation portion of the matrix was a <see cref="Matrix3.Identiy"/> before a scale was set.
+		/// If you need to obtain the current scale of a rotated matrix, use the more expensive <see cref="ExtractRotation"/> method.
+		/// </remarks>
 		public Vector3 Scale
 		{
 			get
@@ -244,6 +249,99 @@ namespace Axiom.Math
 			}
         }
 
+		/// <summary>
+		///    Gets the determinant of this matrix.
+		/// </summary>
+		public float Determinant
+		{
+			get
+			{
+				// note: this is an expanded version of the Ogre determinant() method, to give better performance in C#. Generated using a script
+				float result = m00 * ( m11 * ( m22 * m33 - m32 * m23 ) - m12 * ( m21 * m33 - m31 * m23 ) + m13 * ( m21 * m32 - m31 * m22 ) ) -
+					m01 * ( m10 * ( m22 * m33 - m32 * m23 ) - m12 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m32 - m30 * m22 ) ) +
+					m02 * ( m10 * ( m21 * m33 - m31 * m23 ) - m11 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m31 - m30 * m21 ) ) -
+					m03 * ( m10 * ( m21 * m32 - m31 * m22 ) - m11 * ( m20 * m32 - m30 * m22 ) + m12 * ( m20 * m31 - m30 * m21 ) );
+
+				return result;
+			}
+		}
+		
+		#endregion
+
+		#region Static methods
+
+		/// <summary>
+		///		Used to allow assignment from a Matrix3 to a Matrix4 object.
+		/// </summary>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		public static Matrix4 FromMatrix3( Matrix3 right )
+		{
+			return right;
+		}
+
+		/// <summary>
+		/// Creates a translation Matrix
+		/// </summary>
+		/// <param name="position"></param>
+		/// <param name="scale"></param>
+		/// <param name="orientation"></param>
+		/// <returns></returns>
+		public static Matrix4 Compose(Vector3 translation, Vector3 scale, Quaternion orientation)
+		{
+			// Ordering:
+			//    1. Scale
+			//    2. Rotate
+			//    3. Translate
+
+			Matrix3 rot3x3, scale3x3;
+			rot3x3 = orientation.ToRotationMatrix();
+			scale3x3 = Matrix3.Zero;
+			scale3x3.m00 = scale.x;
+			scale3x3.m11 = scale.y;
+			scale3x3.m22 = scale.z;
+
+			// Set up final matrix with scale, rotation and translation
+			Matrix4 result = rot3x3 * scale3x3;
+			result.Translation = translation;
+
+			return result;
+		}
+		
+		/// <summary>
+		/// Creates an inverse translation Matrix
+		/// </summary>
+		/// <param name="translation"></param>
+		/// <param name="scale"></param>
+		/// <param name="orientation"></param>
+		/// <returns></returns>
+		public static Matrix4 ComposeInverse(Vector3 translation, Vector3 scale, Quaternion orientation)
+		{
+			// Invert the parameters
+			Vector3 invTranslate = -translation;
+			Vector3 invScale = new Vector3(1f / scale.x, 1f / scale.y, 1f / scale.z);
+			Quaternion invRot = orientation.Inverse();
+
+			// Because we're inverting, order is translation, rotation, scale
+			// So make translation relative to scale & rotation
+			invTranslate *= invScale; // scale
+			invTranslate = invRot * invTranslate; // rotate
+
+			// Next, make a 3x3 rotation matrix and apply inverse scale
+			Matrix3 rot3x3, scale3x3;
+			rot3x3 = invRot.ToRotationMatrix();
+			scale3x3 = Matrix3.Zero;
+			scale3x3.m00 = invScale.x;
+			scale3x3.m11 = invScale.y;
+			scale3x3.m22 = invScale.z;
+
+			// Set up final matrix with scale, rotation and translation
+			Matrix4 result = scale3x3 * rot3x3;
+			result.Translation = invTranslate;
+
+			return result;
+		}
+		
 		#endregion
 
 		#region Public methods
@@ -262,7 +360,7 @@ namespace Axiom.Math
 		}
 
 		/// <summary>
-		///    Returns an inverted 4d matrix.
+		///    Returns an inverted matrix.
 		/// </summary>
 		/// <returns></returns>
 		public Matrix4 Inverse()
@@ -271,7 +369,7 @@ namespace Axiom.Math
 		}
 
 		/// <summary>
-		/// returns an inverted affine Matrix
+		///     Returns an inverted affine matrix.
 		/// </summary>
 		/// <returns></returns>
 		public Matrix4 InverseAffine()
@@ -367,6 +465,164 @@ namespace Axiom.Math
                 v.w);
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		public void MakeFloatArray( float[] floats )
+		{
+			floats[0] = this.m00;
+			floats[1] = this.m01;
+			floats[2] = this.m02;
+			floats[3] = this.m03;
+			floats[4] = this.m10;
+			floats[5] = this.m11;
+			floats[6] = this.m12;
+			floats[7] = this.m13;
+			floats[8] = this.m20;
+			floats[9] = this.m21;
+			floats[10] = this.m22;
+			floats[11] = this.m23;
+			floats[12] = this.m30;
+			floats[13] = this.m31;
+			floats[14] = this.m32;
+			floats[15] = this.m33;
+		}
+		
+		/// <summary>
+		///     Extract the 3x3 matrix representing the current rotation. 
+		/// </summary>
+		/// <param name="rotation"></param>
+		public Matrix3 ExtractRotation()
+		{
+			Vector3 axis = Vector3.Zero;
+			Matrix3 rotation = Matrix3.Identity;
+			
+			axis.x = this.m00;
+			axis.y = this.m10;
+			axis.z = this.m20;
+			axis.Normalize();
+			rotation.m00 = axis.x;
+			rotation.m10 = axis.y;
+			rotation.m20 = axis.z;
+			
+			axis.x = this.m01;
+			axis.y = this.m11;
+			axis.z = this.m21;
+			axis.Normalize();
+			rotation.m01 = axis.x;
+			rotation.m11 = axis.y;
+			rotation.m21 = axis.z;
+
+			axis.x = this.m02;
+			axis.y = this.m12;
+			axis.z = this.m22;
+			axis.Normalize();
+			rotation.m02 = axis.x;
+			rotation.m12 = axis.y;
+			rotation.m22 = axis.z;		
+			
+			return rotation;
+		}
+		
+		/// <summary>
+		///     Extract scaling information.
+		/// </summary>
+		/// <returns></returns>
+		public Vector3 ExtractScale()
+		{
+			Vector3 scale = Vector3.UnitScale;
+			Vector3 axis = Vector3.Zero;
+
+			axis.x = this.m00;
+			axis.y = this.m10;
+			axis.z = this.m20;
+			scale.x = axis.Length;
+			
+			axis.x = this.m01;
+			axis.y = this.m11;
+			axis.z = this.m21;
+			scale.y = axis.Length;
+
+			axis.x = this.m02;
+			axis.y = this.m12;
+			axis.z = this.m22;
+			scale.z = axis.Length;
+			
+			return scale;
+		}
+		
+		/// <summary>
+		///    Decompose the matrix.
+		/// </summary>
+		/// <param name="translation"></param>
+		/// <param name="scale"></param>
+		/// <param name="orientation"></param>
+		public void Decompose(out Vector3 translation, out Vector3 scale, out Quaternion orientation)
+		{		
+			scale = Vector3.UnitScale;
+			Matrix3 rotation = Matrix3.Identity;
+			Vector3 axis = Vector3.Zero;
+			
+			axis.x = this.m00;
+			axis.y = this.m10;
+			axis.z = this.m20;
+			scale.x = axis.Normalize(); // Normalize() returns the vector's length before it was normalized
+			rotation.m00 = axis.x;
+			rotation.m10 = axis.y;
+			rotation.m20 = axis.z;
+			
+			axis.x = this.m01;
+			axis.y = this.m11;
+			axis.z = this.m21;
+			scale.y = axis.Normalize();
+			rotation.m01 = axis.x;
+			rotation.m11 = axis.y;
+			rotation.m21 = axis.z;
+
+			axis.x = this.m02;
+			axis.y = this.m12;
+			axis.z = this.m22;
+			scale.z = axis.Normalize();
+			rotation.m02 = axis.x;
+			rotation.m12 = axis.y;
+			rotation.m22 = axis.z;		
+
+			orientation = Quaternion.FromRotationMatrix(rotation);
+			translation = this.Translation;			
+		}
+		
+		#endregion
+
+		#region Private methods
+
+		/// <summary>
+		///    Used to generate the adjoint of this matrix.
+		/// </summary>
+		/// <returns>The adjoint matrix of the current instance.</returns>
+		private Matrix4 Adjoint()
+		{
+			// note: this is an expanded version of the Ogre adjoint() method, to give better performance in C#. Generated using a script
+			float val0 = m11 * ( m22 * m33 - m32 * m23 ) - m12 * ( m21 * m33 - m31 * m23 ) + m13 * ( m21 * m32 - m31 * m22 );
+			float val1 = -( m01 * ( m22 * m33 - m32 * m23 ) - m02 * ( m21 * m33 - m31 * m23 ) + m03 * ( m21 * m32 - m31 * m22 ) );
+			float val2 = m01 * ( m12 * m33 - m32 * m13 ) - m02 * ( m11 * m33 - m31 * m13 ) + m03 * ( m11 * m32 - m31 * m12 );
+			float val3 = -( m01 * ( m12 * m23 - m22 * m13 ) - m02 * ( m11 * m23 - m21 * m13 ) + m03 * ( m11 * m22 - m21 * m12 ) );
+			float val4 = -( m10 * ( m22 * m33 - m32 * m23 ) - m12 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m32 - m30 * m22 ) );
+			float val5 = m00 * ( m22 * m33 - m32 * m23 ) - m02 * ( m20 * m33 - m30 * m23 ) + m03 * ( m20 * m32 - m30 * m22 );
+			float val6 = -( m00 * ( m12 * m33 - m32 * m13 ) - m02 * ( m10 * m33 - m30 * m13 ) + m03 * ( m10 * m32 - m30 * m12 ) );
+			float val7 = m00 * ( m12 * m23 - m22 * m13 ) - m02 * ( m10 * m23 - m20 * m13 ) + m03 * ( m10 * m22 - m20 * m12 );
+			float val8 = m10 * ( m21 * m33 - m31 * m23 ) - m11 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m31 - m30 * m21 );
+			float val9 = -( m00 * ( m21 * m33 - m31 * m23 ) - m01 * ( m20 * m33 - m30 * m23 ) + m03 * ( m20 * m31 - m30 * m21 ) );
+			float val10 = m00 * ( m11 * m33 - m31 * m13 ) - m01 * ( m10 * m33 - m30 * m13 ) + m03 * ( m10 * m31 - m30 * m11 );
+			float val11 = -( m00 * ( m11 * m23 - m21 * m13 ) - m01 * ( m10 * m23 - m20 * m13 ) + m03 * ( m10 * m21 - m20 * m11 ) );
+			float val12 = -( m10 * ( m21 * m32 - m31 * m22 ) - m11 * ( m20 * m32 - m30 * m22 ) + m12 * ( m20 * m31 - m30 * m21 ) );
+			float val13 = m00 * ( m21 * m32 - m31 * m22 ) - m01 * ( m20 * m32 - m30 * m22 ) + m02 * ( m20 * m31 - m30 * m21 );
+			float val14 = -( m00 * ( m11 * m32 - m31 * m12 ) - m01 * ( m10 * m32 - m30 * m12 ) + m02 * ( m10 * m31 - m30 * m11 ) );
+			float val15 = m00 * ( m11 * m22 - m21 * m12 ) - m01 * ( m10 * m22 - m20 * m12 ) + m02 * ( m10 * m21 - m20 * m11 );
+
+			return new Matrix4( val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14, val15 );
+		}
+			
 		#endregion
 
 		#region Operator overloads + CLS compliant method equivalents
@@ -646,16 +902,6 @@ namespace Axiom.Math
 		/// </summary>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Matrix4 FromMatrix3( Matrix3 right )
-		{
-			return right;
-		}
-
-		/// <summary>
-		///		Used to allow assignment from a Matrix3 to a Matrix4 object.
-		/// </summary>
-		/// <param name="right"></param>
-		/// <returns></returns>
 		public static implicit operator Matrix4( Matrix3 right )
 		{
 			Matrix4 result = Matrix4.Identity;
@@ -737,66 +983,6 @@ namespace Axiom.Math
 					}
 				}
 			}
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns></returns>
-		public void MakeFloatArray( float[] floats )
-		{
-			unsafe
-			{
-				fixed ( float* p = &m00 )
-				{
-					for ( int i = 0; i < 16; i++ )
-						floats[ i ] = *( p + i );
-				}
-			}
-		}
-
-		/// <summary>
-		///    Gets the determinant of this matrix.
-		/// </summary>
-		public float Determinant
-		{
-			get
-			{
-				// note: this is an expanded version of the Ogre determinant() method, to give better performance in C#. Generated using a script
-				float result = m00 * ( m11 * ( m22 * m33 - m32 * m23 ) - m12 * ( m21 * m33 - m31 * m23 ) + m13 * ( m21 * m32 - m31 * m22 ) ) -
-					m01 * ( m10 * ( m22 * m33 - m32 * m23 ) - m12 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m32 - m30 * m22 ) ) +
-					m02 * ( m10 * ( m21 * m33 - m31 * m23 ) - m11 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m31 - m30 * m21 ) ) -
-					m03 * ( m10 * ( m21 * m32 - m31 * m22 ) - m11 * ( m20 * m32 - m30 * m22 ) + m12 * ( m20 * m31 - m30 * m21 ) );
-
-				return result;
-			}
-		}
-
-		/// <summary>
-		///    Used to generate the adjoint of this matrix.  Used internally for <see cref="Inverse"/>.
-		/// </summary>
-		/// <returns>The adjoint matrix of the current instance.</returns>
-		private Matrix4 Adjoint()
-		{
-			// note: this is an expanded version of the Ogre adjoint() method, to give better performance in C#. Generated using a script
-			float val0 = m11 * ( m22 * m33 - m32 * m23 ) - m12 * ( m21 * m33 - m31 * m23 ) + m13 * ( m21 * m32 - m31 * m22 );
-			float val1 = -( m01 * ( m22 * m33 - m32 * m23 ) - m02 * ( m21 * m33 - m31 * m23 ) + m03 * ( m21 * m32 - m31 * m22 ) );
-			float val2 = m01 * ( m12 * m33 - m32 * m13 ) - m02 * ( m11 * m33 - m31 * m13 ) + m03 * ( m11 * m32 - m31 * m12 );
-			float val3 = -( m01 * ( m12 * m23 - m22 * m13 ) - m02 * ( m11 * m23 - m21 * m13 ) + m03 * ( m11 * m22 - m21 * m12 ) );
-			float val4 = -( m10 * ( m22 * m33 - m32 * m23 ) - m12 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m32 - m30 * m22 ) );
-			float val5 = m00 * ( m22 * m33 - m32 * m23 ) - m02 * ( m20 * m33 - m30 * m23 ) + m03 * ( m20 * m32 - m30 * m22 );
-			float val6 = -( m00 * ( m12 * m33 - m32 * m13 ) - m02 * ( m10 * m33 - m30 * m13 ) + m03 * ( m10 * m32 - m30 * m12 ) );
-			float val7 = m00 * ( m12 * m23 - m22 * m13 ) - m02 * ( m10 * m23 - m20 * m13 ) + m03 * ( m10 * m22 - m20 * m12 );
-			float val8 = m10 * ( m21 * m33 - m31 * m23 ) - m11 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m31 - m30 * m21 );
-			float val9 = -( m00 * ( m21 * m33 - m31 * m23 ) - m01 * ( m20 * m33 - m30 * m23 ) + m03 * ( m20 * m31 - m30 * m21 ) );
-			float val10 = m00 * ( m11 * m33 - m31 * m13 ) - m01 * ( m10 * m33 - m30 * m13 ) + m03 * ( m10 * m31 - m30 * m11 );
-			float val11 = -( m00 * ( m11 * m23 - m21 * m13 ) - m01 * ( m10 * m23 - m20 * m13 ) + m03 * ( m10 * m21 - m20 * m11 ) );
-			float val12 = -( m10 * ( m21 * m32 - m31 * m22 ) - m11 * ( m20 * m32 - m30 * m22 ) + m12 * ( m20 * m31 - m30 * m21 ) );
-			float val13 = m00 * ( m21 * m32 - m31 * m22 ) - m01 * ( m20 * m32 - m30 * m22 ) + m02 * ( m20 * m31 - m30 * m21 );
-			float val14 = -( m00 * ( m11 * m32 - m31 * m12 ) - m01 * ( m10 * m32 - m30 * m12 ) + m02 * ( m10 * m31 - m30 * m11 ) );
-			float val15 = m00 * ( m11 * m22 - m21 * m12 ) - m01 * ( m10 * m22 - m20 * m12 ) + m02 * ( m10 * m21 - m20 * m11 );
-
-			return new Matrix4( val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14, val15 );
 		}
 
 		#endregion
