@@ -154,12 +154,10 @@ namespace Axiom.Overlays
             // max 100 container levels per overlay, should be plenty
             element.NotifyZOrder( zOrder * 100 );
 
-            Matrix4[] xform = new Matrix4[ 256 ];
             GetWorldTransforms( xform );
 
             element.NotifyWorldTransforms( xform );
             element.NotifyViewport();
-
 
         }
 
