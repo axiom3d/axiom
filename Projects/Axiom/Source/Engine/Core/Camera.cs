@@ -1359,17 +1359,17 @@ namespace Axiom.Core
 				outVolume.planes.Add( new Plane( normal, DerivedPosition ) );
 
 				// right plane
-				normal = ul.Direction.Cross( br.Direction );
+				normal = ur.Direction.Cross( br.Direction );
 				normal.Normalize();
 				outVolume.planes.Add( new Plane( normal, DerivedPosition ) );
 
 				// bottom plane
-				normal = ul.Direction.Cross( bl.Direction );
+				normal = br.Direction.Cross( bl.Direction );
 				normal.Normalize();
 				outVolume.planes.Add( new Plane( normal, DerivedPosition ) );
 
 				// left plane
-				normal = ul.Direction.Cross( ul.Direction );
+				normal = bl.Direction.Cross( ul.Direction );
 				normal.Normalize();
 				outVolume.planes.Add( new Plane( normal, DerivedPosition ) );
 			}
