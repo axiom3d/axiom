@@ -169,19 +169,25 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void Bind()
 		{
+            if ( !IsSupported )
+                return;
 			Gl.glEnable( programType );
 			Gl.glBindProgramARB( programType, programId );
 		}
 
 		public override void Unbind()
 		{
-			Gl.glBindProgramARB( programType, 0 );
+            if ( !IsSupported )
+                return;
+            Gl.glBindProgramARB( programType, 0 );
 			Gl.glDisable( programType );
 		}
 
 		public override void BindParameters( GpuProgramParameters parms )
 		{
-			if ( parms.HasFloatConstants )
+            if ( !IsSupported )
+                return;
+            if ( parms.HasFloatConstants )
 			{
 				for ( int index = 0; index < parms.FloatConstantCount; index++ )
 				{
