@@ -115,7 +115,7 @@ namespace Axiom.Overlays
         protected int zOrder;
 
         // world transforms
-        protected Matrix4[] xform = new Matrix4[ 256 ];
+        protected Matrix4[] xform = new Matrix4[1] { Matrix4.Identity };
 
         protected bool isEnabled;
 

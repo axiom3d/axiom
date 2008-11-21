@@ -94,7 +94,10 @@ namespace Axiom.Overlays
         protected float scrollX, scrollY;
         /// <summary>Scale values.</summary>
         protected float scaleX, scaleY;
+        /// <summary> Camera relative transform. </summary>
         protected Matrix4 transform = Matrix4.Identity;
+        /// <summary> Used when passing transform to overlay elements.</summary>
+        protected Matrix4[] xform = new Matrix4[1] { Matrix4.Identity };
         protected bool isTransformOutOfDate;
         protected bool isTransformUpdated;
 
@@ -250,21 +253,21 @@ namespace Axiom.Overlays
                     container.NotifyViewport();
                 }
             }
-            // update elements
-            if ( isTransformUpdated )
-            {
-                Matrix4[] xform = new Matrix4[ 256 ];
-                GetWorldTransforms( xform );
-                for ( int i = 0; i < elementList.Count; i++ )
-                {
-                    OverlayElementContainer container = (OverlayElementContainer)elementList[ i ];
-                    container.NotifyWorldTransforms( xform );
-                }
-                isTransformUpdated = false;
-            }
 
-            if ( isVisible )
+            if (isVisible)
             {
+                // update transform of elements
+                if ( isTransformUpdated )
+                {
+                    GetWorldTransforms( xform );
+                    for ( int i = 0; i < elementList.Count; i++ )
+                    {
+                        OverlayElementContainer container = (OverlayElementContainer)elementList[ i ];
+                        container.NotifyWorldTransforms( xform );
+                    }
+                    isTransformUpdated = false;
+                }
+
                 // add 3d elements
                 rootNode.Position = camera.DerivedPosition;
                 rootNode.Orientation = camera.DerivedOrientation;
@@ -436,11 +439,10 @@ namespace Axiom.Overlays
             Matrix3 scale3x3 = Matrix3.Zero;
 
             rot3x3.FromEulerAnglesXYZ( 0.0f, 0.0f, Utility.DegreesToRadians( rotate ) );
-            scale3x3[ 0, 0 ] = scaleX;
-            scale3x3[ 1, 1 ] = scaleY;
-            scale3x3[ 2, 2 ] = 1.0f;
+            scale3x3.m00 = scaleX;
+            scale3x3.m11 = scaleY;
+            scale3x3.m22 = 1.0f;
 
-            transform = Matrix4.Identity;
             transform = rot3x3 * scale3x3;
             transform.Translation = new Vector3( scrollX, scrollY, 0 );
 
