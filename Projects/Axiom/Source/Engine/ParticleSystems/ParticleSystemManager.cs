@@ -382,10 +382,7 @@ namespace Axiom.ParticleSystems
             {
                 return;
             }
-            ParticleSystem system = (ParticleSystem)systemList[ name ];
-            //systemList[ name ] = null;
-            //systemList.Remove( name );
-            //system.Dispose();
+            systemList.Remove( name );
         }
 
         /// <summary>
@@ -402,10 +399,7 @@ namespace Axiom.ParticleSystems
             {
                 return;
             }
-            //systemList[ name ] = null;
-            //systemList.Remove( sys.Name );
-            //sys.Dispose();
-            sys = null;
+            systemList.Remove( sys.Name );
         }
 
         /// <summary>
