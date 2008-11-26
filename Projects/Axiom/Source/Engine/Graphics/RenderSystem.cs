@@ -935,6 +935,19 @@ namespace Axiom.Graphics
         public abstract Matrix4 MakeOrthoMatrix( float fov, float aspectRatio, float near, float far, bool forGpuPrograms );
 
         /// <summary>
+        /// 	Converts a uniform projection matrix to one suitable for this render system.
+        /// </summary>
+        /// <remarks>
+        ///		Because different APIs have different requirements (some incompatible) for the
+        ///		projection matrix, this method allows each to implement their own correctly and pass
+        ///		back a generic Matrix4 for storage in the engine.
+        ///	 </remarks>
+        /// <param name="matrix"></param>
+        /// <param name="forGpuProgram"></param>
+        /// <returns></returns>
+        public abstract Matrix4 ConvertProjectionMatrix(Matrix4 matrix, bool forGpuProgram);
+
+        /// <summary>
         ///		Builds a perspective projection matrix suitable for this render system.
         /// </summary>
         /// <remarks>
