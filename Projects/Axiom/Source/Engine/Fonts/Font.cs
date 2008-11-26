@@ -122,46 +122,57 @@ namespace Axiom.Fonts
             // dont load more than once
             if ( !isLoaded )
             {
-                // create a material for this font
-                material = (Material)MaterialManager.Instance.Create( "Fonts/" + name );
+                // clarabie - nov 18, 2008
+                // modified this to check for an existing material instead of always
+                // creating a new one. Allows more flexibility, but also specifically allows us to
+                // solve the problem of XNA not having fixed function support
 
-                TextureUnitState unitState = null;
-                bool blendByAlpha = false;
+                material = MaterialManager.Instance.GetByName("Fonts/" + name);
 
-                if ( fontType == FontType.TrueType )
+                if (material == null)
                 {
-                    // create the font bitmap on the fly
-                    CreateTexture();
 
-                    // a texture layer was added in CreateTexture
-                    unitState = material.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 );
+                    // create a material for this font
+                    material = (Material)MaterialManager.Instance.Create("Fonts/" + name);
 
-                    blendByAlpha = true;
-                }
-                else
-                {
-                    // pre-created font images
-                    unitState = material.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( source );
+                    TextureUnitState unitState = null;
+                    bool blendByAlpha = false;
 
-                    // load this texture
-                    // TODO: In general, modify any methods like this that throw their own exception rather than returning null, so the caller can decide how to handle a missing resource.
-                    Texture texture = TextureManager.Instance.Load( source );
+                    if (fontType == FontType.TrueType)
+                    {
+                        // create the font bitmap on the fly
+                        CreateTexture();
 
-                    blendByAlpha = texture.HasAlpha;
-                }
+                        // a texture layer was added in CreateTexture
+                        unitState = material.GetTechnique(0).GetPass(0).GetTextureUnitState(0);
 
-                // set texture addressing mode to Clamp to eliminate fuzzy edges
-                unitState.TextureAddressing = TextureAddressing.Clamp;
+                        blendByAlpha = true;
+                    }
+                    else
+                    {
+                        // pre-created font images
+                        unitState = material.GetTechnique(0).GetPass(0).CreateTextureUnitState(source);
 
-                // set up blending mode
-                if ( blendByAlpha )
-                {
-                    material.SetSceneBlending( SceneBlendType.TransparentAlpha );
-                }
-                else
-                {
-                    // assume black background here
-                    material.SetSceneBlending( SceneBlendType.Add );
+                        // load this texture
+                        // TODO: In general, modify any methods like this that throw their own exception rather than returning null, so the caller can decide how to handle a missing resource.
+                        Texture texture = TextureManager.Instance.Load(source);
+
+                        blendByAlpha = texture.HasAlpha;
+                    }
+
+                    // set texture addressing mode to Clamp to eliminate fuzzy edges
+                    unitState.TextureAddressing = TextureAddressing.Clamp;
+
+                    // set up blending mode
+                    if (blendByAlpha)
+                    {
+                        material.SetSceneBlending(SceneBlendType.TransparentAlpha);
+                    }
+                    else
+                    {
+                        // assume black background here
+                        material.SetSceneBlending(SceneBlendType.Add);
+                    }
                 }
 
                 isLoaded = true;

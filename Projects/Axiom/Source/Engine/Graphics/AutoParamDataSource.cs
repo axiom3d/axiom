@@ -81,10 +81,12 @@ namespace Axiom.Graphics
         ///    Current view matrix;
         /// </summary>
         protected Matrix4 viewMatrix;
+        protected bool viewMatrixDirty;
         /// <summary>
         ///    Current projection matrix.
         /// </summary>
         protected Matrix4 projectionMatrix;
+        protected bool projMatrixDirty;
         /// <summary>
         ///    Current view and projection matrices concatenated.
         /// </summary>
@@ -176,6 +178,8 @@ namespace Axiom.Graphics
             inverseViewMatrixDirty = true;
             cameraPositionObjectSpaceDirty = true;
             textureViewProjMatrixDirty = true;
+            viewMatrixDirty = true;
+            projMatrixDirty = true;
 
             // defaults for the blank light
             blankLight.Diffuse = ColorEx.Black;
@@ -246,6 +250,8 @@ namespace Axiom.Graphics
                 inverseWorldMatrixDirty = true;
                 inverseViewMatrixDirty = true;
                 cameraPositionObjectSpaceDirty = true;
+                viewMatrixDirty = true;
+                projMatrixDirty = true;
             }
         }
 
@@ -269,6 +275,8 @@ namespace Axiom.Graphics
                 inverseWorldMatrixDirty = true;
                 inverseViewMatrixDirty = true;
                 cameraPositionObjectSpaceDirty = true;
+                viewMatrixDirty = true;
+                projMatrixDirty = true;
             }
         }
 
@@ -475,14 +483,38 @@ namespace Axiom.Graphics
         {
             get
             {
-                projectionMatrix = camera.StandardProjectionMatrix;
+                //clarbie nov 26 2008
+                //fixing overlays
+                //projectionMatrix = camera.StandardProjectionMatrix;
 
-                // // Because we're not using setProjectionMatrix, this needs to be done here
-                if ( currentRenderTarget != null && currentRenderTarget.RequiresTextureFlipping )
+                //// // Because we're not using setProjectionMatrix, this needs to be done here
+                //if ( currentRenderTarget != null && currentRenderTarget.RequiresTextureFlipping )
+                //{
+                //    projectionMatrix.m11 = -projectionMatrix.m11;
+                //}
+
+                //return projectionMatrix;
+
+                if (projMatrixDirty)
                 {
-                    projectionMatrix.m11 = -projectionMatrix.m11;
+                    // NB use API-independent projection matrix since GPU programs
+                    // bypass the API-specific handedness and use right-handed coords
+                    if (renderable != null && renderable.UseIdentityProjection)
+                    {
+                        // Use identity projection matrix, still need to take RS depth into account
+                        projectionMatrix =
+                            Root.Instance.RenderSystem.ConvertProjectionMatrix(Matrix4.Identity, true);
+                    }
+                    else
+                    {
+                        projectionMatrix = camera.StandardProjectionMatrix;
+                    }
+                    if (currentRenderTarget != null && currentRenderTarget.RequiresTextureFlipping)
+                    {
+                        projectionMatrix.m11 = -projectionMatrix.m11;
+                    }
+                    projMatrixDirty = false;
                 }
-
                 return projectionMatrix;
             }
         }
@@ -494,7 +526,15 @@ namespace Axiom.Graphics
         {
             get
             {
-                return camera.ViewMatrix;
+                if (viewMatrixDirty)
+                {
+                    if (renderable != null && renderable.UseIdentityView)
+                        viewMatrix = Matrix4.Identity;
+                    else
+                        viewMatrix = camera.ViewMatrix;
+                    viewMatrixDirty = false;
+                }
+                return viewMatrix;
             }
         }
 

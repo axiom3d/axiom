@@ -11,6 +11,25 @@ vertex_program AmbientVP hlsl
 	}
 }
 
+vertex_program OverlayVP hlsl
+{
+	source overlay_vp.hlsl
+	entry_point main
+	target vs_2_0
+
+	default_params
+	{
+		param_named_auto worldViewProj worldviewproj_matrix
+	}
+}
+
+fragment_program OverlayFP hlsl
+{
+	source overlay_fp.hlsl
+	entry_point main
+	target ps_2_0
+}
+
 vertex_program ColorVP hlsl
 {
 	source color_vp.hlsl

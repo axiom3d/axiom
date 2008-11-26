@@ -16,6 +16,7 @@ using Axiom.Configuration;
 using Axiom.RenderSystems.Xna;
 using Axiom.Controllers;
 using Axiom.Controllers.Canned;
+using Axiom.Overlays;
 using System.Reflection;
 using System.Collections;
 
@@ -46,6 +47,12 @@ namespace Axiom.Demos.CE
         protected SceneNode dirLightNode;
         protected Axiom.Core.Light spotLight;
         protected SceneNode spotLightNode;
+        OverlayElement currFPSElement;
+        OverlayElement bestFPSElement;
+        OverlayElement worstFPSElement;
+        OverlayElement averageFPSElement;
+        OverlayElement numTrisElement;
+        protected float statDelay = 0.0f;
 
 		public Game1()
 		{
@@ -66,7 +73,7 @@ namespace Axiom.Demos.CE
                 camera.Position = new Axiom.Math.Vector3( 0, 0, 500 );
                 camera.LookAt( new Axiom.Math.Vector3( 0, 0, -300 ) );
                 // set the near clipping plane to be very close
-                camera.Near = 5;
+                camera.Near = 0.1f;
                 //camera.Far = 100000;
 
                 viewport = window.AddViewport( camera, 0, 0, 1.0f, 1.0f, 100 );
@@ -162,6 +169,14 @@ namespace Axiom.Demos.CE
                 spotLightNode.Visible = false;
                 spotLight.IsVisible = false;
 
+                Overlay o = OverlayManager.Instance.GetByName("Core/DebugOverlay");
+                o.Show();
+
+                currFPSElement = OverlayElementManager.Instance.GetElement("Core/CurrFps");
+                bestFPSElement = OverlayElementManager.Instance.GetElement("Core/BestFps");
+                worstFPSElement = OverlayElementManager.Instance.GetElement("Core/WorstFps");
+                averageFPSElement = OverlayElementManager.Instance.GetElement("Core/AverageFps");
+                numTrisElement = OverlayElementManager.Instance.GetElement("Core/NumTris");
             }
             catch ( Exception ex )
             {
@@ -276,8 +291,28 @@ namespace Axiom.Demos.CE
                 spotLight.Direction = camera.Direction;
             }
 
+            // update performance stats once per second
+            if (statDelay < 0.0f)
+            {
+                UpdateStats();
+                statDelay = 1.0f;
+            }
+            else
+            {
+                statDelay -= dt;
+            }
+
             base.Update(gameTime); 
 		}
+
+        protected void UpdateStats()
+        {
+            currFPSElement.Text = string.Format("Current FPS: {0:#.00}", Root.Instance.CurrentFPS);
+            bestFPSElement.Text = string.Format("Best FPS: {0:#.00}", Root.Instance.BestFPS);
+            worstFPSElement.Text = string.Format("Worst FPS: {0:#.00}", Root.Instance.WorstFPS);
+            averageFPSElement.Text = string.Format("Average FPS: {0:#.00}", Root.Instance.AverageFPS);
+            numTrisElement.Text = string.Format("Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered);
+        }
 
         protected void HideAllLights()
         {

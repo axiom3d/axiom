@@ -71,6 +71,14 @@
       <Importer>HLSLImporter</Importer>
       <Processor>HLSLVSProcessor</Processor>
     </Compile>
+    <None Include="Core.material">
+      <Name>Core</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Debug.overlay">
+      <Name>Debug</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="dragon.material">
       <Name>dragon</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -90,6 +98,20 @@
     </Compile>
     <Compile Include="point_vp.hlsl">
       <Name>point_vp</Name>
+      <Importer>HLSLImporter</Importer>
+      <Processor>HLSLVSProcessor</Processor>
+    </Compile>
+    <None Include="Garamond.fontdef">
+      <Name>Garamond</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Compile Include="overlay_fp.hlsl">
+      <Name>overlay_fp</Name>
+      <Importer>HLSLImporter</Importer>
+      <Processor>HLSLPSProcessor</Processor>
+    </Compile>
+    <Compile Include="overlay_vp.hlsl">
+      <Name>overlay_vp</Name>
       <Importer>HLSLImporter</Importer>
       <Processor>HLSLVSProcessor</Processor>
     </Compile>
@@ -128,6 +150,45 @@
   <ItemGroup>
     <Compile Include="Flare.png">
       <Name>Flare</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Garamond.png">
+      <Name>Garamond</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="axes.png">
+      <Name>axes</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="AxiomLogo.png">
+      <Name>AxiomLogo</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Border.png">
+      <Name>Border</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Border_Break.png">
+      <Name>Border_Break</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Border_Center.png">
+      <Name>Border_Center</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="XnaLogo.jpg">
+      <Name>XnaLogo</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

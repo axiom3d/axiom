@@ -648,6 +648,7 @@
     <Compile Include="Math\Collections\Vector3Collection.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Media\Bitwise.cs" />
     <Compile Include="Media\BMPCodec.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -675,6 +676,10 @@
     <Compile Include="Media\JPGCodec.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Media\OptimizedPixelConversion.cs" />
+    <Compile Include="Media\PixelBox.cs" />
+    <Compile Include="Media\PixelConverter.cs" />
+    <Compile Include="Media\PixelUtil.cs" />
     <Compile Include="Media\PNGCodec.cs">
       <SubType>Code</SubType>
     </Compile>
