@@ -1201,6 +1201,31 @@ namespace Axiom.RenderSystems.Xna
 			return dest;
 		}
 
+        public override Matrix4 ConvertProjectionMatrix(Matrix4 mat, bool forGpuProgram)
+        {
+            Matrix4 dest = new Matrix4(mat.m00, mat.m01, mat.m02, mat.m03,
+                                       mat.m10, mat.m11, mat.m12, mat.m13,
+                                       mat.m20, mat.m21, mat.m22, mat.m23,
+                                       mat.m30, mat.m31, mat.m32, mat.m33);
+
+            // Convert depth range from [-1,+1] to [0,1]
+            dest.m20 = (dest.m20 + dest.m30) / 2.0f;
+            dest.m21 = (dest.m21 + dest.m31) / 2.0f;
+            dest.m22 = (dest.m22 + dest.m32) / 2.0f;
+            dest.m23 = (dest.m23 + dest.m33) / 2.0f;
+
+            if (!forGpuProgram)
+            {
+                // Convert right-handed to left-handed
+                dest.m02 = -dest.m02;
+                dest.m12 = -dest.m12;
+                dest.m22 = -dest.m22;
+                dest.m32 = -dest.m32;
+            }
+
+            return dest;
+        }
+
 		public override Axiom.Math.Matrix4 MakeProjectionMatrix(float fov, float aspectRatio, float near, float far, bool forGpuProgram)
 		{
 			float theta = Utility.DegreesToRadians(fov * 0.5f);
