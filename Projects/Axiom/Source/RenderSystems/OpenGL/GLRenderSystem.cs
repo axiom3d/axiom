@@ -536,6 +536,15 @@ namespace Axiom.RenderSystems.OpenGL
             return matrix;
         }
 
+        public override Matrix4 ConvertProjectionMatrix( Matrix4 matrix, bool forGpuProgram )
+        {
+            // No conversion required for OpenGL
+
+            Matrix4 dest = matrix;
+
+            return dest;
+        }
+
         public override void ApplyObliqueDepthProjection( ref Axiom.Math.Matrix4 projMatrix, Axiom.Math.Plane plane, bool forGpuProgram )
         {
             // Thanks to Eric Lenyel for posting this calculation at www.terathon.com
