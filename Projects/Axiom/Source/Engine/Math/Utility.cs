@@ -41,6 +41,7 @@ using Axiom.Math.Collections;
 using Real = System.Single;
 using Radian = System.Single;
 using Degree = System.Single;
+using Axiom.Utilities;
 
 #endregion Namespace Declarations
 
@@ -489,6 +490,9 @@ namespace Axiom.Math
         /// <returns>A Pair object containing whether the intersection occurred, and the distance between the 2 objects.</returns>
         public static IntersectResult Intersects( Ray ray, AxisAlignedBox box )
         {
+            Contract.RequiresNotNull( ray, "ray" );
+            Contract.RequiresNotNull( box, "box" );
+
             if ( box.IsNull )
             {
                 return new IntersectResult( false, 0 );
@@ -667,6 +671,9 @@ namespace Axiom.Math
         /// Submitted by: romout
         public static Intersection Intersects( AxisAlignedBox boxA, AxisAlignedBox boxB )
         {
+            Contract.RequiresNotNull( boxA, "boxA" );
+            Contract.RequiresNotNull( boxB, "boxB" );
+
             // grab the max and mix vectors for both boxes for comparison
             Vector3 minA = boxA.Minimum;
             Vector3 maxA = boxA.Maximum;
@@ -728,6 +735,9 @@ namespace Axiom.Math
         /// <returns>Struct that contains a bool (hit?) and distance.</returns>
         public static IntersectResult Intersects( Ray ray, Sphere sphere, bool discardInside )
         {
+            Contract.RequiresNotNull( ray, "ray" );
+            Contract.RequiresNotNull( sphere, "sphere" );
+
             Vector3 rayDir = ray.Direction;
             //Adjust ray origin relative to sphere center
             Vector3 rayOrig = ray.Origin - sphere.Center;
@@ -778,6 +788,8 @@ namespace Axiom.Math
         /// <returns>Struct that contains a bool (hit?) and distance.</returns>
         public static IntersectResult Intersects( Ray ray, Plane plane )
         {
+            Contract.RequiresNotNull( ray, "ray" );
+
             float denom = plane.Normal.Dot( ray.Direction );
 
             if ( Utility.Abs( denom ) < float.Epsilon )
@@ -801,6 +813,9 @@ namespace Axiom.Math
         /// <returns>True if there was an intersection, false otherwise.</returns>
         public static bool Intersects( Sphere sphere, AxisAlignedBox box )
         {
+            Contract.RequiresNotNull( sphere, "sphere" );
+            Contract.RequiresNotNull( box, "box" );
+
             if ( box.IsNull )
                 return false;
 
@@ -856,6 +871,8 @@ namespace Axiom.Math
         /// <returns>True if there was an intersection, false otherwise.</returns>
         public static bool Intersects( Plane plane, AxisAlignedBox box )
         {
+            Contract.RequiresNotNull( box, "box" );
+
             if ( box.IsNull )
                 return false;
 
@@ -886,6 +903,8 @@ namespace Axiom.Math
         /// <returns>True if there was an intersection, false otherwise.</returns>
         public static bool Intersects( Sphere sphere, Plane plane )
         {
+            Contract.RequiresNotNull( sphere, "sphere" );
+
             return Utility.Abs( plane.Normal.Dot( sphere.Center ) ) <= sphere.Radius;
         }
 
@@ -897,6 +916,9 @@ namespace Axiom.Math
         /// <returns>Struct that contains a bool (hit?) and distance.</returns>
         public static IntersectResult Intersects( Ray ray, PlaneBoundedVolume volume )
         {
+            Contract.RequiresNotNull( ray, "ray" );
+            Contract.RequiresNotNull( volume, "volume" );
+
             PlaneList planes = volume.planes;
 
             float maxExtDist = 0.0f;
