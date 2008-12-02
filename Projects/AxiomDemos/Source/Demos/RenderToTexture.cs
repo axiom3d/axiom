@@ -33,7 +33,7 @@ namespace Axiom.Demos
             planeNode.Yaw( 30 * e.TimeSinceLastFrame, TransformSpace.Parent );
         }
 
-        protected override void CreateScene()
+        public override void CreateScene()
         {
             // set ambient light
             scene.AmbientLight = new ColorEx( 0.2f, 0.2f, 0.2f );

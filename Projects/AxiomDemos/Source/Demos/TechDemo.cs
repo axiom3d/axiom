@@ -2,7 +2,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Threading;
 
@@ -26,10 +25,32 @@ namespace Axiom.Demos
         #region Protected Fields
 
         protected Root engine;
+        public Root Engine
+        {
+            get
+            {
+                return engine;
+            }
+            set
+            {
+                engine = value;
+            }
+        }
         protected Camera camera;
         protected Viewport viewport;
         protected SceneManager scene;
         protected RenderWindow window;
+        public RenderWindow Window
+        {
+            get
+            {
+                return window;
+            }
+            set
+            {
+                window = value;
+            }
+        }
         protected InputReader input;
         protected Vector3 cameraVector = Vector3.Zero;
         protected float cameraScale;
@@ -63,7 +84,7 @@ namespace Axiom.Demos
         //    return true;
         //}
 
-        protected virtual void CreateCamera()
+        public virtual void CreateCamera()
         {
             // create a camera and initialize its position
             camera = scene.CreateCamera( "MainCamera" );
@@ -106,14 +127,14 @@ namespace Axiom.Demos
 
         #region Protected Virtual Methods
 
-        protected virtual void ChooseSceneManager()
+        public virtual void ChooseSceneManager()
         {
             // Get the SceneManager, a generic one by default
             scene = engine.SceneManagers.GetSceneManager( SceneType.Generic );
             scene.ClearScene();
         }
 
-        protected virtual void CreateViewports()
+        public virtual void CreateViewports()
         {
             Debug.Assert( window != null, "Attempting to use a null RenderWindow." );
 
@@ -194,7 +215,7 @@ namespace Axiom.Demos
         /// <summary>
         /// 
         /// </summary>
-        protected abstract void CreateScene();
+        public abstract void CreateScene();
 
         #endregion Protected Abstract Methods
 
@@ -361,6 +382,7 @@ namespace Axiom.Demos
 
             if ( input.IsKeyPressed( KeyCodes.P ) )
             {
+#if !(XBOX || XBOX360)
                 string[] temp = Directory.GetFiles( Environment.CurrentDirectory, "screenshot*.jpg" );
                 string fileName = string.Format( "screenshot{0}.jpg", temp.Length + 1 );
 
@@ -371,6 +393,7 @@ namespace Axiom.Demos
 
                 // show for 2 seconds
                 debugTextDelay = 2.0f;
+#endif
             }
 
             if ( input.IsKeyPressed( KeyCodes.B ) )

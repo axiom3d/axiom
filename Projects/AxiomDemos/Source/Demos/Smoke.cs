@@ -14,7 +14,7 @@ namespace Axiom.Demos
     /// </summary>
     public class Smoke : TechDemo
     {
-        protected override void CreateScene()
+        public override void CreateScene()
         {
             scene.AmbientLight = new ColorEx( 0.5f, 0.5f, 0.5f );
 

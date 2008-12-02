@@ -16,7 +16,7 @@ namespace Axiom.Demos
     {
         #region Methods
 
-        protected override void CreateScene()
+        public override void CreateScene()
         {
             // set some ambient light
             scene.AmbientLight = new ColorEx( 1.0f, 0.5f, 0.5f, 0.5f );

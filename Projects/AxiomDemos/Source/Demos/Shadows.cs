@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections;
-using System.Drawing;
 
 using Axiom.Animating;
 using Axiom.Controllers;
@@ -53,7 +52,7 @@ namespace Axiom.Demos
 
         int currentShadowTechnique = 0;
 
-        protected override void CreateScene()
+        public override void CreateScene()
         {
             scene.ShadowTechnique = ShadowTechnique.StencilAdditive;
 

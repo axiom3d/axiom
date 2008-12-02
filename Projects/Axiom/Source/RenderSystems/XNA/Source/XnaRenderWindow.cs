@@ -99,12 +99,12 @@ namespace Axiom.RenderSystems.Xna
 			// mMiscParams[2] = Axiom.Core.RenderWindow
 
 #if !(XBOX || XBOX360 || SILVERLIGHT)
-			SWF.Control targetControl = null;
+			IntPtr targetControl = IntPtr.Zero;
 
 			/// get the Direct3D.Device params
 			if ( miscParams.Length > 0 )
 			{
-				targetControl = (System.Windows.Forms.Control)miscParams[ 0 ];
+				targetControl = (IntPtr)miscParams[ 0 ];
 			}
 #endif
 
@@ -150,7 +150,7 @@ namespace Axiom.RenderSystems.Xna
 				presentParams.BackBufferCount = 1;
 				presentParams.EnableAutoDepthStencil = depthBuffer;
 				presentParams.SwapEffect = XFG.SwapEffect.Discard;
-				presentParams.DeviceWindowHandle = targetControl.Handle;
+				presentParams.DeviceWindowHandle = targetControl;
 				presentParams.BackBufferHeight = height;
 				presentParams.BackBufferWidth = width;
 				presentParams.SwapEffect = XFG.SwapEffect.Default;
@@ -234,11 +234,11 @@ namespace Axiom.RenderSystems.Xna
 
 			// if the control is a form, then close it
 #if !(XBOX || XBOX360 || SILVERLIGHT)
-			if ( targetHandle is SWF.Form )
-			{
-				SWF.Form form = targetHandle as SWF.Form;
-				form.Close();
-			}
+            //if ( targetHandle is SWF.Form )
+            //{
+            //    SWF.Form form = targetHandle as SWF.Form;
+            //    form.Close();
+            //}
 #endif
 
 			// dispopse of our back buffer if need be
@@ -305,12 +305,13 @@ namespace Axiom.RenderSystems.Xna
 		{
       IntPtr handle = new IntPtr(0);
 #if !(XBOX || XBOX360 || SILVERLIGHT)
-			SWF.Control control = (SWF.Control)targetHandle;
-			while ( !( control is SWF.Form ) )
-			{
-				control = control.Parent;
-			}
-      handle = control.Handle;
+            //SWF.Control control = (SWF.Control)targetHandle;
+            //while ( !( control is SWF.Form ) )
+            //{
+            //    control = control.Parent;
+            //}
+            //handle = control.Handle;
+            handle = (IntPtr)targetHandle;
 #else
       //handle = (IntPtr)targetHandle;
 #endif

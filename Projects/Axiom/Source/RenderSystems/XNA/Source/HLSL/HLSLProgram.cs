@@ -38,6 +38,9 @@ using System.Diagnostics;
 
 using Axiom.Core;
 using Axiom.Graphics;
+#if (XBOX || XBOX360 || SILVERLIGHT)
+using Axiom.RenderSystems.Xna.Content;
+#endif
 
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
@@ -67,7 +70,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
 #if !(XBOX || XBOX360 || SILVERLIGHT)
         protected XFG.CompiledShader microcode;
 #else
-		protected Axiom.HLSLReader.HLSLCompiledShader compiledShader;
+		protected HlslCompiledShader compiledShader;
 #endif
         /// <summary>
         ///     Holds information about shader constants.
@@ -162,14 +165,14 @@ namespace Axiom.RenderSystems.Xna.HLSL
 			if (!isHighLevelLoaded)
 			{
 				//get the CompiledShader from ContentManager
-				Axiom.Xna.Content.AxiomContentManager acm = new Axiom.Xna.Content.AxiomContentManager((XnaRenderSystem)Root.Instance.RenderSystem, "");
-				Axiom.HLSLReader.HLSLCompiledShaders compiledShaders = acm.Load<Axiom.HLSLReader.HLSLCompiledShaders>(fileName);
+				AxiomContentManager acm = new AxiomContentManager((XnaRenderSystem)Root.Instance.RenderSystem, "");
+				HlslCompiledShaders compiledShaders = acm.Load<HlslCompiledShaders>(fileName);
 				//find compiled shader with matching entry point
-				for (int i = 0; i < compiledShaders.CompiledShaders.Count; ++i)
+				for (int i = 0; i < compiledShaders.Count; ++i)
 				{
-					if (compiledShaders.CompiledShaders[i].EntryPoint == entry)
+					if (compiledShaders[i].EntryPoint == entry)
 					{
-						compiledShader = compiledShaders.CompiledShaders[i];
+						compiledShader = compiledShaders[i];
 						break;
 					}
 				}

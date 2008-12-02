@@ -1,7 +1,6 @@
 #region Namespace Declarations
 
 using System;
-using System.Drawing;
 
 using Axiom.Core;
 using Axiom.Input;
@@ -54,7 +53,7 @@ namespace Axiom.Demos
         }
 
         #region Methods
-        protected override void CreateScene()
+        public override void CreateScene()
         {
             // since whole screen is being redrawn every frame, dont bother clearing
             // option works for GL right now, uncomment to test it out.  huge fps increase

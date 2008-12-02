@@ -926,22 +926,18 @@ namespace Axiom.RenderSystems.Xna
 			return renderTexture;
 		}
 
-		public override RenderWindow CreateRenderWindow(string name, int width, int height, int colorDepth, bool isFullscreen, int left, int top, bool depthBuffer, bool vsync, object target)
+		public override RenderWindow CreateRenderWindow(string name, int width, int height, int colorDepth, bool isFullscreen, int left, int top, bool depthBuffer, bool vsync, IntPtr target)
 		{
 			if (_device == null)
 			{
-#if !(XBOX || XBOX360 || SILVERLIGHT )
 				if (isFullscreen)
 				{
-					_device = InitDevice(isFullscreen, depthBuffer, width, height, colorDepth, (Control)target);
+					_device = InitDevice(isFullscreen, depthBuffer, width, height, colorDepth, target);
 				}
 				else
 				{
-					_device = InitDevice(isFullscreen, depthBuffer, width, height, colorDepth, new Control());
+					_device = InitDevice(isFullscreen, depthBuffer, width, height, colorDepth, IntPtr.Zero);
 				}
-#else
-				_device = InitDevice(isFullscreen, depthBuffer, width, height, colorDepth, new IntPtr());
-#endif
 			}
 
 			RenderWindow window = new XnaRenderWindow();
@@ -957,18 +953,12 @@ namespace Axiom.RenderSystems.Xna
 			return window;
 		}
 
-		private XFG.GraphicsDevice InitDevice(bool isFullscreen, bool depthBuffer, int width, int height, int colorDepth, object target)
+		private XFG.GraphicsDevice InitDevice(bool isFullscreen, bool depthBuffer, int width, int height, int colorDepth, IntPtr target)
 		{
 			if (_device != null)
 			{
 				return _device;
 			}
-
-			IntPtr handle = new IntPtr(0);
-
-#if !(XBOX || XBOX360 || SILVERLIGHT )
-			handle = ((Control)target).Handle;
-#endif
 
 			XFG.GraphicsDevice newDevice;
 
@@ -1066,7 +1056,7 @@ namespace Axiom.RenderSystems.Xna
 				newDevice = new XFG.GraphicsDevice(
 													 XFG.GraphicsAdapter.DefaultAdapter,
 													 XFG.DeviceType.Hardware,
-						   handle,
+						                             target,
 													 presentParams
 													);
 			}
@@ -1078,7 +1068,7 @@ namespace Axiom.RenderSystems.Xna
 					newDevice = new XFG.GraphicsDevice(
 														XFG.GraphicsAdapter.DefaultAdapter,
 														XFG.DeviceType.Hardware,
-							handle,
+							                            target,
 														presentParams
 													   );
 				}
@@ -1089,7 +1079,7 @@ namespace Axiom.RenderSystems.Xna
 					newDevice = new XFG.GraphicsDevice(
 														XFG.GraphicsAdapter.DefaultAdapter,
 														XFG.DeviceType.Hardware,
-							handle,
+							                            target,
 														presentParams
 													   );
 				}
@@ -1140,14 +1130,16 @@ namespace Axiom.RenderSystems.Xna
 				height = int.Parse(vm.Substring(vm.IndexOf("x") + 1, vm.IndexOf("@") - (vm.IndexOf("x") + 1)));
 				bpp = int.Parse(vm.Substring(vm.IndexOf("@") + 1, vm.IndexOf("-") - (vm.IndexOf("@") + 1)));
 
-				//fullScreen = true;// (ConfigOptions["Full Screen"].Value == "Yes");
+#if !(XBOX || XBOX360 || SILVERLIGHT ) // 
+				fullScreen = (ConfigOptions["Full Screen"].Value == "Yes");
+#endif
 
-				object target = null;
+				IntPtr target = IntPtr.Zero;
 
 				// create a default form window
 #if !(XBOX || XBOX360 || SILVERLIGHT )
 				DefaultForm newWindow = _createDefaultForm(windowTitle, 0, 0, width, height, fullScreen);
-				target = newWindow;
+				target = newWindow.Handle;
 #endif
 
 				// create the render window
@@ -1240,6 +1232,31 @@ namespace Axiom.RenderSystems.Xna
 
 			return dest;
 		}
+
+        public override Matrix4 ConvertProjectionMatrix( Matrix4 mat, bool forGpuProgram )
+        {
+            Matrix4 dest = new Matrix4( mat.m00, mat.m01, mat.m02, mat.m03,
+                                       mat.m10, mat.m11, mat.m12, mat.m13,
+                                       mat.m20, mat.m21, mat.m22, mat.m23,
+                                       mat.m30, mat.m31, mat.m32, mat.m33 );
+
+            // Convert depth range from [-1,+1] to [0,1]
+            dest.m20 = ( dest.m20 + dest.m30 ) / 2.0f;
+            dest.m21 = ( dest.m21 + dest.m31 ) / 2.0f;
+            dest.m22 = ( dest.m22 + dest.m32 ) / 2.0f;
+            dest.m23 = ( dest.m23 + dest.m33 ) / 2.0f;
+
+            if ( !forGpuProgram )
+            {
+                // Convert right-handed to left-handed
+                dest.m02 = -dest.m02;
+                dest.m12 = -dest.m12;
+                dest.m22 = -dest.m22;
+                dest.m32 = -dest.m32;
+            }
+
+            return dest;
+        }
 
 
 		XFG.BasicEffect ef;
