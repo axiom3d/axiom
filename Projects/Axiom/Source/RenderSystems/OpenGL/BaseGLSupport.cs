@@ -238,7 +238,7 @@ namespace Axiom.RenderSystems.OpenGL
         /// <param name="vsync"></param>
         /// <returns></returns>
         public abstract RenderWindow NewWindow( string name, int width, int height, int colorDepth, bool fullScreen,
-            int left, int top, bool depthBuffer, bool vsync, object target );
+            int left, int top, bool depthBuffer, bool vsync, IntPtr target );
 
         #endregion Abstract Members
     }

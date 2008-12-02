@@ -133,7 +133,7 @@ namespace Axiom.RenderSystems.OpenGL
         /// <param name="vsync"></param>
         /// <param name="target"></param>
         /// <returns></returns>
-        public override RenderWindow NewWindow( string name, int width, int height, int colorDepth, bool fullScreen, int left, int top, bool depthBuffer, bool vsync, object target )
+        public override RenderWindow NewWindow( string name, int width, int height, int colorDepth, bool fullScreen, int left, int top, bool depthBuffer, bool vsync, IntPtr target )
         {
             SdlWindow window = new SdlWindow();
             window.Create( name, width, height, colorDepth, fullScreen, left, top, depthBuffer, vsync );
@@ -167,7 +167,7 @@ namespace Axiom.RenderSystems.OpenGL
                 fullScreen = ( ConfigOptions[ "Full Screen" ].Value == "Yes" );
 
                 // create the window with the default form as the target
-                autoWindow = renderSystem.CreateRenderWindow( windowTitle, width, height, 32, fullScreen, 0, 0, true, false, null );
+                autoWindow = renderSystem.CreateRenderWindow( windowTitle, width, height, 32, fullScreen, 0, 0, true, false, IntPtr.Zero );
             }
 
             return autoWindow;

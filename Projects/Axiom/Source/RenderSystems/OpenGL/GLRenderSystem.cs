@@ -248,7 +248,7 @@ namespace Axiom.RenderSystems.OpenGL
         }
 
         public override RenderWindow CreateRenderWindow( string name, int width, int height, int colorDepth,
-            bool isFullscreen, int left, int top, bool depthBuffer, bool vsync, object target )
+            bool isFullscreen, int left, int top, bool depthBuffer, bool vsync, IntPtr target )
         {
 
             // TODO: Check for dupe windows

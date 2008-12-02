@@ -301,7 +301,8 @@ namespace Axiom.Platforms.Win32
             this.window = window;
 
             // for Windows, this should be a S.W.F.Control
-            control = window.Handle as System.Windows.Forms.Control;
+            control = System.Windows.Forms.Control.FromHandle( (IntPtr)window.Handle );
+            //control = window.Handle as System.Windows.Forms.Control;
 
             if ( control is System.Windows.Forms.Form )
             {

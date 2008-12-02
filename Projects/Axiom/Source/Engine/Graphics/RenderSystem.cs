@@ -897,7 +897,7 @@ namespace Axiom.Graphics
         ///	</param>
         /// <returns></returns>
         public abstract RenderWindow CreateRenderWindow( string name, int width, int height, int colorDepth,
-            bool isFullscreen, int left, int top, bool depthBuffer, bool vsync, object target );
+            bool isFullscreen, int left, int top, bool depthBuffer, bool vsync, IntPtr target );
 
         /// <summary>
         ///		Requests an API implementation of a hardware occlusion query used to test for the number

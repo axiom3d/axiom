@@ -147,7 +147,7 @@ namespace Axiom.RenderSystems.OpenGL
                 DefaultForm form = CreateDefaultForm( windowTitle, 0, 0, width, height, fullscreen );
 
                 // create the window with the default form as the target
-                autoWindow = renderSystem.CreateRenderWindow( windowTitle, width, height, bpp, fullscreen, 0, 0, true, false, form.Target );
+                autoWindow = renderSystem.CreateRenderWindow( windowTitle, width, height, bpp, fullscreen, 0, 0, true, false, form.Target.Handle );
 
                 // set the default form's renderwindow so it can access it internally
                 form.RenderWindow = autoWindow;
@@ -159,7 +159,7 @@ namespace Axiom.RenderSystems.OpenGL
             return autoWindow;
         }
 
-        public override Axiom.Graphics.RenderWindow NewWindow( string name, int width, int height, int colorDepth, bool fullScreen, int left, int top, bool depthBuffer, bool vsync, object target )
+        public override Axiom.Graphics.RenderWindow NewWindow( string name, int width, int height, int colorDepth, bool fullScreen, int left, int top, bool depthBuffer, bool vsync, IntPtr target )
         {
             Win32Window window = new Win32Window();
 
