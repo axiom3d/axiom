@@ -51,7 +51,7 @@ namespace Axiom.Demos
 
         #region Methods
 
-        protected override void CreateScene()
+        public override void CreateScene()
         {
             // Check gpu caps
             if ( !GpuProgramManager.Instance.IsSyntaxSupported( "ps_2_0" ) &&

@@ -41,7 +41,9 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 
-using Axiom.Xna.Content;
+#if (XBOX || XBOX360 || SILVERLIGHT)
+using Axiom.RenderSystems.Xna.Content;
+#endif
 
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;

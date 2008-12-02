@@ -156,22 +156,7 @@ namespace Axiom.RenderSystems.Xna
 		protected override void LoadFromSource()
 		{
 			//we should never get here
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		}
+        }
 
 		#endregion GpuProgram Members
 

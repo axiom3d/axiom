@@ -75,7 +75,7 @@ namespace Axiom.Demos
         #region Methods
 
         // Just override the mandatory create scene method
-        protected override void CreateScene()
+        public override void CreateScene()
         {
             RAND = new Random( 0 ); // najak: use a time-based seed
             GuiMgr = OverlayElementManager.Instance;
@@ -502,6 +502,7 @@ namespace Axiom.Demos
                 HandleUserModeInput( string.Format( "Show Overlays = {0}.", viewport.OverlaysEnabled ) );
             }
 
+#if !(XBOX || XBOX360 )
             // 'P' Captures Screenshot (like 'Print' command)
             if ( input.IsKeyPressed( KeyCodes.P ) )
             {
@@ -511,6 +512,7 @@ namespace Axiom.Demos
                 TakeScreenshot( fileName );
                 HandleUserModeInput( string.Format( "Wrote screenshot '{0}'.", fileName ) );
             }
+#endif
         } // end ReadUserModeInputs()
 
         // Process Rapid Inputs (adjust Demo settings)

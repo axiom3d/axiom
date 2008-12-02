@@ -22,12 +22,12 @@ namespace Axiom.Demos
         const float FLOW_HEIGHT = 0.8f;
         const float FLOW_SPEED = 0.2f;
 
-        protected override void ChooseSceneManager()
+        public override void ChooseSceneManager()
         {
             scene = SceneManagerEnumerator.Instance.GetSceneManager( SceneType.ExteriorClose );
         }
 
-        protected override void CreateCamera()
+        public override void CreateCamera()
         {
             camera = scene.CreateCamera( "PlayerCam" );
 
@@ -37,7 +37,7 @@ namespace Axiom.Demos
             camera.Far = 384;
         }
 
-        protected override void CreateScene()
+        public override void CreateScene()
         {
             viewport.BackgroundColor = ColorEx.White;
 
