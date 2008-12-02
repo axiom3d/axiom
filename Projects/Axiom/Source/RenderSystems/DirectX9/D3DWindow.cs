@@ -202,11 +202,12 @@ namespace Axiom.RenderSystems.DirectX9
         {
             base.Dispose();
 
+            Control targetWindow = Control.FromHandle( targetHandle );
+
             // if the control is a form, then close it
-            if ( targetHandle is System.Windows.Forms.Form )
+            if ( targetWindow is System.Windows.Forms.Form )
             {
-                Form form = targetHandle as System.Windows.Forms.Form;
-                form.Close();
+                ((System.Windows.Forms.Form)targetWindow).Close();
             }
 
             // dispopse of our back buffer if need be
@@ -348,7 +349,7 @@ namespace Axiom.RenderSystems.DirectX9
             if ( !IsFullScreen )
             {
                 // whatever our target control is, we need to walk up the chain and find the parent form
-                Control control = (Control)targetHandle;
+                Control control = Control.FromHandle(targetHandle);
 
                 while ( !( control is Form ) )
                 {

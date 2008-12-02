@@ -474,7 +474,7 @@ namespace Axiom.Core
         ///	 </param>
         /// <returns></returns>
         public RenderWindow CreateRenderWindow( string name, int width, int height, int colorDepth,
-            bool isFullscreen, int left, int top, bool depthBuffer, bool vsync, object targetHandle )
+            bool isFullscreen, int left, int top, bool depthBuffer, bool vsync, IntPtr targetHandle )
         {
 
             Debug.Assert( activeRenderSystem != null, "Cannot create a RenderWindow without an active RenderSystem." );

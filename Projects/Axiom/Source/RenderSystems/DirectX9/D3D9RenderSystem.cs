@@ -299,13 +299,17 @@ namespace Axiom.RenderSystems.DirectX9
             return new D3DHardwareOcclusionQuery( device );
         }
 
-        public override RenderWindow CreateRenderWindow( string name, int width, int height, int colorDepth, bool isFullscreen, int left, int top, bool depthBuffer, bool vsync, object target )
+        public override RenderWindow CreateRenderWindow( string name, int width, int height, int colorDepth, bool isFullscreen, int left, int top, bool depthBuffer, bool vsync, IntPtr target )
         {
+            Control targetWindow = Control.FromHandle( target );
+            if ( targetWindow == null )
+                targetWindow = new Control();
+
             if ( device == null )
             {
                 if ( isFullscreen )
                 {
-                    device = InitDevice( isFullscreen, depthBuffer, width, height, colorDepth, (Control)target );
+                    device = InitDevice( isFullscreen, depthBuffer, width, height, colorDepth, targetWindow );
                 }
                 else
                 {
@@ -318,7 +322,7 @@ namespace Axiom.RenderSystems.DirectX9
             window.Handle = target;
 
             // create the window
-            window.Create( name, width, height, colorDepth, isFullscreen, left, top, depthBuffer, (Control)target, device );
+            window.Create( name, width, height, colorDepth, isFullscreen, left, top, depthBuffer, targetWindow, device );
 
             // add the new render target
             AttachRenderTarget( window );
@@ -590,7 +594,7 @@ namespace Axiom.RenderSystems.DirectX9
                 DefaultForm newWindow = CreateDefaultForm( windowTitle, 0, 0, width, height, fullScreen );
 
                 // create the render window
-                renderWindow = CreateRenderWindow( "Main Window", width, height, bpp, fullScreen, 0, 0, true, false, newWindow );
+                renderWindow = CreateRenderWindow( "Main Window", width, height, bpp, fullScreen, 0, 0, true, false, newWindow.Handle );
 
                 // use W buffer when in 16 bit color mode
                 useWBuffer = ( renderWindow.ColorDepth == 16 );

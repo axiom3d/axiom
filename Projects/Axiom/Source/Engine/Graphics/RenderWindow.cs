@@ -66,7 +66,7 @@ namespace Axiom.Graphics
 
         protected int top, left;
         protected bool isFullScreen;
-        protected object targetHandle;
+        protected IntPtr targetHandle;
 
         #endregion
 
@@ -172,7 +172,7 @@ namespace Axiom.Graphics
             }
         }
 
-        public object Handle
+        public IntPtr Handle
         {
             get
             {

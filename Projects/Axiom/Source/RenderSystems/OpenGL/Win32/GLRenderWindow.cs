@@ -107,7 +107,7 @@ namespace Axiom.RenderSystems.OpenGL
                 }
 
                 // grab the HWND from the supplied target control
-                hWnd = (IntPtr)( (Control)this.Handle ).Handle;
+                hWnd = this.Handle;
 
                 Gdi.PIXELFORMATDESCRIPTOR pfd = new Gdi.PIXELFORMATDESCRIPTOR();
                 pfd.nSize = (short)Marshal.SizeOf( pfd );
