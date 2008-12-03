@@ -118,10 +118,10 @@ namespace Axiom.RenderSystems.Xna
         {
         }
 
-        public XnaTexture(string name, XFG.GraphicsDevice device, TextureType type, int width, int height, int numMipMaps, PixelFormat format, TextureUsage usage)
+        public XnaTexture( string name, XFG.GraphicsDevice device, TextureType type, int width, int height, int numMipMaps, PixelFormat format, TextureUsage usage )
         {
             Debug.Assert( device != null, "Cannot create a texture without a valid Xna Device." );
-            
+
             this.name = name;
             this.usage = usage;
             this.textureType = type;
@@ -138,12 +138,12 @@ namespace Axiom.RenderSystems.Xna
             // save off the params used to create the Direct3D device
             this.device = device;
             devParms = device.CreationParameters;
-            
+
             // get the pixel format of the back buffer
             bbPixelFormat = device.DisplayMode.Format;
 
-            SetSrcAttributes(width, height, 1, format);
-           
+            SetSrcAttributes( width, height, 1, format );
+
             // if render target, create the texture up front
             if ( usage == TextureUsage.RenderTarget )
             {
@@ -171,7 +171,7 @@ namespace Axiom.RenderSystems.Xna
             {
                 return texture;
             }
-            
+
         }
 
         public XFG.Texture2D NormalTexture
@@ -236,7 +236,7 @@ namespace Axiom.RenderSystems.Xna
                 case TextureType.TwoD:
                     LoadNormalTexture();
                     break;
-                   
+
                 case TextureType.ThreeD:
                     LoadVolumeTexture();
                     break;
@@ -303,10 +303,11 @@ namespace Axiom.RenderSystems.Xna
 
 #if (XBOX || XBOX360 || SILVERLIGHT)
             AxiomContentManager acm = new AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "");
-            texture = acm.Load<XFG.Texture2D>( name );
+            normTexture = acm.Load<XFG.Texture2D>( name );
+            texture = normTexture;
 			isLoaded = true;
-#else		
-            Stream stream = TextureManager.FindCommonResourceData(name);
+#else
+            Stream stream = TextureManager.FindCommonResourceData( name );
             // use D3DX to load the image directly from the stream
             normTexture = XFG.Texture2D.FromFile(device, stream);
             // store a ref for the base texture interface
@@ -318,12 +319,11 @@ namespace Axiom.RenderSystems.Xna
             SetFinalAttributes(desc.Width, desc.Height, 1, ConvertFormat(desc.Format));
             isLoaded = true;
 
-            /*Stream stream = TextureManager.FindCommonResourceData(name);
-            Image img = Image.FromStream(stream, name.Substring(name.Length - 3, 3));
-            LoadImage(img);
-            stream.Position = 0;
-            SetFinalAttributes(img.Width, img.Height, 1, img.Format);
-            isLoaded = true;*/
+            //Image img = Image.FromStream( stream, name.Substring( name.Length - 3, 3 ) );
+            //LoadImage( img );
+            //stream.Position = 0;
+            //SetFinalAttributes( img.Width, img.Height, 1, img.Format );
+            //isLoaded = true;
 #endif
         }
 
@@ -336,32 +336,32 @@ namespace Axiom.RenderSystems.Xna
 
             Image image = new Image();
 
-            image= Image.FromFile( cubeFaceNames[ 0 ] );
+            image = Image.FromFile( cubeFaceNames[ 0 ] );
             SetSrcAttributes( image.Width, image.Height, 1, image.Format );
             //SetFinalAttributes(image.Width, image.Height, 1, image.Format);
 
             // create the memory for the cube texture
             CreateCubeTexture();
-                
+
             //BlitImagesToCubeTex();
-            for (int face = 0; face < 6; face++)
+            for ( int face = 0; face < 6; face++ )
             {
-              Stream stream = TextureManager.FindCommonResourceData(cubeFaceNames[face]);
-              Image img = Image.FromStream(stream, cubeFaceNames[face].Substring(cubeFaceNames[face].Length - 3, 3));
-              XFG.Color[] cols = new XFG.Color[img.Width * img.Height];
-              int i, j = 0;
-              j = i = 0;
-              foreach (XFG.Color col in cols)
-              {
-                cols[j] = new Microsoft.Xna.Framework.Graphics.Color(img.Data[i + 2], img.Data[i + 1], img.Data[i], 0);
-                i += 3;
-                j++;
-              }
-              cubeTexture.SetData<XFG.Color>((Microsoft.Xna.Framework.Graphics.CubeMapFace)face, cols);
+                Stream stream = TextureManager.FindCommonResourceData( cubeFaceNames[ face ] );
+                Image img = Image.FromStream( stream, cubeFaceNames[ face ].Substring( cubeFaceNames[ face ].Length - 3, 3 ) );
+                XFG.Color[] cols = new XFG.Color[ img.Width * img.Height ];
+                int i, j = 0;
+                j = i = 0;
+                foreach ( XFG.Color col in cols )
+                {
+                    cols[ j ] = new Microsoft.Xna.Framework.Graphics.Color( img.Data[ i + 2 ], img.Data[ i + 1 ], img.Data[ i ], 0 );
+                    i += 3;
+                    j++;
+                }
+                cubeTexture.SetData<XFG.Color>( (Microsoft.Xna.Framework.Graphics.CubeMapFace)face, cols );
             }
-            
-            cubeTexture.GenerateMipMaps(GetBestFilterMethod());
-            
+
+            cubeTexture.GenerateMipMaps( GetBestFilterMethod() );
+
             isLoaded = true;
         }
 
@@ -376,14 +376,14 @@ namespace Axiom.RenderSystems.Xna
             Stream stream = TextureManager.Instance.FindResourceData( name );
 
             // load the cube texture from the image data stream directly
-            volumeTexture = XFG.Texture3D.FromFile(device, stream);    
+            volumeTexture = XFG.Texture3D.FromFile( device, stream );
 
             // store off a base reference
             texture = volumeTexture;
 
             // set src and dest attributes to the same, we can't know
             stream.Position = 0;
-            XFG.TextureInformation desc = XFG.Texture3D.GetTextureInformation(stream);
+            XFG.TextureInformation desc = XFG.Texture3D.GetTextureInformation( stream );
             SetSrcAttributes( desc.Width, desc.Height, desc.Depth, ConvertFormat( desc.Format ) );
             SetFinalAttributes( desc.Width, desc.Height, desc.Depth, ConvertFormat( desc.Format ) );
 #endif
@@ -398,18 +398,18 @@ namespace Axiom.RenderSystems.Xna
 
             // use current back buffer format for render textures, else use the one
             // defined by this texture format
-            XFG.SurfaceFormat d3dPixelFormat=
-            //D3D.Format d3dPixelFormat =
-                (usage == TextureUsage.RenderTarget) ? bbPixelFormat : ((XFG.SurfaceFormat)ChooseD3DFormat());
+            XFG.SurfaceFormat d3dPixelFormat =
+                //D3D.Format d3dPixelFormat =
+                ( usage == TextureUsage.RenderTarget ) ? bbPixelFormat : ( (XFG.SurfaceFormat)ChooseD3DFormat() );
 
             // set the appropriate usage based on the usage of this texture
             XFG.TextureUsage d3dUsage =
-                (usage == TextureUsage.RenderTarget) ? XFG.TextureUsage.Tiled: 0;
+                ( usage == TextureUsage.RenderTarget ) ? XFG.TextureUsage.Tiled : 0;
 
             // how many mips to use?  make sure its at least one
             int numMips = ( numMipMaps > 0 ) ? numMipMaps : 1;
 
-            if ( devCaps.TextureCapabilities.SupportsMipCubeMap)
+            if ( devCaps.TextureCapabilities.SupportsMipCubeMap )
             {
                 if ( this.CanAutoGenMipMaps( d3dUsage, XFG.ResourceType.TextureCube, d3dPixelFormat ) )
                 {
@@ -425,7 +425,7 @@ namespace Axiom.RenderSystems.Xna
             }
 
             // HACK: Why does Managed D3D report R8G8B8 as an invalid format....
-            if (d3dPixelFormat == XFG.SurfaceFormat.Bgr24)
+            if ( d3dPixelFormat == XFG.SurfaceFormat.Bgr24 )
             {
                 d3dPixelFormat = XFG.SurfaceFormat.Color;
             }
@@ -436,14 +436,14 @@ namespace Axiom.RenderSystems.Xna
                  srcWidth,
                  numMips,
                  d3dUsage,
-                 d3dPixelFormat);
-                 //(usage == TextureUsage.RenderTarget) ? XFG..ResourceManagementMode.Manual : XFG.ResourceManagementMode.Automatic);
+                 d3dPixelFormat );
+            //(usage == TextureUsage.RenderTarget) ? XFG..ResourceManagementMode.Manual : XFG.ResourceManagementMode.Automatic);
 
             // set the final texture attributes
             //Stream stream = TextureManager.Instance.FindResourceData(cubeFaceNames[i]);
-            
-           // XFG.TextureInformation desc = XFG.TextureCube.GetTextureInformation(stream);
-           // SetFinalAttributes(desc.Width, desc.Height, 1, ConvertFormat(desc.Format));
+
+            // XFG.TextureInformation desc = XFG.TextureCube.GetTextureInformation(stream);
+            // SetFinalAttributes(desc.Width, desc.Height, 1, ConvertFormat(desc.Format));
 
             // store base reference to the texture
             texture = cubeTexture;
@@ -473,7 +473,7 @@ namespace Axiom.RenderSystems.Xna
                 srcHeight,
                 // TODO: Verify this goes through, this is ridiculous
                 surface.Format,
-                surface.MultiSampleType,surface.MultiSampleQuality);
+                surface.MultiSampleType, surface.MultiSampleQuality );
         }
 
         private void CreateNormalTexture()
@@ -487,16 +487,16 @@ namespace Axiom.RenderSystems.Xna
 
             // set the appropriate usage based on the usage of this texture
             XFG.TextureUsage d3dUsage =
-                ( usage == TextureUsage.RenderTarget ) ? XFG.TextureUsage.Tiled:0;
+                ( usage == TextureUsage.RenderTarget ) ? XFG.TextureUsage.Tiled : 0;
 
             // how many mips to use?  make sure its at least one
             int numMips = ( numMipMaps > 0 ) ? numMipMaps : 1;
 #if !(XBOX || XBOX360 || SILVERLIGHT)
-            XFG.TextureCreationParameters texRequire = new XFG.TextureCreationParameters();  
+            XFG.TextureCreationParameters texRequire = new XFG.TextureCreationParameters();
             texRequire.Width = srcWidth;
             texRequire.Height = srcHeight;
 #endif
- 
+
 
             if ( devCaps.TextureCapabilities.SupportsMipMap && numMipMaps > 0 )
             {
@@ -513,7 +513,7 @@ namespace Axiom.RenderSystems.Xna
 #if !(XBOX || XBOX360 || SILVERLIGHT)
                         texRequire.MipLevels = numMips;
                         texRequire.Format = d3dPixelFormat;
-                        
+
                         //D3D.TextureLoader.CheckTextureRequirements( device, d3dUsage, D3D.Pool.SystemMemory, out texRequire );
                         numMips = texRequire.MipLevels;
                         d3dPixelFormat = texRequire.Format;
@@ -526,7 +526,7 @@ namespace Axiom.RenderSystems.Xna
                             srcHeight,
                             numMips,
                             d3dUsage,
-                            d3dPixelFormat);
+                            d3dPixelFormat );
                     }
                 }
             }
@@ -546,11 +546,11 @@ namespace Axiom.RenderSystems.Xna
             d3dPixelFormat = texRequire.Format;// XFG.SurfaceFormat.Color;
 #endif
 
-       
+
 
             if ( usage == TextureUsage.RenderTarget )
             {
-                testtarget  = new XFG.RenderTarget2D(device, srcWidth, srcHeight, numMips, Microsoft.Xna.Framework.Graphics.SurfaceFormat.Color);//d3dPixelFormat);
+                testtarget = new XFG.RenderTarget2D( device, srcWidth, srcHeight, numMips, Microsoft.Xna.Framework.Graphics.SurfaceFormat.Color );//d3dPixelFormat);
                 CreateDepthStencil();
             }
             else
@@ -560,32 +560,32 @@ namespace Axiom.RenderSystems.Xna
                             srcWidth,
                             srcHeight,
                             numMips, XFG.TextureUsage.None,
-                            d3dPixelFormat);
-                 
-            
+                            d3dPixelFormat );
+
+
             }
         }
 
         private void BlitImageToNormalTexture( Image image )
         {
             //CopyMemoryToSurface(image.Data, normTexture);
-            XFG.Color[] cols = new XFG.Color[image.Width*image.Height];
+            XFG.Color[] cols = new XFG.Color[ image.Width * image.Height ];
 
-            int i,j = 0;
-            j=i = 0;
-            foreach (XFG.Color col in cols)
+            int i, j = 0;
+            j = i = 0;
+            foreach ( XFG.Color col in cols )
             {
-                cols[j] = new Microsoft.Xna.Framework.Graphics.Color(image.Data[i+2], image.Data[i + 1], image.Data[i],0);
+                cols[ j ] = new Microsoft.Xna.Framework.Graphics.Color( image.Data[ i ], image.Data[ i + 1 ], image.Data[ i + 2 ], 0 );
                 i += 3;
                 j++;
             }
-            normTexture.SetData<XFG.Color>(cols);
+            normTexture.SetData<XFG.Color>( cols );
 
             //normTexture.Save("test" + zzz.ToString() + ".jpg", Microsoft.Xna.Framework.Graphics.ImageFileFormat.Jpg);
             //zzz++;
 
             texture = normTexture;
-            texture.GenerateMipMaps(GetBestFilterMethod());
+            texture.GenerateMipMaps( GetBestFilterMethod() );
         }
 
         /*unsafe  private void CopyMemoryToSurface( byte[] buffer, XFG.Texture2D surface )
@@ -710,103 +710,103 @@ namespace Axiom.RenderSystems.Xna
             surface.Save(str, XFG.ImageFileFormat.Jpg);
         }*/
 
-       /*private uint ConvertBitPattern( uint srcValue, uint srcBitMask, uint destBitMask )
-        {
-            // Mask off irrelevant source value bits (if any)
-            srcValue = srcValue & srcBitMask;
+        /*private uint ConvertBitPattern( uint srcValue, uint srcBitMask, uint destBitMask )
+         {
+             // Mask off irrelevant source value bits (if any)
+             srcValue = srcValue & srcBitMask;
 
-            // Shift source down to bottom of DWORD
-            int srcBitShift = GetBitShift( srcBitMask );
-            srcValue >>= srcBitShift;
+             // Shift source down to bottom of DWORD
+             int srcBitShift = GetBitShift( srcBitMask );
+             srcValue >>= srcBitShift;
 
-            // Get max value possible in source from srcMask
-            uint srcMax = srcBitMask >> srcBitShift;
+             // Get max value possible in source from srcMask
+             uint srcMax = srcBitMask >> srcBitShift;
 
-            // Get max avaiable in dest
-            int destBitShift = GetBitShift( destBitMask );
-            uint destMax = destBitMask >> destBitShift;
+             // Get max avaiable in dest
+             int destBitShift = GetBitShift( destBitMask );
+             uint destMax = destBitMask >> destBitShift;
 
-            // Scale source value into destination, and shift back
-            uint destValue = ( srcValue * destMax ) / srcMax;
-            return ( destValue << destBitShift );
-        }
+             // Scale source value into destination, and shift back
+             uint destValue = ( srcValue * destMax ) / srcMax;
+             return ( destValue << destBitShift );
+         }
 
-        private int GetBitShift( uint mask )
-        {
-            if ( mask == 0 )
-                return 0;
+         private int GetBitShift( uint mask )
+         {
+             if ( mask == 0 )
+                 return 0;
 
-            int result = 0;
-            while ( ( mask & 1 ) == 0 )
-            {
-                ++result;
-                mask >>= 1;
-            }
-            return result;
-        }
+             int result = 0;
+             while ( ( mask & 1 ) == 0 )
+             {
+                 ++result;
+                 mask >>= 1;
+             }
+             return result;
+         }
 
-        private void GetColorMasks(XFG.SurfaceFormat format, out uint red, out uint green, out uint blue, out uint alpha, out uint rgbBitCount)
-        {
-            // we choose the format of the D3D texture so check only for our pf types...
-            switch (format)
-            {
-                case XFG.SurfaceFormat.Bgr32:
-                    red = 0x00FF0000;
-                    green = 0x0000FF00;
-                    blue = 0x000000FF;
-                    alpha = 0x00000000;
-                    rgbBitCount = 32;
-                    break;
-                case XFG.SurfaceFormat.Bgr24:
-                    red = 0x00FF0000;
-                    green = 0x0000FF00;
-                    blue = 0x000000FF;
-                    alpha = 0x00000000;
-                    rgbBitCount = 24;
-                    break;
-                case XFG.SurfaceFormat.Color:
-                    red = 0x00FF0000;
-                    green = 0x0000FF00;
-                    blue = 0x000000FF;
-                    alpha = 0xFF000000;
-                    rgbBitCount = 32;
-                    break;
-                case XFG.SurfaceFormat.Bgr555:
-                    red = 0x00007C00;
-                    green = 0x000003E0;
-                    blue = 0x0000001F;
-                    alpha = 0x00000000;
-                    rgbBitCount = 16;
-                    break;
-                case XFG.SurfaceFormat.Bgr565:
-                    red = 0x0000F800;
-                    green = 0x000007E0;
-                    blue = 0x0000001F;
-                    alpha = 0x00000000;
-                    rgbBitCount = 16;
-                    break;
-                case XFG.SurfaceFormat.Bgra4444:
-                    red = 0x00000F00;
-                    green = 0x000000F0;
-                    blue = 0x0000000F;
-                    alpha = 0x0000F000;
-                    rgbBitCount = 16;
-                    break;
-                default:
-                    throw new AxiomException("Unknown D3D pixel format, this should not happen !!!");
-            }
-        }
-        */
+         private void GetColorMasks(XFG.SurfaceFormat format, out uint red, out uint green, out uint blue, out uint alpha, out uint rgbBitCount)
+         {
+             // we choose the format of the D3D texture so check only for our pf types...
+             switch (format)
+             {
+                 case XFG.SurfaceFormat.Bgr32:
+                     red = 0x00FF0000;
+                     green = 0x0000FF00;
+                     blue = 0x000000FF;
+                     alpha = 0x00000000;
+                     rgbBitCount = 32;
+                     break;
+                 case XFG.SurfaceFormat.Bgr24:
+                     red = 0x00FF0000;
+                     green = 0x0000FF00;
+                     blue = 0x000000FF;
+                     alpha = 0x00000000;
+                     rgbBitCount = 24;
+                     break;
+                 case XFG.SurfaceFormat.Color:
+                     red = 0x00FF0000;
+                     green = 0x0000FF00;
+                     blue = 0x000000FF;
+                     alpha = 0xFF000000;
+                     rgbBitCount = 32;
+                     break;
+                 case XFG.SurfaceFormat.Bgr555:
+                     red = 0x00007C00;
+                     green = 0x000003E0;
+                     blue = 0x0000001F;
+                     alpha = 0x00000000;
+                     rgbBitCount = 16;
+                     break;
+                 case XFG.SurfaceFormat.Bgr565:
+                     red = 0x0000F800;
+                     green = 0x000007E0;
+                     blue = 0x0000001F;
+                     alpha = 0x00000000;
+                     rgbBitCount = 16;
+                     break;
+                 case XFG.SurfaceFormat.Bgra4444:
+                     red = 0x00000F00;
+                     green = 0x000000F0;
+                     blue = 0x0000000F;
+                     alpha = 0x0000F000;
+                     rgbBitCount = 16;
+                     break;
+                 default:
+                     throw new AxiomException("Unknown D3D pixel format, this should not happen !!!");
+             }
+         }
+         */
         private XFG.TextureFilter GetBestFilterMethod()
         {
             // those MUST be initialized !!!
-            Debug.Assert(device != null);
-            Debug.Assert(texture != null);
+            Debug.Assert( device != null );
+            Debug.Assert( texture != null );
 
             XFG.GraphicsDeviceCapabilities.FilterCaps filterCaps;
             // Minification filter is used for mipmap generation
             // Pick the best one supported for this tex type
-            switch (this.TextureType)
+            switch ( this.TextureType )
             {
                 case TextureType.OneD: // Same as 2D
                 case TextureType.TwoD:
@@ -821,15 +821,15 @@ namespace Axiom.RenderSystems.Xna
                 default:
                     return XFG.TextureFilter.Point;
             }
-            if (filterCaps.SupportsMinifyGaussianQuad)
+            if ( filterCaps.SupportsMinifyGaussianQuad )
                 return XFG.TextureFilter.GaussianQuad;
-            if (filterCaps.SupportsMinifyPyramidalQuad)
+            if ( filterCaps.SupportsMinifyPyramidalQuad )
                 return XFG.TextureFilter.PyramidalQuad;
-            if (filterCaps.SupportsMinifyAnisotropic)
+            if ( filterCaps.SupportsMinifyAnisotropic )
                 return XFG.TextureFilter.Anisotropic;
-            if (filterCaps.SupportsMinifyLinear)
+            if ( filterCaps.SupportsMinifyLinear )
                 return XFG.TextureFilter.Linear;
-            if (filterCaps.SupportsMinifyPoint)
+            if ( filterCaps.SupportsMinifyPoint )
                 return XFG.TextureFilter.Point;
             return XFG.TextureFilter.Point;
         }
@@ -904,13 +904,13 @@ namespace Axiom.RenderSystems.Xna
         {
             Debug.Assert( device != null );
 
-            if ( device.GraphicsDeviceCapabilities.DriverCapabilities.CanAutoGenerateMipMap)
+            if ( device.GraphicsDeviceCapabilities.DriverCapabilities.CanAutoGenerateMipMap )
             {
                 // make sure we can do it!
                 return XFG.GraphicsAdapter.DefaultAdapter.CheckDeviceFormat(
                    XFG.DeviceType.Hardware,
                    XFG.SurfaceFormat.Color,
-                   srcUsage | XFG.TextureUsage.AutoGenerateMipMap, XFG.QueryUsages.None, srcType, srcFormat); 
+                   srcUsage | XFG.TextureUsage.AutoGenerateMipMap, XFG.QueryUsages.None, srcType, srcFormat );
             }
 
             return false;
@@ -920,12 +920,12 @@ namespace Axiom.RenderSystems.Xna
         {
             //seems to work, saving the texture as file shows the render texture as it should be
             XnaTexture texture = (XnaTexture)target;
-            
+
             if ( target.TextureType == TextureType.TwoD )
             {
-                device.SetRenderTarget(0, null);
-                 texture.texture= testtarget.GetTexture();
-                 //texture.texture.Save("test.jpg", Microsoft.Xna.Framework.Graphics.ImageFileFormat.Jpg);
+                device.SetRenderTarget( 0, null );
+                texture.texture = testtarget.GetTexture();
+                //texture.texture.Save("test.jpg", Microsoft.Xna.Framework.Graphics.ImageFileFormat.Jpg);
             }
             else
             {
@@ -938,9 +938,9 @@ namespace Axiom.RenderSystems.Xna
         /// </summary>
         private void CreateTexture()
         {
-            Debug.Assert(srcWidth > 0 && srcHeight > 0);
+            Debug.Assert( srcWidth > 0 && srcHeight > 0 );
 
-            switch (this.TextureType)
+            switch ( this.TextureType )
             {
                 case TextureType.OneD:
                 case TextureType.TwoD:
@@ -954,31 +954,31 @@ namespace Axiom.RenderSystems.Xna
 
                     break;
                 default:
-                    throw new Exception("Unknown texture type!");
+                    throw new Exception( "Unknown texture type!" );
             }
         }
 
         private XFG.SurfaceFormat ChooseD3DFormat()
         {
-            if (finalBpp > 16 && hasAlpha)
+            if ( finalBpp > 16 && hasAlpha )
             {
                 return XFG.SurfaceFormat.Color;
             }
-            else if (finalBpp > 16 && !hasAlpha)
+            else if ( finalBpp > 16 && !hasAlpha )
             {
                 return XFG.SurfaceFormat.Bgr32;
             }
-            else if (finalBpp == 16 && hasAlpha)
+            else if ( finalBpp == 16 && hasAlpha )
             {
                 return XFG.SurfaceFormat.Bgra4444;
             }
-            else if (finalBpp == 16 && !hasAlpha)
+            else if ( finalBpp == 16 && !hasAlpha )
             {
                 return XFG.SurfaceFormat.Bgr565;
             }
             else
             {
-                throw new Exception("Unknown pixel format!");
+                throw new Exception( "Unknown pixel format!" );
             }
         }
 
@@ -987,9 +987,9 @@ namespace Axiom.RenderSystems.Xna
         /// </summary>
         /// <param name="format"></param>
         /// <returns></returns>
-        public PixelFormat ConvertFormat(XFG.SurfaceFormat format)
+        public PixelFormat ConvertFormat( XFG.SurfaceFormat format )
         {
-            switch (format)
+            switch ( format )
             {
                 case XFG.SurfaceFormat.Alpha8:
                     return PixelFormat.A8;
@@ -1019,9 +1019,9 @@ namespace Axiom.RenderSystems.Xna
         /// </summary>
         /// <param name="format"></param>
         /// <returns></returns>
-        public XFG.SurfaceFormat ConvertFormat(PixelFormat format)
+        public XFG.SurfaceFormat ConvertFormat( PixelFormat format )
         {
-            switch (format)
+            switch ( format )
             {
                 case PixelFormat.L8:
                     return XFG.SurfaceFormat.Luminance8;
@@ -1097,7 +1097,7 @@ namespace Axiom.RenderSystems.Xna
 
             if ( isLoaded )
             {
-                if (renderTarget != null)
+                if ( renderTarget != null )
                     renderTarget.Dispose();
                 if ( texture != null )
                 {
