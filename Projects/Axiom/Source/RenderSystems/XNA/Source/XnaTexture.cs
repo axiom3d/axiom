@@ -307,12 +307,23 @@ namespace Axiom.RenderSystems.Xna
 			isLoaded = true;
 #else		
             Stream stream = TextureManager.FindCommonResourceData(name);
+            // use D3DX to load the image directly from the stream
+            normTexture = XFG.Texture2D.FromFile(device, stream);
+            // store a ref for the base texture interface
+            texture = normTexture;
+            stream.Position = 0;
+            // set the image data attributes
+            XFG.TextureInformation desc = XFG.Texture2D.GetTextureInformation(stream);
+            SetSrcAttributes(desc.Width, desc.Height, 1, ConvertFormat(desc.Format));
+            SetFinalAttributes(desc.Width, desc.Height, 1, ConvertFormat(desc.Format));
+            isLoaded = true;
 
+            /*Stream stream = TextureManager.FindCommonResourceData(name);
             Image img = Image.FromStream(stream, name.Substring(name.Length - 3, 3));
             LoadImage(img);
             stream.Position = 0;
             SetFinalAttributes(img.Width, img.Height, 1, img.Format);
-            isLoaded = true;
+            isLoaded = true;*/
 #endif
         }
 
