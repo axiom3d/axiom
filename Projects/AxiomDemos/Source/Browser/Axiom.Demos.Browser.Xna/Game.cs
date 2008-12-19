@@ -17,21 +17,6 @@ using System.Collections.Generic;
 
 namespace Axiom.Demos.Browser.Xna
 {
-    public interface IMyListItem
-    {
-    }
-
-    public interface IMyList : IList<IMyListItem>
-    {
-    }
-
-    public class MyListItem : IMyListItem
-    {
-    }
-
-    public class MyList : IMyList
-    {
-    }
     /// <summary>
     /// Demo command line browser entry point.
     /// </summary>
