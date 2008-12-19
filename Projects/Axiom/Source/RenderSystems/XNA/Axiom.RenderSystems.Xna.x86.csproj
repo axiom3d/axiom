@@ -83,7 +83,6 @@
     <Compile Include="Source\Plugin.cs" />
     <Compile Include="Source\VideoMode.cs" />
     <Compile Include="Source\VideoModeCollection.cs" />
-    <Compile Include="Source\XnaFixedFunctionEmulation.cs" />
     <Compile Include="Source\XnaGpuProgram.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -173,6 +172,10 @@
     <ProjectReference Include="..\..\Engine\Axiom.CE.x86.csproj">
       <Project>{1829AA64-8988-4CA9-BEEB-19CD95919C53}</Project>
       <Name>Axiom.CE.x86</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.csproj">
+      <Project>{6E5E6221-0235-49C9-9273-449F5F0E8EF6}</Project>
+      <Name>Axiom.RenderSystems.Xna.Content</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
