@@ -177,11 +177,11 @@ namespace Axiom.Demos
 
             // call the overridden CreateScene method
             CreateScene();
-
+#if !( XBOX || XBOX360 )
             // retreive and initialize the input system
             input = PlatformManager.Instance.CreateInputReader();
             input.Initialize( window, true, true, false, false );
-
+#endif
             return true;
         }
 
@@ -276,6 +276,7 @@ namespace Axiom.Demos
             // set the scaling of camera motion
             cameraScale = 100 * e.TimeSinceLastFrame;
 
+#if !( XBOX || XBOX360 )
             // TODO: Move this into an event queueing mechanism that is processed every frame
             input.Capture();
 
@@ -370,7 +371,6 @@ namespace Axiom.Demos
                         aniso = 1;
                         break;
                 }
-
                 Console.WriteLine( "Texture Filtering changed to '{0}'.", filtering );
 
                 // set the new default
@@ -382,7 +382,6 @@ namespace Axiom.Demos
 
             if ( input.IsKeyPressed( KeyCodes.P ) )
             {
-#if !(XBOX || XBOX360)
                 string[] temp = Directory.GetFiles( Environment.CurrentDirectory, "screenshot*.jpg" );
                 string fileName = string.Format( "screenshot{0}.jpg", temp.Length + 1 );
 
@@ -393,7 +392,6 @@ namespace Axiom.Demos
 
                 // show for 2 seconds
                 debugTextDelay = 2.0f;
-#endif
             }
 
             if ( input.IsKeyPressed( KeyCodes.B ) )
@@ -430,6 +428,7 @@ namespace Axiom.Demos
             {
                 camVelocity *= ( 1 - ( 6 * e.TimeSinceLastFrame ) );
             }
+#endif
 
             // update performance stats once per second
             if ( statDelay < 0.0f && showDebugOverlay )

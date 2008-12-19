@@ -11,12 +11,27 @@ using Axiom.Graphics;
 using Axiom.Configuration;
 using System.Reflection;
 using System.Collections;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Demos.Browser.Xna
 {
+    public interface IMyListItem
+    {
+    }
 
+    public interface IMyList : IList<IMyListItem>
+    {
+    }
+
+    public class MyListItem : IMyListItem
+    {
+    }
+
+    public class MyList : IMyList
+    {
+    }
     /// <summary>
     /// Demo command line browser entry point.
     /// </summary>
@@ -41,6 +56,7 @@ namespace Axiom.Demos.Browser.Xna
             Root.Instance.RenderSystem = Root.Instance.RenderSystems[ 0 ];
             _setupResources();
 
+            engine.FrameStarted += new FrameEvent( engine_FrameStarted );
 #if !(XBOX || XBOX360 || SILVERLIGHT)
             //ConfigDialog dlg = new ConfigDialog();
             //DialogResult result = dlg.ShowDialog();
@@ -49,6 +65,12 @@ namespace Axiom.Demos.Browser.Xna
 #endif
 
             return true;
+        }
+
+        void engine_FrameStarted( object source, FrameEventArgs e )
+        {
+            Axiom.Overlays.OverlayManager.Instance.GetByName( "Core/XnaOverlay" ).Show();
+            engine.FrameStarted -= new FrameEvent( engine_FrameStarted );
         }
 
         /// <summary>
@@ -60,11 +82,19 @@ namespace Axiom.Demos.Browser.Xna
             ResourceManager.AddCommonArchive( "Content\\Fonts", "Folder" );
             ResourceManager.AddCommonArchive( "Content\\GpuPrograms", "Folder" );
             ResourceManager.AddCommonArchive( "Content\\Icons", "Folder" );
+#if !( XBOX || XBOX360 )
             ResourceManager.AddCommonArchive( "Content\\Materials", "Folder" );
+#else
+            ResourceManager.AddCommonArchive( "Content\\XBox", "Folder" );
+#endif
             ResourceManager.AddCommonArchive( "Content\\Meshes", "Folder" );
             ResourceManager.AddCommonArchive( "Content\\Overlays", "Folder" );
             ResourceManager.AddCommonArchive( "Content\\Skeletons", "Folder" );
             ResourceManager.AddCommonArchive( "Content\\Textures", "Folder" );
+#if !( XBOX || XBOX360 )
+            ResourceManager.AddCommonArchive( "Content\\Textures\\Skyboxes.zip", "ZipFile" );
+#endif
+
         }
 
         public void Run()

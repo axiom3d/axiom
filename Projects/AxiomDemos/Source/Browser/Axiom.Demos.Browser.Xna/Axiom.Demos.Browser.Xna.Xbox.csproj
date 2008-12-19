@@ -58,9 +58,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Game.cs" />
-    <Compile Include="Menu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Game1.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\..\..\..\Lib\Native\Win32\DevIL.dll">
@@ -150,6 +148,10 @@
     <ProjectReference Include="..\..\..\..\Axiom\Source\RenderSystems\XNA\Axiom.RenderSystems.Xna.Xbox.csproj">
       <Project>{0CC816A6-62C5-416B-BFF5-DBB924A389E9}</Project>
       <Name>Axiom.RenderSystems.Xna.Xbox</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\Source\Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.Xbox.csproj">
+      <Project>{40F18D53-5A6E-48AE-A767-5F5AAE891837}</Project>
+      <Name>Axiom.RenderSystems.Xna.Content.Xbox</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Demos\Axiom.Demos.Xna.Xbox.csproj">
       <Project>{ebf98b3b-3d1a-45ec-b2c9-0ac31dce3ee4}</Project>
