@@ -81,7 +81,7 @@ namespace Axiom.ParticleFX
             // point emitter emits starting from its own position
             particle.Position = pos + particle.ParentSet.WorldPosition;
 
-            GenerateEmissionColor( particle.Color );
+            GenerateEmissionColor( ref particle.Color );
             particle.Direction = particle.ParentSet.WorldPosition - particle.Position;
             GenerateEmissionVelocity( ref particle.Direction );
 
