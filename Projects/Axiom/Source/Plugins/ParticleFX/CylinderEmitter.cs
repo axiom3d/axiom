@@ -88,7 +88,7 @@ namespace Axiom.ParticleFX
             particle.Position = position + xOff * xRange + yOff * yRange * zOff * zRange;
 
             // Generate complex data by reference
-            GenerateEmissionColor( particle.Color );
+            GenerateEmissionColor( ref particle.Color );
             GenerateEmissionDirection( ref particle.Direction );
             GenerateEmissionVelocity( ref particle.Direction );
 

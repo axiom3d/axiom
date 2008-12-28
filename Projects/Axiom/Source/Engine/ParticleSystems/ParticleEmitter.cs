@@ -734,7 +734,7 @@ namespace Axiom.ParticleSystems
         /// <param name="color">
         ///    The color object that will be altered depending on the method of generating the particle color.
         /// </param>
-        protected virtual void GenerateEmissionColor( ColorEx color )
+        protected virtual void GenerateEmissionColor( ref ColorEx color )
         {
             if ( colorRangeStart.CompareTo( colorRangeEnd ) != 0 )
             {
