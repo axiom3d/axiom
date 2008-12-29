@@ -930,7 +930,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			if (_device == null)
 			{
-				if (isFullscreen)
+				if (!isFullscreen)
 				{
 					_device = InitDevice(isFullscreen, depthBuffer, width, height, colorDepth, target);
 				}

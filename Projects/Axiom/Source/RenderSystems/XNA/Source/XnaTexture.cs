@@ -353,7 +353,7 @@ namespace Axiom.RenderSystems.Xna
                 j = i = 0;
                 foreach ( XFG.Color col in cols )
                 {
-                    cols[ j ] = new Microsoft.Xna.Framework.Graphics.Color( img.Data[ i + 2 ], img.Data[ i + 1 ], img.Data[ i ], 0 );
+                    cols[ j ] = new Microsoft.Xna.Framework.Graphics.Color( img.Data[ i ], img.Data[ i + 1 ], img.Data[ i + 2 ], 0 );
                     i += 3;
                     j++;
                 }
