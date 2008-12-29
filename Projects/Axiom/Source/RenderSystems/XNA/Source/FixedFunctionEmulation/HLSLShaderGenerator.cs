@@ -256,7 +256,23 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		    {
 			    String layerCounter = Convert.ToString(i);
 
-                if (texCordVecType.ContainsKey(i))
+                switch (fixedFunctionState.TextureLayerStates[i].TextureType)
+                {
+                    case TextureType.OneD:
+                        shaderSource += "\tfloat1 Texcoord" + layerCounter + " : TEXCOORD" + layerCounter + ";\n";
+                        break;
+                    case TextureType.TwoD:
+                        shaderSource += "\tfloat2 Texcoord" + layerCounter + " : TEXCOORD" + layerCounter + ";\n";
+                        break;
+                    case TextureType.ThreeD:
+                        shaderSource += "\tfloat3 Texcoord" + layerCounter + " : TEXCOORD" + layerCounter + ";\n";
+                        break;
+                    case TextureType.CubeMap:
+                        shaderSource += "\tfloat3 Texcoord" + layerCounter + " : TEXCOORD" + layerCounter + ";\n";
+                        break;
+                    
+                }
+                /*if (texCordVecType.ContainsKey(i))
                     switch (texCordVecType[i])
                     {
                         case VertexElementType.Float1:
@@ -273,7 +289,10 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                 {
                     //fix sometimes there are more texture layer states than textures ?? (water demo)
                     shaderSource += "\tfloat2 Texcoord" + layerCounter + " : TEXCOORD" + layerCounter + ";\n";
-                }
+                }*/
+
+
+
 
 		    }
 
@@ -364,13 +383,24 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                     case TexCoordCalcMethod.EnvironmentMapPlanar:
                         break;
                     case TexCoordCalcMethod.EnvironmentMapReflection:
-                        //assert(curTextureLayerState.getTextureType() == TEX_TYPE_CUBE_MAP);
+
                         shaderSource += "\t{\n";
+                        shaderSource += "\t\tNormal = mul(float4(Normal, 0),World).xyz;\n";
+
+                        shaderSource += "\t\tfloat3 eye= float3(ViewIT[3][0],ViewIT[3][1],ViewIT[3][2]);\n";
+                        shaderSource += "\t\tfloat4 LookAt= float4(worldPos-eye,0)  ;\n";
+
+                        shaderSource += "\t\tLookAt = normalize(LookAt);\n";
+                        shaderSource += "\t\tNormal= normalize(Normal);\n";
+                        shaderSource += "\t\toutput.Texcoord" + layerCounter + " = reflect(LookAt.xyz,Normal);\n";
+                        shaderSource += "\t}\n";
+
+                        /*shaderSource += "\t{\n";
                         shaderSource += "\t\tfloat4 worldNorm = mul(float4(Normal, 0), World);\n";
                         shaderSource += "\t\tfloat4 viewNorm = mul(worldNorm, View);\n";
                         shaderSource += "\t\tviewNorm = normalize(viewNorm);\n";
                         shaderSource += "\t\toutput.Texcoord" + layerCounter + " = reflect(viewNorm.xyz, float3(0.0,0.0,-1.0));\n";
-                        shaderSource += "\t}\n";
+                        shaderSource += "\t}\n";*/
                         break;
                     case TexCoordCalcMethod.EnvironmentMapNormal:
                         break;
@@ -612,7 +642,10 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
                         break;
                     case TextureType.CubeMap:
-                        shaderSource += "\t\ttexColor  = texCUBE(Texture" + layerCounter + ", float3(input.Texcoord" + layerCounter + ".x, input.Texcoord" + layerCounter + ".y, 0.0));\n";
+                        //seems like the mipmapping are not generated, texCube is supposed to choose the right mipmap
+                        //texCUBElod permits to choose one, 0 here
+                        //shaderSource += "\t\ttexColor  = texCUBE(Texture" + layerCounter + ", input.Texcoord" + layerCounter + ");\n";
+                        shaderSource += "\t\ttexColor  = texCUBElod(Texture" + layerCounter + ", float4(input.Texcoord" + layerCounter + ",0));\n";
                         break;
                     case TextureType.ThreeD:
                         if (texCordVecType.ContainsKey(i))
