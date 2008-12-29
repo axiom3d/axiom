@@ -427,8 +427,8 @@ namespace Axiom.SceneManagers.Octree
                 else
                 {
                     AddOctreeNode( node, octree );
-                    return;
                 }
+                return;
             }
 
             if ( !node.IsInBox( node.Octant.Box ) )

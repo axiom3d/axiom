@@ -162,7 +162,6 @@ namespace Axiom.SceneManagers.Octree
 
         public void AddNode( OctreeNode node )
         {
-            // TODO: Att some points, some nodes seemed to be added if they already existed.  Investigate.
             nodeList[ node.Name ] = node;
             node.Octant = this;
             Ref();
@@ -176,7 +175,7 @@ namespace Axiom.SceneManagers.Octree
 
             Index = NodeList.Count - 1;
 
-            for ( i = Index; i > 0; i-- )
+            for ( i = Index; i >= 0; i-- )
             {
                 check = (OctreeNode)NodeList[ i ];
 
