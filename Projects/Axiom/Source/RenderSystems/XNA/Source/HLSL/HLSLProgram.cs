@@ -78,7 +78,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
         protected XFG.ShaderConstantTable constantTable;
 
 #if !(XBOX || XBOX360 || SILVERLIGHT)
-		private HLSLIncludeHandler _includeHandler = new HLSLIncludeHandler();
+        private HLSLIncludeHandler _includeHandler = new HLSLIncludeHandler();
 #endif
 
         #endregion Fields
@@ -129,15 +129,15 @@ namespace Axiom.RenderSystems.Xna.HLSL
 #if !(XBOX || XBOX360 || SILVERLIGHT)
             string errors = null;
 
-			switch ( type )
-			{
-				case GpuProgramType.Vertex:
-					target = "vs_3_0";
-					break;
-				case GpuProgramType.Fragment:
-					target = "ps_3_0";
-					break;
-			}
+            switch ( type )
+            {
+                case GpuProgramType.Vertex:
+                    target = "vs_3_0";
+                    break;
+                case GpuProgramType.Fragment:
+                    target = "ps_3_0";
+                    break;
+            }
 
             // compile the high level shader to low level microcode
             // note, we need to pack matrices in row-major format for HLSL
@@ -206,7 +206,6 @@ namespace Axiom.RenderSystems.Xna.HLSL
         /// </summary>
         protected override void UnloadImpl()
         {
-            //microcode.Close();
             constantTable = null;
         }
 
@@ -241,7 +240,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
         protected void ProcessParamElement( string prefix, int index, GpuProgramParameters parms )
         {
             XFG.ShaderConstant constant = constantTable.Constants[ index ];
-            
+
             string paramName = constant.Name;
 
             // trim the odd '$' which appears at the start of the names in HLSL
@@ -251,13 +250,13 @@ namespace Axiom.RenderSystems.Xna.HLSL
             }
 
             // If it's an array, elements will be > 1
-            for (int e = 0; e < constant.ElementCount; e++)
+            for ( int e = 0; e < constant.ElementCount; e++ )
             {
                 if ( constant.ParameterClass == XFG.EffectParameterClass.Struct )
                 {
                     // work out a new prefix for the nextest members
                     // if its an array, we need the index
-                    if (constant.ElementCount > 1 )
+                    if ( constant.ElementCount > 1 )
                     {
                         prefix += string.Format( "{0}[{1}].", paramName, e );
                     }
@@ -276,7 +275,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
                 {
                     // process params
                     if ( constant.ParameterType == XFG.EffectParameterType.Single ||
-                         constant.ParameterType == XFG.EffectParameterType.Int32  ||
+                         constant.ParameterType == XFG.EffectParameterType.Int32 ||
                          constant.ParameterType == XFG.EffectParameterType.Bool )
                     {
 
@@ -300,22 +299,38 @@ namespace Axiom.RenderSystems.Xna.HLSL
         {
             switch ( target.ToLower() )
             {
-                case "vs_1_1":  return XFG.ShaderProfile.VS_1_1;  break;
-                case "vs_2_0":  return XFG.ShaderProfile.VS_2_0;  break;
-                case "vs_2_a":  return XFG.ShaderProfile.VS_2_A;  break;
-                case "vs_2_sw": return XFG.ShaderProfile.VS_2_SW; break;
-                case "vs_3_0":  return XFG.ShaderProfile.VS_3_0;  break;
-                case "ps_1_1":  return XFG.ShaderProfile.PS_1_1;  break;
-                case "ps_1_2":  return XFG.ShaderProfile.PS_1_2;  break;
-                case "ps_1_3":  return XFG.ShaderProfile.PS_1_3;  break;
-                case "ps_1_4":  return XFG.ShaderProfile.PS_1_4;  break;
-                case "ps_2_0":  return XFG.ShaderProfile.PS_2_0;  break;
-                case "ps_2_a":  return XFG.ShaderProfile.PS_2_A;  break;
-                case "ps_2_b":  return XFG.ShaderProfile.PS_2_B;  break;
-                case "ps_2_sw": return XFG.ShaderProfile.PS_2_SW; break;
-                case "ps_3_0":  return XFG.ShaderProfile.PS_3_0;  break;
-                case "xps_3_0": return XFG.ShaderProfile.XPS_3_0; break;
-                case "xvs_3_0": return XFG.ShaderProfile.XVS_3_0; break;
+                case "vs_1_1":
+                    return XFG.ShaderProfile.VS_1_1;
+                case "vs_2_0":
+                    return XFG.ShaderProfile.VS_2_0;
+                case "vs_2_a":
+                    return XFG.ShaderProfile.VS_2_A;
+                case "vs_2_sw":
+                    return XFG.ShaderProfile.VS_2_SW;
+                case "vs_3_0":
+                    return XFG.ShaderProfile.VS_3_0;
+                case "ps_1_1":
+                    return XFG.ShaderProfile.PS_1_1;
+                case "ps_1_2":
+                    return XFG.ShaderProfile.PS_1_2;
+                case "ps_1_3":
+                    return XFG.ShaderProfile.PS_1_3;
+                case "ps_1_4":
+                    return XFG.ShaderProfile.PS_1_4;
+                case "ps_2_0":
+                    return XFG.ShaderProfile.PS_2_0;
+                case "ps_2_a":
+                    return XFG.ShaderProfile.PS_2_A;
+                case "ps_2_b":
+                    return XFG.ShaderProfile.PS_2_B;
+                case "ps_2_sw":
+                    return XFG.ShaderProfile.PS_2_SW;
+                case "ps_3_0":
+                    return XFG.ShaderProfile.PS_3_0;
+                case "xps_3_0":
+                    return XFG.ShaderProfile.XPS_3_0;
+                case "xvs_3_0":
+                    return XFG.ShaderProfile.XVS_3_0;
             }
             return XFG.ShaderProfile.Unknown; // This will cause the ShaderCompiler to barf.
         }
@@ -354,5 +369,5 @@ namespace Axiom.RenderSystems.Xna.HLSL
         }
 
         #endregion IConfigurable Members
-	}
+    }
 }
