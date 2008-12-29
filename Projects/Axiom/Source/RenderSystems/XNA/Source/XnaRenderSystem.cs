@@ -1302,7 +1302,8 @@ namespace Axiom.RenderSystems.Xna
 					Axiom.RenderSystems.Xna.FixedFunctionEmulation.TextureLayerState tls
 											= new Axiom.RenderSystems.Xna.FixedFunctionEmulation.TextureLayerState();
 
-					if (texStageDesc[i].tex != null)
+                    if (texStageDesc[i].Enabled)
+					//if (texStageDesc[i].tex != null)
 					{
 						tls.TextureType = texStageDesc[i].texType;
 						tls.TexCoordCalcMethod = texStageDesc[i].autoTexCoordType;
@@ -1491,7 +1492,8 @@ namespace Axiom.RenderSystems.Xna
 			// disable fog if set to none
 			/*if ( mode == Axiom.Graphics.FogMode.None )
 			{
-				_device.RenderState.FogTableMode = XFG.FogMode.None;
+                _device.RenderState.FogTableMode = Microsoft.Xna.Framework.Graphics.FogMode.None;
+                  
 				_device.RenderState.FogEnable = false;
 			}
 			else
@@ -1499,13 +1501,13 @@ namespace Axiom.RenderSystems.Xna
 				// enable fog
 				XFG.Color col = XnaHelper.Convert( color );
 				_device.RenderState.FogEnable = true;
-				_device.RenderState.FogVertexMode = XnaHelper.Convert( mode );
-				_device.RenderState.FogTableMode = XnaHelper.Convert( mode );
-				_device.RenderState.FogColor = XFG.Color.Blue;// new ColorEx.Blue();// col;
-				_device.RenderState.FogStart = start;
-				_device.RenderState.FogEnd = end;
-				_device.RenderState.FogDensity = density;
-				_device.RenderState.RangeFogEnable = true; 
+				_device.RenderState.FogVertexMode =XnaHelper.Convert(mode);
+				_device.RenderState.FogTableMode= XnaHelper.Convert(mode);
+				_device.RenderState.FogColor= col;
+				_device.RenderState.FogStart= start;
+				_device.RenderState.FogEnd= end;
+				_device.RenderState.FogDensity= density;
+				_device.RenderState.RangeFogEnable= true; 
 			}*/
 			#endregion
 
@@ -1576,7 +1578,8 @@ namespace Axiom.RenderSystems.Xna
 		public override void SetTexture(int stage, bool enabled, string textureName)
 		{
 			XnaTexture texture = (XnaTexture)TextureManager.Instance.GetByName(textureName);
-			if (enabled && texture != null)
+            texStageDesc[stage].Enabled = enabled;
+            if (enabled && texture != null)
 			{
 				_device.Textures[stage] = texture.DXTexture;
 				// set stage description
@@ -1611,8 +1614,11 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void SetTextureBlendMode(int stage, LayerBlendModeEx blendMode)
 		{
-			//if(blendMode.blendType== LayerBlendType.Alpha)
-			texStageDesc[stage].layerBlendMode = blendMode;
+            if (blendMode.blendType == LayerBlendType.Color)
+            {
+                texStageDesc[stage].layerBlendMode = blendMode;
+                texStageDesc[stage].Enabled = true;
+            }
 
 		}
 
