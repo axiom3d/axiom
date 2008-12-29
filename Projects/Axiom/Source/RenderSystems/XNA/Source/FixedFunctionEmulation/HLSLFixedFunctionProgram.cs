@@ -108,7 +108,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                             {
                                 _setProgramParameter(GpuProgramType.Vertex, prefix + "Position",curLight.DerivedPosition);
                                 _setProgramParameter(GpuProgramType.Vertex, prefix + "Range", curLight.AttenuationRange);
-                                Axiom.Math.Vector3 attenuation;
+                                Axiom.Math.Vector3 attenuation = Axiom.Math.Vector3.Zero;
                                 attenuation.x = curLight.AttenuationConstant;
                                 attenuation.y = curLight.AttenuationLinear;
                                 attenuation.z = curLight.AttenuationQuadratic;

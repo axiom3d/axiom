@@ -36,7 +36,7 @@ namespace Axiom.RenderSystems.Xna.Content
 
 		public override string GetRuntimeReader(TargetPlatform targetPlatform)
 		{
-            return "Axiom.RenderSystems.Xna.Content.HlslReader, Axiom.RenderSystems.Xna.Content";
+            return "Axiom.RenderSystems.Xna.Content.HlslCompiledShaderReader, Axiom.RenderSystems.Xna.Content";
 		}
     }
 }
