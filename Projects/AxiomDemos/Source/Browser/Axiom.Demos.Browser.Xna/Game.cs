@@ -42,12 +42,6 @@ namespace Axiom.Demos.Browser.Xna
             _setupResources();
 
             engine.FrameStarted += new FrameEvent( engine_FrameStarted );
-#if !(XBOX || XBOX360 || SILVERLIGHT)
-            //ConfigDialog dlg = new ConfigDialog();
-            //DialogResult result = dlg.ShowDialog();
-            //if ( result == DialogResult.Cancel )
-            //    return false;
-#endif
 
             return true;
         }
@@ -78,60 +72,20 @@ namespace Axiom.Demos.Browser.Xna
             ResourceManager.AddCommonArchive( "Content\\Textures", "Folder" );
 #if !( XBOX || XBOX360 )
             ResourceManager.AddCommonArchive( "Content\\Textures\\Skyboxes.zip", "ZipFile" );
+            ResourceManager.AddCommonArchive( "Content\\Archives\\chiropteraDM.zip", "ZipFile" );
 #endif
 
         }
 
         public void Run()
         {
-#if !(XBOX || XBOX360 || SILVERLIGHT)
-            ArrayList demoList = new ArrayList();
-#endif
             try
             {
-#if !(XBOX || XBOX360 || SILVERLIGHT)
                 if ( _configure() )
                 {
-
                     Assembly demos = Assembly.LoadFrom( "Axiom.Demos.dll" );
-                    //Type[] demoTypes = demos.GetTypes();
-                    //Type techDemo = demos.GetType( "Axiom.Demos.TechDemo" );
 
-                    //foreach ( Type demoType in demoTypes )
-                    //{
-                    //    if ( demoType.IsSubclassOf( techDemo ) )
-                    //    {
-                    //        demoList.Add( demoType.Name );
-                    //    }
-                    //}
-
-                    //// TODO: Display list of available demos and allow the user to select one, or exit.
                     string next = "ParticleFX";
-
-                    ////while ( next != "exit" )
-                    ////{
-                    //int i = 1;
-                    //foreach ( string typeName in demoList )
-                    //{
-                    //    Console.WriteLine( "{0}) {1}", i++, typeName );
-                    //}
-                    //Console.WriteLine( "Enter the number of the demo that you want to run and press enter." );
-                    //while ( true )
-                    //{
-                    //    string line = Console.ReadLine();
-                    //    int number = -1;
-                    //    if ( line != string.Empty )
-                    //    {
-                    //        number = int.Parse( line.Trim() );
-                    //    }
-                    //    if ( number < 1 || number > demoList.Count )
-                    //        Console.WriteLine( "The number of the demo game must be between 1 and {0}, the number of demos games available.", demoList.Count );
-                    //    else
-                    //    {
-                    //        next = (string)demoList[ number - 1 ];
-                    //        break;
-                    //    }
-                    //}
 
                     Type type = demos.GetType( "Axiom.Demos." + next );
 
@@ -142,18 +96,7 @@ namespace Axiom.Demos.Browser.Xna
                             demo.Start();//show and start rendering
                         }//dispose of it when done
                     }
-                    //}
-
                 }
-#else
-                if ( _configure() )
-                {
-                    using ( TechDemo demo = (TechDemo)( new Axiom.Demos.SkyPlane() ) )
-                    {
-                        demo.Start();//show and start rendering
-                    }//dispose of it when done
-                }
-#endif
             }
             catch ( Exception caughtException )
             {

@@ -14,7 +14,7 @@
     <XnaCrossPlatformGroupID>f95b7adf-1a1c-4092-8e5d-b3ff12a5f548</XnaCrossPlatformGroupID>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Xbox 360' ">
-    <OutputPath>..\..\..\..\Lib\Managed\Xbox\Axiom\debug\</OutputPath>
+    <OutputPath>..\..\..\..\..\Lib\Managed\CompactFramework\XBox\Axiom\debug\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -27,7 +27,7 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
-    <OutputPath>..\..\..\..\Lib\Managed\Xbox\Axiom\Release\</OutputPath>
+    <OutputPath>..\..\..\..\..\Lib\Managed\CompactFramework\XBox\Axiom\Release\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
