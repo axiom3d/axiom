@@ -29,7 +29,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <OutputPath>..\..\..\..\Lib\Managed\XPlatform\Axiom\debug\</OutputPath>
+    <OutputPath>..\..\..\..\..\Lib\Managed\CompactFramework\x86\Axiom\debug\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -43,7 +43,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>..\..\..\..\Lib\Managed\XPlatform\Axiom\Release</OutputPath>
+    <OutputPath>..\..\..\..\..\Lib\Managed\CompactFramework\x86\Axiom\Release\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -173,9 +173,9 @@
       <Project>{1829AA64-8988-4CA9-BEEB-19CD95919C53}</Project>
       <Name>Axiom.CE.x86</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.csproj">
+    <ProjectReference Include="..\..\Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.x86.csproj">
       <Project>{6E5E6221-0235-49C9-9273-449F5F0E8EF6}</Project>
-      <Name>Axiom.RenderSystems.Xna.Content</Name>
+      <Name>Axiom.RenderSystems.Xna.Content.x86</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -34,7 +34,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\build\Debug\</OutputPath>
+    <OutputPath>..\..\..\build\x86\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -46,7 +46,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\build\Release\</OutputPath>
+    <OutputPath>..\..\..\build\x86\Release\</OutputPath>
     <DefineConstants>TRACE;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -143,17 +143,25 @@
       <Project>{1829AA64-8988-4CA9-BEEB-19CD95919C53}</Project>
       <Name>Axiom.CE.x86</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\Platforms\Win32\Axiom.Platforms.Win32_2008.csproj">
+    <ProjectReference Include="..\..\..\..\Axiom\Source\Platforms\Win32\Axiom.Platforms.Win32.x86.csproj">
       <Project>{C0F2A7AA-6984-4F05-8607-5E2702130D65}</Project>
-      <Name>Axiom.Platforms.Win32_2008</Name>
+      <Name>Axiom.Platforms.Win32.x86</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\Plugins\ParticleFX\Axiom.Plugins.ParticleFX_2008.csproj">
-      <Project>{731CF9B4-E674-4DC4-9FEC-DAA9B09B59AA}</Project>
-      <Name>Axiom.Plugins.ParticleFX_2008</Name>
+    <ProjectReference Include="..\..\..\..\Axiom\Source\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.x86.csproj">
+      <Project>{7D01A754-80BA-4965-AC54-A6D6A0ABAD5A}</Project>
+      <Name>Axiom.Plugins.ParticleFX.x86</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\Source\RenderSystems\XNA\Axiom.RenderSystems.Xna.x86.csproj">
       <Project>{628E7ED7-EC58-4C93-B8AB-CB69087D381B}</Project>
       <Name>Axiom.RenderSystems.Xna.x86</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\Source\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.x86.csproj">
+      <Project>{AE2065CC-32F5-48F2-988F-D7E8D0789F30}</Project>
+      <Name>Axiom.SceneManagers.Bsp.x86</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\Source\SceneManagers\Octree\Axiom.SceneManagers.Octree.x86.csproj">
+      <Project>{B1CCB697-0236-4DA5-B4BD-743D99605284}</Project>
+      <Name>Axiom.SceneManagers.Octree.x86</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Demos\Axiom.Demos.Xna.x86.csproj">
       <Project>{3DADBC6D-4756-44D5-8032-C65AE5812F82}</Project>

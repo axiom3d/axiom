@@ -31,7 +31,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Xbox 360' ">
-    <OutputPath>bin\Xbox 360\Debug</OutputPath>
+    <OutputPath>..\..\build\XBox\Debug\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -45,7 +45,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
-    <OutputPath>bin\Xbox 360\Release</OutputPath>
+    <OutputPath>..\..\build\XBox\Release\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -141,9 +141,9 @@
       <Project>{F9D4E0D4-0062-4476-A041-21C3CC844846}</Project>
       <Name>Axiom.CE.Xbox</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\Plugins\ParticleFX\Axiom.Plugins.ParticleFX_2008.csproj">
-      <Project>{731CF9B4-E674-4DC4-9FEC-DAA9B09B59AA}</Project>
-      <Name>Axiom.Plugins.ParticleFX_2008</Name>
+    <ProjectReference Include="..\..\..\..\Axiom\Source\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.XBox.csproj">
+      <Project>{BA9B1CA4-6329-4B02-AF47-B77749DFCBB7}</Project>
+      <Name>Axiom.Plugins.ParticleFX.XBox</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\Source\RenderSystems\XNA\Axiom.RenderSystems.Xna.Xbox.csproj">
       <Project>{0CC816A6-62C5-416B-BFF5-DBB924A389E9}</Project>

@@ -35,7 +35,7 @@
     </StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Xbox 360' ">
-    <OutputPath>bin\Xbox 360\Debug</OutputPath>
+    <OutputPath>bin\XBox\Debug\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -49,7 +49,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
-    <OutputPath>bin\Xbox 360\Release</OutputPath>
+    <OutputPath>bin\XBox\Release\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="BezierPatch.cs" />
+    <Compile Include="BSP.cs" />
     <Compile Include="CameraTrack.cs" />
     <Compile Include="CelShading.cs" />
     <Compile Include="CubeMapping.cs" />
@@ -153,10 +154,6 @@
     <ProjectReference Include="..\..\..\Axiom\Source\Engine\Axiom.CE.Xbox.csproj">
       <Project>{F9D4E0D4-0062-4476-A041-21C3CC844846}</Project>
       <Name>Axiom.CE.Xbox</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Axiom\Source\Plugins\ParticleFX\Axiom.Plugins.ParticleFX_2008.csproj">
-      <Project>{731CF9B4-E674-4DC4-9FEC-DAA9B09B59AA}</Project>
-      <Name>Axiom.Plugins.ParticleFX_2008</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
