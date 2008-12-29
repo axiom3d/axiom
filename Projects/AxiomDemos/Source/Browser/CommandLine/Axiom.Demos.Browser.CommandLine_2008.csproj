@@ -574,10 +574,6 @@
       <Link>Media\Textures\egyptrockyfull.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\..\..\..\Media\Textures\Flare.jpg">
-      <Link>Media\Textures\Flare.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="..\..\..\..\..\Media\Textures\Flare.png">
       <Link>Media\Textures\Flare.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -728,10 +724,6 @@
     </None>
     <None Include="..\..\..\..\..\Media\Textures\Water01.jpg">
       <Link>Media\Textures\Water01.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Textures\Water02.bmp">
-      <Link>Media\Textures\Water02.bmp</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Textures\Water02.jpg">
