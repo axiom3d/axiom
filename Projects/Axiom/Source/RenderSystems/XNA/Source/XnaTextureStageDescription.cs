@@ -50,6 +50,7 @@ namespace Axiom.RenderSystems.Xna
 	/// </summary>
 	internal struct XnaTextureStageDescription
 	{
+        public bool Enabled;
 		/// the type of the texture
 		public TextureType texType;
 		/// wich texCoordIndex to use
