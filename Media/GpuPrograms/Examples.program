@@ -5,10 +5,10 @@
 
 
 // A really basic ambient pass program, support for one texture coodinate set
-vertex_program Ogre/BasicVertexPrograms/AmbientOneTexture hlsl
+vertex_program Ogre/BasicVertexPrograms/AmbientOneTexture cg
 {
-	source Example_Basic.hlsl
+	source Example_Basic.cg
 	entry_point ambientOneTexture_vp
-	target vs_1_1 arbvp1
+	profiles vs_1_1 arbvp1
 }
 
