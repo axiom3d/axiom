@@ -617,6 +617,27 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
    
     			}
 		    }
+
+            //define color blending
+
+            for(int i = 0 ; i < fixedFunctionState.TextureLayerStates.Count ; i++)
+            {
+                TextureLayerState curTextureLayerState = fixedFunctionState.TextureLayerStates[i];
+                LayerBlendModeEx blend = curTextureLayerState.LayerBlendModeEx;
+                String layerCounter = i.ToString();
+                if(blend.source1 == LayerBlendSource.Manual)
+                {
+                    //colourArg1
+                    shaderSource+="float4 Texture" + layerCounter + "_colourArg1;\r\n";
+                }
+                if(blend.source2 == LayerBlendSource.Manual)
+                {
+                    //colourArg2
+                    shaderSource += "float4 Texture" + layerCounter + "_colourArg2;\r\n";
+                }
+            }
+            //end
+
             //shaderSource += "float4  FogColor;\n";
 
             shaderSource += "\nfloat4 " + fragmentProgramName + "( VS_OUTPUT input ) : COLOR\n";
@@ -730,7 +751,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                         shaderSource += "\t\tfloat4 source2 = input.ColorSpec;\n";
                         break;
                     case LayerBlendSource.Manual:
-                        shaderSource += "Texture" + layerCounter + "_colourArg1=float4(" +
+                        shaderSource += "Texture" + layerCounter + "_colourArg2=float4(" +
                                             blend.colorArg2.r.ToString() + "," +
                                             blend.colorArg2.g.ToString() + "," +
                                             blend.colorArg2.b.ToString() + "," +
@@ -800,9 +821,6 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 			shaderSource += "\treturn finalColor;\n}\n";
 
-            
-            
-            
             return shaderSource;
 		}
 

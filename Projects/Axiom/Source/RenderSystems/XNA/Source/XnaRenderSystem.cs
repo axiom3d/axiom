@@ -289,21 +289,12 @@ namespace Axiom.RenderSystems.Xna
 				caps.SetCap(Capabilities.StencilWrap);
 			}
 
-			// Hardware Occlusion, none!
-			/* try
-			 {
-				 D3D.Query test = new D3D.Query(device, D3D.QueryType.Occlusion);
-
-				 // if we made it this far, it is supported
-				 caps.SetCap(Capabilities.HardwareOcculusion);
-
-				 test.Dispose();
-			 }
-			 catch
-			 {
-				 // eat it, this is not supported
-				 // TODO: Isn't there a better way to check for D3D occlusion query support?
-			 }*/
+            // Hardware Occlusion, new!
+            XFG.OcclusionQuery oQuery = new Microsoft.Xna.Framework.Graphics.OcclusionQuery(device);
+            if (oQuery.IsSupported)
+                caps.SetCap(Capabilities.HardwareOcculusion);
+            oQuery.Dispose();
+			
 
 			if (_capabilities.MaxUserClipPlanes > 0)
 			{
