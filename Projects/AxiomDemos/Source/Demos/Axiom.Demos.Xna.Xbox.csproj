@@ -83,6 +83,7 @@
     <Compile Include="SkyPlane.cs" />
     <Compile Include="Smoke.cs" />
     <Compile Include="TechDemo.cs" />
+    <Compile Include="Terrain.cs" />
     <Compile Include="TextureFX.cs" />
     <Compile Include="Transparency.cs" />
     <Compile Include="Tutorial1.cs" />
