@@ -261,46 +261,25 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
            
             for (int i = 0; i < fixedFunctionState.TextureLayerStates.Count; i++)
 		    {
-			    String layerCounter = Convert.ToString(i);
-
-                switch (fixedFunctionState.TextureLayerStates[i].TextureType)
+                String layerCounter = Convert.ToString(i);
+               //dependant of the tex calculation method
+                switch (fixedFunctionState.TextureLayerStates[i].TexCoordCalcMethod)
                 {
-                    case TextureType.OneD:
-                        shaderSource += "\tfloat1 Texcoord" + layerCounter + " : TEXCOORD" + layerCounter + ";\n";
-                        break;
-                    case TextureType.TwoD:
+                    case TexCoordCalcMethod.None:
+                    case TexCoordCalcMethod.EnvironmentMap:
+                    case TexCoordCalcMethod.EnvironmentMapNormal: //? not sure
+                    case TexCoordCalcMethod.EnvironmentMapPlanar: //? not sure
                         shaderSource += "\tfloat2 Texcoord" + layerCounter + " : TEXCOORD" + layerCounter + ";\n";
                         break;
-                    case TextureType.ThreeD:
+
+                    case TexCoordCalcMethod.EnvironmentMapReflection:
                         shaderSource += "\tfloat3 Texcoord" + layerCounter + " : TEXCOORD" + layerCounter + ";\n";
                         break;
-                    case TextureType.CubeMap:
-                        shaderSource += "\tfloat3 Texcoord" + layerCounter + " : TEXCOORD" + layerCounter + ";\n";
+
+                    case TexCoordCalcMethod.ProjectiveTexture:
+                        shaderSource += "\tfloat4 Texcoord" + layerCounter + " : TEXCOORD" + layerCounter + ";\n";
                         break;
-                    
                 }
-                /*if (texCordVecType.ContainsKey(i))
-                    switch (texCordVecType[i])
-                    {
-                        case VertexElementType.Float1:
-                            shaderSource += "\tfloat1 Texcoord" + layerCounter + " : TEXCOORD" + layerCounter + ";\n";
-                            break;
-                        case VertexElementType.Float2:
-                            shaderSource += "\tfloat2 Texcoord" + layerCounter + " : TEXCOORD" + layerCounter + ";\n";
-                            break;
-                        case VertexElementType.Float3:
-                            shaderSource += "\tfloat3 Texcoord" + layerCounter + " : TEXCOORD" + layerCounter + ";\n";
-                            break;
-                    }
-                else
-                {
-                    //fix sometimes there are more texture layer states than textures ?? (water demo)
-                    shaderSource += "\tfloat2 Texcoord" + layerCounter + " : TEXCOORD" + layerCounter + ";\n";
-                }*/
-
-
-
-
 		    }
 
             shaderSource += "\tfloat4 Color : COLOR0;\n";
@@ -388,10 +367,8 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                         shaderSource += "\t\toutput.Texcoord" + layerCounter + " = float2 (r.x / m + 0.5, r.y / m + 0.5);\n";
                         break;
                     case TexCoordCalcMethod.EnvironmentMapPlanar:
-                        break;
+                       // break;
                     case TexCoordCalcMethod.EnvironmentMapReflection:
-
-                        shaderSource += "\t{\n";
                         shaderSource += "\t\tNormal = mul(float4(Normal, 0),World).xyz;\n";
 
                         shaderSource += "\t\tfloat3 eye= float3(ViewIT[3][0],ViewIT[3][1],ViewIT[3][2]);\n";
@@ -400,44 +377,12 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                         shaderSource += "\t\tLookAt = normalize(LookAt);\n";
                         shaderSource += "\t\tNormal= normalize(Normal);\n";
                         shaderSource += "\t\toutput.Texcoord" + layerCounter + " = reflect(LookAt.xyz,Normal);\n";
-                        shaderSource += "\t}\n";
-
-                        /*shaderSource += "\t{\n";
-                        shaderSource += "\t\tfloat4 worldNorm = mul(float4(Normal, 0), World);\n";
-                        shaderSource += "\t\tfloat4 viewNorm = mul(worldNorm, View);\n";
-                        shaderSource += "\t\tviewNorm = normalize(viewNorm);\n";
-                        shaderSource += "\t\toutput.Texcoord" + layerCounter + " = reflect(viewNorm.xyz, float3(0.0,0.0,-1.0));\n";
-                        shaderSource += "\t}\n";*/
                         break;
                     case TexCoordCalcMethod.EnvironmentMapNormal:
-                        break;
+                       // break;
                     case TexCoordCalcMethod.ProjectiveTexture:
-                        if (texCordVecType.ContainsKey(i))
-                            switch (texCordVecType[i])
-                            {
-                                case VertexElementType.Float1:
-                                    shaderSource += "\t{\n";
-                                    shaderSource += "\t\tfloat4 cameraPosNorm = normalize(cameraPos);\n";
-                                    shaderSource += "\t\toutput.Texcoord" + layerCounter + ".x = 0.5 + cameraPosNorm.x;\n";
-                                    shaderSource += "\t}\n";
-                                    break;
-                                case VertexElementType.Float2:
-                                case VertexElementType.Float3:
-                                    shaderSource += "\t{\n";
-                                    shaderSource += "\t\tfloat4 cameraPosNorm = normalize(cameraPos);\n";
-                                    shaderSource += "\t\toutput.Texcoord" + layerCounter + ".x = 0.5 + cameraPosNorm.x;\n";
-                                    shaderSource += "\t\toutput.Texcoord" + layerCounter + ".y = 0.5 - cameraPosNorm.y;\n";
-                                    shaderSource += "\t}\n";
-                                    break;
-                            }
-                        else
-                        {
-                            shaderSource += "\t{\n";
-                            shaderSource += "\t\tfloat4 cameraPosNorm = normalize(cameraPos);\n";
-                            shaderSource += "\t\toutput.Texcoord" + layerCounter + ".x = 0.5 + cameraPosNorm.x;\n";
-                            shaderSource += "\t\toutput.Texcoord" + layerCounter + ".y = 0.5 - cameraPosNorm.y;\n";
-                            shaderSource += "\t}\n";
-                        }
+                        shaderSource += "\t\tfloat4x4  scalemat = float4x4(	0.5,0,0,0.5,0,-0.5,0, 0.5,0,0, 0.5, 0.5,0,0,0,1);\n";
+                        shaderSource += "\t\toutput.Texcoord" + layerCounter + " = mul(scalemat, output.Pos);\n";
                         break;
                 }
                 shaderSource += "\t}\n";
@@ -659,7 +604,24 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                                         break;
                                 }
                             else//envmap works now and correct the color of the overlay with the demo cellshading (was completly white before)
-                                shaderSource += "\t\ttexColor  = tex2D(Texture" + layerCounter + ", input.Texcoord" + layerCounter + ");\n";
+                            //shaderSource += "\t\ttexColor  = tex2D(Texture" + layerCounter + ", input.Texcoord" + layerCounter + ");\n";
+                            {
+                                switch (fixedFunctionState.TextureLayerStates[i].TexCoordCalcMethod)
+                                {
+                                    case TexCoordCalcMethod.None:
+                                    case TexCoordCalcMethod.EnvironmentMap:
+                                    case TexCoordCalcMethod.EnvironmentMapNormal: //?
+                                    case TexCoordCalcMethod.EnvironmentMapPlanar: //?
+                                    case TexCoordCalcMethod.EnvironmentMapReflection:
+                                        shaderSource += "\t\ttexColor  = tex2D(Texture" + layerCounter + ", input.Texcoord" + layerCounter + ");\n";
+                                        break;
+
+                                    case TexCoordCalcMethod.ProjectiveTexture:
+                                        shaderSource += "\t\tfloat2 final   =input.Texcoord" + layerCounter + ".xy / input.Texcoord" + layerCounter + ".w;\n";
+                                        shaderSource += "\t\ttexColor  = tex2D(Texture" + layerCounter + ", final);\n";
+                                        break;
+                                }
+                            }
                         }
 
                         break;

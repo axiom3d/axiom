@@ -75,6 +75,7 @@ namespace Axiom.Demos.Browser.Xna
             ResourceManager.AddCommonArchive( "Content\\Textures\\Skyboxes.zip", "ZipFile" );
             ResourceManager.AddCommonArchive( "Content\\Archives\\chiropteraDM.zip", "ZipFile" );
             ResourceManager.AddCommonArchive( "Content\\Archives\\Fresnel.zip", "ZipFile" );
+            ResourceManager.AddCommonArchive("Content\\Archives\\Water.zip", "ZipFile");
 #endif
 
         }
@@ -85,9 +86,44 @@ namespace Axiom.Demos.Browser.Xna
             {
                 if ( _configure() )
                 {
-                    Assembly demos = Assembly.LoadFrom( "Axiom.Demos.dll" );
+                     Assembly demos = Assembly.LoadFrom( "Axiom.Demos.dll" );
+
+                    Type[] demoTypes = demos.GetTypes();
+                    Type techDemo = demos.GetType("Axiom.Demos.TechDemo");
+                    List<string> demoList=new List<string>();
+                    foreach (Type demoType in demoTypes)
+                    {
+                        if (demoType.IsSubclassOf(techDemo))
+                        {
+                            demoList.Add(demoType.Name);
+                        }
+                    }
+
 
                     string next = "ParticleFX";
+
+                    int i = 1;
+                    foreach (string typeName in demoList)
+                    {
+                        Console.WriteLine("{0}) {1}", i++, typeName);
+                    }
+                    Console.WriteLine("Enter the number of the demo that you want to run and press enter.");
+                    while (true)
+                    {
+                        string line = Console.ReadLine();
+                        int number = -1;
+                        if (line != string.Empty)
+                        {
+                            number = int.Parse(line.Trim());
+                        }
+                        if (number < 1 || number > demoList.Count)
+                            Console.WriteLine("The number of the demo game must be between 1 and {0}, the number of demos games available.", demoList.Count);
+                        else
+                        {
+                            next = (string)demoList[number - 1];
+                            break;
+                        }
+                    }
 
                     Type type = demos.GetType( "Axiom.Demos." + next );
 
@@ -99,6 +135,21 @@ namespace Axiom.Demos.Browser.Xna
                         }//dispose of it when done
                     }
                 }
+
+                    /*Assembly demos = Assembly.LoadFrom( "Axiom.Demos.dll" );
+
+                    string next = "ParticleFX";
+
+                    Type type = demos.GetType( "Axiom.Demos." + next );
+
+                    if ( type != null )
+                    {
+                        using ( TechDemo demo = (TechDemo)Activator.CreateInstance( type ) )
+                        {
+                            demo.Start();//show and start rendering
+                        }//dispose of it when done
+                    }*/
+                
             }
             catch ( Exception caughtException )
             {
