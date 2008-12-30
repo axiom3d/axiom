@@ -43,6 +43,10 @@
       <Name>cubemapsJS</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Archives\Fresnel.zip">
+      <Name>Fresnel</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Archives\RZR-002.zip">
       <Name>RZR-002</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -718,16 +722,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Archives\Fresnel.zip">
-      <Name>Fresnel</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="XNA.Materials\x86\Programs\bump.hlsl">
+    <Content Include="XNA.Materials\x86\Programs\bump.hlsl">
       <Name>bump</Name>
       <Importer>HlslImporter</Importer>
       <Processor>HlslProcessor</Processor>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
     <Content Include="XNA.Materials\x86\Programs\bumpSpecular.hlsl">
       <Name>bumpSpecular</Name>
       <Importer>HlslImporter</Importer>
@@ -934,6 +934,12 @@
       <Name>OffsetMapping</Name>
       <Importer>HlslImporter</Importer>
       <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XNA.Materials\x86\Fresnel.zip">
+      <Name>Fresnel</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
