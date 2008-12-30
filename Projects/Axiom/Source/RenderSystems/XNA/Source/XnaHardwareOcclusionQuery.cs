@@ -61,7 +61,7 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         ///		Reference to the query object being used.
         /// </summary>
-        ///private XFG.Query query;
+        private XFG.OcclusionQuery oQuery;
         /// <summary>
         ///		Number of fragments returned from the last query.
         /// </summary>
@@ -90,15 +90,8 @@ namespace Axiom.RenderSystems.Xna
 		public XnaHardwareOcclusionQuery( XFG.GraphicsDevice device )
         {
             this.device = device;
-
-            // check if queries are supported
-            isSupported = Root.Instance.RenderSystem.Caps.CheckCap( Capabilities.HardwareOcculusion );
-
-            if ( isSupported )
-            {
-                // attempt to create an occlusion query
-                //query = new XFG.Query( device, XFG.QueryType.Occlusion );
-            }
+            oQuery = new XFG.OcclusionQuery(device);
+            
         }
 
         #endregion Constructor
@@ -108,7 +101,7 @@ namespace Axiom.RenderSystems.Xna
         public void Begin()
         {
             // proceed if supported, or silently fail otherwise
-            if ( isSupported )
+            if ( oQuery.IsSupported)
             {
                 if ( skipCounter == skipRate )
                 {
@@ -116,7 +109,9 @@ namespace Axiom.RenderSystems.Xna
                 }
 
                 if ( skipCounter == 0 )
-                { // && lastFragmentCount != 0) {
+                {
+                    oQuery.Begin();
+                    // && lastFragmentCount != 0) {
                  //   query.Issue( XFG.IssueFlags.Begin );
                 }
             }
@@ -127,9 +122,9 @@ namespace Axiom.RenderSystems.Xna
             // default to returning a high count.  will be set otherwise if the query runs
             lastFragmentCount = 100000;
 
-            if ( isSupported )
+            if ( oQuery.IsSupported && oQuery.IsComplete)
             {
-             //   lastFragmentCount = (int)query.GetData( typeof( int ), flush );
+                lastFragmentCount = oQuery.PixelCount;
             }
 
             return lastFragmentCount;
@@ -138,10 +133,12 @@ namespace Axiom.RenderSystems.Xna
         public void End()
         {
             // proceed if supported, or silently fail otherwise
-            if ( isSupported )
+            if ( oQuery.IsSupported )
             {
                 if ( skipCounter == 0 )
-                { // && lastFragmentCount != 0) {
+                {
+                    oQuery.End();
+                    // && lastFragmentCount != 0) {
                  //   query.Issue( D3D.IssueFlags.End );
                 }
 
