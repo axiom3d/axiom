@@ -71,102 +71,6 @@
       <Name>PalatinoLinotype</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="GpuPrograms\Dot3Bump.program">
-      <Name>Dot3Bump</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GpuPrograms\Examples.program">
-      <Name>Examples</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GpuPrograms\Example_Basic.cg">
-      <Name>Example_Basic</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GpuPrograms\Example_BumpMapping.cg">
-      <Name>Example_BumpMapping</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GpuPrograms\Example_CelShading.cg">
-      <Name>Example_CelShading</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GpuPrograms\Fresnel.program">
-      <Name>Fresnel</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GpuPrograms\HardwareSkinning.cg">
-      <Name>HardwareSkinning</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GpuPrograms\OffsetMapping.cg">
-      <Name>OffsetMapping</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GpuPrograms\OffsetMapping.program">
-      <Name>OffsetMapping</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Materials\Athene.material">
-      <Name>Athene</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Materials\CelShading.material">
-      <Name>CelShading</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Materials\Core.material">
-      <Name>Core</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Materials\Dot3Bump.material">
-      <Name>Dot3Bump</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Materials\DP3.material">
-      <Name>DP3</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Materials\Example.particle">
-      <Name>Example</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Materials\Examples.material">
-      <Name>Examples</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Materials\Ninja.material">
-      <Name>Ninja</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Materials\OffsetMapping.material">
-      <Name>OffsetMapping</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Materials\Particles.material">
-      <Name>Particles</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Materials\Robot.material">
-      <Name>Robot</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Materials\Skys.material">
-      <Name>Skys</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Materials\smoke.material">
-      <Name>smoke</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Materials\smoke.particle">
-      <Name>smoke</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Materials\Terrain.material">
-      <Name>Terrain</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Meshes\athene.mesh">
       <Name>athene</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -431,14 +335,6 @@
       <Processor>TextureProcessor</Processor>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Content Include="GpuPrograms\keepgpuprograms.txt">
-      <Name>keepgpuprograms</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GpuPrograms\OffsetMapping_specular.asm">
-      <Name>OffsetMapping_specular</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Icons\AxiomIcon.ico">
       <Name>AxiomIcon</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -811,112 +707,238 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Materials\XnaLogo.material">
+    <Content Include="XNA.Materials\x86\Programs\Example_FresnelPS.asm">
+      <Name>Example_FresnelPS</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Name>XnaLogo</Name>
     </Content>
-    <Compile Include="Xbox\spot_shadow_fade.png">
+    <Content Include="XNA.Materials\x86\Programs\OffsetMapping_specular.asm">
+      <Name>OffsetMapping_specular</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="XNA.Materials\Xbox\Textures\spot_shadow_fade.png">
       <Name>spot_shadow_fade</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Xbox\dragon.material">
-      <Name>dragon</Name>
+    <Content Include="XNA.Materials\x86\Programs\bump.hlsl">
+      <Name>bump</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Xbox\ambient_vp.hlsl">
+    <Content Include="XNA.Materials\x86\Programs\bumpSpecular.hlsl">
+      <Name>bumpSpecular</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Programs\Example_Basic.hlsl">
+      <Name>Example_Basic</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Programs\Example_CelShading.hlsl">
+      <Name>Example_CelShading</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Programs\Example_Fresnel.hlsl">
+      <Name>Example_Fresnel</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Programs\HardwareSkinning.hlsl">
+      <Name>HardwareSkinning</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Athene.material">
+      <Name>Athene</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\CelShading.material">
+      <Name>CelShading</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Core.material">
+      <Name>Core</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Dot3Bump.material">
+      <Name>Dot3Bump</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Dot3Bump.program">
+      <Name>Dot3Bump</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\DP3.material">
+      <Name>DP3</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Example.particle">
+      <Name>Example</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Examples.material">
+      <Name>Examples</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Examples.program">
+      <Name>Examples</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Fresnel.program">
+      <Name>Fresnel</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Ninja.material">
+      <Name>Ninja</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\OffsetMapping.material">
+      <Name>OffsetMapping</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\OffsetMapping.program">
+      <Name>OffsetMapping</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Particles.material">
+      <Name>Particles</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Robot.material">
+      <Name>Robot</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Skys.material">
+      <Name>Skys</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\smoke.material">
+      <Name>smoke</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\smoke.particle">
+      <Name>smoke</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Terrain.material">
+      <Name>Terrain</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\XnaLogo.material">
+      <Name>XnaLogo</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\ambient_vp.hlsl">
       <Name>ambient_vp</Name>
       <Importer>HlslImporter</Importer>
       <Processor>HlslProcessor</Processor>
-      <ProcessorParameters_Profile>VS_3_0</ProcessorParameters_Profile>
-    </Compile>
-    <Compile Include="Xbox\color_fp.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\color_fp.hlsl">
       <Name>color_fp</Name>
       <Importer>HlslImporter</Importer>
       <Processor>HlslProcessor</Processor>
-    </Compile>
-    <Compile Include="Xbox\color_vp.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\color_vp.hlsl">
       <Name>color_vp</Name>
       <Importer>HlslImporter</Importer>
       <Processor>HlslProcessor</Processor>
-      <ProcessorParameters_Profile>VS_3_0</ProcessorParameters_Profile>
-    </Compile>
-    <Compile Include="Xbox\dir_fp.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\dir_fp.hlsl">
       <Name>dir_fp</Name>
       <Importer>HlslImporter</Importer>
       <Processor>HlslProcessor</Processor>
-    </Compile>
-    <Compile Include="Xbox\dir_vp.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\dir_vp.hlsl">
       <Name>dir_vp</Name>
       <Importer>HlslImporter</Importer>
       <Processor>HlslProcessor</Processor>
-      <ProcessorParameters_Profile>VS_3_0</ProcessorParameters_Profile>
-    </Compile>
-    <Content Include="Xbox\flare.material">
-      <Name>flare</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Compile Include="Xbox\point_fp.hlsl">
-      <Name>point_fp</Name>
-      <Importer>HlslImporter</Importer>
-      <Processor>HlslProcessor</Processor>
-    </Compile>
-    <Compile Include="Xbox\point_vp.hlsl">
-      <Name>point_vp</Name>
-      <Importer>HlslImporter</Importer>
-      <Processor>HlslProcessor</Processor>
-      <ProcessorParameters_Profile>VS_3_0</ProcessorParameters_Profile>
-    </Compile>
-    <Content Include="Xbox\shaders.program">
-      <Name>shaders</Name>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Compile Include="Xbox\spot_fp.hlsl">
-      <Name>spot_fp</Name>
-      <Importer>HlslImporter</Importer>
-      <Processor>HlslProcessor</Processor>
-    </Compile>
-    <Compile Include="Xbox\spot_vp.hlsl">
-      <Name>spot_vp</Name>
-      <Importer>HlslImporter</Importer>
-      <Processor>HlslProcessor</Processor>
-      <ProcessorParameters_Profile>VS_3_0</ProcessorParameters_Profile>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Xbox\Core.material">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Name>Core</Name>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Xbox\XnaLogo.material">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Name>XnaLogo</Name>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Xbox\Skys.material">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Name>Skys</Name>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Xbox\overlay_fp.hlsl">
+    <Content Include="XNA.Materials\Xbox\Programs\overlay_fp.hlsl">
       <Name>overlay_fp</Name>
       <Importer>HlslImporter</Importer>
       <Processor>HlslProcessor</Processor>
-    </Compile>
-    <Compile Include="Xbox\overlay_vp.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\overlay_vp.hlsl">
       <Name>overlay_vp</Name>
       <Importer>HlslImporter</Importer>
       <Processor>HlslProcessor</Processor>
-      <ProcessorParameters_Profile>VS_3_0</ProcessorParameters_Profile>
-    </Compile>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\point_fp.hlsl">
+      <Name>point_fp</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\point_vp.hlsl">
+      <Name>point_vp</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\spot_fp.hlsl">
+      <Name>spot_fp</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\spot_vp.hlsl">
+      <Name>spot_vp</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Scripts\Core.material">
+      <Name>Core</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Scripts\dragon.material">
+      <Name>dragon</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Scripts\flare.material">
+      <Name>flare</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Scripts\shaders.program">
+      <Name>shaders</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Scripts\Skys.material">
+      <Name>Skys</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Scripts\XnaLogo.material">
+      <Name>XnaLogo</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XNA.Materials\x86\Programs\OffsetMapping.hlsl">
+      <Name>OffsetMapping</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="XNA.Materials\x86\Textures\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
