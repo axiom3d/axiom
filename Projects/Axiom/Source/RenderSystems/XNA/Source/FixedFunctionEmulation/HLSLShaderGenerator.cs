@@ -728,7 +728,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                         shaderSource += "\t\tfloat4 source1 = input.ColorSpec;\n";
                         break;
                     case LayerBlendSource.Manual:
-                        shaderSource += "Texture" + layerCounter + "_colourArg1=float4("+
+                        shaderSource += "\t\tfloat4 Texture" + layerCounter + "_colourArg1=float4("+
                                             blend.colorArg1.r.ToString()+","+
                                             blend.colorArg1.g.ToString()+","+
                                             blend.colorArg1.b.ToString()+","+
@@ -751,7 +751,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                         shaderSource += "\t\tfloat4 source2 = input.ColorSpec;\n";
                         break;
                     case LayerBlendSource.Manual:
-                        shaderSource += "Texture" + layerCounter + "_colourArg2=float4(" +
+                        shaderSource += "\t\tfloat4 Texture" + layerCounter + "_colourArg2=float4(" +
                                             blend.colorArg2.r.ToString() + "," +
                                             blend.colorArg2.g.ToString() + "," +
                                             blend.colorArg2.b.ToString() + "," +
