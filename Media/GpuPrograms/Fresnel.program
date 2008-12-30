@@ -1,16 +1,16 @@
-vertex_program Examples/FresnelRefractReflectVP hlsl
+vertex_program Examples/FresnelRefractReflectVP cg
 {
-	source Example_Fresnel.hlsl
+	source Example_Fresnel.cg
 	entry_point main_vp
-	target vs_1_1 arbvp1
+	profiles vs_1_1 arbvp1
 }
 
-fragment_program Examples/FresnelRefractReflectFP hlsl
+fragment_program Examples/FresnelRefractReflectFP cg
 {
-	source Example_Fresnel.hlsl
+	source Example_Fresnel.cg
 	entry_point main_fp
 	// sorry, ps_1_1 and fp20 can't do this
-	target ps_2_0 fp30 arbfp1
+	profiles ps_2_0 fp30 arbfp1
 }
 
 fragment_program Examples/FresnelRefractReflectPS asm 
