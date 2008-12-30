@@ -43,20 +43,22 @@ using Axiom.Core;
 
 namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	class ShaderManager
-	{
-		#region Static Interface
+    /// <summary>
+    /// 
+    /// </summary>
+    class ShaderManager
+    {
+        #region Static Interface
 
-		private static int shaderCount = 0;
+        private static int shaderCount = 0;
 
-		#endregion Static Interface
+        #endregion Static Interface
 
-		#region Nested Types
+        #region Nested Types
 
-		internal class ShaderGeneratorMap : Dictionary<String, ShaderGenerator> {}
+        internal class ShaderGeneratorMap : Dictionary<String, ShaderGenerator>
+        {
+        }
         protected class VertexBufferDeclaration2FixedFunctionProgramsMap : Dictionary<VertexBufferDeclaration, FixedFunctionPrograms>
         {
             public FixedFunctionPrograms this[ VertexBufferDeclaration key ]
@@ -79,7 +81,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             }
         }
 
-		protected class State2Declaration2ProgramsMap : Dictionary<FixedFunctionState, VertexBufferDeclaration2FixedFunctionProgramsMap> 
+        protected class State2Declaration2ProgramsMap : Dictionary<FixedFunctionState, VertexBufferDeclaration2FixedFunctionProgramsMap>
         {
             public VertexBufferDeclaration2FixedFunctionProgramsMap this[ FixedFunctionState key ]
             {
@@ -94,7 +96,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             }
         }
 
-		protected class Language2State2Declaration2ProgramsMap : Dictionary<String, State2Declaration2ProgramsMap> 
+        protected class Language2State2Declaration2ProgramsMap : Dictionary<String, State2Declaration2ProgramsMap>
         {
             public State2Declaration2ProgramsMap this[ String key ]
             {
@@ -109,47 +111,47 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             }
         }
 
-		#endregion Nested Types
+        #endregion Nested Types
 
-		#region Fields and Properties
+        #region Fields and Properties
 
-		protected ShaderGeneratorMap shaderGeneratorMap = new ShaderGeneratorMap();
-		protected Language2State2Declaration2ProgramsMap language2State2Declaration2ProgramsMap=new Language2State2Declaration2ProgramsMap();
-		protected List<FixedFunctionPrograms> programsToDeleteAtTheEnd=new List<FixedFunctionPrograms>();
+        protected ShaderGeneratorMap shaderGeneratorMap = new ShaderGeneratorMap();
+        protected Language2State2Declaration2ProgramsMap language2State2Declaration2ProgramsMap = new Language2State2Declaration2ProgramsMap();
+        protected List<FixedFunctionPrograms> programsToDeleteAtTheEnd = new List<FixedFunctionPrograms>();
 
-		#endregion Fields and Properties
+        #endregion Fields and Properties
 
-		#region Construction and Destruction
+        #region Construction and Destruction
 
-		public ShaderManager()
-		{
+        public ShaderManager()
+        {
             //just delete the previously created shader txt file, will be removed when everything works!
-            string[] files = System.IO.Directory.GetFiles(System.IO.Directory.GetCurrentDirectory(),"*.txt");
-            foreach (string str in files)
+            string[] files = System.IO.Directory.GetFiles( System.IO.Directory.GetCurrentDirectory(), "*.txt" );
+            foreach ( string str in files )
             {
-                if (str.StartsWith(System.IO.Directory.GetCurrentDirectory()+"\\shader") == true)
-                    System.IO.File.Delete(str);
+                if ( str.StartsWith( System.IO.Directory.GetCurrentDirectory() + "\\shader" ) == true )
+                    System.IO.File.Delete( str );
             }
 
-		}
+        }
 
-		#endregion Construction and Destruction
+        #endregion Construction and Destruction
 
-		#region Methods
+        #region Methods
 
-		public void RegisterGenerator( ShaderGenerator generator )
-		{
-			shaderGeneratorMap.Add( generator.Name, generator );
-		}
+        public void RegisterGenerator( ShaderGenerator generator )
+        {
+            shaderGeneratorMap.Add( generator.Name, generator );
+        }
 
-		public void UnregisterGenerator( ShaderGenerator generator )
-		{
-			shaderGeneratorMap.Remove( generator.Name );
-		}
+        public void UnregisterGenerator( ShaderGenerator generator )
+        {
+            shaderGeneratorMap.Remove( generator.Name );
+        }
 
-		public FixedFunctionPrograms GetShaderPrograms( String generatorName, VertexBufferDeclaration vertexBufferDeclaration, FixedFunctionState state )
-		{             
-			// Search the maps for a matching program
+        public FixedFunctionPrograms GetShaderPrograms( String generatorName, VertexBufferDeclaration vertexBufferDeclaration, FixedFunctionState state )
+        {
+            // Search the maps for a matching program
             State2Declaration2ProgramsMap languageMaps;
             language2State2Declaration2ProgramsMap.TryGetValue( generatorName, out languageMaps );
             if ( languageMaps != null )
@@ -166,89 +168,91 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                     }
                 }
             }
-			// If we are here, then one did not exist.
-			// Create it.
+            // If we are here, then one did not exist.
+            // Create it.
             return createShaderPrograms( generatorName, vertexBufferDeclaration, state );
-		}
+        }
 
-		protected FixedFunctionPrograms createShaderPrograms( String generatorName, VertexBufferDeclaration vertexBufferDeclaration, FixedFunctionState state )
-		{
-			const String vertexProgramName = "VS";
-			const String fragmentProgramName = "FP";
+        protected FixedFunctionPrograms createShaderPrograms( String generatorName, VertexBufferDeclaration vertexBufferDeclaration, FixedFunctionState state )
+        {
+            const String vertexProgramName = "VS";
+            const String fragmentProgramName = "FP";
 
-			ShaderGenerator shaderGenerator = shaderGeneratorMap[generatorName];
-			String shaderSource = shaderGenerator.GetShaderSource( vertexProgramName, fragmentProgramName, vertexBufferDeclaration,	state );
-            saveShader(shaderSource);
-		
-			// Vertex program details
-			GpuProgramUsage vertexProgramUsage = new GpuProgramUsage(GpuProgramType.Vertex);
-			// Fragment program details
-			GpuProgramUsage fragmentProgramUsage = new GpuProgramUsage(GpuProgramType.Fragment);
+            ShaderGenerator shaderGenerator = shaderGeneratorMap[ generatorName ];
+            String shaderSource = shaderGenerator.GetShaderSource( vertexProgramName, fragmentProgramName, vertexBufferDeclaration, state );
+            saveShader( state.GetHashCode().ToString(), shaderSource );
+
+            // Vertex program details
+            GpuProgramUsage vertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex );
+            // Fragment program details
+            GpuProgramUsage fragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment );
 
 
-			HighLevelGpuProgram vs;
-			HighLevelGpuProgram fs;
+            HighLevelGpuProgram vs;
+            HighLevelGpuProgram fs;
 
-			shaderCount++;
+            shaderCount++;
 
-			vs = HighLevelGpuProgramManager.Instance.CreateProgram( "VS_" + shaderCount.ToString(), 
-																	//ResourceGroupManager.DefaultResourceGroupName,
-																	shaderGenerator.Language,
-																	GpuProgramType.Vertex );
+            vs = HighLevelGpuProgramManager.Instance.CreateProgram( "VS_" + shaderCount.ToString(),
+                //ResourceGroupManager.DefaultResourceGroupName,
+                                                                    shaderGenerator.Language,
+                                                                    GpuProgramType.Vertex );
             LogManager.Instance.Write( "Created VertexShader {0}", "VS_" + shaderCount.ToString() );
-			vs.Source = shaderSource;
-			vs.SetParam( "entry_point", vertexProgramName );
-			vs.SetParam( "target", shaderGenerator.VPTarget );
-			vs.Load();
+            vs.Source = shaderSource;
+            vs.SetParam( "entry_point", vertexProgramName );
+            vs.SetParam( "target", shaderGenerator.VPTarget );
+            vs.Load();
 
-			vertexProgramUsage.Program = vs;
-			vertexProgramUsage.Params = vs.CreateParameters();
+            vertexProgramUsage.Program = vs;
+            vertexProgramUsage.Params = vs.CreateParameters();
 
-			fs = HighLevelGpuProgramManager.Instance.CreateProgram( "FS_" + shaderCount.ToString(), 
-																	//ResourceGroupManager.DefaultResourceGroupName,
-																	shaderGenerator.Language,
-																	GpuProgramType.Fragment );
+            fs = HighLevelGpuProgramManager.Instance.CreateProgram( "FS_" + shaderCount.ToString(),
+                //ResourceGroupManager.DefaultResourceGroupName,
+                                                                    shaderGenerator.Language,
+                                                                    GpuProgramType.Fragment );
             LogManager.Instance.Write( "Created FragmentProgram {0}", "FS_" + shaderCount.ToString() );
             fs.Source = shaderSource;
-			fs.SetParam( "entry_point", fragmentProgramName );
-			fs.SetParam( "target", shaderGenerator.FPTarget );
-			fs.Load();
+            fs.SetParam( "entry_point", fragmentProgramName );
+            fs.SetParam( "target", shaderGenerator.FPTarget );
+            fs.Load();
 
-			fragmentProgramUsage.Program = fs;
-			fragmentProgramUsage.Params = fs.CreateParameters();
+            fragmentProgramUsage.Program = fs;
+            fragmentProgramUsage.Params = fs.CreateParameters();
 
-	
+
             FixedFunctionPrograms newPrograms = shaderGenerator.CreateFixedFunctionPrograms();
-            newPrograms.FixedFunctionState=state;
-            newPrograms.FragmentProgramUsage=fragmentProgramUsage;
-            newPrograms.VertexProgramUsage= vertexProgramUsage;
+            newPrograms.FixedFunctionState = state;
+            newPrograms.FragmentProgramUsage = fragmentProgramUsage;
+            newPrograms.VertexProgramUsage = vertexProgramUsage;
 
-            
+
             //then save the new program
             language2State2Declaration2ProgramsMap[ generatorName ][ state ][ vertexBufferDeclaration ] = newPrograms;
-            programsToDeleteAtTheEnd.Add(newPrograms);
+            programsToDeleteAtTheEnd.Add( newPrograms );
 
-            return newPrograms;		
-		}
+            return newPrograms;
+        }
 
-        public void saveShader(string shaderSource)
+        public void saveShader( string baseFilename, string shaderSource )
         {
             //save the shader just to understand and learn why it bugs :)
-            string str = "shaderCheck.txt";
+            string filename;
             int w = 0;
-            while (System.IO.File.Exists(str))
+            do
             {
-                str = "shaderCheck" + Convert.ToString(w) + ".txt";
+                filename = baseFilename + Convert.ToString( w ) + ".hlsl";
                 w++;
             }
-            System.IO.StreamWriter sw = new System.IO.StreamWriter(str);
-            sw.Write(shaderSource);
+            while ( System.IO.File.Exists( filename ) );
+
+            System.IO.StreamWriter sw = new System.IO.StreamWriter( filename );
+            sw.Write( shaderSource );
             sw.Flush();
             sw.Close();
         }
 
-		#endregion Methods
+        #endregion Methods
 
-	}
+    }
 
 }
