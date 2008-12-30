@@ -2,7 +2,7 @@ vertex_program Ogre/CelShadingVP hlsl
 {
 	source Example_CelShading.hlsl
 	entry_point main_vp
-	profiles vs_1_1 arbvp1
+	target vs_1_1 arbvp1
 
 	default_params
 	{
@@ -17,7 +17,7 @@ fragment_program Ogre/CelShadingFP hlsl
 {
 	source Example_CelShading.hlsl
 	entry_point main_fp
-	profiles ps_1_1 arbfp1 fp20
+	target ps_1_1 arbfp1 fp20
 }
 
 
