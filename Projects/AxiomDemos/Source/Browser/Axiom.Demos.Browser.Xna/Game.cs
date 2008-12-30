@@ -64,6 +64,8 @@ namespace Axiom.Demos.Browser.Xna
             ResourceManager.AddCommonArchive( "Content\\XNA.Materials\\x86\\scripts", "Folder" );
             ResourceManager.AddCommonArchive( "Content\\XNA.Materials\\x86\\programs", "Folder" );
             //ResourceManager.AddCommonArchive( "Content\\XNA.Materials\\x86\\textures", "Folder" );
+
+            ResourceManager.AddCommonArchive( "Content\\XNA.Materials\\x86\\Fresnel.zip", "ZipFile" );
 #else
             ResourceManager.AddCommonArchive( "Content\\XNA.Materials\\XBox", "Folder" );
 #endif
@@ -74,7 +76,6 @@ namespace Axiom.Demos.Browser.Xna
 #if !( XBOX || XBOX360 )
             ResourceManager.AddCommonArchive( "Content\\Textures\\Skyboxes.zip", "ZipFile" );
             ResourceManager.AddCommonArchive( "Content\\Archives\\chiropteraDM.zip", "ZipFile" );
-            ResourceManager.AddCommonArchive( "Content\\Archives\\Fresnel.zip", "ZipFile" );
             ResourceManager.AddCommonArchive("Content\\Archives\\Water.zip", "ZipFile");
 #endif
 
