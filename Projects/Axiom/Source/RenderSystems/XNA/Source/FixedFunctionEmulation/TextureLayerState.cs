@@ -52,7 +52,6 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 		public TextureType TextureType;
 		public TexCoordCalcMethod TexCoordCalcMethod;
-		//public LayerBlendOperationEx LayerBlendOperationEx;
         public LayerBlendModeEx LayerBlendModeEx;
         public int CoordIndex;
 		#endregion Fields

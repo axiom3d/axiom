@@ -117,48 +117,41 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
         protected void _updateParameter( GpuProgramParameters programParameters, String paramName, Object value, int sizeInBytes )
         {
-            //I think its safe now! about 30 frames more!
-            //try
+            programParameters.AutoAddParamName = true ;
+            
+            if (value is Axiom.Math.Matrix4)
             {
-                programParameters.AutoAddParamName = true;
-                
-                if ( value is Axiom.Math.Matrix4 )
-                {
-                    programParameters.SetConstant( programParameters.GetParamIndex( paramName ), (Axiom.Math.Matrix4)value );
-                }
-                else if ( value is Axiom.Core.ColorEx )
-                {
-                    programParameters.SetConstant( programParameters.GetParamIndex( paramName ), (Axiom.Core.ColorEx)value );
-                }
-                else if ( value is Axiom.Math.Vector3 )
-                {
-                    programParameters.SetConstant(programParameters.GetParamIndex(paramName),((Axiom.Math.Vector3)value));
-                }
-                else if ( value is Axiom.Math.Vector4 )
-                {
-                    programParameters.SetConstant( programParameters.GetParamIndex( paramName ), (Axiom.Math.Vector4)value );
-                }
-                else if ( value is float[] )
-                {
-                    programParameters.SetConstant( programParameters.GetParamIndex( paramName ), (float[])value );
-                }
-                else if ( value is int[] )
-                {
-                    programParameters.SetConstant( programParameters.GetParamIndex( paramName ), (int[])value );
-                }
-                else if ( value is float )
-                {
-                    programParameters.SetConstant(programParameters.GetParamIndex(paramName), new float[] { (float)value, 0.0f, 0.0f,0.0f});
-                }
-                else
-                {
-                    programParameters.SetConstant( programParameters.GetParamIndex( paramName ), (float[])value );
-                }
+                programParameters.SetConstant(programParameters.GetParamIndex(paramName), (Axiom.Math.Matrix4)value);
             }
-            //catch ( Exception e )
+            else if (value is Axiom.Core.ColorEx)
             {
-            //    LogManager.Instance.Write( LogManager.BuildExceptionString( e ) );
+                programParameters.SetConstant(programParameters.GetParamIndex(paramName), (Axiom.Core.ColorEx)value);
             }
+            else if (value is Axiom.Math.Vector3)
+            {
+                programParameters.SetConstant(programParameters.GetParamIndex(paramName), ((Axiom.Math.Vector3)value));
+            }
+            else if (value is Axiom.Math.Vector4)
+            {
+                programParameters.SetConstant(programParameters.GetParamIndex(paramName), (Axiom.Math.Vector4)value);
+            }
+            else if (value is float[])
+            {
+                programParameters.SetConstant(programParameters.GetParamIndex(paramName), (float[])value);
+            }
+            else if (value is int[])
+            {
+                programParameters.SetConstant(programParameters.GetParamIndex(paramName), (int[])value);
+            }
+            else if (value is float)
+            {
+                programParameters.SetConstant(programParameters.GetParamIndex(paramName), new float[] { (float)value, 0.0f, 0.0f, 0.0f });
+            }
+            else
+            {
+                programParameters.SetConstant(programParameters.GetParamIndex(paramName), (float[])value);
+            }
+
         }
 
         protected void _setProgramParameter( GpuProgramType type, String paramName, int value )

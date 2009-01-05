@@ -71,9 +71,6 @@ namespace Axiom.RenderSystems.Xna
 
 		public XnaRenderWindow()
 		{
-
-
-
 		}
 
 		#endregion
@@ -94,9 +91,9 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="miscParams"></param>
 		public override void Create( string name, int width, int height, int colorDepth, bool isFullScreen, int left, int top, bool depthBuffer, params object[] miscParams )
 		{
-			// mMiscParams[0] = Direct3D.Device
-			// mMiscParams[1] = D3DRenderSystem.Driver
-			// mMiscParams[2] = Axiom.Core.RenderWindow
+			// mMiscParams[0] = target windows handle
+			// mMiscParams[1] = device
+			
 
 #if !(XBOX || XBOX360 || SILVERLIGHT)
 			IntPtr targetControl = IntPtr.Zero;
@@ -118,18 +115,8 @@ namespace Axiom.RenderSystems.Xna
 				throw new Exception( "Error creating DirectX window: device is null." );
 			}
 
-			// CMH - End
-
 			device.DeviceReset += new EventHandler( OnResetDevice );
 			this.OnResetDevice( device, null );
-
-			/*
-			 * CMH 4/24/2004 - Note: The device initialization code has been moved to initDevice()
-			 * in D3D9RenderSystem.cs, as we don't want to init a new device with every window.
-			 */
-
-
-			// CMH - 4/24/2004 - Start
 
 			/* If we're in fullscreen, we can use the device's back and stencil buffers.
 			 * If we're in windowed mode, we'll want our own.
@@ -145,37 +132,35 @@ namespace Axiom.RenderSystems.Xna
         //clarabie - presentParams isn't even being used
 #if !(XBOX || XBOX360 || SILVERLIGHT)
 
-				XFG.PresentationParameters presentParams = new XFG.PresentationParameters();// (device.PresentationParameters);
+                
+				/*XFG.PresentationParameters presentParams = new XFG.PresentationParameters();// (device.PresentationParameters);
 				presentParams.IsFullScreen = false;
 				presentParams.BackBufferCount = 1;
 				presentParams.EnableAutoDepthStencil = depthBuffer;
-				presentParams.SwapEffect = XFG.SwapEffect.Discard;
 				presentParams.DeviceWindowHandle = targetControl;
 				presentParams.BackBufferHeight = height;
 				presentParams.BackBufferWidth = width;
-				presentParams.SwapEffect = XFG.SwapEffect.Default;
+				presentParams.SwapEffect = XFG.SwapEffect.Flip;
+                presentParams.DeviceWindowHandle=targetControl;
+                presentParams.AutoDepthStencilFormat = DepthFormat.Depth24Stencil8;
 
-				/*swapChain = new XFG.RenderTarget2D(device,
-		device.PresentationParameters.BackBufferWidth,
-		device.PresentationParameters.BackBufferHeight,
-		0, 0,
-		device.PresentationParameters.MultiSampleType,
-		device.PresentationParameters.MultiSampleQuality);*/
-
-				//swapChain =// XNA.SwapEffect.Discard
-				//new XFG.SwapChain( device, presentParams );
+                swapChain = new RenderTarget2D( device,
+                                                presentParams.BackBufferWidth,
+                                                presentParams.BackBufferHeight,
+                                                1,
+                                                presentParams.BackBufferFormat,
+                                                RenderTargetUsage.PlatformContents);*/
 				
-				//device.PresentationParameters.AutoDepthStencilFormat, 
-				// device.PresentationParameters.MultiSampleType,
-				// device.PresentationParameters.MultiSampleQuality
-				// );
+                
 #endif
 
 				customAttributes["SwapChain"] = swapChain;
 
-				stencilBuffer = new XFG.DepthStencilBuffer(
-					device,
-					width, height, XFG.DepthFormat.Depth24, XFG.MultiSampleType.None, 0);
+
+                backBuffer = device.GetRenderTarget(0);
+                stencilBuffer = device.DepthStencilBuffer;
+                // new DepthStencilBuffer(device,width,height, DepthFormat.Depth24Stencil8);
+                    
 
 			}
 			// CMH - End
@@ -191,9 +176,6 @@ namespace Axiom.RenderSystems.Xna
 
 			// set as active
 			this.isActive = true;
-
-
-
 		}
 
 		public override object GetCustomAttribute( string attribute )
@@ -207,18 +189,17 @@ namespace Axiom.RenderSystems.Xna
 					return stencilBuffer;
 
 				case "XNABACKBUFFER":
-					// CMH - 4/24/2004 - Start
-
-					// if we're in windowed mode, we want to get our own backbuffer.
-					if ( isFullScreen )
+                    return backBuffer;
+                    // if we're in windowed mode, we want to get our own backbuffer.
+					/*if ( isFullScreen )
 					{
-						return backBuffer;
+                        return device.GetRenderTarget(0);
 					}
 					else
 					{
-						return device.GetRenderTarget( 0 );// swapChain.GetBackBuffer(0, D3D.BackBufferType.Mono);
-					}
-				// CMH - End
+						return device.GetRenderTarget(0);
+                        // swapChain.get.GetBackBuffer(0, D3D.BackBufferType.Mono);
+					}*/
 			}
 
 			return new NotSupportedException( "There is no Xna RenderWindow custom attribute named " + attribute );
@@ -282,14 +263,14 @@ namespace Axiom.RenderSystems.Xna
 				p.BackBufferWidth = width;
 				//swapChain.Dispose();
 				//swapChain = new D3D.SwapChain( device, p );
-				stencilBuffer.Dispose();
+				/*stencilBuffer.Dispose();
 				stencilBuffer = new XFG.DepthStencilBuffer(
 					device,
 					width, height,
 					device.PresentationParameters.AutoDepthStencilFormat,
 					device.PresentationParameters.MultiSampleType,
 					device.PresentationParameters.MultiSampleQuality
-					);
+					);*/
 
 
 				// customAttributes[ "SwapChain" ] = swapChain;
@@ -303,7 +284,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="waitForVSync"></param>
 		public override void SwapBuffers( bool waitForVSync )
 		{
-      IntPtr handle = new IntPtr(0);
+            IntPtr handle = new IntPtr(0);
 #if !(XBOX || XBOX360 || SILVERLIGHT)
             //SWF.Control control = (SWF.Control)targetHandle;
             //while ( !( control is SWF.Form ) )
@@ -313,39 +294,33 @@ namespace Axiom.RenderSystems.Xna
             //handle = control.Handle;
             handle = (IntPtr)targetHandle;
 #else
-      //handle = (IntPtr)targetHandle;
+            //handle = (IntPtr)targetHandle;
 #endif
-
-			device.Present( null, new XNA.Rectangle( 0, 0, 800, 600 ), handle );
-			//            device.Present();
-			try
-			{
-				// tests coop level to make sure we are ok to render
-				//device.GraphicsDeviceCapabilities.TestCooperativeLevel();
-
-				// swap back buffer to the front
-				// CMH 4/24/2004 - Start
-				if ( this.isFullScreen )
-				{
-
-				}
-				else
-				{
-
-
-				}
-				// CMH - End
-			}
-			catch ( XFG.DeviceLostException dlx )
-			{
-				Console.WriteLine( dlx.ToString() );
-			}
-			catch ( XFG.DeviceNotResetException dnrx )
-			{
-				Console.WriteLine( dnrx.ToString() );
-				device.Reset( device.PresentationParameters );
-			}
-		}
+            device.Present();
+            //device.Present(null, new XNA.Rectangle(0, 0, width, height), handle);
+			//
+            /*try
+            {
+                if ( this.isFullScreen )
+                {
+                    device.Present();
+                }
+                else
+                {
+                    device.Present(null, new XNA.Rectangle(0, 0, width,height), handle);
+                }
+                // CMH - End
+            }
+            catch ( XFG.DeviceLostException dlx )
+            {
+                Console.WriteLine( dlx.ToString() );
+            }
+            catch ( XFG.DeviceNotResetException dnrx )
+            {
+                Console.WriteLine( dnrx.ToString() );
+                device.Reset( device.PresentationParameters );
+            }*/
+        }
 
 		/// <summary>
 		/// 
