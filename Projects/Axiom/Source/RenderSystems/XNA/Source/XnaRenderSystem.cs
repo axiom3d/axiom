@@ -981,49 +981,54 @@ namespace Axiom.RenderSystems.Xna
            
 			if (colorDepth > 16)
 			{
-				// check for 24 bit Z buffer with 8 bit stencil (optimal choice)
-				if (!XFG.GraphicsAdapter.DefaultAdapter.CheckDeviceFormat(
-					 XFG.DeviceType.Hardware,
-					 presentParams.BackBufferFormat,
-					 XFG.TextureUsage.None,
-					 XFG.QueryUsages.None,
-					 XFG.ResourceType.DepthStencilBuffer,
-					 XFG.DepthFormat.Depth24Stencil8))
-				{
-					// doh, check for 32 bit Z buffer then
-					if (!XFG.GraphicsAdapter.DefaultAdapter.CheckDeviceFormat(
-						 XFG.DeviceType.Hardware,
-						 presentParams.BackBufferFormat,
-						 XFG.TextureUsage.None,
-						 XFG.QueryUsages.None,
-						 XFG.ResourceType.DepthStencilBuffer,
-						 XFG.DepthFormat.Depth32))
-					{
-						// float doh, just use 16 bit Z buffer
-						presentParams.AutoDepthStencilFormat = XFG.DepthFormat.Depth16;
-					}
-					else
-					{
-						// use 32 bit Z buffer
-						presentParams.AutoDepthStencilFormat = XFG.DepthFormat.Depth32;
-					}
-				}
-				else
-				{
-					// <flair>Woooooooooo!</flair>
-					if (!XFG.GraphicsAdapter.DefaultAdapter.CheckDepthStencilMatch(
-							XFG.DeviceType.Hardware,
-							presentParams.BackBufferFormat,
-							presentParams.BackBufferFormat,
-							XFG.DepthFormat.Depth24Stencil8))
-					{
-                        presentParams.AutoDepthStencilFormat = XFG.DepthFormat.Depth24;
-					}
-					else
-					{
+                if ( XFG.GraphicsAdapter.DefaultAdapter.CheckDepthStencilMatch( XFG.DeviceType.Hardware, presentParams.BackBufferFormat, presentParams.BackBufferFormat, XFG.DepthFormat.Depth24Stencil8 ) )
+                {
+                    presentParams.AutoDepthStencilFormat = XFG.DepthFormat.Depth24Stencil8;
+                }
+                // check for 24 bit Z buffer with 8 bit stencil (optimal choice)
+                if ( !XFG.GraphicsAdapter.DefaultAdapter.CheckDeviceFormat(
+                     XFG.DeviceType.Hardware,
+                     XFG.GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Format,
+                     XFG.TextureUsage.None,
+                     XFG.QueryUsages.None,
+                     XFG.ResourceType.DepthStencilBuffer,
+                     XFG.DepthFormat.Depth24Stencil8 ) )
+                {
+                    // doh, check for 32 bit Z buffer then
+
+                    if ( !XFG.GraphicsAdapter.DefaultAdapter.CheckDeviceFormat(
+                         XFG.DeviceType.Hardware,
+                         XFG.GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Format,
+                         XFG.TextureUsage.None,
+                         XFG.QueryUsages.None,
+                         XFG.ResourceType.DepthStencilBuffer,
+                         XFG.DepthFormat.Depth32 ) )
+                    {
+                        // float doh, just use 16 bit Z buffer
+                        presentParams.AutoDepthStencilFormat = XFG.DepthFormat.Depth16;
+                    }
+                    else
+                    {
+                        // use 32 bit Z buffer
+                        presentParams.AutoDepthStencilFormat = XFG.DepthFormat.Depth32;
+                    }
+                }
+                else
+                {
+                    // <flair>Woooooooooo!</flair>
+                    if ( XFG.GraphicsAdapter.DefaultAdapter.CheckDepthStencilMatch(
+                            XFG.DeviceType.Hardware,
+                            XFG.GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Format,
+                            presentParams.BackBufferFormat,
+                            XFG.DepthFormat.Depth24Stencil8 ) )
+                    {
                         presentParams.AutoDepthStencilFormat = XFG.DepthFormat.Depth24Stencil8;
-					}
-				}
+                    }
+                    else
+                    {
+                        presentParams.AutoDepthStencilFormat = XFG.DepthFormat.Depth24;
+                    }
+                }
 			}
 			else
 			{
@@ -1574,6 +1579,7 @@ namespace Axiom.RenderSystems.Xna
             _device.RenderState.StencilFail = XnaHelper.Convert(stencilFailOp, flip);
             _device.RenderState.StencilDepthBufferFail = XnaHelper.Convert(depthFailOp, flip);
             _device.RenderState.StencilPass = XnaHelper.Convert(passOp, flip);
+            _device.RenderState.ColorWriteChannels = XFG.ColorWriteChannels.None;
 		}
 
 		public override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess)

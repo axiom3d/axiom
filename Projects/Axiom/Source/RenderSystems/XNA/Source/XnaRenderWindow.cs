@@ -156,11 +156,7 @@ namespace Axiom.RenderSystems.Xna
 
 				customAttributes["SwapChain"] = swapChain;
 
-
-                backBuffer = device.GetRenderTarget(0);
-                stencilBuffer = device.DepthStencilBuffer;
-                // new DepthStencilBuffer(device,width,height, DepthFormat.Depth24Stencil8);
-                    
+				stencilBuffer = new XFG.DepthStencilBuffer(	device,	width, height, device.DepthStencilBuffer.Format, XFG.MultiSampleType.None, 0);                    
 
 			}
 			// CMH - End
@@ -176,6 +172,7 @@ namespace Axiom.RenderSystems.Xna
 
 			// set as active
 			this.isActive = true;
+
 		}
 
 		public override object GetCustomAttribute( string attribute )
