@@ -34,7 +34,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Data;
 using System.IO;
 using System.Collections;
 using System.Runtime.InteropServices;
@@ -136,7 +135,7 @@ namespace Axiom.SceneManagers.Bsp
         /// </summary>
         public override void LoadWorldGeometry( string filename )
         {
-            if ( Path.GetExtension( filename ).ToLower() == ".xml" )
+            /*if ( Path.GetExtension( filename ).ToLower() == ".xml" )
             {
                 DataSet optionData = new DataSet();
                 optionData.ReadXml( filename );
@@ -193,7 +192,7 @@ namespace Axiom.SceneManagers.Bsp
                     optionList[ "AmbientRatio" ] = StringConverter.ParseFloat( (string)row[ "AmbientRatio" ] );
                 }
             }
-            else
+            else*/
             {
                 optionList[ "Map" ] = filename;
             }

@@ -148,7 +148,7 @@ namespace Axiom.RenderSystems.Xna
 		private void _initConfigOptions()
 		{
 			ConfigOption optDevice = new ConfigOption("Rendering Device", "", false);
-			ConfigOption optVideoMode = new ConfigOption("Video Mode", "800 x 600 @ 32-bit colour", false);
+			ConfigOption optVideoMode = new ConfigOption("Video Mode", "1024 x 768@ 32-bit colour", false);
 			ConfigOption optFullScreen = new ConfigOption("Full Screen", "No", false);
 			ConfigOption optVSync = new ConfigOption("VSync", "No", false);
 			ConfigOption optAA = new ConfigOption("Anti aliasing", "None", false);
@@ -921,14 +921,16 @@ namespace Axiom.RenderSystems.Xna
 		{
 			if (_device == null)
 			{
-				if (!isFullscreen)
+                _device = InitDevice(isFullscreen, depthBuffer, width, height, colorDepth, target);
+                
+				/*if (!isFullscreen)
 				{
 					_device = InitDevice(isFullscreen, depthBuffer, width, height, colorDepth, target);
 				}
 				else
 				{
 					_device = InitDevice(isFullscreen, depthBuffer, width, height, colorDepth, IntPtr.Zero);
-				}
+				}*/
 			}
 
 			RenderWindow window = new XnaRenderWindow();
@@ -954,26 +956,15 @@ namespace Axiom.RenderSystems.Xna
 			XFG.GraphicsDevice newDevice;
 
 			// if this is the first window, get the device and do other initialization
-			// CMH - 4/24/2004 start
-			/// get the Direct3D.Device params
 			XFG.PresentationParameters presentParams = new XFG.PresentationParameters();
-			presentParams.IsFullScreen = isFullscreen;
+            presentParams.IsFullScreen = isFullscreen;
 			presentParams.BackBufferCount = 1;
 			presentParams.EnableAutoDepthStencil = depthBuffer;
-
-			if (isFullscreen)
-			{
-				presentParams.BackBufferWidth = width;
-				presentParams.BackBufferHeight = height;
-			}
-			else
-			{	// Save us some bytes.
-				presentParams.BackBufferWidth = width;
-				presentParams.BackBufferHeight = height;
-			}
-
-			presentParams.MultiSampleType = XFG.MultiSampleType.None;
+            presentParams.BackBufferWidth = width;
+            presentParams.BackBufferHeight = height;
+            presentParams.MultiSampleType = XFG.MultiSampleType.None;
 			presentParams.SwapEffect = XFG.SwapEffect.Copy;
+
 			// TODO: Check vsync setting
 			presentParams.PresentationInterval = XFG.PresentInterval.Immediate;
 
@@ -984,9 +975,10 @@ namespace Axiom.RenderSystems.Xna
 			}
 			else
 			{
-				presentParams.BackBufferFormat = XFG.SurfaceFormat.Color;
+                //could not create depth24stencil8 with "Color"
+				presentParams.BackBufferFormat = XFG.SurfaceFormat.Bgr32;
 			}
-
+           
 			if (colorDepth > 16)
 			{
 				// check for 24 bit Z buffer with 8 bit stencil (optimal choice)
@@ -999,7 +991,6 @@ namespace Axiom.RenderSystems.Xna
 					 XFG.DepthFormat.Depth24Stencil8))
 				{
 					// doh, check for 32 bit Z buffer then
-
 					if (!XFG.GraphicsAdapter.DefaultAdapter.CheckDeviceFormat(
 						 XFG.DeviceType.Hardware,
 						 presentParams.BackBufferFormat,
@@ -1026,11 +1017,11 @@ namespace Axiom.RenderSystems.Xna
 							presentParams.BackBufferFormat,
 							XFG.DepthFormat.Depth24Stencil8))
 					{
-						presentParams.AutoDepthStencilFormat = XFG.DepthFormat.Depth24Stencil8;
+                        presentParams.AutoDepthStencilFormat = XFG.DepthFormat.Depth24;
 					}
 					else
 					{
-						presentParams.AutoDepthStencilFormat = XFG.DepthFormat.Depth24;
+                        presentParams.AutoDepthStencilFormat = XFG.DepthFormat.Depth24Stencil8;
 					}
 				}
 			}
@@ -1044,12 +1035,11 @@ namespace Axiom.RenderSystems.Xna
 			try
 			{
 				// hardware vertex processing
-				newDevice = new XFG.GraphicsDevice(
-													 XFG.GraphicsAdapter.DefaultAdapter,
-													 XFG.DeviceType.Hardware,
-						                             target,
-													 presentParams
-													);
+				newDevice = new XFG.GraphicsDevice( XFG.GraphicsAdapter.DefaultAdapter,
+													XFG.DeviceType.Hardware,
+						                            target,
+													presentParams
+												);
 			}
 			catch (Exception)
 			{
@@ -1088,8 +1078,8 @@ namespace Axiom.RenderSystems.Xna
 
 			// intializes the HardwareBufferManager singleton
 			hardwareBufferManager = new XnaHardwareBufferManager(newDevice);
-			_checkCapabilities(newDevice);
 
+            _checkCapabilities(newDevice);
 
 			return newDevice;
 		}
@@ -1249,7 +1239,6 @@ namespace Axiom.RenderSystems.Xna
             return dest;
         }
 
-
 		XFG.BasicEffect ef;
 		public override void Render(RenderOperation op)
 		{
@@ -1271,23 +1260,59 @@ namespace Axiom.RenderSystems.Xna
 
 			if (_device.VertexShader == null || _device.PixelShader == null)
 			{
-
 				Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferDeclaration vbd =
 					 new Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferDeclaration();
 				List<Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferElement> lvbe
 					= new List<Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferElement>(op.vertexData.vertexDeclaration.ElementCount);
 
+                int textureLayer=0;
 				for (int i = 0; i < op.vertexData.vertexDeclaration.ElementCount; i++)
 				{
 					Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferElement element = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferElement();
 					element.VertexElementIndex = (ushort)op.vertexData.vertexDeclaration[i].Index;
 					element.VertexElementSemantic = op.vertexData.vertexDeclaration[i].Semantic;
 					element.VertexElementType = op.vertexData.vertexDeclaration[i].Type;
+
+
+                    //uncomment this to see the texture shadow
+                    //the problem is that texture states are not set and texture are set  in vertexdeclaration
+                    //
+                    /*if (//op.vertexData.vertexDeclaration[i].Type == VertexElementType.Float1&&
+                         op.vertexData.vertexDeclaration[i].Semantic == VertexElementSemantic.TexCoords)
+                    {
+                        if (!texStageDesc[textureLayer].Enabled)
+                        {
+                            texStageDesc[textureLayer].layerBlendMode = new LayerBlendModeEx();
+                            texStageDesc[textureLayer].layerBlendMode.blendType = LayerBlendType.Color;
+                            texStageDesc[textureLayer].layerBlendMode.operation = LayerBlendOperationEx.Modulate;
+                            texStageDesc[textureLayer].layerBlendMode.source1 = LayerBlendSource.Texture;
+                            texStageDesc[textureLayer].layerBlendMode.source2 = LayerBlendSource.Current;
+
+                            texStageDesc[textureLayer].Enabled = true;
+                            texStageDesc[textureLayer].autoTexCoordType = TexCoordCalcMethod.None;
+                            texStageDesc[textureLayer].coordIndex = textureLayer;
+                            switch (op.vertexData.vertexDeclaration[i].Type)
+                            {
+                                case VertexElementType.Float1:
+                                    texStageDesc[textureLayer].texType = TextureType.OneD;
+                                    break;
+                                case VertexElementType.Float2:
+                                    texStageDesc[textureLayer].texType = TextureType.TwoD;
+                                    break;
+                                case VertexElementType.Float3:
+                                    texStageDesc[textureLayer].texType = TextureType.ThreeD;
+                                    break;
+                            }
+                            //texStageDesc[textureLayer].layerBlendMode = new LayerBlendModeEx();
+                        }
+                        textureLayer++;
+                    }*/
+                    
 					lvbe.Add(element);
 				}
 				vbd.VertexBufferElements = lvbe;
 
-				//_fixedFunctionState = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.FixedFunctionState();
+                
 				for (int i = 0; i < Config.MaxTextureLayers; i++)
 				{
 					Axiom.RenderSystems.Xna.FixedFunctionEmulation.TextureLayerState tls
@@ -1299,27 +1324,16 @@ namespace Axiom.RenderSystems.Xna
 						tls.TextureType = texStageDesc[i].texType;
 						tls.TexCoordCalcMethod = texStageDesc[i].autoTexCoordType;
 						tls.CoordIndex = texStageDesc[i].coordIndex;
-
 						tls.LayerBlendMode = texStageDesc[i].layerBlendMode;
-						//uncomment this to see the BSP demo lightmaps to check
-						/*tls.LayerBlendMode = new LayerBlendModeEx();
-						tls.LayerBlendMode.blendType = LayerBlendType.Color;
-						tls.LayerBlendMode.blendFactor = _device.RenderState.BlendFactor.A;
-						tls.LayerBlendMode.operation = LayerBlendOperationEx.Modulate;
-						tls.LayerBlendMode.source1 = LayerBlendSource.Diffuse;
-						tls.LayerBlendMode.source2 = LayerBlendSource.Texture;*/
-						//TextureLayerStateList
+                        //TextureLayerStateList
 						_fixedFunctionState.TextureLayerStates.Add(tls);
-
 					}
 				}
-
 
 				Axiom.RenderSystems.Xna.FixedFunctionEmulation.GeneralFixedFunctionState gff;
 				gff = _fixedFunctionState.GeneralFixedFunctionState;
 
-
-				gff.EnableLighting = _ffProgramParameters.LightingEnabled;//= true;
+				gff.EnableLighting = _ffProgramParameters.LightingEnabled;
 				gff.FogMode = _ffProgramParameters.FogMode;
 				_fixedFunctionState.GeneralFixedFunctionState = gff;
 
@@ -1330,6 +1344,8 @@ namespace Axiom.RenderSystems.Xna
 
 				_fixedFunctionProgram = (FixedFunctionEmulation.HLSLFixedFunctionProgram)
 														 _shaderManager.GetShaderPrograms("hlsl", vbd, _fixedFunctionState);
+
+                _fixedFunctionProgram.FragmentProgramUsage.Program.DefaultParameters.NamedParamCount.ToString();
 
 				_fixedFunctionProgram.SetFixedFunctionProgramParameters(_ffProgramParameters);
 
@@ -1344,12 +1360,10 @@ namespace Axiom.RenderSystems.Xna
 				// Bind Fragment Program 
 				if (_device.PixelShader == null)
 				{
-
 					_device.PixelShader = ((XnaFragmentProgram)_fixedFunctionProgram.FragmentProgramUsage.Program.BindingDelegate).PixelShader;
 					BindGpuProgramParameters(GpuProgramType.Fragment, _fixedFunctionProgram.FragmentProgramUsage.Params);
 					needToUnmapFS = true;
 				}
-
 
 				//clear parameters lists for next frame
 				_fixedFunctionState.Lights.Clear();
@@ -1358,9 +1372,7 @@ namespace Axiom.RenderSystems.Xna
 			/*---------------------------------------------------------------------------------------------------------*/
 #endif
 
-
 			XnaVertexDeclaration vertDecl = (XnaVertexDeclaration)op.vertexData.vertexDeclaration;
-
 			// set the vertex declaration and buffer binding
 			_device.VertexDeclaration = vertDecl.XnaVertexDecl;
 			_setVertexBufferBinding(op.vertexData.vertexBufferBinding);
@@ -1439,7 +1451,6 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void SetColorBufferWriteEnabled(bool red, bool green, bool blue, bool alpha)
 		{
-			//todo
 			XFG.ColorWriteChannels val = 0;
 
 			if (red)
@@ -1458,15 +1469,14 @@ namespace Axiom.RenderSystems.Xna
 			{
 				val |= XFG.ColorWriteChannels.Alpha;
 			}
-
 			_device.RenderState.ColorWriteChannels = val;
 		}
 
 		public override void SetDepthBufferParams(bool depthTest, bool depthWrite, Axiom.Graphics.CompareFunction depthFunction)
 		{
-			DepthCheck = depthTest;
-			DepthWrite = depthWrite;
-			DepthFunction = depthFunction;
+            _device.RenderState.DepthBufferEnable = depthTest;
+            _device.RenderState.DepthBufferWriteEnable = depthWrite;
+            _device.RenderState.DepthBufferFunction = XnaHelper.Convert(depthFunction);
 		}
 
 		public override void SetFog(Axiom.Graphics.FogMode mode, ColorEx color, float density, float start, float end)
@@ -1506,15 +1516,17 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void SetSceneBlending(SceneBlendFactor src, SceneBlendFactor dest)
 		{
-			_device.RenderState.SourceBlend = XnaHelper.Convert(src);
-			_device.RenderState.DestinationBlend = XnaHelper.Convert(dest);
-
-			/*_device.RenderState.SeparateAlphaBlendEnabled=true;
-			_device.RenderState.AlphaBlendEnable = true;
-			_device.RenderState.BlendFunction = Microsoft.Xna.Framework.Graphics.BlendFunction.Add;
-			_device.RenderState.AlphaBlendOperation = Microsoft.Xna.Framework.Graphics.BlendFunction.Add;
-			_device.RenderState.AlphaSourceBlend = Microsoft.Xna.Framework.Graphics.Blend.Zero;
-			_device.RenderState.AlphaDestinationBlend = Microsoft.Xna.Framework.Graphics.Blend.Zero;*/
+            if (src == SceneBlendFactor.One && dest == SceneBlendFactor.Zero)
+            {
+                _device.RenderState.AlphaBlendEnable = false;
+            }
+            else
+            {
+                _device.RenderState.AlphaBlendEnable = true;
+                _device.RenderState.SeparateAlphaBlendEnabled = false;
+                _device.RenderState.SourceBlend = XnaHelper.Convert(src);
+                _device.RenderState.DestinationBlend = XnaHelper.Convert(dest);
+            }
 		}
 
 		public override void SetScissorTest(bool enable, int left, int top, int right, int bottom)
@@ -1532,33 +1544,36 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void SetStencilBufferParams(Axiom.Graphics.CompareFunction function, int refValue, int mask, Axiom.Graphics.StencilOperation stencilFailOp, Axiom.Graphics.StencilOperation depthFailOp, Axiom.Graphics.StencilOperation passOp, bool twoSidedOperation)
 		{
-			// 2 sided operation?
-			if (twoSidedOperation)
-			{
-				if (!caps.CheckCap(Capabilities.TwoSidedStencil))
-				{
-					throw new AxiomException("2-sided stencils are not supported on this hardware!");
-				}
+            bool flip;
+            // 2 sided operation?
 
-				_device.RenderState.TwoSidedStencilMode = true;
+            if (twoSidedOperation)
+            {
+                if (!caps.CheckCap(Capabilities.TwoSidedStencil))
+                {
+                    throw new AxiomException("2-sided stencils are not supported on this hardware!");
+                }
+                _device.RenderState.TwoSidedStencilMode = true;
+                flip = (invertVertexWinding && activeRenderTarget.RequiresTextureFlipping) ||
+                        (!invertVertexWinding && !activeRenderTarget.RequiresTextureFlipping);
 
-				// use CCW version of the operations
-				_device.RenderState.CounterClockwiseStencilFail = XnaHelper.Convert(stencilFailOp, true);
-				_device.RenderState.CounterClockwiseStencilDepthBufferFail = XnaHelper.Convert(depthFailOp, true);
-				_device.RenderState.CounterClockwiseStencilPass = XnaHelper.Convert(passOp, true);
-			}
-			else
-			{
-				_device.RenderState.TwoSidedStencilMode = false;
-			}
+                _device.RenderState.StencilFail = XnaHelper.Convert(stencilFailOp, !flip);
+                _device.RenderState.StencilDepthBufferFail = XnaHelper.Convert(depthFailOp, !flip);
+                _device.RenderState.StencilPass = XnaHelper.Convert(passOp, !flip);
+            }
+            else
+            {
+                _device.RenderState.TwoSidedStencilMode = false;
+                flip = false;
+            }
 
-			// configure standard version of the stencil operations
-			_device.RenderState.StencilFunction = XnaHelper.Convert(function);
-			_device.RenderState.ReferenceStencil = refValue;
-			_device.RenderState.StencilMask = mask;
-			_device.RenderState.StencilFail = XnaHelper.Convert(stencilFailOp);
-			_device.RenderState.StencilDepthBufferFail = XnaHelper.Convert(depthFailOp);
-			_device.RenderState.StencilPass = XnaHelper.Convert(passOp);
+            // configure standard version of the stencil operations
+            _device.RenderState.StencilFunction = XnaHelper.Convert(function);
+            _device.RenderState.ReferenceStencil = refValue;
+            _device.RenderState.StencilMask = mask;
+            _device.RenderState.StencilFail = XnaHelper.Convert(stencilFailOp, flip);
+            _device.RenderState.StencilDepthBufferFail = XnaHelper.Convert(depthFailOp, flip);
+            _device.RenderState.StencilPass = XnaHelper.Convert(passOp, flip);
 		}
 
 		public override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess)
@@ -1608,9 +1623,7 @@ namespace Axiom.RenderSystems.Xna
             if (blendMode.blendType == LayerBlendType.Color)
             {
                 texStageDesc[stage].layerBlendMode = blendMode;
-                texStageDesc[stage].Enabled = true;
             }
-
 		}
 
 		public override void SetTextureCoordCalculation(int stage, TexCoordCalcMethod method, Frustum frustum)
@@ -1641,6 +1654,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 #if !(XBOX || XBOX360 || SILVERLIGHT )
 			_ffProgramParameters.SetTextureMatrix(stage, xform);
+            
 #endif
 		}
 
@@ -1648,8 +1662,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			XnaTextureType texType = XnaHelper.Convert(texStageDesc[stage].texType);
 			XFG.TextureFilter texFilter = XnaHelper.Convert(type, filter, _capabilities, texType);
-
-			switch (type)
+            switch (type)
 			{
 				case FilterType.Min:
 					_device.SamplerStates[stage].MinFilter = texFilter;
@@ -1663,6 +1676,7 @@ namespace Axiom.RenderSystems.Xna
 					_device.SamplerStates[stage].MipFilter = texFilter;
 					break;
 			}
+            
 		}
 
 		XFG.DepthStencilBuffer oriDSB;
@@ -1682,8 +1696,7 @@ namespace Axiom.RenderSystems.Xna
 				// get the back buffer surface for this viewport
 
 				XFG.RenderTarget2D back = (XFG.RenderTarget2D)activeRenderTarget.GetCustomAttribute("XNABACKBUFFER");
-				//XFG.ResolveTexture2D back = (XFG.ResolveTexture2D)activeRenderTarget.GetCustomAttribute("XNABACKBUFFER");
-
+				
 				_device.SetRenderTarget(0, back);
 
 				XFG.DepthStencilBuffer depth = (XFG.DepthStencilBuffer)activeRenderTarget.GetCustomAttribute("XNAZBUFFER");
@@ -1691,9 +1704,12 @@ namespace Axiom.RenderSystems.Xna
 				// set the render target and depth stencil for the surfaces belonging to the viewport
 
 				//dont know why the depthstencil buffer is disposing itself, have to keep it
-				if (depth.IsDisposed) _device.DepthStencilBuffer = oriDSB;
+				//if (depth.IsDisposed) _device.DepthStencilBuffer = oriDSB;
+				//else _device.DepthStencilBuffer = depth;
 
-				else _device.DepthStencilBuffer = depth;
+                if(depth!=null)
+                if(depth.Format==_device.DepthStencilBuffer.Format)
+                    _device.DepthStencilBuffer = depth;
 
 				// set the culling mode, to make adjustments required for viewports
 				// that may need inverted vertex winding or texture flipping

@@ -79,10 +79,10 @@ namespace Axiom.RenderSystems.Xna
             switch ( attribute )
             {
                 case "XNAZBUFFER":
-                    return privateTex.getDepthStencil();
+                    return privateTex.DepthStencil;
                     
                 case "XNABACKBUFFER":
-                    return privateTex.renderTarget;
+                    return privateTex.RenderTarget;
             }
 
             return new NotSupportedException( "There is no Xna RenderTexture custom attribute named " + attribute );
