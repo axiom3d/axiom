@@ -72,6 +72,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 		public override string GetShaderSource( string vertexProgramName, string fragmentProgramName, VertexBufferDeclaration vertexBufferDeclaration, FixedFunctionState fixedFunctionState )
         {
             bool bHasColor = vertexBufferDeclaration.HasColor;
+            bool bHasSpecular=false;
             bool bHasNormal = false;
 			bool bHasTexcoord = vertexBufferDeclaration.HasTexCoord;
             int texcoordCount = vertexBufferDeclaration.TexCoordCount;
@@ -174,6 +175,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 						parameterShaderTypeName = "COLOR";
 						thisElementSemanticCount = semanticCount[ (int)VertexElementSemantic.Diffuse ].ToString(); // Diffuse is the "COLOR" count...
 						semanticCount[ (int)VertexElementSemantic.Diffuse ]++;
+                        bHasSpecular=true;
 						break;
 					case VertexElementSemantic.TexCoords:
                         //all texcoord are not texture coordinates!
@@ -276,12 +278,12 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 				}
 			}
 
-            /*shaderSource += "float4 \tMaterialEnabled= (float4)0;\n";
-            shaderSource += "float4 \tMaterialAmbient=(float4)0;\n";
-            shaderSource += "float4 \tMaterialDiffuse=(float4)0;\n";
-            shaderSource += "float4 \tMaterialSpecular=(float4)0;\n";
-            shaderSource += "float4 \tMaterialEmissive=(float4)0;\n";
-            shaderSource += "float  \tMaterialShininess=(float4)0;\n";*/
+
+            shaderSource += "float4 \tMaterialAmbient=(float4)1;\n";
+            shaderSource += "float4 \tMaterialDiffuse=(float4)1;\n";
+            shaderSource += "float4 \tMaterialSpecular=(float4)1;\n";
+            //shaderSource += "float4 \tMaterialEmissive=(float4)0;\n";
+            //shaderSource += "float  \tMaterialShininess=(float4)0;\n";
 
 			shaderSource += "\nstruct VS_OUTPUT\n";
 			shaderSource += "{\n";
@@ -456,21 +458,32 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             //{
             //}
 
-
-            shaderSource += "\toutput.ColorSpec = float4(0.0, 0.0, 0.0, 0.0);\n";
-            //shaderSource += "\toutput.ColorSpec =MaterialSpecular;\n";
-            //shaderSource += "\toutput.Color = MaterialAmbient* MaterialDiffuse;\n";
-            if ( fixedFunctionState.GeneralFixedFunctionState.EnableLighting && fixedFunctionState.Lights.Count > 0 )
+            if(bHasSpecular)
+                shaderSource += "\toutput.ColorSpec = input.SpecularColor;\n";
+            else if(fixedFunctionState.MaterialEnabled) 
+                shaderSource += "\toutput.ColorSpec =MaterialSpecular;\n";
+            else shaderSource += "\toutput.ColorSpec = float4(0.0, 0.0, 0.0, 0.0);\n";
+            
+            
+            if (fixedFunctionState.GeneralFixedFunctionState.EnableLighting && fixedFunctionState.Lights.Count > 0)
 			{
-                shaderSource += "\toutput.Color +=BaseLightAmbient;\n";
-				if ( bHasColor )
-				{
-                    shaderSource += "\toutput.Color += input.DiffuseColor0;\n";
-				}
+                /*shaderSource += "\toutput.Color +=BaseLightAmbient;\n";*/
+                if (bHasColor)
+                {
+                    shaderSource += "\toutput.Color +=BaseLightAmbient;\n"; 
+                    shaderSource += "\toutput.Color *=input.DiffuseColor0;\n";
+                }
+                else
+                {
+                   shaderSource += "\toutput.Color =BaseLightAmbient* MaterialDiffuse*MaterialAmbient;\n";
+                }
+
                 shaderSource += "\tfloat3 N = mul((float3x3)WorldViewIT, Normal);\n";
                 shaderSource += "\tfloat3 V = -normalize( cameraPos);\n";
                
+                
                 shaderSource += "\t#define fMaterialPower 16.f\n";
+               
 
                 for (int i = 0; i <fixedFunctionState.Lights.Count; i++)
                 {
@@ -575,7 +588,10 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 				}
 				else
 				{
-                    shaderSource += "\toutput.Color = float4(1.0, 1.0, 1.0, 1.0);\n";
+                    if(fixedFunctionState.MaterialEnabled)
+                        shaderSource += "\toutput.Color = MaterialAmbient* MaterialDiffuse;\n";
+                    else
+                        shaderSource += "\t\toutput.Color = float4(1.0, 1.0, 1.0, 1.0);\n";
 				}
 			}
 
