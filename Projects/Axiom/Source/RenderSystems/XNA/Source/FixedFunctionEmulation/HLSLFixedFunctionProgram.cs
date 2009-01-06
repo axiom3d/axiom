@@ -70,15 +70,17 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                 _setProgramParameter(GpuProgramType.Vertex, "WorldViewIT", WorldViewIT);
             }
 
+            _setProgramParameter(GpuProgramType.Vertex, "MaterialAmbient", parameters.MaterialAmbient);
+            _setProgramParameter(GpuProgramType.Vertex, "MaterialDiffuse", parameters.MaterialDiffuse);
+            _setProgramParameter(GpuProgramType.Vertex, "MaterialSpecular", parameters.MaterialSpecular);
+            //_setProgramParameter(GpuProgramType.Vertex, "MaterialEmissive", parameters.MaterialEmissive);
+            //_setProgramParameter(GpuProgramType.Vertex, "MaterialShininess", parameters.MaterialShininess);
+           
             #region shader Lights parameters
             if (parameters.LightingEnabled)
             {
                 _setProgramParameter(GpuProgramType.Vertex, "BaseLightAmbient", parameters.LightAmbient);
-
-                /*uint pointLightCount = 0;
-                uint directionalLightCount = 0;
-                uint spotLightCount = 0;*/
-             
+                
                 for (int i = 0; i < parameters.Lights.Count; i++)
                 {
                     Axiom.Core.Light curLight = parameters.Lights[i];

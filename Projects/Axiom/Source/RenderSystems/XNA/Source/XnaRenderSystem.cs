@@ -150,7 +150,7 @@ namespace Axiom.RenderSystems.Xna
 			ConfigOption optDevice = new ConfigOption("Rendering Device", "", false);
 			ConfigOption optVideoMode = new ConfigOption("Video Mode", "1024 x 768@ 32-bit colour", false);
 			ConfigOption optFullScreen = new ConfigOption("Full Screen", "No", false);
-			ConfigOption optVSync = new ConfigOption("VSync", "No", false);
+            ConfigOption optVSync = new ConfigOption("VSync", "No", false);
 			ConfigOption optAA = new ConfigOption("Anti aliasing", "None", false);
 			ConfigOption optFPUMode = new ConfigOption("Floating-point mode", "Fastest", false);
 
@@ -1269,7 +1269,7 @@ namespace Axiom.RenderSystems.Xna
 					 new Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferDeclaration();
 				List<Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferElement> lvbe
 					= new List<Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferElement>(op.vertexData.vertexDeclaration.ElementCount);
-
+                
                 int textureLayer=0;
 				for (int i = 0; i < op.vertexData.vertexDeclaration.ElementCount; i++)
 				{
@@ -1278,12 +1278,11 @@ namespace Axiom.RenderSystems.Xna
 					element.VertexElementSemantic = op.vertexData.vertexDeclaration[i].Semantic;
 					element.VertexElementType = op.vertexData.vertexDeclaration[i].Type;
 
-
                     //uncomment this to see the texture shadow
                     //the problem is that texture states are not set and texture are set  in vertexdeclaration
                     //
-                    /*if (//op.vertexData.vertexDeclaration[i].Type == VertexElementType.Float1&&
-                         op.vertexData.vertexDeclaration[i].Semantic == VertexElementSemantic.TexCoords)
+                    /*if (op.vertexData.vertexDeclaration[i].Type == VertexElementType.Float1 &&
+                        op.vertexData.vertexDeclaration[i].Semantic == VertexElementSemantic.TexCoords)
                     {
                         if (!texStageDesc[textureLayer].Enabled)
                         {
@@ -1373,6 +1372,7 @@ namespace Axiom.RenderSystems.Xna
 				//clear parameters lists for next frame
 				_fixedFunctionState.Lights.Clear();
 				_fixedFunctionState.TextureLayerStates.Clear();
+                _fixedFunctionState.MaterialEnabled = false;
 			}
 			/*---------------------------------------------------------------------------------------------------------*/
 #endif
@@ -1584,7 +1584,22 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess)
 		{
-			// No Implementation 
+            //from scene manager, when material object lightning is off
+            //targetRenderSystem.SetSurfaceParams( ColorEx.White, ColorEx.Black, ColorEx.Black, ColorEx.Black, 0 );
+
+            if (ambient == ColorEx.White &&
+                diffuse == ColorEx.Black &&
+                specular == ColorEx.Black &&
+                emissive == ColorEx.Black
+                && shininess == 0)
+                _fixedFunctionState.MaterialEnabled = false;
+            else
+                _fixedFunctionState.MaterialEnabled = true;
+            _ffProgramParameters.MaterialAmbient = ambient;
+            _ffProgramParameters.MaterialDiffuse = diffuse;
+            _ffProgramParameters.MaterialEmissive = emissive;
+            _ffProgramParameters.MaterialShininess = shininess;
+            _ffProgramParameters.MaterialSpecular = specular;
 		}
 
 		public override void SetTexture(int stage, bool enabled, string textureName)
@@ -1714,7 +1729,7 @@ namespace Axiom.RenderSystems.Xna
 				//else _device.DepthStencilBuffer = depth;
 
                 if(depth!=null)
-                if(depth.Format==_device.DepthStencilBuffer.Format)
+                //if(depth.Format==_device.DepthStencilBuffer.Format)
                     _device.DepthStencilBuffer = depth;
 
 				// set the culling mode, to make adjustments required for viewports

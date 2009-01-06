@@ -67,6 +67,19 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 	{
 		#region Fields and Properties
 
+        protected bool materialEnabled=false;
+        public bool MaterialEnabled
+        {
+            get
+            {
+                return materialEnabled;
+            }
+            set
+            {
+                materialEnabled = value;
+            }
+        }
+
 		protected GeneralFixedFunctionState generalFFState = GeneralFixedFunctionState.Create();
 		public GeneralFixedFunctionState GeneralFixedFunctionState
 		{
