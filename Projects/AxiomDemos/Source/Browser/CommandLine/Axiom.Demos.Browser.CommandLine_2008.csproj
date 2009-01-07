@@ -150,254 +150,254 @@
       <Link>cg.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\..\..\..\Media\Archives\chiropteraDM.zip">
+    <Content Include="..\..\..\..\..\Media\Archives\chiropteraDM.zip">
       <Link>Media\Archives\chiropteraDM.zip</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Archives\cubemapsJS.zip">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Archives\cubemapsJS.zip">
       <Link>Media\Archives\cubemapsJS.zip</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Archives\Fresnel.zip">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Archives\Fresnel.zip">
       <Link>Media\Archives\Fresnel.zip</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Archives\RZR-002.zip">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Archives\RZR-002.zip">
       <Link>Media\Archives\RZR-002.zip</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Archives\Water.zip">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Archives\Water.zip">
       <Link>Media\Archives\Water.zip</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\BrowserImages\BezierPatch.jpg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\BrowserImages\BezierPatch.jpg">
       <Link>Media\BrowserImages\BezierPatch.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\BrowserImages\CameraTrack.jpg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\BrowserImages\CameraTrack.jpg">
       <Link>Media\BrowserImages\CameraTrack.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\BrowserImages\CelShading.jpg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\BrowserImages\CelShading.jpg">
       <Link>Media\BrowserImages\CelShading.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\BrowserImages\CubeMapping.jpg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\BrowserImages\CubeMapping.jpg">
       <Link>Media\BrowserImages\CubeMapping.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\BrowserImages\Dot3Bump.jpg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\BrowserImages\Dot3Bump.jpg">
       <Link>Media\BrowserImages\Dot3Bump.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\BrowserImages\EnvMapping.jpg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\BrowserImages\EnvMapping.jpg">
       <Link>Media\BrowserImages\EnvMapping.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\BrowserImages\Fresnel.jpg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\BrowserImages\Fresnel.jpg">
       <Link>Media\BrowserImages\Fresnel.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\BrowserImages\Frustum.jpg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\BrowserImages\Frustum.jpg">
       <Link>Media\BrowserImages\Frustum.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\BrowserImages\Lights.jpg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\BrowserImages\Lights.jpg">
       <Link>Media\BrowserImages\Lights.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\BrowserImages\OffsetMapping.jpg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\BrowserImages\OffsetMapping.jpg">
       <Link>Media\BrowserImages\OffsetMapping.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\BrowserImages\ParticleFX.jpg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\BrowserImages\ParticleFX.jpg">
       <Link>Media\BrowserImages\ParticleFX.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\BrowserImages\Physics.jpg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\BrowserImages\Physics.jpg">
       <Link>Media\BrowserImages\Physics.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\BrowserImages\RenderToTexture.jpg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\BrowserImages\RenderToTexture.jpg">
       <Link>Media\BrowserImages\RenderToTexture.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\BrowserImages\SkeletalAnimation.jpg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\BrowserImages\SkeletalAnimation.jpg">
       <Link>Media\BrowserImages\SkeletalAnimation.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\BrowserImages\SkyBox.jpg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\BrowserImages\SkyBox.jpg">
       <Link>Media\BrowserImages\SkyBox.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\BrowserImages\SkyDome.jpg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\BrowserImages\SkyDome.jpg">
       <Link>Media\BrowserImages\SkyDome.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\BrowserImages\SkyPlane.jpg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\BrowserImages\SkyPlane.jpg">
       <Link>Media\BrowserImages\SkyPlane.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\BrowserImages\Smoke.jpg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\BrowserImages\Smoke.jpg">
       <Link>Media\BrowserImages\Smoke.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\BrowserImages\Terrain.jpg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\BrowserImages\Terrain.jpg">
       <Link>Media\BrowserImages\Terrain.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\BrowserImages\TextureFX.jpg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\BrowserImages\TextureFX.jpg">
       <Link>Media\BrowserImages\TextureFX.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\BrowserImages\Transparency.jpg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\BrowserImages\Transparency.jpg">
       <Link>Media\BrowserImages\Transparency.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\BrowserImages\Tutorial1.jpg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\BrowserImages\Tutorial1.jpg">
       <Link>Media\BrowserImages\Tutorial1.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\BrowserImages\Water.jpg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\BrowserImages\Water.jpg">
       <Link>Media\BrowserImages\Water.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Fonts\Arial.fontdef">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Fonts\Arial.fontdef">
       <Link>Media\Fonts\Arial.fontdef</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Fonts\Arial.png">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Fonts\Arial.png">
       <Link>Media\Fonts\Arial.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Fonts\Garamond.fontdef">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Fonts\Garamond.fontdef">
       <Link>Media\Fonts\Garamond.fontdef</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Fonts\Garamond.png">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Fonts\Garamond.png">
       <Link>Media\Fonts\Garamond.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Fonts\maiden.TTF">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Fonts\maiden.TTF">
       <Link>Media\Fonts\maiden.TTF</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Fonts\PalatinoLinotype.fontdef">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Fonts\PalatinoLinotype.fontdef">
       <Link>Media\Fonts\PalatinoLinotype.fontdef</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Fonts\PalatinoLinotype.png">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Fonts\PalatinoLinotype.png">
       <Link>Media\Fonts\PalatinoLinotype.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\GpuPrograms\Dot3Bump.program">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\GpuPrograms\Dot3Bump.program">
       <Link>Media\GpuPrograms\Dot3Bump.program</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\GpuPrograms\Examples.program">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\GpuPrograms\Examples.program">
       <Link>Media\GpuPrograms\Examples.program</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\GpuPrograms\Example_Basic.cg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\GpuPrograms\Example_Basic.cg">
       <Link>Media\GpuPrograms\Example_Basic.cg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\GpuPrograms\Example_BumpMapping.cg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\GpuPrograms\Example_BumpMapping.cg">
       <Link>Media\GpuPrograms\Example_BumpMapping.cg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\GpuPrograms\Example_CelShading.cg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\GpuPrograms\Example_CelShading.cg">
       <Link>Media\GpuPrograms\Example_CelShading.cg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\GpuPrograms\Fresnel.program">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\GpuPrograms\Fresnel.program">
       <Link>Media\GpuPrograms\Fresnel.program</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\GpuPrograms\HardwareSkinning.cg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\GpuPrograms\HardwareSkinning.cg">
       <Link>Media\GpuPrograms\HardwareSkinning.cg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\GpuPrograms\keepgpuprograms.txt">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\GpuPrograms\keepgpuprograms.txt">
       <Link>Media\GpuPrograms\keepgpuprograms.txt</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\GpuPrograms\OffsetMapping.cg">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\GpuPrograms\OffsetMapping.cg">
       <Link>Media\GpuPrograms\OffsetMapping.cg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\GpuPrograms\OffsetMapping.program">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\GpuPrograms\OffsetMapping.program">
       <Link>Media\GpuPrograms\OffsetMapping.program</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\GpuPrograms\OffsetMapping_specular.asm">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\GpuPrograms\OffsetMapping_specular.asm">
       <Link>Media\GpuPrograms\OffsetMapping_specular.asm</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Icons\AxiomIcon.ico">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Icons\AxiomIcon.ico">
       <Link>Media\Icons\AxiomIcon.ico</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Materials\Athene.material">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Materials\Athene.material">
       <Link>Media\Materials\Athene.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Materials\CelShading.material">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Materials\CelShading.material">
       <Link>Media\Materials\CelShading.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Materials\Core.material">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Materials\Core.material">
       <Link>Media\Materials\Core.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Materials\Dot3Bump.material">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Materials\Dot3Bump.material">
       <Link>Media\Materials\Dot3Bump.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Materials\DP3.material">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Materials\DP3.material">
       <Link>Media\Materials\DP3.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Materials\Example.particle">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Materials\Example.particle">
       <Link>Media\Materials\Example.particle</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Materials\Examples.material">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Materials\Examples.material">
       <Link>Media\Materials\Examples.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Materials\Ninja.material">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Materials\Ninja.material">
       <Link>Media\Materials\Ninja.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Materials\OffsetMapping.material">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Materials\OffsetMapping.material">
       <Link>Media\Materials\OffsetMapping.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Materials\Particles.material">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Materials\Particles.material">
       <Link>Media\Materials\Particles.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Materials\Robot.material">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Materials\Robot.material">
       <Link>Media\Materials\Robot.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Materials\Skys.material">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Materials\Skys.material">
       <Link>Media\Materials\Skys.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Materials\smoke.material">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Materials\smoke.material">
       <Link>Media\Materials\smoke.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Materials\smoke.particle">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Materials\smoke.particle">
       <Link>Media\Materials\smoke.particle</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Materials\Terrain.material">
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Materials\Terrain.material">
       <Link>Media\Materials\Terrain.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Include="..\..\..\..\..\Media\Meshes\athene.mesh">
       <Link>Media\Meshes\athene.mesh</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
