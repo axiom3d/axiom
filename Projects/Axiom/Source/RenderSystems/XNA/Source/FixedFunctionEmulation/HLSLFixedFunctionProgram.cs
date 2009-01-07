@@ -61,15 +61,14 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             _setProgramParameter(GpuProgramType.Vertex, "World", parameters.WorldMatrix);
             _setProgramParameter(GpuProgramType.Vertex, "View", parameters.ViewMatrix);
             _setProgramParameter(GpuProgramType.Vertex, "Projection", parameters.ProjectionMatrix);
+           
+            //maybe we could do an inverse function in shader
+            _setProgramParameter(GpuProgramType.Vertex, "ViewIT", parameters.ViewMatrix.Inverse());
+            Axiom.Math.Matrix4 WorldViewIT = parameters.ViewMatrix * parameters.WorldMatrix;
+            WorldViewIT = WorldViewIT.Inverse();
+            _setProgramParameter(GpuProgramType.Vertex, "WorldViewIT", WorldViewIT);
+           
             
-            //if (parameters.Lights.Count > 0)
-            {
-                _setProgramParameter(GpuProgramType.Vertex, "ViewIT", parameters.ViewMatrix.Inverse().Transpose());
-                Axiom.Math.Matrix4 WorldViewIT = parameters.ViewMatrix * parameters.WorldMatrix;
-                WorldViewIT = WorldViewIT.Inverse().Transpose();
-                _setProgramParameter(GpuProgramType.Vertex, "WorldViewIT", WorldViewIT);
-            }
-
             _setProgramParameter(GpuProgramType.Vertex, "MaterialAmbient", parameters.MaterialAmbient);
             _setProgramParameter(GpuProgramType.Vertex, "MaterialDiffuse", parameters.MaterialDiffuse);
             _setProgramParameter(GpuProgramType.Vertex, "MaterialSpecular", parameters.MaterialSpecular);
@@ -139,12 +138,12 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                 case FogMode.Exp:
                 case FogMode.Exp2:
                     _setProgramParameter(GpuProgramType.Vertex, "FogDensity", parameters.FogDensity);
-                    _setProgramParameter(GpuProgramType.Vertex, "FogColor", parameters.FogColor);
+                    _setProgramParameter(GpuProgramType.Fragment, "FogColor", parameters.FogColor);
                     break;
                 case FogMode.Linear:
                     _setProgramParameter(GpuProgramType.Vertex, "FogStart", parameters.FogStart);
                     _setProgramParameter(GpuProgramType.Vertex, "FogEnd", parameters.FogEnd);
-                    _setProgramParameter(GpuProgramType.Vertex, "FogColor", parameters.FogColor);
+                    _setProgramParameter(GpuProgramType.Fragment, "FogColor", parameters.FogColor);
                     break;
             }
 

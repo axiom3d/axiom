@@ -126,12 +126,12 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
         public ShaderManager()
         {
             //just delete the previously created shader txt file, will be removed when everything works!
-            string[] files = System.IO.Directory.GetFiles( System.IO.Directory.GetCurrentDirectory(), "*.txt" );
+            /*string[] files = System.IO.Directory.GetFiles( System.IO.Directory.GetCurrentDirectory(), "*.txt" );
             foreach ( string str in files )
             {
                 if ( str.StartsWith( System.IO.Directory.GetCurrentDirectory() + "\\shader" ) == true )
                     System.IO.File.Delete( str );
-            }
+            }*/
 
         }
 
