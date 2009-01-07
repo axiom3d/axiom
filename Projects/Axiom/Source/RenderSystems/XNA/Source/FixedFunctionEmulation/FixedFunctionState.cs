@@ -67,7 +67,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 	{
 		#region Fields and Properties
 
-        protected bool materialEnabled=false;
+        /*protected bool materialEnabled;
         public bool MaterialEnabled
         {
             get
@@ -78,7 +78,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             {
                 materialEnabled = value;
             }
-        }
+        }*/
 
 		protected GeneralFixedFunctionState generalFFState = GeneralFixedFunctionState.Create();
 		public GeneralFixedFunctionState GeneralFixedFunctionState
@@ -148,6 +148,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                 hashCode ^= light.GetHashCode();
             hashCode ^= textureLayerStates.Count;
             hashCode ^= lights.Count;
+            //hashCode ^= materialEnabled.GetHashCode();
             return hashCode;
         }
 

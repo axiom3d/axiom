@@ -55,14 +55,9 @@ using Axiom.Collections;
 
 namespace Axiom.RenderSystems.Xna
 {
-
-	/// <summary>
-	/// 
-	/// </summary>
-	public class XnaRenderSystem : RenderSystem, IServiceProvider
+    public class XnaRenderSystem : RenderSystem, IServiceProvider
 	{
-
-		public static readonly Matrix4 ProjectionClipSpace2DToImageSpacePerspective = new Matrix4(
+        public static readonly Matrix4 ProjectionClipSpace2DToImageSpacePerspective = new Matrix4(
 		   0.5f, 0, 0, -0.5f,
 		   0, -0.5f, 0, -0.5f,
 		   0, 0, 0, 1f,
@@ -148,7 +143,7 @@ namespace Axiom.RenderSystems.Xna
 		private void _initConfigOptions()
 		{
 			ConfigOption optDevice = new ConfigOption("Rendering Device", "", false);
-			ConfigOption optVideoMode = new ConfigOption("Video Mode", "1024 x 768@ 32-bit colour", false);
+			ConfigOption optVideoMode = new ConfigOption("Video Mode", "800 x 600@ 32-bit colour", false);
 			ConfigOption optFullScreen = new ConfigOption("Full Screen", "No", false);
             ConfigOption optVSync = new ConfigOption("VSync", "No", false);
 			ConfigOption optAA = new ConfigOption("Anti aliasing", "None", false);
@@ -623,15 +618,17 @@ namespace Axiom.RenderSystems.Xna
 			}
 			set
 			{
-				_projectionMatrix = value;
+				_projectionMatrix=value;
 
-				XNA.Matrix mat = XnaHelper.Convert(value);
+                /*XNA.Matrix mat = XnaHelper.Convert(value);
 
-				if (activeRenderTarget.RequiresTextureFlipping)
-				{
-					mat.M22 = -mat.M22;
-				}
+                if (activeRenderTarget.RequiresTextureFlipping)
+                {
+                    mat.M22 = -mat.M22;
+                }*/
 
+              
+                
 #if !(XBOX || XBOX360 || SILVERLIGHT)
 				_ffProgramParameters.ProjectionMatrix = value;
 #endif
@@ -679,7 +676,7 @@ namespace Axiom.RenderSystems.Xna
 		{
 			get
 			{
-				throw new Exception("The method or operation is not implemented.");
+                throw new Exception("The method or operation is not implemented.");
 			}
 			set
 			{
@@ -711,6 +708,7 @@ namespace Axiom.RenderSystems.Xna
 				_viewMatrix.m21 = -_viewMatrix.m21;
 				_viewMatrix.m22 = -_viewMatrix.m22;
 				_viewMatrix.m23 = -_viewMatrix.m23;
+               
 #if !(XBOX || XBOX360 || SILVERLIGHT)
 				_ffProgramParameters.ViewMatrix = _viewMatrix;
 #endif
@@ -879,31 +877,30 @@ namespace Axiom.RenderSystems.Xna
 			}
 		}
 
-		public override void ClearFrameBuffer(FrameBuffer buffers, ColorEx color, float depth, int stencil)
-		{
-			XFG.ClearOptions flags = 0; //ClearFlags 
+        public override void ClearFrameBuffer(FrameBuffer buffers, ColorEx color, float depth, int stencil)
+        {
+            XFG.ClearOptions flags = 0; //ClearFlags 
 
-			if ((buffers & FrameBuffer.Color) > 0)
-			{
-				flags |= XFG.ClearOptions.Target;
-			}
-			if ((buffers & FrameBuffer.Depth) > 0)
-			{
-				flags |= XFG.ClearOptions.DepthBuffer;
-			}
-			// Only try to clear the stencil buffer if supported
-			if ((buffers & FrameBuffer.Stencil) > 0
-				&& caps.CheckCap(Capabilities.StencilBuffer))
-			{
+            if ((buffers & FrameBuffer.Color) > 0)
+            {
+                flags |= XFG.ClearOptions.Target;
+            }
+            if ((buffers & FrameBuffer.Depth) > 0)
+            {
+                flags |= XFG.ClearOptions.DepthBuffer;
+            }
+            // Only try to clear the stencil buffer if supported
+            if ((buffers & FrameBuffer.Stencil) > 0
+                && caps.CheckCap(Capabilities.StencilBuffer))
+            {
 
-				flags |= XFG.ClearOptions.Stencil;
-			}
-			XFG.Color col = new XFG.Color((byte)(color.r * 255.0f), (byte)(color.g * 255.0f), (byte)(color.b * 255.0f), (byte)(color.a * 255.0f));
-			// color.ToXnaColor();
+                flags |= XFG.ClearOptions.Stencil;
+            }
+            XFG.Color col = new XFG.Color((byte)(color.r * 255.0f), (byte)(color.g * 255.0f), (byte)(color.b * 255.0f), (byte)(color.a * 255.0f));
 
-			// clear the device using the specified params
-			_device.Clear(flags, col, depth, stencil);
-		}
+            // clear the device using the specified params
+            _device.Clear(flags, col, depth, stencil);
+        }
 
 		public override int ConvertColor(ColorEx color)
 		{
@@ -1175,7 +1172,7 @@ namespace Axiom.RenderSystems.Xna
 			{
 				dest.m22 = -dest.m22;
 			}
-
+            
 			return dest;
 		}
 
@@ -1244,7 +1241,7 @@ namespace Axiom.RenderSystems.Xna
             return dest;
         }
 
-		XFG.BasicEffect ef;
+		//XFG.BasicEffect ef;
 		public override void Render(RenderOperation op)
 		{
 			// don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800)
@@ -1256,7 +1253,7 @@ namespace Axiom.RenderSystems.Xna
 			// class base implementation first
 			base.Render(op);
 
-
+            
 			/*---------------shaders generator part------*/
 #if !(XBOX || XBOX360 || SILVERLIGHT )
 
@@ -1271,10 +1268,11 @@ namespace Axiom.RenderSystems.Xna
 					= new List<Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferElement>(op.vertexData.vertexDeclaration.ElementCount);
                 
                 int textureLayer=0;
-				for (int i = 0; i < op.vertexData.vertexDeclaration.ElementCount; i++)
+				 for (int i = 0; i < op.vertexData.vertexDeclaration.ElementCount; i++)
 				{
 					Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferElement element = new Axiom.RenderSystems.Xna.FixedFunctionEmulation.VertexBufferElement();
-					element.VertexElementIndex = (ushort)op.vertexData.vertexDeclaration[i].Index;
+                   
+                    element.VertexElementIndex = (ushort)op.vertexData.vertexDeclaration[i].Index;
 					element.VertexElementSemantic = op.vertexData.vertexDeclaration[i].Semantic;
 					element.VertexElementType = op.vertexData.vertexDeclaration[i].Type;
 
@@ -1372,7 +1370,7 @@ namespace Axiom.RenderSystems.Xna
 				//clear parameters lists for next frame
 				_fixedFunctionState.Lights.Clear();
 				_fixedFunctionState.TextureLayerStates.Clear();
-                _fixedFunctionState.MaterialEnabled = false;
+                //_fixedFunctionState.MaterialEnabled = false; 
 			}
 			/*---------------------------------------------------------------------------------------------------------*/
 #endif
@@ -1551,7 +1549,6 @@ namespace Axiom.RenderSystems.Xna
 		{
             bool flip;
             // 2 sided operation?
-
             if (twoSidedOperation)
             {
                 if (!caps.CheckCap(Capabilities.TwoSidedStencil))
@@ -1582,25 +1579,31 @@ namespace Axiom.RenderSystems.Xna
             _device.RenderState.ColorWriteChannels = XFG.ColorWriteChannels.None;
 		}
 
-		public override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess)
-		{
-            //from scene manager, when material object lightning is off
-            //targetRenderSystem.SetSurfaceParams( ColorEx.White, ColorEx.Black, ColorEx.Black, ColorEx.Black, 0 );
-
-            if (ambient == ColorEx.White &&
-                diffuse == ColorEx.Black &&
-                specular == ColorEx.Black &&
-                emissive == ColorEx.Black
-                && shininess == 0)
-                _fixedFunctionState.MaterialEnabled = false;
+        public override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess)
+        {
+            if (//ambient == ColorEx.White &&
+                diffuse == ColorEx.Black //&&
+                //emissive == ColorEx.Black &&
+                //specular == ColorEx.Black &&
+                //shininess == 0
+                )
+            {
+                //_fixedFunctionState.MaterialEnabled = false;
+                _ffProgramParameters.MaterialAmbient = new ColorEx(0,1,1,1);
+                _ffProgramParameters.MaterialDiffuse = ColorEx.White;
+                _ffProgramParameters.MaterialSpecular = ColorEx.Black;
+            }
             else
-                _fixedFunctionState.MaterialEnabled = true;
-            _ffProgramParameters.MaterialAmbient = ambient;
-            _ffProgramParameters.MaterialDiffuse = diffuse;
-            _ffProgramParameters.MaterialEmissive = emissive;
-            _ffProgramParameters.MaterialShininess = shininess;
-            _ffProgramParameters.MaterialSpecular = specular;
-		}
+            {
+                //_fixedFunctionState.MaterialEnabled = true;
+                _ffProgramParameters.MaterialAmbient = ambient;
+                _ffProgramParameters.MaterialDiffuse = diffuse;
+                _ffProgramParameters.MaterialSpecular = specular;
+                //_ffProgramParameters.MaterialEmissive = emissive;
+                //_ffProgramParameters.MaterialShininess = shininess;
+            }
+
+        }
 
 		public override void SetTexture(int stage, bool enabled, string textureName)
 		{
@@ -1674,7 +1677,7 @@ namespace Axiom.RenderSystems.Xna
 		public override void SetTextureMatrix(int stage, Axiom.Math.Matrix4 xform)
 		{
 #if !(XBOX || XBOX360 || SILVERLIGHT )
-			_ffProgramParameters.SetTextureMatrix(stage, xform);
+			_ffProgramParameters.SetTextureMatrix(stage, xform.Transpose());
             
 #endif
 		}
@@ -1697,7 +1700,6 @@ namespace Axiom.RenderSystems.Xna
 					_device.SamplerStates[stage].MipFilter = texFilter;
 					break;
 			}
-            
 		}
 
 		XFG.DepthStencilBuffer oriDSB;
@@ -1728,9 +1730,9 @@ namespace Axiom.RenderSystems.Xna
 				//if (depth.IsDisposed) _device.DepthStencilBuffer = oriDSB;
 				//else _device.DepthStencilBuffer = depth;
 
-                if(depth!=null)
+                //if(depth!=null)
                 //if(depth.Format==_device.DepthStencilBuffer.Format)
-                    _device.DepthStencilBuffer = depth;
+                _device.DepthStencilBuffer = depth;
 
 				// set the culling mode, to make adjustments required for viewports
 				// that may need inverted vertex winding or texture flipping
