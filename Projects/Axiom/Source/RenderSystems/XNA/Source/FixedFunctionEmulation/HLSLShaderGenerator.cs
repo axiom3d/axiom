@@ -87,15 +87,16 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                                   " * Vertex Buffer Delcaration : " + vertexBufferDeclaration.ToString() + "\n" +
                                   " * Fixed Function State : " + fixedFunctionState.ToString() + "\n" +
                                   " ***************************************************************************************/\n";
-            //can't include a file when shaders are loaded from sources
+            //can't include a file when shaders are loaded from sources?
             //shaderSource += "#include \"FixedFunctionStructs.inc\"\n";
             //basic struct for light types
             //shaderSource += "struct PointLight\n{\n\tfloat4 Ambient;\n\tfloat4 Diffuse;\n\tfloat4 Specular;\n\tfloat3 Position;\n\tfloat3 Range;\n\tfloat3 Attenuation;\n};\n";
             //shaderSource += "struct DirectionLight\n{\n\tfloat4 Ambient;\n\tfloat4 Diffuse;\n\tfloat4 Specular;\n\tfloat3 Direction;\n};\n";
             //shaderSource += "struct SpotLight\n{\n\tfloat4 Ambient;\n\tfloat4 Diffuse;\n\tfloat4 Specular;\n\tfloat3 Position;\n\tfloat3 Direction;\n\tfloat4 Spot;\n\tfloat3 Attenuation;\n};\n";
-
             //
-			shaderSource += "struct VS_INPUT\n{\n";
+
+            #region struct input declaration
+            shaderSource += "struct VS_INPUT\n{\n";
             
 			ushort[] semanticCount = new ushort[ 100 ];
 
@@ -217,7 +218,9 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			}
 
 			shaderSource += "};\n\n";
+            #endregion
 
+            #region globales declaration
             shaderSource += "float4x4  World;\n";
             shaderSource += "float4x4  View;\n";
             shaderSource += "float4x4  Projection;\n";
@@ -231,7 +234,6 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                 shaderSource += "shared float4x4  TextureMatrix" + layerCounter + "; //technique: " + fixedFunctionState.TextureLayerStates[textures].TexCoordCalcMethod.ToString() + "\n";
 		    }
             
-
 			switch ( fixedFunctionState.GeneralFixedFunctionState.FogMode )
 			{
 				case FogMode.None:
@@ -248,11 +250,10 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 					break;
 			}
 
+            shaderSource += "float4 BaseLightAmbient;\n";
 			if ( fixedFunctionState.GeneralFixedFunctionState.EnableLighting )
 			{
-                shaderSource += "float4 BaseLightAmbient;\n";
-
-				for ( int i = 0; i < fixedFunctionState.Lights.Count; i++ )
+                for ( int i = 0; i < fixedFunctionState.Lights.Count; i++ )
 				{
 					String prefix = "Light" + i.ToString() + "_";
                     shaderSource += "float4 " + prefix + "Ambient;\n";
@@ -263,7 +264,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 					{
                         case LightType.Point:
                             shaderSource += "float3 " + prefix + "Position;\n";
-                            shaderSource += "float3 " + prefix + "Range;\n";
+                            shaderSource += "float  " + prefix + "Range;\n";
                             shaderSource += "float3 " + prefix + "Attenuation;\n";
                             break;
                         case LightType.Directional:
@@ -280,16 +281,17 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			}
 
 
-            shaderSource += "float4 \tMaterialAmbient=float4(1,1,1,1);\n";
-            shaderSource += "float4 \tMaterialDiffuse=float4(1,1,1,1);\n";
-            shaderSource += "float4 \tMaterialSpecular=(float4)0;\n";
-            //shaderSource += "float4 \tMaterialEmissive=(float4)0;\n";
-            //shaderSource += "float  \tMaterialShininess=(float4)0;\n";
+            shaderSource += "float4 MaterialAmbient=float4(1,1,1,1);\n";
+            shaderSource += "float4 MaterialDiffuse=float4(1,1,1,1);\n";
+            shaderSource += "float4 MaterialSpecular=(float4)0;\n";
+            //shaderSource += "float4 MaterialEmissive=(float4)0;\n";
+            //shaderSource += "float  MaterialShininess=(float4)0;\n";
+#endregion
 
-			shaderSource += "\nstruct VS_OUTPUT\n";
+            #region struct output declaration
+            shaderSource += "\nstruct VS_OUTPUT\n";
 			shaderSource += "{\n";
             shaderSource += "\tfloat4 Pos : POSITION;\n";
-
             for (int i = 0; i < fixedFunctionState.TextureLayerStates.Count; i++)
             {
                 String layerCounter = Convert.ToString(i);
@@ -348,11 +350,13 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 			if ( fixedFunctionState.GeneralFixedFunctionState.FogMode != FogMode.None )
 			{
-                shaderSource += "\tfloat fogDist :COLOR2;\n";
+                shaderSource += "\tfloat4 fogDist : COLOR2;\n";
 			}
-
 			shaderSource += "};\n";
-			shaderSource += "\nVS_OUTPUT " + vertexProgramName + "( VS_INPUT input )\n";
+#endregion
+
+            #region vertex shader main
+            shaderSource += "\nVS_OUTPUT " + vertexProgramName + "( VS_INPUT input )\n";
 			shaderSource += "{\n";
             shaderSource += "\tVS_OUTPUT output = (VS_OUTPUT)0;\n";
 
@@ -360,9 +364,8 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             shaderSource += "\tfloat4 cameraPos = mul( View, worldPos );\n";
             shaderSource += "\toutput.Pos = mul( Projection, cameraPos );\n";
 
-
             //just to check if we can get some more frames by giving the shader to transpose the matrix
-            //inverse cost really a lot, maybe we could find a function to do that in shader
+            //inverse really costs a lot, maybe we could find a function to do that in shader
             //calculate ViewIT and worldViewIT transpose only if lights or projective texture
             if (fixedFunctionState.Lights.Count > 0 || bNeedsMatIT)
             {
@@ -616,7 +619,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                       // shaderSource += "\toutput.Color = float4(1,1,1,1);\n";
                 }
 			}
-
+            
             switch (fixedFunctionState.GeneralFixedFunctionState.FogMode)
             {
                 case FogMode.None:
@@ -632,17 +635,17 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                     shaderSource += "\toutput.fogDist = clamp( output.fogDist, 0, 1 );\n";
                     break;
                 case FogMode.Linear:
+                    shaderSource = shaderSource + "output.fogDist = length(cameraPos.xyz);\r\n";
                     shaderSource += "\toutput.fogDist = (FogEnd - output.fogDist)/(FogEnd - FogStart);\n";
                     shaderSource += "\toutput.fogDist = clamp( output.fogDist, 0, 1 );\n";
                     break;
             }
+
 			shaderSource += "\treturn output;\n}\n\n";
 
+            #endregion
 
-
-
-
-
+            #region pixel shader
             /////////////////////////////////////
 			// here starts the fragment shader //
             /////////////////////////////////////
@@ -720,23 +723,16 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
                         break;
                     case TextureType.CubeMap:
-                        //seems like the mipmapping are not generated, texCube is supposed to choose the right mipmap
-                        //but works well with DDS
-                        //texCUBElod permits to choose one, 0 here
-                        //shaderSource += "\t\ttexColor  = texCUBE(Texture" + layerCounter + ", input.Texcoord" + layerCounter + ");\n";
-                        shaderSource += "\t\ttexColor  = texCUBElod(Texture" + layerCounter + ", float4(input.Texcoord" + layerCounter + ",0));\n";
+                        //mimaps seem to be ok now
+                        shaderSource += "\t\ttexColor  = texCUBE(Texture" + layerCounter + ", input.Texcoord" + layerCounter + ");\n";
+                        //shaderSource += "\t\ttexColor  = texCUBElod(Texture" + layerCounter + ", float4(input.Texcoord" + layerCounter + ",0));\n";
                         break;
                     case TextureType.ThreeD:
                         shaderSource += "\t\t texColor  = tex3D(Texture" + layerCounter + ", input.Texcoord" + layerCounter + ");\n";
                         break;
                 }
 
-                
-
-
-
-
-
+                #region blending
                 /*-----------------Blending----------------------------------------*/
                 LayerBlendModeEx  blend = curTextureLayerState.LayerBlendModeEx;
                 switch (blend.source1)
@@ -835,13 +831,16 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                 }
                 shaderSource += "\t}\n";
             }
+#endregion
        
             if ( fixedFunctionState.GeneralFixedFunctionState.FogMode != FogMode.None )
 			{
-                shaderSource += "\tfinalColor = input.fogDist * finalColor + (1.0 - input.fogDist)*FogColor;\n";
+                shaderSource += "\tfinalColor = input.fogDist * finalColor + (1.0 - input.fogDist)* FogColor;\n";
 			}
             
 			shaderSource += "\treturn finalColor;\n}\n";
+            #endregion
+
 
             return shaderSource;
 		}

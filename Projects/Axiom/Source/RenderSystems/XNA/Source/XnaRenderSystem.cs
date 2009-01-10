@@ -245,7 +245,7 @@ namespace Axiom.RenderSystems.Xna
 			// Hardware mipmapping?
 			if (_capabilities.DriverCapabilities.CanAutoGenerateMipMap)
 			{
-				caps.SetCap(Capabilities.HardwareMipMaps);
+                caps.SetCap(Capabilities.HardwareMipMaps);
 			}
 
 			// blending between stages is definately supported
@@ -1279,11 +1279,12 @@ namespace Axiom.RenderSystems.Xna
                     //uncomment this to see the texture shadow
                     //the problem is that texture states are not set and texture are set  in vertexdeclaration
                     //
-                    /*if (op.vertexData.vertexDeclaration[i].Type == VertexElementType.Float1 &&
+                   /* if (//op.vertexData.vertexDeclaration[i].Type == VertexElementType.Float1 &&
                         op.vertexData.vertexDeclaration[i].Semantic == VertexElementSemantic.TexCoords)
                     {
                         if (!texStageDesc[textureLayer].Enabled)
                         {
+                        
                             texStageDesc[textureLayer].layerBlendMode = new LayerBlendModeEx();
                             texStageDesc[textureLayer].layerBlendMode.blendType = LayerBlendType.Color;
                             texStageDesc[textureLayer].layerBlendMode.operation = LayerBlendOperationEx.Modulate;
@@ -1371,6 +1372,9 @@ namespace Axiom.RenderSystems.Xna
 				_fixedFunctionState.Lights.Clear();
 				_fixedFunctionState.TextureLayerStates.Clear();
                 //_fixedFunctionState.MaterialEnabled = false; 
+                //_ffProgramParameters.FogMode = FogMode.None;
+               
+
 			}
 			/*---------------------------------------------------------------------------------------------------------*/
 #endif
@@ -1505,7 +1509,7 @@ namespace Axiom.RenderSystems.Xna
 				// enable fog
 				XFG.Color col = XnaHelper.Convert( color );
 				_device.RenderState.FogEnable = true;
-				_device.RenderState.FogVertexMode =XnaHelper.Convert(mode);
+				_device.RenderState.FogVertexMode = XnaHelper.Convert(mode);
 				_device.RenderState.FogTableMode= XnaHelper.Convert(mode);
 				_device.RenderState.FogColor= col;
 				_device.RenderState.FogStart= start;
