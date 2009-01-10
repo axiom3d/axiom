@@ -41,9 +41,9 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 
-#if (XBOX || XBOX360 || SILVERLIGHT)
+//#if (XBOX || XBOX360 || SILVERLIGHT)
 using Axiom.RenderSystems.Xna.Content;
-#endif
+//#endif
 
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
@@ -290,16 +290,20 @@ namespace Axiom.RenderSystems.Xna
             Debug.Assert( textureType == TextureType.OneD || textureType == TextureType.TwoD );
 
 #if (XBOX || XBOX360 || SILVERLIGHT)
-            AxiomContentManager acm = new AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "");
+            Axiom.RenderSystems.Xna.Content.AxiomContentManager acm = new Axiom.RenderSystems.Xna.Content.AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "");
             normTexture = acm.Load<XFG.Texture2D>( name );
             texture = normTexture;
 			isLoaded = true;
 #else
             Stream stream = TextureManager.FindCommonResourceData( name );
-            // use D3DX to load the image directly from the stream
-            normTexture = XFG.Texture2D.FromFile(device, stream);
+            // use Xna to load the image directly from the stream
+            XFG.TextureCreationParameters tcp = new XFG.TextureCreationParameters();
+            tcp.Filter = Microsoft.Xna.Framework.Graphics.FilterOptions.Triangle;
+            //tcp.MipFilter = Microsoft.Xna.Framework.Graphics.FilterOptions.Triangle;
+            tcp.MipLevels = numMipMaps;
+            normTexture = XFG.Texture2D.FromFile(device, stream,tcp);
             // store a ref for the base texture interface
-            texture = normTexture;
+            texture = normTexture; 
             stream.Position = 0;
             // set the image data attributes
             XFG.TextureInformation desc = XFG.Texture2D.GetTextureInformation(stream);
@@ -307,11 +311,9 @@ namespace Axiom.RenderSystems.Xna
             SetFinalAttributes(desc.Width, desc.Height, 1, ConvertFormat(desc.Format));
             isLoaded = true;
 
-            //this seems to not generate mipmaps, the rendering becomes black if not close enough to the object
-            //we could use tex2Dlod in the shader instead of tex2D
-            //have to check createtexture...() functions anyway
-
-           /* Image img = Image.FromStream( stream, name.Substring( name.Length - 3, 3 ) );
+            //ok this works quite well now and generates the mipmap but still problems
+            //with some image formats when bliting to texture
+            /*Image img = Image.FromStream( stream, name.Substring( name.Length - 3, 3 ) );
             LoadImage( img );
             stream.Position = 0;
             //SetSrcAttributes(img.Width, img.Height, 1, ConvertFormat(img.Format));
@@ -333,7 +335,6 @@ namespace Axiom.RenderSystems.Xna
             texture = cubeTexture;
 			isLoaded = true;
 #else
-
             //just to test if mipmaps are working from a dds files
             //yeap it works! no need for texCUBElod
             if (name.EndsWith(".dds"))
@@ -346,21 +347,9 @@ namespace Axiom.RenderSystems.Xna
             {
                 Image image = Image.FromFile(cubeFaceNames[0]);
                 SetSrcAttributes(image.Width, image.Height, 1, image.Format);
-                
-                //loading with XNA function
-                /*for (int i = 0; i < 6; i++)
-                {
-                    Stream stream = TextureManager.FindCommonResourceData(cubeFaceNames[i]);
-                    XFG.Texture2D temp = XFG.Texture2D.FromFile(device, stream);
-                    stream.Close();
-                    XFG.Color[] cols = new XFG.Color[temp.Width * temp.Height];
-                    temp.GetData<XFG.Color>(cols);
-                    cubeTexture.SetData<XFG.Color>((XFG.CubeMapFace)i, cols);
-                }*/
-                
                 //loading manually from Image by blitting
                 //BlitImagesToCubeTex();
-                // create the memory for the cube texture
+                //create the memory for the cube texture
                 CreateCubeTexture();
                 for (int face = 0; face < 6; face++)
                 {
@@ -377,9 +366,8 @@ namespace Axiom.RenderSystems.Xna
                     }
                     cubeTexture.SetData<XFG.Color>((XFG.CubeMapFace)face, cols);
                 }
-                cubeTexture.GenerateMipMaps(GetBestFilterMethod());
+                //cubeTexture.GenerateMipMaps(GetBestFilterMethod());
             }
-            
             texture = cubeTexture;
             isLoaded = true;
             
@@ -400,7 +388,10 @@ namespace Axiom.RenderSystems.Xna
 			isLoaded = true;
 #else
             Stream stream = TextureManager.Instance.FindResourceData( name );
-
+            XFG.TextureCreationParameters tcp = new XFG.TextureCreationParameters();
+            tcp.Filter = Microsoft.Xna.Framework.Graphics.FilterOptions.Triangle;//??
+            tcp.MipFilter = Microsoft.Xna.Framework.Graphics.FilterOptions.Triangle;
+            tcp.MipLevels = numMipMaps;
             // load the cube texture from the image data stream directly
             volumeTexture = XFG.Texture3D.FromFile( device, stream );
 
@@ -457,12 +448,11 @@ namespace Axiom.RenderSystems.Xna
             else
             {
                 // create the cube texture
-                cubeTexture = new XFG.TextureCube(
-                     device,
-                     srcWidth,
-                     numMips,
-                     d3dUsage,
-                     d3dPixelFormat);
+                cubeTexture = new XFG.TextureCube(   device,
+                                                     srcWidth,
+                                                     numMips,
+                                                     d3dUsage,
+                                                     d3dPixelFormat);
                 // store base reference to the texture
                 texture = cubeTexture;
             }
@@ -471,7 +461,6 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         /// 
         /// </summary>
-        
         private void CreateDepthStencil()
         {
             // Get the format of the depth stencil surface of our main render target.
@@ -498,46 +487,19 @@ namespace Axiom.RenderSystems.Xna
                 ( usage == TextureUsage.RenderTarget ) ? bbPixelFormat : ChooseD3DFormat();
 
             // set the appropriate usage based on the usage of this texture
-            XFG.TextureUsage d3dUsage =
-                ( usage == TextureUsage.RenderTarget ) ? XFG.TextureUsage.Tiled : 0;
+            XFG.TextureUsage d3dUsage = 
+                (usage == TextureUsage.RenderTarget) ? XFG.TextureUsage.Tiled : 0;
 
             // how many mips to use?  make sure its at least one
             int numMips = ( numMipMaps > 0 ) ? numMipMaps : 1;
-#if !(XBOX || XBOX360 || SILVERLIGHT)
-            XFG.TextureCreationParameters texRequire = new XFG.TextureCreationParameters();
-            texRequire.Width = srcWidth;
-            texRequire.Height = srcHeight;
-#endif
 
 
-            if ( devCaps.TextureCapabilities.SupportsMipMap && numMipMaps > 0 )
+            if ( devCaps.TextureCapabilities.SupportsMipMap )
             {
-                if ( CanAutoGenMipMaps( d3dUsage, XFG.ResourceType.Texture2D, d3dPixelFormat ) )
+                if ( CanAutoGenMipMaps(d3dUsage, XFG.ResourceType.Texture2D, d3dPixelFormat ) )
                 {
                     d3dUsage |= XFG.TextureUsage.AutoGenerateMipMap;
                     numMips = 0;
-                }
-                else
-                {
-                    if ( usage != TextureUsage.RenderTarget )
-                    {
-                        // check texture requirements
-#if !(XBOX || XBOX360 || SILVERLIGHT)
-                        texRequire.MipLevels = numMips;
-                        texRequire.Format = d3dPixelFormat;
-
-                        numMips = texRequire.MipLevels;
-                        d3dPixelFormat = texRequire.Format;
-#endif
-                        // we must create a temp. texture in SYSTEM MEMORY if no auto gen. mip map is present
-                        tempNormTexture = new XFG.Texture2D(
-                            device,
-                            srcWidth,
-                            srcHeight,
-                            numMips,
-                            d3dUsage,
-                            d3dPixelFormat );
-                    }
                 }
             }
             else
@@ -547,19 +509,10 @@ namespace Axiom.RenderSystems.Xna
                 numMips = 1;
             }
 
-            // check texture requirements
-#if !(XBOX || XBOX360 || SILVERLIGHT)
-            texRequire.MipLevels = numMips;
-            texRequire.Format = d3dPixelFormat;
-            numMips = texRequire.MipLevels;
-            d3dPixelFormat = texRequire.Format;
-#endif
-
-
 
             if ( usage == TextureUsage.RenderTarget )
             {
-                renderTarget = new XFG.RenderTarget2D(device, srcWidth, srcHeight, numMips, XFG.SurfaceFormat.Color);// d3dPixelFormat);
+                renderTarget = new XFG.RenderTarget2D(device, srcWidth, srcHeight, numMips, d3dPixelFormat);
                 CreateDepthStencil();
             }
             else
@@ -568,7 +521,8 @@ namespace Axiom.RenderSystems.Xna
                             device,
                             srcWidth,
                             srcHeight,
-                            numMips, XFG.TextureUsage.None,
+                            numMips, 
+                            d3dUsage,
                             d3dPixelFormat );
                texture = cubeTexture;
             }
@@ -642,10 +596,11 @@ namespace Axiom.RenderSystems.Xna
             if ( device.GraphicsDeviceCapabilities.DriverCapabilities.CanAutoGenerateMipMap )
             {
                 // make sure we can do it!
-                return XFG.GraphicsAdapter.DefaultAdapter.CheckDeviceFormat(
-                   XFG.DeviceType.Hardware,
-                   XFG.SurfaceFormat.Color,
-                   srcUsage | XFG.TextureUsage.AutoGenerateMipMap, XFG.QueryUsages.None, srcType, srcFormat );
+                return device.CreationParameters.Adapter.CheckDeviceFormat(XFG.DeviceType.Hardware,
+                    device.CreationParameters.Adapter.CurrentDisplayMode.Format, //rahhh
+                     Microsoft.Xna.Framework.Graphics.TextureUsage.AutoGenerateMipMap,
+                      Microsoft.Xna.Framework.Graphics.QueryUsages.None,
+                       srcType, srcFormat);
 
             }
             return false;
@@ -668,7 +623,6 @@ namespace Axiom.RenderSystems.Xna
                 texture.cubeTexture= ((XFG.RenderTargetCube)renderTarget).GetTexture();
                 texture.texture = cubeTexture;
             }
-
         }
 
         /// <summary>

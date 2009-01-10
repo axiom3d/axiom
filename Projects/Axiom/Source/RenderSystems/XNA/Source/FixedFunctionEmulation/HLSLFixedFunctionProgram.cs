@@ -127,10 +127,9 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                     } // end of - switch (curLight->getType())
                 } // end of - for(size_t i = 0 ; i < params.getLights().size() ; i++)
             } // end of -  if (params.getLightingEnabled())
-
-           
-
             #endregion
+
+
             switch (parameters.FogMode)
             {
                 case FogMode.None:
@@ -154,8 +153,6 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                     _setProgramParameter(GpuProgramType.Vertex, "TextureMatrix" + Axiom.Core.StringConverter.ToString(i), parameters.TextureMatricies[i]);
                 }
             }
-
         }
-
 	}
 }
