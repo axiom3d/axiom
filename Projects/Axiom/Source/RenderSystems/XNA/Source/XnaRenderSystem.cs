@@ -1580,7 +1580,7 @@ namespace Axiom.RenderSystems.Xna
             _device.RenderState.StencilFail = XnaHelper.Convert(stencilFailOp, flip);
             _device.RenderState.StencilDepthBufferFail = XnaHelper.Convert(depthFailOp, flip);
             _device.RenderState.StencilPass = XnaHelper.Convert(passOp, flip);
-            _device.RenderState.ColorWriteChannels = XFG.ColorWriteChannels.None;
+            //_device.RenderState.ColorWriteChannels = XFG.ColorWriteChannels.None;
 		}
 
         public override void SetSurfaceParams(ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess)
