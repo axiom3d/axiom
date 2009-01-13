@@ -360,6 +360,17 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 			shaderSource += "{\n";
             shaderSource += "\tVS_OUTPUT output = (VS_OUTPUT)0;\n";
 
+            //w coord in position is passed separatly as position in fixed function pipeline can't be float4
+            //so I suppose ? we should pass it back in the position.w
+            //it makes shadows appears on the ground in stencil modulative,
+            //but still some tweaks are needed
+            //as they dont show well
+            if(texCordVecType.ContainsKey(0))
+                if (texCordVecType[0] == VertexElementType.Float1)
+                {
+                    shaderSource += "\tinput.Position0.w = input.Texcoord0;\n";
+                }
+
             shaderSource += "\tfloat4 worldPos = mul( World, input.Position0);\n";
             shaderSource += "\tfloat4 cameraPos = mul( View, worldPos );\n";
             shaderSource += "\toutput.Pos = mul( Projection, cameraPos );\n";
@@ -466,20 +477,6 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             //  float4 DiffuseColor0 : COLOR0;      // this is for texture lighting color and alpha
             //  float2 Other2 : TEXCOORD2;          // this is for texture lighting coords
             //
-           
-            //but
-
-            //sometime there can be texcoord declared in vertex declaration but none in the 
-            //texture state, so these are not texture coordinates
-            //it happens in shadow demo,
-            //in entity.cs in EntityShadowRenderable class
-            //it maps in : 
-            //Float3 Position //position data 
-            //Float1 TexCoords //and w-coord buffer
-            //if (texcoordCount > fixedFunctionState.TextureLayerStates.Count
-            //    && fixedFunctionState.TextureLayerStates.Count == 0)
-            //{
-            //}
 
            
             
