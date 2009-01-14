@@ -48,7 +48,7 @@
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <DocumentationFile>..\..\..\..\Lib\Managed\XPlatform\Axiom\debug\Axiom.xml</DocumentationFile>
     <DebugSymbols>True</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
@@ -343,6 +343,7 @@
     <Compile Include="Core\PatchSurface.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Core\PlatformInformation.cs" />
     <Compile Include="Core\PlatformManager.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -588,6 +589,7 @@
     <Compile Include="Input\MouseEventArgs.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Math\Acceleration.cs" />
     <Compile Include="Math\AxisAlignedBox.cs">
       <SubType>Code</SubType>
     </Compile>

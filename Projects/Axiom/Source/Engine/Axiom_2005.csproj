@@ -6,8 +6,6 @@
     <ProjectGuid>{254F7434-4CF4-4418-AAD9-289935EC5556}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ApplicationIcon>
-    </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
     <AssemblyName>Axiom</AssemblyName>
@@ -19,8 +17,6 @@
     <AppDesignerFolder>
     </AppDesignerFolder>
     <RootNamespace>Axiom</RootNamespace>
-    <StartupObject>
-    </StartupObject>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
   </PropertyGroup>
@@ -32,16 +28,15 @@
     </ConfigurationOverrideFile>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DocumentationFile>..\..\..\..\Lib\Managed\XPlatform\Axiom\debug\Axiom.xml</DocumentationFile>
-    <DebugSymbols>True</DebugSymbols>
+    <DebugSymbols>true</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <Optimize>False</Optimize>
     <OutputPath>..\..\..\..\Lib\Managed\XPlatform\Axiom\debug\</OutputPath>
     <RegisterForComInterop>False</RegisterForComInterop>
     <RemoveIntegerChecks>False</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningLevel>0</WarningLevel>
-    <NoWarn>
-    </NoWarn>
+    <DebugType>Full</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
@@ -61,6 +56,10 @@
     <WarningLevel>0</WarningLevel>
     <NoWarn>
     </NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
   </ItemGroup>
@@ -305,6 +304,7 @@
     <Compile Include="Core\PatchSurface.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Core\PlatformInformation.cs" />
     <Compile Include="Core\PlatformManager.cs">
       <SubType>Code</SubType>
     </Compile>
