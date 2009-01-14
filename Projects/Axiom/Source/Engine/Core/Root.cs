@@ -398,6 +398,9 @@ namespace Axiom.Core
 
             new ControllerManager();
 
+
+            PlatformInformation.Log( LogManager.Instance.DefaultLog );
+
             // initialize the current render system
             autoWindow = activeRenderSystem.Initialize( autoCreateWindow, windowTitle );
 
