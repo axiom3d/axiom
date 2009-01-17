@@ -260,7 +260,7 @@ namespace Axiom.Math
         	m3.m12 = m4.m12;
         	m3.m20 = m4.m20;
         	m3.m21 = m4.m21;
-        	m3.m22 = m4.m23;
+        	m3.m22 = m4.m22;
         	
         	m3.reserved1 = m3.reserved2 = m3.reserved3 = 0;
         }
