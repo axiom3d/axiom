@@ -158,7 +158,13 @@ namespace Axiom.Core
             log.Write( "CPU Identifier & Features" );
             log.Write( "-------------------------" );
             log.Write( cpuIdentifier );
-
+#if MONO_SIMD
+			foreach( AccelMode type in Enum.GetValues(typeof(AccelMode))) {
+				if (type == AccelMode.None) continue;
+				
+				log.Write( " *\t{0}: {1}", type,  ((type & SimdRuntime.AccelMode) == type));
+			}
+#else
             log.Write( " *     SSE1: {0}", IsSupported( CPUFeature.SSE1 ) );
             log.Write( " *     SSE2: {0}", IsSupported( CPUFeature.SSE2 ) );
             log.Write( " *     SSE3: {0}", IsSupported( CPUFeature.SSE3 ) );
@@ -166,6 +172,9 @@ namespace Axiom.Core
             log.Write( " *    SSE42: {0}", IsSupported( CPUFeature.SSE42 ) );
             log.Write( " *    SSE4A: {0}", IsSupported( CPUFeature.SSE4A ) );
             log.Write( " *    SSSE3: {0}", IsSupported( CPUFeature.SSSE3 ) );
+#endif
+			log.Write(" *Vector4f.HorizontalAdd() and HorizontalAdd(): {0}", horizontal_add_sub_accel);
+			log.Write(" *Vector4f.Shuffle()                          : {0}", shuffle_accel);
             log.Write( "-------------------------" );
 
         }
