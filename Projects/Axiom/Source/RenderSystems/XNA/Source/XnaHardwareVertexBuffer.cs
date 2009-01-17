@@ -72,7 +72,12 @@ namespace Axiom.RenderSystems.Xna
 		{
 			_device = dev;
 			// Create the Xna vertex buffer
-			_buffer = new XFG.VertexBuffer( _device, vertexSize * numVertices, XnaHelper.Convert( usage ) );
+            if (usage == BufferUsage.Dynamic || usage == BufferUsage.DynamicWriteOnly)
+            {
+                _buffer = new XFG.DynamicVertexBuffer(_device, vertexSize * numVertices, XnaHelper.Convert(usage));
+            }
+            else
+			    _buffer = new XFG.VertexBuffer( _device, vertexSize * numVertices, XnaHelper.Convert( usage ) );
 
 			_bufferBytes = new byte[ vertexSize * numVertices ];
 			_bufferBytes.Initialize();
