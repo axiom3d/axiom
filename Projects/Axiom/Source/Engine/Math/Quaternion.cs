@@ -37,10 +37,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // </file>
 #endregion SVN Version Information
 
+//#undef MONO_SIMD
+
 #region Namespace Declarations
 
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+using Axiom.Core;
+
+#if (MONO_SIMD)
+using Mono.Simd;
+#endif
 
 #endregion Namespace Declarations
 
@@ -49,13 +57,50 @@ namespace Axiom.Math
     /// <summary>
     ///		Summary description for Quaternion.
     /// </summary>
+	[StructLayout( LayoutKind.Sequential, Pack = 0, Size = 16 )]
     public struct Quaternion
     {
         #region Private member variables and constants
 
-        const float EPSILON = 1e-03f;
+        const  float EPSILON = 1e-03f;
 
-        public float w, x, y, z;
+#if (MONO_SIMD)		
+		/* helper vector: 
+		 * quaternion multiplication. All this does is flip the sign on the w (scalar) portion of the vector.
+		 */
+		private static readonly Vector4f nwIdentity = new Vector4f( 1, 1, 1, -1);
+		
+		/* used to find the additive inverse of a Quaternion.
+		 */
+		private static readonly Vector4f nIdentity = new Vector4f(-1, -1, -1, -1);
+		
+		private static readonly Vector4f doubleIdentity = new Vector4f(2, 2, 2, 2);
+		
+		/*private static readonly Vector4f nyzIdentity = new Vector4f(1, -1, -1, 1);
+		
+		private static readonly Vector4f nxzIdentity = new Vector4f(-1, 1, -1, 1);
+		
+		private static readonly Vector4f nxyIdentity = new Vector4f(-1, -1, 1, 1);
+		
+		private static readonly Vector4f zero = new Vector4f(0, 0, 0, 0);
+		
+		private static readonly Vector4f identiy =  new Vector4f(1, 1, 1, 1);
+		
+		private static readonly Vector4f xyzAbs = new Vector4f(~(0x1<<31), 0x7fffffffffffffff,
+		                                                       0x7fffffffffffffff, ~0x0
+		                                                      );
+		private static readonly Vector4f xyzSign = new Vector4f(~0x7fffffffffffffff, ~0x7fffffffffffffff,
+		                                                        ~0x7fffffffffffffff, 0
+		                                                      );*/
+		
+#endif
+		
+		/*
+		 * Note order here was changed to match the order of Vector4f. This makes it much easer to follow
+		 * what is going on, and removes one SEE2 suffle operation from the Quaternion multiply code.
+		 * See the explicit cast operators near the bottem of this file.
+		 */
+        public float x, y, z, w;
 
         private static readonly Quaternion identityQuat = new Quaternion( 1.0f, 0.0f, 0.0f, 0.0f );
         private static readonly Quaternion zeroQuat = new Quaternion( 0.0f, 0.0f, 0.0f, 0.0f );
@@ -112,23 +157,84 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Quaternion operator *( Quaternion left, Quaternion right )
         {
-            Quaternion q = new Quaternion();
+#if (MONO_SIMD)
+			if (PlatformInformation.shuffle_accel){
+				unsafe {
+					Vector4f vRight = *(Vector4f*) &right;
+					Vector4f vLeft = *(Vector4f*) &left;
+					/*
+					 * Warning: SSE2 shufle opperations are slightly hard to understand at first glance.
+					 * However, they speed things up as the vector stays in the registers and doesn't go back and forth
+					 * from memory to registers while swapping values.
+					 * 
+					 * Note: In SSE2 acceleration these suffle opperations get directly mapped to single opcodes.
+					 */
+					
+					*(Vector4f*) &right = (Vector4f.Shuffle(vLeft, ShuffleSel.ExpandW) *
+					                     vRight +
+					                     
+					                     nwIdentity *
+					                     Vector4f.Shuffle(vLeft, ShuffleSel.XFromX | ShuffleSel.YFromY | ShuffleSel.ZFromZ | ShuffleSel.WFromX  ) *
+					                     Vector4f.Shuffle(vRight, ShuffleSel.XFromW | ShuffleSel.YFromW | ShuffleSel.ZFromW  | ShuffleSel.WFromX ) +
+					                     
+					                     nwIdentity *
+					                     Vector4f.Shuffle(vLeft, ShuffleSel.XFromY | ShuffleSel.YFromZ | ShuffleSel.ZFromX | ShuffleSel.WFromY ) *
+					                     Vector4f.Shuffle(vRight, ShuffleSel.XFromZ | ShuffleSel.YFromX | ShuffleSel.ZFromY | ShuffleSel.WFromY ) -
+					                     
+					                     Vector4f.Shuffle(vLeft,  ShuffleSel.XFromZ | ShuffleSel.YFromX | ShuffleSel.ZFromY |ShuffleSel.WFromZ  ) *
+					                     Vector4f.Shuffle(vRight, ShuffleSel.XFromY | ShuffleSel.YFromZ | ShuffleSel.ZFromX | ShuffleSel.WFromZ )
+					                    );
+				}
+				return right;
+				                     	                     
+			} else if (PlatformInformation.general_accel) {
+				Vector4f vl1 = new Vector4f(left.w , left.w, left.w, left.w);
+				unsafe {
+					Vector4f vr1 = *(Vector4f*) &right;
+					
+					/* remember w is last and x is first in Vector4f
+					 * 
+					 * x - b*c
+					 * x + (-1) * b * c
+					 * x + ((-1) * b) * c
+					 */
+					Vector4f vl2 = new Vector4f(left.x, left.y, left.z, -left.x);
+					Vector4f vr2 = new Vector4f(right.w, right.w, right.w, right.x);
+					
+					Vector4f vl3 = new Vector4f(left.y, left.z, left.x, -left.y);
+					Vector4f vr3 = new Vector4f(right.z, right.x, right.y, right.y);
+					
+					Vector4f vl4 = new Vector4f(left.z, left.x, left.y, left.z);
+					Vector4f vr4 = new Vector4f(right.y, right.z, right.x, right.z);
+					
+					*(Vector4f*) &right = (vl1 * vr1 + vl2 * vr2 + vl3 * vr3 - vl4 * vr4);  
+				}
+				return right;
+			}
+			else
+#endif
+			{
+	            Quaternion q = new Quaternion();			
+				
 
-            q.w = left.w * right.w - left.x * right.x - left.y * right.y - left.z * right.z;
-            q.x = left.w * right.x + left.x * right.w + left.y * right.z - left.z * right.y;
-            q.y = left.w * right.y + left.y * right.w + left.z * right.x - left.x * right.z;
-            q.z = left.w * right.z + left.z * right.w + left.x * right.y - left.y * right.x;
+	            q.x = left.w * right.x + left.x * right.w + left.y * right.z - left.z * right.y;
+	            q.y = left.w * right.y + left.y * right.w + left.z * right.x - left.x * right.z;
+	            q.z = left.w * right.z + left.z * right.w + left.x * right.y - left.y * right.x;
+				/* scaler part */
+				q.w = left.w * right.w - left.x * right.x - left.y * right.y - left.z * right.z;
 
-            /*
-            return new Quaternion
-                (
-                left.w * right.w - left.x * right.x - left.y * right.y - left.z * right.z,
-                left.w * right.x + left.x * right.w + left.y * right.z - left.z * right.y,
-                left.w * right.y + left.y * right.w + left.z * right.x - left.x * right.z,
-                left.w * right.z + left.z * right.w + left.x * right.y - left.y * right.x
-                ); */
+	            /*
+	            return new Quaternion
+	                (
+	                left.w * right.w - left.x * right.x - left.y * right.y - left.z * right.z,
+	                left.w * right.x + left.x * right.w + left.y * right.z - left.z * right.y,
+	                left.w * right.y + left.y * right.w + left.z * right.x - left.x * right.z,
+	                left.w * right.z + left.z * right.w + left.x * right.y - left.y * right.x
+	                ); */
 
-            return q;
+	            return q;			
+			}
+				
         }
 
 
@@ -149,7 +255,7 @@ namespace Axiom.Math
         /// <param name="quat"></param>
         /// <param name="vector"></param>
         /// <returns></returns>
-        public static Vector3 operator *( Quaternion quat, Vector3 vector )
+        public static Vector3 operator *(Quaternion quat, Vector3 vector )
         {
             // nVidia SDK implementation
             Vector3 uv, uuv;
@@ -185,7 +291,27 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Quaternion operator *( float scalar, Quaternion right )
         {
-            return new Quaternion( scalar * right.w, scalar * right.x, scalar * right.y, scalar * right.z );
+#if (MONO_SIMD)
+			/* if (Utility.ACCELERATED != Acceleration.NONE) */
+			{
+				unsafe {
+					//TODO use a "new Vector4f(float)" or "Vector4f.ExpandX(Vector4f)"
+        			//TODO when they come avalible.
+        			Vector4f scalarV;
+        			(*(float*) &scalarV) = scalar;
+        			scalarV = Vector4f.InterleaveLow(scalarV, scalarV);
+        			scalarV = Vector4f.InterleaveLow(scalarV, scalarV);
+					
+					*(Vector4f*) &right *= scalarV;
+				}
+				return right;
+			}
+			/* else */
+#else				
+			{
+				return new Quaternion( scalar * right.w, scalar * right.x, scalar * right.y, scalar * right.z );
+			}
+#endif
         }
 
         /// <summary>
@@ -207,7 +333,27 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Quaternion operator *( Quaternion left, float scalar )
         {
-            return new Quaternion( scalar * left.w, scalar * left.x, scalar * left.y, scalar * left.z );
+#if (MONO_SIMD)
+			/*if (Utility.ACCELERATED != Acceleration.NONE) */
+			 {
+				unsafe {
+					//TODO use a "new Vector4f(float)" or "Vector4f.ExpandX(Vector4f)"
+        			//TODO when they come avalible.
+        			Vector4f scalarV;
+        			(*(float*) &scalarV) = scalar;
+        			scalarV = Vector4f.InterleaveLow(scalarV, scalarV);
+        			scalarV = Vector4f.InterleaveLow(scalarV, scalarV);
+					*(Vector4f*) &left *= scalarV;
+				}
+				return left;
+			}
+			/* else */			
+#else			
+			{ 
+				
+				return new Quaternion( scalar * left.w, scalar * left.x, scalar * left.y, scalar * left.z );
+			}
+#endif
         }
 
         /// <summary>
@@ -234,12 +380,39 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Quaternion operator +( Quaternion left, Quaternion right )
         {
-            return new Quaternion( left.w + right.w, left.x + right.x, left.y + right.y, left.z + right.z );
+#if (MONO_SIMD)
+			/* if (Utility.ACCELERATED != Acceleration.NONE) */
+			{
+				unsafe {
+					*(Vector4f*) &left += *(Vector4f*) &right;
+				}
+				return left;
+			}
+			/* else */
+#else			
+			{ 
+
+				return new Quaternion( left.w + right.w, left.x + right.x, left.y + right.y, left.z + right.z );
+			}
+#endif
         }
 
         public static Quaternion operator -( Quaternion left, Quaternion right )
         {
-            return new Quaternion( left.w - right.w, left.x - right.x, left.y - right.y, left.z - right.z );
+#if (MONO_SIMD)
+			/*if (Utility.ACCELERATED != Acceleration.NONE) */
+			  {
+				unsafe {
+					*(Vector4f*) &left -= *(Vector4f*) &right;
+				}
+				return left;
+			}
+			/* else */
+#else		
+			{
+				return new Quaternion( left.w - right.w, left.x - right.x, left.y - right.y, left.z - right.z );
+			}
+#endif
         }
 
         /// <summary>
@@ -250,7 +423,21 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Quaternion operator -( Quaternion right )
         {
-            return new Quaternion( -right.w, -right.x, -right.y, -right.z );
+#if (MONO_SIMD)
+			/*if (Utility.ACCELERATED != Acceleration.NONE) */
+			{
+				unsafe {
+					*(Vector4f*) &right *= nIdentity;
+				}
+				return right;
+			}			
+			/* else */
+#else			
+			{
+
+                return new Quaternion( -right.w, -right.x, -right.y, -right.z );
+			}
+#endif
         }
 
         public static bool operator ==( Quaternion left, Quaternion right )
@@ -296,7 +483,36 @@ namespace Axiom.Math
         {
             get
             {
-                return x * x + y * y + z * z + w * w;
+#if (MONO_SIMD)
+				if (PlatformInformation.horizontal_add_sub_accel)
+				{		
+	                Vector4f temp;
+	                unsafe {
+	                	fixed (Quaternion* thisP = &this){
+	                		temp = *(Vector4f*) thisP;
+	                	}
+	                }
+					temp *= temp;
+					temp = Vector4f.HorizontalAdd(temp, temp); /* x + y, z + w , [ignore], [ignore] */
+					temp = Vector4f.HorizontalAdd(temp, temp); /* (x + y) + (z + w), [ignore], [ignore], [ignore] */
+					return temp.X;
+				}
+				else if (PlatformInformation.general_accel)
+				{			
+	                Vector4f temp;
+	                unsafe {
+	                	fixed (Quaternion* thisP = &this){
+	                		temp = *(Vector4f*) thisP;
+	                	}
+	                }
+					temp *= temp;
+					return temp.X + temp.Y + temp.Z + temp.W;
+				}
+				else 
+#endif				
+				{
+					return x * x + y * y + z * z + w * w;
+				}
             }
         }
 
@@ -310,9 +526,11 @@ namespace Axiom.Math
                 float fTx = 2.0f * x;
                 float fTy = 2.0f * y;
                 float fTz = 2.0f * z;
+				
                 float fTwy = fTy * w;
                 float fTwz = fTz * w;
                 float fTxy = fTy * x;
+				
                 float fTxz = fTz * x;
                 float fTyy = fTy * y;
                 float fTzz = fTz * z;
@@ -504,7 +722,36 @@ namespace Axiom.Math
         /// <returns></returns>
         public float Dot( Quaternion quat )
         {
-            return this.w * quat.w + this.x * quat.x + this.y * quat.y + this.z * quat.z;
+#if (MONO_SIMD)
+			if (PlatformInformation.horizontal_add_sub_accel)
+			{		
+                Vector4f temp;
+                unsafe {
+                	fixed (Quaternion* thisP = &this){
+                		temp = *(Vector4f*) thisP;
+                		temp *= (*(Vector4f*) &quat);
+                	}
+                }	
+				temp = Vector4f.HorizontalAdd(temp, temp); /* x + y, z + w , [ignore], [ignore] */
+				temp = Vector4f.HorizontalAdd(temp, temp); /* (x + y) + (z + w), [ignore], [ignore], [ignore] */
+				return temp.X;
+			}
+			else if (PlatformInformation.general_accel)
+			{
+				Vector4f temp;
+                unsafe {
+                	fixed (Quaternion* thisP = &this){
+                		temp = *(Vector4f*) thisP;
+                		temp *= (*(Vector4f*) &quat);
+                	}
+                }		
+				return temp.X + temp.Y + temp.Z + temp.W;
+			}
+			else 
+#endif			
+			{
+				return x * quat.x + y * quat.y + z * quat.z + w * quat.w;
+			}
         }
 
         /// <summary>
@@ -662,6 +909,26 @@ namespace Axiom.Math
         /// <param name="matrix"></param>
         public void FromRotationMatrix( Matrix3 matrix )
         {
+        	
+#if false
+				
+			{
+				// Algorithem from 
+				// http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
+				// Modifed to be used on simd vectors
+				unsafe {
+					Vector4f left = new Vector4f					
+					float trace = matrix.m00 + matrix.m11 + matrix.m22;
+					if (trace > 0 )
+					{
+						Vector4f s;
+						*(float*) &s = Utility.Sqrt(trace + 1);
+						Vector4f.Shuffle(s, ShuffleSel.ExpandX);
+					}
+					this = *(Quaternion*) &res;
+				}
+            }
+#else
             // Algorithm in Ken Shoemake's article in 1987 SIGGRAPH course notes
             // article "Quaternion Calculus and Fast Animation".
 
@@ -710,6 +977,7 @@ namespace Axiom.Math
                     }
                 }
             }
+#endif
         }
 
         /// <summary>
@@ -816,8 +1084,7 @@ namespace Axiom.Math
 
             return Utility.Abs( angle ) <= tolerance;
         }
-
-
-        #endregion
+#endregion
+       
     }
 }

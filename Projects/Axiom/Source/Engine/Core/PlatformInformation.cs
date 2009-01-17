@@ -61,7 +61,7 @@ using System.Management;
 
 namespace Axiom.Core
 {
-    class PlatformInformation
+    sealed class PlatformInformation
     {
         public enum CPUFeature
         {
@@ -75,6 +75,13 @@ namespace Axiom.Core
             Count
         }
 
+        /* the idea of this is so that we can use accelerated methods while not knowing the
+         * each cpu that provides that acceration. 
+         */
+        public static readonly bool shuffle_accel = false;
+        public static readonly bool general_accel = false;
+        public static readonly bool horizontal_add_sub_accel = false;
+        
         private static bool[] cpuFeatures = new bool[ (int)CPUFeature.Count ];
         private static string cpuIdentifier = "CPU Identification not available";
 
@@ -93,6 +100,15 @@ namespace Axiom.Core
         static PlatformInformation()
         {
 #if MONO_SIMD
+			/* cpu agnostic */
+			shuffle_accel = SimdRuntime.IsMethodAccelerated( typeof( Vector4f ), "Shuffle");
+
+			horizontal_add_sub_accel = SimdRuntime.IsMethodAccelerated( typeof( Vector4f ), "HorizontalAdd") &
+									   SimdRuntime.IsMethodAccelerated( typeof( Vector4f ), "HorizontalSub") ;
+			
+			general_accel = (SimdRuntime.AccelMode != AccelMode.None);
+			
+			
             if ( ( SimdRuntime.AccelMode & AccelMode.SSSE3 ) == AccelMode.SSSE3 )
             {
                 cpuFeatures[ (int)CPUFeature.SSSE3 ] = true;
@@ -146,9 +162,9 @@ namespace Axiom.Core
             log.Write( " *     SSE1: {0}", IsSupported( CPUFeature.SSE1 ) );
             log.Write( " *     SSE2: {0}", IsSupported( CPUFeature.SSE2 ) );
             log.Write( " *     SSE3: {0}", IsSupported( CPUFeature.SSE3 ) );
-            log.Write( " *    SSSE3: {0}", IsSupported( CPUFeature.SSE41 ) );
-            log.Write( " *    SSSE3: {0}", IsSupported( CPUFeature.SSE42 ) );
-            log.Write( " *    SSSE3: {0}", IsSupported( CPUFeature.SSE4A ) );
+            log.Write( " *    SSE41: {0}", IsSupported( CPUFeature.SSE41 ) );
+            log.Write( " *    SSE42: {0}", IsSupported( CPUFeature.SSE42 ) );
+            log.Write( " *    SSE4A: {0}", IsSupported( CPUFeature.SSE4A ) );
             log.Write( " *    SSSE3: {0}", IsSupported( CPUFeature.SSSE3 ) );
             log.Write( "-------------------------" );
 

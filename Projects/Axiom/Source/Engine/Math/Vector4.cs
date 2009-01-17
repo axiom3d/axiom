@@ -37,25 +37,42 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // </file>
 #endregion SVN Version Information
 
+//#undef MONO_SIMD
+
 #region Namespace Declarations
+
+#if (MONO_SIMD)
+using Mono.Simd;
+#endif
 
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Axiom.Core;
 
 #endregion Namespace Declarations
+
+
 
 namespace Axiom.Math
 {
     /// <summary>
     /// 4D homogeneous vector.
     /// </summary>
-    [StructLayout( LayoutKind.Sequential )]
+    [StructLayout( LayoutKind.Sequential, Pack = 0, Size = 16 )]
     public struct Vector4
     {
         #region Member variables
 
+		/* 
+		 * changing the order here can break the acceleration code.
+		 * 
+		 */
         public float x, y, z, w;
+        
+#if (MONO_SIMD)
+        private static readonly Vector4f nIdentity = new Vector4f(-1, -1, -1, -1);
+#endif
 
         #endregion
 
@@ -84,14 +101,137 @@ namespace Axiom.Math
         /// </param>
         /// <returns>A float representing the dot product value.</returns>
         public float Dot( Vector4 vec )
-        {
-            return x * vec.x + y * vec.y + z * vec.z + w * vec.w;
+		{
+#if (MONO_SIMD)
+				if (PlatformInformation.horizontal_add_sub_accel)
+				{
+					unsafe {
+						fixed (Vector4* v = &this) {
+							Vector4f temp = (*(Vector4f*) v) * (*(Vector4f*)&vec);
+							temp = Vector4f.HorizontalAdd(temp, temp); /* x + y, z + w , [ignore], [ignore] */
+							temp = Vector4f.HorizontalAdd(temp, temp); /* (x + y) + (z + w), [ignore], [ignore], [ignore] */
+							return temp.X;
+						}
+					}
+				}
+				else if (PlatformInformation.shuffle_accel) {	
+					unsafe {
+						fixed (Vector4* v = &this) {
+							Vector4f temp = (*(Vector4f*) v) * (*(Vector4f*)&vec);
+						    temp = Vector4f.Shuffle(temp, ShuffleSel.Swap ) + temp;
+						    temp = Vector4f.Shuffle(temp, ShuffleSel.XFromY ) + temp;
+							return temp.X;
+						}
+					}
+				} 
+				else if (PlatformInformation.general_accel) {
+					unsafe {
+						fixed (Vector4* v = &this) {
+							Vector4f temp = (*(Vector4f*) v) * (*(Vector4f*)&vec);
+							return temp.X + temp.Y + temp.Z + temp.W;
+						}
+					}
+				}
+				else	
+#endif				
+				{
+					return x * vec.x + y * vec.y + z * vec.z + w * vec.w;			
+				}
         }
 
         #endregion Methods
 
         #region Operator overloads + CLS compliant method equivalents
 
+        public Vector4 Divide(Vector4 right){
+        	return this * right;
+        }
+        
+        public static Vector4 operator / (Vector4 left, Vector4 right)
+        {
+#if (MONO_SIMD)
+			/*if (Utility.ACCELERATED != Acceleration.NONE) */
+			{
+				unsafe {
+					*(Vector4f*) &left = (*(Vector4f*) &left) / (*(Vector4f*) &right);
+				}
+				return left;
+			}
+			/*else */
+#else 
+			{
+	            return new Vector4( left.x - right.x, left.y - right.y, left.z - right.z, left.w - right.w );
+			}
+ #endif       	
+        }
+        
+        
+        public Vector4 Multiply(Vector4 right){
+        	return this * right;
+        }
+        
+        public static Vector4 operator * (Vector4 left, Vector4 right)
+        {
+#if (MONO_SIMD)
+			/*if (Utility.ACCELERATED != Acceleration.NONE) */
+			{
+				unsafe {
+					*(Vector4f*) &left *= *(Vector4f*) &right;
+				}
+				return left;
+			}
+			/*else*/
+#else 
+			{
+	            return new Vector4( left.x * right.x, left.y * right.y, left.z * right.z, left.w * right.w );
+			}
+#endif        	
+        }
+        
+        public Vector4 Add(Vector4 right){
+        	return this + right;
+        }
+        
+        public static Vector4 operator + (Vector4 left, Vector4 right)
+        {
+#if (MONO_SIMD)
+			/*if (Utility.ACCELERATED != Acceleration.NONE) */
+			{
+				unsafe {
+					*(Vector4f*) &left += *(Vector4f*) &right;
+				}
+				return left;
+			}
+			/* else */
+#else 
+			{
+	            return new Vector4( left.x + right.x, left.y + right.y, left.z + right.z, left.w + right.w );
+			}
+#endif        	
+        }
+        
+        public Vector4 Subtract(Vector4 right){
+        	return this - right;
+        }
+        
+        public static Vector4 operator - (Vector4 left, Vector4 right)
+        {
+#if (MONO_SIMD)
+			/*if (Utility.ACCELERATED != Acceleration.NONE) */
+			{
+				unsafe {
+					*(Vector4f*) &left -= *(Vector4f*) &right;
+				}
+				return left;
+			}
+			/*else*/
+#else 
+			{
+	            return new Vector4( left.x - right.x, left.y - right.y, left.z - right.z, left.w - right.w );
+			}
+#endif        	
+        }
+        
         /// <summary>
         ///		
         /// </summary>
@@ -110,28 +250,111 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Vector4 operator *( Matrix4 matrix, Vector4 vector )
         {
-            Vector4 result = new Vector4();
+#if (MONO_SIMD)
+			if (PlatformInformation.shuffle_accel)
+    		{
+			
+				Vector4f v;
+				unsafe {
+					v = *(Vector4f*) &vector;
+				}
+				
+				
+				Matrix4 transpose;
+				Matrix4.Transpose(ref matrix, out transpose); 
+				
+				unsafe {
+					*(Vector4f*) &vector = Vector4f.Shuffle(v, ShuffleSel.ExpandX) * (*(Vector4f*) &transpose) +
+											Vector4f.Shuffle(v, ShuffleSel.ExpandY) * (*(Vector4f*) &transpose.m10) +
+											Vector4f.Shuffle(v, ShuffleSel.ExpandZ) * (*(Vector4f*) &transpose.m20) +
+											Vector4f.Shuffle(v, ShuffleSel.ExpandW) * (*(Vector4f*) &transpose.m30);
+				}
+				
+				return vector;
+				
+			} else if (PlatformInformation.general_accel) {
+				Matrix4 transpose;
+				Matrix4.Transpose(ref matrix, out transpose);
+				
+				Vector4f v;
+				unsafe {
+					v = *(Vector4f*) &vector;
+				}
+				
+				Vector4f xxyy = Vector4f.InterleaveLow( v, v );
+				Vector4f zzww = Vector4f.InterleaveHigh( v, v );
+			
+				unsafe {
+					*(Vector4f*) &vector = Vector4f.InterleaveLow( xxyy, xxyy ) * (*(Vector4f*) &transpose) +
+										   Vector4f.InterleaveHigh( xxyy, xxyy ) * (*(Vector4f*) &transpose.m10) +
+										   Vector4f.InterleaveLow( zzww, zzww ) * (*(Vector4f*) &transpose.m20) +
+										   Vector4f.InterleaveHigh( xxyy, zzww) * (*(Vector4f*) &transpose.m30);
+				}
+				return vector;
+			}
+			else
+#endif		
+			{	
+	            Vector4 result = new Vector4();
 
-            result.x = vector.x * matrix.m00 + vector.y * matrix.m01 + vector.z * matrix.m02 + vector.w * matrix.m03;
-            result.y = vector.x * matrix.m10 + vector.y * matrix.m11 + vector.z * matrix.m12 + vector.w * matrix.m13;
-            result.z = vector.x * matrix.m20 + vector.y * matrix.m21 + vector.z * matrix.m22 + vector.w * matrix.m23;
-            result.w = vector.x * matrix.m30 + vector.y * matrix.m31 + vector.z * matrix.m32 + vector.w * matrix.m33;
+	            result.x = vector.x * matrix.m00 + vector.y * matrix.m01 + vector.z * matrix.m02 + vector.w * matrix.m03;
+	            result.y = vector.x * matrix.m10 + vector.y * matrix.m11 + vector.z * matrix.m12 + vector.w * matrix.m13;
+	            result.z = vector.x * matrix.m20 + vector.y * matrix.m21 + vector.z * matrix.m22 + vector.w * matrix.m23;
+	            result.w = vector.x * matrix.m30 + vector.y * matrix.m31 + vector.z * matrix.m32 + vector.w * matrix.m33;
 
-            return result;
+	            return result;
+			}
         }
 
         // TODO: Find the signifance of having 2 overloads with opposite param lists that do transposed operations
         public static Vector4 operator *( Vector4 vector, Matrix4 matrix )
         {
-            Vector4 result = new Vector4();
+#if (MONO_SIMD)
+			if (PlatformInformation.shuffle_accel )
+    		{
+				Vector4f v;
+				unsafe {
+					v = *(Vector4f*) &vector;
+				}
 
-            result.x = vector.x * matrix.m00 + vector.y * matrix.m10 + vector.z * matrix.m20 + vector.w * matrix.m30;
-            result.y = vector.x * matrix.m01 + vector.y * matrix.m11 + vector.z * matrix.m21 + vector.w * matrix.m31;
-            result.z = vector.x * matrix.m02 + vector.y * matrix.m12 + vector.z * matrix.m22 + vector.w * matrix.m32;
-            result.w = vector.x * matrix.m03 + vector.y * matrix.m13 + vector.z * matrix.m23 + vector.w * matrix.m33;
-
-            return result;
-        }
+				unsafe {
+					*(Vector4f*) &vector = Vector4f.Shuffle(v, ShuffleSel.ExpandX) * (*(Vector4f*) &matrix) +
+										   Vector4f.Shuffle(v, ShuffleSel.ExpandY) * (*(Vector4f*) &matrix.m10) +
+										   Vector4f.Shuffle(v, ShuffleSel.ExpandZ) * (*(Vector4f*) &matrix.m20) +
+										   Vector4f.Shuffle(v, ShuffleSel.ExpandW) * (*(Vector4f*) &matrix.m30);
+				}
+				return vector;
+			} 
+			else if (PlatformInformation.general_accel)
+			{	    
+				Vector4f v;
+				unsafe {
+					v = *(Vector4f*) &vector;
+				}
+				Vector4f xxyy = Vector4f.InterleaveLow( v, v );
+				Vector4f zzww = Vector4f.InterleaveHigh( v, v );
+			
+				unsafe {
+					*(Vector4f*) &vector = Vector4f.InterleaveLow( xxyy, xxyy ) * (*(Vector4f*) &matrix) +
+										   Vector4f.InterleaveHigh( xxyy, xxyy ) * (*(Vector4f*) &matrix.m10) +
+										   Vector4f.InterleaveLow( zzww, zzww ) * (*(Vector4f*) &matrix.m20) +
+										   Vector4f.InterleaveHigh( xxyy, zzww) * (*(Vector4f*) &matrix.m30);
+				}
+				return vector;
+			}
+			else
+#endif		
+			{
+	            Vector4 result = new Vector4();
+	
+	            result.x = vector.x * matrix.m00 + vector.y * matrix.m10 + vector.z * matrix.m20 + vector.w * matrix.m30;
+	            result.y = vector.x * matrix.m01 + vector.y * matrix.m11 + vector.z * matrix.m21 + vector.w * matrix.m31;
+	            result.z = vector.x * matrix.m02 + vector.y * matrix.m12 + vector.z * matrix.m22 + vector.w * matrix.m32;
+	            result.w = vector.x * matrix.m03 + vector.y * matrix.m13 + vector.z * matrix.m23 + vector.w * matrix.m33;
+	
+	            return result;
+			}
+		}
 
         /// <summary>
         ///		Multiplies a Vector4 by a scalar value.
@@ -140,15 +363,32 @@ namespace Axiom.Math
         /// <param name="scalar"></param>
         /// <returns></returns>
         public static Vector4 operator *( Vector4 vector, float scalar )
-        {
-            Vector4 result = new Vector4();
-
-            result.x = vector.x * scalar;
-            result.y = vector.y * scalar;
-            result.z = vector.z * scalar;
-            result.w = vector.w * scalar;
-
-            return result;
+        {	
+#if (MONO_SIMD)
+			  {
+				unsafe {
+					//TODO use a "new Vector4f(float)" or "Vector4f.ExpandX(Vector4f)"
+        			//TODO when they come avalible.
+        			Vector4f scalarV = new Vector4f(scalar, scalar, scalar, scalar);
+					Vector4f v = *(Vector4f*) &vector; 
+					v = v * scalarV;
+					*(Vector4f*) &vector = v;
+					
+				}
+				return vector;
+			}
+#else
+			{
+	            Vector4 result = new Vector4();
+	
+	            result.x = vector.x * scalar;
+	            result.y = vector.y * scalar;
+	            result.z = vector.z * scalar;
+	            result.w = vector.w * scalar;
+	
+	            return result;
+			}
+#endif
         }
 
         /// <summary>
@@ -172,8 +412,21 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Vector4 operator -( Vector4 left )
         {
-            return new Vector4( -left.x, -left.y, -left.z, -left.w );
-        }
+#if (MONO_SIMD)
+			{
+				unsafe {
+					Vector4f v = *(Vector4f*) &left;
+					v = v * nIdentity;
+					*(Vector4f*) &left = v;
+					return left;
+				}
+			}
+#else
+			{
+            	return new Vector4( -left.x, -left.y, -left.z, -left.w );
+			}
+#endif
+		}
 
         /// <summary>
         ///		User to compare two Vector4 instances for inequality.
@@ -262,7 +515,8 @@ namespace Axiom.Math
             else
                 return false;
         }
-
-        #endregion
+	
+       #endregion		
+		 
     }
 }

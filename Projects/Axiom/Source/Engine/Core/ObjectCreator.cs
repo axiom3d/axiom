@@ -116,7 +116,7 @@ namespace Axiom.Core
 				catch ( Exception e )
 				{
 					LogManager.Instance.Write( "Failed to create instance of {0} of type {0} from assembly {1}", typeof( T ).Name, type, assembly.FullName );
-					LogManager.Instance.Write( e.Message );
+					LogManager.Instance.Write( e.ToString() );
 				}
 			}
 			return null;
