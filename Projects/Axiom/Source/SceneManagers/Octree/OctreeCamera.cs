@@ -201,6 +201,9 @@ namespace Axiom.SceneManagers.Octree
             mdet.m20 = p3.Normal.x;
             mdet.m21 = p3.Normal.y;
             mdet.m22 = p3.Normal.z;
+            
+            /* intitialize the padding.. hum... */
+            mdet.reserved1 = mdet.reserved2 = mdet.reserved3 = 0;
 
             float det = mdet.Determinant;
 

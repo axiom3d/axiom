@@ -37,12 +37,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // </file>
 #endregion SVN Version Information
 
+//#undef MONO_SIMD
+
 #region Namespace Declarations
 
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using Axiom.Core;
+
+#if (MONO_SIMD)
+using Mono.Simd;
+#endif
 
 #endregion Namespace Declarations
 
@@ -74,9 +81,15 @@ namespace Axiom.Math
         /// <summary>
         /// 
         /// </summary>
+        /* KLUDGE: the acceleration code is highly dependent of the ordering of these
+         * variables.
+         */
         public float m00, m01, m02;
+        public float reserved1;
         public float m10, m11, m12;
+        public float reserved2;
         public float m20, m21, m22;
+        public float reserved3;
 
         private static readonly Matrix3 identityMatrix = new Matrix3( 1, 0, 0,
             0, 1, 0,
@@ -86,6 +99,10 @@ namespace Axiom.Math
             0, 0, 0,
             0, 0, 0 );
 
+#if (MONO_SIMD)
+        private static readonly Vector4f nIdentity = new Vector4f(-1, -1, -1, 0);
+#endif
+        
         #endregion
 
         #region Constructors
@@ -106,6 +123,10 @@ namespace Axiom.Math
             this.m20 = m20;
             this.m21 = m21;
             this.m22 = m22;
+            
+            this.reserved1 = 0;
+            this.reserved2 = 0;
+            this.reserved3 = 0; 
         }
 
         /// <summary>
@@ -125,6 +146,10 @@ namespace Axiom.Math
             m20 = xAxis.z;
             m21 = yAxis.z;
             m22 = zAxis.z;
+            
+            this.reserved1 = 0;
+            this.reserved2 = 0;
+            this.reserved3 = 0; 
         }
 
         #endregion
@@ -163,9 +188,20 @@ namespace Axiom.Math
         /// <returns>A transposed Matrix.</returns>
         public Matrix3 Transpose()
         {
-            return new Matrix3( m00, m10, m20,
-                m01, m11, m21,
-                m02, m12, m22 );
+#if (MONO_SIMD)
+   			if (PlatformInformation.general_accel)
+   			{
+        		Matrix3 transpose;
+        		Matrix3.Transpose(ref this, out transpose);
+        		return transpose;
+   			}
+   			else 
+#endif   				
+   			{
+	            return new Matrix3( m00, m10, m20,
+	                m01, m11, m21,
+	                m02, m12, m22 );
+   			}
         }
 
         /// <summary>
@@ -179,10 +215,11 @@ namespace Axiom.Math
 
             unsafe
             {
+            	/* note we have to skip the unused floats */
                 fixed ( float* pM = &m00 )
                     return new Vector3( *( pM + col ),   //m[0,col], 
-                        *( pM + 3 + col ),   //m[1,col], 
-                        *( pM + 6 + col ) );  //m[2,col]);
+                        *( pM + 4 + col ),   //m[1,col], 
+                        *( pM + 8 + col ) );  //m[2,col]);
             }
         }
 
@@ -260,22 +297,88 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Matrix3 operator *( Matrix3 left, Matrix3 right )
         {
+#if (MONO_SIMD)
+			if (PlatformInformation.shuffle_accel)
+			{
+				Matrix3 res;
+				unsafe {
+					Vector4f rv0 = *(Vector4f*) &right.m00; 
+	        		Vector4f rv1 = *(Vector4f*) &right.m10;
+	        		Vector4f rv2 = *(Vector4f*) &right.m20;
+        		
+	        		Vector4f v = *(Vector4f*) &left.m00;
+					*(Vector4f*) &res = Vector4f.Shuffle( v , ShuffleSel.ExpandX ) * rv0 + 
+						   Vector4f.Shuffle( v , ShuffleSel.ExpandY ) * rv1 +
+						   Vector4f.Shuffle( v , ShuffleSel.ExpandZ ) * rv2 ;
+					
+					v = *(Vector4f*) &left.m10;
+					*(Vector4f*) &res.m10 = Vector4f.Shuffle( v , ShuffleSel.ExpandX ) * rv0 + 
+						   Vector4f.Shuffle( v , ShuffleSel.ExpandY ) * rv1 +
+						   Vector4f.Shuffle( v , ShuffleSel.ExpandZ ) * rv2 ;
+					
+					v = *(Vector4f*) &left.m20;
+					*(Vector4f*) &res.m20 = Vector4f.Shuffle( v , ShuffleSel.ExpandX ) * rv0 + 
+						   Vector4f.Shuffle( v , ShuffleSel.ExpandY ) * rv1 +
+						   Vector4f.Shuffle( v , ShuffleSel.ExpandZ ) * rv2 ;
+				}
+				return res;
+			}
+			else if (PlatformInformation.general_accel)
+			{
+				Matrix3 res;
+				
+        		
+        		unsafe {
+        			Vector4f rv0 = *(Vector4f*) &right.m00;
+        			Vector4f rv1 = *(Vector4f*) &right.m10;
+        			Vector4f rv2 = *(Vector4f*) &right.m20;
+        			
+        			Vector4f v = *(Vector4f*) &left.m00;
+        			Vector4f xxyy = Vector4f.InterleaveLow( v, v);
+					Vector4f zzww = Vector4f.InterleaveHigh( v, v );
+        		
+					*(Vector4f*) &res = Vector4f.InterleaveLow( xxyy , xxyy ) * rv0 +
+						   Vector4f.InterleaveHigh( xxyy , xxyy) * rv1 +
+						   Vector4f.InterleaveLow( zzww,  zzww) * rv2 ;
+					
+					v = *(Vector4f*) &left.m10;
+					xxyy = Vector4f.InterleaveLow( v, v );
+					zzww = Vector4f.InterleaveHigh( v, v );
+					
+					*(Vector4f*) &res.m10 = Vector4f.InterleaveLow( xxyy , xxyy ) * rv0 + 
+						   Vector4f.InterleaveHigh( xxyy , xxyy) * rv1 +
+						   Vector4f.InterleaveLow( zzww,  zzww) * rv2;
+					
+					v = *(Vector4f*) &left.m20;
+					xxyy = Vector4f.InterleaveLow( v, v );
+					zzww = Vector4f.InterleaveHigh( v, v );
+					
+					*(Vector4f*) &res.m20 = Vector4f.InterleaveLow( xxyy , xxyy ) * rv0 + 
+						   Vector4f.InterleaveHigh( xxyy , xxyy) * rv1 +
+						   Vector4f.InterleaveLow( zzww,  zzww) * rv2 ;
+        		}
+				return res;
 
-            Matrix3 result = new Matrix3();
-
-            result.m00 = left.m00 * right.m00 + left.m01 * right.m10 + left.m02 * right.m20;
-            result.m01 = left.m00 * right.m01 + left.m01 * right.m11 + left.m02 * right.m21;
-            result.m02 = left.m00 * right.m02 + left.m01 * right.m12 + left.m02 * right.m22;
-
-            result.m10 = left.m10 * right.m00 + left.m11 * right.m10 + left.m12 * right.m20;
-            result.m11 = left.m10 * right.m01 + left.m11 * right.m11 + left.m12 * right.m21;
-            result.m12 = left.m10 * right.m02 + left.m11 * right.m12 + left.m12 * right.m22;
-
-            result.m20 = left.m20 * right.m00 + left.m21 * right.m10 + left.m22 * right.m20;
-            result.m21 = left.m20 * right.m01 + left.m21 * right.m11 + left.m22 * right.m21;
-            result.m22 = left.m20 * right.m02 + left.m21 * right.m12 + left.m22 * right.m22;
-
-            return result;
+			} 
+			else
+#endif
+			{
+	            Matrix3 result = new Matrix3();
+	
+	            result.m00 = left.m00 * right.m00 + left.m01 * right.m10 + left.m02 * right.m20;
+	            result.m01 = left.m00 * right.m01 + left.m01 * right.m11 + left.m02 * right.m21;
+	            result.m02 = left.m00 * right.m02 + left.m01 * right.m12 + left.m02 * right.m22;
+	
+	            result.m10 = left.m10 * right.m00 + left.m11 * right.m10 + left.m12 * right.m20;
+	            result.m11 = left.m10 * right.m01 + left.m11 * right.m11 + left.m12 * right.m21;
+	            result.m12 = left.m10 * right.m02 + left.m11 * right.m12 + left.m12 * right.m22;
+	
+	            result.m20 = left.m20 * right.m00 + left.m21 * right.m10 + left.m22 * right.m20;
+	            result.m21 = left.m20 * right.m01 + left.m21 * right.m11 + left.m22 * right.m21;
+	            result.m22 = left.m20 * right.m02 + left.m21 * right.m12 + left.m22 * right.m22;
+	
+	            return result;
+			}
         }
 
         /// <summary>
@@ -297,13 +400,46 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Vector3 operator *( Vector3 vector, Matrix3 matrix )
         {
-            Vector3 product = new Vector3();
-
-            product.x = matrix.m00 * vector.x + matrix.m01 * vector.y + matrix.m02 * vector.z;
-            product.y = matrix.m10 * vector.x + matrix.m11 * vector.y + matrix.m12 * vector.z;
-            product.z = matrix.m20 * vector.x + matrix.m21 * vector.y + matrix.m22 * vector.z;
-
-            return product;
+#if false
+			if (Utility.ACCELERATED == Acceleration.MONO_ACCELERATED_SSE1)
+			{
+				Matrix3 transpose;
+				Matrix3.Transpose(ref matrix, out transpose);
+				unsafe {
+					Vector4f v = *(Vector4f*) &(vector);
+					Vector4f xxyy = Vector4f.InterleaveLow(v, v);
+					Vector4f zzww = Vector4f.InterleaveHigh(v, v);
+					Vector4f product = (*(Vector4f*) &transpose) * Vector4f.InterleaveLow(xxyy, xxyy) +
+									(*(Vector4f*) &transpose.m10) * Vector4f.InterleaveHigh(xxyy, xxyy) +
+									(*(Vector4f*) &transpose.m20) * Vector4f.InterleaveLow(zzww, zzww) ;
+					return  (*(Vector3.Vector3WithPadding*) &product).vector;
+				}
+			} 
+			else if ((Utility.ACCELERATED == Acceleration.MONO_ACCELERATED_SSE2) ||
+			         (Utility.ACCELERATED == Acceleration.MONO_ACCELERATED_SSE3)   )
+			{
+				Matrix3 transpose;
+				Matrix3.Transpose(ref matrix, out transpose);
+				unsafe {
+					Vector4f v = *(Vector4f*) &vector;
+					Vector4f product = (*(Vector4f*) &transpose) * Vector4f.Shuffle(v, ShuffleSel.ExpandX) +
+										(*(Vector4f*) &transpose.m10) * Vector4f.Shuffle(v, ShuffleSel.ExpandY) +
+										(*(Vector4f*) &transpose.m20) * Vector4f.Shuffle(v, ShuffleSel.ExpandZ) ;
+					return (*(Vector3.Vector3WithPadding*) &product).vector;	
+				}
+				
+			}
+			else
+#endif
+			{
+	            Vector3 product = new Vector3();
+	            
+	            product.x = matrix.m00 * vector.x + matrix.m01 * vector.y + matrix.m02 * vector.z;
+	            product.y = matrix.m10 * vector.x + matrix.m11 * vector.y + matrix.m12 * vector.z;
+	            product.z = matrix.m20 * vector.x + matrix.m21 * vector.y + matrix.m22 * vector.z;
+	
+	            return product;
+			}
         }
 
         /// <summary>
@@ -325,13 +461,46 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Vector3 operator *( Matrix3 matrix, Vector3 vector )
         {
-            Vector3 product = new Vector3();
-
-            product.x = matrix.m00 * vector.x + matrix.m01 * vector.y + matrix.m02 * vector.z;
-            product.y = matrix.m10 * vector.x + matrix.m11 * vector.y + matrix.m12 * vector.z;
-            product.z = matrix.m20 * vector.x + matrix.m21 * vector.y + matrix.m22 * vector.z;
-
-            return product;
+#if false
+			if (Utility.ACCELERATED == Acceleration.MONO_ACCELERATED_SSE1)
+			{
+				Matrix3 transpose;
+				Matrix3.Transpose(ref matrix, out transpose);
+				unsafe {
+					Vector4f v = *(Vector4f*) &vector;
+					Vector4f xxyy = Vector4f.InterleaveLow(v, v);
+					Vector4f zzww = Vector4f.InterleaveHigh(v, v);
+					Vector4f product = (*(Vector4f*) &transpose) * Vector4f.InterleaveLow(xxyy, xxyy) +
+									(*(Vector4f*) &transpose.m10) * Vector4f.InterleaveHigh(xxyy, xxyy) +
+									(*(Vector4f*) &transpose.m20) * Vector4f.InterleaveLow(zzww, zzww) ;
+					return (*(Vector3.Vector3WithPadding*) &product).vector;
+				}
+				
+			}
+			else if ((Utility.ACCELERATED == Acceleration.MONO_ACCELERATED_SSE2) ||
+			         (Utility.ACCELERATED == Acceleration.MONO_ACCELERATED_SSE3)   )
+			{
+				Matrix3 transpose;
+				Matrix3.Transpose(ref matrix, out transpose);
+				unsafe {
+					Vector4f v = *(Vector4f*) &vector;
+					Vector4f product = (*(Vector4f*) &transpose) * Vector4f.Shuffle(v, ShuffleSel.ExpandX) +
+									(*(Vector4f*) &transpose.m10) * Vector4f.Shuffle(v, ShuffleSel.ExpandY) +
+									(*(Vector4f*) &transpose.m20) * Vector4f.Shuffle(v, ShuffleSel.ExpandZ) ;
+					return (*(Vector3.Vector3WithPadding*) &product).vector;
+				}
+			}
+			else
+#endif
+			{
+	            Vector3 product = new Vector3();
+	
+	            product.x = matrix.m00 * vector.x + matrix.m01 * vector.y + matrix.m02 * vector.z;
+	            product.y = matrix.m10 * vector.x + matrix.m11 * vector.y + matrix.m12 * vector.z;
+	            product.z = matrix.m20 * vector.x + matrix.m21 * vector.y + matrix.m22 * vector.z;
+	
+	            return product;
+			}
         }
 
         /// <summary>
@@ -353,19 +522,38 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Matrix3 operator *( Matrix3 matrix, float scalar )
         {
-            Matrix3 result = new Matrix3();
-
-            result.m00 = matrix.m00 * scalar;
-            result.m01 = matrix.m01 * scalar;
-            result.m02 = matrix.m02 * scalar;
-            result.m10 = matrix.m10 * scalar;
-            result.m11 = matrix.m11 * scalar;
-            result.m12 = matrix.m12 * scalar;
-            result.m20 = matrix.m20 * scalar;
-            result.m21 = matrix.m21 * scalar;
-            result.m22 = matrix.m22 * scalar;
-
-            return result;
+#if false
+        	if (Utility.ACCELERATED != Acceleration.NONE)
+        	{
+        		unsafe {
+	        		//TODO use a "new Vector4f(float)" or "Vector4f.ExpandX(Vector4f)"
+        			//TODO when they come avalible.
+        			Vector4f scalarV;
+        			(*(float*) &scalarV) = scalar;
+        			scalarV = Vector4f.InterleaveLow(scalarV, scalarV);
+        			scalarV = Vector4f.InterleaveLow(scalarV, scalarV);
+	        		*(Vector4f*) &matrix *= scalarV;
+	        		*(Vector4f*) &matrix.m10 *= scalarV;
+	        		*(Vector4f*) &matrix.m20 *= scalarV;
+        		}
+        		return matrix;
+        	}
+#endif        	
+			{
+	            Matrix3 result = new Matrix3();
+	
+	            result.m00 = matrix.m00 * scalar;
+	            result.m01 = matrix.m01 * scalar;
+	            result.m02 = matrix.m02 * scalar;
+	            result.m10 = matrix.m10 * scalar;
+	            result.m11 = matrix.m11 * scalar;
+	            result.m12 = matrix.m12 * scalar;
+	            result.m20 = matrix.m20 * scalar;
+	            result.m21 = matrix.m21 * scalar;
+	            result.m22 = matrix.m22 * scalar;
+	
+	            return result;
+			}
         }
 
         /// <summary>
@@ -387,19 +575,35 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Matrix3 operator *( float scalar, Matrix3 matrix )
         {
-            Matrix3 result = new Matrix3();
-
-            result.m00 = matrix.m00 * scalar;
-            result.m01 = matrix.m01 * scalar;
-            result.m02 = matrix.m02 * scalar;
-            result.m10 = matrix.m10 * scalar;
-            result.m11 = matrix.m11 * scalar;
-            result.m12 = matrix.m12 * scalar;
-            result.m20 = matrix.m20 * scalar;
-            result.m21 = matrix.m21 * scalar;
-            result.m22 = matrix.m22 * scalar;
-
-            return result;
+#if (MONO_SIMD)
+        	{
+        		unsafe {
+	        		Vector4f vScalar = new Vector4f(scalar, scalar, scalar, 0);
+	        		(*(Vector4f*) &matrix) = vScalar * (*(Vector4f*) &matrix);
+	        		(*(Vector4f*) &matrix.m10) = vScalar * (*(Vector4f*) &matrix.m10);
+	        		(*(Vector4f*) &matrix.m20) = vScalar * (*(Vector4f*) &matrix.m20);
+        		
+        		}
+        		return matrix;
+        	}
+        	
+#else
+			{
+	            Matrix3 result = new Matrix3();
+	
+	            result.m00 = matrix.m00 * scalar;
+	            result.m01 = matrix.m01 * scalar;
+	            result.m02 = matrix.m02 * scalar;
+	            result.m10 = matrix.m10 * scalar;
+	            result.m11 = matrix.m11 * scalar;
+	            result.m12 = matrix.m12 * scalar;
+	            result.m20 = matrix.m20 * scalar;
+	            result.m21 = matrix.m21 * scalar;
+	            result.m22 = matrix.m22 * scalar;
+	
+	            return result;
+        	}
+#endif
         }
 
         /// <summary>
@@ -421,17 +625,30 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Matrix3 operator +( Matrix3 left, Matrix3 right )
         {
-            Matrix3 result = new Matrix3();
-
-            for ( int row = 0; row < 3; row++ )
-            {
-                for ( int col = 0; col < 3; col++ )
-                {
-                    result[ row, col ] = left[ row, col ] + right[ row, col ];
-                }
-            }
-
-            return result;
+#if (MONO_SIMD)
+        	{
+        		unsafe {
+	        		(*(Vector4f*) &left) += (*(Vector4f*) &right);
+	        		(*(Vector4f*) &left.m10) += (*(Vector4f*) &right.m10);
+	        		(*(Vector4f*) &left.m20) += (*(Vector4f*) &right.m20);
+        		}
+        		return left;
+        	}
+#else
+        	{
+	            Matrix3 result = new Matrix3();
+	
+	            for ( int row = 0; row < 3; row++ )
+	            {
+	                for ( int col = 0; col < 3; col++ )
+	                {
+	                    result[ row, col ] = left[ row, col ] + right[ row, col ];
+	                }
+	            }
+	
+	            return result;
+        	}
+#endif
         }
 
         /// <summary>
@@ -453,17 +670,30 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Matrix3 operator -( Matrix3 left, Matrix3 right )
         {
-            Matrix3 result = new Matrix3();
-
-            for ( int row = 0; row < 3; row++ )
-            {
-                for ( int col = 0; col < 3; col++ )
-                {
-                    result[ row, col ] = left[ row, col ] - right[ row, col ];
-                }
-            }
-
-            return result;
+#if (MONO_SIMD)
+        	{
+        		unsafe {
+	        		(*(Vector4f*) &left) -= (*(Vector4f*) &right);
+	        		(*(Vector4f*) &left.m10) -= (*(Vector4f*) &right.m10);
+	        		(*(Vector4f*) &left.m20) -= (*(Vector4f*) &right.m20);
+        		}
+        		return left;
+        	}
+#else
+        	{
+	            Matrix3 result = new Matrix3();
+	
+	            for ( int row = 0; row < 3; row++ )
+	            {
+	                for ( int col = 0; col < 3; col++ )
+	                {
+	                    result[ row, col ] = left[ row, col ] - right[ row, col ];
+	                }
+	            }
+	
+	            return result;
+        	}
+#endif
         }
 
         /// <summary>
@@ -483,19 +713,32 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Matrix3 operator -( Matrix3 matrix )
         {
-            Matrix3 result = new Matrix3();
-
-            result.m00 = -matrix.m00;
-            result.m01 = -matrix.m01;
-            result.m02 = -matrix.m02;
-            result.m10 = -matrix.m10;
-            result.m11 = -matrix.m11;
-            result.m12 = -matrix.m12;
-            result.m20 = -matrix.m20;
-            result.m21 = -matrix.m21;
-            result.m22 = -matrix.m22;
-
-            return result;
+#if (MONO_SIMD)
+        	{
+        		unsafe {
+        			(*(Vector4f*) &matrix) *= nIdentity;
+        			(*(Vector4f*) &matrix.m10) *= nIdentity;
+        			(*(Vector4f*) &matrix.m20) *= nIdentity;
+        		}
+        		return matrix;
+        	}
+#else      	
+        	{
+	            Matrix3 result = new Matrix3();
+	
+	            result.m00 = -matrix.m00;
+	            result.m01 = -matrix.m01;
+	            result.m02 = -matrix.m02;
+	            result.m10 = -matrix.m10;
+	            result.m11 = -matrix.m11;
+	            result.m12 = -matrix.m12;
+	            result.m20 = -matrix.m20;
+	            result.m21 = -matrix.m21;
+	            result.m22 = -matrix.m22;
+	
+	            return result;
+        	}
+#endif
         }
 
         /// <summary>
@@ -534,8 +777,9 @@ namespace Axiom.Math
 
                 unsafe
                 {
+                	/* note we have to skip the unused floats */
                     fixed ( float* pM = &m00 )
-                        return *( pM + ( ( 3 * row ) + col ) );
+                        return *( pM + ( ( 4 * row ) + col ) );
                 }
             }
             set
@@ -544,8 +788,9 @@ namespace Axiom.Math
 
                 unsafe
                 {
+                	/* note we have to skip the unused floats */
                     fixed ( float* pM = &m00 )
-                        *( pM + ( ( 3 * row ) + col ) ) = value;
+                        *( pM + ( ( 4 * row ) + col ) ) = value;
                 }
             }
         }
@@ -561,9 +806,10 @@ namespace Axiom.Math
 
                 unsafe
                 {
+                	/* note we have to skip the unused floats */
                     fixed ( float* pMatrix = &m00 )
                     {
-                        return *( pMatrix + index );
+                    	return *( pMatrix + (index/3 + index) );
                     }
                 }
             }
@@ -573,9 +819,10 @@ namespace Axiom.Math
 
                 unsafe
                 {
+                	/* note we have to skip the unused floats */
                     fixed ( float* pMatrix = &m00 )
                     {
-                        *( pMatrix + index ) = value;
+                        *( pMatrix + (index/3 + index) ) = value;
                     }
                 }
             }
@@ -662,6 +909,69 @@ namespace Axiom.Math
         }
 
         #endregion
+        
+        #if (MONO_SIMD)       
+        internal unsafe static void Transpose(ref Matrix3 matrix, out Matrix3 transpose)
+        {
+		    Vector4f r0;
+		    Vector4f r1;
+		    Vector4f r2;
+		    
+		    Vector4f c0;
+		    Vector4f c1;
+		    Vector4f c2;
+		    
+        	fixed (Matrix3 *m = &matrix) {
+	       		r0 = *((Vector4f*) m);
+        		r1 = *((Vector4f*) &(*m).m10);
+        		r2 = *((Vector4f*) &(*m).m20);
+			}
+
+		    /*
+		     * m[0,0], m[2,0], m[0,1], m[2,1]
+		     */
+		    Vector4f lowR0R2 = Vector4f.InterleaveLow(r0, r2);
+		    /*
+		     * m[1,0], m[3,0], m[1,1], m[3,1]
+		     */
+		    Vector4f lowR1R3 = Vector4f.InterleaveLow(r1, r2);
+		    
+		    /*
+		     * m[0,0], m[1,0], [2,0], [3,0]
+		     */
+		    c0 = Vector4f.InterleaveLow(lowR0R2, lowR1R3);
+		    
+		    /*
+		     * m[0,1], m[1,1], [2,1], [3,1]
+		     */
+		    c1 = Vector4f.InterleaveHigh(lowR0R2, lowR1R3);
+		    
+		    /* =========================================== */
+		    
+		    /*
+		     * m[0,2], m[2,2], m[0,3], m[2,3]
+		     */
+		    Vector4f highR0R2 = Vector4f.InterleaveHigh(r0, r2);
+		    /*
+		     * m[1,2], m[3,2], m[1,3], m[3,3]
+		     */
+		    Vector4f highR1R3 = Vector4f.InterleaveHigh(r1, r2);
+		    
+		    /*
+		     * m[0,2], m[1,2], [2,2], [3,2]
+		     */
+		    c2 = Vector4f.InterleaveLow(highR0R2, highR1R3);
+		    
+		    fixed ( Matrix3 *t = &transpose ) {
+	  			*((Vector4f*) t) = c0;
+        		*((Vector4f*) &(*t).m10) = c1;
+        		*((Vector4f*) &(*t).m20) = c2;    	
+		    }
+		    
+        }
+        
+
+#endif
 
     }
 }

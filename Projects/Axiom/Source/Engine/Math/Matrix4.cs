@@ -30,6 +30,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 #endregion
 
+//#undef MONO_SIMD
+
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
@@ -43,6 +45,11 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using Axiom.Core;
+
+#if (MONO_SIMD)
+using Mono.Simd;
+#endif
 
 #endregion Namespace Declarations
 
@@ -82,11 +89,15 @@ namespace Axiom.Math
     ///		| m[3][0]  m[3][1]  m[3][2]  m[3][3] |   {1}
     ///	</remarks>
     ///	<ogre headerVersion="1.18" sourceVersion="1.8" />
-    [StructLayout( LayoutKind.Sequential )]
+    ///   
+    
+    [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 16 * 4)]
     public struct Matrix4
     {
         #region Member variables
-
+        /* KLUDGE: the acceleration code is highly dependent of the ordering of these
+         * variables.
+         */
         public float m00, m01, m02, m03;
         public float m10, m11, m12, m13;
         public float m20, m21, m22, m23;
@@ -232,13 +243,27 @@ namespace Axiom.Math
         /// <returns></returns>
         public Matrix3 GetMatrix3()
         {
-            return
-                new Matrix3(
-                    this.m00, this.m01, this.m02,
-                    this.m10, this.m11, this.m12,
-                    this.m20, this.m21, this.m22 );
+            Matrix3 m3;
+            GetMatrix3(ref this, out m3);
+            return m3;
         }
-
+		/// <summary>
+        ///    Returns a 3x3 portion of this 4x4 matrix.
+        /// </summary>
+        /// <returns></returns>
+        public static void GetMatrix3(ref Matrix4 m4, out Matrix3 m3){
+        	m3.m00 = m4.m00;
+        	m3.m01 = m4.m01;
+        	m3.m02 = m4.m03;
+        	m3.m10 = m4.m10;
+        	m3.m11 = m4.m11;
+        	m3.m12 = m4.m12;
+        	m3.m20 = m4.m20;
+        	m3.m21 = m4.m21;
+        	m3.m22 = m4.m23;
+        	
+        	m3.reserved1 = m3.reserved2 = m3.reserved3 = 0;
+        }
         /// <summary>
         ///    Returns an inverted 4d matrix.
         /// </summary>
@@ -246,7 +271,7 @@ namespace Axiom.Math
         public Matrix4 Inverse()
         {
             return Adjoint() * ( 1.0f / this.Determinant );
-        }
+        } 
 
         /// <summary>
         ///    Swap the rows of the matrix with the columns.
@@ -254,12 +279,94 @@ namespace Axiom.Math
         /// <returns>A transposed Matrix.</returns>
         public Matrix4 Transpose()
         {
-            return new Matrix4( this.m00, this.m10, this.m20, this.m30,
-                this.m01, this.m11, this.m21, this.m31,
-                this.m02, this.m12, this.m22, this.m32,
-                this.m03, this.m13, this.m23, this.m33 );
+			Matrix4 transpose;
+			Matrix4.Transpose(ref this, out transpose);
+			return transpose;
         }
 
+        /// <summary>
+        ///    Swap the rows of the matrix with the columns.
+        /// </summary>
+        /// <returns>A transposed Matrix.</returns>
+        public unsafe static void Transpose(ref Matrix4 matrix, out Matrix4 transpose)
+        {
+#if (MONO_SIMD)
+        	{
+			    Vector4f r0;
+			    Vector4f r1;
+			    Vector4f r2;
+			    Vector4f r3;
+			    
+			    Vector4f c0;
+			    Vector4f c1;
+			    Vector4f c2;
+			    Vector4f c3;
+			    
+	        	fixed (Matrix4 *m = &matrix) {
+		       		r0 = *((Vector4f*) m);
+	        		r1 = *((Vector4f*) &(*m).m10);
+	        		r2 = *((Vector4f*) &(*m).m20);
+	        		r3 = *((Vector4f*) &(*m).m30);
+				}
+	
+			    /*
+			     * m[0,0], m[2,0], m[0,1], m[2,1]
+			     */
+			    Vector4f lowR0R2 = Vector4f.InterleaveLow(r0, r2);
+			    /*
+			     * m[1,0], m[3,0], m[1,1], m[3,1]
+			     */
+			    Vector4f lowR1R3 = Vector4f.InterleaveLow(r1, r3);
+			    
+			    /*
+			     * m[0,0], m[1,0], [2,0], [3,0]
+			     */
+			    c0 = Vector4f.InterleaveLow(lowR0R2, lowR1R3);
+			    
+			    /*
+			     * m[0,1], m[1,1], [2,1], [3,1]
+			     */
+			    c1 = Vector4f.InterleaveHigh(lowR0R2, lowR1R3);
+			    
+			    /* =========================================== */
+			    
+			    /*
+			     * m[0,2], m[2,2], m[0,3], m[2,3]
+			     */
+			    Vector4f highR0R2 = Vector4f.InterleaveHigh(r0, r2);
+			    /*
+			     * m[1,2], m[3,2], m[1,3], m[3,3]
+			     */
+			    Vector4f highR1R3 = Vector4f.InterleaveHigh(r1, r3);
+			    
+			    /*
+			     * m[0,2], m[1,2], [2,2], [3,2]
+			     */
+			    c2 = Vector4f.InterleaveLow(highR0R2, highR1R3);
+			    
+			    /*
+			     * m[0,3], m[1,3], [2,3, [3,3]
+			     */
+			    c3 = Vector4f.InterleaveHigh(highR0R2, highR1R3);
+			    
+			    fixed ( Matrix4 *t = &transpose ) {
+		  			*((Vector4f*) t) = c0;
+	        		*((Vector4f*) &(*t).m10) = c1;
+	        		*((Vector4f*) &(*t).m20) = c2;
+	        		*((Vector4f*) &(*t).m30) = c3;	    	
+			    }
+        	}
+        	
+#else
+			{
+	
+				transpose = new Matrix4( this.m00, this.m10, this.m20, this.m30,
+	                				this.m01, this.m11, this.m21, this.m31,
+	            				    this.m02, this.m12, this.m22, this.m32,
+	           					    this.m03, this.m13, this.m23, this.m33 );
+			}
+#endif
+        }
         #endregion
 
         #region Operator overloads + CLS compliant method equivalents
@@ -272,7 +379,9 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Matrix4 Multiply( Matrix4 left, Matrix4 right )
         {
-            return left * right;
+            Matrix4 res;
+        	Multiply(ref left, ref right, out res);
+        	return res;	
         }
 
         /// <summary>
@@ -283,29 +392,164 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Matrix4 operator *( Matrix4 left, Matrix4 right )
         {
-            Matrix4 result = new Matrix4();
-
-            result.m00 = left.m00 * right.m00 + left.m01 * right.m10 + left.m02 * right.m20 + left.m03 * right.m30;
-            result.m01 = left.m00 * right.m01 + left.m01 * right.m11 + left.m02 * right.m21 + left.m03 * right.m31;
-            result.m02 = left.m00 * right.m02 + left.m01 * right.m12 + left.m02 * right.m22 + left.m03 * right.m32;
-            result.m03 = left.m00 * right.m03 + left.m01 * right.m13 + left.m02 * right.m23 + left.m03 * right.m33;
-
-            result.m10 = left.m10 * right.m00 + left.m11 * right.m10 + left.m12 * right.m20 + left.m13 * right.m30;
-            result.m11 = left.m10 * right.m01 + left.m11 * right.m11 + left.m12 * right.m21 + left.m13 * right.m31;
-            result.m12 = left.m10 * right.m02 + left.m11 * right.m12 + left.m12 * right.m22 + left.m13 * right.m32;
-            result.m13 = left.m10 * right.m03 + left.m11 * right.m13 + left.m12 * right.m23 + left.m13 * right.m33;
-
-            result.m20 = left.m20 * right.m00 + left.m21 * right.m10 + left.m22 * right.m20 + left.m23 * right.m30;
-            result.m21 = left.m20 * right.m01 + left.m21 * right.m11 + left.m22 * right.m21 + left.m23 * right.m31;
-            result.m22 = left.m20 * right.m02 + left.m21 * right.m12 + left.m22 * right.m22 + left.m23 * right.m32;
-            result.m23 = left.m20 * right.m03 + left.m21 * right.m13 + left.m22 * right.m23 + left.m23 * right.m33;
-
-            result.m30 = left.m30 * right.m00 + left.m31 * right.m10 + left.m32 * right.m20 + left.m33 * right.m30;
-            result.m31 = left.m30 * right.m01 + left.m31 * right.m11 + left.m32 * right.m21 + left.m33 * right.m31;
-            result.m32 = left.m30 * right.m02 + left.m31 * right.m12 + left.m32 * right.m22 + left.m33 * right.m32;
-            result.m33 = left.m30 * right.m03 + left.m31 * right.m13 + left.m32 * right.m23 + left.m33 * right.m33;
-
-            return result;
+        	Matrix4 res;
+        	Multiply(ref left, ref right, out res);
+        	return res;	
+        }
+        
+        public static void Multiply(ref Matrix4 left, ref Matrix4 right, out Matrix4 result)
+        {
+#if (MONO_SIMD)
+			if (PlatformInformation.shuffle_accel)
+			{
+				unsafe {
+					Vector4f rv0;
+					Vector4f rv1;
+					Vector4f rv2;
+					Vector4f rv3;
+	        		fixed (Matrix4* rightP = &right) {
+						Vector4f* vP = (Vector4f*) rightP;
+						rv0 = vP[0];
+						rv1 = vP[1];
+						rv2 = vP[2];
+						rv3 = vP[3];
+					}
+	        		
+	        		
+					
+					fixed (Matrix4* leftP = &left) fixed (Matrix4* resultP = &result)
+					{
+						Vector4f* leftVectors = (Vector4f*) leftP;
+						Vector4f* resultVectors = (Vector4f*) resultP;
+						Vector4f v = leftVectors[0];
+					
+				
+						resultVectors[0] = Vector4f.Shuffle( v , ShuffleSel.ExpandX ) * rv0 +
+							   Vector4f.Shuffle( v, ShuffleSel.ExpandY ) * rv1 +
+							   Vector4f.Shuffle( v , ShuffleSel.ExpandZ ) * rv2 +
+							   Vector4f.Shuffle( v , ShuffleSel.ExpandW ) * rv3 ;
+						
+						
+						v = leftVectors[1];
+						
+						
+						resultVectors[1] = Vector4f.Shuffle( v , ShuffleSel.ExpandX ) * rv0 + 
+							   Vector4f.Shuffle( v , ShuffleSel.ExpandY ) * rv1 +
+							   Vector4f.Shuffle( v , ShuffleSel.ExpandZ ) * rv2 +
+							   Vector4f.Shuffle( v , ShuffleSel.ExpandW ) * rv3 ;
+						
+						
+						v = leftVectors[2];
+						
+						
+						resultVectors[2] = Vector4f.Shuffle( v , ShuffleSel.ExpandX ) * rv0 + 
+							   Vector4f.Shuffle( v , ShuffleSel.ExpandY ) * rv1 +
+							   Vector4f.Shuffle( v , ShuffleSel.ExpandZ ) * rv2 +
+							   Vector4f.Shuffle( v , ShuffleSel.ExpandW ) * rv3 ;
+						
+						
+						
+						v = leftVectors[3];
+						
+						
+						resultVectors[3] = Vector4f.Shuffle( v , ShuffleSel.ExpandX ) * rv0 + 
+							   Vector4f.Shuffle( v , ShuffleSel.ExpandY ) * rv1 +
+							   Vector4f.Shuffle( v , ShuffleSel.ExpandZ ) * rv2 +
+							   Vector4f.Shuffle( v , ShuffleSel.ExpandW ) * rv3 ;
+					}
+				}
+			}
+			else if (PlatformInformation.general_accel)
+			{
+				unsafe {
+					Vector4f rv0;
+					Vector4f rv1;
+					Vector4f rv2;
+					Vector4f rv3;
+	        		fixed (Matrix4* rightP = &right) {
+						Vector4f* vP = (Vector4f*) rightP;
+						rv0 = vP[0];
+						rv1 = vP[1];
+						rv2 = vP[2];
+						rv3 = vP[3];
+					}
+	        		
+	        		
+					
+					fixed (Matrix4* leftP = &left) fixed (Matrix4* resultP = &result)
+					{
+						Vector4f* leftVectors = (Vector4f*) leftP;
+						Vector4f* resultVectors = (Vector4f*) resultP;
+						Vector4f v = leftVectors[0];
+	        		 
+	        		
+						Vector4f xxyy = Vector4f.InterleaveLow( v, v);
+						Vector4f zzww = Vector4f.InterleaveHigh( v, v );
+						
+						resultVectors[0] = Vector4f.InterleaveLow( xxyy , xxyy ) * rv0 +
+							   Vector4f.InterleaveHigh( xxyy , xxyy) * rv1 +
+							   Vector4f.InterleaveLow( zzww,  zzww) * rv2 +
+							   Vector4f.InterleaveHigh( zzww, zzww ) * rv3 ;
+							
+						
+						v =  leftVectors[1];
+						
+						xxyy = Vector4f.InterleaveLow( v, v );
+						zzww = Vector4f.InterleaveHigh( v, v );
+						
+						resultVectors[1] = Vector4f.InterleaveLow( xxyy , xxyy ) * rv0 +
+							   Vector4f.InterleaveHigh( xxyy , xxyy) * rv1 +
+							   Vector4f.InterleaveLow( zzww,  zzww) * rv2 +
+							   Vector4f.InterleaveHigh( zzww, zzww ) * rv3 ;
+						
+						
+						v = leftVectors[2];
+						
+						xxyy = Vector4f.InterleaveLow( v, v );
+						zzww = Vector4f.InterleaveHigh( v, v );
+						
+						resultVectors[2]  = Vector4f.InterleaveLow( xxyy , xxyy ) * rv0 + 
+							   Vector4f.InterleaveHigh( xxyy , xxyy) * rv1 +
+							   Vector4f.InterleaveLow( zzww,  zzww) * rv2 +
+							   Vector4f.InterleaveHigh( zzww, zzww ) * rv3 ;
+						
+						
+						v = leftVectors[3];
+						
+						xxyy = Vector4f.InterleaveLow( v, v );
+						zzww = Vector4f.InterleaveHigh( v, v );
+						
+						resultVectors[3]  = Vector4f.InterleaveLow( xxyy , xxyy ) * rv0 + 
+							   Vector4f.InterleaveHigh( xxyy , xxyy) * rv1 +
+							   Vector4f.InterleaveLow( zzww,  zzww) * rv2 +
+							   Vector4f.InterleaveHigh( zzww, zzww ) * rv3 ;
+					}
+				}
+			}
+			else
+#endif        	
+        	{
+	
+	            result.m00 = left.m00 * right.m00 + left.m01 * right.m10 + left.m02 * right.m20 + left.m03 * right.m30;
+	            result.m01 = left.m00 * right.m01 + left.m01 * right.m11 + left.m02 * right.m21 + left.m03 * right.m31;
+	            result.m02 = left.m00 * right.m02 + left.m01 * right.m12 + left.m02 * right.m22 + left.m03 * right.m32;
+	            result.m03 = left.m00 * right.m03 + left.m01 * right.m13 + left.m02 * right.m23 + left.m03 * right.m33;
+	
+	            result.m10 = left.m10 * right.m00 + left.m11 * right.m10 + left.m12 * right.m20 + left.m13 * right.m30;
+	            result.m11 = left.m10 * right.m01 + left.m11 * right.m11 + left.m12 * right.m21 + left.m13 * right.m31;
+	            result.m12 = left.m10 * right.m02 + left.m11 * right.m12 + left.m12 * right.m22 + left.m13 * right.m32;
+	            result.m13 = left.m10 * right.m03 + left.m11 * right.m13 + left.m12 * right.m23 + left.m13 * right.m33;
+	
+	            result.m20 = left.m20 * right.m00 + left.m21 * right.m10 + left.m22 * right.m20 + left.m23 * right.m30;
+	            result.m21 = left.m20 * right.m01 + left.m21 * right.m11 + left.m22 * right.m21 + left.m23 * right.m31;
+	            result.m22 = left.m20 * right.m02 + left.m21 * right.m12 + left.m22 * right.m22 + left.m23 * right.m32;
+	            result.m23 = left.m20 * right.m03 + left.m21 * right.m13 + left.m22 * right.m23 + left.m23 * right.m33;
+	
+	            result.m30 = left.m30 * right.m00 + left.m31 * right.m10 + left.m32 * right.m20 + left.m33 * right.m30;
+	            result.m31 = left.m30 * right.m01 + left.m31 * right.m11 + left.m32 * right.m21 + left.m33 * right.m31;
+	            result.m32 = left.m30 * right.m02 + left.m31 * right.m12 + left.m32 * right.m22 + left.m33 * right.m32;
+	            result.m33 = left.m30 * right.m03 + left.m31 * right.m13 + left.m32 * right.m23 + left.m33 * right.m33;
+        	}
         }
 
         /// <summary>
@@ -347,16 +591,66 @@ namespace Axiom.Math
         /// <param name="vector">A Vector3.</param>
         /// <returns>A new vector.</returns>
         public static Vector3 operator *( Matrix4 matrix, Vector3 vector )
-        {
-            Vector3 result = new Vector3();
-
-            float inverseW = 1.0f / ( matrix.m30 + matrix.m31 + matrix.m32 + matrix.m33 );
-
-            result.x = ( ( matrix.m00 * vector.x ) + ( matrix.m01 * vector.y ) + ( matrix.m02 * vector.z ) + matrix.m03 ) * inverseW;
-            result.y = ( ( matrix.m10 * vector.x ) + ( matrix.m11 * vector.y ) + ( matrix.m12 * vector.z ) + matrix.m13 ) * inverseW;
-            result.z = ( ( matrix.m20 * vector.x ) + ( matrix.m21 * vector.y ) + ( matrix.m22 * vector.z ) + matrix.m23 ) * inverseW;
-
-            return result;
+        { 
+#if false
+        	if (Utility.ACCELERATED == Acceleration.MONO_ACCELERATED_SSE1)
+			{
+        		unsafe {
+	        		Matrix4 transpose;
+	        		Matrix4.Transpose(ref matrix, out transpose);
+	        		
+	        		Vector4f vInverseW, xxyy, zzww;
+	        		Vector4f v = *(Vector4f*) &vector;
+	        		*(float*) &vInverseW = 1.0f / ( matrix.m30 + matrix.m31 + matrix.m32 + matrix.m33 );
+	        		
+	        		vInverseW = Vector4f.InterleaveLow( vInverseW, vInverseW );
+	        		vInverseW = Vector4f.InterleaveLow( vInverseW, vInverseW );
+	        		
+	        		xxyy = Vector4f.InterleaveLow( v, v );
+					zzww = Vector4f.InterleaveHigh( v, v );
+	
+					v = ( ((*(Vector4f*) &transpose) * Vector4f.InterleaveLow(xxyy, xxyy)) +
+	        		           ((*(Vector4f*) &transpose.m10) * Vector4f.InterleaveHigh(xxyy, xxyy)) +
+	        		           ((*(Vector4f*) &transpose.m20) * Vector4f.InterleaveLow(zzww, zzww)) +
+	        		           (*(Vector4f*) &transpose.m30) ) * vInverseW;
+	        		
+	        		return (*(Vector3.Vector3WithPadding*) &v).vector;
+        		}
+        	}
+        	else if ((Utility.ACCELERATED == Acceleration.MONO_ACCELERATED_SSE2) ||
+        	         (Utility.ACCELERATED == Acceleration.MONO_ACCELERATED_SSE3))
+        	{
+        		unsafe {
+	        		Matrix4 transpose;
+	        		Matrix4.Transpose(ref matrix, out transpose);
+	        		
+	        		Vector4f vInverseW;
+	        		Vector4f v = *(Vector4f*) &vector;
+	        		*(float*) &vInverseW = 1.0f / ( matrix.m30 + matrix.m31 + matrix.m32 + matrix.m33 );
+	        		
+	        		vInverseW = Vector4f.Shuffle(vInverseW, ShuffleSel.ExpandX);
+	        		
+	        		v = ( ((*(Vector4f*) &transpose) * Vector4f.Shuffle(v, ShuffleSel.ExpandX)) +
+	        		           ((*(Vector4f*) &transpose.m10) * Vector4f.Shuffle(v, ShuffleSel.ExpandY)) +
+	        		           ((*(Vector4f*) &transpose.m20) * Vector4f.Shuffle(v, ShuffleSel.ExpandZ)) +
+	        		           (*(Vector4f*) &transpose.m30) ) * vInverseW;
+	        		
+	        		return (*(Vector3.Vector3WithPadding*) &v).vector;
+        		}
+        	}
+        	else 
+#endif       
+        	{
+	            Vector3 result = new Vector3();
+	
+	            float inverseW = 1.0f / ( matrix.m30 + matrix.m31 + matrix.m32 + matrix.m33 );
+	
+	            result.x = ( ( matrix.m00 * vector.x ) + ( matrix.m01 * vector.y ) + ( matrix.m02 * vector.z ) + matrix.m03 ) * inverseW;
+	            result.y = ( ( matrix.m10 * vector.x ) + ( matrix.m11 * vector.y ) + ( matrix.m12 * vector.z ) + matrix.m13 ) * inverseW;
+	            result.z = ( ( matrix.m20 * vector.x ) + ( matrix.m21 * vector.y ) + ( matrix.m22 * vector.z ) + matrix.m23 ) * inverseW;
+	
+	            return result;
+        	}
         }
 
         /// <summary>
@@ -367,29 +661,61 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Matrix4 operator *( Matrix4 left, float scalar )
         {
-            Matrix4 result = new Matrix4();
-
-            result.m00 = left.m00 * scalar;
-            result.m01 = left.m01 * scalar;
-            result.m02 = left.m02 * scalar;
-            result.m03 = left.m03 * scalar;
-
-            result.m10 = left.m10 * scalar;
-            result.m11 = left.m11 * scalar;
-            result.m12 = left.m12 * scalar;
-            result.m13 = left.m13 * scalar;
-
-            result.m20 = left.m20 * scalar;
-            result.m21 = left.m21 * scalar;
-            result.m22 = left.m22 * scalar;
-            result.m23 = left.m23 * scalar;
-
-            result.m30 = left.m30 * scalar;
-            result.m31 = left.m31 * scalar;
-            result.m32 = left.m32 * scalar;
-            result.m33 = left.m33 * scalar;
-
-            return result;
+#if (MONO_SIMD)
+        	/*if (Utility.ACCELERATED != Acceleration.NONE)
+        	{*/
+           		
+           		unsafe {
+        			//TODO use a "new Vector4f(float)" or "Vector4f.ExpandX(Vector4f)"
+        			//TODO when they come avalible.
+        			Vector4f scalarV = new Vector4f(scalar, scalar, scalar, scalar);
+        			
+        			Vector4f leftV1 = (*(Vector4f*) &left);
+        			Vector4f leftV2 = (*(Vector4f*) &left.m10);
+        			Vector4f leftV3 = (*(Vector4f*) &left.m20);
+        			Vector4f leftV4 = (*(Vector4f*) &left.m30);
+        			
+	           		leftV1 *= scalarV;
+	        		leftV2 *= scalarV;
+	        		leftV3 *= scalarV;
+	        		leftV4 *= scalarV;
+	        		
+	        		(*(Vector4f*) &left) = leftV1;
+	        		(*(Vector4f*) &left.m10) = leftV2;
+	        		(*(Vector4f*) &left.m20) = leftV3;
+	        		(*(Vector4f*) &left.m30) = leftV4;
+	        		
+           		}
+        		return left;
+        	/*}
+        	else */
+#else       		
+        	{
+	            Matrix4 result = new Matrix4();
+	
+	            result.m00 = left.m00 * scalar;
+	            result.m01 = left.m01 * scalar;
+	            result.m02 = left.m02 * scalar;
+	            result.m03 = left.m03 * scalar;
+	
+	            result.m10 = left.m10 * scalar;
+	            result.m11 = left.m11 * scalar;
+	            result.m12 = left.m12 * scalar;
+	            result.m13 = left.m13 * scalar;
+	
+	            result.m20 = left.m20 * scalar;
+	            result.m21 = left.m21 * scalar;
+	            result.m22 = left.m22 * scalar;
+	            result.m23 = left.m23 * scalar;
+	
+	            result.m30 = left.m30 * scalar;
+	            result.m31 = left.m31 * scalar;
+	            result.m32 = left.m32 * scalar;
+	            result.m33 = left.m33 * scalar;
+	
+	            return result;
+        	}
+#endif
         }
 
         /// <summary>
@@ -400,21 +726,76 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Plane operator *( Matrix4 left, Plane plane )
         {
-            Plane result = new Plane();
-
-            Vector3 planeNormal = plane.Normal;
-
-            result.Normal = new Vector3(
-                left.m00 * planeNormal.x + left.m01 * planeNormal.y + left.m02 * planeNormal.z,
-                left.m10 * planeNormal.x + left.m11 * planeNormal.y + left.m12 * planeNormal.z,
-                left.m20 * planeNormal.x + left.m21 * planeNormal.y + left.m22 * planeNormal.z );
-
-            Vector3 pt = planeNormal * -plane.D;
-            pt = left * pt;
-
-            result.D = -pt.Dot( result.Normal );
-
-            return result;
+   #if false
+        	if (Utility.ACCELERATED == Acceleration.MONO_ACCELERATED_SSE1)
+        	{
+        		//TODO this needs optomized
+        		Plane result = new Plane();
+        		Matrix4 t;
+        		Matrix4.Transpose(ref left, out t);
+        		
+        		Vector4f xxyy, zzww;
+        		Vector3 pt;
+        		unsafe {
+        			Vector4f planeNormal = *(Vector4f*) &plane.Normal;
+	        		
+	        		xxyy = Vector4f.InterleaveLow( planeNormal, planeNormal );
+	        		zzww = Vector4f.InterleaveHigh( planeNormal, planeNormal );
+	        		
+	        		*(Vector4f*) &result.Normal = (*(Vector4f*) &t) * Vector4f.InterleaveLow(xxyy, xxyy) +
+						    				   (*(Vector4f*) &t.m10) * Vector4f.InterleaveHigh(xxyy, xxyy) +
+						    				   (*(Vector4f*) &t.m20) * Vector4f.InterleaveLow(zzww, zzww);
+	        		 
+	        		pt = (*(Vector3.Vector3WithPadding*) &planeNormal).vector;
+        		}
+        		pt = pt * -plane.D;
+	            pt = left * pt;
+	
+	            result.D = -pt.Dot( result.Normal );
+	            
+	            return result;
+        	}
+        	else if ((Utility.ACCELERATED == Acceleration.MONO_ACCELERATED_SSE2) ||
+			         (Utility.ACCELERATED == Acceleration.MONO_ACCELERATED_SSE3)    )
+        	{
+        		//TODO this needs optomized
+        		Plane result = new Plane();
+    			Matrix4 t;
+        		Matrix4.Transpose(ref left, out t);
+        		
+    			Vector3 pt;
+    			unsafe {
+	    			Vector4f planeNormal = *(Vector4f*) &plane.Normal;
+	    			*(Vector4f*)&result.Normal = (*(Vector4f*) &t) * Vector4f.Shuffle(planeNormal, ShuffleSel.ExpandX) +
+								    			   (*(Vector4f*) &t.m10) * Vector4f.Shuffle(planeNormal, ShuffleSel.ExpandY) +
+								    			   (*(Vector4f*) &t.m20)* Vector4f.Shuffle(planeNormal, ShuffleSel.ExpandZ);
+	    			
+	    			pt = (*(Vector3.Vector3WithPadding*) &planeNormal).vector;
+    			}
+        		pt = pt * -plane.D;
+        		pt = left * pt;
+	            result.D = -pt.Dot( result.Normal );
+	            
+	            return result;
+        	}
+        	else
+#endif        		
+        	{
+	            Plane result = new Plane();
+	
+	            Vector3 planeNormal = plane.Normal;
+	
+	            result.Normal = new Vector3(
+	                left.m00 * planeNormal.x + left.m01 * planeNormal.y + left.m02 * planeNormal.z,
+	                left.m10 * planeNormal.x + left.m11 * planeNormal.y + left.m12 * planeNormal.z,
+	                left.m20 * planeNormal.x + left.m21 * planeNormal.y + left.m22 * planeNormal.z );
+	
+	            Vector3 pt = planeNormal * -plane.D;
+	            pt = left * pt;
+	            result.D = -pt.Dot( result.Normal );
+	
+	            return result;
+       		}
         }
 
         /// <summary>
@@ -436,29 +817,61 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Matrix4 operator +( Matrix4 left, Matrix4 right )
         {
-            Matrix4 result = new Matrix4();
-
-            result.m00 = left.m00 + right.m00;
-            result.m01 = left.m01 + right.m01;
-            result.m02 = left.m02 + right.m02;
-            result.m03 = left.m03 + right.m03;
-
-            result.m10 = left.m10 + right.m10;
-            result.m11 = left.m11 + right.m11;
-            result.m12 = left.m12 + right.m12;
-            result.m13 = left.m13 + right.m13;
-
-            result.m20 = left.m20 + right.m20;
-            result.m21 = left.m21 + right.m21;
-            result.m22 = left.m22 + right.m22;
-            result.m23 = left.m23 + right.m23;
-
-            result.m30 = left.m30 + right.m30;
-            result.m31 = left.m31 + right.m31;
-            result.m32 = left.m32 + right.m32;
-            result.m33 = left.m33 + right.m33;
-
-            return result;
+#if (MONO_SIMD)
+        	/*if (Utility.ACCELERATED != Acceleration.NONE)
+        	{ */
+        		unsafe {
+        			Vector4f leftV1 = (*(Vector4f*) &left);
+        			Vector4f leftV2 = (*(Vector4f*) &left.m10);
+        			Vector4f leftV3 = (*(Vector4f*) &left.m20);
+        			Vector4f leftV4 = (*(Vector4f*) &left.m30);
+        				
+        			Vector4f rightV1 = (*(Vector4f*) &right);
+        			Vector4f rightV2 = (*(Vector4f*) &right.m10);
+        			Vector4f rightV3 = (*(Vector4f*) &right.m20);
+        			Vector4f rightV4 = (*(Vector4f*) &right.m30);	
+        				
+        			leftV1 += rightV1;
+        			leftV2 += rightV2;
+        			leftV3 += rightV3;
+        			leftV4 += rightV4;
+        				
+	        		(*(Vector4f*) &left) = leftV1;
+	        		(*(Vector4f*) &left.m10) = leftV2;
+	        		(*(Vector4f*) &left.m20) = leftV3;
+	        		(*(Vector4f*) &left.m30) = leftV1;
+        		}
+        		return left;
+        	/*}
+        	else */
+#else        		
+        	{
+        	
+	            Matrix4 result = new Matrix4();
+	
+	            result.m00 = left.m00 + right.m00;
+	            result.m01 = left.m01 + right.m01;
+	            result.m02 = left.m02 + right.m02;
+	            result.m03 = left.m03 + right.m03;
+	
+	            result.m10 = left.m10 + right.m10;
+	            result.m11 = left.m11 + right.m11;
+	            result.m12 = left.m12 + right.m12;
+	            result.m13 = left.m13 + right.m13;
+	
+	            result.m20 = left.m20 + right.m20;
+	            result.m21 = left.m21 + right.m21;
+	            result.m22 = left.m22 + right.m22;
+	            result.m23 = left.m23 + right.m23;
+	
+	            result.m30 = left.m30 + right.m30;
+	            result.m31 = left.m31 + right.m31;
+	            result.m32 = left.m32 + right.m32;
+	            result.m33 = left.m33 + right.m33;
+	
+	            return result;
+        	}
+#endif
         }
 
         /// <summary>
@@ -480,29 +893,60 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Matrix4 operator -( Matrix4 left, Matrix4 right )
         {
-            Matrix4 result = new Matrix4();
-
-            result.m00 = left.m00 - right.m00;
-            result.m01 = left.m01 - right.m01;
-            result.m02 = left.m02 - right.m02;
-            result.m03 = left.m03 - right.m03;
-
-            result.m10 = left.m10 - right.m10;
-            result.m11 = left.m11 - right.m11;
-            result.m12 = left.m12 - right.m12;
-            result.m13 = left.m13 - right.m13;
-
-            result.m20 = left.m20 - right.m20;
-            result.m21 = left.m21 - right.m21;
-            result.m22 = left.m22 - right.m22;
-            result.m23 = left.m23 - right.m23;
-
-            result.m30 = left.m30 - right.m30;
-            result.m31 = left.m31 - right.m31;
-            result.m32 = left.m32 - right.m32;
-            result.m33 = left.m33 - right.m33;
-
-            return result;
+#if (MONO_SIMD)
+        	/*if (Utility.ACCELERATED != Acceleration.NONE)
+        	{*/
+        		unsafe {
+	        		Vector4f leftV1 = (*(Vector4f*) &left);
+        			Vector4f leftV2 = (*(Vector4f*) &left.m10);
+        			Vector4f leftV3 = (*(Vector4f*) &left.m20);
+        			Vector4f leftV4 = (*(Vector4f*) &left.m30);
+        				
+        			Vector4f rightV1 = (*(Vector4f*) &right);
+        			Vector4f rightV2 = (*(Vector4f*) &right.m10);
+        			Vector4f rightV3 = (*(Vector4f*) &right.m20);
+        			Vector4f rightV4 = (*(Vector4f*) &right.m30);	
+        				
+        			leftV1 += rightV1;
+        			leftV2 += rightV2;
+        			leftV3 += rightV3;
+        			leftV4 += rightV4;
+        				
+	        		(*(Vector4f*) &left) = leftV1;
+	        		(*(Vector4f*) &left.m10) = leftV2;
+	        		(*(Vector4f*) &left.m20) = leftV3;
+	        		(*(Vector4f*) &left.m30) = leftV1;
+        		}
+        		return left;
+        	/*}
+        	else*/
+#else      
+        	{
+	            Matrix4 result = new Matrix4();
+	
+	            result.m00 = left.m00 - right.m00;
+	            result.m01 = left.m01 - right.m01;
+	            result.m02 = left.m02 - right.m02;
+	            result.m03 = left.m03 - right.m03;
+	
+	            result.m10 = left.m10 - right.m10;
+	            result.m11 = left.m11 - right.m11;
+	            result.m12 = left.m12 - right.m12;
+	            result.m13 = left.m13 - right.m13;
+	
+	            result.m20 = left.m20 - right.m20;
+	            result.m21 = left.m21 - right.m21;
+	            result.m22 = left.m22 - right.m22;
+	            result.m23 = left.m23 - right.m23;
+	
+	            result.m30 = left.m30 - right.m30;
+	            result.m31 = left.m31 - right.m31;
+	            result.m32 = left.m32 - right.m32;
+	            result.m33 = left.m33 - right.m33;
+	
+	            return result;
+        	}
+#endif
         }
 
         /// <summary>
@@ -657,9 +1101,9 @@ namespace Axiom.Math
             {
                 // note: this is an expanded version of the Ogre determinant() method, to give better performance in C#. Generated using a script
                 float result = m00 * ( m11 * ( m22 * m33 - m32 * m23 ) - m12 * ( m21 * m33 - m31 * m23 ) + m13 * ( m21 * m32 - m31 * m22 ) ) -
-                    m01 * ( m10 * ( m22 * m33 - m32 * m23 ) - m12 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m32 - m30 * m22 ) ) +
-                    m02 * ( m10 * ( m21 * m33 - m31 * m23 ) - m11 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m31 - m30 * m21 ) ) -
-                    m03 * ( m10 * ( m21 * m32 - m31 * m22 ) - m11 * ( m20 * m32 - m30 * m22 ) + m12 * ( m20 * m31 - m30 * m21 ) );
+                               m01 * ( m10 * ( m22 * m33 - m32 * m23 ) - m12 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m32 - m30 * m22 ) ) +
+                               m02 * ( m10 * ( m21 * m33 - m31 * m23 ) - m11 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m31 - m30 * m21 ) ) -
+                               m03 * ( m10 * ( m21 * m32 - m31 * m22 ) - m11 * ( m20 * m32 - m30 * m22 ) + m12 * ( m20 * m31 - m30 * m21 ) );
 
                 return result;
             }
@@ -671,25 +1115,36 @@ namespace Axiom.Math
         /// <returns>The adjoint matrix of the current instance.</returns>
         private Matrix4 Adjoint()
         {
-            // note: this is an expanded version of the Ogre adjoint() method, to give better performance in C#. Generated using a script
-            float val0 = m11 * ( m22 * m33 - m32 * m23 ) - m12 * ( m21 * m33 - m31 * m23 ) + m13 * ( m21 * m32 - m31 * m22 );
-            float val1 = -( m01 * ( m22 * m33 - m32 * m23 ) - m02 * ( m21 * m33 - m31 * m23 ) + m03 * ( m21 * m32 - m31 * m22 ) );
-            float val2 = m01 * ( m12 * m33 - m32 * m13 ) - m02 * ( m11 * m33 - m31 * m13 ) + m03 * ( m11 * m32 - m31 * m12 );
-            float val3 = -( m01 * ( m12 * m23 - m22 * m13 ) - m02 * ( m11 * m23 - m21 * m13 ) + m03 * ( m11 * m22 - m21 * m12 ) );
-            float val4 = -( m10 * ( m22 * m33 - m32 * m23 ) - m12 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m32 - m30 * m22 ) );
-            float val5 = m00 * ( m22 * m33 - m32 * m23 ) - m02 * ( m20 * m33 - m30 * m23 ) + m03 * ( m20 * m32 - m30 * m22 );
-            float val6 = -( m00 * ( m12 * m33 - m32 * m13 ) - m02 * ( m10 * m33 - m30 * m13 ) + m03 * ( m10 * m32 - m30 * m12 ) );
-            float val7 = m00 * ( m12 * m23 - m22 * m13 ) - m02 * ( m10 * m23 - m20 * m13 ) + m03 * ( m10 * m22 - m20 * m12 );
-            float val8 = m10 * ( m21 * m33 - m31 * m23 ) - m11 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m31 - m30 * m21 );
-            float val9 = -( m00 * ( m21 * m33 - m31 * m23 ) - m01 * ( m20 * m33 - m30 * m23 ) + m03 * ( m20 * m31 - m30 * m21 ) );
-            float val10 = m00 * ( m11 * m33 - m31 * m13 ) - m01 * ( m10 * m33 - m30 * m13 ) + m03 * ( m10 * m31 - m30 * m11 );
-            float val11 = -( m00 * ( m11 * m23 - m21 * m13 ) - m01 * ( m10 * m23 - m20 * m13 ) + m03 * ( m10 * m21 - m20 * m11 ) );
-            float val12 = -( m10 * ( m21 * m32 - m31 * m22 ) - m11 * ( m20 * m32 - m30 * m22 ) + m12 * ( m20 * m31 - m30 * m21 ) );
-            float val13 = m00 * ( m21 * m32 - m31 * m22 ) - m01 * ( m20 * m32 - m30 * m22 ) + m02 * ( m20 * m31 - m30 * m21 );
-            float val14 = -( m00 * ( m11 * m32 - m31 * m12 ) - m01 * ( m10 * m32 - m30 * m12 ) + m02 * ( m10 * m31 - m30 * m11 ) );
-            float val15 = m00 * ( m11 * m22 - m21 * m12 ) - m01 * ( m10 * m22 - m20 * m12 ) + m02 * ( m10 * m21 - m20 * m11 );
-
-            return new Matrix4( val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14, val15 );
+#if false        	
+        	{
+        		//TODO Needs optomized with mono.simd
+        		Matrix4 t, res;
+        		Matrix4.Transpose(ref this, out t);
+        	}
+#endif
+        	{
+	        	//TODO There a quite a few intermediate values that can be calculated ahead of time.
+	            // note: this is an expanded version of the Ogre adjoint() method, to give better performance in C#. Generated using a script
+	            float val0 = m11 * ( m22 * m33 - m32 * m23 ) - m12 * ( m21 * m33 - m31 * m23 ) + m13 * ( m21 * m32 - m31 * m22 );
+	            float val1 = -( m01 * ( m22 * m33 - m32 * m23 ) - m02 * ( m21 * m33 - m31 * m23 ) + m03 * ( m21 * m32 - m31 * m22 ) );
+	            float val2 = m01 * ( m12 * m33 - m32 * m13 ) - m02 * ( m11 * m33 - m31 * m13 ) + m03 * ( m11 * m32 - m31 * m12 );
+	            float val3 = -( m01 * ( m12 * m23 - m22 * m13 ) - m02 * ( m11 * m23 - m21 * m13 ) + m03 * ( m11 * m22 - m21 * m12 ) );
+	            float val4 = -( m10 * ( m22 * m33 - m32 * m23 ) - m12 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m32 - m30 * m22 ) );
+	            float val5 = m00 * ( m22 * m33 - m32 * m23 ) - m02 * ( m20 * m33 - m30 * m23 ) + m03 * ( m20 * m32 - m30 * m22 );
+	            float val6 = -( m00 * ( m12 * m33 - m32 * m13 ) - m02 * ( m10 * m33 - m30 * m13 ) + m03 * ( m10 * m32 - m30 * m12 ) );
+	            float val7 = m00 * ( m12 * m23 - m22 * m13 ) - m02 * ( m10 * m23 - m20 * m13 ) + m03 * ( m10 * m22 - m20 * m12 );
+	            float val8 = m10 * ( m21 * m33 - m31 * m23 ) - m11 * ( m20 * m33 - m30 * m23 ) + m13 * ( m20 * m31 - m30 * m21 );
+	            float val9 = -( m00 * ( m21 * m33 - m31 * m23 ) - m01 * ( m20 * m33 - m30 * m23 ) + m03 * ( m20 * m31 - m30 * m21 ) );
+	            float val10 = m00 * ( m11 * m33 - m31 * m13 ) - m01 * ( m10 * m33 - m30 * m13 ) + m03 * ( m10 * m31 - m30 * m11 );
+	            float val11 = -( m00 * ( m11 * m23 - m21 * m13 ) - m01 * ( m10 * m23 - m20 * m13 ) + m03 * ( m10 * m21 - m20 * m11 ) );
+	            float val12 = -( m10 * ( m21 * m32 - m31 * m22 ) - m11 * ( m20 * m32 - m30 * m22 ) + m12 * ( m20 * m31 - m30 * m21 ) );
+	            float val13 = m00 * ( m21 * m32 - m31 * m22 ) - m01 * ( m20 * m32 - m30 * m22 ) + m02 * ( m20 * m31 - m30 * m21 );
+	            float val14 = -( m00 * ( m11 * m32 - m31 * m12 ) - m01 * ( m10 * m32 - m30 * m12 ) + m02 * ( m10 * m31 - m30 * m11 ) );
+	            float val15 = m00 * ( m11 * m22 - m21 * m12 ) - m01 * ( m10 * m22 - m20 * m12 ) + m02 * ( m10 * m21 - m20 * m11 );
+	
+	            return new Matrix4( val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14, val15 );
+	            
+        	}
         }
 
         #endregion
