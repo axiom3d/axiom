@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Runtime.InteropServices;
 
 using Axiom.Core;
 using Axiom.Graphics;
@@ -60,6 +61,15 @@ namespace Axiom.RenderSystems.OpenGL
 		static private int _height;
 		static private int _colorDepth;
 		static private bool _fullScreen;
+		
+		/* these values are used to reset the screen to its previous setings if 
+		 * we set the window to full screen
+		 */
+		private int _previousWidth;
+		private int _previousHeight;
+		private int _previousColorDepth;
+
+		private bool _destroyed;
 
 		public IntPtr Handle
 		{
@@ -222,6 +232,15 @@ namespace Axiom.RenderSystems.OpenGL
 			if ( FullScreen )
 			{
 				flags |= Sdl.SDL_FULLSCREEN;
+				
+				// remember previous window settings for when we destroy it
+				IntPtr info = Sdl.SDL_GetVideoInfo();
+				Sdl.SDL_VideoInfo videoInfo = (Sdl.SDL_VideoInfo) Marshal.PtrToStructure(info, typeof(Sdl.SDL_VideoInfo));
+				Sdl.SDL_PixelFormat vfmt = (Sdl.SDL_PixelFormat) Marshal.PtrToStructure(videoInfo.vfmt, typeof(Sdl.SDL_PixelFormat));
+				
+				_previousWidth = videoInfo.current_w;
+				_previousHeight = videoInfo.current_h;
+				_previousColorDepth = vfmt.BitsPerPixel;
 			}
 
 			// set the video mode (and create the surface)
@@ -268,6 +287,19 @@ namespace Axiom.RenderSystems.OpenGL
 
 		}
 
+		public void Destroy()
+        {
+			/* reset the window paramaters to what we have found before the window was created */
+			if (!_destroyed) {
+				if (FullScreen)
+				{
+					Sdl.SDL_SetVideoMode(_previousWidth, _previousHeight, _previousColorDepth, 0);
+				}
+				_destroyed = true;
+			}
+        }
+		
+		
 		#endregion Methods
 
 	}
