@@ -179,8 +179,17 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
+		protected override void dispose(bool disposeManagedResources)
+		{
+			base.dispose(disposeManagedResources);
+			/* destroy window */
+			_window.Destroy();
+			IsActive = false;
+		}
+		
         public void Destroy()
         {
+			Dispose();
         }
 
         public override void Reposition( int left, int right )
