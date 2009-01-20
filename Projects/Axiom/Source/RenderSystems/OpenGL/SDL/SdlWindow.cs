@@ -40,6 +40,7 @@ using Axiom.Graphics;
 
 using Tao.OpenGl;
 using Tao.Sdl;
+using System.Runtime.InteropServices;
 
 #endregion Namespace Declarations
 
@@ -53,7 +54,18 @@ namespace Axiom.RenderSystems.OpenGL
         #region Fields
 
         private Sdl.SDL_Surface surface;
+		
+		/* these values are used to reset the screen to its previous setings if 
+		 * we set the window to full screen
+		 */
+		private int previousWidth;
+		private int previousHeight;
+		private int previousColorDepth;
 
+		private bool destroyed;
+		
+		private bool fullScreen;
+		
         #endregion Fields
 
         public SdlWindow()
@@ -80,6 +92,8 @@ namespace Axiom.RenderSystems.OpenGL
             this.width = width;
             this.height = height;
             this.colorDepth = colorDepth;
+			
+			this.fullScreen = fullScreen;
 
             int flags = Sdl.SDL_OPENGL | Sdl.SDL_HWPALETTE;
 
@@ -87,6 +101,15 @@ namespace Axiom.RenderSystems.OpenGL
             if ( fullScreen )
             {
                 flags |= Sdl.SDL_FULLSCREEN;
+				
+				// remember previous window settings for when we destroy it
+				IntPtr info = Sdl.SDL_GetVideoInfo();
+				Sdl.SDL_VideoInfo videoInfo = (Sdl.SDL_VideoInfo) Marshal.PtrToStructure(info, typeof(Sdl.SDL_VideoInfo));
+				Sdl.SDL_PixelFormat vfmt = (Sdl.SDL_PixelFormat) Marshal.PtrToStructure(videoInfo.vfmt, typeof(Sdl.SDL_PixelFormat));
+				
+				previousWidth = videoInfo.current_w;
+				previousHeight = videoInfo.current_h;
+				previousColorDepth = vfmt.BitsPerPixel;
             }
 
             // we want double buffering
@@ -116,8 +139,22 @@ namespace Axiom.RenderSystems.OpenGL
             }
         }
 
+		public override void Dispose ()
+		{
+			Destroy();
+			base.Dispose ();			
+		}
+
+		
         public void Destroy()
         {
+			if (!destroyed) {
+				if (fullScreen)
+				{
+					Sdl.SDL_SetVideoMode(previousWidth, previousHeight, previousColorDepth, 0);
+				}
+				destroyed = true;
+			}
             //Sdl.SDL_FreeSurface(
         }
 
