@@ -1,4 +1,4 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>9.0.30729</ProductVersion>
@@ -589,7 +589,6 @@
     <Compile Include="Input\MouseEventArgs.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Math\Acceleration.cs" />
     <Compile Include="Math\AxisAlignedBox.cs">
       <SubType>Code</SubType>
     </Compile>
