@@ -4,7 +4,8 @@
 //---------------------------------------------------
 
 
-// A really basic ambient pass program, support for one texture coodinate set
+// A really basic ambient pass program, 
+// support for one texture coodinate set
 vertex_program Ogre/BasicVertexPrograms/AmbientOneTexture cg
 {
 	source Example_Basic.cg

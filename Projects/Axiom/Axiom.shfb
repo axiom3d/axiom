@@ -1,4 +1,4 @@
-﻿<project schemaVersion="1.3.3.1">
+﻿<project schemaVersion="1.6.0.7">
     <assemblies>
         <assembly assemblyPath="..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.dll" xmlCommentsPath="..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.xml" commentsOnly="False" />
         <assembly assemblyPath="..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.Platforms.SDL.dll" xmlCommentsPath="..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.Platforms.SDL.xml" commentsOnly="False" />
@@ -47,37 +47,49 @@
         <namespaceSummaryItem name="Axiom.Serialization" isDocumented="True" />
         <namespaceSummaryItem name="Axiom.Text" isDocumented="True" />
     </namespaceSummaries>
-    <contentPlacement>AboveNamespaces</contentPlacement>
     <dependencies>
         <dependencyItem depPath="..\..\Lib\Managed\XPlatform\ICSharpCode.SharpZipLib\0.84.0.0\*.*" />
         <dependencyItem depPath="..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\*.*" />
     </dependencies>
-    <projectSummary />
-    <sandcastlePath>..\..\BuildSupport\Sandcastle\</sandcastlePath>
-    <hhcPath />
-    <hxcompPath />
-    <outputPath>.\Documentation\</outputPath>
-    <helpFileFormat>Website</helpFileFormat>
-    <cleanIntermediates>True</cleanIntermediates>
-    <purgeDuplicateTopics>True</purgeDuplicateTopics>
-    <cppCommentsFixup>False</cppCommentsFixup>
-    <frameworkVersion>2.0.50727</frameworkVersion>
-    <binaryTOC>True</binaryTOC>
-    <includeFavorites>False</includeFavorites>
-    <preliminary>False</preliminary>
-    <rootNSContainer>False</rootNSContainer>
-    <helpTitle>Axiom Rendering Engine API Documentation</helpTitle>
-    <htmlHelpName>AxiomSDK</htmlHelpName>
-    <language>en-US</language>
-    <copyrightHref />
-    <copyrightText />
-    <feedbackEMailAddress>borrillis@gmail.com</feedbackEMailAddress>
-    <headerText />
-    <projectLinks>Index</projectLinks>
-    <sdkLinks>Msdn</sdkLinks>
-    <presentationStyle>Prototype</presentationStyle>
-    <namingMethod>MemberName</namingMethod>
-    <syntaxFilters>Standard</syntaxFilters>
-    <missingTags>Summary, Parameter, Returns, AutoDocumentCtors</missingTags>
-    <visibleItems>InheritedMembers, InheritedFrameworkMembers, Protected, ProtectedInternalAsProtected</visibleItems>
+    <ProjectSummary />
+    <MissingTags>Summary, Parameter, Returns, AutoDocumentCtors, Namespace, TypeParameter</MissingTags>
+    <VisibleItems>InheritedMembers, InheritedFrameworkMembers, Protected, ProtectedInternalAsProtected</VisibleItems>
+    <HtmlHelp1xCompilerPath path="" />
+    <HtmlHelp2xCompilerPath path="" />
+    <OutputPath>.\Documentation\</OutputPath>
+    <SandcastlePath path="" />
+    <WorkingPath path="" />
+    <CleanIntermediates>True</CleanIntermediates>
+    <KeepLogFile>True</KeepLogFile>
+    <BuildLogFile path="" />
+    <HelpFileFormat>Website</HelpFileFormat>
+    <CppCommentsFixup>False</CppCommentsFixup>
+    <FrameworkVersion>2.0.50727</FrameworkVersion>
+    <IndentHtml>False</IndentHtml>
+    <Preliminary>False</Preliminary>
+    <RootNamespaceContainer>False</RootNamespaceContainer>
+    <RootNamespaceTitle />
+    <HelpTitle>Axiom Rendering Engine API Documentation</HelpTitle>
+    <HtmlHelpName>AxiomSDK</HtmlHelpName>
+    <Language>en-US</Language>
+    <CopyrightHref />
+    <CopyrightText />
+    <FeedbackEMailAddress>borrillis@gmail.com</FeedbackEMailAddress>
+    <FeedbackEMailLinkText />
+    <HeaderText />
+    <FooterText />
+    <ProjectLinkType>Index</ProjectLinkType>
+    <SdkLinkType>Msdn</SdkLinkType>
+    <SdkLinkTarget>Blank</SdkLinkTarget>
+    <PresentationStyle>Prototype</PresentationStyle>
+    <NamingMethod>MemberName</NamingMethod>
+    <SyntaxFilters>Standard</SyntaxFilters>
+    <ShowFeedbackControl>False</ShowFeedbackControl>
+    <BinaryTOC>True</BinaryTOC>
+    <IncludeFavorites>False</IncludeFavorites>
+    <CollectionTocStyle>Hierarchical</CollectionTocStyle>
+    <IncludeStopWordList>True</IncludeStopWordList>
+    <PlugInNamespaces>ms.vsipcc+, ms.vsexpresscc+</PlugInNamespaces>
+    <HelpFileVersion>1.0.0.0</HelpFileVersion>
+    <ContentPlacement>AboveNamespaces</ContentPlacement>
 </project>

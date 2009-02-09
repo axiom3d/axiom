@@ -410,6 +410,7 @@ namespace Axiom.Core
                 OneTimePostWindowInit();
             }
 
+
             // initialize timer
             timer.Reset();
 
