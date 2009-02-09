@@ -164,6 +164,7 @@
     <Compile Include="Core\ObjectTextDisplay.cs" />
     <Compile Include="Core\PatchMesh.cs" />
     <Compile Include="Core\PatchSurface.cs" />
+    <Compile Include="Core\PlatformInformation.cs" />
     <Compile Include="Core\PlatformManager.cs" />
     <Compile Include="Core\PluginException.cs" />
     <Compile Include="Core\PluginManager.cs" />

@@ -311,6 +311,7 @@
 		<include name="Projects/Axiom/**/*.prebuild" />
 		<include name="Projects/Axiom/**/*.shfb" />
 		<include name="Projects/Axiom/**/*.cmd" />
+		<include name="Projects/Axiom/**/*.sh" />
 		<include name="Projects/Axiom/**/*.txt" />
 		<include name="Projects/Axiom/**/*.xml" />
 		<exclude name="Projects/Axiom/**/*.FileList.txt" />
@@ -321,6 +322,7 @@
 		<include name="Projects/AxiomDemos/**/*.build" />
 		<include name="Projects/AxiomDemos/**/*.prebuild" />
 		<include name="Projects/AxiomDemos/**/*.cmd" />
+		<include name="Projects/AxiomDemos/**/*.sh" />
 		<include name="Projects/AxiomDemos/**/*.txt" />
 		<include name="Projects/AxiomDemos/**/*.xml" />
 		<exclude name="Projects/AxiomDemos/**/*.FileList.txt" />

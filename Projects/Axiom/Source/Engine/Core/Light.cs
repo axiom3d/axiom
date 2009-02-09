@@ -282,7 +282,7 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        ///		Gets/Sets the diffuse color of the light.
+        ///		Gets/Sets the specular color of the light.
         /// </summary>
         public virtual ColorEx Specular
         {
@@ -385,7 +385,7 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        ///		Gets the derived position of this light.
+        ///		Gets the derived direction of this light.
         /// </summary>
         public Vector3 DerivedDirection
         {
