@@ -5675,7 +5675,7 @@ namespace Axiom.Core
                             tempLightList.Add( light );
                         else
                             tempLightList[ 0 ] = light;
-                        RenderSolidObjects( priorityGroup.solidPassesDiffuseSpecular, false, lightList );
+                        RenderSolidObjects( priorityGroup.solidPassesDiffuseSpecular, false, tempLightList );
 
                     }// for each light
                     illuminationStage = IlluminationRenderStage.None;

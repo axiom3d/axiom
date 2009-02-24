@@ -588,14 +588,14 @@ namespace Axiom.RenderSystems.OpenGL
 		///		Note: forGpuProgram is ignored because GL uses the same handed projection matrix
 		///		normally and for GPU programs.
 		/// </summary>
-		/// <param name="fov"></param>
+		/// <param name="fov">In Degrees</param>
 		/// <param name="aspectRatio"></param>
 		/// <param name="near"></param>
 		/// <param name="far"></param>
 		/// <returns></returns>
 		public override Axiom.Math.Matrix4 MakeProjectionMatrix( float fov, float aspectRatio, float near, float far, bool forGpuProgram )
 		{
-			Matrix4 matrix = new Matrix4();
+            Matrix4 matrix = Matrix4.Zero;
 
 			float thetaY = Utility.DegreesToRadians( fov * 0.5f );
 			float tanThetaY = Utility.Tan( thetaY );
@@ -1455,21 +1455,15 @@ namespace Axiom.RenderSystems.OpenGL
 
 			MakeGLMatrix( ref xform, tempMatrix );
 
-			tempMatrix[ 12 ] = tempMatrix[ 8 ];
-			tempMatrix[ 13 ] = tempMatrix[ 9 ];
-
 			Gl.glActiveTextureARB( Gl.GL_TEXTURE0 + stage );
 			Gl.glMatrixMode( Gl.GL_TEXTURE );
+
+			Gl.glLoadMatrixf( tempMatrix );
 
 			// if texture matrix was precalced, use that
 			if ( useAutoTextureMatrix )
 			{
-				Gl.glLoadMatrixf( autoTextureMatrix );
-				Gl.glMultMatrixf( tempMatrix );
-			}
-			else
-			{
-				Gl.glLoadMatrixf( tempMatrix );
+                Gl.glMultMatrixf( autoTextureMatrix );
 			}
 
 			// reset to mesh view matrix and to tex unit 0
@@ -2466,9 +2460,9 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <returns></returns>
 		private void MakeGLMatrix( ref Matrix4 matrix, float[] floats )
 		{
-			Matrix4 mat = matrix.Transpose();
+            Matrix4 mat = matrix.Transpose();
 
-			mat.MakeFloatArray( floats );
+            mat.MakeFloatArray( floats );
 		}
 
 		/// <summary>
