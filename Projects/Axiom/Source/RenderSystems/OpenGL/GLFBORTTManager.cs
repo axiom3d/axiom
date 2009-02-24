@@ -416,6 +416,10 @@ namespace Axiom.RenderSystems.OpenGL
 				if ( fmt != Gl.GL_NONE && _atiMode && ( depths[ 0 ] != 0 || depths[ 1 ] != 0 || depths[ 2 ] != 0 ) )
 					continue;
 
+                // Buggy NVidia Drivers fail on 32Bit FP formats on Windows.
+                if ( PixelUtil.IsFloatingPoint( (PixelFormat)x )  && PlatformManager.IsWindowsOS && !_atiMode )
+                    continue;
+
 				// Create and attach framebuffer
 				Gl.glGenFramebuffersEXT( 1, out fb );
 				Gl.glBindFramebufferEXT( Gl.GL_FRAMEBUFFER_EXT, fb );
