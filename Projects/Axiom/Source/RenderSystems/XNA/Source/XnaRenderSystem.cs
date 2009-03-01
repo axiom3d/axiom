@@ -1581,6 +1581,7 @@ namespace Axiom.RenderSystems.Xna
 
         public override void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess )
         {
+#if (!(XBOX||XBOX360))
             if (//ambient == ColorEx.White &&
                 diffuse == ColorEx.Black //&&
                 //emissive == ColorEx.Black &&
@@ -1602,7 +1603,7 @@ namespace Axiom.RenderSystems.Xna
                 //_ffProgramParameters.MaterialEmissive = emissive;
                 //_ffProgramParameters.MaterialShininess = shininess;
             }
-
+#endif
         }
 
         public override void SetTexture( int stage, bool enabled, string textureName )
