@@ -54,6 +54,7 @@
     <DefineConstants>TRACE;WINDOWS</DefineConstants>
     <XnaCompressContent>true</XnaCompressContent>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>..\..\..\..\..\Lib\Managed\CompactFramework\x86\Axiom\Release\Axiom.RenderSystems.Xna.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
