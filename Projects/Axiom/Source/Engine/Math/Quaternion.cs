@@ -410,7 +410,7 @@ namespace Axiom.Math
 				float test = x * y + z * w;
 				if ( Utility.Abs( test ) > 0.499f ) // singularity at north and south pole
 					return 0f;
-				return Utility.ATan2( 2 * x * w - 2 * y * z, 1 - 2 * x * x - 2 * z * z );
+				return (Real)Utility.ATan2( 2 * x * w - 2 * y * z, 1 - 2 * x * x - 2 * z * z );
 			}
 		}
 
@@ -445,7 +445,7 @@ namespace Axiom.Math
 				float test = x * y + z * w;
 				if ( Utility.Abs( test ) > 0.499f ) // singularity at north and south pole
 					return Utility.Sign( test ) * Utility.PI / 2;
-				return Utility.ASin( 2 * test );
+				return (Real)Utility.ASin( 2 * test );
 			}
 		}
 
@@ -471,7 +471,7 @@ namespace Axiom.Math
 		{
 			float cos = quatA.Dot( quatB );
 
-			float angle = Utility.ACos( cos );
+			float angle = (Real)Utility.ACos( cos );
 
 			if ( Utility.Abs( angle ) < EPSILON )
 			{
@@ -631,7 +631,7 @@ namespace Axiom.Math
 				float sqy = y * y;
 				float sqz = z * z;
 				yaw = Utility.ATan2( 2 * y * w - 2 * x * z, 1 - 2 * sqy - 2 * sqz );
-				roll = Utility.ASin( 2 * test );
+				roll = (Real)Utility.ASin( 2 * test );
 				pitch = Utility.ATan2( 2 * x * w - 2 * y * z, 1 - 2 * sqx - 2 * sqz );
 			}
 
@@ -723,7 +723,7 @@ namespace Axiom.Math
 
 			if ( sqrLength > 0.0f )
 			{
-				angle = 2.0f * Utility.ACos( w );
+				angle = 2.0f * (Real)Utility.ACos( w );
 				float invLength = Utility.InvSqrt( sqrLength );
 				axis.x = x * invLength;
 				axis.y = y * invLength;
@@ -931,7 +931,7 @@ namespace Axiom.Math
 
 			if ( Utility.Abs( w ) < 1.0f )
 			{
-				float angle = Utility.ACos( w );
+				float angle = (Real)Utility.ACos( w );
 				float sin = Utility.Sin( angle );
 
 				if ( Utility.Abs( sin ) >= EPSILON )
@@ -1015,7 +1015,7 @@ namespace Axiom.Math
 		public bool Equals( Quaternion rhs, float tolerance )
 		{
 			float fCos = Dot( rhs );
-			float angle = Utility.ACos( fCos );
+			float angle = (Real)Utility.ACos( fCos );
 
 			return Utility.Abs( angle ) <= tolerance;
 		}
