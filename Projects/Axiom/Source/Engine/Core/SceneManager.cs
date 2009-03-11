@@ -4619,7 +4619,7 @@ namespace Axiom.Core
             shadowTextures.Clear();
             shadowTextureCameras.Clear();
         }
-        protected internal void DestroyCamera( Camera camera )
+        public void DestroyCamera( Camera camera )
         {
             cameraList.Remove( camera );
             targetRenderSystem.NotifyCameraRemoved( camera );
