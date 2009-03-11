@@ -406,7 +406,7 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        ///    Removes the specifed object from this scene node.
+        ///    Removes the specified object from this scene node.
         /// </summary>
         /// <remarks>
         ///    Bounds for this SceneNode are also updated.
@@ -481,6 +481,74 @@ namespace Axiom.Core
             if ( objectList.Count <= index )
                 return null;
             return objectList[ index ];
+        }
+
+        /// <summary>
+        /// This method removes and destroys the child and all of its children.
+        /// </summary>
+        /// <param name="name">name of the node to remove and destroy</param>
+        /// <remarks>
+        /// Unlike removeChild, which removes a single named child from this
+        /// node but does not destroy it, this method destroys the child
+        /// and all of it's children. 
+        /// <para>
+        /// Use this if you wish to recursively destroy a node as well as 
+        /// detaching it from it's parent. Note that any objects attached to
+        /// the nodes will be detached but will not themselves be destroyed.
+        /// </para>
+        /// </remarks>
+        public virtual void RemoveAndDestroyChild( String name )
+        {
+            SceneNode child = (SceneNode)this.GetChild( name );
+            child.RemoveAndDestroyAllChildren();
+                    
+            this.RemoveChild( name );
+            child.Creator.DestroySceneNode( name );
+        }
+
+        /// <summary>
+        /// This method removes and destroys the child and all of its children.
+        /// </summary>
+        /// <param name="index">index of the node to remove and destroy</param>
+        /// <remarks>
+        /// Unlike removeChild, which removes a single named child from this
+        /// node but does not destroy it, this method destroys the child
+        /// and all of it's children. 
+        /// <para>
+        /// Use this if you wish to recursively destroy a node as well as 
+        /// detaching it from it's parent. Note that any objects attached to
+        /// the nodes will be detached but will not themselves be destroyed.
+        /// </para>
+        /// </remarks>
+        public virtual void RemoveAndDestroyChild( int index )
+        {
+            SceneNode child = (SceneNode) this.GetChild( index );
+            child.RemoveAndDestroyAllChildren();
+
+            this.RemoveChild( index );
+            child.Creator.DestroySceneNode( child.Name );
+        }
+
+        /// <summary>
+        /// Removes and destroys all children of this node.
+        /// </summary>
+        /// <remarks>           
+        /// Use this to destroy all child nodes of this node and remove
+        /// them from the scene graph. Note that all objects attached to this
+        /// node will be detached but will not be destroyed.
+        /// </remarks>
+        public virtual void RemoveAndDestroyAllChildren()
+        {
+            while( this.childNodes.Count!=  0)
+            {
+                SceneNode sn = (SceneNode)this.childNodes[ 0 ];
+                // increment iterator before destroying (iterator invalidated by 
+                // SceneManager::destroySceneNode because it causes removal from parent)
+                sn.RemoveAndDestroyAllChildren();
+                sn.Creator.DestroySceneNode( sn.Name );
+            }
+            childNodes.Clear();
+            NeedUpdate();
         }
 
         /// <summary>
@@ -783,6 +851,40 @@ namespace Axiom.Core
         ///		remain the same). If you need more control, use the <see cref="Orientation"/>
         ///		property.
         /// </remarks>
+        /// <param name="x">The x component of the direction vector.</param>
+        /// <param name="y">The y component of the direction vector.</param>
+        /// <param name="z">The z component of the direction vector.</param>
+        /// <param name="relativeTo">The space in which this direction vector is expressed.</param>
+        /// <param name="localDirection">The vector which normally describes the natural direction 
+        ///		of the node, usually -Z.
+        ///	</param>
+        public void SetDirection(Real x, Real y, Real z, TransformSpace relativeTo, Vector3 localDirectionVector)
+        {
+            Vector3 dir;
+            dir.x = x;
+            dir.y = y;
+            dir.z = z;
+            SetDirection(dir, relativeTo, localDirectionVector);
+        }
+
+        public void SetDirection(Real x, Real y, Real z )
+        {
+            SetDirection(x,y,z,TransformSpace.Local,Vector3.NegativeUnitZ);
+        }
+        public void SetDirection(Real x, Real y, Real z, TransformSpace relativeTo )
+        {
+            SetDirection(x, y, z, relativeTo, Vector3.NegativeUnitZ);
+        }
+
+        /// <summary>
+        ///		Sets the node's direction vector ie it's local -z.
+        /// </summary>
+        /// <remarks>
+        ///		Note that the 'up' vector for the orientation will automatically be 
+        ///		recalculated based on the current 'up' vector (i.e. the roll will 
+        ///		remain the same). If you need more control, use the <see cref="Orientation"/>
+        ///		property.
+        /// </remarks>
         /// <param name="vec">The direction vector.</param>
         /// <param name="relativeTo">The space in which this direction vector is expressed.</param>
         /// <param name="localDirection">The vector which normally describes the natural direction 
@@ -863,6 +965,16 @@ namespace Axiom.Core
                     orientation = targetOrientation * parent.DerivedOrientation.Inverse();
                 }
             }
+        }
+
+        public void SetDirection(Vector3 vec)
+        {
+            SetDirection(vec, TransformSpace.Local, Vector3.NegativeUnitZ);
+        }
+
+        public void SetDirection(Vector3 vec, TransformSpace relativeTo)
+        {
+            SetDirection(vec, relativeTo, Vector3.NegativeUnitZ);
         }
 
         /// <summary>
