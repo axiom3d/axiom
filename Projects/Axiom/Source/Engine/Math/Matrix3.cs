@@ -239,9 +239,9 @@ namespace Axiom.Math
 
         public Vector3 ToEulerAnglesXYZ()
         {
-            float yAngle;
-            float rAngle;
-            float pAngle;
+            Real yAngle;
+            Real rAngle;
+            Real pAngle;
 
             pAngle = Utility.ASin( m01 );
             if ( pAngle < Utility.PI / 2 )
@@ -254,8 +254,7 @@ namespace Axiom.Math
                 else
                 {
                     // WARNING. Not a unique solution.
-                    float fRmY = (float)
-                    Utility.ATan2( -m20, m22 );
+                    float fRmY = (float)Utility.ATan2( -m20, m22 );
                     rAngle = 0.0f; // any angle works
                     yAngle = rAngle - fRmY;
                 }
@@ -263,7 +262,7 @@ namespace Axiom.Math
             else
             {
                 // WARNING. Not a unique solution.
-                float fRpY = Utility.ATan2( -m20, m22 );
+                Real fRpY = Utility.ATan2( -m20, m22 );
                 rAngle = 0.0f; // any angle works
                 yAngle = fRpY - rAngle;
             }

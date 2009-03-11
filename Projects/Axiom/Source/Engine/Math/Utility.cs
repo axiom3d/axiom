@@ -39,9 +39,9 @@ using System.Diagnostics;
 
 using Axiom.Math.Collections;
 
-using Real = System.Single;
-using Radian = System.Single;
-using Degree = System.Single;
+//using Real = System.Single;
+//using Radian = System.Single;
+//using Degree = System.Single;
 
 #endregion Namespace Declarations
 
@@ -88,7 +88,7 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Radian DegreesToRadians( Degree degrees )
         {
-            return degrees * RADIANS_PER_DEGREE;
+            return degrees;
         }
 
         /// <summary>
@@ -97,6 +97,26 @@ namespace Axiom.Math
         /// <param name="radians"></param>
         /// <returns></returns>
         public static Degree RadiansToDegrees( Radian radians )
+        {
+            return radians;
+        }
+
+        /// <summary>
+        ///		Converts degrees to radians.
+        /// </summary>
+        /// <param name="degrees"></param>
+        /// <returns></returns>
+        public static float DegreesToRadians(float degrees)
+        {
+            return degrees * RADIANS_PER_DEGREE;
+        }
+
+        /// <summary>
+        ///		Converts radians to degrees.
+        /// </summary>
+        /// <param name="radians"></param>
+        /// <returns></returns>
+        public static float RadiansToDegrees(float radians)
         {
             return radians * DEGREES_PER_RADIAN;
         }
@@ -153,7 +173,7 @@ namespace Axiom.Math
         /// </summary>
         public static Real Sin( Radian angle )
         {
-            return (Real)System.Math.Sin( angle );
+            return (Real)System.Math.Sin( (double)angle );
         }
 
         /// <summary>
@@ -169,7 +189,7 @@ namespace Axiom.Math
         /// </summary>
         public static Real Cos( Radian angle )
         {
-            return (Real)System.Math.Cos( angle );
+            return (Real)System.Math.Cos( (double)angle );
         }
 
         /// <summary>
@@ -195,7 +215,7 @@ namespace Axiom.Math
         /// </summary>
         public static Real Tan( Radian value )
         {
-            return (Real)System.Math.Tan( value );
+            return (Real)System.Math.Tan( (double)value );
         }
 
         /// <summary>
@@ -216,9 +236,9 @@ namespace Axiom.Math
             return (Radian)System.Math.Atan2( y, x );
         }
 
-        public static Radian ATan2( Real y, Real x )
+        public static Real ATan2( Real y, Real x )
         {
-            return (Radian)System.Math.Atan2( y, x );
+            return System.Math.Atan2( y, x );
         }
 
         /// <summary>
