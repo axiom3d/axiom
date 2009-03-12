@@ -876,6 +876,13 @@ namespace Axiom.Serialization
 			return false;
 		}
 
+        [MaterialAttributeParser( "scheme", MaterialScriptSection.Technique )]
+		protected static bool ParseScheme( string parameters, MaterialScriptContext context)
+	    {
+		    context.technique.SchemeName = parameters;
+		    return false;
+	    }
+
 		#endregion Technique
 
 		#region Pass
