@@ -458,7 +458,7 @@ namespace Axiom.Core
         /// <summary>
         /// the per-viewport visibility mask
         /// </summary>
-        private int _visibilityMask;
+        private uint _visibilityMask;
         /// <summary>
         /// a per-viewport visibility mask.
         /// </summary>
@@ -469,7 +469,7 @@ namespace Axiom.Core
         /// (MovableObject.VisibilityFlags), and if a binary 'and'
         /// returns zero, the object will not be rendered.
         /// </remarks>
-        public int VisibilityMask
+        public uint VisibilityMask
         {
             get
             {
