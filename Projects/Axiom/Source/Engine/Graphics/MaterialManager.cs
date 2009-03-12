@@ -45,6 +45,7 @@ using Axiom.Core;
 using Axiom.Serialization;
 
 using ResourceHandle = System.UInt64;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -75,8 +76,6 @@ namespace Axiom.Graphics
 	/// 
 	public class MaterialManager : ResourceManager
 	{
-		public static string DefaultSchemeName = "Default";
-
 		#region Delegates
 
 		delegate void PassAttributeParser( string[] values, Pass pass );
@@ -169,7 +168,13 @@ namespace Axiom.Graphics
 			ScriptPatterns.Add( "*.material" );
 			ResourceGroupManager.Instance.RegisterScriptLoader( this );
 
-			// Resource type
+            // Material Schemes
+            ActiveScheme = MaterialManager.DefaultSchemeName;
+            ActiveSchemeIndex = 0;
+            //_schemes.Add(_activeSchemeName, _activeSchemeIndex);
+            GetSchemeIndex(ActiveScheme);
+            
+            // Resource type
 			ResourceType = "Material";
 
 			// Register with resource group manager
@@ -185,7 +190,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void Initialize()
 		{
-			// Set up default material - don't use name contructor as we want to avoid applying defaults
+			// Set up default material - don't use name constructor as we want to avoid applying defaults
 			Material.defaultSettings = (Material)Create( "DefaultSettings", ResourceGroupManager.DefaultResourceGroupName );
 			// Add a single technique and pass, non-programmable
 			Material.defaultSettings.CreateTechnique().CreatePass();
@@ -195,7 +200,6 @@ namespace Axiom.Graphics
 
 			// create the default BaseWhiteNoLighting Material
 			((Material)Create( "BaseWhiteNoLighting", ResourceGroupManager.DefaultResourceGroupName )).Lighting = false;
-
 		}
 
 		#region SetDefaultTextureFiltering Method
@@ -297,9 +301,86 @@ namespace Axiom.Graphics
 
 		#endregion Methods
 
-		#region ResourceManager Implementation
+        #region Material Schemes
+        public static string DefaultSchemeName = "Default";
+        
+        protected readonly Dictionary<String, ushort> _schemes = new Dictionary<String, ushort>();
+	    protected String _activeSchemeName;
+	    protected ushort _activeSchemeIndex;
 
-		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+        /// <summary>
+        /// The index for the given material scheme name. 
+        /// </summary>
+        /// <seealso ref="Technique.SchemeName"/>
+        public ushort GetSchemeIndex(String name) 
+        {
+            if ( !_schemes.ContainsKey( name ) )
+            {
+                _schemes.Add( name, (ushort)_schemes.Count );
+            }
+
+            return _schemes[ name ];
+        }
+
+
+        /// <summary>
+        /// The name for the given material scheme index. 
+        /// </summary>
+        /// <seealso ref="Technique.SchemeName"/>
+        public String GetSchemeName(ushort index) 
+        {
+            if ( _schemes.ContainsValue( index ) )
+            {
+                foreach (KeyValuePair<String, ushort> item in _schemes)
+                {
+                    if (item.Value == index)
+                    {
+                        return item.Key;
+                    }
+                }
+            }
+            return MaterialManager.DefaultSchemeName; 
+        }
+
+	    /// <summary>
+	    /// The active scheme index. 
+	    /// </summary>
+	    /// <seealso ref="Technique.SchemeIndex"/>
+        public ushort ActiveSchemeIndex
+        {
+            get;
+            protected set;
+        }
+
+	    /// <summary>
+	    /// The name of the active material scheme. 
+	    /// </summary>
+	    /// <seealso ref="Technique.SchemeName"/>
+	    public String ActiveScheme
+	    {
+	        get
+	        {
+	            return _activeSchemeName;
+	        } 
+            set
+            {
+                ActiveSchemeIndex = GetSchemeIndex( value );
+                _activeSchemeName = value;
+            }
+	    }
+
+
+        /// <summary>Internal method for sorting out missing technique for a scheme</summary>
+		public Technique ArbitrateMissingTechniqueForActiveScheme( Material material, int lodIndex, IRenderable renderable )
+		{
+		    return null;
+		}
+
+	    #endregion
+
+        #region ResourceManager Implementation
+
+        protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			return new Material( this, name, handle, group, isManual, loader );
 		}

@@ -36,7 +36,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-
+using System.Text;
 using Axiom.Core;
 
 using Real = System.Single;
@@ -67,8 +67,6 @@ namespace Axiom.Graphics
 		#endregion Constants and Enumerations
 
 		#region Fields and Properties
-
-		private ushort _schemeIndex;
 
 		/// <summary>
 		///    The list of passes (fixed function or programmable) contained in this technique.
@@ -766,6 +764,7 @@ namespace Axiom.Graphics
 		public void CopyTo( Technique target )
 		{
 			target._isSupported = _isSupported;
+		    target.SchemeIndex = SchemeIndex;
 			target._lodIndex = _lodIndex;
 
 			target.RemoveAllPasses();
@@ -792,8 +791,9 @@ namespace Axiom.Graphics
 		///    Determines whether or not the engine should split up extra texture unit requests
 		///    into extra passes if the hardware does not have enough available units.
 		/// </param>
-		internal void Compile( bool autoManageTextureUnits )
+		internal String Compile( bool autoManageTextureUnits )
 		{
+            StringBuilder compileErrors = new StringBuilder();
 			// assume not supported unless it proves otherwise
 			_isSupported = false;
 
@@ -816,14 +816,25 @@ namespace Axiom.Graphics
 					if ( !pass.FragmentProgram.IsSupported )
 					{
 						// can't do this one
-						return;
+						return String.Format( "Pass {0}: Fragment Program {1} cannot be used - {2}", 
+                                              i,
+                                              pass.FragmentProgramName,
+                                              /*TODO: pass.FragmentProgram.HasCompileError() ? "Compile Error." : */ "Not Supported." );
 					}
 
-					numAvailTexUnits = pass.FragmentProgram.SamplerCount;
+					//numAvailTexUnits = pass.FragmentProgram.SamplerCount;
 					if ( numTexUnitsRequested > numAvailTexUnits )
 					{
-						// can't do this, since programmable passes cannot be split automatically
-						return;
+                        if ( !autoManageTextureUnits )
+                        {
+						    // The user disabled auto pass split
+						    return String.Format( "Pass {0}: Too many texture units for the current hardware and no splitting allowed.", i );
+                        }
+                        else if ( pass.HasVertexProgram )
+                        {
+						    // Can't do this one, and can't split a programmable pass
+						    return String.Format( "Pass {0}: Too many texture units for the current hardware and cannot split programmable passes.", i );
+                        }
 					}
 				}
 				else
@@ -836,14 +847,14 @@ namespace Axiom.Graphics
 						// check to make sure we have some cube mapping support
 						if ( texUnit.Is3D && !caps.HasCapability( Capabilities.CubeMapping ) )
 						{
-							return;
-						}
+                            return String.Format( "Pass {0} Tex {1} : Cube maps not supported by current environment.", i, j );
+                        }
 
 						// if this is a Dot3 blending layer, make sure we can support it
 						if ( texUnit.ColorBlendMode.operation == LayerBlendOperationEx.DotProduct && !caps.HasCapability( Capabilities.Dot3 ) )
 						{
-							return;
-						}
+                            return String.Format( "Pass {0} Tex {1} : Volume textures not supported by current environment.", i, j );
+                        }
 					}
 
 					// keep splitting until the texture units required for this pass are available
@@ -862,7 +873,10 @@ namespace Axiom.Graphics
 					if ( !pass.VertexProgram.IsSupported )
 					{
 						// can't do this one
-						return;
+						return String.Format( "Pass {0}: Fragment Program {1} cannot be used - {2}", 
+                                              i,
+                                              pass.VertexProgramName,
+                                              /*TODO: pass.VertexProgram.HasCompileError() ? "Compile Error." : */ "Not Supported." );
 					}
 				}
 			} // for
@@ -872,8 +886,9 @@ namespace Axiom.Graphics
 
 			// CompileIlluminationPasses() used to be called here, but it is now done on
 			// demand since it the illumination passes are only needed for additive shadows
-			// Now compile for categorised illumination, in case we need it later
+			// Now compile for categorized illumination, in case we need it later
 			//CompileIlluminationPasses();
+		    return "";
 		}
 
 		/// <summary>
@@ -1273,5 +1288,51 @@ namespace Axiom.Graphics
 
 		#endregion
 
-	}
+        #region Material Schemes
+
+        /// <summary>
+        /// Get/Set the 'scheme name' for this technique. 
+        /// </summary>
+        /// <remarks>
+        /// Material schemes are used to control top-level switching from one
+        /// set of techniques to another. For example, you might use this to 
+        /// define 'high', 'medium' and 'low' complexity levels on materials
+        /// to allow a user to pick a performance / quality ratio. Another
+        /// possibility is that you have a fully HDR-enabled pipeline for top
+        /// machines, rendering all objects using unclamped shaders, and a 
+        /// simpler pipeline for others; this can be implemented using 
+        /// schemes.
+        /// <para>
+        /// Every technique belongs to a scheme - if you don't specify one, the
+        /// Technique belongs to the scheme called 'Default', which is also the
+        /// scheme used to render by default. The active scheme is set one of
+        /// two ways - either by calling <see ref="Viewport.MaterialScheme" />, or
+        /// by manually calling <see ref="MaterialManager.ActiveScheme" />.
+        /// </para>
+        /// </remarks>
+        public String SchemeName
+        {
+            get
+            {
+                return MaterialManager.Instance.GetSchemeName( SchemeIndex );
+            }
+            set
+            {
+                SchemeIndex = MaterialManager.Instance.GetSchemeIndex( value );
+                this.NotifyNeedsRecompile();
+            }
+        }
+		
+	    /// <summary>
+	    /// The material scheme index
+        /// </summary>
+        public ushort SchemeIndex
+        {
+            get; 
+            protected set;
+        }
+
+        #endregion
+
+    }
 }

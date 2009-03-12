@@ -39,7 +39,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-
+using System.Text;
 using Axiom.Core;
 using Axiom.Math;
 
@@ -95,7 +95,7 @@ namespace Axiom.Graphics
 		#region Fields and Properties
 
 		/// <summary>
-		///    A reference to a precreated Material that contains all the default settings.
+		/// A reference to a precreated Material that contains all the default settings.
 		/// </summary>
 		/// <ogre name="" />
 		static internal protected Material defaultSettings;
@@ -253,22 +253,11 @@ namespace Axiom.Graphics
 
 		#endregion lodDistances Property
 
-		#region bestTechniqueList Property
-
-		private Hashtable _bestTechniqueList = new Hashtable();
 		/// <summary>
 		///		
 		/// </summary>
 		/// <ogre name="mBestTechniqueList" />
-		protected Hashtable bestTechniqueList
-		{
-			get
-			{
-				return _bestTechniqueList;
-			}
-		}
-
-		#endregion bestTechniqueList Property
+		protected readonly Dictionary<ushort,Dictionary<int,Technique>> bestTechniquesByScheme = new Dictionary<ushort, Dictionary<int, Technique>>();
 
 		/// <summary>
 		///		Determines if the material has any transparency with the rest of the scene (derived from 
@@ -313,7 +302,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return bestTechniqueList.Count;
+				return bestTechniquesByScheme.Count;
 			}
 		}
 
@@ -794,9 +783,465 @@ namespace Axiom.Graphics
 
 		#endregion Constructors and Destructor
 
-		#region IComparable Implementation
+		#region Methods
+
+		#region Compile Method
+
+		/// <overloads>
+		/// <summary>
+		///    'Compiles' this Material.
+		/// </summary>
+		/// <remarks>
+		///    Compiling a material involves determining which Techniques are supported on the
+		///    card on which the engine is currently running, and for fixed-function Passes within those
+		///    Techniques, splitting the passes down where they contain more TextureUnitState 
+		///    instances than the current card has texture units.
+		///    <p/>
+		///    This process is automatically done when the Material is loaded, but may be
+		///    repeated if you make some procedural changes.
+		/// </remarks>
+		/// <ogre name="compile" />
+		/// </overloads>
+		/// <remarks>
+		///    By default, the engine will automatically split texture unit operations into multiple
+		///    passes when the target hardware does not have enough texture units.
+		/// </remarks>
+		public void Compile()
+		{
+			Compile( true );
+		}
+
+		/// <param name="autoManageTextureUnits">
+		///    If true, when a fixed function pass has too many TextureUnitState
+		///    entries than the card has texture units, the Pass in question will be split into
+		///    more than one Pass in order to emulate the Pass. If you set this to false and
+		///    this situation arises, an Exception will be thrown.
+		/// </param>
+		public void Compile( bool autoManageTextureUnits )
+		{
+			// clear current list of supported techniques
+			SupportedTechniques.Clear();
+		    ClearBestTechniqueList();
+		    StringBuilder unSupportedReasons = new StringBuilder();
+
+			// compile each technique, adding supported ones to the list of supported techniques
+			for ( int i = 0; i < techniques.Count; i++ )
+			{
+				Technique t = techniques[ i ];
+
+				// compile the technique, splitting texture passes if required
+				String compileMessages = t.Compile( autoManageTextureUnits );
+
+				// if supported, add it to the list
+				if ( t.IsSupported )
+				{
+					InsertSupportedTechnique( t );
+				}
+				else
+				{
+                    LogManager.Instance.Write("Warning: Material '{0}' Technique {1}{2} is not supported./n{3}", 
+                                                _name, i, 
+                                                !String.IsNullOrEmpty(t.Name)?"("+t.Name+")":"",
+                                                compileMessages);
+                    unSupportedReasons.Append(compileMessages);
+				}
+			}
+
+			_compilationRequired = false;
+
+			// Did we find any?
+			if ( SupportedTechniques.Count == 0 )
+			{
+				LogManager.Instance.Write( "Warning: Material '{0}' has no supportable Techniques on this hardware.  Will be rendered blank. Explanation:", _name, unSupportedReasons.ToString() );
+			}
+		}
+
+        private void ClearBestTechniqueList()
+        {
+		    while ( bestTechniquesByScheme.Count > 0 )
+		    {
+		        bestTechniquesByScheme[0].Clear();
+		        bestTechniquesByScheme.Remove( 0 );
+            }
+        }
+
+        private void InsertSupportedTechnique( Technique technique)
+        {
+		    SupportedTechniques.Add( technique );
+		    // get scheme
+		    ushort schemeIndex = technique.SchemeIndex;
+            Dictionary<int, Technique> lodTechniques;
+            if ( !bestTechniquesByScheme.ContainsKey( schemeIndex ) )
+            {
+                lodTechniques = new Dictionary<int, Technique>();
+                bestTechniquesByScheme.Add( schemeIndex, lodTechniques );
+            }
+            else
+            {
+                lodTechniques = bestTechniquesByScheme[ schemeIndex ];
+            }
+
+		    // Insert won't replace if supported technique for this scheme/lod is
+		    // already there, which is what we want
+            if ( !lodTechniques.ContainsKey( technique.LodIndex ) )
+            {
+                lodTechniques.Add( technique.LodIndex, technique );
+            }
+        }
+
+	    #endregion Compile Method
 
 		/// <summary>
+		///    Creates a new Technique for this Material.
+		/// </summary>
+		/// <remarks>
+		///    A Technique is a single way of rendering geometry in order to achieve the effect
+		///    you are intending in a material. There are many reason why you would want more than
+		///    one - the main one being to handle variable graphics card abilities; you might have
+		///    one technique which is impressive but only runs on 4th-generation graphics cards, 
+		///    for example. In this case you will want to create at least one fallback Technique.
+		///    The engine will work out which Techniques a card can support and pick the best one.
+		///    <p/>    
+		///    If multiple Techniques are available, the order in which they are created is 
+		///    important - the engine will consider lower-indexed Techniques to be preferable
+		///    to higher-indexed Techniques, ie when asked for the 'best' technique it will
+		///    return the first one in the technique list which is supported by the hardware.
+		/// </remarks>
+		/// <returns></returns>
+		/// <ogre name="createTechnique" />
+		public Technique CreateTechnique()
+		{
+			Technique t = new Technique( this );
+			techniques.Add( t );
+			_compilationRequired = true;
+			return t;
+		}
+
+		#region GetBestTechnique Method
+
+		/// <overloads>
+		/// <summary>
+		///    Gets the best supported technique. 
+		/// </summary>
+		/// <remarks>
+		///    This method returns the lowest-index supported Technique in this material
+		///    (since lower-indexed Techniques are considered to be better than higher-indexed
+		///    ones).
+		///    <p/>
+		///    The best supported technique is only available after this material has been compiled,
+		///    which typically happens on loading the material. Therefore, if this method returns
+		///    null, try calling Material.Load.
+		/// </remarks>
+		/// <ogre name="getBestTechnique" />
+		/// </overloads>
+		public Technique GetBestTechnique()
+		{
+			return GetBestTechnique( 0 );
+		}
+		/// <param name="lodIndex"></param>
+        public Technique GetBestTechnique(int lodIndex)
+		{
+		    return GetBestTechnique( lodIndex, null );
+		}
+
+	    /// <param name="lodIndex"></param>
+		public Technique GetBestTechnique( int lodIndex, IRenderable renderable )
+		{
+            Technique technique = null;
+	        Dictionary<int, Technique> lodTechniques;
+
+			if ( SupportedTechniques.Count > 0 )
+			{
+                if ( !bestTechniquesByScheme.ContainsKey( MaterialManager.Instance.ActiveSchemeIndex ) )
+                {
+                    technique = MaterialManager.Instance.ArbitrateMissingTechniqueForActiveScheme( this, lodIndex, renderable );
+                    if ( technique != null ) 
+                        return technique;
+
+                    // Nope, use default
+                    // get the first item, will be 0 (the default) if default
+                    // scheme techniques exist, otherwise the earliest defined
+                    lodTechniques = bestTechniquesByScheme.GetEnumerator().Current.Value;
+                }
+                else
+                {
+                    lodTechniques = bestTechniquesByScheme[ MaterialManager.Instance.ActiveSchemeIndex ];
+                }
+
+                if ( !lodTechniques.ContainsKey( lodIndex ) )
+                {
+                    while ( lodIndex >= 0 || !lodTechniques.ContainsKey( lodIndex ) )
+                    {
+                        lodIndex--;
+                    }
+
+                    if ( lodIndex >= 0 )
+                    {
+                        technique = lodTechniques[ lodIndex ];
+                    }
+                }
+                else
+                {
+                    technique = lodTechniques[ lodIndex ];
+                }
+			}
+	        return technique;
+		}
+
+		#endregion GetBestTechnique Method
+
+		/// <summary>
+		///		Gets the LOD index to use at the given distance.
+		/// </summary>
+		/// <param name="distance"></param>
+		/// <returns></returns>
+		/// <ogre name="getLodIndex" />
+		public int GetLodIndex( float distance )
+		{
+			return GetLodIndexSquaredDepth( distance * distance );
+		}
+
+		/// <summary>
+		///		Gets the LOD index to use at the given squared distance.
+		/// </summary>
+		/// <param name="squaredDistance"></param>
+		/// <returns></returns>
+		/// <ogre name="getLodIndexSquaredDepth" />
+		public int GetLodIndexSquaredDepth( float squaredDistance )
+		{
+			for ( int i = 0; i < lodDistances.Count; i++ )
+			{
+				float val = (float)lodDistances[ i ];
+
+				if ( val > squaredDistance )
+				{
+					return i - 1;
+				}
+			}
+
+			// if we fall all the way through, use the highest value
+			return lodDistances.Count - 1;
+		}
+
+		/// <summary>
+		///    Gets the technique at the specified index.
+		/// </summary>
+		/// <param name="index">Index of the technique to return.</param>
+		/// <returns></returns>
+		/// <ogre name="getTechnique" />
+		public Technique GetTechnique( int index )
+		{
+			Debug.Assert( index < techniques.Count, "index < techniques.Count" );
+
+			return techniques[ index ];
+		}
+
+		/// <summary>
+		///    Tells the material that it needs recompilation.
+		/// </summary>
+		/// <ogre name="_notifyNeedsRecompile" />
+		internal void NotifyNeedsRecompile()
+		{
+			_compilationRequired = true;
+
+			// Also need to unload to ensure we loaded any new items
+			if ( IsLoaded ) // needed to stop this being called in 'loading' state
+				unload();
+		}
+
+		/// <summary>
+		///    Removes the specified Technique from this material.
+		/// </summary>
+		/// <param name="t">A reference to the technique to remove</param>
+		/// <ogre name="removeTechnique" />
+		public void RemoveTechnique( Technique t )
+		{
+			Debug.Assert( t != null, "t != null" );
+
+			// remove from the list, and force a rebuild of supported techniques
+			techniques.Remove( t );
+			SupportedTechniques.Clear();
+            ClearBestTechniqueList();
+            _compilationRequired = true;
+		}
+
+		/// <summary>
+		///		Removes all techniques from this material.
+		/// </summary>
+		/// <ogre name="removeAllTechniques" />
+		public void RemoveAllTechniques()
+		{
+			techniques.Clear();
+			SupportedTechniques.Clear();
+			ClearBestTechniqueList();
+			_compilationRequired = true;
+		}
+
+		/// <summary>
+		///		Sets the distance at which level-of-detail (LOD) levels come into effect.
+		/// </summary>
+		/// <remarks>
+		///		You should only use this if you have assigned LOD indexes to the Technique
+		///		instances attached to this Material. If you have done so, you should call this
+		///		method to determine the distance at which the lowe levels of detail kick in.
+		///		The decision about what distance is actually used is a combination of this
+		///		and the LOD bias applied to both the current Camera and the current Entity.
+		/// </remarks>
+		/// <param name="lodDistances">
+		///		A list of floats which indicate the distance at which to 
+		///		switch to lower details. They are listed in LOD index order, starting at index
+		///		1 (ie the first level down from the highest level 0, which automatically applies
+		///		from a distance of 0).
+		/// </param>
+		/// <ogre name="setLoadLevels" />
+		public void SetLodLevels( FloatList lodDistanceList )
+		{
+			// clear and add the 0 distance entry
+			lodDistances.Clear();
+			lodDistances.Add( 0.0f );
+
+			for ( int i = 0; i < lodDistanceList.Count; i++ )
+			{
+				float val = (float)lodDistanceList[ i ];
+
+				// squared distance
+				lodDistances.Add( val * val );
+			}
+		}
+
+
+		/// <summary>
+		///    Creates a copy of this Material with the specified name (must be unique).
+		/// </summary>
+		/// <param name="newName">The name that the cloned material will be known as.</param>
+		/// <returns></returns>
+		/// <ogre name="clone" />
+		public Material Clone( string newName )
+		{
+			return Clone( newName, false, "" );
+		}
+		public Material Clone( string newName, bool changeGroup, string newGroup )
+		{
+			Material newMaterial;
+			if ( changeGroup )
+			{
+				newMaterial = (Material)MaterialManager.Instance.Create( newName, newGroup );
+			}
+			else
+			{
+				newMaterial = (Material)MaterialManager.Instance.Create( newName, this.Group );
+			}
+
+			// Copy material preserving name, group and handle.
+			this.CopyTo( newMaterial, false );
+
+			return newMaterial;
+		}
+
+		#region Copy Method
+
+		/// <overload>
+		/// <summary>
+		///		Copies the details from the supplied material.
+		/// </summary>
+		/// <param name="target">Material which will receive this material's settings.</param>
+		/// <ogre name="copyDetailsTo" />
+		/// <ogre name="operator =" />
+		/// </overload>
+		public void CopyTo( Material target )
+		{
+			CopyTo( target, true );
+		}
+
+		/// <param name="copyUniqueInfo">preserves the target's handle, group, name, and loading properties (unlike operator=) but copying everything else.</param>
+		public void CopyTo( Material target, bool copyUniqueInfo )
+		{
+
+			if ( copyUniqueInfo )
+			{
+				target.Name = Name;
+				target.Handle = Handle;
+				target.Group = Group;
+				target.IsManuallyLoaded = IsManuallyLoaded;
+				target.loader = loader;
+			}
+
+			// copy basic data
+			target.Size = Size;
+			target.LastAccessed = LastAccessed;
+			target.ReceiveShadows = ReceiveShadows;
+			target.TransparencyCastsShadows = TransparencyCastsShadows;
+
+			target.RemoveAllTechniques();
+
+			// clone a copy of all the techniques
+			for ( int i = 0; i < techniques.Count; i++ )
+			{
+				Technique technique = techniques[ i ];
+				Technique newTechnique = target.CreateTechnique();
+				technique.CopyTo( newTechnique );
+
+				// only add this technique to supported techniques if its...well....supported :-)
+				if ( newTechnique.IsSupported )
+				{
+                    InsertSupportedTechnique( newTechnique );
+				}
+			}
+
+			// clear LOD distances
+			target.lodDistances.Clear();
+
+			// copy LOD distances
+			for ( int i = 0; i < lodDistances.Count; i++ )
+			{
+				target.lodDistances.Add( lodDistances[ i ] );
+			}
+
+			target.compilationRequired = compilationRequired;
+		}
+
+		#endregion CopyTo Method
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <ogre name="applyDefaults" />
+		public void ApplyDefaults()
+		{
+			if ( defaultSettings != null )
+			{
+				// copy properties from the default materials
+				defaultSettings.CopyTo( this, false );
+			}
+			_compilationRequired = true;
+		}
+
+		public bool ApplyTextureAliases( Dictionary<string, string> aliasList, bool apply )
+		{
+			// iterate through all techniques and apply texture aliases
+			bool testResult = false;
+
+			foreach ( Technique t in _techniques)
+			{
+				if ( t.ApplyTextureAliases( aliasList, apply ) )
+					testResult = true;
+			}
+
+			return testResult;
+			
+		}
+
+		#endregion
+
+        #region Material Schemes
+
+        
+
+        #endregion
+
+        #region IComparable Implementation
+
+        /// <summary>
 		///		Used for comparing 2 Material objects.
 		/// </summary>
 		/// <remarks>
@@ -911,426 +1356,6 @@ namespace Axiom.Graphics
 		}
 
 		#endregion Resource Implementation
-
-		#region Methods
-
-		#region Compile Method
-
-		/// <overloads>
-		/// <summary>
-		///    'Compiles' this Material.
-		/// </summary>
-		/// <remarks>
-		///    Compiling a material involves determining which Techniques are supported on the
-		///    card on which the engine is currently running, and for fixed-function Passes within those
-		///    Techniques, splitting the passes down where they contain more TextureUnitState 
-		///    instances than the curren card has texture units.
-		///    <p/>
-		///    This process is automatically done when the Material is loaded, but may be
-		///    repeated if you make some procedural changes.
-		/// </remarks>
-		/// <ogre name="compile" />
-		/// </overloads>
-		/// <remarks>
-		///    By default, the engine will automatically split texture unit operations into multiple
-		///    passes when the target hardware does not have enough texture units.
-		/// </remarks>
-		public void Compile()
-		{
-			Compile( true );
-		}
-
-		/// <param name="autoManageTextureUnits">
-		///    If true, when a fixed function pass has too many TextureUnitState
-		///    entries than the card has texture units, the Pass in question will be split into
-		///    more than one Pass in order to emulate the Pass. If you set this to false and
-		///    this situation arises, an Exception will be thrown.
-		/// </param>
-		public void Compile( bool autoManageTextureUnits )
-		{
-			// clear current list of supported techniques
-			SupportedTechniques.Clear();
-			bestTechniqueList.Clear();
-
-			// compile each technique, adding supported ones to the list of supported techniques
-			for ( int i = 0; i < techniques.Count; i++ )
-			{
-				Technique t = (Technique)techniques[ i ];
-
-				// compile the technique, splitting texture passes if required
-				t.Compile( autoManageTextureUnits );
-
-				// if supported, add it to the list
-				if ( t.IsSupported )
-				{
-					SupportedTechniques.Add( t );
-
-					// don't wanna insert if it is already present
-					if ( bestTechniqueList[ t.LodIndex ] == null )
-					{
-						bestTechniqueList[ t.LodIndex ] = t;
-					}
-				}
-			}
-
-			// TODO Order best techniques
-			_fixupBestTechniqueList();
-
-			_compilationRequired = false;
-
-			// Did we find any?
-			if ( SupportedTechniques.Count == 0 )
-			{
-				LogManager.Instance.Write( "Warning: Material '{0}' has no supportable Techniques on this hardware.  Will be rendered blank.", _name );
-			}
-		}
-
-		#endregion Compile Method
-
-		/// <summary>
-		///    Creates a new Technique for this Material.
-		/// </summary>
-		/// <remarks>
-		///    A Technique is a single way of rendering geometry in order to achieve the effect
-		///    you are intending in a material. There are many reason why you would want more than
-		///    one - the main one being to handle variable graphics card abilities; you might have
-		///    one technique which is impressive but only runs on 4th-generation graphics cards, 
-		///    for example. In this case you will want to create at least one fallback Technique.
-		///    The engine will work out which Techniques a card can support and pick the best one.
-		///    <p/>    
-		///    If multiple Techniques are available, the order in which they are created is 
-		///    important - the engine will consider lower-indexed Techniques to be preferable
-		///    to higher-indexed Techniques, ie when asked for the 'best' technique it will
-		///    return the first one in the technique list which is supported by the hardware.
-		/// </remarks>
-		/// <returns></returns>
-		/// <ogre name="createTechnique" />
-		public Technique CreateTechnique()
-		{
-			Technique t = new Technique( this );
-			techniques.Add( t );
-			_compilationRequired = true;
-			return t;
-		}
-
-		#region GetBestTechnique Method
-
-		/// <overloads>
-		/// <summary>
-		///    Gets the best supported technique. 
-		/// </summary>
-		/// <remarks>
-		///    This method returns the lowest-index supported Technique in this material
-		///    (since lower-indexed Techniques are considered to be better than higher-indexed
-		///    ones).
-		///    <p/>
-		///    The best supported technique is only available after this material has been compiled,
-		///    which typically happens on loading the material. Therefore, if this method returns
-		///    null, try calling Material.Load.
-		/// </remarks>
-		/// <ogre name="getBestTechnique" />
-		/// </overloads>
-		public Technique GetBestTechnique()
-		{
-			return GetBestTechnique( 0 );
-		}
-
-		/// <param name="lodIndex"></param>
-		public Technique GetBestTechnique( int lodIndex )
-		{
-			if ( SupportedTechniques.Count > 0 )
-			{
-				if ( bestTechniqueList[ lodIndex ] == null )
-				{
-					throw new AxiomException( "LOD index {0} not found for material '{1}'", lodIndex, _name );
-				}
-				else
-				{
-					return (Technique)bestTechniqueList[ lodIndex ];
-				}
-			}
-			else
-			{
-				return null;
-			}
-		}
-
-		#endregion GetBestTechnique Method
-
-		/// <summary>
-		///  Fixup the best technique list guarantees no gaps inside
-		/// </summary>
-		private void _fixupBestTechniqueList()
-		{
-			int lastIndex = 0;
-			Technique lastTechnique = null;
-
-			foreach ( DictionaryEntry de in bestTechniqueList )
-			{
-				if ( lastIndex < (int)de.Key )
-				{
-					if ( lastTechnique != null ) // hmm, index 0 is missing, use the first one we have
-						lastTechnique = (Technique)de.Value;
-
-					do
-					{
-						bestTechniqueList.Add( lastIndex, lastTechnique );
-					} while ( ++lastIndex < (int)de.Key );
-				}
-
-				++lastIndex;
-				lastTechnique = (Technique)de.Value;
-			}
-		}
-
-		/// <summary>
-		///		Gets the LOD index to use at the given distance.
-		/// </summary>
-		/// <param name="distance"></param>
-		/// <returns></returns>
-		/// <ogre name="getLodIndex" />
-		public int GetLodIndex( float distance )
-		{
-			return GetLodIndexSquaredDepth( distance * distance );
-		}
-
-		/// <summary>
-		///		Gets the LOD index to use at the given squared distance.
-		/// </summary>
-		/// <param name="squaredDistance"></param>
-		/// <returns></returns>
-		/// <ogre name="getLodIndexSquaredDepth" />
-		public int GetLodIndexSquaredDepth( float squaredDistance )
-		{
-			for ( int i = 0; i < lodDistances.Count; i++ )
-			{
-				float val = (float)lodDistances[ i ];
-
-				if ( val > squaredDistance )
-				{
-					return i - 1;
-				}
-			}
-
-			// if we fall all the way through, use the highest value
-			return lodDistances.Count - 1;
-		}
-
-		/// <summary>
-		///    Gets the technique at the specified index.
-		/// </summary>
-		/// <param name="index">Index of the technique to return.</param>
-		/// <returns></returns>
-		/// <ogre name="getTechnique" />
-		public Technique GetTechnique( int index )
-		{
-			Debug.Assert( index < techniques.Count, "index < techniques.Count" );
-
-			return (Technique)techniques[ index ];
-		}
-
-		/// <summary>
-		///    Tells the material that it needs recompilation.
-		/// </summary>
-		/// <ogre name="_notifyNeedsRecompile" />
-		internal void NotifyNeedsRecompile()
-		{
-			_compilationRequired = true;
-
-			// Also need to unload to ensure we loaded any new items
-			if ( IsLoaded ) // needed to stop this being called in 'loading' state
-				unload();
-		}
-
-		/// <summary>
-		///    Removes the specified Technique from this material.
-		/// </summary>
-		/// <param name="t">A reference to the technique to remove</param>
-		/// <ogre name="removeTechnique" />
-		public void RemoveTechnique( Technique t )
-		{
-			Debug.Assert( t != null, "t != null" );
-
-			// remove from the list, and force a rebuild of supported techniques
-			techniques.Remove( t );
-			SupportedTechniques.Clear();
-			bestTechniqueList.Clear();
-			_compilationRequired = true;
-		}
-
-		/// <summary>
-		///		Removes all techniques from this material.
-		/// </summary>
-		/// <ogre name="removeAllTechniques" />
-		public void RemoveAllTechniques()
-		{
-			techniques.Clear();
-			SupportedTechniques.Clear();
-			bestTechniqueList.Clear();
-			_compilationRequired = true;
-		}
-
-		/// <summary>
-		///		Sets the distance at which level-of-detail (LOD) levels come into effect.
-		/// </summary>
-		/// <remarks>
-		///		You should only use this if you have assigned LOD indexes to the Technique
-		///		instances attached to this Material. If you have done so, you should call this
-		///		method to determine the distance at which the lowe levels of detail kick in.
-		///		The decision about what distance is actually used is a combination of this
-		///		and the LOD bias applied to both the current Camera and the current Entity.
-		/// </remarks>
-		/// <param name="lodDistances">
-		///		A list of floats which indicate the distance at which to 
-		///		switch to lower details. They are listed in LOD index order, starting at index
-		///		1 (ie the first level down from the highest level 0, which automatically applies
-		///		from a distance of 0).
-		/// </param>
-		/// <ogre name="setLoadLevels" />
-		public void SetLodLevels( FloatList lodDistanceList )
-		{
-			// clear and add the 0 distance entry
-			lodDistances.Clear();
-			lodDistances.Add( 0.0f );
-
-			for ( int i = 0; i < lodDistanceList.Count; i++ )
-			{
-				float val = (float)lodDistanceList[ i ];
-
-				// squared distance
-				lodDistances.Add( val * val );
-			}
-		}
-
-
-		/// <summary>
-		///    Creates a copy of this Material with the specified name (must be unique).
-		/// </summary>
-		/// <param name="newName">The name that the cloned material will be known as.</param>
-		/// <returns></returns>
-		/// <ogre name="clone" />
-		public Material Clone( string newName )
-		{
-			return Clone( newName, false, "" );
-		}
-		public Material Clone( string newName, bool changeGroup, string newGroup )
-		{
-			Material newMaterial;
-			if ( changeGroup )
-			{
-				newMaterial = (Material)MaterialManager.Instance.Create( newName, newGroup );
-			}
-			else
-			{
-				newMaterial = (Material)MaterialManager.Instance.Create( newName, this.Group );
-			}
-
-			// Copy material preserving name, group and handle.
-			this.CopyTo( newMaterial, false );
-
-			return newMaterial;
-		}
-
-		#region Copy Method
-
-		/// <overload>
-		/// <summary>
-		///		Copies the details from the supplied material.
-		/// </summary>
-		/// <param name="target">Material which will receive this material's settings.</param>
-		/// <ogre name="copyDetailsTo" />
-		/// <ogre name="operator =" />
-		/// </overload>
-		public void CopyTo( Material target )
-		{
-			CopyTo( target, true );
-		}
-
-		/// <param name="copyUniqueInfo">preserves the target's handle, group, name, and loading properties (unlike operator=) but copying everything else.</param>
-		public void CopyTo( Material target, bool copyUniqueInfo )
-		{
-
-			if ( copyUniqueInfo )
-			{
-				target.Name = Name;
-				target.Handle = Handle;
-				target.Group = Group;
-				target.IsManuallyLoaded = IsManuallyLoaded;
-				target.loader = loader;
-			}
-
-			// copy basic data
-			target.Size = Size;
-			target.LastAccessed = LastAccessed;
-			target.ReceiveShadows = ReceiveShadows;
-			target.TransparencyCastsShadows = TransparencyCastsShadows;
-
-			target.RemoveAllTechniques();
-
-			// clone a copy of all the techniques
-			for ( int i = 0; i < techniques.Count; i++ )
-			{
-				Technique technique = (Technique)techniques[ i ];
-				Technique newTechnique = target.CreateTechnique();
-				technique.CopyTo( newTechnique );
-
-				// only add this technique to supported techniques if its...well....supported :-)
-				if ( newTechnique.IsSupported )
-				{
-					target.SupportedTechniques.Add( newTechnique );
-
-					if ( target.bestTechniqueList[ technique.LodIndex ] == null )
-					{
-						target.bestTechniqueList[ technique.LodIndex ] = newTechnique;
-					}
-				}
-			}
-
-			// clear LOD distances
-			target.lodDistances.Clear();
-
-			// copy LOD distances
-			for ( int i = 0; i < lodDistances.Count; i++ )
-			{
-				target.lodDistances.Add( lodDistances[ i ] );
-			}
-
-			target.compilationRequired = compilationRequired;
-		}
-
-		#endregion CopyTo Method
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <ogre name="applyDefaults" />
-		public void ApplyDefaults()
-		{
-			if ( defaultSettings != null )
-			{
-				// copy properties from the default materials
-				defaultSettings.CopyTo( this, false );
-			}
-			_compilationRequired = true;
-		}
-
-		public bool ApplyTextureAliases( Dictionary<string, string> aliasList, bool apply )
-		{
-			// iterate through all techniques and apply texture aliases
-			bool testResult = false;
-
-			foreach ( Technique t in _techniques)
-			{
-				if ( t.ApplyTextureAliases( aliasList, apply ) )
-					testResult = true;
-			}
-
-			return testResult;
-			
-		}
-
-
-		#endregion
 
 		#region Object overloads
 
