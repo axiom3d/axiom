@@ -429,7 +429,7 @@ namespace Axiom.Core
         /// <summary>
         ///     Which material scheme should this viewport use?
         /// </summary>
-        private string _materialScheme;
+        private string _materialScheme = MaterialManager.DefaultSchemeName;
         /// <summary>
         /// the material scheme which the viewport should use.
         /// </summary>
