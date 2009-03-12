@@ -4932,7 +4932,7 @@ namespace Axiom.Core
             // Set viewport in render system
             targetRenderSystem.SetViewport( viewport );
             // Set the active material scheme for this viewport
-            //             MaterialManager.Instance.ActiveScheme = viewport.MaterialScheme;
+            MaterialManager.Instance.ActiveScheme = viewport.MaterialScheme;
         }
 
         protected void RenderSingleObject( IRenderable renderable, Pass pass, bool doLightIteration )
