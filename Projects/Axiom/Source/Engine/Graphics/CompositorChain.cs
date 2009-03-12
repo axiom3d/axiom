@@ -479,11 +479,18 @@ namespace Axiom.Graphics
 
 			// set original scene details from viewport
 			CompositionPass pass = originalScene.Technique.OutputTarget.GetPass( 0 );
-			if ( pass.ClearBuffers != viewport.ClearBuffers ||
-				pass.ClearColor != viewport.BackgroundColor )
+            CompositionTargetPass passParent = pass.Parent;
+            if (pass.ClearBuffers != viewport.ClearBuffers ||
+				pass.ClearColor != viewport.BackgroundColor ||
+                passParent.VisibilityMask != viewport.VisibilityMask || 
+                passParent.MaterialScheme != viewport.MaterialScheme /*||
+                passParent.ShadowsEnabled != viewport.ShowShadows */ )
 			{
 				pass.ClearBuffers = viewport.ClearBuffers;
 				pass.ClearColor = viewport.BackgroundColor;
+			    passParent.VisibilityMask = viewport.VisibilityMask;
+			    passParent.MaterialScheme = viewport.MaterialScheme;
+			    /* passParent.ShadowsEnabled = viewport.ShowShadows; */
 				Compile();
 			}
 
