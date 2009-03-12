@@ -54,9 +54,10 @@ namespace Axiom.FileSystem
         {
             // So that the substring will work out right, we definitely want this string
             // to end with the directory separator char.
-            //if (!name.EndsWith(Path.DirectorySeparatorChar.ToString())) {
-            //    name += Path.DirectorySeparatorChar;
-            ///}
+            if (!name.EndsWith(Path.DirectorySeparatorChar.ToString()))
+            {
+                name += Path.DirectorySeparatorChar;
+            }
         }
 
         public override void Load()
@@ -115,7 +116,7 @@ namespace Axiom.FileSystem
                     throw new AxiomException( "Directory {0} unexpectedly does not start from path {1}", newFile, name );
                 }
 
-                files.Add( newFile.Substring( name.Length + 1 ) );
+                files.Add( newFile.Substring( name.Length ) );
             }
 
             foreach ( string directory in Directory.GetDirectories( path ) )
