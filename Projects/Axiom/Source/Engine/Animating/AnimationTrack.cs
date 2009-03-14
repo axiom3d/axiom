@@ -297,14 +297,13 @@ namespace Axiom.Animating
 			{
 				// search for the correct place to insert the keyframe
 				int i = 0;
-				KeyFrame kf = keyFrameList[ i ];
 
-				while ( kf.Time < time && i != keyFrameList.Count )
+				while ( keyFrameList[ i ].Time < time && i != keyFrameList.Count )
 				{
 					i++;
 				}
 
-				keyFrameList.Insert( i, kf );
+				keyFrameList.Insert( i, keyFrame );
 			}
 
 			// ensure a spline rebuild takes place
@@ -319,7 +318,7 @@ namespace Axiom.Animating
 		/// <param name="index">Index of the keyframe to remove from this track.</param>
 		public void RemoveKeyFrame( int index )
 		{
-			Debug.Assert( index < keyFrameList.Count, "Index of of bounds when removing a key frame." );
+			Debug.Assert( index < keyFrameList.Count, "Index out of bounds when removing a key frame." );
 
 			keyFrameList.RemoveAt( index );
 
