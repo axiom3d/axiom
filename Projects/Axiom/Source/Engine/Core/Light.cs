@@ -52,7 +52,7 @@ namespace Axiom.Core
     ///    parameters like type, position, attenuation (how light intensity fades with
     ///    distance), color etc.
     ///    <p/>
-    ///    The defaults when a light is created is pure white diffues light, with no
+    ///    The defaults when a light is created is pure white diffuse light, with no
     ///    attenuation (does not decrease with distance) and a range of 1000 world units.
     ///    <p/>
     ///    Lights are created by using the SceneManager.CreateLight method. They can subsequently be
@@ -64,7 +64,7 @@ namespace Axiom.Core
     ///    Remember also that dynamic lights rely on modifying the color of vertices based on the position of
     ///    the light compared to an object's vertex normals. Dynamic lighting will only look good if the
     ///    object being lit has a fair level of tesselation and the normals are properly set. This is particularly
-    ///    true for the spotlight which will only look right on highly tesselated models.
+    ///    true for the spotlight which will only look right on highly tessellated models.
     /// </remarks>
     public class Light : MovableObject, IComparable
     {
@@ -185,7 +185,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Gets/Sets the type of light this is.
         /// </summary>
-        public LightType Type
+        public virtual LightType Type
         {
             get
             {
@@ -200,7 +200,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Gets/Sets the position of the light.
         /// </summary>
-        public Vector3 Position
+        public virtual Vector3 Position
         {
             get
             {
@@ -216,7 +216,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Gets/Sets the direction of the light.
         /// </summary>
-        public Vector3 Direction
+        public virtual Vector3 Direction
         {
             get
             {
@@ -237,7 +237,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Gets the inner angle of the spotlight.
         /// </summary>
-        public float SpotlightInnerAngle
+        public virtual float SpotlightInnerAngle
         {
             get
             {
@@ -252,7 +252,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Gets the outer angle of the spotlight.
         /// </summary>
-        public float SpotlightOuterAngle
+        public virtual float SpotlightOuterAngle
         {
             get
             {
@@ -267,7 +267,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Gets the spotlight falloff.
         /// </summary>
-        public float SpotlightFalloff
+        public virtual float SpotlightFalloff
         {
             get
             {
@@ -312,7 +312,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Gets the attenuation range value.
         /// </summary>
-        public float AttenuationRange
+        public virtual float AttenuationRange
         {
             get
             {
@@ -327,7 +327,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Gets the constant attenuation value.
         /// </summary>
-        public float AttenuationConstant
+        public virtual float AttenuationConstant
         {
             get
             {
@@ -342,7 +342,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Gets the linear attenuation value.
         /// </summary>
-        public float AttenuationLinear
+        public virtual float AttenuationLinear
         {
             get
             {
@@ -357,7 +357,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Gets the quadratic attenuation value.
         /// </summary>
-        public float AttenuationQuadratic
+        public virtual float AttenuationQuadratic
         {
             get
             {
@@ -402,7 +402,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Gets the derived position of this light.
         /// </summary>
-        public Vector3 DerivedPosition
+        public virtual Vector3 DerivedPosition
         {
             get
             {
@@ -416,7 +416,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Gets the derived position of this light.
         /// </summary>
-        public Vector3 DerivedDirection
+        public virtual Vector3 DerivedDirection
         {
             get
             {
@@ -424,21 +424,6 @@ namespace Axiom.Core
                 Update();
 
                 return derivedDirection;
-            }
-        }
-
-        /// <summary>
-        ///		Override IsVisible to ensure we are updated when this changes.
-        /// </summary>
-        public override bool IsVisible
-        {
-            get
-            {
-                return base.IsVisible;
-            }
-            set
-            {
-                base.IsVisible = value;
             }
         }
 
@@ -468,8 +453,8 @@ namespace Axiom.Core
         ///		and directional lights (w=0.0f) and be used in the same 
         ///		calculations.
         /// </remarks>
-        /// <returns>A 4D vector represenation of the light.</returns>
-        public Vector4 GetAs4DVector()
+        /// <returns>A 4D vector representation of the light.</returns>
+        public virtual Vector4 GetAs4DVector()
         {
             Vector4 vec;
 
@@ -506,7 +491,7 @@ namespace Axiom.Core
         /// <param name="innerAngle"></param>
         /// <param name="outerAngle"></param>
         /// <param name="falloff"></param>
-        public void SetSpotlightRange( float innerAngle, float outerAngle, float falloff )
+        public virtual void SetSpotlightRange( float innerAngle, float outerAngle, float falloff )
         {
             //allow it to be set ahead of time anyways
             /*if(type != LightType.Spotlight) {
@@ -526,7 +511,7 @@ namespace Axiom.Core
         /// <param name="constant"></param>
         /// <param name="linear"></param>
         /// <param name="quadratic"></param>
-        public void SetAttenuation( float range, float constant, float linear, float quadratic )
+        public virtual void SetAttenuation( float range, float constant, float linear, float quadratic )
         {
             this.range = range;
             attenuationConst = constant;
@@ -548,7 +533,7 @@ namespace Axiom.Core
         /// </remarks>
         /// <param name="camera"></param>
         /// <returns></returns>
-        internal PlaneBoundedVolume GetNearClipVolume( Camera camera )
+        internal virtual PlaneBoundedVolume GetNearClipVolume( Camera camera )
         {
             const float THRESHOLD = -1e-06f;
 
@@ -655,7 +640,7 @@ namespace Axiom.Core
         /// </remarks>
         /// <param name="camera"></param>
         /// <returns></returns>
-        internal PlaneBoundedVolumeList GetFrustumClipVolumes( Camera camera )
+        internal virtual PlaneBoundedVolumeList GetFrustumClipVolumes( Camera camera )
         {
             // Homogenous light position
             Vector4 lightPos = GetAs4DVector();
@@ -1137,7 +1122,7 @@ namespace Axiom.Core
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public int CompareTo( object obj )
+        public virtual int CompareTo( object obj )
         {
             Light other = obj as Light;
 
