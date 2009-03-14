@@ -53,8 +53,14 @@ namespace Axiom.Collections
     /// <summary>
     /// Summary description for LightList.
     /// </summary>
-    public class LightList : AxiomCollection
+    public class LightList : AxiomCollection, IComparer
     {
+        /// <summary>
+		///		Lights will be stored here with the same key as the key that will be used
+		///		to store them in the objectList, so that the Compare method can compare
+		///		the Lights with only the key names given by objectList.
+		/// </summary>
+		protected Hashtable lightsTable;
         #region Constructors
 
         /// <summary>
@@ -62,6 +68,9 @@ namespace Axiom.Collections
         /// </summary>
         public LightList() : base()
         {
+            // Use a SortedList with LightList as comparer.
+            objectList = new SortedList(this, objectList.Capacity);
+            lightsTable = new Hashtable(objectList.Capacity);
         }
 
         /// <summary>
@@ -110,7 +119,9 @@ namespace Axiom.Collections
         /// <param name="item"></param>
         public void Add( T item )
         {
-            base.Add( item );
+            // this is the key that AxiomCollection will use
+            lightsTable.Add("Object" + nextUniqueKeyCounter, item);
+            base.Add("Object" + nextUniqueKeyCounter, item);
         }
 
         /// <summary>
@@ -120,10 +131,29 @@ namespace Axiom.Collections
         /// <param name="item"></param>
         public void Add( K key, T item )
         {
+            lightsTable.Add(key, item);
             base.Add( key, item );
         }
 
         #endregion
 
+
+        #region IComparer Members
+		
+        /// <summary>
+		/// Used to compare this light to another light for sorting.
+		/// </summary>
+		public int Compare(object key1, object key2)
+		{
+			Light light1 = (Light) lightsTable[key1];
+			Light light2 = (Light) lightsTable[key2];
+
+			if (light2 == null)
+				return 1;
+
+			return light1.CompareTo(light2);
+		}
+
+        #endregion
     }
 }
