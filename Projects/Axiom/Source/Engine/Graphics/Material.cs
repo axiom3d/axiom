@@ -1184,7 +1184,7 @@ namespace Axiom.Graphics
 				// only add this technique to supported techniques if its...well....supported :-)
 				if ( newTechnique.IsSupported )
 				{
-                    InsertSupportedTechnique( newTechnique );
+                    target.InsertSupportedTechnique( newTechnique );
 				}
 			}
 

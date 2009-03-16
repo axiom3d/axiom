@@ -772,7 +772,7 @@ namespace Axiom.Graphics
 			// clone each pass and add that to the new technique
 			for ( int i = 0; i < _passes.Count; i++ )
 			{
-				Pass pass = (Pass)_passes[ i ];
+				Pass pass = _passes[ i ];
 				Pass newPass = pass.Clone( target, pass.Index );
 				target._passes.Add( newPass );
 			}
@@ -780,8 +780,8 @@ namespace Axiom.Graphics
 			// recompile illumination passes
 			if ( _compiledIlluminationPasses )
 			{
-			target.CompileIlluminationPasses();
-		}
+			    target.CompileIlluminationPasses();
+		    }
 		}
 
 		/// <summary>
@@ -804,7 +804,7 @@ namespace Axiom.Graphics
 			// check requirements for each pass
 			for ( int i = 0; i < _passes.Count; i++ )
 			{
-				Pass pass = (Pass)_passes[ i ];
+				Pass pass = _passes[ i ];
 
 				int numTexUnitsRequested = pass.TextureUnitStageCount;
 
