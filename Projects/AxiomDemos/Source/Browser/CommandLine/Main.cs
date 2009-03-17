@@ -66,7 +66,7 @@ namespace Axiom.Demos.Browser.CommandLine
                 // interrogate the available resource paths
                 foreach ( EngineConfig.FilePathRow row in config.FilePath )
                 {
-                    ResourceManager.AddCommonArchive( row.src, row.type );
+                    ResourceManager.AddCommonArchive( Path.GetFullPath( row.src ), row.type );
                 }
             }
         }
