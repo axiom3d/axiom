@@ -97,14 +97,18 @@ namespace Axiom.Core
         /// </summary>
         public void LoadAll()
         {
-            // TODO: Make optional, using scanning again in the meantim
+            // TODO: Make optional, using scanning again in the meantime
             // trigger load of the plugins app.config section
             //ArrayList newPlugins = (ArrayList)ConfigurationSettings.GetConfig("plugins");
             ArrayList newPlugins = ScanForPlugins();
 
             foreach ( ObjectCreator pluginCreator in newPlugins )
             {
-                plugins.Add( LoadPlugin( pluginCreator ) );
+                IPlugin plugin = LoadPlugin( pluginCreator );
+                if ( plugin != null )
+                {
+                    plugins.Add( plugin );
+                }
             }
         }
 
