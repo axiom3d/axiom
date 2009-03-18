@@ -351,12 +351,6 @@
       <Processor>TextureProcessor</Processor>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Textures\2049x2049_map.png">
-      <Name>2049x2049_map</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
     <Compile Include="Textures\atheneNormalMap.png">
       <Name>atheneNormalMap</Name>
       <Importer>TextureImporter</Importer>

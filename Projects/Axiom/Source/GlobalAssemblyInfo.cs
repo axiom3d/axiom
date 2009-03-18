@@ -11,15 +11,14 @@ using System.Runtime.InteropServices;
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-
 [assembly: ComVisibleAttribute(false)]
 [assembly: CLSCompliantAttribute(false)]
 [assembly: AssemblyConfigurationAttribute("release")]
 [assembly: AssemblyCompanyAttribute("Axiom Rendering Engine Project Team (http://axiomengine.sourceforge.net)")]
 [assembly: AssemblyProductAttribute("Axiom Rendering Engine")]
-[assembly: AssemblyCopyrightAttribute("Copyright (C) 2005-2007 Axiom Rendering Engine Project Team.")]
+[assembly: AssemblyCopyrightAttribute("Copyright (C) 2005-2009 Axiom Rendering Engine Project Team.")]
 [assembly: AssemblyTrademarkAttribute("")]
 [assembly: AssemblyCultureAttribute("")]
-[assembly: AssemblyVersionAttribute("0.7.3.0")]
-[assembly: AssemblyInformationalVersionAttribute("0.7.3.0")]
+//[assembly: AssemblyVersionAttribute("0.7.5.0")]
+[assembly: AssemblyInformationalVersionAttribute("0.7.5.0")]
 
