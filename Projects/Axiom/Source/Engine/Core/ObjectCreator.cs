@@ -81,13 +81,10 @@ namespace Axiom.Core
 
         public string GetAssemblyTitle()
         {
-            AssemblyTitleAttribute title = (AssemblyTitleAttribute)Attribute.GetCustomAttribute(
-                                                                                                    _assembly,
-                                                                                                    typeof(AssemblyTitleAttribute)
-                                                                                                );
-            if (title == null)
+            Attribute title = Attribute.GetCustomAttribute( _assembly, typeof( AssemblyTitleAttribute ) );
+            if ( title == null )
                 return _assembly.GetName().Name;
-            return title.Title;
+            return ( (AssemblyTitleAttribute)title ).Title;
         }
 
         public T CreateInstance<T>() where T : class
@@ -210,6 +207,8 @@ namespace Axiom.Core
 #endif
                 }
             }
+
+#if !(XBOX || XBOX360 || SILVERLIGHT)
             catch (ReflectionTypeLoadException ex)
             {
                 LogManager.Instance.Write(LogManager.BuildExceptionString(ex));
@@ -219,6 +218,13 @@ namespace Axiom.Core
                     LogManager.Instance.Write(LogManager.BuildExceptionString(lex));
                 }
             }
+#else
+            catch( Exception ex )
+            {
+                LogManager.Instance.Write(LogManager.BuildExceptionString(ex));
+                LogManager.Instance.Write("Loader Exceptions:");
+            }
+#endif
 
             return types;
         }

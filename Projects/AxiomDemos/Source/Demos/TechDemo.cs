@@ -178,7 +178,7 @@ namespace Axiom.Demos
             // call the overridden CreateScene method
             CreateScene();
 #if !( XBOX || XBOX360 )
-            // retreive and initialize the input system
+            // retrieve and initialize the input system
             input = PlatformManager.Instance.CreateInputReader();
             input.Initialize( window, true, true, false, false );
 #endif

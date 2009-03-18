@@ -210,7 +210,7 @@ namespace Axiom.RenderSystems.DirectX9
                 ((System.Windows.Forms.Form)targetWindow).Close();
             }
 
-            // dispopse of our back buffer if need be
+            // dispose of our back buffer if need be
             if ( backBuffer != null && !backBuffer.Disposed )
             {
                 backBuffer.Dispose();

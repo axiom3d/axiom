@@ -133,7 +133,7 @@ namespace Axiom.Serialization
         }
 
         /// <summary>
-        ///		Reads a specified number of shorts and copies them into the destination pointer.
+        ///		Reads a specified number of floats and copies them into the destination pointer.
         /// </summary>
         /// <remarks>This overload will also copy the values into the specified destination array.</remarks>
         /// <param name="count">Number of values to read.</param>
