@@ -398,9 +398,9 @@ namespace Axiom.Core
 
             new ControllerManager();
 
-
+ #if !(XBOX || XBOX360 || SILVERLIGHT)
             PlatformInformation.Log( LogManager.Instance.DefaultLog );
-
+#endif
             // initialize the current render system
             autoWindow = activeRenderSystem.Initialize( autoCreateWindow, windowTitle );
 

@@ -67,7 +67,10 @@ namespace Axiom.Demos.Browser.Xna
 
             ResourceManager.AddCommonArchive( "Content\\XNA.Materials\\x86\\Fresnel.zip", "ZipFile" );
 #else
-            ResourceManager.AddCommonArchive( "Content\\XNA.Materials\\XBox", "Folder" );
+            //ResourceManager.AddCommonArchive( "Content\\XNA.Materials\\XBox", "Folder" );
+            ResourceManager.AddCommonArchive("Content\\XNA.Materials\\XBox\\scripts", "Folder");
+            ResourceManager.AddCommonArchive("Content\\XNA.Materials\\XBox\\programs", "Folder");
+            ResourceManager.AddCommonArchive("Content\\XNA.Materials\\XBox\\Textures", "Folder");
 #endif
             ResourceManager.AddCommonArchive( "Content\\Meshes", "Folder" );
             ResourceManager.AddCommonArchive( "Content\\Overlays", "Folder" );
@@ -85,6 +88,7 @@ namespace Axiom.Demos.Browser.Xna
         {
             try
             {
+                #if !(XBOX || XBOX360 || SILVERLIGHT)
                 if ( _configure() )
                 {
                      Assembly demos = Assembly.LoadFrom( "Axiom.Demos.dll" );
@@ -136,7 +140,11 @@ namespace Axiom.Demos.Browser.Xna
                         }//dispose of it when done
                     }
                 }
-
+#else
+                _configure();
+                Axiom.Demos.TechDemo demo = new CelShading();
+                demo.Start();
+#endif
                     /*Assembly demos = Assembly.LoadFrom( "Axiom.Demos.dll" );
 
                     string next = "ParticleFX";

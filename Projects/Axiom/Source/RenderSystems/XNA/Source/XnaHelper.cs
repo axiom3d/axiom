@@ -482,8 +482,8 @@ namespace Axiom.RenderSystems.Xna
 				case VertexElementType.Color:
 					return XFG.VertexElementFormat.Color;
 
-				//case VertexElementType.Float1:
-				//   return XFG.VertexElementFormat.Float1;
+				case VertexElementType.Float1:
+				   return XFG.VertexElementFormat.Single;
 
 				case VertexElementType.Float2:
 					return XFG.VertexElementFormat.Vector2;

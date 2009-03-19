@@ -713,6 +713,7 @@
       <Name>spot_shadow_fade</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -832,72 +833,78 @@
       <Name>XnaLogo</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="XNA.Materials\Xbox\Programs\ambient_vp.hlsl">
+    <Compile Include="XNA.Materials\Xbox\Programs\ambient_vp.hlsl">
       <Name>ambient_vp</Name>
       <Importer>HlslImporter</Importer>
       <Processor>HlslProcessor</Processor>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XNA.Materials\Xbox\Programs\color_fp.hlsl">
+      <ProcessorParameters_Profile>VS_2_0</ProcessorParameters_Profile>
+    </Compile>
+    <Compile Include="XNA.Materials\Xbox\Programs\color_fp.hlsl">
       <Name>color_fp</Name>
       <Importer>HlslImporter</Importer>
       <Processor>HlslProcessor</Processor>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XNA.Materials\Xbox\Programs\color_vp.hlsl">
+    </Compile>
+    <Compile Include="XNA.Materials\Xbox\Programs\color_vp.hlsl">
       <Name>color_vp</Name>
       <Importer>HlslImporter</Importer>
       <Processor>HlslProcessor</Processor>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XNA.Materials\Xbox\Programs\dir_fp.hlsl">
+      <ProcessorParameters_Profile>VS_2_0</ProcessorParameters_Profile>
+    </Compile>
+    <Compile Include="XNA.Materials\Xbox\Programs\dir_fp.hlsl">
       <Name>dir_fp</Name>
       <Importer>HlslImporter</Importer>
       <Processor>HlslProcessor</Processor>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XNA.Materials\Xbox\Programs\dir_vp.hlsl">
+    </Compile>
+    <Compile Include="XNA.Materials\Xbox\Programs\dir_vp.hlsl">
       <Name>dir_vp</Name>
       <Importer>HlslImporter</Importer>
       <Processor>HlslProcessor</Processor>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XNA.Materials\Xbox\Programs\overlay_fp.hlsl">
+      <ProcessorParameters_Profile>VS_2_0</ProcessorParameters_Profile>
+    </Compile>
+    <Compile Include="XNA.Materials\Xbox\Programs\overlay_fp.hlsl">
       <Name>overlay_fp</Name>
       <Importer>HlslImporter</Importer>
       <Processor>HlslProcessor</Processor>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XNA.Materials\Xbox\Programs\overlay_vp.hlsl">
+    </Compile>
+    <Compile Include="XNA.Materials\Xbox\Programs\overlay_vp.hlsl">
       <Name>overlay_vp</Name>
       <Importer>HlslImporter</Importer>
       <Processor>HlslProcessor</Processor>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XNA.Materials\Xbox\Programs\point_fp.hlsl">
+      <ProcessorParameters_Profile>VS_2_0</ProcessorParameters_Profile>
+    </Compile>
+    <Compile Include="XNA.Materials\Xbox\Programs\point_fp.hlsl">
       <Name>point_fp</Name>
       <Importer>HlslImporter</Importer>
       <Processor>HlslProcessor</Processor>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XNA.Materials\Xbox\Programs\point_vp.hlsl">
+    </Compile>
+    <Compile Include="XNA.Materials\Xbox\Programs\point_vp.hlsl">
       <Name>point_vp</Name>
       <Importer>HlslImporter</Importer>
       <Processor>HlslProcessor</Processor>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XNA.Materials\Xbox\Programs\spot_fp.hlsl">
+      <ProcessorParameters_Profile>VS_2_0</ProcessorParameters_Profile>
+    </Compile>
+    <Compile Include="XNA.Materials\Xbox\Programs\spot_fp.hlsl">
       <Name>spot_fp</Name>
       <Importer>HlslImporter</Importer>
       <Processor>HlslProcessor</Processor>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XNA.Materials\Xbox\Programs\spot_vp.hlsl">
+    </Compile>
+    <Compile Include="XNA.Materials\Xbox\Programs\spot_vp.hlsl">
       <Name>spot_vp</Name>
       <Importer>HlslImporter</Importer>
       <Processor>HlslProcessor</Processor>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+      <ProcessorParameters_Profile>VS_2_0</ProcessorParameters_Profile>
+    </Compile>
     <Content Include="XNA.Materials\Xbox\Scripts\Core.material">
       <Name>Core</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -934,6 +941,93 @@
   <ItemGroup>
     <Content Include="XNA.Materials\x86\Fresnel.zip">
       <Name>Fresnel</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XNA.Materials\Xbox\Programs\ambient_vp.xnb">
+      <Name>ambient_vp</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\color_fp.xnb">
+      <Name>color_fp</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\color_vp.xnb">
+      <Name>color_vp</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\dir_fp.xnb">
+      <Name>dir_fp</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\dir_vp.xnb">
+      <Name>dir_vp</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\overlay_fp.xnb">
+      <Name>overlay_fp</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\overlay_vp.xnb">
+      <Name>overlay_vp</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\point_fp.xnb">
+      <Name>point_fp</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\point_vp.xnb">
+      <Name>point_vp</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\spot_fp.xnb">
+      <Name>spot_fp</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\spot_vp.xnb">
+      <Name>spot_vp</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XNA.Materials\Xbox\Textures\spot_shadow_fade.xnb">
+      <Name>spot_shadow_fade</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XNA.Materials\Xbox\Scripts\CellShading.material">
+      <Name>CellShading</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="XNA.Materials\Xbox\Programs\cellShadingPS.hlsl">
+      <Name>cellShadingPS</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ProcessorParameters_EntryPoint>main_fp</ProcessorParameters_EntryPoint>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="XNA.Materials\Xbox\Programs\cellShadingVS.hlsl">
+      <Name>cellShadingVS</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ProcessorParameters_EntryPoint>main_vp</ProcessorParameters_EntryPoint>
+      <ProcessorParameters_Profile>VS_2_0</ProcessorParameters_Profile>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XNA.Materials\Xbox\Programs\cellShadingPS.xnb">
+      <Name>cellShadingPS</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\cellShadingVS.xnb">
+      <Name>cellShadingVS</Name>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
