@@ -159,7 +159,7 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs">
+    <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Animating\Animation.cs">
@@ -841,7 +841,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="..\GlobalAssemblyInfo.cs">
-      <Link>GlobalAssemblyInfo.cs</Link>
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Utilities\Contract.cs" />
     <Compile Include="Utilities\Exceptions.cs" />
@@ -868,8 +868,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>"$(ProjectDir)..\..\build\version_scm.bat" "$(ProjectDir).\..\.." "$(ProjectDir)..\GlobalAssemblyInfo.cs.in" "$(ProjectDir)..\GlobalAssemblyInfo.cs"</PreBuildEvent>
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
