@@ -1351,6 +1351,9 @@ namespace Axiom.RenderSystems.OpenGL
         /// <returns></returns>
         public override RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
         {
+            // register the GLSL program manage
+            HighLevelGpuProgramManager.Instance.AddFactory( new GLSL.GLSLProgramFactory() );
+
             RenderWindow autoWindow = glSupport.CreateWindow( autoCreateWindow, this, windowTitle );
 
             this.CullingMode = this.cullingMode;

@@ -278,44 +278,6 @@ namespace Axiom.Demos
 
 
 
-            //simple control with joystick
-            Microsoft.Xna.Framework.Input.GamePadState states = Microsoft.Xna.Framework.Input.GamePad.GetState(Microsoft.Xna.Framework.PlayerIndex.One);
-            camAccel.z = -states.ThumbSticks.Left.Y * e.TimeSinceLastFrame * 100;
-            camAccel.x = states.ThumbSticks.Left.X * e.TimeSinceLastFrame * 100;
-
-            camAccel.y -= states.Triggers.Left;
-            camAccel.y += states.Triggers.Right;
-
-            if (states.Buttons.LeftShoulder == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
-                camera.Roll(e.TimeSinceLastFrame*100);
-            if (states.Buttons.RightShoulder == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
-                camera.Roll(-e.TimeSinceLastFrame*100);
-            
-            camera.Yaw(-states.ThumbSticks.Right.X * e.TimeSinceLastFrame * 100);
-            camera.Pitch(states.ThumbSticks.Right.Y * e.TimeSinceLastFrame * 100);
-
-            if (states.Buttons.Y == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
-            {
-                switch (camera.SceneDetail)
-                {
-                    case SceneDetailLevel.Points:
-                        camera.SceneDetail = SceneDetailLevel.Solid;
-                        break;
-                    case SceneDetailLevel.Solid:
-                        camera.SceneDetail = SceneDetailLevel.Wireframe;
-                        break;
-                    case SceneDetailLevel.Wireframe:
-                        camera.SceneDetail = SceneDetailLevel.Points;
-                        break;
-                }
-            }
-            if (states.Buttons.Back == Microsoft.Xna.Framework.Input.ButtonState.Pressed)
-            {
-                Root.Instance.QueueEndRendering();
-                return;
-            }
-
-
 #if !( XBOX || XBOX360 )
             // TODO: Move this into an event queueing mechanism that is processed every frame
             input.Capture();
