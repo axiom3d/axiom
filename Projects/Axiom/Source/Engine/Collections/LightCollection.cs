@@ -104,7 +104,7 @@ namespace Axiom.Collections
         /// <param name="item"></param>
         public void Add( T item )
         {
-            base.Add("Object" + nextUniqueKeyCounter, item);
+            base.Add( item );
         }
 
         /// <summary>
@@ -118,7 +118,5 @@ namespace Axiom.Collections
         }
 
         #endregion
-
-
     }
 }
