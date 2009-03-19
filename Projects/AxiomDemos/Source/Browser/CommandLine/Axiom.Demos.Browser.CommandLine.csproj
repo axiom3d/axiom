@@ -156,6 +156,10 @@
       <Project>{78A50FC2-07B7-43DD-A24F-B4440F2E6169}</Project>
       <Name>Axiom.RenderSystems.OpenGL.Win32</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\Source\RenderSystems\XNA\Axiom.RenderSystems.Xna.csproj">
+      <Project>{628E7ED7-EC58-4C93-B8AB-CB69087D381B}</Project>
+      <Name>Axiom.RenderSystems.Xna</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\Source\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.csproj">
       <Project>{AE2065CC-32F5-48F2-988F-D7E8D0789F30}</Project>
       <Name>Axiom.SceneManagers.Bsp</Name>

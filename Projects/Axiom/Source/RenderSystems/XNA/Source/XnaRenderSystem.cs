@@ -1100,6 +1100,9 @@ namespace Axiom.RenderSystems.Xna
         {
             RenderWindow renderWindow = null;
 
+            // register the HLSL program manager
+            HighLevelGpuProgramManager.Instance.AddFactory( new HLSL.HLSLProgramFactory() );
+
             if ( autoCreateWindow )
             {
                 int width = 800;

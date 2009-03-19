@@ -47,11 +47,6 @@ namespace Axiom.RenderSystems.Xna
         #region Fields
 
         /// <summary>
-        ///     Factory for HLSL programs.
-        /// </summary>
-        private HLSL.HLSLProgramFactory factory = new HLSL.HLSLProgramFactory();
-
-        /// <summary>
         ///     Reference to the render system instance.
         /// </summary>
         private Axiom.Graphics.RenderSystem renderSystem = new XnaRenderSystem();
@@ -64,9 +59,6 @@ namespace Axiom.RenderSystems.Xna
         {
             // add an instance of this plugin to the list of available RenderSystems
             Axiom.Core.Root.Instance.RenderSystems.Add( "Xna", renderSystem );
-
-            // register the HLSL program manager
-            Axiom.Graphics.HighLevelGpuProgramManager.Instance.AddFactory( factory );
         }
 
         public void Stop()

@@ -50,10 +50,6 @@ namespace Axiom.RenderSystems.OpenGL
         #region Implementation of IPlugin
 
         /// <summary>
-        ///     Reference to a GLSL program factory.
-        /// </summary>
-        private GLSL.GLSLProgramFactory factory = new GLSL.GLSLProgramFactory();
-        /// <summary>
         ///     Reference to the render system instance.
         /// </summary>
         private GLRenderSystem renderSystem = new GLRenderSystem();
@@ -62,13 +58,10 @@ namespace Axiom.RenderSystems.OpenGL
         {
             // add an instance of this plugin to the list of available RenderSystems
             Root.Instance.RenderSystems.Add( "OpenGL", renderSystem );
-
-            HighLevelGpuProgramManager.Instance.AddFactory( factory );
         }
 
         public void Stop()
         {
-            factory.Dispose();
             renderSystem.Shutdown();
         }
 
