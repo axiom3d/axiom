@@ -138,7 +138,7 @@
   <ItemGroup>
     <None Include="Axiom.Demos.build">
     </None>
-    <Compile Include="AssemblyInfo.cs">
+    <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BezierPatch.cs">
