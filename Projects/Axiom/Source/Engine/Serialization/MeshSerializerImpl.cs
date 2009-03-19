@@ -263,9 +263,7 @@ namespace Axiom.Serialization
             bool idx32bit = ReadBool( reader );
 
             HardwareIndexBuffer idxBuffer = null;
-#if ( XBOX || XBOX360)
-            int waste = ReadInt( reader );
-#endif
+
             if ( idx32bit )
             {
                 // create the index buffer

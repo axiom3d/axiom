@@ -34,7 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Data;
+//using System.Data;
 using System.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
@@ -84,7 +84,7 @@ namespace Axiom.SceneManagers.Octree
         {
             options = new TerrainOptions();
 
-            DataSet optionData = new DataSet();
+            /*DataSet optionData = new DataSet();
             optionData.ReadXml( fileName );
             DataTable table = optionData.Tables[ 0 ];
             DataRow row = table.Rows[ 0 ];
@@ -248,7 +248,7 @@ namespace Axiom.SceneManagers.Octree
                         ( (TerrainRenderable)tiles[ i, j ] ).CalculateNormals();
                     }
                 }
-            }
+            }*/
         }
 
         /// <summary>
