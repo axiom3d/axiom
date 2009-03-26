@@ -940,5 +940,22 @@ namespace Axiom.Math
 		}
 
 		#endregion
-	}
+
+        #region Parse method, implemented for factories
+
+        /// <summary>
+        ///		Parses a string and returns Vector3.
+        /// </summary>
+        /// <param name="vector">A string representation of a vector3. ( as its returned from Vector3.ToString() )</param>
+        /// <returns>A new Vector3.</returns>
+        public static Vector3 Parse(string vector)
+        {
+            string[] vals = vector.Split(',');
+
+            return new Vector3(float.Parse(vals[0].Trim()), float.Parse(vals[1].Trim()), float.Parse(vals[2].Trim()));
+        }
+
+
+        #endregion
+    }
 }

@@ -130,7 +130,7 @@ namespace Axiom.Math
         /// <summary>
         ///     Returns the point at the specified index.
         /// </summary>
-        /// <param name="index">Index at which to retreive a point.</param>
+        /// <param name="index">Index at which to retrieve a point.</param>
         /// <returns>Vector3 containing the point data.</returns>
         public T GetPoint( int index )
         {
