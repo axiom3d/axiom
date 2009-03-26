@@ -188,10 +188,74 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 			return 0.0f;
 		}
 
+        private float IsIn(float dataX, float dataZ)
+        {
+            return heightData[(int)dataX + (int)dataZ * Options.Instance.PageSize];
+        }
 
 		public virtual Vector3 GetNormalAt (float mX, float mZ)
 		{
-			return Vector3.UnitY;
+			//return Vector3.UnitY;
+
+            //#define  getisIn(a, b) (mHeightData[static_cast<unsigned int> (a) + static_cast<unsigned int> (b) * mSize])
+            float divider = Options.Instance.PageSize / Options.Instance.Scale.y;
+
+            long size = Options.Instance.PageSize - 1;
+            if (mX > 0 && mZ > 0 && mX < size && mZ < size)
+            {
+                Vector3 result = new Vector3((IsIn(mX - 1, mZ) - IsIn(mX + 1, mZ)) * divider,
+                                             2.0f,
+                                             (IsIn(mX, mZ - 1) - IsIn(mX, mZ + 1)) * divider);
+
+                result.Normalize();
+
+                return result;
+            }
+            else
+            {
+                int x = (int) mX;
+                int z = (int) mZ;
+                float a, b, c, d;
+
+                if (x == 0)
+                {
+                    a = IsIn(x, z);
+                    b = IsIn(x + 1, z);
+                }
+                else if (x == Options.Instance.PageSize)
+                {
+                    a = IsIn(x - 1, z);
+                    b = IsIn(x, z);
+                }
+                else
+                {
+                    a = IsIn(x - 1, z);
+                    b = IsIn(x + 1, z);
+                }
+
+                if (z == 0)
+                {
+                    c = IsIn(x, z);
+                    d = IsIn(x, z + 1);
+                }
+                else if (z == Options.Instance.PageSize)
+                {
+                    c = IsIn(x, z - 1);
+                    d = IsIn(x, z);
+                }
+                else
+                {
+                    c = IsIn(x, z - 1);
+                    d = IsIn(x, z + 1);
+                }
+
+                Vector3 result = new Vector3((a - b)*divider,
+                                             2.0f,
+                                             (c - d)*divider);
+                result.Normalize();
+                return result;
+
+            }
 		}
 
 		public virtual ColorEx GetBase (float mX, float mZ)
@@ -338,18 +402,24 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 
 
 
-		protected bool checkSize( int s )
-		{
-			for ( int i = 0; i < 256; i++ ) 
-			{
-				//printf( "Checking...%d\n", ( 1 << i ) + 1 );
-				if ( s == ( 1 << i ) + 1 ) 
-				{
-					return true;
-				}
-			}
-			return false;
-		}
+        protected bool checkSize(int s)
+        {
+            int p = s - 1;
+            // ispow2
+            return ((p & (p - 1)) == 0);
+
+            /*
+            for (int i = 0; i < 256; i++)
+            {
+                //printf( "Checking...%d\n", ( 1 << i ) + 1 );
+                if (s == (1 << i) + 1)
+                {
+                    return true;
+                }
+            }
+            return false;
+             * */
+        }
 
 	}
 }
