@@ -85,7 +85,18 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 					}
 				}
 			}
-            else if (Options.Instance.Data2DFormat == "ClientGen") {
+            else if (Options.Instance.Data2DFormat == "HeightFieldN")
+            {
+                for (j = 0; j < h; j++)
+                {
+                    for (i = 0; i < w; i++)
+                    {
+                        data2D[i][j] = new Data2D_HeightFieldN();
+                    }
+                }
+            }
+            else if (Options.Instance.Data2DFormat == "ClientGen")
+            {
                 for (j = 0; j < h; j++) {
                     for (i = 0; i < w; i++) {
                         data2D[i][j] = new Data2D_ClientGen((int)i, (int)j);
@@ -616,7 +627,6 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 			return ColorEx.White;
 		}
 
-        
 		public Vector3 GetNormalAt(  long dataX,  long dataZ,  float x,  float z)
 		{
 			Data2D data = data2D[ dataX ][ dataZ ];

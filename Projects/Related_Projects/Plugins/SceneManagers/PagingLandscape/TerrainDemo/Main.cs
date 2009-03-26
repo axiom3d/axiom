@@ -36,7 +36,7 @@ namespace TerrainDemo {
 				Type demoType = Type.GetType("TerrainDemo.Terrain");
 
 				using(TechDemo demo = (TechDemo)Activator.CreateInstance(demoType)) {
-					demo.Start();
+					demo.Run();
 				}
             }
             catch(Exception ex) {

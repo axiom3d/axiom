@@ -55,48 +55,49 @@ namespace Axiom.SceneManagers.PagingLandscape.Texture
 			// TODO: Add constructor logic here
 			//
 		}
-		protected override void loadMaterial()
-		{
-			if ( material == null )
-			{
-			
-				if (Options.Instance.ImageNameLoad)
-				{
-					// JEFF - all material settings configured through material script
-					//material = (Material)(MaterialManager.Instance.GetByName("PagingLandScape.0.0"));
 
-					string commonName = dataZ.ToString() + "." + dataX.ToString();
-					string matname = "Image." + commonName;
-					//material = material.Clone(matname);
-					material = CreateMaterial(matname);
-					//if (material.GetTechnique(0).GetPass(0).NumTextureUnitStages == 0 )
-					//{
-					//	material.GetTechnique(0).GetPass(0).AddTextureUnitState(material.GetTechnique(0).GetPass(0).CreateTextureUnitState("gcanyon_texture_4k2k.0.0.png",0));
-					//	material.GetTechnique(0).GetPass(0).GetTextureUnitState(0).TextureAddressing = TextureAddressing.Clamp;
-					//	material.GetTechnique(0).GetPass(0).AddTextureUnitState(material.GetTechnique(0).GetPass(0).CreateTextureUnitState("gcanyon_texture_4k2k.0.0.png",0));
-					//	material.GetTechnique(0).GetPass(0).GetTextureUnitState(1).SetTextureName("detail3.jpg");
-					//	material.GetTechnique(0).GetPass(0).GetTextureUnitState(1).SetTextureScaleU(0.03F);
-					//	material.GetTechnique(0).GetPass(0).GetTextureUnitState(1).SetTextureScaleV(0.03F);
-					//	
-					//}
+        protected override void loadMaterial()
+        {
+            if (material == null)
+            {
 
-					string texname = Options.Instance.Image_Filename + "." +
-						commonName + "." + Options.Instance.Landscape_Extension;       
-					// assign this texture to the material
+                if (Options.Instance.ImageNameLoad)
+                {
+                    // JEFF - all material settings configured through material script
+                    //material = (Material)(MaterialManager.Instance.GetByName("PagingLandScape.0.0"));
 
-					material.GetTechnique(0).GetPass(0).CreateTextureUnitState(texname,0);
-					material.GetTechnique(0).GetPass(0).GetTextureUnitState(0).TextureAddressing = TextureAddressing.Clamp;
-				}
-				else
-				{
-					// JEFF - all material settings configured through material script
-					material = (Material)(MaterialManager.Instance.GetByName("PagingLandScape." +  dataX.ToString()+ "." + dataZ.ToString()));
-				}
-		           
-				material.Load(); 
-				material.Lighting = Options.Instance.Lit;
-			}
-		}
+                    string commonName = dataZ.ToString() + "." + dataX.ToString();
+                    string matname = "Image." + commonName;
+                    //material = material.Clone(matname);
+                    material = CreateMaterial(matname);
+                    //if (material.GetTechnique(0).GetPass(0).NumTextureUnitStages == 0 )
+                    //{
+                    //	material.GetTechnique(0).GetPass(0).AddTextureUnitState(material.GetTechnique(0).GetPass(0).CreateTextureUnitState("gcanyon_texture_4k2k.0.0.png",0));
+                    //	material.GetTechnique(0).GetPass(0).GetTextureUnitState(0).TextureAddressing = TextureAddressing.Clamp;
+                    //	material.GetTechnique(0).GetPass(0).AddTextureUnitState(material.GetTechnique(0).GetPass(0).CreateTextureUnitState("gcanyon_texture_4k2k.0.0.png",0));
+                    //	material.GetTechnique(0).GetPass(0).GetTextureUnitState(1).SetTextureName("detail3.jpg");
+                    //	material.GetTechnique(0).GetPass(0).GetTextureUnitState(1).SetTextureScaleU(0.03F);
+                    //	material.GetTechnique(0).GetPass(0).GetTextureUnitState(1).SetTextureScaleV(0.03F);
+                    //	
+                    //}
+
+                    string texname = Options.Instance.Image_Filename + "." +
+                        commonName + "." + Options.Instance.Landscape_Extension;
+                    // assign this texture to the material
+
+                    material.GetTechnique(0).GetPass(0).CreateTextureUnitState(texname, 0);
+                    material.GetTechnique(0).GetPass(0).GetTextureUnitState(0).TextureAddressing = TextureAddressing.Clamp;
+                }
+                else
+                {
+                    // JEFF - all material settings configured through material script
+                    material = (Material)(MaterialManager.Instance.GetByName("PagingLandScape." + dataX.ToString() + "." + dataZ.ToString()));
+                }
+
+                material.Load();
+                material.Lighting = Options.Instance.Lit;
+            }
+        }
 
 		protected override void unloadMaterial()
 		{

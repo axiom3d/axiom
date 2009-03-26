@@ -19,42 +19,43 @@ namespace TerrainDemo {
         const float FLOW_SPEED = 0.2f;
 		RaySceneQuery raySceneQuery = null;
 
-		// move the camera like a human at 3m/sec
+		// move the Camera like a human at 3m/sec
 		bool humanSpeed = false;
 
-		// keep camera 2m above the ground
+		// keep Camera 2m above the ground
 		bool followTerrain = false;
 
         protected override void ChooseSceneManager() {
-            scene = SceneManagerEnumerator.Instance.GetSceneManager(SceneType.ExteriorFar);
+            SceneManager = Root.CreateSceneManager(SceneType.ExteriorFar, "TechDemoSMInstance");
+            SceneManager.ClearScene();
         }
 
         protected override void CreateCamera() {
-            camera = scene.CreateCamera("PlayerCam");
+            Camera = SceneManager.CreateCamera("PlayerCam");
 
-//            camera.Position = new Vector3(128, 25, 128);
-//            camera.LookAt(new Vector3(0, 0, -300));
-//            camera.Near = 1;
-//            camera.Far = 384;
+//            Camera.Position = new Vector3(128, 25, 128);
+//            Camera.LookAt(new Vector3(0, 0, -300));
+//            Camera.Near = 1;
+//            Camera.Far = 384;
 
-			camera.Position = new Vector3(128, 400, 128);
-			camera.LookAt(new Vector3(0, 0, -300));
-			camera.Near = 1;
-			camera.Far = 100000;
+			Camera.Position = new Vector3(128, 400, 128);
+			Camera.LookAt(new Vector3(0, 0, -300));
+			Camera.Near = 1;
+			Camera.Far = 100000;
         }
 
         protected override void CreateScene() {
-            viewport.BackgroundColor = ColorEx.White;
+            Viewport.BackgroundColor = ColorEx.White;
 
-            scene.AmbientLight = new ColorEx(0.5f, 0.5f, 0.5f);
+            SceneManager.AmbientLight = new ColorEx(0.5f, 0.5f, 0.5f);
 
-            Light light = scene.CreateLight("MainLight");
+            Light light = SceneManager.CreateLight("MainLight");
             light.Position = new Vector3(20, 80, 50);
             light.Diffuse = ColorEx.Blue;
 
-            scene.LoadWorldGeometry("Landscape.xml");
+            SceneManager.LoadWorldGeometry("Landscape.xml");
             
-            // scene.SetFog(FogMode.Exp2, ColorEx.White, .008f, 0, 250);
+            // SceneManager.SetFog(FogMode.Exp2, ColorEx.White, .008f, 0, 250);
 
             // water plane setup
             Plane waterPlane = new Plane(Vector3.UnitY, 1.5f);
@@ -69,17 +70,17 @@ namespace TerrainDemo {
                 10, 10,
                 Vector3.UnitZ);
 
-            Entity waterEntity  = scene.CreateEntity("Water", "WaterPlane");
+            Entity waterEntity  = SceneManager.CreateEntity("Water", "WaterPlane");
             waterEntity.MaterialName = "Terrain/WaterPlane";
 
-            waterNode = scene.RootSceneNode.CreateChildSceneNode("WaterNode");
+            waterNode = SceneManager.RootSceneNode.CreateChildSceneNode("WaterNode");
             waterNode.AttachObject(waterEntity);
             waterNode.Translate(new Vector3(1000, 0, 1000));
 
-			raySceneQuery = scene.CreateRayQuery( new Ray(camera.Position, Vector3.NegativeUnitY));
+			raySceneQuery = SceneManager.CreateRayQuery( new Ray(Camera.Position, Vector3.NegativeUnitY));
         }
 
-        protected override void OnFrameStarted(object source, FrameEventArgs e) {
+        protected override bool OnFrameStarted(object source, FrameEventArgs e) {
             //float moveScale;
             float waterFlow;
 
@@ -108,98 +109,98 @@ namespace TerrainDemo {
 			// reset acceleration zero
 			camAccel = Vector3.Zero;
 
-			// set the scaling of camera motion
+			// set the scaling of Camera motion
 			cameraScale = 100 * e.TimeSinceLastFrame;
 
 			// TODO: Move this into an event queueing mechanism that is processed every frame
-			input.Capture();
+			Input.Capture();
 
-			if(input.IsKeyPressed(KeyCodes.Escape)) 
+			if(Input.IsKeyPressed(KeyCodes.Escape)) 
 			{
 				Root.Instance.QueueEndRendering();
 
-				return;
+				return false;
 			}
 
-			if(input.IsKeyPressed(KeyCodes.H) && toggleDelay < 0)
+			if(Input.IsKeyPressed(KeyCodes.H) && toggleDelay < 0)
 			{
 				humanSpeed = !humanSpeed;
 				toggleDelay = 1;
 			}
 
-			if(input.IsKeyPressed(KeyCodes.G) && toggleDelay < 0)
+			if(Input.IsKeyPressed(KeyCodes.G) && toggleDelay < 0)
 			{
 				followTerrain = !followTerrain;
 				toggleDelay = 1;
 			}
 
-			if(input.IsKeyPressed(KeyCodes.A)) 
+			if(Input.IsKeyPressed(KeyCodes.A)) 
 			{
 				camAccel.x = -0.5f;
 			}
 
-			if(input.IsKeyPressed(KeyCodes.D)) 
+			if(Input.IsKeyPressed(KeyCodes.D)) 
 			{
 				camAccel.x = 0.5f;
 			}
 
-			if(input.IsKeyPressed(KeyCodes.W)) 
+			if(Input.IsKeyPressed(KeyCodes.W)) 
 			{
 				camAccel.z = -1.0f;
 			}
 
-			if(input.IsKeyPressed(KeyCodes.S)) 
+			if(Input.IsKeyPressed(KeyCodes.S)) 
 			{
 				camAccel.z = 1.0f;
 			}
 
-			camAccel.y += (float)(input.RelativeMouseZ * 0.1f);
+			camAccel.y += (float)(Input.RelativeMouseZ * 0.1f);
 
-			if(input.IsKeyPressed(KeyCodes.Left)) 
+			if(Input.IsKeyPressed(KeyCodes.Left)) 
 			{
-				camera.Yaw(cameraScale);
+				Camera.Yaw(cameraScale);
 			}
 
-			if(input.IsKeyPressed(KeyCodes.Right)) 
+			if(Input.IsKeyPressed(KeyCodes.Right)) 
 			{
-				camera.Yaw(-cameraScale);
+				Camera.Yaw(-cameraScale);
 			}
 
-			if(input.IsKeyPressed(KeyCodes.Up)) 
+			if(Input.IsKeyPressed(KeyCodes.Up)) 
 			{
-				camera.Pitch(cameraScale);
+				Camera.Pitch(cameraScale);
 			}
 
-			if(input.IsKeyPressed(KeyCodes.Down)) 
+			if(Input.IsKeyPressed(KeyCodes.Down)) 
 			{
-				camera.Pitch(-cameraScale);
+				Camera.Pitch(-cameraScale);
 			}
 
 			// subtract the time since last frame to delay specific key presses
 			toggleDelay -= e.TimeSinceLastFrame;
 
 			// toggle rendering mode
-			if(input.IsKeyPressed(KeyCodes.R) && toggleDelay < 0) 
+			if(Input.IsKeyPressed(KeyCodes.R) && toggleDelay < 0) 
 			{
-				if ( camera.PolygonMode == PolygonMode.Points ) 
+				if ( Camera.PolygonMode == PolygonMode.Points ) 
 				{
-					camera.PolygonMode = PolygonMode.Solid;
+					Camera.PolygonMode = PolygonMode.Solid;
 				}
-				else if ( camera.PolygonMode == PolygonMode.Solid ) 
+				else if ( Camera.PolygonMode == PolygonMode.Solid ) 
 				{
-					camera.PolygonMode = PolygonMode.Wireframe;
+					Camera.PolygonMode = PolygonMode.Wireframe;
 				}
 				else 
 				{
-					camera.PolygonMode = PolygonMode.Points;
+					Camera.PolygonMode = PolygonMode.Points;
 				}
 
-				Console.WriteLine( "Rendering mode changed to '{0}'.", camera.PolygonMode );
+				Console.WriteLine( "Rendering mode changed to '{0}'.", Camera.PolygonMode );
 
 				toggleDelay = 1;
 			}
 
-			if(input.IsKeyPressed(KeyCodes.T) && toggleDelay < 0) 
+			if(Input.IsKeyPressed(KeyCodes.T) && toggleDelay < 0) 
 			{
 				// toggle the texture settings
 				switch(filtering) 
@@ -227,7 +228,7 @@ namespace TerrainDemo {
 				toggleDelay = 1;
 			}
 
-			if(input.IsKeyPressed(KeyCodes.P)) 
+			if(Input.IsKeyPressed(KeyCodes.P)) 
 			{
 				string[] temp = Directory.GetFiles(Environment.CurrentDirectory, "screenshot*.jpg");
 				string fileName = string.Format("screenshot{0}.jpg", temp.Length + 1);
@@ -241,41 +242,41 @@ namespace TerrainDemo {
 				debugTextDelay = 2.0f;
 			}
 
-			if(input.IsKeyPressed(KeyCodes.B)) 
+			if(Input.IsKeyPressed(KeyCodes.B)) 
 			{
-				scene.ShowBoundingBoxes = !scene.ShowBoundingBoxes;
+				SceneManager.ShowBoundingBoxes = !SceneManager.ShowBoundingBoxes;
 			}
 
-			if(input.IsKeyPressed(KeyCodes.F)) 
+			if(Input.IsKeyPressed(KeyCodes.F)) 
 			{
 				// hide all overlays, includes ones besides the debug overlay
-				viewport.ShowOverlays = !viewport.ShowOverlays;
+				Viewport.ShowOverlays = !Viewport.ShowOverlays;
 			}
 
-			if(!input.IsMousePressed(MouseButtons.Left)) 
+			if(!Input.IsMousePressed(MouseButtons.Left)) 
 			{
-				float cameraYaw = -input.RelativeMouseX * .13f;
-				float cameraPitch = -input.RelativeMouseY * .13f;
+				float cameraYaw = -Input.RelativeMouseX * .13f;
+				float cameraPitch = -Input.RelativeMouseY * .13f;
                 
-				camera.Yaw(cameraYaw);
-				camera.Pitch(cameraPitch);
+				Camera.Yaw(cameraYaw);
+				Camera.Pitch(cameraPitch);
 			} 
 			else 
 			{
-				cameraVector.x += input.RelativeMouseX * 0.13f;
+				cameraVector.x += Input.RelativeMouseX * 0.13f;
 			}
 
 			if ( humanSpeed ) 
 			{
 				camVelocity = camAccel * 7.0f;
-				camera.MoveRelative(camVelocity * e.TimeSinceLastFrame);
+				Camera.MoveRelative(camVelocity * e.TimeSinceLastFrame);
 			} 
 			else 
 			{
 				camVelocity += (camAccel * scaleMove * camSpeed);
 
-				// move the camera based on the accumulated movement vector
-				camera.MoveRelative(camVelocity * e.TimeSinceLastFrame);
+				// move the Camera based on the accumulated movement vector
+				Camera.MoveRelative(camVelocity * e.TimeSinceLastFrame);
 
 				// Now dampen the Velocity - only if user is not accelerating
 				if (camAccel == Vector3.Zero) 
@@ -287,7 +288,7 @@ namespace TerrainDemo {
 			// update performance stats once per second
 			if(statDelay < 0.0f && showDebugOverlay) 
 			{
-				UpdateStats();
+				//UpdateDebugOverlay(null, new Axiom.Core.FrameEventArgs());
 				statDelay = 1.0f;
 			}
 			else 
@@ -308,15 +309,18 @@ namespace TerrainDemo {
 
 			if ( followTerrain ) 
 			{
-				// adjust new camera position to be a fixed distance above the ground
-				raySceneQuery.Ray = new Ray(camera.Position, Vector3.NegativeUnitY);
+				// adjust new Camera position to be a fixed distance above the ground
+				raySceneQuery.Ray = new Ray(Camera.Position, Vector3.NegativeUnitY);
 				raySceneQuery.Execute(this);
 			}
+
+            return base.OnFrameStarted(source, e);
+            return true;
         }
 
 		public bool OnQueryResult(SceneQuery.WorldFragment fragment, float distance) 
 		{
-			camera.Position = new Vector3(camera.Position.x, fragment.SingleIntersection.y + 2.0f, camera.Position.z);
+			Camera.Position = new Vector3(Camera.Position.x, fragment.SingleIntersection.y + 2.0f, Camera.Position.z);
 			return false;
 		}
 		public bool OnQueryResult(MovableObject sceneObject, float distance) 
