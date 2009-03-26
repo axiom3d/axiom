@@ -38,7 +38,7 @@ using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-
+using Axiom.Collections;
 using Axiom.Math;
 using Axiom.Graphics;
 
@@ -111,7 +111,7 @@ namespace Axiom.Core
     {
         #region Constructor
 
-        public ManualObject(string name)
+        public ManualObject( string name )
         {
             base.Name = name;
             dynamic = false;
@@ -139,14 +139,14 @@ namespace Axiom.Core
         #region Const
 
         const int TEMP_INITIAL_SIZE = 50;
-        const int TEMP_VERTEXSIZE_GUESS = sizeof(float) * 12;
+        const int TEMP_VERTEXSIZE_GUESS = sizeof( float ) * 12;
         const int TEMP_INITIAL_VERTEX_SIZE = TEMP_VERTEXSIZE_GUESS * TEMP_INITIAL_SIZE;
-        const int TEMP_INITIAL_INDEX_SIZE = sizeof(UInt16) * TEMP_INITIAL_SIZE;
+        const int TEMP_INITIAL_INDEX_SIZE = sizeof( UInt16 ) * TEMP_INITIAL_SIZE;
 
         #endregion Const
 
         #region Protected
-        
+
         #region Fields
 
         /// List of subsections
@@ -213,12 +213,12 @@ namespace Axiom.Core
         /// Resize the temp vertex buffer
         /// </summary>
         /// <param name="numVerts">Number of vertices</param>
-        protected virtual void ResizeTempVertexBufferIfNeeded(int numVerts)
+        protected virtual void ResizeTempVertexBufferIfNeeded( int numVerts )
         {
             // Calculate byte size
             // Use decl if we know it by now, otherwise default size to pos/norm/texcoord*2
             int newSize;
-            if (!firstVertex)
+            if ( !firstVertex )
             {
                 newSize = declSize * numVerts;
             }
@@ -227,9 +227,9 @@ namespace Axiom.Core
                 // estimate - size checks will deal for subsequent verts
                 newSize = TEMP_VERTEXSIZE_GUESS * numVerts;
             }
-            if (newSize > tempVertexSize || tempVertexBuffer == null)
+            if ( newSize > tempVertexSize || tempVertexBuffer == null )
             {
-                if (tempVertexBuffer == null)
+                if ( tempVertexBuffer == null )
                 {
                     // init
                     newSize = tempVertexSize;
@@ -237,14 +237,14 @@ namespace Axiom.Core
                 else
                 {
                     // increase to at least double current
-                    newSize = (int)Math.Utility.Max((float)newSize, (float)tempVertexSize * 2.0f);
+                    newSize = (int)Math.Utility.Max( (float)newSize, (float)tempVertexSize * 2.0f );
                 }
                 // copy old data
                 byte[] tmp = tempVertexBuffer;
-                tempVertexBuffer = new byte[newSize];
-                if (tmp != null)
+                tempVertexBuffer = new byte[ newSize ];
+                if ( tmp != null )
                 {
-                    tmp.CopyTo(tempVertexBuffer, 0);
+                    tmp.CopyTo( tempVertexBuffer, 0 );
                     tmp = null;
                 }
                 tempVertexSize = newSize;
@@ -255,12 +255,12 @@ namespace Axiom.Core
         /// Resize the index buffer
         /// </summary>
         /// <param name="numInds">Number of indices</param>
-        protected virtual void ResizeTempIndexBufferIfNeeded(int numInds)
+        protected virtual void ResizeTempIndexBufferIfNeeded( int numInds )
         {
-            int newSize = numInds * sizeof(UInt16);
-            if (newSize > tempIndexSize || tempIndexBuffer == null)
+            int newSize = numInds * sizeof( UInt16 );
+            if ( newSize > tempIndexSize || tempIndexBuffer == null )
             {
-                if (tempIndexBuffer == null)
+                if ( tempIndexBuffer == null )
                 {
                     // init
                     newSize = tempIndexSize;
@@ -268,14 +268,14 @@ namespace Axiom.Core
                 else
                 {
                     // increase to at least double current
-                    newSize = (int)Math.Utility.Max((float)newSize, (float)tempIndexSize * 2);
+                    newSize = (int)Math.Utility.Max( (float)newSize, (float)tempIndexSize * 2 );
                 }
-                numInds = newSize / sizeof(UInt16);
+                numInds = newSize / sizeof( UInt16 );
                 UInt16[] tmp = tempIndexBuffer;
-                tempIndexBuffer = new UInt16[numInds];
-                if (tmp != null)
+                tempIndexBuffer = new UInt16[ numInds ];
+                if ( tmp != null )
                 {
-                    tmp.CopyTo(tempIndexBuffer, 0);
+                    tmp.CopyTo( tempIndexBuffer, 0 );
                     tmp = null;
                 }
                 tempIndexSize = newSize;
@@ -290,42 +290,42 @@ namespace Axiom.Core
             tempVertexPending = false;
             RenderOperation rop = currentSection.RenderOperation;
 
-            if (rop.vertexData.vertexCount == 0 && !currentUpdating)
+            if ( rop.vertexData.vertexCount == 0 && !currentUpdating )
             {
                 // first vertex, autoorganise decl
                 VertexDeclaration oldDcl = rop.vertexData.vertexDeclaration;
                 rop.vertexData.vertexDeclaration =
-                    oldDcl.GetAutoOrganizedDeclaration(false, false);
+                    oldDcl.GetAutoOrganizedDeclaration( false, false );
 
-                HardwareBufferManager.Instance.DestroyVertexDeclaration(oldDcl);
+                HardwareBufferManager.Instance.DestroyVertexDeclaration( oldDcl );
             }
 
-            ResizeTempVertexBufferIfNeeded(++rop.vertexData.vertexCount);
+            ResizeTempVertexBufferIfNeeded( ++rop.vertexData.vertexCount );
 
             List<VertexElement> elemList = rop.vertexData.vertexDeclaration.Elements;
 
             unsafe
             {
                 // get base pointer
-                fixed (byte* pBase = &tempVertexBuffer[declSize * (rop.vertexData.vertexCount - 1)])
+                fixed ( byte* pBase = &tempVertexBuffer[ declSize * ( rop.vertexData.vertexCount - 1 ) ] )
                 {
-                    foreach (VertexElement elem in elemList)
+                    foreach ( VertexElement elem in elemList )
                     {
                         float* pFloat = null;
                         UInt32* pRGBA = null;
 
-                        switch (elem.Type)
+                        switch ( elem.Type )
                         {
                             case VertexElementType.Float1:
                             case VertexElementType.Float2:
                             case VertexElementType.Float3:
-                                pFloat = (float*)((byte*)pBase + elem.Offset);
+                                pFloat = (float*)( (byte*)pBase + elem.Offset );
                                 break;
 
                             case VertexElementType.Color:
                             case VertexElementType.Color_ABGR:
                             case VertexElementType.Color_ARGB:
-                                pRGBA = (uint*)((byte*)pBase + elem.Offset);
+                                pRGBA = (uint*)( (byte*)pBase + elem.Offset );
                                 break;
                             default:
                                 // nop ?
@@ -334,7 +334,7 @@ namespace Axiom.Core
 
                         RenderSystem rs;
                         int dims;
-                        switch (elem.Semantic)
+                        switch ( elem.Semantic )
                         {
                             case VertexElementSemantic.Position:
                                 *pFloat++ = tempVertex.position.x;
@@ -347,14 +347,14 @@ namespace Axiom.Core
                                 *pFloat++ = tempVertex.normal.z;
                                 break;
                             case VertexElementSemantic.TexCoords:
-                                dims = VertexElement.GetTypeCount(elem.Type);
-                                for (int t = 0; t < dims; ++t)
-                                    *pFloat++ = tempVertex.texCoord[elem.Index][t];
+                                dims = VertexElement.GetTypeCount( elem.Type );
+                                for ( int t = 0; t < dims; ++t )
+                                    *pFloat++ = tempVertex.texCoord[ elem.Index ][ t ];
                                 break;
                             case VertexElementSemantic.Diffuse:
                                 rs = Root.Instance.RenderSystem;
-                                if (rs != null)
-                                    *pRGBA++ = (uint)rs.ConvertColor(tempVertex.color);
+                                if ( rs != null )
+                                    *pRGBA++ = (uint)rs.ConvertColor( tempVertex.color );
                                 else
                                     *pRGBA++ = (uint)tempVertex.color.ToRGBA(); // pick one!
                                 break;
@@ -406,7 +406,7 @@ namespace Axiom.Core
             {
 
                 // Set existing
-                foreach (ManualObjectSection sec in sectionList)
+                foreach ( ManualObjectSection sec in sectionList )
                 {
                     sec.UseIdentityProjection = value;
                 }
@@ -433,7 +433,7 @@ namespace Axiom.Core
             {
 
                 // Set existing
-                foreach (ManualObjectSection sec in sectionList)
+                foreach ( ManualObjectSection sec in sectionList )
                 {
                     sec.UseIdentityView = value;
                 }
@@ -498,9 +498,9 @@ namespace Axiom.Core
         /// Calling this helps to avoid memory reallocations when you define
         /// vertices. 
         ///</summary>
-        public virtual void EstimateVertexCount(int vcount)
+        public virtual void EstimateVertexCount( int vcount )
         {
-            ResizeTempVertexBufferIfNeeded(vcount);
+            ResizeTempVertexBufferIfNeeded( vcount );
             estVertexCount = vcount;
         }
 
@@ -508,9 +508,9 @@ namespace Axiom.Core
         /// Calling this helps to avoid memory reallocations when you define
         /// indices. 
         ///</summary>
-        public virtual void EstimateIndexCount(int icount)
+        public virtual void EstimateIndexCount( int icount )
         {
-            ResizeTempIndexBufferIfNeeded(icount);
+            ResizeTempIndexBufferIfNeeded( icount );
             estIndexCount = icount;
         }
 
@@ -521,18 +521,18 @@ namespace Axiom.Core
         ///</summary>
         ///<param name="materialName">The name of the material to render this part of the object with.</param>
         ///<param name="opType">The type of operation to use to render.</param>
-        public virtual void Begin(string materialName, OperationType opType)
+        public virtual void Begin( string materialName, OperationType opType )
         {
-            if (currentSection != null)
+            if ( currentSection != null )
             {
-                throw new AxiomException("ManualObject:Begin - You cannot call Begin() again until after you call End()");
+                throw new AxiomException( "ManualObject:Begin - You cannot call Begin() again until after you call End()" );
             }
 
-            currentSection = new ManualObjectSection(this, materialName, opType);
+            currentSection = new ManualObjectSection( this, materialName, opType );
             currentUpdating = false;
             currentSection.UseIdentityProjection = useIdentityProjection;
             currentSection.UseIdentityView = useIdentityView;
-            sectionList.Add(currentSection);
+            sectionList.Add( currentSection );
             firstVertex = true;
             declSize = 0;
             texCoordIndex = 0;
@@ -551,28 +551,28 @@ namespace Axiom.Core
         /// <param name="sectionIndex">The index of the section you want to update. The first
         ///	call to <see cref="Begin"/> would have created section 0, the second section 1, etc.
         ///	</param>
-        public virtual void BeginUpdate(int sectionIndex)
+        public virtual void BeginUpdate( int sectionIndex )
         {
-            if (currentSection != null)
+            if ( currentSection != null )
             {
-                throw new AxiomException("ManualObject.BeginUpdate - You cannot call Begin() again until after you call End()");
+                throw new AxiomException( "ManualObject.BeginUpdate - You cannot call Begin() again until after you call End()" );
             }
 
-            if (sectionIndex >= sectionList.Count)
+            if ( sectionIndex >= sectionList.Count )
             {
-                throw new AxiomException("ManualObject.BeginUpdate - Invalid section index - out of range.");
+                throw new AxiomException( "ManualObject.BeginUpdate - Invalid section index - out of range." );
             }
-            currentSection = sectionList[sectionIndex];
+            currentSection = sectionList[ sectionIndex ];
             currentUpdating = true;
             firstVertex = true;
             texCoordIndex = 0;
             // reset vertex & index count
             RenderOperation rop = currentSection.RenderOperation;
             rop.vertexData.vertexCount = 0;
-            if (rop.indexData != null)
+            if ( rop.indexData != null )
                 rop.indexData.indexCount = 0;
             rop.useIndices = false;
-            declSize = rop.vertexData.vertexDeclaration.GetVertexSize(0);
+            declSize = rop.vertexData.vertexDeclaration.GetVertexSize( 0 );
         }
 
         ///<summary>
@@ -583,35 +583,35 @@ namespace Axiom.Core
         /// texture coordinates) to the last vertex started with <see cref="Position"/>.
         /// </summary>
         /// <param name="pos">Position as a <see cref="Vector3"/></param>
-        public virtual void Position(Vector3 pos)
+        public virtual void Position( Vector3 pos )
         {
-            Position(pos.x, pos.y, pos.z);
+            Position( pos.x, pos.y, pos.z );
         }
 
         ///<summary>Vertex Position</summary>
         ///<param name="x">x value of position as a float</param>
         ///<param name="y">y value of position as a float</param>
         ///<param name="z">z value of position as a float</param>
-        public virtual void Position(float x, float y, float z)
+        public virtual void Position( float x, float y, float z )
         {
 
-            if (currentSection == null)
+            if ( currentSection == null )
             {
-                throw new AxiomException("ManualObject.Position - You must call Begin() before this method");
+                throw new AxiomException( "ManualObject.Position - You must call Begin() before this method" );
             }
 
-            if (tempVertexPending)
+            if ( tempVertexPending )
             {
                 // bake current vertex
                 CopyTempVertexToBuffer();
                 firstVertex = false;
             }
 
-            if (firstVertex && !currentUpdating)
+            if ( firstVertex && !currentUpdating )
             {
                 // defining declaration
-                currentSection.RenderOperation.vertexData.vertexDeclaration.AddElement(0, declSize, VertexElementType.Float3, VertexElementSemantic.Position);
-                declSize += VertexElement.GetTypeSize(VertexElementType.Float3);
+                currentSection.RenderOperation.vertexData.vertexDeclaration.AddElement( 0, declSize, VertexElementType.Float3, VertexElementSemantic.Position );
+                declSize += VertexElement.GetTypeSize( VertexElementType.Float3 );
             }
 
             tempVertex.position.x = x;
@@ -619,8 +619,8 @@ namespace Axiom.Core
             tempVertex.position.z = z;
 
             // update bounds
-            AABB.Merge(tempVertex.position);
-            radius = Math.Utility.Max(radius, tempVertex.position.Length);
+            AABB.Merge( tempVertex.position );
+            radius = Math.Utility.Max( radius, tempVertex.position.Length );
 
             // reset current texture coord
             texCoordIndex = 0;
@@ -633,9 +633,9 @@ namespace Axiom.Core
         /// their components should be normalised.
         /// </summary>
         /// <param name="norm">Normal as Vector3</param>
-        public virtual void Normal(Vector3 norm)
+        public virtual void Normal( Vector3 norm )
         {
-            Normal(norm.x, norm.y, norm.z);
+            Normal( norm.x, norm.y, norm.z );
         }
 
         /// <summary>
@@ -644,19 +644,19 @@ namespace Axiom.Core
         /// <param name="x">x value of vector as float</param>
         /// <param name="y">y value of vector as float</param>
         /// <param name="z">z value of vector as float</param>
-        public virtual void Normal(float x, float y, float z)
+        public virtual void Normal( float x, float y, float z )
         {
-            if (currentSection == null)
+            if ( currentSection == null )
             {
-                throw new AxiomException("ManualObject.Normal - You must call Begin() before this method");
+                throw new AxiomException( "ManualObject.Normal - You must call Begin() before this method" );
             }
 
-            if (firstVertex && !currentUpdating)
+            if ( firstVertex && !currentUpdating )
             {
                 // defining declaration
-                currentSection.RenderOperation.vertexData.vertexDeclaration.AddElement(0, declSize, VertexElementType.Float3, VertexElementSemantic.Normal);
+                currentSection.RenderOperation.vertexData.vertexDeclaration.AddElement( 0, declSize, VertexElementType.Float3, VertexElementSemantic.Normal );
 
-                declSize += VertexElement.GetTypeSize(VertexElementType.Float3);
+                declSize += VertexElement.GetTypeSize( VertexElementType.Float3 );
             }
 
             tempVertex.normal.x = x;
@@ -673,22 +673,22 @@ namespace Axiom.Core
         /// variations in number of dimensions.
         ///</summary>
         ///<param name="u">u coordinate as float</param>
-        public virtual void TextureCoord(float u)
+        public virtual void TextureCoord( float u )
         {
-            if (currentSection == null)
+            if ( currentSection == null )
             {
-                throw new AxiomException("ManualObject.TextureCoord - You must call Begin() before this method");
+                throw new AxiomException( "ManualObject.TextureCoord - You must call Begin() before this method" );
             }
 
-            if (firstVertex && !currentUpdating)
+            if ( firstVertex && !currentUpdating )
             {
                 // defining declaration
-                currentSection.RenderOperation.vertexData.vertexDeclaration.AddElement(0, declSize, VertexElementType.Float1, VertexElementSemantic.TexCoords, texCoordIndex);
-                declSize += VertexElement.GetTypeSize(VertexElementType.Float1);
+                currentSection.RenderOperation.vertexData.vertexDeclaration.AddElement( 0, declSize, VertexElementType.Float1, VertexElementSemantic.TexCoords, texCoordIndex );
+                declSize += VertexElement.GetTypeSize( VertexElementType.Float1 );
             }
 
-            tempVertex.texCoordDims[texCoordIndex] = 1;
-            tempVertex.texCoord[texCoordIndex].x = u;
+            tempVertex.texCoordDims[ texCoordIndex ] = 1;
+            tempVertex.texCoord[ texCoordIndex ].x = u;
 
             ++texCoordIndex;
 
@@ -699,23 +699,23 @@ namespace Axiom.Core
         /// </summary>
         /// <param name="u">u coordinate as float</param>
         /// <param name="v">v coordinate as float</param>
-        public virtual void TextureCoord(float u, float v)
+        public virtual void TextureCoord( float u, float v )
         {
-            if (currentSection == null)
+            if ( currentSection == null )
             {
-                throw new AxiomException("ManualObject.TextureCoord - You must call Begin() before this method");
+                throw new AxiomException( "ManualObject.TextureCoord - You must call Begin() before this method" );
             }
 
-            if (firstVertex && !currentUpdating)
+            if ( firstVertex && !currentUpdating )
             {
                 // defining declaration
-                currentSection.RenderOperation.vertexData.vertexDeclaration.AddElement(0, declSize, VertexElementType.Float2, VertexElementSemantic.TexCoords, texCoordIndex);
-                declSize += VertexElement.GetTypeSize(VertexElementType.Float2);
+                currentSection.RenderOperation.vertexData.vertexDeclaration.AddElement( 0, declSize, VertexElementType.Float2, VertexElementSemantic.TexCoords, texCoordIndex );
+                declSize += VertexElement.GetTypeSize( VertexElementType.Float2 );
             }
 
-            tempVertex.texCoordDims[texCoordIndex] = 2;
-            tempVertex.texCoord[texCoordIndex].x = u;
-            tempVertex.texCoord[texCoordIndex].y = v;
+            tempVertex.texCoordDims[ texCoordIndex ] = 2;
+            tempVertex.texCoord[ texCoordIndex ].x = u;
+            tempVertex.texCoord[ texCoordIndex ].y = v;
 
             ++texCoordIndex;
 
@@ -727,24 +727,24 @@ namespace Axiom.Core
         /// <param name="u">u coordinate as float</param>
         /// <param name="v">v coordinate as float</param>
         /// <param name="w">w coordinate as float</param>
-        public virtual void TextureCoord(float u, float v, float w)
+        public virtual void TextureCoord( float u, float v, float w )
         {
-            if (currentSection == null)
+            if ( currentSection == null )
             {
-                throw new AxiomException("ManualObject.TextureCoord - You must call Begin() before this method");
+                throw new AxiomException( "ManualObject.TextureCoord - You must call Begin() before this method" );
             }
 
-            if (firstVertex && !currentUpdating)
+            if ( firstVertex && !currentUpdating )
             {
                 // defining declaration
-                currentSection.RenderOperation.vertexData.vertexDeclaration.AddElement(0, declSize, VertexElementType.Float3, VertexElementSemantic.TexCoords, texCoordIndex);
-                declSize += VertexElement.GetTypeSize(VertexElementType.Float3);
+                currentSection.RenderOperation.vertexData.vertexDeclaration.AddElement( 0, declSize, VertexElementType.Float3, VertexElementSemantic.TexCoords, texCoordIndex );
+                declSize += VertexElement.GetTypeSize( VertexElementType.Float3 );
             }
 
-            tempVertex.texCoordDims[texCoordIndex] = 3;
-            tempVertex.texCoord[texCoordIndex].x = u;
-            tempVertex.texCoord[texCoordIndex].y = v;
-            tempVertex.texCoord[texCoordIndex].z = w;
+            tempVertex.texCoordDims[ texCoordIndex ] = 3;
+            tempVertex.texCoord[ texCoordIndex ].x = u;
+            tempVertex.texCoord[ texCoordIndex ].y = v;
+            tempVertex.texCoord[ texCoordIndex ].z = w;
 
             ++texCoordIndex;
 
@@ -754,25 +754,25 @@ namespace Axiom.Core
         /// Texture coordinate
         /// </summary>
         /// <param name="uv">uv coordinate as Vector2</param>
-        public virtual void TextureCoord(Vector2 uv)
+        public virtual void TextureCoord( Vector2 uv )
         {
-            TextureCoord(uv.x, uv.y);
+            TextureCoord( uv.x, uv.y );
         }
 
         /// <summary>
         /// Texture Coordinate
         /// </summary>
         /// <param name="uvw">uvw coordinate as Vector3</param>
-        public virtual void TextureCoord(Vector3 uvw)
+        public virtual void TextureCoord( Vector3 uvw )
         {
-            TextureCoord(uvw.x, uvw.y, uvw.z);
+            TextureCoord( uvw.x, uvw.y, uvw.z );
         }
 
         /// <summary>Add a vertex color to a vertex</summary>
         /// <param name="col">col as ColorEx object</param>
-        public virtual void Color(ColorEx col)
+        public virtual void Color( ColorEx col )
         {
-            Color(col.r, col.g, col.b, col.a);
+            Color( col.r, col.g, col.b, col.a );
         }
 
         ///<summary>Add a vertex color to a vertex</summary>
@@ -780,18 +780,18 @@ namespace Axiom.Core
         ///<param name="g">g color component as float</param>
         ///<param name="b">b color component as float</param>
         ///<param name="a">a color component as float</param>
-        public virtual void Color(float r, float g, float b, float a)
+        public virtual void Color( float r, float g, float b, float a )
         {
-            if (currentSection == null)
+            if ( currentSection == null )
             {
-                throw new AxiomException("ManualObject.Color - You must call Begin() before this method");
+                throw new AxiomException( "ManualObject.Color - You must call Begin() before this method" );
             }
 
-            if (firstVertex && !currentUpdating)
+            if ( firstVertex && !currentUpdating )
             {
                 // defining declaration
-                currentSection.RenderOperation.vertexData.vertexDeclaration.AddElement(0, declSize, VertexElementType.Color, VertexElementSemantic.Diffuse);
-                declSize += VertexElement.GetTypeSize(VertexElementType.Color);
+                currentSection.RenderOperation.vertexData.vertexDeclaration.AddElement( 0, declSize, VertexElementType.Color, VertexElementSemantic.Diffuse );
+                declSize += VertexElement.GetTypeSize( VertexElementType.Color );
             }
 
             tempVertex.color.r = r;
@@ -812,26 +812,26 @@ namespace Axiom.Core
         /// class only allows 16-bit indexes, for simplicity and ease of use.
         /// </remarks>
         /// <param name="idx">A vertex index from 0 to 65535.</param>
-        public virtual void Index(UInt16 idx)
+        public virtual void Index( UInt16 idx )
         {
-            if (currentSection == null)
+            if ( currentSection == null )
             {
-                throw new AxiomException("ManualObject.Index - You must call Begin() before this method");
+                throw new AxiomException( "ManualObject.Index - You must call Begin() before this method" );
             }
 
             anyIndexed = true;
             // make sure we have index data
             RenderOperation rop = currentSection.RenderOperation;
-            if (rop.indexData == null)
+            if ( rop.indexData == null )
             {
                 rop.indexData = new IndexData();
                 rop.indexData.indexCount = 0;
             }
 
             rop.useIndices = true;
-            ResizeTempIndexBufferIfNeeded(++rop.indexData.indexCount);
+            ResizeTempIndexBufferIfNeeded( ++rop.indexData.indexCount );
 
-            tempIndexBuffer[rop.indexData.indexCount - 1] = idx;
+            tempIndexBuffer[ rop.indexData.indexCount - 1 ] = idx;
 
         }
 
@@ -847,21 +847,21 @@ namespace Axiom.Core
         /// shortcut to calling <see cref="Index"/> 3 times. It is only valid for triangle 
         /// lists.
         ///</summary>
-        public virtual void Triangle(UInt16 i1, UInt16 i2, UInt16 i3)
+        public virtual void Triangle( UInt16 i1, UInt16 i2, UInt16 i3 )
         {
-            if (currentSection == null)
+            if ( currentSection == null )
             {
-                throw new AxiomException("ManualObject.Triangle - You must call Begin() before this method");
+                throw new AxiomException( "ManualObject.Triangle - You must call Begin() before this method" );
             }
 
-            if (currentSection.RenderOperation.operationType != OperationType.TriangleList)
+            if ( currentSection.RenderOperation.operationType != OperationType.TriangleList )
             {
-                throw new AxiomException("ManualObject.Triangle - This method is only valid on triangle lists");
+                throw new AxiomException( "ManualObject.Triangle - This method is only valid on triangle lists" );
             }
 
-            Index(i1);
-            Index(i2);
-            Index(i3);
+            Index( i1 );
+            Index( i2 );
+            Index( i3 );
 
         }
 
@@ -874,12 +874,12 @@ namespace Axiom.Core
         ///<param name="i2">vertex index from 0 to 65535 defining a face</param>
         ///<param name="i3">vertex index from 0 to 65535 defining a face</param>
         ///<param name="i4">vertex index from 0 to 65535 defining a face</param>
-        public virtual void Quad(UInt16 i1, UInt16 i2, UInt16 i3, UInt16 i4)
+        public virtual void Quad( UInt16 i1, UInt16 i2, UInt16 i3, UInt16 i4 )
         {
             // first tri
-            Triangle(i1, i2, i3);
+            Triangle( i1, i2, i3 );
             // second tri
-            Triangle(i3, i4, i1);
+            Triangle( i3, i4, i1 );
         }
 
         ///<summary>
@@ -887,12 +887,12 @@ namespace Axiom.Core
         ///</summary>
         public virtual ManualObjectSection End()
         {
-            if (currentSection == null)
+            if ( currentSection == null )
             {
-                throw new AxiomException("ManualObject.End - You cannot call End() until after you call Begin()");
+                throw new AxiomException( "ManualObject.End - You cannot call End() until after you call Begin()" );
             }
 
-            if (tempVertexPending)
+            if ( tempVertexPending )
             {
                 // bake current vertex
                 CopyTempVertexToBuffer();
@@ -904,10 +904,10 @@ namespace Axiom.Core
             RenderOperation rop = currentSection.RenderOperation;
 
             // Check for empty content
-            if (rop.vertexData.vertexCount == 0 || (rop.useIndices && rop.indexData.indexCount == 0))
+            if ( rop.vertexData.vertexCount == 0 || ( rop.useIndices && rop.indexData.indexCount == 0 ) )
             {
                 // You're wasting my time sonny
-                if (currentUpdating)
+                if ( currentUpdating )
                 {
                     // Can't just undo / remove since may be in the middle
                     // Just allow counts to be 0, will not be issued to renderer
@@ -919,8 +919,8 @@ namespace Axiom.Core
                 {
                     // First creation, can really undo
                     // Has already been added to section list end, so remove
-                    if (sectionList.Count > 0)
-                        sectionList.RemoveAt(sectionList.Count - 1);
+                    if ( sectionList.Count > 0 )
+                        sectionList.RemoveAt( sectionList.Count - 1 );
                 }
             }
             else // not an empty section
@@ -931,56 +931,56 @@ namespace Axiom.Core
                 bool vbufNeedsCreating = true;
                 bool ibufNeedsCreating = rop.useIndices;
 
-                if (currentUpdating)
+                if ( currentUpdating )
                 {
                     // May be able to reuse buffers, check sizes
-                    vbuf = rop.vertexData.vertexBufferBinding.GetBuffer(0);
-                    if (vbuf.VertexCount >= rop.vertexData.vertexCount)
+                    vbuf = rop.vertexData.vertexBufferBinding.GetBuffer( 0 );
+                    if ( vbuf.VertexCount >= rop.vertexData.vertexCount )
                         vbufNeedsCreating = false;
 
-                    if (rop.useIndices)
+                    if ( rop.useIndices )
                     {
-                        if (rop.indexData.indexBuffer.IndexCount >= rop.indexData.indexCount)
+                        if ( rop.indexData.indexBuffer.IndexCount >= rop.indexData.indexCount )
                             ibufNeedsCreating = false;
                     }
 
                 }
 
-                if (vbufNeedsCreating)
+                if ( vbufNeedsCreating )
                 {
                     // Make the vertex buffer larger if estimated vertex count higher
                     // to allow for user-configured growth area
-                    int vertexCount = (int)Math.Utility.Max(rop.vertexData.vertexCount, estVertexCount);
+                    int vertexCount = (int)Math.Utility.Max( rop.vertexData.vertexCount, estVertexCount );
 
                     vbuf = HardwareBufferManager.Instance.CreateVertexBuffer(
                             declSize,
                             vertexCount,
                             dynamic ? BufferUsage.DynamicWriteOnly :
-                                BufferUsage.StaticWriteOnly);
+                                BufferUsage.StaticWriteOnly );
 
-                    rop.vertexData.vertexBufferBinding.SetBinding(0, vbuf);
+                    rop.vertexData.vertexBufferBinding.SetBinding( 0, vbuf );
                 }
 
-                if (ibufNeedsCreating)
+                if ( ibufNeedsCreating )
                 {
                     // Make the index buffer larger if estimated index count higher
                     // to allow for user-configured growth area
-                    int indexCount = (int)Utility.Max(rop.indexData.indexCount, estIndexCount);
+                    int indexCount = (int)Utility.Max( rop.indexData.indexCount, estIndexCount );
                     rop.indexData.indexBuffer =
                         HardwareBufferManager.Instance.CreateIndexBuffer(
                             IndexType.Size16, indexCount, dynamic ?
-                            BufferUsage.DynamicWriteOnly : BufferUsage.StaticWriteOnly);
+                            BufferUsage.DynamicWriteOnly : BufferUsage.StaticWriteOnly );
                 }
 
                 // Write vertex data
-                if (vbuf != null)
-                    vbuf.WriteData(0, rop.vertexData.vertexCount * vbuf.VertexSize, tempVertexBuffer, true);
+                if ( vbuf != null )
+                    vbuf.WriteData( 0, rop.vertexData.vertexCount * vbuf.VertexSize, tempVertexBuffer, true );
 
                 // Write index data
-                if (rop.useIndices)
+                if ( rop.useIndices )
                 {
-                    rop.indexData.indexBuffer.WriteData(0, rop.indexData.indexCount * rop.indexData.indexBuffer.IndexSize,
-                        tempIndexBuffer, true);
+                    rop.indexData.indexBuffer.WriteData( 0, rop.indexData.indexCount * rop.indexData.indexBuffer.IndexSize,
+                        tempIndexBuffer, true );
                 }
 
                 // return the finished section
@@ -992,7 +992,7 @@ namespace Axiom.Core
             ResetTempAreas();
 
             // Tell parent if present
-            if (ParentNode != null)
+            if ( ParentNode != null )
             {
                 ParentNode.NeedUpdate();
             }
@@ -1012,14 +1012,14 @@ namespace Axiom.Core
         /// </summary>
         /// <param name="idx">The index of the subsection to alter</param>
         /// <param name="name">The name of the new material to use</param>
-        public virtual void SetMaterialName(int idx, string name)
+        public virtual void SetMaterialName( int idx, string name )
         {
-            if (idx >= sectionList.Count)
+            if ( idx >= sectionList.Count )
             {
-                throw new AxiomException("ManualObject.SetMaterialName - Index out of bounds!");
+                throw new AxiomException( "ManualObject.SetMaterialName - Index out of bounds!" );
             }
 
-            sectionList[idx].MaterialName = name;
+            sectionList[ idx ].MaterialName = name;
 
         }
 
@@ -1034,29 +1034,29 @@ namespace Axiom.Core
         ///<param name="meshName">The name to give the mesh</param>
         ///<param name="groupName">The resource group to create the mesh in</param>
 
-        public virtual Mesh ConvertToMesh(string meshName, string groupName)
+        public virtual Mesh ConvertToMesh( string meshName, string groupName )
         {
-            if (currentSection != null)
+            if ( currentSection != null )
             {
-                throw new AxiomException("ManualObject.ConvertToMesh - You cannot call ConvertToMesh() whilst you are in the middle of defining the object; call End() first.");
+                throw new AxiomException( "ManualObject.ConvertToMesh - You cannot call ConvertToMesh() whilst you are in the middle of defining the object; call End() first." );
             }
 
-            if (sectionList.Count == 0)
+            if ( sectionList.Count == 0 )
             {
-                throw new AxiomException("ManualObject.ConvertToMesh - No data defined to convert to a mesh.");
+                throw new AxiomException( "ManualObject.ConvertToMesh - No data defined to convert to a mesh." );
             }
 
-            foreach (ManualObjectSection sec in sectionList)
+            foreach ( ManualObjectSection sec in sectionList )
             {
-                if (!sec.RenderOperation.useIndices)
+                if ( !sec.RenderOperation.useIndices )
                 {
-                    throw new AxiomException("ManualObject.ConvertToMesh - Only indexed geometry may be converted to a mesh.");
+                    throw new AxiomException( "ManualObject.ConvertToMesh - Only indexed geometry may be converted to a mesh." );
                 }
             }
 
-            Mesh m = MeshManager.Instance.CreateManual(meshName, groupName, null);
+            Mesh m = MeshManager.Instance.CreateManual( meshName, groupName, null );
 
-            foreach (ManualObjectSection sec in sectionList)
+            foreach ( ManualObjectSection sec in sectionList )
             {
                 RenderOperation rop = sec.RenderOperation;
                 SubMesh sm = m.CreateSubMesh();
@@ -1064,9 +1064,9 @@ namespace Axiom.Core
                 sm.operationType = rop.operationType;
                 sm.MaterialName = sec.MaterialName;
                 // Copy vertex data; replicate buffers too
-                sm.vertexData = rop.vertexData.Clone(true);
+                sm.vertexData = rop.vertexData.Clone( true );
                 // Copy index data; replicate buffers too
-                sm.indexData = rop.indexData.Clone(true);
+                sm.indexData = rop.indexData.Clone( true );
             }
             // update bounds
             m.BoundingBox = AABB;
@@ -1083,12 +1083,12 @@ namespace Axiom.Core
         /// </summary>
         /// <param name="index">Index of section to get</param>
         /// <returns></returns>
-        public ManualObjectSection GetSection(int index)
+        public ManualObjectSection GetSection( int index )
         {
-            if (index >= sectionList.Count)
-                throw new AxiomException("ManualObject.GetSection - Index out of bounds.");
+            if ( index >= sectionList.Count )
+                throw new AxiomException( "ManualObject.GetSection - Index out of bounds." );
 
-            return sectionList[index];
+            return sectionList[ index ];
         }
 
         /// <summary>
@@ -1097,27 +1097,27 @@ namespace Axiom.Core
         public EdgeData GetEdgeList()
         {
             // Build on demand
-            if (edgeList == null && anyIndexed)
+            if ( edgeList == null && anyIndexed )
             {
                 EdgeListBuilder eb = new EdgeListBuilder();
                 int vertexSet = 0;
                 bool anyBuilt = false;
-                foreach (ManualObjectSection sec in sectionList)
+                foreach ( ManualObjectSection sec in sectionList )
                 {
                     RenderOperation rop = sec.RenderOperation;
                     // Only indexed triangle geometry supported for stencil shadows
-                    if (rop.useIndices && rop.indexData.indexCount != 0 &&
-                        (rop.operationType == OperationType.TriangleFan ||
+                    if ( rop.useIndices && rop.indexData.indexCount != 0 &&
+                        ( rop.operationType == OperationType.TriangleFan ||
                          rop.operationType == OperationType.TriangleList ||
-                         rop.operationType == OperationType.TriangleStrip))
+                         rop.operationType == OperationType.TriangleStrip ) )
                     {
-                        eb.AddVertexData(rop.vertexData);
-                        eb.AddIndexData(rop.indexData, vertexSet++);
+                        eb.AddVertexData( rop.vertexData );
+                        eb.AddIndexData( rop.indexData, vertexSet++ );
                         anyBuilt = true;
                     }
                 }
 
-                if (anyBuilt)
+                if ( anyBuilt )
                     edgeList = eb.Build();
 
             }
@@ -1163,7 +1163,7 @@ namespace Axiom.Core
             }
         }
 
-        public override void NotifyCurrentCamera(Camera camera)
+        public override void NotifyCurrentCamera( Camera camera )
         {
         }
 
@@ -1172,20 +1172,20 @@ namespace Axiom.Core
         /// This is called by the engine automatically if the object is attached to a <see cref="SceneNode"/>.
         /// </summary>
         /// <param name="queue">Rendering queue to add this object</param>
-        public override void UpdateRenderQueue(RenderQueue queue)
+        public override void UpdateRenderQueue( RenderQueue queue )
         {
-            foreach (ManualObjectSection sec in sectionList)
+            foreach ( ManualObjectSection sec in sectionList )
             {
                 // Skip empty sections (only happens if non-empty first, then updated)
                 RenderOperation rop = sec.RenderOperation;
-                if (rop.vertexData.vertexCount == 0 ||
-                    (rop.useIndices && rop.indexData.indexCount == 0))
+                if ( rop.vertexData.vertexCount == 0 ||
+                    ( rop.useIndices && rop.indexData.indexCount == 0 ) )
                     continue;
 
-                if (this.renderQueueIDSet)
-                    queue.AddRenderable(sec, this.renderQueueID);
+                if ( this.renderQueueIDSet )
+                    queue.AddRenderable( sec, this.renderQueueID );
                 else
-                    queue.AddRenderable(sec);
+                    queue.AddRenderable( sec );
             }
 
         }
@@ -1200,15 +1200,15 @@ namespace Axiom.Core
         /// <param name="extrusionDistance">Extrusion distance</param>
         /// <param name="flags">Flag parameters</param>
         /// <returns></returns>
-        public override IEnumerator GetShadowVolumeRenderableEnumerator(ShadowTechnique technique, Light light,
-            HardwareIndexBuffer indexBuffer, bool extrudeVertices, float extrusionDistance, int flags)
+        public override IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light,
+            HardwareIndexBuffer indexBuffer, bool extrudeVertices, float extrusionDistance, int flags )
         {
-            Debug.Assert(indexBuffer != null, "Only external index buffers are supported right now");
-            Debug.Assert(indexBuffer.Type == IndexType.Size16, "Only 16-bit indexes supported for now");
+            Debug.Assert( indexBuffer != null, "Only external index buffers are supported right now" );
+            Debug.Assert( indexBuffer.Type == IndexType.Size16, "Only 16-bit indexes supported for now" );
 
             EdgeData edgeList = GetEdgeList();
 
-            if (edgeList == null)
+            if ( edgeList == null )
             {
                 return shadowRenderables.GetEnumerator();
             }
@@ -1216,33 +1216,33 @@ namespace Axiom.Core
             // Calculate the object space light details
             Vector4 lightPos = light.GetAs4DVector();
             Matrix4 world2Obj = this.ParentNode.FullTransform.Inverse();
-            lightPos = world2Obj.TransformAffine(lightPos);
+            lightPos = world2Obj.TransformAffine( lightPos );
 
             // Init shadow renderable list if required (only allow indexed)
-            bool init = (shadowRenderables.Count == 0 && anyIndexed);
+            bool init = ( shadowRenderables.Count == 0 && anyIndexed );
 
             ManualObjectSectionShadowRenderable esr = null;
             ManualObjectSection seci = null;
 
-            if (init)
+            if ( init )
             {
                 shadowRenderables.Capacity = edgeList.edgeGroups.Count;
             }
 
             EdgeData.EdgeGroup egi;
 
-            for (int i = 0; i < shadowRenderables.Capacity; i++)
+            for ( int i = 0; i < shadowRenderables.Capacity; i++ )
             {
                 // Skip non-indexed geometry
-                egi = (EdgeData.EdgeGroup)edgeList.edgeGroups[i];
-                seci = sectionList[i];
+                egi = (EdgeData.EdgeGroup)edgeList.edgeGroups[ i ];
+                seci = sectionList[ i ];
 
-                if (seci.RenderOperation.useIndices)
+                if ( seci.RenderOperation.useIndices )
                 {
                     continue;
                 }
 
-                if (init)
+                if ( init )
                 {
                     // Create a new renderable, create a separate light cap if
                     // we're using a vertex program (either for this model, or
@@ -1252,35 +1252,35 @@ namespace Axiom.Core
                     mat.Load();
                     bool vertexProgram = false;
                     Technique t = mat.GetBestTechnique();
-                    for (int p = 0; p < t.PassCount; ++p)
+                    for ( int p = 0; p < t.PassCount; ++p )
                     {
-                        Pass pass = t.GetPass(p);
-                        if (pass.HasVertexProgram)
+                        Pass pass = t.GetPass( p );
+                        if ( pass.HasVertexProgram )
                         {
                             vertexProgram = true;
                             break;
                         }
                     }
 
-                    esr = new ManualObjectSectionShadowRenderable(this, indexBuffer, egi.vertexData, vertexProgram || !extrudeVertices, false);
-                    shadowRenderables.Add(esr);
+                    esr = new ManualObjectSectionShadowRenderable( this, indexBuffer, egi.vertexData, vertexProgram || !extrudeVertices, false );
+                    shadowRenderables.Add( esr );
                 }
                 // Get shadow renderable
-                esr = (ManualObjectSectionShadowRenderable)shadowRenderables[i];
+                esr = (ManualObjectSectionShadowRenderable)shadowRenderables[ i ];
 
                 // Extrude vertices in software if required
-                if (extrudeVertices)
+                if ( extrudeVertices )
                 {
-                    ExtrudeVertices(esr.PositionBuffer, egi.vertexData.vertexCount, lightPos, extrusionDistance);
+                    ExtrudeVertices( esr.PositionBuffer, egi.vertexData.vertexCount, lightPos, extrusionDistance );
                 }
 
             }
 
             // Calc triangle light facing
-            UpdateEdgeListLightFacing(edgeList, lightPos);
+            UpdateEdgeListLightFacing( edgeList, lightPos );
 
             // Generate indexes and update renderables
-            GenerateShadowVolume(edgeList, indexBuffer, light, shadowRenderables, flags);
+            GenerateShadowVolume( edgeList, indexBuffer, light, shadowRenderables, flags );
 
             return shadowRenderables.GetEnumerator();
         }
@@ -1298,8 +1298,8 @@ namespace Axiom.Core
         {
             public Vector3 position = Vector3.Zero;
             public Vector3 normal = Vector3.Zero;
-            public Vector3[] texCoord = new Vector3[Axiom.Configuration.Config.MaxTextureCoordSets];
-            public ushort[] texCoordDims = new ushort[Axiom.Configuration.Config.MaxTextureCoordSets];
+            public Vector3[] texCoord = new Vector3[ Axiom.Configuration.Config.MaxTextureCoordSets ];
+            public ushort[] texCoordDims = new ushort[ Axiom.Configuration.Config.MaxTextureCoordSets ];
             public ColorEx color = ColorEx.White;
         }
 
@@ -1317,14 +1317,14 @@ namespace Axiom.Core
             protected ManualObject parent = null;
             protected string materialName;
             protected RenderOperation renderOperation = new RenderOperation();
-            protected Hashtable customParams = new Hashtable(20);
+            protected Hashtable customParams = new Hashtable( 20 );
 
             #endregion Protected fields
 
             #region Constructor
 
-            public ManualObjectSection(ManualObject parent, string materialName,
-                OperationType opType)
+            public ManualObjectSection( ManualObject parent, string materialName,
+                OperationType opType )
             {
                 this.parent = parent;
                 this.materialName = materialName;
@@ -1351,7 +1351,7 @@ namespace Axiom.Core
 
                 set
                 {
-                    if (materialName != value)
+                    if ( materialName != value )
                     {
                         materialName = value;
                         _material = null;
@@ -1376,7 +1376,7 @@ namespace Axiom.Core
 
             #region Methods
 
-            public void GetRenderOperation(RenderOperation op)
+            public void GetRenderOperation( RenderOperation op )
             {
                 op.useIndices = this.renderOperation.useIndices;
                 op.operationType = this.renderOperation.operationType;
@@ -1384,47 +1384,47 @@ namespace Axiom.Core
                 op.indexData = this.renderOperation.indexData;
             }
 
-            public void GetWorldTransforms(Matrix4[] matrices)
+            public void GetWorldTransforms( Matrix4[] matrices )
             {
-                matrices[0] = parent.ParentNode.FullTransform;
+                matrices[ 0 ] = parent.ParentNode.FullTransform;
             }
 
-            public float GetSquaredViewDepth(Camera camera)
+            public float GetSquaredViewDepth( Camera camera )
             {
-                if (parent.ParentNode != null)
+                if ( parent.ParentNode != null )
                 {
-                    return parent.ParentNode.GetSquaredViewDepth(camera);
+                    return parent.ParentNode.GetSquaredViewDepth( camera );
                 }
                 else
                     return 0.0f;
             }
 
-            public Vector4 GetCustomParameter(int index)
+            public Vector4 GetCustomParameter( int index )
             {
-                if (customParams[index] == null)
+                if ( customParams[ index ] == null )
                 {
-                    throw new Exception("A parameter was not found at the given index");
+                    throw new Exception( "A parameter was not found at the given index" );
                 }
                 else
                 {
-                    return (Vector4)customParams[index];
+                    return (Vector4)customParams[ index ];
                 }
             }
 
-            public void SetCustomParameter(int index, Vector4 val)
+            public void SetCustomParameter( int index, Vector4 val )
             {
-                customParams[index] = val;
+                customParams[ index ] = val;
             }
 
-            public void UpdateCustomGpuParameter(GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams)
+            public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
             {
-                if (customParams[entry.data] != null)
+                if ( customParams[ entry.data ] != null )
                 {
-                    gpuParams.SetConstant(entry.index, (Vector4)customParams[entry.data]);
+                    gpuParams.SetConstant( entry.index, (Vector4)customParams[ entry.data ] );
                 }
             }
 
-            #endregion Methods            
+            #endregion Methods
 
             #region Properties
 
@@ -1440,11 +1440,11 @@ namespace Axiom.Core
             {
                 get
                 {
-                    if (_material == null)
+                    if ( _material == null )
                     {
                         // Load from default group. If user wants to use alternate groups,
                         // they can define it and preload
-                        _material = (Material)MaterialManager.Instance.Load(materialName, ResourceGroupManager.DefaultResourceGroupName);
+                        _material = (Material)MaterialManager.Instance.Load( materialName, ResourceGroupManager.DefaultResourceGroupName );
                     }
 
                     return _material;
@@ -1457,10 +1457,10 @@ namespace Axiom.Core
                 get
                 {
                     Material retMat = this.Material;
-                    if (retMat != null)
+                    if ( retMat != null )
                         return retMat.GetBestTechnique();
                     else
-                        throw new AxiomException("ManualObject.Technique - couldn't get object material.");
+                        throw new AxiomException( "ManualObject.Technique - couldn't get object material." );
 
                     return null;
                 }
@@ -1568,9 +1568,9 @@ namespace Axiom.Core
 
             #region Constructor
 
-            public ManualObjectSectionShadowRenderable(ManualObject parent,
+            public ManualObjectSectionShadowRenderable( ManualObject parent,
                 HardwareIndexBuffer indexBuffer, VertexData vertexData,
-                bool createSeparateLightCap, bool isLightCap)
+                bool createSeparateLightCap, bool isLightCap )
             {
                 this.parent = parent;
                 // Initialise render op
@@ -1582,25 +1582,25 @@ namespace Axiom.Core
                 // Create vertex data which just references position component (and 2 component)
                 renderOp.vertexData = new VertexData();
                 // Map in position data
-                renderOp.vertexData.vertexDeclaration.AddElement(0, 0, VertexElementType.Float3, VertexElementSemantic.Position);
+                renderOp.vertexData.vertexDeclaration.AddElement( 0, 0, VertexElementType.Float3, VertexElementSemantic.Position );
                 short origPosBind =
-                vertexData.vertexDeclaration.FindElementBySemantic(VertexElementSemantic.Position).Source;
+                vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position ).Source;
 
-                positionBuffer = vertexData.vertexBufferBinding.GetBuffer(origPosBind);
+                positionBuffer = vertexData.vertexBufferBinding.GetBuffer( origPosBind );
 
-                renderOp.vertexData.vertexBufferBinding.SetBinding(0, positionBuffer);
+                renderOp.vertexData.vertexBufferBinding.SetBinding( 0, positionBuffer );
                 // Map in w-coord buffer (if present)
-                if (vertexData.hardwareShadowVolWBuffer != null)
+                if ( vertexData.hardwareShadowVolWBuffer != null )
                 {
-                    renderOp.vertexData.vertexDeclaration.AddElement(1, 0, VertexElementType.Float1, VertexElementSemantic.TexCoords, 0);
+                    renderOp.vertexData.vertexDeclaration.AddElement( 1, 0, VertexElementType.Float1, VertexElementSemantic.TexCoords, 0 );
                     wBuffer = vertexData.hardwareShadowVolWBuffer;
-                    renderOp.vertexData.vertexBufferBinding.SetBinding(1, wBuffer);
+                    renderOp.vertexData.vertexBufferBinding.SetBinding( 1, wBuffer );
                 }
 
                 // Use same vertex start as input
                 renderOp.vertexData.vertexStart = vertexData.vertexStart;
 
-                if (isLightCap)
+                if ( isLightCap )
                 {
                     // Use original vertex count, no extrusion
                     renderOp.vertexData.vertexCount = vertexData.vertexCount;
@@ -1610,11 +1610,11 @@ namespace Axiom.Core
                     // Vertex count must take into account the doubling of the buffer,
                     // because second half of the buffer is the extruded copy
                     renderOp.vertexData.vertexCount = vertexData.vertexCount * 2;
-                    if (createSeparateLightCap)
+                    if ( createSeparateLightCap )
                     {
                         // Create child light cap
-                        this.lightCap = new ManualObjectSectionShadowRenderable(parent,
-                        indexBuffer, vertexData, false, true);
+                        this.lightCap = new ManualObjectSectionShadowRenderable( parent,
+                        indexBuffer, vertexData, false, true );
                     }
                 }
             }
@@ -1643,9 +1643,9 @@ namespace Axiom.Core
 
             #region ShadowRenderable
 
-            public override void GetWorldTransforms(Matrix4[] matrices)
+            public override void GetWorldTransforms( Matrix4[] matrices )
             {
-                matrices[0] = parent.ParentNode.FullTransform;
+                matrices[ 0 ] = parent.ParentNode.FullTransform;
             }
 
             public override Quaternion WorldOrientation
@@ -1680,4 +1680,29 @@ namespace Axiom.Core
 
         #endregion Nested types
     }
+
+    #region MovableObjectFactory implementation
+
+    public class ManualObjectFactory : MovableObjectFactory
+    {
+        private const string Factory_Type_Name = "ManualObject";
+
+        public ManualObjectFactory()
+        {
+            this.Type = ManualObjectFactory.Factory_Type_Name;
+        }
+
+        protected override MovableObject _createInstance( string name, NameValuePairList param )
+        {
+            return new ManualObject( name );
+        }
+
+        public override void DestroyInstance( MovableObject obj )
+        {
+            obj = null;
+        }
+    }
+
+    #endregion MovableObjectFactory implementation
+
 }

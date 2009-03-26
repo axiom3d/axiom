@@ -914,7 +914,7 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        ///		Empties the entire scene, inluding all SceneNodes, Entities, Lights, 
+        ///		Empties the entire scene, including all SceneNodes, Entities, Lights, 
         ///		BillboardSets etc. Cameras are not deleted at this stage since
         ///		they are still referenced by viewports, which are not destroyed during
         ///		this process.
@@ -1140,7 +1140,7 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        ///     Retreives the AnimationState with the specified name.
+        ///     Retrieves the AnimationState with the specified name.
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -1196,7 +1196,7 @@ namespace Axiom.Core
         ///		The render queue in use by this scene manager.
         ///		Note: The queue is created if it doesn't already exist.
         /// </returns>
-        protected virtual RenderQueue GetRenderQueue()
+        public virtual RenderQueue GetRenderQueue()
         {
             if ( renderQueue == null )
             {
@@ -1404,6 +1404,64 @@ namespace Axiom.Core
                 lastProjectionWasIdentity = false;
             }
         }
+
+        #region MoveableObject Management
+
+        public T Create<T>( string name ) where T: MovableObject
+        {
+            return null;
+        }
+
+        public bool Has<T>(string name) where T : MovableObject
+        {
+            return false;
+        }
+
+        public void Destroy<T>(string name) where T : MovableObject
+        {
+        }
+
+        public void Destroy<T>(T item) where T : MovableObject
+        {
+        }
+
+        public void DestroyAll<T>() where T : MovableObject
+        {
+        }
+
+        #endregion MovableObject Management
+
+        #region ManualObject
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public virtual ManualObject CreateManualObject( string name )
+        {
+            return new ManualObject( name );
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        public virtual void DestroyManualObject( string name )
+        {
+            
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        public virtual void DestroyManualObject( ManualObject item )
+        {
+            
+        }
+        
+        #endregion ManualObject
 
         #endregion
 
@@ -4966,12 +5024,6 @@ namespace Axiom.Core
 
             // grab the current scene detail level
             PolygonMode camPolyMode = cameraInProgress.PolygonMode;
-
-            // 			// update auto params if this is a programmable pass
-            // 			if(pass.IsProgrammable) {
-            // 				autoParamDataSource.Renderable = renderable;
-            // 				pass.UpdateAutoParamsNoLights(autoParamDataSource);
-            // 			}
 
             // get the world matrices and the count
             renderable.GetWorldTransforms( xform );

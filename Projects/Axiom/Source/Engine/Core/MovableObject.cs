@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using Axiom.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Scripting;
@@ -45,13 +46,13 @@ using Axiom.Animating;
 namespace Axiom.Core
 {
     /// <summary>
-    ///		Abstract class definining a movable object in a scene.
+    ///		Abstract class defining a movable object in a scene.
     /// </summary>
     /// <remarks>
     ///		Instances of this class are discrete, relatively small, movable objects
     ///		which are attached to SceneNode objects to define their position.						  
     /// </remarks>
-	public abstract class MovableObject : ShadowCaster, IAnimableObject
+    public abstract class MovableObject : ShadowCaster, IAnimableObject
     {
         #region Fields
 
@@ -106,6 +107,13 @@ namespace Axiom.Core
 
         protected ShadowRenderableList dummyList = new ShadowRenderableList();
 
+        #region Fields for MovableObjectFactory
+
+        private MovableObjectFactory _creator;
+        private SceneManager _manager;
+
+        #endregion Fields for MovableObjectFactory
+
         #endregion Fields
 
         #region Constructors
@@ -116,18 +124,18 @@ namespace Axiom.Core
         public MovableObject()
         {
             isVisible = true;
-			// set default RenderQueueGroupID for this movable object
-			renderQueueID = RenderQueueGroupID.Main;
-			queryFlags = unchecked( 0xffffffff );
-			worldAABB = AxisAlignedBox.Null;
-			castShadows = true;
-		}
+            // set default RenderQueueGroupID for this movable object
+            renderQueueID = RenderQueueGroupID.Main;
+            queryFlags = unchecked( 0xffffffff );
+            worldAABB = AxisAlignedBox.Null;
+            castShadows = true;
+        }
 
-		public MovableObject( string name )
-		{
-			this.Name = name;
+        public MovableObject( string name )
+        {
+            this.Name = name;
 
-			isVisible = true;
+            isVisible = true;
             // set default RenderQueueGroupID for this movable object
             renderQueueID = RenderQueueGroupID.Main;
 
@@ -230,7 +238,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Name of this SceneObject.
         /// </summary>
-		public virtual string Name
+        public virtual string Name
         {
             get
             {
@@ -463,34 +471,34 @@ namespace Axiom.Core
             }
         }
 
-		#endregion ShadowCaster Members
+        #endregion ShadowCaster Members
 
-		#region IAnimable methods
+        #region IAnimable methods
 
-		/// <summary>
-		///     Part of the IAnimableObject interface.
-		///		The implementation of this property just returns null; descendents
-		///     are free to override this.
-		/// </summary>
-		public virtual string[] AnimableValueNames
-		{
-			get
-			{
-				return null;
-			}
-		}
+        /// <summary>
+        ///     Part of the IAnimableObject interface.
+        ///		The implementation of this property just returns null; descendents
+        ///     are free to override this.
+        /// </summary>
+        public virtual string[] AnimableValueNames
+        {
+            get
+            {
+                return null;
+            }
+        }
 
-		/// <summary>
-		///     Part of the IAnimableObject interface.
-		///		Create an AnimableValue for the attribute with the given name, or 
-		///     throws an exception if this object doesn't support creating them.
-		/// </summary>
-		public virtual AnimableValue CreateAnimableValue( string valueName )
-		{
-			throw new Exception( "This object has no AnimableValue attributes" );
-		}
+        /// <summary>
+        ///     Part of the IAnimableObject interface.
+        ///		Create an AnimableValue for the attribute with the given name, or 
+        ///     throws an exception if this object doesn't support creating them.
+        /// </summary>
+        public virtual AnimableValue CreateAnimableValue( string valueName )
+        {
+            throw new Exception( "This object has no AnimableValue attributes" );
+        }
 
-		#endregion IAnimable methods
+        #endregion IAnimable methods
 
         #region Internal engine methods
 
@@ -531,5 +539,163 @@ namespace Axiom.Core
         public abstract void UpdateRenderQueue( RenderQueue queue );
 
         #endregion Internal engine methods
+
+        #region Factory methods and propertys
+
+        /** Notify the object of it's creator (internal use only) */
+        public virtual MovableObjectFactory Creator
+        {
+            get
+            {
+                return _creator;
+            }
+            protected internal set
+            {
+                _creator = value;
+            }
+        }
+
+        /** Notify the object of it's manager (internal use only) */
+        public virtual SceneManager Manager
+        {
+            get
+            {
+                return _manager;
+            }
+            protected internal set
+            {
+                _manager = value;
+            }
+        }
+
+        #endregion Factory methods and propertys
     }
+
+    #region MovableObjectFactory
+    public abstract class MovableObjectFactory : AbstractFactory<MovableObject>
+    {
+        private long _typeFlag;
+        private string _type;
+        private const string Factory_Type_Name = "MovableObject";
+
+        public MovableObjectFactory()
+        {
+            _typeFlag = 0xFFFFFFFF;
+            _type = Factory_Type_Name;
+        }
+
+        protected abstract MovableObject _createInstance( string name, NameValuePairList param );
+
+        /// <summary>
+        ///     Create a new instance of the object.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the new object
+        /// </param>
+        /// <param name="manager">
+        ///     The SceneManager instance that will be holding the instance once created.
+        /// </param>
+        /// <param name="param">
+        ///     Name/value pair list of additional parameters required to construct the object 
+        ///     (defined per subtype).
+        /// </param>
+        /// <returns>A new MovableObject</returns>
+        public MovableObject CreateInstance( string name, SceneManager manager, NameValuePairList param )
+        {
+            MovableObject m = _createInstance( name, param );
+            m.Creator = this;
+            m.Manager = manager;
+            return m;
+        }
+
+        /// <summary>
+        ///     Create a new instance of the object.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the new object
+        /// </param>
+        /// <param name="manager">
+        ///     The SceneManager instance that will be holding the instance once created.
+        /// </param>
+        /// <returns>A new MovableObject</returns>
+        public MovableObject CreateInstance( string name, SceneManager manager )
+        {
+            return CreateInstance( name, null, null );
+        }
+
+        public MovableObject CreateInstance( string name )
+        {
+            return CreateInstance( name, null );
+        }
+
+        /// <summary>
+        ///     Destroy an instance of the object
+        /// </summary>
+        /// <param name="obj">
+        ///     The MovableObject to destroy.
+        /// </param>
+        public abstract void DestroyInstance( MovableObject obj );
+
+        /// <summary>
+        ///     Gets/Sets the type flag for this factory.
+        /// </summary>
+        /// <remarks>
+        ///     A type flag is like a query flag, except that it applies to all instances
+        ///	    of a certain type of object.
+        ///	    This should normally only be called by Root in response to
+        ///	    a 'true' result from RequestTypeFlags. However, you can actually use
+        ///	    it yourself if you're careful; for example to assign the same mask
+        ///	    to a number of different types of object, should you always wish them
+        ///	    to be treated the same in queries.
+        /// </remarks>
+        public virtual long TypeFlag
+        {
+            get
+            {
+                return _typeFlag;
+            }
+            set
+            {
+                _typeFlag = value;
+            }
+        }
+
+        public virtual string Type
+        {
+            get
+            {
+                return _type;
+            }
+            protected set
+            {
+                _type = value;
+            }
+        }
+
+        /// <summary>
+        ///     Does this factory require the allocation of a 'type flag', used to 
+        ///	    selectively include / exclude this type from scene queries?
+        /// </summary>
+        /// <remarks>
+        ///     The default implementation here is to return 'false', ie not to 
+        ///     request a unique type mask from Root. For objects that
+        ///     never need to be excluded in SceneQuery results, that's fine, since
+        ///     the default implementation of MovableObject::getTypeFlags is to return
+        ///     all ones, hence matching any query type mask. However, if you want the
+        ///     objects created by this factory to be filterable by queries using a 
+        ///     broad type, you have to give them a (preferably unique) type mask - 
+        ///     and given that you don't know what other MovableObject types are 
+        ///     registered, Root will allocate you one. 
+        /// </remarks>
+        /// 
+        public virtual bool RequestTypeFlags
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+    }
+    #endregion MovableObjectFactory
 }

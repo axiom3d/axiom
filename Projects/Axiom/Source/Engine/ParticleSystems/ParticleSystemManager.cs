@@ -730,4 +730,27 @@ namespace Axiom.ParticleSystems
 
 		#endregion IScriptLoader Implementation
 	}
+
+    #region MovableObjectFactory implementation
+
+    //TODO: This class is not an inheritor of MovableObject (it is in Ogre)
+
+    //public class ParticleSystemManagerFactory : MovableObjectFactory
+    //{
+    //    public static string FACTORY_TYPE_NAME = "ParticleSystemManager";
+
+    //    protected override MovableObject CreateInstanceImpl(string name, NameValuePairList param)
+    //    {
+    //        return new ManualObject(name);
+    //    }
+
+    //    public override void DestroyInstance(MovableObject obj)
+    //    {
+    //        ParticleSystemManager man = (ParticleSystemManager)obj;
+    //        obj = null;
+    //    }
+    //}
+
+    #endregion MovableObjectFactory implementation
+
 }
