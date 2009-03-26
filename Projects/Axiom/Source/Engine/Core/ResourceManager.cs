@@ -59,13 +59,13 @@ namespace Axiom.Core
 	///		A resource manager is responsible for managing a pool of
 	///		resources of a particular type. It must index them, look
 	///		them up, load and destroy them. It may also need to stay within
-	///		a defined memory budget, and temporaily unload some resources
-	///		if it needs to to stay within this budget.
+	///		a defined memory budget, and temporarily unload some resources
+	///		if it needs to stay within this budget.
 	///		<para/>
 	///		Resource managers use a priority system to determine what can
 	///		be unloaded, and a Least Recently Used (LRU) policy within
 	///		resources of the same priority.
-	///     Resources can be loaded using the generalised load interface,
+	///     Resources can be loaded using the generalized load interface,
 	///     and they can be unloaded and removed. In addition, each 
 	///     subclass of ResourceManager will likely define custom 'load' methods
 	///     which take explicit parameters depending on the kind of resource
@@ -278,7 +278,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Default constructor
 		/// </summary>
-		public ResourceManager()
+		protected ResourceManager()
 		{
 			_memoryBudget = long.MaxValue;
 			_memoryUsage = 0;
