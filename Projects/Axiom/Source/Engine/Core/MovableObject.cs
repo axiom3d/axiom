@@ -588,7 +588,7 @@ namespace Axiom.Core
         public virtual string MovableType
         {
             get{ return movableType;}
-            set { moveableType = value; }
+            set { movableType = value; }
         }
 
         #endregion Factory methods and propertys
