@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
@@ -22,26 +23,29 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.Collections;
+
+using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
-using Axiom.Scripting;
-using Axiom.Animating;
 
-#endregion NAmespace Declarations
+#endregion
 
 namespace Axiom.Core
 {
@@ -57,60 +61,72 @@ namespace Axiom.Core
         #region Fields
 
         /// <summary>
-        ///    Node that this node is attached to.
-        /// </summary>
-        protected Node parentNode;
-        /// <summary>
-        ///    Is this object visible?
-        /// </summary>
-        protected bool isVisible;
-        /// <summary>
-        ///    Name of this object.
-        /// </summary>
-        protected string name;
-        /// <summary>
-        ///    The render queue to use when rendering this object.
-        /// </summary>
-        protected RenderQueueGroupID renderQueueID;
-        /// <summary>
-        ///    Flags whether the RenderQueue's default should be used.
-        /// </summary>
-        protected bool renderQueueIDSet = false;
-        /// <summary>
-        ///    Flags determining whether this object is included/excluded from scene queries.
-        /// </summary>
-        protected ulong queryFlags;
-        /// <summary>
-        ///    Cached world bounding box of this object.
-        /// </summary>
-        protected AxisAlignedBox worldAABB;
-        /// <summary>
-        ///    Cached world bounding spehere.
-        /// </summary>
-        protected Sphere worldBoundingSphere = new Sphere();
-        /// <summary>
-        ///    A link back to a GameObject (or subclass thereof) that may be associated with this SceneObject.
-        /// </summary>
-        protected object userData;
-        /// <summary>
-        ///		Flag which indicates whether this objects parent is a <see cref="TagPoint"/>.
-        /// </summary>
-        protected bool parentIsTagPoint;
-        /// <summary>
-        ///		World space AABB of this object's dark cap.
-        /// </summary>
-        protected AxisAlignedBox worldDarkCapBounds = AxisAlignedBox.Null;
-        /// <summary>
         ///		Does this object cast shadows?
         /// </summary>
         protected bool castShadows;
 
         protected ShadowRenderableList dummyList = new ShadowRenderableList();
 
+        /// <summary>
+        ///    Is this object visible?
+        /// </summary>
+        protected bool isVisible;
+
+        /// <summary>
+        ///    Name of this object.
+        /// </summary>
+        protected string name;
+
+        /// <summary>
+        ///		Flag which indicates whether this objects parent is a <see cref="TagPoint"/>.
+        /// </summary>
+        protected bool parentIsTagPoint;
+
+        /// <summary>
+        ///    Node that this node is attached to.
+        /// </summary>
+        protected Node parentNode;
+
+        /// <summary>
+        ///    Flags determining whether this object is included/excluded from scene queries.
+        /// </summary>
+        protected ulong queryFlags;
+
+        /// <summary>
+        ///    The render queue to use when rendering this object.
+        /// </summary>
+        protected RenderQueueGroupID renderQueueID;
+
+        /// <summary>
+        ///    Flags whether the RenderQueue's default should be used.
+        /// </summary>
+        protected bool renderQueueIDSet = false;
+
+        /// <summary>
+        ///    A link back to a GameObject (or subclass thereof) that may be associated with this SceneObject.
+        /// </summary>
+        protected object userData;
+
+        /// <summary>
+        ///    Cached world bounding box of this object.
+        /// </summary>
+        protected AxisAlignedBox worldAABB;
+
+        /// <summary>
+        ///    Cached world bounding spehere.
+        /// </summary>
+        protected Sphere worldBoundingSphere = new Sphere();
+
+        /// <summary>
+        ///		World space AABB of this object's dark cap.
+        /// </summary>
+        protected AxisAlignedBox worldDarkCapBounds = AxisAlignedBox.Null;
+
         #region Fields for MovableObjectFactory
 
         private MovableObjectFactory _creator;
         private SceneManager _manager;
+        private string movableType;
 
         #endregion Fields for MovableObjectFactory
 
@@ -123,27 +139,27 @@ namespace Axiom.Core
         /// </summary>
         public MovableObject()
         {
-            isVisible = true;
+            this.isVisible = true;
             // set default RenderQueueGroupID for this movable object
-            renderQueueID = RenderQueueGroupID.Main;
-            queryFlags = unchecked( 0xffffffff );
-            worldAABB = AxisAlignedBox.Null;
-            castShadows = true;
+            this.renderQueueID = RenderQueueGroupID.Main;
+            this.queryFlags = unchecked( 0xffffffff );
+            this.worldAABB = AxisAlignedBox.Null;
+            this.castShadows = true;
         }
 
         public MovableObject( string name )
         {
             this.Name = name;
 
-            isVisible = true;
+            this.isVisible = true;
             // set default RenderQueueGroupID for this movable object
-            renderQueueID = RenderQueueGroupID.Main;
+            this.renderQueueID = RenderQueueGroupID.Main;
 
-            queryFlags = unchecked( 0xffffffff );
+            this.queryFlags = unchecked( 0xffffffff );
 
-            worldAABB = AxisAlignedBox.Null;
+            this.worldAABB = AxisAlignedBox.Null;
 
-            castShadows = true;
+            this.castShadows = true;
         }
 
         #endregion Constructors
@@ -153,18 +169,12 @@ namespace Axiom.Core
         /// <summary>
         ///		An abstract method required by subclasses to return the bounding box of this object in local coordinates.
         /// </summary>
-        public abstract AxisAlignedBox BoundingBox
-        {
-            get;
-        }
+        public abstract AxisAlignedBox BoundingBox { get; }
 
         /// <summary>
         ///		An abstract method required by subclasses to return the bounding box of this object in local coordinates.
         /// </summary>
-        public abstract float BoundingRadius
-        {
-            get;
-        }
+        public abstract float BoundingRadius { get; }
 
         /// <summary>
         ///     Get/Sets a link back to a GameObject (or subclass thereof, such as Entity) that may be associated with this SceneObject.
@@ -173,11 +183,11 @@ namespace Axiom.Core
         {
             get
             {
-                return userData;
+                return this.userData;
             }
             set
             {
-                userData = value;
+                this.userData = value;
             }
         }
 
@@ -188,23 +198,22 @@ namespace Axiom.Core
         {
             get
             {
-                return parentNode;
+                return this.parentNode;
             }
         }
-
 
         public SceneNode ParentSceneNode
         {
             get
             {
-                if ( parentIsTagPoint )
+                if ( this.parentIsTagPoint )
                 {
-                    TagPoint tp = (TagPoint)parentNode;
+                    TagPoint tp = (TagPoint) this.parentNode;
                     return tp.ParentEntity.ParentSceneNode;
                 }
                 else
                 {
-                    return (SceneNode)parentNode;
+                    return (SceneNode) this.parentNode;
                 }
             }
         }
@@ -216,7 +225,7 @@ namespace Axiom.Core
         {
             get
             {
-                return ( parentNode != null );
+                return ( this.parentNode != null );
             }
         }
 
@@ -227,11 +236,11 @@ namespace Axiom.Core
         {
             get
             {
-                return isVisible;
+                return this.isVisible;
             }
             set
             {
-                isVisible = value;
+                this.isVisible = value;
             }
         }
 
@@ -242,11 +251,11 @@ namespace Axiom.Core
         {
             get
             {
-                return name;
+                return this.name;
             }
             set
             {
-                name = value;
+                this.name = value;
             }
         }
 
@@ -257,10 +266,10 @@ namespace Axiom.Core
         {
             get
             {
-                if ( parentNode != null )
+                if ( this.parentNode != null )
                 {
                     // object is attached to a node, so return the nodes transform
-                    return parentNode.FullTransform;
+                    return this.parentNode.FullTransform;
                 }
 
                 // fallback
@@ -281,11 +290,11 @@ namespace Axiom.Core
         {
             get
             {
-                return queryFlags;
+                return this.queryFlags;
             }
             set
             {
-                queryFlags = value;
+                this.queryFlags = value;
             }
         }
 
@@ -299,11 +308,11 @@ namespace Axiom.Core
         {
             get
             {
-                return ( (SceneNode)parentNode ).ShowBoundingBox;
+                return ( (SceneNode) this.parentNode ).ShowBoundingBox;
             }
             set
             {
-                ( (SceneNode)parentNode ).ShowBoundingBox = value;
+                ( (SceneNode) this.parentNode ).ShowBoundingBox = value;
             }
         }
 
@@ -321,12 +330,12 @@ namespace Axiom.Core
         {
             get
             {
-                return renderQueueID;
+                return this.renderQueueID;
             }
             set
             {
-                renderQueueID = value;
-                renderQueueIDSet = true;
+                this.renderQueueID = value;
+                this.renderQueueIDSet = true;
             }
         }
 
@@ -340,7 +349,7 @@ namespace Axiom.Core
         /// <param name="flags"></param>
         public void AddQueryFlags( ulong flags )
         {
-            queryFlags |= flags;
+            this.queryFlags |= flags;
         }
 
         /// <summary>
@@ -351,11 +360,11 @@ namespace Axiom.Core
         {
             if ( derive )
             {
-                worldAABB = this.BoundingBox;
-                worldAABB.Transform( this.ParentNodeFullTransform );
+                this.worldAABB = this.BoundingBox;
+                this.worldAABB.Transform( this.ParentNodeFullTransform );
             }
 
-            return worldAABB;
+            return this.worldAABB;
         }
 
         /// <summary>
@@ -364,7 +373,7 @@ namespace Axiom.Core
         /// <returns></returns>
         public Sphere GetWorldBoundingSphere()
         {
-            return GetWorldBoundingSphere( false );
+            return this.GetWorldBoundingSphere( false );
         }
 
         /// <summary>
@@ -376,11 +385,11 @@ namespace Axiom.Core
         {
             if ( derive )
             {
-                worldBoundingSphere.Radius = this.BoundingRadius;
-                worldBoundingSphere.Center = parentNode.DerivedPosition;
+                this.worldBoundingSphere.Radius = this.BoundingRadius;
+                this.worldBoundingSphere.Center = this.parentNode.DerivedPosition;
             }
 
-            return worldBoundingSphere;
+            return this.worldBoundingSphere;
         }
 
         /// <summary>
@@ -389,12 +398,10 @@ namespace Axiom.Core
         /// <param name="flags"></param>
         public void RemoveQueryFlags( ulong flags )
         {
-            queryFlags ^= flags;
+            this.queryFlags ^= flags;
         }
 
         #endregion Methods
-
-        #region ShadowCaster Members
 
         /// <summary>
         ///		Overridden.
@@ -403,18 +410,18 @@ namespace Axiom.Core
         {
             get
             {
-                return castShadows;
+                return this.castShadows;
             }
             set
             {
-                castShadows = value;
+                this.castShadows = value;
             }
         }
 
         public override AxisAlignedBox GetLightCapBounds()
         {
             // same as original bounds
-            return GetWorldBoundingBox();
+            return this.GetWorldBoundingBox();
         }
 
         /// <summary>
@@ -427,11 +434,11 @@ namespace Axiom.Core
         {
             // Extrude own light cap bounds
             // need a clone to avoid modifying the original bounding box
-            worldDarkCapBounds = (AxisAlignedBox)GetLightCapBounds().Clone();
+            this.worldDarkCapBounds = (AxisAlignedBox) this.GetLightCapBounds().Clone();
 
-            ExtrudeBounds( worldDarkCapBounds, light.GetAs4DVector(), extrusionDistance );
+            this.ExtrudeBounds( this.worldDarkCapBounds, light.GetAs4DVector(), extrusionDistance );
 
-            return worldDarkCapBounds;
+            return this.worldDarkCapBounds;
         }
 
         /// <summary>
@@ -442,16 +449,19 @@ namespace Axiom.Core
             return null;
         }
 
-        public override IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light,
-            HardwareIndexBuffer indexBuffer, bool extrudeVertices, float extrusionDistance, int flags )
+        public override IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique,
+                                                                         Light light,
+                                                                         HardwareIndexBuffer indexBuffer,
+                                                                         bool extrudeVertices,
+                                                                         float extrusionDistance,
+                                                                         int flags )
         {
-
-            return dummyList.GetEnumerator();
+            return this.dummyList.GetEnumerator();
         }
 
         public override IEnumerator GetLastShadowVolumeRenderableEnumerator()
         {
-            return dummyList.GetEnumerator();
+            return this.dummyList.GetEnumerator();
         }
 
         /// <summary>
@@ -461,17 +471,15 @@ namespace Axiom.Core
         /// <returns></returns>
         public override float GetPointExtrusionDistance( Light light )
         {
-            if ( parentNode != null )
+            if ( this.parentNode != null )
             {
-                return GetExtrusionDistance( parentNode.DerivedPosition, light );
+                return this.GetExtrusionDistance( this.parentNode.DerivedPosition, light );
             }
             else
             {
                 return 0;
             }
         }
-
-        #endregion ShadowCaster Members
 
         #region IAnimable methods
 
@@ -508,7 +516,7 @@ namespace Axiom.Core
         /// <param name="node">Scene node to notify.</param>
         internal virtual void NotifyAttached( Node node )
         {
-            NotifyAttached( node, false );
+            this.NotifyAttached( node, false );
         }
 
         /// <summary>
@@ -517,8 +525,8 @@ namespace Axiom.Core
         /// <param name="node">Scene node to notify.</param>
         internal virtual void NotifyAttached( Node node, bool isTagPoint )
         {
-            parentNode = node;
-            parentIsTagPoint = isTagPoint;
+            this.parentNode = node;
+            this.parentIsTagPoint = isTagPoint;
         }
 
         /// <summary>
@@ -542,99 +550,63 @@ namespace Axiom.Core
 
         #region Factory methods and propertys
 
-        /** Notify the object of it's creator (internal use only) */
+        /// <summary>
+        ///     Notify the object of it's creator (internal use only).
+        /// </summary>
+
         public virtual MovableObjectFactory Creator
         {
             get
             {
-                return _creator;
+                return this._creator;
             }
             protected internal set
             {
-                _creator = value;
+                this._creator = value;
             }
         }
 
-        /** Notify the object of it's manager (internal use only) */
+        /// <summary>
+        ///     Notify the object of it's manager (internal use only).
+        /// </summary>
+
         public virtual SceneManager Manager
         {
             get
             {
-                return _manager;
+                return this._manager;
             }
             protected internal set
             {
-                _manager = value;
+                this._manager = value;
             }
+        }
+
+        /// <summary>
+        ///     Gets the MovableType for this MovableObject.
+        /// </summary>
+        public virtual string MovableType
+        {
+            get{ return movableType;}
+            set { moveableType = value; }
         }
 
         #endregion Factory methods and propertys
     }
 
     #region MovableObjectFactory
+
     public abstract class MovableObjectFactory : AbstractFactory<MovableObject>
     {
-        private long _typeFlag;
+        public const string TypeName = "MovableObject";
         private string _type;
-        private const string Factory_Type_Name = "MovableObject";
+        private long _typeFlag;
 
         public MovableObjectFactory()
         {
-            _typeFlag = 0xFFFFFFFF;
-            _type = Factory_Type_Name;
+            this._typeFlag = 0xFFFFFFFF;
+            this._type = MovableObjectFactory.TypeName;
         }
-
-        protected abstract MovableObject _createInstance( string name, NameValuePairList param );
-
-        /// <summary>
-        ///     Create a new instance of the object.
-        /// </summary>
-        /// <param name="name">
-        ///     The name of the new object
-        /// </param>
-        /// <param name="manager">
-        ///     The SceneManager instance that will be holding the instance once created.
-        /// </param>
-        /// <param name="param">
-        ///     Name/value pair list of additional parameters required to construct the object 
-        ///     (defined per subtype).
-        /// </param>
-        /// <returns>A new MovableObject</returns>
-        public MovableObject CreateInstance( string name, SceneManager manager, NameValuePairList param )
-        {
-            MovableObject m = _createInstance( name, param );
-            m.Creator = this;
-            m.Manager = manager;
-            return m;
-        }
-
-        /// <summary>
-        ///     Create a new instance of the object.
-        /// </summary>
-        /// <param name="name">
-        ///     The name of the new object
-        /// </param>
-        /// <param name="manager">
-        ///     The SceneManager instance that will be holding the instance once created.
-        /// </param>
-        /// <returns>A new MovableObject</returns>
-        public MovableObject CreateInstance( string name, SceneManager manager )
-        {
-            return CreateInstance( name, null, null );
-        }
-
-        public MovableObject CreateInstance( string name )
-        {
-            return CreateInstance( name, null );
-        }
-
-        /// <summary>
-        ///     Destroy an instance of the object
-        /// </summary>
-        /// <param name="obj">
-        ///     The MovableObject to destroy.
-        /// </param>
-        public abstract void DestroyInstance( MovableObject obj );
 
         /// <summary>
         ///     Gets/Sets the type flag for this factory.
@@ -652,23 +624,11 @@ namespace Axiom.Core
         {
             get
             {
-                return _typeFlag;
+                return this._typeFlag;
             }
             set
             {
-                _typeFlag = value;
-            }
-        }
-
-        public virtual string Type
-        {
-            get
-            {
-                return _type;
-            }
-            protected set
-            {
-                _type = value;
+                this._typeFlag = value;
             }
         }
 
@@ -696,6 +656,75 @@ namespace Axiom.Core
             }
         }
 
+        #region AbstractFactory<MovableObject> Members
+
+        public MovableObject CreateInstance( string name )
+        {
+            return this.CreateInstance( name, null );
+        }
+
+        /// <summary>
+        ///     Destroy an instance of the object
+        /// </summary>
+        /// <param name="obj">
+        ///     The MovableObject to destroy.
+        /// </param>
+        public abstract void DestroyInstance( MovableObject obj );
+
+        public string Type
+        {
+            get
+            {
+                return this._type;
+            }
+            protected set
+            {
+                this._type = value;
+            }
+        }
+
+        #endregion
+
+        protected abstract MovableObject _createInstance( string name, NamedParameterList param );
+
+        /// <summary>
+        ///     Create a new instance of the object.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the new object
+        /// </param>
+        /// <param name="manager">
+        ///     The SceneManager instance that will be holding the instance once created.
+        /// </param>
+        /// <param name="param">
+        ///     Name/value pair list of additional parameters required to construct the object 
+        ///     (defined per subtype).
+        /// </param>
+        /// <returns>A new MovableObject</returns>
+        public MovableObject CreateInstance( string name, SceneManager manager, NamedParameterList param )
+        {
+            MovableObject m = this._createInstance( name, param );
+            m.Creator = this;
+            m.Manager = manager;
+            m.MovableType = this.Type;
+            return m;
+        }
+
+        /// <summary>
+        ///     Create a new instance of the object.
+        /// </summary>
+        /// <param name="name">
+        ///     The name of the new object
+        /// </param>
+        /// <param name="manager">
+        ///     The SceneManager instance that will be holding the instance once created.
+        /// </param>
+        /// <returns>A new MovableObject</returns>
+        public MovableObject CreateInstance( string name, SceneManager manager )
+        {
+            return this.CreateInstance( name, null, null );
+        }
     }
+
     #endregion MovableObjectFactory
 }

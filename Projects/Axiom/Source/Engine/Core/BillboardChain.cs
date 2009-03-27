@@ -1017,52 +1017,51 @@ namespace Axiom
 
     public class BillboardChainFactory : MovableObjectFactory
     {
-        private const string Factory_Type_Name = "BillboardChain";
+        public const string TypeName = "BillboardChain";
 
         public BillboardChainFactory()
         {
-            this.Type = BillboardChainFactory.Factory_Type_Name;
+            this.Type = BillboardChainFactory.TypeName;
         }
 
-        protected override MovableObject _createInstance( string name, NameValuePairList param )
+        protected override MovableObject _createInstance( string name, NamedParameterList param )
         {
             int maxElements = 20;
             int numberOfChains = 1;
-            bool useTex = true;
-            bool useCol = true;
-            bool dynamic = true;
-            // optional params
-            if ( null != param )
-            {
-                object ni = param[ "maxElements" ];
-                if ( null != ni )
-                {
-                    maxElements = Convert.ToInt32( ni );
-                }
-                ni = param[ "numberOfChains" ];
-                if ( null != ni )
-                {
-                    numberOfChains = Convert.ToInt32( ni );
-                }
-                ni = param[ "useTextureCoords" ];
-                if ( null != ni )
-                {
-                    useTex = Convert.ToBoolean( ni );
-                }
-                ni = param[ "useVertexColours" ];
-                if ( null != ni )
-                {
-                    useCol = Convert.ToBoolean( ni );
-                }
-                ni = param[ "dynamic" ];
-                if ( null != ni )
-                {
-                    dynamic = Convert.ToBoolean( ni );
-                }
+            bool useTextureCoords = true;
+            bool useVertexColors = true;
+            bool isDynamic = true;
 
+            // optional parameters
+            if ( param != null )
+            {
+                if ( param.ContainsKey( "maxElements" ) )
+                {
+                    maxElements = Convert.ToInt32( param[ "maxElements" ] );
+                }
+                if ( param.ContainsKey( "numberOfChains" ) )
+                {
+                    numberOfChains = Convert.ToInt32( param[ "numberOfChains" ] );
+                }
+                if ( param.ContainsKey( "useTextureCoords" ) )
+                {
+                    useTextureCoords = Convert.ToBoolean( param[ "useTextureCoords" ] );
+                }
+                if ( param.ContainsKey( "useVertexColours" ) )
+                {
+                    useVertexColors = Convert.ToBoolean( param[ "useVertexColours" ] );
+                }
+                else if ( param.ContainsKey( "useVertexColors" ) )
+                {
+                    useVertexColors = Convert.ToBoolean( param[ "useVertexColors" ] );
+                }
+                if ( param.ContainsKey( "isDynamic" ) )
+                {
+                    isDynamic = Convert.ToBoolean( param[ "isDynamic" ] );
+                }
             }
 
-            return new BillboardChain( name, maxElements, numberOfChains, useTex, useCol, dynamic );
+            return new BillboardChain( name, maxElements, numberOfChains, useTextureCoords, useVertexColors, isDynamic );
         }
 
         public override void DestroyInstance( MovableObject obj )

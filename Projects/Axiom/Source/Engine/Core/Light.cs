@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -37,11 +41,11 @@ using System;
 
 using Axiom.Animating;
 using Axiom.Collections;
+using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Math.Collections;
-using Axiom.Graphics;
 
-#endregion Namespace Declarations
+#endregion
 
 namespace Axiom.Core
 {
@@ -59,7 +63,7 @@ namespace Axiom.Core
     ///    Lights are created by using the SceneManager.CreateLight method. They can subsequently be
     ///    added to a SceneNode if required to allow them to move relative to a node in the scene. A light attached
     ///    to a SceneNode is assumed to have a base position of (0,0,0) and a direction of (0,0,1) before modification
-    ///    by the SceneNode's own orientation. If not attached to a SceneNode,
+    ///    by the SceneNode's own orientation. If note attached to a SceneNode,
     ///    the light's position and direction is as set using Position and Direction.
     ///    <p/>
     ///    Remember also that dynamic lights rely on modifying the color of vertices based on the position of
@@ -70,72 +74,92 @@ namespace Axiom.Core
     public class Light : MovableObject, IComparable
     {
         #region Fields
+
         public static Vector3 DefaultDirection = Vector3.UnitZ;
+
+        /// <summary></summary>
+        protected float attenuationConst;
+
+        /// <summary></summary>
+        protected float attenuationLinear;
+
+        /// <summary></summary>
+        protected float attenuationQuad;
+
+        /// <summary>
+        ///		Derived direction of this light.
+        ///	</summary>
+        protected Vector3 derivedDirection = Vector3.Zero;
+
+        /// <summary>
+        ///		Derived position of this light.
+        ///	</summary>
+        protected Vector3 derivedPosition = Vector3.Zero;
+
+        /// <summary>
+        ///		Diffuse color.
+        ///	</summary>
+        protected ColorEx diffuse;
+
+        /// <summary>
+        ///    Direction of this light.
+        /// </summary>
+        protected Vector3 direction = DefaultDirection;
+
+        /// <summary>
+        ///		
+        /// </summary>
+        protected PlaneBoundedVolumeList frustumClipVolumes = new PlaneBoundedVolumeList();
+
+        /// <summary>
+        ///		Stored version of parent orientation.
+        ///	</summary>
+        protected Quaternion lastParentOrientation = Quaternion.Identity;
+
+        /// <summary>
+        ///		Stored version of parent position.
+        ///	</summary>
+        protected Vector3 lastParentPosition = Vector3.Zero;
+
+        /// <summary></summary>
+        protected bool localTransformDirty;
+
+        /// <summary>
+        ///		Stored version of the last near clip volume tested.
+        /// </summary>
+        protected PlaneBoundedVolume nearClipVolume = new PlaneBoundedVolume();
+
+        /// <summary>
+        ///    Position of this light.
+        /// </summary>
+        protected Vector3 position = Vector3.Zero;
+
+        /// <summary></summary>
+        protected float range;
+
+        /// <summary>
+        ///		Specular color.
+        ///	</summary>
+        protected ColorEx specular;
+
+        /// <summary></summary>
+        protected float spotFalloff;
+
+        /// <summary></summary>
+        protected float spotInner;
+
+        /// <summary></summary>
+        protected float spotOuter;
+
+        /// <summary>
+        ///    Used for sorting.  Internal for "friend" access to SceneManager.
+        /// </summary>
+        protected internal float tempSquaredDist;
 
         /// <summary>
         ///    Type of light.
         /// </summary>
         protected LightType type;
-        /// <summary>
-        ///    Position of this light.
-        /// </summary>
-        protected Vector3 position = Vector3.Zero;
-        /// <summary>
-        ///    Direction of this light.
-        /// </summary>
-        protected Vector3 direction = DefaultDirection;
-        /// <summary>
-        ///		Derived position of this light.
-        ///	</summary>
-        protected Vector3 derivedPosition = Vector3.Zero;
-        /// <summary>
-        ///		Derived direction of this light.
-        ///	</summary>
-        protected Vector3 derivedDirection = Vector3.Zero;
-        /// <summary>
-        ///		Stored version of parent orientation.
-        ///	</summary>
-        protected Quaternion lastParentOrientation = Quaternion.Identity;
-        /// <summary>
-        ///		Stored version of parent position.
-        ///	</summary>
-        protected Vector3 lastParentPosition = Vector3.Zero;
-        /// <summary>
-        ///		Diffuse color.
-        ///	</summary>
-        protected ColorEx diffuse;
-        /// <summary>
-        ///		Specular color.
-        ///	</summary>
-        protected ColorEx specular;
-        /// <summary></summary>
-        protected float spotOuter;
-        /// <summary></summary>
-        protected float spotInner;
-        /// <summary></summary>
-        protected float spotFalloff;
-        /// <summary></summary>
-        protected float range;
-        /// <summary></summary>
-        protected float attenuationConst;
-        /// <summary></summary>
-        protected float attenuationLinear;
-        /// <summary></summary>
-        protected float attenuationQuad;
-        /// <summary></summary>
-        protected bool localTransformDirty;
-        /// <summary>
-        ///    Used for sorting.  Internal for "friend" access to SceneManager.
-        /// </summary>
-        internal protected float tempSquaredDist;
-        /// <summary>
-        ///		Stored version of the last near clip volume tested.
-        /// </summary>
-        protected PlaneBoundedVolume nearClipVolume = new PlaneBoundedVolume();
-        /// <summary>
-        ///		
-        /// </summary>
-        protected PlaneBoundedVolumeList frustumClipVolumes = new PlaneBoundedVolumeList();
 
         #endregion
 
@@ -145,7 +169,7 @@ namespace Axiom.Core
         ///		Default constructor.
         /// </summary>
         public Light()
-            : this( "" )
+                : this( "" )
         {
         }
 
@@ -155,28 +179,27 @@ namespace Axiom.Core
         /// <param name="name"></param>
         public Light( string name )
         {
-
             this.name = name;
 
             // Default to point light, white diffuse light, linear attenuation, fair range
-            type = LightType.Point;
-            diffuse = ColorEx.White;
-            specular = ColorEx.Black;
-            range = 100000;
-            attenuationConst = 1.0f;
-            attenuationLinear = 0.0f;
-            attenuationQuad = 0.0f;
+            this.type = LightType.Point;
+            this.diffuse = ColorEx.White;
+            this.specular = ColorEx.Black;
+            this.range = 100000;
+            this.attenuationConst = 1.0f;
+            this.attenuationLinear = 0.0f;
+            this.attenuationQuad = 0.0f;
 
             // Center in world, direction irrelevant but set anyway
-            position = Vector3.Zero;
-            direction = Vector3.UnitZ;
+            this.position = Vector3.Zero;
+            this.direction = Vector3.UnitZ;
 
             // Default some spot values
-            spotInner = 30.0f;
-            spotOuter = 40.0f;
-            spotFalloff = 1.0f;
+            this.spotInner = 30.0f;
+            this.spotOuter = 40.0f;
+            this.spotFalloff = 1.0f;
 
-            localTransformDirty = false;
+            this.localTransformDirty = false;
         }
 
         #endregion
@@ -190,11 +213,11 @@ namespace Axiom.Core
         {
             get
             {
-                return type;
+                return this.type;
             }
             set
             {
-                type = value;
+                this.type = value;
             }
         }
 
@@ -205,12 +228,12 @@ namespace Axiom.Core
         {
             get
             {
-                return position;
+                return this.position;
             }
             set
             {
-                position = value;
-                localTransformDirty = true;
+                this.position = value;
+                this.localTransformDirty = true;
             }
         }
 
@@ -221,17 +244,19 @@ namespace Axiom.Core
         {
             get
             {
-                return direction;
+                return this.direction;
             }
             set
             {
                 //default to UnitZ, as Zero may cause the meshes to be rendered as white
                 if ( value.IsZero )
+                {
                     value = DefaultDirection;
+                }
 
-                direction = value;
-                direction.Normalize();
-                localTransformDirty = true;
+                this.direction = value;
+                this.direction.Normalize();
+                this.localTransformDirty = true;
             }
         }
 
@@ -242,11 +267,11 @@ namespace Axiom.Core
         {
             get
             {
-                return spotInner;
+                return this.spotInner;
             }
             set
             {
-                spotInner = value;
+                this.spotInner = value;
             }
         }
 
@@ -257,11 +282,11 @@ namespace Axiom.Core
         {
             get
             {
-                return spotOuter;
+                return this.spotOuter;
             }
             set
             {
-                spotOuter = value;
+                this.spotOuter = value;
             }
         }
 
@@ -272,11 +297,11 @@ namespace Axiom.Core
         {
             get
             {
-                return spotFalloff;
+                return this.spotFalloff;
             }
             set
             {
-                spotFalloff = value;
+                this.spotFalloff = value;
             }
         }
 
@@ -287,11 +312,11 @@ namespace Axiom.Core
         {
             get
             {
-                return diffuse;
+                return this.diffuse;
             }
             set
             {
-                diffuse = value;
+                this.diffuse = value;
             }
         }
 
@@ -302,11 +327,11 @@ namespace Axiom.Core
         {
             get
             {
-                return specular;
+                return this.specular;
             }
             set
             {
-                specular = value;
+                this.specular = value;
             }
         }
 
@@ -317,11 +342,11 @@ namespace Axiom.Core
         {
             get
             {
-                return range;
+                return this.range;
             }
             set
             {
-                range = value;
+                this.range = value;
             }
         }
 
@@ -332,11 +357,11 @@ namespace Axiom.Core
         {
             get
             {
-                return attenuationConst;
+                return this.attenuationConst;
             }
             set
             {
-                attenuationConst = value;
+                this.attenuationConst = value;
             }
         }
 
@@ -347,11 +372,11 @@ namespace Axiom.Core
         {
             get
             {
-                return attenuationLinear;
+                return this.attenuationLinear;
             }
             set
             {
-                attenuationLinear = value;
+                this.attenuationLinear = value;
             }
         }
 
@@ -362,42 +387,12 @@ namespace Axiom.Core
         {
             get
             {
-                return attenuationQuad;
+                return this.attenuationQuad;
             }
             set
             {
-                attenuationQuad = value;
+                this.attenuationQuad = value;
             }
-        }
-
-        /// <summary>
-        ///		Updates this lights position.
-        /// </summary>
-        public virtual void Update()
-        {
-            if ( parentNode != null )
-            {
-                if ( !localTransformDirty
-                    && parentNode.DerivedOrientation == lastParentOrientation
-                    && parentNode.DerivedPosition == lastParentPosition )
-                {
-                }
-                else
-                {
-                    // we are out of date with the scene node we are attached to
-                    lastParentOrientation = parentNode.DerivedOrientation;
-                    lastParentPosition = parentNode.DerivedPosition;
-                    derivedDirection = lastParentOrientation * direction;
-                    derivedPosition = ( lastParentOrientation * position ) + lastParentPosition;
-                }
-            }
-            else
-            {
-                derivedPosition = position;
-                derivedDirection = direction;
-            }
-
-            localTransformDirty = false;
         }
 
         /// <summary>
@@ -408,9 +403,9 @@ namespace Axiom.Core
             get
             {
                 // this is called to force an update
-                Update();
+                this.Update();
 
-                return derivedPosition;
+                return this.derivedPosition;
             }
         }
 
@@ -422,9 +417,9 @@ namespace Axiom.Core
             get
             {
                 // this is called to force an update
-                Update();
+                this.Update();
 
-                return derivedDirection;
+                return this.derivedDirection;
             }
         }
 
@@ -440,9 +435,64 @@ namespace Axiom.Core
             }
         }
 
+        public float ShadowFarDistance
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public float PowerScale
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+
         #endregion
 
         #region Methods
+
+        /// <summary>
+        ///		Updates this lights position.
+        /// </summary>
+        public virtual void Update()
+        {
+            if ( this.parentNode != null )
+            {
+                if ( !this.localTransformDirty
+                     && this.parentNode.DerivedOrientation == this.lastParentOrientation
+                     && this.parentNode.DerivedPosition == this.lastParentPosition )
+                {
+                }
+                else
+                {
+                    // we are out of date with the scene node we are attached to
+                    this.lastParentOrientation = this.parentNode.DerivedOrientation;
+                    this.lastParentPosition = this.parentNode.DerivedPosition;
+                    this.derivedDirection = this.lastParentOrientation * this.direction;
+                    this.derivedPosition = ( this.lastParentOrientation * this.position ) + this.lastParentPosition;
+                }
+            }
+            else
+            {
+                this.derivedPosition = this.position;
+                this.derivedDirection = this.direction;
+            }
+
+            this.localTransformDirty = false;
+        }
 
         /// <summary>
         ///		Gets the details of this light as a 4D vector.
@@ -459,17 +509,17 @@ namespace Axiom.Core
         {
             Vector4 vec;
 
-            if ( type == LightType.Directional )
+            if ( this.type == LightType.Directional )
             {
                 // negate direction as 'position'
-                vec = -(Vector4)this.DerivedDirection;
+                vec = -(Vector4) this.DerivedDirection;
 
                 // infinite distance
                 vec.w = 0.0f;
             }
             else
             {
-                vec = (Vector4)this.DerivedPosition;
+                vec = (Vector4) this.DerivedPosition;
                 vec.w = 1.0f;
             }
 
@@ -483,7 +533,7 @@ namespace Axiom.Core
         /// <param name="outerAngle"></param>
         public void SetSpotlightRange( float innerAngle, float outerAngle )
         {
-            SetSpotlightRange( innerAngle, outerAngle, 1.0f );
+            this.SetSpotlightRange( innerAngle, outerAngle, 1.0f );
         }
 
         /// <summary>
@@ -499,10 +549,9 @@ namespace Axiom.Core
 				throw new Exception("Setting the spotlight range is only valid for spotlights.");
 			}*/
 
-
-            spotInner = innerAngle;
-            spotOuter = outerAngle;
-            spotFalloff = falloff;
+            this.spotInner = innerAngle;
+            this.spotOuter = outerAngle;
+            this.spotFalloff = falloff;
         }
 
         /// <summary>
@@ -515,9 +564,9 @@ namespace Axiom.Core
         public virtual void SetAttenuation( float range, float constant, float linear, float quadratic )
         {
             this.range = range;
-            attenuationConst = constant;
-            attenuationLinear = linear;
-            attenuationQuad = quadratic;
+            this.attenuationConst = constant;
+            this.attenuationLinear = linear;
+            this.attenuationQuad = quadratic;
         }
 
         /// <summary>
@@ -542,11 +591,11 @@ namespace Axiom.Core
 
             // First check if the light is close to the near plane, since
             // in this case we have to build a degenerate clip volume
-            nearClipVolume.planes.Clear();
-            nearClipVolume.outside = PlaneSide.Negative;
+            this.nearClipVolume.planes.Clear();
+            this.nearClipVolume.outside = PlaneSide.Negative;
 
             // Homogenous position
-            Vector4 lightPos = GetAs4DVector();
+            Vector4 lightPos = this.GetAs4DVector();
             // 3D version (not the same as DerivedPosition, is -direction for
             // directional lights)
             Vector3 lightPos3 = new Vector3( lightPos.x, lightPos.y, lightPos.z );
@@ -586,7 +635,7 @@ namespace Axiom.Core
                         normal = -normal;
                     }
                     // NB last param to Plane constructor is negated because it's -d
-                    nearClipVolume.planes.Add( new Plane( normal, normal.Dot( corners[ i ] ) ) );
+                    this.nearClipVolume.planes.Add( new Plane( normal, normal.Dot( corners[ i ] ) ) );
                 }
 
                 // Now do the near plane plane
@@ -596,7 +645,7 @@ namespace Axiom.Core
                     // remember the -d negation in plane constructor
                     normal = eyeToWorld * -Vector3.UnitZ;
                     normal.Normalize();
-                    nearClipVolume.planes.Add( new Plane( normal, -normal.Dot( camera.DerivedPosition ) ) );
+                    this.nearClipVolume.planes.Add( new Plane( normal, -normal.Dot( camera.DerivedPosition ) ) );
                 }
                 else
                 {
@@ -604,18 +653,18 @@ namespace Axiom.Core
                     // remember the -d negation in plane constructor
                     normal = eyeToWorld * Vector3.UnitZ;
                     normal.Normalize();
-                    nearClipVolume.planes.Add( new Plane( normal, -normal.Dot( camera.DerivedPosition ) ) );
+                    this.nearClipVolume.planes.Add( new Plane( normal, -normal.Dot( camera.DerivedPosition ) ) );
                 }
 
                 // Finally, for a point/spot light we can add a sixth plane
                 // This prevents false positives from behind the light
-                if ( type != LightType.Directional )
+                if ( this.type != LightType.Directional )
                 {
                     // Direction from light to centre point of viewport 
                     normal = ( eyeToWorld * new Vector3( 0, 0, -n ) ) - lightPos3;
                     normal.Normalize();
                     // remember the -d negation in plane constructor
-                    nearClipVolume.planes.Add( new Plane( normal, normal.Dot( lightPos3 ) ) );
+                    this.nearClipVolume.planes.Add( new Plane( normal, normal.Dot( lightPos3 ) ) );
                 }
             }
             else
@@ -623,11 +672,11 @@ namespace Axiom.Core
                 // light is close to being on the near plane
                 // degenerate volume including the entire scene 
                 // we will always require light / dark caps
-                nearClipVolume.planes.Add( new Plane( Vector3.UnitZ, -n ) );
-                nearClipVolume.planes.Add( new Plane( -Vector3.UnitZ, n ) );
+                this.nearClipVolume.planes.Add( new Plane( Vector3.UnitZ, -n ) );
+                this.nearClipVolume.planes.Add( new Plane( -Vector3.UnitZ, n ) );
             }
 
-            return nearClipVolume;
+            return this.nearClipVolume;
         }
 
         /// <summary>
@@ -644,14 +693,14 @@ namespace Axiom.Core
         internal virtual PlaneBoundedVolumeList GetFrustumClipVolumes( Camera camera )
         {
             // Homogenous light position
-            Vector4 lightPos = GetAs4DVector();
+            Vector4 lightPos = this.GetAs4DVector();
 
             // 3D version (not the same as DerivedPosition, is -direction for
             // directional lights)
             Vector3 lightPos3 = new Vector3( lightPos.x, lightPos.y, lightPos.z );
             Vector3 lightDir;
 
-            Vector3[] clockwiseVerts = new Vector3[ 4 ];
+            Vector3[] clockwiseVerts = new Vector3[4];
 
             Matrix4 eyeToWorld = camera.ViewMatrix.Inverse();
 
@@ -660,11 +709,11 @@ namespace Axiom.Core
 
             bool infiniteViewDistance = ( camera.Far == 0 );
 
-            frustumClipVolumes.Clear();
+            this.frustumClipVolumes.Clear();
 
             for ( int n = 0; n < 6; n++ )
             {
-                FrustumPlane frustumPlane = (FrustumPlane)n;
+                FrustumPlane frustumPlane = (FrustumPlane) n;
 
                 // skip far plane if infinite view frustum
                 if ( infiniteViewDistance && ( frustumPlane == FrustumPlane.Far ) )
@@ -684,9 +733,9 @@ namespace Axiom.Core
                     // Ok, this is a valid one
                     // clockwise verts mean we can cross-product and always get normals
                     // facing into the volume we create
-                    frustumClipVolumes.Add( new PlaneBoundedVolume() );
+                    this.frustumClipVolumes.Add( new PlaneBoundedVolume() );
                     PlaneBoundedVolume vol =
-                        (PlaneBoundedVolume)frustumClipVolumes[ frustumClipVolumes.Count - 1 ];
+                            (PlaneBoundedVolume) this.frustumClipVolumes[ this.frustumClipVolumes.Count - 1 ];
 
                     switch ( frustumPlane )
                     {
@@ -755,7 +804,7 @@ namespace Axiom.Core
 
                     // Finally, for a point/spot light we can add a sixth plane
                     // This prevents false positives from behind the light
-                    if ( type != LightType.Directional )
+                    if ( this.type != LightType.Directional )
                     {
                         // re-use our own plane normal
                         // remember the -d negation in plane constructor
@@ -764,7 +813,7 @@ namespace Axiom.Core
                 }
             }
 
-            return frustumClipVolumes;
+            return this.frustumClipVolumes;
         }
 
         #endregion
@@ -772,19 +821,19 @@ namespace Axiom.Core
         #region IAnimable methods
 
         public static string[] animableAttributes = {
-			"diffuseColour",
-			"specularColour",
-			"attenuation",
-            "AttenuationRange",
-            "AttenuationConstant",
-            "AttenuationLinear",
-            "AttenuationQuadratic",
-			"spotlightInner",
-			"spotlightOuter",
-			"spotlightFalloff",
-            "Diffuse",
-            "Specular"
-		};
+                                                            "diffuseColour",
+                                                            "specularColour",
+                                                            "attenuation",
+                                                            "AttenuationRange",
+                                                            "AttenuationConstant",
+                                                            "AttenuationLinear",
+                                                            "AttenuationQuadratic",
+                                                            "spotlightInner",
+                                                            "spotlightOuter",
+                                                            "spotlightFalloff",
+                                                            "Diffuse",
+                                                            "Specular"
+                                                    };
 
         /// <summary>
         ///     Part of the IAnimableObject interface.
@@ -827,281 +876,318 @@ namespace Axiom.Core
             throw new Exception( string.Format( "Could not find animable attribute '{0}'", valueName ) );
         }
 
-        protected class LightDiffuseColorValue : AnimableValue
+        #region Nested type: LightAttenuationConstantValue
+
+        protected class LightAttenuationConstantValue : AnimableValue
         {
             protected Light light;
-            public LightDiffuseColorValue( Light light )
-                : base( AnimableType.ColorEx )
+
+            public LightAttenuationConstantValue( Light light )
+                    : base( AnimableType.Float )
             {
                 this.light = light;
-                SetAsBaseValue( ColorEx.Black );
+                this.SetAsBaseValue( 0.0f );
             }
 
-            public override void SetValue( ColorEx val )
+            public override void SetValue( float val )
             {
-                light.Diffuse = val;
+                this.light.AttenuationConstant = val;
             }
 
-            public override void ApplyDeltaValue( ColorEx val )
+            public override void ApplyDeltaValue( float val )
             {
-                ColorEx c = light.Diffuse;
-                SetValue( new ColorEx( c.a * val.a, c.r + val.r, c.g + val.g, c.b + val.b ) );
+                this.SetValue( val + this.light.AttenuationConstant );
             }
 
             public override void SetCurrentStateAsBaseValue()
             {
-                SetAsBaseValue( light.Diffuse );
+                this.SetAsBaseValue( this.light.AttenuationConstant );
             }
-
         }
 
-        protected class LightSpecularColorValue : AnimableValue
+        #endregion
+
+        #region Nested type: LightAttenuationLinearValue
+
+        protected class LightAttenuationLinearValue : AnimableValue
         {
             protected Light light;
-            public LightSpecularColorValue( Light light )
-                : base( AnimableType.ColorEx )
+
+            public LightAttenuationLinearValue( Light light )
+                    : base( AnimableType.Float )
             {
                 this.light = light;
-                SetAsBaseValue( ColorEx.Black );
+                this.SetAsBaseValue( 0.0f );
             }
 
-            public override void SetValue( ColorEx val )
+            public override void SetValue( float val )
             {
-                light.Specular = val;
+                this.light.AttenuationLinear = val;
             }
 
-            public override void ApplyDeltaValue( ColorEx val )
+            public override void ApplyDeltaValue( float val )
             {
-                ColorEx c = light.Specular;
-                SetValue( new ColorEx( c.a + val.a, c.r + val.r, c.g + val.g, c.b + val.b ) );
+                this.SetValue( val + this.light.AttenuationLinear );
             }
 
             public override void SetCurrentStateAsBaseValue()
             {
-                SetAsBaseValue( light.Specular );
+                this.SetAsBaseValue( this.light.AttenuationLinear );
+            }
+        }
+
+        #endregion
+
+        #region Nested type: LightAttenuationQuadraticValue
+
+        protected class LightAttenuationQuadraticValue : AnimableValue
+        {
+            protected Light light;
+
+            public LightAttenuationQuadraticValue( Light light )
+                    : base( AnimableType.Float )
+            {
+                this.light = light;
+                this.SetAsBaseValue( 0.0f );
             }
 
+            public override void SetValue( float val )
+            {
+                this.light.AttenuationQuadratic = val;
+            }
+
+            public override void ApplyDeltaValue( float val )
+            {
+                this.SetValue( val + this.light.AttenuationQuadratic );
+            }
+
+            public override void SetCurrentStateAsBaseValue()
+            {
+                this.SetAsBaseValue( this.light.AttenuationQuadratic );
+            }
         }
+
+        #endregion
+
+        #region Nested type: LightAttenuationRangeValue
+
+        protected class LightAttenuationRangeValue : AnimableValue
+        {
+            protected Light light;
+
+            public LightAttenuationRangeValue( Light light )
+                    : base( AnimableType.Float )
+            {
+                this.light = light;
+                this.SetAsBaseValue( 0.0f );
+            }
+
+            public override void SetValue( float val )
+            {
+                this.light.AttenuationRange = val;
+            }
+
+            public override void ApplyDeltaValue( float val )
+            {
+                this.SetValue( val + this.light.AttenuationRange );
+            }
+
+            public override void SetCurrentStateAsBaseValue()
+            {
+                this.SetAsBaseValue( this.light.AttenuationRange );
+            }
+        }
+
+        #endregion
+
+        #region Nested type: LightAttenuationValue
 
         protected class LightAttenuationValue : AnimableValue
         {
             protected Light light;
+
             public LightAttenuationValue( Light light )
-                : base( AnimableType.Vector4 )
+                    : base( AnimableType.Vector4 )
             {
                 this.light = light;
             }
 
             public override void SetValue( Vector4 val )
             {
-                light.SetAttenuation( val.x, val.y, val.z, val.w );
+                this.light.SetAttenuation( val.x, val.y, val.z, val.w );
             }
 
             public override void ApplyDeltaValue( Vector4 val )
             {
-                Vector4 v = light.GetAs4DVector();
-                SetValue( new Vector4( v.x + val.x, v.y + val.y, v.z + val.z, v.w + val.w ) );
+                Vector4 v = this.light.GetAs4DVector();
+                this.SetValue( new Vector4( v.x + val.x, v.y + val.y, v.z + val.z, v.w + val.w ) );
             }
 
             public override void SetCurrentStateAsBaseValue()
             {
-                SetAsBaseValue( light.GetAs4DVector() );
+                this.SetAsBaseValue( this.light.GetAs4DVector() );
             }
         }
 
-        protected class LightAttenuationRangeValue : AnimableValue
+        #endregion
+
+        #region Nested type: LightDiffuseColorValue
+
+        protected class LightDiffuseColorValue : AnimableValue
         {
             protected Light light;
-            public LightAttenuationRangeValue( Light light )
-                : base( AnimableType.Float )
+
+            public LightDiffuseColorValue( Light light )
+                    : base( AnimableType.ColorEx )
             {
                 this.light = light;
-                SetAsBaseValue( 0.0f );
+                this.SetAsBaseValue( ColorEx.Black );
             }
 
-            public override void SetValue( float val )
+            public override void SetValue( ColorEx val )
             {
-                light.AttenuationRange = val;
+                this.light.Diffuse = val;
             }
 
-            public override void ApplyDeltaValue( float val )
+            public override void ApplyDeltaValue( ColorEx val )
             {
-                SetValue( val + light.AttenuationRange );
+                ColorEx c = this.light.Diffuse;
+                this.SetValue( new ColorEx( c.a * val.a, c.r + val.r, c.g + val.g, c.b + val.b ) );
             }
 
             public override void SetCurrentStateAsBaseValue()
             {
-                SetAsBaseValue( light.AttenuationRange );
+                this.SetAsBaseValue( this.light.Diffuse );
             }
         }
 
-        protected class LightAttenuationConstantValue : AnimableValue
+        #endregion
+
+        #region Nested type: LightSpecularColorValue
+
+        protected class LightSpecularColorValue : AnimableValue
         {
             protected Light light;
-            public LightAttenuationConstantValue( Light light )
-                : base( AnimableType.Float )
+
+            public LightSpecularColorValue( Light light )
+                    : base( AnimableType.ColorEx )
             {
                 this.light = light;
-                SetAsBaseValue( 0.0f );
+                this.SetAsBaseValue( ColorEx.Black );
             }
 
-            public override void SetValue( float val )
+            public override void SetValue( ColorEx val )
             {
-                light.AttenuationConstant = val;
+                this.light.Specular = val;
             }
 
-            public override void ApplyDeltaValue( float val )
+            public override void ApplyDeltaValue( ColorEx val )
             {
-                SetValue( val + light.AttenuationConstant );
+                ColorEx c = this.light.Specular;
+                this.SetValue( new ColorEx( c.a + val.a, c.r + val.r, c.g + val.g, c.b + val.b ) );
             }
 
             public override void SetCurrentStateAsBaseValue()
             {
-                SetAsBaseValue( light.AttenuationConstant );
+                this.SetAsBaseValue( this.light.Specular );
             }
         }
 
-        protected class LightAttenuationLinearValue : AnimableValue
-        {
-            protected Light light;
-            public LightAttenuationLinearValue( Light light )
-                : base( AnimableType.Float )
-            {
-                this.light = light;
-                SetAsBaseValue( 0.0f );
-            }
+        #endregion
 
-            public override void SetValue( float val )
-            {
-                light.AttenuationLinear = val;
-            }
-
-            public override void ApplyDeltaValue( float val )
-            {
-                SetValue( val + light.AttenuationLinear );
-            }
-
-            public override void SetCurrentStateAsBaseValue()
-            {
-                SetAsBaseValue( light.AttenuationLinear );
-            }
-        }
-
-        protected class LightAttenuationQuadraticValue : AnimableValue
-        {
-            protected Light light;
-            public LightAttenuationQuadraticValue( Light light )
-                : base( AnimableType.Float )
-            {
-                this.light = light;
-                SetAsBaseValue( 0.0f );
-            }
-
-            public override void SetValue( float val )
-            {
-                light.AttenuationQuadratic = val;
-            }
-
-            public override void ApplyDeltaValue( float val )
-            {
-                SetValue( val + light.AttenuationQuadratic );
-            }
-
-            public override void SetCurrentStateAsBaseValue()
-            {
-                SetAsBaseValue( light.AttenuationQuadratic );
-            }
-        }
-
-        protected class LightSpotlightInnerValue : AnimableValue
-        {
-            protected Light light;
-            public LightSpotlightInnerValue( Light light )
-                : base( AnimableType.Float )
-            {
-                this.light = light;
-            }
-
-            public override void SetValue( float val )
-            {
-                light.SpotlightInnerAngle = Utility.RadiansToDegrees( val );
-            }
-
-            public override void ApplyDeltaValue( float val )
-            {
-                SetValue( Utility.DegreesToRadians( light.SpotlightInnerAngle ) + val );
-            }
-
-            public override void SetCurrentStateAsBaseValue()
-            {
-                SetAsBaseValue( Utility.DegreesToRadians( light.SpotlightInnerAngle ) );
-            }
-
-        }
-
-        protected class LightSpotlightOuterValue : AnimableValue
-        {
-            protected Light light;
-            public LightSpotlightOuterValue( Light light )
-                : base( AnimableType.Float )
-            {
-                this.light = light;
-            }
-
-            public override void SetValue( float val )
-            {
-                light.SpotlightOuterAngle = Utility.RadiansToDegrees( val );
-            }
-
-            public override void ApplyDeltaValue( float val )
-            {
-                SetValue( Utility.DegreesToRadians( light.SpotlightOuterAngle ) + val );
-            }
-
-            public override void SetCurrentStateAsBaseValue()
-            {
-                SetAsBaseValue( Utility.DegreesToRadians( light.SpotlightOuterAngle ) );
-            }
-        }
+        #region Nested type: LightSpotlightFalloffValue
 
         protected class LightSpotlightFalloffValue : AnimableValue
         {
             protected Light light;
+
             public LightSpotlightFalloffValue( Light light )
-                : base( AnimableType.Float )
+                    : base( AnimableType.Float )
             {
                 this.light = light;
             }
 
             public override void SetValue( float val )
             {
-                light.SpotlightFalloff = val;
+                this.light.SpotlightFalloff = val;
             }
 
             public override void ApplyDeltaValue( float val )
             {
-                SetValue( light.SpotlightFalloff + val );
+                this.SetValue( this.light.SpotlightFalloff + val );
             }
 
             public override void SetCurrentStateAsBaseValue()
             {
-                SetAsBaseValue( light.SpotlightFalloff );
+                this.SetAsBaseValue( this.light.SpotlightFalloff );
             }
         }
+
+        #endregion
+
+        #region Nested type: LightSpotlightInnerValue
+
+        protected class LightSpotlightInnerValue : AnimableValue
+        {
+            protected Light light;
+
+            public LightSpotlightInnerValue( Light light )
+                    : base( AnimableType.Float )
+            {
+                this.light = light;
+            }
+
+            public override void SetValue( float val )
+            {
+                this.light.SpotlightInnerAngle = Utility.RadiansToDegrees( val );
+            }
+
+            public override void ApplyDeltaValue( float val )
+            {
+                this.SetValue( Utility.DegreesToRadians( this.light.SpotlightInnerAngle ) + val );
+            }
+
+            public override void SetCurrentStateAsBaseValue()
+            {
+                this.SetAsBaseValue( Utility.DegreesToRadians( this.light.SpotlightInnerAngle ) );
+            }
+        }
+
+        #endregion
+
+        #region Nested type: LightSpotlightOuterValue
+
+        protected class LightSpotlightOuterValue : AnimableValue
+        {
+            protected Light light;
+
+            public LightSpotlightOuterValue( Light light )
+                    : base( AnimableType.Float )
+            {
+                this.light = light;
+            }
+
+            public override void SetValue( float val )
+            {
+                this.light.SpotlightOuterAngle = Utility.RadiansToDegrees( val );
+            }
+
+            public override void ApplyDeltaValue( float val )
+            {
+                this.SetValue( Utility.DegreesToRadians( this.light.SpotlightOuterAngle ) + val );
+            }
+
+            public override void SetCurrentStateAsBaseValue()
+            {
+                this.SetAsBaseValue( Utility.DegreesToRadians( this.light.SpotlightOuterAngle ) );
+            }
+        }
+
+        #endregion
 
         #endregion IAnimable methods
 
         #region MovableObject Implementation
-
-        public override void NotifyCurrentCamera( Camera camera )
-        {
-            // Do nothing
-        }
-
-        public override void UpdateRenderQueue( RenderQueue queue )
-        {
-            // Do Nothing	
-        }
 
         /// <summary>
         /// 
@@ -1112,6 +1198,17 @@ namespace Axiom.Core
             {
                 return AxisAlignedBox.Null;
             }
+        }
+
+
+        public override void NotifyCurrentCamera( Camera camera )
+        {
+            // Do nothing
+        }
+
+        public override void UpdateRenderQueue( RenderQueue queue )
+        {
+            // Do Nothing	
         }
 
         #endregion MovableObject Implementation
@@ -1138,85 +1235,109 @@ namespace Axiom.Core
         }
 
         #endregion
-
     }
 
-    #region MovableObjectFactory implementation
+    #region MovableObjectFactory Implementation
 
     public class LightFactory : MovableObjectFactory
     {
-        private const string Factory_Type_Name = "Light";
+        public const string TypeName = "Light";
 
         public LightFactory()
         {
-            this.Type = LightFactory.Factory_Type_Name;
+            this.Type = LightFactory.TypeName;
         }
 
-        protected override MovableObject _createInstance( string name, NameValuePairList param )
+        protected override MovableObject _createInstance( string name, NamedParameterList param )
         {
             Light light = new Light( name );
 
-            if ( null != param )
+            if ( param != null )
             {
                 string ni;
 
                 // Setting the light type first before any property specific to a certain light type
                 if ( param.ContainsKey( "type" ) )
                 {
-                    ni = param[ "type" ];
-
-                    if ( ni == "point" )
-                        light.Type = LightType.Point;
-                    else if ( ni == "directional" )
-                        light.Type = LightType.Directional;
-                    else if ( ni == "spotlight" || ni == "spot" )
-                        light.Type = LightType.Spotlight;
-                    else
-                        throw new AxiomException( "Invalid light type '" + ni + "'. LightFactory.CreateInstance" );
+                    switch ( param[ "type" ].ToString() )
+                    {
+                        case "point":
+                            light.Type = LightType.Point;
+                            break;
+                        case "directional":
+                            light.Type = LightType.Directional;
+                            break;
+                        case "spot":
+                        case "spotlight":
+                            light.Type = LightType.Spotlight;
+                            break;
+                        default:
+                            throw new AxiomException( "Invalid light type '" + param[ "type" ] + "'." );
+                    }
                 }
 
                 // Common properties
-                if ( ( ni = param[ "position" ] ) != null )
-                    light.Position = Vector3.Parse( ni );
-
-                if ( ( ni = param[ "direction" ] ) != null )
-                    light.Direction = Vector3.Parse( ni );
-
-                if ( ( ni = param[ "diffuseColour" ] ) != null )
-                    light.Diffuse = ColorEx.Parse_0_255_String( ni );
-
-                if ( ( ni = param[ "specularColour" ] ) != null )
-                    light.Specular = ColorEx.Parse_0_255_String( ni );
-
-                if ( ( ni = param[ "attenuation" ] ) != null )
+                if ( param.ContainsKey( "position" ) )
                 {
-                    Vector4 attenuation = Vector4.Parse( ni );
+                    light.Position = Vector3.Parse( param[ "position" ].ToString() );
+                }
+
+                if ( param.ContainsKey( "direction" ) )
+                {
+                    light.Direction = Vector3.Parse( param[ "direction" ].ToString() );
+                }
+
+                if ( param.ContainsKey( "diffuseColour" ) )
+                {
+                    light.Diffuse = ColorEx.Parse_0_255_String( param[ "diffuseColour"].ToString() );
+                }
+
+                if ( param.ContainsKey( "specularColour" ) )
+                {
+                    light.Specular = ColorEx.Parse_0_255_String( param[ "specularColour" ].ToString() );
+                }
+
+                if ( param.ContainsKey( "attenuation" ) )
+                {
+                    Vector4 attenuation = Vector4.Parse( param[ "attenuation" ].ToString() );
                     light.SetAttenuation( attenuation.x, attenuation.y, attenuation.z, attenuation.w );
                 }
 
-                if ( ( ni = param[ "castShadows" ] ) != null )
-                    light.CastShadows = Convert.ToBoolean( ni );
+                if ( param.ContainsKey( "castShadows" ) )
+                {
+                    light.CastShadows = Convert.ToBoolean( param[ "castShadows" ].ToString() );
+                }
 
-                if ( ( ni = param[ "visible" ] ) != null )
-                    light.CastShadows = Convert.ToBoolean( ni );
-
-                // Check: Do we have this here?
-                //if((ni = param["powerScale"]) != null)
-                //    light.PowerScale = (float)Convert.ToDouble(ni);
-
-                // Check: Do we have this here?
-                //if((ni = param["shadowFarDistance"]) != null)
-                //    light.ShadowFarDistance = (float)Convert.ToDouble(ni);
+                if ( param.ContainsKey( "visible" ) )
+                {
+                    light.CastShadows = Convert.ToBoolean( param[ "visible" ].ToString() );
+                }
+                // TODO: Add PowerScale Property to Light
+                if ( param.ContainsKey( "powerScale" ) )
+                {
+                    light.PowerScale = (float)Convert.ToDouble( param[ "powerScale" ].ToString() );
+                }
+                // TODO: Add ShadowFarDistance to Light
+                if ( param.ContainsKey( "shadowFarDistance" ) )
+                {
+                    light.ShadowFarDistance = (float)Convert.ToDouble( param[ "shadowFarDistance" ].ToString() );
+                }
 
                 // Spotlight properties
-                if ( ( ni = param[ "spotlightInner" ] ) != null )
-                    light.SpotlightInnerAngle = (float)Convert.ToDouble( ni );
+                if ( param.ContainsKey( "spotlightInner" ) )
+                {
+                    light.SpotlightInnerAngle = (float)Convert.ToDouble( param[ "spotlightInner" ].ToString() );
+                }
 
-                if ( ( ni = param[ "spotlightOuter" ] ) != null )
-                    light.SpotlightOuterAngle = (float)Convert.ToDouble( ni );
+                if ( param.ContainsKey( "spotlightOuter" ) )
+                {
+                    light.SpotlightOuterAngle = (float)Convert.ToDouble( param[ "spotlightOuter" ].ToString() );
+                }
 
-                if ( ( ni = param[ "spotlightFalloff" ] ) != null )
-                    light.SpotlightFalloff = (float)Convert.ToDouble( ni );
+                if ( param.ContainsKey( "spotlightFalloff" ) )
+                {
+                    light.SpotlightFalloff = (float)Convert.ToDouble( param[ "spotlightFalloff" ].ToString() );
+                }
             }
 
             return light;
@@ -1228,5 +1349,5 @@ namespace Axiom.Core
         }
     }
 
-    #endregion MovableObjectFactory implementation
+    #endregion MovableObjectFactory Implementation
 }
