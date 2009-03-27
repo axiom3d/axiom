@@ -737,16 +737,15 @@ namespace Axiom.ParticleSystems
 
     //public class ParticleSystemManagerFactory : MovableObjectFactory
     //{
-    //    public static string FACTORY_TYPE_NAME = "ParticleSystemManager";
+    //    public static string Factory_Type_Name = "ParticleSystemManager";
 
-    //    protected override MovableObject CreateInstanceImpl(string name, NameValuePairList param)
+    //    protected override MovableObject _createInstance(string name, NamedParameterList param)
     //    {
     //        return new ManualObject(name);
     //    }
 
     //    public override void DestroyInstance(MovableObject obj)
     //    {
-    //        ParticleSystemManager man = (ParticleSystemManager)obj;
     //        obj = null;
     //    }
     //}
