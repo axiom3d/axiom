@@ -328,11 +328,11 @@ namespace Axiom.SceneManagers.Bsp
         protected override void PopulateLightList( Vector3 position, float radius, LightList destList )
         {
             BspNode positionNode = level.FindLeaf( position );
-            BspNode[] lightNodes = new BspNode[ lightList.Count ];
+            BspNode[] lightNodes = new BspNode[ Lights.Count ];
 
-            for ( int i = 0; i < lightList.Count; i++ )
+            for (int i = 0; i < Lights.Count; i++)
             {
-                Light light = lightList[ i ];
+                Light light = (Light)Lights[i];
                 lightNodes[ i ] = (BspNode)level.objectToNodeMap.FindFirst( light );
             }
 
@@ -341,9 +341,9 @@ namespace Axiom.SceneManagers.Bsp
             float squaredRadius = radius * radius;
 
             // loop through the scene lights an add ones in range and visible from positionNode
-            for ( int i = 0; i < lightList.Count; i++ )
+            for (int i = 0; i < Lights.Count; i++)
             {
-                TextureLight light = (TextureLight)lightList[ i ];
+                TextureLight light = (TextureLight)Lights[i];
 
                 if ( light.IsVisible && level.IsLeafVisible( positionNode, lightNodes[ i ] ) )
                 {
@@ -378,7 +378,7 @@ namespace Axiom.SceneManagers.Bsp
         protected override void FindLightsAffectingFrustum( Camera camera )
         {
             lightsAffectingFrustum.Clear();
-            lightAddedToFrustum = new bool[ lightList.Count ];
+            lightAddedToFrustum = new bool[Lights.Count];
 
             if ( shadowTechnique == ShadowTechnique.TextureModulative )
             {
@@ -392,9 +392,9 @@ namespace Axiom.SceneManagers.Bsp
                 // Locate the leaf node where the camera is located
                 BspNode cameraNode = level.FindLeaf( camera.DerivedPosition );
 
-                for ( int i = 0; i < lightList.Count; i++ )
+                for (int i = 0; i < Lights.Count; i++)
                 {
-                    TextureLight light = (TextureLight)lightList[ i ];
+                    TextureLight light = (TextureLight)Lights[i];
 
                     if ( !light.IsVisible )
                         continue;
@@ -468,7 +468,7 @@ namespace Axiom.SceneManagers.Bsp
             TextureLight light = new TextureLight( name, this );
 
             // add the light to the list
-            lightList.Add( name, light );
+            Lights.Add(name, light);
 
             // add it in the bsp tree
             NotifyObjectMoved( light, light.Position );
@@ -484,10 +484,10 @@ namespace Axiom.SceneManagers.Bsp
 
         public override void RemoveAllLights()
         {
-			if ( lightList != null )
+            if (Lights != null)
 			{
-				for ( int i = 0; i < lightList.Count; i++ )
-					NotifyObjectDetached( lightList[ i ] );
+                for (int i = 0; i < Lights.Count; i++)
+                    NotifyObjectDetached(Lights[i]);
 			}
             base.RemoveAllLights();
         }
@@ -500,7 +500,7 @@ namespace Axiom.SceneManagers.Bsp
 
         public override void RemoveEntity( string name )
         {
-            Entity entity = entityList[ name ];
+            Entity entity = (Entity)Entities[ name ];
             if ( entity != null )
             {
                 this.RemoveEntity( entity );
@@ -509,10 +509,10 @@ namespace Axiom.SceneManagers.Bsp
 
         public override void RemoveAllEntities()
         {
-			if ( entityList != null )
+            if (Entities != null)
 			{
-				for ( int i = 0; i < entityList.Count; i++ )
-					NotifyObjectDetached( entityList[ i ] );
+                for (int i = 0; i < Entities.Count; i++)
+                    NotifyObjectDetached(Entities[i]);
 			}
             base.RemoveAllEntities();
         }
@@ -679,21 +679,21 @@ namespace Axiom.SceneManagers.Bsp
             matFaceGroupMap.Clear();
             faceGroupChecked = new bool[ level.FaceGroups.Length ];
 
-            TextureLight[] lights = new TextureLight[ lightList.Count ];
-            BspNode[] lightNodes = new BspNode[ lightList.Count ];
-            Sphere[] lightSpheres = new Sphere[ lightList.Count ];
+            TextureLight[] lights = new TextureLight[ Lights.Count ];
+            BspNode[] lightNodes = new BspNode[Lights.Count];
+            Sphere[] lightSpheres = new Sphere[Lights.Count];
 
             // The base SceneManager uses this for shadows.
             // The BspSceneManager uses this for texture lighting as well.
             if ( shadowTechnique == ShadowTechnique.None )
             {
                 lightsAffectingFrustum.Clear();
-                lightAddedToFrustum = new bool[ lightList.Count ];
+                lightAddedToFrustum = new bool[Lights.Count];
             }
 
-            for ( int lp = 0; lp < lightList.Count; lp++ )
+            for (int lp = 0; lp < Lights.Count; lp++)
             {
-                TextureLight light = (TextureLight)lightList[ lp ];
+                TextureLight light = (TextureLight)Lights[lp];
                 lights[ lp ] = light;
                 lightNodes[ lp ] = (BspNode)level.objectToNodeMap.FindFirst( light );
                 if ( light.Type != LightType.Directional )
@@ -1093,7 +1093,7 @@ namespace Axiom.SceneManagers.Bsp
         /// </summary>
         protected void RenderTextureLighting( int lightIndex )
         {
-            TextureLight light = (TextureLight)lightList[ lightIndex ];
+            TextureLight light = (TextureLight)Lights[lightIndex];
 
             if ( !light.IsTextureLight )
                 return;
@@ -1332,11 +1332,11 @@ namespace Axiom.SceneManagers.Bsp
                         int index;
 
                         // find the index of the light
-                        for ( index = 0; index < lightList.Count; index++ )
-                            if ( lightList[ index ] == lightsAffectingFrustum[ i ] )
+                        for (index = 0; index < Lights.Count; index++)
+                            if (Lights[index] == lightsAffectingFrustum[i])
                                 break;
 
-                        if ( index < lightList.Count )
+                        if (index < Lights.Count)
                         {
                             RenderTextureLighting( index );
                         }
@@ -1365,11 +1365,11 @@ namespace Axiom.SceneManagers.Bsp
                             int index;
 
                             // find the index of the light
-                            for ( index = 0; index < lightList.Count; index++ )
-                                if ( lightList[ index ] == manualLightList[ i ] )
+                            for (index = 0; index < Lights.Count; index++)
+                                if (Lights[index] == manualLightList[i])
                                     break;
 
-                            if ( index < lightList.Count )
+                            if (index < Lights.Count)
                             {
                                 RenderTextureLighting( index );
                             }

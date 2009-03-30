@@ -596,7 +596,7 @@ namespace Axiom.Graphics
 							break; // Give up
 						}
 						string compositorName = RemoveQuotes( splitCmd[ 1 ].Trim() );
-						context.compositor = (Compositor)CompositorManager.Instance.Create( compositorName, groupName );
+						context.compositor = (Compositor)this.Create( compositorName, groupName );
 						context.section = CompositorScriptSection.Compositor;
 						context.seenOpen = false;
 						continue; // next line

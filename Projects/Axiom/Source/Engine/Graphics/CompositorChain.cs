@@ -586,6 +586,11 @@ namespace Axiom.Graphics
 
 			bool compositorsEnabled = false;
 
+	        // force default scheme so materials for compositor quads will determined correctly
+	        MaterialManager matMgr = MaterialManager.Instance;
+	        string prevMaterialScheme = matMgr.ActiveScheme;
+            matMgr.ActiveScheme = MaterialManager.DefaultSchemeName;
+
 			/// Set previous CompositorInstance for each compositor in the list
 			CompositorInstance lastComposition = originalScene;
 			originalScene.PreviousInstance = null;
@@ -627,6 +632,8 @@ namespace Axiom.Graphics
 				}
 			}
 			dirty = false;
+
+            matMgr.ActiveScheme = prevMaterialScheme;
 		}
 
 		protected void ClearCompiledState()

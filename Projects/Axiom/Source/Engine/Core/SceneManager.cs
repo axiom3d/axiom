@@ -1326,7 +1326,7 @@ namespace Axiom.Core
         ///		The render queue in use by this scene manager.
         ///		Note: The queue is created if it doesn't already exist.
         /// </returns>
-        protected virtual RenderQueue GetRenderQueue()
+        public virtual RenderQueue GetRenderQueue()
         {
             if ( this.renderQueue == null )
             {

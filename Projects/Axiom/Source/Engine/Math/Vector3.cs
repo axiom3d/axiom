@@ -427,9 +427,49 @@ namespace Axiom.Math
 			}
 		}
 
+        /// <summary>
+        ///     Returns the square of the length(magnitude) of the vector.
+        /// <remarks>
+        ///     This  property is for efficiency - calculating the actual
+        ///     length of a vector requires a square root, which is expensive
+        ///     in terms of the operations required. This method returns the
+        ///     square of the length of the vector, i.e. the same as the
+        ///     length but before the square root is taken. Use this if you
+        ///     want to find the longest / shortest vector without incurring
+        ///     the square root.
+        /// </remarks>
+        public float SquaredLength
+        {
+            get
+            {
+                return x * x + y * y + z * z;
+            }
+        }
+
+
 		#endregion
 
 		#region Public methods
+
+        /// <summary>
+        ///     Returns the square of the distance to another vector.
+        /// <remarks>
+        ///     This method is for efficiency - calculating the actual
+        ///     distance to another vector requires a square root, which is
+        ///     expensive in terms of the operations required. This method
+        ///     returns the square of the distance to another vector, i.e.
+        ///     the same as the distance but before the square root is taken.
+        ///     Use this if you want to find the longest / shortest distance
+        ///     without incurring the square root.
+        /// </remarks>
+        /// </summary>
+        /// <param name="rhs"></param>
+        /// <returns></returns>
+        public float SquaredDistance(Vector3 rhs)
+        {
+            return (this - rhs).SquaredLength;
+        }
+
 
 		public object[] ToObjectArray()
 		{
@@ -481,6 +521,23 @@ namespace Axiom.Math
         public float Dot( Vector3 vector )
         {
             return x * vector.x + y * vector.y + z * vector.z;
+        }
+
+		/// <summary>
+        ///     Calculates the absolute dot (scalar) product of this vector with another.
+        /// </summary>
+        /// <remarks>
+        ///     This function work similar dotProduct, except it use absolute value
+        ///     of each component of the vector to computing.
+        /// </remarks>
+        /// <param name="vec">
+        ///     vec Vector with which to calculate the absolute dot product (together
+        ///     with this one).
+        /// </param>
+        /// <returns>A float representing the absolute dot product value.</returns>
+        public float AbsDot(Vector3 vec)
+        {
+            return System.Math.Abs(x * vec.x) + System.Math.Abs(y * vec.y) + System.Math.Abs(z * vec.z);
         }
 
 		/// <summary>
@@ -940,7 +997,7 @@ namespace Axiom.Math
 		}
 
 		#endregion
-
+    
         #region Parse method, implemented for factories
 
         /// <summary>
@@ -950,7 +1007,7 @@ namespace Axiom.Math
         /// <returns>A new Vector3.</returns>
         public static Vector3 Parse(string vector)
         {
-            string[] vals = vector.Split(',');
+            string[] vals = vector.TrimStart('<').TrimEnd('>').Split(',');
 
             return new Vector3(float.Parse(vals[0].Trim()), float.Parse(vals[1].Trim()), float.Parse(vals[2].Trim()));
         }

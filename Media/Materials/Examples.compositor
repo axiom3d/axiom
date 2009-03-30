@@ -1,5 +1,4 @@
-// Manuel's bloom
-// Needs a scene-sized rtt, but does only one render of the scene
+//Dark Sylinc's Bloom
 compositor Bloom
 {
     technique
