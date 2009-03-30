@@ -4,6 +4,7 @@ using System.Text;
 
 using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Input;
 using Axiom.Math;
 using Axiom.Media;
 
@@ -12,13 +13,29 @@ namespace Axiom.Demos
 	class Compositor : TechDemo
 	{
 		private SceneNode _spinny;
+	    private int _compositorIndex = -1;
+        private string[] _compositorList = new string[2] { "Bloom", "Motion Blur"};
 
 		protected override bool OnFrameStarted( object source, Axiom.Core.FrameEventArgs e )
 		{
 			if (_spinny !=null)
 				_spinny.Yaw( 10 * e.TimeSinceLastFrame );
 
-            return base.OnFrameStarted( source, e );
+            if (input.IsKeyPressed( KeyCodes.Space ))
+            {
+                if ( _compositorIndex > 0)
+                    CompositorManager.Instance.SetCompositorEnabled( this.window.GetViewport( 0 ),
+                                                                     _compositorList[ _compositorIndex ],
+                                                                     false );
+
+                _compositorIndex = ++_compositorIndex % _compositorList.Length;
+
+                CompositorManager.Instance.SetCompositorEnabled( this.window.GetViewport( 0 ),
+                                                                 _compositorList[ _compositorIndex ],
+                                                                 true );
+            }
+
+		    return base.OnFrameStarted( source, e );
 		}
 
 		protected override void CreateScene()
@@ -79,7 +96,7 @@ namespace Axiom.Demos
 			CompositorManager.Instance.AddCompositor( this.window.GetViewport( 0 ), "Embossed" );
 			CompositorManager.Instance.AddCompositor( this.window.GetViewport( 0 ), "Old Movie" );
 
-			CompositorManager.Instance.SetCompositorEnabled( this.window.GetViewport( 0 ), "Bloom", true );
+			//CompositorManager.Instance.SetCompositorEnabled( this.window.GetViewport( 0 ), "Bloom", true );
 			//CompositorManager.Instance.SetCompositorEnabled( this.window.GetViewport( 0 ), "Motion Blur", true );
 		}
 

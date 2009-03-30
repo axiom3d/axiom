@@ -350,7 +350,7 @@ namespace Axiom.Graphics
 				ts.VisibilityMask = target.VisibilityMask;
 				ts.LodBias = target.LodBias;
 				/// Check for input mode previous
-				if ( target.InputMode == CompositorInputMode.Previous )
+				if ( target.InputMode == CompositorInputMode.Previous && previousInstance != null )
 				{
 					/// Collect target state for previous compositor
 					/// The TargetOperation for the final target is collected seperately as it is merged

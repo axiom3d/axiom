@@ -48,3 +48,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle( "Axiom Rendering Engine Library" )]
 [assembly: AssemblyDescription( "Axiom Rendering Engine Library" )]
 
+//[assembly: InternalsVisibleTo( "Axiom.Tests" )]

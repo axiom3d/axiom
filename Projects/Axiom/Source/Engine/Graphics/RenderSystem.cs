@@ -618,8 +618,11 @@ namespace Axiom.Graphics
         {
             // destroy each render window
             RenderTarget primary = null;
-            foreach ( KeyValuePair<string, RenderTarget> item in renderTargets )
+            while ( renderTargets.Count > 0 )
             {
+                Dictionary<string, RenderTarget>.Enumerator iter = renderTargets.GetEnumerator();
+                iter.MoveNext();
+                KeyValuePair<string, RenderTarget> item = iter.Current;
                 RenderTarget target = item.Value;
                 //if ( primary == null && item.Value.IsPrimary )
                 //{

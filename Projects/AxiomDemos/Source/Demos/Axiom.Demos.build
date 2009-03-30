@@ -61,6 +61,7 @@
 			</nowarn>
 			<sources failonempty="true">
 				<include name="**/*.cs" />
+				<exclude name="**/Gui/*.cs" />
 				<!-- common assembly-level attributes -->
 				<!-- <include name="../CommonAssemblyInfo.cs" /> -->
 			</sources>

@@ -118,7 +118,7 @@
 		<!-- Location of the assemblies if the SDK is installed -->
 		<if test="${environment::variable-exists('DXSDK_DIR') == true}">
 			<property name="directx.sdk.dir" value="${environment::get-variable('DXSDK_DIR')}" dynamic="false" />
-			<property name="libs.managed.directx.dir" value="${path::combine(directx.sdk.dir, 'Developer Runtime/x86/DirectX for Managed Code')}" dynamic="false" />
+			<property name="libs.managed.directx.dir" value="${path::combine(directx.sdk.dir, 'Developer Runtime/x86/DirectX for Managed Code/${version.ManagedDX}')}" dynamic="false" />
 		</if>
 	   
 		<!-- Location of the assemblies if just the runtime is installed -->
