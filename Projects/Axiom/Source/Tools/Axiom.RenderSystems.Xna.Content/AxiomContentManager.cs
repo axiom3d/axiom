@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using Microsoft.Xna.Framework.Content;
-using Axiom;
+
 using Axiom.Core;
 
 namespace Axiom.RenderSystems.Xna.Content
