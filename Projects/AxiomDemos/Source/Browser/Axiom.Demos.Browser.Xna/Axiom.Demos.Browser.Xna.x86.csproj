@@ -87,7 +87,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Game.cs" />
+    <Compile Include="Game.Xbox.CameraTrack.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XnaInput.cs" />
+    <Compile Include="XnaInput.XBox.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\..\..\..\Lib\Native\Win32\DevIL.dll">
