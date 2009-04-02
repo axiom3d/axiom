@@ -14,7 +14,7 @@
     <XnaCrossPlatformGroupID>f95b7adf-1a1c-4092-8e5d-b3ff12a5f548</XnaCrossPlatformGroupID>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Xbox 360' ">
-    <OutputPath>..\..\..\..\..\Lib\Managed\CompactFramework\XBox\Axiom\debug\</OutputPath>
+    <OutputPath>bin\Xbox\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -24,10 +24,11 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG;TRACE;XBOX;XBOX360</DefineConstants>
+    <XnaPlatform>Xbox 360</XnaPlatform>
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
-    <OutputPath>..\..\..\..\..\Lib\Managed\CompactFramework\XBox\Axiom\Release\</OutputPath>
+    <OutputPath>bin\Xbox\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoStdLib>true</NoStdLib>
@@ -36,6 +37,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <DefineConstants>TRACE;XBOX;XBOX360</DefineConstants>
+    <XnaPlatform>Xbox 360</XnaPlatform>
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
@@ -50,7 +52,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.Xna.Framework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=51c3bfb2db46012c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files\Microsoft XNA\XNA Game Studio\v3.0\References\Xbox360\Microsoft.Xna.Framework.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Microsoft XNA\XNA Game Studio\v3.0\References\Xbox360\Microsoft.Xna.Framework.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <Private>False</Private>
@@ -72,9 +74,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Engine\Axiom.CE.Xbox.csproj">
+    <ProjectReference Include="..\..\Engine\Axiom.Xbox.csproj">
       <Project>{F9D4E0D4-0062-4476-A041-21C3CC844846}</Project>
-      <Name>Axiom.CE.Xbox</Name>
+      <Name>Axiom.Xbox</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

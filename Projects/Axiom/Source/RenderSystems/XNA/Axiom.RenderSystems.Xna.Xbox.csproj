@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\..\Lib\Managed\CompactFramework\XBox\Axiom\debug\</OutputPath>
+    <OutputPath>bin\Xbox\</OutputPath>
     <DefineConstants>DEBUG;TRACE;XBOX;XBOX360</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,11 +25,12 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <XnaCompressContent>true</XnaCompressContent>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Xbox\Axiom.RenderSystems.Xna.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\..\..\Lib\Managed\CompactFramework\XBox\Axiom\Release\</OutputPath>
+    <OutputPath>bin\Xbox\</OutputPath>
     <DefineConstants>TRACE;XBOX;XBOX360</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -37,6 +38,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <XnaCompressContent>true</XnaCompressContent>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Xbox\Axiom.RenderSystems.Xna.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Xna.Framework">
@@ -94,9 +96,9 @@
     <Compile Include="Source\XnaVertexDeclaration.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Engine\Axiom.CE.Xbox.csproj">
+    <ProjectReference Include="..\..\Engine\Axiom.Xbox.csproj">
       <Project>{F9D4E0D4-0062-4476-A041-21C3CC844846}</Project>
-      <Name>Axiom.CE.Xbox</Name>
+      <Name>Axiom.Xbox</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.Xbox.csproj">
       <Project>{40F18D53-5A6E-48AE-A767-5F5AAE891837}</Project>

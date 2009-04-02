@@ -1,4 +1,4 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>9.0.30729</ProductVersion>
@@ -30,37 +30,12 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\..\Lib\Managed\CompactFramework\x86\Axiom\debug\</OutputPath>
-    <DocumentationFile>..\..\..\..\..\Lib\Managed\CompactFramework\x86\Axiom\debug\Axiom.SceneManagers.Bsp.xml</DocumentationFile>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
-    <XnaPlatform>Windows</XnaPlatform>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\..\..\..\Lib\Managed\CompactFramework\x86\Axiom\Release\</OutputPath>
-    <DocumentationFile>..\..\..\..\..\Lib\Managed\CompactFramework\x86\Axiom\Release\Axiom.SceneManagers.Bsp.xml</DocumentationFile>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
-    <XnaPlatform>Windows</XnaPlatform>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Xbox 360' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\..\Lib\Managed\CompactFramework\XBox\Axiom\debug\</OutputPath>
-    <DocumentationFile>..\..\..\..\..\Lib\Managed\CompactFramework\XBox\Axiom\debug\Axiom.SceneManagers.Bsp.xml</DocumentationFile>
+    <OutputPath>bin\Xbox\Debug\</OutputPath>
+    <DocumentationFile>bin\Xbox\Axiom.SceneManagers.Bsp.xml</DocumentationFile>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -72,8 +47,8 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\..\..\Lib\Managed\CompactFramework\Xbox\Axiom\Release\</OutputPath>
-    <DocumentationFile>..\..\..\..\..\Lib\Managed\CompactFramework\XBox\Axiom\Release\Axiom.SceneManagers.Bsp.xml</DocumentationFile>
+    <OutputPath>bin\Xbox\Release\</OutputPath>
+    <DocumentationFile>bin\Xbox\Axiom.SceneManagers.Bsp.xml</DocumentationFile>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -82,30 +57,6 @@
     <XnaPlatform>Xbox 360</XnaPlatform>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Zune' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Zune\Debug</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <PlatformTarget>x86</PlatformTarget>
-    <XnaPlatform>Zune</XnaPlatform>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Zune' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Zune\Release</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <PlatformTarget>x86</PlatformTarget>
-    <XnaPlatform>Zune</XnaPlatform>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System">
       <Name>System</Name>
@@ -113,9 +64,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Engine\Axiom.CE.Xbox.csproj">
+    <ProjectReference Include="..\..\Engine\Axiom.Xbox.csproj">
       <Project>{F9D4E0D4-0062-4476-A041-21C3CC844846}</Project>
-      <Name>Axiom.CE.Xbox</Name>
+      <Name>Axiom.Xbox</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
