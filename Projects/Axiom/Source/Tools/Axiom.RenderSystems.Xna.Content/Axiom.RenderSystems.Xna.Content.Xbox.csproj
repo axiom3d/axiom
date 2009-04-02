@@ -39,6 +39,9 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="AxiomContentManager.cs" />
     <Compile Include="HlslCompiledShader.cs" />
     <Compile Include="HlslCompiledShaderReader.cs" />

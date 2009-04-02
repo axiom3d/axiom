@@ -43,5 +43,5 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle( "Axiom Rendering Engine Library" )]
-[assembly: AssemblyDescription( "Axiom Rendering Engine Library" )]
+//[assembly: AssemblyDescription( "Axiom Rendering Engine Library" )]
 [assembly: InternalsVisibleTo("Axiom.Engine.Tests")]
