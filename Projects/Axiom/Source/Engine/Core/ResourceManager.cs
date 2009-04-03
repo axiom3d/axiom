@@ -347,6 +347,44 @@ namespace Axiom.Core
             commonArchives.Add( archive );
         }
 
+
+        /// <summary>
+        /// Manually adds a file to the list of resources.
+        /// </summary>
+        /// <param name="fileName">Name of the file.</param>
+        public static void AddCommonResourceFile( string fileName )
+        {
+
+            foreach ( Archive item in commonArchives )
+            {
+                if ( Path.GetFullPath( fileName ).StartsWith( Path.GetFullPath( item.Name ) ) )
+                {
+                    commonFilePaths.Add( fileName, item );
+                    return;
+                }
+            }
+
+        }
+
+
+        /// <summary>
+        /// Manually adds a file to the list of resources.
+        /// </summary>
+        /// <param name="fileName">Name of the file.</param>
+        public void AddResourceFile( string fileName )
+        {
+
+            foreach ( Archive item in archives )
+            {
+                if ( Path.GetFullPath( fileName ).StartsWith( Path.GetFullPath( item.Name ) ) )
+                {
+                    filePaths.Add( fileName, item );
+                    return;
+                }
+            }
+
+        }
+        
         /// <summary>
         ///		Gets a resource with the given handle.
         /// </summary>
@@ -354,7 +392,7 @@ namespace Axiom.Core
         /// <returns>A reference to a Resource with the given handle.</returns>
         public virtual Resource GetByHandle( int handle )
         {
-            Debug.Assert( resourceHandleMap != null, "A resource was being retreived, but the list of Resources is null.", "" );
+            Debug.Assert( resourceHandleMap != null, "A resource was being retrieved, but the list of Resources is null.", "" );
 
             Resource resource = null;
 
@@ -371,11 +409,11 @@ namespace Axiom.Core
         /// <summary>
         ///    Gets a reference to the specified named resource.
         /// </summary>
-        /// <param name="name">Name of the resource to retreive.</param>
+        /// <param name="name">Name of the resource to retrieve.</param>
         /// <returns></returns>
         public virtual Resource GetByName( string name )
         {
-            Debug.Assert( resourceList != null, "A resource was being retreived, but the list of Resources is null.", "" );
+            Debug.Assert( resourceList != null, "A resource was being retrieved, but the list of Resources is null.", "" );
 
             Resource resource = null;
 
