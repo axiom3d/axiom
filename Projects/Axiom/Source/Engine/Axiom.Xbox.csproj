@@ -1,4 +1,4 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectGuid>{F9D4E0D4-0062-4476-A041-21C3CC844846}</ProjectGuid>
     <ProjectTypeGuids>{2DF5C3F4-5A5F-47a9-8E94-23B4456F55E2};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -347,48 +347,4 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" Condition="" />
-  <Import Project="$(MSBuildProjectDirectory)\..\..\..\..\tools\metabuild\contrib\MSBuild Community Tasks\MSBuild.Community.Tasks.targets" />
-
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.  -->
-
-  <Target Name="BeforeBuild">
-    <!-- Get Subversion revision -->
-    <SvnVersion LocalPath="$(MSBuildProjectDirectory)\..\..\..\..\">
-      <Output TaskParameter="Revision" PropertyName="SvnWCRevision" />
-      <Output TaskParameter="Modifications" PropertyName="SvnWCModified" />
-      <Output TaskParameter="LowRevision" PropertyName="SvnWCLowRevision" />
-      <Output TaskParameter="HighRevision" PropertyName="SvnWCHighRevision" />
-    </SvnVersion>
-    <SvnInfo LocalPath="$(MSBuildProjectDirectory)\..\..\..\..">
-      <Output TaskParameter="RepositoryRoot" PropertyName="SvnWCRoot" />
-    </SvnInfo>
-    <PropertyGroup>
-      <SvnWCModifiedText Condition=" '$(SvnWCModified)'=='true'">, Local Modifications</SvnWCModifiedText>
-      <SvnWCModifiedText Condition=" '$(SvnWCModified)'=='false'">
-      </SvnWCModifiedText>
-      <SvnWCMixedText>
-      </SvnWCMixedText>
-      <SvnWCMixedText Condition=" '$(SvnWCLowRevision)'!='$(SvnWCHighRevision)'">, Mixed Revisions</SvnWCMixedText>
-    </PropertyGroup>
-    <!-- Generate GlobalAssemblyInfo.cs -->
-    <ItemGroup>
-      <Tokens Include="WCURL">
-        <ReplacementValue>$(SvnWCRoot)</ReplacementValue>
-      </Tokens>
-      <Tokens Include="WCMODS">
-        <ReplacementValue>$(SvnWCModifiedText)</ReplacementValue>
-      </Tokens>
-      <Tokens Include="WCMIXED">
-        <ReplacementValue>$(SvnWCMixedText)</ReplacementValue>
-      </Tokens>
-      <Tokens Include="WCREV">
-        <ReplacementValue>$(SvnWCRevision)</ReplacementValue>
-      </Tokens>
-      <AssemblyInfoTemplate Include="$(MSBuildProjectDirectory)\..\GlobalAssemblyInfo.cs.in" />
-    </ItemGroup>
-    <TemplateFile Template="@(AssemblyInfoTemplate)" OutputFilename="$(MSBuildProjectDirectory)\..\GlobalAssemblyInfo.cs" Tokens="@(Tokens)" />
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
 </Project>
