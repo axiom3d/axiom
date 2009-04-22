@@ -128,10 +128,7 @@
       <Name>System.Drawing</Name>
       <HintPath>\System.Drawing.dll</HintPath>
     </Reference>
-    <Reference Include="System.Windows.Forms">
-      <Name>System.Windows.Forms</Name>
-      <HintPath>\System.Windows.Forms.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml">
       <Name>System.Xml</Name>
       <HintPath>\System.Xml.dll</HintPath>
@@ -143,11 +140,6 @@
     <Reference Include="Microsoft.DirectX.DirectInput, Version=1.0.2902.0, Culture=neutral">
       <Name>Microsoft.DirectX.DirectInput, Version=1.0.2902.0, Culture=neutral</Name>
       <HintPath>\Microsoft.DirectX.DirectInput, Version=1.0.2902.0, Culture=neutral.dll</HintPath>
-    </Reference>
-    <Reference Include="Tao.Platform.Windows, Version=1.0.0.3, Culture=neutral, PublicKeyToken=701104b2da67a104">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.Platform.Windows.dll</HintPath>
-      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
