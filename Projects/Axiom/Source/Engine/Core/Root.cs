@@ -565,8 +565,9 @@ namespace Axiom.Core
             while ( !queuedEnd )
             {
                 // allow OS events to process (if the platform requires it
-                //PlatformManager.Instance.DoEvents();
-
+#if !(XBOX || XBOX360 )
+                PlatformManager.Instance.DoEvents();
+#endif
                 RenderOneFrame();
             }
         }
