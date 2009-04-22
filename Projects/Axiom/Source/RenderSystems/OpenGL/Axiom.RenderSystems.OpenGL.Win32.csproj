@@ -156,22 +156,22 @@
     <Reference Include="Tao.OpenGl">
       <Name>Tao.OpenGl</Name>
       <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.OpenGl.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Tao.OpenGl.Glu">
       <Name>Tao.OpenGl.Glu</Name>
       <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.OpenGl.Glu.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Tao.OpenGl.ExtensionLoader">
       <Name>Tao.OpenGl.ExtensionLoader</Name>
       <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.OpenGl.ExtensionLoader.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Tao.Platform.Windows">
       <Name>Tao.Platform.Windows</Name>
       <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.Platform.Windows.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>

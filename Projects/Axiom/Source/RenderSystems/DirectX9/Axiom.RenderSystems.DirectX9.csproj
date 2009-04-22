@@ -153,7 +153,7 @@
     <Reference Include="Tao.Platform.Windows">
       <Name>Tao.Platform.Windows</Name>
       <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.Platform.Windows.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
