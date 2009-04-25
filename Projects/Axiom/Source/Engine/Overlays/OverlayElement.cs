@@ -268,8 +268,8 @@ namespace Axiom.Overlays
                         vpWidth = (float)( oMgr.ViewportWidth );
                         vpHeight = (float)( oMgr.ViewportHeight );
 
-                        pixelScaleX = (int)( 1.0 / vpWidth );
-                        pixelScaleY = (int)( 1.0 / vpHeight );
+                        pixelScaleX = 1.0f / vpWidth;
+                        pixelScaleY = 1.0f / vpHeight;
                     }
                     break;
 
@@ -280,8 +280,8 @@ namespace Axiom.Overlays
                         vpWidth = (float)( oMgr.ViewportWidth );
                         vpHeight = (float)( oMgr.ViewportHeight );
 
-                        pixelScaleX = (int)( 1.0 / ( 10000.0 * ( vpWidth / vpHeight ) ) );
-                        pixelScaleY = (int)( 1.0 / 10000.0 );
+                        pixelScaleX = 1.0f / ( 10000.0f * ( vpWidth / vpHeight ) );
+                        pixelScaleY = 1.0f / 10000.0f;
                     }
                     break;
 
