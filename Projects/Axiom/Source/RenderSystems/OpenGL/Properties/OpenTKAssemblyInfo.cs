@@ -35,45 +35,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-using Axiom.Core;
-using Axiom.Graphics;
-using Axiom.Utilities;
+using System;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.OpenGL
-{
-    /// <summary>
-    /// Summary description for Plugin.
-    /// </summary>
-    public sealed class Plugin : IPlugin
-    {
-        #region Implementation of IPlugin
-
-        /// <summary>
-        ///     Reference to the render system instance.
-        /// </summary>
-        private GLRenderSystem renderSystem;
-
-        public void Start()
-        {
-#if OPENGL_OTK
-            Contract.Requires( PlatformManager.Instance.GetType().Name == "OpenTKPlatformManager", "PlatformManager", 
-                               "OpenGL OpenTK Renderer requires OpenTK Platform Manager." );
-#endif
-            Contract.Requires( Root.Instance.RenderSystems.ContainsKey( "OpenGL" ) == false, "OpenGL",
-                               "An instance of the OpenGL renderer is already loaded." );
-
-            renderSystem = new GLRenderSystem();
-            // add an instance of this plugin to the list of available RenderSystems
-            Root.Instance.RenderSystems.Add( "OpenGL", renderSystem );
-        }
-
-        public void Stop()
-        {
-            renderSystem.Shutdown();
-        }
-
-        #endregion Implementation of IPlugin
-    }
-}
+//
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+//
+[assembly: AssemblyTitle( "Axiom OpenGL (Tao/OpenTK) Renderer" )]
+[assembly: AssemblyDescription( "The OpenGL renderer implementation using the Tao.OpenGl library and OpenTK Windowing." )]

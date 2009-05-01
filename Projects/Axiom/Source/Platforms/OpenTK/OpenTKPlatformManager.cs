@@ -1,7 +1,8 @@
-#region LGPL License
+﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
+Copyright (C) 2003-2009 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -22,58 +23,84 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-
 using Axiom.Core;
-using Axiom.Graphics;
-using Axiom.Utilities;
+using Axiom.Input;
 
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.OpenGL
+namespace Axiom.Platforms.OpenTK
 {
-    /// <summary>
-    /// Summary description for Plugin.
-    /// </summary>
-    public sealed class Plugin : IPlugin
+    public class OpenTKPlatformManager : IPlatformManager
     {
-        #region Implementation of IPlugin
+        #region Fields
 
         /// <summary>
-        ///     Reference to the render system instance.
+        ///		Reference to the current input reader.
         /// </summary>
-        private GLRenderSystem renderSystem;
+        private InputReader inputReader;
 
-        public void Start()
+        /// <summary>
+        ///		Reference to the current active timer.
+        /// </summary>
+        private ITimer timer;
+
+        #endregion Fields
+
+        #region IPlatformManager Members
+
+        /// <summary>
+        ///		Creates an InputReader
+        /// </summary>
+        /// <returns></returns>
+        public Axiom.Input.InputReader CreateInputReader()
         {
-#if OPENGL_OTK
-            Contract.Requires( PlatformManager.Instance.GetType().Name == "OpenTKPlatformManager", "PlatformManager", 
-                               "OpenGL OpenTK Renderer requires OpenTK Platform Manager." );
-#endif
-            Contract.Requires( Root.Instance.RenderSystems.ContainsKey( "OpenGL" ) == false, "OpenGL",
-                               "An instance of the OpenGL renderer is already loaded." );
-
-            renderSystem = new GLRenderSystem();
-            // add an instance of this plugin to the list of available RenderSystems
-            Root.Instance.RenderSystems.Add( "OpenGL", renderSystem );
+            inputReader = new OpenTKInputReader();
+            return inputReader;
         }
 
-        public void Stop()
+        /// <summary>
+        ///		Creates a high precision timer.
+        /// </summary>
+        /// <returns></returns>
+        public ITimer CreateTimer()
         {
-            renderSystem.Shutdown();
+            timer = new OpenTKTimer();
+            return timer;
         }
 
-        #endregion Implementation of IPlugin
+        /// <summary>
+        /// </summary>
+        public void DoEvents()
+        {
+        }
+
+        #endregion
+
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            timer.Reset();
+            timer = null;
+
+            inputReader.Dispose();
+            inputReader = null;
+        }
+
+        #endregion
     }
 }
