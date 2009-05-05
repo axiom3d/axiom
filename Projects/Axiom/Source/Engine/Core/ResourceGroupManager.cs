@@ -1263,7 +1263,7 @@ namespace Axiom.Core
         /// </param>
         public void DeclareResource( string name, string resourceType, string groupName, IManualResourceLoader loader, NameValuePairList loadParameters )
         {
-            ResourceGroup grp = getResourceGroup( name );
+            ResourceGroup grp = getResourceGroup( groupName );
             if ( grp == null )
             {
                 throw new AxiomException( "Cannot find a group named {0} : ResourceGroupManager::DeclareResource", name );
