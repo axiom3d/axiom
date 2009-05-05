@@ -77,7 +77,7 @@ namespace Axiom.RenderSystems.OpenGL
             ConfigOption option;
 
             // Full Screen
-            option = new ConfigOption( "Full Screen", "Yes", false );
+            option = new ConfigOption( "Full Screen", "No", false );
             option.PossibleValues.Add( "Yes" );
             option.PossibleValues.Add( "No" );
             ConfigOptions.Add( option );
@@ -86,7 +86,7 @@ namespace Axiom.RenderSystems.OpenGL
             // get the available OpenGL resolutions
             bool more = User.EnumDisplaySettings( null, i++, out setting );
 
-            option = new ConfigOption( "Video Mode", "", false );
+            option = new ConfigOption( "Video Mode", "800 x 600 @ 32-bit colour", false );
             // add the resolutions to the config
             while ( more )
             {
@@ -105,7 +105,7 @@ namespace Axiom.RenderSystems.OpenGL
                         // add a new row to the display settings table
                         option.PossibleValues.Add( query );
                     }
-                    if ( option.PossibleValues.Count == 1 )
+                    if ( option.PossibleValues.Count == 1 && String.IsNullOrEmpty( option.Value ) )
                     {
                         option.Value = query;
                     }

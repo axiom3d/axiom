@@ -1,3 +1,6 @@
+//#define SIS
+//#define XBOX360
+
 #region Namespace Declarations
 
 using System;
@@ -7,11 +10,17 @@ using System.Threading;
 
 using Axiom.Configuration;
 using Axiom.Core;
-using Axiom.Input;
 using Axiom.Overlays;
 using Axiom.Math;
 using Axiom.Graphics;
+#if !( SIS )
 using MouseButtons = Axiom.Input.MouseButtons;
+using Axiom.Input;
+using InputReader = Axiom.Input.InputReader;
+#else
+using InputReader = SharpInputSystem.InputManager;
+#endif
+
 
 #endregion Namespace Declarations
 
@@ -57,6 +66,10 @@ namespace Axiom.Demos
             }
         }
         protected InputReader input;
+#if ( SIS )
+        protected SharpInputSystem.Mouse mouse;
+        protected SharpInputSystem.Keyboard keyboard;
+#endif
         protected Vector3 cameraVector = Vector3.Zero;
         protected float cameraScale;
         protected bool showDebugOverlay = true;
@@ -163,10 +176,23 @@ namespace Axiom.Demos
         protected InputReader _setupInput()
         {
             InputReader ir = null;
-#if !( XBOX || XBOX360 )
+#if  !( XBOX || XBOX360 ) && !( SIS )
             // retrieve and initialize the input system
             ir = PlatformManager.Instance.CreateInputReader();
             ir.Initialize( window, true, true, false, false );
+#endif
+#if ( SIS )
+            SharpInputSystem.ParameterList pl = new SharpInputSystem.ParameterList();
+            pl.Add( new SharpInputSystem.Parameter( "WINDOW", this.window.Handle ) );
+
+            //Default mode is foreground exclusive..but, we want to show mouse - so nonexclusive
+            pl.Add( new SharpInputSystem.Parameter( "w32_mouse", "CLF_BACKGROUND" ) );
+            pl.Add( new SharpInputSystem.Parameter( "w32_mouse", "CLF_NONEXCLUSIVE" ) );
+
+            //This never returns null.. it will raise an exception on errors
+            ir = SharpInputSystem.InputManager.CreateInputSystem( pl );
+            mouse = ir.CreateInputObject<SharpInputSystem.Mouse>( true, "" );
+            keyboard = ir.CreateInputObject<SharpInputSystem.Keyboard>( true, "" );
 #endif
             return ir;
         }
@@ -239,7 +265,7 @@ namespace Axiom.Demos
             // set the scaling of camera motion
             cameraScale = 100 * e.TimeSinceLastFrame;
 
-#if !( XBOX || XBOX360 )
+#if  !( XBOX || XBOX360 ) && !( SIS )
             // TODO: Move this into an event queueing mechanism that is processed every frame
             input.Capture();
 
@@ -380,6 +406,150 @@ namespace Axiom.Demos
             {
                 cameraVector.x += input.RelativeMouseX * 0.13f;
             }
+#endif
+#if ( SIS )
+            // TODO: Move this into an event queueing mechanism that is processed every frame
+            mouse.Capture();
+            keyboard.Capture();
+
+            if ( keyboard.IsKeyDown( SharpInputSystem.KeyCode.Key_ESCAPE ) )
+            {
+                Root.Instance.QueueEndRendering();
+
+                return;
+            }
+
+            if ( keyboard.IsKeyDown( SharpInputSystem.KeyCode.Key_A ) )
+            {
+                camAccel.x = -0.5f;
+            }
+
+            if ( keyboard.IsKeyDown( SharpInputSystem.KeyCode.Key_D ) )
+            {
+                camAccel.x = 0.5f;
+            }
+
+            if ( keyboard.IsKeyDown( SharpInputSystem.KeyCode.Key_W ) )
+            {
+                camAccel.z = -1.0f;
+            }
+
+            if ( keyboard.IsKeyDown( SharpInputSystem.KeyCode.Key_S ) )
+            {
+                camAccel.z = 1.0f;
+            }
+
+            camAccel.y += (float)( mouse.MouseState.Z.Relative * 0.1f );
+
+            if ( keyboard.IsKeyDown( SharpInputSystem.KeyCode.Key_LEFT ) )
+            {
+                camera.Yaw( cameraScale );
+            }
+
+            if ( keyboard.IsKeyDown( SharpInputSystem.KeyCode.Key_RIGHT ) )
+            {
+                camera.Yaw( -cameraScale );
+            }
+
+            if ( keyboard.IsKeyDown( SharpInputSystem.KeyCode.Key_UP ) )
+            {
+                camera.Pitch( cameraScale );
+            }
+
+            if ( keyboard.IsKeyDown( SharpInputSystem.KeyCode.Key_DOWN ) )
+            {
+                camera.Pitch( -cameraScale );
+            }
+
+            // subtract the time since last frame to delay specific key presses
+            toggleDelay -= e.TimeSinceLastFrame;
+
+            // toggle rendering mode
+            if ( keyboard.IsKeyDown( SharpInputSystem.KeyCode.Key_R ) && toggleDelay < 0 )
+            {
+                if ( camera.SceneDetail == SceneDetailLevel.Points )
+                {
+                    camera.SceneDetail = SceneDetailLevel.Solid;
+                }
+                else if ( camera.SceneDetail == SceneDetailLevel.Solid )
+                {
+                    camera.SceneDetail = SceneDetailLevel.Wireframe;
+                }
+                else
+                {
+                    camera.SceneDetail = SceneDetailLevel.Points;
+                }
+
+                Console.WriteLine( "Rendering mode changed to '{0}'.", camera.SceneDetail );
+
+                toggleDelay = 1;
+            }
+
+            if ( keyboard.IsKeyDown( SharpInputSystem.KeyCode.Key_T ) && toggleDelay < 0 )
+            {
+                // toggle the texture settings
+                switch ( filtering )
+                {
+                    case TextureFiltering.Bilinear:
+                        filtering = TextureFiltering.Trilinear;
+                        aniso = 1;
+                        break;
+                    case TextureFiltering.Trilinear:
+                        filtering = TextureFiltering.Anisotropic;
+                        aniso = 8;
+                        break;
+                    case TextureFiltering.Anisotropic:
+                        filtering = TextureFiltering.Bilinear;
+                        aniso = 1;
+                        break;
+                }
+                Console.WriteLine( "Texture Filtering changed to '{0}'.", filtering );
+
+                // set the new default
+                MaterialManager.Instance.SetDefaultTextureFiltering( filtering );
+                MaterialManager.Instance.DefaultAnisotropy = aniso;
+
+                toggleDelay = 1;
+            }
+
+            if ( keyboard.IsKeyDown( SharpInputSystem.KeyCode.Key_P ) )
+            {
+                string[] temp = Directory.GetFiles( Environment.CurrentDirectory, "screenshot*.jpg" );
+                string fileName = string.Format( "screenshot{0}.jpg", temp.Length + 1 );
+
+                TakeScreenshot( fileName );
+
+                // show briefly on the screen
+                window.DebugText = string.Format( "Wrote screenshot '{0}'.", fileName );
+
+                // show for 2 seconds
+                debugTextDelay = 2.0f;
+            }
+
+            if ( keyboard.IsKeyDown( SharpInputSystem.KeyCode.Key_B ) )
+            {
+                scene.ShowBoundingBoxes = !scene.ShowBoundingBoxes;
+            }
+
+            if ( keyboard.IsKeyDown( SharpInputSystem.KeyCode.Key_F ) )
+            {
+                // hide all overlays, includes ones besides the debug overlay
+                viewport.OverlaysEnabled = !viewport.OverlaysEnabled;
+            }
+
+            if ( !mouse.MouseState.IsButtonDown( SharpInputSystem.MouseButtonID.Left ) )
+            {
+                float cameraYaw = -mouse.MouseState.X.Relative * .13f;
+                float cameraPitch = -mouse.MouseState.Y.Relative * .13f;
+
+                camera.Yaw( cameraYaw );
+                camera.Pitch( cameraPitch );
+            }
+            else
+            {
+                cameraVector.x += mouse.MouseState.X.Relative * 0.13f;
+            }
+
 #endif
             camVelocity += ( camAccel * scaleMove * camSpeed );
 

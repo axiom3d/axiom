@@ -79,14 +79,6 @@ namespace Axiom.RenderSystems.Xna
         /// </summary>
         private XFG.TextureCube cubeTexture;
         /// <summary>
-        ///     Temporary 1D/2D normal texture.
-        /// </summary>
-        private XFG.Texture2D tempNormTexture;
-        /// <summary>
-        ///     Temporary cubic texture reference.
-        /// </summary>
-        private XFG.TextureCube tempCubeTexture;
-        /// <summary>
         ///     3D volume texture.
         /// </summary>
         private XFG.Texture3D volumeTexture;

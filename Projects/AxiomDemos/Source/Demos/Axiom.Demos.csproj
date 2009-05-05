@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
@@ -122,6 +122,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Axiom.Demos.build" />
+    <Compile Include="CubeMapping.cs" />
+    <Compile Include="Dot3Bump.cs" />
+    <Compile Include="FrustumCulling.cs" />
+    <Compile Include="OffsetMapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -155,9 +159,12 @@
     <Compile Include="RenderToTexture.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Shadows.cs" />
     <Compile Include="SkeletalAnimation.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SkyBox.cs" />
+    <Compile Include="SkyDome.cs" />
     <Compile Include="SkyPlane.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -179,6 +186,7 @@
     <Compile Include="Tutorial1.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Water.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Axiom\Source\Engine\Axiom.csproj">

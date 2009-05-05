@@ -61,7 +61,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
         }
         protected class VertexBufferDeclaration2FixedFunctionProgramsMap : Dictionary<VertexBufferDeclaration, FixedFunctionPrograms>
         {
-            public FixedFunctionPrograms this[ VertexBufferDeclaration key ]
+            public new FixedFunctionPrograms this[ VertexBufferDeclaration key ]
             {
                 get
                 {
@@ -83,7 +83,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
         protected class State2Declaration2ProgramsMap : Dictionary<FixedFunctionState, VertexBufferDeclaration2FixedFunctionProgramsMap>
         {
-            public VertexBufferDeclaration2FixedFunctionProgramsMap this[ FixedFunctionState key ]
+            public new VertexBufferDeclaration2FixedFunctionProgramsMap this[ FixedFunctionState key ]
             {
                 get
                 {
@@ -98,7 +98,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
         protected class Language2State2Declaration2ProgramsMap : Dictionary<String, State2Declaration2ProgramsMap>
         {
-            public State2Declaration2ProgramsMap this[ String key ]
+            public new State2Declaration2ProgramsMap this[ String key ]
             {
                 get
                 {
