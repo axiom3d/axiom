@@ -218,7 +218,7 @@ namespace Axiom.Demos
                     float lightScale = 1f;
                     float lightDist = PLANE_SIZE; // / lightScale;
                     float lightHeight = 300f / lightScale;
-                    lightNode.Scale( new Vector3( lightScale, lightScale, lightScale ) );
+                    lightNode.ScaleBy( new Vector3( lightScale, lightScale, lightScale ) );
 
                     // Create a Light
                     AddLight( "Lt1", new Vector3( lightDist, lightHeight, lightDist ), new ColorEx( 1f, 1f, 0f, 0f ), LightType.Point );
@@ -336,7 +336,7 @@ namespace Axiom.Demos
             Vector3 diffPos = newPos - oldPos;
             Quaternion headRotation = Vector3.UnitZ.GetRotationTo( diffPos );
             oldPos = newPos;
-            headNode.Scale( new Vector3( 3.0f, 3.0f, 3.0f ) );
+            headNode.ScaleBy( new Vector3( 3.0f, 3.0f, 3.0f ) );
             headNode.Translate( newPos );
             headNode.Rotate( headRotation );
         }

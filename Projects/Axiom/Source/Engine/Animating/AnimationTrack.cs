@@ -575,7 +575,7 @@ namespace Axiom.Animating
 				{
 					scale = Vector3.UnitScale + (scale - Vector3.UnitScale) * scl;
 				}
-				node.Scale(scale);
+				node.ScaleBy(scale);
 			} 
 			else 
 			{

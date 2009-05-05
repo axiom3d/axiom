@@ -53,6 +53,7 @@ namespace Axiom.Core
     public delegate void NodeUpdateHandler( Vector3 derivedPosition, Quaternion derivedOrientation, Vector3 derivedScale );
 
     #endregion
+
     /// <summary>
     ///		Class representing a general-purpose node an articulated scene graph.
     /// </summary>
@@ -349,7 +350,7 @@ namespace Axiom.Core
         ///	Note that like rotations, scalings are oriented around the node's origin.
         ///</remarks>
         /// <param name="scale"></param>
-        public virtual void Scale( Vector3 factor )
+        public virtual void ScaleBy( Vector3 factor )
         {
             scale = scale * factor;
             NeedUpdate();
@@ -879,7 +880,7 @@ namespace Axiom.Core
         ///
         ///	Note that like rotations, scalings are oriented around the node's origin.
         ///	</remarks>
-        public virtual Vector3 ScaleFactor
+        public virtual Vector3 Scale
         {
             get
             {
@@ -1186,7 +1187,7 @@ namespace Axiom.Core
                 if ( needRelativeTransformUpdate )
                 {
                     //derived properties may call Update() if needsParentUpdate is true and this will set needTransformUpdate to true
-                    MakeTransform( this.Position, this.ScaleFactor, this.Orientation, ref cachedRelativeTransform );
+                    MakeTransform( this.Position, this.Scale, this.Orientation, ref cachedRelativeTransform );
                     //dont need to update this again until next invalidation
                     needRelativeTransformUpdate = false;
                 }
