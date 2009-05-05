@@ -57,7 +57,6 @@ namespace Axiom.RenderSystems.Xna
 		protected XFG.IndexBuffer _xnaBuffer;
 		protected System.Array data;
 
-		private IntPtr _bufferPtr;
 		private byte[] _bufferBytes;
 		private XFG.IndexElementSize _bufferType;
 		private int _offset;

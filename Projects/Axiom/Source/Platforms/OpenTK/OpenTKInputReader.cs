@@ -1,41 +1,4 @@
-﻿#region LGPL License
-
-/*
-Axiom Graphics Engine Library
-Copyright (C) 2003-2009 Axiom Project Team
-
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
-Many thanks to the OGRE team for maintaining such a high quality project.
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
-
-#endregion
-
-#region SVN Version Information
-
-// <file>
-//     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
-//     <id value="$Id$"/>
-// </file>
-
-#endregion SVN Version Information
-
-#region Namespace Declarations
+﻿#region Namespace Declarations
 
 using System.Threading;
 using System.Drawing;
@@ -59,17 +22,17 @@ namespace Axiom.Platforms.OpenTK
     {
         #region Fields
 
-        private int CX, CY;
-        private bool ownMouse = false;
-        private KeyboardDevice keyboard = null;
-        private MouseDevice mouse = null;
+        int CX, CY;
+        bool ownMouse = false;
+        KeyboardDevice keyboard = null;
+        MouseDevice mouse = null;
 
         /// <summary>
         ///		Is the opentk window currently visible? 
         /// </summary>
         protected bool isVisible;
 
-        private int oldX, oldY, oldZ;
+        int oldX, oldY, oldZ;
         protected int mouseX, mouseY;
         protected int relMouseX, relMouseY, relMouseZ;
         protected MouseButtons mouseButtons;
@@ -171,18 +134,15 @@ namespace Axiom.Platforms.OpenTK
         public override void Capture()
         {
             // if we aren't active, wait
-            if ( !isVisible )
+            if (!isVisible)
             {
                 // TODO
-                Thread.Sleep( 100 );
+                Thread.Sleep(100);
             }
 
-            if ( mouse == null )
-            {
-                return;
-            }
+            if (mouse == null) return;
 
-            if ( !useMouseEvents )
+            if (!useMouseEvents)
             {
                 int mx = mouse.X;
                 int my = mouse.Y;
@@ -195,14 +155,14 @@ namespace Axiom.Platforms.OpenTK
 
                 relMouseZ = mouse.Wheel - oldZ;
                 oldZ = mouse.Wheel;
-                mouseButtons = mouse[ MouseButton.Left ] == true ? MouseButtons.Left : 0;
-                mouseButtons = mouse[ MouseButton.Right ] == true ? MouseButtons.Right : 0;
-                mouseButtons = mouse[ MouseButton.Middle ] == true ? MouseButtons.Middle : 0;
+                mouseButtons = mouse[MouseButton.Left] == true ? MouseButtons.Left : 0;
+                mouseButtons = mouse[MouseButton.Right] == true ? MouseButtons.Right : 0;
+                mouseButtons = mouse[MouseButton.Middle] == true ? MouseButtons.Middle : 0;
             }
 
-            if ( ownMouse )
+            if (ownMouse)
             {
-                System.Windows.Forms.Cursor.Position = new Point( CX, CY );
+                System.Windows.Forms.Cursor.Position = new Point(CX, CY);
             }
         }
 
@@ -214,33 +174,27 @@ namespace Axiom.Platforms.OpenTK
         /// <param name="useMouse"></param>
         /// <param name="useGamepad"></param>
         /// <param name="ownMouse"></param>
-        public override void Initialize( Axiom.Graphics.RenderWindow parent,
-                                         bool useKeyboard,
-                                         bool useMouse,
-                                         bool useGamepad,
-                                         bool ownMouse )
+        public override void Initialize(Axiom.Graphics.RenderWindow parent, bool useKeyboard, bool useMouse, bool useGamepad, bool ownMouse)
         {
-            Contract.Requires( parent.GetType().Name == "OpenTKWindow",
-                               "RenderSystem",
-                               "OpenTK InputManager requires OpenTK OpenGL Renderer." );
+            Contract.Requires( parent.GetType().Name == "OpenTKWindow", "RenderSystem", "OpenTK InputManager requires OpenTK OpenGL Renderer." );
 
-            GameWindow window = ( (OpenTKWindow) parent ).OTKGameWindow;
+            GameWindow window = ((OpenTKWindow)parent).OTKGameWindow;
 
             keyboard = window.Keyboard;
             mouse = window.Mouse;
 
-            if ( useMouse && ownMouse )
+            if (useMouse && ownMouse)
             {
                 this.ownMouse = true;
                 System.Windows.Forms.Cursor.Hide();
             }
 
             // mouse starts out in the center of the window
-            mouseX = (int) ( parent.Width * 0.5f );
-            mouseY = (int) ( parent.Height * 0.5f );
+            mouseX = (int)(parent.Width * 0.5f);
+            mouseY = (int)(parent.Height * 0.5f);
             CX = oldX = mouseX;
             CY = oldY = mouseY;
-            System.Windows.Forms.Cursor.Position = new Point( CX, CY );
+            System.Windows.Forms.Cursor.Position = new Point(CX, CY);
         }
 
         /// <summary>
@@ -248,18 +202,15 @@ namespace Axiom.Platforms.OpenTK
         /// </summary>
         /// <param name="key">KeyCode to check.</param>
         /// <returns>true if the key is down, false otherwise.</returns>
-        public override bool IsKeyPressed( KeyCodes key )
+        public override bool IsKeyPressed(KeyCodes key)
         {
-            if ( keyboard == null )
-            {
-                return false;
-            }
-            return keyboard[ ConvertKeyEnum( key ) ] == true;
+            if (keyboard == null) return false;
+            return keyboard[ConvertKeyEnum(key)] == true;
         }
 
-        public override bool IsMousePressed( MouseButtons button )
+        public override bool IsMousePressed(MouseButtons button)
         {
-            return ( mouseButtons & button ) != 0;
+            return (mouseButtons & button) != 0;
         }
 
         public override bool UseKeyboardEvents
@@ -288,6 +239,7 @@ namespace Axiom.Platforms.OpenTK
 
         public override void Dispose()
         {
+
         }
 
         #endregion Methods
@@ -301,11 +253,11 @@ namespace Axiom.Platforms.OpenTK
         /// </summary>
         /// <param name="key">Axiom keyboard code to query.</param>
         /// <returns>The equivalent enum value in the OpenTK enum.</returns>
-        private Key ConvertKeyEnum( KeyCodes key )
+        private Key ConvertKeyEnum(KeyCodes key)
         {
             Key k = 0;
 
-            switch ( key )
+            switch (key)
             {
                 case KeyCodes.A:
                     k = Key.A;
@@ -529,18 +481,18 @@ namespace Axiom.Platforms.OpenTK
                 case KeyCodes.Space:
                     k = Key.Space;
                     break;
-                    //                case KeyCodes.Tilde:
-                    //                  k = Key. ?
-                    //                break;
+                //                case KeyCodes.Tilde:
+                //                  k = Key. ?
+                //                break;
                 case KeyCodes.OpenBracket:
                     k = Key.BracketLeft;
                     break;
                 case KeyCodes.CloseBracket:
                     k = Key.BracketRight;
                     break;
-                    //                case KeyCodes.Plus:
-                    //                  k = Key. ?
-                    //                break;
+                //                case KeyCodes.Plus:
+                //                  k = Key. ?
+                //                break;
                 case KeyCodes.QuestionMark:
                     k = Key.Slash;
                     break;
@@ -556,5 +508,6 @@ namespace Axiom.Platforms.OpenTK
         }
 
         #endregion Keycode Conversions
+
     }
 }

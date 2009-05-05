@@ -33,12 +33,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-
-using Axiom.Core;
 using Axiom.Graphics;
-
-using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
@@ -57,7 +52,7 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         ///		Reference to the current Xna device object.
         /// </summary>
-		private XFG.GraphicsDevice device;
+        private XFG.GraphicsDevice device;
         /// <summary>
         ///		Reference to the query object being used.
         /// </summary>
@@ -77,7 +72,7 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         ///		Current count of number of skipped frames since query last ran.
         /// </summary>
-        private int skipCounter;
+        private int _skipCounter;
 
         #endregion Fields
 
@@ -87,7 +82,7 @@ namespace Axiom.RenderSystems.Xna
         ///		Default constructor.
         /// </summary>
         /// <param name="device">Reference to a Direct3D device.</param>
-		public XnaHardwareOcclusionQuery( XFG.GraphicsDevice device )
+        public XnaHardwareOcclusionQuery( XFG.GraphicsDevice device )
         {
             this.device = device;
             oQuery = new XFG.OcclusionQuery(device);
@@ -103,16 +98,16 @@ namespace Axiom.RenderSystems.Xna
             // proceed if supported, or silently fail otherwise
             if ( oQuery.IsSupported)
             {
-                if ( skipCounter == skipRate )
+                if ( _skipCounter == skipRate )
                 {
-                    skipCounter = 0;
+                    _skipCounter = 0;
                 }
 
-                if ( skipCounter == 0 )
+                if ( _skipCounter == 0 )
                 {
                     oQuery.Begin();
                     // && lastFragmentCount != 0) {
-                 //   query.Issue( XFG.IssueFlags.Begin );
+                    //   query.Issue( XFG.IssueFlags.Begin );
                 }
             }
         }
@@ -135,14 +130,14 @@ namespace Axiom.RenderSystems.Xna
             // proceed if supported, or silently fail otherwise
             if ( oQuery.IsSupported )
             {
-                if ( skipCounter == 0 )
+                if ( _skipCounter == 0 )
                 {
                     oQuery.End();
                     // && lastFragmentCount != 0) {
-                 //   query.Issue( D3D.IssueFlags.End );
+                    //   query.Issue( D3D.IssueFlags.End );
                 }
 
-                skipCounter++;
+                _skipCounter++;
             }
         }
 
