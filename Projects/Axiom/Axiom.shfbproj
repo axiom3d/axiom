@@ -15,7 +15,7 @@
     <RootNamespace>Documentation</RootNamespace>
     <Name>Documentation</Name>
     <!-- SHFB properties -->
-    <OutputPath>.\Documentation\</OutputPath>
+    <OutputPath>C:\Projects\Axiom\trunk\build\image\docs</OutputPath>
     <HtmlHelpName>AxiomSDK</HtmlHelpName>
     <ProjectSummary>
     </ProjectSummary>
@@ -43,6 +43,7 @@
       <DocumentationSource sourceFile="Source\Platforms\Win32\Axiom.Platforms.Win32.csproj" xmlns="" />
       <DocumentationSource sourceFile="Source\Platforms\SDL\Axiom.Platforms.SDL.csproj" xmlns="" />
       <DocumentationSource sourceFile="Source\RenderSystems\DirectX9\Axiom.RenderSystems.DirectX9.csproj" xmlns="" />
+      <DocumentationSource sourceFile="Source\RenderSystems\Xna\Axiom.RenderSystems.Xna.csproj" xmlns="" />
       <DocumentationSource sourceFile="Source\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.Win32.csproj" xmlns="" />
       <DocumentationSource sourceFile="Source\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.SDL.csproj" xmlns="" />
       <DocumentationSource sourceFile="Source\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.csproj" xmlns="" />
@@ -75,6 +76,8 @@
       <NamespaceSummaryItem name="Axiom.Platforms.Win32" isDocumented="True" xmlns="" />
       <NamespaceSummaryItem name="Axiom.RenderSystems.DirectX9" isDocumented="True" xmlns="" />
       <NamespaceSummaryItem name="Axiom.RenderSystems.DirectX9.HLSL" isDocumented="True" xmlns="" />
+      <NamespaceSummaryItem name="Axiom.RenderSystems.Xna" isDocumented="True" xmlns="" />
+      <NamespaceSummaryItem name="Axiom.RenderSystems.Xna.HLSL" isDocumented="True" xmlns="" />
       <NamespaceSummaryItem name="Axiom.RenderSystems.OpenGL" isDocumented="True" xmlns="" />
       <NamespaceSummaryItem name="Axiom.RenderSystems.OpenGL.ARB" isDocumented="True" xmlns="" />
       <NamespaceSummaryItem name="Axiom.RenderSystems.OpenGL.ATI" isDocumented="True" xmlns="" />
@@ -93,6 +96,10 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib">
@@ -119,6 +126,7 @@
     <Reference Include="Tao.Sdl">
       <HintPath>..\..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.Sdl.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   </ItemGroup>
   <!-- Import the SHFB build targets -->
   <Import Project="$(SHFBROOT)\SandcastleHelpFileBuilder.targets" />
