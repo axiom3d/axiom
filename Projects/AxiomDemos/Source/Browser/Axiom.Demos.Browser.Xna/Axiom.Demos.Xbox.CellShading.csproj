@@ -148,9 +148,9 @@
       <Project>{40F18D53-5A6E-48AE-A767-5F5AAE891837}</Project>
       <Name>Axiom.RenderSystems.Xna.Content.Xbox</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Demos\Axiom.Demos.Xna.Xbox.csproj">
+    <ProjectReference Include="..\..\Demos\Axiom.Demos.Xbox.csproj">
       <Project>{ebf98b3b-3d1a-45ec-b2c9-0ac31dce3ee4}</Project>
-      <Name>Axiom.Demos.Xna.Xbox</Name>
+      <Name>Axiom.Demos.Xbox</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
