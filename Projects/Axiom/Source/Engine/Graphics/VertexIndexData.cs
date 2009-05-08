@@ -266,7 +266,7 @@ namespace Axiom.Graphics
                 // the other one half way along
                 IntPtr destPtr = newPosBuffer.Lock( BufferLocking.Discard );
                 // oldVertexCount * 3 * 4, since we are dealing with byte offsets here
-                IntPtr dest2Ptr = new IntPtr( destPtr.ToInt32() + ( oldVertexCount * 12 ) );
+                IntPtr dest2Ptr = new IntPtr( destPtr.ToInt64() + ( oldVertexCount * 12 ) );
 
                 int prePosVertexSize = 0;
                 int postPosVertexSize = 0;

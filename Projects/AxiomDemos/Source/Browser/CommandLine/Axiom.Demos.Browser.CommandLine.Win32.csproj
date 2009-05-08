@@ -162,7 +162,7 @@
       <Project>{DE43F8B9-960F-47E4-9A12-E2F5760EECE6}</Project>
       <Name>Axiom.RenderSystems.DirectX9</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\RenderSystems\xna\Axiom.RenderSystems.Xna.csproj">
+    <ProjectReference Include="..\..\..\..\Axiom\Source\RenderSystems\XNA\Axiom.RenderSystems.Xna.csproj">
       <Project>{628E7ED7-EC58-4C93-B8AB-CB69087D381B}</Project>
       <Name>Axiom.RenderSystems.Xna</Name>
     </ProjectReference>
