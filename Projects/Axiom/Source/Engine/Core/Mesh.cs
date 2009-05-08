@@ -717,7 +717,7 @@ namespace Axiom.Core
                             // get indices of vertices that form a polygon in the position buffer
                             vertIdx[ i ] = pIdx[ vCount++ ];
 
-                            IntPtr tmpPtr = new IntPtr( posPtr.ToInt32() + elemPos.Offset + ( posInc * vertIdx[ i ] ) );
+                            IntPtr tmpPtr = new IntPtr( posPtr.ToInt64() + elemPos.Offset + ( posInc * vertIdx[ i ] ) );
 
                             pVPos = (float*)tmpPtr.ToPointer();
 
@@ -727,7 +727,7 @@ namespace Axiom.Core
                             vertPos[ i ].z = pVPos[ 2 ];
 
                             // get the vertex tex coords from the 2D tex coord buffer
-                            tmpPtr = new IntPtr( srcPtr.ToInt32() + srcElem.Offset + ( srcInc * vertIdx[ i ] ) );
+                            tmpPtr = new IntPtr( srcPtr.ToInt64() + srcElem.Offset + ( srcInc * vertIdx[ i ] ) );
                             p2DTC = (float*)tmpPtr.ToPointer();
 
                             u[ i ] = p2DTC[ 0 ];
@@ -749,7 +749,7 @@ namespace Axiom.Core
                         {
                             // write values (they must be 0 and we must add them so we can average
                             // all the contributions from all the faces
-                            IntPtr tmpPtr = new IntPtr( destPtr.ToInt32() + destElem.Offset + ( destInc * vertIdx[ i ] ) );
+                            IntPtr tmpPtr = new IntPtr( destPtr.ToInt64() + destElem.Offset + ( destInc * vertIdx[ i ] ) );
 
                             p3DTC = (float*)tmpPtr.ToPointer();
 
@@ -768,7 +768,7 @@ namespace Axiom.Core
                     // loop through and normalize all 3d tex coords
                     for ( int n = 0; n < numVerts; n++ )
                     {
-                        IntPtr tmpPtr = new IntPtr( destPtr.ToInt32() + destElem.Offset + offset );
+                        IntPtr tmpPtr = new IntPtr( destPtr.ToInt64() + destElem.Offset + offset );
 
                         p3DTC = (float*)tmpPtr.ToPointer();
 

@@ -169,7 +169,7 @@ namespace Axiom.Graphics
                 // updating the latter because you can't have 2 locks on the same
                 // buffer
                 IntPtr srcPtr = vertexBuffer.Lock( BufferLocking.Normal );
-                IntPtr destPtr = new IntPtr( srcPtr.ToInt32() + ( originalVertexCount * 3 * 4 ) );
+                IntPtr destPtr = new IntPtr( srcPtr.ToInt64() + ( originalVertexCount * 3 * 4 ) );
                 float* pSrc = (float*)srcPtr.ToPointer();
                 float* pDest = (float*)destPtr.ToPointer();
 
