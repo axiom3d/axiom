@@ -199,6 +199,31 @@ namespace Axiom.Overlays
         }
 
         /// <summary>
+        /// Removes a 2D container from the overlay.
+        /// </summary>
+        /// <remarks>
+        /// Consider using <see>Hide</see>.
+        /// </remarks>
+        /// <param name="element"></param>
+        public void RemoveElement( OverlayElementContainer element )
+        {
+            if ( elementList.Contains( element ) )
+            {
+                elementList.Remove( element );
+                //TODO: AssignZOrders();
+            }
+        }
+
+        /// <summary>
+        /// Removes a 3D element from the overlay.
+        /// </summary>
+        /// <param name="node"></param>
+        public void RemoveElement( SceneNode node )
+        {
+            rootNode.RemoveChild( node );
+        }
+
+        /// <summary>
         ///    Clears the overlay of all attached items.
         /// </summary>
         public void Clear()
