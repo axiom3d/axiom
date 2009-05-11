@@ -214,16 +214,23 @@ namespace Axiom.Overlays
             }
         }
 
-        public override void NotifyZOrder( int zOrder )
+        public override int NotifyZOrder( int zOrder )
         {
             // call base class method
             base.NotifyZOrder( zOrder );
 
+            //One for us
+            zOrder++;
+
             for ( int i = 0; i < childList.Count; i++ )
             {
-                ( (OverlayElement)childList[ i ] ).NotifyZOrder( zOrder + 1 );
+                zOrder = ( (OverlayElement)childList[ i ] ).NotifyZOrder( zOrder );
             }
+
+            return zOrder;
         }
+        
+
         public override void NotifyWorldTransforms( Matrix4[] xform )
         {
             base.NotifyWorldTransforms( xform );

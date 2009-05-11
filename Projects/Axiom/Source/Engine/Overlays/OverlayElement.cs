@@ -239,9 +239,15 @@ namespace Axiom.Overlays
         /// items. This method is used internally to notify the element of a change in
         /// final zorder which is used to render the element.
         /// </remarks>
-        public virtual void NotifyZOrder( int zOrder )
+        /// <returns>
+        /// Return the next zordering number availble. For single elements, this
+        /// is simply zOrder + 1, but for containers, they increment it once for each
+        /// child (more if those children are also containers).
+        /// </returns>
+        public virtual int NotifyZOrder( int zOrder )
         {
             this.zOrder = zOrder;
+            return this.zOrder + 1;
         }
 
 
