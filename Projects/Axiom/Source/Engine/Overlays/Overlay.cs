@@ -226,7 +226,6 @@ namespace Axiom.Overlays
             {
                 elementLookup.Remove(element.Name);                
             }
-            elementList.Remove(element);
 
             AssignZOrders();
             element.NotifyParent(null, null);

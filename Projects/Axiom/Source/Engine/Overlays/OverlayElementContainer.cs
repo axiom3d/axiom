@@ -168,7 +168,7 @@ namespace Axiom.Overlays
 
             OverlayElement element = GetChild( name );
             children.Remove( name );
-
+            childList.Remove( element );
             // remove from container list (if found)
             if ( childContainers.ContainsKey( name ) )
             {
