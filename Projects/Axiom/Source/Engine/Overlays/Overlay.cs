@@ -39,6 +39,7 @@ using System.Collections;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
+using Axiom.Utilities;
 
 #endregion Namespace Declarations
 
@@ -150,9 +151,7 @@ namespace Axiom.Overlays
             // notify the parent
             element.NotifyParent( null, this );
 
-            // Set Z order, scaled to separate overlays
-            // max 100 container levels per overlay, should be plenty
-            element.NotifyZOrder( zOrder * 100 );
+            AssignZOrders();
 
             GetWorldTransforms( xform );
 
@@ -229,7 +228,7 @@ namespace Axiom.Overlays
             }
             elementList.Remove(element);
 
-            //TODO: AssignZOrders();
+            AssignZOrders();
             element.NotifyParent(null, null);
         }
 
@@ -491,6 +490,19 @@ namespace Axiom.Overlays
             isTransformOutOfDate = false;
         }
 
+        /// <summary>
+        /// Updates container elements' Z-ordering
+        /// </summary>
+        protected void AssignZOrders()
+        {
+            int zorder = this.zOrder * 100;
+            // notify attached 2d elements
+            for (int i = 0; i < elementList.Count; i++)
+            {
+               zorder = ((OverlayElementContainer)elementList[i]).NotifyZOrder( zorder );
+            }
+        }
+
         #endregion Methods
 
         #region Properties
@@ -584,7 +596,7 @@ namespace Axiom.Overlays
         }
 
         /// <summary>
-        ///    Z ordering of this overlay. Valid values are between 0 and 600.
+        ///    Z ordering of this overlay. Valid values are between 0 and 650.
         /// </summary>
         public int ZOrder
         {
@@ -594,13 +606,9 @@ namespace Axiom.Overlays
             }
             set
             {
+                Contract.Requires( value < 650, "ZOrder", "Overlay ZOrder cannot be greater than 650!" );
                 zOrder = value;
-
-                // notify attached 2d elements
-                for ( int i = 0; i < elementList.Count; i++ )
-                {
-                    ( (OverlayElementContainer)elementList[ i ] ).NotifyZOrder( zOrder );
-                }
+                AssignZOrders();
             }
         }
 
