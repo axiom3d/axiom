@@ -205,13 +205,32 @@ namespace Axiom.Overlays
         /// Consider using <see>Hide</see>.
         /// </remarks>
         /// <param name="element"></param>
+        public void RemoveElement( string name )
+        {
+            RemoveElement( GetChild( name ) );
+        }
+
+        /// <summary>
+        /// Removes a 2D container from the overlay.
+        /// </summary>
+        /// <remarks>
+        /// Consider using <see>Hide</see>.
+        /// </remarks>
+        /// <param name="element"></param>
         public void RemoveElement( OverlayElementContainer element )
         {
             if ( elementList.Contains( element ) )
             {
                 elementList.Remove( element );
-                //TODO: AssignZOrders();
             }
+            if ( elementLookup.ContainsKey( element.Name ) )
+            {
+                elementLookup.Remove(element.Name);                
+            }
+            elementList.Remove(element);
+
+            //TODO: AssignZOrders();
+            element.NotifyParent(null, null);
         }
 
         /// <summary>
