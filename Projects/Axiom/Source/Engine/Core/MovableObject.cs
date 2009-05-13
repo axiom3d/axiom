@@ -299,6 +299,33 @@ namespace Axiom.Core
         }
 
         /// <summary>
+        /// Get the 'type flags' for this MovableObject.
+        /// </summary>
+        /// <remarks>
+        /// A type flag identifies the type of the MovableObject as a bitpattern. 
+        /// This is used for categorical inclusion / exclusion in SceneQuery
+        /// objects. By default, this method returns all ones for objects not 
+        /// created by a MovableObjectFactory (hence always including them); 
+        /// otherwise it returns the value assigned to the MovableObjectFactory.
+        /// Custom objects which don't use MovableObjectFactory will need to 
+        /// override this if they want to be included in queries.
+        /// </remarks>
+        public virtual ulong TypeFlags
+        {
+            get
+            {
+                if ( this.Creator != null )
+                {
+                    return this.Creator.TypeFlag;
+                }
+                else
+                {
+                    return 0xFFFFFFFF;
+                }
+            }
+        }
+
+        /// <summary>
         ///    Allows showing the bounding box of an invidual SceneObject.
         /// </summary>
         /// <remarks>
@@ -336,6 +363,35 @@ namespace Axiom.Core
             {
                 this.renderQueueID = value;
                 this.renderQueueIDSet = true;
+            }
+        }
+
+        /// <summary>
+        /// Returns true if this object is attached to a SceneNode or TagPoint, 
+        /// and this SceneNode / TagPoint is currently in an active part of the
+        /// scene graph.
+        /// </summary>
+        public virtual bool IsInScene
+        {
+            get
+            {
+                if ( this.parentNode != null )
+                {
+                    if ( this.parentIsTagPoint )
+                    {
+                        TagPoint tp = (TagPoint)this.ParentNode;
+                        return tp.ParentEntity.IsInScene;
+                    }
+                    else
+                    {
+                        SceneNode sn = (SceneNode)this.ParentNode;
+                        return sn.IsInSceneGraph;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
 
@@ -510,6 +566,7 @@ namespace Axiom.Core
 
         #region Internal engine methods
 
+
         /// <summary>
         ///		Internal method called to notify the object that it has been attached to a node.
         /// </summary>
@@ -600,9 +657,9 @@ namespace Axiom.Core
     {
         public const string TypeName = "MovableObject";
         private string _type;
-        private long _typeFlag;
+        private ulong _typeFlag;
 
-        public MovableObjectFactory()
+        protected MovableObjectFactory()
         {
             this._typeFlag = 0xFFFFFFFF;
             this._type = MovableObjectFactory.TypeName;
@@ -620,7 +677,7 @@ namespace Axiom.Core
         ///	    to a number of different types of object, should you always wish them
         ///	    to be treated the same in queries.
         /// </remarks>
-        public virtual long TypeFlag
+        public virtual ulong TypeFlag
         {
             get
             {

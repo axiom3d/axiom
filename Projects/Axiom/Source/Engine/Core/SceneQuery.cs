@@ -86,6 +86,10 @@ namespace Axiom.Core
         /// </summary>
         protected ulong queryMask;
         /// <summary>
+        ///		query bit mask which can be used to filter the results of a query based on object type.
+        /// </summary>
+        protected ulong queryTypeMask;
+        /// <summary>
         ///		A flag enum which holds the world fragment types supported by this query.
         /// </summary>
         protected WorldFragmentType worldFragmentTypes;
@@ -145,6 +149,27 @@ namespace Axiom.Core
             }
         }
 
+        /// <summary>
+        ///    Sets the mask for results of this query.
+        /// </summary>
+        /// <remarks>
+        ///    This property allows you to set a 'mask' to limit the results of this
+        ///    query to certain types of result.  Whilst setQueryMask deals with flags
+        ///    set per instance of object, this method deals with setting a mask on 
+        ///    flags set per type of object. Both may exclude an object from query
+        ///    results.
+        /// </remarks>
+        public ulong QueryTypeMask
+        {
+            get
+            {
+                return queryTypeMask;
+            }
+            set
+            {
+                queryTypeMask = value;
+            }
+        }
         #endregion
 
         #region Nested Structs
