@@ -119,7 +119,7 @@ namespace Axiom.Demos
         private int currentCubeIndex = 0;
         private Mesh originalMesh;
         private Mesh clonedMesh;
-        private Entity objectEntity;
+        private Entity objectEntity = null;
         private SceneNode objectNode;
         private Material material;
         private MaterialList clonedMaterials = new MaterialList();

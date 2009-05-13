@@ -77,6 +77,7 @@ namespace Axiom.Math
     {
         None,
         Positive,
-        Negative
+        Negative,
+        Both
     }
 }
