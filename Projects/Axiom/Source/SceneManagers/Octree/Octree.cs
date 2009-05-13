@@ -169,23 +169,9 @@ namespace Axiom.SceneManagers.Octree
 
         public void RemoveNode( OctreeNode node )
         {
-            OctreeNode check;
-            int i;
-            int Index;
-
-            Index = NodeList.Count - 1;
-
-            for ( i = Index; i >= 0; i-- )
-            {
-                check = (OctreeNode)NodeList[ i ];
-
-                if ( check == node )
-                {
-                    node.Octant = null;
-                    NodeList.RemoveAt( i );
-                    UnRef();
-                }
-            }
+            node.Octant = null;
+            NodeList.Remove( node );
+            UnRef();
         }
 
         /// <summary>
