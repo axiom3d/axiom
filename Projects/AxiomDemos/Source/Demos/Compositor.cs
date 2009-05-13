@@ -72,7 +72,7 @@ namespace Axiom.Demos
 			scene.SetSkyBox( true, "Examples/MorningSkyBox", 50 );
 
 
-			Plane plane;
+			Plane plane = new Plane();
 			plane.Normal = Vector3.UnitY;
 			plane.D = 100;
 			MeshManager.Instance.CreatePlane( "Myplane", ResourceGroupManager.DefaultResourceGroupName, plane, 1500, 1500, 10, 10, true, 1, 5, 5, Vector3.UnitZ );
