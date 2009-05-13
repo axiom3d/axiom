@@ -63,22 +63,24 @@ namespace Axiom.Math
 
         internal Vector3 minVector;
         internal Vector3 maxVector;
-        private Vector3[] corners = new Vector3[ 8 ];
+        private Vector3[] corners = new Vector3[8];
         private bool isNull = true;
+        private bool isInfinite;
 
         #endregion
 
         #region Constructors
 
         public AxisAlignedBox()
-            : this( new Vector3( -0.5f, -0.5f, -0.5f ), new Vector3( 0.5f, 0.5f, 0.5f ) )
+            : this(new Vector3(-0.5f, -0.5f, -0.5f), new Vector3(0.5f, 0.5f, 0.5f))
         {
             isNull = true;
+            isInfinite = true; //no exactly true but...
         }
 
-        public AxisAlignedBox( Vector3 min, Vector3 max )
+        public AxisAlignedBox(Vector3 min, Vector3 max)
         {
-            SetExtents( min, max );
+            SetExtents(min, max);
         }
 
         #endregion
@@ -89,41 +91,41 @@ namespace Axiom.Math
         /// 
         /// </summary>
         /// <param name="matrix"></param>
-        public void Transform( Matrix4 matrix )
+        public void Transform(Matrix4 matrix)
         {
             // do nothing for a null box
-            if ( isNull )
+            if (isNull || isInfinite)
                 return;
 
             Vector3 min;
             Vector3 max;
             Vector3 temp;
 
-            temp = matrix * corners[ 0 ];
+            temp = matrix * corners[0];
             min = max = temp;
 
-            for ( int i = 1; i < corners.Length; i++ )
+            for (int i = 1; i < corners.Length; i++)
             {
                 // Transform and check extents
-                temp = matrix * corners[ i ];
+                temp = matrix * corners[i];
 
-                if ( temp.x > max.x )
+                if (temp.x > max.x)
                     max.x = temp.x;
-                else if ( temp.x < min.x )
+                else if (temp.x < min.x)
                     min.x = temp.x;
 
-                if ( temp.y > max.y )
+                if (temp.y > max.y)
                     max.y = temp.y;
-                else if ( temp.y < min.y )
+                else if (temp.y < min.y)
                     min.y = temp.y;
 
-                if ( temp.z > max.z )
+                if (temp.z > max.z)
                     max.z = temp.z;
-                else if ( temp.z < min.z )
+                else if (temp.z < min.z)
                     min.z = temp.z;
             }
 
-            SetExtents( min, max );
+            SetExtents(min, max);
         }
 
         /// <summary>
@@ -136,27 +138,27 @@ namespace Axiom.Math
             //   around face (looking onto the face)
             // Maximum Z face, starting with Max(all), then anticlockwise
             //   around face (looking onto the face)				
-            corners[ 0 ] = minVector;
-            corners[ 1 ].x = minVector.x;
-            corners[ 1 ].y = maxVector.y;
-            corners[ 1 ].z = minVector.z;
-            corners[ 2 ].x = maxVector.x;
-            corners[ 2 ].y = maxVector.y;
-            corners[ 2 ].z = minVector.z;
-            corners[ 3 ].x = maxVector.x;
-            corners[ 3 ].y = minVector.y;
-            corners[ 3 ].z = minVector.z;
+            corners[0] = minVector;
+            corners[1].x = minVector.x;
+            corners[1].y = maxVector.y;
+            corners[1].z = minVector.z;
+            corners[2].x = maxVector.x;
+            corners[2].y = maxVector.y;
+            corners[2].z = minVector.z;
+            corners[3].x = maxVector.x;
+            corners[3].y = minVector.y;
+            corners[3].z = minVector.z;
 
-            corners[ 4 ] = maxVector;
-            corners[ 5 ].x = minVector.x;
-            corners[ 5 ].y = maxVector.y;
-            corners[ 5 ].z = maxVector.z;
-            corners[ 6 ].x = minVector.x;
-            corners[ 6 ].y = minVector.y;
-            corners[ 6 ].z = maxVector.z;
-            corners[ 7 ].x = maxVector.x;
-            corners[ 7 ].y = minVector.y;
-            corners[ 7 ].z = maxVector.z;
+            corners[4] = maxVector;
+            corners[5].x = minVector.x;
+            corners[5].y = maxVector.y;
+            corners[5].z = maxVector.z;
+            corners[6].x = minVector.x;
+            corners[6].y = minVector.y;
+            corners[6].z = maxVector.z;
+            corners[7].x = maxVector.x;
+            corners[7].y = minVector.y;
+            corners[7].z = maxVector.z;
         }
 
         /// <summary>
@@ -165,9 +167,10 @@ namespace Axiom.Math
         /// </summary>
         /// <param name="min"></param>
         /// <param name="max"></param>
-        public void SetExtents( Vector3 min, Vector3 max )
+        public void SetExtents(Vector3 min, Vector3 max)
         {
             isNull = false;
+            isInfinite = false;
 
             minVector = min;
             maxVector = max;
@@ -179,9 +182,9 @@ namespace Axiom.Math
         ///    Scales the size of the box by the supplied factor.
         /// </summary>
         /// <param name="factor">Factor of scaling to apply to the box.</param>
-        public void Scale( Vector3 factor )
+        public void Scale(Vector3 factor)
         {
-            SetExtents( minVector * factor, maxVector * factor );
+            SetExtents(minVector * factor, maxVector * factor);
         }
 
         /// <summary>
@@ -190,11 +193,11 @@ namespace Axiom.Math
         /// <param name="center">Center of the new box</param>
         /// <param name="size">Entire size of the new box</param>
         /// <returns>New bounding box</returns>
-        public static AxisAlignedBox FromDimensions( Vector3 center, Vector3 size )
+        public static AxisAlignedBox FromDimensions(Vector3 center, Vector3 size)
         {
             Vector3 halfSize = .5f * size;
 
-            return new AxisAlignedBox( center - halfSize, center + halfSize );
+            return new AxisAlignedBox(center - halfSize, center + halfSize);
         }
 
 
@@ -202,21 +205,21 @@ namespace Axiom.Math
         ///		Allows for merging two boxes together (combining).
         /// </summary>
         /// <param name="box">Source box.</param>
-        public void Merge( AxisAlignedBox box )
+        public void Merge(AxisAlignedBox box)
         {
             // nothing to merge with in this case, just return
-            if ( box.IsNull )
+            if (box.IsNull || box.IsInfinite)
             {
                 return;
             }
-            else if ( isNull )
+            else if (isNull || isInfinite)
             {
-                SetExtents( box.Minimum, box.Maximum );
+                SetExtents(box.Minimum, box.Maximum);
             }
             else
             {
-                minVector.Floor( box.Minimum );
-                maxVector.Ceil( box.Maximum );
+                minVector.Floor(box.Minimum);
+                maxVector.Ceil(box.Maximum);
 
                 UpdateCorners();
             }
@@ -226,28 +229,28 @@ namespace Axiom.Math
         ///		Extends the box to encompass the specified point (if needed).
         /// </summary>
         /// <param name="point"></param>
-        public void Merge( Vector3 point )
+        public void Merge(Vector3 point)
         {
-            if ( isNull )
+            if (isNull || isInfinite)
             {
                 // if null, use this point
-                SetExtents( point, point );
+                SetExtents(point, point);
             }
             else
             {
-                if ( point.x > maxVector.x )
+                if (point.x > maxVector.x)
                     maxVector.x = point.x;
-                else if ( point.x < minVector.x )
+                else if (point.x < minVector.x)
                     minVector.x = point.x;
 
-                if ( point.y > maxVector.y )
+                if (point.y > maxVector.y)
                     maxVector.y = point.y;
-                else if ( point.y < minVector.y )
+                else if (point.y < minVector.y)
                     minVector.y = point.y;
 
-                if ( point.z > maxVector.z )
+                if (point.z > maxVector.z)
                     maxVector.z = point.z;
-                else if ( point.z < minVector.z )
+                else if (point.z < minVector.z)
                     minVector.z = point.z;
 
                 UpdateCorners();
@@ -256,6 +259,25 @@ namespace Axiom.Math
 
         #endregion
 
+        #region new Contain methods
+
+        /** Tests whether the given point contained by this box.
+        */
+        public bool Contains(Vector3 v)
+        {
+            if (IsNull)
+                return false;
+            if (IsInfinite)
+                return true;
+
+            return Minimum.x <= v.x && v.x <= Maximum.x &&
+                   Minimum.y <= v.y && v.y <= Maximum.y &&
+                   Minimum.z <= v.z && v.z <= Maximum.z;
+        }
+
+
+        #endregion new Contain methods
+
         #region Intersection Methods
 
         /// <summary>
@@ -263,25 +285,28 @@ namespace Axiom.Math
         /// </summary>
         /// <param name="box2"></param>
         /// <returns>True if the 2 boxes intersect, false otherwise.</returns>
-        public bool Intersects( AxisAlignedBox box2 )
+        public bool Intersects(AxisAlignedBox box2)
         {
             // Early-fail for nulls
-            if ( this.IsNull || box2.IsNull )
+            if (this.IsNull || box2.IsNull)
                 return false;
+
+            if (this.IsInfinite || box2.IsInfinite)
+                return true;
 
             // Use up to 6 separating planes
-            if ( this.maxVector.x < box2.minVector.x )
+            if (this.maxVector.x < box2.minVector.x)
                 return false;
-            if ( this.maxVector.y < box2.minVector.y )
+            if (this.maxVector.y < box2.minVector.y)
                 return false;
-            if ( this.maxVector.z < box2.minVector.z )
+            if (this.maxVector.z < box2.minVector.z)
                 return false;
 
-            if ( this.minVector.x > box2.maxVector.x )
+            if (this.minVector.x > box2.maxVector.x)
                 return false;
-            if ( this.minVector.y > box2.maxVector.y )
+            if (this.minVector.y > box2.maxVector.y)
                 return false;
-            if ( this.minVector.z > box2.maxVector.z )
+            if (this.minVector.z > box2.maxVector.z)
                 return false;
 
             // otherwise, must be intersecting
@@ -293,9 +318,9 @@ namespace Axiom.Math
         /// </summary>
         /// <param name="sphere"></param>
         /// <returns>True if the sphere intersects, false otherwise.</returns>
-        public bool Intersects( Sphere sphere )
+        public bool Intersects(Sphere sphere)
         {
-            return Utility.Intersects( sphere, this );
+            return Utility.Intersects(sphere, this);
         }
 
         /// <summary>
@@ -303,9 +328,9 @@ namespace Axiom.Math
         /// </summary>
         /// <param name="plane"></param>
         /// <returns>True if the plane intersects, false otherwise.</returns>
-        public bool Intersects( Plane plane )
+        public bool Intersects(Plane plane)
         {
-            return Utility.Intersects( plane, this );
+            return Utility.Intersects(plane, this);
         }
 
         /// <summary>
@@ -313,19 +338,19 @@ namespace Axiom.Math
         /// </summary>
         /// <param name="vector"></param>
         /// <returns>True if the vector is within this box, false otherwise.</returns>
-        public bool Intersects( Vector3 vector )
+        public bool Intersects(Vector3 vector)
         {
-            return ( vector.x >= minVector.x && vector.x <= maxVector.x &&
+            return (vector.x >= minVector.x && vector.x <= maxVector.x &&
                 vector.y >= minVector.y && vector.y <= maxVector.y &&
-                vector.z >= minVector.z && vector.z <= maxVector.z );
+                vector.z >= minVector.z && vector.z <= maxVector.z);
         }
 
         /// <summary>
         ///		Calculate the area of intersection of this box and another
         /// </summary>
-        public AxisAlignedBox Intersection( AxisAlignedBox b2 )
+        public AxisAlignedBox Intersection(AxisAlignedBox b2)
         {
-            if ( !Intersects( b2 ) )
+            if (!Intersects(b2))
                 return new AxisAlignedBox();
 
             Vector3 intMin = Vector3.Zero;
@@ -334,38 +359,53 @@ namespace Axiom.Math
             Vector3 b2max = b2.maxVector;
             Vector3 b2min = b2.minVector;
 
-            if ( b2max.x > maxVector.x && maxVector.x > b2min.x )
+            if (b2max.x > maxVector.x && maxVector.x > b2min.x)
                 intMax.x = maxVector.x;
             else
                 intMax.x = b2max.x;
-            if ( b2max.y > maxVector.y && maxVector.y > b2min.y )
+            if (b2max.y > maxVector.y && maxVector.y > b2min.y)
                 intMax.y = maxVector.y;
             else
                 intMax.y = b2max.y;
-            if ( b2max.z > maxVector.z && maxVector.z > b2min.z )
+            if (b2max.z > maxVector.z && maxVector.z > b2min.z)
                 intMax.z = maxVector.z;
             else
                 intMax.z = b2max.z;
 
-            if ( b2min.x < minVector.x && minVector.x < b2max.x )
+            if (b2min.x < minVector.x && minVector.x < b2max.x)
                 intMin.x = minVector.x;
             else
                 intMin.x = b2min.x;
-            if ( b2min.y < minVector.y && minVector.y < b2max.y )
+            if (b2min.y < minVector.y && minVector.y < b2max.y)
                 intMin.y = minVector.y;
             else
                 intMin.y = b2min.y;
-            if ( b2min.z < minVector.z && minVector.z < b2max.z )
+            if (b2min.z < minVector.z && minVector.z < b2max.z)
                 intMin.z = minVector.z;
             else
                 intMin.z = b2min.z;
 
-            return new AxisAlignedBox( intMin, intMax );
+            return new AxisAlignedBox(intMin, intMax);
         }
 
         #endregion Intersection Methods
 
         #region Properties
+
+        public Vector3 HalfSize
+        {
+            get
+            {
+                if (isNull)
+                    return Vector3.Zero;
+
+                if (isInfinite)
+                    return Vector3.PositiveInfinity;
+
+                return (Maximum - Minimum) * 0.5f;
+            }
+        }
+
 
         /// <summary>
         ///     Get/set the size of this bounding box.
@@ -393,7 +433,7 @@ namespace Axiom.Math
         {
             get
             {
-                return ( minVector + maxVector ) * 0.5f;
+                return (minVector + maxVector) * 0.5f;
             }
             set
             {
@@ -468,7 +508,7 @@ namespace Axiom.Math
         {
             get
             {
-                Debug.Assert( !isNull, "Cannot get the corners of a null box." );
+                Debug.Assert(!isNull && !isInfinite, "Cannot get the corners of a null or infinite box.");
 
                 return corners;
             }
@@ -489,6 +529,21 @@ namespace Axiom.Math
             }
         }
 
+        /** Returns true if the box is infinite.
+*/
+        public bool IsInfinite
+        {
+            get
+            {
+                return isInfinite;
+            }
+            set
+            {
+                isInfinite = value;
+            }
+        }
+
+
         /// <summary>
         ///		Returns a null box
         /// </summary>
@@ -499,64 +554,83 @@ namespace Axiom.Math
                 AxisAlignedBox nullBox = new AxisAlignedBox();
                 // make sure it is set to null
                 nullBox.IsNull = true;
-
+                nullBox.isInfinite = true;
                 return nullBox;
             }
         }
+
+        /// <summary>
+        ///     Calculate the volume of this box
+        /// </summary>
+        public Real Volume
+        {
+            get
+            {
+                if (isNull)
+                    return 0.0f;
+
+                if (isInfinite)
+                    return Real.PositiveInfinity;
+
+                Vector3 diff = Maximum - Minimum;
+                return diff.x * diff.y * diff.z;
+            }
+        }
+
 
         #endregion
 
         #region Operator Overloads
 
-        public static bool operator ==( AxisAlignedBox left, AxisAlignedBox right )
+        public static bool operator ==(AxisAlignedBox left, AxisAlignedBox right)
         {
-            if ( ( object.ReferenceEquals( left, null ) || left.isNull ) &&
-                ( object.ReferenceEquals( right, null ) || right.isNull ) )
+            if ((object.ReferenceEquals(left, null) || left.isNull) &&
+                (object.ReferenceEquals(right, null) || right.isNull))
                 return true;
 
-            else if ( ( object.ReferenceEquals( left, null ) || left.isNull ) ||
-                     ( object.ReferenceEquals( right, null ) || right.isNull ) )
+            else if ((object.ReferenceEquals(left, null) || left.isNull) ||
+                     (object.ReferenceEquals(right, null) || right.isNull))
                 return false;
 
             return
-                ( left.corners[ 0 ] == right.corners[ 0 ] && left.corners[ 1 ] == right.corners[ 1 ] && left.corners[ 2 ] == right.corners[ 2 ] &&
-                left.corners[ 3 ] == right.corners[ 3 ] && left.corners[ 4 ] == right.corners[ 4 ] && left.corners[ 5 ] == right.corners[ 5 ] &&
-                left.corners[ 6 ] == right.corners[ 6 ] && left.corners[ 7 ] == right.corners[ 7 ] );
+                (left.corners[0] == right.corners[0] && left.corners[1] == right.corners[1] && left.corners[2] == right.corners[2] &&
+                left.corners[3] == right.corners[3] && left.corners[4] == right.corners[4] && left.corners[5] == right.corners[5] &&
+                left.corners[6] == right.corners[6] && left.corners[7] == right.corners[7]);
         }
 
-        public static bool operator !=( AxisAlignedBox left, AxisAlignedBox right )
+        public static bool operator !=(AxisAlignedBox left, AxisAlignedBox right)
         {
-            if ( ( object.ReferenceEquals( left, null ) || left.isNull ) &&
-                ( object.ReferenceEquals( right, null ) || right.isNull ) )
+            if ((object.ReferenceEquals(left, null) || left.isNull) &&
+                (object.ReferenceEquals(right, null) || right.isNull))
                 return false;
 
-            else if ( ( object.ReferenceEquals( left, null ) || left.isNull ) ||
-                     ( object.ReferenceEquals( right, null ) || right.isNull ) )
+            else if ((object.ReferenceEquals(left, null) || left.isNull) ||
+                     (object.ReferenceEquals(right, null) || right.isNull))
                 return true;
 
             return
-                ( left.corners[ 0 ] != right.corners[ 0 ] || left.corners[ 1 ] != right.corners[ 1 ] || left.corners[ 2 ] != right.corners[ 2 ] ||
-                left.corners[ 3 ] != right.corners[ 3 ] || left.corners[ 4 ] != right.corners[ 4 ] || left.corners[ 5 ] != right.corners[ 5 ] ||
-                left.corners[ 6 ] != right.corners[ 6 ] || left.corners[ 7 ] != right.corners[ 7 ] );
+                (left.corners[0] != right.corners[0] || left.corners[1] != right.corners[1] || left.corners[2] != right.corners[2] ||
+                left.corners[3] != right.corners[3] || left.corners[4] != right.corners[4] || left.corners[5] != right.corners[5] ||
+                left.corners[6] != right.corners[6] || left.corners[7] != right.corners[7]);
         }
 
-        public override bool Equals( object obj )
+        public override bool Equals(object obj)
         {
             return obj is AxisAlignedBox && this == (AxisAlignedBox)obj;
         }
 
         public override int GetHashCode()
         {
-            if ( isNull )
+            if (isNull)
                 return 0;
 
-            return corners[ 0 ].GetHashCode() ^ corners[ 1 ].GetHashCode() ^ corners[ 2 ].GetHashCode() ^ corners[ 3 ].GetHashCode() ^ corners[ 4 ].GetHashCode() ^
-                corners[ 5 ].GetHashCode() ^ corners[ 6 ].GetHashCode() ^ corners[ 7 ].GetHashCode();
+            return corners[0].GetHashCode() ^ corners[1].GetHashCode() ^ corners[2].GetHashCode() ^ corners[3].GetHashCode() ^ corners[4].GetHashCode() ^
+                corners[5].GetHashCode() ^ corners[6].GetHashCode() ^ corners[7].GetHashCode();
         }
 
         public override string ToString()
         {
-            return String.Format( "{0}:{1}", this.minVector, this.maxVector );
+            return String.Format("{0}:{1}", this.minVector, this.maxVector);
         }
 
         #endregion
@@ -565,7 +639,7 @@ namespace Axiom.Math
 
         public object Clone()
         {
-            return new AxisAlignedBox( this.minVector, this.maxVector );
+            return new AxisAlignedBox(this.minVector, this.maxVector);
         }
 
         #endregion
