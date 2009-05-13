@@ -221,6 +221,7 @@ namespace Axiom.Core
         /// <summary>
         ///		See if this object is attached to another node.
         /// </summary>
+        [Obsolete("This property has been superceded by the IsInScene property")]
         public bool IsAttached
         {
             get
