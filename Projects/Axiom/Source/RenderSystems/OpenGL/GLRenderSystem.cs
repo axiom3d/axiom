@@ -756,6 +756,9 @@ namespace Axiom.RenderSystems.OpenGL
                     y = activeRenderTarget.Height - viewport.ActualTop - height;
                 }
 
+				// enable scissor testing (for viewports)
+				Gl.glEnable( Gl.GL_SCISSOR_TEST );
+
                 // set the current GL viewport
                 Gl.glViewport( x, y, width, height );
 
