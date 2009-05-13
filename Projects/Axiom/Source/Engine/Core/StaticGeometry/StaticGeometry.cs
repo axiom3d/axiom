@@ -472,10 +472,7 @@ namespace Axiom.Core
 				// Calculate the region center
 				Vector3 center = GetRegionCenter( x, y, z );
 				region = new Region( this, str, owner, index, center );
-				// TODO: Is putting this region in the list of
-				// SceneManager regions necessary?
-				// Need to genericize to MovalbeObject
-				owner.RegionList.Add( region );
+                owner.InjectMovableObject( region );
 				region.IsVisible = visible;
 				region.CastShadows = castShadows;
 				if ( renderQueueIDSet )
@@ -870,8 +867,7 @@ namespace Axiom.Core
 		{
 			foreach ( Region region in regionMap.Values )
 			{
-				// TODO: Is mucking with scene manager's region list necessary?
-				owner.RegionList.Remove( region );
+				owner.ExtractMovableObject( region );
 				region.Dispose();
 			}
 			regionMap.Clear();

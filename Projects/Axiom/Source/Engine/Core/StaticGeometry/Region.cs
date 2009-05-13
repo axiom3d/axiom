@@ -166,14 +166,6 @@ namespace Axiom.Core
 				}
 			}
 
-			public string MovableType
-			{
-				get
-				{
-					return "StaticGeometry";
-				}
-			}
-
 			public override AxisAlignedBox BoundingBox
 			{
 				get
@@ -456,12 +448,33 @@ namespace Axiom.Core
 			/// </summary>
 			public virtual void Dispose()
 			{
-				node.RemoveFromParent();
-				sceneMgr.DestroySceneNode( node.Name );
+                if ( node != null )
+                {
+                    node.RemoveFromParent();
+                    sceneMgr.DestroySceneNode(node.Name);
+                    node = null;
+                }
+
 				foreach ( LODBucket lodBucket in lodBucketList )
 					lodBucket.Dispose();
-			}
+                lodBucketList.Clear();
+            }
 
-		}
+            #region MovableObject Implementation
+
+            public override string MovableType
+            {
+                get
+                {
+                    return "StaticGeometry";
+                }
+                set
+                {
+                    throw new NotSupportedException("Cannot set value of MoveableType.");
+                }
+            }
+
+            #endregion MovableObject Implementation
+        }
 	}
 }
