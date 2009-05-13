@@ -1040,7 +1040,15 @@ namespace Axiom.Graphics
 			}
 		}
 
-		#endregion Properties
+	    /// <summary>
+	    ///    List of automatically updated parameters.
+	    /// </summary>
+	    public AutoConstantEntryList AutoConstantList
+	    {
+	        get { return autoConstantList; }
+	    }
+
+	    #endregion Properties
 
 		#region Inner classes
 
