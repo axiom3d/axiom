@@ -99,7 +99,7 @@ namespace Axiom.Demos
 
             SetupLighting();
 
-            Plane plane;
+            Plane plane = new Plane();
             plane.Normal = Vector3.UnitY;
             plane.D = 0;
 
@@ -343,6 +343,10 @@ namespace Axiom.Demos
         protected override bool OnFrameStarted( object source,
                                                 FrameEventArgs e )
         {
+            if ( input.IsKeyPressed( Axiom.Input.KeyCodes.Enter ) )
+            {
+                StaticGeom.Destroy();
+            }
             base.OnFrameStarted( source, e );
 
             // animate Light Wibbler

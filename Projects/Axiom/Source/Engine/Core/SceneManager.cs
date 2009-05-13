@@ -1098,22 +1098,6 @@ namespace Axiom.Core
                 this.DestroySceneNode( node.GetChild( 0 ).Name );
             }
 
-            for ( int j = 0; j < node.ObjectCount; j++ )
-            {
-                MovableObject obj = node.GetObject( j );
-                this.DestroyMovableObject( obj );
-
-                //if ( obj is Camera )
-                //    cameraList.Remove( obj );
-                //else if ( obj is Light )
-                //    DestroyMovableObject( obj );
-                //else if ( obj is Entity )
-                //    DestroyMovableObject( obj );
-                //else if ( obj is BillboardSet )
-                //    DestroyMovableObject( obj );
-                //else if ( obj is RibbonTrail )
-                //    DestroyMovableObject( obj.Name, RibbonTrailFactory.FACTORY_TYPE_NAME );
-            }
             // Remove this node from its parent
             if ( node.Parent != null )
             {
