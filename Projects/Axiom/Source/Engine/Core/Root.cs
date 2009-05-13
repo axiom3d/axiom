@@ -282,10 +282,9 @@ namespace Axiom.Core
 
         #region MovableObjectFactory fields
 
-        public static long USER_TYPE_MASK_LIMIT = 0x04000000;
+        public static ulong USER_TYPE_MASK_LIMIT = 0x04000000;
 
-        protected readonly Dictionary<string, MovableObjectFactory> movableObjectFactoryMap =
-                new Dictionary<string, MovableObjectFactory>();
+        protected readonly MovableObjectFactoryMap movableObjectFactoryMap = new MovableObjectFactoryMap();
 
         protected BillboardChainFactory billboardChainFactory;
         protected BillboardSetFactory billboardSetFactory;
@@ -293,7 +292,7 @@ namespace Axiom.Core
         protected EntityFactory entityFactory;
         protected LightFactory lightFactory;
         protected ManualObjectFactory manualObjectFactory;
-        protected long nextMovableObjectTypeFlag;
+        protected ulong nextMovableObjectTypeFlag;
         protected RibbonTrailFactory ribbonTrailFactory;
 
         #endregion MovableObjectFactory fields
@@ -1322,7 +1321,7 @@ namespace Axiom.Core
         ///     This is done automatically if MovableObjectFactory.RequestTypeFlags
         ///	    returns true; don't call this manually unless you're sure you need to.
         /// </remarks>
-        public long NextMovableObjectTypeFlag()
+        public ulong NextMovableObjectTypeFlag()
         {
             if ( this.nextMovableObjectTypeFlag == USER_TYPE_MASK_LIMIT )
             {
@@ -1330,7 +1329,7 @@ namespace Axiom.Core
                         "Cannot allocate a type flag since all the available flags have been used." );
             }
 
-            long ret = this.nextMovableObjectTypeFlag;
+            ulong ret = this.nextMovableObjectTypeFlag;
             this.nextMovableObjectTypeFlag <<= 1;
             return ret;
         }
@@ -1427,6 +1426,14 @@ namespace Axiom.Core
             this.movableObjectFactoryMap.Add( fact.Type, fact );
 
             LogManager.Instance.Write( "Factory " + fact.GetType().Name + " registered for MovableObjectType '" + fact.Type + "'." );
+        }
+
+        public MovableObjectFactoryMap MovableObjectFactories
+        {
+            get
+            {
+                return movableObjectFactoryMap;
+            }
         }
 
         #endregion MovableObjectFactory methods

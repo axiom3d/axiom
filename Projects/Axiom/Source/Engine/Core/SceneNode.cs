@@ -145,6 +145,11 @@ namespace Axiom.Core
         /// </summary>
         protected bool visible = true;
 
+        /// <summary>
+        /// Is this node a current part of the scene graph?
+        /// </summary>
+        protected bool isInSceneGraph;
+
         #endregion
 
         #region Constructors
@@ -289,6 +294,57 @@ namespace Axiom.Core
             }
         }
 
+        /// <summary>
+        /// Determines whether this node is in the scene graph, i.e.
+        /// whether it's ultimate ancestor is the root scene node.
+        /// </summary>
+        public virtual bool IsInSceneGraph
+        {
+            get
+            {
+                return this.isInSceneGraph;
+            }
+            protected set
+            {
+                if ( value != this.isInSceneGraph )
+                {
+                    this.isInSceneGraph = value;
+                    // notify children
+                    foreach ( Node child in childNodes )
+                    {
+                        ((SceneNode)child).IsInSceneGraph = this.isInSceneGraph;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Only called by SceneManagers
+        /// </summary>
+        public void SetAsRootNode()
+        {
+           isInSceneGraph = true;
+        }
+
+        public new SceneNode Parent
+        {
+            get
+            {
+                return (SceneNode)base.Parent;
+            }
+            set
+            {
+                base.Parent = value;
+                if ( base.Parent != null )
+                {
+                    IsInSceneGraph = ((SceneNode)base.Parent).IsInSceneGraph;
+                }
+                else
+                {
+                    IsInSceneGraph = false;
+                }
+            }
+        }
         #endregion
 
         #region Methods
