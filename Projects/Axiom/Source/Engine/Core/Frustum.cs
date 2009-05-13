@@ -107,9 +107,9 @@ namespace Axiom.Core
 		/// </summary>
 		/// <remarks>
 		///		Field Of View (FOV) is the angle made between the camera's position, and the left &amp; right edges
-		///		of the 'screen' onto which the scene is projected. High values (90+) result in a wide-angle,
-		///		fish-eye kind of view, low values (30-) in a stretched, telescopic kind of view. Typical values
-		///		are between 45 and 60.
+		///		of the 'screen' onto which the scene is projected. High values (90+ Degrees) result in a wide-angle,
+		///		fish-eye kind of view, low values (30- Degrees) in a stretched, telescopic kind of view. Typical values
+		///		are between 45 and 60 Degrees.
 		///		<p/>
 		///		This value represents the HORIZONTAL field-of-view. The vertical field of view is calculated from
 		///		this depending on the dimensions of the viewport (they will only be the same if the viewport is square).
@@ -122,9 +122,9 @@ namespace Axiom.Core
 			}
 			set
 			{
-				_fieldOfView = Utility.DegreesToRadians( value );
+				_fieldOfView = value;
 				InvalidateFrustum();
-				InvalidateView();	//XEONX FIX: Now the IsObjectVisible() will work properly
+			    InvalidateView();
 			}
 		}
 

@@ -70,7 +70,7 @@ namespace Axiom.SceneManagers.Bsp
                 this.lightPosition = light.DerivedPosition;
                 this.lightOrientation = GetLightOrientation();
 
-                base.FieldOfView = light.SpotlightOuterAngle;
+                base.FieldOfView = Utility.DegreesToRadians( light.SpotlightOuterAngle );
                 base.Near = 1;
                 base.Far = light.AttenuationRange;
                 base.AspectRatio = 1;

@@ -654,6 +654,7 @@ namespace Axiom.Core
 
             // create the root scene node
             this.rootSceneNode = new SceneNode( this, "Root" );
+            this.rootSceneNode.SetAsRootNode();
             this.defaultRootNode = this.rootSceneNode;
 
             this.name = name;
@@ -2705,7 +2706,7 @@ namespace Axiom.Core
                 // Tell params about ORIGINAL fog
                 // Need to be able to override fixed function fog, but still have
                 // original fog parameters available to a shader that chooses to use
-                // TODO : autoParamDataSource.SetFog( fogMode, fogColor, fogDensity, fogStart, fogEnd );
+                // TODO: autoParamDataSource.SetFog( fogMode, fogColor, fogDensity, fogStart, fogEnd );
 
                 // The rest of the settings are the same no matter whether we use programs or not
 
@@ -5250,7 +5251,7 @@ namespace Axiom.Core
                     // Set ortho projection
                     texCam.ProjectionType = Projection.Orthographic;
                     // set easy FOV and near dist so that texture covers far dist
-                    texCam.FieldOfView = 90;
+                    texCam.FieldOfView = Utility.DegreesToRadians( 90 );
                     texCam.Near = shadowDist;
                     // TODO: Ogre doesn't include this line
                     texCam.Far = this.shadowDirLightExtrudeDist * 3;
@@ -5292,7 +5293,7 @@ namespace Axiom.Core
                     // Set perspective projection
                     texCam.ProjectionType = Projection.Perspective;
                     // set FOV slightly larger than the spotlight range to ensure coverage
-                    texCam.FieldOfView = light.SpotlightOuterAngle * 1.2f;
+                    texCam.FieldOfView = Utility.DegreesToRadians( light.SpotlightOuterAngle ) * 1.2f;
                     // set near clip the same as main camera, since they are likely
                     // to both reflect the nature of the scene
                     texCam.Near = camera.Near;
@@ -5307,7 +5308,7 @@ namespace Axiom.Core
                     // Set perspective projection
                     texCam.ProjectionType = Projection.Perspective;
                     // Use 120 degree FOV for point light to ensure coverage more area
-                    texCam.FieldOfView = 120;
+                    texCam.FieldOfView = Utility.DegreesToRadians( 120 );
                     // set near clip the same as main camera, since they are likely
                     // to both reflect the nature of the scene
                     texCam.Near = camera.Near;
@@ -7196,29 +7197,29 @@ namespace Axiom.Core
     /// </summary>
     public class DefaultAxisAlignedBoxRegionSceneQuery : AxisAlignedBoxRegionSceneQuery
     {
-        protected internal DefaultAxisAlignedBoxRegionSceneQuery( SceneManager creator )
-                : base( creator )
+        protected internal DefaultAxisAlignedBoxRegionSceneQuery(SceneManager creator)
+            : base(creator)
         {
         }
 
-        public override void Execute( ISceneQueryListener listener )
+        public override void Execute(ISceneQueryListener listener)
         {
             // TODO: BillboardSets? Will need per-billboard collision most likely
             // Entities only for now
-            MovableObjectCollection entityList = this.creator.GetMovableObjectCollection( EntityFactory.TypeName );
-            for ( int i = 0; i < entityList.Count; i++ )
+            MovableObjectCollection entityList = this.creator.GetMovableObjectCollection(EntityFactory.TypeName);
+            for (int i = 0; i < entityList.Count; i++)
             {
-                Entity entity = (Entity) entityList[ i ];
+                Entity entity = (Entity)entityList[i];
 
                 // skip if unattached or filtered out by query flags
-                if ( !entity.IsAttached || ( entity.QueryFlags & this.queryMask ) == 0 )
+                if (!entity.IsAttached || (entity.QueryFlags & this.queryMask) == 0)
                 {
                     continue;
                 }
 
-                if ( this.box.Intersects( entity.GetWorldBoundingBox() ) )
+                if (this.box.Intersects(entity.GetWorldBoundingBox()))
                 {
-                    listener.OnQueryResult( entity );
+                    listener.OnQueryResult(entity);
                 }
             }
         }
@@ -7229,38 +7230,38 @@ namespace Axiom.Core
     /// </summary>
     public class DefaultRaySceneQuery : RaySceneQuery
     {
-        protected internal DefaultRaySceneQuery( SceneManager creator )
-                : base( creator )
+        protected internal DefaultRaySceneQuery(SceneManager creator)
+            : base(creator)
         {
         }
 
-        public override void Execute( IRaySceneQueryListener listener )
+        public override void Execute(IRaySceneQueryListener listener)
         {
             // Note that becuase we have no scene partitioning, we actually
             // perform a complete scene search even if restricted results are
             // requested; smarter scene manager queries can utilise the paritioning 
             // of the scene in order to reduce the number of intersection tests 
             // required to fulfil the query
-            MovableObjectCollection entityList = this.creator.GetMovableObjectCollection( EntityFactory.TypeName );
+            MovableObjectCollection entityList = this.creator.GetMovableObjectCollection(EntityFactory.TypeName);
             // TODO: BillboardSets? Will need per-billboard collision most likely
             // Entities only for now
-            for ( int i = 0; i < entityList.Count; i++ )
+            for (int i = 0; i < entityList.Count; i++)
             {
-                Entity entity = (Entity) entityList[ i ];
+                Entity entity = (Entity)entityList[i];
 
                 // skip if unattached or filtered out by query flags
-                if ( !entity.IsAttached || ( entity.QueryFlags & this.queryMask ) == 0 )
+                if (!entity.IsAttached || (entity.QueryFlags & this.queryMask) == 0)
                 {
                     continue;
                 }
 
                 // test the intersection against the world bounding box of the entity
-                IntersectResult results = Utility.Intersects( this.ray, entity.GetWorldBoundingBox() );
+                IntersectResult results = Utility.Intersects(this.ray, entity.GetWorldBoundingBox());
 
                 // if the results came back positive, fire the event handler
-                if ( results.Hit == true )
+                if (results.Hit == true)
                 {
-                    listener.OnQueryResult( entity, results.Distance );
+                    listener.OnQueryResult(entity, results.Distance);
                 }
             }
         }
@@ -7271,24 +7272,24 @@ namespace Axiom.Core
     /// </summary>
     public class DefaultSphereRegionSceneQuery : SphereRegionSceneQuery
     {
-        protected internal DefaultSphereRegionSceneQuery( SceneManager creator )
-                : base( creator )
+        protected internal DefaultSphereRegionSceneQuery(SceneManager creator)
+            : base(creator)
         {
         }
 
-        public override void Execute( ISceneQueryListener listener )
+        public override void Execute(ISceneQueryListener listener)
         {
             // TODO: BillboardSets? Will need per-billboard collision most likely
             // Entities only for now
-            MovableObjectCollection entityList = this.creator.GetMovableObjectCollection( EntityFactory.TypeName );
+            MovableObjectCollection entityList = this.creator.GetMovableObjectCollection(EntityFactory.TypeName);
             Sphere testSphere = new Sphere();
 
-            for ( int i = 0; i < entityList.Count; i++ )
+            for (int i = 0; i < entityList.Count; i++)
             {
-                Entity entity = (Entity) entityList[ i ];
+                Entity entity = (Entity)entityList[i];
 
                 // skip if unattached or filtered out by query flags
-                if ( !entity.IsAttached || ( entity.QueryFlags & this.queryMask ) == 0 )
+                if (!entity.IsAttached || (entity.QueryFlags & this.queryMask) == 0)
                 {
                     continue;
                 }
@@ -7297,9 +7298,9 @@ namespace Axiom.Core
                 testSphere.Radius = entity.BoundingRadius;
 
                 // if the results came back positive, fire the event handler
-                if ( this.sphere.Intersects( testSphere ) )
+                if (this.sphere.Intersects(testSphere))
                 {
-                    listener.OnQueryResult( entity );
+                    listener.OnQueryResult(entity);
                 }
             }
         }
@@ -7310,33 +7311,33 @@ namespace Axiom.Core
     /// </summary>
     public class DefaultPlaneBoundedVolumeListSceneQuery : PlaneBoundedVolumeListSceneQuery
     {
-        protected internal DefaultPlaneBoundedVolumeListSceneQuery( SceneManager creator )
-                : base( creator )
+        protected internal DefaultPlaneBoundedVolumeListSceneQuery(SceneManager creator)
+            : base(creator)
         {
         }
 
-        public override void Execute( ISceneQueryListener listener )
+        public override void Execute(ISceneQueryListener listener)
         {
             // Entities only for now
-            MovableObjectCollection entityList = this.creator.GetMovableObjectCollection( EntityFactory.TypeName );
-            for ( int i = 0; i < entityList.Count; i++ )
+            MovableObjectCollection entityList = this.creator.GetMovableObjectCollection(EntityFactory.TypeName);
+            for (int i = 0; i < entityList.Count; i++)
             {
-                Entity entity = (Entity) entityList[ i ];
+                Entity entity = (Entity)entityList[i];
 
                 // skip if unattached or filtered out by query flags
-                if ( !entity.IsAttached || ( entity.QueryFlags & this.queryMask ) == 0 )
+                if (!entity.IsAttached || (entity.QueryFlags & this.queryMask) == 0)
                 {
                     continue;
                 }
 
-                for ( int v = 0; v < this.volumes.Count; v++ )
+                for (int v = 0; v < this.volumes.Count; v++)
                 {
-                    PlaneBoundedVolume volume = (PlaneBoundedVolume) this.volumes[ v ];
+                    PlaneBoundedVolume volume = (PlaneBoundedVolume)this.volumes[v];
                     // Do AABB / plane volume test
-                    if ( ( entity.QueryFlags & this.queryMask ) != 0
-                         && volume.Intersects( entity.GetWorldBoundingBox() ) )
+                    if ((entity.QueryFlags & this.queryMask) != 0
+                         && volume.Intersects(entity.GetWorldBoundingBox()))
                     {
-                        listener.OnQueryResult( entity );
+                        listener.OnQueryResult(entity);
                         break;
                     }
                 }
@@ -7349,50 +7350,50 @@ namespace Axiom.Core
     /// </summary>
     public class DefaultIntersectionSceneQuery : IntersectionSceneQuery
     {
-        protected internal DefaultIntersectionSceneQuery( SceneManager creator )
-                : base( creator )
+        protected internal DefaultIntersectionSceneQuery(SceneManager creator)
+            : base(creator)
         {
             // No world geometry results supported
-            this.AddWorldFragmentType( WorldFragmentType.None );
+            this.AddWorldFragmentType(WorldFragmentType.None);
         }
 
-        public override void Execute( IIntersectionSceneQueryListener listener )
+        public override void Execute(IIntersectionSceneQueryListener listener)
         {
             // TODO: BillboardSets? Will need per-billboard collision most likely
             // Entities only for now
-            MovableObjectCollection entityList = this.creator.GetMovableObjectCollection( EntityFactory.TypeName );
+            MovableObjectCollection entityList = this.creator.GetMovableObjectCollection(EntityFactory.TypeName);
             int numEntities = entityList.Count;
-            for ( int a = 0; a < ( numEntities - 1 ); a++ )
+            for (int a = 0; a < (numEntities - 1); a++)
             {
-                Entity aent = (Entity) entityList[ a ];
+                Entity aent = (Entity)entityList[a];
 
                 // skip if unattached or filtered out by query flags
-                if ( !aent.IsAttached || ( aent.QueryFlags & this.queryMask ) == 0 )
+                if (!aent.IsAttached || (aent.QueryFlags & this.queryMask) == 0)
                 {
                     continue;
                 }
 
                 // Loop b from a+1 to last
                 int b = a;
-                for ( ++b; b != ( numEntities - 1 ); ++b )
+                for (++b; b != (numEntities - 1); ++b)
                 {
-                    Entity bent = (Entity) entityList[ b ];
+                    Entity bent = (Entity)entityList[b];
 
                     // skip if unattached or filtered out by query flags
-                    if ( !bent.IsAttached || ( bent.QueryFlags & this.queryMask ) == 0 )
+                    if (!bent.IsAttached || (bent.QueryFlags & this.queryMask) == 0)
                     {
                         continue;
                     }
 
                     // Apply mask to b (both must pass)
-                    if ( ( bent.QueryFlags & this.queryMask ) != 0 )
+                    if ((bent.QueryFlags & this.queryMask) != 0)
                     {
                         AxisAlignedBox box1 = aent.GetWorldBoundingBox();
                         AxisAlignedBox box2 = bent.GetWorldBoundingBox();
 
-                        if ( box1.Intersects( box2 ) )
+                        if (box1.Intersects(box2))
                         {
-                            listener.OnQueryResult( aent, bent );
+                            listener.OnQueryResult(aent, bent);
                         }
                     }
                 }
