@@ -6888,9 +6888,10 @@ namespace Axiom.Core
             {
                 throw new AxiomException( "The object with the name " + name + " is not in the list." );
             }
-
             MovableObjectFactory factory = Root.Instance.GetMovableObjectFactory( typeName );
-            factory.DestroyInstance( objectMap[ name ] );
+            MovableObject item = objectMap[ name ];
+            factory.DestroyInstance( item );
+            objectMap.Remove( item );
         }
 
         public void DestroyAllMovableObjectsByType( string typeName )
