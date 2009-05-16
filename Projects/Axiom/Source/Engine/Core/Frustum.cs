@@ -240,11 +240,29 @@ namespace Axiom.Core
 
 		#endregion AspectRatio Property
 
-		///<summary>
+        #region FrustumOffset Property
+        ///<summary>
 		/// Off-axis frustum center offset - default (0.0, 0.0)
 		///</summary>
 		protected Vector2 _frustumOffset;
-		///<summary>
+        ///<summary>
+        /// Off-axis frustum center offset - default (0.0, 0.0)
+        ///</summary>
+        public Vector2 FrustumOffset
+	    {
+	        get
+	        {
+	            return _frustumOffset;
+	        } 
+            set
+	        {
+	            _frustumOffset = value; 
+                this.UpdateFrustum();
+	        }
+        }
+        #endregion FrustumOffset Property
+
+        ///<summary>
 		/// Focal length of frustum (for stereo rendering, defaults to 1.0)
 		///</summary> 
 		protected float _focalLength;
