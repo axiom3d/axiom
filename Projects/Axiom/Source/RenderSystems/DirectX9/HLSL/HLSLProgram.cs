@@ -131,7 +131,17 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			// check for errors
 			if ( errors != null && errors.Length > 0 )
 			{
-				throw new AxiomException( "HLSL: Unable to compile high level shader {0}:\n{1}", Name, errors );
+                if ( microcode != null)
+                {
+                    if(LogManager.Instance != null )
+                    {
+                        LogManager.Instance.Write("HLSL: Warnings while compile high level shader {0}:\n{1}", Name, errors);
+                    }
+                }
+                else
+                {
+                    throw new AxiomException("HLSL: Unable to compile high level shader {0}:\n{1}", Name, errors);                    
+                }
 			}
 		}
 
