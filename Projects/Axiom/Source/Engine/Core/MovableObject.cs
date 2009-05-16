@@ -690,6 +690,7 @@ namespace Axiom.Core
             }
         }
 
+
         /// <summary>
         ///     Does this factory require the allocation of a 'type flag', used to 
         ///	    selectively include / exclude this type from scene queries?
@@ -780,8 +781,9 @@ namespace Axiom.Core
         /// <returns>A new MovableObject</returns>
         public MovableObject CreateInstance( string name, SceneManager manager )
         {
-            return this.CreateInstance( name, null, null );
+            return this.CreateInstance( name, manager, null );
         }
+
     }
 
     #endregion MovableObjectFactory

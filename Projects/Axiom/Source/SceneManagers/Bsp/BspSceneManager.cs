@@ -34,7 +34,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Data;
 using System.IO;
 using System.Collections;
 using System.Runtime.InteropServices;
@@ -50,6 +49,8 @@ using Axiom.Math.Collections;
 
 namespace Axiom.SceneManagers.Bsp
 {
+    using System.Data;
+
     /// <summary>
     ///		Specialisation of the SceneManager class to deal with indoor scenes based on a BSP tree.
     ///	</summary>
@@ -325,7 +326,7 @@ namespace Axiom.SceneManagers.Bsp
         /// <param name="position">The position at which to evaluate the list of lights</param>
         /// <param name="radius">The bounding radius to test</param>
         /// <param name="destList">List to be populated with ordered set of lights; will be cleared by this method before population.</param>
-        protected override void PopulateLightList( Vector3 position, float radius, LightList destList )
+        public override void PopulateLightList( Vector3 position, float radius, LightList destList )
         {
             BspNode positionNode = level.FindLeaf( position );
             BspNode[] lightNodes = new BspNode[ Lights.Count ];
@@ -518,7 +519,7 @@ namespace Axiom.SceneManagers.Bsp
         }
 
         /// <summary>
-        ///		Internal method for tagging <see cref="Plugin_BSPSceneManager.BspNode"/'s with objects which intersect them.
+        ///		Internal method for tagging <see cref="Plugin_BSPSceneManager.BspNode"/>'s with objects which intersect them.
         /// </summary>
         internal void NotifyObjectMoved( MovableObject obj, Vector3 pos )
         {

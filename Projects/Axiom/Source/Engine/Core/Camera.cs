@@ -780,11 +780,37 @@ namespace Axiom.Core
 
 		#endregion UseRenderingQueue Property
 
-		#endregion Fields and Properties
+	    private Frustum cullFrustum;
 
-		#region Constructors
+        /// <summary>
+        ///     Tells the camera to use a separate Frustum instance to perform culling.
+        /// </summary>
+        /// <remarks>
+		/// 	By calling this method, you can tell the camera to perform culling
+		/// 	against a different frustum to it's own. This is mostly useful for
+		/// 	debug cameras that allow you to show the culling behaviour of another
+		///	    camera, or a manual frustum instance. 
+		///     This can either be a manual Frustum instance (which you can attach 
+		///     to scene nodes like any other MovableObject), or another camera.
+		///     If you pass null to this property it reverts the camera to normal behaviour.
+        /// </remarks>
+        public Frustum CullFrustum
+        {
+            get
+            {
+                return cullFrustum;
+            }
+            set
+            {
+                cullFrustum = value;
+            }
+        }
 
-		public Camera( string name, SceneManager sceneManager )
+        #endregion Fields and Properties
+
+        #region Constructors
+
+        public Camera( string name, SceneManager sceneManager )
 			: base()
 		{
 			// Init camera location & direction
@@ -894,13 +920,13 @@ namespace Axiom.Core
 				}
 
 				if ( IsReflected &&
-					 _linkedReflectionPlane != null &&
-					 _lastLinkedReflectionPlane != _linkedReflectionPlane.DerivedPlane )
+					 linkedReflectionPlane != null &&
+					 lastLinkedReflectionPlane != linkedReflectionPlane.DerivedPlane )
 				{
 
-					ReflectionPlane = _linkedReflectionPlane.DerivedPlane;
+					ReflectionPlane = linkedReflectionPlane.DerivedPlane;
 					ReflectionMatrix = Utility.BuildReflectionMatrix( ReflectionPlane );
-					_lastLinkedReflectionPlane = _linkedReflectionPlane.DerivedPlane;
+					lastLinkedReflectionPlane = linkedReflectionPlane.DerivedPlane;
 					_recalculateView = true;
 					recalculateWindow = true;
 				}
@@ -928,13 +954,203 @@ namespace Axiom.Core
 
 				return _recalculateView;
 			}
-		}
+        }
 
-		#endregion Frustum Members
+        #region Custom Frustum culling implementation
 
-		#region SceneObject Implementation
+        new public bool IsObjectVisible(AxisAlignedBox box)
+        {
+            if(null != CullFrustum)
+            {
+                return CullFrustum.IsObjectVisible(box);
+            }
+            else
+            {
+                return base.IsObjectVisible(box);
+            }
+        }
 
-		public override void UpdateRenderQueue( RenderQueue queue )
+        new public bool IsObjectVisible(AxisAlignedBox box, out FrustumPlane culledBy)
+        {
+            if (null != CullFrustum)
+            {
+                return CullFrustum.IsObjectVisible(box, out culledBy);
+            }
+            else
+            {
+                return base.IsObjectVisible(box, out culledBy);
+            }
+        }
+
+        new public bool IsObjectVisible(Sphere sphere)
+        {
+            if (null != CullFrustum)
+            {
+                return CullFrustum.IsObjectVisible(sphere);
+            }
+            else
+            {
+                return base.IsObjectVisible(sphere);
+            }
+        }
+
+        new public bool IsObjectVisible(Sphere sphere, out FrustumPlane culledBy)
+        {
+            if (null != CullFrustum)
+            {
+                return CullFrustum.IsObjectVisible(sphere, out culledBy);
+            }
+            else
+            {
+                return base.IsObjectVisible(sphere, out culledBy);
+            }
+        }
+
+        new public bool IsObjectVisible(Vector3 vertex)
+        {
+            if (null != CullFrustum)
+            {
+                return CullFrustum.IsObjectVisible(vertex);
+            }
+            else
+            {
+                return base.IsObjectVisible(vertex);
+            }
+        }
+
+        new public bool IsObjectVisible(Vector3 vertex, out FrustumPlane culledBy)
+        {
+            if (null != CullFrustum)
+            {
+                return CullFrustum.IsObjectVisible(vertex, out culledBy);
+            }
+            else
+            {
+                return base.IsObjectVisible(vertex, out culledBy);
+            }
+        }
+
+        new public Vector3[] WorldSpaceCorners
+        {
+            get
+            {
+                return null != CullFrustum ? CullFrustum.WorldSpaceCorners : base.WorldSpaceCorners;
+            }
+        }
+
+        new public Plane[] FrustumPlanes
+        {
+            get
+            {
+                UpdateFrustumPlanes();
+                if (null != CullFrustum)
+                {
+                    return CullFrustum.FrustumPlanes;
+                }
+                else
+                {
+                    return base.FrustumPlanes;
+                }
+            }
+        }
+
+        public override bool ProjectSphere(Sphere sphere, out float left, out float top, out float right, out float bottom)
+        {
+            if (null != CullFrustum)
+            {
+                return CullFrustum.ProjectSphere(sphere, out left, out top, out right, out bottom);
+            }
+            else
+            {
+                return base.ProjectSphere(sphere, out left, out top, out right, out bottom);
+            }
+        }
+
+        public override float Near
+        {
+            get
+            {
+                if (null != CullFrustum)
+                {
+                    return CullFrustum.Near;
+                }
+                else
+                {
+                    return base.Near;
+                }
+            }
+            set
+            {
+                if (null != CullFrustum)
+                {
+                    CullFrustum.Near = value;
+                }
+                else
+                {
+                    base.Near = value;
+                }
+            }
+        }
+
+        public override float Far
+        {
+            get
+            {
+                if (null != CullFrustum)
+                {
+                    return CullFrustum.Near;
+                }
+                else
+                {
+                    return base.Far;
+                }
+            }
+            set
+            {
+                if (null != CullFrustum)
+                {
+                    CullFrustum.Far = value;
+                }
+                else
+                {
+                    base.Far = value;
+                }
+            }
+        }
+
+        public override Matrix4 ViewMatrix
+        {
+            get
+            {
+                if (null != CullFrustum)
+                {
+                    return CullFrustum.ViewMatrix;
+                }
+                else
+                {
+                    return base.ViewMatrix;
+                }
+            }
+            set
+            {
+                if (null != CullFrustum)
+                {
+                    CullFrustum.ViewMatrix = value;
+                }
+                else
+                {
+                    base.ViewMatrix = value;
+                }
+            }
+        }
+
+        #endregion Custom Frustum culling implementation
+
+        #endregion Frustum Members
+
+        #region SceneObject Implementation
+
+        public override void UpdateRenderQueue( RenderQueue queue )
 		{
 			// Do nothing
 		}
@@ -961,7 +1177,7 @@ namespace Axiom.Core
 			}
 		}
 
-		public override void NotifyCurrentCamera( Axiom.Core.Camera camera )
+	    public override void NotifyCurrentCamera( Axiom.Core.Camera camera )
 		{
 			// Do nothing
 		}
