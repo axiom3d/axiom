@@ -10,9 +10,7 @@
 	<FilePath type="Folder" src="../../../../Media/Materials"/>
 	<FilePath type="Folder" src="../../../../Media/Overlays"/>
 	<FilePath type="Folder" src="../../../../Media/GpuPrograms"/>
-	<FilePath type="Folder" src="../../../../Media/Gui/CeGui.ImageSet.Suave"/>
-	<FilePath type="Folder" src="../../../../Media/Gui/CeGui.ImageSet.Taharez"/>
-	<FilePath type="Folder" src="../../../../Media/Gui/CeGui.ImageSet.Windows"/>
+	<FilePath type="Folder" src="../../../../Media/PCZAppMedia"/>
 	<FilePath type="ZipFile" src="../../../../Media/Archives/Fresnel.zip"/>
 	<FilePath type="ZipFile" src="../../../../Media/Textures/SkyBoxes.zip"/>
 	<FilePath type="ZipFile" src="../../../../Media/Archives/chiropteraDM.zip"/>

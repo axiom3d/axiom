@@ -61,11 +61,11 @@ namespace Axiom.Demos
             scene.AmbientLight = ColorEx.Black;
 
             // TODO: Check based on caps
-            int currentAtheneMaterial = 1;
+            int currentAtheneMaterial =1;
 
             // fixed light, dim
-            sunLight = scene.CreateLight( "SunLight" );
-            sunLight.Type = LightType.Spotlight;
+            sunLight = scene.CreateLight("SunLight");
+            sunLight.Type = LightType.Directional ;
             sunLight.Position = new Vector3( 1000, 1250, 500 );
             sunLight.SetSpotlightRange( 30, 50 );
             Vector3 dir = -sunLight.Position;
@@ -75,7 +75,7 @@ namespace Axiom.Demos
             sunLight.Specular = new ColorEx( 0.9f, 0.9f, 1 );
 
             // point light, movable, reddish
-            light = scene.CreateLight( "Light2" );
+            light =  scene.CreateLight("Light2");
             light.Diffuse = minLightColor;
             light.Specular = ColorEx.White;
             light.SetAttenuation( 8000, 1, .0005f, 0 );
@@ -195,10 +195,10 @@ namespace Axiom.Demos
                 // In D3D, use a 1024x1024 shadow texture
                 scene.SetShadowTextureSettings( 1024, 2 );
             }
-            else
+            else if (Root.Instance.RenderSystem.Name.StartsWith("Axiom Xna"))
             {
                 // Use 512x512 texture in GL since we can't go higher than the window res
-                scene.SetShadowTextureSettings( 512, 2 );
+                scene.SetShadowTextureSettings( 1024, 2 );
             }
 
             scene.ShadowColor = new ColorEx( 0.5f, 0.5f, 0.5f );
@@ -289,7 +289,7 @@ namespace Axiom.Demos
                 case ShadowTechnique.TextureModulative:
                     // Change fixed point light to spotlight
                     // Fixed light, dim
-                    sunLight.CastShadows = true;
+                    //sunLight.CastShadows = true;
 
                     light.Type = LightType.Spotlight;
                     light.Direction = Vector3.NegativeUnitZ;

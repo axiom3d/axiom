@@ -180,7 +180,7 @@ namespace Axiom.Demos
 
             // detach and remove entity
             objectNode.DetachAllObjects();
-            scene.RemoveEntity( objectEntity );
+            scene.RemoveEntity(objectEntity);
 
             // unload current cloned mesh
             MeshManager.Instance.Unload( clonedMesh );
@@ -194,7 +194,7 @@ namespace Axiom.Demos
         /// <param name="meshName"></param>
         private void PrepareEntity( string meshName )
         {
-            if ( objectEntity != null )
+            if ( objectEntity != null)
             {
                 ClearEntity();
             }

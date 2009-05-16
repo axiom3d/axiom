@@ -286,11 +286,10 @@ namespace Axiom.Core
 
         protected readonly MovableObjectFactoryMap movableObjectFactoryMap = new MovableObjectFactoryMap();
 
-        protected BillboardChainFactory billboardChainFactory;
-        protected BillboardSetFactory billboardSetFactory;
-
         protected EntityFactory entityFactory;
         protected LightFactory lightFactory;
+        protected BillboardSetFactory billboardSetFactory;
+        protected BillboardChainFactory billboardChainFactory;
         protected ManualObjectFactory manualObjectFactory;
         protected ulong nextMovableObjectTypeFlag;
         protected RibbonTrailFactory ribbonTrailFactory;
@@ -340,9 +339,9 @@ namespace Axiom.Core
             get
             {
                 AssemblyCopyrightAttribute attribute =
-                        (AssemblyCopyrightAttribute)
+                        ( AssemblyCopyrightAttribute )
                         Attribute.GetCustomAttribute( Assembly.GetExecutingAssembly(),
-                                                      typeof ( AssemblyCopyrightAttribute ),
+                                                      typeof( AssemblyCopyrightAttribute ),
                                                       false );
 
                 if ( attribute != null )
@@ -469,7 +468,7 @@ namespace Axiom.Core
             get
             {
                 return
-                        (int)
+                        ( int )
                         ( ( this.microsecondsPerFrame == 0 )
                                   ? this.microsecondsPerFrame
                                   : ( 1000000.0f / this.microsecondsPerFrame ) );
@@ -478,8 +477,8 @@ namespace Axiom.Core
             {
                 if ( value != 0 )
                 {
-                    this.microsecondsPerTick = 1000000.0f / (float) Stopwatch.Frequency;
-                    this.microsecondsPerFrame = 1000000.0f / (float) value;
+                    this.microsecondsPerTick = 1000000.0f / ( float ) Stopwatch.Frequency;
+                    this.microsecondsPerFrame = 1000000.0f / ( float ) value;
                 }
                 else // Disable MaxFPS
                 {
@@ -733,6 +732,9 @@ namespace Axiom.Core
 
             new ControllerManager();
 
+
+            PlatformInformation.Log( LogManager.Instance.DefaultLog );
+
             // initialize the current render system
             this.autoWindow = this.activeRenderSystem.Initialize( autoCreateWindow, windowTitle );
 
@@ -864,14 +866,14 @@ namespace Axiom.Core
             if ( this.microsecondsPerFrame != 0 )
             {
                 long current = this.CaptureCurrentTime();
-                long diff = (long) Utility.Abs( current - this.lastFrameStartTime );
+                long diff = ( long ) Utility.Abs( current - this.lastFrameStartTime );
                 float microsecondsSinceLastFrame = diff * this.microsecondsPerTick;
                 float mdiff = this.microsecondsPerFrame - microsecondsSinceLastFrame;
                 // If the difference is greater than 500usec and less
                 // than 1000 ms, sleep
                 if ( mdiff > 500f && mdiff < 1000000f )
                 {
-                    Thread.Sleep( (int) ( Utility.Min( mdiff / 1000f, 200f ) ) );
+                    Thread.Sleep( ( int ) ( Utility.Min( mdiff / 1000f, 200f ) ) );
                     this.lastFrameStartTime = this.CaptureCurrentTime();
                 }
                 else
@@ -1141,7 +1143,7 @@ namespace Axiom.Core
 
             if ( type == FrameEventType.Start )
             {
-                result = (float) ( time - this.lastStartTime ) / 1000;
+                result = ( float ) ( time - this.lastStartTime ) / 1000;
 
                 // update the last start time before the render targets are rendered
                 this.lastStartTime = time;
@@ -1156,7 +1158,7 @@ namespace Axiom.Core
                 {
                     // Is It Time To Update Our Calculations?
                     // Calculate New Framerate
-                    this.currentFPS = (float) this.frameCount / (float) ( time - this.lastCalculationTime ) * 1000f;
+                    this.currentFPS = ( float ) this.frameCount / ( float ) ( time - this.lastCalculationTime ) * 1000f;
 
                     // calculate the averge framerate
                     if ( this.averageFPS == 0 )
@@ -1169,7 +1171,7 @@ namespace Axiom.Core
                     }
 
                     // Is The New Framerate A New Low?
-                    if ( this.currentFPS < this.lowestFPS || (int) this.lowestFPS == 0 )
+                    if ( this.currentFPS < this.lowestFPS || ( int ) this.lowestFPS == 0 )
                     {
                         // Set It To The New Low
                         this.lowestFPS = this.currentFPS;
@@ -1189,7 +1191,7 @@ namespace Axiom.Core
                     this.frameCount = 0;
                 }
 
-                result = (float) ( time - this.lastEndTime ) / 1000;
+                result = ( float ) ( time - this.lastEndTime ) / 1000;
 
                 this.lastEndTime = time;
             }
@@ -1382,6 +1384,12 @@ namespace Axiom.Core
                 this.movableObjectFactoryMap.Remove( fact.Type );
             }
         }
+
+        /** Allocate the next MovableObject type flag.
+        @remarks
+            This is done automatically if MovableObjectFactory::requestTypeFlags
+            returns true; don't call this manually unless you're sure you need to.
+        */
 
         /// <summary>
         ///     Register a new MovableObjectFactory which will create new MovableObject

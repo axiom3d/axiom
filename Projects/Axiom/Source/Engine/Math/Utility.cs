@@ -1079,7 +1079,12 @@ namespace Axiom.Math
 			v1 = v2;
 			v2 = temp;
 		}
-	}
+
+        public static Real Sqr( Real number )
+        {
+            return number * number;
+        }
+    }
 
     #region Return result structures
 

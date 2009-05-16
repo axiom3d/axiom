@@ -102,7 +102,7 @@ namespace Axiom.Demos
             camera.SetAutoTracking( false, headNode ); // Autotrack the head, but it isn't working right
 
             //scene.SetFog(FogMode.Exp, ColorEx.White, 0.000020f); // add Fog for fun, cuz we can
-
+            
             // show overlay
             waterOverlay = (Overlay)OverlayManager.Instance.GetByName( "Example/WaterOverlay" );
             waterOverlay.Show();
@@ -189,7 +189,7 @@ namespace Axiom.Demos
             //this.scene.ClearLights();
             lightNode.Lights.Clear();
             lightSet.Clear();
-
+                      
             // Set next Light Mode
             if ( mode == "next" )
             {
@@ -200,6 +200,7 @@ namespace Axiom.Demos
             switch ( lightMode )
             {
                 case "SunLight":
+                    scene.RemoveAllLights();
                     // Add Sun - Up and to the Left
                     for ( int i = 0; i < 3; i++ )
                     {

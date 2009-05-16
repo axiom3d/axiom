@@ -3,24 +3,24 @@
   <WorldTexture>terrain_texture.jpg</WorldTexture>
   <DetailTexture>terrain_detail.jpg</DetailTexture>
   <DetailTile>3</DetailTile>
-  <TileSize>17</TileSize>
+  <TileSize>65</TileSize>
   <PageSize>513</PageSize>
-  <PageWorldX>0</PageWorldX>
-  <MaxHeight>10</MaxHeight>
-  <PageWorldZ>0</PageWorldZ>
-  <VertexColours>no</VertexColours>
+  <PageWorldX>1500</PageWorldX>
+  <MaxHeight>100</MaxHeight>
+  <PageWorldZ>1500</PageWorldZ>
+  <VertexColours>yes</VertexColours>
   <UseTriStrips>no</UseTriStrips>
-  <VertexProgramMorph>no</VertexProgramMorph>
-  <LODMorphStart></LODMorphStart>
+  <VertexProgramMorph>yes</VertexProgramMorph>
+  <LODMorphStart>0.2</LODMorphStart>
   <CustomMaterialName></CustomMaterialName>
   <MorphLODFactorParamName></MorphLODFactorParamName>
   <MorphLODFactorParamIndex></MorphLODFactorParamIndex>
   <PageSource>Heightmap</PageSource>
   <HeightmapImage>terrain2.png</HeightmapImage>
   <MaxPixelError>8</MaxPixelError>
-  <ScaleX>1</ScaleX>
-  <ScaleY>0.2</ScaleY>
-  <ScaleZ>1</ScaleZ>
+  <ScaleX>10</ScaleX>
+  <ScaleY>10</ScaleY>
+  <ScaleZ>10</ScaleZ>
   <MaxMipMapLevel>5</MaxMipMapLevel>
   <VertexNormals>no</VertexNormals>
 </TerrainConfig>

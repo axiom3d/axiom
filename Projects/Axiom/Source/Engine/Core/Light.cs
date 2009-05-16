@@ -169,7 +169,7 @@ namespace Axiom.Core
         ///		Default constructor.
         /// </summary>
         public Light()
-                : this( "" )
+            : this( "" )
         {
         }
 
@@ -460,6 +460,21 @@ namespace Axiom.Core
         }
 
 
+        /// <summary>
+        ///    Used for sorting.   *** Internal for "friend" access to SceneManager. ***
+        /// </summary>
+        public float TempSquaredDist
+        {
+            get
+            {
+                return tempSquaredDist;
+            }
+            set
+            {
+                tempSquaredDist = value;
+            }
+        }
+
         #endregion
 
         #region Methods
@@ -512,14 +527,14 @@ namespace Axiom.Core
             if ( this.type == LightType.Directional )
             {
                 // negate direction as 'position'
-                vec = -(Vector4) this.DerivedDirection;
+                vec = -( Vector4 ) this.DerivedDirection;
 
                 // infinite distance
                 vec.w = 0.0f;
             }
             else
             {
-                vec = (Vector4) this.DerivedPosition;
+                vec = ( Vector4 ) this.DerivedPosition;
                 vec.w = 1.0f;
             }
 
@@ -700,7 +715,7 @@ namespace Axiom.Core
             Vector3 lightPos3 = new Vector3( lightPos.x, lightPos.y, lightPos.z );
             Vector3 lightDir;
 
-            Vector3[] clockwiseVerts = new Vector3[4];
+            Vector3[] clockwiseVerts = new Vector3[ 4 ];
 
             Matrix4 eyeToWorld = camera.ViewMatrix.Inverse();
 
@@ -713,7 +728,7 @@ namespace Axiom.Core
 
             for ( int n = 0; n < 6; n++ )
             {
-                FrustumPlane frustumPlane = (FrustumPlane) n;
+                FrustumPlane frustumPlane = ( FrustumPlane ) n;
 
                 // skip far plane if infinite view frustum
                 if ( infiniteViewDistance && ( frustumPlane == FrustumPlane.Far ) )
@@ -735,7 +750,7 @@ namespace Axiom.Core
                     // facing into the volume we create
                     this.frustumClipVolumes.Add( new PlaneBoundedVolume() );
                     PlaneBoundedVolume vol =
-                            (PlaneBoundedVolume) this.frustumClipVolumes[ this.frustumClipVolumes.Count - 1 ];
+                            ( PlaneBoundedVolume ) this.frustumClipVolumes[ this.frustumClipVolumes.Count - 1 ];
 
                     switch ( frustumPlane )
                     {
@@ -883,7 +898,7 @@ namespace Axiom.Core
             protected Light light;
 
             public LightAttenuationConstantValue( Light light )
-                    : base( AnimableType.Float )
+                : base( AnimableType.Float )
             {
                 this.light = light;
                 this.SetAsBaseValue( 0.0f );
@@ -914,7 +929,7 @@ namespace Axiom.Core
             protected Light light;
 
             public LightAttenuationLinearValue( Light light )
-                    : base( AnimableType.Float )
+                : base( AnimableType.Float )
             {
                 this.light = light;
                 this.SetAsBaseValue( 0.0f );
@@ -945,7 +960,7 @@ namespace Axiom.Core
             protected Light light;
 
             public LightAttenuationQuadraticValue( Light light )
-                    : base( AnimableType.Float )
+                : base( AnimableType.Float )
             {
                 this.light = light;
                 this.SetAsBaseValue( 0.0f );
@@ -976,7 +991,7 @@ namespace Axiom.Core
             protected Light light;
 
             public LightAttenuationRangeValue( Light light )
-                    : base( AnimableType.Float )
+                : base( AnimableType.Float )
             {
                 this.light = light;
                 this.SetAsBaseValue( 0.0f );
@@ -1007,7 +1022,7 @@ namespace Axiom.Core
             protected Light light;
 
             public LightAttenuationValue( Light light )
-                    : base( AnimableType.Vector4 )
+                : base( AnimableType.Vector4 )
             {
                 this.light = light;
             }
@@ -1038,7 +1053,7 @@ namespace Axiom.Core
             protected Light light;
 
             public LightDiffuseColorValue( Light light )
-                    : base( AnimableType.ColorEx )
+                : base( AnimableType.ColorEx )
             {
                 this.light = light;
                 this.SetAsBaseValue( ColorEx.Black );
@@ -1070,7 +1085,7 @@ namespace Axiom.Core
             protected Light light;
 
             public LightSpecularColorValue( Light light )
-                    : base( AnimableType.ColorEx )
+                : base( AnimableType.ColorEx )
             {
                 this.light = light;
                 this.SetAsBaseValue( ColorEx.Black );
@@ -1102,7 +1117,7 @@ namespace Axiom.Core
             protected Light light;
 
             public LightSpotlightFalloffValue( Light light )
-                    : base( AnimableType.Float )
+                : base( AnimableType.Float )
             {
                 this.light = light;
             }
@@ -1132,7 +1147,7 @@ namespace Axiom.Core
             protected Light light;
 
             public LightSpotlightInnerValue( Light light )
-                    : base( AnimableType.Float )
+                : base( AnimableType.Float )
             {
                 this.light = light;
             }
@@ -1162,7 +1177,7 @@ namespace Axiom.Core
             protected Light light;
 
             public LightSpotlightOuterValue( Light light )
-                    : base( AnimableType.Float )
+                : base( AnimableType.Float )
             {
                 this.light = light;
             }
@@ -1289,7 +1304,7 @@ namespace Axiom.Core
 
                 if ( param.ContainsKey( "diffuseColour" ) )
                 {
-                    light.Diffuse = ColorEx.Parse_0_255_String( param[ "diffuseColour"].ToString() );
+                    light.Diffuse = ColorEx.Parse_0_255_String( param[ "diffuseColour" ].ToString() );
                 }
 
                 if ( param.ContainsKey( "specularColour" ) )
@@ -1315,28 +1330,28 @@ namespace Axiom.Core
                 // TODO: Add PowerScale Property to Light
                 if ( param.ContainsKey( "powerScale" ) )
                 {
-                    light.PowerScale = (float)Convert.ToDouble( param[ "powerScale" ].ToString() );
+                    light.PowerScale = ( float ) Convert.ToDouble( param[ "powerScale" ].ToString() );
                 }
                 // TODO: Add ShadowFarDistance to Light
                 if ( param.ContainsKey( "shadowFarDistance" ) )
                 {
-                    light.ShadowFarDistance = (float)Convert.ToDouble( param[ "shadowFarDistance" ].ToString() );
+                    light.ShadowFarDistance = ( float ) Convert.ToDouble( param[ "shadowFarDistance" ].ToString() );
                 }
 
                 // Spotlight properties
                 if ( param.ContainsKey( "spotlightInner" ) )
                 {
-                    light.SpotlightInnerAngle = (float)Convert.ToDouble( param[ "spotlightInner" ].ToString() );
+                    light.SpotlightInnerAngle = ( float ) Convert.ToDouble( param[ "spotlightInner" ].ToString() );
                 }
 
                 if ( param.ContainsKey( "spotlightOuter" ) )
                 {
-                    light.SpotlightOuterAngle = (float)Convert.ToDouble( param[ "spotlightOuter" ].ToString() );
+                    light.SpotlightOuterAngle = ( float ) Convert.ToDouble( param[ "spotlightOuter" ].ToString() );
                 }
 
                 if ( param.ContainsKey( "spotlightFalloff" ) )
                 {
-                    light.SpotlightFalloff = (float)Convert.ToDouble( param[ "spotlightFalloff" ].ToString() );
+                    light.SpotlightFalloff = ( float ) Convert.ToDouble( param[ "spotlightFalloff" ].ToString() );
                 }
             }
 

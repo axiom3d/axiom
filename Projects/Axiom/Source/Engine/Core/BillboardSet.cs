@@ -133,7 +133,7 @@ namespace Axiom.Core
         protected bool fixedTextureCoords;
 
         // Temporary matrix for checking billboard visible
-        protected Matrix4[] world = new Matrix4[1];
+        protected Matrix4[] world = new Matrix4[ 1 ];
         protected Sphere sphere = new Sphere();
 
         // used to keep track of current index in GenerateVertices
@@ -145,7 +145,7 @@ namespace Axiom.Core
         protected bool accurateFacing = false;
         protected IntPtr lockPtr = IntPtr.Zero;
         protected int ptrOffset = 0;
-        protected Vector3[] vOffset = new Vector3[4];
+        protected Vector3[] vOffset = new Vector3[ 4 ];
         protected Camera currentCamera;
         protected float leftOff, rightOff, topOff, bottomOff;
         protected Vector3 camX, camY, camDir;
@@ -162,7 +162,7 @@ namespace Axiom.Core
         protected Hashtable customParams = new Hashtable( 20 );
 
         // Template texcoord data
-        private float[] texData = new float[8] {
+        private float[] texData = new float[ 8 ] {
                                                        -0.5f, 0.5f,
                                                        0.5f, 0.5f,
                                                        -0.5f, -0.5f,
@@ -318,7 +318,7 @@ namespace Axiom.Core
             }
             else // not all default size and not point rendering
             {
-                Vector3[] vOwnOffset = new Vector3[4];
+                Vector3[] vOwnOffset = new Vector3[ 4 ];
                 // If it has own dimensions, or self-oriented, gen offsets
                 if ( this.billboardType == BillboardType.OrientedSelf ||
                      this.billboardType == BillboardType.PerpendicularSelf ||
@@ -462,14 +462,14 @@ namespace Axiom.Core
             {
                 //  (float)X / X is guaranteed to be == 1.0f for X up to 8 million, so
                 //  our range of 1..256 is quite enough to guarantee perfect coverage.
-                float top = (float) v / (float) stacks;
-                float bottom = ( (float) v + 1 ) / (float) stacks;
+                float top = ( float ) v / ( float ) stacks;
+                float bottom = ( ( float ) v + 1 ) / ( float ) stacks;
                 for ( uint u = 0; u < slices; ++u )
                 {
                     RectangleF r = new RectangleF();
-                    r.Left = (float) u / (float) slices;
+                    r.Left = ( float ) u / ( float ) slices;
                     r.Top = top;
-                    r.Width = ( (float) u + 1 ) / (float) slices - r.Left;
+                    r.Width = ( ( float ) u + 1 ) / ( float ) slices - r.Left;
                     r.Height = bottom - top;
                     this.textureCoords[ coordIndex ] = r;
                     ++coordIndex;
@@ -709,8 +709,8 @@ namespace Axiom.Core
             {
                 unsafe
                 {
-                    float* posPtr = (float*) this.lockPtr.ToPointer();
-                    int* colPtr = (int*) posPtr;
+                    float* posPtr = ( float* ) this.lockPtr.ToPointer();
+                    int* colPtr = ( int* ) posPtr;
 
                     // Single vertex per billboard, ignore offsets
                     // position
@@ -725,9 +725,9 @@ namespace Axiom.Core
             {
                 unsafe
                 {
-                    float* posPtr = (float*) this.lockPtr.ToPointer();
-                    int* colPtr = (int*) posPtr;
-                    float* texPtr = (float*) posPtr;
+                    float* posPtr = ( float* ) this.lockPtr.ToPointer();
+                    int* colPtr = ( int* ) posPtr;
+                    float* texPtr = ( float* ) posPtr;
 
                     // Left-top
                     // Positions
@@ -786,9 +786,9 @@ namespace Axiom.Core
 
                 unsafe
                 {
-                    float* posPtr = (float*) this.lockPtr.ToPointer();
-                    int* colPtr = (int*) posPtr;
-                    float* texPtr = (float*) posPtr;
+                    float* posPtr = ( float* ) this.lockPtr.ToPointer();
+                    int* colPtr = ( int* ) posPtr;
+                    float* texPtr = ( float* ) posPtr;
 
                     // Left-top
                     // Positions
@@ -856,9 +856,9 @@ namespace Axiom.Core
 
                 unsafe
                 {
-                    float* posPtr = (float*) this.lockPtr.ToPointer();
-                    int* colPtr = (int*) posPtr;
-                    float* texPtr = (float*) posPtr;
+                    float* posPtr = ( float* ) this.lockPtr.ToPointer();
+                    int* colPtr = ( int* ) posPtr;
+                    float* texPtr = ( float* ) posPtr;
 
                     // Left-top
                     // Positions
@@ -1007,8 +1007,8 @@ namespace Axiom.Core
 
             this.aab.Merge( new AxisAlignedBox( newMin, newMax ) );
 
-            float sqlen = (float) Utility.Max( newMin.LengthSquared, newMax.LengthSquared );
-            this.boundingRadius = (float) Utility.Max( this.boundingRadius, Utility.Sqrt( sqlen ) );
+            float sqlen = ( float ) Utility.Max( newMin.LengthSquared, newMax.LengthSquared );
+            this.boundingRadius = ( float ) Utility.Max( this.boundingRadius, Utility.Sqrt( sqlen ) );
 
             return newBillboard;
         }
@@ -1111,7 +1111,7 @@ namespace Axiom.Core
 
                 unsafe
                 {
-                    ushort* pIdx = (ushort*) idxPtr.ToPointer();
+                    ushort* pIdx = ( ushort* ) idxPtr.ToPointer();
 
                     for ( int idx, idxOffset, bboard = 0; bboard < this.poolSize; ++bboard )
                     {
@@ -1119,12 +1119,12 @@ namespace Axiom.Core
                         idx = bboard * 6;
                         idxOffset = bboard * 4;
 
-                        pIdx[ idx ] = (ushort) idxOffset; // + 0;, for clarity
-                        pIdx[ idx + 1 ] = (ushort) ( idxOffset + 2 );
-                        pIdx[ idx + 2 ] = (ushort) ( idxOffset + 1 );
-                        pIdx[ idx + 3 ] = (ushort) ( idxOffset + 1 );
-                        pIdx[ idx + 4 ] = (ushort) ( idxOffset + 2 );
-                        pIdx[ idx + 5 ] = (ushort) ( idxOffset + 3 );
+                        pIdx[ idx ] = ( ushort ) idxOffset; // + 0;, for clarity
+                        pIdx[ idx + 1 ] = ( ushort ) ( idxOffset + 2 );
+                        pIdx[ idx + 2 ] = ( ushort ) ( idxOffset + 1 );
+                        pIdx[ idx + 3 ] = ( ushort ) ( idxOffset + 1 );
+                        pIdx[ idx + 4 ] = ( ushort ) ( idxOffset + 2 );
+                        pIdx[ idx + 5 ] = ( ushort ) ( idxOffset + 3 );
                     } // for
                 } // unsafe
 
@@ -1453,7 +1453,7 @@ namespace Axiom.Core
                 this.materialName = value;
 
                 // find the requested material
-                this.material = (Material) MaterialManager.Instance[ this.materialName ];
+                this.material = ( Material ) MaterialManager.Instance[ this.materialName ];
 
                 if ( this.material != null )
                 {
@@ -1771,7 +1771,7 @@ namespace Axiom.Core
             }
             else
             {
-                return (Vector4) this.customParams[ index ];
+                return ( Vector4 ) this.customParams[ index ];
             }
         }
 
@@ -1785,7 +1785,7 @@ namespace Axiom.Core
         {
             if ( this.customParams[ entry.data ] != null )
             {
-                gpuParams.SetConstant( entry.index, (Vector4) this.customParams[ entry.data ] );
+                gpuParams.SetConstant( entry.index, ( Vector4 ) this.customParams[ entry.data ] );
             }
         }
 
@@ -1798,7 +1798,7 @@ namespace Axiom.Core
             // cloning to prevent direct modification
             get
             {
-                return (AxisAlignedBox) this.aab.Clone();
+                return ( AxisAlignedBox ) this.aab.Clone();
             }
         }
 
@@ -2041,6 +2041,7 @@ namespace Axiom.Core
         public BillboardSetFactory()
         {
             this.Type = BillboardSetFactory.TypeName;
+
         }
 
         protected override MovableObject _createInstance( string name, NamedParameterList param )
@@ -2051,6 +2052,7 @@ namespace Axiom.Core
 
             if ( param != null )
             {
+                object ni;
                 if ( param.ContainsKey( "poolSize" ) )
                 {
                     poolSize = Convert.ToInt32( param[ "poolSize" ] );
@@ -2062,14 +2064,20 @@ namespace Axiom.Core
                 }
             }
 
+            BillboardSet bSet;
+
             if ( poolSize > 0 )
             {
-                return new BillboardSet( name, poolSize, externalData );
+                bSet = new BillboardSet( name, poolSize, externalData );
             }
             else
             {
-                return new BillboardSet( name, 0 );
+                bSet = new BillboardSet( name, 0 );
             }
+
+            bSet.MovableType = TypeName;
+
+            return bSet;
         }
 
         public override void DestroyInstance( MovableObject obj )

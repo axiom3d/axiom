@@ -1,0 +1,284 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>9.0.30428</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B48165FA-984B-49FE-B12F-79A7681A3640}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>Axiom.RenderSystems.OpenGL.Sdl</AssemblyName>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>
+    </AppDesignerFolder>
+    <RootNamespace>Axiom.RenderSystems.OpenGL.Sdl</RootNamespace>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>..\..\..\..\..\Lib\Managed\XPlatform\Axiom\debug\Axiom.RenderSystems.OpenGL.Sdl.xml</DocumentationFile>
+    <DebugSymbols>True</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>False</Optimize>
+    <OutputPath>..\..\..\..\..\Lib\Managed\XPlatform\Axiom\debug\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <WarningLevel>0</WarningLevel>
+    <NoWarn>
+    </NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>..\..\..\..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.RenderSystems.OpenGL.Sdl.xml</DocumentationFile>
+    <DebugSymbols>False</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>True</Optimize>
+    <OutputPath>..\..\..\..\..\Lib\Managed\XPlatform\Axiom\release\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <WarningLevel>0</WarningLevel>
+    <NoWarn>
+    </NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>..\..\..\..\..\Lib\Managed\XPlatform\Axiom\debug\Axiom.RenderSystems.OpenGL.Sdl.xml</DocumentationFile>
+    <WarningLevel>0</WarningLevel>
+    <FileAlignment>4096</FileAlignment>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>..\..\..\..\..\Lib\Managed\XPlatform\Axiom\release\Axiom.RenderSystems.OpenGL.Sdl.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <WarningLevel>0</WarningLevel>
+    <FileAlignment>4096</FileAlignment>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <Name>System</Name>
+      <HintPath>\System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+      <HintPath>\System.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+      <HintPath>\System.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+      <HintPath>\System.Windows.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.Xml</Name>
+      <HintPath>\System.Xml.dll</HintPath>
+    </Reference>
+    <Reference Include="Tao.OpenGl, Version=2.1.0.12, Culture=neutral, PublicKeyToken=1ca010269a4501ef, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\bin\Tao.OpenGl.dll</HintPath>
+    </Reference>
+    <Reference Include="Tao.Sdl, Version=1.2.13.0, Culture=neutral, PublicKeyToken=9c7a200e36c0094e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\bin\Tao.Sdl.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Engine\Axiom.csproj">
+      <Name>Axiom</Name>
+      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\GlobalAssemblyInfo.cs">
+      <Link>GlobalAssemblyInfo.cs</Link>
+    </Compile>
+    <None Include="Axiom.RenderSystems.OpenGL.build">
+    </None>
+    <Compile Include="ARBGpuProgram.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BaseGLSupport.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLCopyingRTTManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLFBORenderTexture.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLFBORTTManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLFrameBufferObject.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLGpuProgram.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLGpuProgramManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLHardwareBufferManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLHardwareIndexBuffer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLHardwareOcclusionQuery.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLHardwarePixelBuffer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLHardwareVertexBuffer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLPBRenderTexture.cs" />
+    <Compile Include="GLPBRTTManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLPBuffer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLPixelUtil.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLRenderBuffer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLRenderSystem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLRenderTexture.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLRTTManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLSurfaceDesc.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLTexture.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLTextureBuffer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLTextureManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IOpenGLGpuProgramFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Plugin.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ATI\ATIFragmentShaderGpuProgram.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ATI\Compiler2Pass.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ATI\Enums.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ATI\Lists.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ATI\PixelShader.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ATI\Structures.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Nvidia\NV3xGpuProgram.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Nvidia\NvparseFragmentProgram.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLSL\GLSLGpuProgram.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLSL\GLSLHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLSL\GLSLLinkProgram.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLSL\GLSLLinkProgramManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLSL\GLSLProgram.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GLSL\GLSLProgramFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SDL\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SDL\SdlDevice.cs" />
+    <Compile Include="SDL\SdlGLSupport.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SDL\SdlMessageHandling.cs" />
+    <Compile Include="SDL\SdlRenderWindow.cs" />
+    <Compile Include="SDL\SdlWindow.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

@@ -2495,8 +2495,9 @@ namespace Axiom.Core
             {
                 throw new AxiomException( "'mesh' parameter required when constructing an Entity." );
             }
-
-            return new Entity( name, pMesh, null );
+            Entity ent = new Entity( name, pMesh, null );
+            ent.MovableType = this.Type;
+            return ent;
         }
 
         public override void DestroyInstance( MovableObject obj )

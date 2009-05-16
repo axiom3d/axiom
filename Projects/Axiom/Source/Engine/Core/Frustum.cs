@@ -391,7 +391,7 @@ namespace Axiom.Core
 
 				return _viewMatrix;
 			}
-			protected set
+			set
 			{
 				_viewMatrix = value;
 			}
@@ -402,7 +402,7 @@ namespace Axiom.Core
 
 		protected bool _recalculateFrustumPlanes;
 
-		protected Plane[] FrustumPlanes
+		public Plane[] FrustumPlanes
 		{
 			get
 			{
@@ -423,7 +423,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( _useObliqueDepthProjection )
+				if ( useObliqueDepthProjection )
 				{
 					// always out of date since plane needs to be in view space
 					if ( IsViewOutOfDate )
@@ -432,12 +432,12 @@ namespace Axiom.Core
 					}
 
 					// update derived plane
-					if ( _linkedObliqueProjPlane != null &&
-						!( _lastLinkedObliqueProjPlane == _linkedObliqueProjPlane.DerivedPlane ) )
+					if ( linkedObliqueProjPlane != null && 
+						!( lastLinkedObliqueProjPlane == linkedObliqueProjPlane.DerivedPlane ) )
 					{
 
-						_obliqueProjPlane = _linkedObliqueProjPlane.DerivedPlane;
-						_lastLinkedObliqueProjPlane = _obliqueProjPlane;
+						obliqueProjPlane = linkedObliqueProjPlane.DerivedPlane;
+						lastLinkedObliqueProjPlane = obliqueProjPlane;
 						_recalculateFrustum = true;
 					}
 				}
@@ -472,13 +472,13 @@ namespace Axiom.Core
 				}
 
 				// deriving direction from linked plane?
-				if ( _isReflected && _linkedReflectionPlane != null &&
-					!( _lastLinkedReflectionPlane == _linkedReflectionPlane.DerivedPlane ) )
+				if ( _isReflected && linkedReflectionPlane != null &&
+					!( lastLinkedReflectionPlane == linkedReflectionPlane.DerivedPlane ) )
 				{
 
-					_reflectionPlane = _linkedReflectionPlane.DerivedPlane;
+					_reflectionPlane = linkedReflectionPlane.DerivedPlane;
 					_reflectionMatrix = Utility.BuildReflectionMatrix( _reflectionPlane );
-					_lastLinkedReflectionPlane = _linkedReflectionPlane.DerivedPlane;
+					lastLinkedReflectionPlane = linkedReflectionPlane.DerivedPlane;
 					_recalculateView = true;
 				}
 
@@ -611,36 +611,36 @@ namespace Axiom.Core
 		/// <summary>
 		///		Reference of a reflection plane (automatically updated).
 		/// </summary>
-		protected IDerivedPlaneProvider _linkedReflectionPlane;
+		protected IDerivedPlaneProvider linkedReflectionPlane;
 		/// <summary>
 		///		Record of the last world-space reflection plane info used.
 		/// </summary>
-		protected Plane _lastLinkedReflectionPlane;
+		protected Plane lastLinkedReflectionPlane;
 		/// <summary>
 		///		Is this frustum using an oblique depth projection?
 		/// </summary>
-		protected bool _useObliqueDepthProjection;
+		protected bool useObliqueDepthProjection;
 		/// <summary>
 		///		Fixed oblique projection plane.
 		/// </summary>
-		protected Plane _obliqueProjPlane;
+		protected Plane obliqueProjPlane;
 		/// <summary>
 		///		Reference to oblique projection plane (automatically updated).
 		/// </summary>
-		protected IDerivedPlaneProvider _linkedObliqueProjPlane;
+		protected IDerivedPlaneProvider linkedObliqueProjPlane;
 		/// <summary>
 		///		Record of the last world-space oblique depth projection plane info used.
 		/// </summary>
-		protected Plane _lastLinkedObliqueProjPlane;
+		protected Plane lastLinkedObliqueProjPlane;
 
 		/// <summary>
 		///     Dummy list for IRenderable.Lights since we wont be lit.
 		/// </summary>
-		protected LightList _dummyLightList = new LightList();
+		protected LightList dummyLightList = new LightList();
 
-		protected Hashtable _customParams = new Hashtable();
+		protected Hashtable customParams = new Hashtable();
 
-		#endregion Fields and Prperties
+		#endregion Fields and Properties
 
 		#region Constructors
 
@@ -699,8 +699,8 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual void DisableCustomNearClipPlane()
 		{
-			_useObliqueDepthProjection = false;
-			_linkedObliqueProjPlane = null;
+			useObliqueDepthProjection = false;
+			linkedObliqueProjPlane = null;
 			InvalidateFrustum();
 		}
 
@@ -732,7 +732,7 @@ namespace Axiom.Core
 		public virtual void DisableReflection()
 		{
 			_isReflected = false;
-			_lastLinkedReflectionPlane.Normal = Vector3.Zero;
+			lastLinkedReflectionPlane.Normal = Vector3.Zero;
 			InvalidateView();
 		}
 
@@ -765,9 +765,9 @@ namespace Axiom.Core
 		/// <param name="plane">The plane to link to to perform the clipping.</param>
 		public virtual void EnableCustomNearClipPlane( IDerivedPlaneProvider plane )
 		{
-			_useObliqueDepthProjection = true;
-			_linkedObliqueProjPlane = plane;
-			_obliqueProjPlane = plane.DerivedPlane;
+			useObliqueDepthProjection = true;
+			linkedObliqueProjPlane = plane;
+			obliqueProjPlane = plane.DerivedPlane;
 			InvalidateFrustum();
 		}
 
@@ -800,9 +800,9 @@ namespace Axiom.Core
 		/// <param name="plane">The plane to link to to perform the clipping.</param>
 		public virtual void EnableCustomNearClipPlane( Plane plane )
 		{
-			_useObliqueDepthProjection = true;
-			_linkedObliqueProjPlane = null;
-			_obliqueProjPlane = plane;
+			useObliqueDepthProjection = true;
+			linkedObliqueProjPlane = null;
+			obliqueProjPlane = plane;
 			InvalidateFrustum();
 		}
 
@@ -818,7 +818,7 @@ namespace Axiom.Core
 		{
 			_isReflected = true;
 			_reflectionPlane = plane;
-			_linkedReflectionPlane = null;
+			linkedReflectionPlane = null;
 			_reflectionMatrix = Utility.BuildReflectionMatrix( plane );
 			InvalidateView();
 		}
@@ -833,10 +833,10 @@ namespace Axiom.Core
 		public virtual void EnableReflection( IDerivedPlaneProvider plane )
 		{
 			_isReflected = true;
-			_linkedReflectionPlane = plane;
-			_reflectionPlane = _linkedReflectionPlane.DerivedPlane;
+			linkedReflectionPlane = plane;
+			_reflectionPlane = linkedReflectionPlane.DerivedPlane;
 			_reflectionMatrix = Utility.BuildReflectionMatrix( _reflectionPlane );
-			_lastLinkedReflectionPlane = _reflectionPlane;
+			lastLinkedReflectionPlane = _reflectionPlane;
 			InvalidateView();
 		}
 
@@ -889,8 +889,8 @@ namespace Axiom.Core
 				return false;
 
 			// Infinite Boxes are always visible
-			//if ( box.IsInfinite )
-			//    return true;
+			if ( box.IsInfinite )
+			    return true;
 
 			// Make any pending updates to the calculated frustum
 			UpdateFrustumPlanes();
@@ -1201,7 +1201,7 @@ namespace Axiom.Core
 					_projectionMatrix.m23 = qn;
 					_projectionMatrix.m32 = -1.0f;
 
-					if ( _useObliqueDepthProjection )
+					if ( useObliqueDepthProjection )
 					{
 						// Translate the plane into view space
 
@@ -1209,7 +1209,7 @@ namespace Axiom.Core
 						// camera and return a cull frustum view matrix
 						UpdateView();
 
-						Plane plane = _viewMatrix * _obliqueProjPlane;
+						Plane plane = _viewMatrix * obliqueProjPlane;
 
 						// Thanks to Eric Lenyel for posting this calculation 
 						// at www.terathon.com
@@ -1452,7 +1452,7 @@ namespace Axiom.Core
 			_recalculateWorldSpaceCorners = true;
 			// Signal to update frustum if oblique plane enabled,
 			// since plane needs to be in view space
-			if ( _useObliqueDepthProjection )
+			if ( useObliqueDepthProjection )
 			{
 				_recalculateFrustum = true;
 			}
@@ -1791,7 +1791,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _dummyLightList;
+				return dummyLightList;
 			}
 		}
 
@@ -1889,26 +1889,26 @@ namespace Axiom.Core
 
 		public Vector4 GetCustomParameter( int index )
 		{
-			if ( _customParams[ index ] == null )
+			if ( customParams[ index ] == null )
 			{
 				throw new Exception( "A parameter was not found at the given index" );
 			}
 			else
 			{
-				return (Vector4)_customParams[ index ];
+				return (Vector4)customParams[ index ];
 			}
 		}
 
 		public void SetCustomParameter( int index, Vector4 val )
 		{
-			_customParams[ index ] = val;
+			customParams[ index ] = val;
 		}
 
 		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
 		{
-			if ( _customParams[ entry.data ] != null )
+			if ( customParams[ entry.data ] != null )
 			{
-				gpuParams.SetConstant( entry.index, (Vector4)_customParams[ entry.data ] );
+				gpuParams.SetConstant( entry.index, (Vector4)customParams[ entry.data ] );
 			}
 		}
 

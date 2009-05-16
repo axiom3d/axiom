@@ -305,8 +305,12 @@ namespace Axiom.Math
         /// <summary>
         ///		Parses a string and returns Vector4.
         /// </summary>
-        /// <param name="vector">A string representation of a vector4. ( as its returned from Vector4.ToString() )</param>
-        /// <returns>A new Vector3.</returns>
+        /// <param name="vector">
+        ///     A string representation of a Vector4. ( as its returned from Vector4.ToString() )
+        /// </param>
+        /// <returns>
+        ///     A new Vector4.
+        /// </returns>
         public static Vector4 Parse(string vector)
         {
             string[] vals = vector.TrimStart('<').TrimEnd('>').Split(',');

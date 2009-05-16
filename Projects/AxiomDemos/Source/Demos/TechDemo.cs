@@ -133,7 +133,7 @@ namespace Axiom.Demos
         protected virtual bool Setup()
         {
             // instantiate the Root singleton
-            //engine = new Root( "EngineConfig.xml", "AxiomEngine.log" );
+            //engine = new Root( "AxiomEngine.log" );
             engine = Root.Instance;
 
             // add event handlers for frame events
@@ -497,7 +497,7 @@ namespace Axiom.Demos
                 toggleDelay = .3f;
             }
 
-#if !DEBUG
+#if DEBUG
 			if ( !input.IsMousePressed( MouseButtons.Left ) )
 			{
 				float cameraYaw = -input.RelativeMouseX * .13f;

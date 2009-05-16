@@ -34,6 +34,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 #endregion Namespace Declarations
 
@@ -55,6 +57,7 @@ namespace Axiom.Core
 
         #endregion Constructor
 
+        #region Copy Method
         /// <summary>
         ///		Method for copying data from one IntPtr to another.
         /// </summary>
@@ -78,43 +81,69 @@ namespace Axiom.Core
         {
             // TODO: Block copy would be faster, find a cross platform way to do it
             unsafe
-            {				
-				byte* pSrc = ((byte*)src.ToPointer()) + srcOffset;
-                byte* pDest = ((byte*)dest.ToPointer()) + destOffset;
+            {
+                byte* pSrc = (byte*)src.ToPointer();
+                byte* pDest = (byte*)dest.ToPointer();
 
-				for ( int i = 0; i < length; i++ )
-					*pDest++ = *pSrc++;
+                for ( int i = 0; i < length; i++ )
+                {
+                    pDest[ i + destOffset ] = pSrc[ i + srcOffset ];
+                }
             }
         }
+        #endregion Copy Method
 
         /// <summary>
-        /// Sets the memory to 0 starting at the specified offset for the specified byte length.
+        ///     Sets the memory to 0 starting at the specified offset for the specified byte length.
         /// </summary>
         /// <param name="dest">Destination pointer.</param>
         /// <param name="offset">Byte offset to start.</param>
         /// <param name="length">Number of bytes to set.</param>
-        public static void Zero( IntPtr dest, int offset, int length )
+        public static void Set( IntPtr dest, int offset, int length )
         {
-			Set( dest, offset, length, 0 );
+            unsafe
+            {
+                byte* ptr = (byte*)dest.ToPointer();
+
+                for ( int i = 0; i < length; i++ )
+                {
+                    ptr[ i + offset ] = 0;
+                }
+            }
         }
 
-		/// <summary>
-		/// Sets the memory to a specified value starting at the specified offset for the specified byte length.
-		/// </summary>
-		/// <param name="dest">Destination pointer.</param>
-		/// <param name="offset">Byte offset to start.</param>
-		/// <param name="length">Number of bytes to set.</param>
-		public static void Set( IntPtr dest, int offset, int length, byte value )
-		{
-			unsafe
-			{
-				byte* ptr = (byte*)dest.ToPointer();
+        #region Pinned Object Access
 
-				for ( int i = 0; i < length; i++ )
-				{
-					ptr[ i + offset ] = value;
-				}
-			}
-		}
-	}
+        private static Dictionary<object, GCHandle> _pinnedReferences = new Dictionary<object, GCHandle>();
+        public static IntPtr PinObject( object obj )
+        {
+            GCHandle handle;
+            if ( _pinnedReferences.ContainsKey( obj ) )
+            {
+                handle = _pinnedReferences[ obj ];
+            }
+            else
+            {
+                handle = GCHandle.Alloc( obj, GCHandleType.Pinned );
+                _pinnedReferences.Add( obj, handle );
+            }
+            return handle.AddrOfPinnedObject();
+        }
+
+        public static void UnpinObject( object obj )
+        {
+            if ( _pinnedReferences.ContainsKey( obj ) )
+            {
+                GCHandle handle = _pinnedReferences[ obj ];
+                handle.Free();
+                _pinnedReferences.Remove( obj );
+            }
+            else
+            {
+                LogManager.Instance.Write( "MemoryManager : Attempted to unpin memory that wasn't pinned." );
+            }
+        }
+
+        #endregion Pinned Object Access
+    }
 }
