@@ -147,6 +147,29 @@ namespace Axiom.Math
 			return new Vector2( left.x - right.x, left.y - right.y );
 		}
 
+
+        /// <summary>
+        /// Calculates the 2 dimensional cross-product of 2 vectors, which results
+        /// in a single floating point value which is 2 times the area of the triangle.
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <returns></returns>
+        public float CrossProduct(Vector2 vector)
+        {
+            return this.x * vector.y - this.y - vector.x;
+        }
+
+        public float Dot(Vector2 vector)
+        {
+            return x * vector.x + y * vector.y;
+        }
+        public static Vector2 operator *(Vector2 left, Vector2 right)
+        {
+            left.x *= right.x;
+            left.y *= right.y;
+            return left;
+        }
+
 		/// <summary>
 		///		Used when a Vector2 is multiplied by a scalar value.
 		/// </summary>
