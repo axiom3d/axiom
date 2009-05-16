@@ -40,7 +40,7 @@ using System.Text;
 using Axiom.Graphics;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.Configuration
 {
 	public class ConfigOption : ConfigOption<string>
@@ -113,7 +113,7 @@ namespace Axiom.Configuration
             }
         }
 
-	    #endregion PossibleValues Property
+        #endregion PossibleValues Property
 
         #region Immutable Property
 
