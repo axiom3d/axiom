@@ -779,6 +779,10 @@ namespace Axiom.Graphics
 						SetConstant( entry.index, source.InverseWorldViewMatrix );
 						break;
 
+                    case AutoConstants.InverseTransposeWorldViewMatrix:
+                        SetConstant(entry.index, source.InverseTransposeWorldViewMatrix);
+                        break;
+
 					case AutoConstants.AmbientLightColor:
 						SetConstant( entry.index, source.AmbientLight );
 						break;

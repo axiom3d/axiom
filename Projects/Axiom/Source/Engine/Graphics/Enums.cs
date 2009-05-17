@@ -103,7 +103,12 @@ namespace Axiom.Graphics
 		/// </summary>
 		[ScriptEnum( "inverse_worldview_matrix" )]
 		InverseWorldViewMatrix,
-		/// <summary>
+        /// <summary>
+        ///    Current world and view matrices concatenated, then inverted.
+        /// </summary>
+        [ScriptEnum("inverse_transpose_worldview_matrix")]
+        InverseTransposeWorldViewMatrix,
+        /// <summary>
 		///    Global ambient light color.
 		/// </summary>
 		[ScriptEnum( "ambient_light_colour" )]

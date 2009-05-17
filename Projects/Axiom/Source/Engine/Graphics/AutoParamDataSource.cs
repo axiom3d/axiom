@@ -125,6 +125,11 @@ namespace Axiom.Graphics
 		///    Inverse of the current view matrix.
 		/// </summary>
 		protected Matrix4 inverseViewMatrix;
+        /// <summary>
+        ///    Inverse Transpose of the current world view matrix.
+        /// </summary>
+        protected Matrix4 inverseTransposeWorldViewMatrix;
+
 		/// <summary>
 		///		Current texture view projection matrix.
 		/// </summary>
@@ -165,7 +170,8 @@ namespace Axiom.Graphics
 		protected bool inverseWorldMatrixDirty;
 		protected bool inverseWorldViewMatrixDirty;
 		protected bool inverseViewMatrixDirty;
-		protected bool cameraPositionObjectSpaceDirty;
+        protected bool inverseTransposeWorldViewMatrixDirty;
+        protected bool cameraPositionObjectSpaceDirty;
 		protected bool textureViewProjMatrixDirty;
 
 		protected Matrix4 ProjectionClipSpace2DToImageSpacePerspective = new Matrix4(
@@ -207,7 +213,7 @@ namespace Axiom.Graphics
 			inverseWorldViewMatrixDirty = true;
 			inverseViewMatrixDirty = true;
 			// inverseTransposeWorldMatrixDirty = true;
-			// inverseTransposeWorldViewMatrixDirty = true;
+			inverseTransposeWorldViewMatrixDirty = true;
 			cameraPositionObjectSpaceDirty = true;
 			// cameraPositionDirty = true;
 			textureViewProjMatrixDirty = true;
@@ -525,6 +531,22 @@ namespace Axiom.Graphics
 				return inverseViewMatrix;
 			}
 		}
+
+        /// <summary>
+        ///    Gets/Sets the inverse of current concatenated world and view matrices.
+        /// </summary>
+        public Matrix4 InverseTransposeWorldViewMatrix
+        {
+            get
+            {
+                if (inverseTransposeWorldViewMatrixDirty)
+                {
+                    inverseTransposeWorldViewMatrix = this.InverseWorldViewMatrix.Transpose();
+                    inverseTransposeWorldViewMatrixDirty = false;
+                }
+                return inverseTransposeWorldViewMatrix;
+            }
+        }
 
 		/// <summary>
 		///    Gets/Sets the position of the current camera in object space relative to the current renderable.
