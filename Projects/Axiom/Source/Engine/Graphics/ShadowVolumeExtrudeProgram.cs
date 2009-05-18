@@ -430,14 +430,14 @@ namespace Axiom.Graphics
         private static bool isInitialized = false;
 
         public static string[] programNames = new string[]{
-															   "Ogre/ShadowExtrudePointLight",
-															   "Ogre/ShadowExtrudePointLightDebug",
-															   "Ogre/ShadowExtrudeDirLight",
-															   "Ogre/ShadowExtrudeDirLightDebug",
-															   "Ogre/ShadowExtrudePointLightFinite",
-															   "Ogre/ShadowExtrudePointLightFiniteDebug",
-															   "Ogre/ShadowExtrudeDirLightFinite",
-															   "Ogre/ShadowExtrudeDirLightFiniteDebug"
+															   "Axiom/Core/ShadowExtrudePointLight",
+															   "Axiom/Core/ShadowExtrudePointLightDebug",
+															   "Axiom/Core/ShadowExtrudeDirLight",
+															   "Axiom/Core/ShadowExtrudeDirLightDebug",
+															   "Axiom/Core/ShadowExtrudePointLightFinite",
+															   "Axiom/Core/ShadowExtrudePointLightFiniteDebug",
+															   "Axiom/Core/ShadowExtrudeDirLightFinite",
+															   "Axiom/Core/ShadowExtrudeDirLightFiniteDebug"
 														   };
 
         /// <summary>
