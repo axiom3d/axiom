@@ -1239,7 +1239,11 @@ namespace Axiom.Graphics
                     // Nope, use default
                     // get the first item, will be 0 (the default) if default
                     // scheme techniques exist, otherwise the earliest defined
-                    lodTechniques = this.bestTechniquesByScheme.GetEnumerator().Current.Value;
+                    Dictionary<ushort, Dictionary<int, Technique>>.Enumerator iter = this.bestTechniquesByScheme.GetEnumerator();
+                    if ( iter.Current.Value == null )
+                        iter.MoveNext();
+
+                    lodTechniques = iter.Current.Value;
                 }
                 else
                 {
