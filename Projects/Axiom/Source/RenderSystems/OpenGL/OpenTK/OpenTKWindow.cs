@@ -7,7 +7,6 @@ using Axiom.Graphics;
 using OpenTK;
 using OpenTK.Graphics;
 
-
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGL
@@ -17,13 +16,24 @@ namespace Axiom.RenderSystems.OpenGL
     /// </summary>
     public class OpenTKWindow : RenderWindow
     {
+        public class AxiomOTKGameWindow : GameWindow
+        {
+            public AxiomOTKGameWindow(int width, int height, GraphicsMode gm, string title) : base(width, height, gm, title) { }
+            public override void OnRenderFrame(RenderFrameEventArgs e)
+            {
+                if ( this.IsExiting == false )
+                    Exit();
+            }
+        }
+
         #region Fields
 
-        public GameWindow OTKGameWindow;
+        public AxiomOTKGameWindow OTKGameWindow;
 
         private bool destroyed;
         private bool fullScreen;
-        DisplayDevice displayDevice = null;
+        private DisplayDevice displayDevice = null;
+        private bool lastVSyncModeSet = false;
 
         #endregion Fields
 
@@ -55,26 +65,31 @@ namespace Axiom.RenderSystems.OpenGL
             displayDevice = DisplayDevice.Default;
 
             // create window
-            OTKGameWindow = new GameWindow(width, height, GraphicsMode.Default, name);
+            OTKGameWindow = new AxiomOTKGameWindow( width, height, GraphicsMode.Default, name );
 
             // full screen?
             if (fullScreen)
             {
-                displayDevice.ChangeResolution(displayDevice.SelectResolution(width, height, colorDepth, 60f));
+                displayDevice.ChangeResolution( displayDevice.SelectResolution( width, height, colorDepth, 60f ) );
                 OTKGameWindow.WindowState = WindowState.Fullscreen;
             }
-            else OTKGameWindow.WindowState = WindowState.Normal;
-
-            GL.Clear(ClearBufferMask.ColorBufferBit);
-            OTKGameWindow.ProcessEvents();
-            OTKGameWindow.SwapBuffers();
+            else
+            {
+                OTKGameWindow.WindowState = WindowState.Normal;
+                OTKGameWindow.WindowBorder = WindowBorder.Fixed;
+            }
 
             // lets get active!
             isActive = true;
+
+            GL.Clear( ClearBufferMask.ColorBufferBit );
+            SwapBuffers( false );
         }
 
         public override void Dispose()
         {
+            if ( destroyed )
+                return;
             Destroy();
             base.Dispose();
         }
@@ -82,9 +97,10 @@ namespace Axiom.RenderSystems.OpenGL
 
         public void Destroy()
         {
-            if (!destroyed)
+            if ( !destroyed )
             {
-                if (fullScreen) displayDevice.RestoreResolution();
+                if ( fullScreen )
+                    displayDevice.RestoreResolution();
                 OTKGameWindow.Context.Dispose();
                 OTKGameWindow.Exit();
                 OTKGameWindow = null;
@@ -98,6 +114,9 @@ namespace Axiom.RenderSystems.OpenGL
 
         public override void Resize(int width, int height)
         {
+            if ( destroyed )
+                return;
+
             OTKGameWindow.Width = width;
             OTKGameWindow.Height = height;
         }
@@ -109,24 +128,29 @@ namespace Axiom.RenderSystems.OpenGL
 
         public override void Update()
         {
+            if ( destroyed )
+                return;
+
             base.Update();
-            if (OTKGameWindow != null) OTKGameWindow.ProcessEvents();
+            OTKGameWindow.ProcessEvents();
         }
 
-        bool _isSet = false;
         /// <summary>
         ///		Update the render window.
         /// </summary>
         /// <param name="waitForVSync"></param>
         public override void SwapBuffers(bool waitForVSync)
         {
-            if (!_isSet)
+            if ( destroyed || OTKGameWindow.WindowState == WindowState.Minimized )
+                return;
+
+            if ( lastVSyncModeSet != waitForVSync )
             {
                 OTKGameWindow.VSync = waitForVSync ? VSyncMode.On : VSyncMode.Off;
-                _isSet = true;
+                lastVSyncModeSet = waitForVSync;
             }
-            
-            if (OTKGameWindow != null) OTKGameWindow.SwapBuffers();
+
+            OTKGameWindow.SwapBuffers();
         }
 
         /// <summary>
