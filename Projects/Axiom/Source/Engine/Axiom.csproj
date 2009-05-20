@@ -855,49 +855,7 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
-  <Import Project="$(MSBuildProjectDirectory)\..\..\..\..\tools\metabuild\contrib\MSBuild Community Tasks\MSBuild.Community.Tasks.targets" Condition="'$(MetaBuildProjectType)'==''" />
   <Target Name="BeforeBuild">
-    <!-- Get Subversion revision -->
-    <SvnVersion LocalPath="$(MSBuildProjectDirectory)\..\..\..\..\">
-      <Output TaskParameter="Revision" PropertyName="SvnWCRevision" />
-      <Output TaskParameter="Modifications" PropertyName="SvnWCModified" />
-      <Output TaskParameter="LowRevision" PropertyName="SvnWCLowRevision" />
-      <Output TaskParameter="HighRevision" PropertyName="SvnWCHighRevision" />
-    </SvnVersion>
-    <SvnInfo LocalPath="$(MSBuildProjectDirectory)\..\..\..\..">
-      <Output TaskParameter="RepositoryRoot" PropertyName="SvnWCRoot" />
-    </SvnInfo>
-    <PropertyGroup>
-      <SvnWCModifiedText Condition=" '$(SvnWCModified)'=='true'">, Local Modifications</SvnWCModifiedText>
-      <SvnWCModifiedText Condition=" '$(SvnWCModified)'=='false'">
-      </SvnWCModifiedText>
-      <SvnWCMixedText>
-      </SvnWCMixedText>
-      <SvnWCMixedText Condition=" '$(SvnWCLowRevision)'!='$(SvnWCHighRevision)'">, Mixed Revisions</SvnWCMixedText>
-    </PropertyGroup>
-    <!-- Generate GlobalAssemblyInfo.cs -->
-    <ItemGroup>
-      <Tokens Include="WCURL">
-        <ReplacementValue>$(SvnWCRoot)</ReplacementValue>
-      </Tokens>
-      <Tokens Include="WCMODS">
-        <ReplacementValue>$(SvnWCModifiedText)</ReplacementValue>
-      </Tokens>
-      <Tokens Include="WCMIXED">
-        <ReplacementValue>$(SvnWCMixedText)</ReplacementValue>
-      </Tokens>
-      <Tokens Include="WCREV">
-        <ReplacementValue>$(SvnWCRevision)</ReplacementValue>
-      </Tokens>
-      <Tokens Include="VERSION">
-        <ReplacementValue>$(MajorVersion).$(MinorVersion).$(BuildVersion)</ReplacementValue>
-      </Tokens>
-      <Tokens Include="CONFIGURATION">
-        <ReplacementValue>$(Configuration)</ReplacementValue>
-      </Tokens>
-      <AssemblyInfoTemplate Include="$(MSBuildProjectDirectory)\..\GlobalAssemblyInfo.cs.in" />
-    </ItemGroup>
-    <TemplateFile Template="@(AssemblyInfoTemplate)" OutputFilename="$(MSBuildProjectDirectory)\..\GlobalAssemblyInfo.cs" Tokens="@(Tokens)" />
   </Target>
   <PropertyGroup>
     <PreBuildEvent>
