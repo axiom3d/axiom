@@ -40,10 +40,17 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 
+using DX = Microsoft.DirectX;
+using D3D = Microsoft.DirectX.Direct3D;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
+    using System.Drawing;
+
+    using Image=Axiom.Media.Image;
+
     /// <summary>
     ///     Summary description for D3DRenderTexture.
     /// </summary>
@@ -59,8 +66,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         public D3DRenderTexture( string name, int width, int height, TextureType type )
             : base( name, width, height )
-        {
-
+        {            
             privateTex = (D3DTexture)TextureManager.Instance.CreateManual( name + "_PRIVATE##", type, width, height, 0, PixelFormat.R8G8B8, TextureUsage.RenderTarget );
 
         }
@@ -101,8 +107,65 @@ namespace Axiom.RenderSystems.DirectX9
 
         public override void Save( System.IO.Stream stream )
         {
-            // TODO: Implement me
-            throw new NotImplementedException( "Saving RenderTextures is not yet implemented." );
+            D3D.Surface srcSurface = privateTex.NormalTexture.GetSurfaceLevel(0);
+            D3D.Device device = privateTex.NormalTexture.Device;
+
+            D3D.SurfaceDescription desc = new D3D.SurfaceDescription();
+            desc.Width = srcSurface.Description.Width;
+            desc.Height = srcSurface.Description.Height;
+            desc.Format = D3D.Format.A8R8G8B8;
+
+            // create a temp surface which will hold the screen image
+            D3D.Surface dstSurface;
+            dstSurface = device.CreateOffscreenPlainSurface(srcSurface.Description.Width, srcSurface.Description.Height, srcSurface.Description.Format, D3D.Pool.Scratch);
+
+            // copy surfaces
+            D3D.SurfaceLoader.FromSurface(dstSurface, srcSurface, D3D.Filter.Triangle | D3D.Filter.Dither, 0);
+
+            int pitch;
+
+            // lock the surface to grab the data
+            DX.GraphicsStream graphStream = dstSurface.LockRectangle( new Rectangle(0,0,desc.Width,desc.Height), D3D.LockFlags.Discard, out pitch);
+
+            // create an RGB buffer
+            byte[] buffer = new byte[width * height * 3];
+
+            int offset = 0, line = 0, count = 0;
+
+            // gotta copy that data manually since it is in another format (sheesh!)
+            unsafe
+            {
+                byte* data = (byte*)graphStream.InternalData;
+
+                for (int y = 0; y < desc.Height; y++)
+                {
+                    line = y * pitch;
+
+                    for (int x = 0; x < desc.Width; x++)
+                    {
+                        offset = x * 4;
+
+                        int pixel = line + offset;
+
+                        // Actual format is BRGA for some reason
+                        buffer[count++] = data[pixel + 2];
+                        buffer[count++] = data[pixel + 1];
+                        buffer[count++] = data[pixel + 0];
+                    }
+                }
+            }
+
+            dstSurface.UnlockRectangle();
+
+            // dispose of the surface
+            dstSurface.Dispose();
+
+            // gotta flip the image real fast
+            Image image = Image.FromDynamicImage(buffer, width, height, PixelFormat.R8G8B8);
+            image.FlipAroundX();
+
+            // write the data to the stream provided
+            stream.Write(image.Data, 0, image.Data.Length);
         }
 
     }

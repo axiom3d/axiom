@@ -516,7 +516,7 @@ namespace Axiom.RenderSystems.Xna
                             numMips, 
                             d3dUsage,
                             d3dPixelFormat );
-               texture = cubeTexture;
+               texture = normTexture;
             }
         }
 
