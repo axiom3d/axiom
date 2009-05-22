@@ -859,7 +859,6 @@
     <Compile Include="Utilities\Contract.cs" />
     <Compile Include="Utilities\Exceptions.cs" />
     <Compile Include="Utilities\Proclaim.cs" />
-    <None Include="Axiom.Engine.build" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
