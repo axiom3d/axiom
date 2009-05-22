@@ -81,6 +81,15 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             return TextureType.GetHashCode() ^ TexCoordCalcMethod.GetHashCode() ^ LayerBlendModeEx.GetHashCode() ^ CoordIndex.GetHashCode();
         }
 
+        public override string ToString()
+        {
+            return ( new System.Text.StringBuilder() )
+                .AppendFormat( "[ TextureType: {0}; TexCoordCalcMethod : {1}; LayerBlendModeEx : {2}; CoordIndex : {3} ]",
+                               this.TextureType.ToString(),
+                               this.TexCoordCalcMethod.ToString(),
+                               this.LayerBlendModeEx.ToString(),
+                               this.CoordIndex.ToString() ).ToString();
+        }
         #endregion Object Implementation
     }
 }

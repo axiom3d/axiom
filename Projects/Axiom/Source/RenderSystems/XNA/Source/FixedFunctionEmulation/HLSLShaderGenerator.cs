@@ -350,7 +350,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 			if ( fixedFunctionState.GeneralFixedFunctionState.FogMode != FogMode.None )
 			{
-                shaderSource += "\tfloat4 fogDist : COLOR2;\n";
+                shaderSource += "\tfloat fogDist : COLOR2;\n";
 			}
 			shaderSource += "};\n";
 #endregion
@@ -410,9 +410,10 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                             switch (texCordVecType[curTextureLayerState.CoordIndex])
                             {
                                 case VertexElementType.Float1:
-                                    shaderSource += "\t\tfloat4 texCordWithMatrix = float4(input.Texcoord" + coordIdx + ",1, 1, 1);\n";
-                                    shaderSource += "\t\ttexCordWithMatrix = mul(texCordWithMatrix, TextureMatrix" + layerCounter + " );\n";
-                                    shaderSource += "\t\toutput.Texcoord" + layerCounter + " = texCordWithMatrix.x;\n";
+                                    shaderSource += "\t\toutput.Texcoord" + layerCounter + " = input.Texcoord" + coordIdx + ";\n";
+                                    //shaderSource += "\t\tfloat4 texCordWithMatrix = float4(input.Texcoord" + coordIdx + ",1, 1, 1);\n";
+                                    //shaderSource += "\t\ttexCordWithMatrix = mul(texCordWithMatrix, TextureMatrix" + layerCounter + " );\n";
+                                    //shaderSource += "\t\toutput.Texcoord" + layerCounter + " = texCordWithMatrix.x;\n";
                                     break;
                                 case VertexElementType.Float2:
                                     shaderSource += "\t\tfloat4 texCordWithMatrix = float4(input.Texcoord" + coordIdx + ", 1, 1);\n";
@@ -420,9 +421,10 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                                     shaderSource += "\t\toutput.Texcoord" + layerCounter + " = texCordWithMatrix.xy;\n";
                                     break;
                                 case VertexElementType.Float3:
-                                    shaderSource += "\t\tfloat4 texCordWithMatrix = float4(input.Texcoord" + coordIdx + ",1);\n";
-                                    shaderSource += "\t\ttexCordWithMatrix = mul(texCordWithMatrix, TextureMatrix" + layerCounter + ");\n";
-                                    shaderSource += "\t\toutput.Texcoord" + layerCounter + " = texCordWithMatrix.xyz;\n";
+                                    shaderSource += "\t\toutput.Texcoord" + layerCounter + " = input.Texcoord" + coordIdx + ";\n";
+                                    //shaderSource += "\t\tfloat4 texCordWithMatrix = float4(input.Texcoord" + coordIdx + ",1);\n";
+                                    //shaderSource += "\t\ttexCordWithMatrix = mul(texCordWithMatrix, TextureMatrix" + layerCounter + ");\n";
+                                    //shaderSource += "\t\toutput.Texcoord" + layerCounter + " = texCordWithMatrix.xyz;\n";
                                     break;
                             }
                         else 
@@ -622,18 +624,29 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                 case FogMode.None:
                     break;
                 case FogMode.Exp:
+                case FogMode.Exp2:
+                case FogMode.Linear:
+                    shaderSource += "output.fogDist = length( cameraPos.xyz );\r\n";
+                    break;
+            }
+
+            switch (fixedFunctionState.GeneralFixedFunctionState.FogMode)
+            {
+                case FogMode.None:
+                    break;
+                case FogMode.Exp:
                     shaderSource += "\t#define E 2.71828\n";
-                    shaderSource += "\toutput.fogDist = 1.0 / pow( E, output.fogDist*FogDensity );\n";
+                    shaderSource += "\toutput.fogDist = 1.0 / pow( E, output.fogDist * FogDensity );\n";
                     shaderSource += "\toutput.fogDist = clamp( output.fogDist, 0, 1 );\n";
                     break;
                 case FogMode.Exp2:
                     shaderSource += "\t#define E 2.71828\n";
-                    shaderSource += "\toutput.fogDist = 1.0 / pow( E, output.fogDist*output.fogDist*FogDensity*FogDensity );\n";
+                    shaderSource += "\toutput.fogDist = 1.0 / pow( E, output.fogDist * output.fogDist * FogDensity * FogDensity );\n";
                     shaderSource += "\toutput.fogDist = clamp( output.fogDist, 0, 1 );\n";
                     break;
                 case FogMode.Linear:
-                    shaderSource = shaderSource + "output.fogDist = length(cameraPos.xyz);\r\n";
-                    shaderSource += "\toutput.fogDist = (FogEnd - output.fogDist)/(FogEnd - FogStart);\n";
+                    //shaderSource += "\toutput.fogDist = saturate( ( output.fogDist - FogStart ) / ( FogEnd - FogStart ) / FogDensity );\n";
+                    shaderSource += "\toutput.fogDist = ( FogEnd - output.fogDist ) / ( FogEnd - FogStart );\n";
                     shaderSource += "\toutput.fogDist = clamp( output.fogDist, 0, 1 );\n";
                     break;
             }
@@ -677,8 +690,8 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                 shaderSource += "\t{\n\t\tfloat4 texColor=float4(1.0,1.0,1.0,1.0);\n";
                 TextureLayerState curTextureLayerState = fixedFunctionState.TextureLayerStates[i];
                 String layerCounter = Convert.ToString(i);
-               
-                switch (curTextureLayerState.TextureType)
+
+                switch ( curTextureLayerState.TextureType )
                 {
                     case TextureType.OneD:
                         {
@@ -686,7 +699,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                         }
                         break;
                     case TextureType.TwoD:
-                        switch (fixedFunctionState.TextureLayerStates[i].TexCoordCalcMethod)
+                        switch ( fixedFunctionState.TextureLayerStates[ i ].TexCoordCalcMethod )
                         {
                             case TexCoordCalcMethod.None:
                             case TexCoordCalcMethod.EnvironmentMap:
@@ -696,11 +709,11 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                                 shaderSource += "\t\ttexColor  = tex2D(Texture" + layerCounter + ", input.Texcoord" + layerCounter + ");\n";
                                 break;
                             case TexCoordCalcMethod.ProjectiveTexture:
-                                if (texCordVecType.ContainsKey(curTextureLayerState.CoordIndex))
-                                    switch (texCordVecType[curTextureLayerState.CoordIndex])
+                                if ( texCordVecType.ContainsKey( curTextureLayerState.CoordIndex ) )
+                                    switch ( texCordVecType[ curTextureLayerState.CoordIndex ] )
                                     {
                                         case VertexElementType.Float1:
-                                            shaderSource += "\t\ttexColor  = tex2D(Texture" + layerCounter + ",input.Texcoord" + layerCounter + ".x);\n";
+                                            shaderSource += "\t\ttexColor  = tex2D(Texture" + layerCounter + ",input.Texcoord" + layerCounter + ");\n";
                                             break;
                                         case VertexElementType.Float2:
                                             shaderSource += "\t\tfloat2 final   =input.Texcoord" + layerCounter + ".xy / input.Texcoord" + layerCounter + ".w;\n";
@@ -725,7 +738,25 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
                         //shaderSource += "\t\ttexColor  = texCUBElod(Texture" + layerCounter + ", float4(input.Texcoord" + layerCounter + ",0));\n";
                         break;
                     case TextureType.ThreeD:
-                        shaderSource += "\t\t texColor  = tex3D(Texture" + layerCounter + ", input.Texcoord" + layerCounter + ");\n";
+                        if ( texCordVecType.ContainsKey( curTextureLayerState.CoordIndex ) )
+                        {
+                            switch ( texCordVecType[ i ] )
+                            {
+                                case VertexElementType.Float1:
+                                    shaderSource = shaderSource + "\t\t texColor = tex3D(Texture" + layerCounter + ", float3(input.Texcoord" + layerCounter + ", 0.0, 0.0));\r\n";
+                                    break;
+                                case VertexElementType.Float2:
+                                    shaderSource = shaderSource + "\t\t texColor = tex3D(Texture" + layerCounter + ", float3(input.Texcoord" + layerCounter + ".x, input.Texcoord" + layerCounter + ".y, 0.0));\r\n";
+                                    break;
+                                case VertexElementType.Float3:
+                                    shaderSource = shaderSource + "\t\t texColor = tex3D(Texture" + layerCounter + ", input.Texcoord" + layerCounter + ");\r\n";
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            shaderSource += "\t\t texColor  = tex3D(Texture" + layerCounter + ", input.Texcoord" + layerCounter + ");\n";
+                        }
                         break;
                 }
 
@@ -832,12 +863,11 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
        
             if ( fixedFunctionState.GeneralFixedFunctionState.FogMode != FogMode.None )
 			{
-                shaderSource += "\tfinalColor = input.fogDist * finalColor + (1.0 - input.fogDist)* FogColor;\n";
+                shaderSource += "\tfinalColor = input.fogDist * finalColor + (1.0 - input.fogDist) * FogColor;\n";
 			}
             
 			shaderSource += "\treturn finalColor;\n}\n";
             #endregion
-
 
             return shaderSource;
 		}
