@@ -96,7 +96,7 @@ namespace Axiom.Demos
 			CompositorManager.Instance.AddCompositor( this.window.GetViewport( 0 ), "Embossed" );
 			CompositorManager.Instance.AddCompositor( this.window.GetViewport( 0 ), "Old Movie" );
 
-			//CompositorManager.Instance.SetCompositorEnabled( this.window.GetViewport( 0 ), "Bloom", true );
+			CompositorManager.Instance.SetCompositorEnabled( this.window.GetViewport( 0 ), "Bloom", true );
 			//CompositorManager.Instance.SetCompositorEnabled( this.window.GetViewport( 0 ), "Motion Blur", true );
 		}
 

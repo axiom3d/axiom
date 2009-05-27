@@ -958,7 +958,8 @@ namespace Axiom.SceneManagers.PortalConnected
         //---------------------------------------------------------------------
         protected override void PrepareShadowTextures(Camera cam, Viewport vp)
         {
-            activeCameraZone = ((PCZSceneNode)cam.ParentSceneNode).HomeZone;
+            if (((PCZSceneNode)cam.ParentSceneNode) != null)
+                activeCameraZone = ((PCZSceneNode)cam.ParentSceneNode).HomeZone;
             base.PrepareShadowTextures(cam, vp);
         }
         //---------------------------------------------------------------------
