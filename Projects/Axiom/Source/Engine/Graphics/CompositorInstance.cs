@@ -349,6 +349,7 @@ namespace Axiom.Graphics
 				ts.OnlyInitial = target.OnlyInitial;
 				ts.VisibilityMask = target.VisibilityMask;
 				ts.LodBias = target.LodBias;
+			    // TODO: ts.ShadowsEnabled = target.ShadowsEnabled;
 				/// Check for input mode previous
 				if ( target.InputMode == CompositorInputMode.Previous && previousInstance != null )
 				{
@@ -887,6 +888,8 @@ namespace Axiom.Graphics
 			onlyInitial = false;
 			hasBeenRendered = false;
 			findVisibleObjects = false;
+            // This fixes an issue, but seems to be wrong for some reason.
+		    materialScheme = MaterialManager.DefaultSchemeName;
 		}
 
 		#endregion Constructors
