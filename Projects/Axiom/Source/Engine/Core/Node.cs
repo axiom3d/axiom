@@ -302,18 +302,14 @@ namespace Axiom.Core
                 child = childNodes[ i ];
                 if ( child.name == name )
                 {
-                    break;
+                    CancelUpdate(child);
+                    childNodes.Remove(child);
+                    return child;
                 }
             }
 
-            if ( child == null )
-            {
-                throw new AxiomException( "Node named '{0}' not found.!", name );
-            }
-
-            CancelUpdate( child );
-            childNodes.Remove( child );
-            return child;
+            throw new AxiomException( "Node named '{0}' not found.!", name );
+            return null;
         }
 
         /// <summary>
