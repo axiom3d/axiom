@@ -9,8 +9,10 @@
     <RootNamespace>Axiom.RenderSystems.Xna.Content</RootNamespace>
     <AssemblyName>Axiom.RenderSystems.Xna.Content</AssemblyName>
     <XnaFrameworkVersion>v3.0</XnaFrameworkVersion>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <XnaCrossPlatformGroupID>f95b7adf-1a1c-4092-8e5d-b3ff12a5f548</XnaCrossPlatformGroupID>
+    <TargetFrameworkSubset>
+    </TargetFrameworkSubset>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,16 +46,6 @@
     </Reference>
     <Reference Include="System">
       <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
   </ItemGroup>
   <ItemGroup>

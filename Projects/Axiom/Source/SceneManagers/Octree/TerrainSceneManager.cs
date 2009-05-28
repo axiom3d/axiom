@@ -40,12 +40,14 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Media;
+using System.Data;
 
 
 #endregion Namespace Declarations
 
 namespace Axiom.SceneManagers.Octree
 {
+
     /// <summary>
     /// Summary description for TerrainSceneManager.
     /// </summary>
@@ -84,7 +86,7 @@ namespace Axiom.SceneManagers.Octree
         {
             options = new TerrainOptions();
 
-            /*DataSet optionData = new DataSet();
+            DataSet optionData = new DataSet();
             optionData.ReadXml( fileName );
             DataTable table = optionData.Tables[ 0 ];
             DataRow row = table.Rows[ 0 ];
@@ -248,7 +250,7 @@ namespace Axiom.SceneManagers.Octree
                         ( (TerrainRenderable)tiles[ i, j ] ).CalculateNormals();
                     }
                 }
-            }*/
+            }
         }
 
         /// <summary>

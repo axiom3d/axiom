@@ -5,7 +5,7 @@
          assemblies to include from solution and project documentation
          sources -->
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{113d9866-9361-4029-b3b1-5b62114da933}</ProjectGuid>
     <SHFBSchemaVersion>1.8.0.0</SHFBSchemaVersion>
@@ -15,7 +15,7 @@
     <RootNamespace>Documentation</RootNamespace>
     <Name>Documentation</Name>
     <!-- SHFB properties -->
-    <OutputPath>C:\Projects\Axiom\trunk\build\image\docs</OutputPath>
+    <OutputPath>D:\Projects\Axiom\trunk\build\image\docs</OutputPath>
     <HtmlHelpName>AxiomSDK</HtmlHelpName>
     <ProjectSummary>
     </ProjectSummary>
@@ -39,18 +39,19 @@
     <PresentationStyle>Prototype</PresentationStyle>
     <NamingMethod>MemberName</NamingMethod>
     <DocumentationSources>
-      <DocumentationSource sourceFile="Source\Engine\Axiom.csproj" xmlns="" />
-      <DocumentationSource sourceFile="Source\Platforms\Win32\Axiom.Platforms.Win32.csproj" xmlns="" />
-      <DocumentationSource sourceFile="Source\Platforms\SDL\Axiom.Platforms.SDL.csproj" xmlns="" />
-      <DocumentationSource sourceFile="Source\RenderSystems\DirectX9\Axiom.RenderSystems.DirectX9.csproj" xmlns="" />
-      <DocumentationSource sourceFile="Source\RenderSystems\Xna\Axiom.RenderSystems.Xna.csproj" xmlns="" />
-      <DocumentationSource sourceFile="Source\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.Win32.csproj" xmlns="" />
-      <DocumentationSource sourceFile="Source\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.SDL.csproj" xmlns="" />
-      <DocumentationSource sourceFile="Source\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.csproj" xmlns="" />
-      <DocumentationSource sourceFile="Source\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj" xmlns="" />
-      <DocumentationSource sourceFile="Source\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.csproj" xmlns="" />
-      <DocumentationSource sourceFile="Source\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.csproj" xmlns="" />
-    </DocumentationSources>
+      <DocumentationSource sourceFile="Source\Engine\Axiom.csproj" />
+<DocumentationSource sourceFile="Source\Platforms\OpenTK\Axiom.Platforms.OpenTK.csproj" />
+<DocumentationSource sourceFile="Source\Platforms\SDL\Axiom.Platforms.SDL.csproj" />
+<DocumentationSource sourceFile="Source\Platforms\Win32\Axiom.Platforms.Win32.csproj" />
+<DocumentationSource sourceFile="Source\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.csproj" />
+<DocumentationSource sourceFile="Source\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.csproj" />
+<DocumentationSource sourceFile="Source\RenderSystems\DirectX9\Axiom.RenderSystems.DirectX9.csproj" />
+<DocumentationSource sourceFile="Source\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.SDL.csproj" />
+<DocumentationSource sourceFile="Source\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.Win32.csproj" />
+<DocumentationSource sourceFile="Source\Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.x86.csproj" />
+<DocumentationSource sourceFile="Source\RenderSystems\XNA\Axiom.RenderSystems.Xna.csproj" />
+<DocumentationSource sourceFile="Source\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.csproj" />
+<DocumentationSource sourceFile="Source\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj" /></DocumentationSources>
     <NamespaceSummaries>
       <NamespaceSummaryItem name="(global)" isDocumented="False" xmlns="" />
       <NamespaceSummaryItem name="Axiom.Animating" isDocumented="True" xmlns="" />
