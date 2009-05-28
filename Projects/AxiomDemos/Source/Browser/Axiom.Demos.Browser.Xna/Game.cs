@@ -155,7 +155,7 @@ namespace Axiom.Demos.Browser.Xna
             }
         }
 
-        Axiom.Input.InputReader _setupInput()
+        static InputReader _setupInput()
         {
             return new XBoxInput();
         }
