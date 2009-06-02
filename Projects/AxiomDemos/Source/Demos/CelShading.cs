@@ -32,7 +32,7 @@ namespace Axiom.Demos
 
         #endregion Fields
 
-        protected override void CreateScene()
+        public override void CreateScene()
         {
             if ( !Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) ||
                 !Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.FragmentPrograms ) )

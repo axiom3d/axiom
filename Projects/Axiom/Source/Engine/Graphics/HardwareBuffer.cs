@@ -304,12 +304,11 @@ namespace Axiom.Graphics
         /// </param>
         public void WriteData( int offset, int length, System.Array data )
         {
-            GCHandle handle = GCHandle.Alloc( data, GCHandleType.Pinned );
-            IntPtr dataPtr = handle.AddrOfPinnedObject();
+            IntPtr dataPtr = Memory.PinObject( data );
 
             WriteData( offset, length, dataPtr, false );
 
-            handle.Free();
+            Memory.UnpinObject(data);
         }
 
         /// <summary>
@@ -328,12 +327,11 @@ namespace Axiom.Graphics
         /// </param>
 		public virtual void WriteData( int offset, int length, System.Array data, bool discardWholeBuffer )
 		{
-			GCHandle handle = GCHandle.Alloc( data, GCHandleType.Pinned );
-			IntPtr dataPtr = handle.AddrOfPinnedObject();
+			IntPtr dataPtr = Memory.PinObject( data );
 
 			WriteData( offset, length, dataPtr, discardWholeBuffer );
 
-			handle.Free();
+            Memory.UnpinObject( data );
 		}
 
         /// <summary>

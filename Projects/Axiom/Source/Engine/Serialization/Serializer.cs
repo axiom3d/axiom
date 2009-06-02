@@ -105,13 +105,22 @@ namespace Axiom.Serialization
 			unsafe
 			{
 				byte* pointer = (byte*)dest.ToPointer();
-
+                #if !(XBOX || XBOX360 || SILVERLIGHT)
 				for ( int i = 0; i < count; i++ )
 				{
 					pointer[ i ] = reader.ReadByte();
 				}
+                #else
+                for ( int i =0; i <count ; i+=4 )
+                {
+                        pointer[i + 3] = reader.ReadByte();
+                        pointer[i + 2] = reader.ReadByte();
+                        pointer[i+1] = reader.ReadByte();
+                        pointer[i] = reader.ReadByte();
 			}
+                #endif
 		}
+        }
 
 		/// <summary>
 		///		Writes a specified number of bytes.
@@ -320,7 +329,6 @@ namespace Axiom.Serialization
 			unsafe
 			{
 				short* pointer = (short*)dest.ToPointer();
-
 				for ( int i = 0; i < count; i++ )
 				{
 					pointer[ i ] = reader.ReadInt16();

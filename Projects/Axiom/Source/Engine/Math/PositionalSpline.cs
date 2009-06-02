@@ -71,6 +71,12 @@ namespace Axiom.Math
         public PositionalSpline()
             : base()
         {
+            // intialize the vector collections
+            pointList = new List<Vector3>();
+            tangentList = new List<Vector3>();
+
+            // do not auto calculate tangents by default
+            //autoCalculateTangents = false; //[FXCop Optimization : Do not initialize unnecessarily]
         }
 
         #endregion

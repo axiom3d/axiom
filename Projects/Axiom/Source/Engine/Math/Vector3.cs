@@ -185,6 +185,11 @@ namespace Axiom.Math
         public static Vector3 operator *( Vector3 left, Vector3 right )
         {
             return new Vector3( left.x * right.x, left.y * right.y, left.z * right.z );
+            //Vector3 retVal;
+            //retVal.x = left.x * right.x;
+            //retVal.y = left.y * right.y;
+            //retVal.z = left.z * right.z;
+            //return retVal;
         }
 
         /// <summary>
@@ -204,9 +209,15 @@ namespace Axiom.Math
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static Vector3 operator /( Vector3 left, Vector3 right )
+        public static Vector3 operator /(Vector3 left, Vector3 right)
         {
-            return new Vector3( left.x / right.x, left.y / right.y, left.z / right.z );
+            Vector3 vector;
+
+            vector.x = left.x / right.x;
+            vector.y = left.y / right.y;
+            vector.z = left.z / right.z;
+
+            return vector;
         }
 
         /// <summary>
@@ -230,7 +241,7 @@ namespace Axiom.Math
         {
             Debug.Assert( scalar != 0.0f, "Cannot divide a Vector3 by zero." );
 
-            Vector3 vector = new Vector3();
+            Vector3 vector;
 
             // get the inverse of the scalar up front to avoid doing multiple divides later
             float inverse = 1.0f / scalar;
@@ -241,6 +252,7 @@ namespace Axiom.Math
 
             return vector;
         }
+
 
         /// <summary>
         ///		Used when a Vector3 is added to another Vector3.
@@ -305,7 +317,12 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Vector3 operator *( float scalar, Vector3 right )
         {
-            return new Vector3( right.x * scalar, right.y * scalar, right.z * scalar );
+            //return new Vector3( right.x * scalar, right.y * scalar, right.z * scalar );
+            Vector3 retVal;
+            retVal.x = right.x * scalar;
+            retVal.y = right.y * scalar;
+            retVal.z = right.z * scalar;
+            return retVal;
         }
 
         /// <summary>
@@ -606,12 +623,7 @@ namespace Axiom.Math
         /// <returns></returns>
         public Vector3 RandomDeviant( float angle, Vector3 up )
         {
-            Vector3 newUp = Vector3.Zero;
-
-            if ( up == Vector3.Zero )
-                newUp = this.Perpendicular();
-            else
-                newUp = up;
+            Vector3 newUp = ( up == Vector3.Zero ) ? this.Perpendicular() : up;
 
             // rotate up vector by random amount around this
             Quaternion q = Quaternion.FromAngleAxis( Utility.UnitRandom() * Utility.TWO_PI, this );
@@ -718,7 +730,7 @@ namespace Axiom.Math
         public Quaternion GetRotationTo( Vector3 destination, Vector3 fallbackAxis )
         {
             // Based on Stan Melax's article in Game Programming Gems
-            Quaternion q = new Quaternion();
+            Quaternion q;
 
             // Copy, since cannot modify local
             Vector3 v0 = new Vector3( this.x, this.y, this.z );

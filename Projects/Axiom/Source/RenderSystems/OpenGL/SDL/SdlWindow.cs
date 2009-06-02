@@ -40,6 +40,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 
 using Tao.Sdl;
+using System.Runtime.InteropServices;
 
 #endregion Namespace Declarations
 
@@ -95,7 +96,7 @@ namespace Axiom.RenderSystems.OpenGL
 				SdlWindow._renderWindow = value;
 			}
 		}
-
+			
 		public int Top
 		{
 			get
@@ -115,6 +116,15 @@ namespace Axiom.RenderSystems.OpenGL
 			get
 			{
 				return SdlWindow._left;
+				
+				// remember previous window settings for when we destroy it
+				IntPtr info = Sdl.SDL_GetVideoInfo();
+				Sdl.SDL_VideoInfo videoInfo = (Sdl.SDL_VideoInfo) Marshal.PtrToStructure(info, typeof(Sdl.SDL_VideoInfo));
+				Sdl.SDL_PixelFormat vfmt = (Sdl.SDL_PixelFormat) Marshal.PtrToStructure(videoInfo.vfmt, typeof(Sdl.SDL_PixelFormat));
+				
+				_previousWidth = videoInfo.current_w;
+				_previousHeight = videoInfo.current_h;
+				_previousColorDepth = vfmt.BitsPerPixel;
 			}
 			set
 			{

@@ -34,7 +34,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Data;
 
 using Axiom.Configuration;
 using Axiom.Core;
@@ -114,7 +113,7 @@ namespace Axiom.RenderSystems.OpenGL
             Sdl.SDL_Rect[] modes = Sdl.SDL_ListModes( IntPtr.Zero, Sdl.SDL_FULLSCREEN | Sdl.SDL_OPENGL );
             _deviceModes = new List<Sdl.SDL_Rect>( modes );
 
-            optVideoMode = new ConfigOption( "Video Mode", "800 x 600", false );
+            optVideoMode = new ConfigOption( "Video Mode", "800 x 600 @ 32-bit colour", false );
             // add the resolutions to the config
             foreach ( Sdl.SDL_Rect mode in modes )
             {
@@ -131,7 +130,7 @@ namespace Axiom.RenderSystems.OpenGL
                         // add a new row to the display settings table
                         optVideoMode.PossibleValues.Add( optVideoMode.PossibleValues.Count, query );
                     }
-                    if ( optVideoMode.PossibleValues.Count == 1 )
+                    if ( optVideoMode.PossibleValues.Count == 1 && String.IsNullOrEmpty( optVideoMode.Value ) )
                     {
                         optVideoMode.Value = query;
                     }

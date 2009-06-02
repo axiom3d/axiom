@@ -11,6 +11,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -126,7 +127,7 @@ namespace Axiom.Graphics
 
         public override IntPtr Lock( int offset, int length, BufferLocking locking )
         {
-            Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." );
+            //Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." );
             Debug.Assert( offset >= 0 && ( offset + length ) <= sizeInBytes, "The data area to be locked exceeds the buffer." );
 
             isLocked = true;
@@ -136,35 +137,10 @@ namespace Axiom.Graphics
 
         protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
         {
-            Debug.Assert( !handle.IsAllocated, "Internal error, data being pinned twice." );
+            //Debug.Assert( !handle.IsAllocated, "Internal error, data being pinned twice." );
 
-            //pin the data and obtain the offset into the array as a pointer
-            handle = GCHandle.Alloc( data, GCHandleType.Pinned );
-            unsafe
-            {
-                return (IntPtr)( (byte*)handle.AddrOfPinnedObject() + offset );
-            }
-
-            // alternate solution using Marshal.UnsafeAddrOfPinnedArrayElement()
-            // currently not applicable as the method call cannot be used on all platforms
-            //handle = GCHandle.Alloc(data, GCHandleType.Pinned);
-            //return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
-        }
-
-        public override void Unlock()
-        {
-            Debug.Assert( isLocked, "Cannot unlock buffer if it wasn't locked." );
-
-            isLocked = false;
-
-            UnlockImpl();
-        }
-
-        protected override void UnlockImpl()
-        {
-            Debug.Assert( handle.IsAllocated, "Internal error, data not previously pinned." );
-
-            handle.Free();
+            // return the offset into the array as a pointer
+            return GetDataPointer( offset );
         }
 
         public override void ReadData( int offset, int length, IntPtr dest )
@@ -185,9 +161,23 @@ namespace Axiom.Graphics
             }
         }
 
+        public override void Unlock()
+        {
+            //Debug.Assert(isLocked, "Cannot unlock buffer if it wasn't locked.");
+            
+            isLocked = false;
+
+            UnlockImpl();
+        }
+
+        protected override void UnlockImpl()
+        {            
+            Memory.UnpinObject(data);
+        }
+
         public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
         {
-            //Debug.Assert(!isLocked, "Cannot lock this buffer because it is already locked."); //imitating render system specific hardware buffer behaviour
+            //Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." ); //imitating render system specific hardware buffer behaviour
             Debug.Assert( offset >= 0 && ( offset + length ) <= sizeInBytes, "Buffer overrun while trying to write to a software buffer." );
 
             unsafe
@@ -207,17 +197,21 @@ namespace Axiom.Graphics
         ///		Allows direct access to the software buffer data in cases when it is known that the underlying
         ///		buffer is software and not hardware. The buffer must be locked prior to operation.
         /// </summary>
+        /// <remarks>
+        /// The caller is responible for calling <see>Unlock</see> when they are done using this pointer
+        /// </remarks>
         public IntPtr GetDataPointer( int offset )
         {
-            Debug.Assert( isLocked, "Cannot get data pointer if the buffer wasn't locked." );
+            //Debug.Assert( isLocked, "Cannot get data pointer if the buffer wasn't locked." );
             Debug.Assert( offset >= 0 && offset < sizeInBytes, "Offset into buffer out of range." );
-
+            IntPtr result = Memory.PinObject( data );
             unsafe
             {
-                return (IntPtr)( (byte*)handle.AddrOfPinnedObject() + offset );
+                result = (IntPtr)( (byte*)result + offset );
             }
-        }
+            return result;
 
+        }
         protected override void dispose( bool disposeManagedResources )
         {
             if ( !isDisposed )
@@ -282,7 +276,7 @@ namespace Axiom.Graphics
 
         public override IntPtr Lock( int offset, int length, BufferLocking locking )
         {
-            Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." );
+            //Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." );
             Debug.Assert( offset >= 0 && ( offset + length ) <= sizeInBytes, "The data area to be locked exceeds the buffer." );
 
             isLocked = true;
@@ -292,40 +286,12 @@ namespace Axiom.Graphics
 
         protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
         {
-            Debug.Assert( !handle.IsAllocated, "Internal error, data being pinned twice." );
-
-            //pin the data and obtain the offset into the array as a pointer
-            handle = GCHandle.Alloc( data, GCHandleType.Pinned );
-            unsafe
-            {
-                return (IntPtr)( (byte*)handle.AddrOfPinnedObject() + offset );
-            }
-
-            // alternate solution using Marshal.UnsafeAddrOfPinnedArrayElement()
-            // currently not applicable as the method call cannot be used on all platforms
-            //handle = GCHandle.Alloc(data, GCHandleType.Pinned);
-            //return Marshal.UnsafeAddrOfPinnedArrayElement(data, offset);
-        }
-
-        public override void Unlock()
-        {
-            Debug.Assert( isLocked, "Cannot unlock buffer if it wasn't locked." );
-
-            isLocked = false;
-
-            UnlockImpl();
-        }
-
-        protected override void UnlockImpl()
-        {
-            Debug.Assert( handle.IsAllocated, "Internal error, data not previously pinned." );
-
-            handle.Free();
+            return GetDataPointer( offset );
         }
 
         public override void ReadData( int offset, int length, IntPtr dest )
         {
-            //Debug.Assert(!IsLocked, "Cannot lock this buffer because it is already locked."); //imitating render system specific hardware buffer behaviour
+            //Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." ); //imitating render system specific hardware buffer behaviour
             Debug.Assert( offset >= 0 && ( offset + length ) <= sizeInBytes, "Buffer overrun while trying to read a software buffer." );
 
             unsafe
@@ -342,9 +308,23 @@ namespace Axiom.Graphics
             }
         }
 
+        public override void Unlock()
+        {
+            //Debug.Assert(isLocked, "Cannot unlock buffer if it wasn't locked.");
+
+            isLocked = false;
+
+            UnlockImpl();
+        }
+
+        protected override void UnlockImpl()
+        {
+            Memory.UnpinObject( data );
+        }
+
         public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
         {
-            //Debug.Assert(!IsLocked, "Cannot lock this buffer because it is already locked."); //imitating render system specific hardware buffer behaviour
+            //Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." ); //imitating render system specific hardware buffer behaviour
             Debug.Assert( offset >= 0 && ( offset + length ) <= sizeInBytes, "Buffer overrun while trying to write to a software buffer." );
 
             unsafe
@@ -364,15 +344,19 @@ namespace Axiom.Graphics
         ///		Allows direct access to the software buffer data in cases when it is known that the underlying
         ///		buffer is software and not hardware. The buffer must be locked prior to operation.
         /// </summary>
+        /// <remarks>
+        /// The caller is responible for calling <see>Unlock</see> when they are done using this pointer
+        /// </remarks>
         public IntPtr GetDataPointer( int offset )
         {
-            Debug.Assert( IsLocked, "Cannot get data pointer if the buffer wasn't locked." );
+            //Debug.Assert( isLocked, "Cannot get data pointer if the buffer wasn't locked." );
             Debug.Assert( offset >= 0 && offset < sizeInBytes, "Offset into buffer out of range." );
-
+            IntPtr result = Memory.PinObject( data );
             unsafe
             {
-                return (IntPtr)( (byte*)handle.AddrOfPinnedObject() + offset );
+                result = (IntPtr)( (byte*)result + offset );
             }
+            return result;
         }
 
         protected override void dispose( bool disposeManagedResources )

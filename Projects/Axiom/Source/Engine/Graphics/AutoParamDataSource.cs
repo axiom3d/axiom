@@ -217,6 +217,8 @@ namespace Axiom.Graphics
 			cameraPositionObjectSpaceDirty = true;
 			// cameraPositionDirty = true;
 			textureViewProjMatrixDirty = true;
+            viewMatrixDirty = true;
+            projMatrixDirty = true;
 
 			// defaults for the blank light
 			blankLight.Diffuse = ColorEx.Black;
@@ -292,6 +294,8 @@ namespace Axiom.Graphics
 				// inverseTransposeWorldMatrixDirty = true;
 				// inverseTransposeWorldViewMatrixDirty = true;
 				cameraPositionObjectSpaceDirty = true;
+                viewMatrixDirty = true;
+                projMatrixDirty = true;
 			}
 		}
 
@@ -318,7 +322,8 @@ namespace Axiom.Graphics
 				inverseWorldViewMatrixDirty = true;
 				// inverseTransposeWorldViewMatrixDirty = true;
 				cameraPositionObjectSpaceDirty = true;
-				// cameraPositionDirty = true;
+                viewMatrixDirty = true;
+                projMatrixDirty = true;
 			}
 		}
 

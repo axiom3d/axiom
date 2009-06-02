@@ -71,7 +71,7 @@ namespace Axiom.Controllers
         public BaseControllerFunction( bool useDeltaInput )
         {
             this.useDeltaInput = useDeltaInput;
-            deltaCount = 0;
+            //deltaCount = 0; //[FXCop Optimization : Do not initialize unnecessarily], Defaults to 0, left here for clarity
         }
 
         #endregion

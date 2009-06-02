@@ -525,6 +525,14 @@ namespace Axiom.Graphics
 			}
 		}
 
+		public VertexElement this[ int index ]
+		{
+			get
+			{
+				return (VertexElement)elements[ index ];
+			}
+		}
+
 		#endregion
 
 		#region Object overloads

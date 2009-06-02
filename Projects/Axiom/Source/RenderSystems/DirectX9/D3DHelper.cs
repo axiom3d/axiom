@@ -117,7 +117,7 @@ namespace Axiom.RenderSystems.DirectX9
 			return driverList;
 		}
 
-		/// <summary>
+        /// <summary>
 		/// 
 		/// </summary>
 		/// <param name="type"></param>

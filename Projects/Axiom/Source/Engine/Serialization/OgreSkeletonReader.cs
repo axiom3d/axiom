@@ -341,8 +341,8 @@ namespace Axiom.Serialization
 			WriteUShort( writer, bone.Handle );
 			WriteVector3( writer, bone.Position );
 			WriteQuat( writer, bone.Orientation );
-			if ( bone.ScaleFactor != Vector3.UnitScale )
-				WriteVector3( writer, bone.ScaleFactor );
+			if ( bone.Scale != Vector3.UnitScale )
+				WriteVector3( writer, bone.Scale );
 
 			long end_offset = writer.Seek( 0, SeekOrigin.Current );
 			writer.Seek( (int)start_offset, SeekOrigin.Begin );

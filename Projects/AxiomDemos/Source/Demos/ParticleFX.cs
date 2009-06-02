@@ -23,7 +23,7 @@ namespace Axiom.Demos
 
         #region Methods
 
-        protected override void CreateScene()
+        public override void CreateScene()
         {
 
 			// set some ambient light

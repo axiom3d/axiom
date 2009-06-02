@@ -16,13 +16,13 @@ namespace Axiom.Demos
 
 		bool _dual = false;
 
-		protected override void ChooseSceneManager()
+		public override void ChooseSceneManager()
 		{
 			_primary = Root.Instance.CreateSceneManager( SceneType.Generic, "primary" );
 			_secondary = Root.Instance.CreateSceneManager( SceneType.Generic, "secondary" );
 		}
 
-		protected override void CreateScene()
+		public override void CreateScene()
 		{
 			//Setup the TerrainSceneManager
 			_primary.SetSkyDome( true, "Examples/CloudySky", 1, 15 );
@@ -32,13 +32,13 @@ namespace Axiom.Demos
 
 		}
 
-		protected override void CreateCamera()
+		public override void CreateCamera()
 		{
 			_primary.CreateCamera( CAMERA_NAME );
 			_secondary.CreateCamera( CAMERA_NAME );
 		}
 
-		protected override void CreateViewports()
+		public override void CreateViewports()
 		{
 			SetupViewport( window, _primary );
 		}

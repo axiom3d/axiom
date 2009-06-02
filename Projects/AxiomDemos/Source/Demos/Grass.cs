@@ -93,7 +93,7 @@ namespace Axiom.Demos
         protected StaticGeometry StaticGeom;
         protected SceneNode HeadNode;
 
-        protected override void CreateScene()
+        public override void CreateScene()
         {
             scene.SetSkyBox( true, "Skybox/Space", 10000 );
 
@@ -150,7 +150,7 @@ namespace Axiom.Demos
 
             HeadNode = scene.RootSceneNode.CreateChildSceneNode();
             HeadNode.AttachObject( e );
-            HeadNode.Scale( new Vector3( 7, 7, 7 ) );
+            HeadNode.Scale = new Vector3( 7, 7, 7 );
             HeadNode.Position = new Vector3( 0, 200, 0 );
 
             if ( e.GetSubEntity( 0 ).NormalizeNormals == false )

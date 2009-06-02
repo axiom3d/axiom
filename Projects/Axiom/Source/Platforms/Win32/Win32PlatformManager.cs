@@ -69,7 +69,8 @@ namespace Axiom.Platforms.Win32
         /// <returns></returns>
         public Axiom.Input.InputReader CreateInputReader()
         {
-            inputReader = new Win32InputReader();
+            if ( inputReader == null )
+                inputReader = new Win32InputReader();
             return inputReader;
         }
 
@@ -79,7 +80,8 @@ namespace Axiom.Platforms.Win32
         /// <returns></returns>
         public ITimer CreateTimer()
         {
-            timer = new Win32Timer();
+            if( timer == null )
+                timer = new Win32Timer();
             return timer;
         }
 

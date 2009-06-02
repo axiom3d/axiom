@@ -38,10 +38,19 @@ using System.Collections.Generic;
 
 namespace Axiom.Collections
 {
+    using Core;
+
     /// <summary>
     /// Summary for NewClass
     /// </summary>
-    public class NameValuePairList : Dictionary< string, string>
+	public class NameValuePairList : Dictionary<string, string>
 	{
+		/// <summary>
+		/// Default Constructor
+		/// </summary>
+		public NameValuePairList()
+			: base( new CaseInsensitiveStringComparer() )
+		{
+		}
     };
 }

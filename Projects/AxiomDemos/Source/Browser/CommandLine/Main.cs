@@ -8,7 +8,6 @@ using System.Threading;
 using Axiom.Demos;
 using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.Demos.Configuration;
 using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,6 +16,7 @@ using System.Collections.Generic;
 
 namespace Axiom.Demos.Browser.CommandLine
 {
+    using Configuration;
 
     /// <summary>
     /// Demo command line browser entry point.
@@ -29,6 +29,8 @@ namespace Axiom.Demos.Browser.CommandLine
         protected const string CONFIG_FILE = @"EngineConfig.xml";
 
         private Root engine;
+
+#if !(XBOX || XBOX360 || SILVERLIGHT)
 
         private bool _configure( )
         {
@@ -49,6 +51,7 @@ namespace Axiom.Demos.Browser.CommandLine
 
             return true;
         }
+#endif
 
         /// <summary>
         ///		Loads default resource configuration if one exists.
@@ -68,16 +71,19 @@ namespace Axiom.Demos.Browser.CommandLine
                 // interrogate the available resource paths
                 foreach ( EngineConfig.FilePathRow row in config.FilePath )
                 {
-                    ResourceGroupManager.Instance.AddResourceLocation( row.src, row.type );
+                    ResourceGroupManager.Instance.AddResourceLocation( Path.GetFullPath( row.src ), row.type );
                 }
             }
         }
 
         public void Run( )
         {
+#if !(XBOX || XBOX360 || SILVERLIGHT)
 			SortedList<string, string> demoList = new SortedList<string, string>();
+#endif
             try
             {
+#if !(XBOX || XBOX360 || SILVERLIGHT)
                 if ( _configure( ) )
                 {
 
@@ -133,6 +139,12 @@ namespace Axiom.Demos.Browser.CommandLine
                     //}
 
                 }
+#else
+                            using ( TechDemo demo = (TechDemo)(new Axiom.Demos.SkyPlane()))
+                            {
+                                demo.Start();//show and start rendering
+                            }//dispose of it when done
+#endif
             }
             catch ( Exception caughtException )
             {

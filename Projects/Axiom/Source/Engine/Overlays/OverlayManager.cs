@@ -296,7 +296,7 @@ namespace Axiom.Overlays
 		///    Load a specific overlay file by name.
 		/// </summary>
 		/// <remarks>
-		///    This is required from allowing .overlay scripts to include other overlay files.  It
+        ///    This is required to allow .overlay scripts to include other overlay files.  It
 		///    is not guaranteed what order the files will be loaded in, so this can be used to ensure
 		///    depencies in a script are loaded prior to the script itself being loaded.
 		/// </remarks>

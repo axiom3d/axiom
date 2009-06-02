@@ -39,6 +39,7 @@ using System.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
+using System.Runtime.InteropServices;
 
 #endregion Namespace Declarations
 
@@ -330,16 +331,15 @@ namespace Axiom.SceneManagers.Octree
 		{
 			HardwareVertexBuffer buffer = terrain.vertexBufferBinding.GetBuffer( POSITION );
 
-			int offset = ( x * 3 + z * options.size * 3 + n ) * 4;
-			unsafe
-			{
-				fixed ( void* ptr = _vertex )
-				{
-					buffer.ReadData( offset, 4, (IntPtr)ptr );
-				}
-			}
+            float[] vertex = new float[ 1 ];
 
-			return _vertex[ 0 ];
+            IntPtr ptr = Memory.PinObject( vertex );
+
+			int offset = ( x * 3 + z * options.size * 3 + n ) * 4;
+
+            buffer.ReadData( offset, 4, ptr );
+
+            return vertex[ 0 ];
 		}
 
 		public void SetNeighbor( Neighbor n, TerrainRenderable t )

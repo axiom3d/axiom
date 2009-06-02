@@ -34,8 +34,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Collections.Specialized;
 
 using Axiom.Collections;
 using Axiom.Configuration;
@@ -61,11 +61,11 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		///		Collection of extensions supported by the current hardware.
 		/// </summary>
-		private static StringCollection _extensionList;
+        private static List<String> _extensionList;
 		/// <summary>
 		///		Gets a collection of strings listing all the available extensions.
 		/// </summary>
-		public StringCollection Extensions
+        public List<String> Extensions
 		{
 			get
 			{
@@ -201,7 +201,7 @@ namespace Axiom.RenderSystems.OpenGL
 				}
 
 				// create a new extension list
-				_extensionList = new StringCollection();
+                _extensionList = new List<String>();
 
 				string allExt = Gl.glGetString( Gl.GL_EXTENSIONS ); // TAO 2.0
 				//string allExt = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_EXTENSIONS ) );

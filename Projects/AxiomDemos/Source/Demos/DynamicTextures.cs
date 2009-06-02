@@ -92,7 +92,7 @@ namespace Axiom.Demos
 			return false;
 		}
 
-		protected override void CreateScene()
+		public override void CreateScene()
 		{
 			// Create dynamic texture
 			ptex = TextureManager.Instance.CreateManual( "DynaTex", ResourceGroupManager.DefaultResourceGroupName, TextureType.TwoD, reactorExtent - 2, reactorExtent - 2, 0, PixelFormat.A8R8G8B8, TextureUsage.DynamicWriteOnly );
@@ -118,7 +118,7 @@ namespace Axiom.Demos
 
 			SceneNode node = scene.RootSceneNode.CreateChildSceneNode( new Vector3( -100, -40, -100 ) );
 			node.AttachObject( planeEnt );
-			node.Scale( new Vector3( 3.0f, 3.0f, 3.0f ) );
+			node.Scale =  new Vector3( 3.0f, 3.0f, 3.0f );
 
 			// Create objects
 			SceneNode blaNode = scene.RootSceneNode.CreateChildSceneNode( new Vector3( -200, 0, 50 ) );
@@ -138,7 +138,7 @@ namespace Axiom.Demos
 			swim = ent2.GetAnimationState( "swim" );
 			swim.IsEnabled = true;
 			blaNode.AttachObject( ent2 );
-			blaNode.Scale( new Vector3( 50.0f, 50.0f, 50.0f ) );
+			blaNode.Scale = new Vector3( 50.0f, 50.0f, 50.0f );
 
 			LogManager.Instance.Write( "HardwarePixelBuffer {0} {1} {2} ", buffer.Width, buffer.Height, buffer.Depth );
 

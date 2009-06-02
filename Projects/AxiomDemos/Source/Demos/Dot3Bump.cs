@@ -2,7 +2,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Drawing;
 
 using Axiom.Core;
 using Axiom.Overlays;
@@ -102,7 +101,7 @@ namespace Axiom.Demos
 
 		#endregion Fields
 
-		protected override void CreateScene()
+        public override void CreateScene()
 		{
 			scene.AmbientLight = ColorEx.Black;
 

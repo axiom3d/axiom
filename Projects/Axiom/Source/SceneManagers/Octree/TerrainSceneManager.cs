@@ -34,18 +34,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Data;
+//using System.Data;
 using System.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Media;
+using System.Data;
 
 
 #endregion Namespace Declarations
 
 namespace Axiom.SceneManagers.Octree
 {
+
     /// <summary>
     /// Summary description for TerrainSceneManager.
     /// </summary>

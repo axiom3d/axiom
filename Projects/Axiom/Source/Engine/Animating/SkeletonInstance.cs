@@ -131,7 +131,7 @@ namespace Axiom.Animating
 
 			newBone.Orientation = source.Orientation;
 			newBone.Position = source.Position;
-			newBone.ScaleFactor = source.ScaleFactor;
+			newBone.Scale = source.Scale;
 
 			if ( parent == null )
 			{

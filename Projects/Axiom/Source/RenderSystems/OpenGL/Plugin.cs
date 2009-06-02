@@ -37,6 +37,7 @@ using System;
 
 using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Utilities;
 using System.Reflection;
 
 #endregion Namespace Declarations
@@ -51,25 +52,26 @@ namespace Axiom.RenderSystems.OpenGL
 		#region Implementation of IPlugin
 
 		/// <summary>
-		///     Reference to a GLSL program factory.
-		/// </summary>
-		//private GLSL.GLSLProgramFactory factory = new GLSL.GLSLProgramFactory();
-		/// <summary>
 		///     Reference to the render system instance.
 		/// </summary>
-		private GLRenderSystem renderSystem = new GLRenderSystem();
+        private GLRenderSystem renderSystem;
 
 		public void Start()
 		{
+#if OPENGL_OTK
+            Contract.Requires( PlatformManager.Instance.GetType().Name == "OpenTKPlatformManager", "PlatformManager", 
+                               "OpenGL OpenTK Renderer requires OpenTK Platform Manager." );
+#endif
+            Contract.Requires( Root.Instance.RenderSystems.ContainsKey( "OpenGL" ) == false, "OpenGL",
+                               "An instance of the OpenGL renderer is already loaded." );
+
+            renderSystem = new GLRenderSystem();
 			// add an instance of this plugin to the list of available RenderSystems
 			Root.Instance.RenderSystems.Add( "OpenGL", renderSystem );
-
-			//HighLevelGpuProgramManager.Instance.AddFactory( factory );
 		}
 
 		public void Stop()
 		{
-			//factory.Dispose();
 			renderSystem.Shutdown();
 		}
 

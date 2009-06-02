@@ -55,6 +55,7 @@ namespace Axiom.Core
 	public delegate void NodeDestroyed( Node node );
 
     #endregion
+
     /// <summary>
     ///		Class representing a general-purpose node an articulated scene graph.
     /// </summary>
@@ -292,14 +293,14 @@ namespace Axiom.Core
         ///    Removes the specifed node as a child of this node.
         /// </summary>
         /// <param name="child"></param>
-		public virtual void RemoveChild( Node child )
-		{
-			int index = childNodes.IndexOf( child.Name );
-			if ( index != -1 )
+        public virtual void RemoveChild( Node child )
         {
-				RemoveChild( child, index );
-			}
-		}
+            int index = childNodes.IndexOf( child.Name );
+            if ( index != -1 )
+            {
+                RemoveChild( child, index );
+            }
+        }
 
 
         /// <summary>
@@ -309,14 +310,19 @@ namespace Axiom.Core
         /// <returns></returns>
         public virtual Node RemoveChild( string name )
         {
-			int index = childNodes.IndexOf( name );//getting the index prevent traversing 2x
-			if ( index != -1 )
+            int index = childNodes.IndexOf( name ); //getting the index prevent traversing 2x
+            if ( index != -1 )
             {
-				Node child = childNodes[ index ];
-				RemoveChild( child, index );
-				return child;
+                Node child = childNodes[ index ];
+                if ( child.name == name )
+                {
+                    RemoveChild( child, index );
+                    return child;
                 }
-			return null;
+            }
+
+            throw new AxiomException( "Node named '{0}' not found.!", name );
+            return null;
         }
 
         /// <summary>
@@ -353,7 +359,7 @@ namespace Axiom.Core
         ///	Note that like rotations, scalings are oriented around the node's origin.
         ///</remarks>
         /// <param name="scale"></param>
-        public virtual void Scale( Vector3 factor )
+        public virtual void ScaleBy( Vector3 factor )
         {
             scale = scale * factor;
             NeedUpdate();
@@ -390,7 +396,7 @@ namespace Axiom.Core
                 case TransformSpace.World:
                     if ( parent != null )
                     {
-                        position += parent.DerivedOrientation.Inverse() * translate;
+                        position += ( parent.DerivedOrientation.Inverse() * translate ) / parent.DerivedScale;
                     }
                     else
                     {
@@ -400,7 +406,7 @@ namespace Axiom.Core
                     break;
 
                 case TransformSpace.Parent:
-                    position = position + translate;
+                    position += translate;
                     break;
             }
 
@@ -883,7 +889,7 @@ namespace Axiom.Core
         ///
         ///	Note that like rotations, scalings are oriented around the node's origin.
         ///	</remarks>
-        public virtual Vector3 ScaleFactor
+        public virtual Vector3 Scale
         {
             get
             {
@@ -965,24 +971,21 @@ namespace Axiom.Core
                 Quaternion parentOrientation = parent.DerivedOrientation;
                 derivedOrientation = parentOrientation * orientation;
 
-                // change position vector based on parent's orientation
-                derivedPosition = parentOrientation * position;
-
                 // update scale
+                Vector3 parentScale = parent.DerivedScale;
                 if ( inheritsScale )
                 {
-                    // set out own position by parent scale
-                    Vector3 parentScale = parent.DerivedScale;
-                    derivedPosition = derivedPosition * parentScale;
-
                     // set own scale, just combine as equivalent axes, no shearing
-                    derivedScale = scale * parentScale;
+                    derivedScale = parentScale * scale;
                 }
                 else
                 {
                     // do not inherit parents scale
                     derivedScale = scale;
                 }
+
+                // Change position vector based on parent's orientation & scale
+                derivedPosition = parentOrientation * ( parentScale * position );
 
                 // add parents positition to local altered position
                 derivedPosition += parent.DerivedPosition;
@@ -1142,29 +1145,6 @@ namespace Axiom.Core
             }
         }
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        Quaternion IRenderable.WorldOrientation
-        {
-            get
-            {
-                return this.DerivedOrientation;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        Vector3 IRenderable.WorldPosition
-        {
-            get
-            {
-                return this.DerivedPosition;
-            }
-        }
-
         /// <summary>
         /// Gets the scaling factor of the node as derived from all parents.
         /// </summary>
@@ -1225,7 +1205,7 @@ namespace Axiom.Core
                 if ( needRelativeTransformUpdate )
                 {
                     //derived properties may call Update() if needsParentUpdate is true and this will set needTransformUpdate to true
-                    MakeTransform( this.Position, this.ScaleFactor, this.Orientation, ref cachedRelativeTransform );
+                    MakeTransform( this.Position, this.Scale, this.Orientation, ref cachedRelativeTransform );
                     //dont need to update this again until next invalidation
                     needRelativeTransformUpdate = false;
                 }
@@ -1369,6 +1349,28 @@ namespace Axiom.Core
                 return false;
             }
         }
+
+        /// <summary>
+		/// 
+		/// </summary>
+		public Quaternion WorldOrientation
+		{
+			get
+			{
+				return this.DerivedOrientation;
+			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public Vector3 WorldPosition
+		{
+			get
+			{
+				return this.DerivedPosition;
+			}
+		}
 
         /// <summary>
         ///		This is only used if the SceneManager chooses to render the node. This option can be set

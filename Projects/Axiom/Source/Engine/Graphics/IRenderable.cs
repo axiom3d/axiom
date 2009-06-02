@@ -185,7 +185,7 @@ namespace Axiom.Graphics
 
         /// <summary>
         ///    Gets the worldspace orientation of this renderable; this is used in order to
-        ///    more efficiently update parameters to vertex & fragment programs, since inverting Quaterion
+        ///    more efficiently update parameters to vertex &amp; fragment programs, since inverting Quaterion
         ///    and Vector in order to derive object-space positions / directions for cameras and
         ///    lights is much more efficient than inverting a complete 4x4 matrix, and also 
         ///    eliminates problems introduced by scaling.
@@ -197,7 +197,7 @@ namespace Axiom.Graphics
 
         /// <summary>
         ///    Gets the worldspace position of this renderable; this is used in order to
-        ///    more efficiently update parameters to vertex & fragment programs, since inverting Quaterion
+        ///    more efficiently update parameters to vertex &amp; fragment programs, since inverting Quaterion
         ///    and Vector in order to derive object-space positions / directions for cameras and
         ///    lights is much more efficient than inverting a complete 4x4 matrix, and also 
         ///    eliminates problems introduced by scaling.

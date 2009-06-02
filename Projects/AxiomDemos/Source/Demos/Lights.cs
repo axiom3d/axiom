@@ -1,7 +1,6 @@
 #region Namespace Declarations
 
 using System;
-using System.Drawing;
 
 using Axiom.Animating;
 using Axiom.Controllers;
@@ -48,7 +47,7 @@ namespace Axiom.Demos
 
 		#region Methods
 
-		protected override void CreateScene()
+        public override void CreateScene()
 		{
 			// set some ambient light
 			scene.AmbientLight = new ColorEx( 1, 0.5f, 0.5f, 0.5f );

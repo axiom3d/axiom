@@ -2061,6 +2061,8 @@ namespace Axiom.Graphics
 			_hashCode = ( _index << 28 );
 			int count = TextureUnitStageCount;
 
+            // Fix from Multiverse
+            //    It fixes a problem that was causing rendering passes for a single material to be executed in the wrong order.
 			if ( count > 0 && !( (TextureUnitState)textureUnitStates[ 0 ] ).IsBlank )
 			{
 				_hashCode += ( ( (TextureUnitState)textureUnitStates[ 0 ] ).TextureName.GetHashCode() & ( ( 1 << 14 ) - 1 ) ) << 14;

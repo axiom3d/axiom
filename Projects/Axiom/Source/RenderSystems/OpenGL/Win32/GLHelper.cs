@@ -372,6 +372,10 @@ namespace Axiom.RenderSystems.OpenGL
 						// add a new row to the display settings table
 						optVideoMode.PossibleValues.Add( i, query );
 					}
+                    if (optVideoMode.PossibleValues.Count == 1 && String.IsNullOrEmpty(optVideoMode.Value))
+                    {
+                        optVideoMode.Value = query;
+                    }
 				}
 				// grab the current display settings
 				more = User.EnumDisplaySettings( null, i++, out setting );
