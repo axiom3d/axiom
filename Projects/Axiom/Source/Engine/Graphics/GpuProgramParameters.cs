@@ -879,7 +879,8 @@ namespace Axiom.Graphics
 						break;
 
 					case AutoConstants.LightPosition:
-						SetConstant( entry.index, source.GetLight( entry.data ).DerivedPosition );
+                        // Fix from Multiverse to enable Normal Mapping Sample Material from OGRE
+                        SetConstant( entry.index, source.GetLight( entry.data ).GetAs4DVector() );
 						break;
 
 					case AutoConstants.LightDirection:

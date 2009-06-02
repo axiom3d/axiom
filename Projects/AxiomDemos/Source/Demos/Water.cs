@@ -75,7 +75,7 @@ namespace Axiom.Demos
         #region Methods
 
         // Just override the mandatory create scene method
-        protected override void CreateScene()
+        public override void CreateScene()
         {
             RAND = new Random( 0 ); // najak: use a time-based seed
             GuiMgr = OverlayManager.Instance.Elements;
@@ -179,17 +179,19 @@ namespace Axiom.Demos
 
         private void SetLighting( string mode )
         {
-            // Local Variable declarations
-            string[] modeList = new string[] { "Ambient", "SunLight", "Colors" }; // add "Motion"
-            Light l;
-            scene.AmbientLight = ColorEx.Gray; // default is low ambient light
-
             // Clear Current Lights and start over
             // TODO: Add ClearLights
             //this.scene.ClearLights();
             lightNode.Lights.Clear();
             lightSet.Clear();
-                      
+            
+
+            // Local Variable declarations
+            string[] modeList = new string[] { "Ambient", "SunLight", "Colors" }; // add "Motion"
+            Light l;
+            scene.AmbientLight = new ColorEx( 0.05f, 0.05f, 0.05f ); // default is low ambient light
+
+            
             // Set next Light Mode
             if ( mode == "next" )
             {
@@ -215,7 +217,7 @@ namespace Axiom.Demos
                     float lightScale = 1f;
                     float lightDist = PLANE_SIZE; // / lightScale;
                     float lightHeight = 300f / lightScale;
-                    lightNode.Scale( new Vector3( lightScale, lightScale, lightScale ) );
+                    lightNode.ScaleBy( new Vector3( lightScale, lightScale, lightScale ) );
 
                     // Create a Light
                     AddLight( "Lt1", new Vector3( lightDist, lightHeight, lightDist ), ColorEx.Red, LightType.Point );
@@ -330,7 +332,7 @@ namespace Axiom.Demos
             Vector3 diffPos = newPos - oldPos;
             Quaternion headRotation = Vector3.UnitZ.GetRotationTo( diffPos );
             oldPos = newPos;
-            headNode.Scale( new Vector3( 3.0f, 3.0f, 3.0f ) );
+            headNode.ScaleBy( new Vector3( 3.0f, 3.0f, 3.0f ) );
             headNode.Translate( newPos );
             headNode.Rotate( headRotation );
         }
@@ -499,6 +501,7 @@ namespace Axiom.Demos
 				HandleUserModeInput( string.Format( "Show Overlays = {0}.", viewport.ShowOverlays ) );
             }
 
+#if !(XBOX || XBOX360 )
             // 'P' Captures Screenshot (like 'Print' command)
             if ( input.IsKeyPressed( KeyCodes.P ) )
             {
@@ -508,6 +511,7 @@ namespace Axiom.Demos
                 TakeScreenshot( fileName );
                 HandleUserModeInput( string.Format( "Wrote screenshot '{0}'.", fileName ) );
             }
+#endif
         } // end ReadUserModeInputs()
 
         // Process Rapid Inputs (adjust Demo settings)

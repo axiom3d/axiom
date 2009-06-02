@@ -85,7 +85,6 @@ namespace Axiom.Graphics
         /// <summary>
         /// 
         /// </summary>
-        /// DOC
         public int VertexSize
         {
             get

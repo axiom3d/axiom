@@ -19,12 +19,12 @@ namespace Axiom.Demos
     /// </summary>
     public class Bsp : TechDemo
     {
-        protected override void ChooseSceneManager()
+        public override void ChooseSceneManager()
         {
             scene = engine.CreateSceneManager( SceneType.Interior, "TechDemoSMInstance" );
         }
 
-        protected override void CreateScene()
+        public override void CreateScene()
         {
             // Load world geometry
             scene.LoadWorldGeometry( "maps/chiropteradm.bsp" );

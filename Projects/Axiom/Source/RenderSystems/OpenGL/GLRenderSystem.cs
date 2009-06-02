@@ -671,6 +671,14 @@ namespace Axiom.RenderSystems.OpenGL
             }
         }
 
+        public override Matrix4 ConvertProjectionMatrix( Matrix4 matrix, bool forGpuProgram )
+        {
+            // No conversion required for OpenGL
+
+            Matrix4 dest = matrix;
+
+            return dest;
+        }
 
 		public override void ApplyObliqueDepthProjection( ref Axiom.Math.Matrix4 projMatrix, Axiom.Math.Plane plane, bool forGpuProgram )
 		{
@@ -1482,7 +1490,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <returns></returns>
 		public override RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
 		{
-			HighLevelGpuProgramManager.Instance.AddFactory( new GLSL.GLSLProgramFactory() );
+            // register the GLSL program manage
 
 			_glSupport.Start();
 
@@ -1828,6 +1836,7 @@ namespace Axiom.RenderSystems.OpenGL
                 }
 			} // for
 
+
 			// reset to texture unit 0
 			Gl.glClientActiveTextureARB( Gl.GL_TEXTURE0 );
 
@@ -2097,15 +2106,6 @@ namespace Axiom.RenderSystems.OpenGL
             Gl.glActiveTextureARB( Gl.GL_TEXTURE0 + stage );
             Gl.glTexParameterfv( textureTypes[ stage ], Gl.GL_TEXTURE_BORDER_COLOR, border );
             Gl.glActiveTextureARB( Gl.GL_TEXTURE0 );
-		}
-
-		public override Matrix4 ConvertProjectionMatrix( Matrix4 matrix, bool forGpuProgram )
-		{
-            // No conversion required for OpenGL
-
-            Matrix4 dest = matrix;
-
-			return dest;
 		}
 
 		public override CullingMode CullingMode

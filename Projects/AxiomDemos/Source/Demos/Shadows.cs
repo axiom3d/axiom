@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections;
-using System.Drawing;
 
 using Axiom.Animating;
 using Axiom.Controllers;
@@ -55,7 +54,7 @@ namespace Axiom.Demos
 
         int currentShadowTechnique = -1;
 
-        protected override void CreateScene()
+        public override void CreateScene()
         {
             // set ambient light off
             scene.AmbientLight = ColorEx.Black;
@@ -220,7 +219,7 @@ namespace Axiom.Demos
 				ChangeShadowTechnique();
 
 				// show briefly on the screen
-				debugText = string.Format( "Using {0} Technique.", shadowTechniqueDescriptions[ currentShadowTechnique ] );
+				this.debugText = string.Format( "Using {0} Technique.", shadowTechniqueDescriptions[ currentShadowTechnique ] );
 
 				// show for 2 seconds
 				debugTextDelay = 2.0f;
@@ -234,7 +233,7 @@ namespace Axiom.Demos
 				toggleDelay = 1;
 
 				// show briefly on the screen
-				debugText = string.Format( "Debug shadows {0}.", scene.ShowDebugShadows ? "on" : "off" );
+                this.debugText = string.Format("Debug shadows {0}.", scene.ShowDebugShadows ? "on" : "off");
 
 				// show for 2 seconds
 				debugTextDelay = 2.0f;

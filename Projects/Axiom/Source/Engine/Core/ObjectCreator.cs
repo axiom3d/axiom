@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Reflection;
 using System.IO;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -47,43 +48,192 @@ namespace Axiom.Core
     /// </summary>
     public class ObjectCreator
     {
-		public Type type;
-        public string assemblyName;
-        public string className;
+        private Assembly _assembly;
+        private Type _type;
 
 
 		public ObjectCreator( Type type )
 		{
-			this.type = type;
+			this._type = type;
 		}
         public ObjectCreator( string assemblyName, string className )
         {
-            this.assemblyName = assemblyName;
-            this.className = className;
+            string assemblyFile = Path.Combine(System.IO.Directory.GetCurrentDirectory(), assemblyName);
+            try
+            {
+                _assembly = Assembly.LoadFrom(assemblyFile);
         }
+            catch (Exception ex)
+            {
+                _assembly = Assembly.GetExecutingAssembly();
+            }
+
+            _type = _assembly.GetType(className);
+        }
+
+        public ObjectCreator(string className)
+        {
+            _assembly = Assembly.GetExecutingAssembly();
+            _type = _assembly.GetType(className);
+        }
+
+        public ObjectCreator(Assembly assembly, Type type)
+        {
+            _assembly = assembly;
+            _type = type;
+        }
+
+
+        public string GetAssemblyTitle()
+        {
+            Attribute title = Attribute.GetCustomAttribute( _assembly, typeof( AssemblyTitleAttribute ) );
+            if ( title == null )
+                return _assembly.GetName().Name;
+            return ( (AssemblyTitleAttribute)title ).Title;
+        }
+
+        public T CreateInstance<T>() where T : class
+        {
+            Type type = _type;
+            Assembly assembly = _assembly;
+#if !( XBOX || XBOX360 || SILVERLIGHT )
+            // Check interfaces or Base type for casting purposes
+            if (type.GetInterface(typeof(T).Name) != null
+                 || type.BaseType.Name == typeof(T).Name)
+            {
+#else
+            bool typeFound = false;
+            for (int i = 0; i < type.GetInterfaces().GetLength(0); i++)
+            {
+                typeFound = ( type.GetInterfaces()[ i ] == typeof( T ) );
+            }
+
+            if ( typeFound )
+            {
+#endif
+                try
+                {
+                    return (T)Activator.CreateInstance(type);
+                }
+                catch (Exception e)
+                {
+                    LogManager.Instance.Write("Failed to create instance of {0} of type {0} from assembly {1}", typeof(T).Name, type, assembly.FullName);
+                    LogManager.Instance.Write(e.Message);
+                }
+            }
+            return null;
+        }
+    }
+
+
+    internal class DynamicLoader
+    {
+        #region Fields and Properties
+
+        #region Assembly Property
+
+        private string _assemblyFilename;
+        private Assembly _assembly;
 
         public Assembly GetAssembly()
         {
-			if ( type != null )
-				return type.Assembly;
-            string assemblyFile = Path.Combine( Environment.CurrentDirectory, assemblyName );
-
-            // load the requested assembly
-            return Assembly.LoadFrom( assemblyFile );
+            if (_assembly == null)
+            {
+                lock (this)
+                {
+                    if (_assemblyFilename == null || _assemblyFilename.Length == 0)
+                    {
+                        _assembly = Assembly.GetExecutingAssembly();
+                    }
+                    else
+                    {
+                        _assembly = Assembly.LoadFrom(_assemblyFilename);
+                    }
+                }
+            }
+            return _assembly;
         }
 
-        public new Type GetType()
+        #endregion Assembly Property
+
+        #endregion Fields and Properties
+
+        #region Construction and Destruction
+
+        /// <summary>
+        /// Creates a loader instance for the current executing assembly
+        /// </summary>
+        public DynamicLoader()
         {
-			if ( type != null )
-				return type;
-			if ( className == null )
-				throw new InvalidOperationException( "Cannot get the type from an assembly when the class name is null." );
-            return GetAssembly().GetType( className );
         }
 
-        public object CreateInstance()
+        /// <summary>
+        /// Creates a loader instance for the specified assembly
+        /// </summary>
+        public DynamicLoader(string assemblyFilename)
+            : this()
         {
-            return Activator.CreateInstance( GetType() );
+            _assemblyFilename = assemblyFilename;
         }
+
+        #endregion Construction and Destruction
+
+        #region Methods
+
+        public IList<ObjectCreator> Find(Type baseType)
+        {
+            List<ObjectCreator> types = new List<ObjectCreator>();
+            Assembly assembly = GetAssembly() != null ? GetAssembly() : Assembly.GetExecutingAssembly();
+            Type[] assemblyTypes = null;
+
+            try
+            {
+                assemblyTypes = assembly.GetTypes();
+
+                foreach (Type type in assemblyTypes)
+                {
+#if !(XBOX || XBOX360 || SILVERLIGHT)
+                    if ((baseType.IsInterface && type.GetInterface(baseType.Name) != null) ||
+                         (!baseType.IsInterface && type.BaseType == baseType))
+                    {
+                        types.Add(new ObjectCreator(assembly, type));
+        }
+#else
+                    bool typeFound = false;
+                    for (int i = 0; i < type.GetInterfaces().GetLength(0); i++)
+                    {
+                        typeFound = (type.GetInterfaces()[i] == baseType);
+    }
+
+                    if (typeFound)
+                    {
+					    types.Add( new ObjectCreator( assembly, type ) );
+                    }
+#endif
+                }
+            }
+
+#if !(XBOX || XBOX360 || SILVERLIGHT)
+            catch (ReflectionTypeLoadException ex)
+            {
+                LogManager.Instance.Write(LogManager.BuildExceptionString(ex));
+                LogManager.Instance.Write("Loader Exceptions:");
+                foreach (Exception lex in ex.LoaderExceptions)
+                {
+                    LogManager.Instance.Write(LogManager.BuildExceptionString(lex));
+                }
+            }
+#else
+            catch( Exception ex )
+            {
+                LogManager.Instance.Write(LogManager.BuildExceptionString(ex));
+                LogManager.Instance.Write("Loader Exceptions:");
+            }
+#endif
+
+            return types;
+        }
+
+        #endregion Methods
     }
 }

@@ -502,7 +502,6 @@ namespace Axiom.Core
         /// <summary>
         /// 
         /// </summary>
-        /// DOC
         public int MeshLodIndex
         {
             get
@@ -2108,7 +2107,7 @@ namespace Axiom.Core
                         if ( !extrudeVertices )
                         {
                             IntPtr srcPtr = esr.PositionBuffer.Lock( BufferLocking.Normal );
-                            IntPtr destPtr = new IntPtr( srcPtr.ToInt32() + ( egi.vertexData.vertexCount * 12 ) );
+                            IntPtr destPtr = new IntPtr( srcPtr.ToInt64() + ( egi.vertexData.vertexCount * 12 ) );
 
                             // 12 = sizeof(float) * 3
                             Memory.Copy( srcPtr, destPtr, 12 * egi.vertexData.vertexCount );

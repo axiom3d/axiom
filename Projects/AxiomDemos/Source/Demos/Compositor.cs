@@ -38,7 +38,7 @@ namespace Axiom.Demos
 		    return base.OnFrameStarted( source, e );
 		}
 
-		protected override void CreateScene()
+		public override void CreateScene()
 		{
 			scene.ShadowTechnique = ShadowTechnique.TextureModulative;
 			scene.ShadowFarDistance = 1000;

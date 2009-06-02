@@ -115,7 +115,6 @@ namespace Axiom.Fonts
 
 		#region Fields and Properties
 
-
 		#region FontType Property
 
 		/// <summary>
@@ -162,9 +161,9 @@ namespace Axiom.Fonts
 
 		#endregion Source Property
 
-		#region TrueTypeSize Property
+        #region TrueTypeSize Property
 
-		/// <summary>
+        /// <summary>
 		///    Size of the truetype font, in points.
 		/// </summary>
 		private int _ttfSize;
@@ -194,44 +193,44 @@ namespace Axiom.Fonts
 		/// <summary>
 		///    Resolution (dpi) of truetype font.
 		/// </summary>
-		public int TrueTypeResolution
-		{
-			get
-			{
-				return _ttfResolution;
-			}
-			set
-			{
-				_ttfResolution = value;
-			}
-		}
+        public int TrueTypeResolution
+        {
+            get
+            {
+                return _ttfResolution;
+            }
+            set
+            {
+                _ttfResolution = value;
+            }
+        }
 
-		#endregion TrueTypeResolution Property
+        #endregion TrueTypeResolution Property
 
-		#region Material Property
+        #region Material Property
 
-		/// <summary>
-		///    Material create for use on entities by this font.
-		/// </summary>
-		private Material _material;
-		/// <summary>
-		///    Gets a reference to the material being used for this font.
-		/// </summary>
-		public Material Material
-		{
-			get
-			{
-				return _material;
-			}
-			protected set
-			{
-				_material = value;
-			}
-		}
+        /// <summary>
+        ///    Material create for use on entities by this font.
+        /// </summary>
+        private Material _material;
+        /// <summary>
+        ///    Gets a reference to the material being used for this font.
+        /// </summary>
+        public Material Material
+        {
+            get
+            {
+                return _material;
+            }
+            protected set
+            {
+                _material = value;
+            }
+        }
 
-		#endregion Material Property
+        #endregion Material Property
 
-		#region texture Property
+	    #region texture Property
 
 		/// <summary>
 		///    Material create for use on entities by this font.
@@ -303,7 +302,7 @@ namespace Axiom.Fonts
 
 		#region showLines Property
 
-		private bool _showLines = false;
+		private bool _showLines;
 		protected bool showLines
 		{
 			get
@@ -318,11 +317,11 @@ namespace Axiom.Fonts
 
 		#endregion showLines Property
 
-		#endregion Fields and Properties
+        #endregion Fields and Properties
 
-		#region Constructors and Destructor
+        #region Constructors and Destructor
 
-		/// <summary>
+        /// <summary>
 		///		Constructor, should be called through FontManager.Create().
 		/// </summary>
 		public Font( ResourceManager parent, string name, ResourceHandle handle, string group )
@@ -471,50 +470,57 @@ namespace Axiom.Fonts
 
 		protected override void load()
 		{
-			// create a material for this font
-			Material = (Material)MaterialManager.Instance.Create( "Fonts/" + Name, Group );
+            // clarabie - nov 18, 2008
+            // modified this to check for an existing material instead of always
+            // creating a new one. Allows more flexibility, but also specifically allows us to
+            // solve the problem of XNA not having fixed function support
 
-			TextureUnitState texLayer = null;
-			bool blendByAlpha = false;
+            _material = (Material)MaterialManager.Instance.GetByName("Fonts/" + _name);
 
-			if ( _fontType == FontType.TrueType )
-			{
-				// create the font bitmap on the fly
-				createTexture();
+            if (_material == null)
+            {
 
-				// a texture layer was added in CreateTexture
-				texLayer = Material.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 );
+                // create a material for this font
+                _material = (Material)MaterialManager.Instance.Create("Fonts/" + _name, Group);
 
-				blendByAlpha = true;
-			}
-			else
-			{
+                TextureUnitState unitState = null;
+                bool blendByAlpha = false;
 
-				// load this texture
-				// TODO In general, modify any methods like this that throw their own exception rather than returning null, so the caller can decide how to handle a missing resource.
-				_texture = TextureManager.Instance.Load( Source, Group, TextureType.TwoD, 0 );
+                if (_fontType == FontType.TrueType)
+                {
+                    // create the font bitmap on the fly
+                    createTexture();
 
-				blendByAlpha = texture.HasAlpha;
-				// pre-created font images
-				texLayer = Material.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( Source );
-			}
+                    // a texture layer was added in CreateTexture
+                    unitState = _material.GetTechnique(0).GetPass(0).GetTextureUnitState(0);
 
-			// set texture addressing mode to Clamp to eliminate fuzzy edges
-			texLayer.TextureAddressing = TextureAddressing.Clamp;
-			// Allow min/mag filter, but no mip
-			texLayer.SetTextureFiltering( FilterOptions.Linear, FilterOptions.Linear, FilterOptions.None );
+                    blendByAlpha = true;
+                }
+                else
+                {
+                    // load this texture
+                    // TODO In general, modify any methods like this that throw their own exception rather than returning null, so the caller can decide how to handle a missing resource.
+                    _texture = TextureManager.Instance.Load(Source, Group, TextureType.TwoD, 0);
 
-			// set up blending mode
-			if ( blendByAlpha )
-			{
-				Material.SetSceneBlending( SceneBlendType.TransparentAlpha );
-			}
-			else
-			{
-				// assume black background here
-				Material.SetSceneBlending( SceneBlendType.Add );
-			}
+                    blendByAlpha = texture.HasAlpha;
+                    // pre-created font images
+                    unitState = Material.GetTechnique(0).GetPass(0).CreateTextureUnitState(Source);
+                }
 
+                // set texture addressing mode to Clamp to eliminate fuzzy edges
+                unitState.TextureAddressing = TextureAddressing.Clamp;
+
+                // set up blending mode
+                if (blendByAlpha)
+                {
+                    _material.SetSceneBlending(SceneBlendType.TransparentAlpha);
+                }
+                else
+                {
+                    // assume black background here
+                    _material.SetSceneBlending(SceneBlendType.Add);
+                }
+            }
 		}
 
 		protected override void unload()

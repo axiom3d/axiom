@@ -95,6 +95,13 @@ namespace Axiom.Collections
             itemKeys.Clear();
         }
 
+        public void Remove( object key )
+        {
+            itemTable.Remove( key );
+            itemList.Remove( key );
+            itemKeys.Remove( key );
+        }
+
         #endregion
 
         #region Properties

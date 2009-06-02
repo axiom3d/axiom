@@ -272,6 +272,50 @@ Updated Material Serializer
 Updated MeshChunckID enumeration
 	* Added values to support Pose and Multiverse Extensions	
 
+11-11-2008 - Borrillis
+- Fixed project files so they build properly
+
+11-10-2008 - Borrillis
+- Added project files for VS 2005 and VS 2008 ( V9 and v10 )
+  No longer need Prebuild as both SharpDevelop and MonoDevelop understand at least one of these versions
+  Prebuild and thier scripts are left for now, will be removed later.
+  
+- Added check in PlatformManager to look in current assembly for IPlatformManager implementors
+  This allows for merging of assemblies using ILMerge
+
+01-30-2008 - Borrillis
+- Added missing VertexElementTypes Color_ARGB & Color_ABGR which was causng some mesh load problems with meshes created with oFusion
+- hobbiton merged to trunk
+
+10-23-2007 - Borrillis
+- hobbiton merged to trunk
+
+10-23-2007 - Borrillis
+- Fixed PagingLandscape to build and run properly
+- Corrected WorldOrientation/WorldPosition implementation in Node
+
+10-12-2007 - Borrillis
+- Fix for compile error on SDL/Mono
+- Corrected Alpha setting for RenderWindows in GL
+
+08-30-2007 - Borrillis
+- Fixed nAnt builds on mono/linux
+
+08-01-2007 - Borrillis
+hobbiton merged to trunk
+
+07-30-2007 - Borrillis
+- Updated Fix for Serializer.IsEOF [1710556]
+- Updated Build numbers
+
+03-12-2007 - Borrillis
+- Reverted GCHandle usage in SoftwareBufferManager.cs as it does not lock the buffer properly.
+- Fixed up the Axiom.prebuild to remove some extraneous references.
+- Updated ConfigDialog from crickhollow to fix some refresh bugs
+- Removed some extra comments.
+[ 1582151 ] VertexDeclaration.FindElementBySource returns empty list
+[ 1511228 ] SceneManager.CreateEntity bug
+
 01-02-2007 - Borrillis
 hobbiton merged to trunk
 

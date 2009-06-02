@@ -57,7 +57,7 @@ namespace Axiom.Core
 
         #endregion Constructor
 
-        #region Copy Method
+		#region Copy Method
         /// <summary>
         ///		Method for copying data from one IntPtr to another.
         /// </summary>
@@ -91,7 +91,7 @@ namespace Axiom.Core
                 }
             }
         }
-        #endregion Copy Method
+		#endregion Copy Method
 
         /// <summary>
         ///     Sets the memory to 0 starting at the specified offset for the specified byte length.
@@ -112,23 +112,23 @@ namespace Axiom.Core
             }
         }
 
-        #region Pinned Object Access
+		#region Pinned Object Access
 
-        private static Dictionary<object, GCHandle> _pinnedReferences = new Dictionary<object, GCHandle>();
-        public static IntPtr PinObject( object obj )
-        {
-            GCHandle handle;
-            if ( _pinnedReferences.ContainsKey( obj ) )
-            {
-                handle = _pinnedReferences[ obj ];
-            }
-            else
-            {
-                handle = GCHandle.Alloc( obj, GCHandleType.Pinned );
-                _pinnedReferences.Add( obj, handle );
-            }
-            return handle.AddrOfPinnedObject();
-        }
+		private static Dictionary<object, GCHandle> _pinnedReferences = new Dictionary<object, GCHandle>();
+		public static IntPtr PinObject( object obj )
+		{
+			GCHandle handle;
+			if ( _pinnedReferences.ContainsKey( obj ) )
+			{
+				handle = _pinnedReferences[ obj ];
+			}
+			else
+			{
+				handle = GCHandle.Alloc( obj, GCHandleType.Pinned );
+				_pinnedReferences.Add( obj, handle );
+			}
+			return handle.AddrOfPinnedObject();
+		}
 
         public static void UnpinObject( object obj )
         {
@@ -144,6 +144,6 @@ namespace Axiom.Core
             }
         }
 
-        #endregion Pinned Object Access
-    }
+		#endregion Pinned Object Access
+	}
 }

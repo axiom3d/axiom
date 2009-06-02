@@ -404,7 +404,7 @@ namespace Axiom.ParticleSystems
 		///		Since this method is dependent on other engine systems being started, this method will be called by the
 		///		engine when the render system is initialized.
 		/// </remarks>
-		internal void Initialize()
+        public void Initialize()
 		{
 
 			// Create Billboard renderer factory

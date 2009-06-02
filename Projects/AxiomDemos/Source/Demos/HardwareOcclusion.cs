@@ -29,7 +29,7 @@ namespace Axiom.Demos
 
         #region Methods
 
-        protected override void CreateScene()
+        public override void CreateScene()
         {
             // set up queue event handlers to run the query
             scene.QueueStarted += new RenderQueueEvent( scene_QueueStarted );

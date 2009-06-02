@@ -98,82 +98,49 @@ namespace Axiom.Core
 		/// </summary>
 		public void LoadAll()
 		{
-			// TODO: Make optional, using scanning again in the meantim
-			// trigger load of the plugins app.config section
-			//ArrayList newPlugins = (ArrayList)ConfigurationSettings.GetConfig("plugins");
-			ScanForPlugins();
+            IList<ObjectCreator> newPlugins = ScanForPlugins();
 
-			foreach ( IPlugin plugin in _plugins )
+            foreach ( ObjectCreator pluginCreator in newPlugins )
 			{
-				LoadPlugin( plugin );
-			}
-		}
+                IPlugin plugin = LoadPlugin( pluginCreator );
+                if ( plugin != null )
+                {
+                    _plugins.Add( plugin );
+                }
+            }
+        }
 
 		/// <summary>
 		///		Scans for plugin files in the current directory.
 		/// </summary>
 		/// <returns></returns>
-		protected IPlugin[] ScanForPlugins()
+        protected IList<ObjectCreator> ScanForPlugins()
 		{
-			string[] files = Directory.GetFiles( ".", "*.dll" );
-			Assembly assembly = null;
+		    string[] files = Directory.GetFiles( ".", "*.dll" );
+		    Assembly assembly = null;
+            List<ObjectCreator> pluginFactories = new List<ObjectCreator>();
 
-			foreach ( string file in files )
-			{
-				// TODO: Temp fix, allow exlusions in the app.config
-				if ( file != "Axiom.Engine.dll" )
-				{
-					try
-					{
-						assembly = Assembly.LoadFrom( file );
+		    foreach ( string file in files )
+		    {
+		        // TODO: allow exlusions in the app.config
+		        if ( file != Assembly.GetExecutingAssembly().GetName().Name + ".dll" && file.IndexOf( "Axiom." ) != -1 )
+		        {
+                    string fullPath = Path.GetFullPath(file);
 
-						foreach ( Type type in assembly.GetTypes() )
-						{
-							//there may be other interfaces named IPlugin used for other assemblies, so check the full type
-							bool ipluginFound = false;
-							for ( int i = 0; i < type.GetInterfaces().GetLength( 0 ); i++ )
-							{
-								ipluginFound = ( type.GetInterfaces()[ i ] == typeof( IPlugin ) );
-							}
+		            DynamicLoader loader = new DynamicLoader( fullPath );
 
-							if ( ipluginFound )
-							{
-								try
-								{
-									IPlugin plugin = (IPlugin)Activator.CreateInstance( type );
-									if ( plugin != null )
-										_plugins.Add( plugin );
-									else
-										LogManager.Instance.Write( "Failed to create instance of plugin of type {0}.", type );
-								}
-								catch ( Exception e )
-								{
-									LogManager.Instance.Write( "Failed to create instance of plugin of type {0} from assembly {1}", type, assembly.FullName );
-									LogManager.Instance.Write( e.Message );
-								}
-							}
-						}
-					}
-					catch ( BadImageFormatException )
-					{
-						// ignore native assemblies which will throw this exception when loaded
-					}
-					catch ( ReflectionTypeLoadException rtle )
-					{
-						LogManager.Instance.Write( "Failed to load types from assembly {0}.", assembly.FullName );
-						LogManager.Instance.Write( rtle.Message );
-						foreach ( Exception le in rtle.LoaderExceptions )
-						{
-							LogManager.Instance.Write( le.Message );							
-						}
-					}
-				}
-			}
+		            foreach ( ObjectCreator factory in loader.Find( typeof ( IPlugin ) ) )
+		            {
+		                pluginFactories.Add( factory );
+		            }
 
-			return _plugins.ToArray();
-		}
+		        }
 
-		/// <summary>
+		    }
+            return pluginFactories;
+        }
+
+	    /// <summary>
 		///		Unloads all currently loaded plugins.
 		/// </summary>
 		public void UnloadAll()
@@ -183,7 +150,7 @@ namespace Axiom.Core
 			{
 				IPlugin plugin = (IPlugin)_plugins[ i ];
 
-				LogManager.Instance.Write( "Unloading plugin {0} from {1}", plugin, GetAssemblyTitle( plugin ) );
+                LogManager.Instance.Write( "Unloading plugin: {0}", GetAssemblyTitle( plugin.GetType() ) );
 
 				plugin.Stop();
 			}
@@ -192,55 +159,44 @@ namespace Axiom.Core
 			_plugins.Clear();
 		}
 
-		public static string GetAssemblyTitle( object instance )
-		{
-			return GetAssemblyTitle( instance.GetType() );
-		}
+        public static string GetAssemblyTitle(Type type)
+        {
+            Assembly assembly = type.Assembly;
+            AssemblyTitleAttribute title = (AssemblyTitleAttribute)Attribute.GetCustomAttribute(
+                                            (Assembly)assembly, typeof(AssemblyTitleAttribute));
+            if (title == null)
+                return assembly.GetName().Name;
+            return title.Title;
+        }
 
-		public static string GetAssemblyTitle( Type type )
-		{
-			Assembly assembly = type.Assembly;
-			AssemblyTitleAttribute title = (AssemblyTitleAttribute)Attribute.GetCustomAttribute(
-											(Assembly)assembly, typeof( AssemblyTitleAttribute ) );
-			if ( title == null )
-				return assembly.GetName().Name;
-			return title.Title;
-		}
+        /// <summary>
+        ///		Loads a plugin of the given class name from the given assembly, and calls Start() on it.
+        ///		This function does NOT add the plugin to the PluginManager's
+        ///		list of plugins.
+        /// </summary>
+        /// <param name="assemblyName">The assembly filename ("xxx.dll")</param>
+        /// <param name="className">The class ("MyNamespace.PluginClassname") that implemented IPlugin.</param>
+        /// <returns>The loaded plugin.</returns>
+        private static IPlugin LoadPlugin( ObjectCreator creator )
+        {
+            try
+            {
+                // create and start the plugin
+                IPlugin plugin = creator.CreateInstance<IPlugin>();
 
-		public static string GetAssemblyName( object instance )
-		{
-			return GetAssemblyName( instance.GetType() );
-		}
+                plugin.Start();
 
-		public static string GetAssemblyName( Type type )
-		{
-			return type.Assembly.GetName().Name;
-		}
+                LogManager.Instance.Write( "Loaded plugin: {0}", creator.GetAssemblyTitle() );
 
+                return plugin;
+            }
+            catch ( Exception ex )
+            {
+                LogManager.Instance.Write( ex.ToString() );
+            }
 
-		/// <summary>
-		///		Loads a plugin of the given class name from the given assembly, and calls Start() on it.
-		///		This function does NOT add the plugin to the PluginManager's
-		///		list of plugins.
-		/// </summary>
-		/// <param name="assemblyName">The assembly filename ("xxx.dll")</param>
-		/// <param name="className">The class ("MyNamespace.PluginClassname") that implemented IPlugin.</param>
-		/// <returns>The loaded plugin.</returns>
-		private bool LoadPlugin( IPlugin plugin )
-		{
-			try
-			{
-				plugin.Start();
-
-				LogManager.Instance.Write( "Loaded plugin {0} from {1}", plugin, GetAssemblyTitle( plugin ) );
-				return true;
-			}
-			catch ( Exception ex )
-			{
-				LogManager.Instance.Write( ex.ToString() );
-				return false;
-			}
-		}
+            return null;
+        }
 
 		#endregion Methods
 
@@ -258,33 +214,5 @@ namespace Axiom.Core
 
 		#endregion IDiposable Implementation
 	}
-
-	/// <summary>
-	/// The plugin configuration handler
-	/// </summary>
-    //public class PluginConfigurationSectionHandler : IConfigurationSectionHandler
-    //{
-    //    public object Create( object parent, object configContext, XmlNode section )
-    //    {
-    //        ArrayList plugins = new ArrayList();
-
-    //        // grab the plugin nodes
-    //        XmlNodeList pluginNodes = section.SelectNodes( "plugin" );
-
-    //        // loop through each plugin node and load the plugins
-    //        for ( int i = 0; i < pluginNodes.Count; i++ )
-    //        {
-    //            XmlNode pluginNode = pluginNodes[ i ];
-
-    //            // grab the attributes for loading these plugins
-    //            XmlAttribute assemblyAttribute = pluginNode.Attributes[ "assembly" ];
-    //            XmlAttribute classAttribute = pluginNode.Attributes[ "class" ];
-
-    //            plugins.Add( new ObjectCreator( assemblyAttribute.Value, classAttribute.Value ).CreateInstance() );
-    //        }
-
-    //        return plugins;
-    //    }
-    //}
 
 }

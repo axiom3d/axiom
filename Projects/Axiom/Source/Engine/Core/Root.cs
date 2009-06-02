@@ -100,7 +100,7 @@ namespace Axiom.Core
 
                 // Initializes the Log Manager singleton
                 this.logMgr = new LogManager();
-
+				
                 //if logFileName is null, then just the Diagnostics (debug) writes will be made
                 // create a new default log
                 this.logMgr.CreateLog( logFileName, true, true );
@@ -118,9 +118,10 @@ namespace Axiom.Core
                 MeshManager mesh = MeshManager.Instance;
                 SkeletonManager.Instance.Initialize();
                 new ParticleSystemManager();
-#if !XBOX360
+#if !(XBOX || XBOX360 || SILVERLIGHT)
                 new PlatformManager();
 #endif
+
                 // create a new timer
                 this.timer = new Timer();
 
@@ -129,9 +130,10 @@ namespace Axiom.Core
                 OverlayManager.Instance.Initialize();
                 new OverlayElementManager();
 
+#if !(XBOX || XBOX360 || SILVERLIGHT)
                 ArchiveManager.Instance.AddArchiveFactory( new ZipArchiveFactory() );
                 ArchiveManager.Instance.AddArchiveFactory( new FileSystemArchiveFactory() );
-
+#endif
                 new CodecManager();
 
                 new HighLevelGpuProgramManager();
@@ -732,9 +734,9 @@ namespace Axiom.Core
 
             new ControllerManager();
 
-
+ #if !(XBOX || XBOX360 || SILVERLIGHT)
             PlatformInformation.Log( LogManager.Instance.DefaultLog );
-
+#endif
             // initialize the current render system
             this.autoWindow = this.activeRenderSystem.Initialize( autoCreateWindow, windowTitle );
 
@@ -743,6 +745,7 @@ namespace Axiom.Core
             {
                 this.OneTimePostWindowInit();
             }
+
 
             // initialize timer
             this.timer.Reset();
@@ -761,7 +764,10 @@ namespace Axiom.Core
                 MaterialManager.Instance.Initialize();
 
                 // init the particle system manager singleton
+				//clarabie - temporarily disabled because something's wrong here on the 360 with ParticleSystemManager.RegisterParsers
+#if !(XBOX || XBOX360 || SILVERLIGHT)
                 ParticleSystemManager.Instance.Initialize();
+#endif
 
                 // init mesh manager
                 MeshManager.Instance.Initialize();

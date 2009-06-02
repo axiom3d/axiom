@@ -51,9 +51,9 @@ namespace Axiom.Controllers.Canned
         #region Member variables
 
         protected WaveformType type;
-        protected float baseVal = 0.0f;
+        protected float baseVal; //[FXCop Optimization : Do not initialize unnecessarily]
         protected float frequency = 1.0f;
-        protected float phase = 0.0f;
+        protected float phase; //[FXCop Optimization : Do not initialize unnecessarily]
         protected float amplitude = 1.0f;
 
         #endregion

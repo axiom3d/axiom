@@ -42,13 +42,13 @@ namespace Axiom.Demos
 
 
 
-        protected override void ChooseSceneManager()
+        public override void ChooseSceneManager()
         {
             scene = engine.CreateSceneManager(SceneType.Generic, "TestSMInstance"); // note that Generic chooses th OctreeSM
             scene.ClearScene();
         }
 
-        protected override void CreateScene()
+        public override void CreateScene()
         {
             SceneNode dummyNode = scene.RootSceneNode.CreateChildSceneNode();
 
@@ -95,7 +95,7 @@ namespace Axiom.Demos
             particleSpiral.RadiusStep = 0.5f;
             particleSpiral.UpStep = 0;
             firesNode = liteSetup ? dummyNode : EmitObjects(particleSpiral, 24, ResourceKind.ParticleSystem, "Examples/Fireworks");
-            firesNode.ScaleFactor = Vector3.UnitScale * 1.5f;
+            firesNode.Scale = Vector3.UnitScale * 1.5f;
 
             // other objects
 
@@ -147,7 +147,7 @@ namespace Axiom.Demos
 
             foreach (SceneNode child in robotNode.Children)
             {
-                child.Scale(Vector3.UnitScale * 1.3f);
+                child.Scale = Vector3.UnitScale * 1.3f;
 
                 AnimationState state = ((Entity)child.GetObject(0)).GetAnimationState("Walk");
                 state.IsEnabled = true;

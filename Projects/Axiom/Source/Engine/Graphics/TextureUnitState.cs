@@ -2213,9 +2213,23 @@ namespace Axiom.Graphics
         /// <returns></returns>
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return blendType.GetHashCode() ^ operation.GetHashCode() ^ source1.GetHashCode() ^ source2.GetHashCode() ^ colorArg1.GetHashCode() ^ colorArg2.GetHashCode() ^ alphaArg1.GetHashCode() ^ alphaArg2.GetHashCode() ^ blendFactor.GetHashCode();
         }
 
+        public override string ToString()
+        {
+            return ( new System.Text.StringBuilder() )
+                .AppendFormat( "blendType : {0}; opertaion : {1}; source1 : {2}; source2 : {3}; colorArg1 : {4}; colorArg2 : {5}; alphaArg1 : {6}; alphaArg2 : {7}; blendType : {8};",
+                               this.blendType,
+                               this.operation,
+                               this.source1,
+                               this.source2,
+                               this.colorArg1,
+                               this.colorArg2,
+                               this.alphaArg1,
+                               this.alphaArg2,
+                               this.blendFactor ).ToString();
+        }
         #endregion Object overloads
     }
 

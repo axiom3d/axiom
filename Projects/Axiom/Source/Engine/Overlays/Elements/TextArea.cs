@@ -90,7 +90,7 @@ namespace Axiom.Overlays.Elements
         internal TextArea( string name )
             : base( name )
         {
-            isTransparent = false;
+            //isTransparent = false; //[FXCop Optimization : Do not initialize unnecessarily], Defaults to false, left here for clarity
             textAlign = HorizontalAlignment.Center;
 
 

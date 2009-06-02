@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using System.Text;
 
 #endregion Namespace Declarations
 
@@ -180,6 +181,7 @@ namespace Axiom.Core
         /// <returns>A newly created Log object, opened and ready to go.</returns>
         public Log CreateLog( string name, bool isDefaultLog, bool debuggerOutput )
         {
+#if !(XBOX || XBOX360 || SILVERLIGHT)
             Log newLog = new Log( name, debuggerOutput );
 
             // set as the default log if need be
@@ -193,6 +195,9 @@ namespace Axiom.Core
             logList.Add( name, newLog );
 
             return newLog;
+#else
+			return null;
+#endif
         }
 
         /// <summary>
@@ -255,22 +260,24 @@ namespace Axiom.Core
         /// </param>
         public void Write( LogMessageLevel level, bool maskDebug, string message, params object[] substitutions )
         {
+#if !(XBOX || XBOX360 || SILVERLIGHT)
             DefaultLog.Write( level, maskDebug, message, substitutions );
+#endif
         }
 
         public static string BuildExceptionString( Exception exception )
         {
-            string errMessage = string.Empty;
+            StringBuilder errMessage = new StringBuilder();
 
-            errMessage += exception.Message + "\n" + exception.StackTrace;
+            errMessage.Append( exception.Message + Environment.NewLine + exception.StackTrace );
 
             while ( exception.InnerException != null )
             {
-                errMessage += BuildInnerExceptionString( exception.InnerException );
+                errMessage.Append( BuildInnerExceptionString( exception.InnerException ) );
                 exception = exception.InnerException;
             }
 
-            return errMessage;
+            return errMessage.ToString();
         }
 
         private static string BuildInnerExceptionString( Exception innerException )

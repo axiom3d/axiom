@@ -36,7 +36,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Collections.Generic;
@@ -52,7 +52,9 @@ using ResourceHandle = System.UInt64;
 
 namespace Axiom.Core
 {
-	/// <summary>
+    using System.Collections.Specialized;
+
+    /// <summary>
 	///		Defines a generic resource handler.
 	/// </summary>
 	/// <remarks>
@@ -700,6 +702,7 @@ namespace Axiom.Core
 				throw new AxiomException( String.Format( "Resource with the handke {0} already exists.", res.Handle ) );
 			}
 		}
+
 
 		/// <summary>
 		/// Remove a resource from this manager; remove it from the lists.

@@ -36,7 +36,7 @@ namespace Axiom.Demos
             return true;
         }
 
-        protected override void CreateScene()
+        public override void CreateScene()
         {
             // set ambient light
             scene.AmbientLight = new ColorEx( 0.2f, 0.2f, 0.2f );

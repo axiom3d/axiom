@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections;
-using System.Drawing;
 
 using Axiom.Animating;
 using Axiom.Collections;
@@ -29,7 +28,7 @@ namespace Axiom.Demos
         Camera camera2;
         int objectsVisible = 0;
 
-        protected override void CreateScene()
+        public override void CreateScene()
         {
             scene.AmbientLight = new ColorEx( .4f, .4f, .4f );
 
@@ -68,7 +67,7 @@ namespace Axiom.Demos
             frustumNode.AttachObject( camera2 );
         }
 
-        protected override void CreateCamera()
+        public override void CreateCamera()
         {
             base.CreateCamera();
 
@@ -78,7 +77,7 @@ namespace Axiom.Demos
         }
 
 
-        protected override void CreateViewports()
+        public override void CreateViewports()
         {
             base.CreateViewports();
 

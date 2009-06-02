@@ -90,12 +90,13 @@ namespace Axiom.Demos.Browser.CommandLine
 				Console.WriteLine( "Available settings for {0}.\n", _currentOption.Name );
 			}
 			// Load Render Subsystem Options
-			for ( int index = 0; index < _menuItems.Count; index++ )
+            int index = 0;
+            foreach ( object opt in _menuItems )
 			{
-				System.Console.WriteLine( "{0:D2}      | {1}", index, _menuItems[ index ].ToString() );
+                System.Console.WriteLine( "{0:D2}      | {1}", index++, opt.ToString() );
 			}
 
-			if ( _currentOption == null )
+            if ( _currentOption == null )
 			{
 				Console.WriteLine();
 				Console.WriteLine( "Enter  | Saves changes." );

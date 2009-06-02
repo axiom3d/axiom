@@ -40,7 +40,7 @@ namespace Axiom.Demos
         // --- Protected Override Methods ---
         #region CreateScene()
         // Just override the mandatory create scene method
-        protected override void CreateScene()
+        public override void CreateScene()
         {
             // Set ambient light
             scene.AmbientLight = new ColorEx( 0.2f, 0.2f, 0.2f );

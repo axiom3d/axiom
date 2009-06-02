@@ -36,7 +36,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-using System.Collections.Specialized;
 using System.IO;
 using System.Reflection;
 
@@ -369,7 +368,6 @@ namespace Axiom.Graphics
                 _activeSchemeName = value;
             }
         }
-
 
         /// <summary>Internal method for sorting out missing technique for a scheme</summary>
         public Technique ArbitrateMissingTechniqueForActiveScheme( Material material, int lodIndex, IRenderable renderable )

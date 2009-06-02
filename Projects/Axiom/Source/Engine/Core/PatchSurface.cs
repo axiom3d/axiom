@@ -263,10 +263,9 @@ namespace Axiom.Core
             controlPoints.Clear();
             VertexElement elem = declaration.FindElementBySemantic( VertexElementSemantic.Position );
             int vertSize = declaration.GetVertexSize( 0 );
-
             unsafe
             {
-                byte* pVert = (byte*)controlPointBuffer;
+                byte* pVert = (byte*)( Memory.PinObject( controlPointBuffer ).ToPointer() );
                 float* pReal = null;
                 for ( int i = 0; i < controlCount; i++ )
                 {
@@ -448,18 +447,17 @@ namespace Axiom.Core
             int uStep = 1 << uLevel;
             int vStep = 1 << vLevel;
 
+            byte* pSrc = (byte*)( Memory.PinObject( controlPointBuffer ).ToPointer() );
+            byte* pDest;
+            int vertexSize = declaration.GetVertexSize( 0 );
+            float* pSrcReal, pDestReal;
+            int* pSrcRGBA, pDestRGBA;
 
             VertexElement elemPos = declaration.FindElementBySemantic( VertexElementSemantic.Position );
             VertexElement elemNorm = declaration.FindElementBySemantic( VertexElementSemantic.Normal );
             VertexElement elemTex0 = declaration.FindElementBySemantic( VertexElementSemantic.TexCoords, 0 );
             VertexElement elemTex1 = declaration.FindElementBySemantic( VertexElementSemantic.TexCoords, 1 );
             VertexElement elemDiffuse = declaration.FindElementBySemantic( VertexElementSemantic.Diffuse );
-
-            byte* pSrc = (byte*)controlPointBuffer;
-            byte* pDest;
-            int vertexSize = declaration.GetVertexSize( 0 );
-            float* pSrcReal, pDestReal;
-            int* pSrcRGBA, pDestRGBA;
 
             for ( int v = 0; v < meshHeight; v += vStep )
             {

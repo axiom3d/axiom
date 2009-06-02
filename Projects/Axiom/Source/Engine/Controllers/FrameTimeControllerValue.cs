@@ -64,7 +64,7 @@ namespace Axiom.Controllers
             // add a frame started event handler
             Root.Instance.FrameStarted += new FrameEvent( RenderSystem_FrameStarted );
 
-            frameTime = 0;
+            //frameTime = 0; //[FXCop Optimization : Do not initialize unnecessarily], Defaults to 0,  left here for clarity
 
             // default to 1 for standard timing
             timeFactor = 1;

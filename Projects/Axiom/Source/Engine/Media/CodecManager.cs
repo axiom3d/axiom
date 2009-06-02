@@ -92,7 +92,7 @@ namespace Axiom.Media
         /// <summary>
         ///    List of registered media codecs.
         /// </summary>
-        private Dictionary<string, ICodec> codecs = new Dictionary<string,ICodec>( new CaseInsensitiveStringComparer() );
+		private Dictionary<string, ICodec> codecs = new Dictionary<string, ICodec>( new CaseInsensitiveStringComparer() );
 
         #endregion Fields
 

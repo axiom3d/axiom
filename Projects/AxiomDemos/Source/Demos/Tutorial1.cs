@@ -1,7 +1,6 @@
 #region Namespace Declarations
 
 using System;
-using System.Drawing;
 
 using Axiom.Controllers;
 using Axiom.Controllers.Canned;
@@ -42,7 +41,7 @@ namespace Axiom.Demos
             return true;
         }
 
-        protected override void CreateScene()
+        public override void CreateScene()
         {
             // create a 3d line
             Line3d line = new Line3d( new Vector3( 0, 0, 30 ), Vector3.UnitY, 50, ColorEx.Blue );
