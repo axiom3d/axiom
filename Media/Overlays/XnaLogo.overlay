@@ -1,0 +1,18 @@
+// Axiom debug overlay scripts
+Core/XnaOverlay
+{
+    zorder 500
+
+    // Logo panel
+    container Panel(Core/XnaLogoPanel)
+    {
+        metrics_mode pixels
+        horz_align right
+        vert_align top
+        top 10
+        left -90
+        width 80
+        height 36
+        material Core/XnaLogo
+    }
+}
