@@ -70,7 +70,7 @@ namespace Axiom.RenderSystems.DirectX9
 		private Driver _activeDriver;
 
 		/// <summary>
-		/// The one used to crfeate the device.
+		/// The one used to create the device.
 		/// </summary>
 		private D3DRenderWindow _primaryWindow;
 
@@ -78,8 +78,6 @@ namespace Axiom.RenderSystems.DirectX9
 		///    Direct3D capability structure.
 		/// </summary>
 		protected D3D.Caps d3dCaps;
-
-		protected bool isFirstWindow = true;
 
 		/// <summary>
 		///		Should we use the W buffer? (16 bit color only).
