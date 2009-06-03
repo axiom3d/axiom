@@ -1,0 +1,465 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <ProjectGuid>0cf97e24-2000-49b5-aa21-61d4402db622</ProjectGuid>
+    <ProjectTypeGuids>{96E2B04D-8817-42c6-938A-82C39BA4D311};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">Xbox 360</Platform>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <XnaFrameworkVersion>v3.0</XnaFrameworkVersion>
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Xbox 360' ">
+    <XnaPlatform>Xbox 360</XnaPlatform>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Xbox 360' ">
+    <XnaPlatform>Xbox 360</XnaPlatform>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.EffectImporter, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.FBXImporter, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.TextureImporter, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.XImporter, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.AudioImporters, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\10points.png">
+      <Link>Textures\10points.png</Link>
+      <Name>10points</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\2049x2049_map.png">
+      <Link>Textures\2049x2049_map.png</Link>
+      <Name>2049x2049_map</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\atheneNormalMap.png">
+      <Link>Textures\atheneNormalMap.png</Link>
+      <Name>atheneNormalMap</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\axes.png">
+      <Link>Textures\axes.png</Link>
+      <Name>axes</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\AxiomLogo.png">
+      <Link>Textures\AxiomLogo.png</Link>
+      <Name>AxiomLogo</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\basic_droplet.png">
+      <Link>Textures\basic_droplet.png</Link>
+      <Name>basic_droplet</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\blue_flare.jpg">
+      <Link>Textures\blue_flare.jpg</Link>
+      <Name>blue_flare</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\body.jpg">
+      <Link>Textures\body.jpg</Link>
+      <Name>body</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\Border.png">
+      <Link>Textures\Border.png</Link>
+      <Name>Border</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\Border_Break.png">
+      <Link>Textures\Border_Break.png</Link>
+      <Name>Border_Break</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\Border_Center.png">
+      <Link>Textures\Border_Center.png</Link>
+      <Name>Border_Center</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\bricks.jpg">
+      <Link>Textures\bricks.jpg</Link>
+      <Name>bricks</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\BumpyMetal.jpg">
+      <Link>Textures\BumpyMetal.jpg</Link>
+      <Name>BumpyMetal</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\cel_shading_diffuse.png">
+      <Link>Textures\cel_shading_diffuse.png</Link>
+      <Name>cel_shading_diffuse</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\cel_shading_edge.png">
+      <Link>Textures\cel_shading_edge.png</Link>
+      <Name>cel_shading_edge</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\cel_shading_specular.png">
+      <Link>Textures\cel_shading_specular.png</Link>
+      <Name>cel_shading_specular</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\clouds.jpg">
+      <Link>Textures\clouds.jpg</Link>
+      <Name>clouds</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\decal.png">
+      <Link>Textures\decal.png</Link>
+      <Name>decal</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\dirt01.jpg">
+      <Link>Textures\dirt01.jpg</Link>
+      <Name>dirt01</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\egyptrockyfull.jpg">
+      <Link>Textures\egyptrockyfull.jpg</Link>
+      <Name>egyptrockyfull</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\Flare.png">
+      <Link>Textures\Flare.png</Link>
+      <Name>Flare</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\flaretrail.png">
+      <Link>Textures\flaretrail.png</Link>
+      <Name>flaretrail</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\Grass.jpg">
+      <Link>Textures\Grass.jpg</Link>
+      <Name>Grass</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\grass_1024.jpg">
+      <Link>Textures\grass_1024.jpg</Link>
+      <Name>grass_1024</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\GreenSkin.jpg">
+      <Link>Textures\GreenSkin.jpg</Link>
+      <Name>GreenSkin</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\head4.jpg">
+      <Link>Textures\head4.jpg</Link>
+      <Name>head4</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\legs.jpg">
+      <Link>Textures\legs.jpg</Link>
+      <Name>legs</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\MtlPlat2.jpg">
+      <Link>Textures\MtlPlat2.jpg</Link>
+      <Name>MtlPlat2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\NMBalls.png">
+      <Link>Textures\NMBalls.png</Link>
+      <Name>NMBalls</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\NMBumpsOut.png">
+      <Link>Textures\NMBumpsOut.png</Link>
+      <Name>NMBumpsOut</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\NMHollyBumps.png">
+      <Link>Textures\NMHollyBumps.png</Link>
+      <Name>NMHollyBumps</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\NMStripes.png">
+      <Link>Textures\NMStripes.png</Link>
+      <Name>NMStripes</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\nm_bk.png">
+      <Link>Textures\nm_bk.png</Link>
+      <Name>nm_bk</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\nm_dn.png">
+      <Link>Textures\nm_dn.png</Link>
+      <Name>nm_dn</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\nm_fr.png">
+      <Link>Textures\nm_fr.png</Link>
+      <Name>nm_fr</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\nm_lf.png">
+      <Link>Textures\nm_lf.png</Link>
+      <Name>nm_lf</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\nm_rt.png">
+      <Link>Textures\nm_rt.png</Link>
+      <Name>nm_rt</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\nm_up.png">
+      <Link>Textures\nm_up.png</Link>
+      <Name>nm_up</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\nskingr.jpg">
+      <Link>Textures\nskingr.jpg</Link>
+      <Name>nskingr</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\r2skin.jpg">
+      <Link>Textures\r2skin.jpg</Link>
+      <Name>r2skin</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\Razor.png">
+      <Link>Textures\Razor.png</Link>
+      <Name>Razor</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\Rock.jpg">
+      <Link>Textures\Rock.jpg</Link>
+      <Name>Rock</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\rockwall.tga">
+      <Link>Textures\rockwall.tga</Link>
+      <Name>rockwall</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\rockwall_NH.tga">
+      <Link>Textures\rockwall_NH.tga</Link>
+      <Name>rockwall_NH</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\RustedMetal.jpg">
+      <Link>Textures\RustedMetal.jpg</Link>
+      <Name>RustedMetal</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\RustySteel.jpg">
+      <Link>Textures\RustySteel.jpg</Link>
+      <Name>RustySteel</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\smoke.png">
+      <Link>Textures\smoke.png</Link>
+      <Name>smoke</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\smokecolors.png">
+      <Link>Textures\smokecolors.png</Link>
+      <Name>smokecolors</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\spacesky.jpg">
+      <Link>Textures\spacesky.jpg</Link>
+      <Name>spacesky</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\spheremap.png">
+      <Link>Textures\spheremap.png</Link>
+      <Name>spheremap</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\terrain.png">
+      <Link>Textures\terrain.png</Link>
+      <Name>terrain</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\terrain_detail.jpg">
+      <Link>Textures\terrain_detail.jpg</Link>
+      <Name>terrain_detail</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\terrain_texture.jpg">
+      <Link>Textures\terrain_texture.jpg</Link>
+      <Name>terrain_texture</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\terr_dirt-grass.jpg">
+      <Link>Textures\terr_dirt-grass.jpg</Link>
+      <Name>terr_dirt-grass</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\texmap2.jpg">
+      <Link>Textures\texmap2.jpg</Link>
+      <Name>texmap2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\Water01.jpg">
+      <Link>Textures\Water01.jpg</Link>
+      <Name>Water01</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\Water02.jpg">
+      <Link>Textures\Water02.jpg</Link>
+      <Name>Water02</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\WeirdEye.png">
+      <Link>Textures\WeirdEye.png</Link>
+      <Name>WeirdEye</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\XnaLogo.jpg">
+      <Link>Textures\XnaLogo.jpg</Link>
+      <Name>XnaLogo</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\..\..\..\Media\Textures\perlinvolume.dds">
+      <Link>Textures\perlinvolume.dds</Link>
+      <Name>perlinvolume</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\..\..\Media\Fonts\Arial.fontdef">
+      <Link>Fonts\Arial.fontdef</Link>
+      <Name>Arial</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\..\Media\Fonts\Garamond.fontdef">
+      <Link>Fonts\Garamond.fontdef</Link>
+      <Name>Garamond</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\..\Media\Fonts\maiden.TTF">
+      <Link>Fonts\maiden.TTF</Link>
+      <Name>maiden</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\..\Media\Fonts\PalatinoLinotype.fontdef">
+      <Link>Fonts\PalatinoLinotype.fontdef</Link>
+      <Name>PalatinoLinotype</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Compile Include="..\..\..\..\..\..\Media\GpuPrograms\Bloom_ps20.fx">
+      <Link>GpuPrograms\Bloom_ps20.fx</Link>
+      <Name>Bloom_ps20</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+    </Compile>
+    <None Include="..\..\..\..\..\..\Media\GpuPrograms\Bloom_ps20.hlsl">
+      <Link>GpuPrograms\Bloom_ps20.hlsl</Link>
+      <Name>Bloom_ps20</Name>
+    </None>
+    <None Include="..\..\..\..\..\..\Media\GpuPrograms\Bloom_vs11.hlsl">
+      <Link>GpuPrograms\Bloom_vs11.hlsl</Link>
+      <Name>Bloom_vs11</Name>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\..\..\..\Media\Fonts\Arial.png">
+      <Link>Fonts\Arial.png</Link>
+      <Name>Arial</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Fonts\Garamond.png">
+      <Link>Fonts\Garamond.png</Link>
+      <Name>Garamond</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="..\..\..\..\..\..\Media\Fonts\PalatinoLinotype.png">
+      <Link>Fonts\PalatinoLinotype.png</Link>
+      <Name>PalatinoLinotype</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

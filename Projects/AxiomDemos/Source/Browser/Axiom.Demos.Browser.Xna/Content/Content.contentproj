@@ -1,0 +1,1045 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <ProjectGuid>ec8c6d1f-65fd-4368-9ab6-25aaa71f1326</ProjectGuid>
+    <ProjectTypeGuids>{96E2B04D-8817-42c6-938A-82C39BA4D311};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <XnaFrameworkVersion>v3.0</XnaFrameworkVersion>
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <XnaPlatform>Windows</XnaPlatform>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <XnaPlatform>Windows</XnaPlatform>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.EffectImporter, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.FBXImporter, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.TextureImporter, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.XImporter, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.AudioImporters, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d5c3888ef60e27d, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Archives\chiropteraDM.zip">
+      <Name>chiropteraDM</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Archives\cubemapsJS.zip">
+      <Name>cubemapsJS</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Archives\Fresnel.zip">
+      <Name>Fresnel</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Archives\RZR-002.zip">
+      <Name>RZR-002</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Archives\Water.zip">
+      <Name>Water</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Fonts\Arial.fontdef">
+      <Name>Arial</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Fonts\Garamond.fontdef">
+      <Name>Garamond</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Fonts\maiden.TTF">
+      <Name>maiden</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Fonts\PalatinoLinotype.fontdef">
+      <Name>PalatinoLinotype</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\athene.mesh">
+      <Name>athene</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\axes.mesh">
+      <Name>axes</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\ball.mesh">
+      <Name>ball</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\box.mesh">
+      <Name>box</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\column.mesh">
+      <Name>column</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\cube.mesh">
+      <Name>cube</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\dragon.mesh">
+      <Name>dragon</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\geosphere1000.mesh">
+      <Name>geosphere1000</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\geosphere12500.mesh">
+      <Name>geosphere12500</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\geosphere19220.mesh">
+      <Name>geosphere19220</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\geosphere2000.mesh">
+      <Name>geosphere2000</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\geosphere4500.mesh">
+      <Name>geosphere4500</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\geosphere8000.mesh">
+      <Name>geosphere8000</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\knot.mesh">
+      <Name>knot</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\ninja.mesh">
+      <Name>ninja</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\ogrehead.mesh">
+      <Name>ogrehead</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\razor.mesh">
+      <Name>razor</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\robot.mesh">
+      <Name>robot</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\sphere.mesh">
+      <Name>sphere</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Meshes\teapot.mesh">
+      <Name>teapot</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Overlays\Debug.overlay">
+      <Name>Debug</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Overlays\Example-CubeMapping.overlay">
+      <Name>Example-CubeMapping</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Skeletons\ninja.skeleton">
+      <Name>ninja</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Skeletons\robot.skeleton">
+      <Name>robot</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="Textures\perlinvolume.dds">
+      <Name>perlinvolume</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Content Include="Textures\SkyBoxes.zip">
+      <Name>SkyBoxes</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BrowserImages\BezierPatch.jpg">
+      <Name>BezierPatch</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BrowserImages\CameraTrack.jpg">
+      <Name>CameraTrack</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BrowserImages\CelShading.jpg">
+      <Name>CelShading</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BrowserImages\CubeMapping.jpg">
+      <Name>CubeMapping</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BrowserImages\Dot3Bump.jpg">
+      <Name>Dot3Bump</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BrowserImages\EnvMapping.jpg">
+      <Name>EnvMapping</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BrowserImages\Fresnel.jpg">
+      <Name>Fresnel</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BrowserImages\Frustum.jpg">
+      <Name>Frustum</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BrowserImages\Lights.jpg">
+      <Name>Lights</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BrowserImages\OffsetMapping.jpg">
+      <Name>OffsetMapping</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BrowserImages\ParticleFX.jpg">
+      <Name>ParticleFX</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BrowserImages\Physics.jpg">
+      <Name>Physics</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BrowserImages\RenderToTexture.jpg">
+      <Name>RenderToTexture</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BrowserImages\SkeletalAnimation.jpg">
+      <Name>SkeletalAnimation</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BrowserImages\SkyBox.jpg">
+      <Name>SkyBox</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BrowserImages\SkyDome.jpg">
+      <Name>SkyDome</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BrowserImages\SkyPlane.jpg">
+      <Name>SkyPlane</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BrowserImages\Smoke.jpg">
+      <Name>Smoke</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BrowserImages\Terrain.jpg">
+      <Name>Terrain</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BrowserImages\TextureFX.jpg">
+      <Name>TextureFX</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BrowserImages\Transparency.jpg">
+      <Name>Transparency</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BrowserImages\Tutorial1.jpg">
+      <Name>Tutorial1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BrowserImages\Water.jpg">
+      <Name>Water</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="Fonts\Arial.png">
+      <Name>Arial</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Fonts\Garamond.png">
+      <Name>Garamond</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Fonts\PalatinoLinotype.png">
+      <Name>PalatinoLinotype</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Content Include="Icons\AxiomIcon.ico">
+      <Name>AxiomIcon</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="Textures\XnaLogo.jpg">
+      <Name>XnaLogo</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\10points.png">
+      <Name>10points</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\atheneNormalMap.png">
+      <Name>atheneNormalMap</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\axes.png">
+      <Name>axes</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\AxiomLogo.png">
+      <Name>AxiomLogo</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\basic_droplet.png">
+      <Name>basic_droplet</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\blue_flare.jpg">
+      <Name>blue_flare</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\body.jpg">
+      <Name>body</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\Border.png">
+      <Name>Border</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\Border_Break.png">
+      <Name>Border_Break</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\Border_Center.png">
+      <Name>Border_Center</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\bricks.jpg">
+      <Name>bricks</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\BumpyMetal.jpg">
+      <Name>BumpyMetal</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\cel_shading_diffuse.png">
+      <Name>cel_shading_diffuse</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\cel_shading_edge.png">
+      <Name>cel_shading_edge</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\cel_shading_specular.png">
+      <Name>cel_shading_specular</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\clouds.jpg">
+      <Name>clouds</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\decal.png">
+      <Name>decal</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\dirt01.jpg">
+      <Name>dirt01</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\egyptrockyfull.jpg">
+      <Name>egyptrockyfull</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\Flare.png">
+      <Name>Flare</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\flaretrail.png">
+      <Name>flaretrail</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\Grass.jpg">
+      <Name>Grass</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\grass_1024.jpg">
+      <Name>grass_1024</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\GreenSkin.jpg">
+      <Name>GreenSkin</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\head4.jpg">
+      <Name>head4</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\legs.jpg">
+      <Name>legs</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\MtlPlat2.jpg">
+      <Name>MtlPlat2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\NMBalls.png">
+      <Name>NMBalls</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\NMBumpsOut.png">
+      <Name>NMBumpsOut</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\NMHollyBumps.png">
+      <Name>NMHollyBumps</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\NMStripes.png">
+      <Name>NMStripes</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\nm_bk.png">
+      <Name>nm_bk</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\nm_dn.png">
+      <Name>nm_dn</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\nm_fr.png">
+      <Name>nm_fr</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\nm_lf.png">
+      <Name>nm_lf</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\nm_rt.png">
+      <Name>nm_rt</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\nm_up.png">
+      <Name>nm_up</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\nskingr.jpg">
+      <Name>nskingr</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\r2skin.jpg">
+      <Name>r2skin</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\Razor.png">
+      <Name>Razor</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\Rock.jpg">
+      <Name>Rock</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\rockwall.tga">
+      <Name>rockwall</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\rockwall_NH.tga">
+      <Name>rockwall_NH</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\RustedMetal.jpg">
+      <Name>RustedMetal</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\RustySteel.jpg">
+      <Name>RustySteel</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\smoke.png">
+      <Name>smoke</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\smokecolors.png">
+      <Name>smokecolors</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\spacesky.jpg">
+      <Name>spacesky</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\spheremap.png">
+      <Name>spheremap</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\terrain.png">
+      <Name>terrain</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\terrain_detail.jpg">
+      <Name>terrain_detail</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\terrain_texture.jpg">
+      <Name>terrain_texture</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\terr_dirt-grass.jpg">
+      <Name>terr_dirt-grass</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\texmap2.jpg">
+      <Name>texmap2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\Water01.jpg">
+      <Name>Water01</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\Water02.jpg">
+      <Name>Water02</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Textures\WeirdEye.png">
+      <Name>WeirdEye</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\Axiom\Source\Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.x86.csproj">
+      <Project>{6E5E6221-0235-49C9-9273-449F5F0E8EF6}</Project>
+      <Name>Axiom.RenderSystems.Xna.Content.x86</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Overlays\XnaLogo.overlay">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Name>XnaLogo</Name>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XNA.Materials\x86\Programs\Example_FresnelPS.asm">
+      <Name>Example_FresnelPS</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Programs\OffsetMapping_specular.asm">
+      <Name>OffsetMapping_specular</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="XNA.Materials\Xbox\Textures\spot_shadow_fade.png">
+      <Name>spot_shadow_fade</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XNA.Materials\x86\Programs\bump.hlsl">
+      <Name>bump</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Programs\bumpSpecular.hlsl">
+      <Name>bumpSpecular</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Programs\Example_Basic.hlsl">
+      <Name>Example_Basic</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Programs\Example_CelShading.hlsl">
+      <Name>Example_CelShading</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Programs\Example_Fresnel.hlsl">
+      <Name>Example_Fresnel</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Programs\HardwareSkinning.hlsl">
+      <Name>HardwareSkinning</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Athene.material">
+      <Name>Athene</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\CelShading.material">
+      <Name>CelShading</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Core.material">
+      <Name>Core</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Dot3Bump.material">
+      <Name>Dot3Bump</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Dot3Bump.program">
+      <Name>Dot3Bump</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\DP3.material">
+      <Name>DP3</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Example.particle">
+      <Name>Example</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Examples.material">
+      <Name>Examples</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Examples.program">
+      <Name>Examples</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Fresnel.program">
+      <Name>Fresnel</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Ninja.material">
+      <Name>Ninja</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\OffsetMapping.material">
+      <Name>OffsetMapping</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\OffsetMapping.program">
+      <Name>OffsetMapping</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Particles.material">
+      <Name>Particles</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Robot.material">
+      <Name>Robot</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Skys.material">
+      <Name>Skys</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\smoke.material">
+      <Name>smoke</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\smoke.particle">
+      <Name>smoke</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\Terrain.material">
+      <Name>Terrain</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\x86\Scripts\XnaLogo.material">
+      <Name>XnaLogo</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="XNA.Materials\Xbox\Programs\ambient_vp.hlsl">
+      <Name>ambient_vp</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ProcessorParameters_Profile>VS_2_0</ProcessorParameters_Profile>
+    </Compile>
+    <Compile Include="XNA.Materials\Xbox\Programs\color_fp.hlsl">
+      <Name>color_fp</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="XNA.Materials\Xbox\Programs\color_vp.hlsl">
+      <Name>color_vp</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ProcessorParameters_Profile>VS_2_0</ProcessorParameters_Profile>
+    </Compile>
+    <Compile Include="XNA.Materials\Xbox\Programs\dir_fp.hlsl">
+      <Name>dir_fp</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="XNA.Materials\Xbox\Programs\dir_vp.hlsl">
+      <Name>dir_vp</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ProcessorParameters_Profile>VS_2_0</ProcessorParameters_Profile>
+    </Compile>
+    <Compile Include="XNA.Materials\Xbox\Programs\overlay_fp.hlsl">
+      <Name>overlay_fp</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="XNA.Materials\Xbox\Programs\overlay_vp.hlsl">
+      <Name>overlay_vp</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ProcessorParameters_Profile>VS_2_0</ProcessorParameters_Profile>
+    </Compile>
+    <Compile Include="XNA.Materials\Xbox\Programs\point_fp.hlsl">
+      <Name>point_fp</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="XNA.Materials\Xbox\Programs\point_vp.hlsl">
+      <Name>point_vp</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ProcessorParameters_Profile>VS_2_0</ProcessorParameters_Profile>
+    </Compile>
+    <Compile Include="XNA.Materials\Xbox\Programs\spot_fp.hlsl">
+      <Name>spot_fp</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="XNA.Materials\Xbox\Programs\spot_vp.hlsl">
+      <Name>spot_vp</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ProcessorParameters_Profile>VS_2_0</ProcessorParameters_Profile>
+    </Compile>
+    <Content Include="XNA.Materials\Xbox\Scripts\Core.material">
+      <Name>Core</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Scripts\dragon.material">
+      <Name>dragon</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Scripts\flare.material">
+      <Name>flare</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Scripts\shaders.program">
+      <Name>shaders</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Scripts\Skys.material">
+      <Name>Skys</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Scripts\XnaLogo.material">
+      <Name>XnaLogo</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XNA.Materials\x86\Programs\OffsetMapping.hlsl">
+      <Name>OffsetMapping</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XNA.Materials\x86\Fresnel.zip">
+      <Name>Fresnel</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XNA.Materials\Xbox\Programs\ambient_vp.xnb">
+      <Name>ambient_vp</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\color_fp.xnb">
+      <Name>color_fp</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\color_vp.xnb">
+      <Name>color_vp</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\dir_fp.xnb">
+      <Name>dir_fp</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\dir_vp.xnb">
+      <Name>dir_vp</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\overlay_fp.xnb">
+      <Name>overlay_fp</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\overlay_vp.xnb">
+      <Name>overlay_vp</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\point_fp.xnb">
+      <Name>point_fp</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\point_vp.xnb">
+      <Name>point_vp</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\spot_fp.xnb">
+      <Name>spot_fp</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\spot_vp.xnb">
+      <Name>spot_vp</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XNA.Materials\Xbox\Textures\spot_shadow_fade.xnb">
+      <Name>spot_shadow_fade</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XNA.Materials\Xbox\Scripts\CellShading.material">
+      <Name>CellShading</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="XNA.Materials\Xbox\Programs\cellShadingPS.hlsl">
+      <Name>cellShadingPS</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ProcessorParameters_EntryPoint>main_fp</ProcessorParameters_EntryPoint>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="XNA.Materials\Xbox\Programs\cellShadingVS.hlsl">
+      <Name>cellShadingVS</Name>
+      <Importer>HlslImporter</Importer>
+      <Processor>HlslProcessor</Processor>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ProcessorParameters_EntryPoint>main_vp</ProcessorParameters_EntryPoint>
+      <ProcessorParameters_Profile>VS_2_0</ProcessorParameters_Profile>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XNA.Materials\Xbox\Programs\cellShadingPS.xnb">
+      <Name>cellShadingPS</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="XNA.Materials\Xbox\Programs\cellShadingVS.xnb">
+      <Name>cellShadingVS</Name>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="XNA.Materials\x86\Textures\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\v3.0\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -2,6 +2,6 @@
 <EngineConfig xmlns="http://tempuri.org/EngineConfig.xsd">
 	<FilePath type="Folder" src="SampleData"/>
 	<FilePath type="Folder" src="SampleData/ps_height_1k"/>
-  <FilePath type="Folder" src="Media" />
+  <FilePath type="Folder" src="Media"/>
 </EngineConfig>
  
