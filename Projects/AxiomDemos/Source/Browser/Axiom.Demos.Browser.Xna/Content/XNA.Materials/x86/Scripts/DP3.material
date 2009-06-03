@@ -1,0 +1,159 @@
+
+material Examples/DP3Mat1
+{
+	technique
+	{
+		pass
+		{
+
+			texture_unit
+			{
+				texture NMBumpsOut.png
+				colour_op_ex source1 src_texture src_current
+				colour_op_multipass_fallback one zero
+			}
+
+			texture_unit
+			{
+				cubic_texture nm.png combinedUVW
+				tex_coord_set 1
+				tex_address_mode clamp
+				colour_op_ex dotproduct src_texture src_current
+				colour_op_multipass_fallback dest_colour zero
+			}
+
+			texture_unit
+			{
+				texture decal.png
+			}
+		}
+	}
+}
+material Examples/DP3Mat2
+{
+	technique
+	{
+		pass
+		{
+
+			texture_unit
+			{
+				texture NMStripes.png
+				colour_op_ex source1 src_texture src_current
+				colour_op_multipass_fallback one zero
+			}
+
+			texture_unit
+			{
+				cubic_texture nm.png combinedUVW
+				tex_coord_set 1
+				tex_address_mode clamp
+				colour_op_ex dotproduct src_texture src_current
+				colour_op_multipass_fallback dest_colour zero
+			}
+
+			texture_unit
+			{
+				texture Decal.png
+			}
+		}
+	}
+}
+material Examples/DP3Mat3
+{
+	technique
+	{
+		pass
+		{
+
+			texture_unit
+			{
+				texture NMBalls.png
+				colour_op_ex source1 src_texture src_current
+				colour_op_multipass_fallback one zero
+			}
+
+			texture_unit
+			{
+				cubic_texture nm.png combinedUVW
+				tex_coord_set 1
+				tex_address_mode clamp
+				colour_op_ex dotproduct src_texture src_current
+				colour_op_multipass_fallback dest_colour zero
+			}
+
+			texture_unit
+			{
+				texture Decal.png
+			}
+		}
+	}
+}
+material Examples/DP3Mat4
+{
+	technique
+	{
+		pass
+		{
+
+			texture_unit
+			{
+				texture NMHollyBumps.png
+				colour_op_ex source1 src_texture src_current
+				colour_op_multipass_fallback one zero
+			}
+
+			texture_unit
+			{
+				cubic_texture nm.png combinedUVW
+				tex_coord_set 1
+				tex_address_mode clamp
+				colour_op_ex dotproduct src_texture src_current
+				colour_op_multipass_fallback dest_colour zero
+			}
+
+			texture_unit
+			{
+				texture Decal.png
+			}
+		}
+	}
+}
+material Examples/DP3Terrain
+{
+	technique
+	{
+		pass
+		{
+
+			texture_unit
+			{
+				texture NMBalls.png
+				colour_op_ex dotproduct src_texture src_manual 1 1 1
+				colour_op_multipass_fallback dest_colour zero
+			}
+
+			texture_unit
+			{
+				texture dirt01.jpg
+			}
+		}
+	}
+}
+material Examples/DP3Sky
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+
+			texture_unit
+			{
+				texture clouds.jpg
+				scroll_anim 0.15 0
+			}
+		}
+	}
+}
