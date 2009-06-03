@@ -61,87 +61,6 @@ namespace Axiom.Demos
 			// attach the ogre to the scene
 			scene.RootSceneNode.AttachObject( ogre );
 
-			/*
-            // create nodes for the billboard sets
-            redYellowLightsNode = scene.RootSceneNode.CreateChildSceneNode();
-            greenBlueLightsNode = scene.RootSceneNode.CreateChildSceneNode();
-
-            // create a billboard set for creating billboards
-            redYellowLights = scene.CreateBillboardSet( "RedYellowLights", 20 );
-            redYellowLights.MaterialName = "Particles/Flare";
-            redYellowLightsNode.AttachObject( redYellowLights );
-
-            greenBlueLights = scene.CreateBillboardSet( "GreenBlueLights", 20 );
-            greenBlueLights.MaterialName = "Particles/Flare";
-            greenBlueLightsNode.AttachObject( greenBlueLights );
-
-            // red light billboard in off set
-            Vector3 redLightPos = new Vector3( 78, -8, -70 );
-            redLightBoard = redYellowLights.CreateBillboard( redLightPos, ColorEx.Black );
-
-            // yellow light billboard in off set
-            Vector3 yellowLightPos = new Vector3( -4.5f, 30, -80 );
-            yellowLightBoard = redYellowLights.CreateBillboard( yellowLightPos, ColorEx.Black );
-
-            // blue light billboard in off set
-            Vector3 blueLightPos = new Vector3( -90, -8, -70 );
-            blueLightBoard = greenBlueLights.CreateBillboard( blueLightPos, ColorEx.Black );
-
-            // green light billboard in off set
-            Vector3 greenLightPos = new Vector3( 50, 70, 80 );
-            greenLightBoard = greenBlueLights.CreateBillboard( greenLightPos, ColorEx.Black );
-
-            // red light in off state
-            redLight = scene.CreateLight( "RedLight" );
-            redLight.Position = redLightPos;
-            redLight.Type = LightType.Point;
-            redLight.Diffuse = ColorEx.Black;
-            redYellowLightsNode.AttachObject( redLight );
-
-            // yellow light in off state
-            yellowLight = scene.CreateLight( "YellowLight" );
-            yellowLight.Type = LightType.Point;
-            yellowLight.Position = yellowLightPos;
-            yellowLight.Diffuse = ColorEx.Black;
-            redYellowLightsNode.AttachObject( yellowLight );
-
-            // green light in off state
-            greenLight = scene.CreateLight( "GreenLight" );
-            greenLight.Type = LightType.Point;
-            greenLight.Position = greenLightPos;
-            greenLight.Diffuse = ColorEx.Black;
-            greenBlueLightsNode.AttachObject( greenLight );
-
-            // blue light in off state
-            blueLight = scene.CreateLight( "BlueLight" );
-            blueLight.Type = LightType.Point;
-            blueLight.Position = blueLightPos;
-            blueLight.Diffuse = ColorEx.Black;
-            greenBlueLightsNode.AttachObject( blueLight );
-
-            // create controller function
-            redLightFlasher =
-                new LightFlasherControllerValue( redLight, redLightBoard, ColorEx.Red );
-            yellowLightFlasher =
-                new LightFlasherControllerValue( yellowLight, yellowLightBoard, ColorEx.Yellow );
-            greenLightFlasher =
-                new LightFlasherControllerValue( greenLight, greenLightBoard, ColorEx.Green );
-            blueLightFlasher =
-                new LightFlasherControllerValue( blueLight, blueLightBoard, ColorEx.Blue );
-
-            // set up the controller value and function for flashing
-            redLightFunc = new WaveformControllerFunction( WaveformType.Sine, 0, 0.5f, 0, 1 );
-            yellowLightFunc = new WaveformControllerFunction( WaveformType.Triangle, 0, 0.25f, 0, 1 );
-            greenLightFunc = new WaveformControllerFunction( WaveformType.Sine, 0, 0.25f, 0.5f, 1 );
-            blueLightFunc = new WaveformControllerFunction( WaveformType.Sine, 0, 0.75f, 0.5f, 1 );
-
-            // set up the controllers
-            ControllerManager.Instance.CreateController( redLightFlasher, redLightFunc );
-            ControllerManager.Instance.CreateController( yellowLightFlasher, yellowLightFunc );
-            ControllerManager.Instance.CreateController( greenLightFlasher, greenLightFunc );
-            ControllerManager.Instance.CreateController( blueLightFlasher, blueLightFunc );
-			*/
-
 			setupLightTrails();
 		}
 
@@ -157,7 +76,7 @@ namespace Axiom.Demos
 			RibbonTrail trail = scene.CreateRibbonTrail( "RibbonTrail" );
 			trail.MaterialName = "Examples/LightRibbonTrail";
 			trail.TrailLength = 400;
-			trail.MaxChainElements = 100;
+			trail.MaxChainElements = 80;
 			trail.NumberOfChains = 2;
 			scene.RootSceneNode.AttachObject( trail );
 
@@ -200,8 +119,8 @@ namespace Axiom.Demos
 
 			// Add billboard
 			BillboardSet bbs = scene.CreateBillboardSet( "bb", 1 );
-			bbs.CreateBillboard( Vector3.Zero, trail.GetInitialColor( 0 ) );
 			bbs.MaterialName = "Examples/Flare";
+			bbs.CreateBillboard( Vector3.Zero, trail.GetInitialColor( 0 ) );
 			animNode.AttachObject( bbs );
 
 			animNode = scene.RootSceneNode.CreateChildSceneNode();
@@ -238,16 +157,14 @@ namespace Axiom.Demos
 
 			// Add billboard
 			bbs = scene.CreateBillboardSet( "bb2", 1 );
-			bbs.CreateBillboard( Vector3.Zero, trail.GetInitialColor( 1 ) );
 			bbs.MaterialName = "Examples/Flare";
+			bbs.CreateBillboard( Vector3.Zero, trail.GetInitialColor( 1 ) );
 			animNode.AttachObject( bbs );
 		}
 
 		protected override bool OnFrameStarted( object source, FrameEventArgs e )
 		{
 			// move the billboards around a bit
-			//redYellowLightsNode.Yaw( 10 * e.TimeSinceLastFrame );
-			//greenBlueLightsNode.Pitch( 20 * e.TimeSinceLastFrame );
 			foreach ( AnimationState anim in animationStateList )
 			{
 				anim.AddTime( e.TimeSinceLastFrame );

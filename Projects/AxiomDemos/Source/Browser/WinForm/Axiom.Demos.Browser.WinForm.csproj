@@ -1012,10 +1012,6 @@
       <Project>{161EA53F-8D78-4BD3-8217-442D94A593C1}</Project>
       <Name>Axiom.SceneManagers.Bsp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj">
-      <Project>{E0BB87B2-C59D-46D4-9AD9-A919E457E4EF}</Project>
-      <Name>Axiom.SceneManagers.Octree</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Demos\Axiom.Demos.csproj">
       <Project>{8749EB93-DB60-43C3-9BAE-76283B6624A7}</Project>
       <Name>Axiom.Demos</Name>
@@ -1028,6 +1024,10 @@
     </Content>
     <Content Include="..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\lib\DevIL.dll">
       <Link>DevIL.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Textures\ribbonband.png">
+      <Link>Media\Textures\ribbonband.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
