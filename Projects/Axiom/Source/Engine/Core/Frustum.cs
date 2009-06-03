@@ -705,6 +705,9 @@ namespace Axiom.Core
 			_frustumOffset = new Vector2( 0.0f, 0.0f );
 			_focalLength = 1.0f;
 
+            lastLinkedReflectionPlane = new Plane();
+		    lastLinkedObliqueProjPlane = new Plane();
+
 			UpdateView();
 		}
 
