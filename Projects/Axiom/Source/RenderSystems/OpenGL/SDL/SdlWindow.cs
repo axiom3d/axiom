@@ -300,13 +300,14 @@ namespace Axiom.RenderSystems.OpenGL
 		public void Destroy()
         {
 			/* reset the window paramaters to what we have found before the window was created */
-			if (!_destroyed) {
-				if (FullScreen)
-				{
-					Sdl.SDL_SetVideoMode(_previousWidth, _previousHeight, _previousColorDepth, 0);
-				}
-				_destroyed = true;
-			}
+            if (!_destroyed)
+            {
+                if ( FullScreen )
+                {
+                    Sdl.SDL_SetVideoMode( _previousWidth, _previousHeight, _previousColorDepth, 0 );
+                }
+                _destroyed = true;
+            }
         }
 		
 		

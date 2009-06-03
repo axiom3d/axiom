@@ -74,25 +74,6 @@ namespace Axiom.Platforms.SDL
             return inputReader;
         }
 
-        /// <summary>
-        ///		Creates a high precision Windows timer.
-        /// </summary>
-        /// <returns></returns>
-        public ITimer CreateTimer()
-        {
-            timer = new SdlTimer();
-            return timer;
-        }
-
-        /// <summary>
-        ///		Implements the Microsoft Windows (r) message pump for allowing the OS to process
-        ///		pending events.
-        /// </summary>
-        public void DoEvents()
-        {
-            // not required
-        }
-
         #endregion
 
         #region IDisposable Members

@@ -35,22 +35,6 @@ namespace Axiom.Platforms.OpenTK
             return inputReader;
         }
 
-        /// <summary>
-        ///		Creates a high precision timer.
-        /// </summary>
-        /// <returns></returns>
-        public ITimer CreateTimer()
-        {
-            timer = new OpenTKTimer();
-            return timer;
-        }
-
-        /// <summary>
-        /// </summary>
-        public void DoEvents()
-        {
-        }
-
         #endregion
 
         #region IDisposable Members

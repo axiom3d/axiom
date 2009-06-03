@@ -9,7 +9,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>Axiom.RenderSystems.OpenGL.SDL</AssemblyName>
+    <AssemblyName>Axiom.RenderSystems.OpenGL.Sdl</AssemblyName>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
@@ -46,7 +46,7 @@
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <DefineConstants>DEBUG;TRACE;OPENGL_SDL</DefineConstants>
-    <DocumentationFile>bin\Axiom.RenderSystems.OpenGL.SDL.XML</DocumentationFile>
+    <DocumentationFile>bin\Axiom.RenderSystems.OpenGL.Sdl.XML</DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <Optimize>false</Optimize>
@@ -63,7 +63,7 @@
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <DefineConstants>TRACE;OPENGL_SDL</DefineConstants>
-    <DocumentationFile>bin\Axiom.RenderSystems.OpenGL.SDL.XML</DocumentationFile>
+    <DocumentationFile>bin\Axiom.RenderSystems.OpenGL.Sdl.XML</DocumentationFile>
     <FileAlignment>4096</FileAlignment>
     <Optimize>true</Optimize>
     <OutputPath>bin\</OutputPath>
@@ -79,7 +79,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x64\Axiom.RenderSystems.OpenGL.SDL.XML</DocumentationFile>
+    <DocumentationFile>bin\x64\Axiom.RenderSystems.OpenGL.Sdl.XML</DocumentationFile>
     <WarningLevel>0</WarningLevel>
     <FileAlignment>4096</FileAlignment>
     <PlatformTarget>x64</PlatformTarget>
@@ -94,7 +94,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x64\Axiom.RenderSystems.OpenGL.SDL.XML</DocumentationFile>
+    <DocumentationFile>bin\x64\Axiom.RenderSystems.OpenGL.Sdl.XML</DocumentationFile>
     <Optimize>true</Optimize>
     <WarningLevel>0</WarningLevel>
     <FileAlignment>4096</FileAlignment>
@@ -110,7 +110,7 @@
     <DefineConstants>DEBUG;TRACE;OPENGL_SDL</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x86\Axiom.RenderSystems.OpenGL.SDL.XML</DocumentationFile>
+    <DocumentationFile>bin\x86\Axiom.RenderSystems.OpenGL.Sdl.XML</DocumentationFile>
     <WarningLevel>0</WarningLevel>
     <FileAlignment>4096</FileAlignment>
     <PlatformTarget>x86</PlatformTarget>
@@ -125,7 +125,7 @@
     <DefineConstants>TRACE;OPENGL_SDL</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x86\Axiom.RenderSystems.OpenGL.SDL.XML</DocumentationFile>
+    <DocumentationFile>bin\x86\Axiom.RenderSystems.OpenGL.Sdl.XML</DocumentationFile>
     <Optimize>true</Optimize>
     <WarningLevel>0</WarningLevel>
     <FileAlignment>4096</FileAlignment>
@@ -325,7 +325,7 @@
     <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE;OPENGL_SDL</DefineConstants>
     <WarningLevel>0</WarningLevel>
-    <DocumentationFile>bin\Axiom.RenderSystems.OpenGL.SDL.XML</DocumentationFile>
+    <DocumentationFile>bin\Axiom.RenderSystems.OpenGL.Sdl.XML</DocumentationFile>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ConfigurationOverrideFile />
@@ -339,7 +339,7 @@
     <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE;OPENGL_SDL</DefineConstants>
     <WarningLevel>0</WarningLevel>
-    <DocumentationFile>bin\Axiom.RenderSystems.OpenGL.SDL.XML</DocumentationFile>
+    <DocumentationFile>bin\Axiom.RenderSystems.OpenGL.Sdl.XML</DocumentationFile>
     <RemoveIntegerChecks>False</RemoveIntegerChecks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
