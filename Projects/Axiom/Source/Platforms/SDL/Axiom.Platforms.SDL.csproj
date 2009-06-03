@@ -169,9 +169,6 @@
     <Compile Include="SdlPlatformManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SdlTimer.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>

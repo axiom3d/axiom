@@ -189,10 +189,6 @@
       <Project>{251CA27E-5363-419A-B4E3-FD1BE5FD0396}</Project>
       <Name>Axiom.Platforms.SDL</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.SDL.csproj">
-      <Project>{3FC7E038-B500-4CAB-8525-0D3442B3052D}</Project>
-      <Name>Axiom.RenderSystems.OpenGL.SDL</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

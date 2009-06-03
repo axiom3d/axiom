@@ -75,33 +75,6 @@ namespace Axiom.Platforms.Win32
         }
 
         /// <summary>
-        ///		Creates a high precision Windows timer.
-        /// </summary>
-        /// <returns></returns>
-        public ITimer CreateTimer()
-        {
-            if( timer == null )
-                timer = new Win32Timer();
-            return timer;
-        }
-
-        /// <summary>
-        ///		Implements the Microsoft Windows (r) message pump for allowing the OS to process
-        ///		pending events.
-        /// </summary>
-        public void DoEvents()
-        {
-            Msg msg;
-
-            // pump those events!
-            while ( !( PeekMessage( out msg, IntPtr.Zero, 0, 0, PM_REMOVE ) == 0 ) )
-            {
-                TranslateMessage( ref msg );
-                DispatchMessage( ref msg );
-            }
-        }
-
-        /// <summary>
         ///     Called when the engine is being shutdown.
         /// </summary>
         public void Dispose()

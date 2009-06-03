@@ -169,9 +169,6 @@
     <Compile Include="Win32PlatformManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Win32Timer.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
