@@ -94,11 +94,18 @@ namespace Axiom.Core
                 PatchSurfaceType.Bezier, uMaxSubdivisionLevel, vMaxSubdivisionLevel, visibleSide );
         }
 
-        public void SetSubdivision( float factor )
+        public float Subdivision
         {
-            patchSurface.SubdivisionFactor = factor;
-            SubMesh sm = GetSubMesh( 0 );
-            sm.indexData.indexCount = patchSurface.CurrentIndexCount;
+            get
+            {
+                return patchSurface.SubdivisionFactor;
+            }
+            set
+            {
+                patchSurface.SubdivisionFactor = value;
+                SubMesh sm = GetSubMesh(0);
+                sm.indexData.indexCount = patchSurface.CurrentIndexCount;
+            }
         }
 
         protected override void load()

@@ -147,7 +147,7 @@ namespace Axiom.Demos
             patch = MeshManager.Instance.CreateBezierPatch( "Bezier1", ResourceGroupManager.DefaultResourceGroupName, patchVertices, patchDeclaration, 3, 3, 5, 5, VisibleSide.Both, BufferUsage.StaticWriteOnly, BufferUsage.DynamicWriteOnly, true, true );
 
             // Start patch a 0 detail
-            patch.SetSubdivision( 0 );
+            patch.Subdivision = 0;
 
             // Create entity based on patch
 
@@ -186,7 +186,7 @@ namespace Axiom.Demos
                     factor = 0.0f;
                 }
 
-                patch.SetSubdivision( factor );
+                patch.Subdivision = factor;
                 debugText = "Bezier subdivision factor: " + factor;
                 timeLapse = 0.0f;
             }
