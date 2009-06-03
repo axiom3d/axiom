@@ -133,9 +133,9 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			{
                 if ( microcode != null)
                 {
-                    if(LogManager.Instance != null )
+                    if( LogManager.Instance != null )
                     {
-                        LogManager.Instance.Write("HLSL: Warnings while compile high level shader {0}:\n{1}", Name, errors);
+                        LogManager.Instance.Write("HLSL: Warnings while compiling high level shader {0}:\n{1}", Name, errors);
                     }
                 }
                 else
