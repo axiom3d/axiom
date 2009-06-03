@@ -2,7 +2,7 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>10.0.20506</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{766F7401-E3A2-495F-BA07-E0DBFF228705}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -204,6 +204,10 @@
     <Compile Include="Main.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Content Include="..\..\..\..\..\Media\Archives\AxiomCore.zip">
+      <Link>Media\Archives\AxiomCore.zip</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="EngineConfig.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -414,10 +418,6 @@
       <Link>Media\Materials\CelShading.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\..\..\..\Media\Materials\Core.material">
-      <Link>Media\Materials\Core.material</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="..\..\..\..\..\Media\Materials\Dot3Bump.material">
       <Link>Media\Materials\Dot3Bump.material</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -546,10 +546,6 @@
       <Link>Media\Meshes\teapot.mesh</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\..\..\..\Media\Overlays\Debug.overlay">
-      <Link>Media\Overlays\Debug.overlay</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="..\..\..\..\..\Media\Overlays\Example-CubeMapping.overlay">
       <Link>Media\Overlays\Example-CubeMapping.overlay</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -574,14 +570,6 @@
       <Link>Media\Textures\atheneNormalMap.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\..\..\..\Media\Textures\axes.png">
-      <Link>Media\Textures\axes.png</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Textures\AxiomLogo.png">
-      <Link>Media\Textures\AxiomLogo.png</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="..\..\..\..\..\Media\Textures\basic_droplet.png">
       <Link>Media\Textures\basic_droplet.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -592,18 +580,6 @@
     </None>
     <None Include="..\..\..\..\..\Media\Textures\body.jpg">
       <Link>Media\Textures\body.jpg</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Textures\Border.png">
-      <Link>Media\Textures\Border.png</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Textures\Border_Break.png">
-      <Link>Media\Textures\Border_Break.png</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="..\..\..\..\..\Media\Textures\Border_Center.png">
-      <Link>Media\Textures\Border_Center.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\Media\Textures\bricks.jpg">

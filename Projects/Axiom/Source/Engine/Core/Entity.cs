@@ -213,11 +213,6 @@ namespace Axiom.Core
         protected internal int numBoneMatrices;
 
         /// <summary>
-        ///    SceneManager responsible for creating this entity.
-        /// </summary>
-        protected SceneManager sceneMgr;
-
-        /// <summary>
         ///		List of shadow renderables for this entity.
         /// </summary>
         protected ShadowRenderableList shadowRenderables = new ShadowRenderableList();
@@ -338,12 +333,9 @@ namespace Axiom.Core
         /// <param name="name"></param>
         /// <param name="mesh"></param>
         /// <param name="creator"></param>
-        internal Entity( string name, Mesh mesh, SceneManager creator )
+        internal Entity( string name, Mesh mesh )
         {
             this.name = name;
-            this.sceneMgr = creator;
-            //defaults to Points if not set
-
             this.SetMesh( mesh );
         }
 
@@ -373,9 +365,7 @@ namespace Axiom.Core
                     MeshLodUsage usage = mesh.GetLodLevel( i );
 
                     // manually create entity
-                    Entity lodEnt = new Entity( string.Format( "{0}Lod{1}", this.name, i ),
-                                                usage.manualMesh,
-                                                this.sceneMgr );
+                    Entity lodEnt = new Entity( string.Format( "{0}Lod{1}", this.name, i ), usage.manualMesh );
                     this.lodEntityList.Add( lodEnt );
                 }
             }
@@ -2220,8 +2210,13 @@ namespace Axiom.Core
         /// <returns></returns>
         public Entity Clone( string newName )
         {
+            if ( Manager == null )
+            {
+                throw new AxiomException( "Cannot clone an Entity that wasn't created by a SceneManager." );
+            }
+
             // create a new entity using the current mesh (uses same instance, not a copy for speed)
-            Entity clone = this.sceneMgr.CreateEntity( newName, this.mesh.Name );
+            Entity clone = this.Manager.CreateEntity( newName, this.mesh.Name );
 
             // loop through each subentity and set the material up for the clone
             for ( int i = 0; i < this.subEntityList.Count; i++ )
@@ -2494,7 +2489,7 @@ namespace Axiom.Core
             {
                 throw new AxiomException( "'mesh' parameter required when constructing an Entity." );
             }
-            Entity ent = new Entity( name, pMesh, null );
+            Entity ent = new Entity( name, pMesh );
             ent.MovableType = this.Type;
             return ent;
         }
