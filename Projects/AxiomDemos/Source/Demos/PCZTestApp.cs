@@ -20,7 +20,7 @@ namespace PCZDemo
         private float mMoveSpeed;
         private Listener l = new Listener();
 
-        protected override void CreateScene()
+        public override void CreateScene()
         {
             // Set ambient light
             scene.AmbientLight = new ColorEx(0.25f, 0.25f, 0.25f);
@@ -174,7 +174,7 @@ namespace PCZDemo
             return base.OnFrameStarted(source, e);
         }
 
-        protected override void ChooseSceneManager()
+        public override void ChooseSceneManager()
         {
             // Create the SceneManager, in this case a generic one
             scene = Root.Instance.CreateSceneManager("PCZSceneManager", "PCZSceneManager");
@@ -185,7 +185,7 @@ namespace PCZDemo
             //scene.showBoundingBoxes(true);
         }
 
-        protected override void CreateCamera()
+        public override void CreateCamera()
         {
             // Create the camera
             camera = scene.CreateCamera("PlayerCam");

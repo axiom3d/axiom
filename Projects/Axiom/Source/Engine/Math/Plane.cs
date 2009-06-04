@@ -61,7 +61,7 @@ namespace Axiom.Math
     /// respectively), and a constant (D) which is the distance along
     /// the normal you have to go to move the plane back to the origin.
     /// </remarks>
-    public class Plane
+    public struct Plane
     {
         #region Fields
 
@@ -89,11 +89,11 @@ namespace Axiom.Math
 
         #region Constructors
 
-        public Plane()
-        {
-            this.Normal = Vector3.Zero;
-            this.D = float.NaN;
-        }
+        //public Plane()
+        //{
+        //    this.Normal = Vector3.Zero;
+        //    this.D = float.NaN;
+        //}
 
         public Plane( Plane plane )
         {

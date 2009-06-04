@@ -184,12 +184,12 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Vector3 operator *( Vector3 left, Vector3 right )
         {
-            return new Vector3( left.x * right.x, left.y * right.y, left.z * right.z );
-            //Vector3 retVal;
-            //retVal.x = left.x * right.x;
-            //retVal.y = left.y * right.y;
-            //retVal.z = left.z * right.z;
-            //return retVal;
+            //return new Vector3( left.x * right.x, left.y * right.y, left.z * right.z );
+            Vector3 retVal;
+            retVal.x = left.x * right.x;
+            retVal.y = left.y * right.y;
+            retVal.z = left.z * right.z;
+            return retVal;
         }
 
         /// <summary>
@@ -295,7 +295,12 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Vector3 operator *( Vector3 left, float scalar )
         {
-            return new Vector3( left.x * scalar, left.y * scalar, left.z * scalar );
+            //return new Vector3( left.x * scalar, left.y * scalar, left.z * scalar );
+            Vector3 retVal;
+            retVal.x = left.x * scalar;
+            retVal.y = left.y * scalar;
+            retVal.z = left.z * scalar;
+            return retVal;
         }
 
         /// <summary>
