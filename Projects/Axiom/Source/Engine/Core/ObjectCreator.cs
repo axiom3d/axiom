@@ -147,7 +147,14 @@ namespace Axiom.Core
                     }
                     else
                     {
-                        _assembly = Assembly.LoadFrom(_assemblyFilename);
+                        try
+                        {
+                            _assembly = Assembly.LoadFrom( _assemblyFilename );
+                        }
+                        catch ( BadImageFormatException ex )
+                        {
+                            LogManager.Instance.Write( "Failed to load file or assembly '{0}'", _assemblyFilename );
+                        }
                     }
                 }
             }

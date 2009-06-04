@@ -123,7 +123,7 @@ namespace Axiom.Core
 		    foreach ( string file in files )
 		    {
 		        // TODO: allow exlusions in the app.config
-		        if ( file != Assembly.GetExecutingAssembly().GetName().Name + ".dll" && file.IndexOf( "Axiom." ) != -1 )
+		        if ( file != Assembly.GetExecutingAssembly().GetName().Name + ".dll" )
 		        {
                     string fullPath = Path.GetFullPath(file);
 

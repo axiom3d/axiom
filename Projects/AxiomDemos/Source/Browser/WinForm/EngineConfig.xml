@@ -6,6 +6,7 @@
   <FilePath type="Folder" src="Media/Icons"/>
 	<FilePath type="Folder" src="Media/Fonts"/>
 	<FilePath type="Folder" src="Media/Meshes"/>
+  <FilePath type="Folder" src="Media/PCZappMedia- Reverte"/>
 	<FilePath type="Folder" src="Media/Skeletons"/>
 	<FilePath type="Folder" src="Media/Materials"/>
 	<FilePath type="Folder" src="Media/Overlays"/>
