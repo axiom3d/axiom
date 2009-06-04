@@ -53,9 +53,9 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion(              /*  Major.Minor.Build */ "0.7.5.0")]
+[assembly: AssemblyVersion(              /*  Major.Minor.Build */ "0.8.0.0")]
 #if !( XBOX || XBOX360 )
-[assembly: AssemblyFileVersion(          /*  Major.Minor.Build */ "0.7.5.0")]
+[assembly: AssemblyFileVersion(          /*  Major.Minor.Build */ "0.8.0.0")]
 #endif
-[assembly: AssemblyInformationalVersion( /*  Major.Minor.Build */ "0.7.5.0")]
+[assembly: AssemblyInformationalVersion( /*  Major.Minor.Build */ "0.8.0.0")]
 
