@@ -55,10 +55,6 @@ namespace Axiom.Platforms.SDL
         ///		Reference to the current input reader.
         /// </summary>
         private InputReader inputReader;
-        /// <summary>
-        ///		Reference to the current active timer.
-        /// </summary>
-        private ITimer timer;
 
         #endregion Fields
 
@@ -79,17 +75,12 @@ namespace Axiom.Platforms.SDL
         #region IDisposable Members
         public void Dispose()
         {
-			if ( timer != null )
-			{
-				timer.Reset();
-				timer = null;
-			}
-
 			if ( inputReader != null )
 			{
 				inputReader.Dispose();
 				inputReader = null;
 			}
+            LogManager.Instance.Write("SDL Platform Manager Shutdown.");
         }
         #endregion
     }
