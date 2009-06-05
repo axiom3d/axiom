@@ -113,7 +113,6 @@ namespace Axiom.RenderSystems.OpenGL
             Sdl.SDL_Rect[] modes = Sdl.SDL_ListModes( IntPtr.Zero, Sdl.SDL_FULLSCREEN | Sdl.SDL_OPENGL );
             _deviceModes = new List<Sdl.SDL_Rect>( modes );
 
-            optVideoMode = new ConfigOption( "Video Mode", "800 x 600 @ 32-bit colour", false );
             // add the resolutions to the config
             foreach ( Sdl.SDL_Rect mode in modes )
             {
