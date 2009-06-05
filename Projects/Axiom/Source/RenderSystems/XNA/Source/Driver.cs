@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
-//     <id value="$Id$"/>
+//     <id value="$Id:"/>
 // </file>
 #endregion SVN Version Information
 
@@ -47,16 +47,6 @@ namespace Axiom.RenderSystems.Xna
     /// </summary>
     public class Driver
     {
-        #region Member variables
-
-        private int adapterNum;
-        private XFG.DisplayMode desktopMode;
-        private VideoModeCollection videoModeList;
-        private string name;
-        private string description;
-
-        #endregion
-
         #region Constructors
 
         /// <summary>
@@ -64,18 +54,21 @@ namespace Axiom.RenderSystems.Xna
         /// </summary>
         public Driver( XFG.GraphicsAdapter adapterDetails )
         {
-            this.desktopMode = adapterDetails.CurrentDisplayMode;
-            this.name = adapterDetails.DeviceName;
-            this.description = adapterDetails.Description;
-            this.adapterNum = adapterDetails.DeviceId;
+            this._desktopMode = adapterDetails.CurrentDisplayMode;
+            this._name = adapterDetails.DeviceName;
+            this._description = adapterDetails.Description;
+            this._adapterNum = adapterDetails.DeviceId;
+            this._adapterIdentifier = adapterDetails.DeviceIdentifier;
 
-            videoModeList = new VideoModeCollection();
+            _videoModeList = new VideoModeCollection();
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Properties
 
+        #region Name Property
+        private string _name;
         /// <summary>
         /// 
         /// </summary>
@@ -83,10 +76,13 @@ namespace Axiom.RenderSystems.Xna
         {
             get
             {
-                return name;
+                return _name;
             }
         }
+        #endregion Name Property
 
+        #region Description Property
+        private string _description;
         /// <summary>
         /// 
         /// </summary>
@@ -94,10 +90,13 @@ namespace Axiom.RenderSystems.Xna
         {
             get
             {
-                return description;
+                return _description;
             }
         }
+        #endregion Description Property
 
+        #region AdapterNumber Property
+        private int _adapterNum;
         /// <summary>
         /// 
         /// </summary>
@@ -105,10 +104,27 @@ namespace Axiom.RenderSystems.Xna
         {
             get
             {
-                return adapterNum;
+                return _adapterNum;
             }
         }
+        #endregion AdapterNumber Property
 
+        #region AdapterIdentifier Property
+        private Guid _adapterIdentifier;
+        /// <summary>
+        /// 
+        /// </summary>
+        public Guid AdapterIdentifier
+        {
+            get
+            {
+                return _adapterIdentifier;
+            }
+        }
+        #endregion AdapterIdentifier Property
+
+        #region DesktopMode Property
+        private XFG.DisplayMode _desktopMode;
         /// <summary>
         ///		
         /// </summary>
@@ -116,10 +132,13 @@ namespace Axiom.RenderSystems.Xna
         {
             get
             {
-                return desktopMode;
+                return _desktopMode;
             }
         }
+        #endregion DesktopMode Property
 
+        #region VideoModes Property
+        private VideoModeCollection _videoModeList;
         /// <summary>
         ///		
         /// </summary>
@@ -127,10 +146,29 @@ namespace Axiom.RenderSystems.Xna
         {
             get
             {
-                return videoModeList;
+                return _videoModeList;
             }
         }
+        #endregion VideoModes Property
 
-        #endregion
+        #region XnaDevice Property
+        private XFG.GraphicsDevice _device;
+        /// <summary>
+        ///		
+        /// </summary>
+        public XFG.GraphicsDevice XnaDevice
+        {
+            get
+            {
+                return _device;
+            }
+            set
+            {
+                _device = value;
+            }
+        }
+        #endregion XnaDevice Property
+
+        #endregion Properties
     }
 }

@@ -12,7 +12,7 @@
     <XnaPlatform>Windows</XnaPlatform>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <ProductVersion>10.0.20506</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -198,6 +198,7 @@
     <Compile Include="Source\XnaHardwareBufferManager.cs" />
     <Compile Include="Source\XnaHardwareIndexBuffer.cs" />
     <Compile Include="Source\XnaHardwareOcclusionQuery.cs" />
+    <Compile Include="Source\XnaHardwarePixelBuffer.cs" />
     <Compile Include="Source\XnaHardwareVertexBuffer.cs" />
     <Compile Include="Source\XnaHelper.cs" />
     <Compile Include="Source\XnaRenderSystem.cs" />

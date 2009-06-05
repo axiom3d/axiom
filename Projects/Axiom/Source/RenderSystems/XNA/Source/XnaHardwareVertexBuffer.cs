@@ -108,7 +108,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		/// 
 		/// </summary>
-		public override void UnlockImpl()
+		protected override void UnlockImpl()
 		{
 			//there is no unlock/lock system on XNA, just copy the byte buffer into the video card memory
 			// _buffer.SetData<byte>(bufferBytes);
@@ -156,10 +156,26 @@ namespace Axiom.RenderSystems.Xna
 
 		}
 
-		public override void Dispose()
-		{
-			_buffer.Dispose();
-		}
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !isDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                }
+
+                if ( _buffer != null )
+                {
+                    _buffer.Dispose();
+                    _buffer = null;
+                }
+
+            }
+
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose( disposeManagedResources );
+        }
 
 		#endregion
 

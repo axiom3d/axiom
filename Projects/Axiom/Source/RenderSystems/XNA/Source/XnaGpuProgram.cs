@@ -127,8 +127,8 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		///     Overridden to allow for loading microcode from external sources.
 		/// </summary>
-		public override void Load()
-		{
+        protected override void load()
+        {
 			if ( shaderCode != null && shaderCode.Length > 0 )
 			{
 				// unload if needed
@@ -159,6 +159,33 @@ namespace Axiom.RenderSystems.Xna
         }
 
 		#endregion GpuProgram Members
+
+        #region Properties
+        public override int SamplerCount
+        {
+            get
+            {
+                switch (target)
+                {
+                    case "ps_1_1":
+                    case "ps_1_2":
+                    case "ps_1_3":
+                        return 4;
+                    case "ps_1_4":
+                        return 6;
+                    case "ps_2_0":
+                    case "ps_2_x":
+                    case "ps_3_0":
+                    case "ps_3_x":
+                        return 16;
+                    default:
+                        throw new AxiomException("Attempted to query sample count for unknown shader profile({0}).", target);
+                }
+
+                // return 0;
+            }
+        }
+        #endregion
 
 	}
 
@@ -198,7 +225,7 @@ namespace Axiom.RenderSystems.Xna
 
 		#endregion Constructor
 
-		#region XnaGpuProgram Memebers
+		#region XnaGpuProgram Members
 
 		/// <summary>
 		///     Loads a vertex shader from shaderCode member variable
@@ -272,7 +299,7 @@ namespace Axiom.RenderSystems.Xna
 
 		#endregion Constructors
 
-		#region XnaGpuProgram Memebers
+		#region XnaGpuProgram Members
 
 		/// <summary>
 		///     Loads a pixel shader from shaderCode member variable
