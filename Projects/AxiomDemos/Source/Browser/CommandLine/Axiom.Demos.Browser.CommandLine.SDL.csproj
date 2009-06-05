@@ -169,6 +169,10 @@
       <Project>{24CC9752-FFA0-43A7-8CCE-44812D828E7D}</Project>
       <Name>Axiom.Plugins.CgProgramManager</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\Source\Plugins\DevILCodecs\Axiom.Plugins.DevILCodecs.csproj">
+      <Project>{B2BB7F09-2AD3-49C4-9268-D33BC13AA5E7}</Project>
+      <Name>Axiom.Plugins.DevILCodecs</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\Source\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.csproj">
       <Project>{731CF9B4-E674-4DC4-9FEC-DAA9B09B59AA}</Project>
       <Name>Axiom.Plugins.ParticleFX</Name>

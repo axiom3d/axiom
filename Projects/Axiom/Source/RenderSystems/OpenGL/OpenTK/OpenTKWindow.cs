@@ -51,6 +51,25 @@ namespace Axiom.RenderSystems.OpenGL
 
         #region RenderWindow Members
 
+        public override object this[string attribute]
+        {
+            get
+            {
+                switch (attribute.ToLower())
+                {
+                    case "glcontext":
+                        return null; //	_glContext;
+                    case "window":
+                        return OTKGameWindow;
+                    // Retrieve the Handle to the SDL Window
+                    //System.Windows.Forms.Control ctrl = System.Windows.Forms.Control.FromHandle( sdlWindowHandle );
+                    //return ctrl;
+                    default:
+                        return null;
+                }
+            }
+        }
+
         public void Destroy()
         {
             if ( !destroyed )
