@@ -26,6 +26,22 @@ namespace Axiom.Demos.Browser.CommandLine
     /// </remarks>
     public class Program : IDisposable
     {
+        private struct DemoItem
+        {
+            public DemoItem(string name, Type demo)
+            {
+                Name = name;
+                Demo = demo;
+            }
+
+            public string Name;
+            public Type Demo;
+            public override string ToString()
+            {
+                return Name;
+            }
+        }
+
         protected const string CONFIG_FILE = @"EngineConfig.xml";
 
         private Root engine;
@@ -79,64 +95,59 @@ namespace Axiom.Demos.Browser.CommandLine
         public void Run( )
         {
 #if !(XBOX || XBOX360 || SILVERLIGHT)
-			SortedList<string, string> demoList = new SortedList<string, string>();
+            SortedList<string, DemoItem> demoList = new SortedList<string, DemoItem>();
 #endif
             try
             {
 #if !(XBOX || XBOX360 || SILVERLIGHT)
-                if ( _configure( ) )
+                if (_configure())
                 {
 
-                    Assembly demos = Assembly.LoadFrom( "Axiom.Demos.dll" );
-                    Type[]  demoTypes = demos.GetTypes();
-                    Type techDemo = demos.GetType( "Axiom.Demos.TechDemo" );
+                    Assembly demos = Assembly.LoadFrom("Axiom.Demos.dll");
+                    Type[] demoTypes = demos.GetTypes();
+                    Type techDemo = demos.GetType("Axiom.Demos.TechDemo");
 
-                    foreach ( Type demoType in demoTypes )
+                    foreach (Type demoType in demoTypes)
                     {
-                        if ( demoType.IsSubclassOf( techDemo ) )
+                        if (demoType.IsSubclassOf(techDemo))
                         {
-                            demoList.Add(demoType.Name, demoType.Name );
+                            demoList.Add(demoType.Name, new DemoItem(demoType.Name, demoType));
                         }
                     }
 
-                    // TODO: Display list of available demos and allow the user to select one, or exit.
-                    string next = "";
-
-                    //while ( next != "exit" )
-                    //{
+                    {
+                        Type demoType;
                         int i = 1;
-                        foreach ( KeyValuePair<string, string> typeName in demoList)
+                        foreach (KeyValuePair<string, DemoItem> typeName in demoList)
                         {
-                            Console.WriteLine( "{0}) {1}", i++,  typeName.Key );
+                            Console.WriteLine("{0}) {1}", i++, typeName.Key);
                         }
-                        Console.WriteLine( "Enter the number of the demo that you want to run and press enter." );
-                        while ( true )
+                        Console.WriteLine("Enter the number of the demo that you want to run and press enter.");
+                        while (true)
                         {
                             string line = Console.ReadLine();
                             int number = -1;
-                            if ( line != string.Empty )
+                            if (line != string.Empty)
                             {
-                                number = int.Parse( line.Trim() );
+                                number = int.Parse(line.Trim());
                             }
-                            if ( number < 1 || number > demoList.Count )
-                                Console.WriteLine( "The number of the demo game must be between 1 and {0}, the number of demos games available.", demoList.Count );
-							else
-							{
-							    next = (string)demoList.Keys[ number - 1 ];
-							    break;
-							}
+                            if (number < 1 || number > demoList.Count)
+                                Console.WriteLine("The number of the demo game must be between 1 and {0}, the number of demos games available.", demoList.Count);
+                            else
+                            {
+                                demoType = demoList.Values[number - 1].Demo;
+                                break;
+                            }
                         }
 
-                        Type type = demos.GetType( "Axiom.Demos." + next );
-
-                        if ( type != null )
+                        if (demoType != null)
                         {
-                            using ( TechDemo demo = (TechDemo)Activator.CreateInstance( type ) )
+                            using (TechDemo demo = (TechDemo)Activator.CreateInstance(demoType))
                             {
                                 demo.Start();//show and start rendering
                             }//dispose of it when done
                         }
-                    //}
+                    }
 
                 }
 #else
