@@ -39,6 +39,7 @@ using Axiom.Graphics;
 
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -47,7 +48,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
     /// <summary>
     /// Summary description for HLSLProgramFactory.
     /// </summary>
-    public class HLSLProgramFactory : IHighLevelGpuProgramFactory
+    public class HLSLProgramFactory : HighLevelGpuProgramFactory
     {
         #region Fields
 
@@ -55,17 +56,17 @@ namespace Axiom.RenderSystems.Xna.HLSL
 
         #endregion
 
-        #region IHighLevelGpuProgramFactory Members
+        #region HighLevelGpuProgramFactory Members
 
-        public HighLevelGpuProgram Create( string name, GpuProgramType type )
+        public override HighLevelGpuProgram CreateInstance(ResourceManager creator, string name, ulong handle, string group, bool isManual, IManualResourceLoader loader)
         {
-            return new HLSLProgram( name, type, language );
+            return new HLSLProgram(creator, name, handle, group, isManual, loader);
         }
 
         /// <summary>
         ///     Gets the high level language that this factory handles requests for.
         /// </summary>
-        public string Language
+        public override string Language
         {
             get
             {

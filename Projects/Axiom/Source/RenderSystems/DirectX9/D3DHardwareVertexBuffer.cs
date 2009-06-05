@@ -202,7 +202,6 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 
 			}
-			isDisposed = true;
 
 			// If it is available, make the call to the
 			// base class's Dispose(Boolean) method

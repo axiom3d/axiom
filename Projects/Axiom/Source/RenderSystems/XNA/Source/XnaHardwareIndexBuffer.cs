@@ -108,8 +108,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		/// 
 		/// </summary>
-		/// DOC
-		public override void UnlockImpl()
+		protected override void UnlockImpl()
 		{
 			//there is no unlock/lock system on XNA, just copy the byte buffer into the video card memory
 			// d3dBuffer.SetData<byte>(bufferBytes);
@@ -124,7 +123,6 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="offset"></param>
 		/// <param name="length"></param>
 		/// <param name="dest"></param>
-		/// DOC
 		unsafe public override void ReadData( int offset, int length, IntPtr dest )
 		{
 			// lock the buffer for reading
@@ -143,7 +141,6 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="length"></param>
 		/// <param name="src"></param>
 		/// <param name="discardWholeBuffer"></param>
-		/// DOC
 		public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
 		{
 			// lock the buffer re al quick
@@ -156,10 +153,26 @@ namespace Axiom.RenderSystems.Xna
 
 		}
 
-		public override void Dispose()
-		{
-			_xnaBuffer.Dispose();
-		}
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !isDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                }
+
+                if ( xnaBuffer != null )
+                {
+                    xnaBuffer.Dispose();
+                    xnaBuffer = null;
+                }
+
+            }
+
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose( disposeManagedResources );
+        }
 
 		#endregion
 

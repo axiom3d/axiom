@@ -41,6 +41,7 @@ using Axiom.Graphics;
 #if (XBOX || XBOX360 || SILVERLIGHT)
 using Axiom.RenderSystems.Xna.Content;
 #endif
+using ResourceHandle = System.UInt64;
 
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
@@ -85,8 +86,8 @@ namespace Axiom.RenderSystems.Xna.HLSL
 
         #region Constructor
 
-        public HLSLProgram( string name, GpuProgramType type, string language )
-            : base( name, type, language )
+        public HLSLProgram(ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader)
+            : base(parent, name, handle, group, isManual, loader)
         {
         }
 
@@ -196,8 +197,8 @@ namespace Axiom.RenderSystems.Xna.HLSL
             for ( int i = 0; i < constantTable.Constants.Count; i++ )
             {
                 // Recursively descend through the structure levels
-                // Since Xna has no nice 'leaf' method like Cg (sigh)
-                ProcessParamElement( "", i, parms );
+                // Since XNA has no nice 'leaf' method like Cg (sigh)
+                ProcessParamElement( null, "", i, parms );
             }
         }
 
@@ -237,7 +238,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
         /// <param name="prefix"></param>
         /// <param name="index"></param>
         /// <param name="parms"></param>
-        protected void ProcessParamElement( string prefix, int index, GpuProgramParameters parms )
+        protected void ProcessParamElement( XFG.ShaderConstant parent, string prefix, int index, GpuProgramParameters parms )
         {
             XFG.ShaderConstant constant = constantTable.Constants[ index ];
 
@@ -268,7 +269,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
                     // cascade into the struct members
                     for ( int i = 0; i < constant.StructureMemberCount; i++ )
                     {
-                        ProcessParamElement( prefix, i, parms );
+                        ProcessParamElement( constant, prefix, i, parms );
                     }
                 }
                 else
@@ -336,6 +337,33 @@ namespace Axiom.RenderSystems.Xna.HLSL
         }
 
         #endregion Methods
+
+        #region Properties
+        public override int SamplerCount
+        {
+            get
+            {
+                switch (target)
+                {
+                    case "ps_1_1":
+                    case "ps_1_2":
+                    case "ps_1_3":
+                        return 4;
+                    case "ps_1_4":
+                        return 6;
+                    case "ps_2_0":
+                    case "ps_2_x":
+                    case "ps_3_0":
+                    case "ps_3_x":
+                        return 16;
+                    default:
+                        throw new AxiomException("Attempted to query sample count for unknown shader profile({0}).", target);
+                }
+
+                // return 0;
+            }
+        }
+        #endregion
 
         #region IConfigurable Members
 

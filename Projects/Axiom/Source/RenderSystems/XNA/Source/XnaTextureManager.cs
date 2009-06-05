@@ -41,6 +41,7 @@ using Axiom.Media;
 
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
+using Axiom.Collections;
 
 #endregion Namespace Declarations
 
@@ -61,33 +62,38 @@ namespace Axiom.RenderSystems.Xna
 			is32Bit = true;
 		}
 
-		public override Texture Create( string name, TextureType type )
-		{
-			XnaTexture texture = new XnaTexture( name, _device, TextureUsage.Default, type );
+        protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+        {
+            return new XnaTexture( this, name, handle, group, isManual, loader, device );
+        }
 
-			// Handle 32-bit texture settings
-			texture.Enable32Bit( is32Bit );
+        public override PixelFormat GetNativeFormat( TextureType ttype, PixelFormat format, TextureUsage usage )
+        {
+            return PixelFormat.X8R8G8B8;
+        }
 
-			return texture;
-		}
 
-		/// <summary>
-		///    Used to create a blank D3D texture.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="type"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="numMipMaps"></param>
-		/// <param name="format"></param>
-		/// <param name="usage"></param>
-		/// <returns></returns>
-		public override Texture CreateManual( string name, TextureType type, int width, int height, int numMipMaps, PixelFormat format, TextureUsage usage )
-		{
+        public void ReleaseDefaultPoolResources()
+        {
+            int count = 0;
+            foreach ( XnaTexture tex in resourceList.Values )
+            {
+                if ( tex.ReleaseIfDefaultPool() )
+                    count++;
+            }
+            LogManager.Instance.Write( "XNATextureManager released: {0} unmanaged textures", count );
+        }
 
-			XnaTexture texture = new XnaTexture( name, _device, type, width, height, numMipMaps, format, usage );
-			texture.Enable32Bit( is32Bit );
-			return texture;
-		}
+        public void RecreateDefaultPoolResources()
+        {
+            int count = 0;
+            foreach ( XnaTexture tex in resourceList.Values )
+            {
+                if ( tex.RecreateIfDefaultPool( device ) )
+                    count++;
+            }
+            LogManager.Instance.Write( "D3DTextureManager recreated: {0} unmanaged textures", count );
+        }
+
 	}
 }
