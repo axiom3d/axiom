@@ -83,13 +83,13 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OpenTK, Version=0.9.7.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OpenTK, Version=0.9.8.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\OpenTK\0.9.7\OpenTK.dll</HintPath>
+      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\OpenTK\0.9.8\OpenTK.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK.Utilities, Version=0.9.6.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OpenTK.Utilities, Version=0.9.8.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\OpenTK\0.9.7\OpenTK.Utilities.dll</HintPath>
+      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\OpenTK\0.9.8\OpenTK.Utilities.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -109,10 +109,6 @@
     <ProjectReference Include="..\..\Engine\Axiom.csproj">
       <Project>{6436E2A4-0520-40CF-9481-0EB77946120A}</Project>
       <Name>Axiom</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.OpenTK.csproj">
-      <Project>{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}</Project>
-      <Name>Axiom.RenderSystems.OpenGL.OpenTK</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
