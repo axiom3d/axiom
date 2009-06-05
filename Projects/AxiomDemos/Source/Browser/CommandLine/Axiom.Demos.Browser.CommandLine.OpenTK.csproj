@@ -177,6 +177,10 @@
       <Project>{B2BB7F09-2AD3-49C4-9268-D33BC13AA5E7}</Project>
       <Name>Axiom.Plugins.DevILCodecs</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\Source\Plugins\OctreeZone\OctreeZone.csproj">
+      <Project>{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}</Project>
+      <Name>OctreeZone</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\Source\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.csproj">
       <Project>{731CF9B4-E674-4DC4-9FEC-DAA9B09B59AA}</Project>
       <Name>Axiom.Plugins.ParticleFX</Name>
@@ -192,6 +196,10 @@
     <ProjectReference Include="..\..\..\..\Axiom\Source\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj">
       <Project>{F3016FCF-2A53-483E-8679-4514D57B6ACD}</Project>
       <Name>Axiom.SceneManagers.Octree</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\Source\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.csproj">
+      <Project>{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}</Project>
+      <Name>Axiom.SceneManagers.PortalConnected</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Demos\Axiom.Demos.csproj">
       <Project>{C7286349-8DBA-4A39-991C-3D848AB10CCE}</Project>
@@ -212,6 +220,102 @@
       <Link>Media\Archives\AxiomCore.zip</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\building_exterior.mesh">
+      <Link>Media\PCZAppMedia\building_exterior.mesh</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\ROOM.material">
+      <Link>Media\PCZAppMedia\ROOM.material</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\ROOM_NX.mesh">
+      <Link>Media\PCZAppMedia\ROOM_NX.mesh</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\room_nxnynz.mesh">
+      <Link>Media\PCZAppMedia\room_nxnynz.mesh</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\room_nxpx.mesh">
+      <Link>Media\PCZAppMedia\room_nxpx.mesh</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\room_nxpxnypynzpz.mesh">
+      <Link>Media\PCZAppMedia\room_nxpxnypynzpz.mesh</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\room_nxpxnz.mesh">
+      <Link>Media\PCZAppMedia\room_nxpxnz.mesh</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\room_nxpxnzpz.mesh">
+      <Link>Media\PCZAppMedia\room_nxpxnzpz.mesh</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\room_nxpxpz.mesh">
+      <Link>Media\PCZAppMedia\room_nxpxpz.mesh</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\room_nxpynz.mesh">
+      <Link>Media\PCZAppMedia\room_nxpynz.mesh</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\room_nxpz.mesh">
+      <Link>Media\PCZAppMedia\room_nxpz.mesh</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\ROOM_NY.mesh">
+      <Link>Media\PCZAppMedia\ROOM_NY.mesh</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\room_nypy.mesh">
+      <Link>Media\PCZAppMedia\room_nypy.mesh</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\room_nypy_4y.mesh">
+      <Link>Media\PCZAppMedia\room_nypy_4y.mesh</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\ROOM_NZ.mesh">
+      <Link>Media\PCZAppMedia\ROOM_NZ.mesh</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\room_nzpz.mesh">
+      <Link>Media\PCZAppMedia\room_nzpz.mesh</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\ROOM_PX.mesh">
+      <Link>Media\PCZAppMedia\ROOM_PX.mesh</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\room_pxnynz.mesh">
+      <Link>Media\PCZAppMedia\room_pxnynz.mesh</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\room_pxpynz.mesh">
+      <Link>Media\PCZAppMedia\room_pxpynz.mesh</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\room_pxpz.mesh">
+      <Link>Media\PCZAppMedia\room_pxpz.mesh</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\ROOM_PY.mesh">
+      <Link>Media\PCZAppMedia\ROOM_PY.mesh</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\ROOM_PZ.mesh">
+      <Link>Media\PCZAppMedia\ROOM_PZ.mesh</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\terrain2.cfg">
+      <Link>Media\PCZAppMedia\terrain2.cfg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="..\..\..\..\..\Media\GpuPrograms\Grass.cg">
+      <Link>Media\GpuPrograms\Grass.cg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="EngineConfig.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -468,6 +572,58 @@
     </Content>
     <Content Include="..\..\..\..\..\Media\Materials\Terrain.material">
       <Link>Media\Materials\Terrain.material</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\Carpet_Diamond_Olive.jpg">
+      <Link>Media\PCZAppMedia\Carpet_Diamond_Olive.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\Metal_Brass_Ceiling.jpg">
+      <Link>Media\PCZAppMedia\Metal_Brass_Ceiling.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\Metal_Embossed.jpg">
+      <Link>Media\PCZAppMedia\Metal_Embossed.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\Metal_Rusted.jpg">
+      <Link>Media\PCZAppMedia\Metal_Rusted.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\Metal_Rusted1.jpg">
+      <Link>Media\PCZAppMedia\Metal_Rusted1.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\Metal_Steel_Textured.jpg">
+      <Link>Media\PCZAppMedia\Metal_Steel_Textured.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\Metal_Steel_Textured_White.jpg">
+      <Link>Media\PCZAppMedia\Metal_Steel_Textured_White.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\Roofing_Tile_Spanish.jpg">
+      <Link>Media\PCZAppMedia\Roofing_Tile_Spanish.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\terrain.png">
+      <Link>Media\PCZAppMedia\terrain.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\terrain2.png">
+      <Link>Media\PCZAppMedia\terrain2.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\Translucent_Glass_Tinted.jpg">
+      <Link>Media\PCZAppMedia\Translucent_Glass_Tinted.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\Translucent_Glass_Tinted1.jpg">
+      <Link>Media\PCZAppMedia\Translucent_Glass_Tinted1.jpg</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\media\pczappmedia\Wood_Floor.jpg">
+      <Link>Media\PCZAppMedia\Wood_Floor.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\..\..\..\Media\Textures\ribbonband.png">
