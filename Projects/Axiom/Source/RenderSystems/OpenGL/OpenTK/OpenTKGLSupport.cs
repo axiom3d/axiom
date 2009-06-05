@@ -74,8 +74,6 @@ namespace Axiom.RenderSystems.OpenGL
             DisplayDevice dev = DisplayDevice.Default;
             DisplayResolution[] res = dev.AvailableResolutions;
 
-            optVideoMode = new ConfigOption( "Video Mode", "800 x 600 @ 32-bit colour", false );
-
             // add the resolutions to the config
             for ( int q = 0; q < res.Length; q++ )
             {
@@ -87,7 +85,7 @@ namespace Axiom.RenderSystems.OpenGL
                     // filter out the lower resolutions and dupe frequencies
                     if ( width >= 640 && height >= 480 )
                     {
-                        string query = string.Format( "{0} x {1} @ {2}-bit colour", width, height, res[ q ].BitsPerPixel );
+                        string query = string.Format( "{0} x {1}", width, height );
 
                         if ( !optVideoMode.PossibleValues.Values.Contains( query ) )
                         {
@@ -257,18 +255,25 @@ namespace Axiom.RenderSystems.OpenGL
             int width = Int32.Parse( val.Substring( 0, pos ) );
             int height = Int32.Parse( val.Substring( pos + 1 ) );
 
-            //DisplayDevice device = DisplayDevice.Default;
-            //device.AvailableResolutions.
-            //optColorDepth.PossibleValues.Clear();
-            //IntPtr videoInfoPtr = Sdl.SDL_GetVideoInfo();
-            //Sdl.SDL_VideoInfo videoInfo = (Sdl.SDL_VideoInfo)Marshal.PtrToStructure( videoInfoPtr, typeof ( Sdl.SDL_VideoInfo ) );
-            //IntPtr pixelFormatPtr = videoInfo.vfmt;
-            //Sdl.SDL_PixelFormat pixelFormat = (Sdl.SDL_PixelFormat)Marshal.PtrToStructure( pixelFormatPtr, typeof ( Sdl.SDL_PixelFormat ) );
-            //for ( int bpp = pixelFormat.BitsPerPixel, index = 0; bpp > 0; bpp -= 8, index++ )
-            //{
-            //    if ( Sdl.SDL_VideoModeOK( width, height, bpp, 0 ) != 0 )
-            //        optColorDepth.PossibleValues.Add( index, bpp.ToString() );
-            //}
+            DisplayDevice dev = DisplayDevice.Default;
+            DisplayResolution[] res = dev.AvailableResolutions;
+            optColorDepth.PossibleValues.Clear();
+            foreach (DisplayResolution item in res)
+            {
+                if ( item.Width == width && 
+                     item.Height == height )
+                {
+                    if (!optColorDepth.PossibleValues.ContainsValue(item.BitsPerPixel.ToString()))
+                    {
+                        optColorDepth.PossibleValues.Add(optColorDepth.PossibleValues.Values.Count, item.BitsPerPixel.ToString());
+                    }
+                    if (!optDisplayFrequency.PossibleValues.ContainsValue(item.RefreshRate.ToString()))
+                    {
+                        optDisplayFrequency.PossibleValues.Add(optDisplayFrequency.PossibleValues.Values.Count, item.RefreshRate.ToString());
+                    }
+
+                }
+            }
 
             if ( optFullScreen.Value == "No" )
             {
@@ -281,7 +286,7 @@ namespace Axiom.RenderSystems.OpenGL
                 optDisplayFrequency.Value = optDisplayFrequency.PossibleValues.Values[ optDisplayFrequency.PossibleValues.Count - 1 ];
             }
             if ( optColorDepth.PossibleValues.Values.Count > 0 )
-                optColorDepth.Value = optColorDepth.PossibleValues.Values[ optColorDepth.PossibleValues.Values.Count - 1 ];
+                optColorDepth.Value = optColorDepth.PossibleValues.Values[ 0 ];
             if ( optDisplayFrequency.Value != "N/A" )
                 optDisplayFrequency.Value = optDisplayFrequency.PossibleValues.Values[ optDisplayFrequency.PossibleValues.Count - 1 ];
         }
