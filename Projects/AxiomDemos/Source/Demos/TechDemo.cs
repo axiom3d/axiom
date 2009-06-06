@@ -138,7 +138,7 @@ namespace Axiom.Demos
         public virtual void ChooseSceneManager()
         {
             // Get the SceneManager, a generic one by default
-            scene = engine.CreateSceneManager( SceneType.Generic, "TechDemoSMInstance" );
+            scene = engine.CreateSceneManager( "DefaultSceneManager", "TechDemoSMInstance" );
             scene.ClearScene();
         }
 
