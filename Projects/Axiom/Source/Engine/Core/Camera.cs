@@ -524,7 +524,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Stored number of visible faces in the last render.
 		/// </summary>
-		protected int numFacesRenderedLastFrame;
+		protected int faceCountRenderedLastFrame;
 		/// <summary>
 		/// Gets the last count of triangles visible in the view of this camera.
 		/// </summary>
@@ -532,13 +532,32 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return numFacesRenderedLastFrame;
+				return faceCountRenderedLastFrame;
 			}
 		}
 
 		#endregion RenderedFaceCount Property
 
-		#region AutoTrackingTarget Property
+        #region RenderedBatchCount Property
+
+        /// <summary>
+        ///		Stored number of visible batches in the last render.
+        /// </summary>
+        protected int batchCountRenderedLastFrame;
+        /// <summary>
+        /// Gets the last count of batches visible in the view of this camera.
+        /// </summary>
+        public int RenderedBatchCount
+        {
+            get
+            {
+                return batchCountRenderedLastFrame;
+            }
+        }
+
+        #endregion RenderedBatchCount Property
+
+        #region AutoTrackingTarget Property
 
 		/// <summary>
 		///		SceneNode which this Camera will automatically track.
@@ -1183,16 +1202,25 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///    Called by the scene manager to let this camera know how many faces were renderer within
+		///    Called by the scene manager to let this camera know how many faces were rendered within
 		///    view of this camera every frame.
 		/// </summary>
 		/// <param name="renderedFaceCount"></param>
 		internal void NotifyRenderedFaces( int renderedFaceCount )
 		{
-			numFacesRenderedLastFrame = renderedFaceCount;
+			faceCountRenderedLastFrame = renderedFaceCount;
 		}
 
-		#endregion
+        /// <summary>
+        ///    Called by the scene manager to let this camera know how many batches were rendered within
+        ///    view of this camera every frame.
+        /// </summary>
+        /// <param name="renderedFaceCount"></param>
+        internal void NotifyRenderedBatches(int renderedBatchCount)
+        {
+            batchCountRenderedLastFrame = renderedBatchCount;
+        }
+        #endregion
 
 		#region Public methods
 

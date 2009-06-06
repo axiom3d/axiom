@@ -128,11 +128,19 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Number of faces currently rendered this frame.
         /// </summary>
-        protected int numFaces;
+        protected int faceCount;
         /// <summary>
-        ///		Number of faces currently rendered this frame.
+        /// Number of batches currently rendered this frame.
         /// </summary>
-        protected int numVertices;
+        protected int batchCount;
+        /// <summary>
+        ///		Number of vertexes currently rendered this frame.
+        /// </summary>
+        protected int vertexCount;
+        /// <summary>
+        /// Number of times to render the current state
+        /// </summary>
+        protected int currentPassIterationCount;
         /// <summary>
         ///		Capabilites of the current hardware (populated at startup).
         /// </summary>
@@ -217,7 +225,37 @@ namespace Axiom.Graphics
         {
             get
             {
-                return numFaces;
+                return faceCount;
+            }
+        }
+
+        /// <summary>
+        ///		Number of batches rendered during the current frame so far.
+        /// </summary>
+        public int BatchesRendered
+        {
+            get
+            {
+                return batchCount;
+            }
+        }
+
+        /// <summary>
+        ///	Number of times to render the current state.
+        /// </summary>
+        /// <remarks>Set the current multi pass count value.  This must be set prior to 
+        /// calling render() if multiple renderings of the same pass state are 
+        /// required.
+        /// </remarks>
+        public int CurrentPassIterationCount
+        {
+            get
+            {
+                return currentPassIterationCount;
+            }
+            set
+            {
+                currentPassIterationCount = value;
             }
         }
 
@@ -315,7 +353,7 @@ namespace Axiom.Graphics
         /// </summary>
         public virtual void BeginGeometryCount()
         {
-            numFaces = 0;
+            batchCount = vertexCount = faceCount = 0;
         }
 
         /// <summary>
@@ -448,15 +486,19 @@ namespace Axiom.Graphics
                 val = op.vertexData.vertexCount;
             }
 
+            // account for a pass having multiple iterations
+            if ( currentPassIterationCount > 1 )
+                val *= currentPassIterationCount;
+
             // calculate faces
             switch ( op.operationType )
             {
                 case OperationType.TriangleList:
-                    numFaces += val / 3;
+                    faceCount += val / 3;
                     break;
                 case OperationType.TriangleStrip:
                 case OperationType.TriangleFan:
-                    numFaces += val - 2;
+                    faceCount += val - 2;
                     break;
                 case OperationType.PointList:
                 case OperationType.LineList:
@@ -465,7 +507,34 @@ namespace Axiom.Graphics
             }
 
             // increment running vertex count
-            numVertices += op.vertexData.vertexCount;
+            vertexCount += op.vertexData.vertexCount;
+
+            batchCount += currentPassIterationCount;
+        }
+        /// <summary>
+        /// updates pass iteration rendering state including bound gpu program parameter pass iteration auto constant entry
+        /// </summary>
+        /// <returns>True if more iterations are required</returns>
+        protected virtual bool UpdatePassIterationRenderState()
+        {
+            if ( currentPassIterationCount <= 1 )
+                return false;
+
+            --currentPassIterationCount;
+
+            // TODO: Implement ActiveGpuProgramParameters
+            //if ( ActiveVertexGpuProgramParameters.isNull() )
+            //{
+            //    mActiveVertexGpuProgramParameters->incPassIterationNumber();
+            //    bindGpuProgramPassIterationParameters(GPT_VERTEX_PROGRAM);
+            //}
+            //if (!mActiveFragmentGpuProgramParameters.isNull())
+            //{
+            //    mActiveFragmentGpuProgramParameters->incPassIterationNumber();
+            //    bindGpuProgramPassIterationParameters(GPT_FRAGMENT_PROGRAM);
+            //}
+            return true;
+
         }
 
         /// <summary>
@@ -1435,7 +1504,6 @@ namespace Axiom.Graphics
         {
             DestroyRenderTarget( name );
         }
-
 
         #region Overloaded Methods
 

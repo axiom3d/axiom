@@ -254,7 +254,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Axiom\Source\Engine\Axiom.csproj">
-      <Project>{6436E2A4-0520-40CF-9481-0EB77946120A}</Project>
+      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
       <Name>Axiom</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Axiom\Source\Plugins\OctreeZone\OctreeZone.csproj">
