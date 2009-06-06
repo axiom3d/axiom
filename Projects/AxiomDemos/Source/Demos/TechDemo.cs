@@ -753,6 +753,9 @@ namespace Axiom.Demos
 
             element = OverlayManager.Instance.Elements.GetElement( "Core/NumTris" );
             element.Text = string.Format( "Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered );
+
+            element = OverlayManager.Instance.Elements.GetElement("Core/NumBatches");
+            element.Text = string.Format("Batch Count: {0}", scene.TargetRenderSystem.BatchesRendered);
         }
 
         /// <summary>

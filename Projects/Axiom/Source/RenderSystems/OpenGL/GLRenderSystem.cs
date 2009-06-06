@@ -1865,26 +1865,26 @@ namespace Axiom.RenderSystems.OpenGL
 					break;
 			}
 
-			if ( op.useIndices )
-			{
-				// setup a pointer to the index data
-				IntPtr indexPtr; // = IntPtr.Zero;
+            if (op.useIndices)
+            {
+                // setup a pointer to the index data
+                IntPtr indexPtr; // = IntPtr.Zero;
 
                 // find what type of index buffer elements we are using
                 int indexType = (op.indexData.indexBuffer.Type == IndexType.Size16)
                     ? Gl.GL_UNSIGNED_SHORT : Gl.GL_UNSIGNED_INT;
 
-				// if hardware is supported, expect it is a hardware buffer.  else, fallback to software
-				if ( _rsCapabilities.HasCapability( Capabilities.VertexBuffer ) )
-				{
-					// get the index buffer id
-					int idxBufferID = ( (GLHardwareIndexBuffer)op.indexData.indexBuffer ).GLBufferID;
+                // if hardware is supported, expect it is a hardware buffer.  else, fallback to software
+                if (_rsCapabilities.HasCapability(Capabilities.VertexBuffer))
+                {
+                    // get the index buffer id
+                    int idxBufferID = ((GLHardwareIndexBuffer)op.indexData.indexBuffer).GLBufferID;
 
-					// bind the current index buffer
-					Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, idxBufferID );
+                    // bind the current index buffer
+                    Gl.glBindBufferARB(Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, idxBufferID);
 
-					// get the offset pointer to the data in the vbo
-					indexPtr = BUFFER_OFFSET( op.indexData.indexStart * op.indexData.indexBuffer.IndexSize );
+                    // get the offset pointer to the data in the vbo
+                    indexPtr = BUFFER_OFFSET(op.indexData.indexStart * op.indexData.indexBuffer.IndexSize);
 
                     // draw the indexed vertex data
                     //				Gl.glDrawRangeElementsEXT(
@@ -1893,33 +1893,43 @@ namespace Axiom.RenderSystems.OpenGL
                     //					op.indexData.indexStart + op.indexData.indexCount - 1,
                     //					op.indexData.indexCount,
                     //					indexType, indexPtr);
-                    Gl.glDrawElements(primType, op.indexData.indexCount, indexType, indexPtr);
-				}
-				else
-				{
-					// get the index data as a direct pointer to the software buffer data
+                    do
+                    {
+                        Gl.glDrawElements(primType, op.indexData.indexCount, indexType, indexPtr);
+                    } while (UpdatePassIterationRenderState());
+                }
+                else
+                {
+                    // get the index data as a direct pointer to the software buffer data
                     int bufOffset = op.indexData.indexStart * op.indexData.indexBuffer.IndexSize;
                     indexPtr = ((SoftwareIndexBuffer)op.indexData.indexBuffer)
                         .Lock(bufOffset, op.indexData.indexBuffer.Size - bufOffset, BufferLocking.ReadOnly);
 
-				// draw the indexed vertex data
-				//				Gl.glDrawRangeElementsEXT(
-				//					primType,
-				//					op.indexData.indexStart,
-				//					op.indexData.indexStart + op.indexData.indexCount - 1,
-				//					op.indexData.indexCount,
-				//					indexType, indexPtr);
-				Gl.glDrawElements( primType, op.indexData.indexCount, indexType, indexPtr );
-                    
-                    ((SoftwareIndexBuffer)op.indexData.indexBuffer).Unlock();
-			}
-            }
-			else
-			{
-				Gl.glDrawArrays( primType, op.vertexData.vertexStart, op.vertexData.vertexCount );
-			}
+                    // draw the indexed vertex data
+                    //				Gl.glDrawRangeElementsEXT(
+                    //					primType,
+                    //					op.indexData.indexStart,
+                    //					op.indexData.indexStart + op.indexData.indexCount - 1,
+                    //					op.indexData.indexCount,
+                    //					indexType, indexPtr);
+                    do
+                    {
+                        Gl.glDrawElements(primType, op.indexData.indexCount, indexType, indexPtr);
+                    } while (UpdatePassIterationRenderState());
 
-			// disable all client states
+                    ((SoftwareIndexBuffer)op.indexData.indexBuffer).Unlock();
+                }
+            }
+            else
+            {
+                do
+                {
+                    Gl.glDrawArrays( primType, op.vertexData.vertexStart, op.vertexData.vertexCount );
+                } while ( UpdatePassIterationRenderState() );
+
+            }
+
+		    // disable all client states
 			Gl.glDisableClientState( Gl.GL_VERTEX_ARRAY );
 
 			// disable all texture units

@@ -4712,6 +4712,9 @@ namespace Axiom.Core
             // Notify camera of the number of rendered faces
             camera.NotifyRenderedFaces( this.targetRenderSystem.FacesRendered );
 
+            // Notify camera of the number of rendered batches
+            camera.NotifyRenderedBatches( this.targetRenderSystem.BatchesRendered );
+
             renderSceneMeter.Exit();
         }
 

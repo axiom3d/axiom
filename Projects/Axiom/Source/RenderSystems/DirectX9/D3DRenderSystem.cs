@@ -956,17 +956,17 @@ namespace Axiom.RenderSystems.DirectX9
 				case OperationType.TriangleList:
 					primType = D3D.PrimitiveType.TriangleList;
 					primCount = cnt / 3;
-					numFaces += primCount;
+					faceCount += primCount;
 					break;
 				case OperationType.TriangleStrip:
 					primType = D3D.PrimitiveType.TriangleStrip;
 					primCount = cnt - 2;
-					numFaces += primCount;
+                    faceCount += primCount;
 					break;
 				case OperationType.TriangleFan:
 					primType = D3D.PrimitiveType.TriangleFan;
 					primCount = cnt - 2;
-					numFaces += primCount;
+                    faceCount += primCount;
 					break;
 				case OperationType.PointList:
 					primType = D3D.PrimitiveType.PointList;
@@ -982,7 +982,7 @@ namespace Axiom.RenderSystems.DirectX9
 					break;
 			} // switch(primType)
 
-			numVertices += vertexCount;
+			this.vertexCount += vertexCount;
 
 			// are we gonna use indices?
 			if ( op.useIndices )
@@ -992,13 +992,19 @@ namespace Axiom.RenderSystems.DirectX9
 				// set the index buffer on the device
 				device.Indices = idxBuffer.D3DIndexBuffer;
 
-				// draw the indexed primitives
-				device.DrawIndexedPrimitives( primType, op.vertexData.vertexStart, 0, vertexCount, op.indexData.indexStart, primCount );
-			}
+			    do
+			    {
+			        // draw the indexed primitives
+			        device.DrawIndexedPrimitives( primType, op.vertexData.vertexStart, 0, vertexCount, op.indexData.indexStart, primCount );
+			    } while ( UpdatePassIterationRenderState() );
+            }
 			else
 			{
-				// draw vertices without indices
-				device.DrawPrimitives( primType, op.vertexData.vertexStart, primCount );
+			    do
+			    {
+			        // draw vertices without indices
+			        device.DrawPrimitives( primType, op.vertexData.vertexStart, primCount );
+			    } while ( UpdatePassIterationRenderState() );
 			}
 		}
 
