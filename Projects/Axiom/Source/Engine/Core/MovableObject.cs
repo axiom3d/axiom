@@ -134,10 +134,17 @@ namespace Axiom.Core
 
         #region Constructors
 
+        protected MovableObject(string name)
+            : this()
+        {
+            this.name = name;
+        }
+
         /// <summary>
         ///		Default constructor.
         /// </summary>
-        public MovableObject()
+        protected MovableObject()
+            : base()
         {
             this.isVisible = true;
             // set default RenderQueueGroupID for this movable object
@@ -145,12 +152,6 @@ namespace Axiom.Core
             this.queryFlags = unchecked( 0xffffffff );
             this.worldAABB = AxisAlignedBox.Null;
             this.castShadows = true;
-        }
-
-        public MovableObject( string name )
-            : this()
-        {
-            this.Name = name;
         }
 
         #endregion Constructors
