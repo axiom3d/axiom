@@ -78,17 +78,26 @@ namespace Axiom.Graphics
         ///		Default constructor.
         /// </summary>
         public SimpleRenderable()
+            : this( "SimpleRenderable" + nextAutoGenName++ )
         {
-            materialName = "BaseWhite";
-			material = (Material)MaterialManager.Instance[ "BaseWhite" ];
-            name = "SimpleRenderable" + nextAutoGenName++;
+        }
 
-            material.Load();
+        public SimpleRenderable( string name )
+            : base( name )
+        {
+            this.LoadDefaultMaterial();
+        }
+
+        private void LoadDefaultMaterial()
+        {
+            this.materialName = "BaseWhite";
+            this.material = (Material)MaterialManager.Instance[ "BaseWhite" ];
+            this.material.Load();
         }
 
         #endregion
 
-        #region Implementation of SceneObject
+        #region Implementation of MovableObject
 
         /// <summary>
         /// 
