@@ -148,18 +148,9 @@ namespace Axiom.Core
         }
 
         public MovableObject( string name )
+            : this()
         {
             this.Name = name;
-
-            this.isVisible = true;
-            // set default RenderQueueGroupID for this movable object
-            this.renderQueueID = RenderQueueGroupID.Main;
-
-            this.queryFlags = unchecked( 0xffffffff );
-
-            this.worldAABB = AxisAlignedBox.Null;
-
-            this.castShadows = true;
         }
 
         #endregion Constructors
