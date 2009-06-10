@@ -148,11 +148,14 @@ namespace Axiom.CgPrograms
         /// </summary>
         protected override void CreateLowLevelImpl()
         {
-            // retreive the 
-            string lowLevelSource = Cg.cgGetProgramString( cgProgram, Cg.CG_COMPILED_PROGRAM );
+            if ( this.selectedCgProfile != Cg.CG_PROFILE_UNKNOWN && !_compileError )
+            {
+                // retreive the 
+                string lowLevelSource = Cg.cgGetProgramString( cgProgram, Cg.CG_COMPILED_PROGRAM );
 
-            // create a low-level program, with the same name as this one
-            assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( Name, Group, lowLevelSource, type, selectedProfile );
+                // create a low-level program, with the same name as this one
+                assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( Name, Group, lowLevelSource, type, selectedProfile );
+            }
         }
 
         /// <summary>
@@ -275,6 +278,9 @@ namespace Axiom.CgPrograms
         {
             get
             {
+                if ( _compilerError || !IsRequiredCapabilitiesSupported() )
+                    return false;
+
                 // If skeletal animation is being done, we need support for UBYTE4
                 if ( this.IsSkeletalAnimationIncluded &&
                     !Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexFormatUByte4 ) )

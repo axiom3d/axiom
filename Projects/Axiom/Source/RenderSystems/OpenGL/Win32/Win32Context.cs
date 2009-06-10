@@ -74,7 +74,7 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					// Dispose managed resources.
 					GLRenderSystem rs = (GLRenderSystem)Root.Instance.RenderSystem;
-					//todo rs.UnRegisterContext( this );
+					rs.UnRegisterContext( this );
 				}
 
 				// There are no unmanaged resources to release, but
