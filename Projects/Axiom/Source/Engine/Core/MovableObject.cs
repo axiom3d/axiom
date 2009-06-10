@@ -88,11 +88,6 @@ namespace Axiom.Core
         protected Node parentNode;
 
         /// <summary>
-        ///    Flags determining whether this object is included/excluded from scene queries.
-        /// </summary>
-        protected ulong queryFlags;
-
-        /// <summary>
         ///    The render queue to use when rendering this object.
         /// </summary>
         protected RenderQueueGroupID renderQueueID;
@@ -271,27 +266,6 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        ///		Gets/Sets the query flags for this object.
-        /// </summary>
-        /// <remarks>
-        ///		When performing a scene query, this object will be included or excluded according
-        ///		to flags on the object and flags on the query. This is a bitwise value, so only when
-        ///		a bit on these flags is set, will it be included in a query asking for that flag. The
-        ///		meaning of the bits is application-specific.
-        /// </remarks>
-        public ulong QueryFlags
-        {
-            get
-            {
-                return this.queryFlags;
-            }
-            set
-            {
-                this.queryFlags = value;
-            }
-        }
-
-        /// <summary>
         /// Get the 'type flags' for this MovableObject.
         /// </summary>
         /// <remarks>
@@ -393,15 +367,6 @@ namespace Axiom.Core
         #region Methods
 
         /// <summary>
-        ///		Appends the specified flags to the current flags for this object.
-        /// </summary>
-        /// <param name="flags"></param>
-        public void AddQueryFlags( ulong flags )
-        {
-            this.queryFlags |= flags;
-        }
-
-        /// <summary>
         ///    Retrieves the axis-aligned bounding box for this object in world coordinates.
         /// </summary>
         /// <returns></returns>
@@ -441,6 +406,65 @@ namespace Axiom.Core
             return this.worldBoundingSphere;
         }
 
+        #endregion Methods
+
+        #region QueryFlags
+
+        /// <summary>
+        ///    Flags determining whether this object is included/excluded from scene queries.
+        /// </summary>
+        protected ulong queryFlags;
+
+        /// <summary>
+        /// default query flags for all future MovableObject instances.
+        /// </summary>
+        protected ulong defaultQueryFlags;
+
+        /// <summary>
+        /// Gets/Sets default query flags for all future MovableObject instances.
+        /// </summary>
+        public ulong DefaultQueryFlags
+        {
+            get 
+            { 
+                return this.defaultQueryFlags; 
+            }
+            set 
+            { 
+                this.defaultQueryFlags = value; 
+            }
+        }
+
+        /// <summary>
+        ///		Gets/Sets the query flags for this object.
+        /// </summary>
+        /// <remarks>
+        ///		When performing a scene query, this object will be included or excluded according
+        ///		to flags on the object and flags on the query. This is a bitwise value, so only when
+        ///		a bit on these flags is set, will it be included in a query asking for that flag. The
+        ///		meaning of the bits is application-specific.
+        /// </remarks>
+        public ulong QueryFlags
+        {
+            get
+            {
+                return this.queryFlags;
+            }
+            set
+            {
+                this.queryFlags = value;
+            }
+        }
+
+        /// <summary>
+        ///		Appends the specified flags to the current flags for this object.
+        /// </summary>
+        /// <param name="flags"></param>
+        public void AddQueryFlags( ulong flags )
+        {
+            this.queryFlags |= flags;
+        }
+
         /// <summary>
         ///		Removes the specified flags from the current flags for this object.
         /// </summary>
@@ -450,7 +474,74 @@ namespace Axiom.Core
             this.queryFlags ^= flags;
         }
 
-        #endregion Methods
+        #endregion QueryFlags
+
+        #region VisibilityFlags
+
+        /// <summary>
+        /// Flags determining whether this object is visible (compared to SceneManager mask)
+        /// </summary>
+        protected ulong visibilityFlags;
+
+        /// <summary>
+        /// default visibility flags for all future MovableObject instances.
+        /// </summary>
+        protected ulong defaultVisibilityFlags;
+
+        /// <summary>
+        /// Gets/Sets default visibility flags for all future MovableObject instances.
+        /// </summary>
+        public ulong DefaultVisibilityFlags
+        {
+            get
+            {
+                return this.defaultVisibilityFlags;
+            }
+            set
+            {
+                this.defaultVisibilityFlags = value;
+            }
+        }
+
+        /// <summary>
+        ///	Gets/Sets the visibility flags for this object.
+        /// </summary>
+        /// <remarks>
+        ///	As well as a simple true/false value for visibility (as seen in setVisible),
+        ///	you can also set visiblity flags which when 'and'ed with the SceneManager's
+        ///	visibility mask can also make an object invisible.
+        /// </remarks>
+        public ulong VisibilityFlags
+        {
+            get
+            {
+                return this.visibilityFlags;
+            }
+            set
+            {
+                this.visibilityFlags = value;
+            }
+        }
+
+        /// <summary>
+        ///		Appends the specified flags to the current flags for this object.
+        /// </summary>
+        /// <param name="flags"></param>
+        public void AddVisibilityFlags( ulong flags )
+        {
+            this.visibilityFlags |= flags;
+        }
+
+        /// <summary>
+        ///		Removes the specified flags from the current flags for this object.
+        /// </summary>
+        /// <param name="flags"></param>
+        public void RemoveVisibilityFlags( ulong flags )
+        {
+            this.visibilityFlags ^= flags;
+        }
+
+        #endregion VisibilityFlags
 
         /// <summary>
         ///		Overridden.
