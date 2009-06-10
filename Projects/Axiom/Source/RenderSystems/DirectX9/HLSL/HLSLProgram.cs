@@ -90,12 +90,14 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		/// </summary>
 		protected override void CreateLowLevelImpl()
 		{
-			// create a new program, without source since we are setting the microcode manually
-			assemblerProgram =
-				GpuProgramManager.Instance.CreateProgramFromString( Name, Group,  "", type, target );
+            if ( !_compilerError )
+            {
+                // create a new program, without source since we are setting the microcode manually
+                assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( Name, Group, "", type, target );
 
-			// set the microcode for this program
-			( (D3DGpuProgram)assemblerProgram ).ExternalMicrocode = microcode;
+                // set the microcode for this program
+                ( (D3DGpuProgram)assemblerProgram ).ExternalMicrocode = microcode;
+            }
 		}
 
 		public override GpuProgramParameters CreateParameters()
@@ -185,13 +187,10 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		{
 			get
 			{
-				// If skeletal animation is being done, we need support for UBYTE4
-				if ( this.IsSkeletalAnimationIncluded &&
-					!Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexFormatUByte4 ) )
-				{
-
-					return false;
-				}
+                if ( _compilerError || !IsRequiredCapabilitiesSupported() )
+                {
+                    return false;
+                }
 
 				return GpuProgramManager.Instance.IsSyntaxSupported( target );
 			}

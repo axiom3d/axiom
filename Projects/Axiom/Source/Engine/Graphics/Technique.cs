@@ -822,7 +822,7 @@ namespace Axiom.Graphics
                                               /*TODO: pass.FragmentProgram.HasCompileError() ? "Compile Error." : */ "Not Supported." );
 					}
 
-					//numAvailTexUnits = pass.FragmentProgram.SamplerCount;
+					//TODO : ?? numAvailTexUnits = pass.FragmentProgram.SamplerCount;
 					if ( numTexUnitsRequested > numAvailTexUnits )
 					{
                         if ( !autoManageTextureUnits )

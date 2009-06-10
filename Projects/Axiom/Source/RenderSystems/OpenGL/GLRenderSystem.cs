@@ -3060,6 +3060,27 @@ namespace Axiom.RenderSystems.OpenGL
 
 		}
 
+        internal void UnRegisterContext( GLContext context )
+        {
+            if ( this._currentContext == context )
+            {
+                // Change the context to something else so that a valid context
+                // remains active. When this is the main context being unregistered,
+                // we set the main context to 0.
+                if ( this._currentContext != this._mainContext )
+                {
+                    this._switchContext( this._mainContext );
+                }
+                else
+                {
+                    /// No contexts remain
+                    this._currentContext.EndCurrent();
+                    this._currentContext = null;
+                    this._mainContext = null;
+                }
+            }
+        }
+
 		private void _switchContext( GLContext context )
 		{
 			// Unbind GPU programs and rebind to new context later, because
@@ -3098,5 +3119,6 @@ namespace Axiom.RenderSystems.OpenGL
 		}
 
 		#endregion Private methods
-	}
+
+    }
 }

@@ -76,11 +76,6 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected bool loadFromFile;
 
-		/// <summary>
-		/// Did we encounter a compilation error?
-		/// </summary>
-		protected bool _compileError = false;
-
 		#region SourceFile Property
 
 		/// <summary>
@@ -343,7 +338,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( _compileError || !isRequiredCapabilitiesSupported())
+				if ( _compileError || !IsRequiredCapabilitiesSupported())
 				{
 
 					return false;
@@ -368,6 +363,30 @@ namespace Axiom.Graphics
 
 		#endregion SamplerCount Property
 
+        #region CompilerError Property
+
+   		/// <summary>
+		/// Did we encounter a compilation error?
+		/// </summary>
+		protected bool _compileError = false;
+
+        /// <summary>
+        /// Did this program encounter a compile error when loading?
+        /// </summary>
+        public int HasCompileError
+        {
+            return _compilerError;
+        }
+
+        /// <summary>
+        /// Reset a compile error if it occurred, allowing the load to be retried.
+        /// </summary>
+        public void ResetCompileError()
+        {
+            _compilerError = false;
+        }
+
+        #endregion CompilerError Property
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
@@ -447,7 +466,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected abstract void LoadFromSource();
 
-		protected bool isRequiredCapabilitiesSupported()
+		protected bool IsRequiredCapabilitiesSupported()
 		{
 			RenderSystemCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
 			// If skeletal animation is being done, we need support for UBYTE4
