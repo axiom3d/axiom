@@ -374,8 +374,7 @@ namespace Axiom.RenderSystems.DirectX9
 				// Create the GPU program manager
 				gpuProgramMgr = new D3DGpuProgramManager( device );
 				// create & register HLSL factory
-				//HLSLProgramFactory = new D3D9HLSLProgramFactory();
-				//HighLevelGpuProgramManager::getSingleton().addFactory(mHLSLProgramFactory);
+				HighLevelGpuProgramManager.Instance.AddFactory( new HLSL.HLSLProgramFactory() );
 				gpuProgramMgr.PushSyntaxCode( "hlsl" );
 
 
