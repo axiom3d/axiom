@@ -2791,6 +2791,7 @@ namespace Axiom.RenderSystems.OpenGL
 				 _glSupport.CheckExtension( "GL_ARB_fragment_shader" ) &&
 				 _glSupport.CheckExtension( "GL_ARB_vertex_shader" ) )
 			{
+                HighLevelGpuProgramManager.Instance.AddFactory( new GLSL.GLSLProgramFactory() );
 				gpuProgramMgr.PushSyntaxCode( "glsl" );
 				LogManager.Instance.Write( "GLSL support detected" );
 			}
