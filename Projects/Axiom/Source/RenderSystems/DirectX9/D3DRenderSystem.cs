@@ -143,7 +143,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		///		Temp D3D vector to avoid constant allocations.
 		/// </summary>
-		private Microsoft.DirectX.Vector4 tempVec = new Microsoft.DirectX.Vector4();
+		private DX.Vector4 tempVec = new DX.Vector4();
 
 		public D3DRenderSystem()
 		{
@@ -390,6 +390,13 @@ namespace Axiom.RenderSystems.DirectX9
 
 			return window;
 		}
+
+        public override MultiRenderTarget CreateMultiRenderTarget( string name )
+        {
+            MultiRenderTarget retval = new D3DMultiRenderTarget( name );
+            AttachRenderTarget( retval );
+            return retval;
+        }
 
 		public override void Shutdown()
 		{

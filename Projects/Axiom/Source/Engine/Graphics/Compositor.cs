@@ -198,8 +198,8 @@ namespace Axiom.Graphics
 		#region Methods
 
 		///<summary>
-		///    Create a new technique, and return a pointer to it.
-		///</summary
+		/// Create a new technique, and return a pointer to it.
+		///</summary>
 		public CompositionTechnique CreateTechnique()
 		{
 			CompositionTechnique t = new CompositionTechnique( this );
@@ -210,7 +210,7 @@ namespace Axiom.Graphics
 
 		///<summary>
 		///    Remove a technique.
-		///</summary
+		///</summary>
 		public void RemoveTechnique( int idx )
 		{
 			techniques.RemoveAt( idx );
@@ -220,7 +220,7 @@ namespace Axiom.Graphics
 
 		///<summary>
 		///    Get a technique.
-		///</summary
+		///</summary>
 		public CompositionTechnique GetTechnique( int idx )
 		{
 			return techniques[ idx ];
@@ -228,7 +228,7 @@ namespace Axiom.Graphics
 
 		///<summary>
 		///    Get a supported technique.
-		///</summary
+		///</summary>
 		///<remarks>
 		///    The supported technique list is only available after this compositor has been compiled,
 		///    which typically happens on loading it. Therefore, if this method returns
@@ -241,7 +241,7 @@ namespace Axiom.Graphics
 
 		///<summary>
 		///    Remove all techniques.
-		///</summary
+		///</summary>
 		public void RemoveAllTechniques()
 		{
 			techniques.Clear();
@@ -251,7 +251,7 @@ namespace Axiom.Graphics
 
 		///<summary>
 		///    Check supportedness of techniques.
-		///</summary
+		///</summary>
 		protected void Compile()
 		{
 			/// Sift out supported techniques

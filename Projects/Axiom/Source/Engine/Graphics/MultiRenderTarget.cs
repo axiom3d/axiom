@@ -69,56 +69,33 @@ namespace Axiom.Graphics
 
 		public MultiRenderTarget( string name )
 		{
-			Priority = RenderTargetPriority.RenderToTexture;
+			this.Priority = RenderTargetPriority.RenderToTexture;
+            this.Name = name;
 			// Width and height is unknown with no targets attached
-			Width = Height = 0;
+			this.Width = this.Height = 0;
 		}
 
 		#endregion Construction and Destruction
 
 		#region Methods
 
-		#region BindSurface Method
-
 		/// <summary>
 		/// Bind a surface to a certain attachment point.
 		/// </summary>
-		/// <param name="attachment">0 .. mCapabilities->numMultiRenderTargets()-1</param>
+		/// <param name="attachment">0 .. capabilities.MultiRenderTargetCount-1</param>
 		/// <param name="target">RenderTexture to bind.</param>
 		/// <remarks>
 		/// It does not bind the surface and fails with an exception (ERR_INVALIDPARAMS) if:
 		/// - Not all bound surfaces have the same size
 		/// - Not all bound surfaces have the same internal format 
 		/// </remarks>
-		public void BindSurface( int attachment, RenderTexture target )
-		{
-			for ( int i = boundSurfaces.Count; i <= attachment; ++i )
-			{
-				boundSurfaces.Add( null );
-			}
-			boundSurfaces[ attachment ] = target;
-
-			_bindSurface( attachment, target );
-		}
-		protected abstract void _bindSurface( int attachment, RenderTexture target );
-
-		#endregion BindSurface Method
-
-		#region UnbindSurface Method
+        public abstract void BindSurface( int attachment, RenderTexture target );
 
 		/// <summary>
 		/// Unbind Attachment
 		/// </summary>
 		/// <param name="attachment"></param>
-		public void UnbindSurface( int attachment )
-		{
-			if ( attachment < boundSurfaces.Count )
-				boundSurfaces[ attachment ] = null;
-			_unbindSurface( attachment );
-		}
-		protected abstract void _unbindSurface( int attachment );
-
-		#endregion UnbindSurface Method
+        public abstract void UnbindSurface( int attachment );
 
 		#endregion Methods
 
@@ -127,16 +104,11 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Error throwing implementation, it's not possible to copy a MultiRenderTarget.
 		/// </summary>
-		/// <param name="?"></param>	
+		/// <param name="pb"></param>	
+        /// <param name="buffer"></param>
 		public override void CopyContentsToMemory( PixelBox pb, FrameBuffer buffer )
 		{
 			throw new NotSupportedException( "It's not possible to copy a MultiRenderTarget." );
-		}
-
-		/// Irrelevant implementation since cannot copy
-		protected override PixelFormat suggestPixelFormat()
-		{
-			return PixelFormat.Unknown;
 		}
 
 		#endregion RenderTarget Implementation

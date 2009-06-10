@@ -34,11 +34,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+    using System.Drawing;
 using System.Diagnostics;
 
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
+    using Image=Axiom.Media.Image;
 
 using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
@@ -47,9 +49,6 @@ using D3D = Microsoft.DirectX.Direct3D;
 
 namespace Axiom.RenderSystems.DirectX9
 {
-    using System.Drawing;
-
-    using Image=Axiom.Media.Image;
 
 	/// <summary>
 	///     Summary description for D3DRenderTexture.
