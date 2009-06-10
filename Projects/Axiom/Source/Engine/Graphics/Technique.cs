@@ -819,7 +819,7 @@ namespace Axiom.Graphics
 						return String.Format( "Pass {0}: Fragment Program {1} cannot be used - {2}", 
                                               i,
                                               pass.FragmentProgramName,
-                                              /*TODO: pass.FragmentProgram.HasCompileError() ? "Compile Error." : */ "Not Supported." );
+                                              pass.FragmentProgram.HasCompileError ? "Compile Error." : "Not Supported." );
 					}
 
 					//TODO : ?? numAvailTexUnits = pass.FragmentProgram.SamplerCount;
@@ -876,7 +876,7 @@ namespace Axiom.Graphics
 						return String.Format( "Pass {0}: Fragment Program {1} cannot be used - {2}", 
                                               i,
                                               pass.VertexProgramName,
-                                              /*TODO: pass.VertexProgram.HasCompileError() ? "Compile Error." : */ "Not Supported." );
+                                              pass.VertexProgram.HasCompileError ? "Compile Error." : "Not Supported." );
 					}
 				}
 			} // for

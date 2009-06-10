@@ -373,9 +373,12 @@ namespace Axiom.Graphics
         /// <summary>
         /// Did this program encounter a compile error when loading?
         /// </summary>
-        public int HasCompileError
+        public bool HasCompileError
         {
-            return _compilerError;
+            get
+            {
+                return _compileError;
+            }
         }
 
         /// <summary>
@@ -383,7 +386,7 @@ namespace Axiom.Graphics
         /// </summary>
         public void ResetCompileError()
         {
-            _compilerError = false;
+            _compileError = false;
         }
 
         #endregion CompilerError Property
