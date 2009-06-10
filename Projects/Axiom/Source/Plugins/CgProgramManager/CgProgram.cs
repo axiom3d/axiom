@@ -278,7 +278,7 @@ namespace Axiom.CgPrograms
         {
             get
             {
-                if ( _compilerError || !IsRequiredCapabilitiesSupported() )
+                if ( _compileError || !IsRequiredCapabilitiesSupported() )
                     return false;
 
                 // If skeletal animation is being done, we need support for UBYTE4

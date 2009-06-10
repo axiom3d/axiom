@@ -492,7 +492,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Used by compositing layer
         ///</summary>
-        protected uint visibilityMask = 0xFFFFFFFF;
+        protected ulong visibilityMask = 0xFFFFFFFF;
 
         protected Matrix4[] xform = new Matrix4[256];
 
@@ -4412,7 +4412,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Gets and sets the object visibility mask
         /// </summary>
-        public uint VisibilityMask
+        public ulong VisibilityMask
         {
             get { return this.visibilityMask; }
             set { this.visibilityMask = value; }

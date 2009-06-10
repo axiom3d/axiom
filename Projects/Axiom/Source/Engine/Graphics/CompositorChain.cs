@@ -184,7 +184,7 @@ namespace Axiom.Graphics
 		///<summary>
 		///    Store old scene visibility mask
 		///</summary>
-		protected uint oldVisibilityMask;
+		protected ulong oldVisibilityMask;
 		///<summary>
 		///    Store old find visible objects
 		///</summary>
@@ -522,10 +522,10 @@ namespace Axiom.Graphics
 			/// Set material scheme 
 			oldMaterialScheme = vp.MaterialScheme;
 			vp.MaterialScheme = op.MaterialScheme;
-			/// XXX TODO
-			//vp->setClearEveryFrame( true );
-			//vp->setOverlaysEnabled( false );
-			//vp->setBackgroundColour( op.clearColour );
+
+            vp.ClearEveryFrame = true;
+            vp.ShowOverlays = false;
+            //TODO : vp.BackgroundColor = op.ClearColor;
 		}
 
 
@@ -642,8 +642,6 @@ namespace Axiom.Graphics
 			compiledState.Clear();
 			outputOperation = new CompositorTargetOperation( null );
 		}
-
-
 
 		#endregion Methods
 

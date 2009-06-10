@@ -90,7 +90,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		/// </summary>
 		protected override void CreateLowLevelImpl()
 		{
-            if ( !_compilerError )
+            if ( !_compileError )
             {
                 // create a new program, without source since we are setting the microcode manually
                 assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( Name, Group, "", type, target );
@@ -187,7 +187,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		{
 			get
 			{
-                if ( _compilerError || !IsRequiredCapabilitiesSupported() )
+                if ( _compileError || !IsRequiredCapabilitiesSupported() )
                 {
                     return false;
                 }

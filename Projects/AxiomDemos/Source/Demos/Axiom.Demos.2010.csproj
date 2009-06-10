@@ -179,6 +179,16 @@
       <DependentUpon>EngineConfig.cs</DependentUpon>
     </Compile>
     <Compile Include="CubeMapping.cs" />
+    <Compile Include="DeferredShading.cs" />
+    <Compile Include="DeferredShadingSystem\DeferredShadingSystem.cs" />
+    <Compile Include="DeferredShadingSystem\LightMaterialGenerator.cs" />
+    <Compile Include="DeferredShadingSystem\LightMaterialGeneratorGlsl.cs" />
+    <Compile Include="DeferredShadingSystem\LightMaterialGeneratorHlsl.cs" />
+    <Compile Include="DeferredShadingSystem\MaterialGenerator.cs" />
+    <Compile Include="DeferredShadingSystem\IMaterialGeneratorStrategy.cs" />
+    <Compile Include="DeferredShadingSystem\MaterialId.cs" />
+    <Compile Include="DeferredShadingSystem\MiniLight.cs" />
+    <Compile Include="DeferredShadingSystem\PostFilter.cs" />
     <Compile Include="Dot3Bump.cs" />
     <Compile Include="DynamicTextures.cs" />
     <Compile Include="FacialAnimation.cs" />
@@ -253,27 +263,27 @@
     <Compile Include="Water.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Axiom\Source\Engine\Axiom.csproj">
-      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
-      <Name>Axiom</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Axiom\Source\Plugins\OctreeZone\OctreeZone.csproj">
-      <Project>{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}</Project>
-      <Name>OctreeZone</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Axiom\Source\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj">
-      <Project>{F3016FCF-2A53-483E-8679-4514D57B6ACD}</Project>
-      <Name>Axiom.SceneManagers.Octree</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Axiom\Source\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.csproj">
-      <Project>{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}</Project>
-      <Name>Axiom.SceneManagers.PortalConnected</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Configuration\EngineConfig.xsd">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Axiom\Source\Engine\Axiom.2010.csproj">
+      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
+      <Name>Axiom.2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Axiom\Source\Plugins\OctreeZone\OctreeZone.2010.csproj">
+      <Project>{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}</Project>
+      <Name>OctreeZone.2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Axiom\Source\SceneManagers\Octree\Axiom.SceneManagers.Octree.2010.csproj">
+      <Project>{E0BB87B2-C59D-46D4-9AD9-A919E457E4EF}</Project>
+      <Name>Axiom.SceneManagers.Octree.2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Axiom\Source\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.2010.csproj">
+      <Project>{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}</Project>
+      <Name>Axiom.SceneManagers.PortalConnected.2010</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>

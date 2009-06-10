@@ -324,6 +324,13 @@ namespace Axiom.RenderSystems.OpenGL
 			return window;
 		}
 
+        public override MultiRenderTarget CreateMultiRenderTarget( string name )
+        {
+            MultiRenderTarget retval = this.rttManager.CreateMultiRenderTarget( name );
+            AttachRenderTarget( retval );
+            return retval;
+        }
+
 		/// <summary>
 		/// 
 		/// </summary>

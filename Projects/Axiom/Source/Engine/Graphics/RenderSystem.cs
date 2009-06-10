@@ -1111,6 +1111,15 @@ namespace Axiom.Graphics
         public abstract RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullScreen, NamedParameterList miscParams );
 
         /// <summary>
+        /// Create a MultiRenderTarget, which is a render target that renders to multiple RenderTextures at once.
+        /// </summary>
+        /// <Remarks>
+        /// Surfaces can be bound and unbound at will. This fails if Capabilities.MultiRenderTargetsCount is smaller than 2.
+        /// </Remarks>
+        /// <returns></returns>
+        public abstract MultiRenderTarget CreateMultiRenderTarget( string name );
+
+        /// <summary>
         ///		Requests an API implementation of a hardware occlusion query used to test for the number
         ///		of fragments rendered between calls to <see cref="IHardwareOcclusionQuery.Begin"/> and 
         ///		<see cref="IHardwareOcclusionQuery.End"/> that pass the depth buffer test.

@@ -84,7 +84,7 @@ namespace Axiom.Graphics
 		///<summary>
 		///    Visibility mask for this render
 		///</summary>
-		protected uint visibilityMask;
+		protected ulong visibilityMask;
 		///<summary>
 		///    LOD bias of this render
 		///</summary>
@@ -159,7 +159,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-		public uint VisibilityMask
+		public ulong VisibilityMask
 		{
 			get
 			{

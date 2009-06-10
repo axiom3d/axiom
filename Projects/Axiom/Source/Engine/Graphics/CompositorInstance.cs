@@ -845,7 +845,7 @@ namespace Axiom.Graphics
 		///    Scene visibility mask
 		///    If this is 0, the scene is not rendered at all
 		///</summary>
-		protected uint visibilityMask;
+		protected ulong visibilityMask;
 		///<summary>
 		///    LOD offset. This is multiplied with the camera LOD offset
 		///    1.0 is default, lower means lower detail, higher means higher detail
@@ -928,7 +928,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-		public uint VisibilityMask
+		public ulong VisibilityMask
 		{
 			get
 			{
