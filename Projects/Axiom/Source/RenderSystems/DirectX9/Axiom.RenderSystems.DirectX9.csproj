@@ -168,6 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="D3DHardwarePixelBuffer.cs" />
+    <Compile Include="D3DMultiRenderTarget.cs" />
     <Compile Include="D3DRenderSystem.cs" />
     <Compile Include="D3DRenderWindow.cs" />
     <Compile Include="DriverCollection.cs" />

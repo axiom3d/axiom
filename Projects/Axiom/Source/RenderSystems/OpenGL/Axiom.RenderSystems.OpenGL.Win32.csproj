@@ -180,6 +180,7 @@
     </Compile>
     <Compile Include="GLContext.cs" />
     <Compile Include="GLCopyingRTTManager.cs" />
+    <Compile Include="GLFBOMultiRenderTarget.cs" />
     <Compile Include="GLFBORenderTexture.cs" />
     <Compile Include="GLFBORTTManager.cs" />
     <Compile Include="GLFrameBufferObject.cs" />
