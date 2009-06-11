@@ -486,20 +486,20 @@ namespace Axiom.Core
         /// <summary>
         /// default visibility flags for all future MovableObject instances.
         /// </summary>
-        protected ulong defaultVisibilityFlags;
+        protected static ulong defaultVisibilityFlags;
 
         /// <summary>
         /// Gets/Sets default visibility flags for all future MovableObject instances.
         /// </summary>
-        public ulong DefaultVisibilityFlags
+        public static ulong DefaultVisibilityFlags
         {
             get
             {
-                return this.defaultVisibilityFlags;
+                return defaultVisibilityFlags;
             }
             set
             {
-                this.defaultVisibilityFlags = value;
+                defaultVisibilityFlags = value;
             }
         }
 

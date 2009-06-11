@@ -2530,6 +2530,9 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 			}
 
+            // Mutiple Render Targets
+            _rsCapabilities.MultiRenderTargetCount = (int)Utility.Min( d3dCaps.NumberSimultaneousRts, Config.MaxMultipleRenderTargets );
+
 			// write hardware capabilities to registered log listeners
 			_rsCapabilities.Log();
 		}

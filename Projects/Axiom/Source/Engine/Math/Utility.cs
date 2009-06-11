@@ -432,7 +432,18 @@ namespace Axiom.Math
 
             return normal;
         }
-
+        /// <summary>
+        ///		Calculate a face normal, no w-information.
+        /// </summary>
+        /// <param name="v1"></param>
+        /// <param name="v2"></param>
+        /// <param name="v3"></param>
+        /// <returns></returns>
+        public static Vector3 CalculateBasicFaceNormalWithoutNormalize( Vector3 v1, Vector3 v2, Vector3 v3 )
+        {
+            Vector3 normal = ( v2 - v1 ).Cross( v3 - v1 );
+            return normal;
+        }
         /// <summary>
         ///    Calculates the tangent space vector for a given set of positions / texture coords.
         /// </summary>
@@ -752,7 +763,96 @@ namespace Axiom.Math
 
             return new IntersectResult( hit, lowt );
         }
+        public static IntersectResult Intersects(Ray ray, Vector3 a,
+            Vector3 b, Vector3 c, Vector3 normal, bool positiveSide, bool negativeSide)
+        {
+            // Calculate intersection with plane.
+            float t;
+            {
+                float denom = normal.Dot(ray.Direction);
+                // Check intersect side
+                if (denom > +float.Epsilon)
+                {
+                    if (!negativeSide)
+                        return new IntersectResult(false, 0);
+                }
+                else if (denom < -float.Epsilon)
+                {
+                    if (!positiveSide)
+                        return new IntersectResult(false, 0);
+                }
+                else
+                {
+                    // Parallel or triangle area is close to zero when
+                    // the plane normal not normalised.
+                    return new IntersectResult(false, 0);
+                }
 
+                t = normal.Dot(a - ray.Origin) / denom;
+                if (t < 0)
+                {
+                    return new IntersectResult(false, 0);
+                }
+            }
+
+            // Calculate the largest area projection plane in X, Y or Z.
+            int i0, i1;
+            {
+                float n0 = Math.Utility.Abs(normal[0]);
+                float n1 = Math.Utility.Abs(normal[1]);
+                float n2 = Math.Utility.Abs(normal[2]);
+
+                i0 = 1; i1 = 2;
+                if (n1 > n2)
+                {
+                    if (n1 > n0) i0 = 0;
+                }
+                else
+                {
+                    if (n2 > n0) i1 = 0;
+                }
+
+            }
+
+            // Check the intersection point is inside the triangle.
+            {
+                Real u1 = b[i0] - a[i0];
+                Real v1 = b[i1] - a[i1];
+                Real u2 = c[i0] - a[i0];
+                Real v2 = c[i1] - a[i1];
+                Real u0 = t * ray.Direction[i0] + ray.Origin[i0] - a[i0];
+                Real v0 = t * ray.Direction[i1] + ray.Origin[i1] - a[i1];
+
+                Real alpha = u0 * v2 - u2 * v0;
+                Real beta = u1 * v0 - u0 * v1;
+                Real area = u1 * v2 - u2 * v1;
+
+                // epsilon to avoid float precision error
+                Real EPSILON = 1e-3f;
+
+                Real tolerance = -EPSILON * area;
+
+                if (area > 0)
+                {
+                    if (alpha < tolerance || beta < tolerance || alpha + beta > area - tolerance)
+                        return new IntersectResult(false, 0);
+                }
+                else
+                {
+                    if (alpha > tolerance || beta > tolerance || alpha + beta < area - tolerance)
+                        return new IntersectResult(false, 0);
+                }
+
+            }
+
+            return new IntersectResult(true, t);
+        }
+        public static IntersectResult Intersects(Ray ray, Vector3 a,
+            Vector3 b, Vector3 c, bool positiveSide, bool negativeSide)
+        {
+            Vector3 normal = CalculateBasicFaceNormalWithoutNormalize(a, b, c);
+            return Intersects(ray, a, b, c, normal, positiveSide, negativeSide);
+        }
 
         /// <summary>
         ///    Tests an intersection between two boxes.
