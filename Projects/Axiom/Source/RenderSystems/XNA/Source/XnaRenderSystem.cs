@@ -179,26 +179,26 @@ namespace Axiom.RenderSystems.Xna
             ConfigOption optFPUMode = new ConfigOption( "Floating-point mode", "Fastest", false );
 
             optDevice.PossibleValues.Clear();
-            DriverCollection driver = XnaHelper.GetDriverInfo();
+            Driver driver = XnaHelper.GetDriverInfo();
 
-            foreach ( VideoMode mode in driver[0].VideoModes )
+            foreach ( VideoMode mode in driver.VideoModes )
             {
                 string query = string.Format( "{0} x {1} @ {2}-bit colour", mode.Width, mode.Height, mode.ColorDepth.ToString() );
                 // add a new row to the display settings table
-                optVideoMode.PossibleValues.Add( query );
+                optVideoMode.PossibleValues.Add(optVideoMode.PossibleValues.Count, query );
             }
 
-            optFullScreen.PossibleValues.Add( "Yes" );
-            optFullScreen.PossibleValues.Add( "No" );
+            optFullScreen.PossibleValues.Add(0, "Yes" );
+            optFullScreen.PossibleValues.Add(1, "No" );
 
-            optVSync.PossibleValues.Add( "Yes" );
-            optVSync.PossibleValues.Add( "No" );
+            optVSync.PossibleValues.Add(0, "Yes" );
+            optVSync.PossibleValues.Add(1, "No" );
 
-            optAA.PossibleValues.Add( "None" );
+            optAA.PossibleValues.Add(0, "None" );
 
             optFPUMode.PossibleValues.Clear();
-            optFPUMode.PossibleValues.Add( "Fastest" );
-            optFPUMode.PossibleValues.Add( "Consistent" );
+            optFPUMode.PossibleValues.Add(0, "Fastest" );
+            optFPUMode.PossibleValues.Add(1, "Consistent" );
 
             ConfigOptions.Add( optDevice );
             ConfigOptions.Add( optVideoMode );
@@ -273,7 +273,7 @@ namespace Axiom.RenderSystems.Xna
             {
                 HardwareCapabilities.SetCapability( Capabilities.StencilBuffer );
                 // always 8 here
-                HardwareCapabilities.StencilBufferBits = 8;
+                HardwareCapabilities.StencilBufferBitCount = 8;
             }
 
             // some cards, oddly enough, do not support this
@@ -435,51 +435,51 @@ namespace Axiom.RenderSystems.Xna
             if ( fpMajor >= 1 )
             {
                 HardwareCapabilities.SetCapability( Capabilities.FragmentPrograms );
-                _gpuProgramMgr.PushSyntaxCode( "ps_1_1" );
+                this.gpuProgramMgr.PushSyntaxCode( "ps_1_1" );
 
                 if ( fpMajor > 1 || fpMinor >= 2 )
                 {
-                    _gpuProgramMgr.PushSyntaxCode( "ps_1_2" );
+                    this.gpuProgramMgr.PushSyntaxCode("ps_1_2");
                 }
                 if ( fpMajor > 1 || fpMinor >= 3 )
                 {
-                    _gpuProgramMgr.PushSyntaxCode( "ps_1_3" );
+                    this.gpuProgramMgr.PushSyntaxCode("ps_1_3");
                 }
                 if ( fpMajor > 1 || fpMinor >= 4 )
                 {
-                    _gpuProgramMgr.PushSyntaxCode( "ps_1_4" );
+                    this.gpuProgramMgr.PushSyntaxCode("ps_1_4");
                 }
             }
 
             if ( fpMajor >= 2 )
             {
-                _gpuProgramMgr.PushSyntaxCode( "ps_2_0" );
+                this.gpuProgramMgr.PushSyntaxCode("ps_2_0");
 
                 if ( fpMinor > 0 )
                 {
-                    _gpuProgramMgr.PushSyntaxCode( "ps_2_x" );
+                    this.gpuProgramMgr.PushSyntaxCode("ps_2_x");
                 }
             }
 
             if ( fpMajor >= 3 )
             {
-                _gpuProgramMgr.PushSyntaxCode( "ps_3_0" );
+                this.gpuProgramMgr.PushSyntaxCode("ps_3_0");
 
                 if ( fpMinor > 0 )
                 {
-                    _gpuProgramMgr.PushSyntaxCode( "ps_3_x" );
+                    this.gpuProgramMgr.PushSyntaxCode("ps_3_x");
                 }
             }
         }
 
         private void _checkVertexProgramCapabilities()
-            {
+        {
             int vpMajor = _capabilities.VertexShaderVersion.Major;
             int vpMinor = _capabilities.VertexShaderVersion.Minor;
 
             // check vertex program HardwareCapabilities
             switch ( vpMajor )
-                {
+            {
                 case 1:
                     HardwareCapabilities.MaxVertexProgramVersion = "vs_1_1";
                     // 4d float vectors
@@ -515,28 +515,28 @@ namespace Axiom.RenderSystems.Xna
                 default:
                     // not gonna happen
                     HardwareCapabilities.MaxVertexProgramVersion = "";
-                        break;
-                    }
+                    break;
+            }
 
             // check for supported vertex program syntax codes
             if ( vpMajor >= 1 )
             {
                 HardwareCapabilities.SetCapability( Capabilities.VertexPrograms );
-                _gpuProgramMgr.PushSyntaxCode( "vs_1_1" );
+                this.gpuProgramMgr.PushSyntaxCode( "vs_1_1" );
             }
             if ( vpMajor >= 2 )
             {
                 if ( vpMajor > 2 || vpMinor > 0 )
                 {
-                    _gpuProgramMgr.PushSyntaxCode( "vs_2_x" );
+                    this.gpuProgramMgr.PushSyntaxCode( "vs_2_x" );
                 }
-                _gpuProgramMgr.PushSyntaxCode( "vs_2_0" );
+                this.gpuProgramMgr.PushSyntaxCode( "vs_2_0" );
             }
             if ( vpMajor >= 3 )
             {
-                _gpuProgramMgr.PushSyntaxCode( "vs_3_0" );
+                this.gpuProgramMgr.PushSyntaxCode( "vs_3_0" );
             }
-                }
+        }
 
         private XNA.Matrix _makeXnaMatrix( Axiom.Math.Matrix4 matrix )
         {
@@ -635,7 +635,7 @@ namespace Axiom.RenderSystems.Xna
             }
         }
 
-        public override int DepthBias
+        public override float DepthBias
         {
             get
             {
@@ -711,7 +711,7 @@ namespace Axiom.RenderSystems.Xna
             }
         }
 
-        public override PolygonMode RasterizationMode
+        public override PolygonMode PolygonMode
         {
             get
             {
@@ -864,7 +864,7 @@ namespace Axiom.RenderSystems.Xna
             // clear the device if need be
             if ( activeViewport.ClearEveryFrame )
             {
-                ClearFrameBuffer( FrameBuffer.Color | FrameBuffer.Depth, activeViewport.BackgroundColor );
+                ClearFrameBuffer( FrameBufferType.Color | FrameBufferType.Depth, activeViewport.BackgroundColor );
             }
             // set initial render states if this is the first frame. we only want to do 
             //	this once since renderstate changes are expensive
@@ -952,21 +952,21 @@ namespace Axiom.RenderSystems.Xna
             }
         }
 
-        public override void ClearFrameBuffer( RenderTarget.FrameBuffer buffers, ColorEx color, float depth, int stencil )
+        public override void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, float depth, int stencil )
         {
             XFG.ClearOptions flags = 0; //ClearFlags 
 
-            if ( ( buffers & FrameBuffer.Color ) > 0 )
+            if ( ( buffers & FrameBufferType.Color ) > 0 )
             {
                 flags |= XFG.ClearOptions.Target;
             }
-            if ( ( buffers & FrameBuffer.Depth ) > 0 )
+            if ((buffers & FrameBufferType.Depth) > 0)
             {
                 flags |= XFG.ClearOptions.DepthBuffer;
             }
             // Only try to clear the stencil buffer if supported
-            if ( ( buffers & FrameBuffer.Stencil ) > 0
-                && caps.CheckCap( Capabilities.StencilBuffer ) )
+            if ((buffers & FrameBufferType.Stencil) > 0
+                && HardwareCapabilities.HasCapability( Capabilities.StencilBuffer ) )
             {
 
                 flags |= XFG.ClearOptions.Stencil;
@@ -982,6 +982,16 @@ namespace Axiom.RenderSystems.Xna
             return color.ToARGB();
         }
 
+        public override ColorEx ConvertColor(int color)
+        {
+            ColorEx colorEx;
+            colorEx.a = (float)((color >> 24) % 256) / 255;
+            colorEx.r = (float)((color >> 16) % 256) / 255;
+            colorEx.g = (float)((color >> 8) % 256) / 255;
+            colorEx.b = (float)((color) % 256) / 255;
+            return colorEx;
+        }
+
         public override RenderTexture CreateRenderTexture( string name, int width, int height )
         {
             XnaRenderTexture renderTexture = new XnaRenderTexture( name, width, height );
@@ -989,31 +999,74 @@ namespace Axiom.RenderSystems.Xna
             return renderTexture;
         }
 
-        public override RenderWindow CreateRenderWindow( string name, int width, int height, int colorDepth, bool isFullscreen, int left, int top, bool depthBuffer, bool vsync, IntPtr target )
+        public override RenderWindow CreateRenderWindow(string name, int width, int height, bool isFullScreen, NamedParameterList miscParams)
         {
-            if ( _device == null )
+            // Check we're not creating a secondary window when the primary
+            // was fullscreen
+            if ( _primaryWindow != null && _primaryWindow.IsFullScreen )
             {
-                _device = InitDevice( isFullscreen, depthBuffer, width, height, colorDepth, target );
-
-                /*if (!isFullscreen)
-                {
-                    _device = InitDevice(isFullscreen, depthBuffer, width, height, colorDepth, target);
-                }
-                else
-                {
-                    _device = InitDevice(isFullscreen, depthBuffer, width, height, colorDepth, IntPtr.Zero);
-                }*/
+                throw new Exception( "Cannot create secondary windows when the primary is full screen." );
             }
 
-            RenderWindow window = new XnaRenderWindow();
+            if ( _primaryWindow != null && isFullScreen )
+            {
+                throw new ArgumentException( "Cannot create full screen secondary windows." );
+            }
 
-            window.Handle = target;
+            // Log a message
+            System.Text.StringBuilder strParams = new System.Text.StringBuilder();
+            if ( miscParams != null )
+            {
+                foreach ( KeyValuePair<string, object> entry in miscParams )
+                {
+                    strParams.AppendFormat( "{0} = {1}; ", entry.Key, entry.Value );
+                }
+            }
+            LogManager.Instance.Write( "D3D9RenderSystem::createRenderWindow \"{0}\", {1}x{2} {3} miscParams: {4}",
+                                       name, width, height, isFullScreen ? "fullscreen" : "windowed", strParams.ToString() );
+
+            // Make sure we don't already have a render target of the 
+            // same name as the one supplied
+            if ( renderTargets.ContainsKey( name ) )
+            {
+                throw new Exception( String.Format( "A render target of the same name '{0}' already exists." +
+                                                    "You cannot create a new window with this name.", name ) );
+            }
+
+            RenderWindow window = new XnaRenderWindow( _activeDriver, _primaryWindow != null ? device : null );
 
             // create the window
-            window.Create( name, width, height, colorDepth, isFullscreen, left, top, depthBuffer, target, _device );
+            window.Create( name, width, height, isFullScreen, miscParams );
 
             // add the new render target
             AttachRenderTarget( window );
+            // If this is the first window, get the D3D device and create the texture manager
+            if ( _primaryWindow == null )
+            {
+                _primaryWindow = (XnaRenderWindow)window;
+                device = (XFG.GraphicsDevice)window[ "XnaDEVICE" ];
+
+                // Create the texture manager for use by others
+                textureManager = new XnaTextureManager( device );
+                // Also create hardware buffer manager
+                hardwareBufferManager = new XnaHardwareBufferManager( device );
+
+                // Create the GPU program manager
+                gpuProgramMgr = new XnaGpuProgramManager( device );
+                // create & register HLSL factory
+                //HLSLProgramFactory = new D3D9HLSLProgramFactory();
+                //HighLevelGpuProgramManager::getSingleton().addFactory(mHLSLProgramFactory);
+                gpuProgramMgr.PushSyntaxCode( "hlsl" );
+
+
+                // Initialise the capabilities structures
+                this.CheckCaps( device );
+
+            }
+            else
+            {
+                _secondaryWindows.Add( (XnaRenderWindow)window );
+            }
 
             return window;
         }
@@ -1148,7 +1201,7 @@ namespace Axiom.RenderSystems.Xna
             _capabilities = newDevice.GraphicsDeviceCapabilities;
 
             // by creating our texture manager, singleton TextureManager will hold our implementation
-            textureMgr = new XnaTextureManager( newDevice );
+            this.textureManager = new XnaTextureManager( newDevice );
 
             // by creating our Gpu program manager, singleton GpuProgramManager will hold our implementation
             gpuProgramMgr = new XnaGpuProgramManager( newDevice );
@@ -1156,7 +1209,7 @@ namespace Axiom.RenderSystems.Xna
             // intializes the HardwareBufferManager singleton
             hardwareBufferManager = new XnaHardwareBufferManager( newDevice );
 
-            _checkCapabilities( newDevice );
+            this._checkHardwareCapabilities( newDevice );
 
             return newDevice;
         }
@@ -1629,7 +1682,7 @@ namespace Axiom.RenderSystems.Xna
             // 2 sided operation?
             if ( twoSidedOperation )
             {
-                if ( !caps.CheckCap( Capabilities.TwoSidedStencil ) )
+                if ( !HardwareCapabilities.HasCapability( Capabilities.TwoSidedStencil ) )
                 {
                     throw new AxiomException( "2-sided stencils are not supported on this hardware!" );
                 }
@@ -1877,7 +1930,7 @@ namespace Axiom.RenderSystems.Xna
         public object GetService( Type serviceType )
         {
             if ( serviceType == typeof( Microsoft.Xna.Framework.Graphics.IGraphicsDeviceService ) )
-                return this.renderTargets[ 0 ];
+                return this.renderTargets.Values.GetEnumerator().Current;
             else
                 return null;
         }

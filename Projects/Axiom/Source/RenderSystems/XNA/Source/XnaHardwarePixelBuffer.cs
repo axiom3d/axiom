@@ -96,7 +96,7 @@ namespace Axiom.RenderSystems.DirectX9
         ///<summary>
         ///    The Mipmap texture?
         ///</summary>
-        protected XFG.BaseTexture mipTex;
+        protected XFG.Texture mipTex;
         ///<summary>
         ///    Render targets
         ///</summary>

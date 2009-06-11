@@ -52,6 +52,7 @@ namespace Axiom.Graphics
     {
         #region Fields
 
+        protected RenderOperation renderOperation = new RenderOperation();
         protected Matrix4 worldTransform = Matrix4.Identity;
         protected AxisAlignedBox box;
         protected string materialName;
@@ -96,6 +97,26 @@ namespace Axiom.Graphics
         }
 
         #endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="op"></param>
+        /// TODO: Refactor this into a Property
+        public virtual void SetRenderOperation( RenderOperation op )
+        {
+            renderOperation = op;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="op"></param>
+        /// TODO: Refactor this into a Property
+        public virtual void GetRenderOperation( ref RenderOperation op )
+        {
+            op = renderOperation;
+        }
 
         #region Implementation of MovableObject
 
@@ -144,7 +165,7 @@ namespace Axiom.Graphics
         /// <summary>
         /// 
         /// </summary>
-        public Material Material
+        public virtual Material Material
         {
             get
             {

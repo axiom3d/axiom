@@ -91,6 +91,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///    Gets the render operation required to send this object to the frame buffer.
         /// </summary>
+        /// TODO: Refactor this into a Property
         void GetRenderOperation( RenderOperation op );
 
         /// <summary>
