@@ -8,14 +8,15 @@ using System.Threading;
 using Axiom.Demos;
 using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.Configuration;
 using System.Reflection;
 using System.Collections;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Demos.Browser.CommandLine
 {
+    using Configuration;
 
     /// <summary>
     /// Demo command line browser entry point.
@@ -25,6 +26,22 @@ namespace Axiom.Demos.Browser.CommandLine
     /// </remarks>
     public class Program : IDisposable
     {
+        private struct DemoItem
+        {
+            public DemoItem(string name, Type demo)
+            {
+                Name = name;
+                Demo = demo;
+            }
+
+            public string Name;
+            public Type Demo;
+            public override string ToString()
+            {
+                return Name;
+            }
+        }
+
         protected const string CONFIG_FILE = @"EngineConfig.xml";
 
         private Root engine;
@@ -34,15 +51,19 @@ namespace Axiom.Demos.Browser.CommandLine
         private bool _configure( )
         {
             // instantiate the Root singleton
-            engine = new Root( CONFIG_FILE, "AxiomDemos.log" );
+            engine = new Root( "AxiomDemos.log" );
 
             _setupResources();
 
             // HACK: Temporary
             ConfigDialog dlg = new ConfigDialog();
             DialogResult result = dlg.ShowDialog();
-            if ( result == DialogResult.Cancel )
-                return false;
+			if ( result == DialogResult.Cancel )
+			{
+				Root.Instance.Dispose();
+				engine = null;
+				return false;
+			}
 
             return true;
         }
@@ -66,7 +87,7 @@ namespace Axiom.Demos.Browser.CommandLine
                 // interrogate the available resource paths
                 foreach ( EngineConfig.FilePathRow row in config.FilePath )
                 {
-                    ResourceManager.AddCommonArchive( Path.GetFullPath( row.src ), row.type );
+                    ResourceGroupManager.Instance.AddResourceLocation( Path.GetFullPath( row.src ), row.type );
                 }
             }
         }
@@ -74,64 +95,59 @@ namespace Axiom.Demos.Browser.CommandLine
         public void Run( )
         {
 #if !(XBOX || XBOX360 || SILVERLIGHT)
-            ArrayList demoList = new ArrayList();
+            SortedList<string, DemoItem> demoList = new SortedList<string, DemoItem>();
 #endif
             try
             {
 #if !(XBOX || XBOX360 || SILVERLIGHT)
-                if ( _configure( ) )
+                if (_configure())
                 {
 
-                    Assembly demos = Assembly.LoadFrom( "Axiom.Demos.dll" );
-                    Type[]  demoTypes = demos.GetTypes();
-                    Type techDemo = demos.GetType( "Axiom.Demos.TechDemo" );
+                    Assembly demos = Assembly.LoadFrom("Axiom.Demos.dll");
+                    Type[] demoTypes = demos.GetTypes();
+                    Type techDemo = demos.GetType("Axiom.Demos.TechDemo");
 
-                    foreach ( Type demoType in demoTypes )
+                    foreach (Type demoType in demoTypes)
                     {
-                        if ( demoType.IsSubclassOf( techDemo ) )
+                        if (demoType.IsSubclassOf(techDemo))
                         {
-                            demoList.Add( demoType.Name );
+                            demoList.Add(demoType.Name, new DemoItem(demoType.Name, demoType));
                         }
                     }
 
-                    // TODO: Display list of available demos and allow the user to select one, or exit.
-                    string next = "";
-
-                    //while ( next != "exit" )
-                    //{
+                    {
+                        Type demoType;
                         int i = 1;
-                        foreach ( string typeName in demoList)
+                        foreach (KeyValuePair<string, DemoItem> typeName in demoList)
                         {
-                            Console.WriteLine( "{0}) {1}", i++,  typeName );
+                            Console.WriteLine("{0}) {1}", i++, typeName.Key);
                         }
-                        Console.WriteLine( "Enter the number of the demo that you want to run and press enter." );
-                        while ( true )
+                        Console.WriteLine("Enter the number of the demo that you want to run and press enter.");
+                        while (true)
                         {
                             string line = Console.ReadLine();
                             int number = -1;
-                            if ( line != string.Empty )
+                            if (line != string.Empty)
                             {
-                                number = int.Parse( line.Trim() );
+                                number = int.Parse(line.Trim());
                             }
-                            if ( number < 1 || number > demoList.Count )
-                                Console.WriteLine( "The number of the demo game must be between 1 and {0}, the number of demos games available.", demoList.Count );
+                            if (number < 1 || number > demoList.Count)
+                                Console.WriteLine("The number of the demo game must be between 1 and {0}, the number of demos games available.", demoList.Count);
                             else
                             {
-                                next = (string)demoList[ number - 1 ];
+                                demoType = demoList.Values[number - 1].Demo;
                                 break;
                             }
                         }
 
-                        Type type = demos.GetType( "Axiom.Demos." + next );
-
-                        if ( type != null )
+                        if (demoType != null)
                         {
-                            using ( TechDemo demo = (TechDemo)Activator.CreateInstance( type ) )
+                            using (TechDemo demo = (TechDemo)Activator.CreateInstance(demoType))
                             {
                                 demo.Start();//show and start rendering
                             }//dispose of it when done
                         }
-                    //}
+                    }
 
                 }
 #else

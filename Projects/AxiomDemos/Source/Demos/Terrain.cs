@@ -24,7 +24,7 @@ namespace Axiom.Demos
 
         public override void ChooseSceneManager()
         {
-            scene = SceneManagerEnumerator.Instance.GetSceneManager( SceneType.ExteriorClose );
+            scene = engine.CreateSceneManager( SceneType.ExteriorClose, "TechDemoSMInstance" );
         }
 
         public override void CreateCamera()
@@ -41,7 +41,7 @@ namespace Axiom.Demos
         {
             viewport.BackgroundColor = ColorEx.White;
 
-            scene.AmbientLight = new ColorEx( 0.5f, 0.5f, 0.5f );
+            scene.AmbientLight = ColorEx.Gray;
 
             Light light = scene.CreateLight( "MainLight" );
             light.Position = new Vector3( 20, 80, 50 );
@@ -56,6 +56,7 @@ namespace Axiom.Demos
 
             MeshManager.Instance.CreatePlane(
                 "WaterPlane",
+                ResourceGroupManager.DefaultResourceGroupName,
                 waterPlane,
                 2800, 2800,
                 20, 20,
@@ -71,10 +72,13 @@ namespace Axiom.Demos
             waterNode.Translate( new Vector3( 1000, 0, 1000 ) );
         }
 
-        protected override void OnFrameStarted( object source, FrameEventArgs e )
+        protected override bool OnFrameStarted( object source, FrameEventArgs e )
         {
             float moveScale;
             float waterFlow;
+
+            if ( base.OnFrameStarted( source, e ) == false )
+                return false;
 
             moveScale = 10 * e.TimeSinceLastFrame;
             waterFlow = FLOW_SPEED * e.TimeSinceLastFrame;
@@ -102,7 +106,7 @@ namespace Axiom.Demos
                 waterNode.Translate( new Vector3( 0, flowUp ? waterFlow : -waterFlow, 0 ) );
             }
 
-            base.OnFrameStarted( source, e );
+            return true;
         }
 
     }

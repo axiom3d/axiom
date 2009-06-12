@@ -98,16 +98,18 @@ namespace Axiom.Core
             // bind the color buffer
             binding.SetBinding( COLOR, buffer );
 
-            Material mat = MaterialManager.Instance.GetByName( "Core/WireBB" );
+			this.Material = (Material)MaterialManager.Instance[ "BaseWhite" ];
 
-            if ( mat == null )
-            {
-                mat = MaterialManager.Instance.GetByName( "BaseWhite" );
-                mat = mat.Clone( "Core/WireBB" );
-                mat.Lighting = false;
-            }
+			//Material mat = MaterialManager.Instance[ "Core/WireBB" ];
 
-            this.Material = mat;
+			//if ( mat == null )
+			//{
+			//    mat = MaterialManager.Instance[ "BaseWhite" ];
+			//    mat = mat.Clone( "Core/WireBB", "" );
+			//    mat.Lighting = false;
+			//}
+
+			//this.Material = mat;
         }
 
         #endregion Constructors

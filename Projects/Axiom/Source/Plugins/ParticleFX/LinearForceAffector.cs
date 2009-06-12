@@ -120,11 +120,11 @@ namespace Axiom.ParticleFX
         #region Command definition classes
 
         [Command( "force_vector", "Direction of force to apply to this particle.", typeof( ParticleAffector ) )]
-        class ForceVectorCommand : ICommand
-        {
-            #region ICommand Members
+		class ForceVectorCommand : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 LinearForceAffector affector = target as LinearForceAffector;
 
@@ -144,11 +144,11 @@ namespace Axiom.ParticleFX
         }
 
         [Command( "force_application", "Type of force to apply to this particle.", typeof( ParticleAffector ) )]
-        class ForceApplicationCommand : ICommand
-        {
-            #region ICommand Members
+		class ForceApplicationCommand : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 LinearForceAffector affector = target as LinearForceAffector;
 

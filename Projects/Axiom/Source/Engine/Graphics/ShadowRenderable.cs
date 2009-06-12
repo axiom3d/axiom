@@ -219,11 +219,11 @@ namespace Axiom.Graphics
             }
         }
 
-        public virtual SceneDetailLevel RenderDetail
+        public virtual bool PolygonModeOverrideable
         {
             get
             {
-                return SceneDetailLevel.Solid;
+                return true;
             }
         }
 

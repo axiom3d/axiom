@@ -50,7 +50,7 @@ namespace Axiom.Controllers
     ///		<p/>
     ///		This base class implements IControllerFunction, but leaves the implementation up to the subclasses.
     /// </remarks>
-    public abstract class BaseControllerFunction : IControllerFunction
+	public abstract class BaseControllerFunction : IControllerFunction<float>
     {
         #region Member variables
 

@@ -64,12 +64,6 @@ namespace Axiom.Collections
         {
         }
 
-        /// <summary>
-        ///		Constructor that takes a parent object to, and calls the base class constructor to 
-        /// </summary>
-        /// <param name="entity"></param>
-        //public LightList(P parent) : base(parent) {}
-
         #endregion
 
         #region Strongly typed methods and indexers
@@ -124,6 +118,5 @@ namespace Axiom.Collections
         }
 
         #endregion
-
     }
 }

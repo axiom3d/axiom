@@ -881,7 +881,7 @@ namespace Axiom.Media
 		/// this will lose precision when coming from A2R10G10B10 or floating
 		/// point formats.
 		/// </remarks>
-		unsafe public static void UnpackColor(ref byte r, ref byte g, ref byte b, ref byte a,
+		unsafe protected static void UnpackColor( ref byte r, ref byte g, ref byte b, ref byte a,
 												 PixelFormat pf, byte* src )
 		{
 			PixelFormatDescription des = GetDescriptionFor( pf );
@@ -917,7 +917,7 @@ namespace Axiom.Media
 			}
 		}
 
-		unsafe public static void UnpackColor(out float r, out float g, out float b, out float a,
+		unsafe protected static void UnpackColor( out float r, out float g, out float b, out float a,
 												 PixelFormat pf, byte* src )
 		{
 			PixelFormatDescription des = GetDescriptionFor( pf );

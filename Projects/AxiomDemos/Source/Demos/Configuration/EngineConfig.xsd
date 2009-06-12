@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="EngineConfig" targetNamespace="http://tempuri.org/EngineConfig.xsd" xmlns:mstns="http://tempuri.org/EngineConfig.xsd" xmlns="http://tempuri.org/EngineConfig.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="FilePath" msprop:Generator_UserTableName="FilePath" msprop:Generator_RowDeletedName="FilePathRowDeleted" msprop:Generator_RowChangedName="FilePathRowChanged" msprop:Generator_RowClassName="FilePathRow" msprop:Generator_RowChangingName="FilePathRowChanging" msprop:Generator_RowEvArgName="FilePathRowChangeEvent" msprop:Generator_RowEvHandlerName="FilePathRowChangeEventHandler" msprop:Generator_TableClassName="FilePathDataTable" msprop:Generator_TableVarName="tableFilePath" msprop:Generator_RowDeletingName="FilePathRowDeleting" msprop:Generator_TablePropName="FilePath">
+    <xs:complexType>
+      <xs:attribute name="group" form="unqualified" msprop:Generator_UserColumnName="group" msprop:Generator_ColumnVarNameInTable="columngroup" msprop:Generator_ColumnPropNameInRow="group" msprop:Generator_ColumnPropNameInTable="groupColumn" type="xs:string" msdata:DefaultValue="General" use="required"/>
+      <xs:attribute name="src" form="unqualified" msprop:Generator_UserColumnName="src" msprop:Generator_ColumnVarNameInTable="columnsrc" msprop:Generator_ColumnPropNameInRow="src" msprop:Generator_ColumnPropNameInTable="srcColumn" type="xs:string" use="required" />
+      <xs:attribute name="type" form="unqualified" msprop:Generator_UserColumnName="type" msprop:Generator_ColumnVarNameInTable="columntype" msprop:Generator_ColumnPropNameInRow="type" msprop:Generator_ColumnPropNameInTable="typeColumn" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ConfigOption" msprop:Generator_UserTableName="ConfigOption" msprop:Generator_RowDeletedName="ConfigOptionRowDeleted" msprop:Generator_RowChangedName="ConfigOptionRowChanged" msprop:Generator_RowClassName="ConfigOptionRow" msprop:Generator_RowChangingName="ConfigOptionRowChanging" msprop:Generator_RowEvArgName="ConfigOptionRowChangeEvent" msprop:Generator_RowEvHandlerName="ConfigOptionRowChangeEventHandler" msprop:Generator_TableClassName="ConfigOptionDataTable" msprop:Generator_TableVarName="tableConfigOption" msprop:Generator_RowDeletingName="ConfigOptionRowDeleting" msprop:Generator_TablePropName="ConfigOption">
+    <xs:complexType>
+      <xs:attribute name="RenderSystem" form="unqualified" msprop:Generator_UserColumnName="RenderSystem" msprop:Generator_ColumnPropNameInRow="RenderSystem" msprop:Generator_ColumnVarNameInTable="columnRenderSystem" msprop:Generator_ColumnPropNameInTable="RenderSystemColumn" type="xs:string" use="required" />
+      <xs:attribute name="Name" form="unqualified" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:string" use="required" />
+      <xs:attribute name="Value" form="unqualified" msprop:Generator_UserColumnName="Value" msprop:Generator_ColumnPropNameInRow="Value" msprop:Generator_ColumnVarNameInTable="columnValue" msprop:Generator_ColumnPropNameInTable="ValueColumn" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="EngineConfig" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_UserDSName="EngineConfig" msprop:Generator_DataSetName="EngineConfig">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="FilePath" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element ref="ConfigOption" minOccurs="0" maxOccurs="unbounded" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -41,525 +41,1044 @@ using System.IO;
 using Axiom.Core;
 using Axiom.Collections;
 using Axiom.Media;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
 
-    #region Delegate/EventArg Declarations
-
-    /// <summary>
-    ///    Delegate for RenderTarget update events.
-    /// </summary>
-    public delegate void RenderTargetUpdateEventHandler( object sender, RenderTargetUpdateEventArgs e );
-
-    /// <summary>
-    ///    Delegate for Viewport update events.
-    /// </summary>
-    public delegate void ViewportUpdateEventHandler( object sender, ViewportUpdateEventArgs e );
-
-    /// <summary>
-    ///    Event arguments for render target updates.
-    /// </summary>
-    public class RenderTargetUpdateEventArgs : EventArgs
-    {
-    }
-
-    /// <summary>
-    ///    Event arguments for viewport updates through while processing a RenderTarget.
-    /// </summary>
-    public class ViewportUpdateEventArgs : EventArgs
-    {
-        internal Viewport viewport;
-
-        public Viewport Viewport
-        {
-            get
-            {
-                return viewport;
-            }
-        }
-    }
-
-    #endregion Delegate/EventArg Declarations
-
-    /// <summary>
-    ///		A 'canvas' which can receive the results of a rendering operation.
-    /// </summary>
-    /// <remarks>
-    ///		This abstract class defines a common root to all targets of rendering operations. A
-    ///		render target could be a window on a screen, or another
-    ///		offscreen surface like a render texture.
-    ///	</remarks>
-    public abstract class RenderTarget : IDisposable
-    {
-        #region Fields
-
-        /// <summary>
-        ///    Height of this render target.
-        /// </summary>
-        protected int height;
-        /// <summary>
-        ///    Width of this render target.
-        /// </summary>
-        protected int width;
-        /// <summary>
-        ///     Color depth of this render target.
-        /// </summary>
-        protected int colorDepth;
-        /// <summary>
-        ///    Indicates the priority of this render target.  Higher priority targets will get processed first.
-        /// </summary>
-        protected RenderTargetPriority priority;
-        /// <summary>
-        ///    Unique name assigned to this render target.
-        /// </summary>
-        protected string name;
-        /// <summary>
-        ///    Optional debug text that can be display on this render target.  May not be relevant for all targets.
-        /// </summary>
-        protected string debugText;
-        /// <summary>
-        ///    Collection of viewports attached to this render target.
-        /// </summary>
-        protected ViewportCollection viewportList;
-        /// <summary>
-        ///    Number of faces rendered during the last update to this render target.
-        /// </summary>
-        protected int numFaces;
-        /// <summary>
-        ///    Custom attributes that can be assigned to this target.
-        /// </summary>
-        protected Hashtable customAttributes = new Hashtable();
-        /// <summary>
-        ///    Flag that states whether this target is active or not.
-        /// </summary>
-        protected bool isActive = true;
-        /// <summary>
-        ///     Is this render target updated automatically each frame?
-        /// </summary>
-        protected bool isAutoUpdated = true;
-
-        #endregion Fields
-
-        #region Constructor
-
-        /// <summary>
-        ///     Default constructor.
-        /// </summary>
-        public RenderTarget()
-        {
-            this.viewportList = new ViewportCollection( this );
-
-            numFaces = 0;
-        }
-
-        #endregion Constructor
-
-        #region Event handling
-
-        /// <summary>
-        ///    Gets fired before this RenderTarget is going to update.  Handling this event is ideal
-        ///    in situation, such as RenderTextures, where before rendering the scene to the texture,
-        ///    you would like to show/hide certain entities to avoid rendering more than was necessary
-        ///    to reduce processing time.
-        /// </summary>
-        public event RenderTargetUpdateEventHandler BeforeUpdate;
-
-        /// <summary>
-        ///    Gets fired right after this RenderTarget has been updated each frame.  If the scene has been modified
-        ///    in the BeforeUpdate event (such as showing/hiding objects), this event can be handled to set everything 
-        ///    back to normal.
-        /// </summary>
-        public event RenderTargetUpdateEventHandler AfterUpdate;
-
-        /// <summary>
-        ///    Gets fired before rendering the contents of each viewport attached to this RenderTarget.
-        /// </summary>
-        public event ViewportUpdateEventHandler BeforeViewportUpdate;
-
-        /// <summary>
-        ///    Gets fired after rendering the contents of each viewport attached to this RenderTarget.
-        /// </summary>
-        public event ViewportUpdateEventHandler AfterViewportUpdate;
-
-        protected virtual void OnBeforeUpdate()
-        {
-            if ( BeforeUpdate != null )
-            {
-                BeforeUpdate( this, new RenderTargetUpdateEventArgs() );
-            }
-        }
-
-        protected virtual void OnAfterUpdate()
-        {
-            if ( AfterUpdate != null )
-            {
-                AfterUpdate( this, new RenderTargetUpdateEventArgs() );
-            }
-        }
-
-        protected virtual void OnBeforeViewportUpdate( Viewport viewport )
-        {
-            if ( BeforeViewportUpdate != null )
-            {
-                ViewportUpdateEventArgs e = new ViewportUpdateEventArgs();
-                e.viewport = viewport;
-                BeforeViewportUpdate( this, e );
-            }
-        }
-
-        protected virtual void OnAfterViewportUpdate( Viewport viewport )
-        {
-            if ( AfterViewportUpdate != null )
-            {
-                ViewportUpdateEventArgs e = new ViewportUpdateEventArgs();
-                e.viewport = viewport;
-                AfterViewportUpdate( this, e );
-            }
-        }
-
-        #endregion
-
-        #region Public properties
-
-        /// <summary>
-        ///    Gets/Sets the name of this render target.
-        /// </summary>
-        public string Name
-        {
-            get
-            {
-                return this.name;
-            }
-            set
-            {
-                this.name = value;
-            }
-        }
-
-        /// <summary>
-        ///    Gets/Sets whether this RenderTarget is active or not.  When inactive, it will be skipped
-        ///    during processing each frame.
-        /// </summary>
-        public virtual bool IsActive
-        {
-            get
-            {
-                return isActive;
-            }
-            set
-            {
-                isActive = value;
-            }
-        }
-
-
-        /// <summary>
-        ///    Gets/Sets whether this target should be automatically updated if Axiom's rendering
-        ///    loop or Root.UpdateAllRenderTargets is being used.
-        /// </summary>
-        /// <remarks>
-        ///		By default, if you use Axiom's own rendering loop (Root.StartRendering)
-        ///		or call Root.UpdateAllRenderTargets, all render targets are updated
-        ///		automatically. This method allows you to control that behaviour, if 
-        ///		for example you have a render target which you only want to update periodically.
-        /// </remarks>
-        public virtual bool IsAutoUpdated
-        {
-            get
-            {
-                return isAutoUpdated;
-            }
-            set
-            {
-                isAutoUpdated = value;
-            }
-        }
-
-        /// <summary>
-        ///    Gets the priority of this render target.  Higher priority targets will get processed first.
-        /// </summary>
-        public RenderTargetPriority Priority
-        {
-            get
-            {
-                return priority;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the debug text of this render target.
-        /// </summary>
-        public string DebugText
-        {
-            get
-            {
-                return this.debugText;
-            }
-            set
-            {
-                this.debugText = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the width of this render target.
-        /// </summary>
-        public int Width
-        {
-            get
-            {
-                return this.width;
-            }
-            set
-            {
-                this.width = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the height of this render target.
-        /// </summary>
-        public int Height
-        {
-            get
-            {
-                return this.height;
-            }
-            set
-            {
-                this.height = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the color depth of this render target.
-        /// </summary>
-        public int ColorDepth
-        {
-            get
-            {
-                return this.colorDepth;
-            }
-            set
-            {
-                this.colorDepth = value;
-            }
-        }
-
-        /// <summary>
-        ///     Gets the number of viewports attached to this render target.
-        /// </summary>
-        public int NumViewports
-        {
-            get
-            {
-                return viewportList.Count;
-            }
-        }
-
-        /// <summary>
-        ///     Signals whether textures should be flipping before this target
-        ///     is updated.  Required for render textures in some API's.
-        /// </summary>
-        public virtual bool RequiresTextureFlipping
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        #endregion
-
-        #region Methods
-
-        /// <summary>
-        ///		Tells the target to update it's contents.
-        /// </summary>
-        /// <remarks>
-        ///		If the engine is not running in an automatic rendering loop
-        ///		(started using RenderSystem.StartRendering()),
-        ///		the user of the library is responsible for asking each render
-        ///		target to refresh. This is the method used to do this. It automatically
-        ///		re-renders the contents of the target using whatever cameras have been
-        ///		pointed at it (using Camera.RenderTarget).
-        ///	
-        ///		This allows the engine to be used in multi-windowed utilities
-        ///		and for contents to be refreshed only when required, rather than
-        ///		constantly as with the automatic rendering loop.
-        ///	</remarks>
-        public virtual void Update()
-        {
-            numFaces = 0;
-
-            // notify event handlers that this RenderTarget is about to be updated
-            OnBeforeUpdate();
-
-            // Go through viewportList in Z-order
-            // Tell each to refresh
-            for ( int i = 0; i < viewportList.Count; i++ )
-            {
-                Viewport viewport = viewportList[ i ];
-
-                // notify listeners (pre)
-                OnBeforeViewportUpdate( viewport );
-
-                viewportList[ i ].Update();
-                numFaces += viewportList[ i ].Camera.RenderedFaceCount;
-
-                // notify event handlers the the viewport is updated
-                OnAfterViewportUpdate( viewport );
-            }
-
-            // notify event handlers that this target update is complete
-            OnAfterUpdate();
-        }
-
-        /// <summary>
-        ///		Adds a viewport to the rendering target.
-        /// </summary>
-        /// <remarks>
-        ///		A viewport is the rectangle into which rendering output is sent. This method adds
-        ///		a viewport to the render target, rendering from the supplied camera. The
-        ///		rest of the parameters are only required if you wish to add more than one viewport
-        ///		to a single rendering target. Note that size information passed to this method is
-        ///		passed as a parametric, i.e. it is relative rather than absolute. This is to allow
-        ///		viewports to automatically resize along with the target.
-        /// </remarks>
-        /// <param name="camera">The camera from which the viewport contents will be rendered (mandatory)</param>
-        /// <param name="left">The relative position of the left of the viewport on the target, as a value between 0 and 1.</param>
-        /// <param name="top">The relative position of the top of the viewport on the target, as a value between 0 and 1.</param>
-        /// <param name="width">The relative width of the viewport on the target, as a value between 0 and 1.</param>
-        /// <param name="height">The relative height of the viewport on the target, as a value between 0 and 1.</param>
-        /// <param name="zOrder">The relative order of the viewport with others on the target (allows overlapping
-        ///		viewports i.e. picture-in-picture). Higher ZOrders are on top of lower ones. The actual number
-        ///		is irrelevant, only the relative ZOrder matters (you can leave gaps in the numbering)</param>
-        /// <returns></returns>
-        public virtual Viewport AddViewport( Camera camera, float left, float top, float width, float height, int zOrder )
-        {
-            // create a new camera and add it to our internal collection
-            Viewport viewport = new Viewport( camera, this, left, top, width, height, zOrder );
-            this.viewportList.Add( viewport );
-
-            return viewport;
-        }
-
-        /// <summary>
-        ///     Adds a viewport to the rendering target.
-        /// </summary>
-        /// <param name="camera"></param>
-        /// <returns></returns>
-        public Viewport AddViewport( Camera camera )
-        {
-            return AddViewport( camera, 0, 0, 1.0f, 1.0f, 0 );
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public Viewport GetViewport( int index )
-        {
-            Debug.Assert( index >= 0 && index < viewportList.Count );
-
-            return viewportList[ index ];
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="attribute"></param>
-        /// <returns></returns>
-        public virtual object GetCustomAttribute( string attribute )
-        {
-            Debug.Assert( customAttributes.ContainsKey( attribute ) );
-
-            return customAttributes[ attribute ];
-        }
-
-        /// <summary>
-        ///		Utility method to notify a render target that a camera has been removed, 
-        ///		incase it was referring to it as a viewer.
-        /// </summary>
-        /// <param name="camera"></param>
-        internal void NotifyCameraRemoved( Camera camera )
-        {
-            for ( int i = 0; i < viewportList.Count; i++ )
-            {
-                Viewport viewport = viewportList[ i ];
-
-                // remove the link to this camera
-                if ( viewport.Camera == camera )
-                {
-                    viewport.Camera = null;
-                }
-            }
-        }
-
-        public virtual void ResetStatistics()
-        {
-            // TODO: Implement RenderTarget.ResetStatistics
-        }
-
-        /// <summary>
-        ///		Saves window contents to file (i.e. screenshot);
-        /// </summary>
-        public void Save( string fileName )
-        {
-            // create a memory stream, setting the initial capacity
-            MemoryStream bufferStream = new MemoryStream( width * height * 3 );
-
-            // save the data to the memory stream
-            Save( bufferStream );
-
-            int pos = fileName.LastIndexOf( '.' );
-
-            // grab the file extension
-            string extension = fileName.Substring( pos + 1 );
-
-            // grab the codec for the requested file extension
-            ICodec codec = CodecManager.Instance.GetCodec( extension );
-
-            // setup the image file information
-            ImageCodec.ImageData imageData = new ImageCodec.ImageData();
-            imageData.width = width;
-            imageData.height = height;
-            imageData.format = PixelFormat.R8G8B8;
-
-            // reset the stream position
-            bufferStream.Position = 0;
-
-            // finally, save to file as an image
-            codec.EncodeToFile( bufferStream, fileName, imageData );
-
-            bufferStream.Close();
-        }
-
-        /// <summary>
-        ///		Saves the contents of this render target to the specified stream.
-        /// </summary>
-        /// <param name="stream">Stream to write the contents of this render target to.</param>
-        public abstract void Save( Stream stream );
-
-        #endregion Methods
-
-        #region IDisposable Members
-
-        /// <summary>
-        ///     Called when a render target is being destroyed.
-        /// </summary>
-        public virtual void Dispose()
-        {
-            // TODO: Track stats per render target and report on shutdown
-            // Write final performance stats
-            //LogManager.Instance.Write("Final Stats:");
-            //LogManager.Instance.Write("Axiom Framerate Average FPS: " + averageFPS.ToString("0.000000") + " Best FPS: " + highestFPS.ToString("0.000000") + " Worst FPS: " + lowestFPS.ToString("0.000000"));
-        }
-
-        #endregion
-    }
+	#region Delegate/EventArg Declarations
+
+	/// <summary>
+	///    Delegate for RenderTarget update events.
+	/// </summary>
+	public delegate void RenderTargetUpdateEventHandler( RenderTargetUpdateEventArgs e );
+
+	/// <summary>
+	///    Delegate for Viewport update events.
+	/// </summary>
+	public delegate void ViewportUpdateEventHandler( ViewportUpdateEventArgs e );
+
+	/// <summary>
+	///    Event arguments for render target updates.
+	/// </summary>
+	public class RenderTargetUpdateEventArgs : EventArgs
+	{
+		internal RenderTarget source;
+
+		public RenderTarget Source
+		{
+			get
+			{
+				return source;
+			}
+		}
+
+		public RenderTargetUpdateEventArgs( RenderTarget source )
+		{
+			this.source = source;
+		}
+
+	}
+
+	/// <summary>
+	///    Event arguments for viewport updates while processing a RenderTarget.
+	/// </summary>
+	public class ViewportUpdateEventArgs : RenderTargetUpdateEventArgs
+	{
+		internal Viewport viewport;
+
+		public Viewport Viewport
+		{
+			get
+			{
+				return viewport;
+			}
+		}
+
+		public ViewportUpdateEventArgs( RenderTarget source, Viewport viewport )
+			: base( source )
+		{
+			this.viewport = viewport;
+		}
+
+	}
+
+	#endregion Delegate/EventArg Declarations
+
+	/// <summary>
+	///		A 'canvas' which can receive the results of a rendering operation.
+	/// </summary>
+	/// <remarks>
+	///		This abstract class defines a common root to all targets of rendering operations. A
+	///		render target could be a window on a screen, or another
+	///		offscreen surface like a render texture.
+	///	</remarks>
+	public abstract class RenderTarget : IDisposable
+	{
+		#region Enumerations and Structures
+
+		[Flags()]
+		public enum Stats
+		{
+			None = 0,
+			FramesPreSecond = 1,
+			AverageFPS = 2,
+			BestFPS = 4,
+			WorstFPS = 8,
+			TriangleCount = 16,
+			All = 0xFFFF
+		};
+
+		/// <summary>
+		/// Holds all the current statistics for a RenderTarget
+		/// </summary>
+		public struct FrameStatistics
+		{
+			/// <summary>
+			/// The number of Frames per second.
+			/// </summary>
+			public float LastFPS;
+			/// <summary>
+			/// The average number of Frames per second since Root.StartRendering was called.
+			/// </summary>
+			public float AvgerageFPS;
+			/// <summary>
+			/// The highest number of Frames per second since Root.StartRendering was called.
+			/// </summary>
+			public float BestFPS;
+			/// <summary>
+			/// The lowest number of Frames per second since Root.StartRendering was called.
+			/// </summary>
+			public float WorstFPS;
+			/// <summary>
+			/// The best frame time recorded since Root.StartRendering was called.
+			/// </summary>
+			public float BestFrameTime;
+			/// <summary>
+			/// The worst frame time recorded since Root.StartRendering was called.
+			/// </summary>
+			public float WorstFrameTime;
+			/// <summary>
+			/// The number of triangles processed in the last call to Update()
+			/// </summary>
+			public float TriangleCount;
+			/// <summary>
+			/// The number of batches procecssed in the last call to Update()
+			/// </summary>
+			public float BatchCount;
+		};
+
+		public enum FrameBuffer
+		{
+			Front,
+			Back,
+			Auto
+		};
+
+		#endregion Enumerations
+
+		#region Fields and Properties
+
+		private ITimer _timer = Root.Instance.Timer;
+
+		private FrameStatistics _statistics;
+		private long _lastTime;
+		private long _lastSecond;
+		private long _frameCount;
+
+		#region Height Property
+
+		/// <summary>
+		///    Height of this render target.
+		/// </summary>
+		private int _height;
+		/// <summary>
+		/// Gets/Sets the height of this render target.
+		/// </summary>
+		public virtual int Height
+		{
+			get
+			{
+				return _height;
+			}
+			protected set
+			{
+				_height = value;
+			}
+		}
+
+		#endregion Height Property
+
+		#region Width Property
+
+		/// <summary>
+		///    Width of this render target.
+		/// </summary>
+		private int _width;
+		/// <summary>
+		/// Gets/Sets the width of this render target.
+		/// </summary>
+		public virtual int Width
+		{
+			get
+			{
+				return _width;
+			}
+			protected set
+			{
+				_width = value;
+			}
+		}
+
+		#endregion Width Property
+
+		#region ColorDepth Property
+
+		/// <summary>
+		///     Color depth of this render target.
+		/// </summary>
+		private int _colorDepth;
+		/// <summary>
+		/// Gets/Sets the color depth of this render target.
+		/// </summary>
+		public virtual int ColorDepth
+		{
+			get
+			{
+				return _colorDepth;
+			}
+			protected set
+			{
+				_colorDepth = value;
+			}
+		}
+
+		#endregion ColorDepth Property
+
+		#region Priority Property
+
+		/// <summary>
+		///    Indicates the priority of this render target.  Higher priority targets will get processed first.
+		/// </summary>
+		private RenderTargetPriority _priority;
+		/// <summary>
+		///    Gets/Sets the priority of this render target.  Higher priority targets will get processed first.
+		/// </summary>
+		public virtual RenderTargetPriority Priority
+		{
+			get
+			{
+				return _priority;
+			}
+			set
+			{
+				_priority = value;
+			}
+		}
+
+		#endregion Priority Property
+
+		#region Name Property
+
+		/// <summary>
+		///    Unique name assigned to this render target.
+		/// </summary>
+		private string _name;
+		/// <summary>
+		///    Gets/Sets the name of this render target.
+		/// </summary>
+		public virtual string Name
+		{
+			get
+			{
+				return _name;
+			}
+			protected set
+			{
+				_name = value;
+			}
+		}
+
+		#endregion Name Property
+
+		#region RequiresTextureFlipping Property
+
+		/// <summary>
+		///     Signals whether textures should be flipping before this target
+		///     is updated.  Required for render textures in some API's.
+		/// </summary>
+		public virtual bool RequiresTextureFlipping
+		{
+			get
+			{
+				return false;
+			}
+		}
+
+		#endregion RequiresTextureFlipping Property
+
+		#region IsActive Property
+
+		/// <summary>
+		///    Flag that states whether this target is active or not.
+		/// </summary>
+		private bool _isActive = true;
+		/// <summary>
+		///    Gets/Sets whether this RenderTarget is active or not.  When inactive, it will be skipped
+		///    during processing each frame.
+		/// </summary>
+		public virtual bool IsActive
+		{
+			get
+			{
+				return _isActive;
+			}
+			set
+			{
+				_isActive = value;
+			}
+		}
+
+		#endregion IsActive Property
+
+		#region IsAutoUpdated Property
+
+		/// <summary>
+		///     Is this render target updated automatically each frame?
+		/// </summary>
+		private bool _isAutoUpdated = true;
+		/// <summary>
+		///    Gets/Sets whether this target should be automatically updated if Axiom's rendering
+		///    loop or Root.UpdateAllRenderTargets is being used.
+		/// </summary>
+		/// <remarks>
+		///		By default, if you use Axiom's own rendering loop (Root.StartRendering)
+		///		or call Root.UpdateAllRenderTargets, all render targets are updated
+		///		automatically. This method allows you to control that behaviour, if 
+		///		for example you have a render target which you only want to update periodically.
+		/// </remarks>
+		public virtual bool IsAutoUpdated
+		{
+			get
+			{
+				return _isAutoUpdated;
+			}
+			set
+			{
+				_isAutoUpdated = value;
+			}
+		}
+
+		#endregion IsAutoUpdated Property
+
+		#region isDepthBuffered Property
+
+		private bool _isDepthBuffered = true;
+		protected bool isDepthBuffered
+		{
+			get
+			{
+				return _isDepthBuffered;
+			}
+			set
+			{
+				_isDepthBuffered = value;
+			}
+		}
+
+		#endregion isDepthBuffered Property
+
+		#region FSAA Property
+
+		/// <summary>
+		///    Flag that states whether this target is FSAA.
+		/// </summary>
+		private int _fsaa = 0;
+		/// <summary>
+		///    Gets/Sets whether this RenderTarget is FSAA or not.
+		/// </summary>
+		public virtual int FSAA
+		{
+			get
+			{
+				return _fsaa;
+			}
+			set
+			{
+				_fsaa = value;
+			}
+		}
+
+		#endregion FSAA Property
+
+		#endregion Fields
+
+		#region Event Handling
+
+		/// <summary>
+		///    Gets fired before this RenderTarget is going to update.  Handling this event is ideal
+		///    in situation, such as RenderTextures, where before rendering the scene to the texture,
+		///    you would like to show/hide certain entities to avoid rendering more than was necessary
+		///    to reduce processing time.
+		/// </summary>
+		public event RenderTargetUpdateEventHandler BeforeUpdate;
+
+		/// <summary>
+		///    Gets fired right after this RenderTarget has been updated each frame.  If the scene has been modified
+		///    in the BeforeUpdate event (such as showing/hiding objects), this event can be handled to set everything 
+		///    back to normal.
+		/// </summary>
+		public event RenderTargetUpdateEventHandler AfterUpdate;
+
+		/// <summary>
+		///    Gets fired before rendering the contents of each viewport attached to this RenderTarget.
+		/// </summary>
+		public event ViewportUpdateEventHandler BeforeViewportUpdate;
+
+		/// <summary>
+		///    Gets fired after rendering the contents of each viewport attached to this RenderTarget.
+		/// </summary>
+		public event ViewportUpdateEventHandler AfterViewportUpdate;
+
+		/// <summary>
+		/// Gets fired when a Viewport has been added to this RenderTarget.
+		/// </summary>
+		public event ViewportUpdateEventHandler ViewportAdded;
+
+		/// <summary>
+		/// Gets fired when a Viewport has been removed from this RenderTarget.
+		/// </summary>
+		public event ViewportUpdateEventHandler ViewportRemoved;
+
+		protected virtual void OnBeforeUpdate()
+		{
+			if ( BeforeUpdate != null )
+			{
+				BeforeUpdate( new RenderTargetUpdateEventArgs( this ) );
+			}
+		}
+
+		protected virtual void OnAfterUpdate()
+		{
+			if ( AfterUpdate != null )
+			{
+				AfterUpdate( new RenderTargetUpdateEventArgs( this ) );
+			}
+		}
+
+		protected virtual void OnBeforeViewportUpdate( Viewport viewport )
+		{
+			if ( BeforeViewportUpdate != null )
+			{
+				BeforeViewportUpdate( new ViewportUpdateEventArgs( this, viewport ) );
+			}
+		}
+
+		protected virtual void OnAfterViewportUpdate( Viewport viewport )
+		{
+			if ( AfterViewportUpdate != null )
+			{
+				AfterViewportUpdate( new ViewportUpdateEventArgs( this, viewport ) );
+			}
+		}
+
+		protected virtual void OnViewportAdded( Viewport viewport )
+		{
+			if ( ViewportAdded != null )
+			{
+				ViewportAdded( new ViewportUpdateEventArgs( this, viewport ) );
+			}
+		}
+
+		protected virtual void OnViewportRemoved( Viewport viewport )
+		{
+			if ( ViewportRemoved != null )
+			{
+				ViewportRemoved( new ViewportUpdateEventArgs( this, viewport ) );
+			}
+		}
+
+		#endregion Event Handling
+
+		#region Viewport Management
+
+		private ViewportCollection _viewportList = new ViewportCollection();
+		/// <summary>
+		/// The list of viewports
+		/// </summary>
+		protected virtual ViewportCollection viewportList
+		{
+			get
+			{
+				return _viewportList;
+			}
+		}
+
+		/// <summary>
+		///     Gets the number of viewports attached to this render target.
+		/// </summary>
+		public virtual int ViewportCount
+		{
+			get
+			{
+				return _viewportList.Count;
+			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		public virtual Viewport GetViewport( int index )
+		{
+			Debug.Assert( index >= 0 && index < _viewportList.Count );
+
+			return _viewportList[ _viewportList.Keys[ index ] ];
+		}
+
+		/// <summary>
+		///     Adds a viewport to the rendering target.
+		/// </summary>
+		/// <param name="camera"></param>
+		/// <returns></returns>
+		public Viewport AddViewport( Camera camera )
+		{
+			return AddViewport( camera, 0, 0, 1.0f, 1.0f, 0 );
+		}
+
+		/// <summary>
+		///		Adds a viewport to the rendering target.
+		/// </summary>
+		/// <remarks>
+		///		A viewport is the rectangle into which rendering output is sent. This method adds
+		///		a viewport to the render target, rendering from the supplied camera. The
+		///		rest of the parameters are only required if you wish to add more than one viewport
+		///		to a single rendering target. Note that size information passed to this method is
+		///		passed as a parametric, i.e. it is relative rather than absolute. This is to allow
+		///		viewports to automatically resize along with the target.
+		/// </remarks>
+		/// <param name="camera">The camera from which the viewport contents will be rendered (mandatory)</param>
+		/// <param name="left">The relative position of the left of the viewport on the target, as a value between 0 and 1.</param>
+		/// <param name="top">The relative position of the top of the viewport on the target, as a value between 0 and 1.</param>
+		/// <param name="width">The relative width of the viewport on the target, as a value between 0 and 1.</param>
+		/// <param name="height">The relative height of the viewport on the target, as a value between 0 and 1.</param>
+		/// <param name="zOrder">The relative order of the viewport with others on the target (allows overlapping
+		///		viewports i.e. picture-in-picture). Higher ZOrders are on top of lower ones. The actual number
+		///		is irrelevant, only the relative ZOrder matters (you can leave gaps in the numbering)</param>
+		/// <returns></returns>
+		public virtual Viewport AddViewport( Camera camera, float left, float top, float width, float height, int zOrder )
+		{
+			if ( _viewportList.ContainsKey( zOrder ) )
+				throw new AxiomException( String.Format( "Can't create another viewport for {0} with Z-Order {1} because a viewport exists with this Z-Order already.", _name, zOrder ) );
+
+			// create a new camera and add it to our internal collection
+			Viewport viewport = new Viewport( camera, this, left, top, width, height, zOrder );
+			this._viewportList.Add( viewport );
+
+			OnViewportAdded( viewport );
+
+			return viewport;
+		}
+
+		/// <summary>
+		/// Removes a viewport at a given ZOrder.
+		/// </summary>
+		/// <param name="zOrder">
+		/// The <see cref="Viewport.ZOrder"/> of the viewport to be removed.
+		/// </param>
+		public virtual void RemoveViewport( int zOrder )
+		{
+			if ( _viewportList.ContainsKey( zOrder ) )
+			{
+				Viewport viewport = _viewportList[ zOrder ];
+
+				OnViewportRemoved( viewport );
+
+				_viewportList.Remove( zOrder );
+			}
+		}
+
+		/// <summary>
+		/// Removes all viewports on this target.
+		/// </summary>
+		public virtual void RemoveAllViewports()
+		{
+			foreach ( KeyValuePair<int, Viewport> pair in _viewportList )
+			{
+				OnViewportRemoved( pair.Value );
+			}
+
+			_viewportList.Clear();
+		}
+
+		#endregion Viewport Management
+
+		#region Statistics
+
+		/// <summary>
+		/// Retieves details of current rendering performance.
+		/// </summary>
+		/// <param name="lastFPS">The number of frames per second (FPS) based on the last frame rendered.</param>
+		/// <param name="avgFPS">
+		/// The FPS rating based on an average of all the frames rendered 
+		/// since rendering began (the call to Root.StartRendering).
+		/// </param>
+		/// <param name="bestFPS">The best FPS rating that has been achieved since rendering began.</param>
+		/// <param name="worstFPS">The worst FPS rating seen so far</param>
+		public virtual void GetStatistics( out float lastFPS, out float avgFPS, out float bestFPS, out float worstFPS )
+		{
+			lastFPS = _statistics.LastFPS;
+			avgFPS = _statistics.AvgerageFPS;
+			bestFPS = _statistics.BestFPS;
+			worstFPS = _statistics.WorstFPS;
+		}
+
+		/// <summary>
+		/// Retieves details of current rendering performance.
+		/// </summary>
+		public virtual FrameStatistics Statistics
+		{
+			get
+			{
+				return this._statistics;
+			}
+		}
+
+		/// <summary>
+		/// The number of frames per second (FPS) based on the last frame rendered.
+		/// </summary>
+		public virtual float LastFPS
+		{
+			get
+			{
+				return _statistics.LastFPS;
+			}
+		}
+
+		/// The average frames per second (FPS) since call to Root.StartRendering.
+		/// </summary>
+		public virtual float AverageFPS
+		{
+			get
+			{
+				return _statistics.AvgerageFPS;
+			}
+		}
+
+		/// <summary>
+		/// The best frames per second (FPS) since call to Root.StartRendering.
+		/// </summary>
+		public virtual float BestFPS
+		{
+			get
+			{
+				return _statistics.BestFPS;
+			}
+		}
+
+		/// <summary>
+		/// The worst frames per second (FPS) since call to Root.StartRendering.
+		/// </summary>
+		public virtual float WorstFPS
+		{
+			get
+			{
+				return _statistics.WorstFPS;
+			}
+		}
+
+		/// <summary>
+		/// The best frame time
+		/// </summary>
+		public virtual float BestFrameTime
+		{
+			get
+			{
+				return _statistics.BestFrameTime;
+			}
+		}
+
+		/// <summary>
+		/// The worst frame time
+		/// </summary>
+		public virtual float WorstFrameTime
+		{
+			get
+			{
+				return _statistics.WorstFrameTime;
+			}
+		}
+
+		/// <summary>
+		/// The number of triangles rendered in the last Update() call. 
+		/// </summary>
+		public virtual float LastTriangleCount
+		{
+			get
+			{
+				return _statistics.TriangleCount;
+			}
+		}
+
+		/// <summary>
+		/// The number of triangles rendered in the last Update() call. 
+		/// </summary>
+		public virtual float LastBatchCount
+		{
+			get
+			{
+				return _statistics.BatchCount;
+			}
+		}
+
+		/// <summary>
+		/// Resets saved frame-rate statistices.
+		/// </summary>
+		public virtual void ResetStatistics()
+		{
+			_statistics.AvgerageFPS = 0.0F;
+			_statistics.BestFPS = 0.0F;
+			_statistics.LastFPS = 0.0F;
+			_statistics.WorstFPS = 999.0F;
+			_statistics.TriangleCount = 0;
+			_statistics.BatchCount = 0;
+			_statistics.BestFrameTime = 999999;
+			_statistics.WorstFrameTime = 0;
+
+			_lastTime = _timer.Milliseconds;
+			_lastSecond = _lastTime;
+			_frameCount = 0;
+		}
+
+		protected void updateStatistics()
+		{
+			_frameCount++;
+			long thisTime = _timer.Milliseconds;
+
+			// check frame time
+			long frameTime = thisTime - _lastTime;
+			_lastTime = thisTime;
+
+			_statistics.BestFrameTime = Math.Utility.Min( _statistics.BestFrameTime, frameTime );
+			_statistics.WorstFrameTime = Math.Utility.Max( _statistics.WorstFrameTime, frameTime );
+
+			// check if new second (update only once per second)
+			if ( thisTime - _lastSecond > 1000 )
+			{
+				// new second - not 100% precise
+				_statistics.LastFPS = (float)_frameCount / (float)( thisTime - _lastSecond ) * 1000;
+
+				if ( _statistics.AvgerageFPS == 0 )
+					_statistics.AvgerageFPS = _statistics.LastFPS;
+				else
+					_statistics.AvgerageFPS = ( _statistics.AvgerageFPS + _statistics.LastFPS ) / 2; // not strictly correct, but good enough
+
+				_statistics.BestFPS = Math.Utility.Max( _statistics.BestFPS, _statistics.LastFPS );
+				_statistics.WorstFPS = Math.Utility.Min( _statistics.WorstFPS, _statistics.LastFPS );
+
+				_lastSecond = thisTime;
+				_frameCount = 0;
+
+			}
+
+		}
+		#endregion Statistics
+
+		#region Custom Attributes
+
+		/// <summary>
+		/// Gets a custom (maybe platform-specific) attribute.
+		/// </summary>
+		/// <remarks>
+		/// This is a nasty way of satisfying any API's need to see platform-specific details.
+		/// Its horrid, but D3D needs this kind of info. At least it's abstracted.
+		/// </remarks>
+		/// <param name="attribute">The name of the attribute.</param>
+		/// <returns></returns>
+		[Obsolete( "The GetCustomAttribute function has been deprecated in favor of an indexer property. Use object[\"attribute\"] to get custom attributes." )]
+		public object GetCustomAttribute( string attribute )
+		{
+			return this[ attribute ];
+		}
+
+		public virtual object this[ string attribute ]
+		{
+			get
+			{
+				throw new Exception( String.Format( "Attribute [{0}] not found.", attribute ) );
+			}
+		}
+
+		#endregion Custom Attributes
+
+		#region Methods
+
+		private static TimingMeter updateTargetMeter = MeterManager.GetMeter( "Update Target", "Update Target" );
+		private static TimingMeter beforeUpdateMeter = MeterManager.GetMeter( "Before Update", "Update Target" );
+		private static TimingMeter afterUpdateMeter = MeterManager.GetMeter( "After Update", "Update Target" );
+		private static TimingMeter beforeViewPortUpdateMeter = MeterManager.GetMeter( "Before Viewport Update", "Update Target" );
+		private static TimingMeter afterViewPortUpdateMeter = MeterManager.GetMeter( "After Viewport Update", "Update Target" );
+		private static TimingMeter viewPortUpdateMeter = MeterManager.GetMeter( "Viewport Update", "Update Target" );
+
+		/// <summary>
+		///		Tells the target to update it's contents.
+		/// </summary>
+		/// <remarks>
+		///		If the engine is not running in an automatic rendering loop
+		///		(started using RenderSystem.StartRendering()),
+		///		the user of the library is responsible for asking each render
+		///		target to refresh. This is the method used to do this. It automatically
+		///		re-renders the contents of the target using whatever cameras have been
+		///		pointed at it (using Camera.RenderTarget).
+		///	
+		///		This allows the engine to be used in multi-windowed utilities
+		///		and for contents to be refreshed only when required, rather than
+		///		constantly as with the automatic rendering loop.
+		///	</remarks>
+		public virtual void Update()
+		{
+			updateTargetMeter.Enter();
+
+
+			// notify event handlers that this RenderTarget is about to be updated
+			beforeUpdateMeter.Enter();
+			OnBeforeUpdate();
+			beforeUpdateMeter.Exit();
+
+			// Go through viewportList in Z-order
+			// Tell each to refresh
+			for ( int i = 0; i < _viewportList.Count; i++ )
+			{
+				Viewport viewport = _viewportList[ _viewportList.Keys[ i ] ];
+
+				// notify listeners (pre)
+				beforeViewPortUpdateMeter.Enter();
+				OnBeforeViewportUpdate( viewport );
+				beforeViewPortUpdateMeter.Exit();
+
+				viewPortUpdateMeter.Enter();
+				viewport.Update();
+				viewPortUpdateMeter.Exit();
+
+				_statistics.TriangleCount += viewport.Camera.RenderedFaceCount;
+				//TODO : _statistics.BatchCount += viewport.Camera.RenderedBatchCount;
+
+				// notify event handlers the the viewport is updated
+				afterViewPortUpdateMeter.Enter();
+				OnAfterViewportUpdate( viewport );
+				afterViewPortUpdateMeter.Exit();
+			}
+
+			// notify event handlers that this target update is complete
+			afterUpdateMeter.Enter();
+			OnAfterUpdate();
+			afterUpdateMeter.Exit();
+
+			updateTargetMeter.Exit();
+
+
+			// Update statistics (always on top)
+			updateStatistics();
+
+		}
+
+
+
+		/// <summary>
+		///		Utility method to notify a render target that a camera has been removed, 
+		///		incase it was referring to it as a viewer.
+		/// </summary>
+		/// <param name="camera"></param>
+		internal void NotifyCameraRemoved( Camera camera )
+		{
+			for ( int i = 0; i < _viewportList.Count; i++ )
+			{
+				Viewport viewport = _viewportList[ _viewportList.Keys[ i ] ];
+
+				// remove the link to this camera
+				if ( viewport.Camera == camera )
+				{
+					viewport.Camera = null;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Retrieve information about the render target.
+		/// </summary>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="colourDepth"></param>
+		public void GetMetrics( out int width, out int height, out int colorDepth )
+		{
+			width = _width;
+			height = _height;
+			colorDepth = _colorDepth;
+		}
+
+		/// <summary>
+		///		Saves window contents to file (i.e. screenshot);
+		/// </summary>
+		public void WriteContentsToFile( string fileName )
+		{
+			PixelFormat pf = suggestPixelFormat();
+
+			byte[] data = new byte[ Width * Height * PixelUtil.GetNumElemBytes( pf ) ];
+			GCHandle bufGCHandle = new GCHandle();
+			bufGCHandle = GCHandle.Alloc( data, GCHandleType.Pinned );
+			PixelBox pb = new PixelBox( Width, Height, 1, pf, bufGCHandle.AddrOfPinnedObject() );
+
+			CopyContentsToMemory( pb );
+
+			( new Image() ).FromDynamicImage( data, Width, Height, 1, pf, false, 1, 0 ).Save( fileName );
+
+			if ( bufGCHandle.IsAllocated )
+				bufGCHandle.Free();
+		}
+
+		public void CopyContentsToMemory( PixelBox pb )
+		{
+			CopyContentsToMemory( pb, FrameBuffer.Auto );
+		}
+
+		public abstract void CopyContentsToMemory( PixelBox pb, FrameBuffer buffer );
+
+		/// <summary>
+		/// Suggests a pixel format to use for extracting the data in this target, when calling <see cref="CopyContentsToMemory"/>.
+		/// </summary>
+		/// <returns></returns>
+		protected virtual PixelFormat suggestPixelFormat()
+		{
+			return PixelFormat.BYTE_RGBA;
+		}
+
+		/// <summary>
+		///		Swaps the frame buffers to display the next frame.
+		/// </summary>
+		/// <remarks>				
+		///		For targets that are double-buffered so that no
+		///     'in-progress' versions of the scene are displayed
+		///     during rendering. Once rendering has completed (to
+		///		an off-screen version of the window) the buffers
+		///		are swapped to display the new frame.
+		/// </remarks>
+		public void SwapBuffers()
+		{
+			SwapBuffers( true );
+		}
+
+		/// <summary>
+		///		Swaps the frame buffers to display the next frame.
+		/// </summary>
+		/// <remarks>
+		///		For targets that are double-buffered so that no
+		///     'in-progress' versions of the scene are displayed
+		///     during rendering. Once rendering has completed (to
+		///		an off-screen version of the window) the buffers
+		///		are swapped to display the new frame.
+		///	</remarks>
+		/// <param name="waitForVSync">
+		///		If true, the system waits for the
+		///		next vertical blank period (when the CRT beam turns off
+		///		as it travels from bottom-right to top-left at the
+		///		end of the pass) before flipping. If false, flipping
+		///		occurs no matter what the beam position. Waiting for
+		///		a vertical blank can be slower (and limits the
+		///		framerate to the monitor refresh rate) but results
+		///		in a steadier image with no 'tearing' (a flicker
+		///		resulting from flipping buffers when the beam is
+		///		in the progress of drawing the last frame). 
+		///</param>
+		public virtual void SwapBuffers( bool waitForVSync )
+		{
+		}
+
+
+		#endregion Methods
+
+		#region IDisposable Implementation
+
+		#region isDisposed Property
+
+		private bool _disposed = false;
+		/// <summary>
+		/// Determines if this instance has been disposed of already.
+		/// </summary>
+		protected bool isDisposed
+		{
+			get
+			{
+				return _disposed;
+			}
+			set
+			{
+				_disposed = value;
+			}
+		}
+
+		#endregion isDisposed Property
+
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		/// <remarks>
+		/// When implementing this method in an inherited class the following template should be used;
+		/// protected override void dispose( bool disposeManagedResources )
+		/// {
+		/// 	if ( !isDisposed )
+		/// 	{
+		/// 		if ( disposeManagedResources )
+		/// 		{
+		/// 			// Dispose managed resources.
+		/// 		}
+		/// 
+		/// 		// There are no unmanaged resources to release, but
+		/// 		// if we add them, they need to be released here.
+		/// 	}
+		///
+		/// 	// If it is available, make the call to the
+		/// 	// base class's Dispose(Boolean) method
+		/// 	base._dispose( disposeManagedResources );
+		/// }
+		/// </remarks>
+		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+		protected virtual void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					// Delete viewports
+					while ( _viewportList.Count > 0 )
+					{
+						Viewport vp = _viewportList[ _viewportList.Keys[ 0 ] ];
+						OnViewportRemoved( vp );
+						this._viewportList.Remove( _viewportList.Keys[ 0 ] );
+					}
+					// Write final performance stats
+                    if ( LogManager.Instance != null )
+					    LogManager.Instance.Write( "Final Stats [{0}]: FPS <A,B,W> : {1:#.00} {2:#.00} {3:#.00}", this.Name, this._statistics.AvgerageFPS, this._statistics.BestFPS, this._statistics.WorstFPS );
+				}
+			}
+			isDisposed = true;
+		}
+
+		public void Dispose()
+		{
+			dispose( true );
+			GC.SuppressFinalize( this );
+		}
+
+		~RenderTarget()
+		{
+			dispose( false );
+		}
+
+		#endregion IDisposable Implementation
+
+	}
 }

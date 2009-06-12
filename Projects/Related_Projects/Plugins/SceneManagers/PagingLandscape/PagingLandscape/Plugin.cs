@@ -37,14 +37,19 @@ namespace Axiom.SceneManagers.PagingLandscape
 	/// Summary description for IPLSMPlugin.
 	/// </summary>
 	public class LandscapeSceneManagerPlugin: IPlugin 
-	{ 
+	{
+	    private PagingLandscapeSceneManagerFactory m_factory;
+
 		public void Start() 
 		{ 
-			SceneManagerEnumerator.Instance.SetSceneManager(SceneType.ExteriorFar, new SceneManager());
+			//SceneManagerEnumerator.Instance.SetSceneManager(SceneType.ExteriorFar, new SceneManager("noName"));
+            m_factory  = new PagingLandscapeSceneManagerFactory();
+            Root.Instance.AddSceneManagerFactory(m_factory);
 		} 
 
 		public void Stop() 
-		{ 
+		{
+            Root.Instance.RemoveSceneManagerFactory(m_factory);
 		} 
 	}
 }

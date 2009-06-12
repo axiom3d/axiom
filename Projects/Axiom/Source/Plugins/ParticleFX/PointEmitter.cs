@@ -51,7 +51,7 @@ namespace Axiom.ParticleFX
     {
         #region Constructors
 
-        public PointEmitter()
+		public PointEmitter( ParticleSystem ps ) : base (ps)
         {
             this.Type = "Point";
         }
@@ -60,7 +60,7 @@ namespace Axiom.ParticleFX
 
         #region Methods
 
-        public override ushort GetEmissionCount( float timeElapsed )
+		public override ushort GetEmissionCount( float timeElapsed )
         {
             // use basic constant emission
             return GenerateConstantEmissionCount( timeElapsed );

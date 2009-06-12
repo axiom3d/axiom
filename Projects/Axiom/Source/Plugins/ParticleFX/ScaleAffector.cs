@@ -86,27 +86,26 @@ namespace Axiom.ParticleFX
 
                 if ( p.HasOwnDimensions == false )
                 {
-                    p.Height = system.DefaultHeight;
-                    p.Width = system.DefaultWidth;
+					newHigh = system.DefaultHeight + ds;
+					newWide = system.DefaultWidth + ds;
                 }
                 else
                 {
                     newWide = p.Width + ds;
                     newHigh = p.Height + ds;
-                    p.Width = newWide;
-                    p.Height = newHigh;
                 }
+				p.SetDimensions( newWide, newHigh );
             }
         }
 
         #region Command definition classes
 
         [Command( "rate", "Rate of particle scaling.", typeof( ParticleAffector ) )]
-        class RateCommand : ICommand
-        {
-            #region ICommand Members
+		class RateCommand : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 ScaleAffector affector = target as ScaleAffector;
                 return StringConverter.ToString( affector.ScaleAdjust );

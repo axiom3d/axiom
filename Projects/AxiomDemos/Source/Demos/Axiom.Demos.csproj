@@ -2,7 +2,7 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>10.0.20506</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C7286349-8DBA-4A39-991C-3D848AB10CCE}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -170,10 +170,25 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compositor.cs" />
+    <Compile Include="Configuration\EngineConfig.cs">
+      <DependentUpon>EngineConfig.xsd</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Configuration\EngineConfig.Designer.cs">
+      <DependentUpon>EngineConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="CubeMapping.cs" />
     <Compile Include="Dot3Bump.cs" />
+    <Compile Include="DynamicTextures.cs" />
+    <Compile Include="FacialAnimation.cs" />
     <Compile Include="FrustumCulling.cs" />
+    <Compile Include="Grass.cs" />
+    <Compile Include="LargeScene.cs" />
+    <Compile Include="MousePicking.cs" />
+    <Compile Include="MultipleSceneManager.cs" />
     <Compile Include="OffsetMapping.cs" />
+    <Compile Include="PCZTestApp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -207,6 +222,7 @@
     <Compile Include="RenderToTexture.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="RoomObject.cs" />
     <Compile Include="Shadows.cs" />
     <Compile Include="SkeletalAnimation.cs">
       <SubType>Code</SubType>
@@ -238,13 +254,26 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Axiom\Source\Engine\Axiom.csproj">
-      <Project>{6436E2A4-0520-40CF-9481-0EB77946120A}</Project>
+      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
       <Name>Axiom</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Axiom\Source\Plugins\OctreeZone\OctreeZone.csproj">
+      <Project>{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}</Project>
+      <Name>OctreeZone</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Axiom\Source\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj">
       <Project>{F3016FCF-2A53-483E-8679-4514D57B6ACD}</Project>
       <Name>Axiom.SceneManagers.Octree</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Axiom\Source\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.csproj">
+      <Project>{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}</Project>
+      <Name>Axiom.SceneManagers.PortalConnected</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Configuration\EngineConfig.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>

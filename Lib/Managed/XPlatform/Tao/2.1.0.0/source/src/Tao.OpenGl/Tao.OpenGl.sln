@@ -1,0 +1,108 @@
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tao.OpenAl", "..\Tao.OpenAl\Tao.OpenAl.csproj", "{7B619BB0-3AB4-4DC9-BA37-BC5B461BEF17}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Redbook", "..\..\examples\Redbook\Redbook.csproj", "{7E8945BA-1C9C-4C88-A4D9-70BE863C4056}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tao.Glfw", "..\Tao.Glfw\Tao.Glfw.csproj", "{15C1A132-940F-4C07-B81A-74C56AC80D10}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tao.Cg", "..\Tao.Cg\Tao.Cg.csproj", "{723454BE-6A6B-4D52-B0A0-F4B0ED4F8C49}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenAlExamples", "..\..\examples\OpenAlExamples\OpenAlExamples.csproj", "{15DF8877-A758-4D78-BAE8-1E3290548D1D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tao.Platform.Windows", "..\Tao.Platform.Windows\Tao.Platform.Windows.csproj", "{228201EB-1A36-4E25-B59F-52255CBBE270}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NateRobins", "..\..\examples\NateRobins\NateRobins.csproj", "{07F2FB99-129A-482E-8ECC-8AC494F2C0D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tao.FreeGlut", "..\Tao.FreeGlut\Tao.FreeGlut.csproj", "{87C95364-7158-4D81-83B8-97B649E27ABA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlfwExamples", "..\..\examples\GlfwExamples\GlfwExamples.csproj", "{B60D9D96-28D9-4D65-B493-2D8EBD8CDF44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CgExamples", "..\..\examples\CgExamples\CgExamples.csproj", "{FA92914D-1A61-431A-9BD4-82469A1AF787}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tao.Platform.X11", "..\Tao.Platform.X11\Tao.Platform.X11.csproj", "{291CD638-964A-4E66-AFC1-BC9AFF9E0D60}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeHe", "..\..\examples\NeHe\NeHe.csproj", "{FCC053CE-BC45-4687-84BF-8F8B731089ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tao.OpenGl", "Tao.OpenGl.csproj", "{6292109B-6BB4-4120-AD56-F409C0285AB6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeWangExamples", "..\..\examples\GeWangExamples\GeWangExamples.csproj", "{78748E63-B733-4B50-BE65-05E711E33D4F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{468F1D07-AD17-4CC3-ABD0-2CA268E4E1A6}"
+	ProjectSection(SolutionItems) = preProject
+		..\Tao.Platform.Windows\TaoButton.jpg = ..\Tao.Platform.Windows\TaoButton.jpg
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FreeGlutExamples", "..\..\examples\FreeGlutExamples\FreeGlutExamples.csproj", "{3B6C7425-AA18-4890-ADF1-56F21095E94E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7B619BB0-3AB4-4DC9-BA37-BC5B461BEF17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B619BB0-3AB4-4DC9-BA37-BC5B461BEF17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B619BB0-3AB4-4DC9-BA37-BC5B461BEF17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B619BB0-3AB4-4DC9-BA37-BC5B461BEF17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E8945BA-1C9C-4C88-A4D9-70BE863C4056}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E8945BA-1C9C-4C88-A4D9-70BE863C4056}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E8945BA-1C9C-4C88-A4D9-70BE863C4056}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E8945BA-1C9C-4C88-A4D9-70BE863C4056}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15C1A132-940F-4C07-B81A-74C56AC80D10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15C1A132-940F-4C07-B81A-74C56AC80D10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15C1A132-940F-4C07-B81A-74C56AC80D10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15C1A132-940F-4C07-B81A-74C56AC80D10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{723454BE-6A6B-4D52-B0A0-F4B0ED4F8C49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{723454BE-6A6B-4D52-B0A0-F4B0ED4F8C49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{723454BE-6A6B-4D52-B0A0-F4B0ED4F8C49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{723454BE-6A6B-4D52-B0A0-F4B0ED4F8C49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15DF8877-A758-4D78-BAE8-1E3290548D1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15DF8877-A758-4D78-BAE8-1E3290548D1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15DF8877-A758-4D78-BAE8-1E3290548D1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15DF8877-A758-4D78-BAE8-1E3290548D1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{228201EB-1A36-4E25-B59F-52255CBBE270}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{228201EB-1A36-4E25-B59F-52255CBBE270}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{228201EB-1A36-4E25-B59F-52255CBBE270}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{228201EB-1A36-4E25-B59F-52255CBBE270}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07F2FB99-129A-482E-8ECC-8AC494F2C0D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07F2FB99-129A-482E-8ECC-8AC494F2C0D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07F2FB99-129A-482E-8ECC-8AC494F2C0D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07F2FB99-129A-482E-8ECC-8AC494F2C0D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87C95364-7158-4D81-83B8-97B649E27ABA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87C95364-7158-4D81-83B8-97B649E27ABA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87C95364-7158-4D81-83B8-97B649E27ABA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87C95364-7158-4D81-83B8-97B649E27ABA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B60D9D96-28D9-4D65-B493-2D8EBD8CDF44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B60D9D96-28D9-4D65-B493-2D8EBD8CDF44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B60D9D96-28D9-4D65-B493-2D8EBD8CDF44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B60D9D96-28D9-4D65-B493-2D8EBD8CDF44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA92914D-1A61-431A-9BD4-82469A1AF787}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA92914D-1A61-431A-9BD4-82469A1AF787}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA92914D-1A61-431A-9BD4-82469A1AF787}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA92914D-1A61-431A-9BD4-82469A1AF787}.Release|Any CPU.Build.0 = Release|Any CPU
+		{291CD638-964A-4E66-AFC1-BC9AFF9E0D60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{291CD638-964A-4E66-AFC1-BC9AFF9E0D60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{291CD638-964A-4E66-AFC1-BC9AFF9E0D60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{291CD638-964A-4E66-AFC1-BC9AFF9E0D60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCC053CE-BC45-4687-84BF-8F8B731089ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCC053CE-BC45-4687-84BF-8F8B731089ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCC053CE-BC45-4687-84BF-8F8B731089ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCC053CE-BC45-4687-84BF-8F8B731089ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6292109B-6BB4-4120-AD56-F409C0285AB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6292109B-6BB4-4120-AD56-F409C0285AB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6292109B-6BB4-4120-AD56-F409C0285AB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6292109B-6BB4-4120-AD56-F409C0285AB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78748E63-B733-4B50-BE65-05E711E33D4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78748E63-B733-4B50-BE65-05E711E33D4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78748E63-B733-4B50-BE65-05E711E33D4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78748E63-B733-4B50-BE65-05E711E33D4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B6C7425-AA18-4890-ADF1-56F21095E94E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B6C7425-AA18-4890-ADF1-56F21095E94E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B6C7425-AA18-4890-ADF1-56F21095E94E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B6C7425-AA18-4890-ADF1-56F21095E94E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

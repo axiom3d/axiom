@@ -14,7 +14,7 @@
 	<!-- -->
 	
 	<!--Data2DFormat>HeightFieldTC<Data2DFormat-->
-	<Data2DFormat>HeightField</Data2DFormat>
+	<Data2DFormat>HeightFieldN</Data2DFormat>
 	<!--Data2DFormat>SplineField<Data2DFormat-->
 	
 	<!-- -->

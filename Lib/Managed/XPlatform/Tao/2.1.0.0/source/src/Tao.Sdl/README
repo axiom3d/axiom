@@ -1,0 +1,19 @@
+Tao.Sdl 1.2.12.0
+Copyright ©2003-2005 Tao Framework Team
+http://www.taoframework.com
+All rights reserved.
+
+Tao.Sdl is an SDL API binding for .NET, implementing SDL 1.2.12.
+
+Change Log:
+1.2.13.0 - January 2008:
+	Updated to latest version of SDL.
+1.2.12.0 - August 2007:
+	Updated to latest version of SDL.
+1.2.11 - June 2006:
+    Updated to latest version of SDL.
+1.2.10.0 - June 15, 2006:
+    Updated to latest version of SDL.
+1.2.7.0 - April 20, 2004:
+    Initial release.  Special thanks to Dave Hudson for doing most of this
+    implementation.

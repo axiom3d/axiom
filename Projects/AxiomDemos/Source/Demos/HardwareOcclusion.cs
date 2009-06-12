@@ -99,11 +99,11 @@ namespace Axiom.Demos
             // report the results
             if ( count == 0 )
             {
-                window.DebugText = "Object is occluded.";
+                debugText = "Object is occluded.";
             }
             else
             {
-                window.DebugText = string.Format( "Visible fragments = {0}", count );
+                debugText = string.Format( "Visible fragments = {0}", count );
             }
 
             return false;

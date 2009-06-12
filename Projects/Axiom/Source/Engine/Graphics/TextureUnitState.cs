@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -85,6 +86,10 @@ namespace Axiom.Graphics
         /// </summary>
         private TextureAddressing texAddressingMode;
         /// <summary>
+        ///    Border color to use when texture addressing mode is set to Border
+        /// </summary>
+        private ColorEx texBorderColor = ColorEx.Black;
+        /// <summary>
         ///    Reference to a class containing the color blending operation params for this stage.
         /// </summary>
         private LayerBlendModeEx colorBlendMode = new LayerBlendModeEx();
@@ -128,6 +133,14 @@ namespace Axiom.Graphics
         ///    Store names of textures for animation frames.
         /// </summary>
         private string[] frames = new string[ MaxAnimationFrames ];
+        /// <summary>
+        ///     Optional name for the texture unit state
+        /// </summary>
+        private string name;
+        /// <summary>
+        ///     Optional alias for texture frames
+        /// </summary>
+        private string textureNameAlias;
         /// <summary>
         ///    Flag the determines if a recalc of the texture matrix is required, usually set after a rotate or
         ///    other transformations.
@@ -173,6 +186,8 @@ namespace Axiom.Graphics
         ///    Type of texture this is.
         /// </summary>
         private TextureType textureType;
+        private int textureSrcMipmaps;
+        private bool isAlpha;
         /// <summary>
         ///    Texture filtering - minification.
         /// </summary>
@@ -208,7 +223,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///     Reference to an animation controller for this texture unit.
         /// </summary>
-        private Controller animController;
+        private Controller<float> animController;
 
         /// <summary>
         ///     Reference to the environment mapping type for this texunit.
@@ -366,10 +381,8 @@ namespace Axiom.Graphics
             get
             {
                 // TODO: Optimize this to hopefully eliminate the search every time
-                for ( int i = 0; i < effectList.Count; i++ )
+                foreach ( TextureEffect effect in effectList )
                 {
-                    TextureEffect effect = (TextureEffect)effectList[ i ];
-
                     if ( effect.subtype == (System.Enum)EnvironmentMap.Reflection )
                     {
                         return true;
@@ -456,6 +469,38 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
+        ///    Get/Set the name of this texture unit state
+        /// </summary>
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
+            set
+            {
+                name = value;
+                if ( textureNameAlias == null )
+                    textureNameAlias = name;
+            }
+        }
+
+        /// <summary>
+        ///    Get/Set the alias for this texture unit state.
+        /// </summary>
+        public string TextureNameAlias
+        {
+            get
+            {
+                return textureNameAlias;
+            }
+            set
+            {
+                textureNameAlias = value;
+            }
+        }
+
+        /// <summary>
         ///		Gets/Sets the texture coordinate set to be used by this texture layer.
         /// </summary>
         /// <remarks>
@@ -496,6 +541,22 @@ namespace Axiom.Graphics
         }
 
         /// <summary>
+        ///    Gets/Sets the texture border color, which is used to fill outside the 0-1 range of
+        ///    texture coordinates when the texture addressing mode is set to Border.
+        /// </summary>
+        public ColorEx TextureBorderColor
+        {
+            get
+            {
+                return texBorderColor;
+            }
+            set
+            {
+                texBorderColor = value;
+            }
+        }
+
+        /// <summary>
         ///    Gets/Sets the multipass fallback for color blending operation source factor.
         /// </summary>
         public SceneBlendFactor ColorBlendFallbackSource
@@ -525,6 +586,10 @@ namespace Axiom.Graphics
             get
             {
                 return colorOp;
+            }
+            set
+            {
+                this.SetColorOperation( value );
             }
         }
 
@@ -898,12 +963,12 @@ namespace Axiom.Graphics
         ///    Set to true if you want a single 3D texture addressable with 3D texture coordinates rather than
         ///    6 separate textures. Useful for cubic environment mapping.
         /// </param>
-        public void SetCubicTexture( string textureName, bool forUVW )
+        public void SetCubicTextureName( string textureName, bool forUVW )
         {
             if ( forUVW )
             {
                 // pass in the single texture name
-                SetCubicTexture( new string[] { textureName }, forUVW );
+                SetCubicTextureName( new string[] { textureName }, forUVW );
             }
             else
             {
@@ -922,7 +987,7 @@ namespace Axiom.Graphics
                     fullNames[ i ] = baseName + postfixes[ i ] + ext;
                 }
 
-                SetCubicTexture( fullNames, forUVW );
+                SetCubicTextureName( fullNames, forUVW );
             }
         }
 
@@ -975,7 +1040,7 @@ namespace Axiom.Graphics
         ///    Set to true if you want a single 3D texture addressable with 3D texture coordinates rather than
         ///    6 separate textures. Useful for cubic environment mapping.
         /// </param>
-        public void SetCubicTexture( string[] textureNames, bool forUVW )
+        public void SetCubicTextureName( string[] textureNames, bool forUVW )
         {
             numFrames = forUVW ? 1 : 6;
             currentFrame = 0;
@@ -1635,12 +1700,12 @@ namespace Axiom.Graphics
         /// </remarks>
         /// <param name="name">Name of the texture.</param>
         /// <param name="type">Type of texture this is.</param>
-        public void SetTextureName( string name, TextureType type )
+        public void SetTextureName( string name, TextureType type, int mipmaps, bool alpha )
         {
             if ( type == TextureType.CubeMap )
             {
                 // delegate to cube texture implementation
-                SetCubicTexture( name, true );
+                SetCubicTextureName( name, true );
             }
             else
             {
@@ -1649,6 +1714,8 @@ namespace Axiom.Graphics
                 currentFrame = 0;
                 isCubic = false;
                 textureType = type;
+                textureSrcMipmaps = mipmaps;
+                isAlpha = alpha;
 
                 if ( name.Length == 0 )
                 {
@@ -1658,12 +1725,10 @@ namespace Axiom.Graphics
 
                 if ( this.IsLoaded )
                 {
-                    // reload
-                    Load();
-
-                    // tell parent to recalc hash (for sorting)
-                    parent.DirtyHash();
+                    Load(); // reload
                 }
+                // Tell parent to recalculate hash (for sorting)
+                parent.DirtyHash();
             }
         }
 
@@ -1677,6 +1742,14 @@ namespace Axiom.Graphics
         public void SetTextureName( string name )
         {
             SetTextureName( name, TextureType.TwoD );
+        }
+        public void SetTextureName( string name, TextureType type )
+        {
+            SetTextureName( name, type, -1 );
+        }		/// <summary>
+        public void SetTextureName( string name, TextureType type, int mipmaps )
+        {
+            SetTextureName( name, type, mipmaps, false );
         }
 
         /// <summary>
@@ -1703,7 +1776,7 @@ namespace Axiom.Graphics
             Matrix3 xform = Matrix3.Identity;
 
             // texture scaling
-            if ( scaleU != 0 || scaleV != 0 )
+            if ( scaleU != 1 || scaleV != 1 )
             {
                 // offset to the center of the texture
                 xform.m00 = 1 / scaleU;
@@ -1741,17 +1814,17 @@ namespace Axiom.Graphics
                 rotation.m11 = cosTheta;
 
                 // offset the center of rotation to the center of the texture
-                float cosThetaOff = cosTheta * -0.5f;
-                float sinThetaOff = sinTheta * -0.5f;
                 rotation.m02 = 0.5f + ( ( -0.5f * cosTheta ) - ( -0.5f * sinTheta ) );
                 rotation.m12 = 0.5f + ( ( -0.5f * sinTheta ) + ( -0.5f * cosTheta ) );
 
                 // multiply the rotation and transformation matrices
-                xform = xform * rotation;
+                xform = rotation * xform;
             }
 
             // store the transformation into the local texture matrix
             texMatrix = xform;
+
+            recalcTexMatrix = false;
         }
 
         /// <summary>
@@ -1772,17 +1845,17 @@ namespace Axiom.Graphics
 
             // these effects must be unique, so remove any existing
             if ( effect.type == TextureEffectType.EnvironmentMap ||
-                effect.type == TextureEffectType.Scroll ||
-                effect.type == TextureEffectType.Rotate ||
-                effect.type == TextureEffectType.ProjectiveTexture )
+                 effect.type == TextureEffectType.Scroll ||
+                 effect.type == TextureEffectType.Rotate ||
+                 effect.type == TextureEffectType.ProjectiveTexture )
             {
 
-                for ( int i = 0; i < effectList.Count; i++ )
-                {
-                    if ( ( (TextureEffect)effectList[ i ] ).type == effect.type )
-                    {
-                        effectList.RemoveAt( i );
-                        break;
+				for ( int i = 0; i < effectList.Count; i++ )
+				{
+					if ( ( (TextureEffect)effectList[ i ] ).type == effect.type )
+					{
+						effectList.RemoveAt( i );
+						break;
                     }
                 } // for
             }
@@ -1802,13 +1875,14 @@ namespace Axiom.Graphics
         private void RemoveEffect( TextureEffectType type )
         {
             // TODO: Verify this works correctly since we are removing items during a loop
-            for ( int i = 0; i < effectList.Count; i++ )
-            {
-                if ( ( (TextureEffect)effectList[ i ] ).type == type )
-                {
-                    effectList.RemoveAt( i );
-                }
+			for ( int i = 0; i < effectList.Count; i++ )
+			{
+				if ( ( (TextureEffect)effectList[ i ] ).type == type )
+				{
+					effectList.RemoveAt( i );
+				}
             }
+
         }
 
         /// <summary>
@@ -1861,6 +1935,9 @@ namespace Axiom.Graphics
         /// </summary>
         public void Load()
         {
+            // Unload first
+            Unload();
+
             // load all textures
             for ( int i = 0; i < numFrames; i++ )
             {
@@ -1869,7 +1946,7 @@ namespace Axiom.Graphics
                     try
                     {
                         // ensure the texture is loaded
-                        TextureManager.Instance.Load( frames[ i ], textureType );
+                        TextureManager.Instance.Load( frames[ i ], ResourceGroupManager.DefaultResourceGroupName, textureType, textureSrcMipmaps, 1.0f, this.isAlpha );
 
                         isBlank = false;
                     }
@@ -1889,9 +1966,8 @@ namespace Axiom.Graphics
             }
 
             // initialize texture effects
-            for ( int i = 0; i < effectList.Count; i++ )
+            foreach ( TextureEffect effect in effectList )
             {
-                TextureEffect effect = (TextureEffect)effectList[ i ];
                 CreateEffectController( effect );
             }
         }
@@ -1912,6 +1988,40 @@ namespace Axiom.Graphics
             parent.NotifyNeedsRecompile();
         }
 
+        public bool ApplyTextureAliases( Dictionary<string, string> aliasList, bool apply )
+        {
+            bool testResult = false;
+            // if TUS has an alias, see if it's in the alias container
+            if ( textureNameAlias.Length > 0 )
+            {
+                if ( aliasList.ContainsKey( textureNameAlias ) )
+                {
+                    // match was found so change the texture name in frames
+                    testResult = true;
+
+                    if ( apply )
+                    {
+                        // currently assumes animated frames are sequentially numbered
+                        // cubic, 1d, 2d, and 3d textures are determined from current TUS state
+
+                        if ( this.isCubic )
+                        {
+                            SetCubicTextureName( aliasList[ textureNameAlias ], textureType == TextureType.CubeMap );
+                        }
+                        else
+                        {
+                            // if more than one frame, then assume animated frames
+                            if ( numFrames > 1 )
+                                SetAnimatedTextureName( aliasList[ textureNameAlias ], numFrames, animDuration );
+                            else
+                                SetTextureName( aliasList[ textureNameAlias ], textureType, textureSrcMipmaps );
+                        }
+                    }
+                }
+            }
+            return testResult;
+        }
+
         #endregion
 
         #region Object cloning
@@ -1924,6 +2034,9 @@ namespace Axiom.Graphics
         {
             FieldInfo[] props = target.GetType().GetFields( BindingFlags.NonPublic | BindingFlags.Instance );
 
+            // save parent from target, since it will be overwritten by the following loop
+            Pass tmpParent = target.parent;
+
             for ( int i = 0; i < props.Length; i++ )
             {
                 FieldInfo prop = props[ i ];
@@ -1931,6 +2044,9 @@ namespace Axiom.Graphics
                 object srcVal = prop.GetValue( this );
                 prop.SetValue( target, srcVal );
             }
+
+            // restore correct parent
+            target.parent = tmpParent;
 
             target.frames = new string[ MaxAnimationFrames ];
 
@@ -1947,9 +2063,8 @@ namespace Axiom.Graphics
             target.effectList = new TextureEffectList();
 
             // copy effects
-            for ( int i = 0; i < effectList.Count; i++ )
+            foreach ( TextureEffect effect in effectList )
             {
-                TextureEffect effect = (TextureEffect)effectList[ i ];
                 target.effectList.Add( effect.Clone() );
             }
 
@@ -2135,7 +2250,7 @@ namespace Axiom.Graphics
         public float frequency;
         public float phase;
         public float amplitude;
-        public Controller controller;
+        public Controller<float> controller;
         public Frustum frustum;
 
         /// <summary>

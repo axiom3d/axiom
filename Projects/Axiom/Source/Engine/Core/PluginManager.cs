@@ -40,125 +40,124 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Xml;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
-    /// <summary>
-    /// Summary description for PluginManager.
-    /// </summary>
-    public class PluginManager : IDisposable
-    {
-        #region Singleton implementation
+	/// <summary>
+	/// Summary description for PluginManager.
+	/// </summary>
+	public class PluginManager : IDisposable
+	{
+		#region Singleton implementation
 
-        /// <summary>
-        ///     Singleton instance of this class.
-        /// </summary>
-        private static PluginManager instance;
+		/// <summary>
+		///     Singleton instance of this class.
+		/// </summary>
+		private static PluginManager instance;
 
-        /// <summary>
-        ///     Internal constructor.  This class cannot be instantiated externally.
-        /// </summary>
-        internal PluginManager()
-        {
-            if ( instance == null )
-            {
-                instance = this;
-            }
-        }
+		/// <summary>
+		///     Internal constructor.  This class cannot be instantiated externally.
+		/// </summary>
+		internal PluginManager()
+		{
+			if ( instance == null )
+			{
+				instance = this;
+			}
+		}
 
-        /// <summary>
-        ///     Gets the singleton instance of this class.
-        /// </summary>
-        public static PluginManager Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
+		/// <summary>
+		///     Gets the singleton instance of this class.
+		/// </summary>
+		public static PluginManager Instance
+		{
+			get
+			{
+				return instance;
+			}
+		}
 
-        #endregion Singleton implementation
+		#endregion Singleton implementation
 
-        #region Fields
+		#region Fields
 
-        /// <summary>
-        ///		List of loaded plugins.
-        /// </summary>
-        private ArrayList plugins = new ArrayList();
+		/// <summary>
+		///		List of loaded plugins.
+		/// </summary>
+		private List<IPlugin> _plugins = new List<IPlugin>();
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Methods
+		#region Methods
 
-        /// <summary>
-        ///		Loads all plugins specified in the plugins section of the app.config file.
-        /// </summary>
-        public void LoadAll()
-        {
-            // TODO: Make optional, using scanning again in the meantime
-            // trigger load of the plugins app.config section
-            //ArrayList newPlugins = (ArrayList)ConfigurationSettings.GetConfig("plugins");
-            ArrayList newPlugins = ScanForPlugins();
+		/// <summary>
+		///		Loads all plugins specified in the plugins section of the app.config file.
+		/// </summary>
+		public void LoadAll()
+		{
+            IList<ObjectCreator> newPlugins = ScanForPlugins();
 
             foreach ( ObjectCreator pluginCreator in newPlugins )
-            {
+			{
                 IPlugin plugin = LoadPlugin( pluginCreator );
                 if ( plugin != null )
                 {
-                    plugins.Add( plugin );
+                    _plugins.Add( plugin );
                 }
             }
         }
 
-        /// <summary>
-        ///		Scans for plugin files in the current directory.
-        /// </summary>
-        /// <returns></returns>
-        protected ArrayList ScanForPlugins()
-        {
-            ArrayList plugins = new ArrayList();
+		/// <summary>
+		///		Scans for plugin files in the current directory.
+		/// </summary>
+		/// <returns></returns>
+        protected IList<ObjectCreator> ScanForPlugins()
+		{
+		    string[] files = Directory.GetFiles( ".", "*.dll" );
+		    Assembly assembly = null;
+            List<ObjectCreator> pluginFactories = new List<ObjectCreator>();
 
-            string[] files = Directory.GetFiles( ".", "*.dll" );
+		    foreach ( string file in files )
+		    {
+		        // TODO: allow exlusions in the app.config
+		        if ( file != Assembly.GetExecutingAssembly().GetName().Name + ".dll" )
+		        {
+                    string fullPath = Path.GetFullPath(file);
 
-            foreach ( string file in files )
-            {
-                // TODO: allow exlusions in the app.config
-                if ( file != Assembly.GetExecutingAssembly().GetName().Name + ".dll" && file.IndexOf( "Axiom." ) != -1 )
-                {
-                    string fullPath = Path.GetFullPath( file );
+		            DynamicLoader loader = new DynamicLoader( fullPath );
 
-					DynamicLoader loader = new DynamicLoader( fullPath );
+		            foreach ( ObjectCreator factory in loader.Find( typeof ( IPlugin ) ) )
+		            {
+		                pluginFactories.Add( factory );
+		            }
 
-                    foreach ( ObjectCreator factory in loader.Find( typeof( IPlugin ) ) )
-                    {
-                        plugins.Add( factory );
-                    }
-                }
-            }
+		        }
 
-            return plugins;
+		    }
+            return pluginFactories;
         }
 
-        /// <summary>
-        ///		Unloads all currently loaded plugins.
-        /// </summary>
-        public void UnloadAll()
-        {
-            // loop through and stop all loaded plugins
-            for ( int i = 0; i < plugins.Count; i++ )
-            {
-                IPlugin plugin = (IPlugin)plugins[ i ];
+	    /// <summary>
+		///		Unloads all currently loaded plugins.
+		/// </summary>
+		public void UnloadAll()
+		{
+			// loop through and stop all loaded plugins
+			for ( int i = _plugins.Count - 1; i >= 0; i-- )
+			{
+				IPlugin plugin = (IPlugin)_plugins[ i ];
 
                 LogManager.Instance.Write( "Unloading plugin: {0}", GetAssemblyTitle( plugin.GetType() ) );
 
-                plugin.Stop();
-            }
+				plugin.Stop();
+			}
 
-            // clear the plugin list
-            plugins.Clear();
-        }
+			// clear the plugin list
+			_plugins.Clear();
+		}
 
         public static string GetAssemblyTitle(Type type)
         {
@@ -169,7 +168,6 @@ namespace Axiom.Core
                 return assembly.GetName().Name;
             return title.Title;
         }
-
 
         /// <summary>
         ///		Loads a plugin of the given class name from the given assembly, and calls Start() on it.
@@ -200,45 +198,21 @@ namespace Axiom.Core
             return null;
         }
 
-        /// <summary>
-        ///		Loads a plugin of the given class name from the given assembly, and calls Start() on it.
-        ///		This function does NOT add the plugin to the PluginManager's
-        ///		list of plugins.
-        /// </summary>
-        /// <param name="assemblyName">The assembly filename ("xxx.dll")</param>
-        /// <param name="className">The class ("MyNamespace.PluginClassname") that implemented IPlugin.</param>
-        /// <returns>The loaded plugin.</returns>
-        public bool LoadPlugin(IPlugin plugin)
-        {
-            try
-            {
-                plugin.Start();
+		#endregion Methods
 
-                LogManager.Instance.Write("Loaded plugin {0} from {1}", plugin, GetAssemblyTitle(plugin.GetType()));
-                return true;
-            }
-            catch (Exception ex)
-            {
-                LogManager.Instance.Write(ex.ToString());
-                return false;
-            }
-        }
+		#region IDisposable Implementation
 
-        #endregion Methods
+		public void Dispose()
+		{
+			if ( instance != null )
+			{
+				instance = null;
 
-        #region IDisposable Implementation
+				UnloadAll();
+			}
+		}
 
-        public void Dispose()
-        {
-            if ( instance != null )
-            {
-                instance = null;
-
-                UnloadAll();
-            }
-        }
-
-        #endregion IDiposable Implementation
-    }
+		#endregion IDiposable Implementation
+	}
 
 }

@@ -40,26 +40,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Math.Collections
 {
-    public class PlaneList : ArrayList
-    {
-        public void Add( Plane plane )
-        {
-            base.Add( plane );
-        }
-    }
+    public class PlaneList : List<Plane> { }
 
-    public class PlaneBoundedVolumeList : ArrayList
-    {
-        public void Add( PlaneBoundedVolume volume )
-        {
-            base.Add( volume );
-        }
-    }
+    public class PlaneBoundedVolumeList : List<PlaneBoundedVolume> { }
 }

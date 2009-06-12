@@ -89,7 +89,7 @@ namespace Axiom.SceneManagers.Octree
         public OctreeCamera( string name, SceneManager scene )
             : base( name, scene )
         {
-            material = MaterialManager.Instance.GetByName( "BaseWhite" );
+            _material = (Material)MaterialManager.Instance.GetByName( "BaseWhite" );
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace Axiom.SceneManagers.Octree
 
                 for ( int corner = 0; corner < 8; corner++ )
                 {
-                    distance = planes[ plane ].GetDistance( boxCorners[ corners[ corner ] ] );
+                    distance = _planes[ plane ].GetDistance( boxCorners[ corners[ corner ] ] );
                     AllOutside = AllOutside && ( distance < 0 );
                     AllInside = AllInside && ( distance >= 0 );
 
@@ -186,9 +186,9 @@ namespace Axiom.SceneManagers.Octree
         /// <returns></returns>
         private Vector3 GetCorner( FrustumPlane pp1, FrustumPlane pp2, FrustumPlane pp3 )
         {
-            Plane p1 = planes[ (int)pp1 ];
-            Plane p2 = planes[ (int)pp1 ];
-            Plane p3 = planes[ (int)pp1 ];
+            Plane p1 = _planes[ (int)pp1 ];
+            Plane p2 = _planes[ (int)pp1 ];
+            Plane p3 = _planes[ (int)pp1 ];
 
             Matrix3 mdet;
 

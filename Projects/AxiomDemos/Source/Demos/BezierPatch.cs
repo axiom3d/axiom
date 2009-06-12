@@ -5,9 +5,10 @@ using System;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
+using System.Runtime.InteropServices;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.Demos
 {
     public class BezierPatch : TechDemo
@@ -20,6 +21,10 @@ namespace Axiom.Demos
         private bool isWireframe;
         private PatchMesh patch;
         private Entity patchEntity;
+        private Pass patchPass;
+
+        private GCHandle _handle;
+
         #endregion Private Fields
 
         #region Private Structs
@@ -139,17 +144,19 @@ namespace Axiom.Demos
             patchVertices[ 8 ].U = 1;
             patchVertices[ 8 ].V = 1;
 
-            patch = MeshManager.Instance.CreateBezierPatch( "Bezier1", patchVertices, patchDeclaration, 3, 3, 5, 5, VisibleSide.Both, BufferUsage.StaticWriteOnly, BufferUsage.DynamicWriteOnly, true, true );
+            patch = MeshManager.Instance.CreateBezierPatch( "Bezier1", ResourceGroupManager.DefaultResourceGroupName, patchVertices, patchDeclaration, 3, 3, 5, 5, VisibleSide.Both, BufferUsage.StaticWriteOnly, BufferUsage.DynamicWriteOnly, true, true );
 
             // Start patch a 0 detail
-            patch.SetSubdivision( 0 );
+            patch.Subdivision = 0;
 
             // Create entity based on patch
+
             patchEntity = scene.CreateEntity( "Entity1", "Bezier1" );
 
-            Material material = (Material)MaterialManager.Instance.Create( "TextMat" );
+			Material material = (Material)MaterialManager.Instance.Create( "TextMat", ResourceGroupManager.DefaultResourceGroupName, null );
             material.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( "BumpyMetal.jpg" );
             patchEntity.MaterialName = "TextMat";
+            patchPass = material.GetTechnique(0).GetPass(0);
 
             // Attach the entity to the root of the scene
             scene.RootSceneNode.AttachObject( patchEntity );
@@ -163,7 +170,7 @@ namespace Axiom.Demos
         #region bool OnFrameStarted(Object source, FrameEventArgs e)
 
         // Event handler to add ability to alter subdivision
-        protected override void OnFrameStarted( Object source, FrameEventArgs e )
+        protected override bool OnFrameStarted( Object source, FrameEventArgs e )
         {
             timeLapse += e.TimeSinceLastFrame;
 
@@ -175,17 +182,17 @@ namespace Axiom.Demos
                 if ( factor > 1.0f )
                 {
                     isWireframe = !isWireframe;
-                    patchEntity.RenderDetail = ( isWireframe ? SceneDetailLevel.Wireframe : SceneDetailLevel.Solid );
+                    patchPass.PolygonMode = ( isWireframe ? PolygonMode.Wireframe : PolygonMode.Solid );
                     factor = 0.0f;
                 }
 
-                patch.SetSubdivision( factor );
-                window.DebugText = "Bezier subdivision factor: " + factor;
+                patch.Subdivision = factor;
+                debugText = "Bezier subdivision factor: " + factor;
                 timeLapse = 0.0f;
             }
 
             // Call default
-            base.OnFrameStarted( source, e );
+            return base.OnFrameStarted( source, e );
         }
 
         #endregion bool OnFrameStarted(Object source, FrameEventArgs e)

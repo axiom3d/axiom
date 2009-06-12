@@ -86,17 +86,28 @@ namespace Axiom.SceneManagers.PagingLandscape.Texture
                         textures[i][j] = new Texture_Image();
                     }
 				}
-			} else if ( Options.Instance.TextureFormat == "Splatting5" )
+			} 
+            else if ( Options.Instance.TextureFormat == "Splatting" )
 			{
 				for ( j = 0; j < h; j++ )
 				{
 					for ( i = 0; i < w; i++ )
 					{
-						textures[i][j] = new Texture_Splatting5();
+						textures[i][j] = new Texture_Splatting();
 					}
 				}
 			}
-		}
+            else if (Options.Instance.TextureFormat == "Splatting5")
+            {
+                for (j = 0; j < h; j++)
+                {
+                    for (i = 0; i < w; i++)
+                    {
+                        textures[i][j] = new Texture_Splatting5();
+                    }
+                }
+            }
+        }
 
 
 		private static TextureManager instance = null;

@@ -65,7 +65,7 @@ namespace Axiom.Scripting
 
             for ( int i = start; i < end; i++ )
             {
-                sb.AppendFormat( "{0} ", items[ i ] );
+				sb.AppendFormat( System.Globalization.CultureInfo.CurrentCulture, "{0} ", items[ i ] );
             }
 
             return sb.ToString( 0, sb.Length - 1 );

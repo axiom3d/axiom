@@ -1,0 +1,116 @@
+<?xml version="1.0" ?>
+<project name="Tao.OpenGl" default="build">
+    <echo message="Using '${nant.settings.currentframework}' Framework"/>
+
+    <property name="bin.dir" value="bin" />
+    <property name="obj.dir" value="obj" />
+    <property name="doc.dir" value="doc" />
+    <property name="project.main.dir" value="${project::get-base-directory()}" />
+
+    <target name="Debug" description="">
+        <property name="project.config" value="Debug" />
+        <property name="build.debug" value="true" />
+    </target>
+
+    <property name="project.config" value="Release" />
+
+    <target name="Release" description="">
+        <property name="project.config" value="Release" />
+        <property name="build.debug" value="false" />
+    </target>
+
+    <target name="net-1.1" description="Sets framework to .NET 1.1">
+        <property name="nant.settings.currentframework" value="net-1.1" />
+    </target>
+
+    <target name="net-2.0" description="Sets framework to .NET 2.0">
+        <property name="nant.settings.currentframework" value="net-2.0" />
+    </target>
+
+    <target name="mono-2.0" description="Sets framework to mono 2.0">
+        <property name="nant.settings.currentframework" value="mono-2.0" />
+    </target>
+
+    <target name="mono-1.0" description="Sets framework to mono 1.0">
+        <property name="nant.settings.currentframework" value="mono-1.0" />
+    </target>
+
+    <target name="init" description="">
+        <call target="${project.config}" />
+        <sysinfo failonerror="false" />
+        <echo message="Platform ${sys.os.platform}" />
+        <property name="build.dir" value="${bin.dir}/${project.config}" />
+    </target>
+
+    <target name="clean" description="">
+        <echo message="Deleting all builds from all configurations" />
+        <delete dir="${bin.dir}" failonerror="false" />
+        <delete dir="${obj.dir}" failonerror="false" />
+        <nant buildfile="../Tao.OpenAl/Tao.OpenAl.dll.build" target="clean" />
+        <nant buildfile="../../examples/Redbook/Redbook.exe.build" target="clean" />
+        <nant buildfile="../Tao.Glfw/Tao.Glfw.dll.build" target="clean" />
+        <nant buildfile="../Tao.Cg/Tao.Cg.dll.build" target="clean" />
+        <nant buildfile="../../examples/OpenAlExamples/OpenAlExamples.exe.build" target="clean" />
+        <nant buildfile="../../examples/FreeGlutExamples/FreeGlutExamples.exe.build" target="clean" />
+        <nant buildfile="../Tao.Platform.Windows/Tao.Platform.Windows.dll.build" target="clean" />
+        <nant buildfile="../../examples/NateRobins/NateRobins.exe.build" target="clean" />
+        <nant buildfile="../Tao.FreeGlut/Tao.FreeGlut.dll.build" target="clean" />
+        <nant buildfile="../../examples/GlfwExamples/GlfwExamples.exe.build" target="clean" />
+        <nant buildfile="../../examples/CgExamples/CgExamples.exe.build" target="clean" />
+        <nant buildfile="../Tao.Platform.X11/Tao.Platform.X11.dll.build" target="clean" />
+        <nant buildfile="../../examples/NeHe/NeHe.exe.build" target="clean" />
+        <nant buildfile="./Tao.OpenGl.dll.build" target="clean" />
+        <nant buildfile="../../examples/GeWangExamples/GeWangExamples.exe.build" target="clean" />
+    </target>
+
+    <target name="build" depends="init" description="">
+        <nant buildfile="../Tao.Cg/Tao.Cg.dll.build" target="build" />
+        <nant buildfile="../Tao.OpenAl/Tao.OpenAl.dll.build" target="build" />
+        <nant buildfile="./Tao.OpenGl.dll.build" target="build" />
+        <nant buildfile="../Tao.FreeGlut/Tao.FreeGlut.dll.build" target="build" />
+        <nant buildfile="../Tao.Glfw/Tao.Glfw.dll.build" target="build" />
+        <nant buildfile="../Tao.Platform.Windows/Tao.Platform.Windows.dll.build" target="build" />
+        <nant buildfile="../Tao.Platform.X11/Tao.Platform.X11.dll.build" target="build" />
+        <nant buildfile="../../examples/FreeGlutExamples/FreeGlutExamples.exe.build" target="build" />
+        <nant buildfile="../../examples/GeWangExamples/GeWangExamples.exe.build" target="build" />
+        <nant buildfile="../../examples/GlfwExamples/GlfwExamples.exe.build" target="build" />
+        <nant buildfile="../../examples/NateRobins/NateRobins.exe.build" target="build" />
+        <nant buildfile="../../examples/NeHe/NeHe.exe.build" target="build" />
+        <nant buildfile="../../examples/Redbook/Redbook.exe.build" target="build" />
+        <nant buildfile="../../examples/OpenAlExamples/OpenAlExamples.exe.build" target="build" />
+        <nant buildfile="../../examples/CgExamples/CgExamples.exe.build" target="build" />
+    </target>
+
+    <target name="build-release" depends="Release, init, build" description="Builds in Release mode" />
+
+    <target name="build-debug" depends="Debug, init, build" description="Builds in Debug mode" />
+
+    <target name="package" depends="clean, doc" description="Builds all" />
+
+    <target name="install" depends="Release, init" description="Installs assemblies into GAC">
+      <nant buildfile="Tao.OpenGl.dll.build" target="install" />
+      <nant if="${platform::is-unix()}" buildfile="../Tao.Platform.X11/Tao.Platform.X11.dll.build" target="install" />
+      <nant buildfile="../Tao.FreeGlut/Tao.FreeGlut.dll.build" target="install" />
+      <nant buildfile="../Tao.OpenAl/Tao.OpenAl.dll.build" target="install" />
+    </target>
+
+    <target name="doc" depends="build-release">
+        <echo message="Generating all documentation from all builds" />
+        <nant buildfile="../Tao.OpenAl/Tao.OpenAl.dll.build" target="doc" />
+	<!-- <nant buildfile="../../examples/Redbook/Redbook.exe.build" target="doc" /> -->
+        <nant buildfile="../Tao.Glfw/Tao.Glfw.dll.build" target="doc" />
+        <nant buildfile="../Tao.Cg/Tao.Cg.dll.build" target="doc" />
+        <!-- <nant buildfile="../../examples/OpenAlExamples/OpenAlExamples.exe.build" target="doc" /> -->
+        <!-- <nant buildfile="../../examples/FreeGlutExamples/FreeGlutExamples.exe.build" target="doc" /> -->
+        <nant buildfile="../Tao.Platform.Windows/Tao.Platform.Windows.dll.build" target="doc" />
+        <!-- <nant buildfile="../../examples/NateRobins/NateRobins.exe.build" target="doc" /> -->
+        <nant buildfile="../Tao.FreeGlut/Tao.FreeGlut.dll.build" target="doc" />
+        <!-- <nant buildfile="../../examples/GlfwExamples/GlfwExamples.exe.build" target="doc" /> -->
+        <!-- <nant buildfile="../../examples/CgExamples/CgExamples.exe.build" target="doc" /> -->
+        <nant buildfile="../Tao.Platform.X11/Tao.Platform.X11.dll.build" target="doc" />
+        <!-- <nant buildfile="../../examples/NeHe/NeHe.exe.build" target="doc" /> -->
+        <!-- <nant buildfile="./Tao.OpenGl.dll.build" target="doc" /> -->
+        <!-- <nant buildfile="../../examples/GeWangExamples/GeWangExamples.exe.build" target="doc" /> -->
+    </target>
+
+</project>

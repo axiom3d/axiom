@@ -34,14 +34,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 using System;
 using System.Collections.Generic;
+
 using Axiom.Core;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Collections
 {
-	/// <summary>
-	/// Summary for NewClass
-	/// </summary>
+    /// <summary>
+    /// Summary for NewClass
+    /// </summary>
 	public class NameValuePairList : Dictionary<string, string>
 	{
 		/// <summary>
@@ -51,5 +53,5 @@ namespace Axiom.Collections
 			: base( new CaseInsensitiveStringComparer() )
 		{
 		}
-	};
+    };
 }

@@ -115,7 +115,7 @@ namespace Axiom.Overlays
         protected int zOrder;
 
         // world transforms
-        protected Matrix4[] xform = new Matrix4[ 256 ];
+        protected Matrix4[] xform = new Matrix4[1] { Matrix4.Identity };
 
         protected bool isEnabled;
 
@@ -142,7 +142,6 @@ namespace Axiom.Overlays
             this.name = name;
             width = 1.0f;
             height = 1.0f;
-
             isVisible = true;
             isDerivedOutOfDate = true;
             isCloneable = true;
@@ -181,7 +180,7 @@ namespace Axiom.Overlays
                 // if the prop is not settable, then skip
                 if ( !prop.CanWrite || !prop.CanRead )
                 {
-                    Console.WriteLine( prop.Name );
+					LogManager.Instance.Write( prop.Name );
                     continue;
                 }
 
@@ -229,28 +228,41 @@ namespace Axiom.Overlays
         }
 
         /// <summary>
-        ///    Internal method to notify the element when Zorder of parent overlay
-        ///    has changed.
+        /// Internal method to notify the element when Zorder of parent overlay
+        /// has changed.
         /// </summary>
+        /// <param name="zOrder">The z order.</param>
         /// <remarks>
-        ///    Overlays have explicit Z orders. OverlayElements do not, they inherit the 
-        ///    ZOrder of the overlay, and the Zorder is incremented for every container
-        ///    nested within this to ensure that containers are displayed behind contained
-        ///    items. This method is used internally to notify the element of a change in
-        ///    final zorder which is used to render the element.
+        /// Overlays have explicit Z orders. OverlayElements do not, they inherit the
+        /// ZOrder of the overlay, and the Zorder is incremented for every container
+        /// nested within this to ensure that containers are displayed behind contained
+        /// items. This method is used internally to notify the element of a change in
+        /// final zorder which is used to render the element.
         /// </remarks>
-        /// <param name="zOrder"></param>
-        public virtual void NotifyZOrder( int zOrder )
+        /// <returns>
+        /// Return the next zordering number availble. For single elements, this
+        /// is simply zOrder + 1, but for containers, they increment it once for each
+        /// child (more if those children are also containers).
+        /// </returns>
+        public virtual int NotifyZOrder( int zOrder )
         {
             this.zOrder = zOrder;
+            return this.zOrder + 1;
         }
 
 
+        /// <summary>
+        /// Notifies the world transforms.
+        /// </summary>
+        /// <param name="xform">The xform.</param>
         public virtual void NotifyWorldTransforms( Matrix4[] xform )
         {
             this.xform = xform;
         }
 
+        /// <summary>
+        /// Notifies the viewport.
+        /// </summary>
         public virtual void NotifyViewport()
         {
             switch ( metricsMode )
@@ -262,8 +274,8 @@ namespace Axiom.Overlays
                         vpWidth = (float)( oMgr.ViewportWidth );
                         vpHeight = (float)( oMgr.ViewportHeight );
 
-                        pixelScaleX = (int)( 1.0 / vpWidth );
-                        pixelScaleY = (int)( 1.0 / vpHeight );
+                        pixelScaleX = 1.0f / vpWidth;
+                        pixelScaleY = 1.0f / vpHeight;
                     }
                     break;
 
@@ -274,8 +286,8 @@ namespace Axiom.Overlays
                         vpWidth = (float)( oMgr.ViewportWidth );
                         vpHeight = (float)( oMgr.ViewportHeight );
 
-                        pixelScaleX = (int)( 1.0 / ( 10000.0 * ( vpWidth / vpHeight ) ) );
-                        pixelScaleY = (int)( 1.0 / 10000.0 );
+                        pixelScaleX = 1.0f / ( 10000.0f * ( vpWidth / vpHeight ) );
+                        pixelScaleY = 1.0f / 10000.0f;
                     }
                     break;
 
@@ -321,24 +333,25 @@ namespace Axiom.Overlays
                 MethodInfo method = methods[ i ];
 
                 // see if the method should be used to parse one or more material attributes
-                AttributeParserAttribute[] parserAtts =
-                    (AttributeParserAttribute[])method.GetCustomAttributes( typeof( AttributeParserAttribute ), true );
+                ParserCommandAttribute[] parserAtts =
+                    (ParserCommandAttribute[])method.GetCustomAttributes( typeof( ParserCommandAttribute ), true );
 
                 // loop through each one we found and register its parser
                 for ( int j = 0; j < parserAtts.Length; j++ )
                 {
-                    AttributeParserAttribute parserAtt = parserAtts[ j ];
+                    ParserCommandAttribute parserAtt = parserAtts[ j ];
 
-                    attribParsers.Add( parserAtt.Name, Delegate.CreateDelegate( typeof( AttributeParserMethod ), null, method ) );
+                    //attribParsers.Add( parserAtt.Name, Delegate.CreateDelegate( typeof( AttributeParserMethod ), method. ) );
+                    attribParsers.Add(parserAtt.Name, method);
                 } // for
             } // for
         }
 
         /// <summary>
-        ///    
+        /// Sets the dimensions.
         /// </summary>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
+        /// <param name="width">The width.</param>
+        /// <param name="height">The height.</param>
         public void SetDimensions( float width, float height )
         {
             if ( metricsMode != MetricsMode.Relative )
@@ -369,20 +382,20 @@ namespace Axiom.Overlays
                 return false;
             }
 
-            AttributeParserMethod parser = (AttributeParserMethod)attribParsers[ param ];
-
+            //AttributeParserMethod parser = (AttributeParserMethod)attribParsers[ param ];
+            MethodInfo parser = (MethodInfo)attribParsers[param];
             // call the parser method, passing in an array of the split val param, and this element for the optional object
             // MONO: As of 1.0.5, complains if the second param is not explicitly passed as an object array
-            parser( val.Split( ' ' ), new object[] { this } );
-
+            //parser( val.Split( ' ' ), new object[] { this } );
+            parser.Invoke(null, new object[] { val.Split(' '), new object[] { this } });
             return true;
         }
 
         /// <summary>
-        ///    Sets the position of this element.
+        /// Sets the position of this element.
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="top"></param>
+        /// <param name="left">The left.</param>
+        /// <param name="top">The top.</param>
         public void SetPosition( float left, float top )
         {
             if ( metricsMode != MetricsMode.Relative )
@@ -436,7 +449,7 @@ namespace Axiom.Overlays
 
                 case MetricsMode.Relative_Aspect_Adjusted:
                     if ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate )
-                    {
+            {
                         float vpWidth, vpHeight;
                         OverlayManager oMgr = OverlayManager.Instance;
                         vpWidth = (float)( oMgr.ViewportWidth );
@@ -455,10 +468,10 @@ namespace Axiom.Overlays
                     break;
             }
 
+			// container subclasses will update children too
             UpdateFromParent();
-            // NB container subclasses will update children too
 
-            // Tell self to update own position geometry
+			// update our own position geometry
             if ( isGeomPositionsOutOfDate && isInitialised )
             {
                 UpdatePositionGeometry();
@@ -471,7 +484,7 @@ namespace Axiom.Overlays
                 UpdateTextureGeometry();
                 isGeomPositionsOutOfDate = false;
             }
-        }
+       }
 
         /// <summary>
         /// Internal method which is triggered when the UVs of the element get updated,
@@ -492,10 +505,10 @@ namespace Axiom.Overlays
         }
 
         /// <summary>
-        ///  Returns true if xy is within the constraints of the component
+        /// Returns true if xy is within the constraints of the component
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
         /// <returns></returns>
         public virtual OverlayElement FindElementAt( float x, float y )
         {
@@ -506,6 +519,7 @@ namespace Axiom.Overlays
             }
             return ret;
         }
+
         /// <summary>
         ///    Updates this elements transform based on it's parent.
         /// </summary>
@@ -594,7 +608,7 @@ namespace Axiom.Overlays
 
                 parentRect = parent.ClippingRegion;
 
-                Rectangle childRect = new Rectangle( (int)derivedLeft, (int)derivedTop, (int)width, (int)height );
+                Rectangle childRect = new Rectangle( (long)derivedLeft, (long)derivedTop, (long)width, (long)height );
                 //				child.Left   = derivedLeft;
                 //				child.Top    = derivedTop;
                 //				child.Right  = derivedLeft + width;
@@ -604,7 +618,7 @@ namespace Axiom.Overlays
             }
             else
             {
-                clippingRegion = new Rectangle( (int)derivedLeft, (int)derivedTop, (int)width, (int)height );
+                clippingRegion = new Rectangle( (long)derivedLeft, (long)derivedTop, (long)width, (long)height );
                 //				clippingRegion.Left   = derivedLeft;
                 //				clippingRegion.Top    = derivedTop;
                 //				clippingRegion.Right  = derivedLeft + width;
@@ -705,6 +719,7 @@ namespace Axiom.Overlays
             isDerivedOutOfDate = true;
             PositionsOutOfDate();
         }
+
         /// <summary>
         ///    Internal method which is triggered when the positions of the element get updated,
         ///    meaning the element should be rebuilding it's mesh positions. Abstract since
@@ -718,6 +733,7 @@ namespace Axiom.Overlays
         /// subclasses must implement this.
         /// </summary>
         protected abstract void UpdateTextureGeometry();
+
         /// <summary>
         ///    Internal method to put the contents onto the render queue.
         /// </summary>
@@ -743,6 +759,7 @@ namespace Axiom.Overlays
                 return this.sourceTemplate;
             }
         }
+
         /// <summary>
         ///    Sets the color on elements that support it.
         /// </summary>
@@ -902,6 +919,10 @@ namespace Axiom.Overlays
             {
                 return isVisible;
             }
+            set
+            {
+                isVisible = value;
+            }
         }
 
         /// <summary>
@@ -948,7 +969,7 @@ namespace Axiom.Overlays
             set
             {
                 materialName = value;
-                material = MaterialManager.Instance.GetByName( materialName );
+				material = (Material)MaterialManager.Instance[ materialName ];
 
                 if ( material == null )
                 {
@@ -1015,7 +1036,7 @@ namespace Axiom.Overlays
                             pixelScaleY = 1.0f / 10000.0f;
 
                             if ( metricsMode == MetricsMode.Relative )
-                            {
+                        {
                                 pixelLeft = left;
                                 pixelTop = top;
                                 pixelWidth = width;
@@ -1258,7 +1279,7 @@ namespace Axiom.Overlays
         /// 
         /// </summary>
         /// <param name="matrices"></param>
-        public void GetWorldTransforms( Matrix4[] matrices )
+		public void GetWorldTransforms( Matrix4[] matrices )
         {
             overlay.GetWorldTransforms( matrices );
         }
@@ -1309,16 +1330,14 @@ namespace Axiom.Overlays
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public SceneDetailLevel RenderDetail
+        public virtual bool PolygonModeOverrideable
         {
             get
             {
-                return SceneDetailLevel.Solid;
+                return false;
             }
         }
+
 
         /// <summary>
         ///    Implementation of IRenderable.
@@ -1389,7 +1408,7 @@ namespace Axiom.Overlays
 
         #region Script parser methods
 
-        [AttributeParser( "metrics_mode", "OverlayElement" )]
+        [ParserCommand( "metrics_mode", "OverlayElement" )]
         public static void ParseMetricsMode( string[] parms, params object[] objects )
         {
             OverlayElement element = (OverlayElement)objects[ 0 ];
@@ -1397,7 +1416,7 @@ namespace Axiom.Overlays
             element.MetricsMode = (MetricsMode)ScriptEnumAttribute.Lookup( parms[ 0 ], typeof( MetricsMode ) );
         }
 
-        [AttributeParser( "horz_align", "OverlayElement" )]
+        [ParserCommand( "horz_align", "OverlayElement" )]
         public static void ParseHorzAlign( string[] parms, params object[] objects )
         {
             OverlayElement element = (OverlayElement)objects[ 0 ];
@@ -1405,7 +1424,7 @@ namespace Axiom.Overlays
             element.HorizontalAlignment = (HorizontalAlignment)ScriptEnumAttribute.Lookup( parms[ 0 ], typeof( HorizontalAlignment ) );
         }
 
-        [AttributeParser( "vert_align", "OverlayElement" )]
+        [ParserCommand( "vert_align", "OverlayElement" )]
         public static void ParseVertAlign( string[] parms, params object[] objects )
         {
             OverlayElement element = (OverlayElement)objects[ 0 ];
@@ -1413,7 +1432,7 @@ namespace Axiom.Overlays
             element.VerticalAlignment = (VerticalAlignment)ScriptEnumAttribute.Lookup( parms[ 0 ], typeof( VerticalAlignment ) );
         }
 
-        [AttributeParser( "top", "OverlayElement" )]
+        [ParserCommand( "top", "OverlayElement" )]
         public static void ParseTop( string[] parms, params object[] objects )
         {
             OverlayElement element = (OverlayElement)objects[ 0 ];
@@ -1421,7 +1440,7 @@ namespace Axiom.Overlays
             element.Top = StringConverter.ParseFloat( parms[ 0 ] );
         }
 
-        [AttributeParser( "left", "OverlayElement" )]
+        [ParserCommand( "left", "OverlayElement" )]
         public static void ParseLeft( string[] parms, params object[] objects )
         {
             OverlayElement element = (OverlayElement)objects[ 0 ];
@@ -1429,7 +1448,7 @@ namespace Axiom.Overlays
             element.Left = StringConverter.ParseFloat( parms[ 0 ] );
         }
 
-        [AttributeParser( "width", "OverlayElement" )]
+        [ParserCommand( "width", "OverlayElement" )]
         public static void ParseWidth( string[] parms, params object[] objects )
         {
             OverlayElement element = (OverlayElement)objects[ 0 ];
@@ -1437,7 +1456,7 @@ namespace Axiom.Overlays
             element.Width = StringConverter.ParseFloat( parms[ 0 ] );
         }
 
-        [AttributeParser( "height", "OverlayElement" )]
+        [ParserCommand( "height", "OverlayElement" )]
         public static void ParseHeight( string[] parms, params object[] objects )
         {
             OverlayElement element = (OverlayElement)objects[ 0 ];
@@ -1445,7 +1464,15 @@ namespace Axiom.Overlays
             element.Height = StringConverter.ParseFloat( parms[ 0 ] );
         }
 
-        [AttributeParser( "caption", "OverlayElement" )]
+        [ParserCommand( "visible", "OverlayElement" )]
+        public static void ParseVisible( string[] parms, params object[] objects )
+        {
+            OverlayElement element = (OverlayElement)objects[ 0 ];
+
+            element.isVisible = StringConverter.ParseBool( parms[ 0 ] );
+        }
+
+        [ParserCommand( "caption", "OverlayElement" )]
         public static void ParseCaption( string[] parms, params object[] objects )
         {
             OverlayElement element = (OverlayElement)objects[ 0 ];
@@ -1465,7 +1492,7 @@ namespace Axiom.Overlays
             element.Text = sb.ToString();
         }
 
-        [AttributeParser( "material", "OverlayElement" )]
+        [ParserCommand( "material", "OverlayElement" )]
         public static void ParseMaterial( string[] parms, params object[] objects )
         {
             OverlayElement element = (OverlayElement)objects[ 0 ];

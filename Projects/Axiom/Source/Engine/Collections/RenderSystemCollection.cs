@@ -120,7 +120,10 @@ namespace Axiom.Collections
         /// <param name="item"></param>
         public void Add( K key, T item )
         {
-            base.Add( key, item );
+            if ( !this.ContainsKey( key ) )
+                base.Add( key, item );
+            else
+                LogManager.Instance.Write( "{0} rendering system has already been registered by {1}, skipping {2}.", key, this[key].Name, item.Name );
         }
 
         #endregion

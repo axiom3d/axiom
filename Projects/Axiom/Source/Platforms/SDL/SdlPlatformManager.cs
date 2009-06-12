@@ -55,10 +55,6 @@ namespace Axiom.Platforms.SDL
         ///		Reference to the current input reader.
         /// </summary>
         private InputReader inputReader;
-        /// <summary>
-        ///		Reference to the current active timer.
-        /// </summary>
-        private ITimer timer;
 
         #endregion Fields
 
@@ -74,35 +70,17 @@ namespace Axiom.Platforms.SDL
             return inputReader;
         }
 
-        /// <summary>
-        ///		Creates a high precision Windows timer.
-        /// </summary>
-        /// <returns></returns>
-        public ITimer CreateTimer()
-        {
-            timer = new SdlTimer();
-            return timer;
-        }
-
-        /// <summary>
-        ///		Implements the Microsoft Windows (r) message pump for allowing the OS to process
-        ///		pending events.
-        /// </summary>
-        public void DoEvents()
-        {
-            // not required
-        }
-
         #endregion
 
         #region IDisposable Members
         public void Dispose()
         {
-            timer.Reset();
-            timer = null;
-
-            inputReader.Dispose();
-            inputReader = null;
+			if ( inputReader != null )
+			{
+				inputReader.Dispose();
+				inputReader = null;
+			}
+            LogManager.Instance.Write("SDL Platform Manager Shutdown.");
         }
         #endregion
     }

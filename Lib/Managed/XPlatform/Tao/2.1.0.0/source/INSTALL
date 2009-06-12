@@ -1,0 +1,71 @@
+
+** For the latest information, please visit http://taoframework.com
+
+There are two ways of building Tao; one requiring NAnt and one using the 
+autotools tools. 
+
+1. Using NAnt
+=============
+Building the Tao Framework with NAnt is rather easy. Just go to your favorite
+shell and issue (in Tao's main directory):
+
+$ nant build-release
+
+to build all binaries for the current framework. In order to install Tao into  
+the Global Assembly Cache and create pkg-config files on unix, this should be  
+followed by:                                                                   
+
+# nant install
+
+On Windows you probably need to do this on the Visual Studio or .NET SDK
+command prompt.
+You can change the location for the GAC by adding -D:gacdir=/yourdir
+You can change the location of pkg-config files by adding -D:pkgconfig=/yourdir
+
+Alternatively you can also build a full zip package with documentation and     
+source using:                                                                  
+
+$ nant package
+
+2. Using Autotools
+==================
+To generate the autotools build scripts, you need to bootstrap the package:
+
+$ ./bootstrap
+
+Once done, just run configure and make to build the Tao Framework:
+
+$ ./configure
+$ make
+
+To install the assemblies and register them in the GAC, run as root:
+
+# make install
+
+You should now have:
+ * tao-opengl.pc in /usr/local/lib/pkgconfig/
+ * Tao.OpenGl.dll in /usr/local/lib/cli/tao-opengl-<version>/
+ * Tao.OpenGl in your GAC
+
+You can now run something like this:
+
+$ pkg-config --modversion tao-opengl
+2.1.0.4
+
+You can now add a dependence on Tao.OpenGl into your application by adding     
+something like the following to your configure.ac:                             
+
+TAO_OPENGL_REQUIRED_VERSION=2.1.0
+PKG_CHECK_MODULES(TAO_OPENGL_DEPENDENCIES,
+                  tao-opengl >= $TAO_OPENGL_REQUIRED_VERSION,
+                  has_tao_opengl=yes,
+                  has_tao_opengl=no)
+
+if test "x$has_tao_opengl" = "xno"; then
+  AC_MSG_WARN([Tao.OpenGl not detected; examples will not be built])
+else
+  AC_MSG_NOTICE([Tao.OpenGl found; examples will be built])
+fi
+
+AM_CONDITIONAL(HAS_TAO_OPENGL, test x$has_tao_opengl = xyes)
+

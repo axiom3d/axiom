@@ -279,7 +279,7 @@ namespace Axiom.SceneManagers.Bsp
 
         public static Texture CreateTexture()
         {
-            Texture tex = TextureManager.Instance.GetByName( "Axiom/LightingTexture" );
+            Texture tex = (Texture)TextureManager.Instance.GetByName( "Axiom/LightingTexture" );
             if ( tex == null )
             {
                 byte[] fotbuf = new byte[ 128 * 128 * 4 ];
@@ -301,9 +301,9 @@ namespace Axiom.SceneManagers.Bsp
 
                 System.IO.MemoryStream stream = new System.IO.MemoryStream( fotbuf );
                 Axiom.Media.Image img = Axiom.Media.Image.FromRawStream( stream, 128, 128, Axiom.Media.PixelFormat.A8R8G8B8 );
-                TextureManager.Instance.LoadImage( "Axiom/LightingTexture", img, TextureType.TwoD, 0, 1, 1 );
+                TextureManager.Instance.LoadImage( "Axiom/LightingTexture", ResourceGroupManager.DefaultResourceGroupName, img, TextureType.TwoD, 0, 1, false, Axiom.Media.PixelFormat.A8R8G8B8 );
 
-                tex = TextureManager.Instance.GetByName( "Axiom/LightingTexture" );
+                tex = (Texture)TextureManager.Instance.GetByName( "Axiom/LightingTexture" );
             }
 
             return tex;

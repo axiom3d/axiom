@@ -45,6 +45,8 @@ using Axiom.Graphics;
 using Axiom.Collections;
 using Axiom.Scripting;
 
+using ResourceHandle = System.UInt64;
+
 #endregion Namespace Declarations
 
 namespace Axiom.SceneManagers.Bsp
@@ -71,6 +73,7 @@ namespace Axiom.SceneManagers.Bsp
 
         #region Protected members
 
+		protected NameValuePairList createParam;
         protected BspNode[] nodes;
         protected int numLeaves;
         protected int leafStart;
@@ -222,14 +225,51 @@ namespace Axiom.SceneManagers.Bsp
         ///		Default constructor - used by BspResourceManager (do not call directly).
         /// </summary>
         /// <param name="name"></param>
-        public BspLevel( string name )
+        public BspLevel( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+            : base( parent, name, handle, group, isManual, loader )
         {
-            this.name = name;
             this.objectToNodeMap = new Bsp.Collections.Map();
+            this.createParam = createParams;
         }
         #endregion
 
         #region Public methods
+
+        public void Load( Stream stream )
+        {
+			if ( createParam.ContainsKey( "SetYAxisUp" ) )			
+				bool.TryParse( createParam[ "SetYAxisUp" ], out bspOptions.setYAxisUp);            
+
+			if ( createParam.ContainsKey( "Scale" ) )			
+				float.TryParse( createParam[ "Scale" ], out bspOptions.scale );				
+
+			Vector3 move = Vector3.Zero;
+			if ( createParam.ContainsKey( "MoveX" ) )			
+				 float.TryParse( createParam[ "MoveX" ], out move.x );			
+			
+			if ( createParam.ContainsKey("MoveY" ) ) 			
+				float.TryParse( createParam["MoveY"], out move.y );			
+			
+			if ( createParam.ContainsKey( "MoveZ" ) ) 			
+				float.TryParse( createParam["MoveZ"], out move.z );		
+
+			if ( createParam.ContainsKey( "UseLightmaps" ) )			
+				 bool.TryParse( createParam[ "UseLightmaps" ], out bspOptions.useLightmaps );			
+
+			if ( createParam.ContainsKey( "AmbientEnabled" ) )
+				 bool.TryParse( createParam[ "AmbientEnabled" ], out bspOptions.ambientEnabled );
+				 
+			if ( createParam.ContainsKey( "AmbientRatio") )
+				 float.TryParse( createParam[ "AmbientRatio" ], out bspOptions.ambientRatio );
+
+            Quake3Level q3 = new Quake3Level( bspOptions );
+
+            q3.LoadFromStream( stream );
+
+            LoadQuake3Level( q3 );
+
+        }
+
         /// <summary>
         ///		Determines if one leaf node is visible from another.
         /// </summary>
@@ -325,11 +365,14 @@ namespace Axiom.SceneManagers.Bsp
         /// </summary>
         protected void LoadQuake3Level( Quake3Level q3lvl )
         {
-            SceneManager sm = SceneManagerEnumerator.Instance.GetSceneManager( SceneType.Interior );
+            ResourceGroupManager rgm = ResourceGroupManager.Instance;
+            rgm.notifyWorldGeometryStageStarted( "Parsing entities" );
             LoadEntities( q3lvl );
+            rgm.notifyWorldGeometryStageEnded();
 
-            Quake3ShaderManager.Instance.ParseAllSources( ".shader" );
+            rgm.notifyWorldGeometryStageStarted( "Extracting lightmaps" );
             q3lvl.ExtractLightmaps();
+            rgm.notifyWorldGeometryStageEnded();
 
             //-----------------------------------------------------------------------
             // Vertices
@@ -352,7 +395,9 @@ namespace Axiom.SceneManagers.Bsp
             // Build initial patches - we need to know how big the vertex buffer needs to be
             // to accommodate the subdivision
             // we don't want to include the elements for texture lighting, so we clone it
+            rgm.notifyWorldGeometryStageStarted( "Initializing patches" );
             InitQuake3Patches( q3lvl, (VertexDeclaration)decl.Clone() );
+            rgm.notifyWorldGeometryStageEnded();
 
             // this is for texture lighting color and alpha
             decl.AddElement( 1, lightTexOffset, VertexElementType.Color, VertexElementSemantic.Diffuse );
@@ -360,7 +405,7 @@ namespace Axiom.SceneManagers.Bsp
             // this is for texture lighting coords
             decl.AddElement( 1, lightTexOffset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 2 );
 
-
+            rgm.notifyWorldGeometryStageStarted( "Setting up vertex data" );
             // Create the vertex buffer, allow space for patches
             HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer(
                 Marshal.SizeOf( typeof( BspVertex ) ),
@@ -421,10 +466,12 @@ namespace Axiom.SceneManagers.Bsp
             // Set other data
             vertexData.vertexStart = 0;
             vertexData.vertexCount = q3lvl.NumVertices + patchVertexCount;
+            rgm.notifyWorldGeometryStageEnded();
 
             //-----------------------------------------------------------------------
             // Faces
             //-----------------------------------------------------------------------
+            rgm.notifyWorldGeometryStageStarted( "Setting up face data" );
             leafFaceGroups = new int[ q3lvl.LeafFaces.Length ];
             Array.Copy( q3lvl.LeafFaces, 0, leafFaceGroups, 0, leafFaceGroups.Length );
 
@@ -444,9 +491,12 @@ namespace Axiom.SceneManagers.Bsp
 
             // Write main indexes
             indexes.WriteData( 0, Marshal.SizeOf( typeof( uint ) ) * q3lvl.NumElements, q3lvl.Elements, true );
+            rgm.notifyWorldGeometryStageEnded();
 
             // now build patch information
+            rgm.notifyWorldGeometryStageStarted( "Building patches" );
             BuildQuake3Patches( q3lvl.NumVertices, q3lvl.NumElements );
+            rgm.notifyWorldGeometryStageEnded();
 
             //-----------------------------------------------------------------------
             // Create materials for shaders
@@ -466,21 +516,37 @@ namespace Axiom.SceneManagers.Bsp
             // it can be used with multiple lightmaps)
             string shaderName;
             int face = q3lvl.Faces.Length;
+			int progressCountdown = 100;
+			int progressCount = 0;
 
             while ( face-- > 0 )
             {
+				// Progress reporting
+				if (progressCountdown == 100)
+				{
+					++progressCount;
+					String str = String.Format( "Loading materials (phase {0})",progressCount ); 
+					rgm.notifyWorldGeometryStageStarted(str);
+				}
+				else if (progressCountdown == 0)
+				{
+					// stage report
+					rgm.notifyWorldGeometryStageEnded();
+					progressCountdown = 100 + 1; 
+				}
+
                 // Check to see if existing material
                 // Format shader#lightmap
                 int shadIdx = q3lvl.Faces[ face ].shader;
 
                 shaderName = String.Format( "{0}#{1}", q3lvl.Shaders[ shadIdx ].name, q3lvl.Faces[ face ].lmTexture );
-                Material shadMat = sm.GetMaterial( shaderName );
+                Material shadMat = (Material)MaterialManager.Instance.GetByName( shaderName );
 
                 if ( shadMat == null && !bspOptions.useLightmaps )
                 {
                     // try the no-lightmap material
                     shaderName = String.Format( "{0}#n", q3lvl.Shaders[ shadIdx ].name );
-                    shadMat = sm.GetMaterial( shaderName );
+                    shadMat = (Material)MaterialManager.Instance.GetByName( shaderName );
                 }
 
                 if ( shadMat == null )
@@ -494,30 +560,33 @@ namespace Axiom.SceneManagers.Bsp
 
                     if ( shader != null )
                     {
-                        shadMat = shader.CreateAsMaterial( sm, q3lvl.Faces[ face ].lmTexture );
+                        shadMat = shader.CreateAsMaterial( q3lvl.Faces[ face ].lmTexture );
                     }
                     else
                     {
                         // No shader script, try default type texture
-                        shadMat = sm.CreateMaterial( shaderName );
+                        shadMat = (Material)MaterialManager.Instance.Create( shaderName, rgm.WorldResourceGroupName );
                         Pass shadPass = shadMat.GetTechnique( 0 ).GetPass( 0 );
 
                         // Try jpg
-                        TextureUnitState tex = shadPass.CreateTextureUnitState( tryName + ".jpg" );
-                        tex.Load();
+						TextureUnitState tex = null;
+						if ( ResourceGroupManager.Instance.ResourceExists( rgm.WorldResourceGroupName, tryName + ".jpg" ) )
+						{
+							tex = shadPass.CreateTextureUnitState( tryName + ".jpg" );
+						}
+						if ( ResourceGroupManager.Instance.ResourceExists( rgm.WorldResourceGroupName, tryName + ".tga" ) )
+						{
+							tex = shadPass.CreateTextureUnitState( tryName + ".tga" );
+						}
 
-                        if ( tex.IsBlank )
-                        {
-                            // Try tga
-                            tex.SetTextureName( tryName + ".tga" );
-                        }
-
-                        // Set replace on all first layer textures for now
-                        tex.SetColorOperation( LayerBlendOperation.Replace );
-                        tex.TextureAddressing = TextureAddressing.Wrap;
-
-                        // for ambient lighting
-                        tex.ColorBlendMode.source2 = LayerBlendSource.Manual;
+						if ( tex != null )
+						{
+							// Set replace on all first layer textures for now
+							tex.SetColorOperation( LayerBlendOperation.Replace );
+							tex.TextureAddressing = TextureAddressing.Wrap;
+							// for ambient lighting
+							tex.ColorBlendMode.source2 = LayerBlendSource.Manual;
+						}
 
                         if ( bspOptions.useLightmaps && q3lvl.Faces[ face ].lmTexture != -1 )
                         {
@@ -961,42 +1030,46 @@ namespace Axiom.SceneManagers.Bsp
         /// <summary>
         ///		Generic load - called by <see cref="Plugin_BSPSceneManager.BspResourceManager"/>.
         /// </summary>
-        public override void Load()
-        {
-            Hashtable options = SceneManagerEnumerator.Instance.GetSceneManager( SceneType.Interior ).Options;
+        protected override void load()
+		{
+            if ( createParam.ContainsKey( "SetYAxisUp" ) )			
+				bool.TryParse( createParam[ "SetYAxisUp" ], out bspOptions.setYAxisUp);            
 
-            if ( options.ContainsKey( "SetYAxisUp" ) )
-                bspOptions.setYAxisUp = (bool)options[ "SetYAxisUp" ];
+			if ( createParam.ContainsKey( "Scale" ) )			
+				float.TryParse( createParam[ "Scale" ], out bspOptions.scale );				
 
-            if ( options.ContainsKey( "Scale" ) )
-                bspOptions.scale = (float)options[ "Scale" ];
+			Vector3 move = Vector3.Zero;
+			if ( createParam.ContainsKey( "MoveX" ) )			
+				 float.TryParse( createParam[ "MoveX" ], out move.x );			
+			
+			if ( createParam.ContainsKey("MoveY" ) ) 			
+				float.TryParse( createParam["MoveY"], out move.y );			
+			
+			if ( createParam.ContainsKey( "MoveZ" ) ) 			
+				float.TryParse( createParam["MoveZ"], out move.z );		
 
-            if ( options.ContainsKey( "Move" ) )
-                bspOptions.move = (Vector3)options[ "Move" ];
+			if ( createParam.ContainsKey( "UseLightmaps" ) )			
+				 bool.TryParse( createParam[ "UseLightmaps" ], out bspOptions.useLightmaps );			
 
-            if ( options.ContainsKey( "UseLightmaps" ) )
-                bspOptions.useLightmaps = (bool)options[ "UseLightmaps" ];
-
-            if ( options.ContainsKey( "AmbientEnabled" ) )
-                bspOptions.ambientEnabled = (bool)options[ "AmbientEnabled" ];
-
-            if ( options.ContainsKey( "AmbientRatio" ) )
-                bspOptions.ambientRatio = (float)options[ "AmbientRatio" ];
+			if ( createParam.ContainsKey( "AmbientEnabled" ) )
+				 bool.TryParse( createParam[ "AmbientEnabled" ], out bspOptions.ambientEnabled );
+				 
+			if ( createParam.ContainsKey( "AmbientRatio") )
+				 float.TryParse( createParam[ "AmbientRatio" ], out bspOptions.ambientRatio );
 
             Quake3Level q3 = new Quake3Level( bspOptions );
 
-            Stream chunk = BspResourceManager.Instance.FindResourceData( name );
+            Stream chunk = ResourceGroupManager.Instance.OpenResource( Name, ResourceGroupManager.Instance.WorldResourceGroupName );
             q3.LoadFromStream( chunk );
             LoadQuake3Level( q3 );
             chunk.Close();
 
-            isLoaded = true;
         }
 
         /// <summary>
         ///		Generic unload - called by <see cref="BspResourceManager"/>.
         /// </summary>
-        public override void Unload()
+        protected override void unload()
         {
             nodes = null;
             faceGroups = null;

@@ -49,6 +49,8 @@ using Axiom.Math.Collections;
 
 namespace Axiom.SceneManagers.Bsp
 {
+    using System.Data;
+
     /// <summary>
     ///		Specialisation of the SceneManager class to deal with indoor scenes based on a BSP tree.
     ///	</summary>
@@ -85,7 +87,7 @@ namespace Axiom.SceneManagers.Bsp
 
         protected Bsp.Collections.Map matFaceGroupMap = new Bsp.Collections.Map();
         protected MovableObjectCollection objectsForRendering = new MovableObjectCollection();
-        protected BspGeometry bspGeometry = new BspGeometry();
+		protected BspGeometry bspGeometry;
         protected SpotlightFrustum spotlightFrustum;
         protected Material textureLightMaterial;
         protected Pass textureLightPass;
@@ -112,10 +114,18 @@ namespace Axiom.SceneManagers.Bsp
                 showNodeAABs = value;
             }
         }
+        
+		public override string TypeName
+		{
+			get { return "BspSceneManager"; }
+		}
+		
         #endregion
 
         #region Constructor
-        public BspSceneManager()
+        
+        public BspSceneManager( string name ):
+			base( name )
         {
             // Set features for debugging render
             showNodeAABs = false;
@@ -135,7 +145,9 @@ namespace Axiom.SceneManagers.Bsp
         /// </summary>
         public override void LoadWorldGeometry( string filename )
         {
-            /*if ( Path.GetExtension( filename ).ToLower() == ".xml" )
+			bspGeometry = new BspGeometry();
+
+            if ( Path.GetExtension( filename ).ToLower() == ".xml" )
             {
                 DataSet optionData = new DataSet();
                 optionData.ReadXml( filename );
@@ -176,6 +188,9 @@ namespace Axiom.SceneManagers.Bsp
                 }
 
                 optionList[ "Move" ] = move;
+                optionList[ "MoveX" ] = move.x;
+                optionList[ "MoveY" ] = move.y;
+                optionList[ "MoveZ" ] = move.z;
 
                 if ( table.Columns[ "UseLightmaps" ] != null )
                 {
@@ -192,7 +207,7 @@ namespace Axiom.SceneManagers.Bsp
                     optionList[ "AmbientRatio" ] = StringConverter.ParseFloat( (string)row[ "AmbientRatio" ] );
                 }
             }
-            else*/
+            else
             {
                 optionList[ "Map" ] = filename;
             }
@@ -202,6 +217,8 @@ namespace Axiom.SceneManagers.Bsp
 
         public void LoadWorldGeometry()
         {
+			bspGeometry = new BspGeometry();
+
             if ( !optionList.ContainsKey( "Map" ) )
                 throw new AxiomException( "Unable to load world geometry. \"Map\" filename option is not set." );
 
@@ -215,7 +232,12 @@ namespace Axiom.SceneManagers.Bsp
                 optionList[ "Scale" ] = 1f;
 
             if ( !optionList.ContainsKey( "Move" ) )
+            {
                 optionList[ "Move" ] = Vector3.Zero;
+				optionList[ "MoveX" ] = 0;
+				optionList[ "MoveY" ] = 0;
+				optionList[ "MoveZ" ] = 0;
+            }
 
             if ( !optionList.ContainsKey( "UseLightmaps" ) )
                 optionList[ "UseLightmaps" ] = true;
@@ -231,8 +253,15 @@ namespace Axiom.SceneManagers.Bsp
             if ( spotlightFrustum == null )
                 spotlightFrustum = new SpotlightFrustum();
 
+			NameValuePairList paramList = new NameValuePairList();
+
+			foreach ( DictionaryEntry option in optionList) 
+			{
+				paramList.Add( option.Key.ToString(), option.Value.ToString() );
+			}
+			
             // Load using resource manager
-            level = BspResourceManager.Instance.Load( (string)optionList[ "Map" ] );
+            level = (BspLevel)BspResourceManager.Instance.Load( (string)optionList[ "Map" ], ResourceGroupManager.Instance.WorldResourceGroupName, false, null, paramList );
 
             // Init static render operation
             renderOp.vertexData = level.VertexData;
@@ -297,14 +326,14 @@ namespace Axiom.SceneManagers.Bsp
         /// <param name="position">The position at which to evaluate the list of lights</param>
         /// <param name="radius">The bounding radius to test</param>
         /// <param name="destList">List to be populated with ordered set of lights; will be cleared by this method before population.</param>
-        protected override void PopulateLightList( Vector3 position, float radius, LightList destList )
+        public override void PopulateLightList( Vector3 position, float radius, LightList destList )
         {
             BspNode positionNode = level.FindLeaf( position );
-            BspNode[] lightNodes = new BspNode[ lightList.Count ];
+            BspNode[] lightNodes = new BspNode[ Lights.Count ];
 
-            for ( int i = 0; i < lightList.Count; i++ )
+            for (int i = 0; i < Lights.Count; i++)
             {
-                Light light = lightList[ i ];
+                Light light = (Light)Lights[i];
                 lightNodes[ i ] = (BspNode)level.objectToNodeMap.FindFirst( light );
             }
 
@@ -313,9 +342,9 @@ namespace Axiom.SceneManagers.Bsp
             float squaredRadius = radius * radius;
 
             // loop through the scene lights an add ones in range and visible from positionNode
-            for ( int i = 0; i < lightList.Count; i++ )
+            for (int i = 0; i < Lights.Count; i++)
             {
-                TextureLight light = (TextureLight)lightList[ i ];
+                TextureLight light = (TextureLight)Lights[i];
 
                 if ( light.IsVisible && level.IsLeafVisible( positionNode, lightNodes[ i ] ) )
                 {
@@ -350,7 +379,7 @@ namespace Axiom.SceneManagers.Bsp
         protected override void FindLightsAffectingFrustum( Camera camera )
         {
             lightsAffectingFrustum.Clear();
-            lightAddedToFrustum = new bool[ lightList.Count ];
+            lightAddedToFrustum = new bool[Lights.Count];
 
             if ( shadowTechnique == ShadowTechnique.TextureModulative )
             {
@@ -364,9 +393,9 @@ namespace Axiom.SceneManagers.Bsp
                 // Locate the leaf node where the camera is located
                 BspNode cameraNode = level.FindLeaf( camera.DerivedPosition );
 
-                for ( int i = 0; i < lightList.Count; i++ )
+                for (int i = 0; i < Lights.Count; i++)
                 {
-                    TextureLight light = (TextureLight)lightList[ i ];
+                    TextureLight light = (TextureLight)Lights[i];
 
                     if ( !light.IsVisible )
                         continue;
@@ -440,7 +469,7 @@ namespace Axiom.SceneManagers.Bsp
             TextureLight light = new TextureLight( name, this );
 
             // add the light to the list
-            lightList.Add( name, light );
+            Lights.Add(name, light);
 
             // add it in the bsp tree
             NotifyObjectMoved( light, light.Position );
@@ -456,9 +485,11 @@ namespace Axiom.SceneManagers.Bsp
 
         public override void RemoveAllLights()
         {
-            for ( int i = 0; i < lightList.Count; i++ )
-                NotifyObjectDetached( lightList[ i ] );
-
+            if (Lights != null)
+			{
+                for (int i = 0; i < Lights.Count; i++)
+                    NotifyObjectDetached(Lights[i]);
+			}
             base.RemoveAllLights();
         }
 
@@ -470,7 +501,7 @@ namespace Axiom.SceneManagers.Bsp
 
         public override void RemoveEntity( string name )
         {
-            Entity entity = entityList[ name ];
+            Entity entity = (Entity)Entities[ name ];
             if ( entity != null )
             {
                 this.RemoveEntity( entity );
@@ -479,14 +510,16 @@ namespace Axiom.SceneManagers.Bsp
 
         public override void RemoveAllEntities()
         {
-            for ( int i = 0; i < entityList.Count; i++ )
-                NotifyObjectDetached( entityList[ i ] );
-
+            if (Entities != null)
+			{
+                for (int i = 0; i < Entities.Count; i++)
+                    NotifyObjectDetached(Entities[i]);
+			}
             base.RemoveAllEntities();
         }
 
         /// <summary>
-        ///		Internal method for tagging <see cref="Plugin_BSPSceneManager.BspNode"/'s with objects which intersect them.
+        ///		Internal method for tagging <see cref="Plugin_BSPSceneManager.BspNode"/>'s with objects which intersect them.
         /// </summary>
         internal void NotifyObjectMoved( MovableObject obj, Vector3 pos )
         {
@@ -598,14 +631,15 @@ namespace Axiom.SceneManagers.Bsp
 
         protected void InitTextureLighting()
         {
-            Trace.WriteLineIf( targetRenderSystem.Caps.TextureUnitCount < 2, "--WARNING--At least 2 available texture units are required for BSP dynamic lighting!" );
+			if ( targetRenderSystem.HardwareCapabilities.TextureUnitCount < 2 )
+				LogManager.Instance.Write( "--WARNING--At least 2 available texture units are required for BSP dynamic lighting!" );
 
             Texture texLight = TextureLight.CreateTexture();
 
-            textureLightMaterial = MaterialManager.Instance.GetByName( "Axiom/BspTextureLightMaterial" );
+            textureLightMaterial = (Material)MaterialManager.Instance.GetByName( "Axiom/BspTextureLightMaterial" );
             if ( textureLightMaterial == null )
             {
-                textureLightMaterial = (Material)MaterialManager.Instance.Create( "Axiom/BspTextureLightMaterial" );
+                textureLightMaterial = (Material)MaterialManager.Instance.Create( "Axiom/BspTextureLightMaterial", ResourceGroupManager.DefaultResourceGroupName );
                 textureLightPass = textureLightMaterial.GetTechnique( 0 ).GetPass( 0 );
                 // the texture light
                 TextureUnitState tex = textureLightPass.CreateTextureUnitState( texLight.Name );
@@ -646,21 +680,21 @@ namespace Axiom.SceneManagers.Bsp
             matFaceGroupMap.Clear();
             faceGroupChecked = new bool[ level.FaceGroups.Length ];
 
-            TextureLight[] lights = new TextureLight[ lightList.Count ];
-            BspNode[] lightNodes = new BspNode[ lightList.Count ];
-            Sphere[] lightSpheres = new Sphere[ lightList.Count ];
+            TextureLight[] lights = new TextureLight[ Lights.Count ];
+            BspNode[] lightNodes = new BspNode[Lights.Count];
+            Sphere[] lightSpheres = new Sphere[Lights.Count];
 
             // The base SceneManager uses this for shadows.
             // The BspSceneManager uses this for texture lighting as well.
             if ( shadowTechnique == ShadowTechnique.None )
             {
                 lightsAffectingFrustum.Clear();
-                lightAddedToFrustum = new bool[ lightList.Count ];
+                lightAddedToFrustum = new bool[Lights.Count];
             }
 
-            for ( int lp = 0; lp < lightList.Count; lp++ )
+            for (int lp = 0; lp < Lights.Count; lp++)
             {
-                TextureLight light = (TextureLight)lightList[ lp ];
+                TextureLight light = (TextureLight)Lights[lp];
                 lights[ lp ] = light;
                 lightNodes[ lp ] = (BspNode)level.objectToNodeMap.FindFirst( light );
                 if ( light.Type != LightType.Directional )
@@ -749,7 +783,7 @@ namespace Axiom.SceneManagers.Bsp
                     Material mat = GetMaterial( faceGroup.materialHandle );
 
                     // Check normal (manual culling)
-                    ManualCullingMode cullMode = mat.GetTechnique( 0 ).GetPass( 0 ).ManualCullMode;
+                    ManualCullingMode cullMode = mat.GetTechnique( 0 ).GetPass( 0 ).ManualCullingMode;
 
                     if ( cullMode != ManualCullingMode.None )
                     {
@@ -948,8 +982,8 @@ namespace Axiom.SceneManagers.Bsp
             targetRenderSystem.WorldMatrix = Matrix4.Identity;
 
             // Set view / proj
-            targetRenderSystem.ViewMatrix = camInProgress.ViewMatrix;
-            targetRenderSystem.ProjectionMatrix = camInProgress.ProjectionMatrix;
+            targetRenderSystem.ViewMatrix = cameraInProgress.ViewMatrix;
+            targetRenderSystem.ProjectionMatrix = cameraInProgress.ProjectionMatrix;
 
             ColorEx bspAmbient = ColorEx.White;
 
@@ -1007,7 +1041,7 @@ namespace Axiom.SceneManagers.Bsp
 
                 if ( isQuakeShader )
                 {
-                    for ( int i = 0; i < thisMaterial.GetTechnique( 0 ).NumPasses; i++ )
+                    for ( int i = 0; i < thisMaterial.GetTechnique( 0 ).PassCount; i++ )
                     {
                         SetPass( thisMaterial.GetTechnique( 0 ).GetPass( i ) );
                         targetRenderSystem.Render( renderOp );
@@ -1017,7 +1051,7 @@ namespace Axiom.SceneManagers.Bsp
                 else if ( !passIsSet )
                 {
                     int i;
-                    for ( i = 0; i < thisMaterial.GetTechnique( 0 ).NumPasses; i++ )
+                    for ( i = 0; i < thisMaterial.GetTechnique( 0 ).PassCount; i++ )
                     {
                         SetPass( thisMaterial.GetTechnique( 0 ).GetPass( i ) );
 
@@ -1040,7 +1074,7 @@ namespace Axiom.SceneManagers.Bsp
                     TextureUnitState geometryTex = pass.GetTextureUnitState( 0 );
                     targetRenderSystem.SetTexture( 0, true, geometryTex.TextureName );
 
-                    if ( pass.NumTextureUnitStages > 1 )
+                    if ( pass.TextureUnitStageCount > 1 )
                     {
                         // Get the lightmap
                         TextureUnitState lightmapTex = pass.GetTextureUnitState( 1 );
@@ -1060,7 +1094,7 @@ namespace Axiom.SceneManagers.Bsp
         /// </summary>
         protected void RenderTextureLighting( int lightIndex )
         {
-            TextureLight light = (TextureLight)lightList[ lightIndex ];
+            TextureLight light = (TextureLight)Lights[lightIndex];
 
             if ( !light.IsTextureLight )
                 return;
@@ -1072,8 +1106,8 @@ namespace Axiom.SceneManagers.Bsp
             targetRenderSystem.WorldMatrix = Matrix4.Identity;
 
             // Set view / proj
-            targetRenderSystem.ViewMatrix = camInProgress.ViewMatrix;
-            targetRenderSystem.ProjectionMatrix = camInProgress.ProjectionMatrix;
+            targetRenderSystem.ViewMatrix = cameraInProgress.ViewMatrix;
+            targetRenderSystem.ProjectionMatrix = cameraInProgress.ProjectionMatrix;
 
             TextureUnitState lightTex = textureLightPass.GetTextureUnitState( 0 );
             TextureUnitState normalTex = textureLightPass.GetTextureUnitState( 1 );
@@ -1137,7 +1171,7 @@ namespace Axiom.SceneManagers.Bsp
                 if ( faceGrp[ 0 ].isQuakeShader )
                     continue;
 
-                ManualCullingMode cullMode = thisMaterial.GetTechnique( 0 ).GetPass( 0 ).ManualCullMode;
+                ManualCullingMode cullMode = thisMaterial.GetTechnique( 0 ).GetPass( 0 ).ManualCullingMode;
 
                 // Empty existing cache
                 renderOp.indexData.indexCount = 0;
@@ -1195,8 +1229,8 @@ namespace Axiom.SceneManagers.Bsp
             targetRenderSystem.WorldMatrix = Matrix4.Identity;
 
             // Set view / proj
-            targetRenderSystem.ViewMatrix = camInProgress.ViewMatrix;
-            targetRenderSystem.ProjectionMatrix = camInProgress.ProjectionMatrix;
+            targetRenderSystem.ViewMatrix = cameraInProgress.ViewMatrix;
+            targetRenderSystem.ProjectionMatrix = cameraInProgress.ProjectionMatrix;
 
             Camera shadowCam = null;
             Vector3 camPos = Vector3.Zero, camDir = Vector3.Zero;
@@ -1213,19 +1247,19 @@ namespace Axiom.SceneManagers.Bsp
                 }
             }
 
-            CullingMode prevCullMode = shadowReceiverPass.CullMode;
+            CullingMode prevCullMode = shadowReceiverPass.CullingMode;
             LayerBlendModeEx colorBlend = shadowTex.ColorBlendMode;
             LayerBlendSource prevSource = colorBlend.source2;
             ColorEx prevColorArg = colorBlend.colorArg2;
 
             // Quake uses counter-clockwise culling
-            shadowReceiverPass.CullMode = CullingMode.CounterClockwise;
+            shadowReceiverPass.CullingMode = CullingMode.CounterClockwise;
             colorBlend.source2 = LayerBlendSource.Manual;
             colorBlend.colorArg2 = ColorEx.White;
 
             SetPass( shadowReceiverPass );
 
-            shadowReceiverPass.CullMode = prevCullMode;
+            shadowReceiverPass.CullingMode = prevCullMode;
             colorBlend.source2 = prevSource;
             colorBlend.colorArg2 = prevColorArg;
 
@@ -1256,7 +1290,7 @@ namespace Axiom.SceneManagers.Bsp
                         float angle = faceGrp[ i ].plane.Normal.Dot( camDir );
 
                         if ( ( ( dist < 0 && angle > 0 ) || ( dist > 0 && angle < 0 ) ) &&
-                            Utility.Abs( angle ) >= Utility.Cos( shadowCam.FOV * 0.5f ) )
+                            Utility.Abs( angle ) >= Utility.Cos( shadowCam.FieldOfView * 0.5f ) )
                         {
                             // face is in shadow's frustum
 
@@ -1299,11 +1333,11 @@ namespace Axiom.SceneManagers.Bsp
                         int index;
 
                         // find the index of the light
-                        for ( index = 0; index < lightList.Count; index++ )
-                            if ( lightList[ index ] == lightsAffectingFrustum[ i ] )
+                        for (index = 0; index < Lights.Count; index++)
+                            if (Lights[index] == lightsAffectingFrustum[i])
                                 break;
 
-                        if ( index < lightList.Count )
+                        if (index < Lights.Count)
                         {
                             RenderTextureLighting( index );
                         }
@@ -1313,7 +1347,7 @@ namespace Axiom.SceneManagers.Bsp
                 {
                     if ( manualLightList.Count == 0 )
                     {
-                        if ( illuminationStage == IlluminationRenderStage.RenderModulativePass )
+                        if ( illuminationStage == IlluminationRenderStage.RenderReceiverPass )
                         {
                             // texture shadows
                             RenderTextureShadowOnGeometry();
@@ -1332,11 +1366,11 @@ namespace Axiom.SceneManagers.Bsp
                             int index;
 
                             // find the index of the light
-                            for ( index = 0; index < lightList.Count; index++ )
-                                if ( lightList[ index ] == manualLightList[ i ] )
+                            for (index = 0; index < Lights.Count; index++)
+                                if (Lights[index] == manualLightList[i])
                                     break;
 
-                            if ( index < lightList.Count )
+                            if (index < Lights.Count)
                             {
                                 RenderTextureLighting( index );
                             }
@@ -1714,4 +1748,37 @@ namespace Axiom.SceneManagers.Bsp
         }
         #endregion
     }
+
+	/// <summary>
+	///		Factory for the BspSceneManager.
+	/// </summary>
+	class BspSceneManagerFactory : SceneManagerFactory
+	{
+		public BspSceneManagerFactory()
+		{
+
+		}
+		
+		#region Methods
+		
+		protected override void InitMetaData()
+		{
+			metaData.typeName = "BspSceneManager";
+			metaData.description = "Scene manager for loading Quake3 .bsp files.";
+			metaData.sceneTypeMask = SceneType.Interior;
+			metaData.worldGeometrySupported = true;
+		}
+
+		public override SceneManager CreateInstance( string name )
+		{
+			return new BspSceneManager( name );
+		}
+
+		public override void DestroyInstance( SceneManager instance )
+		{
+			instance.ClearScene();
+		}
+		
+		#endregion
+	}
 }

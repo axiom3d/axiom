@@ -43,6 +43,8 @@ using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Graphics;
 using Axiom.Math;
+using System.Collections.Generic;
+using Axiom.Media;
 
 #endregion Namespace Declarations
 
@@ -80,13 +82,17 @@ namespace Axiom.Graphics
         #region Fields
 
         /// <summary>
+        ///		List of current render targets (i.e. a <see cref="RenderWindow"/>, or a<see cref="RenderTexture"/>) by priority
+        /// </summary>
+        protected List<RenderTarget> prioritizedRenderTargets = new List<RenderTarget>();
+        /// <summary>
         ///		List of current render targets (i.e. a <see cref="RenderWindow"/>, or a<see cref="RenderTexture"/>)
         /// </summary>
-        protected RenderTargetList renderTargets = new RenderTargetList();
+        protected Dictionary<string, RenderTarget> renderTargets = new Dictionary<string, RenderTarget>();
         /// <summary>
         ///		A reference to the texture management class specific to this implementation.
         /// </summary>
-        protected TextureManager textureMgr;
+        protected TextureManager textureManager;
         /// <summary>
         ///		A reference to the hardware vertex/index buffer manager specific to this API.
         /// </summary>
@@ -122,15 +128,23 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Number of faces currently rendered this frame.
         /// </summary>
-        protected int numFaces;
+        protected int faceCount;
         /// <summary>
-        ///		Number of faces currently rendered this frame.
+        /// Number of batches currently rendered this frame.
         /// </summary>
-        protected int numVertices;
+        protected int batchCount;
+        /// <summary>
+        ///		Number of vertexes currently rendered this frame.
+        /// </summary>
+        protected int vertexCount;
+        /// <summary>
+        /// Number of times to render the current state
+        /// </summary>
+        protected int currentPassIterationCount;
         /// <summary>
         ///		Capabilites of the current hardware (populated at startup).
         /// </summary>
-        protected HardwareCaps caps = new HardwareCaps();
+        protected RenderSystemCapabilities _rsCapabilities = new RenderSystemCapabilities();
         /// <summary>
         ///		Saved set of world matrices.
         /// </summary>
@@ -139,6 +153,11 @@ namespace Axiom.Graphics
         ///     Flag for whether vertex winding needs to be inverted, useful for reflections.
         /// </summary>
         protected bool invertVertexWinding;
+
+        protected bool vertexProgramBound = false;
+        protected bool fragmentProgramBound = false;
+
+        protected static long totalRenderCalls = 0;
 
         #endregion Fields
 
@@ -167,13 +186,24 @@ namespace Axiom.Graphics
         #region Properties
 
         /// <summary>
-        ///		Gets a set of hardware capabilities queryed by the current render system.
+        ///		Gets the currently-active viewport
         /// </summary>
-        public virtual HardwareCaps Caps
+        public Viewport ActiveViewport
         {
             get
             {
-                return caps;
+                return activeViewport;
+            }
+        }
+
+        /// <summary>
+        ///		Gets a set of hardware capabilities queryed by the current render system.
+        /// </summary>
+        public virtual RenderSystemCapabilities HardwareCapabilities
+        {
+            get
+            {
+                return _rsCapabilities;
             }
         }
 
@@ -195,7 +225,37 @@ namespace Axiom.Graphics
         {
             get
             {
-                return numFaces;
+                return faceCount;
+            }
+        }
+
+        /// <summary>
+        ///		Number of batches rendered during the current frame so far.
+        /// </summary>
+        public int BatchesRendered
+        {
+            get
+            {
+                return batchCount;
+            }
+        }
+
+        /// <summary>
+        ///	Number of times to render the current state.
+        /// </summary>
+        /// <remarks>Set the current multi pass count value.  This must be set prior to 
+        /// calling render() if multiple renderings of the same pass state are 
+        /// required.
+        /// </remarks>
+        public int CurrentPassIterationCount
+        {
+            get
+            {
+                return currentPassIterationCount;
+            }
+            set
+            {
+                currentPassIterationCount = value;
             }
         }
 
@@ -248,6 +308,22 @@ namespace Axiom.Graphics
             }
         }
 
+        public int RenderTargetCount
+        {
+            get
+            {
+                return renderTargets.Count;
+            }
+        }
+
+        public static long TotalRenderCalls
+        {
+            get
+            {
+                return totalRenderCalls;
+            }
+        }
+
         #endregion Properties
 
         #region Methods
@@ -258,15 +334,17 @@ namespace Axiom.Graphics
         /// <param name="target">Reference to the render target to attach to this render system.</param>
         public virtual void AttachRenderTarget( RenderTarget target )
         {
-            if ( target.Priority == RenderTargetPriority.High )
+            renderTargets.Add( target.Name, target );
+
+            if ( target.Priority == RenderTargetPriority.RenderToTexture )
             {
                 // insert at the front of the list
-                renderTargets.Insert( 0, target );
+                prioritizedRenderTargets.Insert( 0, target );
             }
             else
             {
                 // add to the end
-                renderTargets.Add( target );
+                prioritizedRenderTargets.Add( target );
             }
         }
 
@@ -275,42 +353,42 @@ namespace Axiom.Graphics
         /// </summary>
         public virtual void BeginGeometryCount()
         {
-            numFaces = 0;
+            batchCount = vertexCount = faceCount = 0;
         }
 
         /// <summary>
         ///		Detaches the render target with the specified name from this render system.
         /// </summary>
         /// <param name="name">Name of the render target to detach.</param>
-        public virtual void DetachRenderTarget( string name )
+        /// <returns>the render target that was detached</returns>
+        public RenderTarget DetachRenderTarget( string name )
         {
-            RenderTarget target = null;
-
-            for ( int i = 0; i < renderTargets.Count; i++ )
+            RenderTarget target = prioritizedRenderTargets.Find( delegate( RenderTarget item )
             {
-                RenderTarget tmp = (RenderTarget)renderTargets[ i ];
+                return item.Name == name;
+            } );
 
-                if ( tmp.Name == name )
-                {
-                    target = tmp;
-                    break;
-                }
-            }
-
-            if ( target != null )
-            {
-                DetachRenderTarget( target );
-            }
+            return DetachRenderTarget( target );
         }
 
         /// <summary>
         ///		Detaches the render target from this render system.
         /// </summary>
         /// <param name="target">Reference to the render target to detach.</param>
-        public virtual void DetachRenderTarget( RenderTarget target )
+        /// <returns>the render target that was detached</returns>
+        public virtual RenderTarget DetachRenderTarget( RenderTarget target )
         {
-            // TODO: Remove prioritized render targets
-            renderTargets.Remove( target );
+            if ( target != null )
+            {
+                prioritizedRenderTargets.Remove( target );
+                renderTargets.Remove( target.Name );
+
+                /// If detached render target is the active render target, 
+                /// reset active render target
+                if ( target == activeRenderTarget )
+                    activeRenderTarget = null;
+            }
+            return target;
         }
 
         /// <summary>
@@ -323,17 +401,51 @@ namespace Axiom.Graphics
             SetTextureMatrix( stage, Matrix4.Identity );
         }
 
+        public virtual void DisableTextureUnitsFrom( int texUnit )
+        {
+            for ( int i = texUnit; i < _rsCapabilities.TextureUnitCount; ++i )
+            {
+                DisableTextureUnit( i );
+            }
+        }
+
+
         /// <summary>
         ///     Utility method for initializing all render targets attached to this rendering system.
         /// </summary>
         public virtual void InitRenderTargets()
         {
             // init stats for each render target
-            foreach ( RenderTarget target in renderTargets )
+            foreach ( KeyValuePair<string, RenderTarget> item in renderTargets )
             {
-                target.ResetStatistics();
+                item.Value.ResetStatistics();
             }
         }
+
+        /// <summary>
+        /// Set a clipping plane
+        ///</summary>
+        public void SetClipPlane( ushort index, Plane p )
+        {
+            SetClipPlane( index, p.Normal.x, p.Normal.y, p.Normal.z, p.D );
+        }
+
+        /// <summary>
+        /// Set a clipping plane
+        /// </summary>
+        /// <param name="index">Index of plane</param>
+        /// <param name="A"></param>
+        /// <param name="B"></param>
+        /// <param name="C"></param>
+        /// <param name="D"></param>
+        public abstract void SetClipPlane( ushort index, float A, float B, float C, float D );
+
+        /// <summary>
+        /// Enable the clipping plane
+        /// </summary>
+        /// <param name="index">Index of plane</param>
+        /// <param name="enable">Enable True or False</param>
+        public abstract void EnableClipPlane( ushort index, bool enable );
 
         /// <summary>
         ///		Utility method to notify all render targets that a camera has been removed, 
@@ -342,10 +454,9 @@ namespace Axiom.Graphics
         /// <param name="camera">Camera being removed.</param>
         internal virtual void NotifyCameraRemoved( Camera camera )
         {
-            for ( int i = 0; i < renderTargets.Count; i++ )
+            foreach ( KeyValuePair<string, RenderTarget> item in renderTargets )
             {
-                RenderTarget target = (RenderTarget)renderTargets[ i ];
-                target.NotifyCameraRemoved( camera );
+                item.Value.NotifyCameraRemoved( camera );
             }
         }
 
@@ -375,15 +486,19 @@ namespace Axiom.Graphics
                 val = op.vertexData.vertexCount;
             }
 
+            // account for a pass having multiple iterations
+            if ( currentPassIterationCount > 1 )
+                val *= currentPassIterationCount;
+
             // calculate faces
             switch ( op.operationType )
             {
                 case OperationType.TriangleList:
-                    numFaces += val / 3;
+                    faceCount += val / 3;
                     break;
                 case OperationType.TriangleStrip:
                 case OperationType.TriangleFan:
-                    numFaces += val - 2;
+                    faceCount += val - 2;
                     break;
                 case OperationType.PointList:
                 case OperationType.LineList:
@@ -392,7 +507,34 @@ namespace Axiom.Graphics
             }
 
             // increment running vertex count
-            numVertices += op.vertexData.vertexCount;
+            vertexCount += op.vertexData.vertexCount;
+
+            batchCount += currentPassIterationCount;
+        }
+        /// <summary>
+        /// updates pass iteration rendering state including bound gpu program parameter pass iteration auto constant entry
+        /// </summary>
+        /// <returns>True if more iterations are required</returns>
+        protected virtual bool UpdatePassIterationRenderState()
+        {
+            if ( currentPassIterationCount <= 1 )
+                return false;
+
+            --currentPassIterationCount;
+
+            // TODO: Implement ActiveGpuProgramParameters
+            //if ( ActiveVertexGpuProgramParameters.isNull() )
+            //{
+            //    mActiveVertexGpuProgramParameters->incPassIterationNumber();
+            //    bindGpuProgramPassIterationParameters(GPT_VERTEX_PROGRAM);
+            //}
+            //if (!mActiveFragmentGpuProgramParameters.isNull())
+            //{
+            //    mActiveFragmentGpuProgramParameters->incPassIterationNumber();
+            //    bindGpuProgramPassIterationParameters(GPT_FRAGMENT_PROGRAM);
+            //}
+            return true;
+
         }
 
         /// <summary>
@@ -403,13 +545,17 @@ namespace Axiom.Graphics
         /// </summary>
         /// <param name="textureUnit">Index of the texture unit to configure</param>
         /// <param name="layer">Reference to a TextureLayer object which defines all the settings.</param>
-        public virtual void SetTextureUnit( int unit, TextureUnitState unitState )
+        public virtual void SetTextureUnit( int unit, TextureUnitState unitState, bool fixedFunction )
         {
-            // set the texture if it is different from the current
-            SetTexture( unit, true, unitState.TextureName );
 
-            // Tex Coord Set
-            SetTextureCoordSet( unit, unitState.TextureCoordSet );
+            // First do the stuff that is just sampler related.  This stuff needs to be done for
+            // both fixed function and shaders.
+
+            // set the texture if it is different from the current
+            if ( unitState.IsBlank )
+                SetTexture( unit, true, string.Empty );
+            else
+                SetTexture( unit, true, unitState.TextureName );
 
             // Texture layer filtering
             SetTextureUnitFiltering(
@@ -421,71 +567,84 @@ namespace Axiom.Graphics
             // Texture layer anistropy
             SetTextureLayerAnisotropy( unit, unitState.TextureAnisotropy );
 
-            // set the texture blending mode
-            SetTextureBlendMode( unit, unitState.ColorBlendMode );
-
-            // set the texture blending mode
-            SetTextureBlendMode( unit, unitState.AlphaBlendMode );
-
             // this must always be set for OpenGL.  DX9 will ignore dupe render states like this (observed in the
             // output window when debugging with high verbosity), so there is no harm
             SetTextureAddressingMode( unit, unitState.TextureAddressing );
 
-            bool anyCalcs = false;
-
-            for ( int i = 0; i < unitState.NumEffects; i++ )
-            {
-                TextureEffect effect = unitState.GetEffect( i );
-
-                switch ( effect.type )
-                {
-                    case TextureEffectType.EnvironmentMap:
-                        if ( (EnvironmentMap)effect.subtype == EnvironmentMap.Curved )
-                        {
-                            SetTextureCoordCalculation( unit, TexCoordCalcMethod.EnvironmentMap );
-                            anyCalcs = true;
-                        }
-                        else if ( (EnvironmentMap)effect.subtype == EnvironmentMap.Planar )
-                        {
-                            SetTextureCoordCalculation( unit, TexCoordCalcMethod.EnvironmentMapPlanar );
-                            anyCalcs = true;
-                        }
-                        else if ( (EnvironmentMap)effect.subtype == EnvironmentMap.Reflection )
-                        {
-                            SetTextureCoordCalculation( unit, TexCoordCalcMethod.EnvironmentMapReflection );
-                            anyCalcs = true;
-                        }
-                        else if ( (EnvironmentMap)effect.subtype == EnvironmentMap.Normal )
-                        {
-                            SetTextureCoordCalculation( unit, TexCoordCalcMethod.EnvironmentMapNormal );
-                            anyCalcs = true;
-                        }
-                        break;
-
-                    case TextureEffectType.Scroll:
-                    case TextureEffectType.Rotate:
-                    case TextureEffectType.Transform:
-                        break;
-
-                    case TextureEffectType.ProjectiveTexture:
-                        SetTextureCoordCalculation( unit, TexCoordCalcMethod.ProjectiveTexture, effect.frustum );
-                        anyCalcs = true;
-                        break;
-                } // switch
-            } // for
-
-            // Ensure any previous texcoord calc settings are reset if there are now none
-            if ( !anyCalcs )
-            {
-                SetTextureCoordCalculation( unit, TexCoordCalcMethod.None );
-                SetTextureCoordSet( unit, unitState.TextureCoordSet );
-            }
-
-            // set the texture matrix to that of the current layer for any transformations
-            SetTextureMatrix( unit, unitState.TextureMatrix );
+            // Set the texture border color.  Not sure if its worth making this conditional on the
+            // texture addressing mode.
+            SetTextureBorderColor( unit, unitState.TextureBorderColor );
 
             // set alpha rejection
             SetAlphaRejectSettings( unit, unitState.AlphaRejectFunction, unitState.AlphaRejectValue );
+
+
+            // This stuff only gets done for the fixed function pipeline.  It is not needed
+            // if we are using a pixel shader.
+            if ( fixedFunction )
+            {
+                // Tex Coord Set
+                SetTextureCoordSet( unit, unitState.TextureCoordSet );
+
+                // set the texture blending mode
+                SetTextureBlendMode( unit, unitState.ColorBlendMode );
+
+                // set the texture blending mode
+                SetTextureBlendMode( unit, unitState.AlphaBlendMode );
+
+                bool anyCalcs = false;
+
+                for ( int i = 0; i < unitState.NumEffects; i++ )
+                {
+                    TextureEffect effect = unitState.GetEffect( i );
+
+                    switch ( effect.type )
+                    {
+                        case TextureEffectType.EnvironmentMap:
+                            if ( (EnvironmentMap)effect.subtype == EnvironmentMap.Curved )
+                            {
+                                SetTextureCoordCalculation( unit, TexCoordCalcMethod.EnvironmentMap );
+                                anyCalcs = true;
+                            }
+                            else if ( (EnvironmentMap)effect.subtype == EnvironmentMap.Planar )
+                            {
+                                SetTextureCoordCalculation( unit, TexCoordCalcMethod.EnvironmentMapPlanar );
+                                anyCalcs = true;
+                            }
+                            else if ( (EnvironmentMap)effect.subtype == EnvironmentMap.Reflection )
+                            {
+                                SetTextureCoordCalculation( unit, TexCoordCalcMethod.EnvironmentMapReflection );
+                                anyCalcs = true;
+                            }
+                            else if ( (EnvironmentMap)effect.subtype == EnvironmentMap.Normal )
+                            {
+                                SetTextureCoordCalculation( unit, TexCoordCalcMethod.EnvironmentMapNormal );
+                                anyCalcs = true;
+                            }
+                            break;
+
+                        case TextureEffectType.Scroll:
+                        case TextureEffectType.Rotate:
+                        case TextureEffectType.Transform:
+                            break;
+
+                        case TextureEffectType.ProjectiveTexture:
+                            SetTextureCoordCalculation( unit, TexCoordCalcMethod.ProjectiveTexture, effect.frustum );
+                            anyCalcs = true;
+                            break;
+                    } // switch
+                } // for
+
+                // Ensure any previous texcoord calc settings are reset if there are now none
+                if ( !anyCalcs )
+                {
+                    SetTextureCoordCalculation( unit, TexCoordCalcMethod.None );
+                    SetTextureCoordSet( unit, unitState.TextureCoordSet );
+                }
+
+                // set the texture matrix to that of the current layer for any transformations
+                SetTextureMatrix( unit, unitState.TextureMatrix );
+            }
         }
 
         /// <summary>
@@ -511,7 +670,7 @@ namespace Axiom.Graphics
         /// <param name="count"></param>
         public virtual void SetWorldMatrices( Matrix4[] matrices, ushort count )
         {
-            if ( !caps.CheckCap( Capabilities.VertexBlending ) )
+            if ( !_rsCapabilities.HasCapability( Capabilities.VertexBlending ) )
             {
                 // save these for later during software vertex blending
                 for ( int i = 0; i < count; i++ )
@@ -524,19 +683,42 @@ namespace Axiom.Graphics
             }
         }
 
+        public virtual void RemoveRenderTargets()
+        {
+            // destroy each render window
+            RenderTarget primary = null;
+            while ( renderTargets.Count > 0 )
+            {
+                Dictionary<string, RenderTarget>.Enumerator iter = renderTargets.GetEnumerator();
+                iter.MoveNext();
+                KeyValuePair<string, RenderTarget> item = iter.Current;
+                RenderTarget target = item.Value;
+                //if ( primary == null && item.Value.IsPrimary )
+                //{
+                //  primary = target;
+                //}
+                //else
+                //{
+                DetachRenderTarget( target );
+                target.Dispose();
+                //}
+            }
+            if ( primary != null )
+            {
+                DetachRenderTarget( primary );
+                primary.Dispose();
+            }
+
+            renderTargets.Clear();
+            prioritizedRenderTargets.Clear();
+        }
+
         /// <summary>
         ///		Shuts down the RenderSystem.
         /// </summary>
         public virtual void Shutdown()
         {
-            // destroy each render window
-            foreach ( RenderTarget target in renderTargets )
-            {
-                target.Dispose();
-            }
-
-            // Clear the render window list
-            renderTargets.Clear();
+            RemoveRenderTargets();
 
             // dispose of the render system
             this.Dispose();
@@ -549,10 +731,8 @@ namespace Axiom.Graphics
         {
             // Update all in order of priority
             // This ensures render-to-texture targets get updated before render windows
-            for ( int i = 0; i < renderTargets.Count; i++ )
+            foreach ( RenderTarget target in prioritizedRenderTargets )
             {
-                RenderTarget target = (RenderTarget)renderTargets[ i ];
-
                 // only update if it is active
                 if ( target.IsActive && target.IsAutoUpdated )
                 {
@@ -655,7 +835,7 @@ namespace Axiom.Graphics
         ///		the decal appears on top.
         /// </remarks>
         /// <value>The bias value, should be between 0 and 16.</value>
-        public abstract int DepthBias
+        public abstract float DepthBias
         {
             get;
             set;
@@ -719,7 +899,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///		Gets/Sets how to rasterise triangles, as points, wireframe or solid polys.
         /// </summary>
-        public abstract SceneDetailLevel RasterizationMode
+        public abstract PolygonMode PolygonMode
         {
             get;
             set;
@@ -824,7 +1004,18 @@ namespace Axiom.Graphics
         ///    one will simply replace the existing one.
         /// </remarks>
         /// <param name="program"></param>
-        public abstract void BindGpuProgram( GpuProgram program );
+        public virtual void BindGpuProgram( GpuProgram program )
+        {
+            switch ( program.Type )
+            {
+                case GpuProgramType.Vertex:
+                    vertexProgramBound = true;
+                    break;
+                case GpuProgramType.Fragment:
+                    fragmentProgramBound = true;
+                    break;
+            }
+        }
 
         /// <summary>
         ///    Bind Gpu program parameters.
@@ -842,10 +1033,10 @@ namespace Axiom.Graphics
         /// <param name="color">The color to clear the color buffer with, if enabled.</param>
         /// <param name="depth">The value to initialize the depth buffer with, if enabled.</param>
         /// <param name="stencil">The value to initialize the stencil buffer with, if enabled.</param>
-        public abstract void ClearFrameBuffer( FrameBuffer buffers, ColorEx color, float depth, int stencil );
+        public abstract void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, float depth, int stencil );
 
         /// <summary>
-        ///		Converts the System.Drawing.Color value to a int.  Each API may need the 
+        ///		Converts the Axiom.Core.ColorEx value to a int.  Each API may need the 
         ///		bytes of the packed color data in different orders. i.e. OpenGL - ABGR, D3D - ARGB
         /// </summary>
         /// <param name="color"></param>
@@ -853,11 +1044,20 @@ namespace Axiom.Graphics
         public abstract int ConvertColor( ColorEx color );
 
         /// <summary>
+        ///		Converts the int value to an Axiom.Core.ColorEx object.  Each API may have the 
+        ///		bytes of the packed color data in different orders. i.e. OpenGL - ABGR, D3D - ARGB
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        public abstract ColorEx ConvertColor( int color );
+
+        /// <summary>
         ///    Creates and registers a render texture object.
         /// </summary>
         /// <param name="name">The name for the new render texture. Note that names must be unique.</param>
         /// <param name="width">Requested width for the render texture.</param>
         /// <param name="height">Requested height for the render texture.</param>
+        /// <param name="format">Requested pixel format for the render texture.</param>
         /// <returns>
         ///    On success, a reference to a new API-dependent, RenderTexture-derived
         ///    class is returned. On failure, null is returned.
@@ -868,7 +1068,24 @@ namespace Axiom.Graphics
         ///    size for the texture. Depending on the hardware driver or the underlying
         ///    API, these values might change when the texture is created.
         /// </remarks>
-        public abstract RenderTexture CreateRenderTexture( string name, int width, int height );
+        //public abstract RenderTexture CreateRenderTexture(string name, int width, int height, PixelFormat format);
+
+        //public virtual RenderTexture CreateRenderTexture(string name, int width, int height, 
+        //                                         TextureType ttype, PixelFormat format,
+        //                                         Dictionary<string, string> miscParams) {
+        //    /// Create a new 2D texture, and return surface to render to
+        //    Texture texture = 
+        //        TextureManager.Instance.CreateManual(name, ttype, width, height, 
+        //                                             0, format, TextureUsage.RenderTarget);
+        //    // Ensure texture loaded and internal resources created
+        //    texture.Load();
+
+        //    return texture.GetBuffer().GetRenderTarget();
+        //}
+
+        //public RenderTexture CreateRenderTexture(string name, int width, int height) {
+        //    return CreateRenderTexture(name, width, height, PixelFormat.R8G8B8);
+        //}		
 
         /// <summary>
         ///		Creates a new render window.
@@ -886,18 +1103,21 @@ namespace Axiom.Graphics
         /// <param name="name"></param>
         /// <param name="width"></param>
         /// <param name="height"></param>
-        /// <param name="colorDepth"></param>
         /// <param name="isFullscreen"></param>
-        /// <param name="left"></param>
-        /// <param name="top"></param>
-        /// <param name="depthBuffer"></param>
-        /// <param name="vsync"></param>
-        /// <param name="target">
-        ///		A handle to a pre-created window to be used for the rendering target.
+        /// <param name="miscParams">
+        ///		A collection of addition rendersystem specific options.
         ///	</param>
         /// <returns></returns>
-        public abstract RenderWindow CreateRenderWindow( string name, int width, int height, int colorDepth,
-            bool isFullscreen, int left, int top, bool depthBuffer, bool vsync, IntPtr target );
+        public abstract RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullScreen, NamedParameterList miscParams );
+
+        /// <summary>
+        /// Create a MultiRenderTarget, which is a render target that renders to multiple RenderTextures at once.
+        /// </summary>
+        /// <Remarks>
+        /// Surfaces can be bound and unbound at will. This fails if Capabilities.MultiRenderTargetsCount is smaller than 2.
+        /// </Remarks>
+        /// <returns></returns>
+        public abstract MultiRenderTarget CreateMultiRenderTarget( string name );
 
         /// <summary>
         ///		Requests an API implementation of a hardware occlusion query used to test for the number
@@ -913,10 +1133,28 @@ namespace Axiom.Graphics
         public abstract void EndFrame();
 
         /// <summary>
-        /// 
+        /// Initialize the rendering engine.
         /// </summary>
-        /// <param name="autoCreateWindow"></param>
-        public abstract RenderWindow Initialize( bool autoCreateWindow, string windowTitle );
+        /// <param name="autoCreateWindow">If true, a default window is created to serve as a rendering target.</param>
+        /// <param name="windowTitle">Text to display on the window caption if not fullscreen.</param>
+        /// <returns>A RenderWindow implementation specific to this RenderSystem.</returns>
+        /// <remarks>All subclasses should call this method from within thier own intialize methods.</remarks>
+        public virtual RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
+        {
+            vertexProgramBound = false;
+            fragmentProgramBound = false;
+            return null;
+        }
+
+        /// <summary>
+        ///	Initialize the rendering engine.
+        /// </summary>
+        /// <param name="autoCreateWindow">If true, a default window is created to serve as a rendering target.</param>
+        /// <returns>A RenderWindow implementation specific to this RenderSystem.</returns>
+        public RenderWindow Initialize( bool autoCreateWindow )
+        {
+            return Initialize( autoCreateWindow, DefaultWindowTitle );
+        }
 
         /// <summary>
         ///		Builds an orthographic projection matrix suitable for this render system.
@@ -924,7 +1162,7 @@ namespace Axiom.Graphics
         /// <remarks>
         ///		Because different APIs have different requirements (some incompatible) for the
         ///		projection matrix, this method allows each to implement their own correctly and pass
-        ///		back a generic Matrix3 for storage in the engine.
+        ///		back a generic Matrix4 for storage in the engine.
         ///	 </remarks>
         /// <param name="fov">Field of view angle.</param>
         /// <param name="aspectRatio">Aspect ratio.</param>
@@ -945,7 +1183,7 @@ namespace Axiom.Graphics
         /// <param name="matrix"></param>
         /// <param name="forGpuProgram"></param>
         /// <returns></returns>
-        public abstract Matrix4 ConvertProjectionMatrix(Matrix4 matrix, bool forGpuProgram);
+        public abstract Matrix4 ConvertProjectionMatrix( Matrix4 matrix, bool forGpuProgram );
 
         /// <summary>
         ///		Builds a perspective projection matrix suitable for this render system.
@@ -953,7 +1191,7 @@ namespace Axiom.Graphics
         /// <remarks>
         ///		Because different APIs have different requirements (some incompatible) for the
         ///		projection matrix, this method allows each to implement their own correctly and pass
-        ///		back a generic Matrix3 for storage in the engine.
+        ///		back a generic Matrix4 for storage in the engine.
         ///	 </remarks>
         /// <param name="fov">Field of view angle.</param>
         /// <param name="aspectRatio">Aspect ratio.</param>
@@ -970,6 +1208,19 @@ namespace Axiom.Graphics
         /// <param name="func"></param>
         /// <param name="val"></param>
         public abstract void SetAlphaRejectSettings( int stage, CompareFunction func, byte val );
+
+        /// <summary>
+        ///   Used to confirm the settings (normally chosen by the user) in
+        ///   order to make the renderer able to inialize with the settings as required.
+        ///   This make be video mode, D3D driver, full screen / windowed etc.
+        ///   Called automatically by the default configuration
+        ///   dialog, and by the restoration of saved settings.
+        ///   These settings are stored and only activeated when 
+        ///   RenderSystem::Initalize or RenderSystem::Reinitialize are called
+        /// </summary>
+        /// <param name="name">the name of the option to alter</param>
+        /// <param name="value">the value to set the option to</param>
+        public abstract void SetConfigOption( string name, string value );
 
         /// <summary>
         ///    Sets whether or not color buffer writing is enabled, and for which channels. 
@@ -1104,7 +1355,8 @@ namespace Axiom.Graphics
         /// <param name="specular"></param>
         /// <param name="emissive"></param>
         /// <param name="shininess"></param>
-        public abstract void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess );
+        /// <param name="tracking"></param>
+        public abstract void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess, TrackVertexColor tracking );
 
         /// <summary>
         ///		Sets the details of a texture stage, to be used for all primitives
@@ -1127,6 +1379,13 @@ namespace Axiom.Graphics
         /// <param name="stage"></param>
         /// <param name="texAddressingMode"></param>
         public abstract void SetTextureAddressingMode( int stage, TextureAddressing texAddressingMode );
+
+        /// <summary>
+        ///    Tells the hardware what border color to use when texture addressing mode is set to Border
+        /// </summary>
+        /// <param name="state"></param>
+        /// <param name="borderColor"></param>
+        public abstract void SetTextureBorderColor( int stage, ColorEx borderColor );
 
         /// <summary>
         ///		Sets the texture blend modes from a TextureLayer record.
@@ -1185,7 +1444,34 @@ namespace Axiom.Graphics
         ///    Unbinds the current GpuProgram of a given GpuProgramType.
         /// </summary>
         /// <param name="type"></param>
-        public abstract void UnbindGpuProgram( GpuProgramType type );
+        public virtual void UnbindGpuProgram( GpuProgramType type )
+        {
+            switch ( type )
+            {
+                case GpuProgramType.Vertex:
+                    vertexProgramBound = false;
+                    break;
+                case GpuProgramType.Fragment:
+                    fragmentProgramBound = false;
+                    break;
+            }
+        }
+
+        /// <summary>
+        ///    Gets the bound status of a given GpuProgramType.
+        /// </summary>
+        /// <param name="type"></param>
+        public bool IsGpuProgramBound( GpuProgramType type )
+        {
+            switch ( type )
+            {
+                case GpuProgramType.Vertex:
+                    return vertexProgramBound;
+                case GpuProgramType.Fragment:
+                    return fragmentProgramBound;
+            }
+            return false;
+        }
 
         /// <summary>
         ///    Tells the rendersystem to use the attached set of lights (and no others) 
@@ -1200,7 +1486,51 @@ namespace Axiom.Graphics
 
         #endregion Abstract Members
 
+        /// <summary>
+        ///   Destroys a render target of any sort
+        /// </summary>
+        /// <param name="name"></param>
+        public virtual void DestroyRenderTarget( string name )
+        {
+            RenderTarget rt = DetachRenderTarget( name );
+            rt.Dispose();
+        }
+
+        /// <summary>
+        ///   Destroys a render window
+        /// </summary>
+        /// <param name="name"></param>
+        public virtual void DestroyRenderWindow( string name )
+        {
+            DestroyRenderTarget( name );
+        }
+
+        /// <summary>
+        ///   Destroys a render texture
+        /// </summary>
+        /// <param name="name"></param>
+        public virtual void DestroyRenderTexture( string name )
+        {
+            DestroyRenderTarget( name );
+        }
+
         #region Overloaded Methods
+
+        /// <summary>
+        ///		Converts a uniform projection matrix to one suitable for this render system.
+        /// </summary>
+        /// <remarks>
+        ///		Because different APIs have different requirements (some incompatible) for the
+        ///		projection matrix, this method allows each to implement their own correctly and pass
+        ///		back a generic Matrix4 for storage in the engine.
+        ///	 </remarks>
+        /// <param name="matrix"></param>
+        /// <returns></returns>
+        public Matrix4 ConvertProjectionMatrix( Matrix4 matrix )
+        {
+            // create without consideration for Gpu programs by default
+            return ConvertProjectionMatrix( matrix, false );
+        }
 
         /// <summary>
         ///		Builds a perspective projection matrix suitable for this render system.
@@ -1208,7 +1538,7 @@ namespace Axiom.Graphics
         /// <remarks>
         ///		Because different APIs have different requirements (some incompatible) for the
         ///		projection matrix, this method allows each to implement their own correctly and pass
-        ///		back a generic Matrix3 for storage in the engine.
+        ///		back a generic Matrix4 for storage in the engine.
         ///	 </remarks>
         /// <param name="fov">Field of view angle.</param>
         /// <param name="aspectRatio">Aspect ratio.</param>
@@ -1226,8 +1556,8 @@ namespace Axiom.Graphics
         /// </summary>
         /// <remarks>
         ///		Because different APIs have different requirements (some incompatible) for the
-        ///		projection matrix, this method allows each to implement their own correctly and pass
-        ///		back a generic Matrix3 for storage in the engine.
+        ///		orthographic matrix, this method allows each to implement their own correctly and pass
+        ///		back a generic Matrix4 for storage in the engine.
         ///	 </remarks>
         /// <param name="fov">Field of view angle.</param>
         /// <param name="aspectRatio">Aspect ratio.</param>
@@ -1237,16 +1567,6 @@ namespace Axiom.Graphics
         public Matrix4 MakeOrthoMatrix( float fov, float aspectRatio, float near, float far )
         {
             return MakeOrthoMatrix( fov, aspectRatio, near, far, false );
-        }
-
-        /// <summary>
-        ///		Initialize the rendering engine.
-        /// </summary>
-        /// <param name="autoCreateWindow">If true, a default window is created to serve as a rendering target.</param>
-        /// <returns>A RenderWindow implementation specific to this RenderSystem.</returns>
-        public RenderWindow Initialize( bool autoCreateWindow )
-        {
-            return Initialize( autoCreateWindow, DefaultWindowTitle );
         }
 
         /// <summary>
@@ -1332,17 +1652,17 @@ namespace Axiom.Graphics
 
         #region ClearFrameBuffer()
 
-        public void ClearFrameBuffer( FrameBuffer buffers, ColorEx color, float depth )
+        public void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, float depth )
         {
             ClearFrameBuffer( buffers, color, depth, 0 );
         }
 
-        public void ClearFrameBuffer( FrameBuffer buffers, ColorEx color )
+        public void ClearFrameBuffer( FrameBufferType buffers, ColorEx color )
         {
             ClearFrameBuffer( buffers, color, 1.0f, 0 );
         }
 
-        public void ClearFrameBuffer( FrameBuffer buffers )
+        public void ClearFrameBuffer( FrameBufferType buffers )
         {
             ClearFrameBuffer( buffers, ColorEx.Black, 1.0f, 0 );
         }

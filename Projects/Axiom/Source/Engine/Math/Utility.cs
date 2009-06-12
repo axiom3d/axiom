@@ -35,12 +35,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using Axiom.Math.Collections;
 
-using Real = System.Single;
-using Radian = System.Single;
-using Degree = System.Single;
+//using Real = System.Single;
+//using Radian = System.Single;
+//using Degree = System.Single;
 using Axiom.Utilities;
 
 #endregion Namespace Declarations
@@ -88,7 +89,7 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Radian DegreesToRadians( Degree degrees )
         {
-            return degrees * RADIANS_PER_DEGREE;
+            return degrees;
         }
 
         /// <summary>
@@ -98,14 +99,34 @@ namespace Axiom.Math
         /// <returns></returns>
         public static Degree RadiansToDegrees( Radian radians )
         {
+            return radians;
+        }
+
+        /// <summary>
+        ///		Converts degrees to radians.
+        /// </summary>
+        /// <param name="degrees"></param>
+        /// <returns></returns>
+        public static float DegreesToRadians(float degrees)
+        {
+            return degrees * RADIANS_PER_DEGREE;
+        }
+
+        /// <summary>
+        ///		Converts radians to degrees.
+        /// </summary>
+        /// <param name="radians"></param>
+        /// <returns></returns>
+        public static float RadiansToDegrees(float radians)
+        {
             return radians * DEGREES_PER_RADIAN;
         }
 
         /// <summary>
         ///     Compares float values for equality, taking into consideration
         ///     that floating point values should never be directly compared using
-        ///     ==.  2 floats could be conceptually equal, but vary by a 
-        ///     .000001 which would fail in a direct comparison.  To circumvent that,
+        ///     the '==' operator.  2 floats could be conceptually equal, but vary by a 
+        ///     float.Epsilon which would fail in a direct comparison.  To circumvent that,
         ///     a tolerance value is used to see if the difference between the 2 floats
         ///     is less than the desired amount of accuracy.
         /// </summary>
@@ -115,31 +136,34 @@ namespace Axiom.Math
         /// <returns></returns>
         public static bool FloatEqual( float a, float b, float tolerance )
         {
-            if ( System.Math.Abs( b - a ) <= tolerance )
-            {
-                return true;
-            }
-
-            return false;
+            return ( System.Math.Abs( b - a ) <= tolerance );
         }
 
         /// <summary>
         ///     Compares float values for equality, taking into consideration
         ///     that floating point values should never be directly compared using
-        ///     ==.  2 floats could be conceptually equal, but vary by a 
-        ///     .000001 which would fail in a direct comparison.  To circumvent that,
-        ///     a tolerance value is used to see if the difference between the 2 floats
-        ///     is less than the desired amount of accuracy.
+        ///     the '==' operator.  2 floats could be conceptually equal, but vary by a 
+        ///     float.Epsilon which would fail in a direct comparison.
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
         public static bool FloatEqual( float a, float b )
         {
-            return FloatEqual( a, b, .00001f );
+        	return ( System.Math.Abs( b - a ) <= float.Epsilon );
         }
 
+		public static Real ParseReal( string value )
+		{
+			return Real.Parse( value, new System.Globalization.CultureInfo( "en-US" ) );
+		}
 
+		/// <summary>
+		///     Returns the sign of a real number.
+		/// The result will be -1 for a negative number, 0 for zero and 1 for positive number.
+		/// </summary>
+		/// <param name="number"></param>
+		/// <returns></returns>
         public static int Sign( Real number )
         {
             return System.Math.Sign( number );
@@ -150,7 +174,7 @@ namespace Axiom.Math
         /// </summary>
         public static Real Sin( Radian angle )
         {
-            return (Real)System.Math.Sin( angle );
+            return (Real)System.Math.Sin( (double)angle );
         }
 
         /// <summary>
@@ -166,7 +190,7 @@ namespace Axiom.Math
         /// </summary>
         public static Real Cos( Radian angle )
         {
-            return (Real)System.Math.Cos( angle );
+            return (Real)System.Math.Cos( (double)angle );
         }
 
         /// <summary>
@@ -192,7 +216,7 @@ namespace Axiom.Math
         /// </summary>
         public static Real Tan( Radian value )
         {
-            return (Real)System.Math.Tan( value );
+            return (Real)System.Math.Tan( (double)value );
         }
 
         /// <summary>
@@ -213,9 +237,9 @@ namespace Axiom.Math
             return (Radian)System.Math.Atan2( y, x );
         }
 
-        public static Radian ATan2( Real y, Real x )
+        public static Real ATan2( Real y, Real x )
         {
-            return (Radian)System.Math.Atan2( y, x );
+            return System.Math.Atan2( y, x );
         }
 
         /// <summary>
@@ -240,6 +264,17 @@ namespace Axiom.Math
         }
 
         /// <summary>
+        ///     Raise a number to a power.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns>The number x raised to power y</returns>
+        public static Real Pow( Real x, Real y )
+        {
+        	return (Real)System.Math.Pow( (double)x, (double)y );
+        }
+        
+        /// <summary>
         ///		Returns the absolute value of the supplied number.
         /// </summary>
         /// <param name="number"></param>
@@ -261,6 +296,27 @@ namespace Axiom.Math
         }
 
         /// <summary>
+        ///     Finds the first maximum value in the array and returns the index of it.
+        /// </summary>
+        /// <param name="values">Array of values containing one value at least.</param>
+        /// <returns></returns>
+        public static int Max( Real[] values )
+        {
+        	Debug.Assert(values != null && values.Length > 0);
+        	
+        	int maxIndex = 0;
+        	Real max = values[0];
+        	for (int i = 1; i < values.Length; i++)
+        		if (values[i] > max)
+        		{
+        			max = values[i];
+        			maxIndex = i;
+        		}
+        	
+        	return maxIndex;
+        }
+        
+        /// <summary>
         /// Returns the minumum of the two supplied values.
         /// </summary>
         /// <param name="lhs"></param>
@@ -270,6 +326,37 @@ namespace Axiom.Math
         {
             return lhs < rhs ? lhs : rhs;
         }
+
+		/// <summary>
+        ///     Finds the first minimum value in the array and returns the index of it.
+        /// </summary>
+        /// <param name="values">Array of values containing one value at least.</param>
+        /// <returns></returns>
+        public static int Min( Real[] values )
+        {
+        	Debug.Assert(values != null && values.Length > 0);
+        	
+        	int minIndex = 0;
+        	Real min = values[0];
+        	for (int i = 1; i < values.Length; i++)
+        		if (values[i] < min)
+        		{
+        			min = values[i];
+        			minIndex = i;
+        		}
+        	
+        	return minIndex;
+        }
+  
+		/// <summary>
+		/// Returns the smallest integer greater than or equal to the specified value.
+		/// </summary>
+		/// <param name="number"></param>
+		/// <returns></returns>
+		public static Real Ceiling( Real number )
+		{
+			return (Real)System.Math.Ceiling( number );
+		}
 
         /// <summary>
         ///    Returns a random value between the specified min and max values.
@@ -310,10 +397,10 @@ namespace Axiom.Math
             Vector3 normal = plane.Normal;
 
             return new Matrix4(
-                -2.0f * normal.x * normal.x + 1.0f, -2.0f * normal.x * normal.y, -2.0f * normal.x * normal.z, -2.0f * normal.x * plane.D,
-                -2.0f * normal.y * normal.x, -2.0f * normal.y * normal.y + 1.0f, -2.0f * normal.y * normal.z, -2.0f * normal.y * plane.D,
-                -2.0f * normal.z * normal.x, -2.0f * normal.z * normal.y, -2.0f * normal.z * normal.z + 1.0f, -2.0f * normal.z * plane.D,
-                0.0f, 0.0f, 0.0f, 1.0f );
+                -2.0f * normal.x * normal.x + 1.0f,		-2.0f * normal.x * normal.y,			-2.0f * normal.x * normal.z,			-2.0f * normal.x * plane.D,
+                -2.0f * normal.y * normal.x,			-2.0f * normal.y * normal.y + 1.0f,		-2.0f * normal.y * normal.z,			-2.0f * normal.y * plane.D,
+                -2.0f * normal.z * normal.x,			-2.0f * normal.z * normal.y,			-2.0f * normal.z * normal.z + 1.0f,		-2.0f * normal.z * plane.D,
+                0.0f,									0.0f,									0.0f,									1.0f );
         }
 
         /// <summary>
@@ -345,7 +432,18 @@ namespace Axiom.Math
 
             return normal;
         }
-
+        /// <summary>
+        ///		Calculate a face normal, no w-information.
+        /// </summary>
+        /// <param name="v1"></param>
+        /// <param name="v2"></param>
+        /// <param name="v3"></param>
+        /// <returns></returns>
+        public static Vector3 CalculateBasicFaceNormalWithoutNormalize( Vector3 v1, Vector3 v2, Vector3 v3 )
+        {
+            Vector3 normal = ( v2 - v1 ).Cross( v3 - v1 );
+            return normal;
+        }
         /// <summary>
         ///    Calculates the tangent space vector for a given set of positions / texture coords.
         /// </summary>
@@ -480,6 +578,30 @@ namespace Axiom.Math
             return true;
         }
 
+        /// <summary>
+		///    Method delegate with a simple signature. 
+		///    Used to measure execution time of a method for instance.
+		/// </summary>
+		public delegate void SimpleMethodDelegate();
+		
+		/// <summary>
+		///     Measure the execution time of a method.
+		/// </summary>
+		/// <param name="method"></param>
+		/// <returns>The elapsed time in seconds.</returns>
+		public static float Measure( SimpleMethodDelegate method ) 
+		{
+			long start = System.Diagnostics.Stopwatch.GetTimestamp();
+			
+			method();
+			
+			double elapsed = (double)(System.Diagnostics.Stopwatch.GetTimestamp() - start);
+			double freq = (double)System.Diagnostics.Stopwatch.Frequency;
+
+			return (float)(elapsed / freq);
+		}
+	
+		
         #region Intersection Methods
 
         /// <summary>
@@ -641,7 +763,96 @@ namespace Axiom.Math
 
             return new IntersectResult( hit, lowt );
         }
+        public static IntersectResult Intersects(Ray ray, Vector3 a,
+            Vector3 b, Vector3 c, Vector3 normal, bool positiveSide, bool negativeSide)
+        {
+            // Calculate intersection with plane.
+            float t;
+            {
+                float denom = normal.Dot(ray.Direction);
+                // Check intersect side
+                if (denom > +float.Epsilon)
+                {
+                    if (!negativeSide)
+                        return new IntersectResult(false, 0);
+                }
+                else if (denom < -float.Epsilon)
+                {
+                    if (!positiveSide)
+                        return new IntersectResult(false, 0);
+                }
+                else
+                {
+                    // Parallel or triangle area is close to zero when
+                    // the plane normal not normalised.
+                    return new IntersectResult(false, 0);
+                }
 
+                t = normal.Dot(a - ray.Origin) / denom;
+                if (t < 0)
+                {
+                    return new IntersectResult(false, 0);
+                }
+            }
+
+            // Calculate the largest area projection plane in X, Y or Z.
+            int i0, i1;
+            {
+                float n0 = Math.Utility.Abs(normal[0]);
+                float n1 = Math.Utility.Abs(normal[1]);
+                float n2 = Math.Utility.Abs(normal[2]);
+
+                i0 = 1; i1 = 2;
+                if (n1 > n2)
+                {
+                    if (n1 > n0) i0 = 0;
+                }
+                else
+                {
+                    if (n2 > n0) i1 = 0;
+                }
+
+            }
+
+            // Check the intersection point is inside the triangle.
+            {
+                Real u1 = b[i0] - a[i0];
+                Real v1 = b[i1] - a[i1];
+                Real u2 = c[i0] - a[i0];
+                Real v2 = c[i1] - a[i1];
+                Real u0 = t * ray.Direction[i0] + ray.Origin[i0] - a[i0];
+                Real v0 = t * ray.Direction[i1] + ray.Origin[i1] - a[i1];
+
+                Real alpha = u0 * v2 - u2 * v0;
+                Real beta = u1 * v0 - u0 * v1;
+                Real area = u1 * v2 - u2 * v1;
+
+                // epsilon to avoid float precision error
+                Real EPSILON = 1e-3f;
+
+                Real tolerance = -EPSILON * area;
+
+                if (area > 0)
+                {
+                    if (alpha < tolerance || beta < tolerance || alpha + beta > area - tolerance)
+                        return new IntersectResult(false, 0);
+                }
+                else
+                {
+                    if (alpha > tolerance || beta > tolerance || alpha + beta < area - tolerance)
+                        return new IntersectResult(false, 0);
+                }
+
+            }
+
+            return new IntersectResult(true, t);
+        }
+        public static IntersectResult Intersects(Ray ray, Vector3 a,
+            Vector3 b, Vector3 c, bool positiveSide, bool negativeSide)
+        {
+            Vector3 normal = CalculateBasicFaceNormalWithoutNormalize(a, b, c);
+            return Intersects(ray, a, b, c, normal, positiveSide, negativeSide);
+        }
 
         /// <summary>
         ///    Tests an intersection between two boxes.
@@ -977,6 +1188,24 @@ namespace Axiom.Math
         }
 
         #endregion Intersection Methods
+
+		/// <summary>
+		/// Swaps two values
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="v1"></param>
+		/// <param name="v2"></param>
+		public static void Swap<T>( ref T v1, ref T v2 )
+		{
+			T temp = v1;
+			v1 = v2;
+			v2 = temp;
+		}
+
+        public static Real Sqr( Real number )
+        {
+            return number * number;
+        }
     }
 
     #region Return result structures
@@ -1016,3 +1245,5 @@ namespace Axiom.Math
 
     #endregion Return result structures
 }
+
+ 	  	 

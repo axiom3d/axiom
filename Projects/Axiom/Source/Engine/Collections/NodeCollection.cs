@@ -121,6 +121,40 @@ namespace Axiom.Collections
         {
             base.Add( key, item );
         }
+		public override void Remove( object item )
+		{
+			if ( !( item is T ) )
+				throw new ArgumentException( "Cannot remove an item that is note a Node from a NodeCollection." );
+			Remove( (T)item );
+		}
+		public void Remove( T item )
+		{
+			objectList.Remove( item.Name );
+		}
+		public void Remove( K key )
+		{
+			objectList.Remove( key );
+		}
+		public bool Contains( T item )
+		{
+			return objectList.Contains( item.Name );
+		}
+
+		public bool Contains( K key )
+		{
+			return objectList.Contains( key );
+		}
+
+		public int IndexOf( K key )
+		{
+			return objectList.IndexOfKey( key );
+		}
+
+		public int IndexOf( T item )
+		{
+			return objectList.IndexOfKey( item.Name );
+		}
+
 
         #endregion
     }

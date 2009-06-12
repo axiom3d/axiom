@@ -44,7 +44,7 @@ namespace Axiom.Controllers.Canned
     /// <summary>
     ///     Predefined controller function for dealing with animation.
     /// </summary>
-    public class AnimationControllerFunction : IControllerFunction
+	public class AnimationControllerFunction : IControllerFunction<float>
     {
         #region Fields
 

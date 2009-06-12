@@ -58,7 +58,7 @@ namespace Axiom.Core
         #endregion Constructor
 
 		#region Copy Method
-		/// <summary>
+        /// <summary>
         ///		Method for copying data from one IntPtr to another.
         /// </summary>
         /// <param name="src">Source pointer.</param>
@@ -90,10 +90,10 @@ namespace Axiom.Core
                     pDest[ i + destOffset ] = pSrc[ i + srcOffset ];
                 }
             }
-		}
+        }
 		#endregion Copy Method
 
-		/// <summary>
+        /// <summary>
         ///     Sets the memory to 0 starting at the specified offset for the specified byte length.
         /// </summary>
         /// <param name="dest">Destination pointer.</param>
@@ -110,7 +110,7 @@ namespace Axiom.Core
                     ptr[ i + offset ] = 0;
                 }
             }
-		}
+        }
 
 		#region Pinned Object Access
 

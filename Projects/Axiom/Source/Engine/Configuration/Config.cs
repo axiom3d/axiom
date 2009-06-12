@@ -34,25 +34,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Configuration;
+using System.Xml;
+using System.Xml.Serialization;
+using System.Xml.XPath;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Configuration
 {
     /// <summary>
-    /// Summary description for XConfig.
+    /// Summary description for Config.
     /// </summary>
     public class Config
     {
-        //public const string MediaPath = @"E:\GameProgramming\Resources\";
         public const int MaxTextureCoordSets = 6;
-#if !(XBOX360)
-        public const int MaxTextureLayers = 8;
-#else
-		public const int MaxTextureLayers = 16;
-#endif
+        public const int MaxTextureLayers = 16;
         public const int MaxBlendWeights = 4;
         public const int MaxSimultaneousLights = 8;
+		public const int MaxMultipleRenderTargets = 8;
 
         public Config()
         {

@@ -40,6 +40,7 @@ using System.Diagnostics;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -68,11 +69,21 @@ namespace Axiom.Overlays
     {
         #region Member variables
 
-        protected Hashtable children = new Hashtable();
-        protected ArrayList childList = new ArrayList();
-        protected Hashtable childContainers = new Hashtable();
-
+        protected Dictionary<string, OverlayElement> children = new Dictionary<string, OverlayElement>();
+        protected List<OverlayElement> childList = new List<OverlayElement>();
+        protected Dictionary<string, OverlayElement> childContainers = new Dictionary<string, OverlayElement>();
         protected bool childrenProcessEvents;
+
+        /// <summary>
+        /// Gets the children OverlayElements as a Key-Value collection
+        /// </summary>
+        public IDictionary<string, OverlayElement> Children
+        {
+            get
+            {
+                return children;
+            }
+        }
 
         #endregion
 
@@ -92,6 +103,20 @@ namespace Axiom.Overlays
 
         #region Methods
 
+        public override void Initialize()
+        {
+            foreach ( OverlayElementContainer container in childContainers.Values)
+            {                
+                container.Initialize();
+            }
+
+            for (int i = 0; i < childList.Count; i++)
+            {
+                childList[i].Initialize();
+            }
+
+        }
+
         /// <summary>
         ///    Adds another OverlayElement to this container.
         /// </summary>
@@ -100,11 +125,11 @@ namespace Axiom.Overlays
         {
             if ( element.IsContainer )
             {
-                AddChildImpl( (OverlayElementContainer)element );
+                AddChildContainer( (OverlayElementContainer)element);
             }
             else
             {
-                AddChildImpl( element );
+                AddChildElement( element );
             }
         }
 
@@ -112,7 +137,7 @@ namespace Axiom.Overlays
         ///    Adds another OverlayElement to this container.
         /// </summary>
         /// <param name="element"></param>
-        public virtual void AddChildImpl( OverlayElement element )
+        public virtual void AddChildElement( OverlayElement element )
         {
             Debug.Assert( !children.ContainsKey( element.Name ), string.Format( "Child with name '{0}' already defined.", element.Name ) );
 
@@ -131,41 +156,31 @@ namespace Axiom.Overlays
         ///    Add a nested container to this container.
         /// </summary>
         /// <param name="container"></param>
-        public virtual void AddChildImpl( OverlayElementContainer container )
+        public virtual void AddChildContainer( OverlayElementContainer container )
         {
             // add this container to the main child list first
             OverlayElement element = container;
-            AddChildImpl( element );
-            /*
-            element.NotifyParent( this, overlay );
-            element.NotifyZOrder( zOrder + 1 );
+            AddChildElement( element );
 
-            // inform container children of the current overlay
-            // *gasp* it's a foreach!  this isn't a time critical method anyway
-            foreach ( OverlayElement child in container.children )
-            {
-                child.NotifyParent( container, overlay );
-                child.NotifyZOrder( container.ZOrder + 1 );
-            }
-        */
             // now add the container to the container collection
             childContainers.Add( container.Name, container );
         }
+
+        /// <summary>
+        /// Removes a child element by its name
+        /// </summary>
+        /// <param name="name"></param>
         public virtual void RemoveChild( string name )
         {
-            Debug.Assert( !children.ContainsKey( name ), string.Format( "Child with name '{0}' not found.", name ) );
-
             OverlayElement element = GetChild( name );
             children.Remove( name );
-
+            childList.Remove( element );
             // remove from container list (if found)
             if ( childContainers.ContainsKey( name ) )
             {
                 childContainers.Remove( name );
             }
             element.Parent = null;
-
-
         }
         /// <summary>
         ///    Gets the named child of this container.
@@ -173,9 +188,9 @@ namespace Axiom.Overlays
         /// <param name="name"></param>
         public virtual OverlayElement GetChild( string name )
         {
-            Debug.Assert( children.ContainsKey( name ), "children.ContainsKey(name)" );
+            Debug.Assert(children.ContainsKey(name), string.Format("Child with name '{0}' not found.", name));
 
-            return (OverlayElement)children[ name ];
+            return children[ name ];
         }
 
         /// <summary>
@@ -188,7 +203,7 @@ namespace Axiom.Overlays
 
             for ( int i = 0; i < childList.Count; i++ )
             {
-                ( (OverlayElement)childList[ i ] ).PositionsOutOfDate();
+                childList[ i ].PositionsOutOfDate();
             }
         }
 
@@ -199,20 +214,27 @@ namespace Axiom.Overlays
 
             for ( int i = 0; i < childList.Count; i++ )
             {
-                ( (OverlayElement)childList[ i ] ).Update();
+                childList[ i ].Update();
             }
         }
 
-        public override void NotifyZOrder( int zOrder )
+        public override int NotifyZOrder( int zOrder )
         {
             // call base class method
             base.NotifyZOrder( zOrder );
 
+            //One for us
+            zOrder++;
+
             for ( int i = 0; i < childList.Count; i++ )
             {
-                ( (OverlayElement)childList[ i ] ).NotifyZOrder( zOrder + 1 );
+                zOrder = childList[ i ].NotifyZOrder( zOrder );
             }
+
+            return zOrder;
         }
+        
+
         public override void NotifyWorldTransforms( Matrix4[] xform )
         {
             base.NotifyWorldTransforms( xform );
@@ -220,7 +242,7 @@ namespace Axiom.Overlays
             // Update children
             for ( int i = 0; i < childList.Count; i++ )
             {
-                ( (OverlayElement)childList[ i ] ).NotifyWorldTransforms( xform );
+                childList[ i ].NotifyWorldTransforms( xform );
             }
         }
 
@@ -230,7 +252,7 @@ namespace Axiom.Overlays
             // Update children
             for ( int i = 0; i < childList.Count; i++ )
             {
-                OverlayElement overlayElement = (OverlayElement)childList[ i ];
+                OverlayElement overlayElement = childList[ i ];
                 overlayElement.NotifyViewport();
             }
         }
@@ -242,11 +264,9 @@ namespace Axiom.Overlays
 
             for ( int i = 0; i < childList.Count; i++ )
             {
-                ( (OverlayElement)childList[ i ] ).NotifyParent( this, overlay );
+                childList[ i ].NotifyParent( this, overlay );
             }
         }
-
-
 
         public override void UpdateRenderQueue( RenderQueue queue )
         {
@@ -257,7 +277,7 @@ namespace Axiom.Overlays
 
                 for ( int i = 0; i < childList.Count; i++ )
                 {
-                    ( (OverlayElement)childList[ i ] ).UpdateRenderQueue( queue );
+                    childList[ i ].UpdateRenderQueue( queue );
                 }
             }
         }
@@ -274,7 +294,7 @@ namespace Axiom.Overlays
                 {
                     for ( int i = 0; i < childList.Count; i++ )
                     {
-                        OverlayElement currentOverlayElement = (OverlayElement)childList[ i ];
+                        OverlayElement currentOverlayElement = childList[ i ];
 
                         if ( currentOverlayElement.IsVisible && currentOverlayElement.Enabled )
                         {
@@ -325,21 +345,6 @@ namespace Axiom.Overlays
 
         #endregion
 
-        public override void Initialize()
-        {
-            IDictionaryEnumerator en = childContainers.GetEnumerator();
-            while ( en.MoveNext() )
-            {
-                ( (OverlayElementContainer)en.Value ).Initialize();
-            }
-
-            for ( int i = 0; i < childList.Count; i++ )
-            {
-                ( (OverlayElement)childList[ i ] ).Initialize();
-
-            }
-
-        }
         //		public void CopyFromTemplate(OverlayElement templateOverlay)
         //		{
         //			base.CopyFromTemplate(templateOverlay);

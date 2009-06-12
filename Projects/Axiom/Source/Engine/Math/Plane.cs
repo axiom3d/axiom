@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
@@ -28,18 +29,21 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
+
 
 #endregion Namespace Declarations
 
@@ -61,18 +65,35 @@ namespace Axiom.Math
     {
         #region Fields
 
-        /// <summary>
-        ///		Direction the plane is facing.
-        /// </summary>
-        public Vector3 Normal;
+        private static readonly Plane nullPlane = new Plane( Vector3.Zero, 0 );
+
         /// <summary>
         ///		Distance from the origin.
         /// </summary>
         public float D;
 
+        /// <summary>
+        ///		Direction the plane is facing.
+        /// </summary>
+        public Vector3 Normal;
+
+        public static Plane Null
+        {
+            get
+            {
+                return nullPlane;
+            }
+        }
+
         #endregion Fields
 
         #region Constructors
+
+        //public Plane()
+        //{
+        //    this.Normal = Vector3.Zero;
+        //    this.D = float.NaN;
+        //}
 
         public Plane( Plane plane )
         {
@@ -107,9 +128,9 @@ namespace Axiom.Math
         {
             Vector3 edge1 = point1 - point0;
             Vector3 edge2 = point2 - point0;
-            Normal = edge1.Cross( edge2 );
-            Normal.Normalize();
-            D = -Normal.Dot( point0 );
+            this.Normal = edge1.Cross( edge2 );
+            this.Normal.Normalize();
+            this.D = -this.Normal.Dot( point0 );
         }
 
         #endregion
@@ -123,15 +144,72 @@ namespace Axiom.Math
         /// <returns></returns>
         public PlaneSide GetSide( Vector3 point )
         {
-            float distance = GetDistance( point );
+            float distance = this.GetDistance( point );
 
             if ( distance < 0.0f )
+            {
                 return PlaneSide.Negative;
+            }
 
             if ( distance > 0.0f )
+            {
                 return PlaneSide.Positive;
+            }
 
             return PlaneSide.None;
+        }
+
+        /// <summary>
+        /// Returns the side where the aligneBox is. the flag Both indicates an intersecting box.
+        /// one corner ON the plane is sufficient to consider the box and the plane intersecting.
+        /// </summary>
+        /// <param name="box"></param>
+        /// <returns></returns>
+        public PlaneSide GetSide( AxisAlignedBox box )
+        {
+            if ( box.IsNull )
+            {
+                return PlaneSide.None;
+            }
+            if ( box.IsInfinite )
+            {
+                return PlaneSide.Both;
+            }
+
+            return this.GetSide( box.Center, box.HalfSize );
+        }
+
+        /// <summary>
+        ///     Returns which side of the plane that the given box lies on.
+        ///     The box is defined as centre/half-size pairs for effectively.
+        /// </summary>
+        /// <param name="centre">The centre of the box.</param>
+        /// <param name="halfSize">The half-size of the box.</param>
+        /// <returns>
+        ///     Positive if the box complete lies on the "positive side" of the plane,
+        ///     Negative if the box complete lies on the "negative side" of the plane,
+        ///     and Both if the box intersects the plane.
+        /// </returns>
+        public PlaneSide GetSide( Vector3 centre, Vector3 halfSize )
+        {
+            // Calculate the distance between box centre and the plane
+            Real dist = this.GetDistance( centre );
+
+            // Calculate the maximise allows absolute distance for
+            // the distance between box centre and plane
+            Real maxAbsDist = this.Normal.AbsDot( halfSize );
+
+            if ( dist < -maxAbsDist )
+            {
+                return PlaneSide.Negative;
+            }
+
+            if ( dist > +maxAbsDist )
+            {
+                return PlaneSide.Positive;
+            }
+
+            return PlaneSide.Both;
         }
 
         /// <summary>
@@ -146,7 +224,18 @@ namespace Axiom.Math
         /// <returns></returns>
         public float GetDistance( Vector3 point )
         {
-            return Normal.Dot( point ) + D;
+            return this.Normal.Dot( point ) + this.D;
+        }
+
+        /// <summary>
+        /// Redefine this plane based on a normal and a point.
+        /// </summary>
+        /// <param name="rkNormal">Normal vector</param>
+        /// <param name="rkPoint">Point vector</param>
+        public void Redefine( Vector3 rkNormal, Vector3 rkPoint )
+        {
+            this.Normal = rkNormal;
+            this.D = -rkNormal.Dot( rkPoint );
         }
 
         /// <summary>
@@ -159,9 +248,32 @@ namespace Axiom.Math
         {
             Vector3 edge1 = point1 - point0;
             Vector3 edge2 = point2 - point0;
-            Normal = edge1.Cross( edge2 );
-            Normal.Normalize();
-            D = -Normal.Dot( point0 );
+            this.Normal = edge1.Cross( edge2 );
+            this.Normal.Normalize();
+            this.D = -this.Normal.Dot( point0 );
+        }
+
+        /// <summary>
+        ///     Project a point onto the plane.
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public Vector3 ProjectVector( Vector3 point )
+        {
+            // We know plane normal is unit length, so use simple method
+            Matrix3 xform;
+
+            xform.m00 = 1.0f - this.Normal.x * this.Normal.x;
+            xform.m01 = -this.Normal.x * this.Normal.y;
+            xform.m02 = -this.Normal.x * this.Normal.z;
+            xform.m10 = -this.Normal.y * this.Normal.x;
+            xform.m11 = 1.0f - this.Normal.y * this.Normal.y;
+            xform.m12 = -this.Normal.y * this.Normal.z;
+            xform.m20 = -this.Normal.z * this.Normal.x;
+            xform.m21 = -this.Normal.z * this.Normal.y;
+            xform.m22 = 1.0f - this.Normal.z * this.Normal.z;
+
+            return xform * point;
         }
 
         #endregion Methods
@@ -175,9 +287,7 @@ namespace Axiom.Math
         /// <returns>True if the 2 planes are logically equal, false otherwise.</returns>
         public override bool Equals( object obj )
         {
-            Plane plane = (Plane)obj;
-
-            return plane == this;
+            return obj is Plane && this == (Plane) obj;
         }
 
         /// <summary>
@@ -186,7 +296,7 @@ namespace Axiom.Math
         /// <returns></returns>
         public override int GetHashCode()
         {
-            return D.GetHashCode() ^ Normal.GetHashCode();
+            return this.D.GetHashCode() ^ this.Normal.GetHashCode();
         }
 
         /// <summary>
@@ -195,7 +305,7 @@ namespace Axiom.Math
         /// <returns></returns>
         public override string ToString()
         {
-            return string.Format( "Distance: {0} Normal: {1}", D, Normal.ToString() );
+            return string.Format( "Distance: {0} Normal: {1}", this.D, this.Normal );
         }
 
         #endregion
@@ -210,6 +320,18 @@ namespace Axiom.Math
         /// <returns>true if equal, false if not equal.</returns>
         public static bool operator ==( Plane left, Plane right )
         {
+            object l = left;
+            object r = right;
+            if ( l == null || r == null )
+            {
+                if ( l == null && r == null )
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
             return ( left.D == right.D ) && ( left.Normal == right.Normal );
         }
 
@@ -221,6 +343,18 @@ namespace Axiom.Math
         /// <returns>true if not equal, false if equal.</returns>
         public static bool operator !=( Plane left, Plane right )
         {
+            object l = left;
+            object r = right;
+            if ( l == null || r == null )
+            {
+                if ( l == null && r == null )
+                {
+                    return false;
+                }
+
+                return true;
+            }
+
             return ( left.D != right.D ) || ( left.Normal != right.Normal );
         }
 

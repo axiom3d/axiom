@@ -36,6 +36,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 
 using Axiom.Core;
+using Axiom.Collections;
+
+using ResourceHandle = System.UInt64;
+using System.IO;
 
 #endregion Namespace Declarations
 
@@ -52,9 +56,33 @@ namespace Axiom.SceneManagers.Bsp
     ///		only 1 BspLevel resource is allowed to be loaded at one time. Loading
     ///		another automatically unloads the currently loaded level if any.
     /// </remarks>
-    public class BspResourceManager : ResourceManager
+    public class BspResourceManager : ResourceManager, ISingleton<BspResourceManager>
     {
-        #region Singleton implementation
+        #region Fields and Properties
+
+        protected Quake3ShaderManager shaderManager;
+
+        #endregion Fields and Properties
+
+        #region Methods
+
+        /// <summary>
+        ///		Loads a BSP-based level from the named file.  Currently only supports loading of Quake3 .bsp files.
+        /// </summary>
+        public BspLevel Load( Stream stream, string group )
+        {
+            RemoveAll();
+
+            BspLevel bsp = (BspLevel)Create( "bsplevel", ResourceGroupManager.Instance.WorldResourceGroupName, true, null, null );
+            bsp.Load( stream );
+
+            return bsp;
+        }
+
+        #endregion
+
+        #region ISingleton<BspResourceManager> Implementation
+
         protected static BspResourceManager instance;
 
         public static BspResourceManager Instance
@@ -72,43 +100,57 @@ namespace Axiom.SceneManagers.Bsp
 
         protected BspResourceManager()
         {
+            ResourceType = "BspLevel";
+            shaderManager = Quake3ShaderManager.Instance;
+            ResourceGroupManager.Instance.RegisterResourceManager( ResourceType, this );
         }
-        #endregion
 
-        #region Protected members
-        protected Quake3ShaderManager shaderManager;
-        #endregion
-
-        #region Methods
-        /// <summary>
-        ///		Loads a BSP-based level from the named file.  Currently only supports loading of Quake3 .bsp files.
-        /// </summary>
-        public BspLevel Load( string fileName )
+        public bool Initialize( params object[] args )
         {
-            return Load( fileName, 1 );
+            return true;
         }
 
-        /// <summary>
-        ///		Loads a BSP-based level from the named file.  Currently only supports loading of Quake3 .bsp files.
-        /// </summary>
-        public BspLevel Load( string fileName, int priority )
+        protected override void dispose( bool disposeManagedResources )
         {
-            // TODO: Bleh?!
-            // UnloadAndDestroyAll();
+            if ( !isDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    // Dispose managed resources.
+                    shaderManager.Dispose();
+                    ResourceGroupManager.Instance.UnregisterResourceManager( "BspLevel" );
+                }
 
-            BspLevel bsp = (BspLevel)Create( fileName );
-            base.Load( bsp, priority );
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
+            isDisposed = true;
 
-            return bsp;
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose( disposeManagedResources );
         }
+
+        #endregion ISingleton<BspResourceManager> Implementation
+
+        #region ResourceManager Implementation
+
+        public override Resource Load( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
+        {
+            RemoveAll(); // Only one level at a time.
+
+            return base.Load( name, group, isManual, loader, loadParams );
+        }
+
 
         /// <summary>
         ///		Creates a BspLevel resource - mainly used internally.
         /// </summary>
-        public override Resource Create( string name )
+        protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
         {
-            return new BspLevel( name );
+            return new BspLevel( this, name, handle, group, isManual, loader, createParams );
         }
-        #endregion
+
+        #endregion ResourceMAnager Implementation
     }
 }

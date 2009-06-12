@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<project name="Tao.Platform.X11" default="build">
+
+<target name="build-settings">
+	<assemblyfileset id="proj.references" basedir="${project::get-base-directory()}">
+                <lib>
+                    <include name="${project::get-base-directory()}" />
+                    <include name="${project::get-base-directory()}/${build.dir}" />
+                </lib>
+                <include name="System.dll" />
+                <include name="System.Drawing.dll" />
+                <include name="System.Windows.Forms.dll" />
+                <include name="../Tao.OpenGl/${build.dir}/Tao.OpenGl.dll" />
+	</assemblyfileset >
+	
+	<property name="proj.keyfile" value="${project::get-name()}.snk" />
+</target>
+
+<include buildfile="../../project.build.include" />
+
+</project>

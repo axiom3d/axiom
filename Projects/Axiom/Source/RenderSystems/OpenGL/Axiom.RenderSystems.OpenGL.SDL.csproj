@@ -2,14 +2,14 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>10.0.20506</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3FC7E038-B500-4CAB-8525-0D3442B3052D}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>Axiom.RenderSystems.OpenGL.SDL</AssemblyName>
+    <AssemblyName>Axiom.RenderSystems.OpenGL.Sdl</AssemblyName>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
@@ -46,7 +46,7 @@
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <DefineConstants>DEBUG;TRACE;OPENGL_SDL</DefineConstants>
-    <DocumentationFile>bin\Axiom.RenderSystems.OpenGL.SDL.XML</DocumentationFile>
+    <DocumentationFile>bin\Axiom.RenderSystems.OpenGL.Sdl.XML</DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <Optimize>false</Optimize>
@@ -63,7 +63,7 @@
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <DefineConstants>TRACE;OPENGL_SDL</DefineConstants>
-    <DocumentationFile>bin\Axiom.RenderSystems.OpenGL.SDL.XML</DocumentationFile>
+    <DocumentationFile>bin\Axiom.RenderSystems.OpenGL.Sdl.XML</DocumentationFile>
     <FileAlignment>4096</FileAlignment>
     <Optimize>true</Optimize>
     <OutputPath>bin\</OutputPath>
@@ -79,7 +79,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x64\Axiom.RenderSystems.OpenGL.SDL.XML</DocumentationFile>
+    <DocumentationFile>bin\x64\Axiom.RenderSystems.OpenGL.Sdl.XML</DocumentationFile>
     <WarningLevel>0</WarningLevel>
     <FileAlignment>4096</FileAlignment>
     <PlatformTarget>x64</PlatformTarget>
@@ -94,7 +94,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x64\Axiom.RenderSystems.OpenGL.SDL.XML</DocumentationFile>
+    <DocumentationFile>bin\x64\Axiom.RenderSystems.OpenGL.Sdl.XML</DocumentationFile>
     <Optimize>true</Optimize>
     <WarningLevel>0</WarningLevel>
     <FileAlignment>4096</FileAlignment>
@@ -110,7 +110,7 @@
     <DefineConstants>DEBUG;TRACE;OPENGL_SDL</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x86\Axiom.RenderSystems.OpenGL.SDL.XML</DocumentationFile>
+    <DocumentationFile>bin\x86\Axiom.RenderSystems.OpenGL.Sdl.XML</DocumentationFile>
     <WarningLevel>0</WarningLevel>
     <FileAlignment>4096</FileAlignment>
     <PlatformTarget>x86</PlatformTarget>
@@ -125,7 +125,7 @@
     <DefineConstants>TRACE;OPENGL_SDL</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>bin\x86\Axiom.RenderSystems.OpenGL.SDL.XML</DocumentationFile>
+    <DocumentationFile>bin\x86\Axiom.RenderSystems.OpenGL.Sdl.XML</DocumentationFile>
     <Optimize>true</Optimize>
     <WarningLevel>0</WarningLevel>
     <FileAlignment>4096</FileAlignment>
@@ -159,18 +159,13 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tao.OpenGl, Version=0.0.0.0, Culture=neutral, PublicKeyToken=1ca010269a4501ef">
-      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.OpenGl.dll</HintPath>
-    </Reference>
-    <Reference Include="Tao.OpenGl.Glu, Version=1.5.0.3, Culture=neutral, PublicKeyToken=3661ea75021374b5">
-      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.OpenGl.Glu.dll</HintPath>
-    </Reference>
-    <Reference Include="Tao.OpenGl.ExtensionLoader, Version=1.5.0.3, Culture=neutral, PublicKeyToken=aaade445f4a3f192">
-      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.OpenGl.ExtensionLoader.dll</HintPath>
-    </Reference>
-    <Reference Include="Tao.Sdl, Version=1.2.11.0, Culture=neutral, PublicKeyToken=9c7a200e36c0094e">
+    <Reference Include="Tao.OpenGl, Version=2.1.0.12, Culture=neutral, PublicKeyToken=1ca010269a4501ef, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.Sdl.dll</HintPath>
+      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\bin\Tao.OpenGl.dll</HintPath>
+    </Reference>
+    <Reference Include="Tao.Sdl, Version=1.2.13.0, Culture=neutral, PublicKeyToken=9c7a200e36c0094e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\bin\Tao.Sdl.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -183,6 +178,12 @@
     <Compile Include="BaseGLSupport.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GLContext.cs" />
+    <Compile Include="GLCopyingRTTManager.cs" />
+    <Compile Include="GLFBOMultiRenderTarget.cs" />
+    <Compile Include="GLFBORenderTexture.cs" />
+    <Compile Include="GLFBORTTManager.cs" />
+    <Compile Include="GLFrameBufferObject.cs" />
     <Compile Include="GLGpuProgram.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -198,21 +199,30 @@
     <Compile Include="GLHardwareOcclusionQuery.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GLHardwarePixelBuffer.cs" />
     <Compile Include="GLHardwareVertexBuffer.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GLHelper.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GLPBRenderTexture.cs" />
+    <Compile Include="GLPBRTTManager.cs" />
+    <Compile Include="GLPBuffer.cs" />
+    <Compile Include="GLPixelUtil.cs" />
+    <Compile Include="GLRenderBuffer.cs" />
     <Compile Include="GLRenderSystem.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GLRenderTexture.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GLRTTManager.cs" />
+    <Compile Include="GLSurfaceDesc.cs" />
     <Compile Include="GLTexture.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GLTextureBuffer.cs" />
     <Compile Include="GLTextureManager.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -265,7 +275,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\SdlAssemblyInfo.cs" />
+    <Compile Include="sdl\SdlDevice.cs" />
     <Compile Include="sdl\SdlGLSupport.cs" />
+    <Compile Include="sdl\SdlMessageHandling.cs" />
+    <Compile Include="sdl\SdlRenderWindow.cs" />
     <Compile Include="sdl\SdlWindow.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -313,7 +326,7 @@
     <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE;OPENGL_SDL</DefineConstants>
     <WarningLevel>0</WarningLevel>
-    <DocumentationFile>bin\Axiom.RenderSystems.OpenGL.SDL.XML</DocumentationFile>
+    <DocumentationFile>bin\Axiom.RenderSystems.OpenGL.Sdl.XML</DocumentationFile>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ConfigurationOverrideFile />
@@ -327,7 +340,7 @@
     <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE;OPENGL_SDL</DefineConstants>
     <WarningLevel>0</WarningLevel>
-    <DocumentationFile>bin\Axiom.RenderSystems.OpenGL.SDL.XML</DocumentationFile>
+    <DocumentationFile>bin\Axiom.RenderSystems.OpenGL.Sdl.XML</DocumentationFile>
     <RemoveIntegerChecks>False</RemoveIntegerChecks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>

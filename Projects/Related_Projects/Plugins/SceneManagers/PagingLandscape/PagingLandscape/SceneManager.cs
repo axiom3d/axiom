@@ -121,7 +121,8 @@ namespace Axiom.SceneManagers.PagingLandscape
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		public SceneManager( )
+		public SceneManager( string name )
+            : base(name)
 		{
 			tileManager = null;
 			renderableManager = null;
@@ -536,7 +537,12 @@ namespace Axiom.SceneManagers.PagingLandscape
 		}
 
 
-		/// <summary>
+	    public override string TypeName
+	    {
+            get { return "PagingLandscapeSceneManager"; }
+        }
+
+	    /// <summary>
 		/// Internal method for updating the scene graph ie the tree of SceneNode instances managed by this class.
 		/// </summary>
 		/// <param name="cam"></param>
@@ -763,7 +769,7 @@ namespace Axiom.SceneManagers.PagingLandscape
 		/// <summary>
 		/// 
 		/// </summary>
-		internal EntityList Entities
+		new internal EntityList Entities
 		{
 			get 
 			{
@@ -773,5 +779,33 @@ namespace Axiom.SceneManagers.PagingLandscape
 
 		#endregion
 	}
+
+    class PagingLandscapeSceneManagerFactory : SceneManagerFactory
+    {
+        public PagingLandscapeSceneManagerFactory()
+        {
+
+        }
+
+        protected override void InitMetaData()
+        {
+            metaData.typeName = "PagingLandscapeSceneManager";
+            metaData.description = "Scene manager organising the scene in pages of terrain.";
+            metaData.sceneTypeMask = SceneType.ExteriorFar;
+            metaData.worldGeometrySupported = true;
+        }
+
+        public override Axiom.Core.SceneManager CreateInstance(string name)
+        {
+            return new SceneManager(name);
+        }
+
+        public override void DestroyInstance(Core.SceneManager instance)
+        {
+            instance.ClearScene();
+        }
+
+    }
+
 
 }

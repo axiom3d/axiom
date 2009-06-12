@@ -119,7 +119,7 @@ namespace Axiom.Demos
         private int currentCubeIndex = 0;
         private Mesh originalMesh;
         private Mesh clonedMesh;
-        private Entity objectEntity;
+        private Entity objectEntity = null;
         private SceneNode objectNode;
         private Material material;
         private MaterialList clonedMaterials = new MaterialList();
@@ -180,7 +180,7 @@ namespace Axiom.Demos
 
             // detach and remove entity
             objectNode.DetachAllObjects();
-            scene.RemoveEntity( objectEntity );
+            scene.RemoveEntity(objectEntity);
 
             // unload current cloned mesh
             MeshManager.Instance.Unload( clonedMesh );
@@ -194,7 +194,7 @@ namespace Axiom.Demos
         /// <param name="meshName"></param>
         private void PrepareEntity( string meshName )
         {
-            if ( objectEntity != null )
+            if ( objectEntity != null)
             {
                 ClearEntity();
             }
@@ -206,7 +206,7 @@ namespace Axiom.Demos
             if ( originalMesh == null )
             {
                 originalMesh = (Mesh)MeshManager.Instance.Load(
-                    meshName,
+                    meshName, ResourceGroupManager.DefaultResourceGroupName,
                     BufferUsage.StaticWriteOnly,
                     BufferUsage.StaticWriteOnly,
                     true, true, 1 );
@@ -237,7 +237,7 @@ namespace Axiom.Demos
                 if ( subMesh.IsMaterialInitialized )
                 {
                     string matName = subMesh.MaterialName;
-                    Material subMat = MaterialManager.Instance.GetByName( matName );
+                    Material subMat = (Material)MaterialManager.Instance.GetByName( matName );
 
                     if ( subMat != null )
                     {
@@ -248,7 +248,7 @@ namespace Axiom.Demos
                         Pass clonedPass = cloned.GetTechnique( 0 ).GetPass( 0 );
 
                         // add global texture layers to the existing material of the entity
-                        for ( int j = 0; j < pass.NumTextureUnitStages; j++ )
+                        for ( int j = 0; j < pass.TextureUnitStageCount; j++ )
                         {
                             TextureUnitState orgLayer = pass.GetTextureUnitState( j );
                             TextureUnitState newLayer = clonedPass.CreateTextureUnitState( orgLayer.TextureName );
@@ -279,7 +279,7 @@ namespace Axiom.Demos
         private void PrepareClonedMesh()
         {
             // create a new mesh based on the original, only with different BufferUsage flags (inside PrepareVertexData)
-            clonedMesh = MeshManager.Instance.CreateManual( MESH_NAME );
+            clonedMesh = MeshManager.Instance.CreateManual( MESH_NAME, ResourceGroupManager.DefaultResourceGroupName, null);
             clonedMesh.BoundingBox = (AxisAlignedBox)originalMesh.BoundingBox.Clone();
             clonedMesh.BoundingSphereRadius = originalMesh.BoundingSphereRadius;
 
@@ -579,7 +579,7 @@ namespace Axiom.Demos
             PrepareEntity( meshes[ currentMeshIndex ] );
 
             // update the UI
-            OverlayElementManager.Instance.GetElement( "Example/CubeMapping/Material" ).Text =
+            OverlayManager.Instance.Elements.GetElement( "Example/CubeMapping/Material" ).Text =
                 string.Format( "[M] Material: {0}", blendModes[ currentLbxIndex ] );
         }
 
@@ -604,10 +604,10 @@ namespace Axiom.Demos
             }
 
             // set the current entity material to the new cubemap texture
-            material.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 ).SetCubicTexture( cubeMapName, true );
+            material.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 ).SetCubicTextureName( cubeMapName, true );
 
             // get the current skybox cubemap and change it to the new one
-            Material skyBoxMat = MaterialManager.Instance.GetByName( SKYBOX_MATERIAL );
+            Material skyBoxMat = (Material)MaterialManager.Instance.GetByName( SKYBOX_MATERIAL );
 
             // toast the existing textures
             for ( int i = 0; i < skyBoxMat.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 ).NumFrames; i++ )
@@ -618,7 +618,7 @@ namespace Axiom.Demos
             }
 
             // set the new cube texture for the skybox
-            skyBoxMat.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 ).SetCubicTexture( cubeMapName, false );
+            skyBoxMat.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 ).SetCubicTextureName( cubeMapName, false );
 
             // reset the entity based on the new cubemap
             PrepareEntity( meshes[ currentMeshIndex ] );
@@ -627,7 +627,7 @@ namespace Axiom.Demos
             scene.SetSkyBox( true, SKYBOX_MATERIAL, 2000.0f );
 
             // update the UI
-            OverlayElementManager.Instance.GetElement( "Example/CubeMapping/CubeMap" ).Text =
+            OverlayManager.Instance.Elements.GetElement( "Example/CubeMapping/CubeMap" ).Text =
                 string.Format( "[C] CubeMap: {0}", cubeMapName );
         }
 
@@ -638,7 +638,7 @@ namespace Axiom.Demos
         {
             noiseOn = !noiseOn;
 
-            OverlayElementManager.Instance.GetElement( "Example/CubeMapping/Noise" ).Text =
+            OverlayManager.Instance.Elements.GetElement( "Example/CubeMapping/Noise" ).Text =
                 string.Format( "[N] Noise: {0}", noiseOn ? "on" : "off" );
         }
 
@@ -655,21 +655,21 @@ namespace Axiom.Demos
             string meshName = meshes[ currentMeshIndex ];
             PrepareEntity( meshName );
 
-            OverlayElementManager.Instance.GetElement( "Example/CubeMapping/Object" ).Text =
+            OverlayManager.Instance.Elements.GetElement( "Example/CubeMapping/Object" ).Text =
                 string.Format( "[O] Object: {0}", meshName );
         }
 
         void updateInfoDisplacement()
         {
-            OverlayElementManager.Instance.GetElement( "Example/CubeMapping/Displacement" ).Text = string.Format( "[1/2] Displacement: {0}", displacement );
+            OverlayManager.Instance.Elements.GetElement( "Example/CubeMapping/Displacement" ).Text = string.Format( "[1/2] Displacement: {0}", displacement );
         }
         void updateInfoDensity()
         {
-            OverlayElementManager.Instance.GetElement( "Example/CubeMapping/Density" ).Text = string.Format( "[3/4] Noise density: {0}", density );
+            OverlayManager.Instance.Elements.GetElement( "Example/CubeMapping/Density" ).Text = string.Format( "[3/4] Noise density: {0}", density );
         }
         void updateInfoTimeDensity()
         {
-            OverlayElementManager.Instance.GetElement( "Example/CubeMapping/TimeDensity" ).Text = string.Format( "[5/6] Time density: {0}", timeDensity );
+            OverlayManager.Instance.Elements.GetElement( "Example/CubeMapping/TimeDensity" ).Text = string.Format( "[5/6] Time density: {0}", timeDensity );
         }
 
         /// <summary>
@@ -678,9 +678,10 @@ namespace Axiom.Demos
         /// <param name="source"></param>
         /// <param name="e"></param>
         /// <returns></returns>
-        protected override void OnFrameStarted( object source, FrameEventArgs e )
+        protected override bool OnFrameStarted( object source, FrameEventArgs e )
         {
-            base.OnFrameStarted( source, e );
+            if ( base.OnFrameStarted( source, e ) == false )
+                return false;
 
             tm += e.TimeSinceLastFrame / timeDensity;
 
@@ -778,6 +779,8 @@ namespace Axiom.Demos
             updateInfoDensity();
             updateInfoDisplacement();
             updateInfoTimeDensity();
+
+            return true;
         }
 
         /// <summary>
@@ -789,12 +792,12 @@ namespace Axiom.Demos
             if ( base.Setup() )
             {
 
-                material = MaterialManager.Instance.GetByName( MATERIAL_NAME );
+                material = (Material)MaterialManager.Instance.GetByName( MATERIAL_NAME );
 
                 ToggleNoise();
                 ToggleMesh();
                 ToggleBlending();
-                OverlayElementManager.Instance.GetElement( "Example/CubeMapping/CubeMap" ).Text =
+                OverlayManager.Instance.Elements.GetElement( "Example/CubeMapping/CubeMap" ).Text =
                                 string.Format( "[C] CubeMap: {0}", cubeMaps[ currentCubeIndex ] );
                 return true;
             }

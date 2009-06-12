@@ -38,216 +38,225 @@ using System.Collections;
 
 using Axiom.Core;
 
+using ResourceHandle = System.UInt64;
+using Axiom.Collections;
+using System.Collections.Generic;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
-    /// <summary>
-    /// 	This ResourceManager manages high-level vertex and fragment programs. 
-    /// </summary>
-    /// <remarks>
-    ///    High-level vertex and fragment programs can be used instead of assembler programs
-    ///    as managed by <see cref="GpuProgramManager"/>; however they typically result in a 
-    ///    <see cref="GpuProgram"/> being created as a derivative of the high-level program. 
-    ///    High-level programs are easier to write, and can often be API-independent, 
-    ///    unlike assembler programs. 
-    ///    <p/>
-    ///    This class not only manages the programs themselves, it also manages the factory
-    ///    classes which allow the creation of high-level programs using a variety of high-level
-    ///    syntaxes. Plugins can be created which register themselves as high-level program
-    ///    factories and as such the engine can be extended to accept virtually any kind of
-    ///    program provided a plugin is written.
-    /// </remarks>
-    public class HighLevelGpuProgramManager : ResourceManager
-    {
-        #region Singleton implementation
+	/// <summary>
+	/// 	This ResourceManager manages high-level vertex and fragment programs. 
+	/// </summary>
+	/// <remarks>
+	///    High-level vertex and fragment programs can be used instead of assembler programs
+	///    as managed by <see cref="GpuProgramManager"/>; however they typically result in a 
+	///    <see cref="GpuProgram"/> being created as a derivative of the high-level program. 
+	///    High-level programs are easier to write, and can often be API-independent, 
+	///    unlike assembler programs. 
+	///    <p/>
+	///    This class not only manages the programs themselves, it also manages the factory
+	///    classes which allow the creation of high-level programs using a variety of high-level
+	///    syntaxes. Plugins can be created which register themselves as high-level program
+	///    factories and as such the engine can be extended to accept virtually any kind of
+	///    program provided a plugin is written.
+	/// </remarks>
+	public class HighLevelGpuProgramManager : ResourceManager
+	{
+		#region Singleton implementation
 
-        /// <summary>
-        ///     Singleton instance of this class.
-        /// </summary>
-        private static HighLevelGpuProgramManager instance;
+		/// <summary>
+		///     Singleton instance of this class.
+		/// </summary>
+		private static HighLevelGpuProgramManager _instance;
 
-        /// <summary>
-        ///     Internal constructor.  This class cannot be instantiated externally.
-        /// </summary>
-        internal HighLevelGpuProgramManager()
-        {
-            if ( instance == null )
-            {
-                instance = this;
-            }
-        }
+		/// <summary>
+		///     Internal constructor.  This class cannot be instantiated externally.
+		/// </summary>
+		internal HighLevelGpuProgramManager()
+			: base() 
+		{
+			if ( _instance == null )
+			{
+				_instance = this;
+				LoadingOrder = 50.0f;
+				ResourceType = "HighLevelGpuProgram";
 
-        /// <summary>
-        ///     Gets the singleton instance of this class.
-        /// </summary>
-        public static HighLevelGpuProgramManager Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
+				ResourceGroupManager.Instance.RegisterResourceManager( ResourceType, this );
+				//AddFactory( new NullGpuProgramFactory() );
+				AddFactory( new UnifiedHighLevelGpuProgramFactory() );
+			}
+		}
 
-        #endregion Singleton implementation
+		/// <summary>
+		///     Gets the singleton instance of this class.
+		/// </summary>
+		public static HighLevelGpuProgramManager Instance
+		{
+			get
+			{
+				return _instance;
+			}
+		}
 
-        #region Fields
+		#endregion Singleton implementation
 
-        /// <summary>
-        ///    Lookup table for list of registered factories.
-        /// </summary>
-        protected Hashtable factories = new Hashtable();
+		#region Fields
 
-        #endregion Fields
+		/// <summary>
+		///    Lookup table for list of registered factories.
+		/// </summary>
+		protected Hashtable factories = new Hashtable();
 
-        #region Methods
+		#endregion Fields
 
-        /// <summary>
-        ///    Add a new factory object for high-level programs of a given language.
-        /// </summary>
-        /// <param name="factory">
-        ///    The factory instance to register.
-        /// </param>
-        public void AddFactory( IHighLevelGpuProgramFactory factory )
-        {
-            factories.Add( factory.Language, factory );
-        }
+		#region Methods
 
-        /// <summary>
-        ///    Creates a new, unloaded HighLevelGpuProgram instance.
-        /// </summary>
-        /// <remarks>
-        ///    This method creates a new program of the type specified as the second and third parameters.
-        ///    You will have to call further methods on the returned program in order to 
-        ///    define the program fully before you can load it.
-        /// </remarks>
-        /// <param name="name">Name of the program to create.</param>
-        /// <param name="language">HLSL language to use.</param>
-        /// <param name="type">Type of program, i.e. vertex or fragment.</param>
-        /// <returns>An unloaded instance of HighLevelGpuProgram.</returns>
-        public HighLevelGpuProgram CreateProgram( string name, string language, GpuProgramType type )
-        {
-            // lookup the factory for the requested program language
-            IHighLevelGpuProgramFactory factory = GetFactory( language );
+		/// <summary>
+		///    Add a new factory object for high-level programs of a given language.
+		/// </summary>
+		/// <param name="factory">
+		///    The factory instance to register.
+		/// </param>
+		public void AddFactory( HighLevelGpuProgramFactory factory )
+		{
+			factories.Add( factory.Language, factory );
+		}
 
-            if ( factory == null )
-            {
-                throw new Exception( string.Format( "Could not find HighLevelGpuProgramManager that can compile programs of type '{0}'", language ) );
-            }
+		/// <summary>
+		///    Creates a new, unloaded HighLevelGpuProgram instance.
+		/// </summary>
+		/// <remarks>
+		///    This method creates a new program of the type specified as the second and third parameters.
+		///    You will have to call further methods on the returned program in order to 
+		///    define the program fully before you can load it.
+		/// </remarks>
+		/// <param name="name">Name of the program to create.</param>
+		/// <param name="language">HLSL language to use.</param>
+		/// <param name="type">Type of program, i.e. vertex or fragment.</param>
+		/// <returns>An unloaded instance of HighLevelGpuProgram.</returns>
+		public HighLevelGpuProgram CreateProgram( string name, string group, string language, GpuProgramType type )
+		{
+			// lookup the factory for the requested program language
+			HighLevelGpuProgramFactory factory = GetFactory( language );
 
-            // create the high level program using the factory
-            HighLevelGpuProgram program = factory.Create( name, type );
-            Add( program );
-            return program;
-        }
+			if ( factory == null )
+			{
+				throw new Exception( string.Format( "Could not find HighLevelGpuProgramManager that can compile programs of type '{0}'", language ) );
+			}
 
-        /// <summary>
-        ///    Retreives a factory instance capable of producing HighLevelGpuPrograms of the
-        ///    specified language.
-        /// </summary>
-        /// <param name="language">HLSL language.</param>
-        /// <returns>A factory capable of creating a HighLevelGpuProgram of the specified language.</returns>
-        public IHighLevelGpuProgramFactory GetFactory( string language )
-        {
-            if ( factories.ContainsKey( language ) )
-            {
-                return (IHighLevelGpuProgramFactory)factories[ language ];
-            }
+			// create the high level program using the factory
+			HighLevelGpuProgram program = factory.CreateInstance(this, name, nextHandle, group, false, null );
+			program.Type = type;
+			program.SyntaxCode = language;
 
-            // wasn't found, so return null
-            return null;
-        }
+			_add( program );
+			return program;
+		}
 
-        #endregion Methods
+		/// <summary>
+		///    Retreives a factory instance capable of producing HighLevelGpuPrograms of the
+		///    specified language.
+		/// </summary>
+		/// <param name="language">HLSL language.</param>
+		/// <returns>A factory capable of creating a HighLevelGpuProgram of the specified language.</returns>
+		public HighLevelGpuProgramFactory GetFactory( string language )
+		{
+			if ( factories.ContainsKey( language ) )
+			{
+				return (HighLevelGpuProgramFactory)factories[ language ];
+			}
 
-        #region Properties
+			// wasn't found, so return null
+			return null;
+		}
 
-        public string[] ProgramNames
-        {
-            get
-            {
-                string[] sl = new string[ resourceList.Count ];
-                int count = 0;
-                foreach ( string s in resourceList.Keys )
-                {
-                    sl[ count++ ] = s;
-                }
-                return sl;
-            }
-        }
+		#endregion Methods
 
-        #endregion Properties
+		#region Properties
 
-        #region ResourceManager Implementation
+		public string[] ProgramNames
+		{
+			get
+			{
+				string[] sl = new string[ resources.Count ];
+				int count = 0;
+				foreach ( string s in resources.Keys )
+				{
+					sl[ count++ ] = s;
+				}
+				return sl;
+			}
+		}
 
-        /// <summary>
-        ///    Overridden to throw an exception since this Create method isn't sufficient enough
-        ///    for creating HighLevelGpuPrograms, since more info is required.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public override Resource Create( string name )
-        {
-            throw new AxiomException( "The more specific method, CreateProgram should be used." );
-        }
+		#endregion Properties
 
-        /// <summary>
-        ///     Gets a HighLevelGpuProgram with the specified name.
-        /// </summary>
-        /// <param name="name">Name of the program to retrieve.</param>
-        /// <returns>The high level gpu program with the specified name.</returns>
-        public new HighLevelGpuProgram GetByName( string name )
-        {
-            return (HighLevelGpuProgram)base.GetByName( name );
-        }
+		#region ResourceManager Implementation
 
-        /// <summary>
-        ///     Called when the engine is shutting down.
-        /// </summary>
-        public override void Dispose()
-        {
-            base.Dispose();
+		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		{
 
-            instance = null;
-        }
+			if ( createParams == null || !createParams.ContainsKey( "language" ) )
+			{
+				throw new Exception( "You must supply a 'language' parameter");
+			}
+	        return GetFactory(createParams["language"]).CreateInstance(this, name, nextHandle, group, isManual, loader );
+		}
 
-        #endregion ResourceManager Implementation
-    }
+		/// <summary>
+		///     Gets a HighLevelGpuProgram with the specified name.
+		/// </summary>
+		/// <param name="name">Name of the program to retrieve.</param>
+		/// <returns>The high level gpu program with the specified name.</returns>
+		public new HighLevelGpuProgram this[ string name ]
+		{
+			get
+			{
+				return (HighLevelGpuProgram)base[ name ];
+			}
+		}
 
-    /// <summary>
-    ///    Interface definition for factories that create instances of HighLevelGpuProgram.
-    /// </summary>
-    public interface IHighLevelGpuProgramFactory
-    {
-        #region Methods
+		/// <summary>
+		///     Gets a HighLevelGpuProgram with the specified handle.
+		/// </summary>
+		/// <param name="name">Handle of the program to retrieve.</param>
+		/// <returns>The high level gpu program with the specified handle.</returns>
+		public new HighLevelGpuProgram this[ ResourceHandle handle ]
+		{
+			get
+			{
+				return (HighLevelGpuProgram)base[ handle ];
+			}
+		}
 
-        /// <summary>
-        ///    Create method which needs to be implemented to return an
-        ///    instance of a HighLevelGpuProgram.
-        /// </summary>
-        /// <param name="name">
-        ///    Name of the program to create.
-        /// </param>
-        /// <param name="type">
-        ///    Type of program to create, i.e. vertex or fragment.
-        /// </param>
-        /// <returns>
-        ///    A newly created instance of HighLevelGpuProgram.
-        /// </returns>
-        HighLevelGpuProgram Create( string name, GpuProgramType type );
+		/// <summary>
+		///     Called when the engine is shutting down.
+		/// </summary>
+		/// <summary>
+		///     Called when the engine is shutting down.
+		/// </summary>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
+					_instance = null;
+				}
 
-        #endregion Methods
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+			}
+			isDisposed = true;
 
-        #region Properties
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+		}
 
-        /// <summary>
-        ///    Gets the name of the HLSL language that this factory creates programs for.
-        /// </summary>
-        string Language
-        {
-            get;
-        }
+		#endregion ResourceManager Implementation
+	}
 
-        #endregion Properties
-    }
 }

@@ -63,23 +63,26 @@ namespace Axiom.Demos
 
             if ( p.HasVertexProgram && p.VertexProgram.IsSkeletalAnimationIncluded )
             {
-                window.DebugText = "Hardware skinning is enabled.";
+                debugText = "Hardware skinning is enabled.";
             }
             else
             {
-                window.DebugText = "Software skinning is enabled.";
+                debugText = "Software skinning is enabled.";
             }
         }
 
-        protected override void OnFrameStarted( object source, FrameEventArgs e )
+        protected override bool OnFrameStarted( object source, FrameEventArgs e )
         {
+            if ( base.OnFrameStarted( source, e ) == false )
+                return false;
+
             for ( int i = 0; i < NumRobots; i++ )
             {
                 // add time to the robot animation
                 animState[ i ].AddTime( e.TimeSinceLastFrame * animationSpeed[ i ] );
             }
 
-            base.OnFrameStarted( source, e );
+            return true;
         }
 
         #endregion

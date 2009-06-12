@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+
+Name: Tao.Sdl.Tests
+Description: Unit tests for the SDL portion of the Tao framework
+Version: @TAOSDL_VERSION@
+Requires:
+Libs: -r:${libdir}/mono/tao-sdl-tests-@TAOSDL_MAJOR@/Tao.Sdl.Tests.dll
+

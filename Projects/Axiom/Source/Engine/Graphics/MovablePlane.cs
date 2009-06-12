@@ -42,6 +42,19 @@ using Axiom.Math;
 
 namespace Axiom.Graphics
 {
+
+	public interface IDerivedPlaneProvider
+	{
+
+		/// <summary>
+		///		Get the derived plane as transformed by its parent node.
+		/// </summary>
+		Plane DerivedPlane
+		{
+			get;
+		}
+	}
+
     /// <summary>
     ///		Definition of a Plane that may be attached to a node, and the derived
     ///		details of it retrieved simply.
@@ -52,7 +65,7 @@ namespace Axiom.Graphics
     ///		own, which is useful if you're using the plane for some kind of calculation,
     ///		e.g. reflection.
     /// </remarks>
-    public class MovablePlane : MovableObject
+	public class MovablePlane : MovableObject, IDerivedPlaneProvider
     {
         #region Fields
 
@@ -104,6 +117,7 @@ namespace Axiom.Graphics
         #endregion Constructor
 
         #region Properties
+
 
         public Plane Plane
         {

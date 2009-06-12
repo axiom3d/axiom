@@ -47,7 +47,7 @@ namespace Axiom.CgPrograms
     /// <summary>
     /// 	Summary description for CgProgramFactory.
     /// </summary>
-    public class CgProgramFactory : IHighLevelGpuProgramFactory, IDisposable
+    public class CgProgramFactory : HighLevelGpuProgramFactory, IDisposable
     {
         #region Fields
 
@@ -73,7 +73,15 @@ namespace Axiom.CgPrograms
 
         #endregion Constructors
 
-        #region IHighLevelGpuProgramFactory Members
+        #region HighLevelGpuProgramFactory Members
+
+		public override string Language
+		{
+			get
+			{
+				return "cg";
+			}
+		}
 
         /// <summary>
         ///    Creates and returns a specialized CgProgram instance.
@@ -81,20 +89,9 @@ namespace Axiom.CgPrograms
         /// <param name="name">Name of the program to create.</param>
         /// <param name="type">Type of program to create, vertex or fragment.</param>
         /// <returns>A new CgProgram instance within the current Cg Context.</returns>
-        public HighLevelGpuProgram Create( string name, Axiom.Graphics.GpuProgramType type )
-        {
-            return new CgProgram( name, type, this.Language, cgContext );
-        }
-
-        /// <summary>
-        ///    Returns 'cg' to identify this factory.
-        /// </summary>
-        public string Language
-        {
-            get
-            {
-                return "cg";
-            }
+		public override HighLevelGpuProgram CreateInstance( ResourceManager parent, string name, ulong handle, string group, bool isManual, IManualResourceLoader loader )
+		{
+            return new CgProgram( parent, name, handle, group, isManual, loader, cgContext );
         }
 
         #endregion
@@ -111,5 +108,7 @@ namespace Axiom.CgPrograms
         }
 
         #endregion
-    }
+
+
+	}
 }

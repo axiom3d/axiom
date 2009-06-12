@@ -21,9 +21,10 @@ namespace Axiom.Demos
         MovablePlane plane;
         Entity planeEntity;
 
-        protected override void OnFrameStarted( object source, FrameEventArgs e )
+        protected override bool OnFrameStarted( object source, FrameEventArgs e )
         {
-            base.OnFrameStarted( source, e );
+            if ( base.OnFrameStarted( source, e ) == false )
+                return false;
 
             // make sure reflection camera is updated too
             reflectCam.Orientation = camera.Orientation;
@@ -31,6 +32,8 @@ namespace Axiom.Demos
 
             // rotate plane
             planeNode.Yaw( 30 * e.TimeSinceLastFrame, TransformSpace.Parent );
+
+            return true;
         }
 
         public override void CreateScene()
@@ -59,7 +62,7 @@ namespace Axiom.Demos
             tmpPlane.D = 0;
             tmpPlane.Normal = Vector3.UnitY;
 
-            MeshManager.Instance.CreatePlane( "ReflectionPlane", tmpPlane, 2000, 2000, 1, 1, true, 1, 1, 1, Vector3.UnitZ );
+			MeshManager.Instance.CreatePlane( "ReflectionPlane", ResourceGroupManager.DefaultResourceGroupName, tmpPlane, 2000, 2000, 1, 1, true, 1, 1, 1, Vector3.UnitZ );
             planeEntity = scene.CreateEntity( "Plane", "ReflectionPlane" );
 
             // create an entity from a model
@@ -83,18 +86,20 @@ namespace Axiom.Demos
             rootNode.CreateChildSceneNode( "Head" ).AttachObject( head );
 
             // create a render texture
-            RenderTexture rttTex = Root.Instance.RenderSystem.CreateRenderTexture( "RttTex", 512, 512 );
-            reflectCam = scene.CreateCamera( "ReflectCam" );
+			Texture texture = TextureManager.Instance.CreateManual( "RttTex", ResourceGroupManager.DefaultResourceGroupName, TextureType.TwoD, 512, 512, 0, Axiom.Media.PixelFormat.R8G8B8, TextureUsage.RenderTarget );
+			RenderTarget rttTex = texture.GetBuffer().GetRenderTarget();
+
+			reflectCam = scene.CreateCamera( "ReflectCam" );
             reflectCam.Near = camera.Near;
             reflectCam.Far = camera.Far;
             reflectCam.AspectRatio = (float)window.GetViewport( 0 ).ActualWidth / (float)window.GetViewport( 0 ).ActualHeight;
 
             Viewport viewport = rttTex.AddViewport( reflectCam );
-            viewport.ClearEveryFrame = true;
-            viewport.OverlaysEnabled = false;
+			viewport.ClearEveryFrame = true;
+            viewport.ShowOverlays = false;
             viewport.BackgroundColor = ColorEx.Black;
 
-            Material mat = scene.CreateMaterial( "RttMat" );
+			Material mat = (Material)MaterialManager.Instance.Create( "RttMat", ResourceGroupManager.DefaultResourceGroupName );
             TextureUnitState t = mat.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( "RustedMetal.jpg" );
             t = mat.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( "RttTex" );
 
@@ -152,7 +157,7 @@ namespace Axiom.Demos
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void rttTex_BeforeUpdate( object sender, RenderTargetUpdateEventArgs e )
+        private void rttTex_BeforeUpdate( RenderTargetUpdateEventArgs e )
         {
             planeEntity.IsVisible = false;
         }
@@ -162,7 +167,7 @@ namespace Axiom.Demos
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void rttTex_AfterUpdate( object sender, RenderTargetUpdateEventArgs e )
+        private void rttTex_AfterUpdate( RenderTargetUpdateEventArgs e )
         {
             planeEntity.IsVisible = true;
         }

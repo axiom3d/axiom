@@ -43,84 +43,84 @@ using Tao.OpenGl;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-    /// <summary>
-    /// 	Summary description for GLHardwareBufferManager.
-    /// </summary>
-    public class GLHardwareBufferManager : HardwareBufferManager
-    {
-        #region Member variables
+	/// <summary>
+	/// 	Summary description for GLHardwareBufferManager.
+	/// </summary>
+	public class GLHardwareBufferManager : HardwareBufferManager
+	{
+		#region Member variables
 
-        #endregion
+		#endregion
 
-        #region Constructors
+		#region Constructors
 
-        public GLHardwareBufferManager()
-        {
-        }
+		public GLHardwareBufferManager()
+		{
+		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="numIndices"></param>
-        /// <param name="usage"></param>
-        /// <returns></returns>
-        public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
-        {
-            return CreateIndexBuffer( type, numIndices, usage, false );
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="numIndices"></param>
+		/// <param name="usage"></param>
+		/// <returns></returns>
+		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
+		{
+			return CreateIndexBuffer( type, numIndices, usage, false );
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="numIndices"></param>
-        /// <param name="usage"></param>
-        /// <param name="useShadowBuffer"></param>
-        /// <returns></returns>
-        public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
-        {
-            GLHardwareIndexBuffer buffer = new GLHardwareIndexBuffer( type, numIndices, usage, useShadowBuffer );
-            indexBuffers.Add( buffer );
-            return buffer;
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="numIndices"></param>
+		/// <param name="usage"></param>
+		/// <param name="useShadowBuffer"></param>
+		/// <returns></returns>
+		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
+		{
+			GLHardwareIndexBuffer buffer = new GLHardwareIndexBuffer( type, numIndices, usage, useShadowBuffer );
+			indexBuffers.Add( buffer );
+			return buffer;
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="vertexSize"></param>
-        /// <param name="numVerts"></param>
-        /// <param name="usage"></param>
-        /// <returns></returns>
-        public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage )
-        {
-            return CreateVertexBuffer( vertexSize, numVerts, usage, false );
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="vertexSize"></param>
+		/// <param name="numVerts"></param>
+		/// <param name="usage"></param>
+		/// <returns></returns>
+		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage )
+		{
+			return CreateVertexBuffer( vertexSize, numVerts, usage, false );
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="vertexSize"></param>
-        /// <param name="numVerts"></param>
-        /// <param name="usage"></param>
-        /// <param name="useShadowBuffer"></param>
-        /// <returns></returns>
-        public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer )
-        {
-            GLHardwareVertexBuffer buffer = new GLHardwareVertexBuffer( vertexSize, numVerts, usage, useShadowBuffer );
-            vertexBuffers.Add( buffer );
-            return buffer;
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="vertexSize"></param>
+		/// <param name="numVerts"></param>
+		/// <param name="usage"></param>
+		/// <param name="useShadowBuffer"></param>
+		/// <returns></returns>
+		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer )
+		{
+			GLHardwareVertexBuffer buffer = new GLHardwareVertexBuffer( vertexSize, numVerts, usage, useShadowBuffer );
+			vertexBuffers.Add( buffer );
+			return buffer;
+		}
 
 
-        #endregion
-    }
+		#endregion
+	}
 
-    public class GLSoftwareBufferManager : SoftwareBufferManager
-    {
-    }
+	public class GLSoftwareBufferManager : SoftwareBufferManager
+	{
+	}
 }

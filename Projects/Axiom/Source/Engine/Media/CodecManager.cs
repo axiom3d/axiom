@@ -102,13 +102,11 @@ namespace Axiom.Media
         public void RegisterCodecs()
         {
             // register codecs
-#if !(XBOX || XBOX360 || SILVERLIGHT )
-            RegisterCodec( new JPGCodec() );
-            RegisterCodec( new BMPCodec() );
-            RegisterCodec( new PNGCodec() );
-            RegisterCodec( new DDSCodec() );
-            RegisterCodec( new TGACodec() );
-#endif
+            //RegisterCodec( new JPGCodec() );
+            //RegisterCodec( new BMPCodec() );
+            //RegisterCodec( new PNGCodec() );
+            //RegisterCodec( new DDSCodec() );
+            //RegisterCodec( new TGACodec() );
         }
 
         /// <summary>

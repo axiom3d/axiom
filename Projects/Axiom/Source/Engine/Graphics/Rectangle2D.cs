@@ -97,7 +97,7 @@ namespace Axiom.Graphics
             }
 
             // TODO: Fix
-            material = MaterialManager.Instance.GetByName( "BaseWhite" );
+			material = (Material)MaterialManager.Instance[ "BaseWhite" ];
             material.Lighting = false;
         }
 

@@ -74,23 +74,27 @@ namespace Axiom.Demos
             light.Type = LightType.Directional;
             light.Direction = -Vector3.UnitY;
 
-            Material mat = MaterialManager.Instance.GetByName( "Examples/FresnelReflectionRefraction" );
+            Material mat = (Material)MaterialManager.Instance.GetByName( "Examples/FresnelReflectionRefraction" );
 
             // Refraction texture
-            RenderTexture rttTex = Root.Instance.RenderSystem.CreateRenderTexture( "Refraction", 512, 512 );
+			Texture mTexture = TextureManager.Instance.CreateManual( "Refraction", ResourceGroupManager.DefaultResourceGroupName, TextureType.TwoD, 512, 512, 0, Axiom.Media.PixelFormat.R8G8B8, TextureUsage.RenderTarget );
+			RenderTarget rttTex = mTexture.GetBuffer().GetRenderTarget();
+            //RenderTexture rttTex = Root.Instance.RenderSystem.CreateRenderTexture( "Refraction", 512, 512 );
             {
                 Viewport vp = rttTex.AddViewport( camera, 0, 0, 1.0f, 1.0f, 0 );
-                vp.OverlaysEnabled = false;
+				vp.ShowOverlays = false;
                 mat.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 2 ).SetTextureName( "Refraction" );
                 rttTex.BeforeUpdate += new RenderTargetUpdateEventHandler( Refraction_BeforeUpdate );
                 rttTex.AfterUpdate += new RenderTargetUpdateEventHandler( Refraction_AfterUpdate );
             }
 
             // Reflection texture
-            rttTex = Root.Instance.RenderSystem.CreateRenderTexture( "Reflection", 512, 512 );
+			mTexture = TextureManager.Instance.CreateManual( "Reflection", ResourceGroupManager.DefaultResourceGroupName, TextureType.TwoD, 512, 512, 0, Axiom.Media.PixelFormat.R8G8B8, TextureUsage.RenderTarget );
+			rttTex = mTexture.GetBuffer().GetRenderTarget();
+			//rttTex = Root.Instance.RenderSystem.CreateRenderTexture( "Reflection", 512, 512 );
             {
                 Viewport vp = rttTex.AddViewport( camera, 0, 0, 1.0f, 1.0f, 0 );
-                vp.OverlaysEnabled = false;
+				vp.ShowOverlays = false;
                 mat.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 1 ).SetTextureName( "Reflection" );
                 rttTex.BeforeUpdate += new RenderTargetUpdateEventHandler( Reflection_BeforeUpdate );
                 rttTex.AfterUpdate += new RenderTargetUpdateEventHandler( Reflection_AfterUpdate );
@@ -99,7 +103,7 @@ namespace Axiom.Demos
             reflectionPlane.Normal = Vector3.UnitY;
             reflectionPlane.D = 0;
             MeshManager.Instance.CreatePlane(
-                "ReflectionPlane", reflectionPlane, 1500, 1500, 10, 10, true, 1, 5, 5, Vector3.UnitZ );
+				"ReflectionPlane", ResourceGroupManager.DefaultResourceGroupName, reflectionPlane, 1500, 1500, 10, 10, true, 1, 5, 5, Vector3.UnitZ );
 
             planeEnt = scene.CreateEntity( "Plane", "ReflectionPlane" );
             planeEnt.MaterialName = "Examples/FresnelReflectionRefraction";
@@ -181,7 +185,7 @@ namespace Axiom.Demos
             }
         }
 
-        protected override void OnFrameStarted( object source, FrameEventArgs e )
+        protected override bool OnFrameStarted( object source, FrameEventArgs e )
         {
             animTime += e.TimeSinceLastFrame;
 
@@ -207,7 +211,7 @@ namespace Axiom.Demos
                 fishLastPosition[ i ] = newPos;
             }
 
-            base.OnFrameStarted( source, e );
+            return base.OnFrameStarted( source, e );
         }
 
 
@@ -215,7 +219,7 @@ namespace Axiom.Demos
 
         #region Event Handlers
 
-        private void Reflection_BeforeUpdate( object sender, RenderTargetUpdateEventArgs e )
+        private void Reflection_BeforeUpdate( RenderTargetUpdateEventArgs e )
         {
             planeEnt.IsVisible = false;
 
@@ -227,7 +231,7 @@ namespace Axiom.Demos
             theCam.EnableReflection( reflectionPlane );
         }
 
-        private void Reflection_AfterUpdate( object sender, RenderTargetUpdateEventArgs e )
+        private void Reflection_AfterUpdate( RenderTargetUpdateEventArgs e )
         {
             planeEnt.IsVisible = true;
 
@@ -239,7 +243,7 @@ namespace Axiom.Demos
             theCam.DisableReflection();
         }
 
-        private void Refraction_BeforeUpdate( object sender, RenderTargetUpdateEventArgs e )
+        private void Refraction_BeforeUpdate( RenderTargetUpdateEventArgs e )
         {
             planeEnt.IsVisible = false;
 
@@ -249,7 +253,7 @@ namespace Axiom.Demos
             }
         }
 
-        private void Refraction_AfterUpdate( object sender, RenderTargetUpdateEventArgs e )
+        private void Refraction_AfterUpdate( RenderTargetUpdateEventArgs e )
         {
             planeEnt.IsVisible = true;
 

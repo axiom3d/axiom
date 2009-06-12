@@ -53,8 +53,8 @@ namespace Axiom.Animating
 	///		reflected in the master copy. The exception is animations; these are
 	///		shared on the Skeleton itself and may not be modified here.
 	/// </remarks>
-	public class SkeletonInstance : Skeleton 
-    {
+	public class SkeletonInstance : Skeleton
+	{
 
 		#region Fields
 
@@ -77,7 +77,9 @@ namespace Axiom.Animating
 		///		when you create an <see cref="Entity"/> based on a skeletally animated Mesh.
 		/// </summary>
 		/// <param name="masterCopy"></param>
-		public SkeletonInstance(Skeleton masterCopy) : base("") {
+		public SkeletonInstance( Skeleton masterCopy )
+			: base( )
+		{
 			this.skeleton = masterCopy;
 		}
 
@@ -88,9 +90,19 @@ namespace Axiom.Animating
 		/// <summary>
 		///		Gets the number of animations on this skeleton.
 		/// </summary>
-		public override int AnimationCount {
-			get {
+		public override int AnimationCount
+		{
+			get
+			{
 				return skeleton.AnimationCount;
+			}
+		}
+
+		public Skeleton MasterSkeleton
+		{
+			get
+			{
+				return skeleton;
 			}
 		}
 
@@ -104,53 +116,73 @@ namespace Axiom.Animating
 		/// </summary>
 		/// <param name="source"></param>
 		/// <param name="parent"></param>
-		protected void CloneBoneAndChildren(Bone source, Bone parent) {
+		protected void CloneBoneAndChildren( Bone source, Bone parent )
+		{
 			Bone newBone;
 
-			if(source.Name == "") {
-				newBone = CreateBone(source.Handle);
+			if ( source.Name == "" )
+			{
+				newBone = CreateBone( source.Handle );
 			}
-			else {
-				newBone = CreateBone(source.Name, source.Handle);
+			else
+			{
+				newBone = CreateBone( source.Name, source.Handle );
 			}
 
 			newBone.Orientation = source.Orientation;
 			newBone.Position = source.Position;
 			newBone.Scale = source.Scale;
 
-			if(parent == null) {
-				rootBones.Add(newBone);
+			if ( parent == null )
+			{
+				rootBones.Add( newBone );
 			}
-			else {
-				parent.AddChild(newBone);
+			else
+			{
+				parent.AddChild( newBone );
 			}
 
 			// process children
-			for(int i = 0; i < source.ChildCount; i++) {
-				Bone child = (Bone)source.GetChild(i);
+			for ( int i = 0; i < source.ChildCount; i++ )
+			{
+				Bone child = (Bone)source.GetChild( i );
 
-				CloneBoneAndChildren(child, newBone);
+				CloneBoneAndChildren( child, newBone );
 			}
 		}
 
-		public TagPoint CreateTagPointOnBone(Bone bone) {
-			return CreateTagPointOnBone(bone, Quaternion.Identity);
+		public TagPoint CreateTagPointOnBone( Bone bone )
+		{
+			return CreateTagPointOnBone( bone, Quaternion.Identity );
 		}
 
-		public TagPoint CreateTagPointOnBone(Bone bone, Quaternion offsetOrientation) {
-			return CreateTagPointOnBone(bone, Quaternion.Identity, Vector3.UnitScale);
+		public TagPoint CreateTagPointOnBone( Bone bone, Quaternion offsetOrientation )
+		{
+			return CreateTagPointOnBone( bone, Quaternion.Identity, Vector3.Zero );
 		}
 
-		public TagPoint CreateTagPointOnBone(Bone bone, Quaternion offsetOrientation, Vector3 offsetPosition) {
-			TagPoint tagPoint = new TagPoint(++nextTagPointAutoHandle, this);
-			tagPointList[nextTagPointAutoHandle] = tagPoint;
+		public TagPoint CreateTagPointOnBone( Bone bone, Quaternion offsetOrientation, Vector3 offsetPosition )
+		{
+			TagPoint tagPoint = new TagPoint( ++nextTagPointAutoHandle, this );
+			tagPointList[ nextTagPointAutoHandle ] = tagPoint;
 
-			tagPoint.Translate(offsetPosition);
-			tagPoint.Rotate(offsetOrientation);
+			tagPoint.Translate( offsetPosition );
+			tagPoint.Rotate( offsetOrientation );
 			tagPoint.SetBindingPose();
-			bone.AddChild(tagPoint);
+			bone.AddChild( tagPoint );
 
 			return tagPoint;
+		}
+
+		public void FreeTagPoint( TagPoint tagPoint )
+		{
+			if  ( tagPointList.ContainsValue( tagPoint ) )
+			{
+				if ( tagPoint.Parent != null )
+				{
+					tagPoint.Parent.RemoveChild( tagPoint );
+				}
+			}
 		}
 
 		#endregion Methods
@@ -166,8 +198,9 @@ namespace Axiom.Animating
 		/// <param name="name">The name of this animation.</param>
 		/// <param name="length">The length of the animation in seconds.</param>
 		/// <returns></returns>
-		public override Animation CreateAnimation(string name, float length) {
-			return skeleton.CreateAnimation(name, length);
+		public override Animation CreateAnimation( string name, float length )
+		{
+			return skeleton.CreateAnimation( name, length );
 		}
 
 		/// <summary>
@@ -175,8 +208,9 @@ namespace Axiom.Animating
 		/// </summary>
 		/// <param name="name">Name of the animation to retrieve.</param>
 		/// <returns>Animation with the specified name, or null if none exists.</returns>
-		public override Animation GetAnimation(string name) {
-			return skeleton.GetAnimation(name);
+		public override Animation GetAnimation( string name )
+		{
+			return skeleton.GetAnimation( name );
 		}
 
 		/// <summary>
@@ -184,16 +218,18 @@ namespace Axiom.Animating
 		/// </summary>
 		/// <param name="index">Index of the animation to retrieve.</param>
 		/// <returns>Animation at the specified index, or null if none exists.</returns>
-		public override Animation GetAnimation(int index) {
-			return skeleton.GetAnimation(index);
+		public override Animation GetAnimation( int index )
+		{
+			return skeleton.GetAnimation( index );
 		}
 
 		/// <summary>
 		///		Removes an <see cref="Animation"/> from this skeleton.
 		/// </summary>
 		/// <param name="name">Name of the animation to remove.</param>
-		public override void RemoveAnimation(string name) {
-			skeleton.RemoveAnimation(name);
+		public override void RemoveAnimation( string name )
+		{
+			skeleton.RemoveAnimation( name );
 		}
 
 		#endregion Methods
@@ -203,28 +239,38 @@ namespace Axiom.Animating
 		/// <summary>
 		///		Overriden to copy/clone the bones of the master skeleton.
 		/// </summary>
-		public override void Load() {
+		protected override void load()
+		{
 			nextAutoHandle = skeleton.nextAutoHandle;
 			nextTagPointAutoHandle = 0;
 
-			this.blendMode = skeleton.BlendMode;
+			this.BlendMode = skeleton.BlendMode;
 
 			// copy bones starting at the roots
-			for(int i = 0; i < skeleton.RootBoneCount; i++) {
-				Bone rootBone = skeleton.GetRootBone(i);
-				CloneBoneAndChildren(rootBone, null);
-				rootBone.Update(true, false);
+			for ( int i = 0; i < skeleton.RootBoneCount; i++ )
+			{
+				Bone rootBone = skeleton.GetRootBone( i );
+				CloneBoneAndChildren( rootBone, null );
+				rootBone.Update( true, false );
 			}
 
 			SetBindingPose();
 
-			isLoaded = true;
+			// Clone the attachment points
+			for ( int i = 0; i < skeleton.AttachmentPoints.Count; i++ )
+			{
+				AttachmentPoint ap = skeleton.AttachmentPoints[ i ];
+				Bone parentBone = this.GetBone( ap.ParentBone );
+				this.CreateAttachmentPoint( ap.Name, parentBone.Handle, ap.Orientation, ap.Position );
+			}
+
 		}
 
 		/// <summary>
 		///		Overriden to unload the skeleton and clear the tagpoint list.
 		/// </summary>
-		public override void Unload() {
+		public override void Unload()
+		{
 			base.Unload();
 
 			// clear all tag points

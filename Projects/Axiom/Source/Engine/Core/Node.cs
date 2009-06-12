@@ -51,6 +51,8 @@ namespace Axiom.Core
     /// Signature for the Node.UpdatedFromParent event which provides the newly-updated derived properties for syncronization in a physics engine for instance
     /// </summary>
     public delegate void NodeUpdateHandler( Vector3 derivedPosition, Quaternion derivedOrientation, Vector3 derivedScale );
+	public delegate void NodeUpdated( Node node );
+	public delegate void NodeDestroyed( Node node );
 
     #endregion
 
@@ -74,6 +76,10 @@ namespace Axiom.Core
         /// Event which provides the newly-updated derived properties for syncronization in a physics engine for instance
         /// </summary>
         public event NodeUpdateHandler UpdatedFromParent;
+
+		public event NodeUpdated NodeUpdated;
+		public event NodeDestroyed NodeDestroyed;
+
         #endregion
 
         #region Protected member variables
@@ -84,11 +90,11 @@ namespace Axiom.Core
         protected Node parent;
         /// <summary>Collection of this nodes child nodes.</summary>
         protected NodeCollection childNodes;
-        public NodeCollection Children
+		public ICollection Children
         {
             get
             {
-                return childNodes;
+				return childNodes.Values;
             }
         }
         /// <summary>Collection of this nodes child nodes.</summary>
@@ -99,7 +105,7 @@ namespace Axiom.Core
         protected bool needChildUpdate;
         /// <summary>Flag indicating that parent has been notified about update request.</summary>
         protected bool isParentNotified;
-        /// <summary>Orientation of this node relative to it's parent.</summary>
+		/// <summary>Orientation of this node relative to its parent.</summary>
         protected Quaternion orientation;
         /// <summary>World orientation of this node based on parents orientation.</summary>
         protected Quaternion derivedOrientation;
@@ -107,7 +113,7 @@ namespace Axiom.Core
         protected Quaternion initialOrientation;
         /// <summary></summary>
         protected Quaternion rotationFromInitial;
-        /// <summary>Position of this node relative to it's parent.</summary>
+		/// <summary>Position of this node relative to its parent.</summary>
         protected Vector3 position;
         /// <summary></summary>
         protected Vector3 derivedPosition;
@@ -141,6 +147,8 @@ namespace Axiom.Core
         protected SubMesh nodeSubMesh;
 
         protected Hashtable customParams = new Hashtable();
+
+		protected bool suppressUpdateEvent = false;
 
         #endregion
 
@@ -226,7 +234,7 @@ namespace Axiom.Core
             string childName = child.Name;
             if ( child == this )
                 throw new ArgumentException( string.Format( "Node '{0}' cannot be added as a child of itself.", childName ) );
-            if ( childNodes.ContainsKey( childName ) )
+			if ( childNodes.Contains( childName ) )
                 throw new ArgumentException( string.Format( "Node '{0}' already has a child node with the name '{1}'.", this.name, childName ) );
 
             child.RemoveFromParent();
@@ -252,6 +260,16 @@ namespace Axiom.Core
             Clear();
         }
 
+		public bool HasChild( Node node )
+		{
+			return childNodes.Contains( node );
+		}
+
+		public bool HasChild( string name )
+		{
+			return childNodes.Contains( name );
+		}
+
         /// <summary>
         ///    Gets a child node by index.
         /// </summary>
@@ -275,17 +293,15 @@ namespace Axiom.Core
         ///    Removes the specifed node as a child of this node.
         /// </summary>
         /// <param name="child"></param>
-        public void RemoveChild( Node child )
+        public virtual void RemoveChild( Node child )
         {
-            Debug.Assert( child != this );
-
-            // cancel any pending updates to this child
-            CancelUpdate( child );
-
-            childNodes.Remove( child );
-
-            child.Parent = null;
+            int index = childNodes.IndexOf( child.Name );
+            if ( index != -1 )
+            {
+                RemoveChild( child, index );
+            }
         }
+
 
         /// <summary>
         ///     Removes the child node with the specified name.
@@ -294,16 +310,13 @@ namespace Axiom.Core
         /// <returns></returns>
         public virtual Node RemoveChild( string name )
         {
-            // TODO: optimize
-            Node child = null;
-
-            for ( int i = 0; i < childNodes.Count; i++ )
+            int index = childNodes.IndexOf( name ); //getting the index prevent traversing 2x
+            if ( index != -1 )
             {
-                child = childNodes[ i ];
+                Node child = childNodes[ index ];
                 if ( child.name == name )
                 {
-                    CancelUpdate(child);
-                    childNodes.Remove(child);
+                    RemoveChild( child, index );
                     return child;
                 }
             }
@@ -335,11 +348,11 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        /// Scales the node, combining it's current scale with the passed in scaling factor. 
+		/// Scales the node, combining its current scale with the passed in scaling factor. 
         /// </summary>
         /// <remarks>
         ///	This method applies an extra scaling factor to the node's existing scale, (unlike setScale
-        ///	which overwrites it) combining it's current scale with the new one. E.g. calling this 
+		///	which overwrites it) combining its current scale with the new one. E.g. calling this 
         ///	method twice with Vector3(2,2,2) would have the same effect as setScale(Vector3(4,4,4)) if
         /// the existing scale was 1.
         /// 
@@ -556,7 +569,7 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        /// Resets the position / orientation / scale of this node to it's initial state, see SetInitialState for more info.
+		/// Resets the position / orientation / scale of this node to its initial state, see SetInitialState for more info.
         /// </summary>
         public virtual void ResetToInitialState()
         {
@@ -580,10 +593,10 @@ namespace Axiom.Core
         /// </summary>
         /// <remarks>
         ///	You never need to call this method unless you plan to animate this node. If you do
-        ///	plan to animate it, call this method once you've loaded the node with it's base state,
+		///	plan to animate it, call this method once you've loaded the node with its base state,
         ///	ie the state on which all keyframes are based.
         ///
-        ///	If you never call this method, the initial state is the identity transform, ie do nothing.
+		///	If you never call this method, the initial state is the identity transform (do nothing) and a position of zero
         /// </remarks>
         public virtual void SetInitialState()
         {
@@ -686,11 +699,11 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        ///		To be called in the event of transform changes to this node that require it's recalculation.
+		///		To be called in the event of transform changes to this node that require its recalculation.
         /// </summary>
         /// <remarks>
-        ///		This not only tags the node state as being 'dirty', it also requests it's parent to 
-        ///		know about it's dirtiness so it will get an update next time.
+		///		This not only tags the node state as being 'dirty', it also requests its parent to 
+		///		know about its dirtiness so it will get an update next time.
         /// </remarks>
         public virtual void NeedUpdate()
         {
@@ -871,7 +884,7 @@ namespace Axiom.Core
         ///	to apply to a child node (e.g. where the child node is a part of the same object, so you
         ///	want it to be the same relative size and position based on the parent's size), but
         ///	not in other cases (e.g. where the child node is just for positioning another object,
-        ///	you want it to maintain it's own size and relative position). The default is to inherit
+		///	you want it to maintain its own size and relative position). The default is to inherit
         ///	as with other transforms.
         ///
         ///	Note that like rotations, scalings are oriented around the node's origin.
@@ -890,7 +903,7 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        /// Tells the node whether it should inherit scaling factors from it's parent node.
+		/// Tells the node whether it should inherit scaling factors from its parent node.
         /// </summary>
         /// <remarks>
         ///	Scaling factors, unlike other transforms, are not always inherited by child nodes. 
@@ -899,7 +912,7 @@ namespace Axiom.Core
         ///	to apply to a child node (e.g. where the child node is a part of the same object, so you
         ///	want it to be the same relative size and position based on the parent's size), but
         ///	not in other cases (e.g. where the child node is just for positioning another object,
-        ///	you want it to maintain it's own size and relative position). The default is to inherit
+		///	you want it to maintain its own size and relative position). The default is to inherit
         ///	as with other transforms.
         ///	If true, this node's scale and position will be affected by its parent's scale. If false,
         ///	it will not be affected.
@@ -919,7 +932,7 @@ namespace Axiom.Core
 
         /// <summary>
         /// Gets a matrix whose columns are the local axes based on
-        /// the nodes orientation relative to it's parent.
+		/// the nodes orientation relative to its parent.
         /// </summary>
         public virtual Matrix3 LocalAxes
         {
@@ -943,13 +956,13 @@ namespace Axiom.Core
 
         #region Protected methods
         /// <summary>
-        ///	Triggers the node to update it's combined transforms.
+		///	Triggers the node to update its combined transforms.
         ///
         ///	This method is called internally by the engine to ask the node
-        ///	to update it's complete transformation based on it's parents
+		///	to update its complete transformation based on its parents
         ///	derived transform.
         /// </summary>
-        // TODO This was previously protected.  Was made internal to allow access from custom collections.
+		// TODO: This was previously protected.  Was made internal to allow access to custom collections.
         virtual internal void UpdateFromParent()
         {
             if ( parent != null )
@@ -987,15 +1000,24 @@ namespace Axiom.Core
 
             needTransformUpdate = true;
             needRelativeTransformUpdate = true;
+			if ( suppressUpdateEvent == false )
+			{
+				OnUpdatedFromParent();
+			}
+		}
+
+		public void OnUpdatedFromParent()
+		{
             if ( UpdatedFromParent != null )
                 UpdatedFromParent( derivedPosition, derivedOrientation, derivedScale );
         }
+
 
         /// <summary>
         /// Internal method for building a Matrix4 from orientation / scale / position. 
         /// </summary>
         /// <remarks>
-        ///	Transform is performed in the order rotate, scale, translation, i.e. translation is independent
+		///	Transform is performed in the order scale, rotate, translation, i.e. translation is independent
         ///	of orientation axes, scale does not affect size of translation, rotation and scaling are always
         ///	centered on the origin.
         ///	</remarks>
@@ -1217,6 +1239,12 @@ namespace Axiom.Core
                 // update transforms from parent
                 UpdateFromParent();
                 needParentUpdate = false;
+
+				if (NodeUpdated != null)
+				{
+					NodeUpdated(this);
+				}
+
             }
 
             // see if we need to process all
@@ -1249,7 +1277,7 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        /// This method transforms a Node by a weighted amount from it's
+		/// This method transforms a Node by a weighted amount from its
         ///	initial state. If weighted transforms have already been applied, 
         ///	the previous transforms and this one are blended together based
         /// on their relative weight. This method should not be used in
@@ -1261,6 +1289,22 @@ namespace Axiom.Core
         /// <param name="scale"></param>
         internal virtual void WeightedTransform( float weight, Vector3 translate, Quaternion rotate, Vector3 scale )
         {
+			WeightedTransform( weight, translate, rotate, scale, false );
+		}
+
+		/// <summary>
+		/// This method transforms a Node by a weighted amount from its
+		///	initial state. If weighted transforms have already been applied, 
+		///	the previous transforms and this one are blended together based
+		/// on their relative weight. This method should not be used in
+		///	combination with the unweighted rotate, translate etc methods.
+		/// </summary>
+		/// <param name="weight"></param>
+		/// <param name="translate"></param>
+		/// <param name="rotate"></param>
+		/// <param name="scale"></param>
+		internal virtual void WeightedTransform( float weight, Vector3 translate, Quaternion rotate, Vector3 scale, bool lookInMovementDirection )
+		{
             // If no previous transforms, we can just apply
             if ( accumAnimWeight == 0.0f )
             {
@@ -1288,6 +1332,9 @@ namespace Axiom.Core
             orientation = initialOrientation * rotationFromInitial;
             position = initialPosition + translationFromInitial;
             scale = initialScale * scaleFromInitial;
+			if ( lookInMovementDirection )
+				orientation = -Vector3.UnitX.GetRotationTo( translate.ToNormalized() );
+
 
             NeedUpdate();
         }
@@ -1303,7 +1350,7 @@ namespace Axiom.Core
             }
         }
 
-		/// <summary>
+        /// <summary>
 		/// 
 		/// </summary>
 		public Quaternion WorldOrientation
@@ -1334,7 +1381,7 @@ namespace Axiom.Core
         {
             if ( nodeSubMesh == null )
             {
-                Mesh nodeMesh = MeshManager.Instance.Load( "axes.mesh" );
+                Mesh nodeMesh = (Mesh)MeshManager.Instance.Load( "axes.mesh", ResourceGroupManager.BootstrapResourceGroupName );
                 nodeSubMesh = nodeMesh.GetSubMesh( 0 );
             }
             // return the render operation of the submesh itself
@@ -1355,7 +1402,7 @@ namespace Axiom.Core
             {
                 if ( nodeMaterial == null )
                 {
-                    nodeMaterial = MaterialManager.Instance.GetByName( "Core/NodeMaterial" );
+					nodeMaterial = (Material)MaterialManager.Instance[ "Core/NodeMaterial" ];
 
                     if ( nodeMaterial == null )
                     {
@@ -1420,14 +1467,11 @@ namespace Axiom.Core
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public SceneDetailLevel RenderDetail
+        public virtual bool PolygonModeOverrideable
         {
             get
             {
-                return SceneDetailLevel.Solid;
+                return true;
             }
         }
 

@@ -70,7 +70,7 @@ namespace Axiom.SceneManagers.Bsp
                 this.lightPosition = light.DerivedPosition;
                 this.lightOrientation = GetLightOrientation();
 
-                base.FOV = light.SpotlightOuterAngle;
+                base.FieldOfView = Utility.DegreesToRadians( light.SpotlightOuterAngle );
                 base.Near = 1;
                 base.Far = light.AttenuationRange;
                 base.AspectRatio = 1;
@@ -80,46 +80,20 @@ namespace Axiom.SceneManagers.Bsp
             }
         }
 
-        #region Frustum Members
-
-        /// <summary>
-        /// Gets the projection matrix for this frustum.
-        /// </summary>
-        public override Matrix4 ProjectionMatrix
-        {
-            get
-            {
-                return projectionMatrix;
-            }
-        }
-
-        /// <summary>
-        ///     Gets the view matrix for this frustum.
-        /// </summary>
-        public override Matrix4 ViewMatrix
-        {
-            get
-            {
-                return viewMatrix;
-            }
-        }
-
-        #endregion Frustum Members
-
         protected void UpdateMatrices()
         {
             // grab a reference to the current render system
             RenderSystem renderSystem = Root.Instance.RenderSystem;
 
-            if ( projectionType == Projection.Perspective )
+            if ( ProjectionType == Projection.Perspective )
             {
                 // perspective transform, API specific
-                projectionMatrix = renderSystem.MakeProjectionMatrix( fieldOfView, aspectRatio, nearDistance, farDistance );
+                ProjectionMatrix = renderSystem.MakeProjectionMatrix( FieldOfView, AspectRatio, Near, Far );
             }
-            else if ( projectionType == Projection.Orthographic )
+            else if ( ProjectionType == Projection.Orthographic )
             {
                 // orthographic projection, API specific
-                projectionMatrix = renderSystem.MakeOrthoMatrix( fieldOfView, aspectRatio, nearDistance, farDistance );
+				ProjectionMatrix = renderSystem.MakeOrthoMatrix( FieldOfView, AspectRatio, Near, Far );
             }
 
             // View matrix is:
@@ -147,13 +121,13 @@ namespace Axiom.SceneManagers.Bsp
             Vector3 translation = -rotationT * position;
 
             // initialize the upper 3x3 portion with the rotation
-            viewMatrix = rotationT;
+            _viewMatrix = rotationT;
 
             // add the translation portion, add set 1 for the bottom right portion
-            viewMatrix.m03 = translation.x;
-            viewMatrix.m13 = translation.y;
-            viewMatrix.m23 = translation.z;
-            viewMatrix.m33 = 1.0f;
+            _viewMatrix.m03 = translation.x;
+            _viewMatrix.m13 = translation.y;
+            _viewMatrix.m23 = translation.z;
+            _viewMatrix.m33 = 1.0f;
         }
 
         protected Quaternion GetLightOrientation()

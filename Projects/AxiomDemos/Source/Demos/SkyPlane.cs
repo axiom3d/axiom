@@ -19,7 +19,7 @@ namespace Axiom.Demos
         public override void CreateScene()
         {
             // set some ambient light
-            scene.AmbientLight = new ColorEx( 1.0f, 0.5f, 0.5f, 0.5f );
+            scene.AmbientLight = ColorEx.Gray;
 
             Plane plane = new Plane();
             // 5000 units from the camera
@@ -28,7 +28,7 @@ namespace Axiom.Demos
             plane.Normal = -Vector3.UnitY;
 
             // create the skyplace 10000 units wide, tile the texture 3 times
-            scene.SetSkyPlane( true, plane, "Skyplane/Space", 10000, 3, true, 0 );
+			scene.SetSkyPlane( true, plane, "Skyplane/Space", 10000, 3, true, 0, ResourceGroupManager.DefaultResourceGroupName );
 
             // create a default point light
             Light light = scene.CreateLight( "MainLight" );

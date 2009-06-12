@@ -58,7 +58,7 @@ namespace Axiom.ParticleFX
 
         #endregion Fields
 
-        public AreaEmitter() : base()
+        public AreaEmitter( ParticleSystem ps ) : base( ps)
         {
         }
 
@@ -157,7 +157,7 @@ namespace Axiom.ParticleFX
 
         #region Implementation of ParticleEmitter
 
-        public override ushort GetEmissionCount( float timeElapsed )
+		public override ushort GetEmissionCount( float timeElapsed )
         {
             // use basic constant emission
             return GenerateConstantEmissionCount( timeElapsed );

@@ -103,32 +103,32 @@ namespace Axiom.RenderSystems.Xna
             privateTex.Dispose();
         }
 
-        public override void Save(System.IO.Stream fileName)
-        {
-            //can't copy the byte[] straight,it gives bad image
-            XFG.Texture2D tex = privateTex.NormalTexture;
-            if (tex == null)
-                return;
-            XFG.Color[] cols = new XFG.Color[ tex.Width * tex.Height ];
-            tex.GetData<XFG.Color>( cols );
+        //public override void Save(System.IO.Stream fileName)
+        //{
+        //    //can't copy the byte[] straight,it gives bad image
+        //    XFG.Texture2D tex = privateTex.NormalTexture;
+        //    if (tex == null)
+        //        return;
+        //    XFG.Color[] cols = new XFG.Color[ tex.Width * tex.Height ];
+        //    tex.GetData<XFG.Color>( cols );
 
-            byte[] bytes = new byte[ tex.Width * tex.Height * 3 ];
-            int i = 0;
-            foreach ( XFG.Color col in cols )
-            {
-                bytes[ i ] = col.R;
-                bytes[ i + 1 ] = col.G;
-                bytes[ i + 2 ] = col.B;
-                i += 3;
-            }
-            //flip it
-            Image image = Image.FromDynamicImage( bytes, tex.Width, tex.Height, PixelFormat.B8G8R8 );
-            if ( this.RequiresTextureFlipping )
-                image.FlipAroundX();
+        //    byte[] bytes = new byte[ tex.Width * tex.Height * 3 ];
+        //    int i = 0;
+        //    foreach ( XFG.Color col in cols )
+        //    {
+        //        bytes[ i ] = col.R;
+        //        bytes[ i + 1 ] = col.G;
+        //        bytes[ i + 2 ] = col.B;
+        //        i += 3;
+        //    }
+        //    //flip it
+        //    Image image = Image.FromDynamicImage( bytes, tex.Width, tex.Height, PixelFormat.B8G8R8 );
+        //    if ( this.RequiresTextureFlipping )
+        //        image.FlipAroundX();
 
-            //
-            fileName.Write( image.Data, 0, image.Data.Length );
+        //    //
+        //    fileName.Write( image.Data, 0, image.Data.Length );
 
-        }
+        //}
     }
 }

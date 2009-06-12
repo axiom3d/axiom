@@ -21,7 +21,7 @@ namespace Axiom.Demos
     {
         public override void ChooseSceneManager()
         {
-            scene = SceneManagerEnumerator.Instance.GetSceneManager( SceneType.Interior );
+            scene = engine.CreateSceneManager( SceneType.Interior, "TechDemoSMInstance" );
         }
 
         public override void CreateScene()
