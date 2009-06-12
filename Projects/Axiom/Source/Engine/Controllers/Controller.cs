@@ -58,24 +58,24 @@ namespace Axiom.Controllers
     ///		While this is very flexible, it can be a little bit confusing so to make it simpler the most often used
     ///		controller setups are available by calling methods on the ControllerManager object.
     /// </remarks>
-    public class Controller
+	public class Controller<T>
     {
         #region Member variables
 
         /// <summary>
         /// 
         /// </summary>
-        protected IControllerValue source;
+		protected IControllerValue<T> source;
 
         /// <summary>
         /// 
         /// </summary>
-        protected IControllerValue destination;
+		protected IControllerValue<T> destination;
 
         /// <summary>
         ///		Local reference to the function to be used for this controller.
         /// </summary>
-        protected IControllerFunction function;
+		protected IControllerFunction<T> function;
 
         /// <summary>
         ///		States whether or not this controller is enabled.
@@ -93,7 +93,7 @@ namespace Axiom.Controllers
         /// <param name="source"></param>
         /// <param name="destination"></param>
         /// <param name="function"></param>
-        internal Controller( IControllerValue source, IControllerValue destination, IControllerFunction function )
+		internal Controller( IControllerValue<T> source, IControllerValue<T> destination, IControllerFunction<T> function )
         {
             this.source = source;
             this.destination = destination;
@@ -126,7 +126,7 @@ namespace Axiom.Controllers
         /// <summary>
         ///		The value that returns the source data for this controller.
         /// </summary>
-        public IControllerValue Source
+		public IControllerValue<T> Source
         {
             get
             {
@@ -141,7 +141,7 @@ namespace Axiom.Controllers
         /// <summary>
         ///		The object the sets the destination objects value.
         /// </summary>
-        public IControllerValue Destination
+		public IControllerValue<T> Destination
         {
             get
             {
@@ -156,7 +156,7 @@ namespace Axiom.Controllers
         /// <summary>
         ///		Gets/Sets the eference to the function to be used for this controller.
         /// </summary>
-        public IControllerFunction Function
+		public IControllerFunction<T> Function
         {
             get
             {

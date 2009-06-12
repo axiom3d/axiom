@@ -19,9 +19,10 @@ namespace Axiom.Demos
         protected ParticleSystem thrusters = null;
         #endregion Fields
 
-        protected override void OnFrameStarted( Object source, FrameEventArgs e )
+        protected override bool OnFrameStarted( Object source, FrameEventArgs e )
         {
-            base.OnFrameStarted( source, e );
+            if ( base.OnFrameStarted( source, e ) == false )
+                return false;
 
             if ( input.IsKeyPressed( KeyCodes.N ) )
             {
@@ -50,6 +51,8 @@ namespace Axiom.Demos
                 thrusters.GetEmitter( 1 ).ParticleVelocity = defaultVelocity - 1;
                 defaultVelocity -= 1;
             }
+
+            return true;
         }
 
         #region Methods
@@ -58,10 +61,10 @@ namespace Axiom.Demos
             // since whole screen is being redrawn every frame, dont bother clearing
             // option works for GL right now, uncomment to test it out.  huge fps increase
             // also, depth_write in the skybox material must be set to on
-            //mainViewport.ClearEveryFrame = false;
+            //viewport.ClearEveryFrame = false;
 
             // set ambient light
-            scene.AmbientLight = new ColorEx( 1.0f, 0.5f, 0.5f, 0.5f );
+            scene.AmbientLight = ColorEx.Gray;
 
             // create a skybox
             scene.SetSkyBox( true, "Skybox/Space", 50 );

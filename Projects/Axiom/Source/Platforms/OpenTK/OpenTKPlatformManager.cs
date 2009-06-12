@@ -16,10 +16,6 @@ namespace Axiom.Platforms.OpenTK
         ///		Reference to the current input reader.
         /// </summary>
         private InputReader inputReader;
-        /// <summary>
-        ///		Reference to the current active timer.
-        /// </summary>
-        private ITimer timer;
 
         #endregion Fields
 
@@ -35,32 +31,17 @@ namespace Axiom.Platforms.OpenTK
             return inputReader;
         }
 
-        /// <summary>
-        ///		Creates a high precision timer.
-        /// </summary>
-        /// <returns></returns>
-        public ITimer CreateTimer()
-        {
-            timer = new OpenTKTimer();
-            return timer;
-        }
-
-        /// <summary>
-        /// </summary>
-        public void DoEvents()
-        {
-        }
-
         #endregion
 
         #region IDisposable Members
         public void Dispose()
         {
-            timer.Reset();
-            timer = null;
-
-            inputReader.Dispose();
-            inputReader = null;
+            if (inputReader != null)
+            {
+                inputReader.Dispose();
+                inputReader = null;
+            }
+            LogManager.Instance.Write("OpenTK Platform Manager Shutdown.");
         }
         #endregion
     }

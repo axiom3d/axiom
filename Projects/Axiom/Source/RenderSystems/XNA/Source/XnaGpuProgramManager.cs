@@ -37,9 +37,11 @@ using System;
 
 using Axiom.Core;
 using Axiom.Graphics;
+using ResourceHandle = System.UInt64;
 
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
+using Axiom.Collections;
 
 #endregion Namespace Declarations
 
@@ -63,17 +65,34 @@ namespace Axiom.RenderSystems.Xna
         /// <param name="name"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public override GpuProgram Create( string name, GpuProgramType type, string syntaxCode )
+        protected override Resource _create(string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode)
         {
             switch ( type )
             {
                 case GpuProgramType.Vertex:
-                    return new XnaVertexProgram( name, device, syntaxCode );
+                    return new XnaVertexProgram( this, name, handle, group, isManual, loader, device );
 
                 case GpuProgramType.Fragment:
-                    return new XnaFragmentProgram( name, device, syntaxCode );
+                    return new XnaFragmentProgram( this, name, handle, group, isManual, loader, device );
                 default:
                     throw new NotSupportedException( "The program type is not supported." );
+            }
+        }
+
+        protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+        {
+            if ( !createParams.ContainsKey( "type" ) )
+            {
+                throw new Exception( "You must supply a 'type' parameter." );
+            }
+
+            if ( createParams["type"] == "vertex_program" )
+            {
+                return new XnaVertexProgram( this, name, handle, group, isManual, loader, device );
+            }
+            else
+            {
+                return new XnaFragmentProgram( this, name, handle, group, isManual, loader, device );
             }
         }
 

@@ -95,7 +95,7 @@ namespace Axiom.ParticleSystems
         ///		Subclasses must add newly created emitters to the emitterList.
         /// </remarks>
         /// <returns></returns>
-        public abstract ParticleEmitter Create();
+        public abstract ParticleEmitter Create( ParticleSystem ps);
 
         /// <summary>
         ///		Destroys the emitter referenced by the parameter.

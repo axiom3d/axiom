@@ -1,0 +1,11 @@
+Tao.FreeType 2.3.5.0
+Copyright �2003-2006 Tao Framework Team
+http://www.taoframework.com
+All rights reserved.
+
+Tao.FreeType is an FreeType API binding for .NET, implementing FreeType 2.
+
+
+Change Log:
+2.3.5.0 - November 8, 2007:
+    Initial release.

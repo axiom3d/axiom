@@ -44,110 +44,110 @@ using Tao.OpenGl;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-    /// <summary>
-    /// Summary description for GLHardwareOcclusionQuery.
-    /// </summary>
-    public class GLHardwareOcclusionQuery : IHardwareOcclusionQuery
-    {
-        /// <summary>
-        ///		Number of fragments returned from the last query.
-        /// </summary>
-        private int lastFragmentCount;
-        /// <summary>
-        ///		Flag that indicates whether hardware queries are supported
-        /// </summary>
-        private bool isSupported;
-        /// <summary>
-        ///		Rate at which queries are skipped (in frames).
-        /// </summary>
-        private int skipRate;
-        /// <summary>
-        ///		Current count of number of skipped frames since query last ran.
-        /// </summary>
-        private int skipCounter;
-        /// <summary>
-        ///		Id of the GL query.
-        /// </summary>
-        private int id;
+	/// <summary>
+	/// Summary description for GLHardwareOcclusionQuery.
+	/// </summary>
+	public class GLHardwareOcclusionQuery : IHardwareOcclusionQuery
+	{
+		/// <summary>
+		///		Number of fragments returned from the last query.
+		/// </summary>
+		private int lastFragmentCount;
+		/// <summary>
+		///		Flag that indicates whether hardware queries are supported
+		/// </summary>
+		private bool isSupported;
+		/// <summary>
+		///		Rate at which queries are skipped (in frames).
+		/// </summary>
+		private int skipRate;
+		/// <summary>
+		///		Current count of number of skipped frames since query last ran.
+		/// </summary>
+		private int skipCounter;
+		/// <summary>
+		///		Id of the GL query.
+		/// </summary>
+		private int id;
 
-        public GLHardwareOcclusionQuery()
-        {
-            isSupported = Root.Instance.RenderSystem.Caps.CheckCap( Capabilities.HardwareOcculusion );
+		public GLHardwareOcclusionQuery()
+		{
+			isSupported = Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.HardwareOcculusion );
 
-            if ( isSupported )
-            {
-                Gl.glGenOcclusionQueriesNV( 1, out id );
-            }
-        }
+			if ( isSupported )
+			{
+				Gl.glGenOcclusionQueriesNV( 1, out id );
+			}
+		}
 
-        #region IHardwareOcclusionQuery Members
+		#region IHardwareOcclusionQuery Members
 
-        public void Begin()
-        {
-            // proceed if supported, or silently fail otherwise
-            if ( isSupported )
-            {
-                if ( skipCounter == skipRate )
-                {
-                    skipCounter = 0;
-                }
+		public void Begin()
+		{
+			// proceed if supported, or silently fail otherwise
+			if ( isSupported )
+			{
+				if ( skipCounter == skipRate )
+				{
+					skipCounter = 0;
+				}
 
-                if ( skipCounter == 0 )
-                { // && lastFragmentCount != 0) {
-                    Gl.glBeginOcclusionQueryNV( id );
-                }
-            }
-        }
+				if ( skipCounter == 0 )
+				{ // && lastFragmentCount != 0) {
+					Gl.glBeginOcclusionQueryNV( id );
+				}
+			}
+		}
 
-        public int PullResults( bool flush )
-        {
-            // note: flush doesn't apply to GL
+		public int PullResults( bool flush )
+		{
+			// note: flush doesn't apply to GL
 
-            // default to returning a high count.  will be set otherwise if the query runs
-            lastFragmentCount = 100000;
+			// default to returning a high count.  will be set otherwise if the query runs
+			lastFragmentCount = 100000;
 
-            if ( isSupported )
-            {
-                Gl.glGetOcclusionQueryivNV( id, Gl.GL_PIXEL_COUNT_NV, out lastFragmentCount );
-            }
+			if ( isSupported )
+			{
+				Gl.glGetOcclusionQueryivNV( id, Gl.GL_PIXEL_COUNT_NV, out lastFragmentCount );
+			}
 
-            return lastFragmentCount;
-        }
+			return lastFragmentCount;
+		}
 
-        public void End()
-        {
-            // proceed if supported, or silently fail otherwise
-            if ( isSupported )
-            {
-                if ( skipCounter == 0 )
-                { // && lastFragmentCount != 0) {
-                    Gl.glEndOcclusionQueryNV();
-                }
+		public void End()
+		{
+			// proceed if supported, or silently fail otherwise
+			if ( isSupported )
+			{
+				if ( skipCounter == 0 )
+				{ // && lastFragmentCount != 0) {
+					Gl.glEndOcclusionQueryNV();
+				}
 
-                skipCounter++;
-            }
-        }
+				skipCounter++;
+			}
+		}
 
-        public int SkipRate
-        {
-            get
-            {
-                return skipRate;
-            }
-            set
-            {
-                skipRate = value;
-            }
-        }
+		public int SkipRate
+		{
+			get
+			{
+				return skipRate;
+			}
+			set
+			{
+				skipRate = value;
+			}
+		}
 
-        public int LastFragmentCount
-        {
-            get
-            {
-                return lastFragmentCount;
-            }
-        }
+		public int LastFragmentCount
+		{
+			get
+			{
+				return lastFragmentCount;
+			}
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

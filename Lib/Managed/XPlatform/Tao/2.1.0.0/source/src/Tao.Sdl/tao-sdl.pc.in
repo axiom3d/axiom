@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+
+Name: Tao.Sdl
+Description: SDL portion of the Tao framework
+Version: @TAOSDL_VERSION@
+Requires:
+Libs: -r:${libdir}/mono/tao-sdl-@TAOSDL_MAJOR@/Tao.Sdl.dll
+

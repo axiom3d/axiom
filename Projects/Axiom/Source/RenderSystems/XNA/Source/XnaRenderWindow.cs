@@ -237,7 +237,7 @@ namespace Axiom.RenderSystems.Xna
 
 		public override void Reposition( int left, int right )
 		{
-			// TODO: Implementation of D3DWindow.Reposition()
+			// TODO: Implementation of XnaRenderWindow.Reposition()
 		}
 
 		/// <summary>

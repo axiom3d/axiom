@@ -46,7 +46,7 @@ namespace Axiom.Controllers.Canned
     /// <summary>
     /// Summary description for NodeRotationControllerValue.
     /// </summary>
-    public class NodeRotationControllerValue : IControllerValue
+	public class NodeRotationControllerValue : IControllerValue<float>
     {
         private float radians; //[FXCop Optimization : Do not initialize unnecessarily]
         private Node node;

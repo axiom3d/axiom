@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -43,58 +44,37 @@ namespace Axiom.Graphics
     /// <summary>
     ///     Generics: List<VertexElement>
     /// </summary>
-    public class VertexElementList : ArrayList
-    {
-    }
+    public class VertexElementList : List< VertexElement> { }
 
     /// <summary>
     ///     Generics: List<TextureEffect>
     /// </summary>
-    public class TextureEffectList : ArrayList
-    {
-    }
-
-    /// <summary>
-    ///     Generics: List<RenderTarget>
-    /// </summary>
-    public class RenderTargetList : ArrayList
-    {
-    }
+    public class TextureEffectList : List<TextureEffect> { }
 
     /// <summary>
     ///     Generics: List<RenderTexture>
     /// </summary>
-    public class RenderTextureList : ArrayList
-    {
-    }
+    public class RenderTextureList : List<RenderTexture> { }
 
     /// <summary>
     ///     Generics: List<Pass>
     /// </summary>
-    public class PassList : ArrayList
-    {
-    }
+    public class PassList : List<Pass> { }
 
     /// <summary>
     ///     Generics: List<Technique>
     /// </summary>
-    public class TechniqueList : ArrayList
-    {
-    }
+    public class TechniqueList : List<Technique> { }
 
     /// <summary>
     ///     Generics: List<TextureUnitState>
     /// </summary>
-    public class TextureUnitStateList : ArrayList
-    {
-    }
+    public class TextureUnitStateList : List<TextureUnitState> { }
 
     /// <summary>
     ///     Generics: List<AutoConstantEntry>
     /// </summary>
-    public class AutoConstantEntryList : ArrayList
-    {
-    }
+    public class AutoConstantEntryList : List<Axiom.Graphics.GpuProgramParameters.AutoConstantEntry> { }
 
     /// <summary>
     ///     Generics: List<AutoConstantEntry>
@@ -127,49 +107,47 @@ namespace Axiom.Graphics
     /// <summary>
     ///     Generics: List<IRenderable>
     /// </summary>
-    public class RenderableList : ArrayList
-    {
-    }
+    public class RenderableList : List<IRenderable> { }
 
     /// <summary>
     ///     Generics: List<EdgeData.Triangle>
     /// </summary>
-    public class TriangleList : ArrayList
-    {
-    }
+	public class TriangleList : List<EdgeData.Triangle>
+	{
+	}
 
     /// <summary>
     ///     Generics: List<EdgeData.Edge>
     /// </summary>
-    public class EdgeList : ArrayList
+	public class EdgeList : List<EdgeData.Edge>
     {
     }
 
     /// <summary>
-    ///     Generics: List<EdgeGroup>
+    ///     Generics: List<EdgeData.EdgeGroup>
     /// </summary>
-    public class EdgeGroupList : ArrayList
+	public class EdgeGroupList : List<EdgeData.EdgeGroup>
     {
     }
 
     /// <summary>
     ///     Generics: List<VertexData>
     /// </summary>
-    public class VertexDataList : ArrayList
+	public class VertexDataList : List<VertexData>
     {
     }
 
     /// <summary>
     ///     Generics: List<IndexData>
     /// </summary>
-    public class IndexDataList : ArrayList
+	public class IndexDataList : List<IndexData>
     {
     }
 
     /// <summary>
     ///     Generics: List<ShadowRenderable>
     /// </summary>
-    public class ShadowRenderableList : ArrayList
+	public class ShadowRenderableList : List<ShadowRenderable>
     {
     }
 

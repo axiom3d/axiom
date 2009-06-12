@@ -677,7 +677,6 @@ namespace Axiom.Overlays.Elements
         {
             get
             {
-
                 if ( metricsMode == MetricsMode.Pixels )
                 {
                     return pixelBottomBorderSize;
@@ -701,7 +700,7 @@ namespace Axiom.Overlays.Elements
             set
             {
                 borderMaterialName = value;
-                borderMaterial = MaterialManager.Instance.GetByName( borderMaterialName );
+				borderMaterial = (Material)MaterialManager.Instance[ borderMaterialName ];
 
                 if ( borderMaterial == null )
                 {
@@ -739,7 +738,7 @@ namespace Axiom.Overlays.Elements
 
         #region Script parser methods
 
-        [AttributeParser( "border_left_uv", "BorderPanel" )]
+        [ParserCommand( "border_left_uv", "BorderPanel" )]
         public static void ParserLeftBorderUV( string[] parms, params object[] objects )
         {
             BorderPanel borderPanel = (BorderPanel)objects[ 0 ];
@@ -753,7 +752,7 @@ namespace Axiom.Overlays.Elements
             borderPanel.SetLeftBorderUV( u1, v1, u2, v2 );
         }
 
-        [AttributeParser( "border_right_uv", "BorderPanel" )]
+        [ParserCommand( "border_right_uv", "BorderPanel" )]
         public static void ParserRightBorderUV( string[] parms, params object[] objects )
         {
             BorderPanel borderPanel = (BorderPanel)objects[ 0 ];
@@ -767,7 +766,7 @@ namespace Axiom.Overlays.Elements
             borderPanel.SetRightBorderUV( u1, v1, u2, v2 );
         }
 
-        [AttributeParser( "border_top_uv", "BorderPanel" )]
+        [ParserCommand( "border_top_uv", "BorderPanel" )]
         public static void ParserTopBorderUV( string[] parms, params object[] objects )
         {
             BorderPanel borderPanel = (BorderPanel)objects[ 0 ];
@@ -781,7 +780,7 @@ namespace Axiom.Overlays.Elements
             borderPanel.SetTopBorderUV( u1, v1, u2, v2 );
         }
 
-        [AttributeParser( "border_bottom_uv", "BorderPanel" )]
+        [ParserCommand( "border_bottom_uv", "BorderPanel" )]
         public static void ParserBottomBorderUV( string[] parms, params object[] objects )
         {
             BorderPanel borderPanel = (BorderPanel)objects[ 0 ];
@@ -795,7 +794,7 @@ namespace Axiom.Overlays.Elements
             borderPanel.SetBottomBorderUV( u1, v1, u2, v2 );
         }
 
-        [AttributeParser( "border_topleft_uv", "BorderPanel" )]
+        [ParserCommand( "border_topleft_uv", "BorderPanel" )]
         public static void ParserTopLeftBorderUV( string[] parms, params object[] objects )
         {
             BorderPanel borderPanel = (BorderPanel)objects[ 0 ];
@@ -809,7 +808,7 @@ namespace Axiom.Overlays.Elements
             borderPanel.SetTopLeftBorderUV( u1, v1, u2, v2 );
         }
 
-        [AttributeParser( "border_topright_uv", "BorderPanel" )]
+        [ParserCommand( "border_topright_uv", "BorderPanel" )]
         public static void ParserTopRightBorderUV( string[] parms, params object[] objects )
         {
             BorderPanel borderPanel = (BorderPanel)objects[ 0 ];
@@ -823,7 +822,7 @@ namespace Axiom.Overlays.Elements
             borderPanel.SetTopRightBorderUV( u1, v1, u2, v2 );
         }
 
-        [AttributeParser( "border_bottomleft_uv", "BorderPanel" )]
+        [ParserCommand( "border_bottomleft_uv", "BorderPanel" )]
         public static void ParserBottomLeftBorderUV( string[] parms, params object[] objects )
         {
             BorderPanel borderPanel = (BorderPanel)objects[ 0 ];
@@ -837,7 +836,7 @@ namespace Axiom.Overlays.Elements
             borderPanel.SetBottomLeftBorderUV( u1, v1, u2, v2 );
         }
 
-        [AttributeParser( "border_bottomright_uv", "BorderPanel" )]
+        [ParserCommand( "border_bottomright_uv", "BorderPanel" )]
         public static void ParserBottomRightBorderUV( string[] parms, params object[] objects )
         {
             BorderPanel borderPanel = (BorderPanel)objects[ 0 ];
@@ -851,7 +850,7 @@ namespace Axiom.Overlays.Elements
             borderPanel.SetBottomRightBorderUV( u1, v1, u2, v2 );
         }
 
-        [AttributeParser( "border_size", "BorderPanel" )]
+        [ParserCommand( "border_size", "BorderPanel" )]
         public static void ParserBorderSize( string[] parms, params object[] objects )
         {
             BorderPanel borderPanel = (BorderPanel)objects[ 0 ];
@@ -864,7 +863,7 @@ namespace Axiom.Overlays.Elements
             borderPanel.SetBorderSize( left, right, top, bottom );
         }
 
-        [AttributeParser( "border_material", "BorderPanel" )]
+        [ParserCommand( "border_material", "BorderPanel" )]
         public static void ParserBorderMaterial( string[] parms, params object[] objects )
         {
             BorderPanel borderPanel = (BorderPanel)objects[ 0 ];
@@ -958,16 +957,16 @@ namespace Axiom.Overlays.Elements
                 op.operationType = parent.renderOp2.operationType;
             }
 
-            public void GetWorldTransforms( Matrix4[] matrices )
+			public void GetWorldTransforms( Matrix4[] matrices )
             {
                 parent.GetWorldTransforms( matrices );
             }
 
-            public SceneDetailLevel RenderDetail
+            public virtual bool PolygonModeOverrideable
             {
                 get
                 {
-                    return SceneDetailLevel.Solid;
+                    return parent.PolygonModeOverrideable;
                 }
             }
 

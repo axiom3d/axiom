@@ -45,207 +45,244 @@ using Tao.OpenGl;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-    /// <summary>
-    /// 	Summary description for GLHardwareVertexBuffer.
-    /// </summary>
-    public class GLHardwareVertexBuffer : HardwareVertexBuffer
-    {
-        #region Member variables
+	/// <summary>
+	/// 	Summary description for GLHardwareVertexBuffer.
+	/// </summary>
+	public class GLHardwareVertexBuffer : HardwareVertexBuffer
+	{
+		#region Member variables
 
-        /// <summary>Saves the GL buffer ID for this buffer.</summary>
-        private int bufferID;
+		/// <summary>Saves the GL buffer ID for this buffer.</summary>
+		private int bufferID;
 
-        #endregion
+		#endregion
 
-        #region Constructors
+		#region Constructors
 
-        public GLHardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage, bool useShadowBuffer )
-            : base( vertexSize, numVertices, usage, false, useShadowBuffer )
-        {
+		public GLHardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage, bool useShadowBuffer )
+			: base( vertexSize, numVertices, usage, false, useShadowBuffer )
+		{
 
-            bufferID = 0;
+			bufferID = 0;
 
-            Gl.glGenBuffersARB( 1, out bufferID );
+			Gl.glGenBuffersARB( 1, out bufferID );
 
-            if ( bufferID == 0 )
-            {
-                throw new Exception( "Cannot create GL vertex buffer" );
-            }
+			if ( bufferID == 0 )
+			{
+				throw new Exception( "Cannot create GL vertex buffer" );
+			}
 
-            Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, bufferID );
+			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, bufferID );
 
-            // initialize this buffer.  we dont have data yet tho
-            Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, sizeInBytes, IntPtr.Zero, GLHelper.ConvertEnum( usage ) );
-        }
+			// initialize this buffer.  we dont have data yet tho
+			Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, new IntPtr( sizeInBytes ), IntPtr.Zero, GLHelper.ConvertEnum( usage ) ); // TAO 2.0
+			//Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, sizeInBytes, IntPtr.Zero, GLHelper.ConvertEnum( usage ) );
+		}
 
-        #endregion
+		#endregion
 
-        #region GLHardwareVertexBuffer Implementation
+		#region HardwareVertexBuffer Implementation
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        /// <param name="locking"></param>
-        /// <returns></returns>
-        protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
-        {
-            int access = 0;
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="offset"></param>
+		/// <param name="length"></param>
+		/// <param name="locking"></param>
+		/// <returns></returns>
+		protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
+		{
+			int access = 0;
 
-            if ( isLocked )
-            {
-                throw new Exception( "Invalid attempt to lock an index buffer that has already been locked." );
-            }
+			if ( isLocked )
+			{
+				throw new Exception( "Invalid attempt to lock an index buffer that has already been locked." );
+			}
 
-            // bind this buffer
-            Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, bufferID );
+			// bind this buffer
+			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, bufferID );
 
-            if ( locking == BufferLocking.Discard )
-            {
-                // fixes issues with ATI cards
-                //Gl.glBufferDataARB(Gl.GL_ARRAY_BUFFER_ARB, length, IntPtr.Zero, GLHelper.ConvertEnum(usage));
+			if ( locking == BufferLocking.Discard )
+			{
+				// fixes issues with ATI cards
+				//Gl.glBufferDataARB(Gl.GL_ARRAY_BUFFER_ARB, length, IntPtr.Zero, GLHelper.ConvertEnum(usage));
 
-                // find out how we shall access this buffer
-                access = ( usage == BufferUsage.Dynamic ) ?
-                    Gl.GL_READ_WRITE_ARB : Gl.GL_WRITE_ONLY_ARB;
-            }
-            else if ( locking == BufferLocking.ReadOnly )
-            {
-                if ( usage == BufferUsage.WriteOnly )
-                {
-                    LogManager.Instance.Write( "Invalid attempt to lock a write-only vertex buffer as read-only." );
-                }
+				// find out how we shall access this buffer
+				access = ( usage == BufferUsage.Dynamic ) ?
+					Gl.GL_READ_WRITE_ARB : Gl.GL_WRITE_ONLY_ARB;
+			}
+			else if ( locking == BufferLocking.ReadOnly )
+			{
+				if ( usage == BufferUsage.WriteOnly )
+				{
+					LogManager.Instance.Write( "Invalid attempt to lock a write-only vertex buffer as read-only." );
+				}
 
-                access = Gl.GL_READ_ONLY_ARB;
-            }
-            else if ( locking == BufferLocking.Normal || locking == BufferLocking.NoOverwrite )
-            {
-                access = ( usage == BufferUsage.Dynamic ) ?
-                    Gl.GL_READ_WRITE_ARB : Gl.GL_WRITE_ONLY_ARB;
-            }
+				access = Gl.GL_READ_ONLY_ARB;
+			}
+			else if ( locking == BufferLocking.Normal || locking == BufferLocking.NoOverwrite )
+			{
+				access = ( usage == BufferUsage.Dynamic ) ?
+					Gl.GL_READ_WRITE_ARB : Gl.GL_WRITE_ONLY_ARB;
+			}
 
-            IntPtr ptr = Gl.glMapBufferARB( Gl.GL_ARRAY_BUFFER_ARB, access );
+			IntPtr ptr = Gl.glMapBufferARB( Gl.GL_ARRAY_BUFFER_ARB, access );
 
-            if ( ptr == IntPtr.Zero )
-            {
-                throw new Exception( "GL Vertex Buffer: Out of memory" );
-            }
+			if ( ptr == IntPtr.Zero )
+			{
+				throw new Exception( "GL Vertex Buffer: Out of memory" );
+			}
 
-            isLocked = true;
+			isLocked = true;
 
             return new IntPtr( ptr.ToInt64() + offset );
-        }
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public override void UnlockImpl()
-        {
-            Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, bufferID );
+		/// <summary>
+		/// 
+		/// </summary>
+		protected override void UnlockImpl()
+		{
+			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, bufferID );
 
-            // Unmap the buffer to unlock it
-            if ( Gl.glUnmapBufferARB( Gl.GL_ARRAY_BUFFER_ARB ) == 0 )
-            {
-                throw new Exception( "Buffer data currupted!" );
-            }
+			// Unmap the buffer to unlock it
+			if ( Gl.glUnmapBufferARB( Gl.GL_ARRAY_BUFFER_ARB ) == 0 )
+			{
+				throw new Exception( "Buffer data currupted!" );
+			}
 
-            isLocked = false;
-        }
+			isLocked = false;
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        /// <param name="src"></param>
-        /// <param name="discardWholeBuffer"></param>
-        public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
-        {
-            Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, bufferID );
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="offset"></param>
+		/// <param name="length"></param>
+		/// <param name="src"></param>
+		/// <param name="discardWholeBuffer"></param>
+		public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
+		{
+			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, bufferID );
 
-            if ( useShadowBuffer )
-            {
-                // lock the buffer for reading
-                IntPtr dest = shadowBuffer.Lock( offset, length,
-                    discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
+			if ( useShadowBuffer )
+			{
+				// lock the buffer for reading
+				IntPtr dest = shadowBuffer.Lock( offset, length,
+					discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
 
-                // copy that data in there
-                Memory.Copy( src, dest, length );
+				// copy that data in there
+				Memory.Copy( src, dest, length );
 
-                // unlock the buffer
-                shadowBuffer.Unlock();
-            }
+				// unlock the buffer
+				shadowBuffer.Unlock();
+			}
 
-            if ( discardWholeBuffer )
-            {
-                Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB,
-                    sizeInBytes,
-                    IntPtr.Zero,
-                    GLHelper.ConvertEnum( usage ) );
-            }
+			if ( discardWholeBuffer )
+			{
+				Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB,
+					new IntPtr( sizeInBytes ),
+					IntPtr.Zero,
+					GLHelper.ConvertEnum( usage ) ); // TAO 2.0
+				//Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB,
+				//    sizeInBytes,
+				//    IntPtr.Zero,
+				//    GLHelper.ConvertEnum( usage ) );
 
-            Gl.glBufferSubDataARB(
-                Gl.GL_ARRAY_BUFFER_ARB,
-                offset,
-                length,
-                src );
-        }
+			}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="offset"></param>
-        /// <param name="length"></param>
-        /// <param name="dest"></param>
-        public override void ReadData( int offset, int length, IntPtr dest )
-        {
-            if ( useShadowBuffer )
-            {
-                // lock the buffer for reading
-                IntPtr src = shadowBuffer.Lock( offset, length, BufferLocking.ReadOnly );
+			Gl.glBufferSubDataARB(
+				Gl.GL_ARRAY_BUFFER_ARB,
+				new IntPtr( offset ),
+				new IntPtr( length ),
+				src ); // TAO 2.0
+			//Gl.glBufferSubDataARB(
+			//    Gl.GL_ARRAY_BUFFER_ARB,
+			//    offset,
+			//    length,
+			//    src );
 
-                // copy that data in there
-                Memory.Copy( src, dest, length );
+		}
 
-                // unlock the buffer
-                shadowBuffer.Unlock();
-            }
-            else
-            {
-                Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, bufferID );
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="offset"></param>
+		/// <param name="length"></param>
+		/// <param name="dest"></param>
+		public override void ReadData( int offset, int length, IntPtr dest )
+		{
+			if ( useShadowBuffer )
+			{
+				// lock the buffer for reading
+				IntPtr src = shadowBuffer.Lock( offset, length, BufferLocking.ReadOnly );
 
-                Gl.glGetBufferSubDataARB(
-                    Gl.GL_ARRAY_BUFFER_ARB,
-                    offset,
-                    length,
-                    dest );
-            }
-        }
+				// copy that data in there
+				Memory.Copy( src, dest, length );
 
-        /// <summary>
-        ///     Called to destroy this buffer.
-        /// </summary>
-        public override void Dispose()
-        {
-            Gl.glDeleteBuffersARB( 1, ref bufferID );
-        }
+				// unlock the buffer
+				shadowBuffer.Unlock();
+			}
+			else
+			{
+				Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, bufferID );
 
-        #endregion GLHardwareVertexBuffer Implementation
+				Gl.glGetBufferSubDataARB(
+					Gl.GL_ARRAY_BUFFER_ARB,
+					new IntPtr( offset ),
+					new IntPtr( length ),
+					dest ); // TAO 2.0
+				//Gl.glGetBufferSubDataARB(
+				//    Gl.GL_ARRAY_BUFFER_ARB,
+				//    offset,
+				//    length,
+				//    dest );
 
-        #region Properties
+			}
+		}
 
-        /// <summary>
-        ///		Gets the GL buffer ID for this buffer.
-        /// </summary>
-        public int GLBufferID
-        {
-            get
-            {
-                return bufferID;
-            }
-        }
+		/// <summary>
+		///     Called to destroy this buffer.
+		/// </summary>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+				}
 
-        #endregion
-    }
+				try
+				{
+					Gl.glDeleteBuffersARB( 1, ref bufferID );
+				}
+				catch ( AccessViolationException ave )
+				{
+					LogManager.Instance.Write( "Error Deleting Vertexbuffer[{0}].", bufferID );
+				}
+
+			}
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+		}
+
+		#endregion GLHardwareVertexBuffer Implementation
+
+		#region Properties
+
+		/// <summary>
+		///		Gets the GL buffer ID for this buffer.
+		/// </summary>
+		public int GLBufferID
+		{
+			get
+			{
+				return bufferID;
+			}
+		}
+
+		#endregion
+	}
 }

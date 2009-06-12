@@ -39,111 +39,183 @@ using Axiom.Core;
 using Axiom.Graphics;
 
 using Tao.OpenGl;
+using System.Diagnostics;
+
+using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGL
 {
-    /// <summary>
-    /// 	Specialization of vertex/fragment programs for OpenGL.
-    /// </summary>
-    public class GLGpuProgram : GpuProgram
-    {
-        #region Fields
+	/// <summary>
+	/// 	Specialization of vertex/fragment programs for OpenGL.
+	/// </summary>
+	public class GLGpuProgram : GpuProgram
+	{
+		#region Fields
 
-        /// <summary>
-        ///    Internal OpenGL id assigned to this program.
-        /// </summary>
-        protected int programId;
+		/// <summary>
+		///    Internal OpenGL id assigned to this program.
+		/// </summary>
+		protected int programId;
 
-        /// <summary>
-        ///    Type of this program (vertex or fragment).
-        /// </summary>
-        protected int programType;
+		/// <summary>
+		///    Type of this program (vertex or fragment).
+		/// </summary>
+		protected int programType;
 
-        /// <summary>
-        ///     For use internally to store temp values for passing constants, etc.
-        /// </summary>
-        protected float[] tempProgramFloats = new float[ 4 ];
+		/// <summary>
+		///     For use internally to store temp values for passing constants, etc.
+		/// </summary>
+		protected float[] tempProgramFloats = new float[ 4 ];
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Constructors
+		#region Constructors
 
-        /// <summary>
-        ///     Constructor.
-        /// </summary>
-        /// <param name="name">Name of the program.</param>
-        /// <param name="type">Type of program (vertex or fragment).</param>
-        /// <param name="syntaxCode">Syntax code (i.e. arbvp1, etc).</param>
-        internal GLGpuProgram( string name, GpuProgramType type, string syntaxCode )
-            : base( name, type, syntaxCode )
-        {
-        }
+		/// <summary>
+		///     Constructor.
+		/// </summary>
+		/// <param name="name">Name of the program.</param>
+		/// <param name="type">Type of program (vertex or fragment).</param>
+		/// <param name="syntaxCode">Syntax code (i.e. arbvp1, etc).</param>
+		internal GLGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+			: base( parent, name, handle, group, isManual, loader )
+		{
+		}
 
-        #endregion Constructors
+		#endregion Constructors
 
-        #region GpuProgram Methods
+		#region GpuProgram Methods
 
-        /// <summary>
-        ///     Called when a program needs to be bound.
-        /// </summary>
-        public virtual void Bind()
-        {
-            // do nothing
-        }
+		/// <summary>
+		///     Called when a program needs to be bound.
+		/// </summary>
+		public virtual void Bind()
+		{
+			// do nothing
+		}
 
-        /// <summary>
-        ///     Called when a program needs to be unbound.
-        /// </summary>
-        public virtual void Unbind()
-        {
-            // do nothing
-        }
+		/// <summary>
+		///     Called when a program needs to be unbound.
+		/// </summary>
+		public virtual void Unbind()
+		{
+			// do nothing
+		}
 
-        /// <summary>
-        ///     Called to create the program from source.
-        /// </summary>
-        protected override void LoadFromSource()
-        {
-            // do nothing
-        }
+		/// <summary>
+		///     Called to create the program from source.
+		/// </summary>
+		protected override void LoadFromSource()
+		{
+			// do nothing
+		}
 
-        /// <summary>
-        ///     Called when a program needs to bind the supplied parameters.
-        /// </summary>
-        /// <param name="parms"></param>
-        public virtual void BindParameters( GpuProgramParameters parms )
-        {
-            // do nothing
-        }
+		/// <summary>
+		///     Called when a program needs to bind the supplied parameters.
+		/// </summary>
+		/// <param name="parms"></param>
+		public virtual void BindParameters( GpuProgramParameters parms )
+		{
+			// do nothing
+		}
 
-        #endregion GpuProgram Methods
+		/// <summary>
+		/// Bind just the pass iteration parameters
+		/// </summary>
+		/// <param name="parms"></param>
+		public virtual void BindProgramPassIterationParameters( GpuProgramParameters parms )
+		{
+			// do nothing
+		}
 
-        #region Properties
+		#endregion GpuProgram Methods
 
-        /// <summary>
-        ///    Access to the internal program id.
-        /// </summary>
-        public int ProgramID
-        {
-            get
-            {
-                return programId;
-            }
-        }
+		#region Properties
 
-        /// <summary>
-        ///    Gets the program type (GL_VERTEX_PROGRAM_ARB, GL_FRAGMENT_PROGRAM_ARB, etc);
-        /// </summary>
-        public int GLProgramType
-        {
-            get
-            {
-                return programType;
-            }
-        }
+		/// <summary>
+		///    Access to the internal program id.
+		/// </summary>
+		public int ProgramID
+		{
+			get
+			{
+				return programId;
+			}
+		}
 
-        #endregion Properties
-    }
+		/// <summary>
+		///    Gets the program type (GL_VERTEX_PROGRAM_ARB, GL_FRAGMENT_PROGRAM_ARB, etc);
+		/// </summary>
+		public int GLProgramType
+		{
+			get
+			{
+				return programType;
+			}
+		}
+
+
+		public override int SamplerCount
+		{
+			get
+			{
+				//TODO: SamplerCount is not implimented
+				return 0;
+			}
+		}
+
+		#endregion Properties
+
+		internal bool IsAttributeValid( VertexElementSemantic semantic )
+		{
+			switch ( semantic )
+			{
+				case VertexElementSemantic.Diffuse:
+				case VertexElementSemantic.Normal:
+				case VertexElementSemantic.Position:
+				case VertexElementSemantic.Specular:
+				case VertexElementSemantic.TexCoords:
+				default:
+					Debug.Assert( false, "Shouldn't be calling this for normal attributes" );
+					break;
+				case VertexElementSemantic.Binormal:
+				case VertexElementSemantic.BlendIndices:
+				case VertexElementSemantic.BlendWeights:
+				case VertexElementSemantic.Tangent:
+					return true;
+
+			}
+			return false; // keeps compiler happy
+
+		}
+
+		internal int AttributeIndex( VertexElementSemantic semantic )
+		{
+			switch ( semantic )
+			{
+				case VertexElementSemantic.Diffuse:
+				case VertexElementSemantic.Normal:
+				case VertexElementSemantic.Position:
+				case VertexElementSemantic.Specular:
+				case VertexElementSemantic.TexCoords:
+				default:
+					Debug.Assert( false, "Shouldn't be calling this for normal attributes" );
+					break;
+				case VertexElementSemantic.Binormal:
+					return 7;
+				case VertexElementSemantic.BlendIndices:
+					return 1;
+				case VertexElementSemantic.BlendWeights:
+					return 14;
+				case VertexElementSemantic.Tangent:
+					return 15;
+
+			}
+			return 0; // keeps compiler happy
+		}
+
+
+	}
 }

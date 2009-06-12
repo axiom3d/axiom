@@ -53,10 +53,11 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		private Image image;
 		private Image coverage;
 		private Image baseImg;
+        private Image shadowImg;
 
 		private long bpp;// should be 4 bytes (image is RGBA)
 
-		#endregion Fields
+	    #endregion Fields
 
 		#region Constructor
 
@@ -65,6 +66,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 			image = null;
 			coverage = null;
 			baseImg = null;
+            shadowImg = null;
 			maxheight = 256.0f * Options.Instance.Scale.y;
 		}
 
@@ -84,6 +86,36 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		}
 
 		#endregion
+
+        private float Scale
+        {
+            get
+            {
+                return Options.Instance.Scale.y;
+                // need to check up...
+                float prescale;
+                switch (bpp)
+                {
+                    case 1:
+                        prescale = Options.Instance.Scale.y / 255;
+                        break;
+                    case 2:
+                        prescale = Options.Instance.Scale.y / 65535;
+                        break;
+                    case 3:
+                        prescale = Options.Instance.Scale.y / 16777215;
+                        break;
+                    case 4:
+                        prescale = Options.Instance.Scale.y / 16777215;
+                        break;
+                    default:
+                        throw new AxiomException("unrecongnized number of bpp for data src image.", "PagingLandScapeData2D_HeightField::getScale");
+                        break;
+                }
+                return prescale;
+
+            }
+        }
 
 		public override Vector3 GetNormalAt (float X, float Z)
 		{
@@ -125,8 +157,31 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 			}	
 		}
 
+        public float GetShadow(float mX, float mZ, bool positive)
+        {
+            if (shadowImg != null)
+            {
+                uint Pos = (uint) ((mZ*shadowImg.Width + mX)*3); //3 bytes (mImage is RGBA)
+                if (shadowImg.Size > Pos)
+                {
+                    if (positive)
+                        return (float) (shadowImg.Data[Pos + 0])/255;
+                    else
+                        return (float) (shadowImg.Data[Pos + 1])/255;
+                }
+                else
+                {
+                    return 0.0f;
+                }
+            }
+            else
+            {
+                return 0.0f;
+            }
+        }
 
-		public override ColorEx GetBase (float X, float Z)
+
+	    public override ColorEx GetBase (float X, float Z)
 		{
 			if ( baseImg != null )
 			{
@@ -180,25 +235,26 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 		{
 			if ( image == null )
 			{
-				image = Image.FromFile( Options.Instance.Landscape_Filename + ".HN." + Z.ToString() + "." + 
-						X.ToString()  + "." + Options.Instance.Landscape_Extension );
+				image = Image.FromFile( Options.Instance.Landscape_Filename + "." + Z.ToString() + "." + X.ToString()  + "." + Options.Instance.Landscape_Extension );
+                //image = Image.FromFile(Options.Instance.Landscape_Filename + "." + Z.ToString() + "." + X.ToString() + "." + Options.Instance.Landscape_Extension);
 			    
 				//check to make sure it's 2^n + 1 size.
-				if ( !this.checkSize(image.Height) ||	!this.checkSize( image.Width ) )
+                
+				if (  image.Width != image.Height  || !this.checkSize(image.Width) )
 				{
-				string err = "Error: Invalid heightmap size : " +
-					 image.Width.ToString()  +
-					"," + image.Height.ToString() +
-					". Should be 2^n+1, 2^n+1";
+                //string err = "Error: Invalid heightmap size : " +
+                //     image.Width.ToString()  +
+                //    "," + image.Height.ToString() +
+                //    ". Should be 2^n+1, 2^n+1";
 
-					throw new AxiomException( err );
+                //    throw new AxiomException( err );
 				}
-			    
-				this.bpp = (long)Image.GetNumElemBytes( image.Format );
-				if ( this.bpp != 4 )
-				{
-					throw new AxiomException("Error: Image is not a RGBA image.(4 bytes, 32 bits)");
-				}
+                
+				this.bpp = (long)PixelUtil.GetNumElemBytes( image.Format );
+                //if ( this.bpp != 4 )
+                //{
+                //    throw new AxiomException("Error: Image is not a RGBA image.(4 bytes, 32 bits)");
+                //}
 			    
 			    
 				this.size = Options.Instance.PageSize;
@@ -212,7 +268,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 				{ 
 					//coverage = new Image();
 					coverage = Image.FromFile ( Options.Instance.Landscape_Filename + 
-							".Coverage." + 
+							".Coverage.0." + 
 							Z.ToString() + "." + 
 							X.ToString() + "." +		
 							Options.Instance.Landscape_Extension );
@@ -227,18 +283,26 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 						X.ToString() + "." +		
 						Options.Instance.Landscape_Extension );
 				}
+
+                if (Options.Instance.Vertex_Shadowed)
+                {
+                    shadowImg = Image.FromFile(Options.Instance.Landscape_Filename +
+                           ".HS" +
+                           Z.ToString() + "." +
+                           X.ToString() + "." +
+                           Options.Instance.Landscape_Extension);
+                }
 			    
 				maxArrayPos = (long) (this.size * image.Height);
 				heightData = new float[maxArrayPos];
 				long j = 0;
-				float scale = Options.Instance.Scale.y;
 				maxheight = 0.0f;
-				for (long i = 0; i < this.max - 1;  i += this.bpp )
-				{  
-				float h =  (float) (image.Data[ i + (this.bpp - 1)]) * scale;
-					this.MaxHeight = System.Math.Max ( h, MaxHeight);
-					heightData[j++] = h;
-				}
+                for (long i = 0; i < this.max - 1; i += this.bpp)
+                {
+                    float h = (float) (image.Data[i + (this.bpp - 1)]) * this.Scale;
+                    maxheight = System.Math.Max(h, maxheight);
+                    heightData[j++] = h;
+                }
 			}
 			else
 			{
@@ -264,7 +328,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 					throw new AxiomException( err );
 				}
 
-				this.bpp = (long)Image.GetNumElemBytes( image.Format );
+				this.bpp = (long)PixelUtil.GetNumElemBytes( image.Format );
 				if ( this.bpp != 1 )
 				{
 					throw new AxiomException("Error: Image is not a greyscale image.(1 byte, 8 bits)");
@@ -276,11 +340,11 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 				maxArrayPos = (long)(this.size * image.Height);
 				heightData = new float[maxArrayPos];
 				long j = 0;
-				float scale = Options.Instance.Scale.y;
-				maxheight = 0.0f;
+
+                maxheight = 0.0f;
 				for (long i = 0; i < this.max - 1;  i += this.bpp )
 				{  
-					float h =  (float) (image.Data[ i + (this.bpp - 1)]) * scale;
+					float h =  (float) (image.Data[ i + (this.bpp - 1)]) * this.Scale;
 					this.MaxHeight = System.Math.Max ( h, MaxHeight);
 					heightData[j++] = h;
 				}
@@ -310,7 +374,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 					throw new AxiomException( err );
 				}
 
-				this.bpp = (long)Image.GetNumElemBytes( image.Format );
+				this.bpp = (long)PixelUtil.GetNumElemBytes( image.Format );
 				if ( this.bpp != 1 )
 				{
 					throw new AxiomException("Error: Image is not a greyscale image.(1 byte, 8 bits)");
@@ -322,11 +386,11 @@ namespace Axiom.SceneManagers.PagingLandscape.Data2D
 				maxArrayPos = (long)(this.size * image.Height);
 				heightData = new float[maxArrayPos];
 				long j = 0;
-				float scale = Options.Instance.Scale.y;
-				maxheight = 0.0f;
+
+                maxheight = 0.0f;
 				for (long i = 0; i < this.max - 1;  i += this.bpp )
 				{  
-					float h =  (float) (image.Data[ i + (this.bpp - 1)]) * scale;
+					float h =  (float) (image.Data[ i + (this.bpp - 1)]) * this.Scale;
 					this.MaxHeight = System.Math.Max ( h, MaxHeight);
 					heightData[j++] = h;
 				}

@@ -21,9 +21,10 @@ namespace Axiom.Demos
 
         private Vector4 color = new Vector4( 1, 0, 0, 1 );
 
-        protected override void OnFrameStarted( object source, FrameEventArgs e )
+        protected override bool OnFrameStarted( object source, FrameEventArgs e )
         {
-            base.OnFrameStarted( source, e );
+            if ( base.OnFrameStarted( source, e ) == false )
+                return false;
 
             color.x += e.TimeSinceLastFrame * .6f;
             if ( color.x > 1 )
@@ -36,6 +37,8 @@ namespace Axiom.Demos
             color.z += e.TimeSinceLastFrame * .6f;
             if ( color.z > 1 )
                 color.z = 0;
+
+            return true;
         }
 
         public override void CreateScene()
@@ -81,7 +84,7 @@ namespace Axiom.Demos
             // place the camera in an optimal position
             camera.Position = new Vector3( 30, 30, 220 );
 
-            window.DebugText = "Spinning triangle - Using custom built geometry";
+            debugText = "Spinning triangle - Using custom built geometry";
         }
 
         #endregion
@@ -155,7 +158,7 @@ namespace Axiom.Demos
 
             // MATERIAL
             // grab a copy of the BaseWhite material for our use
-            Material material = MaterialManager.Instance.GetByName( "BaseWhite" );
+            Material material = (Material)MaterialManager.Instance.GetByName( "BaseWhite" );
             material = material.Clone( "LineMat" );
             // disable lighting to vertex colors are used
             material.Lighting = false;
@@ -275,7 +278,7 @@ namespace Axiom.Demos
 
             // MATERIAL
             // grab a copy of the BaseWhite material for our use
-            Material material = MaterialManager.Instance.GetByName( "BaseWhite" );
+            Material material = (Material)MaterialManager.Instance.GetByName( "BaseWhite" );
             material = material.Clone( "TriMat" );
 
             // disable lighting to vertex colors are used

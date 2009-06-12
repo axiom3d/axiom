@@ -38,25 +38,26 @@ using System;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Utilities;
+using System.Reflection;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGL
 {
-    /// <summary>
-    /// Summary description for Plugin.
-    /// </summary>
-    public sealed class Plugin : IPlugin
-    {
-        #region Implementation of IPlugin
+	/// <summary>
+	/// Summary description for Plugin.
+	/// </summary>
+	public sealed class Plugin : IPlugin
+	{
+		#region Implementation of IPlugin
 
-        /// <summary>
-        ///     Reference to the render system instance.
-        /// </summary>
+		/// <summary>
+		///     Reference to the render system instance.
+		/// </summary>
         private GLRenderSystem renderSystem;
 
-        public void Start()
-        {
+		public void Start()
+		{
 #if OPENGL_OTK
             Contract.Requires( PlatformManager.Instance.GetType().Name == "OpenTKPlatformManager", "PlatformManager", 
                                "OpenGL OpenTK Renderer requires OpenTK Platform Manager." );
@@ -65,15 +66,15 @@ namespace Axiom.RenderSystems.OpenGL
                                "An instance of the OpenGL renderer is already loaded." );
 
             renderSystem = new GLRenderSystem();
-            // add an instance of this plugin to the list of available RenderSystems
-            Root.Instance.RenderSystems.Add( "OpenGL", renderSystem );
-        }
+			// add an instance of this plugin to the list of available RenderSystems
+			Root.Instance.RenderSystems.Add( "OpenGL", renderSystem );
+		}
 
-        public void Stop()
-        {
-            renderSystem.Shutdown();
-        }
+		public void Stop()
+		{
+			renderSystem.Shutdown();
+		}
 
-        #endregion Implementation of IPlugin
-    }
+		#endregion Implementation of IPlugin
+	}
 }

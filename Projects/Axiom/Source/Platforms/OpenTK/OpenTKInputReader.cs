@@ -5,24 +5,25 @@ using System.Drawing;
 
 using Axiom.Core;
 using Axiom.Input;
-using Axiom.RenderSystems.OpenGL;
 using Axiom.Utilities;
 
 using OpenTK.Input;
 using OpenTK;
+using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Platforms.OpenTK
 {
     /// <summary>
-    ///		Platform management specialization for Microsoft Windows (r) platform.
+    ///		Platform management specialization
     /// </summary>
     public class OpenTKInputReader : InputReader
     {
         #region Fields
 
-        int CX, CY;
+        RenderWindow parent;
+        Point center;
         bool ownMouse = false;
         KeyboardDevice keyboard = null;
         MouseDevice mouse = null;
@@ -32,7 +33,7 @@ namespace Axiom.Platforms.OpenTK
         /// </summary>
         protected bool isVisible;
 
-        int oldX, oldY, oldZ;
+        protected int oldX, oldY, oldZ;
         protected int mouseX, mouseY;
         protected int relMouseX, relMouseY, relMouseZ;
         protected MouseButtons mouseButtons;
@@ -133,26 +134,18 @@ namespace Axiom.Platforms.OpenTK
         /// </summary>
         public override void Capture()
         {
+            GameWindow window = (GameWindow)parent["window"];
+
             // if we aren't active, wait
-            if (!isVisible)
+            if (mouse == null || window.IsExiting || !isVisible || window.WindowState == WindowState.Minimized)
             {
                 // TODO
                 Thread.Sleep(100);
+                return;
             }
-
-            if (mouse == null) return;
 
             if (!useMouseEvents)
             {
-                int mx = mouse.X;
-                int my = mouse.Y;
-                relMouseX = mx - oldX;
-                relMouseY = my - oldY;
-                mouseX += relMouseX;
-                mouseY += relMouseY;
-                oldX = mx;
-                oldY = my;
-
                 relMouseZ = mouse.Wheel - oldZ;
                 oldZ = mouse.Wheel;
                 mouseButtons = mouse[MouseButton.Left] == true ? MouseButtons.Left : 0;
@@ -162,7 +155,25 @@ namespace Axiom.Platforms.OpenTK
 
             if (ownMouse)
             {
-                System.Windows.Forms.Cursor.Position = new Point(CX, CY);
+                int mx = System.Windows.Forms.Cursor.Position.X;
+                int my = System.Windows.Forms.Cursor.Position.Y;
+                relMouseX = mx - center.X;
+                relMouseY = my - center.Y;
+                mouseX += relMouseX;
+                mouseY += relMouseY;
+
+                System.Windows.Forms.Cursor.Position = center;
+            }
+            else
+            {
+                int mx = mouse.X;
+                int my = mouse.Y;
+                relMouseX = mx - oldX;
+                relMouseY = my - oldY;
+                mouseX += relMouseX;
+                mouseY += relMouseY;
+                oldX = mx;
+                oldY = my;
             }
         }
 
@@ -176,25 +187,32 @@ namespace Axiom.Platforms.OpenTK
         /// <param name="ownMouse"></param>
         public override void Initialize(Axiom.Graphics.RenderWindow parent, bool useKeyboard, bool useMouse, bool useGamepad, bool ownMouse)
         {
-            Contract.Requires( parent.GetType().Name == "OpenTKWindow", "RenderSystem", "OpenTK InputManager requires OpenTK OpenGL Renderer." );
+            Contract.Requires(parent.GetType().Name == "OpenTKWindow", "RenderSystem", "OpenTK InputManager requires OpenTK OpenGL Renderer.");
 
-            GameWindow window = ((OpenTKWindow)parent).OTKGameWindow;
+            this.parent = parent;
+
+            GameWindow window = (GameWindow)this.parent["window"];
 
             keyboard = window.Keyboard;
-            mouse = window.Mouse;
 
-            if (useMouse && ownMouse)
+            if (useMouse)
             {
-                this.ownMouse = true;
-                System.Windows.Forms.Cursor.Hide();
-            }
+                mouse = window.Mouse;
+                if (ownMouse)
+                {
+                    this.ownMouse = true;
+                    System.Windows.Forms.Cursor.Hide();
+                }
 
-            // mouse starts out in the center of the window
-            mouseX = (int)(parent.Width * 0.5f);
-            mouseY = (int)(parent.Height * 0.5f);
-            CX = oldX = mouseX;
-            CY = oldY = mouseY;
-            System.Windows.Forms.Cursor.Position = new Point(CX, CY);
+                // mouse starts out in the center of the window
+                center.X = parent.Width / 2;
+                center.Y = parent.Height / 2;
+                center = window.PointToClient(center);
+                System.Windows.Forms.Cursor.Position = center;
+                mouseX = oldX = center.X;
+                mouseY = oldY = center.Y;
+
+            }
         }
 
         /// <summary>

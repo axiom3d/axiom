@@ -82,14 +82,15 @@ namespace Axiom.Demos
             base.CreateViewports();
 
             viewport2 = window.AddViewport( camera2, 0.6f, 0, 0.4f, 0.4f, 102 );
-            viewport2.OverlaysEnabled = false;
+            viewport2.ShowOverlays = false;
             viewport2.BackgroundColor = ColorEx.Blue;
         }
 
 
-        protected override void OnFrameStarted( object source, FrameEventArgs e )
+        protected override bool OnFrameStarted( object source, FrameEventArgs e )
         {
-            base.OnFrameStarted( source, e );
+            if ( base.OnFrameStarted( source, e ) == false )
+                return false;
 
             objectsVisible = 0;
 
@@ -115,17 +116,17 @@ namespace Axiom.Demos
 
             if ( input.IsKeyPressed( KeyCodes.D1 ) )
             {
-                if ( frustum.FOV - change > 20 )
+                if ( frustum.FieldOfView - change > 20 )
                 {
-                    frustum.FOV -= change;
+                    frustum.FieldOfView -= change;
                 }
             }
 
             if ( input.IsKeyPressed( KeyCodes.D2 ) )
             {
-                if ( frustum.FOV < 90 )
+                if ( frustum.FieldOfView < 90 )
                 {
-                    frustum.FOV += change;
+                    frustum.FieldOfView += change;
                 }
             }
 
@@ -161,7 +162,9 @@ namespace Axiom.Demos
             }
 
             // report the number of objects within the frustum
-            window.DebugText = string.Format( "Objects visible: {0}", objectsVisible );
+            debugText = string.Format( "Objects visible: {0}", objectsVisible );
+
+            return true;
         }
 
     }

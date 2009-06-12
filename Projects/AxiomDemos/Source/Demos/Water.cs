@@ -78,8 +78,7 @@ namespace Axiom.Demos
         public override void CreateScene()
         {
             RAND = new Random( 0 ); // najak: use a time-based seed
-            GuiMgr = OverlayElementManager.Instance;
-            scene.AmbientLight = new ColorEx( 0.75f, 0.75f, 0.75f ); // default Ambient Light
+            GuiMgr = OverlayManager.Instance.Elements;
 
             // Customize Controls - speed up camera and slow down the input update rate
             this.camSpeed = 5.0f;
@@ -120,7 +119,7 @@ namespace Axiom.Demos
             particleSystem.FastForward( 20 ); // Fastforward rain to make it look natural
 
             // It can't be set in .particle file, and we need it ;)
-            particleSystem.BillboardOrigin = BillboardOrigin.BottomCenter;
+            //particleSystem.Origin = BillboardOrigin.BottomCenter;
 
             // Set Lighting
             lightNode = scene.RootSceneNode.CreateChildSceneNode();
@@ -138,11 +137,11 @@ namespace Axiom.Demos
 
             // set up spline animation of light node.  Create random Spline
             Animation anim = scene.CreateAnimation( "WaterLight", 20 );
-            AnimationTrack track = anim.CreateTrack( 0, this.lightNode );
-            KeyFrame key = track.CreateKeyFrame( 0 );
+            AnimationTrack track = anim.CreateNodeTrack( 0, this.lightNode );
+            TransformKeyFrame key = (TransformKeyFrame)track.CreateKeyFrame( 0 );
             for ( int ff = 1; ff <= 19; ff++ )
             {
-                key = track.CreateKeyFrame( ff );
+				key = (TransformKeyFrame)track.CreateKeyFrame( ff );
                 Random rand = new Random( 0 );
                 Vector3 lpos = new Vector3(
                     (float)rand.NextDouble() % (int)PLANE_SIZE, //- PLANE_SIZE/2,
@@ -150,7 +149,7 @@ namespace Axiom.Demos
                     (float)rand.NextDouble() % (int)PLANE_SIZE ); //- PLANE_SIZE/2
                 key.Translate = lpos;
             }
-            key = track.CreateKeyFrame( 20 );
+			key = (TransformKeyFrame)track.CreateKeyFrame( 20 );
             #endregion STUBBED LIGHT ANIMATION
 
             // Initialize the Materials/Demo
@@ -211,7 +210,7 @@ namespace Axiom.Demos
                         l.Direction = new Vector3( 1f, -0.5f, 0f );
                         l.SetAttenuation( 10000f, 0, 0, 0 );
                     }
-                    scene.AmbientLight = new ColorEx( 0.1f, 0.1f, 0.1f ); // default is low ambient light
+                    scene.AmbientLight = ColorEx.White; // default is low ambient light
                     break;
 
                 case "Colors":
@@ -221,7 +220,7 @@ namespace Axiom.Demos
                     lightNode.ScaleBy( new Vector3( lightScale, lightScale, lightScale ) );
 
                     // Create a Light
-                    AddLight( "Lt1", new Vector3( lightDist, lightHeight, lightDist ), new ColorEx( 1f, 1f, 0f, 0f ), LightType.Point );
+                    AddLight( "Lt1", new Vector3( lightDist, lightHeight, lightDist ), ColorEx.Red, LightType.Point );
                     AddLight( "Lt2", new Vector3( lightDist, lightHeight, 0 ), ColorEx.Purple, LightType.Point );
                     AddLight( "Lt3", new Vector3( 0, lightHeight, lightDist ), ColorEx.Blue, LightType.Point );
                     AddLight( "Lt4", new Vector3( 0, lightHeight, 0 ), ColorEx.DarkOrange, LightType.Point );
@@ -253,7 +252,7 @@ namespace Axiom.Demos
                     break;
 
                 default: // "Ambient" mode
-                    scene.AmbientLight = new ColorEx( 0.85f, 0.85f, 0.85f ); // set Ambient Light
+                    scene.AmbientLight = ColorEx.LightGray; // set Ambient Light
                     break;
             }
         }
@@ -276,9 +275,10 @@ namespace Axiom.Demos
 
         #region RAPID UPDATE FUNCTIONS
 
-        protected override void OnFrameStarted( object source, FrameEventArgs e )
+        protected override bool OnFrameStarted( object source, FrameEventArgs e )
         {
-            base.OnFrameStarted( source, e );
+            if ( base.OnFrameStarted( source, e ) == false )
+                return false;
 
             // Limit user input update rate, to prevent math rounding errors from deltas too small
             //   Note: Slowing down input queries will speed up Frame Rates, not slow them down.
@@ -305,14 +305,10 @@ namespace Axiom.Demos
                     UpdateStats();
                 }
 
-                // Check for Shutdown request and reset the Input Timer
-                if ( input.IsKeyPressed( KeyCodes.Escape ) )
-                {
-                    Root.Instance.QueueEndRendering();
-                }
-
                 inputTimer = 0f;
             }
+
+            return true;
         }
 
         public void AnimateHead( float timeSinceLastFrame )
@@ -454,19 +450,19 @@ namespace Axiom.Demos
             // 'R' Toggles Render Mode
             if ( input.IsKeyPressed( KeyCodes.R ) )
             {
-                switch ( camera.SceneDetail )
+                switch ( camera.PolygonMode )
                 {
-                    case SceneDetailLevel.Points:
-                        camera.SceneDetail = SceneDetailLevel.Solid;
+                    case PolygonMode.Points:
+                        camera.PolygonMode = PolygonMode.Solid;
                         break;
-                    case SceneDetailLevel.Solid:
-                        camera.SceneDetail = SceneDetailLevel.Wireframe;
+                    case PolygonMode.Solid:
+                        camera.PolygonMode = PolygonMode.Wireframe;
                         break;
-                    case SceneDetailLevel.Wireframe:
-                        camera.SceneDetail = SceneDetailLevel.Points;
+                    case PolygonMode.Wireframe:
+                        camera.PolygonMode = PolygonMode.Points;
                         break;
                 }
-                HandleUserModeInput( string.Format( "Rendering mode changed to '{0}'.", camera.SceneDetail ) );
+                HandleUserModeInput( string.Format( "Rendering mode changed to '{0}'.", camera.PolygonMode ) );
             }
 
             // 'T' Toggles Texture Settings
@@ -501,8 +497,8 @@ namespace Axiom.Demos
             }
             if ( input.IsKeyPressed( KeyCodes.F ) )
             {
-                viewport.OverlaysEnabled = !viewport.OverlaysEnabled;
-                HandleUserModeInput( string.Format( "Show Overlays = {0}.", viewport.OverlaysEnabled ) );
+				viewport.ShowOverlays = !viewport.ShowOverlays;
+				HandleUserModeInput( string.Format( "Show Overlays = {0}.", viewport.ShowOverlays ) );
             }
 
 #if !(XBOX || XBOX360 )
@@ -722,21 +718,10 @@ namespace Axiom.Demos
         /// <summary>Prints output to screen/log, and resets Input Timer to avoid rapid flicker.</summary>
         protected void HandleUserModeInput( string logText )
         {
-            window.DebugText = logText;
+            debugText = logText;
             UpdateStats();
             LogManager.Instance.Write( logText );
             modeTimer = 0f;
-        }
-
-        protected new void UpdateStats()
-        {
-            statsTimer = 0f; // reset Stats Timer
-            OverlayElementManager.Instance.GetElement( "Core/CurrFps" ).Text = string.Format( "Current FPS: {0}", Root.Instance.CurrentFPS );
-            OverlayElementManager.Instance.GetElement( "Core/BestFps" ).Text = string.Format( "Best FPS: {0}", Root.Instance.BestFPS );
-            OverlayElementManager.Instance.GetElement( "Core/WorstFps" ).Text = string.Format( "Worst FPS: {0}", Root.Instance.WorstFPS );
-            OverlayElementManager.Instance.GetElement( "Core/AverageFps" ).Text = string.Format( "Average FPS: {0}", Root.Instance.AverageFPS );
-            OverlayElementManager.Instance.GetElement( "Core/NumTris" ).Text = string.Format( "Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered );
-            OverlayElementManager.Instance.GetElement( "Core/DebugText" ).Text = window.DebugText;
         }
 
         #endregion Water Class EVENT HANDLERS
@@ -795,7 +780,7 @@ namespace Axiom.Demos
             fNorms = new Vector3[ cmplx, cmplx, 2 ]; // face Normals for each triangle
 
             // Create mesh and submesh to represent the Water
-            mesh = (Mesh)MeshManager.Instance.CreateManual( meshName );
+            mesh = (Mesh)MeshManager.Instance.CreateManual( meshName, ResourceGroupManager.DefaultResourceGroupName, null );
             subMesh = mesh.CreateSubMesh();
             subMesh.useSharedVertices = false;
 

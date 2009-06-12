@@ -42,65 +42,68 @@ using Axiom.Media;
 
 namespace Axiom.Graphics
 {
-    /// <summary>
-    ///    Custom RenderTarget that allows for rendering a scene to a texture.
-    /// </summary>
-    public abstract class RenderTexture : RenderTarget
-    {
-        #region Fields
+	/// <summary>
+	///    Custom RenderTarget that allows for rendering a scene to a texture.
+	/// </summary>
+	public abstract class RenderTexture : RenderTarget
+	{
+		#region Fields
 
-        /// <summary>
-        ///    The texture object that will be accessed by the rest of the API.
-        /// </summary>
-        protected Texture texture;
+		protected HardwarePixelBuffer pixelBuffer;
+		protected int zOffset = 0;
 
-        #endregion Fields
+		#endregion Fields
 
-        #region Constructors
+		#region Constructors
 
-        public RenderTexture( string name, int width, int height )
-            :
-            this( name, width, height, TextureType.TwoD )
-        {
-        }
+		public RenderTexture( HardwarePixelBuffer buffer, int zOffset )
+		{
+			pixelBuffer = buffer;
+			this.zOffset = zOffset;
+			Priority = RenderTargetPriority.RenderToTexture;
+			Width = buffer.Width;
+			Height = buffer.Height;
+			ColorDepth = PixelUtil.GetNumElemBits( buffer.Format );
+		}
 
-        public RenderTexture( string name, int width, int height, TextureType type )
-        {
-            this.name = name;
-            this.width = width;
-            this.height = height;
-            // render textures are high priority
-            this.priority = RenderTargetPriority.High;
-            texture = TextureManager.Instance.CreateManual( name, type, width, height, 0, PixelFormat.R8G8B8, TextureUsage.RenderTarget );
-            TextureManager.Instance.Load( texture, 1 );
-        }
+		#endregion Constructors
 
-        #endregion Constructors
+		#region Methods
 
-        #region Methods
+		public override void CopyContentsToMemory( PixelBox dst, RenderTarget.FrameBuffer buffer )
+		{
+			if (buffer == FrameBuffer.Auto) buffer = FrameBuffer.Front;
+			if (buffer != FrameBuffer.Front)
+			{
+				throw new Exception("Invalid buffer.");
+			}
 
-        protected override void OnAfterUpdate()
-        {
-            base.OnAfterUpdate();
+			pixelBuffer.BlitToMemory( dst );
+		}
 
-            CopyToTexture();
-        }
+		protected override PixelFormat suggestPixelFormat()
+		{
+			return pixelBuffer.Format;
+		}
 
-        /// <summary>
-        ///    
-        /// </summary>
-        protected abstract void CopyToTexture();
+		/// <summary>
+		/// Ensures texture is destroyed.
+		/// </summary>
+		protected override void dispose( bool disposeManagedResources )
+		{
+			if ( !isDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					pixelBuffer.ClearSliceRTT( 0 );
+				}
+			}
 
-        /// <summary>
-        ///    Ensures texture is destroyed.
-        /// </summary>
-        public override void Dispose()
-        {
-            base.Dispose();
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
+		}
 
-            TextureManager.Instance.Unload( texture );
-        }
-
-        #endregion Methods
-    }
+		#endregion Methods
+	}
 }

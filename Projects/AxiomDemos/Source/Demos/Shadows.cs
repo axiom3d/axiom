@@ -37,25 +37,25 @@ namespace Axiom.Demos
 		};
 
         string[] shadowTechniqueDescriptions = new string[] { 
+			"Texture Shadows (Modulative)",
+			"Texture Shadows (Additive)",
 			"Stencil Shadows (Additive)",
 			"Stencil Shadows (Modulative)",
-			"Texture Shadows (Modulative)",
 			"None"
 		};
 
         ShadowTechnique[] shadowTechniques = new ShadowTechnique[] { 
+			ShadowTechnique.TextureModulative,
+			ShadowTechnique.TextureAdditive,
 			ShadowTechnique.StencilAdditive,
 			ShadowTechnique.StencilModulative,
-			ShadowTechnique.TextureModulative,
 			ShadowTechnique.None
 		};
 
-        int currentShadowTechnique = 0;
+        int currentShadowTechnique = -1;
 
         public override void CreateScene()
         {
-            scene.ShadowTechnique = ShadowTechnique.StencilAdditive;
-
             // set ambient light off
             scene.AmbientLight = ColorEx.Black;
 
@@ -91,8 +91,7 @@ namespace Axiom.Demos
             lightNode.AttachObject( bbs );
 
             // create controller, after this is will get updated on its own
-            WaveformControllerFunction func =
-                new WaveformControllerFunction( WaveformType.Sine, 0.75f, 0.5f );
+            WaveformControllerFunction func = new WaveformControllerFunction( WaveformType.Sine, 0.75f, 0.5f );
 
             LightWibbler val = new LightWibbler( light, bb, minLightColor, maxLightColor, minFlareSize, maxFlareSize );
             ControllerManager.Instance.CreateController( val, func );
@@ -104,29 +103,29 @@ namespace Axiom.Demos
             // spline it for nice curves
             anim.InterpolationMode = InterpolationMode.Spline;
             // create a track to animate the camera's node
-            AnimationTrack track = anim.CreateTrack( 0, lightNode );
+            AnimationTrack track = anim.CreateNodeTrack( 0, lightNode );
             // setup keyframes
-            KeyFrame key = track.CreateKeyFrame( 0 );
+            TransformKeyFrame key = (TransformKeyFrame)track.CreateKeyFrame( 0 );
             key.Translate = new Vector3( 300, 250, -300 );
-            key = track.CreateKeyFrame( 2 );
+			key = (TransformKeyFrame)track.CreateKeyFrame( 2 );
             key.Translate = new Vector3( 150, 300, -250 );
-            key = track.CreateKeyFrame( 4 );
+			key = (TransformKeyFrame)track.CreateKeyFrame( 4 );
             key.Translate = new Vector3( -150, 350, -100 );
-            key = track.CreateKeyFrame( 6 );
+			key = (TransformKeyFrame)track.CreateKeyFrame( 6 );
             key.Translate = new Vector3( -400, 200, -200 );
-            key = track.CreateKeyFrame( 8 );
+			key = (TransformKeyFrame)track.CreateKeyFrame( 8 );
             key.Translate = new Vector3( -200, 200, -400 );
-            key = track.CreateKeyFrame( 10 );
+			key = (TransformKeyFrame)track.CreateKeyFrame( 10 );
             key.Translate = new Vector3( -100, 150, -200 );
-            key = track.CreateKeyFrame( 12 );
+			key = (TransformKeyFrame)track.CreateKeyFrame( 12 );
             key.Translate = new Vector3( -100, 75, 180 );
-            key = track.CreateKeyFrame( 14 );
+			key = (TransformKeyFrame)track.CreateKeyFrame( 14 );
             key.Translate = new Vector3( 0, 250, 300 );
-            key = track.CreateKeyFrame( 16 );
+			key = (TransformKeyFrame)track.CreateKeyFrame( 16 );
             key.Translate = new Vector3( 100, 350, 100 );
-            key = track.CreateKeyFrame( 18 );
+			key = (TransformKeyFrame)track.CreateKeyFrame( 18 );
             key.Translate = new Vector3( 250, 300, 0 );
-            key = track.CreateKeyFrame( 20 );
+			key = (TransformKeyFrame)track.CreateKeyFrame( 20 );
             key.Translate = new Vector3( 300, 250, -300 );
 
             // create a new animation state to track this
@@ -137,7 +136,7 @@ namespace Axiom.Demos
             // change the moving light to a spotlight
             lightNode.SetAutoTracking( true, scene.RootSceneNode );
 
-            Mesh mesh = MeshManager.Instance.Load( "athene.mesh" );
+            Mesh mesh = MeshManager.Instance.Load( "athene.mesh", ResourceGroupManager.DefaultResourceGroupName );
 
             short srcIdx, destIdx;
 
@@ -183,8 +182,7 @@ namespace Axiom.Demos
             scene.SetSkyBox( true, "Skybox/Stormy", 3000 );
 
             Plane plane = new Plane( Vector3.UnitY, -100 );
-            MeshManager.Instance.CreatePlane(
-                "MyPlane", plane, 1500, 1500, 20, 20, true, 1, 5, 5, Vector3.UnitZ );
+            MeshManager.Instance.CreatePlane( "MyPlane", ResourceGroupManager.DefaultResourceGroupName, plane, 1500, 1500, 20, 20, true, 1, 5, 5, Vector3.UnitZ );
 
             Entity planeEnt = scene.CreateEntity( "Plane", "MyPlane" );
             planeEnt.MaterialName = "Examples/Rockwall";
@@ -206,18 +204,22 @@ namespace Axiom.Demos
 
             // incase infinite far distance is not supported
             camera.Far = 100000;
+
+            ChangeShadowTechnique();
+
         }
 
-        protected override void OnFrameStarted( object source, FrameEventArgs e )
+        protected override bool OnFrameStarted( object source, FrameEventArgs e )
         {
-            base.OnFrameStarted( source, e );
+            if ( base.OnFrameStarted( source, e ) == false )
+                return false;
 
 			if ( input.IsKeyPressed( KeyCodes.O ) && toggleDelay < 0 )
 			{
 				ChangeShadowTechnique();
 
 				// show briefly on the screen
-				window.DebugText = string.Format( "Using {0} Technique.", shadowTechniqueDescriptions[ currentShadowTechnique ] );
+				this.debugText = string.Format( "Using {0} Technique.", shadowTechniqueDescriptions[ currentShadowTechnique ] );
 
 				// show for 2 seconds
 				debugTextDelay = 2.0f;
@@ -231,15 +233,16 @@ namespace Axiom.Demos
 				toggleDelay = 1;
 
 				// show briefly on the screen
-				window.DebugText = string.Format( "Debug shadows {0}.", scene.ShowDebugShadows ? "on" : "off" );
+                this.debugText = string.Format("Debug shadows {0}.", scene.ShowDebugShadows ? "on" : "off");
 
 				// show for 2 seconds
 				debugTextDelay = 2.0f;
 			}
 
-			animState.AddTime( e.TimeSinceLastFrame );
+            animState.AddTime( e.TimeSinceLastFrame );
 
-		}
+            return true;
+        }
 
         /// <summary>
         ///		Method used to cycle through the shadow techniques.
@@ -303,7 +306,7 @@ namespace Axiom.Demos
     /// <summary>
     ///		This class 'wibbles' the light and billboard.
     /// </summary>
-    public class LightWibbler : IControllerValue
+    public class LightWibbler : IControllerValue<float>
     {
         #region Fields
 

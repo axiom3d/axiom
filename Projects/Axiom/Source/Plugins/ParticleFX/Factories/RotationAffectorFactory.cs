@@ -49,7 +49,7 @@ using Axiom.ParticleSystems;
 namespace Axiom.ParticleFX.Factories
 {
     /// <summary>
-    /// Summary description for ColorFaderAffectorFactory.
+	/// Summary description for RotationAffectorFactory.
     /// </summary>
     public class RotationAffectorFactory : ParticleAffectorFactory
     {

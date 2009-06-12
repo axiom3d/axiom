@@ -132,7 +132,7 @@ namespace Axiom.ParticleSystems
                 string name = (string)entry.Key;
 
                 // get the value of the param from this instance
-                string val = ( (ICommand)entry.Value ).Get( this );
+                string val = ( (IPropertyCommand)entry.Value ).Get( this );
 
                 // set the param on the target instance
                 affector.SetParam( name, val );
@@ -167,7 +167,7 @@ namespace Axiom.ParticleSystems
         {
             if ( commandTable.ContainsKey( name ) )
             {
-                ICommand command = (ICommand)commandTable[ name ];
+                IPropertyCommand command = (IPropertyCommand)commandTable[ name ];
 
                 command.Set( this, val );
 

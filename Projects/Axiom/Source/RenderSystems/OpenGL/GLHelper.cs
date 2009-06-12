@@ -63,7 +63,12 @@ namespace Axiom.RenderSystems.OpenGL
 
                 case BufferUsage.Dynamic:
                 case BufferUsage.DynamicWriteOnly:
-                default:
+					return (int)Gl.GL_DYNAMIC_DRAW_ARB;
+
+				case BufferUsage.DynamicWriteOnlyDiscardable:
+					return (int)Gl.GL_STREAM_DRAW_ARB;
+
+				default:
                     return (int)Gl.GL_DYNAMIC_DRAW_ARB;
             }
         }
@@ -90,6 +95,8 @@ namespace Axiom.RenderSystems.OpenGL
                     return Gl.GL_SHORT;
 
                 case VertexElementType.Color:
+				case VertexElementType.Color_ABGR:
+				case VertexElementType.Color_ARGB:
                 case VertexElementType.UByte4:
                     return Gl.GL_UNSIGNED_BYTE;
             }

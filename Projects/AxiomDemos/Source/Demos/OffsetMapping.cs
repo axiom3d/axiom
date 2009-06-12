@@ -87,7 +87,7 @@ namespace Axiom.Demos
             // Load the meshes with non-default HBU options
             for ( int mn = 0; mn < entityMeshes.Length; mn++ )
             {
-                Mesh mesh = MeshManager.Instance.Load( entityMeshes[ mn ],
+                Mesh mesh = MeshManager.Instance.Load( entityMeshes[ mn ], ResourceGroupManager.DefaultResourceGroupName,
                     BufferUsage.DynamicWriteOnly,
                     BufferUsage.StaticWriteOnly,
                     true, true, 1 ); //so we can still read it
@@ -144,9 +144,10 @@ namespace Axiom.Demos
             camera.LookAt( new Vector3( 0, 0, 0 ) );
         }
 
-        protected override void OnFrameStarted( object source, FrameEventArgs e )
+        protected override bool OnFrameStarted( object source, FrameEventArgs e )
         {
-            base.OnFrameStarted( source, e );
+            if ( base.OnFrameStarted( source, e ) == false )
+                return false;
 
             if ( timeDelay > 0.0f )
             {
@@ -191,6 +192,8 @@ namespace Axiom.Demos
             {
                 lightPivots[ i ].Rotate( Vector3.UnitZ, lightSpeeds[ i ] * e.TimeSinceLastFrame );
             }
+
+            return true;
         }
 
 

@@ -107,7 +107,7 @@ namespace Axiom.ParticleFX
             }
         }
 
-        protected void AdjustWithClamp( ref float component, float adjust )
+        protected float AdjustWithClamp( float component, float adjust )
         {
             component += adjust;
 
@@ -116,6 +116,8 @@ namespace Axiom.ParticleFX
                 component = 0.0f;
             else if ( component > 1.0f )
                 component = 1.0f;
+
+			return component;
         }
 
         public override void InitParticle( ref Particle particle )
@@ -138,10 +140,10 @@ namespace Axiom.ParticleFX
                 Particle p = (Particle)system.Particles[ i ];
 
                 // adjust the values with clamping ([0,1] in this case)
-                AdjustWithClamp( ref p.Color.a, da );
-                AdjustWithClamp( ref p.Color.r, dr );
-                AdjustWithClamp( ref p.Color.g, dg );
-                AdjustWithClamp( ref p.Color.b, db );
+				p.Color.a = AdjustWithClamp( p.Color.a, da );
+				p.Color.r = AdjustWithClamp( p.Color.r, dr );
+				p.Color.g = AdjustWithClamp( p.Color.g, dg );
+				p.Color.b = AdjustWithClamp( p.Color.b, db );
 
             }
         }
@@ -149,11 +151,11 @@ namespace Axiom.ParticleFX
         #region Command definition classes
 
         [Command( "red", "Red component.", typeof( ParticleAffector ) )]
-        class RedCommand : ICommand
-        {
-            #region ICommand Members
+		class RedCommand : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 ColorFaderAffector affector = target as ColorFaderAffector;
                 return StringConverter.ToString( affector.RedAdjust );
@@ -168,11 +170,11 @@ namespace Axiom.ParticleFX
         }
 
         [Command( "green", "Green component.", typeof( ParticleAffector ) )]
-        class GreenCommand : ICommand
-        {
-            #region ICommand Members
+		class GreenCommand : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 ColorFaderAffector affector = target as ColorFaderAffector;
                 return StringConverter.ToString( affector.GreenAdjust );
@@ -187,11 +189,11 @@ namespace Axiom.ParticleFX
         }
 
         [Command( "blue", "Blue component.", typeof( ParticleAffector ) )]
-        class BlueCommand : ICommand
-        {
-            #region ICommand Members
+		class BlueCommand : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 ColorFaderAffector affector = target as ColorFaderAffector;
                 return StringConverter.ToString( affector.BlueAdjust );
@@ -206,11 +208,11 @@ namespace Axiom.ParticleFX
         }
 
         [Command( "alpha", "Alpha component.", typeof( ParticleAffector ) )]
-        class AlphaCommand : ICommand
-        {
-            #region ICommand Members
+		class AlphaCommand : IPropertyCommand
+		{
+			#region IPropertyCommand Members
 
-            public string Get( object target )
+			public string Get( object target )
             {
                 ColorFaderAffector affector = target as ColorFaderAffector;
                 return StringConverter.ToString( affector.AlphaAdjust );

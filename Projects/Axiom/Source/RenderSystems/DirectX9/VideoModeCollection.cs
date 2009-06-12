@@ -35,21 +35,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
     /// <summary>
-    /// Summary description for D3DVideoModeCollection.
+    /// Summary description for VideoModeCollection.
     /// </summary>
-    public class VideoModeCollection : IEnumerable
+    public class VideoModeCollection : IEnumerable<VideoMode>
     {
-        private ArrayList videoModes;
+        private List<VideoMode> videoModes;
 
         public VideoModeCollection()
         {
-            videoModes = new ArrayList();
+            videoModes = new List<VideoMode>();
         }
 
         public void Add( VideoMode mode )
@@ -57,15 +58,35 @@ namespace Axiom.RenderSystems.DirectX9
             videoModes.Add( mode );
         }
 
-        #region Implementation of IEnumerable
+        public VideoMode this[ string description ]
+        {
+            get
+            {
+                foreach ( VideoMode mode in videoModes )
+                {
+                    if ( mode.ToString() == description )
+                        return mode;
+                }
+                return null;
+            }
+        }
 
-        public System.Collections.IEnumerator GetEnumerator()
+        #region IEnumerable<VideoMode> Members
+
+        public IEnumerator<VideoMode> GetEnumerator()
         {
             return videoModes.GetEnumerator();
         }
 
         #endregion
 
+        #region IEnumerable Members
 
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return videoModes.GetEnumerator();
+        }
+
+        #endregion
     }
 }

@@ -449,7 +449,7 @@ namespace Axiom.SceneManagers.PagingLandscape.Tile
 		{
 			get
 			{
-				return parentNode.WorldPosition;
+				return parentNode.DerivedPosition;
 			}
 		}
 

@@ -39,6 +39,40 @@ using System;
 
 namespace Axiom.Animating
 {
+	/// <summary>
+	///		Types of vertex animations
+	/// </summary>
+	public enum VertexAnimationType
+	{
+		/// No animation
+		None,
+		/// Morph animation is made up of many interpolated snapshot keyframes
+		Morph,
+		/// Pose animation is made up of a single delta pose keyframe
+		Pose
+	}
+
+	/// <summary>
+	///		Identify which vertex data we should be sending to the renderer
+	/// </summary>
+	public enum VertexDataBindChoice
+	{
+		Original,
+		SoftwareSkeletal,
+		SoftwareMorph,
+		HardwareMorph
+	}
+
+	/// <summary>
+	///		Do we do vertex animation in hardware or software?
+	/// </summary>
+	public enum VertexAnimationTargetMode
+	{
+		/// In software
+		Software,
+		/// In hardware
+		Hardware
+	}
 
     /// <summary>
     ///		Used to specify how animations are applied to a skeleton.

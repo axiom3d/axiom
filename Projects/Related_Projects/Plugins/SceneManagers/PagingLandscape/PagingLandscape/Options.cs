@@ -28,6 +28,7 @@ using System.Data;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Media;
+using System.Collections.Generic;
 
 #endregion;
 
@@ -236,7 +237,17 @@ namespace Axiom.SceneManagers.PagingLandscape
 		public bool Vertex_Shadowed;
 		public bool Vertex_Instant_Colored;
 
-		#endregion // Properties
+	    public string MaterialName;
+
+	    public bool MaterialPerPage;
+	    public bool VertexCompression;
+	    public string GroupName;
+        public string TextureExtension;
+	    public List<string> SplatDetailMapNames;
+	    public int NumMatHeightSplat;
+	    public bool Deformable;
+
+	    #endregion // Properties
 
 		public void Load( string filename )
 		{
@@ -430,8 +441,11 @@ namespace Axiom.SceneManagers.PagingLandscape
 
 			val =this.getSetting( "Blur" );
 			if (val != "" ) Blur = int.Parse( val );
-			
-		}
+
+            MaterialName = this.getSetting("MaterialName");
+
+		    GroupName = this.getSetting("GroupName");
+        }
 
 		public bool setOption( string strKey, object pValue )
 		{
@@ -640,7 +654,7 @@ namespace Axiom.SceneManagers.PagingLandscape
 		private ColorEx getAvgColor(string tex)
 		{
 		Image img = Image.FromFile(tex);
-		int bpp = Image.GetNumElemBytes( img.Format );
+		int bpp = PixelUtil.GetNumElemBytes( img.Format );
 		byte[] data = img.Data;
 		int cr = 0, cg = 0, cb = 0, s = 0;
 

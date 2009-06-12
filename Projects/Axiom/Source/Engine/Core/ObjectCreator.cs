@@ -51,33 +51,37 @@ namespace Axiom.Core
         private Assembly _assembly;
         private Type _type;
 
-        public ObjectCreator(string assemblyName, string className)
+        public ObjectCreator( Type type )
         {
-            string assemblyFile = Path.Combine(System.IO.Directory.GetCurrentDirectory(), assemblyName);
+            this._type = type;
+        }
+
+        public ObjectCreator( string assemblyName, string className )
+        {
+            string assemblyFile = Path.Combine( System.IO.Directory.GetCurrentDirectory(), assemblyName );
             try
             {
-                _assembly = Assembly.LoadFrom(assemblyFile);
+                _assembly = Assembly.LoadFrom( assemblyFile );
             }
-            catch (Exception ex)
+            catch ( Exception ex )
             {
                 _assembly = Assembly.GetExecutingAssembly();
             }
 
-            _type = _assembly.GetType(className);
+            _type = _assembly.GetType( className );
         }
 
-        public ObjectCreator(string className)
+        public ObjectCreator( string className )
         {
             _assembly = Assembly.GetExecutingAssembly();
-            _type = _assembly.GetType(className);
+            _type = _assembly.GetType( className );
         }
 
-        public ObjectCreator(Assembly assembly, Type type)
+        public ObjectCreator( Assembly assembly, Type type )
         {
             _assembly = assembly;
             _type = type;
         }
-
 
         public string GetAssemblyTitle()
         {
@@ -93,14 +97,18 @@ namespace Axiom.Core
             Assembly assembly = _assembly;
 #if !( XBOX || XBOX360 || SILVERLIGHT )
             // Check interfaces or Base type for casting purposes
-            if (type.GetInterface(typeof(T).Name) != null
-                 || type.BaseType.Name == typeof(T).Name)
+            if ( type.GetInterface( typeof( T ).Name ) != null
+                 || type.BaseType.Name == typeof( T ).Name )
             {
 #else
             bool typeFound = false;
             for (int i = 0; i < type.GetInterfaces().GetLength(0); i++)
             {
-                typeFound = ( type.GetInterfaces()[ i ] == typeof( T ) );
+                if ( type.GetInterfaces()[ i ] == typeof( T ) )
+                { 
+                    typeFound = true;
+                    break;
+                }
             }
 
             if ( typeFound )
@@ -108,12 +116,12 @@ namespace Axiom.Core
 #endif
                 try
                 {
-                    return (T)Activator.CreateInstance(type);
+                    return (T)Activator.CreateInstance( type );
                 }
-                catch (Exception e)
+                catch ( Exception e )
                 {
-                    LogManager.Instance.Write("Failed to create instance of {0} of type {0} from assembly {1}", typeof(T).Name, type, assembly.FullName);
-                    LogManager.Instance.Write(e.Message);
+                    LogManager.Instance.Write( "Failed to create instance of {0} of type {0} from assembly {1}", typeof( T ).Name, type, assembly.FullName );
+                    LogManager.Instance.Write( e.Message );
                 }
             }
             return null;
@@ -125,31 +133,8 @@ namespace Axiom.Core
     {
         #region Fields and Properties
 
-        #region Assembly Property
-
         private string _assemblyFilename;
         private Assembly _assembly;
-
-        public Assembly GetAssembly()
-        {
-            if (_assembly == null)
-            {
-                lock (this)
-                {
-                    if (_assemblyFilename == null || _assemblyFilename.Length == 0)
-                    {
-                        _assembly = Assembly.GetExecutingAssembly();
-                    }
-                    else
-                    {
-                        _assembly = Assembly.LoadFrom(_assemblyFilename);
-                    }
-                }
-            }
-            return _assembly;
-        }
-
-        #endregion Assembly Property
 
         #endregion Fields and Properties
 
@@ -165,7 +150,7 @@ namespace Axiom.Core
         /// <summary>
         /// Creates a loader instance for the specified assembly
         /// </summary>
-        public DynamicLoader(string assemblyFilename)
+        public DynamicLoader( string assemblyFilename )
             : this()
         {
             _assemblyFilename = assemblyFilename;
@@ -175,49 +160,73 @@ namespace Axiom.Core
 
         #region Methods
 
-        public IList<ObjectCreator> Find(Type baseType)
+
+        public Assembly GetAssembly()
+        {
+            if ( _assembly == null )
+            {
+                lock ( this )
+                {
+                    if ( String.IsNullOrEmpty( _assemblyFilename ) )
+                    {
+                        _assembly = Assembly.GetExecutingAssembly();
+                    }
+                    else
+                    {
+                        _assembly = Assembly.LoadFrom( _assemblyFilename );
+                    }
+                }
+            }
+            return _assembly;
+        }
+
+        public IList<ObjectCreator> Find( Type baseType )
         {
             List<ObjectCreator> types = new List<ObjectCreator>();
-            Assembly assembly = GetAssembly() != null ? GetAssembly() : Assembly.GetExecutingAssembly();
+            Assembly assembly;
             Type[] assemblyTypes = null;
 
             try
             {
+                assembly = GetAssembly();
                 assemblyTypes = assembly.GetTypes();
 
-                foreach (Type type in assemblyTypes)
+                foreach ( Type type in assemblyTypes )
                 {
 #if !(XBOX || XBOX360 || SILVERLIGHT)
-                    if ((baseType.IsInterface && type.GetInterface(baseType.Name) != null) ||
-                         (!baseType.IsInterface && type.BaseType == baseType))
+                    if ( ( baseType.IsInterface && type.GetInterface( baseType.Name ) != null ) ||
+                         ( !baseType.IsInterface && type.BaseType == baseType ) )
                     {
-                        types.Add(new ObjectCreator(assembly, type));
+                        types.Add( new ObjectCreator( assembly, type ) );
                     }
 #else
-                    bool typeFound = false;
-                    for (int i = 0; i < type.GetInterfaces().GetLength(0); i++)
+                    for ( int i = 0; i < type.GetInterfaces().GetLength( 0 ); i++ )
                     {
-                        typeFound = (type.GetInterfaces()[i] == baseType);
-                    }
-
-                    if (typeFound)
-                    {
-					    types.Add( new ObjectCreator( assembly, type ) );
+                        if ( type.GetInterfaces()[ i ] == baseType )
+                        {
+    					    types.Add( new ObjectCreator( assembly, type ) );
+                            break;
+                        }
                     }
 #endif
                 }
             }
 
 #if !(XBOX || XBOX360 || SILVERLIGHT)
-            catch (ReflectionTypeLoadException ex)
+            catch ( ReflectionTypeLoadException ex )
             {
-                LogManager.Instance.Write(LogManager.BuildExceptionString(ex));
-                LogManager.Instance.Write("Loader Exceptions:");
-                foreach (Exception lex in ex.LoaderExceptions)
+                LogManager.Instance.Write( LogManager.BuildExceptionString( ex ) );
+                LogManager.Instance.Write( "Loader Exceptions:" );
+                foreach ( Exception lex in ex.LoaderExceptions )
                 {
-                    LogManager.Instance.Write(LogManager.BuildExceptionString(lex));
+                    LogManager.Instance.Write( LogManager.BuildExceptionString( lex ) );
                 }
             }
+            catch ( BadImageFormatException ex )
+            {
+                LogManager.Instance.Write( LogMessageLevel.Trivial, true, ex.Message );
+            }
+
 #else
             catch( Exception ex )
             {

@@ -248,7 +248,8 @@ namespace Chess.Main
             plane.D = 0;
             MeshManager.Instance.CreatePlane( "board", plane, 160, 160, 1, 1, true, 1, 1, 1, Vector3.UnitZ );
 
-            RenderTexture rttTex = Root.Instance.RenderSystem.CreateRenderTexture( "RttTex", 1024, 1024 );//, TEX_TYPE_2D, PF_R8G8B8 );  
+			Texture texture = TextureManager.Instance.CreateManual( "RttTex", TextureType.TwoD, 1024, 1024, 0, Axiom.Media.PixelFormat.R8G8B8, TextureUsage.RenderTarget );
+			RenderTarget rttTex = texture.GetBuffer().GetRenderTarget();
 
             Viewport v = rttTex.AddViewport( reflectCamera );
             v.ClearEveryFrame = true;
@@ -295,7 +296,8 @@ namespace Chess.Main
             mPlaneNode.AttachObject( movablePlane );
             mPlaneNode.Translate( new Vector3( 0, -15, 0 ) );
 
-            RenderTexture rttTexa = Root.Instance.RenderSystem.CreateRenderTexture( "RttTexa", 1024, 1024 );//, TEX_TYPE_2D, PF_R8G8B8 );
+			Texture texturea = TextureManager.Instance.CreateManual( "RttTexa", TextureType.TwoD, 1024, 1024, 0, Axiom.Media.PixelFormat.R8G8B8, TextureUsage.RenderTarget );
+			RenderTarget rttTexa = texturea.GetBuffer().GetRenderTarget();
             {
                 Viewport va = rttTexa.AddViewport( reflectCameraGround );
                 va.ClearEveryFrame = true;

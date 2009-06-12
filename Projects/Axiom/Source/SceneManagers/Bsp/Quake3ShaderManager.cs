@@ -61,92 +61,13 @@ namespace Axiom.SceneManagers.Bsp
     ///		I choose not to set up Material instances for shaders found since they may or may not be used by a level,
     ///		so it would be very wasteful to set up Materials since they load texture images for each layer (apart from the
     ///		lightmap). Once the usage of a shader is confirmed, a full Material instance can be set up from it.</p>
-    ///		Because this is a subclass of ResourceManager, any files mentioned will be searched for in any path or
-    ///		archive added to the resource paths/archives. See <see cref="ResourceManager"/> for details.
+    ///     Because this is a subclass of ScriptLoader, any files mentioned will be searched for in any path or
+    ///     archive added to the ResourceGroupManager.World_Group_Name group. See <see cref="ResourceGroupManager"/> for details.
     ///	</remarks>
-    public class Quake3ShaderManager : ResourceManager
+    public class Quake3ShaderManager : ResourceManager, ISingleton<Quake3ShaderManager>
     {
-        #region Singleton implementation
-        protected static Quake3ShaderManager instance;
-
-        public static Quake3ShaderManager Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
-
-        static Quake3ShaderManager()
-        {
-            instance = new Quake3ShaderManager();
-        }
-
-        protected Quake3ShaderManager()
-        {
-        }
-        #endregion
 
         #region Methods
-        public void ParseShaderFile( Stream stream )
-        {
-            StreamReader file = new StreamReader( stream, Encoding.ASCII );
-            string line;
-            Quake3Shader shader = null;
-
-            while ( ( line = file.ReadLine() ) != null )
-            {
-                line = line.Trim();
-
-                // Ignore comments & blanks
-                if ( ( line != String.Empty ) && !line.StartsWith( "//" ) )
-                {
-                    if ( shader == null )
-                    {
-                        LogManager.Instance.Write( "Creating {0}...", line );
-                        // No current shader
-                        // So first valid data should be a shader name
-                        shader = (Quake3Shader)Create( line );
-
-                        // Skip to and over next brace
-                        ParseHelper.SkipToNextOpenBrace( file );
-                    }
-                    else
-                    {
-                        // Already in a shader
-                        if ( line == "}" )
-                        {
-                            LogManager.Instance.Write( "End of shader." );
-                            shader = null;
-                        }
-                        else if ( line == "{" )
-                        {
-                            LogManager.Instance.Write( "New pass..." );
-                            ParseNewShaderPass( file, shader );
-                        }
-                        else
-                        {
-                            LogManager.Instance.Write( "New attrib, {0}...", line );
-                            ParseShaderAttrib( line.ToLower(), shader );
-                        }
-                    }
-                }
-            }
-        }
-
-        public void ParseAllSources( string extension )
-        {
-            Stream chunk;
-            IList<String> shaderFiles = ResourceManager.GetAllCommonNamesLike( "", extension );
-
-            for ( int i = 0; i < shaderFiles.Count; i++ )
-            {
-                if ( ( chunk = ResourceManager.FindCommonResourceData( shaderFiles[ i ] ) ) == null )
-                    continue;
-
-                ParseShaderFile( chunk );
-            }
-        }
 
         protected void ParseNewShaderPass( StreamReader stream, Quake3Shader shader )
         {
@@ -440,16 +361,115 @@ namespace Axiom.SceneManagers.Bsp
             // Default if unrecognised
             return SceneBlendFactor.One;
         }
-        #endregion
+        #endregion Methods
 
-        #region ResourceManager implementation
-        public override Resource Create( string name )
+        #region ResourceManager Implementation
+
+        protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, Axiom.Collections.NameValuePairList createParams )
         {
-            Quake3Shader s = new Quake3Shader( name );
-            Load( s, 1 );
+            Quake3Shader s = new Quake3Shader( this, name, nextHandle ,ResourceGroupManager.Instance.WorldResourceGroupName );
+
+            Load( name, ResourceGroupManager.Instance.WorldResourceGroupName );
 
             return s;
         }
-        #endregion
+
+        public override void ParseScript( Stream stream, string groupName, string fileName )
+        {
+            StreamReader file = new StreamReader( stream, Encoding.ASCII );
+            string line;
+            Quake3Shader shader = null;
+
+            while ( ( line = file.ReadLine() ) != null )
+            {
+                line = line.Trim();
+
+                // Ignore comments & blanks
+                if ( ( line != String.Empty ) && !line.StartsWith( "//" ) )
+                {
+                    if ( shader == null )
+                    {
+                        LogManager.Instance.Write( "Creating {0}...", line );
+                        // No current shader
+                        // So first valid data should be a shader name
+                        shader = (Quake3Shader)Create( line, groupName );
+
+                        // Skip to and over next brace
+                        ParseHelper.SkipToNextOpenBrace( file );
+                    }
+                    else
+                    {
+                        // Already in a shader
+                        if ( line == "}" )
+                        {
+                            LogManager.Instance.Write( "End of shader." );
+                            shader = null;
+                        }
+                        else if ( line == "{" )
+                        {
+                            LogManager.Instance.Write( "New pass..." );
+                            ParseNewShaderPass( file, shader );
+                        }
+                        else
+                        {
+                            LogManager.Instance.Write( "New attrib, {0}...", line );
+                            ParseShaderAttrib( line.ToLower(), shader );
+                        }
+                    }
+                }
+            }
+        }
+
+        #endregion ResourceManager Implementation
+
+        #region ISingleton<Quake3ShaderManager> Implementation
+
+        protected static Quake3ShaderManager instance;
+
+        public static Quake3ShaderManager Instance
+        {
+            get
+            {
+                return instance;
+            }
+        }
+
+        static Quake3ShaderManager()
+        {
+            instance = new Quake3ShaderManager();
+        }
+
+        protected Quake3ShaderManager()
+        {
+            LoadingOrder = 110.0f;
+            ScriptPatterns.Add( "*.shader" );
+            ResourceGroupManager.Instance.RegisterScriptLoader( this );
+        }
+
+        public bool Initialize( params object[] args )
+        {
+            return true;
+        }
+
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !isDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    // Dispose managed resources.
+                    ResourceGroupManager.Instance.UnregisterScriptLoader( this );
+                }
+
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
+            isDisposed = true;
+
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose( disposeManagedResources );
+        }
+        #endregion ISingleton<Quake3ShaderManager> Implementation
     }
 }

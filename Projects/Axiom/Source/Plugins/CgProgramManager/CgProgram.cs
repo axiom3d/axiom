@@ -93,8 +93,8 @@ namespace Axiom.CgPrograms
         /// <param name="type">Type of this program, vertex or fragment program.</param>
         /// <param name="language">HLSL language of this program.</param>
         /// <param name="context">CG context id.</param>
-        public CgProgram( string name, GpuProgramType type, string language, IntPtr context )
-            : base( name, type, language )
+        public CgProgram( ResourceManager parent, string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, IntPtr context )
+			: base( parent, name, handle, group, isManual, loader )
         {
             this.cgContext = context;
         }
@@ -115,7 +115,7 @@ namespace Axiom.CgPrograms
                     selectedProfile = profiles[ i ];
                     selectedCgProfile = Cg.cgGetProfile( selectedProfile );
 
-                    CgHelper.CheckCgError( "Unable to find Cg profile enum for program " + name, cgContext );
+                    CgHelper.CheckCgError( "Unable to find Cg profile enum for program " + Name, cgContext );
 
                     break;
                 }
@@ -131,6 +131,7 @@ namespace Axiom.CgPrograms
 
             string[] args = null;
 
+			// This option causes an error with the CG 1.3 compiler
             if ( selectedCgProfile == Cg.CG_PROFILE_VS_1_1 )
             {
                 args = new string[] { "-profileopts", "dcls", null };
@@ -139,7 +140,7 @@ namespace Axiom.CgPrograms
             // create the Cg program
             cgProgram = Cg.cgCreateProgram( cgContext, Cg.CG_SOURCE, source, selectedCgProfile, entry, args );
 
-            CgHelper.CheckCgError( "Unable to compile Cg program " + name, cgContext );
+            CgHelper.CheckCgError( "Unable to compile Cg program " + Name, cgContext );
         }
 
         /// <summary>
@@ -147,11 +148,14 @@ namespace Axiom.CgPrograms
         /// </summary>
         protected override void CreateLowLevelImpl()
         {
-            // retreive the 
-            string lowLevelSource = Cg.cgGetProgramString( cgProgram, Cg.CG_COMPILED_PROGRAM );
+            if ( this.selectedCgProfile != Cg.CG_PROFILE_UNKNOWN && !_compileError )
+            {
+                // retreive the 
+                string lowLevelSource = Cg.cgGetProgramString( cgProgram, Cg.CG_COMPILED_PROGRAM );
 
-            // create a low-level program, with the same name as this one
-            assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( name, lowLevelSource, type, selectedProfile );
+                // create a low-level program, with the same name as this one
+                assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( Name, Group, lowLevelSource, type, selectedProfile );
+            }
         }
 
         /// <summary>
@@ -247,7 +251,7 @@ namespace Axiom.CgPrograms
             {
                 Cg.cgDestroyProgram( cgProgram );
 
-                CgHelper.CheckCgError( string.Format( "Error unloading CgProgram named '{0}'", this.name ), cgContext );
+                CgHelper.CheckCgError( string.Format( "Error unloading CgProgram named '{0}'", this.Name ), cgContext );
             }
         }
 
@@ -274,9 +278,12 @@ namespace Axiom.CgPrograms
         {
             get
             {
+                if ( _compileError || !IsRequiredCapabilitiesSupported() )
+                    return false;
+
                 // If skeletal animation is being done, we need support for UBYTE4
                 if ( this.IsSkeletalAnimationIncluded &&
-                    !Root.Instance.RenderSystem.Caps.CheckCap( Capabilities.VertexFormatUByte4 ) )
+                    !Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexFormatUByte4 ) )
                 {
 
                     return false;
@@ -296,6 +303,34 @@ namespace Axiom.CgPrograms
             }
         }
 
+		public override int SamplerCount
+		{
+			get
+			{
+				switch ( selectedProfile )
+				{
+					case "ps_1_1":
+					case "ps_1_2":
+					case "ps_1_3":
+					case "fp20":
+						return 4;
+					case "ps_1_4":
+						return 6;
+					case "ps_2_0":
+					case "ps_2_x":
+					case "ps_3_0":
+					case "ps_3_x":
+					case "arbfp1":
+					case "fp30":
+					case "fp40":
+						return 16;
+					default:
+						throw new AxiomException( "Attempted to query sample count for unknown shader profile({0}).", selectedProfile );
+				}
+
+				return 0;
+			}
+		}
 
         #endregion
 
@@ -334,5 +369,5 @@ namespace Axiom.CgPrograms
         }
 
         #endregion IConfigurable Members
-    }
+	}
 }

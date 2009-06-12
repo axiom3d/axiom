@@ -44,7 +44,7 @@ namespace Axiom.Demos
             plane.D = 200;
 
             // create a plane mesh
-            MeshManager.Instance.CreatePlane( "FloorPlane", plane, 200000, 200000, 20, 20, true, 1, 50, 50, Vector3.UnitZ );
+            MeshManager.Instance.CreatePlane( "FloorPlane", ResourceGroupManager.DefaultResourceGroupName, plane, 200000, 200000, 20, 20, true, 1, 50, 50, Vector3.UnitZ );
 
             // create an entity to reference this mesh
             Entity planeEntity = scene.CreateEntity( "Floor", "FloorPlane" );
@@ -72,21 +72,21 @@ namespace Axiom.Demos
             animation.InterpolationMode = InterpolationMode.Spline;
 
             // create the main animation track
-            AnimationTrack track = animation.CreateTrack( 0, cameraNode );
+            AnimationTrack track = animation.CreateNodeTrack( 0, cameraNode );
 
             // create a few keyframes to move the camera around
-            KeyFrame frame = track.CreateKeyFrame( 0.0f );
+			TransformKeyFrame frame = (TransformKeyFrame)track.CreateKeyFrame( 0.0f );
 
-            frame = track.CreateKeyFrame( 2.5f );
+            frame = (TransformKeyFrame)track.CreateKeyFrame( 2.5f );
             frame.Translate = new Vector3( 500, 500, -1000 );
 
-            frame = track.CreateKeyFrame( 5.0f );
+			frame = (TransformKeyFrame)track.CreateKeyFrame( 5.0f );
             frame.Translate = new Vector3( -1500, 1000, -600 );
 
-            frame = track.CreateKeyFrame( 7.5f );
+			frame = (TransformKeyFrame)track.CreateKeyFrame( 7.5f );
             frame.Translate = new Vector3( 0, -100, 0 );
 
-            frame = track.CreateKeyFrame( 10.0f );
+			frame = (TransformKeyFrame)track.CreateKeyFrame( 10.0f );
             frame.Translate = Vector3.Zero;
 
             // create a new animation state to control the animation
@@ -102,12 +102,12 @@ namespace Axiom.Demos
 
         #region Protected Override Event Handlers
 
-        protected override void OnFrameStarted( object source, FrameEventArgs e )
+        protected override bool OnFrameStarted( object source, FrameEventArgs e )
         {
-            base.OnFrameStarted( source, e );
-
             // add time to the animation which is driven off of rendering time per frame
             animationState.AddTime( e.TimeSinceLastFrame );
+
+            return base.OnFrameStarted( source, e );
         }
 
         #endregion Protected Override Event Handlers

@@ -68,16 +68,34 @@ namespace Axiom.RenderSystems.Xna
             0, 0, 0, 1f,
             0, 0, 0, 1f );
 
+        /// <summary>
+        ///    Reference to the Xna device.
+        /// </summary>
         private XFG.GraphicsDevice _device;
+        private Driver _activeDriver;
+
         private XFG.GraphicsDeviceCapabilities _capabilities;
         /// Saved last view matrix
         protected Matrix4 _viewMatrix = Matrix4.Identity;
         bool _isFirstFrame = true;
+        private int _primCount;
+        private int _renderCount = 0;
+        /// <summary>
+        /// The one used to crfeate the device.
+        /// </summary>
+        private XnaRenderWindow _primaryWindow;
+
+        List<XnaRenderWindow> _secondaryWindows = new List<XnaRenderWindow>();
 
         // stores texture stage info locally for convenience
         internal XnaTextureStageDescription[] texStageDesc = new XnaTextureStageDescription[ Config.MaxTextureLayers ];
         protected XnaGpuProgramManager gpuProgramMgr;
         int numLastStreams = 0;
+
+        /// <summary>
+        ///    Number of streams used last frame, used to unbind any buffers not used during the current operation.
+        /// </summary>
+        private int _lastVertexSourceCount;
 
         // Fixed Function Emulation
 #if !(XBOX || XBOX360 || SILVERLIGHT)
@@ -114,35 +132,47 @@ namespace Axiom.RenderSystems.Xna
 
         #region Helper Methods
 
-        protected void _setVertexBufferBinding( VertexBufferBinding binding )
+        /// <summary>
+        /// 
+        /// </summary>
+        private void _setVertexBufferBinding(VertexBufferBinding binding)
         {
-            IEnumerator e = binding.Bindings;
+            Dictionary<short, HardwareVertexBuffer> bindings = binding.Bindings;
+
             // TODO: Optimize to remove enumeration if possible, although with so few iterations it may never make a difference
-            while ( e.MoveNext() )
+            foreach (short stream in bindings.Keys)
             {
-                DictionaryEntry entry = (DictionaryEntry)e.Current;
-                XnaHardwareVertexBuffer buffer = (XnaHardwareVertexBuffer)entry.Value;
+                XnaHardwareVertexBuffer buffer = (XnaHardwareVertexBuffer)bindings[stream];
 
-                short stream = (short)entry.Key;
+                _device.Vertices[stream].SetSource(buffer.XnaVertexBuffer, 0, buffer.VertexSize);
 
-                _device.Vertices[ stream ].SetSource( buffer.XnaVertexBuffer, 0, buffer.VertexSize );
-
-                numLastStreams++;
+                _lastVertexSourceCount++;
             }
 
             // Unbind any unused sources
-            for ( int i = binding.BindingCount; i < numLastStreams; i++ )
+            for (int i = binding.BindingCount; i < _lastVertexSourceCount; i++)
             {
-                _device.Vertices[ i ].SetSource( null, 0, 0 );
+                _device.Vertices[i].SetSource(null, 0, 0);
             }
 
-            numLastStreams = binding.BindingCount;
+            _lastVertexSourceCount = binding.BindingCount;
+        }
+
+        /// <summary>
+        ///		Helper method for setting the current vertex declaration.
+        /// </summary>
+        private void _setVertexDeclaration(VertexDeclaration decl)
+        {
+            // TODO: Check for duplicate setting and avoid setting if dupe
+            XnaVertexDeclaration vertDecl = (XnaVertexDeclaration)decl;
+
+            _device.VertexDeclaration = vertDecl.XnaVertexDecl;
         }
 
         private void _initConfigOptions()
         {
             ConfigOption optDevice = new ConfigOption( "Rendering Device", "", false );
-            ConfigOption optVideoMode = new ConfigOption( "Video Mode", "800 x 600@ 32-bit colour", false );
+            ConfigOption optVideoMode = new ConfigOption( "Video Mode", "800 x 600 @ 32-bit colour", false );
             ConfigOption optFullScreen = new ConfigOption( "Full Screen", "No", false );
             ConfigOption optVSync = new ConfigOption( "VSync", "No", false );
             ConfigOption optAA = new ConfigOption( "Anti aliasing", "None", false );
@@ -155,20 +185,20 @@ namespace Axiom.RenderSystems.Xna
             {
                 string query = string.Format( "{0} x {1} @ {2}-bit colour", mode.Width, mode.Height, mode.ColorDepth.ToString() );
                 // add a new row to the display settings table
-                optVideoMode.PossibleValues.Add( query );
+                optVideoMode.PossibleValues.Add(optVideoMode.PossibleValues.Count, query );
             }
 
-            optFullScreen.PossibleValues.Add( "Yes" );
-            optFullScreen.PossibleValues.Add( "No" );
+            optFullScreen.PossibleValues.Add(0, "Yes" );
+            optFullScreen.PossibleValues.Add(1, "No" );
 
-            optVSync.PossibleValues.Add( "Yes" );
-            optVSync.PossibleValues.Add( "No" );
+            optVSync.PossibleValues.Add(0, "Yes" );
+            optVSync.PossibleValues.Add(1, "No" );
 
-            optAA.PossibleValues.Add( "None" );
+            optAA.PossibleValues.Add(0, "None" );
 
             optFPUMode.PossibleValues.Clear();
-            optFPUMode.PossibleValues.Add( "Fastest" );
-            optFPUMode.PossibleValues.Add( "Consistent" );
+            optFPUMode.PossibleValues.Add(0, "Fastest" );
+            optFPUMode.PossibleValues.Add(1, "Consistent" );
 
             ConfigOptions.Add( optDevice );
             ConfigOptions.Add( optVideoMode );
@@ -179,6 +209,19 @@ namespace Axiom.RenderSystems.Xna
         }
 
 #if !(XBOX || XBOX360 || SILVERLIGHT)
+        /// <summary>
+        ///		Creates a default form to use for a rendering target.
+        /// </summary>
+        /// <remarks>
+        ///		This is used internally whenever <see cref="Initialize"/> is called and autoCreateWindow is set to true.
+        /// </remarks>
+        /// <param name="windowTitle">Title of the window.</param>
+        /// <param name="top">Top position of the window.</param>
+        /// <param name="left">Left position of the window.</param>
+        /// <param name="width">Width of the window.</param>
+        /// <param name="height">Height of the window</param>
+        /// <param name="fullScreen">Prepare the form for fullscreen mode?</param>
+        /// <returns>A form suitable for using as a rendering target.</returns>
         private DefaultForm _createDefaultForm( string windowTitle, int top, int left, int width, int height, bool fullScreen )
         {
             DefaultForm form = new DefaultForm();
@@ -210,13 +253,17 @@ namespace Axiom.RenderSystems.Xna
         }
 #endif
 
-        private void _checkCapabilities( XFG.GraphicsDevice device )
+
+        /// <summary>
+        ///		Helper method to go through and interrogate hardware capabilities.
+        /// </summary>
+        private void _checkHardwareCapabilities( XFG.GraphicsDevice device )
         {
             // get the number of possible texture units
-            caps.TextureUnitCount = _capabilities.MaxSimultaneousTextures;
+            HardwareCapabilities.TextureUnitCount = _capabilities.MaxSimultaneousTextures;
 
             // max active lights
-            caps.MaxLights = 8;
+            HardwareCapabilities.MaxLights = 8; // d3dHardwareCapabilities.MaxActiveLights;
 
             XFG.DepthStencilBuffer surface = device.DepthStencilBuffer;
             //XNA.TextureInformation surfaceDesc = surface.Description;
@@ -224,63 +271,69 @@ namespace Axiom.RenderSystems.Xna
 
             if ( surface.Format == XFG.DepthFormat.Depth24Stencil8 || surface.Format == XFG.DepthFormat.Depth24 )
             {
-                caps.SetCap( Capabilities.StencilBuffer );
+                HardwareCapabilities.SetCapability( Capabilities.StencilBuffer );
                 // always 8 here
-                caps.StencilBufferBits = 8;
+                HardwareCapabilities.StencilBufferBitCount = 8;
             }
 
             // some cards, oddly enough, do not support this
             if ( _capabilities.DeclarationTypeCapabilities.SupportsByte4 )
             {
-                caps.SetCap( Capabilities.VertexFormatUByte4 );
+                HardwareCapabilities.SetCapability( Capabilities.VertexFormatUByte4 );
             }
 
             // Anisotropy?
             if ( _capabilities.MaxAnisotropy > 1 )
             {
-                caps.SetCap( Capabilities.AnisotropicFiltering );
+                HardwareCapabilities.SetCapability( Capabilities.AnisotropicFiltering );
             }
 
             // Hardware mipmapping?
             if ( _capabilities.DriverCapabilities.CanAutoGenerateMipMap )
             {
-                caps.SetCap( Capabilities.HardwareMipMaps );
+                HardwareCapabilities.SetCapability( Capabilities.HardwareMipMaps );
             }
 
             // blending between stages is definately supported
-            caps.SetCap( Capabilities.TextureBlending );
-            caps.SetCap( Capabilities.MultiTexturing );
+            HardwareCapabilities.SetCapability( Capabilities.TextureBlending );
+            HardwareCapabilities.SetCapability( Capabilities.MultiTexturing );
+
+            // Dot3 bump mapping?
+            //if ( _capabilities.TextureCapabilities.SupportsDotProduct3 )
+            //{
+            //    HardwareCapabilities.SetCap( Capabilities.Dot3 );
+            //}
 
             // Cube mapping?
             if ( _capabilities.TextureCapabilities.SupportsCubeMap )
             {
-                caps.SetCap( Capabilities.CubeMapping );
+                HardwareCapabilities.SetCapability( Capabilities.CubeMapping );
             }
 
             // Texture Compression
             // We always support compression, Xna will decompress if device does not support
-            caps.SetCap( Capabilities.TextureCompression );
-            caps.SetCap( Capabilities.TextureCompressionDXT );
+            HardwareCapabilities.SetCapability( Capabilities.TextureCompression );
+            HardwareCapabilities.SetCapability( Capabilities.TextureCompressionDXT );
 
-            // D3D uses vertex buffers for everything
-            caps.SetCap( Capabilities.VertexBuffer );
+            // Xna uses vertex buffers for everything
+            HardwareCapabilities.SetCapability( Capabilities.VertexBuffer );
 
             // Scissor test
             if ( _capabilities.RasterCapabilities.SupportsScissorTest )
             {
-                caps.SetCap( Capabilities.ScissorTest );
+                HardwareCapabilities.SetCapability( Capabilities.ScissorTest );
             }
 
             // 2 sided stencil
             if ( _capabilities.StencilCapabilities.SupportsTwoSided )
             {
-                caps.SetCap( Capabilities.TwoSidedStencil );
+                HardwareCapabilities.SetCapability( Capabilities.TwoSidedStencil );
             }
 
             // stencil wrap
             if ( _capabilities.StencilCapabilities.SupportsIncrement && _capabilities.StencilCapabilities.SupportsDecrement )
             {
-                caps.SetCap( Capabilities.StencilWrap );
+                HardwareCapabilities.SetCapability( Capabilities.StencilWrap );
             }
 
             // Hardware Occlusion, new!
@@ -292,101 +345,67 @@ namespace Axiom.RenderSystems.Xna
 
             if ( _capabilities.MaxUserClipPlanes > 0 )
             {
-                caps.SetCap( Capabilities.UserClipPlanes );
+                HardwareCapabilities.SetCapability( Capabilities.UserClipPlanes );
             }
 
-            int vpMajor = _capabilities.VertexShaderVersion.Major;
-            int vpMinor = _capabilities.VertexShaderVersion.Minor;
+            _checkVertexProgramCapabilities();
+
+            _checkFragmentProgramCapabilities();
+
+            // Infinite projection?
+            // We have no capability for this, so we have to base this on our
+            // experience and reports from users
+            // Non-vertex program capable hardware does not appear to support it
+            if ( HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
+            {
+                // GeForce4 Ti (and presumably GeForce3) does not
+                // render infinite projection properly, even though it does in GL
+                // So exclude all cards prior to the FX range from doing infinite
+
+                XFG.GraphicsAdapter details = XFG.GraphicsAdapter.Adapters[0];
+
+                // not nVidia or GeForceFX and above
+                if ( details.VendorId != 0x10DE || details.DeviceId >= 0x0301 )
+                    {
+                    HardwareCapabilities.SetCapability( Capabilities.InfiniteFarPlane );
+                    }
+                    }
+
+            // write hardware capabilities to registered log listeners
+            HardwareCapabilities.Log();
+            }
+
+        private void _checkFragmentProgramCapabilities()
+            {
             int fpMajor = _capabilities.PixelShaderVersion.Major;
             int fpMinor = _capabilities.PixelShaderVersion.Minor;
 
-            // check vertex program caps
-            switch ( vpMajor )
-            {
-                case 1:
-                    caps.MaxVertexProgramVersion = "vs_1_1";
-                    // 4d float vectors
-                    caps.VertexProgramConstantFloatCount = _capabilities.MaxVertexShaderConstants;
-                    // no int params supports
-                    caps.VertexProgramConstantIntCount = 0;
-                    break;
-                case 2:
-                    if ( vpMinor > 0 )
-                    {
-                        caps.MaxVertexProgramVersion = "vs_2_x";
-                    }
-                    else
-                    {
-                        caps.MaxVertexProgramVersion = "vs_2_0";
-                    }
-
-                    // 16 ints
-                    caps.VertexProgramConstantIntCount = 16 * 4;
-                    // 4d float vectors
-                    caps.VertexProgramConstantFloatCount = _capabilities.MaxVertexShaderConstants;
-
-                    break;
-                case 3:
-                    caps.MaxVertexProgramVersion = "vs_3_0";
-
-                    // 16 ints
-                    caps.VertexProgramConstantIntCount = 16 * 4;
-                    // 4d float vectors
-                    caps.VertexProgramConstantFloatCount = _capabilities.MaxVertexShaderConstants;
-
-                    break;
-                default:
-                    // not gonna happen
-                    caps.MaxVertexProgramVersion = "";
-                    break;
-            }
-
-            // check for supported vertex program syntax codes
-            if ( vpMajor >= 1 )
-            {
-                caps.SetCap( Capabilities.VertexPrograms );
-                gpuProgramMgr.PushSyntaxCode( "vs_1_1" );
-            }
-            if ( vpMajor >= 2 )
-            {
-                if ( vpMajor > 2 || vpMinor > 0 )
-                {
-                    gpuProgramMgr.PushSyntaxCode( "vs_2_x" );
-                }
-                gpuProgramMgr.PushSyntaxCode( "vs_2_0" );
-            }
-            if ( vpMajor >= 3 )
-            {
-                gpuProgramMgr.PushSyntaxCode( "vs_3_0" );
-            }
-
-            // Fragment Program Caps
             switch ( fpMajor )
             {
                 case 1:
-                    caps.MaxFragmentProgramVersion = string.Format( "ps_1_{0}", fpMinor );
+                    HardwareCapabilities.MaxFragmentProgramVersion = string.Format( "ps_1_{0}", fpMinor );
 
-                    caps.FragmentProgramConstantIntCount = 0;
+                    HardwareCapabilities.FragmentProgramConstantIntCount = 0;
                     // 8 4d float values, entered as floats but stored as fixed
-                    caps.FragmentProgramConstantFloatCount = 8;
+                    HardwareCapabilities.FragmentProgramConstantFloatCount = 8;
                     break;
 
                 case 2:
                     if ( fpMinor > 0 )
                     {
-                        caps.MaxFragmentProgramVersion = "ps_2_x";
+                        HardwareCapabilities.MaxFragmentProgramVersion = "ps_2_x";
                         //16 integer params allowed
-                        caps.FragmentProgramConstantIntCount = 16 * 4;
+                        HardwareCapabilities.FragmentProgramConstantIntCount = 16 * 4;
                         // 4d float params
-                        caps.FragmentProgramConstantFloatCount = 224;
+                        HardwareCapabilities.FragmentProgramConstantFloatCount = 224;
                     }
                     else
                     {
-                        caps.MaxFragmentProgramVersion = "ps_2_0";
+                        HardwareCapabilities.MaxFragmentProgramVersion = "ps_2_0";
                         // no integer params allowed
-                        caps.FragmentProgramConstantIntCount = 0;
+                        HardwareCapabilities.FragmentProgramConstantIntCount = 0;
                         // 4d float params
-                        caps.FragmentProgramConstantFloatCount = 32;
+                        HardwareCapabilities.FragmentProgramConstantFloatCount = 32;
                     }
 
                     break;
@@ -394,99 +413,156 @@ namespace Axiom.RenderSystems.Xna
                 case 3:
                     if ( fpMinor > 0 )
                     {
-                        caps.MaxFragmentProgramVersion = "ps_3_x";
+                        HardwareCapabilities.MaxFragmentProgramVersion = "ps_3_x";
                     }
                     else
                     {
-                        caps.MaxFragmentProgramVersion = "ps_3_0";
+                        HardwareCapabilities.MaxFragmentProgramVersion = "ps_3_0";
                     }
 
                     // 16 integer params allowed
-                    caps.FragmentProgramConstantIntCount = 16;
-                    caps.FragmentProgramConstantFloatCount = 224;
+                    HardwareCapabilities.FragmentProgramConstantIntCount = 16;
+                    HardwareCapabilities.FragmentProgramConstantFloatCount = 224;
                     break;
 
                 default:
                     // doh, SOL
-                    caps.MaxFragmentProgramVersion = "";
+                    HardwareCapabilities.MaxFragmentProgramVersion = "";
                     break;
             }
 
             // Fragment Program syntax code checks
             if ( fpMajor >= 1 )
             {
-                caps.SetCap( Capabilities.FragmentPrograms );
-                gpuProgramMgr.PushSyntaxCode( "ps_1_1" );
+                HardwareCapabilities.SetCapability( Capabilities.FragmentPrograms );
+                this.gpuProgramMgr.PushSyntaxCode( "ps_1_1" );
 
                 if ( fpMajor > 1 || fpMinor >= 2 )
                 {
-                    gpuProgramMgr.PushSyntaxCode( "ps_1_2" );
+                    this.gpuProgramMgr.PushSyntaxCode("ps_1_2");
                 }
                 if ( fpMajor > 1 || fpMinor >= 3 )
                 {
-                    gpuProgramMgr.PushSyntaxCode( "ps_1_3" );
+                    this.gpuProgramMgr.PushSyntaxCode("ps_1_3");
                 }
                 if ( fpMajor > 1 || fpMinor >= 4 )
                 {
-                    gpuProgramMgr.PushSyntaxCode( "ps_1_4" );
+                    this.gpuProgramMgr.PushSyntaxCode("ps_1_4");
                 }
             }
 
             if ( fpMajor >= 2 )
             {
-                gpuProgramMgr.PushSyntaxCode( "ps_2_0" );
+                this.gpuProgramMgr.PushSyntaxCode("ps_2_0");
 
                 if ( fpMinor > 0 )
                 {
-                    gpuProgramMgr.PushSyntaxCode( "ps_2_x" );
+                    this.gpuProgramMgr.PushSyntaxCode("ps_2_x");
                 }
             }
 
             if ( fpMajor >= 3 )
             {
-                gpuProgramMgr.PushSyntaxCode( "ps_3_0" );
+                this.gpuProgramMgr.PushSyntaxCode("ps_3_0");
 
                 if ( fpMinor > 0 )
                 {
-                    gpuProgramMgr.PushSyntaxCode( "ps_3_x" );
+                    this.gpuProgramMgr.PushSyntaxCode("ps_3_x");
                 }
             }
-
-            // Infinite projection?
-            // We have no capability for this, so we have to base this on our
-            // experience and reports from users
-            // Non-vertex program capable hardware does not appear to support it
-            if ( caps.CheckCap( Capabilities.VertexPrograms ) )
-            {
-                // GeForce4 Ti (and presumably GeForce3) does not
-                // render infinite projection properly, even though it does in GL
-                // So exclude all cards prior to the FX range from doing infinite
-                Driver driver = XnaHelper.GetDriverInfo();
-                XFG.GraphicsAdapter details = null;
-                foreach ( XFG.GraphicsAdapter ga in XFG.GraphicsAdapter.Adapters )
-                {
-                    if ( ga.DeviceId == driver.AdapterNumber )
-                    {
-                        details = ga;
-                        break;
-                    }
-                }
-
-                if ( details != null )
-                {
-                    // not nVidia or GeForceFX and above
-                    if ( details.VendorId != 0x10DE || details.DeviceId >= 0x0301 )
-                    {
-                        caps.SetCap( Capabilities.InfiniteFarPlane );
-                    }
-                }
-            }
-
-            // write hardware capabilities to registered log listeners
-            caps.Log();
         }
 
-        #endregion Helper Methods
+        private void _checkVertexProgramCapabilities()
+        {
+            int vpMajor = _capabilities.VertexShaderVersion.Major;
+            int vpMinor = _capabilities.VertexShaderVersion.Minor;
+
+            // check vertex program HardwareCapabilities
+            switch ( vpMajor )
+            {
+                case 1:
+                    HardwareCapabilities.MaxVertexProgramVersion = "vs_1_1";
+                    // 4d float vectors
+                    HardwareCapabilities.VertexProgramConstantFloatCount = _capabilities.MaxVertexShaderConstants;
+                    // no int params supports
+                    HardwareCapabilities.VertexProgramConstantIntCount = 0;
+                    break;
+                case 2:
+                    if ( vpMinor > 0 )
+                    {
+                        HardwareCapabilities.MaxVertexProgramVersion = "vs_2_x";
+                    }
+                    else
+                    {
+                        HardwareCapabilities.MaxVertexProgramVersion = "vs_2_0";
+                    }
+
+                    // 16 ints
+                    HardwareCapabilities.VertexProgramConstantIntCount = 16 * 4;
+                    // 4d float vectors
+                    HardwareCapabilities.VertexProgramConstantFloatCount = _capabilities.MaxVertexShaderConstants;
+
+                    break;
+                case 3:
+                    HardwareCapabilities.MaxVertexProgramVersion = "vs_3_0";
+
+                    // 16 ints
+                    HardwareCapabilities.VertexProgramConstantIntCount = 16 * 4;
+                    // 4d float vectors
+                    HardwareCapabilities.VertexProgramConstantFloatCount = _capabilities.MaxVertexShaderConstants;
+
+                    break;
+                default:
+                    // not gonna happen
+                    HardwareCapabilities.MaxVertexProgramVersion = "";
+                    break;
+            }
+
+            // check for supported vertex program syntax codes
+            if ( vpMajor >= 1 )
+            {
+                HardwareCapabilities.SetCapability( Capabilities.VertexPrograms );
+                this.gpuProgramMgr.PushSyntaxCode( "vs_1_1" );
+            }
+            if ( vpMajor >= 2 )
+            {
+                if ( vpMajor > 2 || vpMinor > 0 )
+                {
+                    this.gpuProgramMgr.PushSyntaxCode( "vs_2_x" );
+                }
+                this.gpuProgramMgr.PushSyntaxCode( "vs_2_0" );
+            }
+            if ( vpMajor >= 3 )
+            {
+                this.gpuProgramMgr.PushSyntaxCode( "vs_3_0" );
+            }
+        }
+
+        private XNA.Matrix _makeXnaMatrix( Axiom.Math.Matrix4 matrix )
+        {
+            XNA.Matrix xna = new XNA.Matrix();
+
+            xna.M11 = matrix.m00;
+            xna.M12 = matrix.m01;
+            xna.M13 = matrix.m02;
+            xna.M14 = matrix.m03;
+            xna.M21 = matrix.m10;
+            xna.M22 = matrix.m11;
+            xna.M23 = matrix.m12;
+            xna.M24 = matrix.m13;
+            xna.M31 = matrix.m20;
+            xna.M32 = matrix.m21;
+            xna.M33 = matrix.m22;
+            xna.M34 = matrix.m23;
+            xna.M41 = matrix.m30;
+            xna.M42 = matrix.m31;
+            xna.M43 = matrix.m32;
+            xna.M44 = matrix.m33;
+
+            return xna;
+        }
+
+        #endregion Private Helper Functions
 
         #region Axiom.Core.RenderSystem Implementation
 
@@ -559,7 +635,7 @@ namespace Axiom.RenderSystems.Xna
             }
         }
 
-        public override int DepthBias
+        public override float DepthBias
         {
             get
             {
@@ -635,7 +711,7 @@ namespace Axiom.RenderSystems.Xna
             }
         }
 
-        public override SceneDetailLevel RasterizationMode
+        public override PolygonMode PolygonMode
         {
             get
             {
@@ -645,13 +721,13 @@ namespace Axiom.RenderSystems.Xna
             {
                 switch ( value )
                 {
-                    case SceneDetailLevel.Points:
+                    case PolygonMode.Points:
                         _device.RenderState.FillMode = XFG.FillMode.Point;
                         break;
-                    case SceneDetailLevel.Wireframe:
+                    case PolygonMode.Wireframe:
                         _device.RenderState.FillMode = XFG.FillMode.WireFrame;
                         break;
-                    case SceneDetailLevel.Solid:
+                    case PolygonMode.Solid:
                         _device.RenderState.FillMode = XFG.FillMode.Solid;
                         break;
                 }
@@ -788,7 +864,7 @@ namespace Axiom.RenderSystems.Xna
             // clear the device if need be
             if ( activeViewport.ClearEveryFrame )
             {
-                ClearFrameBuffer( FrameBuffer.Color | FrameBuffer.Depth, activeViewport.BackgroundColor );
+                ClearFrameBuffer( FrameBufferType.Color | FrameBufferType.Depth, activeViewport.BackgroundColor );
             }
             // set initial render states if this is the first frame. we only want to do 
             //	this once since renderstate changes are expensive
@@ -876,21 +952,21 @@ namespace Axiom.RenderSystems.Xna
             }
         }
 
-        public override void ClearFrameBuffer( FrameBuffer buffers, ColorEx color, float depth, int stencil )
+        public override void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, float depth, int stencil )
         {
             XFG.ClearOptions flags = 0; //ClearFlags 
 
-            if ( ( buffers & FrameBuffer.Color ) > 0 )
+            if ( ( buffers & FrameBufferType.Color ) > 0 )
             {
                 flags |= XFG.ClearOptions.Target;
             }
-            if ( ( buffers & FrameBuffer.Depth ) > 0 )
+            if ((buffers & FrameBufferType.Depth) > 0)
             {
                 flags |= XFG.ClearOptions.DepthBuffer;
             }
             // Only try to clear the stencil buffer if supported
-            if ( ( buffers & FrameBuffer.Stencil ) > 0
-                && caps.CheckCap( Capabilities.StencilBuffer ) )
+            if ((buffers & FrameBufferType.Stencil) > 0
+                && HardwareCapabilities.HasCapability( Capabilities.StencilBuffer ) )
             {
 
                 flags |= XFG.ClearOptions.Stencil;
@@ -906,6 +982,16 @@ namespace Axiom.RenderSystems.Xna
             return color.ToARGB();
         }
 
+        public override ColorEx ConvertColor(int color)
+        {
+            ColorEx colorEx;
+            colorEx.a = (float)((color >> 24) % 256) / 255;
+            colorEx.r = (float)((color >> 16) % 256) / 255;
+            colorEx.g = (float)((color >> 8) % 256) / 255;
+            colorEx.b = (float)((color) % 256) / 255;
+            return colorEx;
+        }
+
         public override RenderTexture CreateRenderTexture( string name, int width, int height )
         {
             XnaRenderTexture renderTexture = new XnaRenderTexture( name, width, height );
@@ -913,31 +999,74 @@ namespace Axiom.RenderSystems.Xna
             return renderTexture;
         }
 
-        public override RenderWindow CreateRenderWindow( string name, int width, int height, int colorDepth, bool isFullscreen, int left, int top, bool depthBuffer, bool vsync, IntPtr target )
+        public override RenderWindow CreateRenderWindow(string name, int width, int height, bool isFullScreen, NamedParameterList miscParams)
         {
-            if ( _device == null )
+            // Check we're not creating a secondary window when the primary
+            // was fullscreen
+            if ( _primaryWindow != null && _primaryWindow.IsFullScreen )
             {
-                _device = InitDevice( isFullscreen, depthBuffer, width, height, colorDepth, target );
-
-                /*if (!isFullscreen)
-                {
-                    _device = InitDevice(isFullscreen, depthBuffer, width, height, colorDepth, target);
-                }
-                else
-                {
-                    _device = InitDevice(isFullscreen, depthBuffer, width, height, colorDepth, IntPtr.Zero);
-                }*/
+                throw new Exception( "Cannot create secondary windows when the primary is full screen." );
             }
 
-            RenderWindow window = new XnaRenderWindow();
+            if ( _primaryWindow != null && isFullScreen )
+            {
+                throw new ArgumentException( "Cannot create full screen secondary windows." );
+            }
 
-            window.Handle = target;
+            // Log a message
+            System.Text.StringBuilder strParams = new System.Text.StringBuilder();
+            if ( miscParams != null )
+            {
+                foreach ( KeyValuePair<string, object> entry in miscParams )
+                {
+                    strParams.AppendFormat( "{0} = {1}; ", entry.Key, entry.Value );
+                }
+            }
+            LogManager.Instance.Write( "D3D9RenderSystem::createRenderWindow \"{0}\", {1}x{2} {3} miscParams: {4}",
+                                       name, width, height, isFullScreen ? "fullscreen" : "windowed", strParams.ToString() );
+
+            // Make sure we don't already have a render target of the 
+            // same name as the one supplied
+            if ( renderTargets.ContainsKey( name ) )
+            {
+                throw new Exception( String.Format( "A render target of the same name '{0}' already exists." +
+                                                    "You cannot create a new window with this name.", name ) );
+            }
+
+            RenderWindow window = new XnaRenderWindow( _activeDriver, _primaryWindow != null ? device : null );
 
             // create the window
-            window.Create( name, width, height, colorDepth, isFullscreen, left, top, depthBuffer, target, _device );
+            window.Create( name, width, height, isFullScreen, miscParams );
 
             // add the new render target
             AttachRenderTarget( window );
+            // If this is the first window, get the D3D device and create the texture manager
+            if ( _primaryWindow == null )
+            {
+                _primaryWindow = (XnaRenderWindow)window;
+                device = (XFG.GraphicsDevice)window[ "XnaDEVICE" ];
+
+                // Create the texture manager for use by others
+                textureManager = new XnaTextureManager( device );
+                // Also create hardware buffer manager
+                hardwareBufferManager = new XnaHardwareBufferManager( device );
+
+                // Create the GPU program manager
+                gpuProgramMgr = new XnaGpuProgramManager( device );
+                // create & register HLSL factory
+                //HLSLProgramFactory = new D3D9HLSLProgramFactory();
+                //HighLevelGpuProgramManager::getSingleton().addFactory(mHLSLProgramFactory);
+                gpuProgramMgr.PushSyntaxCode( "hlsl" );
+
+
+                // Initialise the capabilities structures
+                this.CheckCaps( device );
+
+            }
+            else
+            {
+                _secondaryWindows.Add( (XnaRenderWindow)window );
+            }
 
             return window;
         }
@@ -1072,7 +1201,7 @@ namespace Axiom.RenderSystems.Xna
             _capabilities = newDevice.GraphicsDeviceCapabilities;
 
             // by creating our texture manager, singleton TextureManager will hold our implementation
-            textureMgr = new XnaTextureManager( newDevice );
+            this.textureManager = new XnaTextureManager( newDevice );
 
             // by creating our Gpu program manager, singleton GpuProgramManager will hold our implementation
             gpuProgramMgr = new XnaGpuProgramManager( newDevice );
@@ -1080,7 +1209,7 @@ namespace Axiom.RenderSystems.Xna
             // intializes the HardwareBufferManager singleton
             hardwareBufferManager = new XnaHardwareBufferManager( newDevice );
 
-            _checkCapabilities( newDevice );
+            this._checkHardwareCapabilities( newDevice );
 
             return newDevice;
         }
@@ -1553,7 +1682,7 @@ namespace Axiom.RenderSystems.Xna
             // 2 sided operation?
             if ( twoSidedOperation )
             {
-                if ( !caps.CheckCap( Capabilities.TwoSidedStencil ) )
+                if ( !HardwareCapabilities.HasCapability( Capabilities.TwoSidedStencil ) )
                 {
                     throw new AxiomException( "2-sided stencils are not supported on this hardware!" );
                 }
@@ -1801,7 +1930,7 @@ namespace Axiom.RenderSystems.Xna
         public object GetService( Type serviceType )
         {
             if ( serviceType == typeof( Microsoft.Xna.Framework.Graphics.IGraphicsDeviceService ) )
-                return this.renderTargets[ 0 ];
+                return this.renderTargets.Values.GetEnumerator().Current;
             else
                 return null;
         }

@@ -121,6 +121,25 @@ namespace Axiom.Math
         #endregion
 
         #region Intersection methods
+		public static bool operator==(Sphere sphere1, Sphere sphere2) 
+		{
+			return sphere1.center == sphere2.center && sphere1.radius == sphere2.radius;
+		}
+		
+		public static bool operator!=(Sphere sphere1, Sphere sphere2) 
+		{
+			return sphere1.center != sphere2.center || sphere1.radius != sphere2.radius;
+		}
+		public override bool Equals(object obj)
+		{
+			return obj is Sphere && this == (Sphere)obj;
+		}
+		public override int GetHashCode()
+		{
+			return center.GetHashCode() ^ radius.GetHashCode();
+		}
+
+
 
         /// <summary>
         ///		Tests for intersection between this sphere and another sphere.

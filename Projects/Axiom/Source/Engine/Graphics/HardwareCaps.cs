@@ -48,242 +48,508 @@ namespace Axiom.Graphics
     /// 	users hardware configuration.  A RenderSystem should create and initialize an instance
     /// 	of this class during startup so that it will be available for use ASAP for checking caps.
     /// </summary>
-    public class HardwareCaps
+    public class RenderSystemCapabilities
     {
-        #region Member variables
+        #region Fields and Properties
 
         /// <summary>
         ///    Flag enum holding the bits that identify each supported feature.
         /// </summary>
-        private Capabilities caps;
-        /// <summary>
-        ///    Max number of texture units available on the current hardware.
-        /// </summary>
-        private int numTextureUnits;
-        /// <summary>
-        ///    Max number of world matrices supported.
-        /// </summary>
-        private int numWorldMatrices;
-        /// <summary>
-        ///    The best vertex program version supported by the hardware.
-        /// </summary>
-        private string maxVertexProgramVersion;
-        /// <summary>
-        ///    The best fragment program version supported by the hardware.
-        /// </summary>
-        private string maxFragmentProgramVersion;
-        /// <summary>
-        ///    The number of floating point constants the current hardware supports for vertex programs.
-        /// </summary>
-        private int vertexProgramConstantFloatCount;
-        /// <summary>
-        ///    The number of integer constants the current hardware supports for vertex programs.
-        /// </summary>
-        private int vertexProgramConstantIntCount;
-        /// <summary>
-        ///    The number of floating point constants the current hardware supports for fragment programs.
-        /// </summary>
-        private int fragmentProgramConstantFloatCount;
-        /// <summary>
-        ///    The number of integer constants the current hardware supports for fragment programs.
-        /// </summary>
-        private int fragmentProgramConstantIntCount;
-        /// <summary>
-        ///    Stencil buffer bits available.
-        /// </summary>
-        private int stencilBufferBits;
-        /// <summary>
-        ///    Maximum number of lights that can be active in the scene at any given time.
-        /// </summary>
-        private int maxLights;
+        private Capabilities _caps;
 
-        #endregion
+		#region TextureUnitCount Property
 
-        #region Constructors
+		/// <summary>
+		///    Max number of texture units available on the current hardware.
+		/// </summary>
+		private int _textureUnitCount;
+		/// <summary>
+		///		Reports on the number of texture units the graphics hardware has available.
+		/// </summary>
+		public int TextureUnitCount
+		{
+			get
+			{
+				return _textureUnitCount;
+			}
+			set
+			{
+				_textureUnitCount = value;
+			}
+		}
 
-        /// <summary>
+		#endregion TextureUnitCount Property
+
+		#region WorlMatrixCount Property
+
+		/// <summary>
+		///    Max number of world matrices supported.
+		/// </summary>
+		private int _worldMatrixCount;
+		/// <summary>
+		///    Max number of world matrices supported by the hardware.
+		/// </summary>
+		public int WorldMatrixCount
+		{
+			get
+			{
+				return _worldMatrixCount;
+			}
+			set
+			{
+				_worldMatrixCount = value;
+			}
+		}
+
+		#endregion WorlMatrixCount Property
+			
+		#region MaxVertexProgramVersion Property
+
+		/// <summary>
+		///    The best vertex program version supported by the hardware.
+		/// </summary>
+		private string _maxVertexProgramVersion;
+		/// <summary>
+		///    Best vertex program version supported by the hardware.
+		/// </summary>
+		public string MaxVertexProgramVersion
+		{
+			get
+			{
+				return _maxVertexProgramVersion;
+			}
+			set
+			{
+				_maxVertexProgramVersion = value;
+			}
+		}
+
+		#endregion MaxVertexProgramVersion Property
+
+		#region VertexProgramConstantFloatCount Property
+
+		/// <summary>
+		///    The number of floating point constants the current hardware supports for vertex programs.
+		/// </summary>
+		private int _vertexProgramConstantFloatCount;
+		/// <summary>
+		///    Max number of floating point constants supported by the hardware for vertex programs.
+		/// </summary>
+		public int VertexProgramConstantFloatCount
+		{
+			get
+			{
+				return _vertexProgramConstantFloatCount;
+			}
+			set
+			{
+				_vertexProgramConstantFloatCount = value;
+			}
+		}
+
+		#endregion VertexProgramConstantFloatCount Property
+
+		#region VertexProgramConstantIntCount Property
+
+		/// <summary>
+		///    The number of integer constants the current hardware supports for vertex programs.
+		/// </summary>
+		private int _vertexProgramConstantIntCount;
+		/// <summary>
+		///    Max number of integer constants supported by the hardware for vertex programs.
+		/// </summary>
+		public int VertexProgramConstantIntCount
+		{
+			get
+			{
+				return _vertexProgramConstantIntCount;
+			}
+			set
+			{
+				_vertexProgramConstantIntCount = value;
+			}
+		}
+
+		#endregion VertexProgramConstantIntCount Property
+
+		#region VertexProgramConstantBoolCount Property
+
+		/// <summary>
+		///    The number of boolean constants the current hardware supports for vertex programs.
+		/// </summary>
+		private int _vertexProgramConstantBoolCount;
+		/// <summary>
+		///    Max number of boolean constants supported by the hardware for vertex programs.
+		/// </summary>
+		public int VertexProgramConstantBoolCount
+		{
+			get
+			{
+				return _vertexProgramConstantBoolCount;
+			}
+			set
+			{
+				_vertexProgramConstantBoolCount = value;
+			}
+		}
+
+		#endregion VertexProgramConstantBoolCount Property
+			
+		#region MaxFragmentProgramVersion Property
+
+		/// <summary>
+		///    The best fragment program version supported by the hardware.
+		/// </summary>
+		private string _maxFragmentProgramVersion;
+		/// <summary>
+		///    Best fragment program version supported by the hardware.
+		/// </summary>
+		public string MaxFragmentProgramVersion
+		{
+			get
+			{
+				return _maxFragmentProgramVersion;
+			}
+			set
+			{
+				_maxFragmentProgramVersion = value;
+			}
+		}
+
+		#endregion MaxFragmentProgramVersion Property
+			
+		#region FragmentProgramConstantFloatCount Property
+
+		/// <summary>
+		///    The number of floating point constants the current hardware supports for fragment programs.
+		/// </summary>
+		private int _fragmentProgramConstantFloatCount;
+		/// <summary>
+		///    Max number of floating point constants supported by the hardware for fragment programs.
+		/// </summary>
+		public int FragmentProgramConstantFloatCount
+		{
+			get
+			{
+				return _fragmentProgramConstantFloatCount;
+			}
+			set
+			{
+				_fragmentProgramConstantFloatCount = value;
+			}
+		}
+
+		#endregion FragmentProgramConstantFloatCount Property
+
+		#region FragmentProgramConstantIntCount Property
+
+		/// <summary>
+		///    The number of integer constants the current hardware supports for fragment programs.
+		/// </summary>
+		private int _fragmentProgramConstantIntCount;
+		/// <summary>
+		///    Max number of integer constants supported by the hardware for fragment programs.
+		/// </summary>
+		public int FragmentProgramConstantIntCount
+		{
+			get
+			{
+				return _fragmentProgramConstantIntCount;
+			}
+			set
+			{
+				_fragmentProgramConstantIntCount = value;
+			}
+		}
+
+		#endregion FragmentProgramConstantIntCount Property
+
+		#region FragmentProgramConstantBoolCount Property
+
+		/// <summary>
+		///    The number of boolean constants the current hardware supports for fragment programs.
+		/// </summary>
+		private int _fragmentProgramConstantBoolCount;
+		/// <summary>
+		///    Max number of boolean constants supported by the hardware for fragment programs.
+		/// </summary>
+		public int FragmentProgramConstantBoolCount
+		{
+			get
+			{
+				return _fragmentProgramConstantBoolCount;
+			}
+			set
+			{
+				_fragmentProgramConstantBoolCount = value;
+			}
+		}
+
+		#endregion FragmentProgramConstantBoolCount Property
+
+		#region MultiRenderTargetCount Property
+
+		/// <summary>
+		/// The number of simultaneous render targets supported
+		/// </summary>
+		private int _multiRenderTargetCount;
+		/// <summary>
+		/// The number of simultaneous render targets supported
+		/// </summary>
+		public int MultiRenderTargetCount
+		{
+			get
+			{
+				return _multiRenderTargetCount;
+			}
+			set
+			{
+				_multiRenderTargetCount = value;
+			}
+		}
+
+		#endregion MultiRenderTargetCount Property
+			
+		#region StencilBufferBitCount Property
+
+		/// <summary>
+		///    Stencil buffer bits available.
+		/// </summary>
+		private int _stencilBufferBitCount;
+		/// <summary>
+		///		Number of stencil buffer bits suppported by the hardware.
+		/// </summary>
+		public int StencilBufferBitCount
+		{
+			get
+			{
+				return _stencilBufferBitCount;
+			}
+			set
+			{
+				_stencilBufferBitCount = value;
+			}
+		}
+
+		#endregion StencilBufferBitCount Property
+			
+		#region MaxLights Property
+
+		/// <summary>
+		///    Maximum number of lights that can be active in the scene at any given time.
+		/// </summary>
+		private int _maxLights;
+		/// <summary>
+		///		Maximum number of lights that can be active in the scene at any given time.
+		/// </summary>
+		public int MaxLights
+		{
+			get
+			{
+				return _maxLights;
+			}
+			set
+			{
+				_maxLights = value;
+			}
+		}
+
+		#endregion MaxLights Property
+
+		#region VendorName Property
+
+		/// <summary>
+		/// name of the adapter
+		/// </summary>
+		private string _vendorName = "";
+		/// <summary>
+		/// Name of the display adapter
+		/// </summary>
+		public string VendorName
+		{
+			get
+			{
+				return _vendorName;
+			}
+			set
+			{
+				_vendorName = value;
+			}
+		}
+
+		#endregion DeviceName Property
+
+		#region DeviceName Property
+
+		/// <summary>
+		/// name of the adapter
+		/// </summary>
+		private string _deviceName = "";
+		/// <summary>
+		/// Name of the display adapter
+		/// </summary>
+		public string DeviceName
+		{
+			get
+			{
+				return _deviceName;
+			}
+			set
+			{
+				_deviceName = value;
+			}
+		}
+
+		#endregion DeviceName Property
+
+		#region DeviceVersion Property
+
+		/// <summary>
+		/// version number of the driver
+		/// </summary>
+		private string _driverVersion = "";
+		/// <summary>
+		/// The driver version string
+		/// </summary>
+		public string DriverVersion
+		{
+			get
+			{
+				return _driverVersion;
+			}
+			set
+			{
+				_driverVersion = value;
+			}
+		}
+
+		#endregion DeviceVersion Property
+
+		#region MaxPointSize Property
+
+		/// <summary>
+		/// The maximum point size
+		/// </summary>
+		private float _maxPointSize;
+		/// <summary>
+		/// The maximum point size
+		/// </summary>
+		public float MaxPointSize
+		{
+			get
+			{
+				return _maxPointSize;
+			}
+			set
+			{
+				_maxPointSize = value;
+			}
+		}
+
+		#endregion MaxPointSize Property
+
+		#region NonPOW2TexturesLimited Property
+
+		/// <summary>
+		/// Are non-POW2 textures feature-limited?
+		/// </summary>
+		private bool _nonPOW2TexturesLimited;
+		/// <summary>
+		/// Are non-POW2 textures feature-limited?
+		/// </summary>
+		public bool NonPOW2TexturesLimited
+		{
+			get
+			{
+				return _nonPOW2TexturesLimited;
+			}
+			set
+			{
+				_nonPOW2TexturesLimited = value;
+			}
+		}
+
+		#endregion NonPOW2TexturesLimited Property
+
+		#region VertexTextureUnitCount Property
+
+		/// <summary>
+		/// The number of vertex texture units supported
+		/// </summary>
+		private int _vertexTextureUnitCount;
+		/// <summary>
+		/// The number of vertex texture units supported
+		/// </summary>
+		public int VertexTextureUnitCount
+		{
+			get
+			{
+				return _vertexTextureUnitCount;
+			}
+			set
+			{
+				_vertexTextureUnitCount = value;
+			}
+		}
+
+		#endregion VertexTextureUnitCount Property
+
+		#region VertexTextureUnitsShared Property
+
+		/// <summary>
+		/// Are vertex texture units shared with fragment processor?
+		/// </summary>
+		private bool _vertexTextureUnitsShared;
+		/// <summary>
+		/// Are vertex texture units shared with fragment processor?
+		/// </summary>
+		public bool VertexTextureUnitsShared
+		{
+			get
+			{
+				return _vertexTextureUnitsShared;
+			}
+			set
+			{
+				_vertexTextureUnitsShared = value;
+			}
+		}
+
+		#endregion VertexTextureUnitsShared Property
+
+		#endregion Fields and Properties
+
+		#region Construction and Destruction
+
+		/// <summary>
         ///    Default constructor.
         /// </summary>
-        public HardwareCaps()
+        public RenderSystemCapabilities()
         {
-            caps = 0;
-        }
+            _caps = 0;
+		}
 
-        #endregion
+		#endregion Construction and Destruction
 
-        #region Properties
+		#region Methods
 
-        /// <summary>
-        ///    Max number of floating point constants supported by the hardware for fragment programs.
-        /// </summary>
-        public int FragmentProgramConstantFloatCount
-        {
-            get
-            {
-                return fragmentProgramConstantFloatCount;
-            }
-            set
-            {
-                fragmentProgramConstantFloatCount = value;
-            }
-        }
-
-        /// <summary>
-        ///    Max number of integer constants supported by the hardware for fragment programs.
-        /// </summary>
-        public int FragmentProgramConstantIntCount
-        {
-            get
-            {
-                return fragmentProgramConstantIntCount;
-            }
-            set
-            {
-                fragmentProgramConstantIntCount = value;
-            }
-        }
-
-        /// <summary>
-        ///    Best fragment program version supported by the hardware.
-        /// </summary>
-        public string MaxFragmentProgramVersion
-        {
-            get
-            {
-                return maxFragmentProgramVersion;
-            }
-            set
-            {
-                maxFragmentProgramVersion = value;
-            }
-        }
-
-        /// <summary>
-        ///		Maximum number of lights that can be active in the scene at any given time.
-        /// </summary>
-        public int MaxLights
-        {
-            get
-            {
-                return maxLights;
-            }
-            set
-            {
-                maxLights = value;
-            }
-        }
-
-        /// <summary>
-        ///    Best vertex program version supported by the hardware.
-        /// </summary>
-        public string MaxVertexProgramVersion
-        {
-            get
-            {
-                return maxVertexProgramVersion;
-            }
-            set
-            {
-                maxVertexProgramVersion = value;
-            }
-        }
-
-        /// <summary>
-        ///		Reports on the number of texture units the graphics hardware has available.
-        /// </summary>
-        public int TextureUnitCount
-        {
-            get
-            {
-                return numTextureUnits;
-            }
-            set
-            {
-                numTextureUnits = value;
-            }
-        }
-
-        /// <summary>
-        ///    Max number of world matrices supported by the hardware.
-        /// </summary>
-        public int NumWorldMatrices
-        {
-            get
-            {
-                return numWorldMatrices;
-            }
-            set
-            {
-                numWorldMatrices = value;
-            }
-        }
-
-        /// <summary>
-        ///		Number of stencil buffer bits suppported by the hardware.
-        /// </summary>
-        public int StencilBufferBits
-        {
-            get
-            {
-                return stencilBufferBits;
-            }
-            set
-            {
-                stencilBufferBits = value;
-            }
-        }
-
-        /// <summary>
-        ///    Max number of floating point constants supported by the hardware for vertex programs.
-        /// </summary>
-        public int VertexProgramConstantFloatCount
-        {
-            get
-            {
-                return vertexProgramConstantFloatCount;
-            }
-            set
-            {
-                vertexProgramConstantFloatCount = value;
-            }
-        }
-
-        /// <summary>
-        ///    Max number of integer constants supported by the hardware for vertex programs.
-        /// </summary>
-        public int VertexProgramConstantIntCount
-        {
-            get
-            {
-                return vertexProgramConstantIntCount;
-            }
-            set
-            {
-                vertexProgramConstantIntCount = value;
-            }
-        }
-
-        #endregion
-
-        #region Methods
-
-        /// <summary>
+		/// <summary>
         ///    Returns true if the current hardware supports the requested feature.
         /// </summary>
         /// <param name="cap">Feature to query (i.e. Dot3 bump mapping)</param>
         /// <returns></returns>
-        public bool CheckCap( Capabilities cap )
+        public bool HasCapability( Capabilities cap )
         {
-            return ( caps & cap ) > 0;
+            return ( _caps & cap ) > 0;
         }
 
         /// <summary>
         ///    Sets a flag stating the specified feature is supported.
         /// </summary>
         /// <param name="cap"></param>
-        public void SetCap( Capabilities cap )
+        public void SetCapability( Capabilities cap )
         {
-            caps |= cap;
+            _caps |= cap;
         }
 
         /// <summary>
@@ -294,52 +560,63 @@ namespace Axiom.Graphics
             LogManager logMgr = LogManager.Instance;
 
             logMgr.Write( "---RenderSystem capabilities---" );
+			logMgr.Write( "\t-Adapter Name: {0}", _deviceName );
+			logMgr.Write( "\t-Driver Version: {0}", _driverVersion );
             logMgr.Write( "\t-Available texture units: {0}", this.TextureUnitCount );
             logMgr.Write( "\t-Maximum lights available: {0}", this.MaxLights );
-            logMgr.Write( "\t-Hardware generation of mip-maps: {0}", ConvertBool( CheckCap( Capabilities.HardwareMipMaps ) ) );
-            logMgr.Write( "\t-Texture blending: {0}", ConvertBool( CheckCap( Capabilities.TextureBlending ) ) );
-            logMgr.Write( "\t-Anisotropic texture filtering: {0}", ConvertBool( CheckCap( Capabilities.AnisotropicFiltering ) ) );
-            logMgr.Write( "\t-Dot product texture operation: {0}", ConvertBool( CheckCap( Capabilities.Dot3 ) ) );
-            logMgr.Write( "\t-Cube Mapping: {0}", ConvertBool( CheckCap( Capabilities.CubeMapping ) ) );
+            logMgr.Write( "\t-Hardware generation of mip-maps: {0}", ConvertBool( HasCapability( Capabilities.HardwareMipMaps ) ) );
+            logMgr.Write( "\t-Texture blending: {0}", ConvertBool( HasCapability( Capabilities.TextureBlending ) ) );
+            logMgr.Write( "\t-Anisotropic texture filtering: {0}", ConvertBool( HasCapability( Capabilities.AnisotropicFiltering ) ) );
+            logMgr.Write( "\t-Dot product texture operation: {0}", ConvertBool( HasCapability( Capabilities.Dot3 ) ) );
+            logMgr.Write( "\t-Cube Mapping: {0}", ConvertBool( HasCapability( Capabilities.CubeMapping ) ) );
 
-            logMgr.Write( "\t-Hardware stencil buffer: {0}", ConvertBool( CheckCap( Capabilities.StencilBuffer ) ) );
+            logMgr.Write( "\t-Hardware stencil buffer: {0}", ConvertBool( HasCapability( Capabilities.StencilBuffer ) ) );
 
-            if ( CheckCap( Capabilities.StencilBuffer ) )
+            if ( HasCapability( Capabilities.StencilBuffer ) )
             {
-                logMgr.Write( "\t\t-Stencil depth: {0} bits", stencilBufferBits );
-                logMgr.Write( "\t\t-Two sided stencil support: {0}", ConvertBool( CheckCap( Capabilities.TwoSidedStencil ) ) );
-                logMgr.Write( "\t\t-Wrap stencil values: {0}", ConvertBool( CheckCap( Capabilities.StencilWrap ) ) );
+                logMgr.Write( "\t\t-Stencil depth: {0} bits", _stencilBufferBitCount );
+                logMgr.Write( "\t\t-Two sided stencil support: {0}", ConvertBool( HasCapability( Capabilities.TwoSidedStencil ) ) );
+                logMgr.Write( "\t\t-Wrap stencil values: {0}", ConvertBool( HasCapability( Capabilities.StencilWrap ) ) );
             }
 
-            logMgr.Write( "\t-Hardware vertex/index buffers: {0}", ConvertBool( CheckCap( Capabilities.VertexBuffer ) ) );
+            logMgr.Write( "\t-Hardware vertex/index buffers: {0}", ConvertBool( HasCapability( Capabilities.VertexBuffer ) ) );
 
-            logMgr.Write( "\t-Vertex programs: {0}", ConvertBool( CheckCap( Capabilities.VertexPrograms ) ) );
+            logMgr.Write( "\t-Vertex programs: {0}", ConvertBool( HasCapability( Capabilities.VertexPrograms ) ) );
 
-            if ( CheckCap( Capabilities.VertexPrograms ) )
+            if ( HasCapability( Capabilities.VertexPrograms ) )
             {
                 logMgr.Write( "\t\t-Max vertex program version: {0}", this.MaxVertexProgramVersion );
             }
 
-            logMgr.Write( "\t-Fragment programs: {0}", ConvertBool( CheckCap( Capabilities.FragmentPrograms ) ) );
+            logMgr.Write( "\t-Fragment programs: {0}", ConvertBool( HasCapability( Capabilities.FragmentPrograms ) ) );
 
-            if ( CheckCap( Capabilities.FragmentPrograms ) )
+            if ( HasCapability( Capabilities.FragmentPrograms ) )
             {
                 logMgr.Write( "\t\t-Max fragment program version: {0}", this.MaxFragmentProgramVersion );
             }
 
-            logMgr.Write( "\t-Texture compression: {0}", ConvertBool( CheckCap( Capabilities.TextureCompression ) ) );
+            logMgr.Write( "\t-Texture compression: {0}", ConvertBool( HasCapability( Capabilities.TextureCompression ) ) );
 
-            if ( CheckCap( Capabilities.TextureCompression ) )
+            if ( HasCapability( Capabilities.TextureCompression ) )
             {
-                logMgr.Write( "\t\t-DXT: {0}", ConvertBool( CheckCap( Capabilities.TextureCompressionDXT ) ) );
-                logMgr.Write( "\t\t-VTC: {0}", ConvertBool( CheckCap( Capabilities.TextureCompressionVTC ) ) );
+                logMgr.Write( "\t\t-DXT: {0}", ConvertBool( HasCapability( Capabilities.TextureCompressionDXT ) ) );
+                logMgr.Write( "\t\t-VTC: {0}", ConvertBool( HasCapability( Capabilities.TextureCompressionVTC ) ) );
             }
 
-            logMgr.Write( "\t-Scissor rectangle: {0}", ConvertBool( CheckCap( Capabilities.ScissorTest ) ) );
-            logMgr.Write( "\t-Hardware Occlusion Query: {0}", ConvertBool( CheckCap( Capabilities.HardwareOcculusion ) ) );
-            logMgr.Write( "\t-User clip planes: {0}", ConvertBool( CheckCap( Capabilities.UserClipPlanes ) ) );
-            logMgr.Write( "\t-VertexElementType.UBYTE4: {0}", ConvertBool( CheckCap( Capabilities.VertexFormatUByte4 ) ) );
-            logMgr.Write( "\t-Infinite far plane projection: {0}", ConvertBool( CheckCap( Capabilities.InfiniteFarPlane ) ) );
+            logMgr.Write( "\t-Scissor rectangle: {0}", ConvertBool( HasCapability( Capabilities.ScissorTest ) ) );
+            logMgr.Write( "\t-Hardware Occlusion Query: {0}", ConvertBool( HasCapability( Capabilities.HardwareOcculusion ) ) );
+            logMgr.Write( "\t-User clip planes: {0}", ConvertBool( HasCapability( Capabilities.UserClipPlanes ) ) );
+            logMgr.Write( "\t-VertexElementType.UBYTE4: {0}", ConvertBool( HasCapability( Capabilities.VertexFormatUByte4 ) ) );
+            logMgr.Write( "\t-Infinite far plane projection: {0}", ConvertBool( HasCapability( Capabilities.InfiniteFarPlane ) ) );
+
+			logMgr.Write( "\t-Max Point Size: {0} ", MaxPointSize );
+			logMgr.Write( "\t-Vertex texture fetch: {0} ", ConvertBool( HasCapability( Capabilities.VertexTextureFetch ) ) );
+			if (HasCapability( Capabilities.VertexTextureFetch ))
+			{
+				logMgr.Write( "\t\t-Max vertex textures: {0}", VertexTextureUnitCount);
+				logMgr.Write( "\t\t-Vertex textures shared: {0}", ConvertBool( VertexTextureUnitsShared ) );
+			}
+
         }
 
         /// <summary>
@@ -352,6 +629,6 @@ namespace Axiom.Graphics
             return val ? "yes" : "no";
         }
 
-        #endregion
+        #endregion Methods
     }
 }

@@ -79,7 +79,7 @@ namespace Axiom.Platforms.Win32
         /// <summary>
         ///		Active host control that reserves control over the input.
         /// </summary>
-        protected System.Windows.Forms.Control control;
+        protected IntPtr winHandle;
         /// <summary>
         ///		Do we want exclusive use of the mouse?
         /// </summary>
@@ -251,9 +251,9 @@ namespace Axiom.Platforms.Win32
         /// </summary>
         public override void Capture()
         {
-            this.control.BringToFront();
-            this.control.Select();
-            this.control.Show();
+            //this.winHandle.BringToFront();
+            //this.winHandle.Select();
+            //this.winHandle.Show();
 
             if ( window.IsActive )
             {
@@ -299,26 +299,25 @@ namespace Axiom.Platforms.Win32
             this.ownMouse = ownMouse;
             this.window = window;
 
-            // for Windows, this should be a S.W.F.Control
-            control = System.Windows.Forms.Control.FromHandle( (IntPtr)window.Handle );
-            //control = window.Handle as System.Windows.Forms.Control;
+            // for Windows, this should be an IntPtr to a Window Handle
+			winHandle = (IntPtr)window[ "WINDOW" ];
 
-            if ( control is System.Windows.Forms.Form )
-            {
-                control = control;
-            }
-            else if ( control is System.Windows.Forms.PictureBox )
-            {
-                // if the control is a picturebox, we need to grab its parent form
-                while ( !( control is System.Windows.Forms.Form ) && control != null )
-                {
-                    control = control.Parent;
-                }
-            }
-            else
-            {
-                throw new AxiomException( "Win32InputReader requires the RenderWindow to have an associated handle of either a PictureBox or a Form." );
-            }
+			//if ( winHandle is System.Windows.Forms.Form )
+			//{
+			//    winHandle = winHandle;
+			//}
+			//else if ( winHandle is System.Windows.Forms.PictureBox )
+			//{
+			//    // if the control is a picturebox, we need to grab its parent form
+			//    while ( !( winHandle is System.Windows.Forms.Form ) && winHandle != null )
+			//    {
+			//        winHandle = winHandle.TopLevelControl;
+			//    }
+			//}
+			//else
+			//{
+			//    throw new AxiomException( "Win32InputReader requires the RenderWindow to have an associated handle of either a PictureBox or a Form." );
+			//}
 
             // initialize keyboard if needed
             if ( useKeyboard )
@@ -537,7 +536,7 @@ namespace Axiom.Platforms.Win32
             // set cooperation level
             if ( ownMouse )
             {
-                mouseDevice.SetCooperativeLevel( control, DI.CooperativeLevelFlags.Exclusive | DI.CooperativeLevelFlags.Foreground );
+                mouseDevice.SetCooperativeLevel( winHandle, DI.CooperativeLevelFlags.Exclusive | DI.CooperativeLevelFlags.Foreground );
             }
             else
             {

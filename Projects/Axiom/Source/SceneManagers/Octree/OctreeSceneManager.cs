@@ -58,7 +58,7 @@ namespace Axiom.SceneManagers.Octree
         protected System.Collections.ArrayList visible = new ArrayList();
         public System.Collections.Hashtable options = new Hashtable();
         protected static long white = 0xFFFFFFFF;
-        protected ushort[] indexes = { 0, 1, 1, 2, 2, 3, 3, 0, 0, 6, 6, 5, 5, 1, 3, 7, 7, 4, 4, 2, 6, 7, 5, 4 };
+        protected short[] indexes = { 0, 1, 1, 2, 2, 3, 3, 0, 0, 6, 6, 5, 5, 1, 3, 7, 7, 4, 4, 2, 6, 7, 5, 4 };
         protected long[] colors = { white, white, white, white, white, white, white, white };
         protected float[] corners;
         protected Matrix4 scaleFactor;
@@ -89,24 +89,31 @@ namespace Axiom.SceneManagers.Octree
                 return white;
             }
         }
+        
+		public override string TypeName
+		{
+			get { return "OctreeSceneManager"; }
+		}
 
-        #endregion
+		#endregion
 
-        public OctreeSceneManager()
-        {
-            Vector3 Min = new Vector3( -500f, -500f, -500f );
-            Vector3 Max = new Vector3( 500f, 500f, 500f );
-            int depth = 5;
+		public OctreeSceneManager( string name )
+			: base( name )
+		{
+			Vector3 Min = new Vector3(-500f, -500f, -500f);
+			Vector3 Max = new Vector3(500f, 500f, 500f);
+			int depth = 5;
 
-            AxisAlignedBox box = new AxisAlignedBox( Min, Max );
+			AxisAlignedBox box = new AxisAlignedBox(Min, Max);
 
-            Init( box, depth );
-        }
+			Init(box, depth);
+		}
 
-        public OctreeSceneManager( AxisAlignedBox box, int max_depth )
-        {
-            Init( box, max_depth );
-        }
+		public OctreeSceneManager(string name, AxisAlignedBox box, int max_depth)
+			: base(name)
+		{
+			Init(box, max_depth);
+		}
 
         public Intersection Intersect( AxisAlignedBox box1, AxisAlignedBox box2 )
         {
@@ -251,7 +258,7 @@ namespace Axiom.SceneManagers.Octree
 
                 if ( c != null )
                 {
-                    camInProgress = cameraList[ "CullCamera" ];
+                    cameraInProgress = cameraList[ "CullCamera" ];
                 }
             }
 
@@ -420,8 +427,8 @@ namespace Axiom.SceneManagers.Octree
                 else
                 {
                     AddOctreeNode( node, octree );
-                    return;
                 }
+                return;
             }
 
             if ( !node.IsInBox( node.Octant.Box ) )
@@ -673,4 +680,30 @@ namespace Axiom.SceneManagers.Octree
             return true;//TODO: Implement
         }
     }
+
+	class OctreeSceneManagerFactory : SceneManagerFactory
+	{
+		public OctreeSceneManagerFactory()
+		{
+
+		}
+
+		protected override void InitMetaData()
+		{
+			metaData.typeName = "OctreeSceneManager";
+			metaData.description = "Scene manager organising the scene on the basis of an octree.";
+			metaData.sceneTypeMask = SceneType.Generic; 
+			metaData.worldGeometrySupported = false;
+		}
+
+		public override SceneManager CreateInstance(string name)
+		{
+			return new OctreeSceneManager(name);
+		}
+
+		public override void DestroyInstance(SceneManager instance)
+		{
+			instance.ClearScene();
+		}
+	}
 }

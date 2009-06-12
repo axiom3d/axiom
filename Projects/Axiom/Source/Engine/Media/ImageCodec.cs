@@ -68,12 +68,10 @@ namespace Axiom.Media
             public int width;
             public int height;
             public int depth;
-            public int bpp;
             public int size;
             public ImageFlags flags;
             public int numMipMaps;
             public PixelFormat format;
-            public bool flip;
         }
     }
 }

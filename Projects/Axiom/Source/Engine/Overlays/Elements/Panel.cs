@@ -273,7 +273,7 @@ namespace Axiom.Overlays.Elements
         {
             if ( material != null && isInitialised )
             {
-                int numLayers = material.GetTechnique( 0 ).GetPass( 0 ).NumTextureUnitStages;
+                int numLayers = material.GetTechnique( 0 ).GetPass( 0 ).TextureUnitStageCount;
 
                 VertexDeclaration decl = renderOp.vertexData.vertexDeclaration;
 
@@ -407,7 +407,7 @@ namespace Axiom.Overlays.Elements
 
         #region Script parser methods
 
-        [AttributeParser( "tiling", "Panel" )]
+        [ParserCommand( "tiling", "Panel" )]
         public static void ParseTiling( string[] parms, params object[] objects )
         {
             Panel panel = (Panel)objects[ 0 ];
@@ -415,7 +415,7 @@ namespace Axiom.Overlays.Elements
             panel.SetTiling( StringConverter.ParseFloat( parms[ 0 ] ), StringConverter.ParseFloat( parms[ 1 ] ), int.Parse( parms[ 2 ] ) );
         }
 
-        [AttributeParser( "transparent", "Panel" )]
+        [ParserCommand( "transparent", "Panel" )]
         public static void ParseTransparent( string[] parms, params object[] objects )
         {
             Panel panel = (Panel)objects[ 0 ];

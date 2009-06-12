@@ -1,13 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <!-- The configuration and platform will be used to determine which
          assemblies to include from solution and project documentation
          sources -->
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{113d9866-9361-4029-b3b1-5b62114da933}</ProjectGuid>
+    <ProjectGuid>{2e857992-0512-4730-839a-4aac019d713b}</ProjectGuid>
     <SHFBSchemaVersion>1.8.0.0</SHFBSchemaVersion>
     <!-- AssemblyName, Name, and RootNamespace are not used by SHFB but Visual
          Studio adds them anyway -->
@@ -15,7 +14,7 @@
     <RootNamespace>Documentation</RootNamespace>
     <Name>Documentation</Name>
     <!-- SHFB properties -->
-    <OutputPath>D:\Projects\Axiom\trunk\build\image\docs</OutputPath>
+    <OutputPath>.\Documentation\</OutputPath>
     <HtmlHelpName>AxiomSDK</HtmlHelpName>
     <ProjectSummary>
     </ProjectSummary>
@@ -29,29 +28,37 @@
     </SandcastlePath>
     <WorkingPath>
     </WorkingPath>
-    <BuildLogFile>
-    </BuildLogFile>
     <HelpFileFormat>Website</HelpFileFormat>
     <FrameworkVersion>2.0.50727</FrameworkVersion>
+    <BinaryTOC>False</BinaryTOC>
     <HelpTitle>Axiom Rendering Engine API Documentation</HelpTitle>
     <FeedbackEMailAddress>borrillis%40gmail.com</FeedbackEMailAddress>
     <ProjectLinkType>Index</ProjectLinkType>
+    <SdkLinkType>None</SdkLinkType>
     <PresentationStyle>Prototype</PresentationStyle>
     <NamingMethod>MemberName</NamingMethod>
     <DocumentationSources>
-      <DocumentationSource sourceFile="Source\Engine\Axiom.csproj" />
-<DocumentationSource sourceFile="Source\Platforms\OpenTK\Axiom.Platforms.OpenTK.csproj" />
-<DocumentationSource sourceFile="Source\Platforms\SDL\Axiom.Platforms.SDL.csproj" />
-<DocumentationSource sourceFile="Source\Platforms\Win32\Axiom.Platforms.Win32.csproj" />
-<DocumentationSource sourceFile="Source\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.csproj" />
-<DocumentationSource sourceFile="Source\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.csproj" />
-<DocumentationSource sourceFile="Source\RenderSystems\DirectX9\Axiom.RenderSystems.DirectX9.csproj" />
-<DocumentationSource sourceFile="Source\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.SDL.csproj" />
-<DocumentationSource sourceFile="Source\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.Win32.csproj" />
-<DocumentationSource sourceFile="Source\Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.x86.csproj" />
-<DocumentationSource sourceFile="Source\RenderSystems\XNA\Axiom.RenderSystems.Xna.csproj" />
-<DocumentationSource sourceFile="Source\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.csproj" />
-<DocumentationSource sourceFile="Source\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj" /></DocumentationSources>
+      <DocumentationSource sourceFile="..\Lib\Managed\XPlatform\Axiom\debug\Axiom.RenderSystems.DirectX9.dll" xmlns="" />
+      <DocumentationSource sourceFile="..\Lib\Managed\XPlatform\Axiom\debug\Axiom.RenderSystems.DirectX9.xml" xmlns="" />
+      <DocumentationSource sourceFile="..\Lib\Managed\XPlatform\Axiom\debug\Axiom.RenderSystems.OpenGL.Win32.dll" xmlns="" />
+      <DocumentationSource sourceFile="..\Lib\Managed\XPlatform\Axiom\debug\Axiom.RenderSystems.OpenGL.Win32.xml" xmlns="" />
+      <DocumentationSource sourceFile="..\Lib\Managed\XPlatform\Axiom\debug\Axiom.SceneManagers.Bsp.dll" xmlns="" />
+      <DocumentationSource sourceFile="..\Lib\Managed\XPlatform\Axiom\debug\Axiom.SceneManagers.Bsp.xml" xmlns="" />
+      <DocumentationSource sourceFile="..\Lib\Managed\XPlatform\Axiom\debug\Axiom.SceneManagers.Octree.dll" xmlns="" />
+      <DocumentationSource sourceFile="..\Lib\Managed\XPlatform\Axiom\debug\Axiom.SceneManagers.Octree.xml" xmlns="" />
+      <DocumentationSource sourceFile="..\Lib\Managed\XPlatform\Axiom\debug\Axiom.dll" xmlns="" />
+      <DocumentationSource sourceFile="..\Lib\Managed\XPlatform\Axiom\debug\Axiom.xml" xmlns="" />
+      <DocumentationSource sourceFile="..\Lib\Managed\XPlatform\Axiom\debug\Axiom.Platforms.SDL.dll" xmlns="" />
+      <DocumentationSource sourceFile="..\Lib\Managed\XPlatform\Axiom\debug\Axiom.Platforms.SDL.xml" xmlns="" />
+      <DocumentationSource sourceFile="..\Lib\Managed\XPlatform\Axiom\debug\Axiom.Platforms.Win32.dll" xmlns="" />
+      <DocumentationSource sourceFile="..\Lib\Managed\XPlatform\Axiom\debug\Axiom.Platforms.Win32.xml" xmlns="" />
+      <DocumentationSource sourceFile="..\Lib\Managed\XPlatform\Axiom\debug\Axiom.Plugins.CgProgramManager.dll" xmlns="" />
+      <DocumentationSource sourceFile="..\Lib\Managed\XPlatform\Axiom\debug\Axiom.Plugins.CgProgramManager.xml" xmlns="" />
+      <DocumentationSource sourceFile="..\Lib\Managed\XPlatform\Axiom\debug\Axiom.Plugins.DevILCodecs.dll" xmlns="" />
+      <DocumentationSource sourceFile="..\Lib\Managed\XPlatform\Axiom\debug\Axiom.Plugins.DevILCodecs.xml" xmlns="" />
+      <DocumentationSource sourceFile="..\Lib\Managed\XPlatform\Axiom\debug\Axiom.Plugins.ParticleFX.dll" xmlns="" />
+      <DocumentationSource sourceFile="..\Lib\Managed\XPlatform\Axiom\debug\Axiom.Plugins.ParticleFX.xml" xmlns="" />
+    </DocumentationSources>
     <NamespaceSummaries>
       <NamespaceSummaryItem name="(global)" isDocumented="False" xmlns="" />
       <NamespaceSummaryItem name="Axiom.Animating" isDocumented="True" xmlns="" />
@@ -77,8 +84,6 @@
       <NamespaceSummaryItem name="Axiom.Platforms.Win32" isDocumented="True" xmlns="" />
       <NamespaceSummaryItem name="Axiom.RenderSystems.DirectX9" isDocumented="True" xmlns="" />
       <NamespaceSummaryItem name="Axiom.RenderSystems.DirectX9.HLSL" isDocumented="True" xmlns="" />
-      <NamespaceSummaryItem name="Axiom.RenderSystems.Xna" isDocumented="True" xmlns="" />
-      <NamespaceSummaryItem name="Axiom.RenderSystems.Xna.HLSL" isDocumented="True" xmlns="" />
       <NamespaceSummaryItem name="Axiom.RenderSystems.OpenGL" isDocumented="True" xmlns="" />
       <NamespaceSummaryItem name="Axiom.RenderSystems.OpenGL.ARB" isDocumented="True" xmlns="" />
       <NamespaceSummaryItem name="Axiom.RenderSystems.OpenGL.ATI" isDocumented="True" xmlns="" />
@@ -98,38 +103,32 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\..\..\Lib\Managed\XPlatform\ICSharpCode.SharpZipLib\0.84.0.0\ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>..\Lib\Managed\XPlatform\ICSharpCode.SharpZipLib\0.84.0.0\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="Tao.Cg">
-      <HintPath>..\..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.Cg.dll</HintPath>
+      <HintPath>..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.Cg.dll</HintPath>
     </Reference>
     <Reference Include="Tao.DevIl">
-      <HintPath>..\..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.DevIl.dll</HintPath>
+      <HintPath>..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.DevIl.dll</HintPath>
     </Reference>
     <Reference Include="Tao.OpenGl">
-      <HintPath>..\..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.OpenGl.dll</HintPath>
+      <HintPath>..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.OpenGl.dll</HintPath>
     </Reference>
     <Reference Include="Tao.OpenGl.ExtensionLoader">
-      <HintPath>..\..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.OpenGl.ExtensionLoader.dll</HintPath>
+      <HintPath>..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.OpenGl.ExtensionLoader.dll</HintPath>
     </Reference>
     <Reference Include="Tao.OpenGl.Glu">
-      <HintPath>..\..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.OpenGl.Glu.dll</HintPath>
+      <HintPath>..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.OpenGl.Glu.dll</HintPath>
     </Reference>
     <Reference Include="Tao.Platform.Windows">
-      <HintPath>..\..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.Platform.Windows.dll</HintPath>
+      <HintPath>..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.Platform.Windows.dll</HintPath>
     </Reference>
     <Reference Include="Tao.Sdl">
-      <HintPath>..\..\..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.Sdl.dll</HintPath>
+      <HintPath>..\Lib\Managed\XPlatform\Tao\1.5.0.3\Tao.Sdl.dll</HintPath>
     </Reference>
-    <Reference Include="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   </ItemGroup>
   <!-- Import the SHFB build targets -->
   <Import Project="$(SHFBROOT)\SandcastleHelpFileBuilder.targets" />
-  <Target Name="GetModuleReferences" />
 </Project>

@@ -1,0 +1,23 @@
+# Generic program building automake rules
+
+noinst_DATA = $(PROGRAM).exe
+
+EXTRA_DIST = $(SOURCES) $(RESX) $(PROGRAM).csproj $(PROGRAM).sh
+CLEANFILES = $(PROGRAM).exe $(RESOURCES)
+
+$(PROGRAM).exe: $(RESOURCES) $(SOURCES)
+	for lib in $(BINARY_LIBS); do \
+	  ln -sf ../../src/$${lib%.dll}/$${lib}; \
+	  ln -sf ../../src/$${lib%.dll}/$${lib}.config; \
+	done
+	$(CSC) -out:$@ -target:winexe \
+	  $(addprefix -r:$(srcdir)/, $(BINARY_LIBS)) \
+	  $(addprefix -r:, $(SYSTEM_LIBS)) \
+	  $(addprefix -resource:, $(RESOURCES)) \
+	  $(addprefix $(srcdir)/, $(SOURCES)) \
+	  $(addprefix -keyfile:$(srcdir)/, $(KEYFILE))
+
+clean-local:
+	rm -f $(BINARY_LIBS)
+	rm -f $(addsuffix .config, $(BINARY_LIBS))
+

@@ -2601,7 +2601,7 @@ namespace Axiom.Core
 
         public override bool Equals( object obj )
         {
-            if ( obj.GetType() is ColorEx )
+            if ( typeof( object ) is ColorEx )
                 return this == (ColorEx)obj;
             else
                 return false;

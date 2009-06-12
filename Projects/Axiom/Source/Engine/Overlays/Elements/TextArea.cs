@@ -75,9 +75,9 @@ namespace Axiom.Overlays.Elements
         protected ColorEx colorTop;
         protected bool haveColorsChanged;
 
-        const int DEFAULT_INITIAL_CHARS = 1;
-        const int POSITION_TEXCOORD = 0;
-        const int COLORS = 1;
+        const int DEFAULT_INITIAL_CHARS = 12;
+        const int POSITION_TEXCOORD_BINDING = 0;
+        const int COLOR_BINDING = 1;
 
         #endregion
 
@@ -129,22 +129,22 @@ namespace Axiom.Overlays.Elements
                 // positions & texcoords
                 HardwareVertexBuffer buffer =
                     HardwareBufferManager.Instance.CreateVertexBuffer(
-                        decl.GetVertexSize( POSITION_TEXCOORD ),
+                        decl.GetVertexSize( POSITION_TEXCOORD_BINDING ),
                         renderOp.vertexData.vertexCount,
                         BufferUsage.DynamicWriteOnly );
 
                 // bind the pos/tex buffer
-                binding.SetBinding( POSITION_TEXCOORD, buffer );
+                binding.SetBinding( POSITION_TEXCOORD_BINDING, buffer );
 
                 // colors
                 buffer =
                     HardwareBufferManager.Instance.CreateVertexBuffer(
-                    decl.GetVertexSize( COLORS ),
+                    decl.GetVertexSize( COLOR_BINDING ),
                     renderOp.vertexData.vertexCount,
                     BufferUsage.DynamicWriteOnly );
 
                 // bind the color buffer
-                binding.SetBinding( COLORS, buffer );
+                binding.SetBinding( COLOR_BINDING, buffer );
 
                 allocSize = numChars;
                 // force color buffer regeneration
@@ -179,13 +179,14 @@ namespace Axiom.Overlays.Elements
                 int offset = 0;
 
                 // positions
-                decl.AddElement( POSITION_TEXCOORD, offset, VertexElementType.Float3, VertexElementSemantic.Position );
+                decl.AddElement( POSITION_TEXCOORD_BINDING, offset, VertexElementType.Float3, VertexElementSemantic.Position );
                 offset += VertexElement.GetTypeSize( VertexElementType.Float3 );
+
                 // texcoords
-                decl.AddElement( POSITION_TEXCOORD, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
+                decl.AddElement( POSITION_TEXCOORD_BINDING, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
                 offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
                 // colors, stored in seperate buffer since they change less often
-                decl.AddElement( COLORS, 0, VertexElementType.Color, VertexElementSemantic.Diffuse );
+                decl.AddElement( COLOR_BINDING, 0, VertexElementType.Color, VertexElementSemantic.Diffuse );
 
                 renderOp.operationType = OperationType.TriangleList;
                 renderOp.useIndices = false;
@@ -236,7 +237,7 @@ namespace Axiom.Overlays.Elements
 
             // get the seperate color buffer
             HardwareVertexBuffer buffer =
-                renderOp.vertexData.vertexBufferBinding.GetBuffer( COLORS );
+                renderOp.vertexData.vertexBufferBinding.GetBuffer( COLOR_BINDING );
 
             IntPtr data = buffer.Lock( BufferLocking.Discard );
             int* colPtr = (int*)data.ToPointer();
@@ -277,9 +278,8 @@ namespace Axiom.Overlays.Elements
             renderOp.vertexData.vertexCount = charLength * 6;
 
             // get pos/tex buffer
-            HardwareVertexBuffer buffer = renderOp.vertexData.vertexBufferBinding.GetBuffer( POSITION_TEXCOORD );
+            HardwareVertexBuffer buffer = renderOp.vertexData.vertexBufferBinding.GetBuffer( POSITION_TEXCOORD_BINDING );
             IntPtr data = buffer.Lock( BufferLocking.Discard );
-
             float largestWidth = 0.0f;
             float left = this.DerivedLeft * 2.0f - 1.0f;
             float top = -( ( this.DerivedTop * 2.0f ) - 1.0f );
@@ -542,11 +542,15 @@ namespace Axiom.Overlays.Elements
             }
             set
             {
-                font = (Font)FontManager.Instance.GetByName( value );
+                font = (Font)FontManager.Instance[ value ];
+                if ( font == null )
+                {
+                    throw new Exception( "Could not find font " + value );
+                }
                 font.Load();
 
                 // note: font materials are created with lighting and depthcheck disabled by default
-                material = font.Material.Clone( this.name + "Font" );
+                material = font.Material;
 
                 // TODO See if this can be eliminated
 
@@ -589,11 +593,20 @@ namespace Axiom.Overlays.Elements
                 float vpHeight = OverlayManager.Instance.ViewportHeight;
                 viewportAspectCoef = vpHeight / vpWidth;
                 base.MetricsMode = value;
+
                 // configure pixel variables based on current viewport
-                if ( metricsMode != MetricsMode.Relative )
+                switch ( metricsMode )
                 {
-                    pixelCharHeight = (int)( charHeight * vpHeight );
-                    pixelSpaceWidth = (int)( spaceWidth * vpHeight );
+                    case MetricsMode.Pixels:
+                        // set pixel variables multiplied by the viewport multipliers
+                        pixelCharHeight = (int)( charHeight * vpHeight );
+                        pixelSpaceWidth = (int)( spaceWidth * vpHeight );
+                        break;
+                    case MetricsMode.Relative:
+                        // set pixel variables multiplied by the height constant
+                        pixelCharHeight = (int)( charHeight * 10000.0 );
+                        pixelSpaceWidth = (int)( spaceWidth * 10000.0 );
+                        break;
                 }
             }
         }
@@ -666,7 +679,7 @@ namespace Axiom.Overlays.Elements
 
         #region Script parser methods
 
-        [AttributeParser( "char_height", "TextArea" )]
+        [ParserCommand( "char_height", "TextArea" )]
         public static void ParseCharHeight( string[] parms, params object[] objects )
         {
             TextArea textArea = (TextArea)objects[ 0 ];
@@ -674,7 +687,7 @@ namespace Axiom.Overlays.Elements
             textArea.CharHeight = StringConverter.ParseFloat( parms[ 0 ] );
         }
 
-        [AttributeParser( "space_width", "TextArea" )]
+        [ParserCommand( "space_width", "TextArea" )]
         public static void ParseSpaceWidth( string[] parms, params object[] objects )
         {
             TextArea textArea = (TextArea)objects[ 0 ];
@@ -682,7 +695,7 @@ namespace Axiom.Overlays.Elements
             textArea.SpaceWidth = StringConverter.ParseFloat( parms[ 0 ] );
         }
 
-        [AttributeParser( "font_name", "TextArea" )]
+        [ParserCommand( "font_name", "TextArea" )]
         public static void ParseFontName( string[] parms, params object[] objects )
         {
             TextArea textArea = (TextArea)objects[ 0 ];
@@ -690,8 +703,8 @@ namespace Axiom.Overlays.Elements
             textArea.FontName = parms[ 0 ];
         }
 
-        [AttributeParser( "color", "TextArea" )]
-        [AttributeParser( "colour", "TextArea" )]
+        [ParserCommand( "color", "TextArea" )]
+        [ParserCommand( "colour", "TextArea" )]
         public static void ParseColor( string[] parms, params object[] objects )
         {
             TextArea textArea = (TextArea)objects[ 0 ];
@@ -699,8 +712,8 @@ namespace Axiom.Overlays.Elements
             textArea.Color = StringConverter.ParseColor( parms );
         }
 
-        [AttributeParser( "color_top", "TextArea" )]
-        [AttributeParser( "colour_top", "TextArea" )]
+        [ParserCommand( "color_top", "TextArea" )]
+        [ParserCommand( "colour_top", "TextArea" )]
         public static void ParseColorTop( string[] parms, params object[] objects )
         {
             TextArea textArea = (TextArea)objects[ 0 ];
@@ -708,8 +721,8 @@ namespace Axiom.Overlays.Elements
             textArea.ColorTop = StringConverter.ParseColor( parms );
         }
 
-        [AttributeParser( "color_bottom", "TextArea" )]
-        [AttributeParser( "colour_bottom", "TextArea" )]
+        [ParserCommand( "color_bottom", "TextArea" )]
+        [ParserCommand( "colour_bottom", "TextArea" )]
         public static void ParseColorBottom( string[] parms, params object[] objects )
         {
             TextArea textArea = (TextArea)objects[ 0 ];

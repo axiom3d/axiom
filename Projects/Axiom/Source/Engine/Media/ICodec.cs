@@ -55,7 +55,7 @@ namespace Axiom.Media
         /// <param name="args">Variable number of extra arguments.</param>
         /// <returns>
         ///    An object that holds data specific to the media format which this codec deal with.
-        ///    For example, an image coded might return a structure that has image related details,
+        ///    For example, an image codec might return a structure that has image related details,
         ///    such as height, width, etc.
         /// </returns>
         object Decode( Stream input, Stream output, params object[] args );

@@ -21,9 +21,10 @@ namespace Axiom.Demos
 
         #endregion Fields
 
-        protected override void OnFrameStarted( Object source, FrameEventArgs e )
+        protected override bool OnFrameStarted( Object source, FrameEventArgs e )
         {
-            base.OnFrameStarted( source, e );
+            if ( base.OnFrameStarted( source, e ) == false )
+                return false;
 
             bool updateSky = false;
 
@@ -64,6 +65,8 @@ namespace Axiom.Demos
             {
                 scene.SetSkyDome( true, "Examples/CloudySky", curvature, tiling );
             }
+
+            return true;
         }
 
         #region Methods
@@ -71,7 +74,7 @@ namespace Axiom.Demos
         public override void CreateScene()
         {
             // set ambient light
-            scene.AmbientLight = new ColorEx( 1.0f, 0.5f, 0.5f, 0.5f );
+            scene.AmbientLight = ColorEx.Gray;
 
             // create a skydome
             scene.SetSkyDome( true, "Examples/CloudySky", 5, 8 );
@@ -84,7 +87,7 @@ namespace Axiom.Demos
             Plane p = new Plane();
             p.Normal = Vector3.UnitY;
             p.D = 200;
-            MeshManager.Instance.CreatePlane( "FloorPlane", p, 2000, 2000, 1, 1, true, 1, 5, 5, Vector3.UnitZ );
+			MeshManager.Instance.CreatePlane( "FloorPlane", ResourceGroupManager.DefaultResourceGroupName, p, 2000, 2000, 1, 1, true, 1, 5, 5, Vector3.UnitZ );
 
             // add the floor entity
             Entity floor = scene.CreateEntity( "Floor", "FloorPlane" );

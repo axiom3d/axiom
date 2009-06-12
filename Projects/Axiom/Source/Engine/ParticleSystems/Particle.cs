@@ -36,18 +36,42 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 
 using Axiom.Core;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
 namespace Axiom.ParticleSystems
 {
+	public enum ParticleType
+	{
+		Emitter,
+		Visual
+	}
+
     /// <summary>
-    ///		An extension of Billboard that allows for each particle to have particle system specific info.
+	///		Class representing a single particle instance.
     /// </summary>
-    public class Particle : Billboard
+	public class Particle
     {
 
         #region Member variables
+
+		/// Does this particle have it's own dimensions?
+		public bool hasOwnDimensions;
+		/// Personal width if mOwnDimensions == true
+		public float width;
+		/// Personal height if mOwnDimensions == true
+		public float height;
+		/// Current rotation value
+		public float rotationInRadians;
+		// Note the intentional public access to internal variables
+		// Accessing via get/set would be too costly for 000's of particles
+		/// World position
+		public Vector3 Position = Vector3.Zero;
+		/// Direction (and speed) 
+		public Vector3 Direction = Vector3.Zero;
+		/// Current colour
+		public ColorEx Color = ColorEx.White;
 
         /// <summary>Time (in seconds) before this particle is destroyed.</summary>
         public float timeToLive;
@@ -55,6 +79,13 @@ namespace Axiom.ParticleSystems
         public float totalTimeToLive;
         /// <summary>Speed of rotation in radians</summary>
         float rotationSpeed;
+
+		/// Parent ParticleSystem
+		protected ParticleSystem parentSystem;
+		/// Additional visual data you might want to associate with the Particle
+		protected ParticleVisualData visual;
+
+		protected ParticleType particleType = ParticleType.Visual;
 
         #endregion
 
@@ -72,6 +103,17 @@ namespace Axiom.ParticleSystems
             }
         }
 
+		public ParticleType ParticleType
+		{
+			get
+			{
+				return particleType;
+			}
+			set
+			{
+				particleType = value;
+			}
+		}
         #endregion
 
         /// <summary>
@@ -83,5 +125,87 @@ namespace Axiom.ParticleSystems
             totalTimeToLive = 10;
             rotationSpeed = 0;
         }
-    }
+
+
+		public void NotifyVisualData( ParticleVisualData vdata )
+		{
+			visual = vdata;
+		}
+
+		public void NotifyOwner( ParticleSystem owner )
+		{
+			this.parentSystem = owner;
+		}
+
+		public void SetDimensions( float width, float height )
+		{
+			hasOwnDimensions = true;
+			this.width = width;
+			this.height = height;
+			parentSystem.NotifyParticleResized();
+		}
+
+		public void ResetDimensions()
+		{
+			hasOwnDimensions = false;
+		}
+
+		public bool HasOwnDimensions
+		{
+			get
+			{
+				return hasOwnDimensions;
+			}
+			set
+			{
+				hasOwnDimensions = value;
+			}
+		}
+
+		public float Rotation
+		{
+			get
+			{
+				return rotationInRadians * Utility.DEGREES_PER_RADIAN;
+			}
+			set
+			{
+				rotationInRadians = value * Utility.RADIANS_PER_DEGREE;
+				if ( rotationInRadians != 0 )
+					parentSystem.NotifyParticleRotated();
+			}
+		}
+
+		public float Width
+		{
+			get
+			{
+				return width;
+			}
+			set
+			{
+				width = value;
+			}
+		}
+
+		public float Height
+		{
+			get
+			{
+				return height;
+			}
+			set
+			{
+				height = value;
+			}
+		}
+
+		public ParticleVisualData VisualData
+		{
+			get
+			{
+				return visual;
+			}
+		}
+	}
 }

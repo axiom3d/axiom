@@ -34,8 +34,8 @@ namespace Axiom.Demos
 
         public override void CreateScene()
         {
-            if ( !Root.Instance.RenderSystem.Caps.CheckCap( Capabilities.VertexPrograms ) ||
-                !Root.Instance.RenderSystem.Caps.CheckCap( Capabilities.FragmentPrograms ) )
+            if ( !Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) ||
+                !Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.FragmentPrograms ) )
             {
 
                 throw new Exception( "Your hardware does not support vertex and fragment programs, so you cannot run this demo." );
@@ -87,11 +87,11 @@ namespace Axiom.Demos
             window.GetViewport( 0 ).BackgroundColor = ColorEx.White;
         }
 
-        protected override void OnFrameStarted( object source, FrameEventArgs e )
+        protected override bool OnFrameStarted( object source, FrameEventArgs e )
         {
             rotNode.Yaw( e.TimeSinceLastFrame * 30 );
 
-            base.OnFrameStarted( source, e );
+            return base.OnFrameStarted( source, e );
         }
     }
 }

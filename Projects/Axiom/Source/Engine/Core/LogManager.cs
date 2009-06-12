@@ -75,6 +75,11 @@ namespace Axiom.Core
             }
         }
 
+		~LogManager()
+		{
+			instance = null;
+		}
+
         #endregion Singleton implementation
 
         #region Fields
@@ -185,6 +190,8 @@ namespace Axiom.Core
                 defaultLog = newLog;
             }
 
+			if ( name == null )
+				name = string.Empty;
             logList.Add( name, newLog );
 
             return newLog;
@@ -277,8 +284,8 @@ namespace Axiom.Core
         {
             string errMessage = string.Empty;
 
-            errMessage += Environment.NewLine + " InnerException ";
-            errMessage += Environment.NewLine + innerException.Message + Environment.NewLine + innerException.StackTrace;
+            errMessage += "\n" + " InnerException ";
+            errMessage += "\n" + innerException.Message + "\n" + innerException.StackTrace;
 
             return errMessage;
         }
@@ -292,6 +299,7 @@ namespace Axiom.Core
         /// </summary>
         public void Dispose()
         {
+			Write( "*-*-* Axiom Shutdown Complete." );
             // dispose of all the logs
             foreach ( IDisposable o in logList.Values )
             {
@@ -299,6 +307,8 @@ namespace Axiom.Core
             }
 
             logList.Clear();
+
+			instance = null;
         }
 
         #endregion

@@ -1,0 +1,202 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FCC053CE-BC45-4687-84BF-8F8B731089ED}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>App.ico</ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>NeHe</AssemblyName>
+    <AssemblyOriginatorKeyFile>../../src/Tao.OpenGl/Tao.OpenGl.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NeHe</RootNamespace>
+    <StartupObject>NeHe.Program</StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE;WIN32</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>True</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>
+    </NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;WIN32</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>False</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>
+    </NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <Name>System</Name>
+      <HintPath>\System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+      <HintPath>\System.Windows.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+      <HintPath>\System.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+      <HintPath>\System.Drawing.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Tao.FreeGlut\Tao.FreeGlut.csproj">
+      <Name>Tao.FreeGlut</Name>
+      <Project>{87C95364-7158-4D81-83B8-97B649E27ABA}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Tao.OpenGl\Tao.OpenGl.csproj">
+      <Name>Tao.OpenGl</Name>
+      <Project>{6292109B-6BB4-4120-AD56-F409C0285AB6}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Tao.Platform.Windows\Tao.Platform.Windows.csproj">
+      <Name>Tao.Platform.Windows</Name>
+      <Project>{228201EB-1A36-4E25-B59F-52255CBBE270}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="NeHe.resx">
+      <DependentUpon>NeHe.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="NeHe.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson01.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson02.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson03.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson04.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson05.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson06.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson07.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson08.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson09.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson10.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson11.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson12.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson13.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson14.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson15.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson16.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson17.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson18.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson19.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson20.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson21.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson23.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson25.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson26.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Lesson34.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NeHe.Designer.cs">
+      <DependentUpon>NeHe.cs</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Program.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

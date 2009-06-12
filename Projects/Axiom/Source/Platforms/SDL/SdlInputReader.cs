@@ -178,6 +178,9 @@ namespace Axiom.Platforms.SDL
                 }
             }
 
+            // gather input from the various devices
+            Sdl.SDL_PumpEvents();
+
             if ( useKeyboardEvents )
             {
                 ProcessBufferedKeyboard();
@@ -188,8 +191,6 @@ namespace Axiom.Platforms.SDL
                 ProcessBufferedMouse();
             }
 
-            // gather input from the various devices
-            Sdl.SDL_PumpEvents();
 
             if ( !useKeyboardEvents )
             {

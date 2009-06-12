@@ -430,14 +430,14 @@ namespace Axiom.Graphics
         private static bool isInitialized = false;
 
         public static string[] programNames = new string[]{
-															   "Axiom/Core/ShadowExtrudePointLight",
-															   "Axiom/Core/ShadowExtrudePointLightDebug",
-															   "Axiom/Core/ShadowExtrudeDirLight",
-															   "Axiom/Core/ShadowExtrudeDirLightDebug",
-															   "Axiom/Core/ShadowExtrudePointLightFinite",
-															   "Axiom/Core/ShadowExtrudePointLightFiniteDebug",
-															   "Axiom/Core/ShadowExtrudeDirLightFinite",
-															   "Axiom/Core/ShadowExtrudeDirLightFiniteDebug"
+															   "Axiom/ShadowExtrudePointLight",
+															   "Axiom/ShadowExtrudePointLightDebug",
+															   "Axiom/ShadowExtrudeDirLight",
+															   "Axiom/ShadowExtrudeDirLightDebug",
+															   "Axiom/ShadowExtrudePointLightFinite",
+															   "Axiom/ShadowExtrudePointLightFiniteDebug",
+															   "Axiom/ShadowExtrudeDirLightFinite",
+															   "Axiom/ShadowExtrudeDirLightFiniteDebug"
 														   };
 
         /// <summary>
@@ -726,13 +726,10 @@ namespace Axiom.Graphics
                     // sanity check to make sure it doesn't already exist
                     if ( GpuProgramManager.Instance.GetByName( programNames[ i ] ) == null )
                     {
-                        string source = ShadowVolumeExtrudeProgram.GetProgramSource(
-                            vertexProgramLightTypes[ i ], syntax, vertexProgramFinite[ i ], vertexProgramDebug[ i ] );
+                        string source = ShadowVolumeExtrudeProgram.GetProgramSource( vertexProgramLightTypes[ i ], syntax, vertexProgramFinite[ i ], vertexProgramDebug[ i ] );
 
                         // create the program from the static source
-                        GpuProgram program =
-                            GpuProgramManager.Instance.CreateProgramFromString(
-                                programNames[ i ], source, GpuProgramType.Vertex, syntax );
+                        GpuProgram program = GpuProgramManager.Instance.CreateProgramFromString( programNames[ i ], ResourceGroupManager.InternalResourceGroupName, source, GpuProgramType.Vertex, syntax );
 
                         // load the program
                         program.Load();

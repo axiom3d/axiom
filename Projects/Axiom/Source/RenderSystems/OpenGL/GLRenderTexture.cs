@@ -45,58 +45,41 @@ using Tao.OpenGl;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-    /// <summary>
-    /// Summary description for GLRenderTexture.
-    /// </summary>
-    public class GLRenderTexture : RenderTexture
-    {
-        #region Constructor
+	/// <summary>
+	/// Base class for GL Render Textures.
+	/// </summary>
+	internal class GLRenderTexture : RenderTexture
+	{
+		#region Construction and Destruction
 
-        public GLRenderTexture( string name, int width, int height )
-            : base( name, width, height )
-        {
-        }
+		public GLRenderTexture( string name, GLSurfaceDesc target )
+			: base( target.Buffer, target.ZOffset )
+		{
+			Name = name;
+		}
 
-        #endregion Constructor
+		#endregion Construction and Destruction
 
-        #region RenderTexture Members
+		#region RenderTexture Implementation
 
-        /// <summary>
-        ///     
-        /// </summary>
-        protected override void CopyToTexture()
-        {
-            int textureID = ( (GLTexture)texture ).TextureID;
+		#region Properties
 
-            // bind our texture as active
-            Gl.glBindTexture( Gl.GL_TEXTURE_2D, textureID );
+		public override bool RequiresTextureFlipping
+		{
+			get
+			{
+				return true;
+			}
+		}
 
-            // copy the color buffer to the active texture
-            Gl.glCopyTexSubImage2D(
-                Gl.GL_TEXTURE_2D,
-                texture.NumMipMaps,
-                0, 0,
-                0, 0,
-                width, height );
-        }
+		#endregion Properties
 
-        /// <summary>
-        ///     OpenGL requires render textures to be flipped.
-        /// </summary>
-        public override bool RequiresTextureFlipping
-        {
-            get
-            {
-                return true;
-            }
-        }
+		#region Methods
 
-        public override void Save( System.IO.Stream stream )
-        {
-            // TODO: Implement me
-            throw new NotImplementedException( "Saving RenderTextures is not yet implemented." );
-        }
+		#endregion Methods
 
-        #endregion RenderTexture Members
-    }
+		#endregion RenderTexture Implementation
+
+	}
+
 }

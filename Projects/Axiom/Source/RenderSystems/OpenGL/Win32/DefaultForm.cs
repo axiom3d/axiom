@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using IO = System.IO;
 using System.Windows.Forms;
 
 using Axiom.Core;
@@ -44,119 +45,117 @@ using Axiom.Graphics;
 namespace Axiom.RenderSystems.OpenGL
 {
 
-    public class DefaultForm : System.Windows.Forms.Form
-    {
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private RenderWindow renderWindow;
+	public class DefaultForm : System.Windows.Forms.Form
+	{
+		private RenderWindow renderWindow;
 
-        public DefaultForm()
-        {
-            InitializeComponent();
+		public DefaultForm()
+		{
+			InitializeComponent();
 
-            this.Deactivate += new System.EventHandler( this.DefaultForm_Deactivate );
-            this.Activated += new System.EventHandler( this.DefaultForm_Activated );
-            this.Closing += new System.ComponentModel.CancelEventHandler( this.DefaultForm_Close );
-        }
+			this.Deactivate += new System.EventHandler( this.DefaultForm_Deactivate );
+			this.Activated += new System.EventHandler( this.DefaultForm_Activated );
+			this.Closing += new System.ComponentModel.CancelEventHandler( this.DefaultForm_Close );
+			this.Resize += new System.EventHandler( this.DefaultForm_Resize );
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="e"></param>
-        public void DefaultForm_Deactivate( object source, System.EventArgs e )
-        {
-            if ( renderWindow != null )
+		protected override void WndProc( ref Message m )
+		{
+			if ( !WindowMessageHandling.WndProc( renderWindow, ref m ) )
+				base.WndProc( ref m );
+		}
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="e"></param>
+		public void DefaultForm_Deactivate( object source, System.EventArgs e )
+		{
+			if ( renderWindow != null )
+			{
+				renderWindow.IsActive = false;
+			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="e"></param>
+		public void DefaultForm_Activated( object source, System.EventArgs e )
+		{
+			if ( renderWindow != null )
+			{
+				renderWindow.IsActive = true;
+			}
+		}
+
+		private void InitializeComponent()
+		{
+			this.SuspendLayout();
+			// 
+			// DefaultForm
+			// 
+			this.AutoScaleBaseSize = new System.Drawing.Size( 5, 13 );
+			this.BackColor = System.Drawing.Color.Black;
+			this.ClientSize = new System.Drawing.Size( 640, 480 );
+			this.Name = "DefaultForm";
+			this.Load += new System.EventHandler( this.DefaultForm_Load );
+			this.ResumeLayout( false );
+
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="e"></param>
+		public void DefaultForm_Close( object source, System.ComponentModel.CancelEventArgs e )
+		{
+			// set the window to inactive
+			if ( renderWindow != null )
+			{
+				renderWindow.IsActive = false;
+			}
+
+			// remove it from the list of render windows, which will halt the rendering loop
+			// since there should now be 0 windows left
+			//Root.Instance.RenderSystem.RenderWindows.Remove(renderWindow);
+		}
+
+		private void DefaultForm_Load( object sender, System.EventArgs e )
+		{
+            try
             {
-                renderWindow.IsActive = false;
+                IO.Stream strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico", ResourceGroupManager.BootstrapResourceGroupName );
+			    if ( strm != null )
+			    {
+				    this.Icon = new System.Drawing.Icon( strm );
+			    }
             }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="e"></param>
-        public void DefaultForm_Activated( object source, System.EventArgs e )
-        {
-            if ( renderWindow != null )
+            catch ( IO.FileNotFoundException )
             {
-                renderWindow.IsActive = true;
             }
-        }
+		}
 
-        private void InitializeComponent()
-        {
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.SuspendLayout();
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Anchor = ( (System.Windows.Forms.AnchorStyles)( ( ( ( System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom )
-                | System.Windows.Forms.AnchorStyles.Left )
-                | System.Windows.Forms.AnchorStyles.Right ) ) );
-            this.pictureBox1.BackColor = System.Drawing.Color.Black;
-            this.pictureBox1.Location = new System.Drawing.Point( 0, 0 );
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size( 292, 266 );
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
-            // 
-            // DefaultForm
-            // 
-            this.AutoScaleBaseSize = new System.Drawing.Size( 5, 13 );
-            this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size( 292, 266 );
-            this.Controls.Add( this.pictureBox1 );
-            this.Name = "DefaultForm";
-            this.Load += new System.EventHandler( this.DefaultForm_Load );
-            this.ResumeLayout( false );
+		private void DefaultForm_Resize( object sender, System.EventArgs e )
+		{
+			Root.Instance.SuspendRendering = this.WindowState == FormWindowState.Minimized;
+		}
 
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="e"></param>
-        public void DefaultForm_Close( object source, System.ComponentModel.CancelEventArgs e )
-        {
-            // set the window to inactive
-            //window.IsActive = false;
-
-            // remove it from the list of render windows, which will halt the rendering loop
-            // since there should now be 0 windows left
-            //Root.Instance.RenderSystem.RenderWindows.Remove(renderWindow);
-        }
-
-        private void DefaultForm_Load( object sender, System.EventArgs e )
-        {
-            this.Icon = new System.Drawing.Icon( Axiom.Core.ResourceManager.FindCommonResourceData( "AxiomIcon.ico" ) );
-        }
-
-        /// <summary>
-        ///		Get/Set the RenderWindow associated with this form.
-        /// </summary>
-        public RenderWindow RenderWindow
-        {
-            get
-            {
-                return renderWindow;
-            }
-            set
-            {
-                renderWindow = value;
-            }
-        }
-
-        /// <summary>
-        ///		
-        /// </summary>
-        public PictureBox Target
-        {
-            get
-            {
-                return pictureBox1;
-            }
-        }
-    }
+		/// <summary>
+		///		Get/Set the RenderWindow associated with this form.
+		/// </summary>
+		public RenderWindow RenderWindow
+		{
+			get
+			{
+				return renderWindow;
+			}
+			set
+			{
+				renderWindow = value;
+			}
+		}
+	}
 }
