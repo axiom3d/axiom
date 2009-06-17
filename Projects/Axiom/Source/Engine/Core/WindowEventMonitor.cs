@@ -245,15 +245,16 @@ namespace Axiom.Core
 
 			if ( _windows.Contains( window ) )
 			{
-				// Notify Window of closure
-				window.Dispose();
-
-				// Notify listeners of close
+                // Notify listeners of close
 				foreach ( IWindowEventListener listener in _listeners[ window ] )
 				{
 					listener.WindowClosed( window );
 				}
-				return;
+
+                // Notify Window of closure
+                window.Dispose();
+
+                return;
 			}
         }
 
