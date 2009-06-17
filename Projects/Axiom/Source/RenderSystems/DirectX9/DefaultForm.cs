@@ -117,10 +117,6 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				renderWindow.IsActive = false;
 			}
-
-            // remove it from the list of render windows, which will halt the rendering loop
-            // since there should now be 0 windows left
-            //Root.Instance.RenderSystem.RenderWindows.Remove(renderWindow);
         }
 
         private void DefaultForm_Load( object sender, System.EventArgs e )
