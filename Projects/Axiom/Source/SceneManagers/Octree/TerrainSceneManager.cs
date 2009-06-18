@@ -98,6 +98,7 @@ namespace Axiom.SceneManagers.Octree
             string terrainFileName = "";
             string detailTexture = "";
             string worldTexture = "";
+            string materialName = "";
 
             if ( table.Columns[ "Terrain" ] != null )
             {
@@ -107,6 +108,11 @@ namespace Axiom.SceneManagers.Octree
             if ( table.Columns[ "DetailTexture" ] != null )
             {
                 detailTexture = (string)row[ "DetailTexture" ];
+            }
+
+            if ( table.Columns[ "Material" ] != null )
+            {
+                materialName = (string)row[ "Material" ];
             }
 
             if ( table.Columns[ "WorldTexture" ] != null )
@@ -173,7 +179,7 @@ namespace Axiom.SceneManagers.Octree
 
             Resize( new AxisAlignedBox( Vector3.Zero, new Vector3( maxx, maxy, maxz ) ) );
 
-            terrainMaterial = (Material)MaterialManager.Instance.Create( "Terrain", ResourceGroupManager.Instance.WorldResourceGroupName );
+            terrainMaterial = (Material)MaterialManager.Instance.CreateOrRetrieve( !String.IsNullorEmpty( materialName ) ? materialName : "Terrain", ResourceGroupManager.Instance.WorldResourceGroupName );
 
             if ( worldTexture != "" )
             {
