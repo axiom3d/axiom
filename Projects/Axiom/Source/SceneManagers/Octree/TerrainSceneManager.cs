@@ -179,7 +179,14 @@ namespace Axiom.SceneManagers.Octree
 
             Resize( new AxisAlignedBox( Vector3.Zero, new Vector3( maxx, maxy, maxz ) ) );
 
-            terrainMaterial = (Material)MaterialManager.Instance.CreateOrRetrieve( !String.IsNullorEmpty( materialName ) ? materialName : "Terrain", ResourceGroupManager.Instance.WorldResourceGroupName );
+            //if ( !String.IsNullOrEmpty( materialName ) )
+            //{
+            //    terrainMaterial = (Material)MaterialManager.Instance.GetByName( materialName );
+            //}
+            //else
+            //{
+                terrainMaterial = (Material)MaterialManager.Instance.Create( "Terrain", ResourceGroupManager.Instance.WorldResourceGroupName );
+            //}
 
             if ( worldTexture != "" )
             {
