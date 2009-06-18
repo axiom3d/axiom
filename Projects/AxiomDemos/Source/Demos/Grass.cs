@@ -159,9 +159,7 @@ namespace Axiom.Demos
             }
             Root.Instance.RenderSystem.NormalizeNormals = true;
 
-            camera.Move( new Vector3( 0,
-                                      350,
-                                      0 ) );
+            camera.Move( new Vector3( 0, 350, 0 ) );
         }
 
         private void CreateGrassMesh()
@@ -340,30 +338,12 @@ namespace Axiom.Demos
             AnimState.IsEnabled = true;
         }
 
-        protected override bool OnFrameStarted( object source,
-                                                FrameEventArgs e )
+        protected override bool OnFrameStarted( object source, FrameEventArgs e )
         {
-            if ( input.IsKeyPressed( Axiom.Input.KeyCodes.Enter ) )
-            {
-                StaticGeom.Destroy();
-            }
             base.OnFrameStarted( source, e );
 
             // animate Light Wibbler
             AnimState.AddTime( e.TimeSinceLastFrame );
-
-            /* some extra math to modify later
-            float xinc = Math.Utility.PI * 0.4f;
-            float zinc = Math.Utility.PI * 0.55f;
-            float xpos = Math.Utility.RangeRandom( -Math.Utility.PI, Math.Utility.PI );
-            float zpos = Math.Utility.RangeRandom( -Math.Utility.PI, Math.Utility.PI );
-
-            xpos += xinc * e.TimeSinceLastFrame;
-            zpos += zinc * e.TimeSinceLastFrame;
-
-            // Update vertex program parameters by binding a value to each renderable
-            Vector4 offset = new Vector4( 0, 0, 0, 0 );
-            */
 
             randomRange = Math.Utility.RangeRandom( 20, 100 );
 
@@ -387,12 +367,6 @@ namespace Axiom.Demos
             // we are animating the static mesh ( Entity ) here with a simple offset
             foreach ( Axiom.Core.StaticGeometry.Region reg in StaticGeom.RegionMap.Values )
             {
-                /*xpos += reg.Center.x * 0.001f;
-                zpos += reg.Center.z * 0.01f;
-      
-                offset.x = Math.Utility.Sin( xpos ) * 15;
-                offset.z = Math.Utility.Sin( zpos ) * 15;*/
-
                 foreach ( StaticGeometry.LODBucket lod in reg.LodBucketList )
                 {
                     foreach ( StaticGeometry.MaterialBucket mat in lod.MaterialBucketMap.Values )
