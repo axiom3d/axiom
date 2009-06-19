@@ -44,6 +44,7 @@ using Axiom.Media;
 
 using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
+using Axiom.Configuration;
 
 #endregion Namespace Declarations
 
@@ -88,14 +89,16 @@ namespace Axiom.RenderSystems.DirectX9
 				switch ( attribute.ToUpper() )
 				{
 					case "D3DBACKBUFFER":
+                        D3D.Surface[] surface = new D3D.Surface[ Config.MaxMultipleRenderTargets ];
 						if ( this.FSAA > 0 )
 						{
-							return ( (D3DHardwarePixelBuffer)pixelBuffer ).FSAASurface;
+                            surface[ 0 ] = ( (D3DHardwarePixelBuffer)pixelBuffer ).FSAASurface;
 						}
 						else
 						{
-							return ( (D3DHardwarePixelBuffer)pixelBuffer ).Surface;
+                            surface[ 0 ] = ( (D3DHardwarePixelBuffer)pixelBuffer ).Surface;
 						}
+                        return surface;
 					case "HWND":
 						return null;
 					case "BUFFER":

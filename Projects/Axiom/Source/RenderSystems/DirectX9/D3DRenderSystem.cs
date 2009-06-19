@@ -800,7 +800,7 @@ namespace Axiom.RenderSystems.DirectX9
 				RenderTarget target = viewport.Target;
 				// TODO: FIXME: Looks like these methods should be able to return multiple buffers
 				// get the back buffer surface for this viewport
-				D3D.Surface back = (D3D.Surface)activeRenderTarget[ "D3DBACKBUFFER" ];
+				D3D.Surface[] back = (D3D.Surface[])activeRenderTarget[ "D3DBACKBUFFER" ];
 				if ( back == null )
 					return;
 
@@ -810,18 +810,16 @@ namespace Axiom.RenderSystems.DirectX9
 					/// No depth buffer provided, use our own
 					/// Request a depth stencil that is compatible with the format, multisample type and
 					/// dimensions of the render target.
-					D3D.SurfaceDescription srfDesc = back.Description;
+					D3D.SurfaceDescription srfDesc = back[0].Description;
 					depth = _getDepthStencilFor( srfDesc.Format, srfDesc.MultiSampleType, srfDesc.Width, srfDesc.Height );
 
 				}
 
 				// Bind render targets
-				device.SetRenderTarget( 0, back );
-				// TODO: FIXME: Support multiple render targets
-				//uint count = d3dCaps.NumberSimultaneousRts;
-				//for (int i = 0; i < count; ++i) {
-				//    device.SetRenderTarget(i, back[i]);
-				//}
+                int count = back.Length;
+				for (int i = 0; i < count && back[i] != null; ++i) {
+				    device.SetRenderTarget(i, back[i]);
+				}
 
 				// set the render target and depth stencil for the surfaces belonging to the viewport
 				device.DepthStencilSurface = depth;

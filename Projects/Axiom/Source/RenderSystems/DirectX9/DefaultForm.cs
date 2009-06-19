@@ -64,6 +64,7 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( !Win32MessageHandling.WndProc( renderWindow, ref m ) )
 				base.WndProc( ref m );
 		}
+
         /// <summary>
         /// 
         /// </summary>
