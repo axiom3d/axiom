@@ -112,7 +112,7 @@ namespace Axiom.SceneManagers.Octree
 
             if ( table.Columns[ "MaterialName" ] != null )
             {
-                materialName = (string)row[ "Material" ];
+                materialName = (string)row[ "MaterialName" ];
             }
 
             if ( table.Columns[ "WorldTexture" ] != null )
