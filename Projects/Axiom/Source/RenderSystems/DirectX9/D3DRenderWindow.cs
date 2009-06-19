@@ -701,7 +701,9 @@ namespace Axiom.RenderSystems.DirectX9
 						return _renderZBuffer;
 
 					case "D3DBACKBUFFER":
-						return _renderSurface;
+                        D3D.Surface[] surface = new D3D.Surface[ 1 ];
+                        surface[ 0 ] = _renderSurface;
+						return surface;
 
 					case "D3DFRONTBUFFER":
 						return _renderSurface;
