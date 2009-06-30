@@ -217,6 +217,10 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public void Show()
 		{
+            if ( FullScreen )
+            {
+                this.SavePreviousWindowSettings();
+            }
 			InitializeWindow();
 		}
 
@@ -241,28 +245,30 @@ namespace Axiom.RenderSystems.OpenGL
 			// full screen?
 			if ( FullScreen )
 			{
-				flags |= Sdl.SDL_FULLSCREEN;
-				
-				// remember previous window settings for when we destroy it
-				IntPtr info = Sdl.SDL_GetVideoInfo();
-				Sdl.SDL_VideoInfo videoInfo = (Sdl.SDL_VideoInfo) Marshal.PtrToStructure(info, typeof(Sdl.SDL_VideoInfo));
-				Sdl.SDL_PixelFormat vfmt = (Sdl.SDL_PixelFormat) Marshal.PtrToStructure(videoInfo.vfmt, typeof(Sdl.SDL_PixelFormat));
-				
-				_previousWidth = videoInfo.current_w;
-				_previousHeight = videoInfo.current_h;
-				_previousColorDepth = vfmt.BitsPerPixel;
+			    flags |= Sdl.SDL_FULLSCREEN;
 			}
 
-			// set the video mode (and create the surface)
+		    // set the video mode (and create the surface)
 			// TODO: Grab return val once changed to the right type
 			SdlWindow._hWindow = Sdl.SDL_SetVideoMode( Width, Height, ColorDepth, flags );
 
 			if ( _hWindow == IntPtr.Zero )
-				throw new Exception( "Failed to create SDL window :" + Sdl.SDL_GetError() );
+				throw new Exception( String.Format( "SDL: failed to set video mode to {0}x{1}, color depth: {2}./n{3}",  Width, Height, ColorDepth, Sdl.SDL_GetError() ) );
 
 		}
 
-		internal void WndProc()
+	    private void SavePreviousWindowSettings()
+	    {
+	        IntPtr info = Sdl.SDL_GetVideoInfo();
+	        Sdl.SDL_VideoInfo videoInfo = (Sdl.SDL_VideoInfo) Marshal.PtrToStructure(info, typeof(Sdl.SDL_VideoInfo));
+	        Sdl.SDL_PixelFormat vfmt = (Sdl.SDL_PixelFormat) Marshal.PtrToStructure(videoInfo.vfmt, typeof(Sdl.SDL_PixelFormat));
+				
+	        this._previousWidth = videoInfo.current_w;
+	        this._previousHeight = videoInfo.current_h;
+	        this._previousColorDepth = vfmt.BitsPerPixel;
+	    }
+
+	    internal void WndProc()
 		{
             Sdl.SDL_Event sdlEvent;
 
