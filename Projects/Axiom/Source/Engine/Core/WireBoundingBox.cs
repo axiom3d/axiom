@@ -47,17 +47,16 @@ namespace Axiom.Core
     /// </summary>
     public sealed class WireBoundingBox : SimpleRenderable
     {
-        #region Member variables
+        #region Field and Properties
 
         private float radius;
 
-        #endregion Member variables
+        #endregion Field and Properties
 
         #region Constants
 
         const int POSITION = 0;
-        const int COLOR = 1;
-
+ 
         #endregion Constants
 
         #region Constructors
@@ -77,7 +76,6 @@ namespace Axiom.Core
 
             // add elements for position and color only
             decl.AddElement( POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position );
-            decl.AddElement( COLOR, 0, VertexElementType.Color, VertexElementSemantic.Diffuse );
 
             // create a new hardware vertex buffer for the position data
             HardwareVertexBuffer buffer =
@@ -89,27 +87,8 @@ namespace Axiom.Core
             // bind the position buffer
             binding.SetBinding( POSITION, buffer );
 
-            // create a new hardware vertex buffer for the color data
-            buffer = HardwareBufferManager.Instance.CreateVertexBuffer(
-                decl.GetVertexSize( COLOR ),
-                vertexData.vertexCount,
-                BufferUsage.StaticWriteOnly );
+			this.Material = (Material)MaterialManager.Instance[ "BaseWhiteNoLighting" ];
 
-            // bind the color buffer
-            binding.SetBinding( COLOR, buffer );
-
-			this.Material = (Material)MaterialManager.Instance[ "BaseWhite" ];
-
-			//Material mat = MaterialManager.Instance[ "Core/WireBB" ];
-
-			//if ( mat == null )
-			//{
-			//    mat = MaterialManager.Instance[ "BaseWhite" ];
-			//    mat = mat.Clone( "Core/WireBB", "" );
-			//    mat.Lighting = false;
-			//}
-
-			//this.Material = mat;
         }
 
         #endregion Constructors
@@ -122,31 +101,13 @@ namespace Axiom.Core
         /// <param name="matrices"></param>
         public override void GetWorldTransforms( Matrix4[] matrices )
         {
+            // return identity matrix to prevent parent transforms
             matrices[ 0 ] = Matrix4.Identity;
         }
 
         public void InitAABB( AxisAlignedBox box )
         {
             SetupAABBVertices( box );
-
-            // get a reference to the color buffer
-            HardwareVertexBuffer buffer =
-                vertexData.vertexBufferBinding.GetBuffer( COLOR );
-
-            // lock the buffer
-            IntPtr colPtr = buffer.Lock( BufferLocking.Discard );
-
-            // load the color buffer with the specified color for each element
-            unsafe
-            {
-                int* pCol = (int*)colPtr.ToPointer();
-
-                for ( int i = 0; i < vertexData.vertexCount; i++ )
-                    pCol[ i ] = Root.Instance.ConvertColor( ColorEx.Red );
-            }
-
-            // unlock the buffer
-            buffer.Unlock();
 
             // store the bounding box locally
             this.box = box;
@@ -161,18 +122,17 @@ namespace Axiom.Core
             float lengthSquared = Utility.Max( max.LengthSquared, min.LengthSquared );
             radius = Utility.Sqrt( lengthSquared );
 
-            float maxx = max.x + 1.0f;
-            float maxy = max.y + 1.0f;
-            float maxz = max.z + 1.0f;
+            float maxx = max.x;
+            float maxy = max.y;
+            float maxz = max.z;
 
-            float minx = min.x - 1.0f;
-            float miny = min.y - 1.0f;
-            float minz = min.z - 1.0f;
+            float minx = min.x;
+            float miny = min.y;
+            float minz = min.z;
 
             int i = 0;
 
-            HardwareVertexBuffer buffer =
-                vertexData.vertexBufferBinding.GetBuffer( POSITION );
+            HardwareVertexBuffer buffer = vertexData.vertexBufferBinding.GetBuffer( POSITION );
 
             IntPtr posPtr = buffer.Lock( BufferLocking.Discard );
 
@@ -281,7 +241,7 @@ namespace Axiom.Core
             Vector3 min, max, mid, dist;
             min = box.Minimum;
             max = box.Maximum;
-            mid = ( ( min - max ) * 0.5f ) + min;
+            mid = ( ( max - min ) * 0.5f ) + min;
             dist = camera.DerivedPosition - mid;
 
             return dist.LengthSquared;
