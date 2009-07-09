@@ -1,0 +1,484 @@
+<CodeStyleSettings>
+  <CSharp>
+    <FormatSettings>
+      <FORCE_FIXED_BRACES_STYLE>ALWAYS_ADD</FORCE_FIXED_BRACES_STYLE>
+      <FORCE_FOR_BRACES_STYLE>ALWAYS_ADD</FORCE_FOR_BRACES_STYLE>
+      <FORCE_FOREACH_BRACES_STYLE>ALWAYS_ADD</FORCE_FOREACH_BRACES_STYLE>
+      <FORCE_IFELSE_BRACES_STYLE>ALWAYS_ADD</FORCE_IFELSE_BRACES_STYLE>
+      <FORCE_USING_BRACES_STYLE>ALWAYS_ADD</FORCE_USING_BRACES_STYLE>
+      <FORCE_WHILE_BRACES_STYLE>ALWAYS_ADD</FORCE_WHILE_BRACES_STYLE>
+      <INDENT_ANONYMOUS_METHOD_BLOCK>False</INDENT_ANONYMOUS_METHOD_BLOCK>
+      <INDENT_SIZE>4</INDENT_SIZE>
+      <KEEP_BLANK_LINES_IN_CODE>1</KEEP_BLANK_LINES_IN_CODE>
+      <KEEP_BLANK_LINES_IN_DECLARATIONS>1</KEEP_BLANK_LINES_IN_DECLARATIONS>
+      <KEEP_USER_LINEBREAKS>False</KEEP_USER_LINEBREAKS>
+      <MODIFIERS_ORDER IsNull="False">
+        <Item>public</Item>
+        <Item>protected</Item>
+        <Item>internal</Item>
+        <Item>private</Item>
+        <Item>new</Item>
+        <Item>abstract</Item>
+        <Item>virtual</Item>
+        <Item>override</Item>
+        <Item>sealed</Item>
+        <Item>static</Item>
+        <Item>readonly</Item>
+        <Item>extern</Item>
+        <Item>unsafe</Item>
+        <Item>volatile</Item>
+      </MODIFIERS_ORDER>
+      <PLACE_CONSTRUCTOR_INITIALIZER_ON_SAME_LINE>False</PLACE_CONSTRUCTOR_INITIALIZER_ON_SAME_LINE>
+      <PLACE_SIMPLE_ACCESSOR_ON_SINGLE_LINE>False</PLACE_SIMPLE_ACCESSOR_ON_SINGLE_LINE>
+      <REDUNDANT_THIS_QUALIFIER_STYLE>ALWAYS_USE</REDUNDANT_THIS_QUALIFIER_STYLE>
+      <SPACE_AFTER_TYPECAST_PARENTHESES>False</SPACE_AFTER_TYPECAST_PARENTHESES>
+      <SPACE_AROUND_MULTIPLICATIVE_OP>True</SPACE_AROUND_MULTIPLICATIVE_OP>
+      <SPACE_BEFORE_SIZEOF_PARENTHESES>False</SPACE_BEFORE_SIZEOF_PARENTHESES>
+      <SPACE_BEFORE_TYPEOF_PARENTHESES>False</SPACE_BEFORE_TYPEOF_PARENTHESES>
+      <SPACE_WITHIN_ARRAY_RANK_BRACKETS>True</SPACE_WITHIN_ARRAY_RANK_BRACKETS>
+      <SPACE_WITHIN_METHOD_CALL_PARENTHESES>True</SPACE_WITHIN_METHOD_CALL_PARENTHESES>
+      <SPACE_WITHIN_METHOD_PARENTHESES>True</SPACE_WITHIN_METHOD_PARENTHESES>
+      <SPACE_WITHIN_PARENTHESES>True</SPACE_WITHIN_PARENTHESES>
+      <SPACE_WITHIN_SINGLE_LINE_ARRAY_INITIALIZER_BRACES>True</SPACE_WITHIN_SINGLE_LINE_ARRAY_INITIALIZER_BRACES>
+      <STICK_COMMENT>False</STICK_COMMENT>
+      <WRAP_AFTER_INVOCATION_LPAR>True</WRAP_AFTER_INVOCATION_LPAR>
+      <WRAP_ARGUMENTS_STYLE>CHOP_IF_LONG</WRAP_ARGUMENTS_STYLE>
+      <WRAP_EXTENDS_LIST_STYLE>CHOP_IF_LONG</WRAP_EXTENDS_LIST_STYLE>
+      <WRAP_PARAMETERS_STYLE>CHOP_IF_LONG</WRAP_PARAMETERS_STYLE>
+    </FormatSettings>
+    <UsingsSettings>
+      <AddImportsToDeepestScope>True</AddImportsToDeepestScope>
+      <KeepImports IsNull="False">
+        <Item>System</Item>
+      </KeepImports>
+    </UsingsSettings>
+    <Naming2>
+      <ExceptionName IsNull="False">
+      </ExceptionName>
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="TypesAndNamespaces" />
+      <PredefinedRule Inspect="True" Prefix="I" Suffix="" Style="AaBb" ElementKind="Interfaces" />
+      <PredefinedRule Inspect="True" Prefix="T" Suffix="" Style="AaBb" ElementKind="TypeParameters" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="MethodPropertyEvent" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="Locals" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="LocalConstants" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="Parameters" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PublicFields" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Constants" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="StaticReadonly" />
+      <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" ElementKind="NotPublicStaticFields" />
+      <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" ElementKind="NotPublicInstanceFields" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="EnumMember" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Other" />
+    </Naming2>
+    <CustomMemberReorderingPatterns><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
+<Patterns xmlns="urn:shemas-jetbrains-com:member-reordering-patterns">
+
+  <!--Do not reorder COM interfaces-->
+  <Pattern>
+    <Match>
+      <And Weight="100">
+        <Kind Is="interface"/>
+        <HasAttribute CLRName="System.Runtime.InteropServices.InterfaceTypeAttribute"/>
+      </And>
+    </Match>
+  </Pattern>
+
+  <!--Default pattern-->
+  <Pattern RemoveAllRegions="true">
+
+    <!--delegate-->
+    <Entry>
+      <Match>
+        <And Weight="100">
+          <Access Is="public"/>
+          <Kind Is="delegate"/>
+        </And>
+      </Match>
+      <Sort>
+        <Access Order="public protected internal private" />
+        <Name/>
+      </Sort>
+      <Group Region="Delegates"/>
+    </Entry>
+
+    <!--enums-->
+    <Entry>
+      <Match>
+        <Kind Is="enum"/>
+      </Match>
+      <Sort>
+        <Access Order="public protected internal private" />
+        <Name/>
+      </Sort>
+      <Group Region="Enums"/>
+    </Entry>
+
+    <!--constants-->
+    <Entry>
+      <Match>
+        <Kind Is="constant"/>
+      </Match>
+      <Sort>
+        <Access Order="public protected internal private" />
+        <Name/>
+      </Sort>
+      <Group Region="Constants"/>
+    </Entry>
+
+    <!--static and readonly fields-->
+    <Entry>
+      <Match>
+        <And>
+          <Kind Is="field"/>
+          <Or>
+            <Static/>
+            <Readonly/>
+          </Or>
+        </And>
+      </Match>
+      <Sort>
+        <Access Order="public protected internal private" />
+        <Name/>
+      </Sort>
+      <Group Region="Readonly &amp; Static Fields"/>
+    </Entry>
+
+    <!--fields-->
+    <Entry>
+      <Match>
+        <Kind Is="field"/>
+      </Match>
+      <Sort>
+        <Access Order="public protected internal private" />
+        <Name/>
+      </Sort>
+      <Group Region="Fields"/>
+    </Entry>
+
+    <!--Constructors. Place static one first-->
+    <Entry>
+      <Match>
+        <Kind Is="constructor"/>
+      </Match>
+      <Sort>
+        <Static/>
+        <Access Order="public protected internal private" />
+      </Sort>
+      <Group Region="Constructors"/>
+    </Entry>
+
+    <!--Destructors. Place static one first-->
+    <Entry>
+      <Match>
+        <Kind Is="destructor"/>
+      </Match>
+      <Sort>
+        <Static/>
+        <Access Order="public protected internal private" />
+      </Sort>
+      <Group Region="Destructors"/>
+    </Entry>
+
+    <!--Class indexers-->
+    <Entry>
+      <Match>
+        <And>
+          <Kind Is="indexer"/>
+          <Static/>
+        </And>
+      </Match>
+      <Sort>
+        <Access Order="public protected internal private" />
+        <Abstract/>
+        <Virtual/>
+        <Override/>
+        <Name/>
+      </Sort>
+      <Group Region="Class Indexers"/>
+    </Entry>
+
+    <!--Instance indexers-->
+    <Entry>
+      <Match>
+        <And>
+          <Kind Is="indexer"/>
+          <Not>
+            <Static/>
+          </Not>
+        </And>
+      </Match>
+      <Sort>
+        <Access Order="public protected internal private" />
+        <Abstract/>
+        <Virtual/>
+        <Override/>
+        <Name/>
+      </Sort>
+      <Group Region="Instance Indexers"/>
+    </Entry>
+
+    <!--Class properties-->
+    <Entry>
+      <Match>
+        <And>
+          <Kind Is="property"/>
+          <Static/>
+        </And>
+      </Match>
+      <Sort>
+        <Access Order="public protected internal private" />
+        <Abstract/>
+        <Virtual/>
+        <Override/>
+        <Name/>
+      </Sort>
+      <Group Region="Class Properties"/>
+    </Entry>
+
+    <!--instance properties-->
+    <Entry>
+      <Match>
+        <And>
+          <Kind Is="property"/>
+          <Not>
+            <Static/>
+          </Not>
+          <Not>
+            <Kind Is="indexer"/>
+          </Not>
+        </And>
+      </Match>
+      <Sort>
+        <Access Order="public protected internal private" />
+        <Abstract/>
+        <Virtual/>
+        <Override/>
+        <Name/>
+      </Sort>
+      <Group Region="Instance Properties"/>
+    </Entry>
+
+    <!-- operator -->
+    <Entry>
+      <Match>
+        <Kind Is="operator"/>
+      </Match>
+      <Sort>
+        <Access Order="public protected internal private" />
+        <Name/>
+      </Sort>
+      <Group Region="Operators"/>
+    </Entry>
+
+    <!--Setup/Teardow-->
+    <Entry>
+      <Match>
+        <And>
+          <Kind Is="method"/>
+          <Or>
+            <HasAttribute CLRName="NUnit.Framework.SetUpAttribute" Inherit="true"/>
+            <HasAttribute CLRName="NUnit.Framework.TearDownAttribute" Inherit="true"/>
+            <HasAttribute CLRName="NUnit.Framework.TestFixtureSetUpAttribute" Inherit="true"/>
+            <HasAttribute CLRName="NUnit.Framework.TestFixtureTearDownAttribute" Inherit="true"/>
+            <HasAttribute CLRName="Microsoft.VisualStudio.TestTools.UnitTesting.ClassInitializeAttribute" Inherit="true"/>
+            <HasAttribute CLRName="Microsoft.VisualStudio.TestTools.UnitTesting.ClassCleanupAttribute" Inherit="true"/>
+            <HasAttribute CLRName="Microsoft.VisualStudio.TestTools.UnitTesting.TestInitializeAttribute" Inherit="false"/>
+            <HasAttribute CLRName="Microsoft.VisualStudio.TestTools.UnitTesting.TestCleanupAttribute" Inherit="false"/>
+          </Or>
+        </And>
+      </Match>
+      <Sort>
+        <Static/>
+      </Sort>
+      <Group Region="Setup/Teardown"/>
+    </Entry>
+
+    <!--Class Methods-->
+    <Entry>
+      <Match>
+        <And>
+          <Kind Is="method"/>
+          <Static/>
+          <Not>
+            <Or>
+              <HasAttribute CLRName="Microsoft.VisualStudio.TestTools.UnitTesting.ClassInitializeAttribute" Inherit="true"/>
+              <HasAttribute CLRName="Microsoft.VisualStudio.TestTools.UnitTesting.ClassCleanupAttribute" Inherit="true"/>
+          </Or>
+          </Not>
+        </And>
+      </Match>
+      <Sort>
+        <Access Order="public protected internal private" />
+        <Abstract/>
+        <Virtual/>
+        <Override/>
+        <Name/>
+      </Sort>
+      <Group Region="Class Methods"/>
+    </Entry>
+
+    <!--Test methods-->
+    <Entry>
+      <Match>
+        <And Weight="100">
+          <Kind Is="method"/>
+          <Or>
+              <HasAttribute CLRName="NUnit.Framework.TestAttribute" Inherit="false"/>
+              <HasAttribute CLRName="Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute" Inherit="false"/>
+          </Or>
+        </And>
+      </Match>
+      <Sort>
+        <Name/>
+      </Sort>
+      <Group Region="Tests"/>
+    </Entry>
+
+    <!--Methods-->
+    <Entry>
+      <Match>
+        <And>
+          <Kind Is="method"/>
+          <Not>
+            <Static/>
+          </Not>
+          <Not>
+          <Or>
+            <HasAttribute CLRName="NUnit.Framework.SetUpAttribute" Inherit="true"/>
+            <HasAttribute CLRName="NUnit.Framework.TearDownAttribute" Inherit="true"/>
+            <HasAttribute CLRName="NUnit.Framework.TestFixtureSetUpAttribute" Inherit="true"/>
+            <HasAttribute CLRName="NUnit.Framework.TestFixtureTearDownAttribute" Inherit="true"/>
+            <HasAttribute CLRName="Microsoft.VisualStudio.TestTools.UnitTesting.TestInitializeAttribute" Inherit="false"/>
+            <HasAttribute CLRName="Microsoft.VisualStudio.TestTools.UnitTesting.TestCleanupAttribute" Inherit="false"/>
+            <HandlesEvent />
+          </Or>
+          </Not>
+          <Not>
+            <Kind Is="destructor"/>
+          </Not>
+        </And>
+      </Match>
+      <Sort>
+        <Access Order="public protected internal private" />
+        <Abstract/>
+        <Virtual/>
+        <Override/>
+        <Name/>
+      </Sort>
+      <Group Region="Instance Methods"/>
+    </Entry>
+
+    <!--Event Handling-->
+    <Entry>
+      <Match>
+        <HandlesEvent />
+      </Match>
+      <Sort>
+        <Access Order="public protected internal private" />
+        <Abstract/>
+        <Virtual/>
+        <Override/>
+        <Name/>
+      </Sort>
+      <Group Region="Event Handling"/>
+    </Entry>
+
+    <!-- event -->
+    <Entry>
+      <Match>
+        <Kind Is="event"/>
+      </Match>
+      <Sort>
+        <Access Order="public protected internal private" />
+        <Name/>
+      </Sort>
+      <Group Region="Event Declarations"/>
+    </Entry>
+
+    <!--interface implementations-->
+    <Entry>
+      <Match>
+        <And Weight="100">
+          <Kind Is="member"/>
+          <ImplementsInterface/>
+        </And>
+      </Match>
+      <Sort>
+        <ImplementsInterface Immediate="true"/>
+      </Sort>
+      <Group>
+        <ImplementsInterface Immediate="true" Region="${ImplementsInterface} Members"/>
+      </Group>
+    </Entry>
+
+    <!--all other members-->
+    <Entry/>
+
+    <!--nested types-->
+    <Entry>
+      <Match>
+        <Kind Is="type"/>
+      </Match>
+      <Sort>
+        <Name/>
+      </Sort>
+      <Group>
+        <Name Region="Nested type: ${Name}"/>
+      </Group>
+    </Entry>
+  </Pattern>
+
+</Patterns>
+]]></CustomMemberReorderingPatterns>
+  </CSharp>
+  <VB>
+    <FormatSettings>
+      <INDENT_SIZE>4</INDENT_SIZE>
+    </FormatSettings>
+    <ImportsSettings />
+    <Naming2 />
+  </VB>
+  <FileHeader Region="LGPL License"><![CDATA[Axiom Graphics Engine Library
+Copyright (C) 2003-2009 Axiom Project Team
+
+The overall design, and a majority of the core engine and rendering code 
+contained within this library is a derivative of the open source Object Oriented 
+Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+Many thanks to the OGRE team for maintaining such a high quality project.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+]]></FileHeader>
+  <GenerateMemberBody />
+  <Naming2>
+    <ExceptionName IsNull="False">
+    </ExceptionName>
+    <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="Locals" />
+    <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="NotPublicInstanceFields" />
+    <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="NotPublicStaticFields" />
+    <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="Parameters" />
+    <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="TypesAndNamespaces" />
+    <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="MethodPropertyEvent" />
+    <PredefinedRule Inspect="True" Prefix="I" Suffix="" Style="AaBb" ElementKind="Interfaces" />
+    <PredefinedRule Inspect="True" Prefix="T" Suffix="" Style="AaBb" ElementKind="TypeParameters" />
+    <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="LocalConstants" />
+    <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PublicFields" />
+    <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Constants" />
+    <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="StaticReadonly" />
+    <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="EnumMember" />
+    <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Other" />
+    <Abbreviation Text="VG" />
+    <Abbreviation Text="ID" />
+  </Naming2>
+</CodeStyleSettings>
