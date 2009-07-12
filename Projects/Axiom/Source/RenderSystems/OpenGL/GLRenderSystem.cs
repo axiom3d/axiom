@@ -2072,8 +2072,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 			for ( ; i < limit && i < lightList.Count; i++ )
 			{
-				SetGLLight( i, lightList[ i ] );
-				lights[ i ] = lightList[ i ];
+				SetGLLight(i, lightList.Values[i]);
+				lights[i] = lightList.Values[i];
 			}
 
 			for ( ; i < numCurrentLights; i++ )

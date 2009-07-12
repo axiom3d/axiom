@@ -85,6 +85,12 @@ namespace Axiom.SceneManagers.Octree
 			forcedRenderLevel = -1;
 		}
 
+        public TerrainRenderable(string name) : base(name)
+        {
+            renderLevel = 1;
+            forcedRenderLevel = -1;
+        }
+
 		#region Methods
 
 		public void SetMaterial( Material mat )

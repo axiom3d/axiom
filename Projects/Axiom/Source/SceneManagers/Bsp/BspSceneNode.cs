@@ -88,7 +88,7 @@ namespace Axiom.SceneManagers.Bsp
             {
                 for ( int i = 0; i < this.objectList.Count; i++ )
                 {
-                    MovableObject obj = this.objectList[ i ];
+                    MovableObject obj = this.objectList.Values[ i ];
                     if ( obj is TextureLight )
                     {
                         // the notification of BspSceneManager when the position of
@@ -134,10 +134,10 @@ namespace Axiom.SceneManagers.Bsp
             for ( int i = 0; i < this.objectList.Count; i++ )
             {
                 // TextureLights are detached only when removed at the BspSceneManager
-                if ( this.objectList[ i ] is TextureLight )
+                if (this.objectList.Values[i] is TextureLight)
                     continue;
 
-                mgr.NotifyObjectDetached( this.objectList[ i ] );
+                mgr.NotifyObjectDetached(this.objectList.Values[i]);
             }
 
             base.DetachAllObjects();

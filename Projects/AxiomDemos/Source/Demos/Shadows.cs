@@ -52,7 +52,7 @@ namespace Axiom.Demos
 			ShadowTechnique.None
 		};
 
-        int currentShadowTechnique = -1;
+        int currentShadowTechnique = 1;
 
         public override void CreateScene()
         {

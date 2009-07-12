@@ -56,7 +56,7 @@ namespace Axiom.Core
     ///		Instances of this class are discrete, relatively small, movable objects
     ///		which are attached to SceneNode objects to define their position.						  
     /// </remarks>
-    public abstract class MovableObject : ShadowCaster, IAnimableObject
+    public abstract class MovableObject : ShadowCaster, IAnimableObject, INamable //thild
     {
         #region Fields
 
@@ -66,7 +66,9 @@ namespace Axiom.Core
         protected bool castShadows;
 
         protected ShadowRenderableList dummyList = new ShadowRenderableList();
-
+		
+		protected static long nextUnnamedNodeExtNum = 1;
+		
         /// <summary>
         ///    Is this object visible?
         /// </summary>
@@ -147,6 +149,7 @@ namespace Axiom.Core
             this.queryFlags = unchecked( 0xffffffff );
             this.worldAABB = AxisAlignedBox.Null;
             this.castShadows = true;
+			this.name = "Unnamed_" + nextUnnamedNodeExtNum++;
         }
 
         #endregion Constructors
@@ -241,9 +244,10 @@ namespace Axiom.Core
             {
                 return this.name;
             }
+            //thild
             set
             {
-                this.name = value;
+                name = value;
             }
         }
 

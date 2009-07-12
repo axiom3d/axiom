@@ -1258,7 +1258,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			for ( ; i < limit && i < lightList.Count; i++ )
 			{
-				SetD3DLight( i, lightList[ i ] );
+				SetD3DLight( i, lightList.Values[ i ] );
 			}
 
 			for ( ; i < numCurrentLights; i++ )

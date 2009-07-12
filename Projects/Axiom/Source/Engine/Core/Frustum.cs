@@ -661,11 +661,15 @@ namespace Axiom.Core
 		#endregion Fields and Properties
 
 		#region Constructors
-
+		
 		/// <summary>
 		///     Default constructor.
 		/// </summary>
-		public Frustum()
+		public Frustum() : base()
+		{
+			Initialize();
+		}
+		private void Initialize()
 		{
 			for ( int i = 0; i < 6; i++ )
 			{
@@ -710,6 +714,12 @@ namespace Axiom.Core
 
 			UpdateView();
 		}
+		
+		 //thild
+         public Frustum(string name) : base(name)
+         {
+             Initialize();
+         }
 
 		#endregion
 

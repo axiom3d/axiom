@@ -225,7 +225,7 @@ namespace Axiom.Demos
 
             for ( int i = 0; i < belowWaterEnts.Count; i++ )
             {
-                ( (Entity)belowWaterEnts[ i ] ).IsVisible = false;
+                ( (Entity)belowWaterEnts.Values[ i ] ).IsVisible = false;
             }
 
             theCam.EnableReflection( reflectionPlane );
@@ -237,7 +237,7 @@ namespace Axiom.Demos
 
             for ( int i = 0; i < belowWaterEnts.Count; i++ )
             {
-                ( (Entity)belowWaterEnts[ i ] ).IsVisible = true;
+                ( (Entity)belowWaterEnts.Values[ i ] ).IsVisible = true;
             }
 
             theCam.DisableReflection();
@@ -249,7 +249,7 @@ namespace Axiom.Demos
 
             for ( int i = 0; i < aboveWaterEnts.Count; i++ )
             {
-                ( (Entity)aboveWaterEnts[ i ] ).IsVisible = false;
+                ( (Entity)aboveWaterEnts.Values[ i ] ).IsVisible = false;
             }
         }
 
@@ -259,7 +259,7 @@ namespace Axiom.Demos
 
             for ( int i = 0; i < aboveWaterEnts.Count; i++ )
             {
-                ( (Entity)aboveWaterEnts[ i ] ).IsVisible = true;
+                ( (Entity)aboveWaterEnts.Values[ i ] ).IsVisible = true;
             }
         }
 

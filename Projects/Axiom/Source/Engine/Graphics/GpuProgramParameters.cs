@@ -39,7 +39,7 @@ using System.Collections;
 using Axiom.Controllers;
 using Axiom.Core;
 using Axiom.Math;
-
+using System.Collections.Generic;
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
@@ -112,8 +112,8 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected bool autoAddParamName;
 
-		protected ArrayList paramTypeList = new ArrayList();
-		protected ArrayList paramIndexTypes = new ArrayList();
+		 protected List<ParameterEntry> paramTypeList = new List<ParameterEntry>();
+        //protected ArrayList paramIndexTypes = new ArrayList();
 
 		#endregion
 
@@ -942,7 +942,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-		public ArrayList ParameterInfo
+		public List<ParameterEntry> ParameterInfo
 		{
 			get
 			{
@@ -986,11 +986,11 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Gets a packed array of all current integer contants.
 		/// </summary>
-		public int[] IntConstants
+		public IntConstantEntry[] IntConstants
 		{
 			get
 			{
-				int[] ints = new int[ intConstants.Count ];
+				IntConstantEntry[] ints = new IntConstantEntry[intConstants.Count];
 				intConstants.CopyTo( ints );
 				return ints;
 			}

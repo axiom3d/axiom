@@ -189,6 +189,16 @@ namespace Axiom.Graphics
 		private long _lastSecond;
 		private long _frameCount;
 
+        public RenderTarget()
+        {
+
+        }
+
+        public RenderTarget(string name)
+        {
+            _name = name;
+        }
+
 		#region Height Property
 
 		/// <summary>
@@ -302,6 +312,7 @@ namespace Axiom.Graphics
 			}
 		}
 
+        
 		#endregion Name Property
 
 		#region RequiresTextureFlipping Property
@@ -537,7 +548,7 @@ namespace Axiom.Graphics
 		{
 			Debug.Assert( index >= 0 && index < _viewportList.Count );
 
-			return _viewportList[ _viewportList.Keys[ index ] ];
+            return _viewportList.Values[index];
 		}
 
 		/// <summary>
@@ -607,9 +618,9 @@ namespace Axiom.Graphics
 		/// </summary>
 		public virtual void RemoveAllViewports()
 		{
-			foreach ( KeyValuePair<int, Viewport> pair in _viewportList )
+			foreach ( Viewport pair in _viewportList )
 			{
-				OnViewportRemoved( pair.Value );
+				OnViewportRemoved( pair );
 			}
 
 			_viewportList.Clear();
@@ -853,7 +864,7 @@ namespace Axiom.Graphics
 			// Tell each to refresh
 			for ( int i = 0; i < _viewportList.Count; i++ )
 			{
-				Viewport viewport = _viewportList[ _viewportList.Keys[ i ] ];
+                Viewport viewport = _viewportList.Values[i];
 
 				// notify listeners (pre)
 				beforeViewPortUpdateMeter.Enter();
@@ -897,7 +908,7 @@ namespace Axiom.Graphics
 		{
 			for ( int i = 0; i < _viewportList.Count; i++ )
 			{
-				Viewport viewport = _viewportList[ _viewportList.Keys[ i ] ];
+                Viewport viewport = _viewportList.Values[i];
 
 				// remove the link to this camera
 				if ( viewport.Camera == camera )
@@ -1055,9 +1066,10 @@ namespace Axiom.Graphics
 					// Delete viewports
 					while ( _viewportList.Count > 0 )
 					{
-						Viewport vp = _viewportList[ _viewportList.Keys[ 0 ] ];
+						Viewport vp = _viewportList.Values[ 0 ];
 						OnViewportRemoved( vp );
-						this._viewportList.Remove( _viewportList.Keys[ 0 ] );
+                        //thild: remove by key
+						this._viewportList.Remove( vp.ZOrder );
 					}
 					// Write final performance stats
                     if ( LogManager.Instance != null )

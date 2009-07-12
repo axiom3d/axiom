@@ -130,7 +130,7 @@ namespace Axiom.Animating
 		/// Gets the bones.
 		/// </summary>
 		/// <value>The bones.</value>
-		public ICollection Bones
+		public IList<Bone> Bones
 		{
 			get
 			{
@@ -453,10 +453,18 @@ namespace Axiom.Animating
 			Bone currentBone = boneList[ 0 ];
 
 			// all bones without a parent are root bones
-			for ( int i = 0; i < boneList.Count; i++ )
-			{
-				Bone bone = boneList[ i ];
+            //for ( int i = 0; i < boneList.Count; i++ )
+            //{
+            //    Bone bone = boneList.Values[i];
 
+            //    if ( bone.Parent == null )
+            //    {
+            //        rootBones.Add( bone );
+            //    }
+            //}
+            //thild: foreach
+            foreach (Bone bone in boneList)
+			{
 				if ( bone.Parent == null )
 				{
 					rootBones.Add( bone );
@@ -475,7 +483,7 @@ namespace Axiom.Animating
 		{
 			Debug.Assert( index < animationList.Count, "index < animationList.Count" );
 
-			return animationList[ index ];
+            return animationList.Values[index];
 		}
 
 		/// <summary>
@@ -584,10 +592,16 @@ namespace Axiom.Animating
 				reverse transform by the Bone's original derived position/orientation, then transform
 				by the new derived position / orientation.
 			*/
-			for ( int i = 0; i < boneList.Count; i++ )
+            //for ( int i = 0; i < boneList.Count; i++ )
+            //{
+            //    Bone bone = boneList.Values[i];
+            //    matrices[ i ] = bone.FullTransform * bone.BindDerivedInverseTransform;
+            //}
+            int i = 0;
+            //thild: foreach
+            foreach (Bone bone in boneList)
 			{
-				Bone bone = boneList[ i ];
-				matrices[ i ] = bone.FullTransform * bone.BindDerivedInverseTransform;
+                matrices[i++] = bone.FullTransform * bone.BindDerivedInverseTransform;
 			}
 		}
 
@@ -604,10 +618,16 @@ namespace Axiom.Animating
 
 			// loop through all the internal animations and add new animation states to the passed in
 			// collection
-			for ( int i = 0; i < animationList.Count; i++ )
-			{
-				Animation anim = animationList[ i ];
+            //for ( int i = 0; i < animationList.Count; i++ )
+            //{
+            //    Animation anim = animationList.Values[i];
 
+            //    animSet.CreateAnimationState( anim.Name, 0, anim.Length );
+            //}
+
+            //thild: foreach
+            foreach (Animation anim in animationList)
+			{
 				animSet.CreateAnimationState( anim.Name, 0, anim.Length );
 			}
 		}
@@ -619,7 +639,8 @@ namespace Axiom.Animating
 		/// <returns></returns>
 		public virtual void RemoveAnimation( string name )
 		{
-			animationList.Remove( animationList[ name ] );
+            //thild: if animation has a name remove by name
+			animationList.Remove( name );
 		}
 
 		/// <summary>
@@ -648,9 +669,9 @@ namespace Axiom.Animating
 			// set all bones back to their binding pose
 			for ( int i = 0; i < boneList.Count; i++ )
 			{
-				if ( !boneList[ i ].IsManuallyControlled || resetManualBones )
+                if (!boneList.Values[i].IsManuallyControlled || resetManualBones)
 				{
-					boneList[ i ].Reset();
+                    boneList.Values[i].Reset();
 				}
 			}
 		}
@@ -694,7 +715,7 @@ namespace Axiom.Animating
 			// set all bones back to their binding pose
 			for ( int i = 0; i < boneList.Count; i++ )
 			{
-				boneList[ i ].SetBindingPose();
+                boneList.Values[i].SetBindingPose();
 			}
 		}
 

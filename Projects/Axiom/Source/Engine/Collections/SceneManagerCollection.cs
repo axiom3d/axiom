@@ -36,12 +36,6 @@ using System.Diagnostics;
 
 using Axiom.Core;
 
-// used to alias a type in the code for easy copying and pasting.  Come on generics!!
-using T = Axiom.Core.SceneManager;
-// used to alias a key value in the code for easy copying and pasting.  Come on generics!!
-using K = System.String;
-
-
 
 #endregion Namespace Declarations
 
@@ -51,71 +45,19 @@ namespace Axiom.Collections
 	/// <summary>
 	///		
 	/// </summary>
-	public class SceneManagerCollection : AxiomCollection 		
+    public class SceneManagerCollection : NamedCollection<SceneManager>
 	{
 		#region Constructors
 
         /// <summary>
         ///		Default constructor.
         /// </summary>
-        public SceneManagerCollection () : base()
+        public SceneManagerCollection()
+            : base()
         {
 			
         }
         
         #endregion
-
-        #region Strongly typed methods and indexers
-
-        /// <summary>
-        ///		Get/Set indexer that allows access to the collection by index.
-        /// </summary>
-        new public T this[ int index ]
-        {
-            get
-            {
-                return (T)base[ index ];
             }
-            set
-            {
-                base[ index ] = value;
             }
-        }
-
-        /// <summary>
-        ///		Get/Set indexer that allows access to the collection by key value.
-        /// </summary>
-        public T this[ K key ]
-        {
-            get
-            {
-                return (T)base[ key ];
-            }
-            set
-            {
-                base[ key ] = value;
-            }
-        }
-
-        /// <summary>
-        ///		Adds an object to the collection.
-        /// </summary>
-        /// <param name="item"></param>
-        public void Add( T item )
-        {
-            Add( item.Name, item );
-        }
-
-        /// <summary>
-        ///		Adds a named object to the collection.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="item"></param>
-        public void Add( K key, T item )
-        {
-            base.Add( key, item );
-        }
-
-        #endregion
-	}
-}

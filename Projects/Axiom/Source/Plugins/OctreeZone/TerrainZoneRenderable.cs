@@ -166,7 +166,7 @@ namespace OctreeZone
         public TerrainZoneRenderable( string name, TerrainZone tsm )
             : base()
         {
-            Name = name;
+            this.name = name;
             mTerrainZone = tsm;
             mTerrain = null;
             mPositionBuffer = null;

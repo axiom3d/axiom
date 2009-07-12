@@ -79,7 +79,7 @@ namespace Axiom.Demos
         {
             RAND = new Random( 0 ); // najak: use a time-based seed
             GuiMgr = OverlayManager.Instance.Elements;
-
+			scene.AmbientLight = new ColorEx( 0.75f, 0.75f, 0.75f ); // default Ambient Light
             // Customize Controls - speed up camera and slow down the input update rate
             this.camSpeed = 5.0f;
             inputInterval = inputTimer = 0.02f;
@@ -104,7 +104,7 @@ namespace Axiom.Demos
             //scene.SetFog(FogMode.Exp, ColorEx.White, 0.000020f); // add Fog for fun, cuz we can
             
             // show overlay
-            waterOverlay = (Overlay)OverlayManager.Instance.GetByName( "Example/WaterOverlay" );
+            waterOverlay = OverlayManager.Instance.GetByName( "Example/WaterOverlay" );
             waterOverlay.Show();
 
             // Create Rain Emitter, but default Rain to OFF

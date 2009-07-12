@@ -196,6 +196,7 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
+        
         protected float remainder = 0;
 
         protected Hashtable commandTable = new Hashtable();

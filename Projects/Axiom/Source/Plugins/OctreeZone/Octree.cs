@@ -172,7 +172,7 @@ namespace OctreeZone
 
             for ( i = Index; i >= 0; i-- )
             {
-                check = ( PCZSceneNode ) NodeList[ i ];
+                check = ( PCZSceneNode ) NodeList.Values[ i ];
 
                 if ( check == node )
                 {

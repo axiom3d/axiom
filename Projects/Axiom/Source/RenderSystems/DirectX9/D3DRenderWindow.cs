@@ -855,9 +855,9 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			// Notify viewports of resize
-			foreach ( KeyValuePair<int, Viewport> entry in this.viewportList )
+            foreach (Viewport entry in this.viewportList)
 			{
-				entry.Value.UpdateDimensions();
+                entry.UpdateDimensions();
 			}
 		}
 
@@ -1133,9 +1133,9 @@ namespace Axiom.RenderSystems.DirectX9
 							else
 							{
 								// Update dimensions incase changed
-								foreach ( KeyValuePair<int, Viewport> entry in this.viewportList )
+                                foreach (Viewport entry in this.viewportList)
 								{
-									entry.Value.UpdateDimensions();
+                                    entry.UpdateDimensions();
 								}
 								// Actual restoration of surfaces will happen in 
 								// D3D9RenderSystem::restoreLostDevice when it calls

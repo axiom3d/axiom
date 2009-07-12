@@ -195,6 +195,7 @@ namespace Axiom.Graphics
 			}
 		}
 
+
 		#endregion Name Property
 			
 		#region Ambient Property

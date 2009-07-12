@@ -394,7 +394,8 @@ namespace Axiom.SceneManagers.Bsp
         ///	</summary>
         public void RemoveObject( MovableObject obj )
         {
-            objectList.Remove( obj );
+            //thild: remove by key
+            objectList.Remove( obj.Name );
         }
 
         /// <summary>

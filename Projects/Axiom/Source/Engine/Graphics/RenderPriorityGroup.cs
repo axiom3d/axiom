@@ -40,6 +40,7 @@ using System.Diagnostics;
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -64,7 +65,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// 
 		/// </summary>
-		protected internal ArrayList transparentPasses = new ArrayList();
+        protected internal List<RenderablePass> transparentPasses = new List<RenderablePass>();
 		/// <summary>
 		///		Solid pass list, used when no shadows, modulative shadows, or ambient passes for additive.
 		/// </summary>
@@ -477,7 +478,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Nested class that implements IComparer for transparency sorting.
 		/// </summary>
-		class TransparencySort : IComparer
+		class TransparencySort : IComparer<RenderablePass>
 		{
 			private Camera camera;
 
@@ -486,9 +487,11 @@ namespace Axiom.Graphics
 				this.camera = camera;
 			}
 
-			#region IComparer Members
 
-			public int Compare( object x, object y )
+
+            #region IComparer<RenderablePass> Members
+
+            public int Compare(RenderablePass x, RenderablePass y)
 			{
 				if ( x == null || y == null )
 					return 0;
@@ -497,15 +500,12 @@ namespace Axiom.Graphics
 				if ( x == y )
 					return 0;
 
-				RenderablePass a = x as RenderablePass;
-				RenderablePass b = y as RenderablePass;
-
-				float adepth = a.renderable.GetSquaredViewDepth( camera );
-				float bdepth = b.renderable.GetSquaredViewDepth( camera );
+                float adepth = x.renderable.GetSquaredViewDepth(camera);
+                float bdepth = y.renderable.GetSquaredViewDepth(camera);
 
 				if ( adepth == bdepth )
 				{
-					if ( a.pass.GetHashCode() < b.pass.GetHashCode() )
+                    if (x.pass.GetHashCode() < y.pass.GetHashCode())
 					{
 						return 1;
 					}

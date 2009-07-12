@@ -78,7 +78,7 @@ namespace Axiom.SceneManagers.Octree
         Children are dynamically created as needed when nodes are inserted in the Octree.
         If, later, the all the nodes are removed from the child, it is still kept arround.
         */
-        public Octree[ , , ] Children = new Octree[ 8, 8, 8 ];
+        public Octree[, ,] Children = new Octree[8, 8, 8];
 
         protected Octree parent = null;
 
@@ -106,25 +106,28 @@ namespace Axiom.SceneManagers.Octree
             //set{nodeList = value;}
         }
 
-        public WireBoundingBox BoundingBox
-        {
-            get
-            {
-                // Create a WireBoundingBox if needed
-                if ( this.wireBoundingBox == null )
-                {
-                    this.wireBoundingBox = new WireBoundingBox();
-                }
+       // public WireBoundingBox BoundingBox
+       // {
+            //thild: removed BoundingBox
+            //public WireBoundingBox BoundingBox
+            //{
+            //    get
+            //    {
+            //        // Create a WireBoundingBox if needed
+            //        if ( this.wireBoundingBox == null )
+            //        {
+            //            this.wireBoundingBox = new WireBoundingBox();
+            //        }
 
-                this.wireBoundingBox.InitAABB( this.box );
-                return this.wireBoundingBox;
-            }
+            // 		this.wireBoundingBox.InitAABB( this.box );
+            //        return this.wireBoundingBox;
+            //    }
 
-            set
-            {
-                wireBoundingBox = value;
-            }
-        }
+            //   set
+            //   {
+            //       wireBoundingBox = value;
+            //   }
+       // }
 
         public Vector3 HalfSize
         {
@@ -151,7 +154,8 @@ namespace Axiom.SceneManagers.Octree
         }
 
         #endregion
-        public Octree( Octree parent )
+
+        public Octree(Octree parent)
         {
             this.wireBoundingBox = null;
             this.HalfSize = new Vector3();
@@ -160,18 +164,39 @@ namespace Axiom.SceneManagers.Octree
             this.NumNodes = 0;
         }
 
-        public void AddNode( OctreeNode node )
+        public void AddNode(OctreeNode node)
         {
-            nodeList[ node.Name ] = node;
+            // TODO: Att some points, some nodes seemed to be added if they already existed.  Investigate.
+            nodeList.Add(node);
             node.Octant = this;
             Ref();
         }
 
-        public void RemoveNode( OctreeNode node )
+        public void RemoveNode(OctreeNode node)
         {
-            node.Octant = null;
-            NodeList.Remove( node );
-            UnRef();
+            //OctreeNode check;
+            //int i;
+            //int Index;
+
+            //Index = NodeList.Count - 1;
+
+            //for ( i = Index; i >= 0; i-- )
+            //{
+            //    check = (OctreeNode)NodeList.Values[i];
+
+            //    if ( check == node )
+            //    {
+            //        node.Octant = null;
+            //        NodeList.RemoveAt( i );
+            //        UnRef();
+            //    }
+            //}
+
+            if (nodeList.Remove(node.Name))
+            {
+                node.Octant = null;
+                UnRef();
+            }
         }
 
         /// <summary>
@@ -181,14 +206,14 @@ namespace Axiom.SceneManagers.Octree
         ///	box will fit into a child of this octree.
         /// </summary>
 
-        public bool IsTwiceSize( AxisAlignedBox box )
+        public bool IsTwiceSize(AxisAlignedBox box)
         {
             Vector3[] pts1 = this.box.Corners;
             Vector3[] pts2 = box.Corners;
 
-            return ( ( pts2[ 4 ].x - pts2[ 0 ].x ) <= ( pts1[ 4 ].x - pts1[ 0 ].x ) / 2 ) &&
-                ( ( pts2[ 4 ].y - pts2[ 0 ].y ) <= ( pts1[ 4 ].y - pts1[ 0 ].y ) / 2 ) &&
-                ( ( pts2[ 4 ].z - pts2[ 0 ].z ) <= ( pts1[ 4 ].z - pts1[ 0 ].z ) / 2 );
+            return ((pts2[4].x - pts2[0].x) <= (pts1[4].x - pts1[0].x) / 2) &&
+                ((pts2[4].y - pts2[0].y) <= (pts1[4].y - pts1[0].y) / 2) &&
+                ((pts2[4].z - pts2[0].z) <= (pts1[4].z - pts1[0].z) / 2);
 
         }
 
@@ -199,16 +224,16 @@ namespace Axiom.SceneManagers.Octree
         ///finding the appropriate octree to insert the box.  Since it is a loose octree, only the
         ///center of the box is checked to determine the octant.
         /// </summary>
-        public void GetChildIndexes( AxisAlignedBox aabox, out int x, out int y, out int z )
+        public void GetChildIndexes(AxisAlignedBox aabox, out int x, out int y, out int z)
         {
 
             Vector3 max = this.box.Maximum;
             Vector3 min = aabox.Minimum;
 
-            Vector3 Center = this.box.Maximum.MidPoint( this.box.Minimum );
-            Vector3 CheckCenter = aabox.Maximum.MidPoint( aabox.Minimum );
+            Vector3 Center = this.box.Maximum.MidPoint(this.box.Minimum);
+            Vector3 CheckCenter = aabox.Maximum.MidPoint(aabox.Minimum);
 
-            if ( CheckCenter.x > Center.x )
+            if (CheckCenter.x > Center.x)
             {
                 x = 1;
             }
@@ -218,7 +243,7 @@ namespace Axiom.SceneManagers.Octree
             }
 
 
-            if ( CheckCenter.y > Center.y )
+            if (CheckCenter.y > Center.y)
             {
                 y = 1;
             }
@@ -228,7 +253,7 @@ namespace Axiom.SceneManagers.Octree
             }
 
 
-            if ( CheckCenter.z > Center.z )
+            if (CheckCenter.z > Center.z)
             {
                 z = 1;
             }
@@ -249,7 +274,7 @@ namespace Axiom.SceneManagers.Octree
             get
             {
                 Vector3[] Corners = this.box.Corners;
-                box.SetExtents( Corners[ 0 ] - this.HalfSize, Corners[ 4 ] + this.HalfSize );
+                box.SetExtents(Corners[0] - this.HalfSize, Corners[4] + this.HalfSize);
 
                 return box;
             }
@@ -259,7 +284,7 @@ namespace Axiom.SceneManagers.Octree
         {
             numNodes++;
 
-            if ( parent != null )
+            if (parent != null)
             {
                 parent.Ref();
             }
@@ -269,11 +294,25 @@ namespace Axiom.SceneManagers.Octree
         {
             numNodes--;
 
-            if ( parent != null )
+            if (parent != null)
             {
                 parent.UnRef();
             }
         }
 
+        //thild: implemented Octree.WireBoundingBox
+        public WireBoundingBox WireBoundingBox
+        {
+            get
+            {
+                // Create a WireBoundingBox if needed
+                if (wireBoundingBox == null)
+                    wireBoundingBox = new WireBoundingBox();
+
+                wireBoundingBox.SetupBoundingBox(box);
+                return wireBoundingBox;
+            }
+        }
     }
 }
+

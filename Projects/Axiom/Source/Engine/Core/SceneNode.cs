@@ -40,7 +40,7 @@ using System.Collections;
 using Axiom.Collections;
 using Axiom.Math;
 using Axiom.Graphics;
-
+using System.Collections.Generic;
 #endregion Namespace Declarations
 
 namespace Axiom.Core
@@ -77,7 +77,7 @@ namespace Axiom.Core
         /// <summary>
         /// Gets the list of scene objects attached to this scene node
         /// </summary>
-        public ICollection Objects
+        public IList<MovableObject> Objects
         {
             get
             {
@@ -472,9 +472,10 @@ namespace Axiom.Core
         {
             Debug.Assert( index < objectList.Count, "index < objectList.Count" );
 
-            MovableObject obj = objectList[ index ];
+            MovableObject obj = objectList.Values[index];
 
-            objectList.Remove( obj );
+            //thild: remove at
+            objectList.RemoveAt(index);
 
             // notify the object that it was removed (sending in null sets its parent scene node to null)
             obj.NotifyAttached( null );
@@ -491,7 +492,8 @@ namespace Axiom.Core
         /// <param name="obj"></param>
         public virtual void NotifyAttachedObjectNameChanged( MovableObject obj )
         {
-            objectList.Remove( obj );
+            //thild: remove by name
+            objectList.Remove( obj.Name );
             objectList.Add( obj );
         }
 
@@ -506,7 +508,8 @@ namespace Axiom.Core
         {
             Debug.Assert( obj != null, "obj != null" );
 
-            objectList.Remove( obj );
+            //thild: remove by name
+            objectList.Remove( obj.Name );
 
             // notify the object that it was removed (sending in null sets its parent scene node to null)
             obj.NotifyAttached( null );
@@ -536,7 +539,7 @@ namespace Axiom.Core
         {
             if ( objectList.Count <= index )
                 return null;
-            return objectList[ index ];
+           return objectList.Values[index];
         }
 
         /// <summary>
@@ -597,7 +600,7 @@ namespace Axiom.Core
         {
             while( this.childNodes.Count!=  0)
             {
-                SceneNode sn = (SceneNode)this.childNodes[ 0 ];
+                SceneNode sn = (SceneNode)this.childNodes.Values[ 0 ];
                 // increment iterator before destroying (iterator invalidated by 
                 // SceneManager::destroySceneNode because it causes removal from parent)
                 sn.RemoveAndDestroyAllChildren();
@@ -674,7 +677,7 @@ namespace Axiom.Core
             //objectListMeter.Enter();
             for ( int i = 0; i < objectList.Count; i++ )
             {
-                MovableObject obj = objectList[ i ];
+                MovableObject obj = objectList.Values[i];
 
                 // tell attached object about current camera in case it wants to know
                 //notifyCameraMeter.Enter();
@@ -698,7 +701,7 @@ namespace Axiom.Core
                 // ask all child nodes to update the render queue with visible objects
                 for ( int i = 0; i < childNodes.Count; i++ )
                 {
-                    SceneNode childNode = (SceneNode)childNodes[ i ];
+                    SceneNode childNode = (SceneNode)childNodes.Values[i];
                     if ( childNode.IsVisible )
                         childNode.FindVisibleObjects( camera, queue, includeChildren, displayNodes, onlyShadowCasters );
                 }
@@ -747,7 +750,7 @@ namespace Axiom.Core
             // update bounds from attached objects
             for ( int i = 0; i < objectList.Count; i++ )
             {
-                MovableObject obj = objectList[ i ];
+                MovableObject obj = objectList.Values[i];
 
                 // update
                 worldAABB.Merge( obj.GetWorldBoundingBox( true ) );
@@ -757,7 +760,7 @@ namespace Axiom.Core
             // merge with Children
             for ( int i = 0; i < childNodes.Count; i++ )
             {
-                SceneNode child = (SceneNode)childNodes[ i ];
+                SceneNode child = (SceneNode)childNodes.Values[i];
 
                 // merge our bounding box with that of the child node
                 worldAABB.Merge( child.worldAABB );

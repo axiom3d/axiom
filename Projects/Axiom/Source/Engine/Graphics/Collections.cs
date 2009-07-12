@@ -79,7 +79,7 @@ namespace Axiom.Graphics
     /// <summary>
     ///     Generics: List<AutoConstantEntry>
     /// </summary>
-    public class FloatConstantEntryList : ArrayList
+    public class FloatConstantEntryList : List<GpuProgramParameters.FloatConstantEntry>
     {
         public void Resize( int size )
         {
@@ -93,7 +93,7 @@ namespace Axiom.Graphics
     /// <summary>
     ///     Generics: List<AutoConstantEntry>
     /// </summary>
-    public class IntConstantEntryList : ArrayList
+    public class IntConstantEntryList : List<GpuProgramParameters.IntConstantEntry>
     {
         public void Resize( int size )
         {
@@ -154,23 +154,7 @@ namespace Axiom.Graphics
     /// <summary>
     ///		Generics: List<RenderOperation>
     /// </summary>
-    public class OperationTypeList : ArrayList
+    public class OperationTypeList : List<OperationType>
     {
-        public void Add( OperationType type )
-        {
-            base.Add( type );
         }
-
-        public new OperationType this[ int index ]
-        {
-            get
-            {
-                return (OperationType)base[ index ];
             }
-            set
-            {
-                base[ index ] = value;
-            }
-        }
-    }
-}

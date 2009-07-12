@@ -100,7 +100,7 @@ namespace Axiom.Animating
     ///		You should not create these animations directly. They will be created via a parent
     ///		object which owns the animation, e.g. Skeleton, SceneManager, etc.
     /// </remarks>
-	public class Animation
+    public class Animation : INamable
 	{
 		#region Member variables
 

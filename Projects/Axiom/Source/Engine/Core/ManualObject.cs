@@ -116,9 +116,10 @@ namespace Axiom.Core
     {
         #region Constructor
 
-        public ManualObject( string name )
+        public ManualObject(string name) : base(name)
         {
-            base.Name = name;
+            //thild: removed
+            //base.Name = name;
             this.dynamic = false;
             this.currentSection = null;
             this.firstVertex = true;

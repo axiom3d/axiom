@@ -25,12 +25,12 @@ namespace Axiom.Demos.Browser.CommandLine
 		private RenderSystem _currentSystem;
 		private DialogResult _result;
 		private ConfigOption _currentOption;
-		private ArrayList _menuItems = new ArrayList();
-		private ArrayList _options = new ArrayList();
+		private List<ConfigOption> _menuItems = new List<ConfigOption>();
+        private List<ConfigOption> _options = new List<ConfigOption>();
 
 		public ConfigDialog()
 		{
-			_currentSystem = Root.Instance.RenderSystems[ 0 ];
+			_currentSystem = Root.Instance.RenderSystems.Values[0];
 			_renderSystems = new ConfigOption( "Render System", _currentSystem.Name, false );
 			foreach ( RenderSystem rs in Root.Instance.RenderSystems )
 			{
@@ -58,8 +58,8 @@ namespace Axiom.Demos.Browser.CommandLine
 			_menuItems.Clear();
 			if ( _currentOption == null )
 				BuildMainMenu();
-			else
-				BuildOptionMenu();
+			//else
+            //    BuildOptionMenu();
 		}
 
 		private void BuildMainMenu()
@@ -70,13 +70,13 @@ namespace Axiom.Demos.Browser.CommandLine
 			}
 		}
 
-		private void BuildOptionMenu()
-		{
-			for ( int index = 0; index < _currentOption.PossibleValues.Count; index++ )
-			{
-				_menuItems.Add( _currentOption.PossibleValues.Values[ index ].ToString() );
-			}
-		}
+	        //private void BuildOptionMenu()
+        //{
+        //    foreach (string value in _currentOption.PossibleValues)
+        //    {
+        //        _menuItems.Add(value);
+        //    }
+        //}
 
 		private void DisplayOptions()
 		{
@@ -155,17 +155,23 @@ namespace Axiom.Demos.Browser.CommandLine
 
 				if ( key < _menuItems.Count )
 				{
-					_currentOption = (ConfigOption)_menuItems[ key ];
+					_currentOption = _options.Find
+					(
+                        delegate(ConfigOption c)
+                        {
+                            return c == _menuItems[key];
+						}
+					);
 				}
-			}
+            }
 			else
 			{
-				_currentOption.Value = _currentOption.PossibleValues.Values[ key ].ToString();
+				_currentOption.Value = _currentOption.PossibleValues[key].ToString();
 
 				if ( _currentOption.Name == "Render System" ) // About to change Renderers
 				{
 					_renderSystems = _currentOption;
-					_currentSystem = Root.Instance.RenderSystems[ key ];
+					_currentSystem = Root.Instance.RenderSystems[key.ToString()];
 					BuildOptions();
 					_currentOption = null;
 

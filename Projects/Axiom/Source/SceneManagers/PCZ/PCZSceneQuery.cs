@@ -101,9 +101,9 @@ namespace Axiom.SceneManagers.PortalConnected
                     //grab all moveables from the node that intersect...
                     foreach (PCZSceneNode node in list)
                     {
-                        foreach (MovableObject m in node.Children)
+                        foreach (MovableObject m in node.Objects)
                         {
-
+                           // MovableObject m = 
                             if (m != e &&
                                 !set.ContainsKey(m) &&
                                 !set.ContainsKey(e) &&

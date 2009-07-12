@@ -51,10 +51,9 @@ namespace Axiom.Demos
             entityList.Add( box );
             scene.RootSceneNode.CreateChildSceneNode( new Vector3( -200, 100, -200 ), Quaternion.Identity ).AttachObject( box );
 
-            frustum = new Frustum();
+            frustum = new Frustum("PlayFrustum");
             frustum.Near = 10;
             frustum.Far = 300;
-            frustum.Name = "PlayFrustum";
 
             // create a node for the frustum and attach it
             frustumNode = scene.RootSceneNode.CreateChildSceneNode( new Vector3( 0, 0, 200 ), Quaternion.Identity );

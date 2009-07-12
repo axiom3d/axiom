@@ -40,6 +40,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 
 using Tao.OpenGl;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -68,7 +69,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
 		#region Inner Classes
 
-		public class UniformReferenceList : ArrayList
+		public class UniformReferenceList : List<UniformReference>
 		{
 		}
 
