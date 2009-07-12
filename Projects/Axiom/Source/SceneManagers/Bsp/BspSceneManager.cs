@@ -44,7 +44,7 @@ using Axiom.Math;
 using Axiom.Graphics;
 using Axiom.Collections;
 using Axiom.Math.Collections;
-
+using System.Collections.Generic;
 #endregion Namespace Declarations
 
 namespace Axiom.SceneManagers.Bsp
@@ -85,7 +85,7 @@ namespace Axiom.SceneManagers.Bsp
         protected bool showNodeAABs;
         protected RenderOperation aaBGeometry = new RenderOperation();
 
-        protected Bsp.Collections.Map matFaceGroupMap = new Bsp.Collections.Map();
+        protected Map<Material, BspStaticFaceGroup> matFaceGroupMap = new Map<Material, BspStaticFaceGroup>();
         protected MovableObjectCollection objectsForRendering = new MovableObjectCollection();
 		protected BspGeometry bspGeometry;
         protected SpotlightFrustum spotlightFrustum;
@@ -333,7 +333,7 @@ namespace Axiom.SceneManagers.Bsp
 
             for (int i = 0; i < Lights.Count; i++)
             {
-                Light light = (Light)Lights[i];
+                Light light = destList.Values[ i ];
                 lightNodes[ i ] = (BspNode)level.objectToNodeMap.FindFirst( light );
             }
 
@@ -344,7 +344,7 @@ namespace Axiom.SceneManagers.Bsp
             // loop through the scene lights an add ones in range and visible from positionNode
             for (int i = 0; i < Lights.Count; i++)
             {
-                TextureLight light = (TextureLight)Lights[i];
+                TextureLight light = (TextureLight)destList.Values[ i ];
 
                 if ( light.IsVisible && level.IsLeafVisible( positionNode, lightNodes[ i ] ) )
                 {
@@ -395,7 +395,7 @@ namespace Axiom.SceneManagers.Bsp
 
                 for (int i = 0; i < Lights.Count; i++)
                 {
-                    TextureLight light = (TextureLight)Lights[i];
+                    TextureLight light = (TextureLight)Lights[ i ];
 
                     if ( !light.IsVisible )
                         continue;
@@ -444,7 +444,8 @@ namespace Axiom.SceneManagers.Bsp
         public override SceneNode CreateSceneNode()
         {
             BspSceneNode node = new BspSceneNode( this );
-            this.sceneNodeList[ node.Name ] = node;
+            //thild: add instead set
+             this.sceneNodeList.Add ( node );
 
             return node;
         }
@@ -455,7 +456,8 @@ namespace Axiom.SceneManagers.Bsp
         public override SceneNode CreateSceneNode( string name )
         {
             BspSceneNode node = new BspSceneNode( this, name );
-            this.sceneNodeList[ node.Name ] = node;
+            //thild: add instead set
+            this.sceneNodeList.Add ( node );
 
             return node;
         }
@@ -469,7 +471,7 @@ namespace Axiom.SceneManagers.Bsp
             TextureLight light = new TextureLight( name, this );
 
             // add the light to the list
-            Lights.Add(name, light);
+            ((MovableObjectCollection)Lights).Add( name, light );
 
             // add it in the bsp tree
             NotifyObjectMoved( light, light.Position );
@@ -501,7 +503,8 @@ namespace Axiom.SceneManagers.Bsp
 
         public override void RemoveEntity( string name )
         {
-            Entity entity = (Entity)Entities[ name ];
+            
+            Entity entity =(Entity)((MovableObjectCollection)Entities)[ name ];
             if ( entity != null )
             {
                 this.RemoveEntity( entity );
@@ -513,7 +516,7 @@ namespace Axiom.SceneManagers.Bsp
             if (Entities != null)
 			{
                 for (int i = 0; i < Entities.Count; i++)
-                    NotifyObjectDetached(Entities[i]);
+                    NotifyObjectDetached( ((MovableObjectCollection)Entities).Values[ i ] );
 			}
             base.RemoveAllEntities();
         }
@@ -694,7 +697,7 @@ namespace Axiom.SceneManagers.Bsp
 
             for (int lp = 0; lp < Lights.Count; lp++)
             {
-                TextureLight light = (TextureLight)Lights[lp];
+                TextureLight light = (TextureLight)Lights[ lp ];
                 lights[ lp ] = light;
                 lightNodes[ lp ] = (BspNode)level.objectToNodeMap.FindFirst( light );
                 if ( light.Type != LightType.Directional )
@@ -795,7 +798,7 @@ namespace Axiom.SceneManagers.Bsp
                     }
 
                     // Try to insert, will find existing if already there
-                    matFaceGroupMap.Insert( mat, faceGroup );
+                    matFaceGroupMap.Add( mat, faceGroup );
                 }
             }
 
@@ -803,9 +806,9 @@ namespace Axiom.SceneManagers.Bsp
             // Add movables to render queue, provided it hasn't been seen already.			
             for ( int i = 0; i < leaf.Objects.Count; i++ )
             {
-                if ( !objectsForRendering.ContainsKey( ( (MovableObject)leaf.Objects[ i ] ).Name ) )
+                if ( !objectsForRendering.ContainsKey( ( (MovableObject)leaf.Objects.Values[ i ] ).Name ) )
                 {
-                    MovableObject obj = leaf.Objects[ i ];
+                    MovableObject obj = leaf.Objects.Values[ i ];
 
                     if ( obj.IsVisible &&
                         ( !onlyShadowCasters || obj.CastShadows ) &&
@@ -1002,7 +1005,7 @@ namespace Axiom.SceneManagers.Bsp
             ambientBlend.colorArg2 = bspAmbient;
 
             // For each material in turn, cache rendering data & render
-            IEnumerator mapEnu = matFaceGroupMap.buckets.Keys.GetEnumerator();
+            IEnumerator mapEnu = matFaceGroupMap.Keys.GetEnumerator();
 
             bool passIsSet = false;
 
@@ -1010,7 +1013,7 @@ namespace Axiom.SceneManagers.Bsp
             {
                 // Get Material
                 Material thisMaterial = (Material)mapEnu.Current;
-                BspStaticFaceGroup[] faceGrp = (BspStaticFaceGroup[])( (ArrayList)matFaceGroupMap.buckets[ thisMaterial ] ).ToArray( typeof( BspStaticFaceGroup ) );
+                List<BspStaticFaceGroup> faceGrp = matFaceGroupMap[ thisMaterial ];
 
                 // if one face group is a quake shader then the material is a quake shader
                 bool isQuakeShader = faceGrp[ 0 ].isQuakeShader;
@@ -1023,7 +1026,7 @@ namespace Axiom.SceneManagers.Bsp
                 {
                     uint* pIdx = (uint*)renderOp.indexData.indexBuffer.Lock( BufferLocking.Discard );
 
-                    for ( int i = 0; i < faceGrp.Length; i++ )
+                    for ( int i = 0; i < faceGrp.Count; i++ )
                     {
                         // Cache each
                         int numElems = CacheGeometry( (IntPtr)pIdx, faceGrp[ i ] );
@@ -1094,7 +1097,7 @@ namespace Axiom.SceneManagers.Bsp
         /// </summary>
         protected void RenderTextureLighting( int lightIndex )
         {
-            TextureLight light = (TextureLight)Lights[lightIndex];
+            TextureLight light = (TextureLight)((MovableObjectCollection)Lights).Values[ lightIndex ];
 
             if ( !light.IsTextureLight )
                 return;
@@ -1159,13 +1162,13 @@ namespace Axiom.SceneManagers.Bsp
             }
 
             // For each material in turn, cache rendering data & render
-            IEnumerator mapEnu = matFaceGroupMap.buckets.Keys.GetEnumerator();
+            IEnumerator mapEnu = matFaceGroupMap.Keys.GetEnumerator();
 
             while ( mapEnu.MoveNext() )
             {
                 // Get Material
                 Material thisMaterial = (Material)mapEnu.Current;
-                BspStaticFaceGroup[] faceGrp = (BspStaticFaceGroup[])( (ArrayList)matFaceGroupMap.buckets[ thisMaterial ] ).ToArray( typeof( BspStaticFaceGroup ) );
+                List<BspStaticFaceGroup> faceGrp = matFaceGroupMap[ thisMaterial ];
 
                 // if one face group is a quake shader then the material is a quake shader
                 if ( faceGrp[ 0 ].isQuakeShader )
@@ -1186,7 +1189,7 @@ namespace Axiom.SceneManagers.Bsp
                     TextureLightMap* pTexLightMap = (TextureLightMap*)lightTexCoordBuffer.Lock( BufferLocking.Discard );
                     uint* pIdx = (uint*)renderOp.indexData.indexBuffer.Lock( BufferLocking.Discard );
 
-                    for ( int i = 0; i < faceGrp.Length; i++ )
+                    for ( int i = 0; i < faceGrp.Count; i++ )
                     {
                         if ( faceGrp[ i ].type != FaceGroup.Patch &&
                             light.AffectsFaceGroup( faceGrp[ i ], cullMode ) )
@@ -1272,13 +1275,14 @@ namespace Axiom.SceneManagers.Bsp
                 uint* pIdx = (uint*)renderOp.indexData.indexBuffer.Lock( BufferLocking.Discard );
 
                 // For each material in turn, cache rendering data
-                IEnumerator mapEnu = matFaceGroupMap.buckets.Keys.GetEnumerator();
+                IEnumerator mapEnu = matFaceGroupMap.Keys.GetEnumerator();
 
                 while ( mapEnu.MoveNext() )
                 {
                     // Get Material
                     Material thisMaterial = (Material)mapEnu.Current;
-                    BspStaticFaceGroup[] faceGrp = (BspStaticFaceGroup[])( (ArrayList)matFaceGroupMap.buckets[ thisMaterial ] ).ToArray( typeof( BspStaticFaceGroup ) );
+                    BspStaticFaceGroup[] faceGrp = matFaceGroupMap[ thisMaterial ].ToArray();
+
 
                     // if one face group is a quake shader then the material is a quake shader
                     if ( faceGrp[ 0 ].isQuakeShader )
@@ -1334,7 +1338,7 @@ namespace Axiom.SceneManagers.Bsp
 
                         // find the index of the light
                         for (index = 0; index < Lights.Count; index++)
-                            if (Lights[index] == lightsAffectingFrustum[i])
+                            if ( ((MovableObjectCollection)Lights).Values[ index ] == lightsAffectingFrustum.Values[ i ] )
                                 break;
 
                         if (index < Lights.Count)
@@ -1367,7 +1371,7 @@ namespace Axiom.SceneManagers.Bsp
 
                             // find the index of the light
                             for (index = 0; index < Lights.Count; index++)
-                                if (Lights[index] == manualLightList[i])
+                                if ( ((MovableObjectCollection)Lights).Values[ index ] == manualLightList.Values[ i ] )
                                     break;
 
                             if (index < Lights.Count)
@@ -1411,7 +1415,7 @@ namespace Axiom.SceneManagers.Bsp
             int leafPoint = lvl.LeafStart;
             int numLeaves = lvl.NumLeaves;
 
-            Bsp.Collections.Map objIntersections = new Bsp.Collections.Map();
+            Map<MovableObject, MovableObject> objIntersections = new Map<MovableObject, MovableObject>();
             PlaneBoundedVolume boundedVolume = new PlaneBoundedVolume( PlaneSide.Positive );
 
             while ( ( numLeaves-- ) != 0 )
@@ -1422,7 +1426,7 @@ namespace Axiom.SceneManagers.Bsp
 
                 for ( int a = 0; a < numObjects; a++ )
                 {
-                    MovableObject aObj = objects[ a ];
+                    MovableObject aObj = objects.Values[ a ];
                     // Skip this object if collision not enabled
                     if ( ( aObj.QueryFlags & queryMask ) == 0 )
                         continue;
@@ -1433,7 +1437,7 @@ namespace Axiom.SceneManagers.Bsp
                         int b = a;
                         for ( ++b; b < numObjects; ++b )
                         {
-                            MovableObject bObj = objects[ b ];
+                            MovableObject bObj = objects.Values[ b ];
                             // Apply mask to b (both must pass)
                             if ( ( bObj.QueryFlags & queryMask ) != 0 )
                             {
@@ -1451,7 +1455,7 @@ namespace Axiom.SceneManagers.Bsp
 
                                     if ( !alreadyReported )
                                     {
-                                        objIntersections.Insert( aObj, bObj );
+                                        objIntersections.Add( aObj, bObj );
                                         listener.OnQueryResult( aObj, bObj );
                                     }
                                 }
@@ -1504,7 +1508,7 @@ namespace Axiom.SceneManagers.Bsp
 
                             if ( !alreadyReported )
                             {
-                                objIntersections.Insert( aObj, brush );
+                                //objIntersections.Add( aObj, brush );
                                 // report this brush as it's WorldFragment
                                 brush.Fragment.FragmentType = WorldFragmentType.PlaneBoundedRegion;
                                 listener.OnQueryResult( aObj, brush.Fragment );
@@ -1595,7 +1599,7 @@ namespace Axiom.SceneManagers.Bsp
             //Check ray against objects
             for ( int a = 0; a < numObjects; a++ )
             {
-                MovableObject obj = objects[ a ];
+                MovableObject obj = objects.Values[ a ];
                 // Skip this object if collision not enabled
                 if ( ( obj.QueryFlags & queryMask ) == 0 )
                     continue;
@@ -1662,7 +1666,7 @@ namespace Axiom.SceneManagers.Bsp
         #region Protected Members
 
         protected ISceneQueryListener listener;
-        protected ArrayList foundIntersections = new ArrayList();
+        protected List<MovableObject> foundIntersections = new List<MovableObject>();
 
         #endregion
 
@@ -1714,7 +1718,7 @@ namespace Axiom.SceneManagers.Bsp
             //Check sphere against objects
             for ( int a = 0; a < numObjects; a++ )
             {
-                MovableObject obj = objects[ a ];
+                MovableObject obj = objects.Values[ a ];
                 // Skip this object if collision not enabled
                 if ( ( obj.QueryFlags & queryMask ) == 0 )
                     continue;

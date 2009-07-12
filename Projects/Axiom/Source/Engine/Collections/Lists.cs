@@ -38,27 +38,24 @@ using System.Collections;
 using System.Diagnostics;
 
 using Axiom.Core;
+using Axiom.Controllers;
+using System.Collections.Generic;
+using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Collections
 {
-    /// <summary>
-    /// Summary description for AnimationCollection.
-    /// </summary>
-    public class ControllerList : ArrayList
+
+    public class MaterialList : List<Material>
     {
     }
 
-    public class MaterialList : ArrayList
+    public class BillboardList : List<Billboard>
     {
     }
 
-    public class BillboardList : ArrayList
-    {
-    }
-
-    public class ImageList : ArrayList
+    public class ImageList : List<Axiom.Media.Image>
     {
     }
 }

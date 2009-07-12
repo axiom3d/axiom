@@ -202,10 +202,11 @@ namespace Axiom.Core
             // destroy all instances for this factory						
             for ( int i = 0; i < _instances.Values.Count; i++ )
             {
-                if ( _instances[ i ].TypeName == fact.MetaData.typeName )
+                if ( _instances.Values[ i ].TypeName == fact.MetaData.typeName )
                 {
-                    fact.DestroyInstance( _instances[ i ] );
-                    _instances.Remove( _instances[ i ] );
+                    fact.DestroyInstance(_instances.Values[i]);
+                    //thild: remove by name
+                    _instances.Remove(_instances.Values[i].Name);
                 }
             }
 
@@ -341,7 +342,8 @@ namespace Axiom.Core
         public void DestroySceneManager( SceneManager sm )
         {
             // erase instance from list
-            _instances.Remove( sm );
+            //thild: remove by name
+            _instances.Remove( sm.Name );
 
             foreach ( SceneManagerFactory factory in _factories )
             {

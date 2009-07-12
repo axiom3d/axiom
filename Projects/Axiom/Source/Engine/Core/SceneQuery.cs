@@ -40,7 +40,7 @@ using Axiom.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Math.Collections;
-
+using System.Collections.Generic;
 #endregion Namespace Declarations
 
 namespace Axiom.Core
@@ -330,7 +330,7 @@ namespace Axiom.Core
         /// <summary>
         ///		List of world fragments.
         /// </summary>
-        public ArrayList worldFragments = new ArrayList();
+        public List<Axiom.Core.SceneQuery.WorldFragment> worldFragments = new List<Axiom.Core.SceneQuery.WorldFragment>();
     }
 
     /// <summary>
@@ -384,7 +384,7 @@ namespace Axiom.Core
         /// <summary>
         ///		List of query results from the last execution of this query.
         /// </summary>
-        protected ArrayList lastResults = new ArrayList();
+        protected List<RaySceneQueryResultEntry> lastResults = new List<RaySceneQueryResultEntry>();
 
         #endregion Fields
 
@@ -489,7 +489,7 @@ namespace Axiom.Core
         ///		this method that returns results through a listener is also available.
         /// </remarks>
         /// <returns></returns>
-        public virtual ArrayList Execute()
+        public virtual List<RaySceneQueryResultEntry> Execute()
         {
             ClearResults();
 

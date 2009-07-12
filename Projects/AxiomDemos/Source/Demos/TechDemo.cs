@@ -735,7 +735,10 @@ namespace Axiom.Demos
 
             return true;
         }
-
+        DateTime averageStart = DateTime.Now;
+        float sum = 0;
+        float average = 0;
+        int elapsedFrames = 1;
         protected void UpdateStats()
         {
             // TODO: Replace with CEGUI
@@ -748,9 +751,15 @@ namespace Axiom.Demos
             element = OverlayManager.Instance.Elements.GetElement( "Core/WorstFps" );
             element.Text = string.Format( "Worst FPS: {0:#.00}", Root.Instance.WorstFPS );
 
-            element = OverlayManager.Instance.Elements.GetElement( "Core/AverageFps" );
-            element.Text = string.Format( "Average FPS: {0:#.00}", Root.Instance.AverageFPS );
-
+            //element = OverlayManager.Instance.Elements.GetElement( "Core/AverageFps" );
+            //element.Text = string.Format( "Average FPS: {0:#.00}", Root.Instance.AverageFPS );
+			element = OverlayManager.Instance.Elements.GetElement( "Core/AverageFps" );
+			
+            sum += Root.Instance.CurrentFPS;
+            average = sum / elapsedFrames;
+            elapsedFrames++;
+            element.Text = string.Format( "Average FPS: {0:#.00} in {1:#.0}s", average, ( DateTime.Now - averageStart ).TotalSeconds );
+			
             element = OverlayManager.Instance.Elements.GetElement( "Core/NumTris" );
             element.Text = string.Format( "Triangle Count: {0}", scene.TargetRenderSystem.FacesRendered );
 

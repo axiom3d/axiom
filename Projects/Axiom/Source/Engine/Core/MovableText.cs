@@ -251,14 +251,16 @@ namespace Axiom.Core
         }
 
         public MovableText( string name, string caption, string fontName, int charHeight, ColorEx color )
+            : base(name) // thild
         {
+            
             if ( name == "" )
                 throw new AxiomException( "Trying to create MovableText without name." );
             if ( caption == "" )
                 throw new AxiomException( "Trying to create MovableText without caption." );
 
             _renderOperation = new RenderOperation();
-            this.Name = name;
+            //this.name = name;
             _caption = caption;
             _characterHeight = charHeight;
             _color = color;

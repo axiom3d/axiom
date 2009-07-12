@@ -243,7 +243,7 @@ namespace Axiom.Graphics
 			}
 			else
 			{
-				return currentLightList[ index ];
+				return currentLightList.Values[index];
 			}
 		}
 

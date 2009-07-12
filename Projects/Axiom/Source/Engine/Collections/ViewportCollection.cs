@@ -35,7 +35,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 
 using Axiom.Core;
@@ -46,6 +45,7 @@ using T = Axiom.Core.Viewport;
 using K = System.Int32;
 // type of parent of this collection (if any)
 using P = Axiom.Graphics.RenderTarget;
+using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
@@ -54,9 +54,8 @@ namespace Axiom.Collections
     /// <summary>
     /// Summary description for ViewportCollection.
     /// </summary>
-    public class ViewportCollection : SortedList< K, T >
+    public class ViewportCollection : AxiomCollection<int, Viewport>
     {
-
         #region Constructors
 
         /// <summary>
@@ -65,7 +64,6 @@ namespace Axiom.Collections
         public ViewportCollection() : base()
         {
         }
-
         #endregion
 
         #region Methods
@@ -74,7 +72,7 @@ namespace Axiom.Collections
         ///		Adds an object to the collection.
         /// </summary>
         /// <param name="item"></param>
-		public void Add( T item )
+        public void Add(Viewport item)
 		{
 			Debug.Assert( !this.ContainsKey( item.ZOrder ), "A viewport with the specified ZOrder " + item.ZOrder + " already exists." );
 
@@ -83,6 +81,5 @@ namespace Axiom.Collections
 		}
 
         #endregion
-
     }
 }

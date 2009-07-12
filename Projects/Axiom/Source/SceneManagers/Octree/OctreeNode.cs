@@ -95,11 +95,13 @@ namespace Axiom.SceneManagers.Octree
 
         #region Methods
 
-        public OctreeNode( SceneManager scene ) : base( scene )
+        public OctreeNode( SceneManager scene )
+            : base( scene )
         {
         }
 
-        public OctreeNode( SceneManager scene, string name ) : base( scene, name )
+        public OctreeNode( SceneManager scene, string name )
+            : base( scene, name )
         {
         }
 
@@ -171,7 +173,7 @@ namespace Axiom.SceneManagers.Octree
             int i;
             for ( i = 0; i < objectList.Count; i++ )
             {
-                MovableObject obj = (MovableObject)objectList[ i ];
+                MovableObject obj = (MovableObject)objectList.Values[ i ];
                 obj.NotifyCurrentCamera( cam );
 
                 if ( obj.IsVisible )
@@ -189,7 +191,7 @@ namespace Axiom.SceneManagers.Octree
             //update bounds from attached objects
             for ( int i = 0; i < objectList.Count; i++ )
             {
-                MovableObject obj = objectList[ i ];
+                MovableObject obj = objectList.Values[ i ];
 
                 localAABB.Merge( obj.BoundingBox );
 
@@ -202,6 +204,7 @@ namespace Axiom.SceneManagers.Octree
                 oManager.UpdateOctreeNode( this );
             }
         }
+
     }
         #endregion
 }

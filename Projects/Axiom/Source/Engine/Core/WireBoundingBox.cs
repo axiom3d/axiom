@@ -270,6 +270,134 @@ namespace Axiom.Core
             }
         }
 
+        public void SetupBoundingBox( AxisAlignedBox aabb )
+        {
+            // init the vertices to the aabb
+            SetupBoundingBoxVertices( aabb );
+
+            // setup the bounding box of this SimpleRenderable
+            box = aabb;
+        }
+
+        public void SetupBoundingBoxVertices( AxisAlignedBox aab )
+        {
+
+            Vector3 vmax = aab.Maximum;
+            Vector3 vmin = aab.Minimum;
+
+            float sqLen = System.Math.Max( vmax.LengthSquared, vmin.LengthSquared );
+            //mRadius = System.Math.Sqrt(sqLen);
+
+
+
+
+            float maxx = vmax.x;
+            float maxy = vmax.y;
+            float maxz = vmax.z;
+
+            float minx = vmin.x;
+            float miny = vmin.y;
+            float minz = vmin.z;
+
+
+            HardwareVertexBuffer buffer = vertexData.vertexBufferBinding.GetBuffer( POSITION );
+
+            IntPtr posPtr = buffer.Lock( BufferLocking.Discard );
+
+            unsafe
+            {
+                float* pPos = (float*)posPtr.ToPointer();
+
+                // line 0
+                *pPos++ = minx;
+                *pPos++ = miny;
+                *pPos++ = minz;
+                *pPos++ = maxx;
+                *pPos++ = miny;
+                *pPos++ = minz;
+                // line 1
+                *pPos++ = minx;
+                *pPos++ = miny;
+                *pPos++ = minz;
+                *pPos++ = minx;
+                *pPos++ = miny;
+                *pPos++ = maxz;
+                // line 2
+                *pPos++ = minx;
+                *pPos++ = miny;
+                *pPos++ = minz;
+                *pPos++ = minx;
+                *pPos++ = maxy;
+                *pPos++ = minz;
+                // line 3
+                *pPos++ = minx;
+                *pPos++ = maxy;
+                *pPos++ = minz;
+                *pPos++ = minx;
+                *pPos++ = maxy;
+                *pPos++ = maxz;
+                // line 4
+                *pPos++ = minx;
+                *pPos++ = maxy;
+                *pPos++ = minz;
+                *pPos++ = maxx;
+                *pPos++ = maxy;
+                *pPos++ = minz;
+                // line 5
+                *pPos++ = maxx;
+                *pPos++ = miny;
+                *pPos++ = minz;
+                *pPos++ = maxx;
+                *pPos++ = miny;
+                *pPos++ = maxz;
+                // line 6
+                *pPos++ = maxx;
+                *pPos++ = miny;
+                *pPos++ = minz;
+                *pPos++ = maxx;
+                *pPos++ = maxy;
+                *pPos++ = minz;
+                // line 7
+                *pPos++ = minx;
+                *pPos++ = maxy;
+                *pPos++ = maxz;
+                *pPos++ = maxx;
+                *pPos++ = maxy;
+                *pPos++ = maxz;
+                // line 8
+                *pPos++ = minx;
+                *pPos++ = maxy;
+                *pPos++ = maxz;
+                *pPos++ = minx;
+                *pPos++ = miny;
+                *pPos++ = maxz;
+                // line 9
+                *pPos++ = maxx;
+                *pPos++ = maxy;
+                *pPos++ = minz;
+                *pPos++ = maxx;
+                *pPos++ = maxy;
+                *pPos++ = maxz;
+                // line 10
+                *pPos++ = maxx;
+                *pPos++ = miny;
+                *pPos++ = maxz;
+                *pPos++ = maxx;
+                *pPos++ = maxy;
+                *pPos++ = maxz;
+                // line 11
+                *pPos++ = minx;
+                *pPos++ = miny;
+                *pPos++ = maxz;
+                *pPos++ = maxx;
+                *pPos++ = miny;
+                *pPos++ = maxz;
+            }
+            buffer.Unlock();
+        }
+
+
+
         #endregion
     }
 }

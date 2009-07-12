@@ -39,6 +39,7 @@ using System.Collections;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
+using System.Collections.Generic;
 using Axiom.Utilities;
 
 #endregion Namespace Declarations
@@ -87,8 +88,8 @@ namespace Axiom.Overlays
         protected SceneNode rootNode;
 
         /// <summary>2D element list.</summary>
-        protected ArrayList elementList = new ArrayList();
-        protected Hashtable elementLookup = new Hashtable();
+        protected List<OverlayElementContainer> elementList = new List<OverlayElementContainer>();
+        protected Dictionary<string, OverlayElementContainer> elementLookup = new Dictionary<string, OverlayElementContainer>();
         /// <summary>Degrees of rotation around center.</summary>
         protected float rotate;
         /// <summary>Scroll values, offsets.</summary>
@@ -115,7 +116,7 @@ namespace Axiom.Overlays
         ///    Constructor: do not call direct, use SceneManager.CreateOverlay
         /// </summary>
         /// <param name="name"></param>
-        internal Overlay( string name )
+        internal Overlay( string name ) : base()
         {
             this.Name = name;
             this.scaleX = 1.0f;

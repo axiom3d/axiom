@@ -83,11 +83,16 @@ namespace Axiom.Graphics
         {
         }
 
-        public SimpleRenderable( string name )
-            : base( name )
+        /// <summary>
+        ///		Default constructor.
+        /// </summary>
+        public SimpleRenderable(string name) : base(name)
         {
-            this.LoadDefaultMaterial();
-        }
+            materialName = "BaseWhite";
+            material = (Material)MaterialManager.Instance[ "BaseWhite" ];
+            name = "SimpleRenderable" + nextAutoGenName++;
+            material.Load();
+         }
 
         private void LoadDefaultMaterial()
         {

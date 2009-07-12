@@ -41,6 +41,7 @@ using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -69,7 +70,7 @@ namespace Axiom.Core
     ///		e.g. SceneNode, Bone
     ///	</remarks>
     ///	<ogre headerVersion="1.39" sourceVersion="1.53" />
-    public abstract class Node : IRenderable
+    public abstract class Node : IRenderable, INamable
     {
         #region Events
         /// <summary>
@@ -90,7 +91,7 @@ namespace Axiom.Core
         protected Node parent;
         /// <summary>Collection of this nodes child nodes.</summary>
         protected NodeCollection childNodes;
-		public ICollection Children
+		public IList<Node> Children
         {
             get
             {
@@ -234,7 +235,7 @@ namespace Axiom.Core
             string childName = child.Name;
             if ( child == this )
                 throw new ArgumentException( string.Format( "Node '{0}' cannot be added as a child of itself.", childName ) );
-			if ( childNodes.Contains( childName ) )
+			if ( childNodes.ContainsKey( childName ) )
                 throw new ArgumentException( string.Format( "Node '{0}' already has a child node with the name '{1}'.", this.name, childName ) );
 
             child.RemoveFromParent();
@@ -267,7 +268,7 @@ namespace Axiom.Core
 
 		public bool HasChild( string name )
 		{
-			return childNodes.Contains( name );
+			return childNodes.ContainsKey( name );
 		}
 
         /// <summary>
@@ -276,7 +277,7 @@ namespace Axiom.Core
         /// <param name="index"></param>
         public Node GetChild( int index )
         {
-            return childNodes[ index ];
+            return childNodes.Values[ index ];
         }
 
         /// <summary>
@@ -313,7 +314,7 @@ namespace Axiom.Core
             int index = childNodes.IndexOf( name ); //getting the index prevent traversing 2x
             if ( index != -1 )
             {
-                Node child = childNodes[ index ];
+                Node child = childNodes.Values[ index ];
                 if ( child.name == name )
                 {
                     RemoveChild( child, index );
@@ -334,7 +335,7 @@ namespace Axiom.Core
         {
             if ( index < 0 || index >= childNodes.Count )
                 throw new ArgumentOutOfRangeException( string.Format( "The index must be greater then or equal to 0 and less then {0}, the number of items.", childNodes.Count ) );
-            Node child = childNodes[ index ];
+            Node child = childNodes.Values[index];
             RemoveChild( child, index );
             return child;
         }
@@ -753,7 +754,8 @@ namespace Axiom.Core
         public virtual void CancelUpdate( Node child )
         {
             // remove this from the list of children to update
-            childrenToUpdate.Remove( child );
+            //thild: remove by name
+            childrenToUpdate.Remove( child.Name );
 
             // propogate this changed if we are done
             if ( childrenToUpdate.Count == 0 && parent != null && !needChildUpdate )
@@ -788,21 +790,21 @@ namespace Axiom.Core
             {
                 return name;
             }
-            set
-            {
-                if ( value == name )
-                    return;
-                string oldName = name;
-                name = value;
-                if ( parent != null )
-                {
-                    //ensure that it is keyed under this new name in its parent's collection
-                    parent.RemoveChild( oldName );
-                    parent.AddChild( this );
-                }
-                OnRename( oldName );
+            //set
+            //{
+            //    if ( value == name )
+            //        return;
+            //    string oldName = name;
+            //    name = value;
+            //    if ( parent != null )
+            //    {
+            //        //ensure that it is keyed under this new name in its parent's collection
+            //        parent.RemoveChild( oldName );
+            //        parent.AddChild( this );
+            //    }
+            //    OnRename( oldName );
 
-            }
+            //}
         }
 
         /// <summary>
@@ -1253,7 +1255,7 @@ namespace Axiom.Core
                 // update all children
                 for ( int i = 0; i < childNodes.Count; i++ )
                 {
-                    Node child = childNodes[ i ];
+                    Node child = childNodes.Values[ i ];
                     child.Update( true, true );
                 }
 
@@ -1264,7 +1266,7 @@ namespace Axiom.Core
                 // just update selected children
                 for ( int i = 0; i < childrenToUpdate.Count; i++ )
                 {
-                    Node child = childrenToUpdate[ i ];
+                    Node child = childrenToUpdate.Values[ i ];
                     child.Update( true, false );
                 }
 

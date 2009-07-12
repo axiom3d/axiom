@@ -36,15 +36,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-
 using Axiom.Core;
-
-// used to alias a type in the code for easy copying and pasting.  Come on generics!!
-using T = Axiom.Graphics.RenderSystem;
-// used to alias a key value in the code for easy copying and pasting.  Come on generics!!
-using K = System.String;
-// used to alias a parent type in the code for easy copying and pasting.  Come on generics!!
-//using P = Axiom.Core.Entity;
+using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
@@ -53,7 +46,7 @@ namespace Axiom.Collections
     /// <summary>
     /// Summary description for RenderSystemCollection.
     /// </summary>
-    public class RenderSystemCollection : AxiomCollection
+    public class RenderSystemCollection : AxiomCollection<string, RenderSystem>
     {
         #region Constructors
 
@@ -74,56 +67,14 @@ namespace Axiom.Collections
 
         #region Strongly typed methods and indexers
 
-        /// <summary>
-        ///		Get/Set indexer that allows access to the collection by index.
-        /// </summary>
-        new public T this[ int index ]
-        {
-            get
-            {
-                return (T)base[ index ];
-            }
-            set
-            {
-                base[ index ] = value;
-            }
-        }
-
-        /// <summary>
-        ///		Get/Set indexer that allows access to the collection by key value.
-        /// </summary>
-        public T this[ string key ]
-        {
-            get
-            {
-                return (T)base[ key ];
-            }
-            set
-            {
-                base[ key ] = value;
-            }
-        }
 
         /// <summary>
         ///		Adds an object to the collection.
         /// </summary>
         /// <param name="item"></param>
-        public void Add( T item )
+        public void Add( RenderSystem item )
         {
             Add( item.Name, item );
-        }
-
-        /// <summary>
-        ///		Adds a named object to the collection.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="item"></param>
-        public void Add( K key, T item )
-        {
-            if ( !this.ContainsKey( key ) )
-                base.Add( key, item );
-            else
-                LogManager.Instance.Write( "{0} rendering system has already been registered by {1}, skipping {2}.", key, this[key].Name, item.Name );
         }
 
         #endregion

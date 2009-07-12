@@ -36,16 +36,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-
 using Axiom.Animating;
 using Axiom.Core;
-
-// used to alias a type in the code for easy copying and pasting.  Come on generics!!
-using T = Axiom.Animating.KeyFrame;
-// used to alias a key value in the code for easy copying and pasting.  Come on generics!!
-using K = System.Single;
-// used to alias a parent type in the code for easy copying and pasting.  Come on generics!!
-//using P = Axiom.Core.Entity;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -54,7 +47,7 @@ namespace Axiom.Collections
     /// <summary>
     /// Summary description for KeyFrameCollection.
     /// </summary>
-    public class KeyFrameCollection : ArrayList
+    public class KeyFrameCollection : List<KeyFrame>
     {
         #region Constructors
 
@@ -75,40 +68,7 @@ namespace Axiom.Collections
 
         #region Strongly typed methods and indexers
 
-        /// <summary>
-        ///		Get/Set indexer that allows access to the collection by index.
-        /// </summary>
-        new public T this[ int index ]
-        {
-            get
-            {
-                return (T)base[ index ];
-            }
-            set
-            {
-                base[ index ] = value;
-            }
-        }
-
-        /// <summary>
-        ///		Get/Set indexer that allows access to the collection by key value.
-        /// </summary>
-        //public T this[string key]
-        //{
-        //	get { return (T)base[key]; }
-        //	set { base[key] = value; }
-        //}
-
-        /// <summary>
-        ///		Adds an object to the collection.
-        /// </summary>
-        /// <param name="item"></param>
-        public void Add( T item )
-        {
-            base.Add( item );
-        }
-
-        public void Insert( int pos, T item )
+        public void Insert( int pos, KeyFrame item )
         {
             base.Insert( pos, item );
         }

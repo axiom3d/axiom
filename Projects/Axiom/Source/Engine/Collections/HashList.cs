@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-
+using System.Collections.Generic;
 #endregion Namespace Declarations
 
 namespace Axiom.Collections
@@ -43,11 +43,11 @@ namespace Axiom.Collections
     /// <summary>
     /// 	Summary description for HashList.
     /// </summary>
-    public class HashList
+    public class HashList<K, T>
     {
-        Hashtable itemTable = new Hashtable();
-        SortedList itemList = new SortedList();
-        ArrayList itemKeys = new ArrayList();
+		Dictionary<K, T> itemTable = new Dictionary<K, T>();
+        SortedList<K, T> itemList = new SortedList<K, T>();
+        List<K> itemKeys = new List<K>();
 
         #region Member variables
 
@@ -66,24 +66,24 @@ namespace Axiom.Collections
 
         #region Methods
 
-        public void Add( object key, object item )
+        public void Add(K key, T item)
         {
             itemTable.Add( key, item );
             itemList.Add( key, item );
             itemKeys.Add( key );
         }
 
-        public object GetKeyAt( int index )
+        public K GetKeyAt(int index)
         {
-            return itemList.GetKey( index );
+            return itemList.Keys[index];
         }
 
-        public object GetByKey( object key )
+        public T GetByKey(K key)
         {
             return itemTable[ key ];
         }
 
-        public bool ContainsKey( object key )
+        public bool ContainsKey(K key)
         {
             return itemTable.ContainsKey( key );
         }
@@ -95,7 +95,7 @@ namespace Axiom.Collections
             itemKeys.Clear();
         }
 
-        public void Remove( object key )
+        public void Remove(K key)
         {
             itemTable.Remove( key );
             itemList.Remove( key );
@@ -118,20 +118,19 @@ namespace Axiom.Collections
 
         #region Operators
 
-        public object this[ int index ]
+        public T this[int index]
         {
             get
             {
-                return itemList.GetByIndex( index );
+                return itemList.Values[index];
             }
         }
 
-        public object this[ object key ]
+        public T this[K key]
         {
             get
             {
                 return itemList[ key ];
-                //return itemTable[key]; 
             }
         }
 

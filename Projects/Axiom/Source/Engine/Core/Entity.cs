@@ -304,7 +304,7 @@ namespace Axiom.Core
                 Material[] materials = new Material[this.subEntityList.Count];
                 for ( int i = 0; i < this.subEntityList.Count; i++ )
                 {
-                    materials[ i ] = this.subEntityList[ i ].Material;
+                    materials[i] = this.subEntityList.Values[i].Material;
                 }
                 return materials;
             }
@@ -317,7 +317,7 @@ namespace Axiom.Core
                 string[] materials = new string[this.subEntityList.Count];
                 for ( int i = 0; i < this.subEntityList.Count; i++ )
                 {
-                    materials[ i ] = this.subEntityList[ i ].MaterialName;
+                   materials[i] = this.subEntityList.Values[i].MaterialName;
                 }
                 return materials;
             }
@@ -450,7 +450,7 @@ namespace Axiom.Core
 
                 for ( int i = 0; i < this.childObjectList.Count; i++ )
                 {
-                    MovableObject child = this.childObjectList[ i ];
+                    MovableObject child = this.childObjectList.Values[i];
                     box = child.BoundingBox;
                     TagPoint tagPoint = (TagPoint) child.ParentNode;
 
@@ -549,7 +549,7 @@ namespace Axiom.Core
                     // assign the material name to all sub entities
                     for ( int i = 0; i < this.subEntityList.Count; i++ )
                     {
-                        this.subEntityList[ i ].MaterialName = this.materialName;
+                        this.subEntityList.Values[i].MaterialName = this.materialName;
                     }
                 }
             }
@@ -716,7 +716,8 @@ namespace Axiom.Core
         /// <param name="tagPoint">TagPoint to attach the object to.</param>
         protected void AttachObjectImpl( MovableObject sceneObject, TagPoint tagPoint )
         {
-            this.childObjectList[ sceneObject.Name ] = sceneObject;
+            //thild: add instead set
+			this.childObjectList.Add (sceneObject.Name, sceneObject);
             sceneObject.NotifyAttached( tagPoint, true );
         }
 
@@ -729,7 +730,8 @@ namespace Axiom.Core
             }
 
             this.DetachObjectImpl( obj );
-            this.childObjectList.Remove( obj );
+            //thild: remove by name
+			this.childObjectList.Remove( name );
 
             return obj;
         }
@@ -747,11 +749,12 @@ namespace Axiom.Core
         {
             for ( int i = 0; i < this.childObjectList.Count; i++ )
             {
-                MovableObject child = this.childObjectList[ i ];
+                 MovableObject child = this.childObjectList.Values[i];
                 if ( child == obj )
                 {
                     this.DetachObjectImpl( obj );
-                    this.childObjectList.Remove( obj );
+                    //thild: remove by name
+ 					this.childObjectList.Remove( obj.Name );
 
                     // Trigger update of bounding box if necessary
                     if ( this.parentNode != null )
@@ -794,7 +797,7 @@ namespace Axiom.Core
         {
             for ( int i = 0; i < this.childObjectList.Count; i++ )
             {
-                MovableObject child = this.childObjectList[ i ];
+                MovableObject child = this.childObjectList.Values[ i ];
                 this.DetachObjectImpl( child );
             }
             this.childObjectList.Clear();
@@ -904,7 +907,7 @@ namespace Axiom.Core
             // update the child object's transforms
             for ( int i = 0; i < this.childObjectList.Count; i++ )
             {
-                MovableObject child = this.childObjectList[ i ];
+                MovableObject child = childObjectList.Values[i];
                 child.ParentNode.Update( true, true );
             }
 
@@ -936,7 +939,7 @@ namespace Axiom.Core
 
             for ( int i = 0; i < this.subEntityList.Count; i++ )
             {
-                SubEntity se = this.subEntityList[ i ];
+                 SubEntity se = subEntityList.Values[i];
                 if ( originalData == se.SubMesh.vertexData )
                 {
                     return this.HasSkeleton ? se.SkelAnimVertexData : se.SoftwareVertexAnimVertexData;
@@ -961,7 +964,7 @@ namespace Axiom.Core
 
             for ( int i = 0; i < this.subEntityList.Count; i++ )
             {
-                SubEntity subEnt = this.subEntityList[ i ];
+                SubEntity subEnt = this.subEntityList.Values[i];
 
                 if ( original == subEnt.SubMesh.vertexData )
                 {
@@ -1020,7 +1023,7 @@ namespace Axiom.Core
                         }
                         for ( int i = 0; i < this.subEntityList.Count; i++ )
                         {
-                            SubEntity subEntity = this.subEntityList[ i ];
+                            SubEntity subEntity = this.subEntityList.Values[i];
                             if ( subEntity.IsVisible && subEntity.SoftwareVertexAnimVertexData != null &&
                                  subEntity.SubMesh.VertexAnimationType != VertexAnimationType.None )
                             {
@@ -1072,7 +1075,7 @@ namespace Axiom.Core
                         for ( int i = 0; i < this.subEntityList.Count; i++ )
                         {
                             // Blend dedicated geometry
-                            SubEntity subEntity = this.subEntityList[ i ];
+                            SubEntity subEntity = this.subEntityList.Values[i];
                             if ( subEntity.IsVisible && subEntity.SkelAnimVertexData != null )
                             {
                                 subEntitySWBlendMeter.Enter();
@@ -1178,7 +1181,7 @@ namespace Axiom.Core
                 }
                 for ( int i = 0; i < this.subEntityList.Count; i++ )
                 {
-                    SubEntity subEntity = this.subEntityList[ i ];
+                    SubEntity subEntity = this.subEntityList.Values[i];
                     SubMesh subMesh = subEntity.SubMesh;
                     VertexAnimationType type = subMesh.VertexAnimationType;
                     if ( type != VertexAnimationType.None && !subMesh.useSharedVertices )
@@ -1206,7 +1209,7 @@ namespace Axiom.Core
                 }
                 for ( int i = 0; i < this.subEntityList.Count; i++ )
                 {
-                    SubEntity subEntity = this.subEntityList[ i ];
+                    SubEntity subEntity = this.subEntityList.Values[i];
                     SubMesh subMesh = subEntity.SubMesh;
                     if ( !subMesh.useSharedVertices && subMesh.VertexAnimationType == VertexAnimationType.Pose )
                     {
@@ -1253,7 +1256,7 @@ namespace Axiom.Core
                 }
                 for ( int i = 0; i < this.subEntityList.Count; i++ )
                 {
-                    SubEntity subEntity = this.subEntityList[ i ];
+                    SubEntity subEntity = this.subEntityList.Values[i];
                     SubMesh subMesh = subEntity.SubMesh;
                     if ( !subMesh.useSharedVertices &&
                          subMesh.VertexAnimationType == VertexAnimationType.Pose )
@@ -1276,7 +1279,7 @@ namespace Axiom.Core
             this.vertexAnimationAppliedThisFrame = false;
             for ( int i = 0; i < this.subEntityList.Count; i++ )
             {
-                SubEntity subEntity = this.subEntityList[ i ];
+                SubEntity subEntity = this.subEntityList.Values[i];
                 subEntity.MarkBuffersUnusedForAnimation();
             }
         }
@@ -1319,7 +1322,7 @@ namespace Axiom.Core
 
             for ( int i = 0; i < this.subEntityList.Count; i++ )
             {
-                SubEntity subEntity = this.subEntityList[ i ];
+                SubEntity subEntity = this.subEntityList.Values[i];
                 subEntity.RestoreBuffersForUnusedAnimation( hardwareAnimation );
             }
         }
@@ -1366,7 +1369,7 @@ namespace Axiom.Core
             }
             for ( int i = 0; i < this.subEntityList.Count; i++ )
             {
-                SubEntity subEntity = this.subEntityList[ i ];
+                SubEntity subEntity = this.subEntityList.Values[i];
                 if ( !subEntity.SubMesh.useSharedVertices &&
                      subEntity.SubMesh.VertexAnimationType != VertexAnimationType.None )
                 {
@@ -1388,7 +1391,7 @@ namespace Axiom.Core
             }
             for ( int i = 0; i < this.subEntityList.Count; i++ )
             {
-                SubEntity subEntity = this.subEntityList[ i ];
+                SubEntity subEntity = this.subEntityList.Values[i];
                 if ( subEntity.IsVisible && subEntity.skelAnimVertexData != null )
                 {
                     if ( !subEntity.TempSkelAnimInfo.BuffersCheckedOut( true, requestNormals ) )
@@ -1516,7 +1519,7 @@ namespace Axiom.Core
                 for ( int i = 0; i < this.subEntityList.Count; i++ )
                 {
                     // get the index at this biased depth
-                    SubEntity subEnt = this.subEntityList[ i ];
+                    SubEntity subEnt = this.subEntityList.Values[i];
 
                     int idx = subEnt.Material.GetLodIndexSquaredDepth( temp );
 
@@ -1530,7 +1533,7 @@ namespace Axiom.Core
             // Notify child objects (tag points)
             for ( int i = 0; i < this.childObjectList.Count; i++ )
             {
-                MovableObject child = this.childObjectList[ i ];
+                MovableObject child = this.childObjectList.Values[i];
                 child.NotifyCurrentCamera( camera );
             }
         }
@@ -1544,7 +1547,7 @@ namespace Axiom.Core
         {
             Debug.Assert( index < this.subEntityList.Count, "index < subEntityList.Count" );
 
-            return this.subEntityList[ index ];
+            return this.subEntityList.Values[index];
         }
 
         /// <summary>
@@ -1556,7 +1559,7 @@ namespace Axiom.Core
         {
             for ( int i = 0; i < this.subEntityList.Count; i++ )
             {
-                SubEntity sub = this.subEntityList[ i ];
+                SubEntity sub = this.subEntityList.Values[ i ];
 
                 if ( sub.SubMesh.name == name )
                 {
@@ -1797,7 +1800,7 @@ namespace Axiom.Core
                 Debug.Assert( this.meshLodIndex - 1 < this.lodEntityList.Count,
                               "No LOD EntityList - did you build the manual LODs after creating the entity?" );
 
-                Entity lodEnt = this.lodEntityList[ this.meshLodIndex - 1 ];
+                Entity lodEnt = this.lodEntityList.Values[this.meshLodIndex - 1];
 
                 // index - 1 as we skip index 0 (original LOD)
                 if ( this.HasSkeleton && lodEnt.HasSkeleton )
@@ -1816,9 +1819,9 @@ namespace Axiom.Core
             // add all visible sub entities to the render queue
             for ( int i = 0; i < this.subEntityList.Count; i++ )
             {
-                if ( this.subEntityList[ i ].IsVisible )
+                if (subEntityList.Values[i].IsVisible)
                 {
-                    queue.AddRenderable( this.subEntityList[ i ], RenderQueue.DEFAULT_PRIORITY, this.renderQueueID );
+                    queue.AddRenderable(subEntityList.Values[i], RenderQueue.DEFAULT_PRIORITY, renderQueueID);
                 }
             }
 
@@ -1839,7 +1842,7 @@ namespace Axiom.Core
                 // Update render queue with child objects (tag points)
                 for ( int i = 0; i < this.childObjectList.Count; i++ )
                 {
-                    MovableObject child = this.childObjectList[ i ];
+                    MovableObject child = childObjectList.Values[i];
 
                     if ( child.IsVisible )
                     {
@@ -1905,7 +1908,7 @@ namespace Axiom.Core
             // prepare temp blending buffers for subentites as well
             for ( int i = 0; i < this.SubEntityCount; i++ )
             {
-                this.subEntityList[ i ].PrepareTempBlendBuffers();
+                subEntityList.Values[i].PrepareTempBlendBuffers();
             }
         }
 
@@ -1976,7 +1979,7 @@ namespace Axiom.Core
                 Debug.Assert( this.meshLodIndex - 1 < this.lodEntityList.Count,
                               "No LOD EntityList - did you build the manual LODs after creating the entity?" );
 
-                Entity lodEnt = this.lodEntityList[ this.meshLodIndex - 1 ];
+                Entity lodEnt = lodEntityList.Values[meshLodIndex - 1];
 
                 // index - 1 as we skip index 0 (original LOD)
                 if ( this.HasSkeleton && lodEnt.HasSkeleton )
@@ -2221,7 +2224,7 @@ namespace Axiom.Core
             // loop through each subentity and set the material up for the clone
             for ( int i = 0; i < this.subEntityList.Count; i++ )
             {
-                SubEntity subEntity = this.subEntityList[ i ];
+                SubEntity subEntity = subEntityList.Values[i];
                 SubEntity cloneSubEntity = clone.GetSubEntity( i );
                 cloneSubEntity.MaterialName = subEntity.MaterialName;
                 cloneSubEntity.IsVisible = subEntity.IsVisible;

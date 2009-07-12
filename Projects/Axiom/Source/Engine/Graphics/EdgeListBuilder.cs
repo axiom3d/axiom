@@ -40,6 +40,7 @@ using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Math.Collections;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -693,7 +694,7 @@ namespace Axiom.Graphics
 		///     evaluate the surface properties, a single common vertex is used for these duplicates,
 		///     and the faces hold the detail of the duplicated vertices.
 		/// </summary>
-		protected struct CommonVertex
+		public struct CommonVertex
 		{
 			/// <summary>
 			///     Location of point in euclidean space.
@@ -717,17 +718,17 @@ namespace Axiom.Graphics
 			public int originalIndex;
 		}
 
-		protected struct UniqueEdge
+		public struct UniqueEdge
 		{
 			public int vertexIndex1;
 			public int vertexIndex2;
 		}
 
-		public class CommonVertexList : ArrayList
+		public class CommonVertexList : List<CommonVertex>
 		{
 		}
 
-		public class UniqueEdgeList : ArrayList
+		public class UniqueEdgeList : List<UniqueEdge>
 		{
 		}
 

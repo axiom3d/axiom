@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -44,16 +45,17 @@ namespace Axiom.Collections
     /// <summary>
     ///		Serves as a basis for strongly typed collections in the engine.
     /// </summary>
-    /// <remarks>
-    ///		Can't wait for Generics in .Net Framework 2.0!   
-    /// </remarks>
-    public abstract class AxiomCollection : ICollection, IEnumerable
+    public abstract class AxiomCollection<K, T>
+        : /*SortedList<K, T>//,*/ ICollection, IEnumerable, ICollection<T>, IEnumerable<T>
     {
-        /// <summary></summary>
-        protected SortedList objectList;
-        /// <summary></summary>
-        protected Object parent;
+
+        #region Custom
+
+
+        Dictionary<K, T> _dictionary;
+        ValuesCollection _values;
         static protected int nextUniqueKeyCounter;
+        List<K> _list;
 
         const int INITIAL_CAPACITY = 60;
 
@@ -64,85 +66,154 @@ namespace Axiom.Collections
         /// </summary>
         public AxiomCollection()
         {
-            this.parent = null;
-            objectList = new SortedList( INITIAL_CAPACITY );
+            _dictionary = new Dictionary<K, T>( INITIAL_CAPACITY );
+            _values = new ValuesCollection( this );
+            _list = new List<K>( INITIAL_CAPACITY );
+
         }
 
         /// <summary>
         ///		
         /// </summary>
-        /// <param name="parent"></param>
-        public AxiomCollection( Object parent )
+        /// <param name="capacity"></param>
+        public AxiomCollection( int capacity )
         {
-            this.parent = parent;
-            objectList = new SortedList( INITIAL_CAPACITY );
+            _dictionary = new Dictionary<K, T>( capacity );
+            _values = new ValuesCollection( this );
+            _list = new List<K>( capacity );
         }
+
 
         #endregion
 
-		/// <summary>
-		///		
-		/// </summary>
-		public object this[ int index ]
+
+        public T this[ K key ]
 		{
 			get
 			{
-				return objectList.GetByIndex( index );
+
+                return _dictionary[ key ];
+
 			}
 			set
 			{
-				objectList.SetByIndex( index, value );
+                _dictionary[ key ] = value;
+                if ( !_list.Contains( key ) )
+                {
+                    _list.Add( key );
 			}
 		}
+        }
 
-		public ICollection Values
+        public void Add( K key, T value )
 		{
-			get
+            _list.Add( key );
+            _dictionary.Add( key, value );
+        }
+
+        public bool Remove( K key )
 			{
-				return objectList.Values;
+            _dictionary.Remove( key );
+            _list.Remove( key );
+            return true;
 			}
-		}
-
-		public ICollection Keys
-        {
-            get
-            {
-				return objectList.Keys;
-            }
-        }
 
         /// <summary>
-        ///		
-        /// </summary>
-        protected object this[ object key ]
-        {
-            get
-            {
-                return objectList[ key ];
-            }
-            set
-            {
-                objectList[ key ] = value;
-            }
-        }
-
-        /// <summary>
-        ///		Accepts an unnamed object and names it manually.
+        /// Removes the item from the collection.
         /// </summary>
         /// <param name="item"></param>
-        protected void Add( object item )
+        public virtual bool Remove( T item )
         {
-            objectList.Add( "Object" + ( nextUniqueKeyCounter++ ), item );
+            foreach ( KeyValuePair<K, T> i in this._dictionary )
+            {
+                if ( i.Value.Equals( item ) )
+                {
+                    _dictionary.Remove( i.Key );
+                    _list.Remove( i.Key );
+                    return true;
+            }
+        }
+            return false;
+        }
+
+        public bool RemoveAt( int index )
+        {
+            _dictionary.Remove( _list[ index ] );
+            _list.RemoveAt( index );
+            return true;
+        }
+
+        public int IndexOf( K key )
+        {
+            return _list.IndexOf( key );
         }
 
         /// <summary>
-        ///		Adds a named object to the collection.
+        /// Very slow method.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public int IndexOf( T item )
+        {
+            foreach ( KeyValuePair<K, T> i in _dictionary )
+            {
+                if ( i.Value.Equals(item) )
+                {
+                    return _list.IndexOf( i.Key );
+            }
+            }
+            return -1;
+        }
+
+        public IList<T> Values
+            {
+            get
+            {
+                return _values;
+            }
+
+        }
+
+        public Dictionary<K, T>.KeyCollection Keys
+        {
+            get { return _dictionary.Keys; }
+        }
+
+        /// <summary>
+        /// Tests if there is a dupe entry in here.
         /// </summary>
         /// <param name="key"></param>
-        /// <param name="item"></param>
-        protected void Add( object key, object item )
+        /// <returns></returns>
+        public bool ContainsKey( K key )
         {
-            objectList.Add( key, item );
+            return _dictionary.ContainsKey( key );
+        }
+
+        /// <summary>
+        /// Accepts an unnamed object and names it manually.
+        /// </summary>
+        /// <param name="item"></param>
+        public virtual void Add( T item )
+        {
+
+            K key = default( K );
+
+            if ( typeof( K ) == typeof( string ) )
+            {
+                key = (K)Convert.ChangeType( typeof( T ).Name + nextUniqueKeyCounter++, typeof( K ) );
+        }
+            else
+            {
+                key = (K)Convert.ChangeType( nextUniqueKeyCounter++, typeof( K ) );
+            }
+            Add( key, item );
+        }
+
+        #region ICollection<T> Members
+
+        void ICollection<T>.Add( T item )
+        {
+            Add( item );
         }
 
         /// <summary>
@@ -150,147 +221,477 @@ namespace Axiom.Collections
         /// </summary>
         public void Clear()
         {
-            objectList.Clear();
+            _dictionary.Clear();
+            _list.Clear();
         }
 
-        /// <summary>
-        ///		Removes the item from the collection.
-        /// </summary>
-        /// <param name="item"></param>
-		public virtual void Remove( object item )
+        public bool Contains( T item )
         {
-            int index = objectList.IndexOfValue( item );
-
-            if ( index != -1 )
-                objectList.RemoveAt( index );
+            return _dictionary.ContainsValue( item );
         }
 
-
-		/// <summary>
-		///		Removes the item from the collection.
-		/// </summary>
-		/// <param name="item"></param>
-		public virtual void RemoveByKey( object item )
-		{
-			int index = objectList.IndexOfKey( item );
-
-			if ( index != -1 )
-				objectList.RemoveAt( index );
-		}
-
-
-        /// <summary>
-        ///		Removes an item at the specified index.
-        /// </summary>
-        /// <param name="index"></param>
-        public void RemoveAt( int index )
+        void ICollection<T>.CopyTo( T[] array, int arrayIndex )
         {
-            objectList.RemoveAt( index );
-        }
-
-        /// <summary>
-        ///		Tests if there is a dupe entry in here.
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public bool ContainsKey( object key )
-        {
-            return objectList.ContainsKey( key );
-        }
-
-        #region Implementation of ICollection
-
-        public void CopyTo( System.Array array, int index )
-        {
-            objectList.CopyTo( array, index );
-        }
-
-        public bool IsSynchronized
-        {
-            get
-            {
-                return objectList.IsSynchronized;
-            }
+            _dictionary.Values.CopyTo( array, arrayIndex );
         }
 
         public int Count
         {
-            get
-            {
-                return objectList.Count;
-            }
+            get { return _dictionary.Count; }
         }
 
-        public object SyncRoot
+        bool ICollection<T>.IsReadOnly
+		{
+            get { return ( _dictionary as ICollection<T> ).IsReadOnly; }
+        }
+
+        bool ICollection<T>.Remove( T item )
+        {
+            return Remove( item );
+		}
+
+        #endregion
+
+        #region IEnumerable<T> Members
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return _dictionary.Values.GetEnumerator();
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        #endregion
+
+        #region ICollection Members
+
+        void ICollection.CopyTo( Array array, int index )
+        {
+            _dictionary.Values.CopyTo( (T[])array, index );
+        }
+
+        int ICollection.Count
+        {
+            get { return Count; }
+        }
+
+        bool ICollection.IsSynchronized
+            {
+            get { return ( _dictionary.Values as ICollection ).IsSynchronized; }
+            }
+
+        object ICollection.SyncRoot
+        {
+            get { return ( _dictionary.Values as ICollection ).SyncRoot; }
+        }
+
+        #endregion
+
+        private class ValuesCollection : IList<T>
+        {
+            AxiomCollection<K, T> _collection;
+
+            public ValuesCollection( AxiomCollection<K, T> collection )
+            {
+                _collection = collection;
+            }
+            public T this[ int index ]
         {
             get
             {
-                return objectList.SyncRoot;
+                    return _collection._dictionary[ _collection._list[ index ] ];
             }
+                set
+                {
+                    throw new NotImplementedException();
         }
+            }
 
-        #endregion
+            #region IList<T> Members
 
-        #region Implementation of IEnumerable
+            int IList<T>.IndexOf( T item )
+            {
+                throw new NotImplementedException();
+            }
 
-        public System.Collections.IEnumerator GetEnumerator()
+            void IList<T>.Insert( int index, T item )
         {
-			return objectList.Values.GetEnumerator();
+                throw new NotImplementedException();
         }
+
+            void IList<T>.RemoveAt( int index )
+            {
+                throw new NotImplementedException();
+            }
 
         #endregion
 
-        #region Implementation of IEnumerator
+            #region ICollection<T> Members
 
-        public class Enumerator : IEnumerator
+            void ICollection<T>.Add( T item )
         {
-            private int position = -1;
-            private AxiomCollection list;
-
-            public Enumerator( AxiomCollection list )
-            {
-                this.list = list;
+                throw new NotImplementedException();
             }
 
-            /// <summary>
-            ///		Resets the in progress enumerator.
-            /// </summary>
-            public void Reset()
+            void ICollection<T>.Clear()
             {
-                // reset the enumerator position
-                position = -1;
+                throw new NotImplementedException();
             }
 
-            /// <summary>
-            ///		Moves to the next item in the enumeration if there is one.
-            /// </summary>
-            /// <returns></returns>
-            public bool MoveNext()
+            bool ICollection<T>.Contains( T item )
             {
-                position += 1;
+                throw new NotImplementedException();
+            }
 
-                if ( position >= list.objectList.Count )
+            void ICollection<T>.CopyTo( T[] array, int arrayIndex )
+            {
+                throw new NotImplementedException();
+            }
+
+            int ICollection<T>.Count
                 {
-                    return false;
+                get { return _collection._dictionary.Count; }
                 }
-                else
+
+            bool ICollection<T>.IsReadOnly
                 {
-                    return true;
+                get { throw new NotImplementedException(); }
                 }
+
+            bool ICollection<T>.Remove( T item )
+            {
+                throw new NotImplementedException();
             }
 
-            /// <summary>
-            ///		Returns the current object in the enumeration.
-            /// </summary>
-            public object Current
+            #endregion
+
+            #region IEnumerable<T> Members
+
+            IEnumerator<T> IEnumerable<T>.GetEnumerator()
             {
-                get
-                {
-                    return list.objectList.GetByIndex( position );
-                }
+                return _collection._dictionary.Values.GetEnumerator();
             }
-        }
+
+            #endregion
+
+            #region IEnumerable Members
+
+            IEnumerator IEnumerable.GetEnumerator()
+                {
+                throw new NotImplementedException();
+                }
+
+            #endregion
+            }
+
+
+
         #endregion
+
+
+
+        //#region Encapsulated
+
+
+
+        ///// <summary></summary>
+        //private SortedList<K, T> objectList;
+
+        //static protected int nextUniqueKeyCounter;
+
+        //const int INITIAL_CAPACITY = 60;
+
+        //#region Constructors
+
+        ///// <summary>
+        /////		
+        ///// </summary>
+        //public AxiomCollection()
+        //{
+        //    objectList = new SortedList<K, T>(INITIAL_CAPACITY);
+
+        //}
+
+        ///// <summary>
+        /////
+        ///// </summary>
+        ///// <param name="capacity"></param>
+        //public AxiomCollection(int capacity)
+        //{
+        //    objectList = new SortedList<K, T>(capacity);
+        //}
+
+
+        //#endregion
+
+        //public IList<K> Keys
+        //{
+        //    get { return objectList.Keys; }
+        //}
+
+        //public IList<T> Values
+        //{
+        //    get { return objectList.Values; }
+        //}
+
+        ///// <summary>
+        /////		
+        ///// </summary>
+        //public T this[K key]
+        //{
+        //    get { return objectList[key]; }
+        //    set { objectList[key] = value; }
+        //}
+
+        ///// <summary>
+        ///// Adds a named object to the collection.
+        ///// </summary>
+        ///// <param name="key"></param>
+        ///// <param name="item"></param>
+        //public virtual void Add(K key, T item)
+        //{
+        //    objectList.Add(key, item);
+        //}
+
+        ///// <summary>
+        ///// Accepts an unnamed object and names it manually.
+        ///// </summary>
+        ///// <param name="item"></param>
+        //public virtual void Add(T item)
+        //{
+
+        //    K key = default(K);
+
+        //    if (typeof(K) == typeof(string))
+        //    {
+        //        key = (K)Convert.ChangeType(typeof(T).Name + nextUniqueKeyCounter++, typeof(K));
+        //    }
+        //    else
+        //    {
+        //        key = (K)Convert.ChangeType(nextUniqueKeyCounter++, typeof(K));
+        //    }
+        //    objectList.Add(key, item);
+
+        //}
+
+        ///// <summary>
+        ///// Removes the item from the collection by key.
+        ///// </summary>
+        ///// <param name="item"></param>
+        //public virtual bool Remove(K key)
+        //{
+        //    return objectList.Remove(key);
+        //}
+
+        ///// <summary>
+        ///// Removes the item from the collection.
+        ///// </summary>
+        ///// <param name="item"></param>
+        //public virtual bool Remove(T item)
+        //{
+        //    int i = objectList.IndexOfValue(item);
+        //    if (i > -1)
+        //    {
+        //        objectList.RemoveAt(i);
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Removes an item at the specified index.
+        ///// </summary>
+        ///// <param name="index"></param>
+        //public virtual void RemoveAt(int index)
+        //{
+        //    objectList.RemoveAt(index);
+        //}
+
+        ///// <summary>
+        ///// Tests if there is a dupe entry in here.
+        ///// </summary>
+        ///// <param name="key"></param>
+        ///// <returns></returns>
+        //public bool ContainsKey(K key)
+        //{
+        //    return objectList.ContainsKey(key);
+        //}
+
+        //public int IndexOf(K key)
+        //{
+        //    return objectList.Keys.IndexOf(key);
+        //}
+
+        //#region ICollection<T> Members
+
+        //void ICollection<T>.Add(T item)
+        //{
+        //    Add(item);
+        //}
+
+        ///// <summary>
+        ///// Clears all objects from the collection.
+        ///// </summary>
+        //public void Clear()
+        //{
+        //    objectList.Clear();
+        //}
+
+        //public bool Contains(T item)
+        //{
+        //    return objectList.Values.Contains(item);
+        //}
+
+        //void ICollection<T>.CopyTo(T[] array, int arrayIndex)
+        //{
+        //    objectList.Values.CopyTo(array, arrayIndex);
+        //}
+
+        //public int Count
+        //{
+        //    get { return objectList.Count; }
+        //}
+
+        //bool ICollection<T>.IsReadOnly
+        //{
+        //    get { return (objectList as ICollection<T>).IsReadOnly; }
+        //}
+
+        //bool ICollection<T>.Remove(T item)
+        //{
+        //    return Remove(item);
+        //}
+
+        //#endregion
+
+        //#region IEnumerable<T> Members
+
+        //public IEnumerator<T> GetEnumerator()
+        //{
+        //    return objectList.Values.GetEnumerator();
+        //}
+
+        //#endregion
+
+        //#region IEnumerable Members
+
+        //IEnumerator IEnumerable.GetEnumerator()
+        //{
+        //    return GetEnumerator();
+        //}
+
+        //#endregion
+
+        //#region ICollection Members
+
+        //void ICollection.CopyTo(Array array, int index)
+        //{
+        //    objectList.Values.CopyTo((T[])array, index);
+        //}
+
+        //int ICollection.Count
+        //{
+        //    get { return Count; }
+        //}
+
+        //bool ICollection.IsSynchronized
+        //{
+        //    get { return (objectList.Values as ICollection).IsSynchronized; }
+        //}
+
+        //object ICollection.SyncRoot
+        //{
+        //    get { return (objectList.Values as ICollection).SyncRoot; }
+        //}
+
+        //#endregion
+
+
+
+
+
+        //#endregion
+
+
+
+
+        //#region Derived
+
+
+
+        ////############### Override
+
+        //static protected int nextUniqueKeyCounter;
+
+        ///// <summary>
+        ///// Accepts an unnamed object and names it manually.
+        ///// </summary>
+        ///// <param name="item"></param>
+        //public virtual void Add(T item)
+        //{
+
+        //    K key = default(K);
+
+        //    if (typeof(K) == typeof(string))
+        //    {
+        //        key = (K)Convert.ChangeType(typeof(T).Name + nextUniqueKeyCounter++, typeof(K));
+        //    }
+        //    else
+        //    {
+        //        key = (K)Convert.ChangeType(nextUniqueKeyCounter++, typeof(K));
+        //    }
+        //    base.Add(key, item);
+
+        //}
+
+        //public int IndexOf(K key)
+        //{
+        //    return base.Keys.IndexOf(key);
+        //}
+
+        //public bool Contains(T item)
+        //{
+        //    return base.ContainsValue(item);
+        //}
+
+        ///// <summary>
+        ///// Removes the item from the collection.
+        ///// </summary>
+        ///// <param name="item"></param>
+        //public virtual bool Remove(T item)
+        //{
+        //    foreach (T i in base.Values)
+        //    {
+        //        if (i.Equals(item))
+        //        {
+        //            return true;
+        //        }
+        //    }
+        //    return false;
+        //}
+
+        //#region IEnumerable<T> Members
+
+        //public IEnumerator<T> GetEnumerator()
+        //{
+        //    return base.Values.GetEnumerator();
+        //}
+
+        //#endregion
+
+        //#endregion
 
     }
 }
+
+

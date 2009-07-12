@@ -73,7 +73,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		List of priority groups.
 		/// </summary>
-		protected HashList priorityGroups = new HashList();
+        protected HashList<ushort, RenderPriorityGroup> priorityGroups = new HashList<ushort, RenderPriorityGroup>();
 		/// <summary>
 		///		Are shadows enabled for this group?
 		/// </summary>

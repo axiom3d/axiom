@@ -46,7 +46,7 @@ using Axiom.Collections;
 using Axiom.Scripting;
 
 using ResourceHandle = System.UInt64;
-
+using System.Collections.Generic;
 #endregion Namespace Declarations
 
 namespace Axiom.SceneManagers.Bsp
@@ -98,7 +98,7 @@ namespace Axiom.SceneManagers.Bsp
         /// <summary>
         ///		Storage of patches 
         ///	</summary>
-        protected HashList patches = new HashList();
+        protected HashList<long, PatchSurface> patches = new HashList<long, PatchSurface>();
 
         /// <summary>
         ///		Total number of vertices required for all patches.
@@ -115,9 +115,9 @@ namespace Axiom.SceneManagers.Bsp
         protected int numIndexes;
         protected HardwareIndexBuffer indexes;
         protected BspBrush[] brushes;
-        protected ArrayList playerStarts = new ArrayList();
+        protected List<ViewPoint> playerStarts = new List<ViewPoint>();
         protected VisData visData;
-        internal protected Bsp.Collections.Map objectToNodeMap;
+        internal protected Map<MovableObject, BspNode> objectToNodeMap;
         protected BspOptions bspOptions = new BspOptions();
 
         #endregion
@@ -207,7 +207,7 @@ namespace Axiom.SceneManagers.Bsp
         {
             get
             {
-                return (ViewPoint[])playerStarts.ToArray( typeof( ViewPoint ) );
+                return playerStarts.ToArray( );
             }
         }
 
@@ -228,7 +228,7 @@ namespace Axiom.SceneManagers.Bsp
         public BspLevel( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
             : base( parent, name, handle, group, isManual, loader )
         {
-            this.objectToNodeMap = new Bsp.Collections.Map();
+            objectToNodeMap = new Map<MovableObject, BspNode>();
             this.createParam = createParams;
         }
         #endregion
@@ -929,7 +929,7 @@ namespace Axiom.SceneManagers.Bsp
             {
                 // Add to movable->node map
                 // Insert all the time, will get current if already there
-                objectToNodeMap.Insert( obj, node );
+                objectToNodeMap.Add( obj, node );
                 node.AddObject( obj );
             }
             else

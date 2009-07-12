@@ -1732,7 +1732,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			ClearAllMachineInst();
 
 			// if pass 2 was successful, optimize the machine instructions
-			bool passed = Pass2scan( (TokenInstruction[])tokenInstructions.ToArray( ( typeof( TokenInstruction ) ) ), tokenInstructions.Count );
+			bool passed = Pass2scan( tokenInstructions.ToArray( ), tokenInstructions.Count );
 
 			if ( passed )
 			{

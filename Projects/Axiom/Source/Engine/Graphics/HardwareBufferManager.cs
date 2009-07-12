@@ -40,6 +40,7 @@ using System.Diagnostics;
 using Axiom.Core;
 using Axiom.Collections;
 using Axiom.Math.Collections;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -71,7 +72,7 @@ namespace Axiom.Graphics
 			{
 				instance = this;
 
-				freeTempVertexBufferMap = new Hashtable( null, new BufferComparer() );
+                freeTempVertexBufferMap = new Dictionary<HardwareVertexBuffer, List<HardwareVertexBuffer>>(new BufferComparer());
 			}
 		}
 
@@ -93,28 +94,28 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     A list of vertex declarations created by this buffer manager.
 		/// </summary>
-		protected ArrayList vertexDeclarations = new ArrayList();
+        protected List<VertexDeclaration> vertexDeclarations = new List<VertexDeclaration>();
 		/// <summary>
 		///     A list of vertex buffer bindings created by this buffer manager.
 		/// </summary>
-		protected ArrayList vertexBufferBindings = new ArrayList();
+        protected List<VertexBufferBinding> vertexBufferBindings = new List<VertexBufferBinding>();
 		/// <summary>
 		///     A list of vertex buffers created by this buffer manager.
 		/// </summary>
-		protected ArrayList vertexBuffers = new ArrayList();
+        protected List<HardwareBuffer> vertexBuffers = new List<HardwareBuffer>();
 		/// <summary>
 		///     A list of index buffers created by this buffer manager.
 		/// </summary>
-		protected ArrayList indexBuffers = new ArrayList();
+        protected List<HardwareBuffer> indexBuffers = new List<HardwareBuffer>();
 
 		/// <summary>
 		///		Map from original buffer to list of temporary buffers.
 		/// </summary>
-		protected Hashtable freeTempVertexBufferMap;
+        protected Dictionary<HardwareVertexBuffer, List<HardwareVertexBuffer>> freeTempVertexBufferMap;
 		/// <summary>
 		///		List of currently licensed temp buffers.
 		/// </summary>
-		protected ArrayList tempVertexBufferLicenses = new ArrayList();
+        protected List<VertexBufferLicense> tempVertexBufferLicenses = new List<VertexBufferLicense>();
 
 		/// <summary>
 		///		Number of frames elapsed since temporary buffers utilization was above half the available
@@ -318,11 +319,12 @@ namespace Axiom.Graphics
 			HardwareVertexBuffer vbuf = null;
 
 			// Locate existing buffer copy in free list
-			IList list = (IList)freeTempVertexBufferMap[ sourceBuffer ];
+            List<HardwareVertexBuffer> list;
+            freeTempVertexBufferMap.TryGetValue(sourceBuffer, out list);
 
 			if ( list == null )
 			{
-				list = new ArrayList();
+                list = new List<HardwareVertexBuffer>();
 				freeTempVertexBufferMap[ sourceBuffer ] = list;
 			}
 
@@ -527,11 +529,11 @@ namespace Axiom.Graphics
 			}
 
 			// TODO: Verify this works
-			foreach ( DictionaryEntry entry in freeTempVertexBufferMap )
+            foreach (KeyValuePair<HardwareVertexBuffer, List<HardwareVertexBuffer>> entry in freeTempVertexBufferMap)
 			{
 				if ( entry.Key == sourceBuffer )
 				{
-					ArrayList list = (ArrayList)entry.Value;
+                    List<HardwareVertexBuffer> list = entry.Value;
 					list.Clear();
 				}
 			}
@@ -594,9 +596,9 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Used for buffer comparison.
 		/// </summary>
-		protected class BufferComparer : IComparer
+        protected class BufferComparer : IEqualityComparer<HardwareVertexBuffer>, IComparer<HardwareVertexBuffer>
 		{
-			#region IComparer Implementation
+            #region IComparer<HardwareBuffer> Members
 
 			/// <summary>
 			///     Comparse 2 HardwareBuffers for equality.
@@ -604,19 +606,31 @@ namespace Axiom.Graphics
 			/// <param name="x"></param>
 			/// <param name="y"></param>
 			/// <returns></returns>
-			public int Compare( object x, object y )
+            public int Compare(HardwareVertexBuffer x, HardwareVertexBuffer y)
 			{
-				HardwareBuffer a = x as HardwareBuffer;
-				HardwareBuffer b = y as HardwareBuffer;
-
-				if ( a.ID == b.ID )
+                if (x.ID == y.ID)
 				{
 					return 0;
 				}
 
 				return -1;
 			}
-			#endregion IComparer Implementation
+
+            #endregion
+
+            #region IEqualityComparer<HardwareBuffer> Members
+
+            public bool Equals(HardwareVertexBuffer x, HardwareVertexBuffer y)
+            {
+                return Compare(x, y) == 0;
 		}
+
+            public int GetHashCode(HardwareVertexBuffer obj)
+            {
+                return obj.GetHashCode();
 	}
+
+            #endregion
+}
+    }
 }
