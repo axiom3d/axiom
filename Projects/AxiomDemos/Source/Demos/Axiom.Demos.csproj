@@ -189,8 +189,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Configuration\EngineConfig.xsc">
+      <DependentUpon>EngineConfig.xsd</DependentUpon>
+    </None>
     <None Include="Configuration\EngineConfig.xsd">
       <SubType>Designer</SubType>
+    </None>
+    <None Include="Configuration\EngineConfig.xss">
+      <DependentUpon>EngineConfig.xsd</DependentUpon>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />

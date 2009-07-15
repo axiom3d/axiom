@@ -62,6 +62,17 @@ namespace Axiom.FileSystem
         /// <summary>Directory stack of previous directories </summary>
         private Stack<string> _directoryStack = new Stack<string>();
 
+        /// <summary>
+        /// Is this archive capable of being monitored for additions, changes and deletions
+        /// </summary>
+        public override bool IsMonitorable
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         #endregion Fields and Properties
 
         #region Utility Methods
