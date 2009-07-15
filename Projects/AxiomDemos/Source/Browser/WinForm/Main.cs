@@ -111,7 +111,7 @@ namespace Axiom.Demos.Browser.WinForm
                 // interrogate the available resource paths
 				foreach ( EngineConfig.FilePathRow row in config.FilePath )
                 {
-                    ResourceGroupManager.Instance.AddResourceLocation( row.src, row.type, row.group );
+                    ResourceGroupManager.Instance.AddResourceLocation( row.src, row.type, row.group, false, true );
                 }
             }
         }

@@ -1073,7 +1073,7 @@
       <Name>Axiom.SceneManagers.PortalConnected</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Demos\Axiom.Demos.csproj">
-      <Project>{8749EB93-DB60-43C3-9BAE-76283B6624A7}</Project>
+      <Project>{C7286349-8DBA-4A39-991C-3D848AB10CCE}</Project>
       <Name>Axiom.Demos</Name>
     </ProjectReference>
   </ItemGroup>

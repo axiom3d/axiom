@@ -358,23 +358,16 @@ namespace Axiom.Core
         };
 
         /// <summary>Resource location entry</summary>
-        public struct ResourceLocation : IDisposable
+        public struct ResourceLocation
         {
             /// <summary>Pointer to the archive which is the destination</summary>
             public Archive Archive;
-            /// Whether this location was added recursively
+            /// <summary>Pointer to the watcher which is monitoring the archive location</summary>
+            public Watcher Watcher;
+            /// <summary>Whether this location and it's children are searched for files</summary>
             public bool Recursive;
-
-            #region IDisposable Members
-
-            public void Dispose()
-            {
-                //Archive.Dispose();
-                Archive = null;
-                Recursive = false;
-            }
-
-            #endregion
+            /// <summary>Whether this location is be monitored for new files</summary>
+            public bool Monitor;
         };
 
         /// Resource group entry
@@ -1063,7 +1056,7 @@ namespace Axiom.Core
         /// </overloads>
         public void AddResourceLocation( string name, string locType )
         {
-            AddResourceLocation( name, locType, DefaultResourceGroupName, false );
+            AddResourceLocation( name, locType, DefaultResourceGroupName, false, false );
         }
 
         /// <param name="resGroup">
@@ -1077,7 +1070,7 @@ namespace Axiom.Core
         /// </param>
         public void AddResourceLocation( string name, string locType, string resGroup )
         {
-            AddResourceLocation( name, locType, resGroup, false );
+            AddResourceLocation( name, locType, resGroup, false, false );
         }
 
         /// <param name="recursive"> 
@@ -1089,7 +1082,7 @@ namespace Axiom.Core
         /// </param>
         public void AddResourceLocation( string name, string locType, bool recursive )
         {
-            AddResourceLocation( name, locType, DefaultResourceGroupName, recursive );
+            AddResourceLocation( name, locType, DefaultResourceGroupName, recursive, false );
         }
 
         /// <param name="resGroup">
@@ -1108,8 +1101,8 @@ namespace Axiom.Core
         /// When opening a resource you still need to use the fully qualified name, 
         /// this allows duplicate names in alternate paths.
         /// </param>
-        public void AddResourceLocation( string name, string locType, string resGroup, bool recursive )
-        {
+        public void AddResourceLocation( string name, string locType, string resGroup, bool recursive, bool monitor )
+        {      
             ResourceGroup grp = getResourceGroup( resGroup );
             if ( grp == null )
             {
@@ -1136,6 +1129,11 @@ namespace Axiom.Core
                     // Index under lower case name too for case insensitive match
                     grp.ResourceIndexCaseInsensitive[ it.ToLower() ] = arch;
                 }
+            }
+
+            if ( arch.IsMonitorable && monitor )
+            {
+                loc.Watcher = new Watcher( name, recursive );
             }
 
             LogManager.Instance.Write( "Added resource location '{0}' of type '{1}' to resource group '{2}'{3}", name, locType, resGroup, recursive ? " with recursive option" : "" );
@@ -1184,8 +1182,6 @@ namespace Axiom.Core
                         if ( grp.ResourceIndexCaseSensitive[ name ] == arch )
                             grp.ResourceIndexCaseSensitive.Remove( name );
                     }
-
-                    loc.Dispose();
 
                     grp.LocationList.Remove( loc );
                     break;
@@ -2184,10 +2180,7 @@ namespace Axiom.Core
             }
 
             // Drop location list
-            foreach ( ResourceLocation loc in grp.LocationList )
-            {
-                loc.Dispose();
-            }
+            grp.LocationList.Clear();
 
             // delete ResourceGroup
             grp.Dispose();

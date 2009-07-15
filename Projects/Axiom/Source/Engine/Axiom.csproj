@@ -120,6 +120,7 @@
     <Compile Include="Core\StaticGeometry\StaticGeometry.cs" />
     <Compile Include="Core\WindowEventMonitor.cs" />
     <Compile Include="FileSystem\FileSystemArchive.cs" />
+    <Compile Include="FileSystem\Watcher.cs" />
     <Compile Include="FileSystem\ZipArchive.cs" />
     <Compile Include="Graphics\AnyBuilder.cs" />
     <Compile Include="Graphics\CompositionPass.cs" />

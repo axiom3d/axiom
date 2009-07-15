@@ -142,6 +142,14 @@ namespace Axiom.FileSystem
             get;
         }
 
+        /// <summary>
+        /// Is this archive capable of being monitored for additions, changes and deletions
+        /// </summary>
+        public virtual bool IsMonitorable
+        {
+            get { return false; }
+        }
+
         #endregion Fields and Properties
 
         #region Construction and Destruction
@@ -311,7 +319,7 @@ namespace Axiom.FileSystem
 			}
 		}
 
-		#endregion isDisposed Property
+        #endregion isDisposed Property
 
 		/// <summary>
 		/// Class level dispose method
