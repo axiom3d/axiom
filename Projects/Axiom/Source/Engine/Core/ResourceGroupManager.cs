@@ -773,6 +773,7 @@ namespace Axiom.Core
                 // Reset current group
                 _currentGroup = null;
             }
+            LogManager.Instance.Write( "\t{0} initialized.", grp.Name );
         }
 
         /// <summary>
@@ -792,6 +793,9 @@ namespace Axiom.Core
             foreach ( KeyValuePair<string, ResourceGroup> pair in resourceGroups )
             {
                 ResourceGroup grp = pair.Value;
+
+                LogManager.Instance.Write( "Initializing resource group {0}.", grp.Name );
+
                 if ( !grp.Initialized )
                 {
                     // Set current group
