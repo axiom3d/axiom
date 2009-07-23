@@ -35,6 +35,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Text;
+
+using Axiom.FileSystem;
+
 using SDI = System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -47,6 +52,7 @@ using Axiom.Media;
 using ResourceHandle = System.UInt64;
 using Real = System.Single;
 using CodePoint = System.UInt32;
+using Image=Axiom.Media.Image;
 using UVRect = Axiom.Core.RectangleF;
 
 #endregion Namespace Declarations
@@ -560,8 +566,45 @@ namespace Axiom.Fonts
 			// get a handles to the graphics context of the bitmap
 			System.Drawing.Graphics g = System.Drawing.Graphics.FromImage( bitmap );
 
+		    // load the font from file into a private collection to make sure
+		    // this works even if the font is not installed
+		    FontFamily fontFamily;
+		    string fontFile = String.Empty;
+		    IntPtr pData = IntPtr.Zero;
+
+		    try
+		    {
+		        using ( Stream fileStream = Singleton<ResourceGroupManager>.Instance.OpenResource( this.Source, Group ) )
+		        {
+		            using ( PrivateFontCollection fontCollection = new PrivateFontCollection() )
+		            {
+		                byte[] data = new byte[fileStream.Length];
+		                fileStream.Read( data, 0, data.Length );
+		                pData = Memory.PinObject( data );
+
+		                fontCollection.AddMemoryFont( pData, data.Length );
+
+		                fontFamily = fontCollection.Families[ 0 ];
+		            }
+		        }
+		    }
+		    catch ( Exception e )
+		    {
+		        string error = String.Format( "Error loading font file: {0}\n{1}. Setting font to GenericSansSerif", fontFile, e.Message );
+		        LogManager.Instance.Write( error );
+
+		        fontFamily = FontFamily.GenericSansSerif;
+		    }
+		    finally
+		    {
+		        if ( pData != IntPtr.Zero )
+		        {
+		            Memory.UnpinObject( pData );
+		        }
+		    }
+
 			// get a font object for the specified font
-			System.Drawing.Font font = new System.Drawing.Font( Name, 18 );
+            System.Drawing.Font font = new System.Drawing.Font( fontFamily, 18 );
 
 			// create a pen for the grid lines
 			System.Drawing.Pen linePen = new System.Drawing.Pen( System.Drawing.Color.Red );
