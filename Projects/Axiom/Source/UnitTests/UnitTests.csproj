@@ -46,8 +46,44 @@
     <Reference Include="Typemock.ArrangeActAssert, Version=5.3.1.0, Culture=neutral, PublicKeyToken=3dae460033b8d8e2, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\SceneManagerRegressionTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\SceneNodeRegressionTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\SceneNodeTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Fonts\FontManagerRegressionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SceneManagers\Bsp\BspSceneManagerRegressionTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SceneManagers\Bsp\BspSceneNodeRegressionTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SceneManagers\Bsp\BspSceneNodeTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SceneManagers\Octree\OctreeNodeRegressionTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SceneManagers\Octree\OctreeNodeTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SceneManagers\Octree\OctreeSceneManagerRegressionTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SceneManagers\PortalConnected\PCZSceneManagerRegressionTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SceneManagers\PortalConnected\PCZSceneNodeRegressionTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SceneManagers\PortalConnected\PCZSceneNodeTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Axiom.csproj">
@@ -69,10 +105,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Collections\" />
-    <Folder Include="Core\" />
-    <Folder Include="SceneManagers\Bsp\" />
-    <Folder Include="SceneManagers\Octree\" />
-    <Folder Include="SceneManagers\PortalConnected\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

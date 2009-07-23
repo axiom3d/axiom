@@ -589,6 +589,28 @@ namespace Axiom.Core
         }
 
         /// <summary>
+        /// This method removes and destroys the child and all of its children.
+        /// </summary>
+        /// <param name="sceneNode">The node to remove and destroy</param>
+        /// <remarks>
+        /// Unlike removeChild, which removes a single named child from this
+        /// node but does not destroy it, this method destroys the child
+        /// and all of it's children. 
+        /// <para>
+        /// Use this if you wish to recursively destroy a node as well as 
+        /// detaching it from it's parent. Note that any objects attached to
+        /// the nodes will be detached but will not themselves be destroyed.
+        /// </para>
+        /// </remarks>
+        public void RemoveAndDestroyChild(SceneNode sceneNode)
+        {
+            sceneNode.RemoveAndDestroyAllChildren();
+
+            this.RemoveChild(sceneNode);
+            sceneNode.Creator.DestroySceneNode(sceneNode.Name);
+        }
+
+        /// <summary>
         /// Removes and destroys all children of this node.
         /// </summary>
         /// <remarks>           
