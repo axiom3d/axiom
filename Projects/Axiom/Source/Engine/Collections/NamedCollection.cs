@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -117,42 +118,59 @@ namespace Axiom.Collections
             _dictionary.Add( key, value );
         }
 
+        /// <summary>
+        /// Removes the value with the specified key from the <see cref="NamedCollection{T}"/>.
+        /// </summary>
+        /// <param name="key">The key of the element to remove.</param>
+        /// <returns><c>true</c> if the element is successfully found and removed; otherwise, false.
+        /// This method returns false if key is not found in the <see cref="NamedCollection{T}"/>.
+        /// </returns>
         public bool Remove( string key )
         {
-            T value = _dictionary[ key ];
-            if ( _dictionary.Remove( key ) )
+            bool foundAndRemoved = false;
+
+            if (this._dictionary.ContainsKey(key))
             {
-                _list.Remove( value );
-                return true;
+                T value = _dictionary[key];
+                _dictionary.Remove( key );
+                foundAndRemoved = _list.Remove(value);
             }
-            else
-            {
-                return false;
-            }
+
+            return foundAndRemoved;
         }
 
         /// <summary>
-        /// Removes the item from the collection.
+        /// Removes the object from the <see cref="NamedCollection{T}"/>.
         /// </summary>
-        /// <param name="item"></param>
-        public virtual bool Remove( T item )
+        /// <param name="item">The object to remove from the <see cref="NamedCollection{T}"/>.
+        /// The value can be <c>null</c> for reference types.</param>
+        /// <returns><c>true</c> if the element is successfully found and removed; otherwise, false.
+        /// This method returns false if key is not found in the <see cref="NamedCollection{T}"/>.
+        /// </returns>
+        public virtual bool Remove(T item)
         {
+            bool foundAndRemoved = false;
+
             if ( _dictionary.Remove( item.Name ) )
             {
-                _list.Remove( item );
-                return true;
+                foundAndRemoved = _list.Remove(item);
             }
-            else
-            {
-                return false;
-            }
+
+            return foundAndRemoved;
         }
 
-        public bool RemoveAt( int index )
+        /// <summary>
+        /// Removes the element at the specified index of the <see cref="NamedCollection{T}"/>.
+        /// </summary>
+        /// <param name="index">The zero-based index of the element to remove.</param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///     <paramref name="index"/> is less than 0 or
+        ///     <paramref name="index"/> is equal to or greater than <see cref="NamedCollection{T}.Count"/>.
+        /// </exception>
+        public void RemoveAt( int index )
         {
-            _dictionary.Remove( _list[ index ].Name );
-            _list.RemoveAt( index );
-            return true;
+            _dictionary.Remove(_list[index].Name);
+            _list.RemoveAt(index);
         }
 
         public int IndexOf( string key )
