@@ -61,7 +61,7 @@ namespace Axiom.Overlays
     /// 	elements. These are also the smallest elements that can be attached directly
     /// 	to an Overlay.
     /// 	<p/>
-    /// 	OverlayElementContainers should be managed using GuiManager. This class is responsible for
+    /// 	OverlayElementContainers should be managed using OverlayManager. This class is responsible for
     /// 	instantiating elements, and also for accepting new types of element
     /// 	from plugins etc.
     /// </remarks>
