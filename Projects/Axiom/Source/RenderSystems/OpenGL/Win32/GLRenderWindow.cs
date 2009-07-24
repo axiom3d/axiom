@@ -142,7 +142,7 @@ namespace Axiom.RenderSystems.OpenGL
 			string title = name;
 			bool vsync = false;
 			int fsaa = 0;
-			string border;
+			string border = "";
 			bool outerSize = false;
 
 			#region Parameter Handling
@@ -181,6 +181,7 @@ namespace Axiom.RenderSystems.OpenGL
 						case "externalGLControl":
 							break;
 						case "border":
+                            border = ( (string)miscParams[ "border" ] ).ToLower(); 
 							break;
 						case "outerDimensions":
 							break;
@@ -248,8 +249,16 @@ namespace Axiom.RenderSystems.OpenGL
 					}
 					else
 					{
-						//TODO : Implement "border" and "fixed" window options.
-					}
+                        if ( border == "none" )
+                        {
+                            form.FormBorderStyle = SWF.FormBorderStyle.None;
+                        }
+                        else if ( border == "fixed" )
+                        {
+                            form.FormBorderStyle = SWF.FormBorderStyle.FixedSingle;
+                            form.MaximizeBox = false;
+                        }
+                    }
 
 					form.Top = top;
 					form.Left = left;

@@ -251,7 +251,7 @@ namespace Axiom.RenderSystems.DirectX9
 			int left = -1; // Defaults to screen center
 			int top = -1; // Defaults to screen center
 			bool depthBuffer = true;
-			String border;
+			string border = "";
 			bool outerSize = false;
 
 			_useNVPerfHUD = false;
@@ -356,7 +356,7 @@ namespace Axiom.RenderSystems.DirectX9
 				// window border style
 				if ( miscParams.ContainsKey( "border" ) )
 				{
-					border = (string)miscParams[ "border" ];
+					border = ((string)miscParams[ "border" ]).ToLower();
 				}
 
 				// set outer dimensions?
@@ -400,7 +400,15 @@ namespace Axiom.RenderSystems.DirectX9
 					}
 					else
 					{
-						//TODO : Implement "border" and "fixed" window options.
+                        if( border == "none")
+                        {
+                            newWin.FormBorderStyle = SWF.FormBorderStyle.None;
+                        }
+                        else if ( border == "fixed" )
+                        {
+                            newWin.FormBorderStyle = SWF.FormBorderStyle.FixedSingle;
+                            newWin.MaximizeBox = false;
+                        }
 					}
 
 					if ( !outerSize )
