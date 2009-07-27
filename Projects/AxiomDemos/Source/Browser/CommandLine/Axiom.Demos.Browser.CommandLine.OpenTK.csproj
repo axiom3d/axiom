@@ -590,6 +590,7 @@
     </None>
     <None Include="..\..\..\..\..\media\materials\smoke.particle">
       <Link>Media\Materials\smoke.particle</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\..\..\..\media\materials\Terrain.material">
       <Link>Media\Materials\Terrain.material</Link>
