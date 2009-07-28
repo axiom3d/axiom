@@ -179,9 +179,25 @@ namespace Axiom.RenderSystems.Xna
 
 		#region Constructor
 
-		public XnaRenderWindow()
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="driver">The root driver</param>
+		public XnaRenderWindow( Driver driver )
 		{
+			_driver = driver;
 		}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="driver">The root driver</param>
+        /// <param name="deviceIfSwapChain"></param>
+		public XnaRenderWindow( Driver driver, GraphicsDevice deviceIfSwapChain )
+			: this( driver )
+        {
+            _isSwapChain = ( deviceIfSwapChain != null );
+        }
 
 		#endregion
 
@@ -646,7 +662,7 @@ namespace Axiom.RenderSystems.Xna
         {
             get
             {
-                switch ( attribute )
+                switch ( attribute.ToUpper() )
                 {
                     case "XNADEVICE":
                         return Driver.XnaDevice;

@@ -546,8 +546,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( autoCreateWindow )
 			{
-				int width = 640;
-				int height = 480;
+				int width = 800;
+				int height = 600;
 				int bpp = 32;
 				bool fullScreen = false;
 

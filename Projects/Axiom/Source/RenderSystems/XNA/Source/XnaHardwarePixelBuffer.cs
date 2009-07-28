@@ -42,6 +42,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 
+using Axiom.RenderSystems.Xna;
+
 using VertexDeclaration = Axiom.Graphics.VertexDeclaration;
 using Root = Axiom.Core.Root;
 using Axiom.Core;
@@ -172,7 +174,7 @@ namespace Axiom.RenderSystems.DirectX9
             Width = volume.Width;
             Height = volume.Height;
             Depth = volume.Depth;
-            Format = XnaHelper.ConvertEnum( volume.Format );
+            Format = XnaHelper.Convert( volume.Format );
             // Default
             RowPitch = Width;
             SlicePitch = Height * Width;
@@ -331,7 +333,7 @@ namespace Axiom.RenderSystems.DirectX9
             if ( update )
             {
                 Debug.Assert( sliceTRT.Count == Depth );
-                foreach ( XFGRenderTexture trt in sliceTRT )
+                foreach ( XnaRenderTexture trt in sliceTRT )
                     trt.Rebind( this );
                 return;
             }
@@ -346,7 +348,7 @@ namespace Axiom.RenderSystems.DirectX9
             for ( int zoffset = 0; zoffset < Depth; ++zoffset )
             {
                 string name = "rtt/" + this.ID;
-                RenderTexture trt = new XFGRenderTexture( name, this );
+                RenderTexture trt = new XnaRenderTexture( name, this );
                 sliceTRT.Add( trt );
                 Root.Instance.RenderSystem.AttachRenderTarget( trt );
             }
@@ -416,7 +418,7 @@ namespace Axiom.RenderSystems.DirectX9
             PixelBox converted = src;
             GCHandle bufGCHandle = new GCHandle();
             // convert to pixelbuffer's native format if necessary
-            if ( XFGHelper.ConvertEnum( src.Format ) == XFG.Format.Unknown )
+            if ( XnaHelper.Convert( src.Format ) == XFG.Format.Unknown )
             {
                 int bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, Format );
                 byte[] newBuffer = new byte[bufSize];
@@ -426,7 +428,7 @@ namespace Axiom.RenderSystems.DirectX9
             }
 
             // int formatBytes = PixelUtil.GetNumElemBytes(converted.Format);
-            XFG.Surface tmpSurface = device.CreateOffscreenPlainSurface( converted.Width, converted.Height, XFGHelper.ConvertEnum( converted.Format ), XFG.Pool.Scratch );
+            XFG.Surface tmpSurface = device.CreateOffscreenPlainSurface( converted.Width, converted.Height, XnaHelper.Convert( converted.Format ), XFG.Pool.Scratch );
             int pitch;
             // Ideally I would be using the Array mechanism here, but that doesn't seem to work
             DX.GraphicsStream buf = tmpSurface.LockRectangle( XFG.LockFlags.NoSystemLock, out pitch );
@@ -444,7 +446,7 @@ namespace Axiom.RenderSystems.DirectX9
             buf.Dispose();
 
             //ImageInformation imageInfo = new ImageInformation();
-            //imageInfo.Format = XFGHelper.ConvertEnum(converted.Format);
+            //imageInfo.Format = XnaHelper.Convert(converted.Format);
             //imageInfo.Width = converted.Width;
             //imageInfo.Height = converted.Height;
             //imageInfo.Depth = converted.Depth;
@@ -485,7 +487,7 @@ namespace Axiom.RenderSystems.DirectX9
         {
             // Decide on pixel format of temp surface
             PixelFormat tmpFormat = Format;
-            if ( XFGHelper.ConvertEnum( dst.Format ) == XFG.Format.Unknown )
+            if ( XnaHelper.Convert( dst.Format ) == XFG.Format.Unknown )
                 tmpFormat = dst.Format;
             if ( surface != null )
             {
@@ -494,7 +496,7 @@ namespace Axiom.RenderSystems.DirectX9
                 XFG.Texture tmp =
                     new XFG.Texture( device, dst.Width, dst.Height,
                                     1, // 1 mip level ie topmost, generate no mipmaps
-                                    0, XFGHelper.ConvertEnum( tmpFormat ),
+                                    0, XnaHelper.Convert( tmpFormat ),
                                     XFG.Pool.Scratch );
                 XFG.Surface subSurface = tmp.GetSurfaceLevel( 0 );
                 // Copy texture to this temp surface
@@ -522,7 +524,7 @@ namespace Axiom.RenderSystems.DirectX9
                 XFG.VolumeTexture tmp =
                     new XFG.VolumeTexture( device, dst.Width, dst.Height, dst.Depth,
                                           0, XFG.Usage.None,
-                                          XFGHelper.ConvertEnum( tmpFormat ),
+                                          XnaHelper.Convert( tmpFormat ),
                                           XFG.Pool.Scratch );
                 XFG.Volume subVolume = tmp.GetVolumeLevel( 0 );
                 // Volume
@@ -564,7 +566,7 @@ namespace Axiom.RenderSystems.DirectX9
         ///<summary>
         ///    Function to set mipmap generation
         ///</summary>
-        public void SetMipmapping( bool doMipmapGen, bool HWMipmaps, XFG.BaseTexture mipTex )
+        public void SetMipmapping( bool doMipmapGen, bool HWMipmaps, XFG.Texture mipTex )
         {
             this.doMipmapGen = doMipmapGen;
             this.hwMipmaps = HWMipmaps;
