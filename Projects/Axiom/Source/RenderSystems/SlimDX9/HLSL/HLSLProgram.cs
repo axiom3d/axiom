@@ -148,9 +148,7 @@ namespace Axiom.RenderSystems.SlimDX9.HLSL
             }
             catch ( D3D.Direct3D9Exception ex )
             {
-                throw new AxiomException( "HLSL: Unable to compile high level shader {0}:\n{1}", Name, errors );
-
-                LogManager.Instance.Write( ex.Message );
+                throw new AxiomException( "HLSL: Unable to compile high level shader {0}:\n{1}", ex, Name );
             }
             finally
             {

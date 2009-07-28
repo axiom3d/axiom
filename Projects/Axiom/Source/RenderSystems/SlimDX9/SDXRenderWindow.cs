@@ -994,69 +994,71 @@ namespace Axiom.RenderSystems.SlimDX9
         	
         }
         public override void Update( bool swapBuffers )
-		{
-        	SDXRenderSystem rs = (SDXRenderSystem)Root.Instance.RenderSystem;
-        	
-        	// access device through driver
-			D3D.Device device = _driver.D3DDevice;
+        {
+            SDXRenderSystem rs = (SDXRenderSystem)Root.Instance.RenderSystem;
 
-			if ( rs.IsDeviceLost )
-			{
-				try
-	            {
-		        	device.TestCooperativeLevel();
-	            }
-	            catch ( SlimDX.SlimDXException dlx ) 
-	            {
-	            	if(dlx.ResultCode == D3D.ResultCode.DeviceLost)
-	            	{
-	            			// device lost, and we can't reset
-							// can't do anything about it here, wait until we get 
-							// D3DERR_DEVICENOTRESET; rendering calls will silently fail until 
-							// then (except Present, but we ignore device lost there too)
-							_renderSurface.ReleaseDC(_renderSurface.GetDC());
-							// need to release if swap chain
-							if ( !_isSwapChain )
-								_renderZBuffer = null;
-							else
-								_renderZBuffer.ReleaseDC(_renderZBuffer.GetDC());
-							System.Threading.Thread.Sleep( 50 );
-							return;
-	            	}else
-	            	{
-	            		// device lost, and we can reset
-	            		rs.RestoreLostDevice();
-	            		
-	            		// Still lost?
-						if ( rs.IsDeviceLost )
-						{
-							// Wait a while
-							System.Threading.Thread.Sleep( 50 );
-							return;
-						}
-						
-						if ( !_isSwapChain )
-						{
-							// re-qeuery buffers
-							_renderSurface = device.GetRenderTarget( 0 );
-							_renderZBuffer = device.DepthStencilSurface;
-							// release immediately so we don't hog them
-							_renderZBuffer.ReleaseDC( _renderZBuffer.GetDC() );
-						}
-						else
-						{
-							// Update dimensions incase changed
+            // access device through driver
+            D3D.Device device = _driver.D3DDevice;
+
+            if ( rs.IsDeviceLost )
+            {
+                try
+                {
+                    device.TestCooperativeLevel();
+                }
+                catch ( SlimDX.SlimDXException dlx )
+                {
+                    if ( dlx.ResultCode == D3D.ResultCode.DeviceLost )
+                    {
+                        // device lost, and we can't reset
+                        // can't do anything about it here, wait until we get 
+                        // D3DERR_DEVICENOTRESET; rendering calls will silently fail until 
+                        // then (except Present, but we ignore device lost there too)
+                        _renderSurface.ReleaseDC( _renderSurface.GetDC() );
+                        // need to release if swap chain
+                        if ( !_isSwapChain )
+                            _renderZBuffer = null;
+                        else
+                            _renderZBuffer.ReleaseDC( _renderZBuffer.GetDC() );
+                        System.Threading.Thread.Sleep( 50 );
+                        return;
+                    }
+                    else
+                    {
+                        // device lost, and we can reset
+                        rs.RestoreLostDevice();
+
+                        // Still lost?
+                        if ( rs.IsDeviceLost )
+                        {
+                            // Wait a while
+                            System.Threading.Thread.Sleep( 50 );
+                            return;
+                        }
+
+                        if ( !_isSwapChain )
+                        {
+                            // re-qeuery buffers
+                            _renderSurface = device.GetRenderTarget( 0 );
+                            _renderZBuffer = device.DepthStencilSurface;
+                            // release immediately so we don't hog them
+                            _renderZBuffer.ReleaseDC( _renderZBuffer.GetDC() );
+                        }
+                        else
+                        {
+                            // Update dimensions incase changed
                             foreach ( Viewport entry in this.viewportList )
-							{
+                            {
                                 entry.UpdateDimensions();
-							}
-						}
-	            	}
-				}
-	            
-	            base.Update( swapBuffers );
-			}
+                            }
+                        }
+                    }
+                }
+            }
+
+            base.Update( swapBuffers );
         }
+
         #endregion
     }
 }
