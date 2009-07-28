@@ -136,7 +136,7 @@ namespace Axiom.Overlays
         ///    Adds a 2d element to this overlay.
         /// </summary>
         /// <remarks>
-        ///    Containers are created and managed using the GuiManager. A container
+        ///    Containers are created and managed using the OverlayManager. A container
         ///    could be as simple as a square panel, or something more complex like
         ///    a grid or tree view. Containers group collections of other elements,
         ///    giving them a relative coordinate space and a common z-order.
