@@ -54,6 +54,8 @@ using Axiom.Collections;
 
 namespace Axiom.RenderSystems.Xna
 {
+    ///<summary>
+    ///</summary>
     public class XnaRenderSystem : RenderSystem, IServiceProvider
     {
         public static readonly Matrix4 ProjectionClipSpace2DToImageSpacePerspective = new Matrix4(
@@ -105,6 +107,10 @@ namespace Axiom.RenderSystems.Xna
         FixedFunctionEmulation.HLSLFixedFunctionProgram _fixedFunctionProgram;//= new Axiom.RenderSystems.Xna.FixedFunctionEmulation.HLSLFixedFunctionProgram();
         FixedFunctionEmulation.FixedFunctionPrograms.FixedFunctionProgramsParameters _ffProgramParameters = new FixedFunctionEmulation.FixedFunctionPrograms.FixedFunctionProgramsParameters();
 #endif
+        private bool _useNVPerfHUD;
+        private bool _vSync;
+        private XFG.MultiSampleType _fsaaType = XFG.MultiSampleType.None;
+        private int _fsaaQuality = 0;
 
 
         protected int primCount;
@@ -992,13 +998,6 @@ namespace Axiom.RenderSystems.Xna
             return colorEx;
         }
 
-        public override RenderTexture CreateRenderTexture( string name, int width, int height )
-        {
-            XnaRenderTexture renderTexture = new XnaRenderTexture( name, width, height );
-            AttachRenderTarget( renderTexture );
-            return renderTexture;
-        }
-
         public override RenderWindow CreateRenderWindow(string name, int width, int height, bool isFullScreen, NamedParameterList miscParams)
         {
             // Check we're not creating a secondary window when the primary
@@ -1033,7 +1032,7 @@ namespace Axiom.RenderSystems.Xna
                                                     "You cannot create a new window with this name.", name ) );
             }
 
-            RenderWindow window = new XnaRenderWindow( _activeDriver, _primaryWindow != null ? device : null );
+            RenderWindow window = new XnaRenderWindow( _activeDriver, _primaryWindow != null ? this._device : null );
 
             // create the window
             window.Create( name, width, height, isFullScreen, miscParams );
@@ -1044,23 +1043,23 @@ namespace Axiom.RenderSystems.Xna
             if ( _primaryWindow == null )
             {
                 _primaryWindow = (XnaRenderWindow)window;
-                device = (XFG.GraphicsDevice)window[ "XnaDEVICE" ];
+                _device = (XFG.GraphicsDevice)window[ "XNADEVICE" ];
 
                 // Create the texture manager for use by others
-                textureManager = new XnaTextureManager( device );
+                textureManager = new XnaTextureManager( _device );
                 // Also create hardware buffer manager
-                hardwareBufferManager = new XnaHardwareBufferManager( device );
+                hardwareBufferManager = new XnaHardwareBufferManager( _device );
 
                 // Create the GPU program manager
-                gpuProgramMgr = new XnaGpuProgramManager( device );
+                gpuProgramMgr = new XnaGpuProgramManager( _device );
                 // create & register HLSL factory
                 //HLSLProgramFactory = new D3D9HLSLProgramFactory();
                 //HighLevelGpuProgramManager::getSingleton().addFactory(mHLSLProgramFactory);
                 gpuProgramMgr.PushSyntaxCode( "hlsl" );
 
 
-                // Initialise the capabilities structures
-                this.CheckCaps( device );
+                // Initialize the capabilities structures
+                this._checkHardwareCapabilities( _device );
 
             }
             else
@@ -1069,6 +1068,11 @@ namespace Axiom.RenderSystems.Xna
             }
 
             return window;
+        }
+
+        public override MultiRenderTarget CreateMultiRenderTarget( string name )
+        {
+            throw new NotImplementedException();
         }
 
         private XFG.GraphicsDevice InitDevice( bool isFullscreen, bool depthBuffer, int width, int height, int colorDepth, IntPtr target )
@@ -1256,8 +1260,16 @@ namespace Axiom.RenderSystems.Xna
                 target = newWindow.Handle;
 #endif
 
+                NamedParameterList miscParams = new NamedParameterList();
+                miscParams.Add( "title", windowTitle );
+                miscParams.Add( "colorDepth", bpp );
+                miscParams.Add( "FSAA", this._fsaaType );
+                miscParams.Add( "FSAAQuality", _fsaaQuality );
+                miscParams.Add( "vsync", _vSync );
+                miscParams.Add( "useNVPerfHUD", _useNVPerfHUD );
+
                 // create the render window
-                renderWindow = CreateRenderWindow( "Main Window", width, height, bpp, fullScreen, 0, 0, true, false, target );
+                renderWindow = CreateRenderWindow( "Main Window", width, height, fullScreen, miscParams );
 
                 // use W buffer when in 16 bit color mode
                 //useWBuffer = (renderWindow.ColorDepth == 16);
@@ -1373,6 +1385,16 @@ namespace Axiom.RenderSystems.Xna
         }
 
         //XFG.BasicEffect ef;
+        public override void SetClipPlane( ushort index, float A, float B, float C, float D )
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void EnableClipPlane( ushort index, bool enable )
+        {
+            throw new NotImplementedException();
+        }
+
         public override void Render( RenderOperation op )
         {
             // don't even bother if there are no vertices to render, causes problems on some cards (FireGL 8800)
@@ -1583,6 +1605,11 @@ namespace Axiom.RenderSystems.Xna
             _device.RenderState.ReferenceAlpha = val;
         }
 
+        public override void SetConfigOption( string name, string value )
+        {
+            throw new NotImplementedException();
+        }
+
         public override void SetColorBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )
         {
             XFG.ColorWriteChannels val = 0;
@@ -1710,7 +1737,7 @@ namespace Axiom.RenderSystems.Xna
             //_device.RenderState.ColorWriteChannels = XFG.ColorWriteChannels.None;
         }
 
-        public override void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess )
+        public override void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess, TrackVertexColor tracking )
         {
 #if (!(XBOX||XBOX360))
             if (//ambient == ColorEx.White &&
@@ -1772,6 +1799,11 @@ namespace Axiom.RenderSystems.Xna
             _device.SamplerStates[ stage ].AddressU = xnaMode;
             _device.SamplerStates[ stage ].AddressV = xnaMode;
             _device.SamplerStates[ stage ].AddressW = xnaMode;
+        }
+
+        public override void SetTextureBorderColor( int stage, ColorEx borderColor )
+        {
+            throw new NotImplementedException();
         }
 
         public override void SetTextureBlendMode( int stage, LayerBlendModeEx blendMode )
