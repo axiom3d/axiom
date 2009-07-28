@@ -830,7 +830,7 @@ namespace Axiom.RenderSystems.Xna
                 XFG.Texture2D dstSurface;
                 
                 
-                //D3D.Surface dstSurface;
+                //XFG.Surface dstSurface;
 
                 // Now we need to copy the source surface (where our image is) to 
                 // either the the temp. texture level 0 surface (for s/w mipmaps)
@@ -839,13 +839,13 @@ namespace Axiom.RenderSystems.Xna
                 {
                     //dstSurface = XFG.Texture2D.FromFile(device, tempCubeTexture);
 //                    tempCubeTexture.GetData<XFG.RenderTarget2D>(dstSurface);
-//                    dstSurface = tempCubeTexture.GetCubeMapSurface( (D3D.CubeMapFace)i, 0 );
+//                    dstSurface = tempCubeTexture.GetCubeMapSurface( (XFG.CubeMapFace)i, 0 );
                 }
                 else
                 {
                    // dstSurface = XFG.Texture2D.FromFile(device, cubeTexture.Name);
                     //cubeTexture.GetData<XFG.RenderTarget2D>(dstSurface);
-                   // dstSurface = cubeTexture.GetCubeMapSurface( (D3D.CubeMapFace)i, 0 );
+                   // dstSurface = cubeTexture.GetCubeMapSurface( (XFG.CubeMapFace)i, 0 );
                 }
 
                 // copy the image data to a memory stream
@@ -854,7 +854,7 @@ namespace Axiom.RenderSystems.Xna
                 // load the stream into the cubemap surface
 
                 //dstSurface.fr;// XFG.Texture2D.FromFile(device, stream);
-                //D3D.SurfaceLoader.FromStream( dstSurface, stream, D3D.Filter.Point, 0 );
+                //XFG.SurfaceLoader.FromStream( dstSurface, stream, XFG.Filter.Point, 0 );
 
                 //dstSurface.Dispose();
             }
@@ -864,14 +864,14 @@ namespace Axiom.RenderSystems.Xna
             // TODO: Find best filtering method for this hardware, currently hardcoded to Point
             if ( tempCubeTexture != null )
             {
-                //D3D.TextureLoader.FilterTexture( tempCubeTexture, 0, D3D.Filter.Point );
+                //XFG.TextureLoader.FilterTexture( tempCubeTexture, 0, XFG.Filter.Point );
                 //device.UpdateTexture( tempCubeTexture, cubeTexture );
 
                  tempCubeTexture.Dispose();
             }
             else
             {
-                //cubeTexture.AutoGenerateFilterType = D3D.TextureFilter.Point;
+                //cubeTexture.AutoGenerateFilterType = XFG.TextureFilter.Point;
                 cubeTexture.GenerateMipMaps(XFG.TextureFilter.Point);
             }
         }
