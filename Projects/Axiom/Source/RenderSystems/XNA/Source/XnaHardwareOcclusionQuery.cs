@@ -134,7 +134,7 @@ namespace Axiom.RenderSystems.Xna
                 {
                     oQuery.End();
                     // && lastFragmentCount != 0) {
-                    //   query.Issue( D3D.IssueFlags.End );
+                    //   query.Issue( XFG.IssueFlags.End );
                 }
 
                 _skipCounter++;

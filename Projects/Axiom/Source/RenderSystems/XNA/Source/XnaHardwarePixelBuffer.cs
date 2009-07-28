@@ -72,19 +72,19 @@ namespace Axiom.RenderSystems.DirectX9
         ///<summary>
         ///    Surface abstracted by this buffer
         ///</summary>
-        protected XFG.Surface surface;
+        protected XFG.Texture surface;
         ///<summary>
         ///    Volume abstracted by this buffer
         ///</summary>
-        protected XFG.Volume volume;
+        protected XFG.Texture3D volume;
         ///<summary>
         ///    Temporary surface in main memory if direct locking of mSurface is not possible
         ///</summary>
-        protected XFG.Surface tempSurface;
+        protected XFG.Texture tempSurface;
         ///<summary>
         ///    Temporary volume in main memory if direct locking of mVolume is not possible
         ///</summary>
-        protected XFG.Volume tempVolume;
+        protected XFG.Texture3D tempVolume;
         ///<summary>
         ///    Doing Mipmapping?
         ///</summary>
@@ -92,7 +92,7 @@ namespace Axiom.RenderSystems.DirectX9
         ///<summary>
         ///    Hardware Mipmaps?
         ///</summary>
-        protected bool HWMipmaps;
+        protected bool hwMipmaps;
         ///<summary>
         ///    The Mipmap texture?
         ///</summary>
@@ -116,7 +116,7 @@ namespace Axiom.RenderSystems.DirectX9
             tempSurface = null;
             tempVolume = null;
             doMipmapGen = false;
-            HWMipmaps = false;
+            hwMipmaps = false;
             mipTex = null;
             sliceTRT = new List<RenderTexture>();
         }
@@ -128,7 +128,7 @@ namespace Axiom.RenderSystems.DirectX9
         ///<summary>
         ///    Accessor for surface
         ///</summary>
-        public XFG.Surface Surface
+        public XFG.ResolveTexture2D Surface
         {
             get
             {
@@ -143,16 +143,15 @@ namespace Axiom.RenderSystems.DirectX9
         ///<summary>
         ///    Call this to associate a Xna surface with this pixel buffer
         ///</summary>
-        public void Bind( XFG.Device device, XFG.Surface surface, bool update )
+        public void Bind( XFG.GraphicsDevice device, XFG.Texture surface, bool update )
         {
             this.device = device;
             this.surface = surface;
 
-            XFG.SurfaceDescription desc = surface.Description;
-            Width = desc.Width;
-            Height = desc.Height;
+            Width = surface.Width;
+            Height = surface.Height;
             Depth = 1;
-            Format = XFGHelper.ConvertEnum( desc.Format );
+            Format = XnaHelper.ConvertEnum( surface.Format );
             // Default
             RowPitch = Width;
             SlicePitch = Height * Width;
@@ -165,16 +164,15 @@ namespace Axiom.RenderSystems.DirectX9
         ///<summary>
         ///    Call this to associate a XFG volume with this pixel buffer
         ///</summary>
-        public void Bind( XFG.Device device, XFG.Volume volume, bool update )
+        public void Bind( XFG.GraphicsDevice device, XFG.Texture3D volume, bool update )
         {
             this.device = device;
             this.volume = volume;
 
-            XFG.VolumeDescription desc = volume.Description;
-            Width = desc.Width;
-            Height = desc.Height;
-            Depth = desc.Depth;
-            Format = XFGHelper.ConvertEnum( desc.Format );
+            Width = volume.Width;
+            Height = volume.Height;
+            Depth = volume.Depth;
+            Format = XnaHelper.ConvertEnum( volume.Format );
             // Default
             RowPitch = Width;
             SlicePitch = Height * Width;
@@ -187,7 +185,7 @@ namespace Axiom.RenderSystems.DirectX9
         ///<summary>
         ///    Util functions to convert a XFG locked rectangle to a pixel box
         ///</summary>
-        protected static void FromXFGLock( PixelBox rval, int pitch, DX.GraphicsStream stream )
+        protected static void FromXFGLock( PixelBox rval, int pitch, XFG.GraphicsStream stream )
         {
             rval.RowPitch = pitch / PixelUtil.GetNumElemBytes( rval.Format );
             rval.SlicePitch = rval.RowPitch * rval.Height;
@@ -208,7 +206,7 @@ namespace Axiom.RenderSystems.DirectX9
         }
 
         ///<summary>
-        ///    Convert Ogre integer Box to XFG rectangle
+        ///    Convert Axiom integer Box to XFG rectangle
         ///</summary>
         protected static System.Drawing.Rectangle ToXFGRectangle( BasicBox lockBox )
         {
@@ -272,31 +270,14 @@ namespace Axiom.RenderSystems.DirectX9
         {
             // Check for misuse
             if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
-                throw new Exception( "DirectX does not allow locking of or directly writing to RenderTargets. Use BlitFromMemory if you need the contents; " +
-                                    "in XFG9HardwarePixelBuffer.LockImpl" );
+                throw new Exception( "Xna does not allow locking of or directly writing to RenderTargets. Use BlitFromMemory if you need the contents; " );
             // Set extents and format
             PixelBox rval = new PixelBox( lockBox, Format );
-            // Set locking flags according to options
-            XFG.LockFlags flags = XFG.LockFlags.None;
-            switch ( options )
-            {
-                case BufferLocking.Discard:
-                    // XFG only likes XFG.LockFlags.Discard if you created the texture with XFGUSAGE_DYNAMIC
-                    // debug runtime flags this up, could cause problems on some drivers
-                    if ( ( usage & BufferUsage.Dynamic ) != 0 )
-                        flags |= XFG.LockFlags.Discard;
-                    break;
-                case BufferLocking.ReadOnly:
-                    flags |= XFG.LockFlags.ReadOnly;
-                    break;
-                default:
-                    break;
-            }
 
             if ( surface != null )
             {
                 // Surface
-                DX.GraphicsStream data = null;
+                XFG.GraphicsStream data = null;
                 int pitch = 0;
                 if ( lockBox.Left == 0 && lockBox.Top == 0 &&
                     lockBox.Right == Width && lockBox.Bottom == Height )
@@ -570,7 +551,7 @@ namespace Axiom.RenderSystems.DirectX9
         {
             Debug.Assert( mipTex != null );
             // Mipmapping
-            if ( HWMipmaps )
+            if ( hwMipmaps )
                 // Hardware mipmaps
                 mipTex.GenerateMipSubLevels();
             else
@@ -586,7 +567,7 @@ namespace Axiom.RenderSystems.DirectX9
         public void SetMipmapping( bool doMipmapGen, bool HWMipmaps, XFG.BaseTexture mipTex )
         {
             this.doMipmapGen = doMipmapGen;
-            this.HWMipmaps = HWMipmaps;
+            this.hwMipmaps = HWMipmaps;
             this.mipTex = mipTex;
         }
 
