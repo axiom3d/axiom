@@ -35,9 +35,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.IO;
 
 using ResourceHandle = System.UInt64;
+
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
@@ -769,7 +769,6 @@ namespace Axiom.Core
 		/// 		// There are no unmanaged resources to release, but
 		/// 		// if we add them, they need to be released here.
 		/// 	}
-		/// 	isDisposed = true;
 		///
 		/// 	// If it is available, make the call to the
 		/// 	// base class's Dispose(Boolean) method
