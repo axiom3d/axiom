@@ -34,13 +34,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 using Axiom.Core;
-using Axiom.Collections;
-using Axiom.Math.Collections;
-using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -416,37 +413,31 @@ namespace Axiom.Graphics
 		/// </remarks>
 		public void FreeUnusedBufferCopies()
 		{
-			/// ??? I don't know how to do this.  The problem is that
-			/// ??? UseCount is maintained in Ogre using the
-			/// ??? HardwareBufferSharedPtr construct, and there is no
-			/// ??? similar facility in Axiom.  For now, comment out the
-			/// ??? freeing.
+            int numFreed = 0;
 
-			//int numFreed = 0;
+            // Free unused temporary buffers
+            foreach ( IList<HardwareVertexBuffer> list in freeTempVertexBufferMap.Values )
+            {
+                for ( int i = list.Count - 1; i > 0; i-- )
+                {
+                    HardwareVertexBuffer vbuf = list[ i ];
+                    // Free the temporary buffer that referenced by ourself only.
+                    // TODO: Some temporary buffers are bound to vertex buffer bindings
+                    // but not checked out, need to sort out method to unbind them.
+                    if ( vbuf.UseCount <= 1 )
+                    {
+                        ++numFreed;
+                        list.RemoveAt( i );
+                    }
+                }
+            }
 
-			//// Free unused temporary buffers
-			//foreach ( IList list in freeTempVertexBufferMap.Values )
-			//{
-			//    for ( int i = list.Count - 1; i > 0; i-- )
-			//    {
-			//        HardwareVertexBuffer vbuf = (HardwareVertexBuffer)list[ i ];
-			//        // Free the temporary buffer that referenced by ourself only.
-			//        // TODO: Some temporary buffers are bound to vertex buffer bindings
-			//        // but not checked out, need to sort out method to unbind them.
-			//        if ( vbuf.UseCount <= 1 )
-			//        {
-			//            ++numFreed;
-			//            list.RemoveAt( i );
-			//        }
-			//    }
-			//}
-
-			//string str;
-			//if ( numFreed > 0 )
-			//    str = "HardwareBufferManager: Freed " + numFreed + " unused temporary vertex buffers.";
-			//else
-			//    str = "HardwareBufferManager: No unused temporary vertex buffers found.";
-			//LogManager.Instance.Write( str );
+            string str;
+            if ( numFreed > 0 )
+                str = "HardwareBufferManager: Freed " + numFreed + " unused temporary vertex buffers.";
+            else
+                str = "HardwareBufferManager: No unused temporary vertex buffers found.";
+            LogManager.Instance.Write( str );
 		}
 
 		/// <summary>
@@ -467,7 +458,7 @@ namespace Axiom.Graphics
 				   ( forceFreeUnused || --vbl.expiredDelay <= 0 ) )
 				{
 					vbl.licensee.LicenseExpired( vbl.buffer );
-					IList list = (IList)freeTempVertexBufferMap[ vbl.originalBuffer ];
+					IList<HardwareVertexBuffer> list = freeTempVertexBufferMap[ vbl.originalBuffer ];
 
 					Debug.Assert( list != null, "There is no license recorded for this buffer." );
 
@@ -561,6 +552,7 @@ namespace Axiom.Graphics
 		public virtual void Dispose()
 		{
 			// Destroy all necessary objects
+
 			vertexDeclarations.Clear();
 			vertexBufferBindings.Clear();
 

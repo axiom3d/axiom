@@ -33,16 +33,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
 
 using Axiom.Core;
-using Axiom.FileSystem;
-using Axiom.Scripting;
-using Axiom.Math;
 
 using ResourceHandle = System.UInt64;
 
@@ -372,7 +365,6 @@ namespace Axiom.Graphics
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}
-			isDisposed = true;
 
 			// If it is available, make the call to the
 			// base class's Dispose(Boolean) method

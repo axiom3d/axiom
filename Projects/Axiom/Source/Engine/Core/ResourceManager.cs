@@ -35,11 +35,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Collections.Generic;
 
 using Axiom.Collections;
 using Axiom.Math;
@@ -88,49 +86,42 @@ namespace Axiom.Core
 		#region Fields and Properties
 
 		#region Resources Property
-		//  HashMap< String, ResourcePtr >
-		private Hashtable _resources = CollectionsUtil.CreateCaseInsensitiveHashtable();
+
+		private readonly Dictionary< string, Resource> _resources = new Dictionary<string, Resource>(new CaseInsensitiveStringComparer());
 		/// <summary>
 		///		A cached list of all resources in memory.
 		///	</summary>
-		public ICollection Resources
+		public ICollection<Resource> Resources
 		{
 			get
 			{
 				return _resources.Values;
 			}
-		}
-		/// <summary>
-		///		A cached list of all resources in memory.
-		///	</summary>
-		protected Hashtable resources
-		{
-			get
-			{
-				return _resources;
-			}
-			set
-			{
-				_resources = value;
-			}
-		}
-		#endregion resourceList Property
+        }
 
-		#region resourceHandleMap Property
-		//  std::map<ResourceHandle, ResourcePtr>
-		private Hashtable _resourceHandleMap = new Hashtable();
+        /// <summary>
+        ///		A cached list of all resources and keys in memory.
+        ///	</summary>
+        protected IDictionary<string, Resource> resources
+        {
+            get
+            {
+                return _resources;
+            }
+        }
+        #endregion Resources Property
+
+        #region resourceHandleMap Property
+        //  std::map<ResourceHandle, ResourcePtr>
+        private readonly Dictionary<ResourceHandle, Resource> _resourceHandleMap = new Dictionary<ResourceHandle, Resource>();
 		/// <summary>
 		///		A cached list of all resources handles in memory.
 		///	</summary>
-		protected Hashtable resourceHandleMap
+        protected IDictionary<ResourceHandle, Resource> resourceHandleMap
 		{
 			get
 			{
 				return _resourceHandleMap;
-			}
-			set
-			{
-				_resourceHandleMap = value;
 			}
 		}
 		#endregion resourceHandleMap Property
@@ -261,7 +252,7 @@ namespace Axiom.Core
 				Resource resource = null;
 
 				// find the resource in the Hashtable and return it
-				if ( _resourceHandleMap.Contains( handle ) == true )
+				if ( _resourceHandleMap.ContainsKey( handle ) == true )
 				{
 					resource = (Resource)_resourceHandleMap[ handle ];
 					resource.Touch();
@@ -512,7 +503,7 @@ namespace Axiom.Core
 		/// </remarks>
 		public virtual void UnloadAll()
 		{
-			foreach ( Resource res in _resources )
+			foreach ( Resource res in _resources.Values )
 			{
 				res.Unload();
 			}
@@ -526,9 +517,9 @@ namespace Axiom.Core
 		/// </remarks>
 		public virtual void ReloadAll()
 		{
-			foreach ( DictionaryEntry res in _resources )
+			foreach ( Resource res in _resources.Values )
 			{
-				((Resource)res.Value).Reload();
+				res.Reload();
 			}
 		}
 
@@ -600,10 +591,14 @@ namespace Axiom.Core
 		/// these resources if they were relying on the manager (especially if
 		/// it is a plugin). If you find you get problems on shutdown in the
 		/// destruction of resources, try making sure you release all your
-		/// references before you shutdown OGRE.
+		/// references before you shutdown Axiom.
 		/// </remarks>
 		public virtual void RemoveAll()
 		{
+		    foreach ( Resource resource in _resources.Values )
+		    {
+		        resource.Dispose();
+		    }
 			_resources.Clear();
 			_resourceHandleMap.Clear();
 
