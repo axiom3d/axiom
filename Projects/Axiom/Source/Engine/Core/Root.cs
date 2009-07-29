@@ -993,13 +993,13 @@ namespace Axiom.Core
 
             SceneManagerEnumerator.Instance.ShutdownAll();
 
-            PluginManager.Instance.UnloadAll();
-
             // destroy all auto created GPU programs
             ShadowVolumeExtrudeProgram.Shutdown();
 
             // ResourceBackGroundPool.Instance.Shutdown();
             ResourceGroupManager.Instance.ShutdownAll();
+
+            PluginManager.Instance.UnloadAll();
         }
 
         /// <summary>
