@@ -298,7 +298,7 @@ namespace Axiom.RenderSystems.SlimDX9
 
             try
             {
-                device.Clear( flags, color.ToARGB(), depth, stencil );
+                device.Clear( D3D.ClearFlags.Target , color.ToARGB(), depth, stencil );
             }
             catch ( DX.SlimDXException ex )
             {
@@ -792,40 +792,53 @@ namespace Axiom.RenderSystems.SlimDX9
                 activeViewport = viewport;
                 activeRenderTarget = viewport.Target;
 
-                RenderTarget target = viewport.Target;
-                // TODO: FIXME: Looks like these methods should be able to return multiple buffers
                 // get the back buffer surface for this viewport
-                D3D.Surface[] back = (D3D.Surface[])activeRenderTarget[ "D3DBACKBUFFER" ];
-                if ( back == null )
+                D3D.Surface[] back = (D3D.Surface[])activeRenderTarget.GetCustomAttribute( "D3DBACKBUFFER" );
+                for ( int i = 0; i < back.Length; i++ )
                 {
-                    return;
+                    try
+                    {
+                        device.SetRenderTarget( 0, back[ i ] );
+                    }
+                    catch ( D3D.Direct3D9Exception ex )
+                    {
+                        if ( LogManager.Instance != null )
+                        {
+                            LogManager.Instance.Write( LogManager.BuildExceptionString( ex ) );
+                        }
+                    }
+                }
+                // we cannot dipose of the back buffer in fullscreen mode, since we have a direct reference to
+                // the main back buffer.  all other surfaces are safe to dispose
+                bool disposeBackBuffer = true;
+
+                if ( activeRenderTarget is SDXRenderWindow )
+                {
+                    SDXRenderWindow window = activeRenderTarget as SDXRenderWindow;
+
+                    if ( window.IsFullScreen )
+                    {
+                        disposeBackBuffer = false;
+                    }
                 }
 
-                D3D.Surface depth = (D3D.Surface)activeRenderTarget[ "D3DZBUFFER" ];
-                if ( depth == null )
+                // be sure to destroy the surface we had
+                if ( disposeBackBuffer )
                 {
-                    /// No depth buffer provided, use our own
-                    /// Request a depth stencil that is compatible with the format, multisample type and
-                    /// dimensions of the render target.
-                    D3D.SurfaceDescription srfDesc = back[ 0 ].Description;
-                    depth = _getDepthStencilFor( srfDesc.Format, srfDesc.MultisampleType, srfDesc.Width, srfDesc.Height );
+                    for ( int i = 0; i < back.Length; i++ )
+                        back[ i ].Dispose();
                 }
 
-                // Bind render targets
-                int count = back.Length;
-                for ( int i = 0; i < count && back[ i ] != null; ++i )
-                {
-                    device.SetRenderTarget( i, back[ i ] );
-                }
+                D3D.Surface depth = (D3D.Surface)activeRenderTarget.GetCustomAttribute( "D3DZBUFFER" );
 
-                // set the render target and depth stencil for the surfaces belonging to the viewport
+                // set the render target and depth stencil for the surfaces beloning to the viewport
                 device.DepthStencilSurface = depth;
 
                 // set the culling mode, to make adjustments required for viewports
                 // that may need inverted vertex winding or texture flipping
                 this.CullingMode = cullingMode;
 
-                SlimDX.Viewport d3dvp = new SlimDX.Viewport();
+                DX.Viewport d3dvp = new DX.Viewport();
 
                 // set viewport dimensions
                 d3dvp.X = viewport.ActualLeft;
@@ -833,14 +846,7 @@ namespace Axiom.RenderSystems.SlimDX9
                 d3dvp.Width = viewport.ActualWidth;
                 d3dvp.Height = viewport.ActualHeight;
 
-                if ( target.RequiresTextureFlipping )
-                {
-                    // Convert "top-left" to "bottom-left"
-                    d3dvp.Y = activeRenderTarget.Height - d3dvp.Height - d3dvp.Y;
-                }
-
-                // Z-values from 0.0 to 1.0 
-                // TODO: standardize with OpenGL
+                // Z-values from 0.0 to 1.0 (TODO: standardize with OpenGL)
                 d3dvp.MinZ = 0.0f;
                 d3dvp.MaxZ = 1.0f;
 
