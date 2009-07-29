@@ -647,6 +647,9 @@ namespace Axiom.RenderSystems.SlimDX9
                 if ( disposeManagedResources )
                 {
                 }
+
+                if ( surface != null && !surface.Disposed )
+                    surface.Dispose();
                 DestroyRenderTextures();
             }
             isDisposed = true;

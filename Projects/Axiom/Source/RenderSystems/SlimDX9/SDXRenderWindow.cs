@@ -814,14 +814,14 @@ namespace Axiom.RenderSystems.SlimDX9
             }
             catch ( SlimDX.SlimDXException dlx ) //catch ( D3D.DeviceLostException dlx )
             {
-                if (dlx.ResultCode == SlimDX.Direct3D9.ResultCode.DeviceLost)
+                if (dlx.ResultCode == D3D.ResultCode.DeviceLost)
                 {
                 	_renderSurface.ReleaseDC(_renderSurface.GetDC());
                 	( (SDXRenderSystem)( Root.Instance.RenderSystem ) ).notifyDeviceLost();
                     Console.WriteLine(dlx.ToString());
                 }
 
-                else if (dlx.ResultCode == SlimDX.Direct3D9.ResultCode.DeviceNotReset)
+                else if (dlx.ResultCode == D3D.ResultCode.DeviceNotReset)
                 {
                     Console.WriteLine(dlx.ToString());
                     device.Reset( _swapChain.PresentParameters );
@@ -980,12 +980,12 @@ namespace Axiom.RenderSystems.SlimDX9
 
             // Turn off culling, so we see the front and back of the triangle
             //resetDevice.RenderState.CullMode = D3D.Cull.None;
-            resetDevice.SetRenderState(SlimDX.Direct3D9.RenderState.CullMode, D3D.Cull.None);
+            resetDevice.SetRenderState(D3D.RenderState.CullMode, D3D.Cull.None);
             // Turn on the ZBuffer
             //resetDevice.RenderState.ZBufferEnable = true;
-            resetDevice.SetRenderState(SlimDX.Direct3D9.RenderState.ZWriteEnable, true);
+            resetDevice.SetRenderState(D3D.RenderState.ZWriteEnable, true);
             //resetDevice.RenderState.Lighting = true;    //make sure lighting is enabled
-            resetDevice.SetRenderState(SlimDX.Direct3D9.RenderState.Lighting, true);
+            resetDevice.SetRenderState(D3D.RenderState.Lighting, true);
 
         }
 
