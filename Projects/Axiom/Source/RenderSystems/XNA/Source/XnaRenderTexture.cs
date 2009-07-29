@@ -52,40 +52,50 @@ namespace Axiom.RenderSystems.Xna
     /// </summary>
     public class XnaRenderTexture : RenderTexture
     {
-
-        private XnaTexture privateTex;
-
-        public XnaRenderTexture( string name, int width, int height )
-            : this( name, width, height, TextureType.TwoD )
+        public XnaRenderTexture( string name, HardwarePixelBuffer buffer )
+            : base( buffer, 0 )
         {
+            this.Name = name;
         }
 
-        public XnaRenderTexture( string name, int width, int height, TextureType type )
-            : base( name, width, height )
+        #region Axiom.Graphics.RenderTexture Implementation
+
+        public override void Update()
         {
+            XnaRenderSystem rs = (XnaRenderSystem)Root.Instance.RenderSystem;
+            // TODO: Implement XnaRenderSystem.IsDeviceLost
+            //if ( rs.IsDeviceLost )
+            //{
+            //    return;
+            //}
 
-            privateTex = (XnaTexture)TextureManager.Instance.CreateManual(name + "_PRIVATE##", type, width, height, 0, PixelFormat.R8G8B8, Axiom.Graphics.TextureUsage.RenderTarget);
-
+            base.Update();
         }
 
-        protected override void CopyToTexture()
+        public override object this[ string attribute ]
         {
-           privateTex.CopyToTexture( texture );
-         
-        }
-
-        public override object GetCustomAttribute( string attribute )
-        {
-            switch ( attribute )
+            get
             {
-                case "XNAZBUFFER":
-                    return privateTex.DepthStencil;
-                    
-                case "XNABACKBUFFER":
-                    return privateTex.RenderTarget;
+                switch ( attribute.ToUpper() )
+                {
+                    case "XNABACKBUFFER":
+                        if ( this.FSAA > 0 )
+                        {
+                            return ( (XnaHardwarePixelBuffer)pixelBuffer ).FSAASurface;
+                        }
+                        else
+                        {
+                            return ( (XnaHardwarePixelBuffer)pixelBuffer ).Surface;
+                        }
+                    case "HWND":
+                        return null;
+                    case "BUFFER":
+                        return (HardwarePixelBuffer)pixelBuffer;
+                    default:
+                        return null;
+                }
+                return null;
             }
-
-            return new NotSupportedException( "There is no Xna RenderTexture custom attribute named " + attribute );
         }
 
         public override bool RequiresTextureFlipping
@@ -96,39 +106,46 @@ namespace Axiom.RenderSystems.Xna
             }
         }
 
-        public override void Dispose()
+        public override void SwapBuffers( bool waitForVSync )
         {
-            base.Dispose();
+            //// Only needed if we have to blit from AA surface
+            if ( this.FSAA > 0 )
+            {
+                XnaRenderSystem rs = (XnaRenderSystem)Root.Instance.RenderSystem;
+                // TODO: Implement XnaRenderSystem.IsDeviceLost
+                //if ( rs.IsDeviceLost )
+                //{
+                //    return;
+                //}
 
-            privateTex.Dispose();
+                XnaHardwarePixelBuffer buf = (XnaHardwarePixelBuffer)this.pixelBuffer;
+
+                // TODO: Implement rs.Device.StretchRect()
+                //    rs.Device.StretchRect(buf.FSAASurface, 0, buf.Surface, 0, D3DTEXF_NONE);
+                //    if (FAILED(hr))
+                //    {
+                //        OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, 
+                //            "Unable to copy AA buffer to final buffer: " + String(DXGetErrorDescription9(hr)), 
+                //            "D3D9RenderTexture::swapBuffers");
+                //    }
+            }
         }
 
-        //public override void Save(System.IO.Stream fileName)
-        //{
-        //    //can't copy the byte[] straight,it gives bad image
-        //    XFG.Texture2D tex = privateTex.NormalTexture;
-        //    if (tex == null)
-        //        return;
-        //    XFG.Color[] cols = new XFG.Color[ tex.Width * tex.Height ];
-        //    tex.GetData<XFG.Color>( cols );
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !isDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    // Dispose managed resources.
+                }
+            }
 
-        //    byte[] bytes = new byte[ tex.Width * tex.Height * 3 ];
-        //    int i = 0;
-        //    foreach ( XFG.Color col in cols )
-        //    {
-        //        bytes[ i ] = col.R;
-        //        bytes[ i + 1 ] = col.G;
-        //        bytes[ i + 2 ] = col.B;
-        //        i += 3;
-        //    }
-        //    //flip it
-        //    Image image = Image.FromDynamicImage( bytes, tex.Width, tex.Height, PixelFormat.B8G8R8 );
-        //    if ( this.RequiresTextureFlipping )
-        //        image.FlipAroundX();
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose( disposeManagedResources );
+        }
 
-        //    //
-        //    fileName.Write( image.Data, 0, image.Data.Length );
-
-        //}
+        #endregion Axiom.Graphics.RenderTexture Implementation
     }
 }

@@ -345,7 +345,7 @@ namespace Axiom.RenderSystems.Xna
             // Hardware Occlusion, new!
             XFG.OcclusionQuery oQuery = new Microsoft.Xna.Framework.Graphics.OcclusionQuery( device );
             if ( oQuery.IsSupported )
-                caps.SetCap( Capabilities.HardwareOcculusion );
+                HardwareCapabilities.SetCapability( Capabilities.HardwareOcculusion );
             oQuery.Dispose();
 
 
@@ -1945,7 +1945,7 @@ namespace Axiom.RenderSystems.Xna
             _fixedFunctionState.GeneralFixedFunctionState.ResetLightTypeCounts();
             for ( int index = 0; index < currentLightCount; index++ )
             {
-                Light light = lights[ index ];
+                Light light = lights.Values[ index ];
                 lightList.Add( light );
                 _fixedFunctionState.GeneralFixedFunctionState.IncrementLightTypeCount( light.Type );
             }

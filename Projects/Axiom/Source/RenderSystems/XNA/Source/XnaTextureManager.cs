@@ -59,12 +59,12 @@ namespace Axiom.RenderSystems.Xna
 		{
 			this._device = device;
 
-			is32Bit = true;
+			Is32Bit = true;
 		}
 
         protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
         {
-            return new XnaTexture( this, name, handle, group, isManual, loader, device );
+            return new XnaTexture( this, name, handle, group, isManual, loader, _device );
         }
 
         public override PixelFormat GetNativeFormat( TextureType ttype, PixelFormat format, TextureUsage usage )
@@ -76,23 +76,25 @@ namespace Axiom.RenderSystems.Xna
         public void ReleaseDefaultPoolResources()
         {
             int count = 0;
-            foreach ( XnaTexture tex in resourceList.Values )
+            foreach ( XnaTexture tex in resources.Values )
             {
-                if ( tex.ReleaseIfDefaultPool() )
-                    count++;
+                //TODO : Implement XnaTexture.ReleaseIfDefaultPool()
+                //if ( tex.ReleaseIfDefaultPool() )
+                //    count++;
             }
-            LogManager.Instance.Write( "XNATextureManager released: {0} unmanaged textures", count );
+            LogManager.Instance.Write( "[XNA] : TextureManager released: {0} unmanaged textures", count );
         }
 
         public void RecreateDefaultPoolResources()
         {
             int count = 0;
-            foreach ( XnaTexture tex in resourceList.Values )
+            foreach ( XnaTexture tex in resources.Values )
             {
-                if ( tex.RecreateIfDefaultPool( device ) )
-                    count++;
+                //TODO : Implement XnaTexture.RecreateIfDefaultPool()
+                //if ( tex.RecreateIfDefaultPool( device ) )
+                //    count++;
             }
-            LogManager.Instance.Write( "D3DTextureManager recreated: {0} unmanaged textures", count );
+            LogManager.Instance.Write( "[XNA] : TextureManager recreated: {0} unmanaged textures", count );
         }
 
 	}

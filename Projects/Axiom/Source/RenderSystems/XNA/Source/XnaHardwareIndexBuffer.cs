@@ -161,10 +161,10 @@ namespace Axiom.RenderSystems.Xna
                 {
                 }
 
-                if ( xnaBuffer != null )
+                if ( _xnaBuffer != null )
                 {
-                    xnaBuffer.Dispose();
-                    xnaBuffer = null;
+                    _xnaBuffer.Dispose();
+                    _xnaBuffer = null;
                 }
 
             }

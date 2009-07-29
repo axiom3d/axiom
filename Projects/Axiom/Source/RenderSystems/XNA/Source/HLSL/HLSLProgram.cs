@@ -103,7 +103,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
         {
             // create a new program, without source since we are setting the microcode manually
             assemblerProgram =
-                GpuProgramManager.Instance.CreateProgramFromString( name, "", type, target );
+                GpuProgramManager.Instance.CreateProgramFromString( entry, Group, "", type, target );
 
             // set the microcode for this program
 #if !(XBOX || XBOX360 || SILVERLIGHT)
@@ -153,7 +153,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
             // check for errors
             if ( errors != null && errors.Length > 0 )
             {
-                throw new AxiomException( "HLSL: Unable to compile high level shader {0}:\n{1}", name, errors );
+                throw new AxiomException( "HLSL: Unable to compile high level shader {0}:\n{1}", entry, errors );
             }
 #else
 			throw new AxiomException("HLSL: LoadFromSource not implemented on the 360");
@@ -216,7 +216,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
             {
                 // If skeletal animation is being done, we need support for UBYTE4
                 if ( this.IsSkeletalAnimationIncluded &&
-                    !Root.Instance.RenderSystem.Caps.CheckCap( Capabilities.VertexFormatUByte4 ) )
+                    !Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexFormatUByte4 ) )
                 {
 
                     return false;

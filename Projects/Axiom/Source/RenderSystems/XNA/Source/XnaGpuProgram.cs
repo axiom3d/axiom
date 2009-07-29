@@ -39,6 +39,7 @@ using System.Diagnostics;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
+using ResourceHandle = System.UInt64;
 
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
@@ -92,13 +93,12 @@ namespace Axiom.RenderSystems.Xna
     
 		#endregion ShaderCode Property
 
-
 		#endregion Fields and Properties
 
 		#region Constructor
 
-		public XnaGpuProgram( string name, GpuProgramType type, XFG.GraphicsDevice device, string syntaxCode )
-			: base( name, type, syntaxCode )
+        public XnaGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, XFG.GraphicsDevice device )
+            : base( parent, name, handle, group, isManual, loader )
 		{
 			this.device = device;
 			this.shaderCode = null;
@@ -132,7 +132,7 @@ namespace Axiom.RenderSystems.Xna
 			if ( shaderCode != null && shaderCode.Length > 0 )
 			{
 				// unload if needed
-				if ( isLoaded )
+				if ( IsLoaded )
 				{
 					Unload();
 				}
@@ -141,7 +141,6 @@ namespace Axiom.RenderSystems.Xna
 				// creates the shader from an external microcode source
 				// for example, a compiled HLSL program
 				LoadFromShaderCode();
-				isLoaded = true;
 			}
 			else
 			{
@@ -165,22 +164,22 @@ namespace Axiom.RenderSystems.Xna
         {
             get
             {
-                switch (target)
-                {
-                    case "ps_1_1":
-                    case "ps_1_2":
-                    case "ps_1_3":
+                //switch (target)
+                //{
+                //    case "ps_1_1":
+                //    case "ps_1_2":
+                //    case "ps_1_3":
                         return 4;
-                    case "ps_1_4":
-                        return 6;
-                    case "ps_2_0":
-                    case "ps_2_x":
-                    case "ps_3_0":
-                    case "ps_3_x":
-                        return 16;
-                    default:
-                        throw new AxiomException("Attempted to query sample count for unknown shader profile({0}).", target);
-                }
+                    //case "ps_1_4":
+                    //    return 6;
+                    //case "ps_2_0":
+                    //case "ps_2_x":
+                    //case "ps_3_0":
+                    //case "ps_3_x":
+                    //    return 16;
+                    //default:
+                    //    throw new AxiomException("Attempted to query sample count for unknown shader profile({0}).", target);
+                //}
 
                 // return 0;
             }
@@ -218,8 +217,8 @@ namespace Axiom.RenderSystems.Xna
 
 		#region Constructor
 
-		internal XnaVertexProgram( string name, XFG.GraphicsDevice device, string syntaxCode )
-			: base( name, GpuProgramType.Vertex, device, syntaxCode )
+        internal XnaVertexProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, XFG.GraphicsDevice device )
+            : base( parent, name, handle, group, isManual, loader, device )
 		{
 		}
 
@@ -236,11 +235,7 @@ namespace Axiom.RenderSystems.Xna
 			vertexShader = new XFG.VertexShader( device, shaderCode );
 		}
 
-
-
-
-
-		#endregion XnaGpuProgram Memebers
+        #endregion XnaGpuProgram Memebers
 
 		#region GpuProgram Members
 
@@ -292,8 +287,8 @@ namespace Axiom.RenderSystems.Xna
 
 		#region Constructors
 
-		internal XnaFragmentProgram( string name, XFG.GraphicsDevice device, string syntaxCode )
-			: base( name, GpuProgramType.Fragment, device, syntaxCode )
+        internal XnaFragmentProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, XFG.GraphicsDevice device )
+            : base( parent, name, handle, group, isManual, loader, device )
 		{
 		}
 
@@ -309,12 +304,6 @@ namespace Axiom.RenderSystems.Xna
 			// create a new pixel shader
 			pixelShader = new XFG.PixelShader( device, shaderCode );
 		}
-
-
-
-
-
-
 
 		#endregion XnaGpuProgram Members
 

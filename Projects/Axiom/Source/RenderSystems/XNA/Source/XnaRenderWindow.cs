@@ -93,7 +93,7 @@ namespace Axiom.RenderSystems.Xna
 
         #endregion IsClosed Property
 
-        public bool IsVisible
+        public override bool IsVisible
         {
             get
             {
