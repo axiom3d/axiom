@@ -51,7 +51,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
 	{
 		public override Stream Open( XFG.CompilerIncludeHandlerType includeType, string filename )
 		{
-			return ResourceManager.FindCommonResourceData( filename );
+			return ResourceGroupManager.Instance.OpenResource( filename );
 		}
 	}
 }

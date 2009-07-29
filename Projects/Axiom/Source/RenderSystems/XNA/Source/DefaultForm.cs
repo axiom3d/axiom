@@ -133,7 +133,7 @@ namespace Axiom.RenderSystems.Xna
 
         private void DefaultForm_Load( object sender, System.EventArgs e )
         {
-            System.IO.Stream strm = ResourceManager.FindCommonResourceData( "AxiomIcon.ico" );
+            System.IO.Stream strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico" );
             if ( strm != null )
                 this.Icon = new System.Drawing.Icon( strm );
             }

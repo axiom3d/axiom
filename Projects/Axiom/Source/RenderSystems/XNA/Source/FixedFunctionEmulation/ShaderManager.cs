@@ -194,7 +194,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             shaderCount++;
             
             vs = HighLevelGpuProgramManager.Instance.CreateProgram( "VS_" + shaderCount.ToString(),
-                //ResourceGroupManager.DefaultResourceGroupName,
+                                                                    ResourceGroupManager.DefaultResourceGroupName,
                                                                     shaderGenerator.Language,
                                                                     GpuProgramType.Vertex );
             LogManager.Instance.Write( "Created VertexShader {0}", "VS_" + shaderCount.ToString() );
@@ -207,7 +207,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
             //vertexProgramUsage.Params = vs.CreateParameters();
             
             fs = HighLevelGpuProgramManager.Instance.CreateProgram( "FS_" + shaderCount.ToString(),
-                //ResourceGroupManager.DefaultResourceGroupName,
+                                                                    ResourceGroupManager.DefaultResourceGroupName,
                                                                     shaderGenerator.Language,
                                                                     GpuProgramType.Fragment );
             LogManager.Instance.Write( "Created FragmentProgram {0}", "FS_" + shaderCount.ToString() );
