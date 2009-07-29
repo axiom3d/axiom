@@ -72,9 +72,7 @@ namespace Axiom.RenderSystems.SlimDX9.HLSL
         /// <summary>
         ///     Holds the low level program instructions after the compile.
         /// </summary>
-        protected SlimDX.Direct3D9.ShaderBytecode microcode;
-
-        //protected Microsoft.DirectX.GraphicsStream microcode;
+        protected D3D.ShaderBytecode microcode;
 
         /// <summary>
         ///     Holds information about shader constants.
@@ -167,6 +165,7 @@ namespace Axiom.RenderSystems.SlimDX9.HLSL
                         throw new AxiomException( "HLSL: Unable to compile high level shader {0}:\n{1}", Name, errors );
                     }
                 }
+                effectCompiler.Dispose();
             }
         }
 
@@ -363,5 +362,28 @@ namespace Axiom.RenderSystems.SlimDX9.HLSL
         }
 
         #endregion IConfigurable Members
+
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !isDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    // Dispose managed resources.
+                }
+
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+                if ( microcode != null && !microcode.Disposed )
+                    microcode.Dispose();
+                if ( constantTable != null && !constantTable.Disposed )
+                    constantTable.Dispose();
+            }
+
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose( disposeManagedResources );
+        }
+
     }
 }

@@ -64,8 +64,8 @@ namespace Axiom.RenderSystems.SlimDX9
         /// <summary>
         ///     Microsode set externally, most likely from the HLSL compiler.
         /// </summary>
-        //protected SlimDX.Direct3D9.ShaderBytecode externalMicrocode;
-        protected SlimDX.Direct3D9.ShaderBytecode externalMicrocode;
+        //protected D3D.ShaderBytecode externalMicrocode;
+        protected D3D.ShaderBytecode externalMicrocode;
 
         #endregion Fields
 
@@ -136,7 +136,7 @@ namespace Axiom.RenderSystems.SlimDX9
         /// <param name="microcode">
         ///     GraphicsStream that contains the assembler instructions for the program.
         /// </param>
-        protected abstract void LoadFromMicrocode( SlimDX.Direct3D9.ShaderBytecode microcode );
+        protected abstract void LoadFromMicrocode( D3D.ShaderBytecode microcode );
 
         #endregion Methods
 
@@ -151,7 +151,7 @@ namespace Axiom.RenderSystems.SlimDX9
         ///     level microcode, which can then be loaded into a low level GPU
         ///     program.
         /// </remarks>
-        internal SlimDX.Direct3D9.ShaderBytecode ExternalMicrocode
+        internal D3D.ShaderBytecode ExternalMicrocode
         {
             get { return externalMicrocode; }
             set { externalMicrocode = value; }
@@ -186,7 +186,7 @@ namespace Axiom.RenderSystems.SlimDX9
 
         #region D3DGpuProgram Memebers
 
-        protected override void LoadFromMicrocode( SlimDX.Direct3D9.ShaderBytecode microcode )
+        protected override void LoadFromMicrocode( D3D.ShaderBytecode microcode )
         {
             // create the new vertex shader
             vertexShader = new D3D.VertexShader( device, microcode );
@@ -254,7 +254,7 @@ namespace Axiom.RenderSystems.SlimDX9
 
         #region D3DGpuProgram Memebers
 
-        protected override void LoadFromMicrocode( SlimDX.Direct3D9.ShaderBytecode microcode )
+        protected override void LoadFromMicrocode( D3D.ShaderBytecode microcode )
         {
             // create a new pixel shader
             pixelShader = new D3D.PixelShader( device, microcode );

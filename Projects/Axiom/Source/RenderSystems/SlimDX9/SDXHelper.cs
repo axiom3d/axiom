@@ -77,12 +77,12 @@ namespace Axiom.RenderSystems.SlimDX9
                 int lastWidth = 0, lastHeight = 0;
                 D3D.Format lastFormat = 0;
 
-                foreach ( D3D.DisplayMode mode in adapterInfo.GetDisplayModes( SlimDX.Direct3D9.Format.X8R8G8B8 ) )
+                foreach ( D3D.DisplayMode mode in adapterInfo.GetDisplayModes( D3D.Format.X8R8G8B8 ) )
                 {
                     displaymodeList.Add( mode );
                 }
 
-                foreach ( D3D.DisplayMode mode in adapterInfo.GetDisplayModes( SlimDX.Direct3D9.Format.R5G6B5 ) )
+                foreach ( D3D.DisplayMode mode in adapterInfo.GetDisplayModes( D3D.Format.R5G6B5 ) )
                 {
                     displaymodeList.Add( mode );
                 }
@@ -173,7 +173,7 @@ namespace Axiom.RenderSystems.SlimDX9
                     switch ( options )
                     {
                         case FilterOptions.Anisotropic:
-                            if ( ( filterCaps & SlimDX.Direct3D9.FilterCaps.MinAnisotropic ) == SlimDX.Direct3D9.FilterCaps.MinAnisotropic )
+                            if ( ( filterCaps & D3D.FilterCaps.MinAnisotropic ) == D3D.FilterCaps.MinAnisotropic )
                             {
                                 return D3D.TextureFilter.Anisotropic;
                             }
@@ -183,7 +183,7 @@ namespace Axiom.RenderSystems.SlimDX9
                             }
 
                         case FilterOptions.Linear:
-                            if ( ( filterCaps & SlimDX.Direct3D9.FilterCaps.MinLinear ) == SlimDX.Direct3D9.FilterCaps.MinLinear )
+                            if ( ( filterCaps & D3D.FilterCaps.MinLinear ) == D3D.FilterCaps.MinLinear )
                             {
                                 return D3D.TextureFilter.Linear;
                             }
@@ -203,7 +203,7 @@ namespace Axiom.RenderSystems.SlimDX9
                     switch ( options )
                     {
                         case FilterOptions.Anisotropic:
-                            if ( ( filterCaps & SlimDX.Direct3D9.FilterCaps.MagAnisotropic ) == SlimDX.Direct3D9.FilterCaps.MagAnisotropic )
+                            if ( ( filterCaps & D3D.FilterCaps.MagAnisotropic ) == D3D.FilterCaps.MagAnisotropic )
                             {
                                 return D3D.TextureFilter.Anisotropic;
                             }
@@ -213,7 +213,7 @@ namespace Axiom.RenderSystems.SlimDX9
                             }
 
                         case FilterOptions.Linear:
-                            if ( ( filterCaps & SlimDX.Direct3D9.FilterCaps.MagLinear ) == SlimDX.Direct3D9.FilterCaps.MagLinear )
+                            if ( ( filterCaps & D3D.FilterCaps.MagLinear ) == D3D.FilterCaps.MagLinear )
                             {
                                 return D3D.TextureFilter.Linear;
                             }
@@ -234,7 +234,7 @@ namespace Axiom.RenderSystems.SlimDX9
                     {
                         case FilterOptions.Anisotropic:
                         case FilterOptions.Linear:
-                            if ( ( filterCaps & SlimDX.Direct3D9.FilterCaps.MipLinear ) == SlimDX.Direct3D9.FilterCaps.MipLinear )
+                            if ( ( filterCaps & D3D.FilterCaps.MipLinear ) == D3D.FilterCaps.MipLinear )
                             {
                                 return D3D.TextureFilter.Linear;
                             }
@@ -244,7 +244,7 @@ namespace Axiom.RenderSystems.SlimDX9
                             }
 
                         case FilterOptions.Point:
-                            if ( ( filterCaps & SlimDX.Direct3D9.FilterCaps.MipPoint ) == SlimDX.Direct3D9.FilterCaps.MipPoint )
+                            if ( ( filterCaps & D3D.FilterCaps.MipPoint ) == D3D.FilterCaps.MipPoint )
                             {
                                 return D3D.TextureFilter.Point;
                             }
@@ -650,7 +650,7 @@ namespace Axiom.RenderSystems.SlimDX9
                 case TexCoordCalcMethod.EnvironmentMapReflection:
                     return (int)D3D.TextureCoordIndex.CameraSpaceReflectionVector;
                 case TexCoordCalcMethod.EnvironmentMapPlanar:
-                    if ( ( caps.VertexProcessingCaps & SlimDX.Direct3D9.VertexProcessingCaps.TexGenSphereMap ) == SlimDX.Direct3D9.VertexProcessingCaps.TexGenSphereMap )
+                    if ( ( caps.VertexProcessingCaps & D3D.VertexProcessingCaps.TexGenSphereMap ) == D3D.VertexProcessingCaps.TexGenSphereMap )
                     {
                         // use sphere map if available
                         return (int)D3D.TextureCoordIndex.SphereMap;
@@ -666,7 +666,7 @@ namespace Axiom.RenderSystems.SlimDX9
 
                 case TexCoordCalcMethod.EnvironmentMap:
                     //if (caps.VertexProcessingCaps.SupportsTextureGenerationSphereMap)
-                    if ( ( caps.VertexProcessingCaps & SlimDX.Direct3D9.VertexProcessingCaps.TexGenSphereMap ) == SlimDX.Direct3D9.VertexProcessingCaps.TexGenSphereMap )
+                    if ( ( caps.VertexProcessingCaps & D3D.VertexProcessingCaps.TexGenSphereMap ) == D3D.VertexProcessingCaps.TexGenSphereMap )
                     {
                         return (int)D3D.TextureCoordIndex.SphereMap;
                     }

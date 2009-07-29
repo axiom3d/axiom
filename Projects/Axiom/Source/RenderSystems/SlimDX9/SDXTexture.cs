@@ -175,7 +175,6 @@ namespace Axiom.RenderSystems.SlimDX9
             }
         }
 
-        #region Methods
 
         private void LoadNormalTexture()
         {
@@ -691,7 +690,7 @@ namespace Axiom.RenderSystems.SlimDX9
         {
             Debug.Assert( this._device != null, "D3DDevice not ready!" );
 
-            if ( ( _device.Capabilities.Caps2 & SlimDX.Direct3D9.Caps2.CanAutoGenerateMipMap ) == SlimDX.Direct3D9.Caps2.CanAutoGenerateMipMap )
+            if ( ( _device.Capabilities.Caps2 & D3D.Caps2.CanAutoGenerateMipMap ) == D3D.Caps2.CanAutoGenerateMipMap )
             {
                 // make sure we can do it!
                 return _manager.CheckDeviceFormat(
@@ -1085,13 +1084,10 @@ namespace Axiom.RenderSystems.SlimDX9
                 FreeInternalResources();
             }
 
-            isDisposed = true;
-
             // If it is available, make the call to the
             // base class's Dispose(Boolean) method
             base.dispose( disposeManagedResources );
         }
     }
 
-    #endregion
 }
