@@ -307,5 +307,10 @@ namespace Axiom.RenderSystems.Xna
         }
 
         #endregion HardwarePixelBuffer Implementation
+
+        internal void SetMipmapping( bool p, bool MipmapsHardwareGenerated, Microsoft.Xna.Framework.Graphics.Texture texture )
+        {
+            throw new NotImplementedException();
+        }
     }
 }

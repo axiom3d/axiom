@@ -287,7 +287,7 @@ namespace Axiom.RenderSystems.Xna
         private void CreateSurfaceList()
         {
             Debug.Assert( this._texture != null, "texture must be intialized." );
-            XFG.Texture2D texture;
+            XFG.Texture2D texture = null;
 
             // Make sure number of mips is right
             _mipmapCount = this._texture.LevelCount - 1;
@@ -346,15 +346,16 @@ namespace Axiom.RenderSystems.Xna
                     Debug.Assert( _cubeTexture != null, "texture must be initialized." );
 
                     // For all faces and mipmaps, store surfaces as HardwarePixelBuffer
-                    for ( int face = 0; face < 6; ++face )
-                    {
-                        for ( int mip = 0; mip <= MipmapCount; ++mip )
-                        {
-                            texture = this._cubeTexture.GetCubeMapSurface( (D3D.CubeMapFace)face, mip );
-                            this.GetSurfaceAtLevel( face, mip ).Bind( this._device, texture, updateOldList );
-                            this._managedObjects.Add( texture );
-                        }
-                    }
+                    // TODO - Load CubeMap Textures
+                    //for ( int face = 0; face < 6; ++face )
+                    //{
+                    //    for ( int mip = 0; mip <= MipmapCount; ++mip )
+                    //    {
+                    //        texture = this._cubeTexture.GetCubeMapSurface( (D3D.CubeMapFace)face, mip );
+                    //        this.GetSurfaceAtLevel( face, mip ).Bind( this._device, texture, updateOldList );
+                    //        this._managedObjects.Add( texture );
+                    //    }
+                    //}
 
                     break;
 
@@ -362,12 +363,14 @@ namespace Axiom.RenderSystems.Xna
                     Debug.Assert( _volumeTexture != null, "texture must be intialized." );
 
                     // For all mipmaps, store surfaces as HardwarePixelBuffer
-                    for ( int mip = 0; mip <= MipmapCount; ++mip )
-                    {
-                        XFG.Volume volume = this._volumeTexture.GetVolumeLevel( mip );
-                        this.GetSurfaceAtLevel( 0, mip ).Bind( this._device, volume, updateOldList );
-                        this._managedObjects.Add( volume );
-                    }
+                    // TODO - Load Volume Textures
+
+                    //for ( int mip = 0; mip <= MipmapCount; ++mip )
+                    //{
+                    //    XFG.Volume volume = this._volumeTexture.GetVolumeLevel( mip );
+                    //    this.GetSurfaceAtLevel( 0, mip ).Bind( this._device, volume, updateOldList );
+                    //    this._managedObjects.Add( volume );
+                    //}
 
                     break;
             }
@@ -587,8 +590,8 @@ namespace Axiom.RenderSystems.Xna
             // set src and dest attributes to the same, we can't know
             stream.Position = 0;
             XFG.TextureInformation desc = XFG.Texture3D.GetTextureInformation( stream );
-            SetSrcAttributes( desc.Width, desc.Height, desc.Depth, ConvertFormat( desc.Format ) );
-            SetFinalAttributes( desc.Width, desc.Height, desc.Depth, ConvertFormat( desc.Format ) );
+            SetSrcAttributes( desc.Width, desc.Height, desc.Depth, XnaHelper.Convert( desc.Format ) );
+            SetFinalAttributes( desc.Width, desc.Height, desc.Depth, XnaHelper.Convert( desc.Format ) );
             stream.Close();
             internalResourcesCreated = true;
 #endif
