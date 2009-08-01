@@ -59,6 +59,7 @@ namespace Axiom.RenderSystems.Xna
             this._description = adapterDetails.Description;
             this._adapterNum = adapterDetails.DeviceId;
             this._adapterIdentifier = adapterDetails.DeviceIdentifier;
+            this._adapter = adapterDetails;
 
             _videoModeList = new VideoModeCollection();
         }
@@ -94,6 +95,20 @@ namespace Axiom.RenderSystems.Xna
             }
         }
         #endregion Description Property
+
+        #region Adapter Property
+        private XFG.GraphicsAdapter _adapter;
+        /// <summary>
+        /// 
+        /// </summary>
+        public XFG.GraphicsAdapter Adapter
+        {
+            get
+            {
+                return _adapter;
+            }
+        }
+        #endregion AdapterNumber Property
 
         #region AdapterNumber Property
         private int _adapterNum;

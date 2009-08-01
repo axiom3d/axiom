@@ -37,6 +37,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+using Axiom.Collections;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna
@@ -44,44 +46,19 @@ namespace Axiom.RenderSystems.Xna
     /// <summary>
     /// Summary description for DriverCollection.
     /// </summary>
-    public class DriverCollection : IEnumerable<Driver>
+    public class DriverCollection : UnsortedCollection<Driver>
     {
-        private List<Driver> drivers;
-
-        public DriverCollection()
-        {
-            drivers = new List<Driver>();
-        }
-
-        public void Add( Driver drv )
-        {
-            drivers.Add( drv );
-        }
-
-        public Driver this[ int index ]
+        public Driver this[ string description ]
         {
             get
             {
-                return drivers[ index ];
+                foreach ( Driver drv in this )
+                {
+                    if ( drv.Description == description )
+                        return drv;
+                }
+                return null;
             }
         }
-
-        #region IEnumerable<Driver> Members
-
-        public IEnumerator<Driver> GetEnumerator()
-        {
-            return drivers.GetEnumerator();
-        }
-
-        #endregion
-
-        #region IEnumerable Members
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return drivers.GetEnumerator();
-        }
-
-        #endregion
     }
 }

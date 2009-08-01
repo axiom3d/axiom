@@ -175,24 +175,107 @@ namespace Axiom.RenderSystems.Xna
             _device.VertexDeclaration = vertDecl.XnaVertexDecl;
         }
 
+        public override void SetConfigOption( string name, string value )
+        {
+            if ( ConfigOptions.ContainsKey( name ) )
+                ConfigOptions[ name ].Value = value;
+
+        }
+
+        private void _configOptionChanged( string name, string value )
+        {
+            LogManager.Instance.Write( "D3D9 : RenderSystem Option: {0} = {1}", name, value );
+
+            bool viewModeChanged = false;
+
+            // Find option
+            ConfigOption opt = ConfigOptions[ name ];
+
+            // Refresh other options if D3DDriver changed
+            if ( name == "Rendering Device" )
+                _refreshXnaSettings();
+
+            if ( name == "Full Screen" )
+            {
+                // Video mode is applicable
+                opt = ConfigOptions[ "Video Mode" ];
+                if ( opt.Value == "" )
+                {
+                    opt.Value = "800 x 600 @ 32-bit colour";
+                    viewModeChanged = true;
+                }
+            }
+
+            if ( name == "Anti aliasing" )
+            {
+                if ( value == "None" )
+                {
+                    _setFSAA( XFG.MultiSampleType.None, 0 );
+                }
+                else
+                {
+                    XFG.MultiSampleType fsaa = XFG.MultiSampleType.None;
+                    int level = 0;
+
+                    if ( value.StartsWith( "NonMaskable" ) )
+                    {
+                        fsaa = XFG.MultiSampleType.NonMaskable;
+                        level = Int32.Parse( value.Substring( value.LastIndexOf( " " ) ) );
+                        level -= 1;
+                    }
+                    else if ( value.StartsWith( "Level" ) )
+                    {
+                        fsaa = (XFG.MultiSampleType)Int32.Parse( value.Substring( value.LastIndexOf( " " ) ) );
+                    }
+
+                    _setFSAA( fsaa, level );
+                }
+            }
+
+            if ( name == "VSync" )
+            {
+                _vSync = ( value == "Yes" );
+            }
+
+            if ( name == "Allow NVPerfHUD" )
+            {
+                _useNVPerfHUD = ( value == "Yes" );
+            }
+
+            if ( viewModeChanged || name == "Video Mode" )
+            {
+                _refreshFSAAOptions();
+            }
+
+        }
+
+        private void _setFSAA( XFG.MultiSampleType fsaa, int level )
+        {
+            if ( _device == null )
+            {
+                _fsaaType = fsaa;
+                _fsaaQuality = level;
+            }
+        }
+
         private void _initConfigOptions()
         {
             ConfigOption optDevice = new ConfigOption( "Rendering Device", "", false );
-            ConfigOption optVideoMode = new ConfigOption( "Video Mode", "800 x 600 @ 32-bit colour", false );
+            ConfigOption optVideoMode = new ConfigOption( "Video Mode", "800 x 600 @ 32-bit color", false );
             ConfigOption optFullScreen = new ConfigOption( "Full Screen", "No", false );
             ConfigOption optVSync = new ConfigOption( "VSync", "No", false );
             ConfigOption optAA = new ConfigOption( "Anti aliasing", "None", false );
             ConfigOption optFPUMode = new ConfigOption( "Floating-point mode", "Fastest", false );
+            ConfigOption optNVPerfHUD = new ConfigOption( "Allow NVPerfHUD", "No", false );
 
             optDevice.PossibleValues.Clear();
-            Driver driver = XnaHelper.GetDriverInfo();
 
-            foreach ( VideoMode mode in driver.VideoModes )
+            DriverCollection driverList = XnaHelper.GetDriverInfo();
+            foreach ( Driver driver in driverList )
             {
-                string query = string.Format( "{0} x {1} @ {2}-bit colour", mode.Width, mode.Height, mode.ColorDepth.ToString() );
-                // add a new row to the display settings table
-                optVideoMode.PossibleValues.Add(optVideoMode.PossibleValues.Count, query );
+                optDevice.PossibleValues.Add( driver.AdapterNumber, driver.Description );
             }
+            optDevice.Value = driverList[ 0 ].Description;
 
             optFullScreen.PossibleValues.Add(0, "Yes" );
             optFullScreen.PossibleValues.Add(1, "No" );
@@ -206,12 +289,109 @@ namespace Axiom.RenderSystems.Xna
             optFPUMode.PossibleValues.Add(0, "Fastest" );
             optFPUMode.PossibleValues.Add(1, "Consistent" );
 
+            optNVPerfHUD.PossibleValues.Add( 0, "Yes" );
+            optNVPerfHUD.PossibleValues.Add( 1, "No" );
+
+            optFPUMode.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
+            optAA.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
+            optVSync.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
+            optFullScreen.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
+            optVideoMode.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
+            optDevice.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
+            optNVPerfHUD.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
+
             ConfigOptions.Add( optDevice );
             ConfigOptions.Add( optVideoMode );
             ConfigOptions.Add( optFullScreen );
             ConfigOptions.Add( optVSync );
             ConfigOptions.Add( optAA );
             ConfigOptions.Add( optFPUMode );
+            ConfigOptions.Add( optNVPerfHUD );
+
+            _refreshXnaSettings();
+        }
+
+        private void _refreshXnaSettings()
+        {
+            DriverCollection drivers = XnaHelper.GetDriverInfo();
+
+            ConfigOption optDevice = ConfigOptions[ "Rendering Device" ];
+            Driver driver = drivers[ optDevice.Value ];
+            if ( driver != null )
+            {
+                // Get Current Selection
+                ConfigOption optVideoMode = ConfigOptions[ "Video Mode" ];
+                string curMode = optVideoMode.Value;
+
+                // Clear previous Modes
+                optVideoMode.PossibleValues.Clear();
+
+                // Get Video Modes for current device;
+                foreach ( VideoMode videoMode in driver.VideoModes )
+                {
+                    optVideoMode.PossibleValues.Add( optVideoMode.PossibleValues.Count, videoMode.ToString() );
+                }
+
+                // Reset video mode to default if previous doesn't avail in new possible values
+
+                if ( optVideoMode.PossibleValues.Values.Contains( curMode ) == false )
+                {
+                    optVideoMode.Value = "800 x 600 @ 32-bit color";
+                }
+
+                // Also refresh FSAA options
+                _refreshFSAAOptions();
+            }
+        }
+
+        private void _refreshFSAAOptions()
+        {
+            // Reset FSAA Options
+            ConfigOption optFSAA = ConfigOptions[ "Anti aliasing" ];
+            string curFSAA = optFSAA.Value;
+            optFSAA.PossibleValues.Clear();
+            optFSAA.PossibleValues.Add( 0, "None" );
+
+            ConfigOption optFullScreen = ConfigOptions[ "Full Screen" ];
+            bool windowed = optFullScreen.Value != "Yes";
+
+            DriverCollection drivers = XnaHelper.GetDriverInfo();
+            ConfigOption optDevice = ConfigOptions[ "Rendering Device" ];
+            Driver driver = drivers[ optDevice.Value ];
+            if ( driver != null )
+            {
+                ConfigOption optVideoMode = ConfigOptions[ "Video Mode" ];
+                VideoMode videoMode = driver.VideoModes[ optVideoMode.Value ];
+                if ( videoMode != null )
+                {
+                    int numLevels = 0;
+
+                    // get non maskable levels supported for this VMODE
+                    if ( driver.Adapter.CheckDeviceMultiSampleType( XFG.DeviceType.Hardware, videoMode.Format, windowed, XFG.MultiSampleType.NonMaskable, out numLevels ) )
+                    {
+                        for ( int n = 0; n < numLevels; n++ )
+                        {
+                            optFSAA.PossibleValues.Add( optFSAA.PossibleValues.Count, String.Format( "NonMaskable {0}", n ) );
+                        }
+                    }
+
+
+                    // get maskable levels supported for this VMODE
+                    for ( int n = 2; n < 17; n++ )
+                    {
+                        if ( driver.Adapter.CheckDeviceMultiSampleType( XFG.DeviceType.Hardware, videoMode.Format, windowed, (XFG.MultiSampleType)n ) )
+                        {
+                            optFSAA.PossibleValues.Add( optFSAA.PossibleValues.Count, String.Format( "Level {0}", n ) );
+                        }
+                    }
+                }
+            }
+
+            // Reset FSAA to none if previous doesn't avail in new possible values
+            if ( optFSAA.PossibleValues.Values.Contains( curFSAA ) == false )
+            {
+                optFSAA.Value = "None";
+            }
         }
 
 #if !(XBOX || XBOX360 || SILVERLIGHT)
@@ -265,15 +445,15 @@ namespace Axiom.RenderSystems.Xna
         /// </summary>
         private void _checkHardwareCapabilities( XFG.GraphicsDevice device )
         {
+            _capabilities = _device.GraphicsDeviceCapabilities;
+
             // get the number of possible texture units
             HardwareCapabilities.TextureUnitCount = _capabilities.MaxSimultaneousTextures;
 
             // max active lights
-            HardwareCapabilities.MaxLights = 8; // d3dHardwareCapabilities.MaxActiveLights;
+            HardwareCapabilities.MaxLights = 8; 
 
             XFG.DepthStencilBuffer surface = device.DepthStencilBuffer;
-            //XNA.TextureInformation surfaceDesc = surface.Description;
-            //surface.Dispose();
 
             if ( surface.Format == XFG.DepthFormat.Depth24Stencil8 || surface.Format == XFG.DepthFormat.Depth24 )
             {
@@ -1021,7 +1201,7 @@ namespace Axiom.RenderSystems.Xna
                     strParams.AppendFormat( "{0} = {1}; ", entry.Key, entry.Value );
                 }
             }
-            LogManager.Instance.Write( "D3D9RenderSystem::createRenderWindow \"{0}\", {1}x{2} {3} miscParams: {4}",
+            LogManager.Instance.Write( "[XNA] : Creating RenderWindow \"{0}\", {1}x{2} {3} miscParams: {4}",
                                        name, width, height, isFullScreen ? "fullscreen" : "windowed", strParams.ToString() );
 
             // Make sure we don't already have a render target of the 
@@ -1074,6 +1254,35 @@ namespace Axiom.RenderSystems.Xna
         {
             throw new NotImplementedException();
         }
+
+        public override void Shutdown()
+        {
+            _activeDriver = null;
+
+            // dispose of the device
+            if ( _device != null )
+            {
+                _device.Dispose();
+            }
+
+            if ( gpuProgramMgr != null )
+            {
+                gpuProgramMgr.Dispose();
+            }
+            if ( hardwareBufferManager != null )
+            {
+                hardwareBufferManager.Dispose();
+            }
+            if ( textureManager != null )
+            {
+                textureManager.Dispose();
+            }
+
+            base.Shutdown();
+
+            LogManager.Instance.Write( "[XNA] : " + Name + " shutdown." );
+        }
+
 
         private XFG.GraphicsDevice InitDevice( bool isFullscreen, bool depthBuffer, int width, int height, int colorDepth, IntPtr target )
         {
@@ -1230,6 +1439,16 @@ namespace Axiom.RenderSystems.Xna
 
         public override RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
         {
+            LogManager.Instance.Write( "[XNA] : Subsystem Initializing" );
+
+            WindowEventMonitor.Instance.MessagePump = Win32MessageHandling.MessagePump;
+
+            _activeDriver = XnaHelper.GetDriverInfo()[ ConfigOptions[ "Rendering Device" ].Value ];
+            if ( _activeDriver == null )
+            {
+                throw new ArgumentException( "Problems finding requested Xna driver!" );
+            }
+
             RenderWindow renderWindow = null;
 
             // register the HLSL program manager
@@ -1603,11 +1822,6 @@ namespace Axiom.RenderSystems.Xna
             _device.RenderState.AlphaTestEnable = ( func != Axiom.Graphics.CompareFunction.AlwaysPass );
             _device.RenderState.AlphaFunction = XnaHelper.Convert( func );
             _device.RenderState.ReferenceAlpha = val;
-        }
-
-        public override void SetConfigOption( string name, string value )
-        {
-            throw new NotImplementedException();
         }
 
         public override void SetColorBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )

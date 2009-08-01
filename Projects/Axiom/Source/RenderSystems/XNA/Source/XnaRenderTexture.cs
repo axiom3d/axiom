@@ -58,6 +58,14 @@ namespace Axiom.RenderSystems.Xna
             this.Name = name;
         }
 
+        public void Rebind( XnaHardwarePixelBuffer buffer )
+        {
+            pixelBuffer = buffer;
+            Width = pixelBuffer.Width;
+            Height = pixelBuffer.Height;
+            ColorDepth = PixelUtil.GetNumElemBits( buffer.Format );
+        }
+
         #region Axiom.Graphics.RenderTexture Implementation
 
         public override void Update()

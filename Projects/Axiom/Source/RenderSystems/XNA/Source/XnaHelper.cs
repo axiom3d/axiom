@@ -68,35 +68,36 @@ namespace Axiom.RenderSystems.Xna
 		/// <summary>
 		///		Enumerates driver information and their supported display modes.
 		/// </summary>
-		public static Driver GetDriverInfo()
+		public static DriverCollection GetDriverInfo()
 		{
-			ArrayList driverList = new ArrayList();
+            DriverCollection driverList = new DriverCollection();
 
-			// get the information for the default adapter (not checking secondaries)
-			XFG.GraphicsAdapter adapterInfo = XFG.GraphicsAdapter.Adapters[ 0 ];
+            foreach ( XFG.GraphicsAdapter adapterInfo in XFG.GraphicsAdapter.Adapters )
+            {
+                Driver driver = new Driver( adapterInfo );
 
-			Driver driver = new Driver( adapterInfo );
+                int lastWidth = 0, lastHeight = 0;
+                XFG.SurfaceFormat lastFormat = 0;
 
-			int lastWidth = 0, lastHeight = 0;
-			XFG.SurfaceFormat lastFormat = 0;
+                foreach ( XFG.DisplayMode mode in adapterInfo.SupportedDisplayModes )
+                {
+                    // filter out lower resolutions, and make sure this isnt a dupe (ignore variations on refresh rate)
+                    if ( ( mode.Width >= 640 && mode.Height >= 480 ) &&
+                        ( ( mode.Width != lastWidth ) || mode.Height != lastHeight || mode.Format != lastFormat ) )
+                    {
+                        // add the video mode to the list
+                        driver.VideoModes.Add( new VideoMode( mode ) );
 
-			foreach ( XFG.DisplayMode mode in adapterInfo.SupportedDisplayModes )
-			{
-				// filter out lower resolutions, and make sure this isnt a dupe (ignore variations on refresh rate)
-				if ( ( mode.Width >= 640 && mode.Height >= 480 ) &&
-					( ( mode.Width != lastWidth ) || mode.Height != lastHeight || mode.Format != lastFormat ) )
-				{
-					// add the video mode to the list
-					driver.VideoModes.Add( new VideoMode( mode ) );
+                        // save current mode settings for comparison on the next iteraion
+                        lastWidth = mode.Width;
+                        lastHeight = mode.Height;
+                        lastFormat = mode.Format;
+                    }
+                }
+                driverList.Add( driver );
+            }
 
-					// save current mode settings for comparison on the next iteraion
-					lastWidth = mode.Width;
-					lastHeight = mode.Height;
-					lastFormat = mode.Format;
-				}
-			}
-
-			return driver;
+            return driverList;
 		}
 
 		public static XFG.Color Convert( Axiom.Core.ColorEx color )
@@ -886,7 +887,10 @@ namespace Axiom.RenderSystems.Xna
                 case SurfaceFormat.Bgra1010102:
                     return Axiom.Media.PixelFormat.A2R10G10B10;
                 case SurfaceFormat.Color:
-                    return Axiom.Media.PixelFormat.R8G8B8A8;
+                    return Axiom.Media.PixelFormat.A8R8G8B8;
+                case XFG.SurfaceFormat.Bgr32:
+                case XFG.SurfaceFormat.Bgr24:
+                    return Axiom.Media.PixelFormat.R8G8B8;
                 case SurfaceFormat.Dxt1:
                     return Axiom.Media.PixelFormat.DXT1;
                 case SurfaceFormat.Dxt2:
@@ -901,5 +905,42 @@ namespace Axiom.RenderSystems.Xna
                     return Axiom.Media.PixelFormat.Unknown;
             }
 	    }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        public XFG.SurfaceFormat Convert( PixelFormat format )
+        {
+            switch ( format )
+            {
+                case PixelFormat.L8:
+                    return XFG.SurfaceFormat.Luminance8;
+                case PixelFormat.A8:
+                    return XFG.SurfaceFormat.Alpha8;
+                case PixelFormat.B5G6R5:
+                case PixelFormat.R5G6B5:
+                    return XFG.SurfaceFormat.Bgr565;
+                case PixelFormat.B4G4R4A4:
+                case PixelFormat.A4R4G4B4:
+                    return XFG.SurfaceFormat.Bgra4444;
+                case PixelFormat.B8G8R8:
+                case PixelFormat.R8G8B8:
+                    return XFG.SurfaceFormat.Bgr24;
+                case PixelFormat.B8G8R8A8:
+                case PixelFormat.A8R8G8B8:
+                    return XFG.SurfaceFormat.Color;
+                //case PixelFormat.L4A4:
+                case PixelFormat.A4L4:
+                    return XFG.SurfaceFormat.LuminanceAlpha8;
+                //case PixelFormat.B10G10R10A2:
+                case PixelFormat.A2R10G10B10:
+                    return XFG.SurfaceFormat.Bgra1010102;
+            }
+
+            return XFG.SurfaceFormat.Unknown;
+        }
+
 	}
 }
