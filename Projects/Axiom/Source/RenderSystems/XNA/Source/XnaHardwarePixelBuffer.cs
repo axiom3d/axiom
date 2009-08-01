@@ -65,6 +65,47 @@ namespace Axiom.RenderSystems.Xna
         #region Fields and Properties
 
         ///<summary>
+        ///    Xna Device
+        ///</summary>
+        protected XFG.GraphicsDevice device;
+        ///<summary>
+        ///    Surface abstracted by this buffer
+        ///</summary>
+        protected XFG.Texture2D surface;
+        ///<summary>
+        ///    FSAA Surface abstracted by this buffer
+        ///</summary>
+        protected XFG.Texture2D fsaaSurface;
+        ///<summary>
+        ///    Volume abstracted by this buffer
+        ///</summary>
+        protected XFG.Texture3D volume;
+        ///<summary>
+        ///    Temporary surface in main memory if direct locking of mSurface is not possible
+        ///</summary>
+        protected XFG.Texture2D tempSurface;
+        ///<summary>
+        ///    Temporary volume in main memory if direct locking of mVolume is not possible
+        ///</summary>
+        protected XFG.Texture3D tempVolume;
+        ///<summary>
+        ///    Doing Mipmapping?
+        ///</summary>
+        protected bool doMipmapGen;
+        ///<summary>
+        ///    Hardware Mipmaps?
+        ///</summary>
+        protected bool HWMipmaps;
+        ///<summary>
+        ///    The Mipmap texture?
+        ///</summary>
+        protected XFG.Texture mipTex;
+        ///<summary>
+        ///    Render targets
+        ///</summary>
+        protected List<RenderTexture> sliceTRT;
+
+        ///<summary>
         ///    Accessor for surface
         ///</summary>
         public XFG.Texture FSAASurface
@@ -91,6 +132,20 @@ namespace Axiom.RenderSystems.Xna
 
         #region Construction and Destruction
 
+        public XnaHardwarePixelBuffer( BufferUsage usage )
+            : base( 0, 0, 0, Axiom.Media.PixelFormat.Unknown, usage, false, false )
+        {
+            device = null;
+            surface = null;
+            volume = null;
+            tempSurface = null;
+            tempVolume = null;
+            doMipmapGen = false;
+            HWMipmaps = false;
+            mipTex = null;
+            sliceTRT = new List<RenderTexture>();
+        }
+
         ///<summary>
         ///</summary>
         ///<param name="width"></param>
@@ -106,6 +161,97 @@ namespace Axiom.RenderSystems.Xna
         }
 
         #endregion Construction and Destruction
+
+        #region Methods
+        ///<summary>
+        ///    Call this to associate a Xna Texture2D with this pixel buffer
+        ///</summary>
+        public void Bind( XFG.GraphicsDevice device, XFG.Texture2D surface, bool update )
+        {
+            this.device = device;
+            this.surface = surface;
+
+            Width = surface.Width;
+            Height = surface.Height;
+            Depth = 1;
+            Format = XnaHelper.Convert( surface.Format );
+            // Default
+            RowPitch = Width;
+            SlicePitch = Height * Width;
+            sizeInBytes = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
+
+            if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
+                CreateRenderTextures( update );
+        }
+
+        ///<summary>
+        ///    Call this to associate a Xna Texture3D with this pixel buffer
+        ///</summary>
+        public void Bind( XFG.GraphicsDevice device, XFG.Texture3D volume, bool update )
+        {
+            this.device = device;
+            this.volume = volume;
+
+            Width = volume.Width;
+            Height = volume.Height;
+            Depth = volume.Depth;
+            Format = XnaHelper.Convert( volume.Format );
+            // Default
+            RowPitch = Width;
+            SlicePitch = Height * Width;
+            sizeInBytes = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
+
+            if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
+                CreateRenderTextures( update );
+        }
+
+        ///<summary>
+        ///    Create (or update) render textures for slices
+        ///</summary>
+        ///<param name="update">are we updating an existing texture</param>
+        protected void CreateRenderTextures( bool update )
+        {
+            if ( update )
+            {
+                Debug.Assert( sliceTRT.Count == Depth );
+                foreach ( XnaRenderTexture trt in sliceTRT )
+                    trt.Rebind( this );
+                return;
+            }
+
+            DestroyRenderTextures();
+            if ( surface == null )
+                throw new Exception( "Rendering to 3D slices not supported yet for Direct3D; in " +
+                                    "D3DHardwarePixelBuffer.CreateRenderTexture" );
+            // Create render target for each slice
+            sliceTRT.Clear();
+            Debug.Assert( Depth == 1 );
+            for ( int zoffset = 0; zoffset < Depth; ++zoffset )
+            {
+                string name = "rtt/" + this.ID;
+                RenderTexture trt = new XnaRenderTexture( name, this );
+                sliceTRT.Add( trt );
+                Root.Instance.RenderSystem.AttachRenderTarget( trt );
+            }
+        }
+
+        ///<summary>
+        ///    Destroy render textures for slices
+        ///</summary>
+        protected void DestroyRenderTextures()
+        {
+            if ( sliceTRT.Count == 0 )
+                return;
+
+            for ( int i = 0; i < sliceTRT.Count; ++i )
+            {
+                RenderTexture trt = sliceTRT[ i ];
+                if ( trt != null )
+                    Root.Instance.RenderSystem.DestroyRenderTarget( trt.Name );
+            }
+        }
+
+        #endregion Methods
 
         #region HardwarePixelBuffer Implementation
 

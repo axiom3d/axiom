@@ -428,14 +428,14 @@ namespace Axiom.RenderSystems.Xna
             this.top = top;
             this.left = left;
 
-            LogManager.Instance.Write( "D3D9 : Created D3D9 Rendering Window '{0}' : {1}x{2}, {3}bpp", Name, Width, Height, ColorDepth );
-
             CreateXnaResources();
 
             _window.Show();
 
             IsActive = true;
             _isClosed = false;
+
+            LogManager.Instance.Write( "[XNA] : Created D3D9 Rendering Window '{0}' : {1}x{2}, {3}bpp", Name, Width, Height, ColorDepth );
         }
 
 	    private void CreateXnaResources()
@@ -494,7 +494,7 @@ namespace Axiom.RenderSystems.Xna
                 this._xnapp.BackBufferFormat = XFG.SurfaceFormat.Bgr32;
             }
 
-	        XFG.GraphicsAdapter currentAdapter = XFG.GraphicsAdapter.Adapters[ _driver.AdapterNumber ];
+	        XFG.GraphicsAdapter currentAdapter = _driver.Adapter;
             if ( ColorDepth > 16 )
             {
                 // Try to create a 32-bit depth, 8-bit stencil
@@ -582,8 +582,8 @@ namespace Axiom.RenderSystems.Xna
                     ConfigOptionCollection configOptions = Root.Instance.RenderSystem.ConfigOptions;
                     ConfigOption FPUMode = configOptions[ "Floating-point mode" ];
 
-                    // Set default settings (use the one Ogre discovered as a default)
-                    XFG.GraphicsAdapter adapterToUse = XFG.GraphicsAdapter.Adapters[ Driver.AdapterNumber ];
+                    // Set default settings (use the one Axiom discovered as a default)
+                    XFG.GraphicsAdapter adapterToUse = Driver.Adapter;
 
                     if ( this._useNVPerfHUD )
                     {
@@ -602,11 +602,11 @@ namespace Axiom.RenderSystems.Xna
                         }
                     }
 
-                    // create the D3D Device, trying for the best vertex support first, and settling for less if necessary
+                    // create the XNA GraphicsDevice, trying for the best vertex support first, and settling for less if necessary
                     try
                     {
                         // hardware vertex processing
-                        device = new XFG.GraphicsDevice( XFG.GraphicsAdapter.Adapters[Driver.AdapterNumber], devType, _window.Handle, this._xnapp );
+                        device = new XFG.GraphicsDevice( adapterToUse, devType, _window.Handle, this._xnapp );
                     }
                     catch ( Exception )
                     {

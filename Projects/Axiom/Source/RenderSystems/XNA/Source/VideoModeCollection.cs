@@ -37,6 +37,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+using Axiom.Collections;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.Xna
@@ -44,36 +46,19 @@ namespace Axiom.RenderSystems.Xna
     /// <summary>
     /// Summary description for VideoModeCollection.
     /// </summary>
-    public class VideoModeCollection : IEnumerable<VideoMode>
+    public class VideoModeCollection : UnsortedCollection<VideoMode>
     {
-        private List<VideoMode> videoModes;
-
-        public VideoModeCollection()
+        public VideoMode this[ string description ]
         {
-            videoModes = new List<VideoMode>();
+            get
+            {
+                foreach ( VideoMode mode in this )
+                {
+                    if ( mode.ToString() == description )
+                        return mode;
+                }
+                return null;
+            }
         }
-
-        public void Add( VideoMode mode )
-        {
-            videoModes.Add( mode );
-        }
-
-        #region IEnumerable<VideoMode> Members
-
-        public IEnumerator<VideoMode> GetEnumerator()
-        {
-            return videoModes.GetEnumerator();
-        }
-
-        #endregion
-
-        #region IEnumerable Members
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return videoModes.GetEnumerator();
-        }
-
-        #endregion
     }
 }

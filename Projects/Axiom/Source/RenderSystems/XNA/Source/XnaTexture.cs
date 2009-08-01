@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
@@ -43,6 +44,9 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 
+using BufferUsage=Axiom.Graphics.BufferUsage;
+using Texture=Axiom.Core.Texture;
+using TextureUsage=Axiom.Graphics.TextureUsage;
 #if (XBOX || XBOX360 || SILVERLIGHT)
 using Axiom.RenderSystems.Xna.Content;
 #endif
@@ -105,8 +109,31 @@ namespace Axiom.RenderSystems.Xna
         /// </summary>
         private string[] cubeFaceNames = new string[ 6 ];
 
+        /// <summary>
+        ///     Dynamic textures?
+        /// </summary>
+        private bool _dynamicTextures = false;
+        /// <summary>
+        ///     List of subsurfaces
+        /// </summary>
+        private List<XnaHardwarePixelBuffer> _surfaceList = new List<XnaHardwarePixelBuffer>();
+        /// <summary>
+        /// List of D3D resources in use ( surfaces and volumes )
+        /// </summary>
+        private List<IDisposable> _managedObjects = new List<IDisposable>();
+
         #endregion Fields
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="name"></param>
+        /// <param name="handle"></param>
+        /// <param name="group"></param>
+        /// <param name="isManual"></param>
+        /// <param name="loader"></param>
+        /// <param name="device"></param>
         public XnaTexture( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader,XFG.GraphicsDevice device )
             : base( parent, name, handle, group, isManual, loader )
         {
@@ -193,19 +220,10 @@ namespace Axiom.RenderSystems.Xna
 
         protected override void load()
         {
-            // unload if loaded already
-            if ( IsLoaded )
-            {
-                Unload();
-            }
-
-            // log a quick message
-            LogManager.Instance.Write( "XnaTexture: Loading {0} with {1} mipmaps from an Image.", Name, MipmapCount );
-
             // create a render texture if need be
-            if ( Usage == TextureUsage.RenderTarget )
+            if ( ( Usage & TextureUsage.RenderTarget ) == TextureUsage.RenderTarget )
             {
-                CreateTexture();
+                CreateInternalResources();
                 return;
             }
 
@@ -214,19 +232,19 @@ namespace Axiom.RenderSystems.Xna
             {
                 case TextureType.OneD:
                 case TextureType.TwoD:
-                    LoadNormalTexture();
+                    this.LoadNormalTexture();
                     break;
 
                 case TextureType.ThreeD:
-                    LoadVolumeTexture();
+                    this.LoadVolumeTexture();
                     break;
 
                 case TextureType.CubeMap:
-                    LoadCubeTexture();
+                    this.LoadCubeTexture();
                     break;
 
                 default:
-                    throw new Exception( "Unsupported texture type!" );
+                    throw new Exception( "Unsupported texture type." );
             }
 
         }
@@ -263,7 +281,119 @@ namespace Axiom.RenderSystems.Xna
         /// <returns>A shared pointer to a hardware pixel buffer</returns>
         public override HardwarePixelBuffer GetBuffer( int face, int mipmap )
         {
-            throw new NotImplementedException();
+            return this.GetSurfaceAtLevel( face, mipmap );
+        }
+
+        private void CreateSurfaceList()
+        {
+            Debug.Assert( this._texture != null, "texture must be intialized." );
+            XFG.Texture2D texture;
+
+            // Make sure number of mips is right
+            _mipmapCount = this._texture.LevelCount - 1;
+
+            // Need to know static / dynamic
+            BufferUsage bufusage;
+            if ( ( ( Usage & TextureUsage.Dynamic ) != 0 ) && this._dynamicTextures )
+            {
+                bufusage = BufferUsage.Dynamic;
+            }
+            else
+            {
+                bufusage = BufferUsage.Static;
+            }
+
+            if ( ( Usage & TextureUsage.RenderTarget ) != 0 )
+            {
+                bufusage = (BufferUsage)( (int)bufusage | (int)TextureUsage.RenderTarget );
+            }
+
+            // If we already have the right number of surfaces, just update the old list
+            bool updateOldList = ( this._surfaceList.Count == ( faceCount * ( MipmapCount + 1 ) ) );
+            if ( !updateOldList )
+            {
+                // Create new list of surfaces
+                this.ClearSurfaceList();
+                for ( int face = 0; face < faceCount; ++face )
+                {
+                    for ( int mip = 0; mip <= MipmapCount; ++mip )
+                    {
+                        XnaHardwarePixelBuffer buffer = new XnaHardwarePixelBuffer( bufusage );
+                        this._surfaceList.Add( buffer );
+                    }
+                }
+            }
+
+            switch ( TextureType )
+            {
+                case TextureType.OneD:
+                case TextureType.TwoD:
+                    Debug.Assert( this._normTexture != null, "texture must be intialized." );
+
+                    // For all mipmaps, store surfaces as HardwarePixelBuffer
+                    for ( int mip = 0; mip <= MipmapCount; ++mip )
+                    {
+                        int size = PixelUtil.GetMemorySize(this._normTexture.Width,this._normTexture.Height, 1,XnaHelper.Convert(this._normTexture.Format));
+                        byte[] data = new byte[size];
+                        this._normTexture.GetData( mip, null,data,0, size );
+                        this.GetSurfaceAtLevel( 0, mip ).Bind( this._device, texture, updateOldList );
+                        this._managedObjects.Add( texture );
+                    }
+
+                    break;
+
+                case TextureType.CubeMap:
+                    Debug.Assert( _cubeTexture != null, "texture must be initialized." );
+
+                    // For all faces and mipmaps, store surfaces as HardwarePixelBuffer
+                    for ( int face = 0; face < 6; ++face )
+                    {
+                        for ( int mip = 0; mip <= MipmapCount; ++mip )
+                        {
+                            texture = this._cubeTexture.GetCubeMapSurface( (D3D.CubeMapFace)face, mip );
+                            this.GetSurfaceAtLevel( face, mip ).Bind( this._device, texture, updateOldList );
+                            this._managedObjects.Add( texture );
+                        }
+                    }
+
+                    break;
+
+                case TextureType.ThreeD:
+                    Debug.Assert( _volumeTexture != null, "texture must be intialized." );
+
+                    // For all mipmaps, store surfaces as HardwarePixelBuffer
+                    for ( int mip = 0; mip <= MipmapCount; ++mip )
+                    {
+                        XFG.Volume volume = this._volumeTexture.GetVolumeLevel( mip );
+                        this.GetSurfaceAtLevel( 0, mip ).Bind( this._device, volume, updateOldList );
+                        this._managedObjects.Add( volume );
+                    }
+
+                    break;
+            }
+
+            // Set autogeneration of mipmaps for each face of the texture, if it is enabled
+            if ( ( RequestedMipmapCount != 0 ) && ( ( Usage & TextureUsage.AutoMipMap ) != 0 ) )
+            {
+                for ( int face = 0; face < faceCount; ++face )
+                {
+                    this.GetSurfaceAtLevel( face, 0 ).SetMipmapping( true, MipmapsHardwareGenerated, this._texture );
+                }
+            }
+        }
+
+        private void ClearSurfaceList()
+        {
+            foreach ( XnaHardwarePixelBuffer buf in _surfaceList )
+            {
+                buf.Dispose();
+            }
+            this._surfaceList.Clear();
+        }
+
+        private XnaHardwarePixelBuffer GetSurfaceAtLevel( int face, int mip )
+        {
+            return this._surfaceList[ ( face * ( MipmapCount + 1 ) ) + mip ];
         }
 
         protected override void createInternalResources()
@@ -357,31 +487,30 @@ namespace Axiom.RenderSystems.Xna
             Axiom.RenderSystems.Xna.Content.AxiomContentManager acm = new Axiom.RenderSystems.Xna.Content.AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "");
             normTexture = acm.Load<XFG.Texture2D>( name );
             texture = normTexture;
-			isLoaded = true;
+            internalResourcesCreated = true;
 #else
             Stream stream = ResourceGroupManager.Instance.OpenResource( Name );
+
             // use Xna to load the image directly from the stream
             XFG.TextureCreationParameters tcp = new XFG.TextureCreationParameters();
             tcp.Filter = Microsoft.Xna.Framework.Graphics.FilterOptions.Triangle;
-            //tcp.MipFilter = Microsoft.Xna.Framework.Graphics.FilterOptions.Triangle;
             tcp.MipLevels = MipmapCount;
+
             _normTexture = XFG.Texture2D.FromFile(_device, stream,tcp);
             // store a ref for the base texture interface
             _texture = _normTexture; 
-            stream.Position = 0;
-            // set the image data attributes
-            XFG.TextureInformation desc = XFG.Texture2D.GetTextureInformation(stream);
-            SetSrcAttributes(desc.Width, desc.Height, 1, ConvertFormat(desc.Format));
-            SetFinalAttributes(desc.Width, desc.Height, 1, ConvertFormat(desc.Format));
 
-            //ok this works quite well now and generates the mipmap but still problems
-            //with some image formats when bliting to texture
-            /*Image img = Image.FromStream( stream, name.Substring( name.Length - 3, 3 ) );
-            LoadImage( img );
+            //reset stream position to read Texture information
             stream.Position = 0;
-            //SetSrcAttributes(img.Width, img.Height, 1, ConvertFormat(img.Format));
-            SetFinalAttributes( img.Width, img.Height, 1, img.Format );
-            isLoaded = true;*/
+
+            // set the image data attributes
+            XFG.TextureInformation info = XFG.Texture2D.GetTextureInformation(stream);
+            SetSrcAttributes( info.Width, info.Height, 1, XnaHelper.Convert( info.Format ) );
+            SetFinalAttributes( info.Width, info.Height, 1, XnaHelper.Convert( info.Format ) );
+
+            internalResourcesCreated = true;
+
+            stream.Close();
 #endif
         }
 
@@ -396,10 +525,8 @@ namespace Axiom.RenderSystems.Xna
             AxiomContentManager acm = new AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "");
             cubeTexture = acm.Load<XFG.TextureCube>( name );
             texture = cubeTexture;
-			isLoaded = true;
+            internalResourcesCreated = true;
 #else
-            //just to test if mipmaps are working from a dds files
-            //yeap it works! no need for texCUBElod
             if (Name.EndsWith(".dds"))
             {
                 Stream stream = ResourceGroupManager.Instance.OpenResource( Name );
@@ -408,19 +535,16 @@ namespace Axiom.RenderSystems.Xna
             }
             else
             {
+                this.ConstructCubeFaceNames( this.Name );
                 Image image = Image.FromFile(cubeFaceNames[0]);
                 SetSrcAttributes(image.Width, image.Height, 1, image.Format);
-                //loading manually from Image by blitting
-                //BlitImagesToCubeTex();
-                //create the memory for the cube texture
                 CreateCubeTexture();
                 for (int face = 0; face < 6; face++)
                 {
                     Stream stream = ResourceGroupManager.Instance.OpenResource(cubeFaceNames[face]);
                     Image img = Image.FromStream(stream, cubeFaceNames[face].Substring(cubeFaceNames[face].Length - 3, 3));
                     XFG.Color[] cols = new XFG.Color[img.Width * img.Height];
-                    int i, j = 0;
-                    j = i = 0;
+                    int i = 0, j = 0;
                     foreach (XFG.Color col in cols)
                     {
                         cols[j] = new XFG.Color(img.Data[i], img.Data[i + 1], img.Data[i + 2]);
@@ -428,11 +552,12 @@ namespace Axiom.RenderSystems.Xna
                         j++;
                     }
                     _cubeTexture.SetData<XFG.Color>((XFG.CubeMapFace)face, cols);
+                    stream.Close();
                 }
                 //cubeTexture.GenerateMipMaps(GetBestFilterMethod());
             }
             _texture = _cubeTexture;
-
+            internalResourcesCreated = true;
 #endif
         }
 
@@ -446,7 +571,7 @@ namespace Axiom.RenderSystems.Xna
             AxiomContentManager acm = new AxiomContentManager( (XnaRenderSystem)Root.Instance.RenderSystem, "");
             volumeTexture = acm.Load<XFG.Texture3D>( name );
             texture = volumeTexture;
-			isLoaded = true;
+            internalResourcesCreated = true;
 #else
             Stream stream = ResourceGroupManager.Instance.OpenResource( Name );
             XFG.TextureCreationParameters tcp = new XFG.TextureCreationParameters();
@@ -464,6 +589,8 @@ namespace Axiom.RenderSystems.Xna
             XFG.TextureInformation desc = XFG.Texture3D.GetTextureInformation( stream );
             SetSrcAttributes( desc.Width, desc.Height, desc.Depth, ConvertFormat( desc.Format ) );
             SetFinalAttributes( desc.Width, desc.Height, desc.Depth, ConvertFormat( desc.Format ) );
+            stream.Close();
+            internalResourcesCreated = true;
 #endif
         }
 
@@ -596,13 +723,13 @@ namespace Axiom.RenderSystems.Xna
             j = i = 0;
             foreach ( XFG.Color col in cols )
             {
-                cols[j] = new XFG.Color(image.Data[i], image.Data[i + 1], image.Data[i + 2]);
+                cols[ j ] = new XFG.Color( image.Data[ i ], image.Data[ i + 1 ], image.Data[ i + 2 ] );
                 i += 3;
                 j++;
             }
-            _normTexture.SetData<XFG.Color>(cols);
+            _normTexture.SetData<XFG.Color>( cols );
             _texture = _normTexture;
-            _texture.GenerateMipMaps(GetBestFilterMethod() );
+            _texture.GenerateMipMaps( GetBestFilterMethod() );
         }
 
         private XFG.TextureFilter GetBestFilterMethod()
@@ -738,74 +865,6 @@ namespace Axiom.RenderSystems.Xna
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        public PixelFormat ConvertFormat( XFG.SurfaceFormat format )
-        {
-            switch ( format )
-            {
-                case XFG.SurfaceFormat.Alpha8:
-                    return PixelFormat.A8;
-                case XFG.SurfaceFormat.LuminanceAlpha8:
-                    return PixelFormat.A4L4;
-                case XFG.SurfaceFormat.Bgra4444:
-                    return PixelFormat.A4R4G4B4;
-                case XFG.SurfaceFormat.Color:
-                    return PixelFormat.A8R8G8B8;
-                case XFG.SurfaceFormat.Bgra1010102:
-                    return PixelFormat.A2R10G10B10;
-                case XFG.SurfaceFormat.Luminance8:
-                    return PixelFormat.L8;
-                case XFG.SurfaceFormat.Bgr555:
-                case XFG.SurfaceFormat.Bgr565:
-                    return PixelFormat.R5G6B5;
-                case XFG.SurfaceFormat.Bgr32:
-                case XFG.SurfaceFormat.Bgr24:
-                    return PixelFormat.R8G8B8;
-            }
-
-            return PixelFormat.Unknown;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        public XFG.SurfaceFormat ConvertFormat( PixelFormat format )
-        {
-            switch ( format )
-            {
-                case PixelFormat.L8:
-                    return XFG.SurfaceFormat.Luminance8;
-                case PixelFormat.A8:
-                    return XFG.SurfaceFormat.Alpha8;
-                case PixelFormat.B5G6R5:
-                case PixelFormat.R5G6B5:
-                    return XFG.SurfaceFormat.Bgr565;
-                case PixelFormat.B4G4R4A4:
-                case PixelFormat.A4R4G4B4:
-                    return XFG.SurfaceFormat.Bgra4444;
-                case PixelFormat.B8G8R8:
-                case PixelFormat.R8G8B8:
-                    return XFG.SurfaceFormat.Bgr24;
-                case PixelFormat.B8G8R8A8:
-                case PixelFormat.A8R8G8B8:
-                    return XFG.SurfaceFormat.Color;
-                //case PixelFormat.L4A4:
-                case PixelFormat.A4L4:
-                    return XFG.SurfaceFormat.LuminanceAlpha8;
-                //case PixelFormat.B10G10R10A2:
-                case PixelFormat.A2R10G10B10:
-                    return XFG.SurfaceFormat.Bgra1010102;
-            }
-
-            return XFG.SurfaceFormat.Unknown;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="width"></param>
         /// <param name="height"></param>
         /// <param name="depth"></param>
@@ -886,6 +945,8 @@ namespace Axiom.RenderSystems.Xna
             }
 
             Size = width * height * depth * bytesPerPixel * ( ( TextureType == TextureType.CubeMap ) ? 6 : 1 );
+
+            this.CreateSurfaceList();
         }
 
         public override void Unload()
