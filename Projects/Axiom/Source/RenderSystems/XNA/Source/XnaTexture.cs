@@ -38,6 +38,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
+using Axiom.Math;
+
+using Microsoft.Xna.Framework.Graphics;
+
 using ResourceHandle = System.UInt64;
 
 using Axiom.Core;
@@ -333,9 +337,13 @@ namespace Axiom.RenderSystems.Xna
                     // For all mipmaps, store surfaces as HardwarePixelBuffer
                     for ( int mip = 0; mip <= MipmapCount; ++mip )
                     {
-                        int size = PixelUtil.GetMemorySize(this._normTexture.Width,this._normTexture.Height, 1,XnaHelper.Convert(this._normTexture.Format));
+                        int size = PixelUtil.GetMemorySize( this._normTexture.Width / (int)Utility.Pow( 2, mip ), this._normTexture.Height / (int)Utility.Pow( 2, mip ), 1, XnaHelper.Convert( this._normTexture.Format ) );
                         byte[] data = new byte[size];
                         this._normTexture.GetData( mip, null,data,0, size );
+
+                        texture = new Texture2D( this._device, this._normTexture.Width / (int)Utility.Pow( 2, mip ), this._normTexture.Height / (int)Utility.Pow( 2, mip ), 1, this._normTexture.TextureUsage, this._normTexture.Format );
+                        texture.SetData( data );
+
                         this.GetSurfaceAtLevel( 0, mip ).Bind( this._device, texture, updateOldList );
                         this._managedObjects.Add( texture );
                     }
