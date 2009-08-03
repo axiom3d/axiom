@@ -65,10 +65,6 @@ namespace Axiom.ParticleFX
             emitterFactory = new PointEmitterFactory();
             ParticleSystemManager.Instance.AddEmitterFactory( emitterFactory );
 
-			//// draw emitter
-			//emitterFactory = new DrawEmitterFactory();
-			//ParticleSystemManager.Instance.AddEmitterFactory( emitterFactory );
-
             // cylinder emitter
             emitterFactory = new CylinderEmitterFactory();
             ParticleSystemManager.Instance.AddEmitterFactory( emitterFactory );
@@ -113,7 +109,13 @@ namespace Axiom.ParticleFX
             affectorFactory = new RotationAffectorFactory();
             ParticleSystemManager.Instance.AddAffectorFactory( affectorFactory );
 
-			// TODO: Ogre has direction and deflector affectors
+            // deflector plane affector
+            affectorFactory = new DeflectorPlaneAffectorFactory();
+            ParticleSystemManager.Instance.AddAffectorFactory( affectorFactory );
+
+            //direction randomizer affector
+            affectorFactory = new DirectionRandomizerAffectorFactory();
+            ParticleSystemManager.Instance.AddAffectorFactory( affectorFactory );
         }
 
         public void Stop()
