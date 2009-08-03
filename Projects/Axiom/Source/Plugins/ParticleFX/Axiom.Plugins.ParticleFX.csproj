@@ -80,6 +80,10 @@
     <Compile Include="AreaEmitter.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DeflectorPlaneAffector.cs" />
+    <Compile Include="DirectionRandomizerAffector.cs" />
+    <Compile Include="Factories\DeflectorPlaneFactory.cs" />
+    <Compile Include="Factories\DirectionRandomizerFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
