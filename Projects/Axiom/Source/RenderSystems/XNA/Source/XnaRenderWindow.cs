@@ -42,8 +42,6 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 
-using Microsoft.Xna.Framework.Graphics;
-
 using RenderTarget=Axiom.Graphics.RenderTarget;
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
@@ -193,7 +191,7 @@ namespace Axiom.RenderSystems.Xna
         /// </summary>
         /// <param name="driver">The root driver</param>
         /// <param name="deviceIfSwapChain"></param>
-		public XnaRenderWindow( Driver driver, GraphicsDevice deviceIfSwapChain )
+		public XnaRenderWindow( Driver driver,XFG.GraphicsDevice deviceIfSwapChain )
 			: this( driver )
         {
             _isSwapChain = ( deviceIfSwapChain != null );
@@ -773,42 +771,7 @@ namespace Axiom.RenderSystems.Xna
 		/// <param name="waitForVSync"></param>
 		public override void SwapBuffers( bool waitForVSync )
 		{
-            IntPtr handle = new IntPtr(0);
-#if !(XBOX || XBOX360 || SILVERLIGHT)
-            //SWF.Control control = (SWF.Control)targetHandle;
-            //while ( !( control is SWF.Form ) )
-            //{
-            //    control = control.Parent;
-            //}
-            //handle = control.Handle;
-            handle = (IntPtr)targetHandle;
-#else
-            //handle = (IntPtr)targetHandle;
-#endif
             _driver.XnaDevice.Present();
-            //_device.Present(null, new XNA.Rectangle(0, 0, width, height), handle);
-			//
-            /*try
-            {
-                if ( this.isFullScreen )
-                {
-                    _device.Present();
-                }
-                else
-                {
-                    _device.Present(null, new XNA.Rectangle(0, 0, width,height), handle);
-                }
-                // CMH - End
-            }
-            catch ( XFG.DeviceLostException dlx )
-            {
-                Console.WriteLine( dlx.ToString() );
-            }
-            catch ( XFG.DeviceNotResetException dnrx )
-            {
-                Console.WriteLine( dnrx.ToString() );
-                _device.Reset( _device.PresentationParameters );
-            }*/
         }
 
         public override void CopyContentsToMemory( PixelBox dst, FrameBuffer buffer )
@@ -822,7 +785,7 @@ namespace Axiom.RenderSystems.Xna
             }
 
             XFG.GraphicsDevice device = Driver.XnaDevice;
-            XFG.ResolveTexture2D surface, tmpSurface = null;
+            XFG.ResolveTexture2D surface;
             byte[] data = new byte[ dst.ConsecutiveSize ];
             int pitch = 0;
 
@@ -833,7 +796,7 @@ namespace Axiom.RenderSystems.Xna
 
 
             XFG.DisplayMode mode = device.DisplayMode;
-            surface = new ResolveTexture2D( device, mode.Width, mode.Height, 0, XFG.SurfaceFormat.Rgba32 );
+            surface = new XFG.ResolveTexture2D( device, mode.Width, mode.Height, 0, XFG.SurfaceFormat.Rgba32 );
 
             if ( buffer == RenderTarget.FrameBuffer.Front )
             {
@@ -866,11 +829,10 @@ namespace Axiom.RenderSystems.Xna
                     srcRect.Top = dst.Top;
                     srcRect.Bottom = dst.Bottom;
                     // Adjust Rectangle for Window Menu and Chrome
-                    SWF.Control control = (SWF.Control)_window;
                     System.Drawing.Point point = new System.Drawing.Point();
                     point.X = (int)srcRect.Left;
                     point.Y = (int)srcRect.Top;
-                    point = control.PointToScreen( point );
+                    point = _window.PointToScreen( point );
                     srcRect.Top = point.Y;
                     srcRect.Left = point.X;
                     srcRect.Bottom += point.Y;
@@ -904,8 +866,6 @@ namespace Axiom.RenderSystems.Xna
 
             if ( format == PixelFormat.Unknown )
             {
-                if ( tmpSurface != null )
-                    tmpSurface.Dispose();
                 throw new Exception( "Unsupported format" );
             }
 
@@ -918,8 +878,6 @@ namespace Axiom.RenderSystems.Xna
 
             Memory.UnpinObject( data );
             surface.Dispose();
-            if ( tmpSurface != null )
-                tmpSurface.Dispose();
         }
 	
 		private void OnResetDevice( object sender, EventArgs e )
@@ -933,9 +891,61 @@ namespace Axiom.RenderSystems.Xna
 			//resetDevice.RenderState.Lighting = true;    //make sure lighting is enabled
 		}
 
-		#endregion
+		public override void Update( bool swapBuffers )
+		{
+            XnaRenderSystem rs = (XnaRenderSystem)Root.Instance.RenderSystem;
+
+			// access device through driver
+			XFG.GraphicsDevice device = _driver.XnaDevice;
+
+            switch ( device.GraphicsDeviceStatus )
+            {
+                case XFG.GraphicsDeviceStatus.Lost:
+                    System.Threading.Thread.Sleep( 50 );
+                    return;
+                    
+                case XFG.GraphicsDeviceStatus.NotReset:
+                    break;
+            }
+
+            base.Update( swapBuffers );
+		}
+
+	    #endregion
 
         #region IGraphicsDeviceService Members
+
+        private void _fireDeviceCreated()
+        {
+            if ( DeviceCreated != null )
+            {
+                DeviceCreated( this, new EventArgs() );
+            }
+        }
+
+        private void _fireDeviceDisposing()
+        {
+            if ( DeviceDisposing != null )
+            {
+                DeviceDisposing( this, new EventArgs() );
+            }
+        }
+
+        private void _fireDeviceReset()
+        {
+            if ( DeviceReset != null )
+            {
+                DeviceReset( this, new EventArgs() );
+            }
+        }
+
+        private void _fireDeviceResetting()
+        {
+            if ( DeviceResetting != null )
+            {
+                DeviceResetting( this, new EventArgs() );
+            }
+        }
 
         public event EventHandler DeviceCreated;
 

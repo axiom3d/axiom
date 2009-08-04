@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 #if !(XBOX || XBOX360 || SILVERLIGHT )
 using System.Windows.Forms;
@@ -1047,11 +1048,8 @@ namespace Axiom.RenderSystems.Xna
 
         public override void BeginFrame()
         {
-            // clear the device if need be
-            if ( activeViewport.ClearEveryFrame )
-            {
-                ClearFrameBuffer( FrameBufferType.Color | FrameBufferType.Depth, activeViewport.BackgroundColor );
-            }
+            Debug.Assert( activeViewport != null, "BeingFrame cannot run without an active viewport." );
+
             // set initial render states if this is the first frame. we only want to do 
             //	this once since renderstate changes are expensive
             if ( _isFirstFrame )
@@ -1471,14 +1469,6 @@ namespace Axiom.RenderSystems.Xna
                 fullScreen = ( ConfigOptions[ "Full Screen" ].Value == "Yes" );
 #endif
 
-                IntPtr target = IntPtr.Zero;
-
-                // create a default form window
-#if !(XBOX || XBOX360 || SILVERLIGHT )
-                DefaultForm newWindow = _createDefaultForm( windowTitle, 0, 0, width, height, fullScreen );
-                target = newWindow.Handle;
-#endif
-
                 NamedParameterList miscParams = new NamedParameterList();
                 miscParams.Add( "title", windowTitle );
                 miscParams.Add( "colorDepth", bpp );
@@ -1489,19 +1479,9 @@ namespace Axiom.RenderSystems.Xna
 
                 // create the render window
                 renderWindow = CreateRenderWindow( "Main Window", width, height, fullScreen, miscParams );
-
-                // use W buffer when in 16 bit color mode
-                //useWBuffer = (renderWindow.ColorDepth == 16);
-#if !(XBOX || XBOX360 || SILVERLIGHT )
-                //newWindow.Target.Visible = false;
-
-                //newWindow.Show();
-
-                // set the default form's renderwindow so it can access it internally
-                newWindow.RenderWindow = renderWindow;
-#endif
             }
 
+            LogManager.Instance.Write( "[XNA] : Subsystem Initialized successfully." );
             return renderWindow;
         }
 
