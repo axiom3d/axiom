@@ -51,7 +51,6 @@ namespace Axiom.RenderSystems.Xna
 
     public class DefaultForm : System.Windows.Forms.Form
     {
-        private SWF.PictureBox pictureBox1;
         private RenderWindow renderWindow;
 
         public DefaultForm()
@@ -91,25 +90,13 @@ namespace Axiom.RenderSystems.Xna
 
         private void InitializeComponent()
         {
-            this.pictureBox1 = new SWF.PictureBox();
             this.SuspendLayout();
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Anchor = ( (SWF.AnchorStyles)( ( ( ( SWF.AnchorStyles.Top | SWF.AnchorStyles.Bottom ) | SWF.AnchorStyles.Left ) | SWF.AnchorStyles.Right ) ) );
-            this.pictureBox1.BackColor = System.Drawing.Color.Black;
-            this.pictureBox1.Location = new System.Drawing.Point( 0, 0 );
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size( 292, 266 );
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
             // 
             // DefaultForm
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size( 5, 13 );
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size( 292, 266 );
-            this.Controls.Add( this.pictureBox1 );
             this.Name = "DefaultForm";
             this.Load += new System.EventHandler( this.DefaultForm_Load );
             this.ResumeLayout( false );
@@ -150,17 +137,6 @@ namespace Axiom.RenderSystems.Xna
             set
             {
                 renderWindow = value;
-            }
-        }
-
-        /// <summary>
-        ///		
-        /// </summary>
-        public SWF.PictureBox Target
-        {
-            get
-            {
-                return pictureBox1;
             }
         }
     }
