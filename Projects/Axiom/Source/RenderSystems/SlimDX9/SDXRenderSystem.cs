@@ -296,18 +296,10 @@ namespace Axiom.RenderSystems.SlimDX9
                 flags |= D3D.ClearFlags.Stencil;
             }
 
-            try
+            DX.Result result = device.Clear( flags , SDXHelper.ToColor(color).ToArgb(), depth, stencil );
+            if ( result.IsFailure )
             {
-                device.Clear( D3D.ClearFlags.Target , color.ToARGB(), depth, stencil );
-            }
-            catch ( DX.SlimDXException ex )
-            {
-                if ( LogManager.Instance != null )
-                {
-                    LogManager.Instance.Write( " flags:" + flags + " Color: " + color.ToARGB() + " depth:" + depth + " stencil:" + stencil );
-                    LogManager.Instance.Write( " Result Desc:" + ex.ResultCode.Description );
-                    LogManager.Instance.Write( LogManager.BuildExceptionString( ex ) );
-                }
+                LogManager.Instance.Write( "[SDX] : Failed clearing flags:" + flags + " Color: " + color.ToARGB() + " depth:" + depth + " stencil:" + stencil );
             }
         }
 
@@ -423,7 +415,7 @@ namespace Axiom.RenderSystems.SlimDX9
 
             base.Shutdown();
 
-            LogManager.Instance.Write( "SlimDX : " + Name + " shutdown." );
+            LogManager.Instance.Write( "[SlimDX] : " + Name + " shutdown." );
         }
 
         /// <summary>
@@ -532,7 +524,7 @@ namespace Axiom.RenderSystems.SlimDX9
 
         public override RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
         {
-            LogManager.Instance.Write( "SlimDX : Subsystem Initializing" );
+            LogManager.Instance.Write( "[SlimDX] : Subsystem Initializing" );
 
             WindowEventMonitor.Instance.MessagePump = Win32MessageHandling.MessagePump;
 
@@ -798,7 +790,7 @@ namespace Axiom.RenderSystems.SlimDX9
                 {
                     try
                     {
-                        device.SetRenderTarget( 0, back[ i ] );
+                        DX.Result result = device.SetRenderTarget( i, back[ i ] );
                     }
                     catch ( D3D.Direct3D9Exception ex )
                     {

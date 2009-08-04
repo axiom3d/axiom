@@ -57,7 +57,7 @@ namespace Axiom.RenderSystems.SlimDX9
         #region Fields
 
         private SWF.Control _window;			// Win32 Window handle
-		private bool _isExternal;			// window not created by Ogre
+		private bool _isExternal;			// window not created by Axiom
 		private bool _sizing;
 		private bool _isSwapChain;			// Is this a secondary window?
 		
@@ -595,10 +595,10 @@ namespace Axiom.RenderSystems.SlimDX9
                         // If it is present, override default settings
                         foreach ( D3D.AdapterInformation adapter in manager.Adapters )
                         {
-                            LogManager.Instance.Write( "D3D : NVIDIA PerfHUD requested, checking adapter {0}:{1}", adapter.Adapter, adapter.Details.Description );
+                            LogManager.Instance.Write( "[SDX] : NVIDIA PerfHUD requested, checking adapter {0}:{1}", adapter.Adapter, adapter.Details.Description );
                             if ( adapter.Details.Description.ToLower().Contains( "perfhud" ) )
                             {
-                                LogManager.Instance.Write( "D3D : NVIDIA PerfHUD requested, using adapter {0}:{1}", adapter.Adapter, adapter.Details.Description );
+                                LogManager.Instance.Write( "[SDX] : NVIDIA PerfHUD requested, using adapter {0}:{1}", adapter.Adapter, adapter.Details.Description );
                                 adapterToUse = adapter.Adapter;
                                 devType = D3D.DeviceType.Reference;
                                 break;
@@ -642,7 +642,6 @@ namespace Axiom.RenderSystems.SlimDX9
                             }
                         }
                     }
-
                     //device.DeviceResizing += new System.ComponentModel.CancelEventHandler( OnDeviceResizing );
                 }
                 // update device in driver
@@ -650,8 +649,6 @@ namespace Axiom.RenderSystems.SlimDX9
                 // Store references to buffers for convenience
                 _renderSurface = device.GetRenderTarget( 0 );
                 _renderZBuffer = device.DepthStencilSurface;
-                // release immediately so we don't hog them
-                //_renderZBuffer.ReleaseDC( _renderZBuffer.GetDC() );
 
                 //device.DeviceReset += new EventHandler( OnResetDevice );
 
@@ -791,57 +788,27 @@ namespace Axiom.RenderSystems.SlimDX9
         /// <param name="waitForVSync"></param>
         public override void SwapBuffers( bool waitForVSync )
         {
-        	D3D.Device device = _driver.D3DDevice;
-            try
+            DX.Result result;
+            D3D.Device device = _driver.D3DDevice;
+            if ( device != null )
             {
-            	
-	        	if ( device != null )
-				{
-	        		// tests coop level to make sure we are ok to render
-					DX.Result result = device.TestCooperativeLevel();
-					if(result.IsSuccess)
-					{
-						if ( _isSwapChain )
-						{
-							_swapChain.Present(D3D.Present.None);
-						}
-						else
-						{
-							device.Present();
-						}
-					}
-	        	}
-            }
-            catch ( SlimDX.SlimDXException dlx ) //catch ( D3D.DeviceLostException dlx )
-            {
-                if (dlx.ResultCode == D3D.ResultCode.DeviceLost)
-                {
-                	_renderSurface.ReleaseDC(_renderSurface.GetDC());
-                	( (SDXRenderSystem)( Root.Instance.RenderSystem ) ).notifyDeviceLost();
-                    Console.WriteLine(dlx.ToString());
-                }
 
-                else if (dlx.ResultCode == D3D.ResultCode.DeviceNotReset)
+                result = this._isSwapChain ? this._swapChain.Present( D3D.Present.None ) : device.Present();
+                if ( result.Code == D3D.ResultCode.DeviceLost.Code )
                 {
-                    Console.WriteLine(dlx.ToString());
-                    device.Reset( _swapChain.PresentParameters );
+                    _renderSurface.ReleaseDC( _renderSurface.GetDC() );
+                    ( (SDXRenderSystem)( Root.Instance.RenderSystem ) ).notifyDeviceLost();
                 }
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public override bool IsFullScreen
-        {
-            get
-            {
-                return base.IsFullScreen;
+                else if ( result.IsFailure )
+                {
+                    throw new AxiomException( "[SDX] : Error presenting surfaces." );
+                }
             }
         }
 
         public override void CopyContentsToMemory( PixelBox dst, FrameBuffer buffer )
         {
+
         	if ( ( dst.Left < 0 ) || ( dst.Right > Width ) ||
 				( dst.Top < 0 ) || ( dst.Bottom > Height ) ||
 				( dst.Front != 0 ) || ( dst.Back != 1 ) )
@@ -1002,55 +969,49 @@ namespace Axiom.RenderSystems.SlimDX9
 
             if ( rs.IsDeviceLost )
             {
-                try
+                DX.Result result = device.TestCooperativeLevel();
+                if ( result.Code == D3D.ResultCode.DeviceLost.Code )
                 {
-                    device.TestCooperativeLevel();
+                    // device lost, and we can't reset
+                    // can't do anything about it here, wait until we get 
+                    // D3DERR_DEVICENOTRESET; rendering calls will silently fail until 
+                    // then (except Present, but we ignore device lost there too)
+                    _renderSurface.ReleaseDC( _renderSurface.GetDC() );
+                    // need to release if swap chain
+                    if ( !_isSwapChain )
+                        _renderZBuffer = null;
+                    else
+                        _renderZBuffer.ReleaseDC( _renderZBuffer.GetDC() );
+                    System.Threading.Thread.Sleep( 50 );
+                    return;
                 }
-                catch ( SlimDX.SlimDXException dlx )
+                else
                 {
-                    if ( dlx.ResultCode == D3D.ResultCode.DeviceLost )
+                    // device lost, and we can reset
+                    rs.RestoreLostDevice();
+
+                    // Still lost?
+                    if ( rs.IsDeviceLost )
                     {
-                        // device lost, and we can't reset
-                        // can't do anything about it here, wait until we get 
-                        // D3DERR_DEVICENOTRESET; rendering calls will silently fail until 
-                        // then (except Present, but we ignore device lost there too)
-                        _renderSurface.ReleaseDC( _renderSurface.GetDC() );
-                        // need to release if swap chain
-                        if ( !_isSwapChain )
-                            _renderZBuffer = null;
-                        else
-                            _renderZBuffer.ReleaseDC( _renderZBuffer.GetDC() );
+                        // Wait a while
                         System.Threading.Thread.Sleep( 50 );
                         return;
                     }
+
+                    if ( !_isSwapChain )
+                    {
+                        // re-qeuery buffers
+                        _renderSurface = device.GetRenderTarget( 0 );
+                        _renderZBuffer = device.DepthStencilSurface;
+                        // release immediately so we don't hog them
+                        _renderZBuffer.ReleaseDC( _renderZBuffer.GetDC() );
+                    }
                     else
                     {
-                        // device lost, and we can reset
-                        rs.RestoreLostDevice();
-
-                        // Still lost?
-                        if ( rs.IsDeviceLost )
+                        // Update dimensions incase changed
+                        foreach ( Viewport entry in this.viewportList )
                         {
-                            // Wait a while
-                            System.Threading.Thread.Sleep( 50 );
-                            return;
-                        }
-
-                        if ( !_isSwapChain )
-                        {
-                            // re-qeuery buffers
-                            _renderSurface = device.GetRenderTarget( 0 );
-                            _renderZBuffer = device.DepthStencilSurface;
-                            // release immediately so we don't hog them
-                            _renderZBuffer.ReleaseDC( _renderZBuffer.GetDC() );
-                        }
-                        else
-                        {
-                            // Update dimensions incase changed
-                            foreach ( Viewport entry in this.viewportList )
-                            {
-                                entry.UpdateDimensions();
-                            }
+                            entry.UpdateDimensions();
                         }
                     }
                 }

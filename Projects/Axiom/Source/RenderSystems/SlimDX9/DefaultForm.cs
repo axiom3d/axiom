@@ -47,7 +47,6 @@ namespace Axiom.RenderSystems.SlimDX9
 
     public class DefaultForm : System.Windows.Forms.Form
     {
-        private System.Windows.Forms.PictureBox pictureBox1;
         private RenderWindow renderWindow;
 
         public DefaultForm()
@@ -61,11 +60,11 @@ namespace Axiom.RenderSystems.SlimDX9
         }
 
 
-        protected override void WndProc(ref Message m)
-        {
-            if (!Win32MessageHandling.WndProc(renderWindow, ref m))
-                base.WndProc(ref m);
-        }
+        //protected override void WndProc(ref Message m)
+        //{
+        //    if (!Win32MessageHandling.WndProc(renderWindow, ref m))
+        //        base.WndProc(ref m);
+        //}
 
         /// <summary>
         /// 
@@ -147,8 +146,14 @@ namespace Axiom.RenderSystems.SlimDX9
         /// </summary>
         public RenderWindow RenderWindow
         {
-            get{return renderWindow;}
-            set{renderWindow = value;}
+            get
+            {
+                return renderWindow;
+            }
+            set
+            {
+                renderWindow = value;
+            }
         }
     }
 }
