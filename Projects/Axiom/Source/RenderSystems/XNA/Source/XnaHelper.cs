@@ -882,13 +882,13 @@ namespace Axiom.RenderSystems.Xna
                     return Axiom.Media.PixelFormat.A4R4G4B4;
                 case SurfaceFormat.Bgr565:
                     return Axiom.Media.PixelFormat.R5G6B5;
-                case SurfaceFormat.Rgba32:
-                    return Axiom.Media.PixelFormat.A8R8G8B8;
+                case XFG.SurfaceFormat.Bgr32:
+                    return Axiom.Media.PixelFormat.X8B8G8R8;
                 case SurfaceFormat.Bgra1010102:
                     return Axiom.Media.PixelFormat.A2R10G10B10;
+                case SurfaceFormat.Rgba32:
                 case SurfaceFormat.Color:
                     return Axiom.Media.PixelFormat.A8R8G8B8;
-                case XFG.SurfaceFormat.Bgr32:
                 case XFG.SurfaceFormat.Bgr24:
                     return Axiom.Media.PixelFormat.R8G8B8;
                 case SurfaceFormat.Dxt1:
