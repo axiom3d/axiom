@@ -667,6 +667,9 @@ namespace Axiom.RenderSystems.Xna
                     case "XNADEVICE":
                         return Driver.XnaDevice;
 
+                    case "WINDOW":
+                        return this._window.Handle;
+
                     case "XNAZBUFFER":
                         return this._stencilBuffer;
 
