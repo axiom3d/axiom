@@ -102,11 +102,10 @@ namespace Axiom.RenderSystems.Xna.HLSL
         protected override void CreateLowLevelImpl()
         {
             // create a new program, without source since we are setting the microcode manually
-            assemblerProgram =
-                GpuProgramManager.Instance.CreateProgramFromString( entry, Group, "", type, target );
+            assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( Name, Group, "", type, target );
 
             // set the microcode for this program
-#if !(XBOX || XBOX360 || SILVERLIGHT)
+#if !(XBOX || XBOX360)
             ( (XnaGpuProgram)assemblerProgram ).ShaderCode = microcode.GetShaderCode();
 #else
 			((XnaGpuProgram)assemblerProgram).ShaderCode = compiledShader.ShaderCode;
@@ -127,7 +126,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
         /// </summary>
         protected override void LoadFromSource()
         {
-#if !(XBOX || XBOX360 || SILVERLIGHT)
+#if !(XBOX || XBOX360)
             string errors = null;
 
             switch ( type )
@@ -151,7 +150,7 @@ namespace Axiom.RenderSystems.Xna.HLSL
                 errors = microcode.ErrorsAndWarnings;
 
             // check for errors
-            if ( errors != null && errors.Length > 0 )
+            if ( !string.IsNullOrEmpty( errors ) )
             {
                 throw new AxiomException( "HLSL: Unable to compile high level shader {0}:\n{1}", entry, errors );
             }

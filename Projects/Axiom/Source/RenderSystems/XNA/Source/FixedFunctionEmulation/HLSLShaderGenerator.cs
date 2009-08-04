@@ -67,7 +67,7 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
 		#endregion Construction and Destruction
 
-		#region ShaderGenerator Implentation
+		#region ShaderGenerator Implementation
 
 		public override string GetShaderSource( string vertexProgramName, string fragmentProgramName, VertexBufferDeclaration vertexBufferDeclaration, FixedFunctionState fixedFunctionState )
         {

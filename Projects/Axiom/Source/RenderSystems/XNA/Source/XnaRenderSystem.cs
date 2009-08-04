@@ -1493,9 +1493,9 @@ namespace Axiom.RenderSystems.Xna
                 // use W buffer when in 16 bit color mode
                 //useWBuffer = (renderWindow.ColorDepth == 16);
 #if !(XBOX || XBOX360 || SILVERLIGHT )
-                newWindow.Target.Visible = false;
+                //newWindow.Target.Visible = false;
 
-                newWindow.Show();
+                //newWindow.Show();
 
                 // set the default form's renderwindow so it can access it internally
                 newWindow.RenderWindow = renderWindow;
@@ -2017,7 +2017,7 @@ namespace Axiom.RenderSystems.Xna
 
         public override void SetTextureBorderColor( int stage, ColorEx borderColor )
         {
-            throw new NotImplementedException();
+            //texStageDesc[ stage ].borderColor = borderColor;
         }
 
         public override void SetTextureBlendMode( int stage, LayerBlendModeEx blendMode )
