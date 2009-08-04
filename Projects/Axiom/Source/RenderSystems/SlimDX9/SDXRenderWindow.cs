@@ -670,15 +670,30 @@ namespace Axiom.RenderSystems.SlimDX9
 						case "ISTEXTURE":
 							return false;
 						case "D3DZBUFFER":
+                            if ( _renderZBuffer.Disposed )
+                            {
+                                _renderZBuffer = _driver.D3DDevice.DepthStencilSurface;
+                                LogManager.Instance.Write( "[SDX] : ZBuffer was disposed, reinitializing." );
+                            }
 							return _renderZBuffer;
 							
 						case "D3DBACKBUFFER":
 	                        D3D.Surface[] surface = new D3D.Surface[ 1 ];
-	                        surface[ 0 ] = _renderSurface;
+                            if ( _renderSurface.Disposed )
+                            {
+                                LogManager.Instance.Write( "[SDX] : BackBuffer was disposed, reinitializing." );
+                                _renderSurface = _driver.D3DDevice.GetRenderTarget( 0 );
+                            }
+				            surface[ 0 ] = _renderSurface;
 							return surface;
 
 						case "D3DFRONTBUFFER":
-							return _renderSurface;
+                            if ( _renderSurface.Disposed )
+                            {
+                                LogManager.Instance.Write( "[SDX] : BackBuffer was disposed, reinitializing." );
+                                _renderSurface = _driver.D3DDevice.GetRenderTarget( 0 );
+                            }
+                            return _renderSurface;
 	
 				}
 				
