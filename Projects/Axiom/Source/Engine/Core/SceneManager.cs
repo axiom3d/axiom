@@ -75,7 +75,7 @@ namespace Axiom.Core
     /// </summary>
     /// <remarks>
     ///		This class defines the interface and the basic behaviour of a 
-    ///		'Scene Manager'. A SceneManager organises the culling and rendering of
+    ///		'Scene Manager'. A SceneManager organizes the culling and rendering of
     ///		the scene, in conjunction with the <see cref="RenderQueue"/>. This class is designed 
     ///		to be extended through subclassing in order to provide more specialized
     ///		scene organization structures for particular needs. The default 
@@ -101,7 +101,7 @@ namespace Axiom.Core
     ///	 </remarks>
     /// TODO: Thoroughly review node removal/cleanup.
     /// TODO: Review of method visibility/virtuality to ensure consistency.
-    public abstract class SceneManager : INamable //thild
+    public abstract class SceneManager : INamable 
     {
         #region Fields
 
@@ -5303,12 +5303,6 @@ namespace Axiom.Core
             // grab the current scene detail level
             PolygonMode camPolyMode = this.cameraInProgress.PolygonMode;
 
-            // 			// update auto params if this is a programmable pass
-            // 			if(pass.IsProgrammable) {
-            // 				autoParamDataSource.Renderable = renderable;
-            // 				pass.UpdateAutoParamsNoLights(autoParamDataSource);
-            // 			}
-
             // get the world matrices and the count
             renderable.GetWorldTransforms( this.xform );
             numMatrices = renderable.NumWorldTransforms;
@@ -5538,7 +5532,6 @@ namespace Axiom.Core
                                                    LightList manualLightList )
         {
             // ----- SOLIDS LOOP -----
-            // 			renderSolidObjectsMeter.Enter();
             for ( int i = 0; i < list.Count; i++ )
             {
                 RenderableList renderables = (RenderableList)list.GetByIndex( i );
@@ -5583,7 +5576,6 @@ namespace Axiom.Core
                     this.callRenderSingleMeter.Exit();
                 }
             }
-            // 			renderSolidObjectsMeter.Exit();
         }
 
         protected void RenderSolidObjects( SortedList list, bool doLightIteration )
@@ -6001,8 +5993,7 @@ namespace Axiom.Core
                             Camera camera = shadowTex.GetBuffer().GetRenderTarget().GetViewport( 0 ).Camera;
                             // Hook up receiver texture
                             Pass targetPass = this.shadowTextureCustomReceiverPass != null
-                                                  ?
-                                                      this.shadowTextureCustomReceiverPass
+                                                  ? this.shadowTextureCustomReceiverPass
                                                   : this.shadowReceiverPass;
                             targetPass.GetTextureUnitState( 0 ).SetTextureName( shadowTex.Name );
                             // Hook up projection frustum
@@ -6829,7 +6820,6 @@ namespace Axiom.Core
         /// they can report on whilst loading. During real loading (setWorldGeomtry),
         /// they should call <see cref="ResourceGroupManager.notifyWorlGeometryProgress"/> exactly
         /// that number of times when loading the geometry for real.
-        /// @note
         /// </remarks>
         /// <param name="fileName">Name of the file.</param>
         /// <returns>
