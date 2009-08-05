@@ -37,6 +37,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+using Axiom.Collections;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
@@ -44,25 +46,13 @@ namespace Axiom.RenderSystems.DirectX9
     /// <summary>
     /// Summary description for VideoModeCollection.
     /// </summary>
-    public class VideoModeCollection : IEnumerable<VideoMode>
+    public class VideoModeCollection : UnsortedCollection<VideoMode>
     {
-        private List<VideoMode> videoModes;
-
-        public VideoModeCollection()
-        {
-            videoModes = new List<VideoMode>();
-        }
-
-        public void Add( VideoMode mode )
-        {
-            videoModes.Add( mode );
-        }
-
         public VideoMode this[ string description ]
         {
             get
             {
-                foreach ( VideoMode mode in videoModes )
+                foreach ( VideoMode mode in this )
                 {
                     if ( mode.ToString() == description )
                         return mode;
@@ -70,23 +60,5 @@ namespace Axiom.RenderSystems.DirectX9
                 return null;
             }
         }
-
-        #region IEnumerable<VideoMode> Members
-
-        public IEnumerator<VideoMode> GetEnumerator()
-        {
-            return videoModes.GetEnumerator();
-        }
-
-        #endregion
-
-        #region IEnumerable Members
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return videoModes.GetEnumerator();
-        }
-
-        #endregion
     }
 }

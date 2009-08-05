@@ -176,7 +176,7 @@ namespace Axiom.RenderSystems.DirectX9
         /// <returns></returns>
         public override string ToString()
         {
-            return string.Format( "{0} x {1} @ {2}-bit colour", displayMode.Width, displayMode.Height, this.ColorDepth );
+            return string.Format( "{0} x {1} @ {2}-bit color", displayMode.Width, displayMode.Height, this.ColorDepth );
         }
 
         #endregion

@@ -1582,7 +1582,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			ConfigOption optDevice = new ConfigOption( "Rendering Device", "", false );
 
-			ConfigOption optVideoMode = new ConfigOption( "Video Mode", "800 x 600 @ 32-bit colour", false );
+			ConfigOption optVideoMode = new ConfigOption( "Video Mode", "800 x 600 @ 32-bit color", false );
 
 			ConfigOption optFullScreen = new ConfigOption( "Full Screen", "No", false );
 
@@ -1660,7 +1660,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 				if ( optVideoMode.PossibleValues.Values.Contains( curMode ) == false )
 				{
-					optVideoMode.Value = "800 x 600 @ 32-bit colour";
+					optVideoMode.Value = "800 x 600 @ 32-bit color";
 				}
 
 				// Also refresh FSAA options
