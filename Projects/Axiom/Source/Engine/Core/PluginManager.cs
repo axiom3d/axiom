@@ -192,7 +192,7 @@ namespace Axiom.Core
             }
             catch ( Exception ex )
             {
-                LogManager.Instance.Write( ex.ToString() );
+                LogManager.Instance.Write( LogManager.BuildExceptionString( ex ) );
             }
 
             return null;
