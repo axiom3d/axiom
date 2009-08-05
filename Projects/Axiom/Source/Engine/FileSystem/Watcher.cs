@@ -47,7 +47,7 @@ namespace Axiom.FileSystem
     {
         #region Fields and Properties
 
-        private FileSystemWatcher _fsWatcher;
+        private readonly FileSystemWatcher _monitor;
 
         #endregion Fields and Properties
 
@@ -55,25 +55,23 @@ namespace Axiom.FileSystem
 
         public Watcher(string path, bool recurse)
         {
-            // Create a new FileSystemWatcher and set its properties.
-            _fsWatcher = new FileSystemWatcher();
-            _fsWatcher.Path = path;
-            /* Watch for changes in LastAccess and LastWrite times, and
-               the renaming of files or directories. */
-            _fsWatcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
-                                      | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+            // Initialize FileSystemWatcher
+            this._monitor = new FileSystemWatcher();
+            this._monitor.Path = path;
+            // Watch for changes in LastAccess and LastWrite times, and the renaming of files or directories.
+            this._monitor.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
             // Watch all files.
-            _fsWatcher.Filter = "*.*";
-            _fsWatcher.IncludeSubdirectories = recurse;
+            this._monitor.Filter = "*.*";
+            this._monitor.IncludeSubdirectories = recurse;
 
             // Add event handlers.
-            _fsWatcher.Changed += new FileSystemEventHandler( OnChanged );
-            _fsWatcher.Created += new FileSystemEventHandler( OnChanged );
-            _fsWatcher.Deleted += new FileSystemEventHandler( OnChanged );
-            _fsWatcher.Renamed += new RenamedEventHandler( OnRenamed );
+            this._monitor.Changed += new FileSystemEventHandler( OnChanged );
+            this._monitor.Created += new FileSystemEventHandler( OnChanged );
+            this._monitor.Deleted += new FileSystemEventHandler( OnChanged );
+            this._monitor.Renamed += new RenamedEventHandler( OnRenamed );
 
             // Begin watching.
-            _fsWatcher.EnableRaisingEvents = true;
+            this._monitor.EnableRaisingEvents = true;
 
             LogManager.Instance.Write( "File monitor created for {0}.", path );
         }
