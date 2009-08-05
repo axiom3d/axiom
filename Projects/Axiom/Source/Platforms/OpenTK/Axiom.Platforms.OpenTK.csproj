@@ -47,6 +47,7 @@
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\x86\Axiom.Platforms.OpenTK.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\</OutputPath>
@@ -60,6 +61,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\x86\Axiom.Platforms.OpenTK.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="OpenTK, Version=0.9.8.0, Culture=neutral, processorArchitecture=MSIL">
