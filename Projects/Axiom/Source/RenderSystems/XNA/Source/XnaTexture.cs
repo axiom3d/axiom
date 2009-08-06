@@ -729,16 +729,8 @@ namespace Axiom.RenderSystems.Xna
 
         private void BlitImageToNormalTexture( Image image )
         {
-            XFG.Color[] cols = new XFG.Color[ image.Width * image.Height ];
-            int i, j = 0;
-            j = i = 0;
-            foreach ( XFG.Color col in cols )
-            {
-                cols[ j ] = new XFG.Color( image.Data[ i ], image.Data[ i + 1 ], image.Data[ i + 2 ] );
-                i += 3;
-                j++;
-            }
-            _normTexture.SetData<XFG.Color>( cols );
+            // TODO: check pixel formats and convert if needed
+            _normTexture.SetData<byte>( image.Data );
             _texture = _normTexture;
             _texture.GenerateMipMaps( GetBestFilterMethod() );
         }

@@ -180,7 +180,8 @@ namespace Axiom.RenderSystems.Xna.FixedFunctionEmulation
 
             ShaderGenerator shaderGenerator = shaderGeneratorMap[ generatorName ];
             String shaderSource = shaderGenerator.GetShaderSource( vertexProgramName, fragmentProgramName, vertexBufferDeclaration, state );
-            saveShader( state.GetHashCode().ToString(), shaderSource );
+            if ( Root.Instance.RenderSystem.ConfigOptions[ "Save Generated Shaders" ].Value == "Yes" )
+                saveShader( state.GetHashCode().ToString(), shaderSource );
 
             // Vertex program details
             GpuProgramUsage vertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex );
