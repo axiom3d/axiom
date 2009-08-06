@@ -268,6 +268,8 @@ namespace Axiom.RenderSystems.Xna
             ConfigOption optAA = new ConfigOption( "Anti aliasing", "None", false );
             ConfigOption optFPUMode = new ConfigOption( "Floating-point mode", "Fastest", false );
             ConfigOption optNVPerfHUD = new ConfigOption( "Allow NVPerfHUD", "No", false );
+            ConfigOption optSaveShaders = new ConfigOption( "Save Generated Shaders", "No", false );
+
 
             optDevice.PossibleValues.Clear();
 
@@ -293,6 +295,9 @@ namespace Axiom.RenderSystems.Xna
             optNVPerfHUD.PossibleValues.Add( 0, "Yes" );
             optNVPerfHUD.PossibleValues.Add( 1, "No" );
 
+            optSaveShaders.PossibleValues.Add( 0, "Yes" );
+            optSaveShaders.PossibleValues.Add( 1, "No" );
+
             optFPUMode.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
             optAA.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
             optVSync.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
@@ -300,6 +305,7 @@ namespace Axiom.RenderSystems.Xna
             optVideoMode.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
             optDevice.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
             optNVPerfHUD.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
+            optSaveShaders.ConfigValueChanged += new ConfigOption.ValueChanged( _configOptionChanged );
 
             ConfigOptions.Add( optDevice );
             ConfigOptions.Add( optVideoMode );
@@ -308,6 +314,7 @@ namespace Axiom.RenderSystems.Xna
             ConfigOptions.Add( optAA );
             ConfigOptions.Add( optFPUMode );
             ConfigOptions.Add( optNVPerfHUD );
+            ConfigOptions.Add( optSaveShaders );
 
             _refreshXnaSettings();
         }
