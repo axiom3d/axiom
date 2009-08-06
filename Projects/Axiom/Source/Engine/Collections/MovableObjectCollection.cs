@@ -47,7 +47,7 @@ namespace Axiom.Collections
     /// <summary>
     /// Summary description for MovableObjectCollection.
     /// </summary>
-    public class MovableObjectCollection : NamedCollection< MovableObject>
+    public class MovableObjectCollection : NamedCollection<MovableObject>
     {
         #region Constructors
 

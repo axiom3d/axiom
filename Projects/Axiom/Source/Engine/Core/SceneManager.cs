@@ -508,41 +508,14 @@ namespace Axiom.Core
         }
 
         /// <summary>A list of lights in the scene for easy lookup.</summary>
-        //protected LightList lightList;
         public IList<Light> Lights
         {
-            get { return (IList<Light>)this.GetMovableObjectCollection( LightFactory.TypeName ); }
-        }
-
-        /// <summary>A list of entities in the scene for easy lookup.</summary>
-        //protected internal EntityList entityList;
-        public IList<Entity> Entities
-        {
-            get { return (IList<Entity>)this.GetMovableObjectCollection(EntityFactory.TypeName); }
+            get { return (IList<Light>)this.GetMovableObjectCollection( LightFactory.TypeName ).Values; }
         }
 
         public IList<SceneNode> SceneNodes
         {
             get { return this.sceneNodeList.Values; }
-        }
-
-        /// <summary>A list of billboard set for easy lookup.</summary>
-        //protected BillboardSetCollection billboardSetList;
-        public IList<BillboardSet> BillboardSets
-        {
-            get { return (IList<BillboardSet>)this.GetMovableObjectCollection( BillboardSetFactory.TypeName ); }
-        }
-
-        /// <summary>A list of RibbonTrails for easy lookup.</summary>
-        //protected SortedList<string, RibbonTrail> ribbonTrailList;
-        public IList<RibbonTrail> RibbonTrails
-        {
-            get { return (IList<RibbonTrail>)this.GetMovableObjectCollection( RibbonTrailFactory.TypeName ); }
-        }
-
-        public IList<Animation> Animations
-        {
-            get { return this.animationList.Values; }
         }
 
         /// <summary>
@@ -917,18 +890,6 @@ namespace Axiom.Core
         /// <returns></returns>
         public virtual Light CreateLight(string name)
         {
-            //if ( lightList.ContainsKey( name ) )
-            //{
-            //    throw new AxiomException( string.Format( "A light with the name '{0}' already exists in the scene.", name ) );
-            //}
-
-            //// create a new light and add it to our internal list
-            //Light light = new Light( name );
-
-            //// add the light to the list
-            //lightList.Add( name, light );
-
-            //return light;
             return (Light)this.CreateMovableObject( name, LightFactory.TypeName, null );
         }
 
@@ -961,16 +922,6 @@ namespace Axiom.Core
             return (ManualObject)this.GetMovableObject( name, ManualObjectFactory.Factory_Type_Name );
         }
 
-        /// <summary>
-        ///		Creates a new (blank) material with the specified name.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        //public virtual Material CreateMaterial( string name )
-        //{
-        //    Material material = (Material)MaterialManager.Instance.Create( name );
-        //    return material;
-        //}
         /// <summary>
         ///		Creates a new Overlay.
         /// </summary>
@@ -1022,9 +973,6 @@ namespace Axiom.Core
             }
 
             this.DestroyAllMovableObjects();
-            //RemoveAllEntities();
-            //RemoveAllBillboardSets();
-            //RemoveAllLights();
 
             // Clear animations
             this.DestroyAllAnimations();
@@ -1062,45 +1010,16 @@ namespace Axiom.Core
                 else if (autoNode == node)
                 {
                     // node being removed is a tracker
-                    //thild: remove by name
                     autoTrackingSceneNodes.Remove( name );
                 }
             }
 
-            /* CMH 7/18/2004 */
-            // Destroy child nodes
-            // We can't use a for loop here, since the recursion mutates node.ChildCount
-            while (node.ChildCount > 0)
-            {
-                this.DestroySceneNode( node.GetChild( 0 ).Name );
-            }
-#warning whats this? unable to find suitable code rep
-/*
--
-+            //thild: remove by name
-             for ( int j = 0; j < node.ObjectCount; j++ )
-             {
--                MovableObject obj = node.GetObject( j );
-+                string obj = node.GetObject( j ).Name;
-                 if ( obj is Camera )
-                     cameraList.Remove( obj );
-                 else if ( obj is Light )
-@@ -998,14 +999,15 @@
-                 else if ( obj is BillboardSet )
-                     billboardSetList.Remove( obj );
-                 else if ( obj is RibbonTrail )
--                    ribbonTrailList.Remove( ( (RibbonTrail)obj ).Name );
-+                    ribbonTrailList.Remove( obj );
-             }
-*/
-            // Remove this node from its parent
             if ( node.Parent != null )
             {
                 node.Parent.RemoveChild( node );
             }
 			
             // removes the node from the list
-            //thild: remove by name
             sceneNodeList.Remove( name );
         }
 
@@ -1117,7 +1036,6 @@ namespace Axiom.Core
             {
                 throw new AxiomException( "Animation named '{0}' not found.", name );
             }
-            //thild: remove by name
             animationList.Remove( name );
         }
 
@@ -1206,14 +1124,6 @@ namespace Axiom.Core
         /// <returns></returns>
         public virtual Light GetLight(string name)
         {
-            //Light light = lightList[ name ];
-            //if ( light == null )
-            //{
-            //    throw new AxiomException( "Light named '{0}' not found.", name );
-            //}
-
-            //return light;
-
             return (Light)this.GetMovableObject( name, LightFactory.TypeName );
         }
 
@@ -1224,14 +1134,6 @@ namespace Axiom.Core
         /// <returns></returns>
         public virtual BillboardSet GetBillboardSet(string name)
         {
-            //BillboardSet billboardSet = billboardSetList[ name ];
-            //if ( billboardSet == null )
-            //{
-            //    throw new AxiomException( "BillboardSet named '{0}' not found.", name );
-            //}
-
-            //return billboardSet;
-
             return (BillboardSet)this.GetMovableObject( name, BillboardSetFactory.TypeName );
         }
 
@@ -1243,10 +1145,6 @@ namespace Axiom.Core
         public virtual Animation GetAnimation(string name)
         {
             Animation animation = this.animationList[ name ];
-            /*
-            if(animation == null) {
-                throw new AxiomException("Animation named '{0}' not found.", name);
-            }*/
             return animation;
         }
 
@@ -1258,10 +1156,6 @@ namespace Axiom.Core
         public virtual AnimationState GetAnimationState(string name)
         {
             AnimationState animationState = this.animationStateList.GetAnimationState( name );
-            /*
-            if(animationState == null) {
-                throw new AxiomException("AnimationState named '{0}' not found.", name);
-            }*/
             return animationState;
         }
 
@@ -1273,10 +1167,6 @@ namespace Axiom.Core
         public virtual Overlay GetOverlay(string name)
         {
             Overlay overlay = OverlayManager.Instance.GetByName(name);
-            /*
-            if (overlay == null)
-                throw new AxiomException("An overlay named " + name + " cannot be found.");
-            */
             return overlay;
         }
 
@@ -3008,7 +2898,7 @@ namespace Axiom.Core
         /// </summary>
         /// <param name="group"></param>
         /// <returns>True if the queue should be skipped.</returns>
-        protected bool OnRenderQueueStarted( RenderQueueGroupID group )
+        protected virtual bool OnRenderQueueStarted( RenderQueueGroupID group )
         {
             if ( this.QueueStarted != null )
             {
@@ -3023,7 +2913,7 @@ namespace Axiom.Core
         /// </summary>
         /// <param name="group"></param>
         /// <returns>True if the queue should be repeated.</returns>
-        protected bool OnRenderQueueEnded( RenderQueueGroupID group )
+        protected virtual bool OnRenderQueueEnded( RenderQueueGroupID group )
         {
             if ( this.QueueEnded != null )
             {
@@ -3041,52 +2931,27 @@ namespace Axiom.Core
 
         public virtual RibbonTrail CreateRibbonTrail( string name )
         {
-            //if ( ribbonTrailList.ContainsKey( name ) )
-            //{
-            //    throw new AxiomException( string.Format( "A RibbonTrail with the name '{0}' already exists in the scene.", name ) );
-            //}
-
-            //RibbonTrail ribbonTrail = new RibbonTrail( name );
-
-            //// keep a local copy
-            //ribbonTrailList.Add( name, ribbonTrail );
-
-            //return ribbonTrail;
-
-            return (RibbonTrail)this.CreateMovableObject( name, RibbonTrailFactory.Factory_Type_Name, null );
+            return (RibbonTrail)this.CreateMovableObject( name, RibbonTrailFactory.TypeName, null );
         }
 
         public virtual RibbonTrail GetRibbonTrail( string name )
         {
-            //RibbonTrail ribbonTrail = ribbonTrailList[ name ];
-            //if ( ribbonTrail == null )
-            //{
-            //    throw new AxiomException( "RibbonTrail named '{0}' not found.", name );
-            //}
-
-            //return ribbonTrail;
-            return (RibbonTrail)this.GetMovableObject( name, RibbonTrailFactory.Factory_Type_Name );
+            return (RibbonTrail)this.GetMovableObject( name, RibbonTrailFactory.TypeName );
         }
 
         public virtual void RemoveAllRibonTrails()
         {
-            // clear the list
-            //ribbonTrailList.Clear();
-            this.DestroyAllMovableObjectsByType( RibbonTrailFactory.Factory_Type_Name );
+            this.DestroyAllMovableObjectsByType( RibbonTrailFactory.TypeName );
         }
 
         public virtual void RemoveRibbonTrail( RibbonTrail ribbonTrail )
         {
-            //ribbonTrailList.Remove( ribbonTrail.Name );
             this.DestroyMovableObject( ribbonTrail );
         }
 
         public virtual void RemoveRibbonTrail( string name )
         {
-            //Debug.Assert( ribbonTrailList.ContainsKey( name ), string.Format( "RibbonTrail '{0}' does not exist in the scene.", name ) );
-
-            //ribbonTrailList.Remove( name );
-            this.DestroyMovableObject( name, RibbonTrailFactory.Factory_Type_Name );
+            this.DestroyMovableObject( name, RibbonTrailFactory.TypeName );
         }
 
         #endregion RibbonTrail Management
@@ -3325,10 +3190,6 @@ namespace Axiom.Core
         /// </summary>
         public virtual void RemoveAllLights()
         {
-            // clear the list
-            //if ( lightList != null )
-            //    lightList.Clear();
-
             this.DestroyAllMovableObjectsByType( LightFactory.TypeName );
         }
 
@@ -3337,9 +3198,6 @@ namespace Axiom.Core
         /// </summary>
         public virtual void RemoveAllEntities()
         {
-            // clear the list
-            //if ( entityList != null )
-            //    entityList.Clear();
             this.DestroyAllMovableObjectsByType( EntityFactory.TypeName );
         }
 
@@ -3348,9 +3206,6 @@ namespace Axiom.Core
         /// </summary>
         public virtual void RemoveAllBillboardSets()
         {
-            // clear the list
-            //if ( billboardSetList != null )
-            //    billboardSetList.Clear();
             this.DestroyAllMovableObjectsByType( BillboardSetFactory.TypeName );
         }
 
@@ -3394,13 +3249,7 @@ namespace Axiom.Core
         /// <param name="camera">Reference to the light to remove.</param>
         public virtual void RemoveLight( Light light )
         {
-            //lightList.Remove( light );
             this.DestroyMovableObject( light );
-			#warning patch obsolete?
-			/*
-			//thild: remove by name
-            lightList.Remove( light.Name );
-			*/
         }
 
         /// <summary>
@@ -3412,9 +3261,6 @@ namespace Axiom.Core
         /// <param name="name">Name of the light to remove.</param>
         public virtual void RemoveLight( string name )
         {
-            //Debug.Assert( lightList.ContainsKey( name ), string.Format( "Light '{0}' does not exist in the scene.", name ) );
-
-            //RemoveLight( lightList[ name ] );
             this.DestroyMovableObject( name, LightFactory.TypeName );
         }
 
@@ -3427,14 +3273,7 @@ namespace Axiom.Core
         /// <param name="camera">Reference to the BillboardSet to remove.</param>
         public virtual void RemoveBillboardSet( BillboardSet billboardSet )
         {
-            //billboardSetList.Remove( billboardSet );
-
             this.DestroyMovableObject( billboardSet );
-			#warning patch obsolete?
-			/*
-			//thild: remove by name
-            billboardSetList.Remove( billboardSet.Name );
-			*/
         }
 
         /// <summary>
@@ -3446,10 +3285,6 @@ namespace Axiom.Core
         /// <param name="name">Name of the BillboardSet to remove.</param>
         public virtual void RemoveBillboardSet( string name )
         {
-            //Debug.Assert( billboardSetList.ContainsKey( name ), string.Format( "BillboardSet '{0}' does not exist in the scene.", name ) );
-
-            //RemoveBillboardSet( billboardSetList[ name ] );
-
             this.DestroyMovableObject( name, BillboardSetFactory.TypeName );
         }
 
@@ -3459,13 +3294,7 @@ namespace Axiom.Core
         /// <param name="entity">Entity to remove from the scene.</param>
         public virtual void RemoveEntity( Entity entity )
         {
-            //entityList.Remove( entity );
             this.DestroyMovableObject( entity );
-			#warning patch obsolete?
-			/*
-			//thild: remove by name
-            entityList.Remove( entity.Name );
-			*/
         }
 
         /// <summary>
@@ -3474,12 +3303,6 @@ namespace Axiom.Core
         /// <param name="entity">Entity to remove from the scene.</param>
         public virtual void RemoveEntity( string name )
         {
-            //Entity entity = entityList[ name ];
-            //if ( entity != null )
-            //{
-            //    entityList.Remove( entity );
-            //}
-
             this.DestroyMovableObject( name, EntityFactory.TypeName );
         }
 
@@ -4461,23 +4284,6 @@ namespace Axiom.Core
         {
             get { return this.findVisibleObjects; }
             set { this.findVisibleObjects = value; }
-        }
-
-        /// <summary>
-        ///		Get the count of entities in this scene
-        /// </summary>
-        public int NumEntities
-        {
-            get { return this.Entities.Count; }
-        }
-
-        /// <summary>
-        ///		Get the regions in use
-        ///     TODO: Is there any point to having this region list?
-        /// </summary>
-        public List<StaticGeometry.Region> RegionList
-        {
-            get { return this.regionList; }
         }
 
         /// <summary>
@@ -6897,7 +6703,7 @@ namespace Axiom.Core
 
         public MovableObject CreateMovableObject( string name, string typeName, NamedParameterList para )
         {
-            // Nasty hack to make generalised Camera functions work without breaking add-on SMs
+            // Nasty hack to make generalized Camera functions work without breaking add-on SMs
             if ( typeName == "Camera" )
             {
                 return this.CreateCamera( name );
@@ -6921,7 +6727,7 @@ namespace Axiom.Core
 
         public void DestroyMovableObject( string name, string typeName )
         {
-            // Nasty hack to make generalised Camera functions work without breaking add-on SMs
+            // Nasty hack to make generalized Camera functions work without breaking add-on SMs
             if ( typeName == "Camera" )
             {
                 this.DestroyCamera( this.cameraList[ name ] );
@@ -6942,7 +6748,7 @@ namespace Axiom.Core
 
         public void DestroyAllMovableObjectsByType( string typeName )
         {
-            // Nasty hack to make generalised Camera functions work without breaking add-on SMs
+            // Nasty hack to make generalized Camera functions work without breaking add-on SMs
             if ( typeName == "Camera" )
             {
                 this.DestroyAllCameras();
@@ -6993,7 +6799,7 @@ namespace Axiom.Core
 
         public MovableObject GetMovableObject( string name, string typeName )
         {
-            // Nasty hack to make generalised Camera functions work without breaking add-on SMs
+            // Nasty hack to make generalized Camera functions work without breaking add-on SMs
             if ( typeName == "Camera" )
             {
                 return this.cameraList[ name ];
@@ -7014,7 +6820,7 @@ namespace Axiom.Core
 
         public bool HasMovableObject( string name, string typeName )
         {
-            // Nasty hack to make generalised Camera functions work without breaking add-on SMs
+            // Nasty hack to make generalized Camera functions work without breaking add-on SMs
             if ( typeName == "Camera" )
             {
                 return this.cameraList.ContainsKey( name );

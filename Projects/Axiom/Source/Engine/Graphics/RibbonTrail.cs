@@ -483,11 +483,11 @@ namespace Axiom.Graphics
 
     public class RibbonTrailFactory : MovableObjectFactory
     {
-        public static string Factory_Type_Name = "RibbonTrail";
+        public static string TypeName = "RibbonTrail";
 
         public RibbonTrailFactory()
         {
-            this.Type = Factory_Type_Name;
+            this.Type = TypeName;
         }
 
         protected override MovableObject _createInstance( string name, NamedParameterList param )
