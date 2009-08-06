@@ -80,7 +80,7 @@ namespace Axiom.SceneManagers.Bsp
     {
         #region Protected members
         protected BspLevel level;
-        protected bool[] faceGroupChecked;
+        protected Dictionary<int, bool> faceGroupChecked = new Dictionary<int, bool>();
         protected RenderOperation renderOp = new RenderOperation();
         protected bool showNodeAABs;
         protected RenderOperation aaBGeometry = new RenderOperation();
@@ -320,103 +320,6 @@ namespace Axiom.SceneManagers.Bsp
             BspNode cameraNode = WalkTree( camera, onlyShadowCasters );
         }
 
-        /// <summary>
-        ///		Overriden from SceneManager.
-        /// </summary>
-        /// <param name="position">The position at which to evaluate the list of lights</param>
-        /// <param name="radius">The bounding radius to test</param>
-        /// <param name="destList">List to be populated with ordered set of lights; will be cleared by this method before population.</param>
-        public override void PopulateLightList( Vector3 position, float radius, LightList destList )
-        {
-            BspNode positionNode = level.FindLeaf( position );
-            BspNode[] lightNodes = new BspNode[ Lights.Count ];
-
-            for (int i = 0; i < Lights.Count; i++)
-            {
-                Light light = destList.Values[ i ];
-                lightNodes[ i ] = (BspNode)level.objectToNodeMap.FindFirst( light );
-            }
-
-            // Trawl of the lights that are visible from position, then sort
-            destList.Clear();
-            float squaredRadius = radius * radius;
-
-            // loop through the scene lights an add ones in range and visible from positionNode
-            for (int i = 0; i < Lights.Count; i++)
-            {
-                TextureLight light = (TextureLight)destList.Values[ i ];
-
-                if ( light.IsVisible && level.IsLeafVisible( positionNode, lightNodes[ i ] ) )
-                {
-                    if ( light.Type == LightType.Directional )
-                    {
-                        // no distance
-                        light.TempSquaredDist = 0.0f;
-                        destList.Add( light );
-                    }
-                    else
-                    {
-                        light.TempSquaredDist = ( light.DerivedPosition - position ).LengthSquared;
-                        light.TempSquaredDist -= squaredRadius;
-                        // only add in-range lights
-                        float range = light.AttenuationRange;
-                        if ( light.TempSquaredDist <= ( range * range ) )
-                        {
-                            destList.Add( light );
-                        }
-                    }
-                } // if
-            } // for
-
-            // Sort Destination light list.
-            // TODO: Not needed yet since the current LightList is a sorted list under the hood already
-            //destList.Sort();
-        }
-
-        /// <summary>
-        ///		Overriden from SceneManager.
-        /// </summary>
-        protected override void FindLightsAffectingFrustum( Camera camera )
-        {
-            lightsAffectingFrustum.Clear();
-            lightAddedToFrustum = new bool[Lights.Count];
-
-            if ( shadowTechnique == ShadowTechnique.TextureModulative )
-            {
-                // we must provide the list of lights now, not at WalkTree
-
-                // CHECK: The code here finds the lights faster than at WalkTree
-                // but not as accurate. The case where the node of a light is not
-                // visible, but the nodes that the light affects are, is not taken
-                // into account.
-
-                // Locate the leaf node where the camera is located
-                BspNode cameraNode = level.FindLeaf( camera.DerivedPosition );
-
-                for (int i = 0; i < Lights.Count; i++)
-                {
-                    TextureLight light = (TextureLight)Lights[ i ];
-
-                    if ( !light.IsVisible )
-                        continue;
-
-                    // This is set so that the lights are rendered with ascending
-                    // Priority order.
-                    light.TempSquaredDist = light.Priority;
-
-                    BspNode lightNode = (BspNode)level.objectToNodeMap.FindFirst( light );
-                    if ( level.IsLeafVisible( cameraNode, lightNode ) )
-                    {
-                        lightsAffectingFrustum.Add( light );
-                        lightAddedToFrustum[ i ] = true;
-                    }
-                }
-            }
-
-            // Lights are added to the lightsAffectingFrustum in WalkTree for other
-            // shadow techniques
-        }
-
         protected override IList FindShadowCastersForLight( Light light, Camera camera )
         {
             // objectsForRendering was filled at ProcessVisibleLeaf which is called
@@ -462,64 +365,6 @@ namespace Axiom.SceneManagers.Bsp
             return node;
         }
 
-        /// <summary>
-        ///		Creates a specialised texture light.
-        /// </summary>
-        public override Light CreateLight( string name )
-        {
-            // create a new texture light and add it to our internal list
-            TextureLight light = new TextureLight( name, this );
-
-            // add the light to the list
-            ((MovableObjectCollection)Lights).Add( name, light );
-
-            // add it in the bsp tree
-            NotifyObjectMoved( light, light.Position );
-
-            return light;
-        }
-
-        public override void RemoveLight( Light light )
-        {
-            NotifyObjectDetached( light );
-            base.RemoveLight( light );
-        }
-
-        public override void RemoveAllLights()
-        {
-            if (Lights != null)
-			{
-                for (int i = 0; i < Lights.Count; i++)
-                    NotifyObjectDetached(Lights[i]);
-			}
-            base.RemoveAllLights();
-        }
-
-        public override void RemoveEntity( Entity entity )
-        {
-            NotifyObjectDetached( entity );
-            base.RemoveEntity( entity );
-        }
-
-        public override void RemoveEntity( string name )
-        {
-            
-            Entity entity =(Entity)((MovableObjectCollection)Entities)[ name ];
-            if ( entity != null )
-            {
-                this.RemoveEntity( entity );
-            }
-        }
-
-        public override void RemoveAllEntities()
-        {
-            if (Entities != null)
-			{
-                for (int i = 0; i < Entities.Count; i++)
-                    NotifyObjectDetached( ((MovableObjectCollection)Entities).Values[ i ] );
-			}
-            base.RemoveAllEntities();
-        }
 
         /// <summary>
         ///		Internal method for tagging <see cref="Plugin_BSPSceneManager.BspNode"/>'s with objects which intersect them.
@@ -677,35 +522,16 @@ namespace Axiom.SceneManagers.Bsp
         /// </summary>
         protected BspNode WalkTree( Camera camera, bool onlyShadowCasters )
         {
+            if ( level == null )
+            {
+                return null;
+            }
+
             // Locate the leaf node where the camera is located
             BspNode cameraNode = level.FindLeaf( camera.DerivedPosition );
 
             matFaceGroupMap.Clear();
-            faceGroupChecked = new bool[ level.FaceGroups.Length ];
-
-            TextureLight[] lights = new TextureLight[ Lights.Count ];
-            BspNode[] lightNodes = new BspNode[Lights.Count];
-            Sphere[] lightSpheres = new Sphere[Lights.Count];
-
-            // The base SceneManager uses this for shadows.
-            // The BspSceneManager uses this for texture lighting as well.
-            if ( shadowTechnique == ShadowTechnique.None )
-            {
-                lightsAffectingFrustum.Clear();
-                lightAddedToFrustum = new bool[Lights.Count];
-            }
-
-            for (int lp = 0; lp < Lights.Count; lp++)
-            {
-                TextureLight light = (TextureLight)Lights[ lp ];
-                lights[ lp ] = light;
-                lightNodes[ lp ] = (BspNode)level.objectToNodeMap.FindFirst( light );
-                if ( light.Type != LightType.Directional )
-                {
-                    // treating spotlight as point for simplicity
-                    lightSpheres[ lp ] = new Sphere( light.DerivedPosition, light.AttenuationRange );
-                }
-            }
+            faceGroupChecked.Clear();
 
             // Scan through all the other leaf nodes looking for visibles
             int i = level.NumNodes - level.LeafStart;
@@ -723,27 +549,6 @@ namespace Axiom.SceneManagers.Bsp
 
                     if ( camera.IsObjectVisible( node.BoundingBox, out plane ) )
                     {
-                        if ( !onlyShadowCasters )
-                        {
-                            for ( int lp = 0; lp < lights.Length; lp++ )
-                            {
-                                if ( lightAddedToFrustum[ lp ] || !lights[ lp ].IsVisible )
-                                    continue;
-
-                                if ( level.IsLeafVisible( lightNodes[ lp ], node ) &&
-                                    ( lights[ lp ].Type == LightType.Directional ||
-                                    lightSpheres[ lp ].Intersects( node.BoundingBox ) ) )
-                                {
-                                    // This is set so that the lights are rendered with ascending
-                                    // Priority order.
-                                    lights[ lp ].TempSquaredDist = lights[ lp ].Priority;
-
-                                    lightsAffectingFrustum.Add( lights[ lp ] );
-                                    lightAddedToFrustum[ lp ] = true;
-                                }
-                            }
-                        }
-
                         ProcessVisibleLeaf( node, camera, onlyShadowCasters );
 
                         if ( showNodeAABs )
@@ -775,7 +580,7 @@ namespace Axiom.SceneManagers.Bsp
                     int realIndex = level.LeafFaceGroups[ idx++ ];
 
                     // Is it already checked ?
-                    if ( faceGroupChecked[ realIndex ] == true )
+                    if ( faceGroupChecked.ContainsKey( realIndex ) && faceGroupChecked[ realIndex ] == true )
                         continue;
 
                     faceGroupChecked[ realIndex ] = true;
@@ -974,6 +779,14 @@ namespace Axiom.SceneManagers.Bsp
         /// </summary>
         protected void AddBoundingBox( AxisAlignedBox aab, bool visible )
         {
+        }
+
+        protected override bool OnRenderQueueEnded( RenderQueueGroupID group )
+        {
+            bool repeat = base.OnRenderQueueEnded( group );
+            //if ( group == RenderQueueGroupID.SkiesEarly )
+            //    this.RenderStaticGeometry();
+            return repeat;
         }
 
         /// <summary>
