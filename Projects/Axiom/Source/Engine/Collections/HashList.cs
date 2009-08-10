@@ -1,140 +1,84 @@
 #region LGPL License
-/*
-Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
-Many thanks to the OGRE team for maintaining such a high quality project.
+// Axiom Graphics Engine Library
+// Copyright (C) 2003-2009 Axiom Project Team
+// 
+// The overall design, and a majority of the core engine and rendering code 
+// contained within this library is a derivative of the open source Object Oriented 
+// Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+// Many thanks to the OGRE team for maintaining such a high quality project.
+// 
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+// 
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
 #endregion Namespace Declarations
 
 namespace Axiom.Collections
 {
     /// <summary>
-    /// 	Summary description for HashList.
+    /// Represents a collection of key/value pairs that are sorted by the keys and are accessible by key and by index.
     /// </summary>
-    public class HashList<K, T>
+    public class HashList<TKey, TValue> : AxiomSortedCollection<TKey, TValue>
     {
-		Dictionary<K, T> itemTable = new Dictionary<K, T>();
-        SortedList<K, T> itemList = new SortedList<K, T>();
-        List<K> itemKeys = new List<K>();
+        #region Instance Indexers
 
-        #region Member variables
-
-        #endregion
-
-        #region Constructors
-
-        public HashList()
+        /// <summary>
+        /// Gets the <see cref="TValue"/> at the specified index.
+        /// </summary>
+        /// <value>A <see cref="TValue"/>.</value>
+        public TValue this[ int index ]
         {
-            //
-            // TODO: Add constructor logic here
-            //
+            get { return Values[index]; }
         }
 
         #endregion
 
-        #region Methods
+        #region Instance Methods
 
-        public void Add(K key, T item)
+        /// <summary>
+        /// Gets a <see cref="TValue"/> by key.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns>The <see cref="TValue"/> that corresponds to the specified key.</returns>
+        public TValue GetByKey( TKey key )
         {
-            itemTable.Add( key, item );
-            itemList.Add( key, item );
-            itemKeys.Add( key );
+            return base[ key ];
         }
 
-        public K GetKeyAt(int index)
+        /// <summary>
+        /// Gets the key at the specified index.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        /// <returns>The key at the specified index.</returns>
+        public TKey GetKeyAt( int index )
         {
-            return itemList.Keys[index];
-        }
-
-        public T GetByKey(K key)
-        {
-            return itemTable[ key ];
-        }
-
-        public bool ContainsKey(K key)
-        {
-            return itemTable.ContainsKey( key );
-        }
-
-        public void Clear()
-        {
-            itemTable.Clear();
-            itemList.Clear();
-            itemKeys.Clear();
-        }
-
-        public void Remove(K key)
-        {
-            itemTable.Remove( key );
-            itemList.Remove( key );
-            itemKeys.Remove( key );
+            return Keys[index];
         }
 
         #endregion
-
-        #region Properties
-
-        public int Count
-        {
-            get
-            {
-                return itemList.Count;
-            }
-        }
-
-        #endregion
-
-        #region Operators
-
-        public T this[int index]
-        {
-            get
-            {
-                return itemList.Values[index];
-            }
-        }
-
-        public T this[K key]
-        {
-            get
-            {
-                return itemList[ key ];
-            }
-        }
-
-        #endregion
-
     }
 }

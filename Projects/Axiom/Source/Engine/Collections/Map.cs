@@ -1,47 +1,45 @@
 #region LGPL License
-/*
-Axiom Graphics Engine Library
-Copyright (C) 2003-2006 Axiom Project Team
 
-The overall design, and a majority of the core engine and rendering code 
-contained within this library is a derivative of the open source Object Oriented 
-Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
-Many thanks to the OGRE team for maintaining such a high quality project.
+// Axiom Graphics Engine Library
+// Copyright (C) 2003-2009 Axiom Project Team
+// 
+// The overall design, and a majority of the core engine and rendering code 
+// contained within this library is a derivative of the open source Object Oriented 
+// Graphics Engine OGRE, which can be found at http://ogre.sourceforge.net.  
+// Many thanks to the OGRE team for maintaining such a high quality project.
+// 
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+// 
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-*/
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
 using System.Collections;
-using System.Diagnostics;
-
-using Axiom.Math.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
-#endregion Namespace Declarations
+#endregion
 
 namespace Axiom.Collections
 {
@@ -69,37 +67,119 @@ namespace Axiom.Collections
     ///     enumeration of them all (with unboxing of the value type stored in the buckets) took between 16-30ms.
     /// </remarks>
     public class Map<K, T> : IDictionary<K, List<T>>,
-                       ICollection<KeyValuePair<K, List<T>>>,
-                       IEnumerable<KeyValuePair<K, List<T>>>,
-                       IDictionary, ICollection, IEnumerable, IEnumerable<T>, IEnumerable<List<T>>
+                             ICollection<KeyValuePair<K, List<T>>>,
+                             IEnumerable<KeyValuePair<K, List<T>>>,
+                             IDictionary, ICollection, IEnumerable, IEnumerable<T>, IEnumerable<List<T>>
     {
         #region Fields
+
+        private Dictionary<K, List<T>> buckets;
 
         /// <summary>
         ///     Number of total items currently in this buckets.
         /// </summary>
         private int count;
 
-        private Dictionary<K, List<T>> buckets;
+        #endregion
 
-        #endregion Fields
-
-        #region Constructor
+        #region Constructors
 
         /// <summary>
         ///     Default constructor.
         /// </summary>
         public Map()
         {
-            buckets = new Dictionary<K, List<T>>();
+            this.buckets = new Dictionary<K, List<T>>();
         }
 
-        public Map(IEqualityComparer<K> comparer)
+        public Map( IEqualityComparer<K> comparer )
         {
-            buckets = new Dictionary<K, List<T>>(comparer);
+            this.buckets = new Dictionary<K, List<T>>( comparer );
         }
 
-        #endregion Constructor
+        #endregion
+
+        #region Instance Properties
+
+        public int Count
+        {
+            get { return this.buckets.Count; }
+        }
+
+        /// <summary>
+        ///		Gets the number of keys in this map.
+        /// </summary>
+        public int KeyCount
+        {
+            get { return this.buckets.Count; }
+        }
+
+        public int TotalCount
+        {
+            get { return this.count; }
+        }
+
+        #endregion
+
+        #region Instance Methods
+
+        /// <summary>
+        ///     Inserts a value into a bucket that is specified by the
+        ///     key.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="val"></param>
+        public void Add( K key, T value )
+        {
+            List<T> container = null;
+
+            if ( !this.buckets.ContainsKey( key ) )
+            {
+                container = new List<T>();
+                this.buckets.Add( key, container );
+            }
+            else
+            {
+                container = this.buckets[ key ];
+            }
+
+            // TODO: Doing the contains check is extremely slow, so for now duplicate items are allowed
+            //if (!container.Contains(value))
+            //{
+            container.Add( value );
+            this.count++;
+            //}
+        }
+
+        /// <summary>
+        ///     Gets the count of objects mapped to the specified key.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public int BucketCount( K key )
+        {
+            if ( this.buckets.ContainsKey( key ) )
+            {
+                return this.buckets[ key ].Count;
+            }
+
+            return 0;
+        }
+
+        public void Clear()
+        {
+            this.buckets.Clear();
+            this.count = 0;
+        }
+
+        public void Clear( K key )
+        {
+            if ( this.buckets.ContainsKey( key ) )
+            {
+                this.count -= this.buckets[ key ].Count;
+            }
+            this.buckets[ key ].Clear();
+        }
 
         /// <summary>
         ///     Given a key, Find will return an IEnumerator that allows
@@ -108,19 +188,28 @@ namespace Axiom.Collections
         /// </summary>
         /// <param name="key">Key for look for.</param>
         /// <returns>IEnumerator to go through the items assigned to the key.</returns>
-        public IEnumerator<T> Find(K key)
+        public IEnumerator<T> Find( K key )
         {
-            if (buckets.ContainsKey (key) )
-        {
-                return buckets[key].GetEnumerator();
+            if ( this.buckets.ContainsKey( key ) )
+            {
+                return this.buckets[ key ].GetEnumerator();
                 //int length = buckets[key].Count;
                 //IList<T> bucket = buckets[key];
                 //for (int i = 0; i < length; i++)
                 //{
                 //    yield return bucket[i];
                 //}
-        }
+            }
             return null;
+        }
+
+        public List<T> FindBucket( K key )
+        {
+            if ( !this.buckets.ContainsKey( key ) )
+            {
+                return null;
+            }
+            return this.buckets[ key ];
         }
 
         /// <summary>
@@ -128,221 +217,73 @@ namespace Axiom.Collections
         ///     associated with the key.
         /// </summary>
         /// <param name="key">Key to look for.</param>
-        public object FindFirst(K key)
+        public object FindFirst( K key )
         {
-            if (!buckets.ContainsKey(key))
+            if ( !this.buckets.ContainsKey( key ) )
             {
                 return null;
             }
             else
             {
-                return (buckets[key])[0];
+                return ( this.buckets[ key ] )[ 0 ];
             }
         }
 
-        public List<T> FindBucket(K key)
+        public IEnumerator<KeyValuePair<K, List<T>>> GetBucketsEnumerator()
         {
-            if (!buckets.ContainsKey(key))
+            foreach ( KeyValuePair<K, List<T>> item in this.buckets )
             {
-                return null;
+                yield return item;
             }
-            return buckets[key];
-            }
-
-        /// <summary>
-        ///     Gets the count of objects mapped to the specified key.
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public int BucketCount(K key)
-        {
-            if (buckets.ContainsKey (key) )
-            {
-                return buckets[key].Count;
-            }
-
-            return 0;
         }
 
-        public int Count
-        {
-            get { return buckets.Count; }
-        }
-
-        public int TotalCount
-        {
-            get { return count; }
-        }
-
-
-        public void Clear()
-        {
-            buckets.Clear();
-            count = 0;
-        }
-
-        public void Clear(K key)
-        {
-            if ( buckets.ContainsKey(key) )
-            {
-                count -= buckets[ key ].Count;
-            }
-            buckets[key].Clear();
-        }
-
-        /// <summary>
-        ///     Inserts a value into a bucket that is specified by the
-        ///     key.
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="val"></param>
-        public void Add(K key, T value)
+        private void Add( K key, IList<T> value )
         {
             List<T> container = null;
 
-            if (!buckets.ContainsKey(key))
+            if ( !this.buckets.ContainsKey( key ) )
             {
                 container = new List<T>();
-                buckets.Add( key, container );
+                this.buckets.Add( key, container );
             }
             else
             {
-                container = buckets[key];
+                container = this.buckets[ key ];
             }
 
-            // TODO: Doing the contains check is extremely slow, so for now duplicate items are allowed
-            //if (!container.Contains(value))
-            //{
-            container.Add(value);
-            count++;
-            //}
-        }
-
-        /// <summary>
-        ///		Gets the number of keys in this map.
-        /// </summary>
-        public int KeyCount
-        {
-            get
+            foreach ( T i in value )
             {
-                return buckets.Count;
-            }
-        }
-
-        private void Add(K key, IList<T> value)
-            {
-            List<T> container = null;
-
-            if (!buckets.ContainsKey(key))
-            {
-                container = new List<T>();
-                buckets.Add(key, container);
-            }
-            else
-            {
-                container = buckets[key];
-        }
-
-            foreach (T i in value)
-        {
                 // TODO: Doing the contains check is extremely slow, so for now duplicate items are allowed
-                if (!container.Contains(i))
+                if ( !container.Contains( i ) )
                 {
-                    container.Add(i);
-                    count++;
+                    container.Add( i );
+                    this.count++;
                 }
             }
-
-        }
-
-        #region IDictionary<K,IList<T>> Members
-
-        void IDictionary<K, List<T>>.Add(K key, List<T> value)
-        {
-            Add(key, value);
-        }
-
-        public bool ContainsKey(K key)
-        {
-            return buckets.ContainsKey(key);
-        }
-
-        public ICollection<K> Keys
-        {
-            get { return buckets.Keys; }
-        }
-
-        public bool Remove(K key)
-        {
-            bool removed = buckets.Remove(key);
-            if (removed)
-            {
-                count--;
-                return true;
-            }
-            return false;
-        }
-
-        public bool TryGetValue(K key, out List<T> value)
-        {
-            List<T> tvalue;
-            buckets.TryGetValue(key, out tvalue);
-            value = tvalue;
-            if (tvalue == null)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        public ICollection<List<T>> Values
-        {
-            get { return buckets.Values; }
-        }
-
-        public List<T> this[K key]
-        {
-            get
-            {
-                return buckets[key];
-            }
-            set
-            {
-                buckets[key] = value;
-        }
-        }
-
-        #endregion
-
-        #region IEnumerable Members
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
 
         #endregion
 
         #region IDictionary Members
 
-        void IDictionary.Add(object key, object value)
+        void IDictionary.Add( object key, object value )
         {
-            if (key is K & value is IList<T>)
+            if ( key is K & value is IList<T> )
             {
-                Add((K)key, (IList<T>)value);
+                this.Add( (K)key, (IList<T>)value );
             }
         }
 
         void IDictionary.Clear()
         {
-            Clear();
+            this.Clear();
         }
 
-        bool IDictionary.Contains(object key)
+        bool IDictionary.Contains( object key )
         {
-            if (key is K)
+            if ( key is K )
             {
-                return ContainsKey((K)key);
+                return this.ContainsKey( (K)key );
             }
             return false;
         }
@@ -354,120 +295,183 @@ namespace Axiom.Collections
 
         bool IDictionary.IsFixedSize
         {
-            get { return (buckets as IDictionary).IsFixedSize; }
+            get { return ( this.buckets as IDictionary ).IsFixedSize; }
         }
 
         bool IDictionary.IsReadOnly
-            {
-            get { return (buckets as IDictionary).IsReadOnly; }
-            }
+        {
+            get { return ( this.buckets as IDictionary ).IsReadOnly; }
+        }
 
         ICollection IDictionary.Keys
         {
-            get { return buckets.Keys; }
+            get { return this.buckets.Keys; }
         }
 
-        void IDictionary.Remove(object key)
+        void IDictionary.Remove( object key )
+        {
+            if ( key is K )
             {
-            if (key is K)
-            {
-                Remove((K)key);
+                this.Remove( (K)key );
             }
         }
 
         ICollection IDictionary.Values
-            {
-            get { return buckets.Values; }
+        {
+            get { return this.buckets.Values; }
         }
 
-        object IDictionary.this[object key]
+        object IDictionary.this[ object key ]
         {
-                get
+            get
+            {
+                if ( key is K )
                 {
-                if (key is K)
-                    return this[(K)key];
-                return null;
+                    return this[ (K)key ];
                 }
+                return null;
+            }
             set
             {
-                if (value is IList<T>)
-                    this[(K)key] = (List<T>)value;
+                if ( value is IList<T> )
+                {
+                    this[ (K)key ] = (List<T>)value;
+                }
                 else
-                    throw new ArgumentException("The key must be of type " + typeof(List<T>).ToString(), "value");
+                {
+                    throw new ArgumentException( "The key must be of type " + typeof ( List<T> ).ToString(), "value" );
+                }
             }
         }
 
-
-        #endregion
-
-        #region ICollection Members
-
-        void ICollection.CopyTo(Array array, int index)
-            {
+        void ICollection.CopyTo( Array array, int index )
+        {
             throw new NotImplementedException();
         }
 
         int ICollection.Count
-                {
-            get { return count; }
-                }
+        {
+            get { return this.count; }
+        }
 
         bool ICollection.IsSynchronized
-                {
-            get { return (buckets as ICollection).IsSynchronized; }
-                }
+        {
+            get { return ( this.buckets as ICollection ).IsSynchronized; }
+        }
 
         object ICollection.SyncRoot
-                {
-            get { return (buckets as ICollection).SyncRoot; }
+        {
+            get { return ( this.buckets as ICollection ).SyncRoot; }
         }
 
         #endregion
 
-        #region ICollection<KeyValuePair<K,IList<T>>> Members
+        #region IDictionary<K,List<T>> Members
 
-        void ICollection<KeyValuePair<K, List<T>>>.Add(KeyValuePair<K, List<T>> item)
-                    {
-            Add(item.Key, item.Value);
-                    }
+        void IDictionary<K, List<T>>.Add( K key, List<T> value )
+        {
+            Add( key, value );
+        }
+
+        public bool ContainsKey( K key )
+        {
+            return this.buckets.ContainsKey( key );
+        }
+
+        public ICollection<K> Keys
+        {
+            get { return this.buckets.Keys; }
+        }
+
+        public bool Remove( K key )
+        {
+            bool removed = this.buckets.Remove( key );
+            if ( removed )
+            {
+                this.count--;
+                return true;
+            }
+            return false;
+        }
+
+        public bool TryGetValue( K key, out List<T> value )
+        {
+            List<T> tvalue;
+            this.buckets.TryGetValue( key, out tvalue );
+            value = tvalue;
+            if ( tvalue == null )
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public ICollection<List<T>> Values
+        {
+            get { return this.buckets.Values; }
+        }
+
+        public List<T> this[ K key ]
+        {
+            get { return this.buckets[ key ]; }
+            set { this.buckets[ key ] = value; }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+
+        void ICollection<KeyValuePair<K, List<T>>>.Add( KeyValuePair<K, List<T>> item )
+        {
+            Add( item.Key, item.Value );
+        }
 
         void ICollection<KeyValuePair<K, List<T>>>.Clear()
-                    {
-            Clear();
-                    }
-
-        bool ICollection<KeyValuePair<K, List<T>>>.Contains(KeyValuePair<K, List<T>> item)
         {
-            return buckets.ContainsKey(item.Key);
-                }
+            this.Clear();
+        }
 
-        void ICollection<KeyValuePair<K, List<T>>>.CopyTo(KeyValuePair<K, List<T>>[] array, int arrayIndex)
-                {
+        bool ICollection<KeyValuePair<K, List<T>>>.Contains( KeyValuePair<K, List<T>> item )
+        {
+            return this.buckets.ContainsKey( item.Key );
+        }
+
+        void ICollection<KeyValuePair<K, List<T>>>.CopyTo( KeyValuePair<K, List<T>>[] array, int arrayIndex )
+        {
             throw new NotImplementedException();
-                }
+        }
 
         int ICollection<KeyValuePair<K, List<T>>>.Count
         {
-            get { return Count; }
-            }
+            get { return this.Count; }
+        }
 
         bool ICollection<KeyValuePair<K, List<T>>>.IsReadOnly
         {
-            get { return (buckets as IDictionary).IsReadOnly; }
+            get { return ( this.buckets as IDictionary ).IsReadOnly; }
         }
 
-        bool ICollection<KeyValuePair<K, List<T>>>.Remove(KeyValuePair<K, List<T>> item)
+        bool ICollection<KeyValuePair<K, List<T>>>.Remove( KeyValuePair<K, List<T>> item )
         {
-            return Remove(item.Key);
+            return this.Remove( item.Key );
         }
-
-            #endregion
-
-        #region IEnumerable<KeyValuePair<K,IList<T>>> Members
 
         IEnumerator<KeyValuePair<K, List<T>>> IEnumerable<KeyValuePair<K, List<T>>>.GetEnumerator()
         {
-            return buckets.GetEnumerator();
+            return this.buckets.GetEnumerator();
+        }
+
+        #endregion
+
+        #region IEnumerable<List<T>> Members
+
+        IEnumerator<List<T>> IEnumerable<List<T>>.GetEnumerator()
+        {
+            foreach ( KeyValuePair<K, List<T>> item in this.buckets )
+            {
+                yield return item.Value;
+            }
         }
 
         #endregion
@@ -476,35 +480,13 @@ namespace Axiom.Collections
 
         public IEnumerator<T> GetEnumerator()
         {
-            foreach (IList<T> item in buckets.Values)
+            foreach ( IList<T> item in this.buckets.Values )
             {
                 int length = item.Count;
-                for (int i = 0; i < length; i++)
+                for ( int i = 0; i < length; i++ )
                 {
-                    yield return item[i];
-    }
-}
-        }
-
-
-        #endregion
-
-        public IEnumerator<KeyValuePair<K, List<T>>> GetBucketsEnumerator()
-        {
-            foreach (KeyValuePair<K, List<T>> item in buckets)
-            {
-                yield return item;
-            }
-        }
-
-
-        #region IEnumerable<IList<T>> Members
-
-        IEnumerator<List<T>> IEnumerable<List<T>>.GetEnumerator()
-        {
-            foreach (KeyValuePair<K, List<T>> item in buckets)
-            {
-                yield return item.Value;
+                    yield return item[ i ];
+                }
             }
         }
 

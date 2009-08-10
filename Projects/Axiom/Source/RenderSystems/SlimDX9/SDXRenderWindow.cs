@@ -1024,7 +1024,7 @@ namespace Axiom.RenderSystems.SlimDX9
                     else
                     {
                         // Update dimensions incase changed
-                        foreach ( Viewport entry in this.viewportList )
+                        foreach ( Viewport entry in this.viewportList.Values )
                         {
                             entry.UpdateDimensions();
                         }

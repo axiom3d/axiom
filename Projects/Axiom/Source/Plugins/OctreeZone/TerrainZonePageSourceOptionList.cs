@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+
+using Axiom.Collections;
 
 namespace OctreeZone
 {
@@ -14,7 +15,7 @@ namespace OctreeZone
     //    }
     //}
 
-    public class TerrainZonePageSourceOptionList : SortedList<string, string>
+    public class TerrainZonePageSourceOptionList : AxiomSortedCollection<string, string>
     {
     }
 }

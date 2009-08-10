@@ -634,7 +634,7 @@ namespace Axiom.SceneManagers.Octree
                 RemoveOctreeNode( node );
             }
 
-            base.DestroySceneNode( name );
+            base.DestroySceneNode( node );
         }
 
         public void AddOctreeNode( OctreeNode node, Octree octant )

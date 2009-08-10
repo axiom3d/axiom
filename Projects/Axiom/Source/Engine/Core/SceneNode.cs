@@ -561,8 +561,8 @@ namespace Axiom.Core
             SceneNode child = (SceneNode)this.GetChild( name );
             child.RemoveAndDestroyAllChildren();
                     
-            this.RemoveChild( name );
-            child.Creator.DestroySceneNode( name );
+            this.RemoveChild( child );
+            child.Creator.DestroySceneNode( child );
         }
 
         /// <summary>
@@ -584,8 +584,8 @@ namespace Axiom.Core
             SceneNode child = (SceneNode) this.GetChild( index );
             child.RemoveAndDestroyAllChildren();
 
-            this.RemoveChild( index );
-            child.Creator.DestroySceneNode( child.Name );
+            this.RemoveChild( child );
+            child.Creator.DestroySceneNode( child );
         }
 
         /// <summary>
@@ -607,7 +607,7 @@ namespace Axiom.Core
             sceneNode.RemoveAndDestroyAllChildren();
 
             this.RemoveChild(sceneNode);
-            sceneNode.Creator.DestroySceneNode(sceneNode.Name);
+            sceneNode.Creator.DestroySceneNode(sceneNode);
         }
 
         /// <summary>
@@ -626,7 +626,7 @@ namespace Axiom.Core
                 // increment iterator before destroying (iterator invalidated by 
                 // SceneManager::destroySceneNode because it causes removal from parent)
                 sn.RemoveAndDestroyAllChildren();
-                sn.Creator.DestroySceneNode( sn.Name );
+                sn.Creator.DestroySceneNode( sn );
             }
             childNodes.Clear();
             NeedUpdate();

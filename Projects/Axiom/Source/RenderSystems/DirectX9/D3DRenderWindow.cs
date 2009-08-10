@@ -863,7 +863,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			// Notify viewports of resize
-            foreach (Viewport entry in this.viewportList)
+            foreach (Viewport entry in this.viewportList.Values)
 			{
                 entry.UpdateDimensions();
 			}
@@ -1141,7 +1141,7 @@ namespace Axiom.RenderSystems.DirectX9
 							else
 							{
 								// Update dimensions incase changed
-                                foreach (Viewport entry in this.viewportList)
+                                foreach (Viewport entry in this.viewportList.Values)
 								{
                                     entry.UpdateDimensions();
 								}

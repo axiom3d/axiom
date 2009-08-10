@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using Axiom.Collections;
 using Axiom.Graphics;
 
 #endregion Namespace Declarations
@@ -101,11 +102,11 @@ namespace Axiom.Configuration
 
         #region PossibleValues Property
 
-		private SortedList<int,T> _possibleValues = new SortedList<int,T>();
+        private ConfigOptionValuesCollection<T> _possibleValues = new ConfigOptionValuesCollection<T>();
         /// <summary>
         /// A list of the possible values for this Configuration Option
         /// </summary>
-		public SortedList<int, T> PossibleValues
+        public ConfigOptionValuesCollection<T> PossibleValues
         {
             get
             {
@@ -158,6 +159,11 @@ namespace Axiom.Configuration
         public override string ToString()
         {
             return string.Format( "{0} : {1}", this.Name, this.Value );
+        }
+
+        public class ConfigOptionValuesCollection<T> : AxiomSortedCollection<int,T>
+        {
+            
         }
     }
 }

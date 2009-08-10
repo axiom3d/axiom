@@ -55,7 +55,7 @@ namespace Axiom.UnitTests.Core
 
             node.RemoveAndDestroyChild( childNode );
 
-            Assert.IsFalse( ManagerContainsNode( sceneManager, childNode ), "A child node was destroryed but not removed from the scene graph." );
+            Assert.IsFalse( ManagerContainsNode( sceneManager, childNode ), "A child node was destroyed but not removed from the scene graph." );
         }
 
         private static bool ManagerContainsNode( SceneManager sceneManager, SceneNode childNode )
