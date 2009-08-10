@@ -56,7 +56,18 @@ namespace Axiom.Graphics
 
 		#region Constructors
 
-		public RenderTexture( HardwarePixelBuffer buffer, int zOffset )
+        public RenderTexture( string name, HardwarePixelBuffer buffer, int zOffset )
+            : base( name )
+        {
+            pixelBuffer = buffer;
+            this.zOffset = zOffset;
+            Priority = RenderTargetPriority.RenderToTexture;
+            Width = buffer.Width;
+            Height = buffer.Height;
+            ColorDepth = PixelUtil.GetNumElemBits( buffer.Format );
+        }
+
+	    public RenderTexture( HardwarePixelBuffer buffer, int zOffset )
 		{
 			pixelBuffer = buffer;
 			this.zOffset = zOffset;

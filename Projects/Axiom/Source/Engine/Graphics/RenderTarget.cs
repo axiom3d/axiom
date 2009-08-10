@@ -618,7 +618,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public virtual void RemoveAllViewports()
 		{
-			foreach ( Viewport pair in _viewportList )
+			foreach ( Viewport pair in _viewportList.Values )
 			{
 				OnViewportRemoved( pair );
 			}

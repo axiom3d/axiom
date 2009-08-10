@@ -721,7 +721,7 @@ namespace Axiom.Core
 
             // create a new animation and record it locally
             Animation anim = new Animation( name, length );
-            this.animationList.Add( anim );
+            this.animationList.Add( name, anim );
 
             return anim;
         }
@@ -996,18 +996,27 @@ namespace Axiom.Core
             // grab the node from the list
             SceneNode node = (SceneNode)this.sceneNodeList[ name ];
 
+            this.DestroySceneNode( node );
+        }
+
+        /// <summary>
+        ///    Destroys and removes a node from the scene.
+        /// </summary>
+        /// <param name="node">A SceneNode</param>
+        public virtual void DestroySceneNode( SceneNode node )
+        {
             // Find any scene nodes which are tracking this node, and turn them off.
             for ( int i = 0; i < this.autoTrackingSceneNodes.Count; i++ )
             {
                 SceneNode autoNode = autoTrackingSceneNodes.Values[ i ];
 
                 // Tracking this node
-                if (autoNode.AutoTrackTarget == node)
+                if ( autoNode.AutoTrackTarget == node )
                 {
                     // turn off, this will notify SceneManager to remove
-                    autoNode.SetAutoTracking(false);
+                    autoNode.SetAutoTracking( false );
                 }
-                else if (autoNode == node)
+                else if ( autoNode == node )
                 {
                     // node being removed is a tracker
                     autoTrackingSceneNodes.Remove( name );
@@ -1018,9 +1027,10 @@ namespace Axiom.Core
             {
                 node.Parent.RemoveChild( node );
             }
-			
+
             // removes the node from the list
-            sceneNodeList.Remove( name );
+            sceneNodeList.Remove( node.Name );
+
         }
 
         /// <summary>
@@ -6743,7 +6753,7 @@ namespace Axiom.Core
             MovableObjectFactory factory = Root.Instance.GetMovableObjectFactory( typeName );
             MovableObject item = objectMap[ name ];
             factory.DestroyInstance( item );
-            objectMap.Remove( item );
+            objectMap.Remove( item.Name );
         }
 
         public void DestroyAllMovableObjectsByType( string typeName )
@@ -6854,7 +6864,7 @@ namespace Axiom.Core
             MovableObjectCollection objectMap = this.GetMovableObjectCollection( typeName );
             lock ( objectMap )
             {
-                objectMap.Remove( objectMap[ name ] );
+                objectMap.Remove( name );
             }
         }
 

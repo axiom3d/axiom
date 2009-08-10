@@ -1057,6 +1057,10 @@
       <Project>{F81F1AAF-8BC9-4064-94C2-AD0C0A9C0ED1}</Project>
       <Name>Axiom.Plugins.ParticleFX</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\Source\RenderSystems\DirectX9\Axiom.RenderSystems.DirectX9.csproj">
+      <Project>{68DBB62F-F98D-47B5-A769-C20B461227AB}</Project>
+      <Name>Axiom.RenderSystems.DirectX9</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\Source\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.Win32.csproj">
       <Project>{503C2DEF-293E-491F-ADDA-EE3860FCF84B}</Project>
       <Name>Axiom.RenderSystems.OpenGL.Win32</Name>

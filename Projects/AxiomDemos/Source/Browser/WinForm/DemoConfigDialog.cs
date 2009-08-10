@@ -1,23 +1,19 @@
 
 using System;
-using System.ComponentModel;
-using System.Drawing;
 using System.IO;
-using System.Windows.Forms;
+using System.Reflection;
 using SWF = System.Windows.Forms;
 
-using Axiom;
-using System.Collections.Generic;
-using System.Reflection;
 using Axiom.Core;
+using Axiom.Collections;
 
 namespace Axiom.Demos
 {
 	public class DemoConfigDialog : ConfigDialog
 	{
-		protected ListBox lstDemos;
-		protected GroupBox grpAvailableDemos;
-		protected PictureBox picPreview;
+		protected SWF.ListBox lstDemos;
+		protected SWF.GroupBox grpAvailableDemos;
+		protected SWF.PictureBox picPreview;
 		protected SWF.Timer tmrRotator;
 
 		private Stream image = null;
@@ -51,9 +47,9 @@ namespace Axiom.Demos
 
         private void InitializeComponent()
         {
-			this.lstDemos = new ListBox();
-			this.grpAvailableDemos = new GroupBox();
-			this.picPreview = new PictureBox();
+			this.lstDemos = new SWF.ListBox();
+            this.grpAvailableDemos = new SWF.GroupBox();
+            this.picPreview = new SWF.PictureBox();
 			this.tmrRotator = new System.Windows.Forms.Timer();
 
 			///
@@ -150,7 +146,7 @@ namespace Axiom.Demos
 
 		public void LoadDemos( string DemoAssembly )
 		{
-			SortedList<string, DemoItem> demoList = new SortedList<string, DemoItem>();
+            AxiomSortedCollection<string, DemoItem> demoList = new AxiomSortedCollection<string, DemoItem>();
 
 			Assembly demos = Assembly.LoadFrom( DemoAssembly );
 			Type[] demoTypes = demos.GetTypes();
@@ -165,9 +161,9 @@ namespace Axiom.Demos
 				}
 			}
 
-			foreach ( KeyValuePair<string, DemoItem> typeName in demoList )
+			foreach ( DemoItem typeName in demoList )
 			{
-				lstDemos.Items.Add( typeName.Value );
+				lstDemos.Items.Add( typeName );
 			}
 
 			this.lstDemos.SelectedIndexChanged += new EventHandler( lstDemos_SelectedIndexChanged );

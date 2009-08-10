@@ -5,6 +5,7 @@ using System.IO;
 using System.Globalization;
 using System.Threading;
 
+using Axiom.Collections;
 using Axiom.Demos;
 using Axiom.Core;
 using Axiom.Graphics;
@@ -95,7 +96,7 @@ namespace Axiom.Demos.Browser.CommandLine
         public void Run( )
         {
 #if !(XBOX || XBOX360 || SILVERLIGHT)
-            SortedList<string, DemoItem> demoList = new SortedList<string, DemoItem>();
+            AxiomSortedCollection<string, DemoItem> demoList = new AxiomSortedCollection<string, DemoItem>();
 #endif
             try
             {

@@ -44,6 +44,8 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 
+using D3D = SlimDX.Direct3D9;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.SlimDX9
@@ -59,9 +61,8 @@ namespace Axiom.RenderSystems.SlimDX9
         /// <param name="name"></param>
         /// <param name="buffer"></param>
         public SDXRenderTexture( string name, HardwarePixelBuffer buffer )
-            : base( buffer, 0 )
+            : base( name, buffer, 0 )
         {
-            this.Name = name;
         }
 
         public void Rebind( SDXHardwarePixelBuffer buffer )
@@ -92,14 +93,10 @@ namespace Axiom.RenderSystems.SlimDX9
                 switch ( attribute.ToUpper() )
                 {
                     case "D3DBACKBUFFER":
-                        if ( this.FSAA > 0 )
-                        {
-                            return ( (SDXHardwarePixelBuffer)pixelBuffer ).FSAASurface;
-                        }
-                        else
-                        {
-                            return ( (SDXHardwarePixelBuffer)pixelBuffer ).Surface;
-                        }
+                        D3D.Surface[] surface = new D3D.Surface[ 1 ];
+                        SDXHardwarePixelBuffer hpb = ( (SDXHardwarePixelBuffer)pixelBuffer );
+                        surface[ 0 ] = this.FSAA > 0 ? hpb.FSAASurface : hpb.Surface;
+                        return surface;
                     case "HWND":
                         return null;
                     case "BUFFER":

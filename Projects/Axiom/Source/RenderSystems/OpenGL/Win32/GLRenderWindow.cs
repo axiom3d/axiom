@@ -409,7 +409,7 @@ namespace Axiom.RenderSystems.OpenGL
             }
 
 			// Update dimensions incase changed
-            foreach ( Viewport entry in this.viewportList )
+            foreach ( Viewport entry in this.viewportList.Values )
 			{
                 entry.UpdateDimensions();
 			}

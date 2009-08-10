@@ -71,7 +71,7 @@ namespace OctreeZone
         /// The buffer with all the renderable geometry in it
         private HardwareVertexBuffer mMainBuffer;
         /// Optional set of delta buffers, used to morph from one LOD to the next
-        private SortedList<int, HardwareVertexBuffer> mDeltaBuffers = new SortedList<int, HardwareVertexBuffer>();
+        private AxiomSortedCollection<int, HardwareVertexBuffer> mDeltaBuffers = new AxiomSortedCollection<int, HardwareVertexBuffer>();
         /// System-memory buffer with just positions in it, for CPU operations
         float[] mPositionBuffer;
         /// Forced rendering LOD level, optional
@@ -336,7 +336,7 @@ namespace OctreeZone
                 if ( mOptions.lodMorph )
                 {
                     // Create delta buffer for all except the lowest mip
-                    mDeltaBuffers = new SortedList<int, HardwareVertexBuffer>( mOptions.maxGeoMipMapLevel - 1 );
+                    mDeltaBuffers = new AxiomSortedCollection<int, HardwareVertexBuffer>( mOptions.maxGeoMipMapLevel - 1 );
                 }
 
                 Real C = CalculateCFactor();
