@@ -835,10 +835,6 @@ namespace Axiom.Demos
         /// <param name="rw">The RenderWindow which created this event</param>
         public void WindowFocusChange( RenderWindow rw )
         {
-            Contract.RequiresNotNull( rw, "RenderWindow" );
-
-            if ( !rw.IsActive )
-                rw.IsActive = true;
         }
 
     }
