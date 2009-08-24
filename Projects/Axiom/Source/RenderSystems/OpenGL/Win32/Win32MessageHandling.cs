@@ -162,7 +162,7 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				case WindowMessage.Activate:
 					{
-						bool active = ( (ActivateState)m.WParam ) != ActivateState.InActive;
+                        bool active = ((ActivateState)(m.WParam.ToInt32() & 0xFFFF)) != ActivateState.InActive;
 						win.IsActive = active;
 						WindowEventMonitor.Instance.WindowFocusChange( win, active );
 						break;
