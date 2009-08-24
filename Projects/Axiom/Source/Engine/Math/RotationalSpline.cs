@@ -187,6 +187,8 @@ namespace Axiom.Math
             // let p = point[i], pInv = p.Inverse
             // tangent[i] = p * exp( -0.25 * ( log(pInv * point[i+1]) + log(pInv * point[i-1]) ) )
 
+            tangentList.Clear();
+
             int i, numPoints;
             bool isClosed;
 
