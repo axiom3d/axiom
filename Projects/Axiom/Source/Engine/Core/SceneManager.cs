@@ -5481,7 +5481,7 @@ namespace Axiom.Core
                     }
                     else
                     {
-                         tempLightList.Values[ 0 ] = light;
+                         tempLightList[ 0 ] = light;
                     }
 
                     this.RenderSolidObjects( priorityGroup.solidPassesDiffuseSpecular, false, tempLightList );
@@ -5843,7 +5843,7 @@ namespace Axiom.Core
                         }
                         else
                         {
-                            tempLightList.Values[ 0 ] = light;
+                            tempLightList[ 0 ] = light;
                         }
                         this.RenderSolidObjects( priorityGroup.solidPassesDiffuseSpecular, false, tempLightList );
                     } // for each light
