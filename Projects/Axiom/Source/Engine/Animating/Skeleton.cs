@@ -452,18 +452,7 @@ namespace Axiom.Animating
 			// get the first bone in the list
 			Bone currentBone = boneList[ 0 ];
 
-			// all bones without a parent are root bones
-            //for ( int i = 0; i < boneList.Count; i++ )
-            //{
-            //    Bone bone = boneList.Values[i];
-
-            //    if ( bone.Parent == null )
-            //    {
-            //        rootBones.Add( bone );
-            //    }
-            //}
-            //thild: foreach
-            foreach (Bone bone in boneList)
+            foreach (Bone bone in boneList.Values)
 			{
 				if ( bone.Parent == null )
 				{
@@ -592,14 +581,8 @@ namespace Axiom.Animating
 				reverse transform by the Bone's original derived position/orientation, then transform
 				by the new derived position / orientation.
 			*/
-            //for ( int i = 0; i < boneList.Count; i++ )
-            //{
-            //    Bone bone = boneList.Values[i];
-            //    matrices[ i ] = bone.FullTransform * bone.BindDerivedInverseTransform;
-            //}
             int i = 0;
-            //thild: foreach
-            foreach (Bone bone in boneList)
+            foreach (Bone bone in boneList.Values)
 			{
                 matrices[i++] = bone.FullTransform * bone.BindDerivedInverseTransform;
 			}
@@ -615,20 +598,9 @@ namespace Axiom.Animating
 		public virtual void InitAnimationState( AnimationStateSet animSet )
 		{
 			animSet.RemoveAllAnimationStates();
-
-			// loop through all the internal animations and add new animation states to the passed in
-			// collection
-            //for ( int i = 0; i < animationList.Count; i++ )
-            //{
-            //    Animation anim = animationList.Values[i];
-
-            //    animSet.CreateAnimationState( anim.Name, 0, anim.Length );
-            //}
-
-            //thild: foreach
-            foreach (Animation anim in animationList)
+            foreach ( Animation anim in animationList.Values)
 			{
-				animSet.CreateAnimationState( anim.Name, 0, anim.Length );
+                animSet.CreateAnimationState(anim.Name, 0, anim.Length);
 			}
 		}
 
@@ -639,7 +611,6 @@ namespace Axiom.Animating
 		/// <returns></returns>
 		public virtual void RemoveAnimation( string name )
 		{
-            //thild: if animation has a name remove by name
 			animationList.Remove( name );
 		}
 
@@ -767,7 +738,7 @@ namespace Axiom.Animating
 			Vector3 axis = new Vector3();
 
 			// write each bone out
-			foreach ( Bone bone in boneList )
+			foreach ( Bone bone in boneList.Values )
 			{
 				writer.WriteLine( "-- Bone {0} --", bone.Handle );
 				writer.Write( "Position: {0}", bone.Position );
@@ -783,7 +754,7 @@ namespace Axiom.Animating
 			writer.WriteLine( "Number of animations: {0}", animationList.Count );
 
 			// animations
-			foreach ( Animation anim in animationList )
+			foreach ( Animation anim in animationList.Values )
 			{
 				writer.WriteLine( "-- Animation '{0}' (length {1}) --", anim.Name, anim.Length );
 				writer.WriteLine( "Number of tracks: {0}", anim.NodeTracks.Count );
