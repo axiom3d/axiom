@@ -402,11 +402,10 @@ namespace Axiom.Math
 			{
 				float pitch, yaw, roll;
 				ToEulerAngles( out pitch, out yaw, out roll );
-				FromEulerAngles( value, yaw, roll );
+				this = FromEulerAngles( value, yaw, roll );
 			}
 			get
 			{
-
 				float test = x * y + z * w;
 				if ( Utility.Abs( test ) > 0.499f ) // singularity at north and south pole
 					return 0f;
@@ -421,7 +420,7 @@ namespace Axiom.Math
 			{
 				float pitch, yaw, roll;
 				ToEulerAngles( out pitch, out yaw, out roll );
-				FromEulerAngles( pitch, value, roll );
+				this = FromEulerAngles( pitch, value, roll );
 			}
 			get
 			{
@@ -438,7 +437,7 @@ namespace Axiom.Math
 
 				float pitch, yaw, roll;
 				ToEulerAngles( out pitch, out yaw, out roll );
-				FromEulerAngles( pitch, yaw, value );
+				this = FromEulerAngles( pitch, yaw, value );
 			}
 			get
 			{
