@@ -532,12 +532,12 @@ namespace Axiom.Core
             {
                 this.materialName = value;
                 //if null or empty string then reset the material to that defined by the mesh
-                if ( value == null || value == string.Empty )
+                if ( String.IsNullOrEmpty( value ) )
                 {
                     foreach ( SubEntity ent in this.subEntityList )
                     {
                         string defaultMaterial = ent.SubMesh.MaterialName;
-                        if ( defaultMaterial != null && defaultMaterial != string.Empty )
+                        if ( !String.IsNullOrEmpty( defaultMaterial ) )
                         {
                             ent.MaterialName = defaultMaterial;
                             break;

@@ -233,15 +233,6 @@ namespace Axiom.Collections
         #region Instance Methods
 
         /// <summary>
-        /// eturns an enumerator that iterates through the <see cref="AxiomCollection{T}"/>.
-        /// </summary>
-        /// <returns>An <see cref="IEnumerator{T}"/> for the <see cref="AxiomCollection{T}"/> values.</returns>
-        public virtual IEnumerator GetEnumerator()
-        {
-            return Values.GetEnumerator();
-        }
-
-        /// <summary>
         ///	Removes the item with the specified key from the collection.
         /// </summary>
         /// <param name="item">The key of the item to remove.</param>

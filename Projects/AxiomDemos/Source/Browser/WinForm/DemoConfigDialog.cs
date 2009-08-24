@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using SWF = System.Windows.Forms;
@@ -161,9 +162,9 @@ namespace Axiom.Demos
 				}
 			}
 
-			foreach ( DemoItem typeName in demoList )
-			{
-				lstDemos.Items.Add( typeName );
+            foreach (KeyValuePair<string, DemoItem> demoItem in demoList)
+            {
+                lstDemos.Items.Add(demoItem.Value);
 			}
 
 			this.lstDemos.SelectedIndexChanged += new EventHandler( lstDemos_SelectedIndexChanged );
