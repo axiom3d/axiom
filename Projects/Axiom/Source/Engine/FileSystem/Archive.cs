@@ -38,6 +38,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+using Axiom.Core;
+
 #endregion Namespace Declarations
 			
 namespace Axiom.FileSystem
@@ -135,7 +137,22 @@ namespace Axiom.FileSystem
         }
 
         #endregion Type Property
-			
+
+        #region IsReadOnly Property
+        private bool _isReadOnly;
+        public bool IsReadOnly
+        {
+            get 
+            {
+                return _isReadOnly;
+            }
+            protected set 
+            {
+                _isReadOnly = value;
+            }
+        }
+        #endregion IsReadOnly Property
+
         /// Is this archive case sensitive in the way it matches files
         public abstract bool IsCaseSensitive
         {
@@ -163,6 +180,7 @@ namespace Axiom.FileSystem
         {
             _name = name;
             _type = archType;
+            _isReadOnly = true;
         }
 
 		~Archive()
@@ -206,7 +224,28 @@ namespace Axiom.FileSystem
         /// A reference to a DataStream which can be used to read / write
         ///  the file. If the file is not present, returns null.
         /// </returns>
-        public abstract Stream Open( string fileName );
+        public abstract Stream Open(string fileName);
+
+        /// <summary>
+        /// Create a new file (or overwrite one already there).
+        /// </summary>
+        /// <remarks>If the archive is read-only then this method will fail.</remarks>
+        /// <param name="filename">The fully qualified name of the file</param>
+        /// <returns>A Stream which can be used to read / write the file.</returns>
+		public virtual Stream Create(string filename) 
+		{
+			throw new AxiomException("This archive does not support creation of files.");
+		}
+
+        /// <summary>
+        /// Delete a named file.
+        /// </summary>
+        /// <remarks>If the archive is read-only then this method will fail.</remarks>
+        /// <param name="filename">The fully qualified name of the file</param>
+        public virtual void Remove(string filename)
+		{
+            throw new AxiomException("This archive does not support removal of files.");
+		}
 
         #region List Method
 

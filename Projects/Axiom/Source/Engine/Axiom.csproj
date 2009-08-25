@@ -95,6 +95,7 @@
     <Compile Include="Animating\AnimationStateSet.cs" />
     <Compile Include="Animating\AttachmentPoint.cs" />
     <Compile Include="Animating\Pose.cs" />
+    <Compile Include="Collections\Deque.cs" />
     <Compile Include="Collections\NamedParameterList.cs" />
     <Compile Include="Collections\RadixSort.cs" />
     <Compile Include="Collections\SceneManagerCollection.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="Controllers\Canned\PassthroughControllerFunction.cs" />
     <Compile Include="Core\AbstractFactory.cs" />
     <Compile Include="Core\BillboardChain.cs" />
+    <Compile Include="Core\BitConverterEx.cs" />
     <Compile Include="Core\INamable.cs" />
     <Compile Include="Core\ManualObject.cs" />
     <Compile Include="Core\Meters.cs" />
@@ -784,6 +786,7 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Serialization\StreamSerializer.cs" />
     <Compile Include="Utilities\Contract.cs" />
     <Compile Include="Utilities\Exceptions.cs" />
     <Compile Include="Utilities\Proclaim.cs" />
