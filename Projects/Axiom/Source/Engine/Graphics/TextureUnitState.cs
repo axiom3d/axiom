@@ -1773,7 +1773,7 @@ namespace Axiom.Graphics
         /// </summary>
         private void RecalcTextureMatrix()
         {
-            Matrix3 xform = Matrix3.Identity;
+            Matrix4 xform = Matrix4.Identity;
 
             // texture scaling
             if ( scaleU != 1 || scaleV != 1 )
@@ -1783,17 +1783,17 @@ namespace Axiom.Graphics
                 xform.m11 = 1 / scaleV;
 
                 // skip matrix mult since first matrix update
-                xform.m02 = ( -0.5f * xform.m00 ) + 0.5f;
-                xform.m12 = ( -0.5f * xform.m11 ) + 0.5f;
+                xform.m03 = (-0.5f * xform.m00) + 0.5f;
+                xform.m13 = (-0.5f * xform.m11) + 0.5f;
             }
 
             // texture translation
             if ( transU != 0 || transV != 0 )
             {
-                Matrix3 xlate = Matrix3.Identity;
+                Matrix4 xlate = Matrix4.Identity;
 
-                xlate.m02 = transU;
-                xlate.m12 = transV;
+                xlate.m03 = transU;
+                xlate.m13 = transV;
 
                 // multiplt the transform by the translation
                 xform = xlate * xform;
@@ -1801,7 +1801,7 @@ namespace Axiom.Graphics
 
             if ( rotate != 0.0f )
             {
-                Matrix3 rotation = Matrix3.Identity;
+                Matrix4 rotation = Matrix4.Identity;
 
                 float theta = Utility.DegreesToRadians( rotate );
                 float cosTheta = Utility.Cos( theta );
@@ -1814,8 +1814,8 @@ namespace Axiom.Graphics
                 rotation.m11 = cosTheta;
 
                 // offset the center of rotation to the center of the texture
-                rotation.m02 = 0.5f + ( ( -0.5f * cosTheta ) - ( -0.5f * sinTheta ) );
-                rotation.m12 = 0.5f + ( ( -0.5f * sinTheta ) + ( -0.5f * cosTheta ) );
+                rotation.m03 = 0.5f + ( ( -0.5f * cosTheta ) - ( -0.5f * sinTheta ) );
+                rotation.m13 = 0.5f + ( ( -0.5f * sinTheta ) + ( -0.5f * cosTheta ) );
 
                 // multiply the rotation and transformation matrices
                 xform = rotation * xform;
