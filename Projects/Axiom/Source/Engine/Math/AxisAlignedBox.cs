@@ -259,10 +259,13 @@ namespace Axiom.Math
 
         #endregion
 
-        #region new Contain methods
+        #region Contain methods
 
-        /** Tests whether the given point contained by this box.
-        */
+        /// <summary>
+        /// Tests whether the given point contained by this box.
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns>True if the vector is contained inside the box.</returns>
         public bool Contains(Vector3 v)
         {
             if (IsNull)
@@ -276,7 +279,7 @@ namespace Axiom.Math
         }
 
 
-        #endregion new Contain methods
+        #endregion Contain methods
 
         #region Intersection Methods
 
@@ -529,8 +532,9 @@ namespace Axiom.Math
             }
         }
 
-        /** Returns true if the box is infinite.
-*/
+        /// <summary>
+        /// Returns true if the box is infinite.
+        /// </summary>
         public bool IsInfinite
         {
             get
