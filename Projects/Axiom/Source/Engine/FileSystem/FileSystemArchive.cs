@@ -209,6 +209,26 @@ namespace Axiom.FileSystem
             popDirectory();
         }
 
+        public override Stream Create(string filename)
+        {
+            if ( IsReadOnly )
+            {
+                throw new AxiomException( "Cannot create a file in a read-only archive" );
+            }
+
+            Stream stream = null;
+            try
+            {
+                stream = File.Create( _basePath + Path.DirectorySeparatorChar + filename, 0, FileOptions.RandomAccess );
+            }
+            catch( Exception ex )
+            {
+                throw new AxiomException( "Failed to open file : " + filename, ex, null );
+            }
+
+            return stream;
+        }
+
         public override void Unload()
         {
             // Nothing to do here.
