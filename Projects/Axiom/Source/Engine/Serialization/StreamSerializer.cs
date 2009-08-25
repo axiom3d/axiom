@@ -116,7 +116,7 @@ namespace Axiom.Serialization
 
         #region Fields and Properties
 
-        protected MemoryStream mStream;
+        protected Stream mStream;
         protected bool mFlipEndian;
         protected bool mReadWriteHeader;
         protected RealStorageFormat mRealFormat = RealStorageFormat.Float;
@@ -218,7 +218,7 @@ namespace Axiom.Serialization
         /// Default constructor.
         /// </summary>
         /// <param name="stream">The stream on which you will read / write data.</param>
-        public StreamSerializer(MemoryStream stream)
+        public StreamSerializer(Stream stream)
             : this(stream, Endian.Auto, true)
         {
         }
@@ -233,7 +233,7 @@ namespace Axiom.Serialization
         /// then you can skip writing / reading the header if you wish, if for example
         /// this stream is midway through a file which has already included header
         /// information.</param>
-        public StreamSerializer(MemoryStream stream, Endian endianMode)
+        public StreamSerializer(Stream stream, Endian endianMode)
             : this(stream, endianMode, true)
         {
         }
@@ -254,12 +254,9 @@ namespace Axiom.Serialization
         /// then you can skip writing / reading the header if you wish, if for example
         /// this stream is midway through a file which has already included header
         /// information.</param>
-        public StreamSerializer(MemoryStream stream, Endian endianMode, bool autoHeader)
+        public StreamSerializer(Stream stream, Endian endianMode, bool autoHeader)
         {
-            if (stream.Capacity == 0)
-                mStream = stream;
-            else
-                mStream = new MemoryStream(stream.GetBuffer());
+            mStream = stream;
             mEndian = endianMode;
             mReadWriteHeader = autoHeader;
 
