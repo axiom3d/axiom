@@ -220,11 +220,27 @@ namespace Axiom.FileSystem
         /// controls the lifecycle of this file operation.
         /// </remarks>
         /// <param name="filename">The fully qualified name of the file</param>
-        /// <returns>
-        /// A reference to a DataStream which can be used to read / write
+        /// <param name="readOnly">True to open for Read Access, false for Read/Write </param>
+        /// <returns>A reference to a Stream which can be used to read / write
         ///  the file. If the file is not present, returns null.
         /// </returns>
-        public abstract Stream Open(string fileName);
+        public abstract Stream Open(string filename, bool readOnly);
+
+        /// <summary>
+        /// Open a stream on a given file. 
+        /// </summary>
+        /// <remarks>
+        /// There is no equivalent 'close' method; the returned stream
+        /// controls the lifecycle of this file operation.
+        /// </remarks>
+        /// <param name="filename">The fully qualified name of the file</param>
+        /// <returns>
+        /// A reference to a Stream which can be used to read the file. If the file is not present, returns null.
+        /// </returns>
+        public Stream Open(string filename)
+        {
+            return Open( filename, true );
+        }
 
         /// <summary>
         /// Create a new file (or overwrite one already there).

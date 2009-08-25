@@ -203,7 +203,7 @@ namespace Axiom.FileSystem
 			}
 		}
 
-		public override Stream Open( string fileName )
+		public override Stream Open( string filename, bool readOnly )
 		{
 			ZipEntry entry;
 
@@ -218,7 +218,7 @@ namespace Axiom.FileSystem
 			// loop through all the entries until we find the requested one
 			while ( entry != null )
 			{
-				if ( entry.Name.ToLower() == fileName.ToLower() )
+				if ( entry.Name.ToLower() == filename.ToLower() )
 				{
 					break;
 				}
