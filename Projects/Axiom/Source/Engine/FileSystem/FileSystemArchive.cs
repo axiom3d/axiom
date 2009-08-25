@@ -191,6 +191,20 @@ namespace Axiom.FileSystem
             // Check we can change to it
             pushDirectory( _basePath );
 
+            // check to see if it's writable
+            try
+            {
+                File.Create( _basePath + @"\__testWrite.Axiom", 0, FileOptions.WriteThrough | FileOptions.DeleteOnClose );
+            }
+            catch (Exception ex)
+            {
+                IsReadOnly = true;
+            }
+            finally
+            {
+                IsReadOnly = false;
+            }
+
             // return to previous
             popDirectory();
         }
@@ -200,15 +214,15 @@ namespace Axiom.FileSystem
             // Nothing to do here.
         }
 
-        public override System.IO.Stream Open( string fileName )
+        public override System.IO.Stream Open( string filename, bool readOnly )
         {
 			Stream strm = null;
 
 			pushDirectory( _basePath );
-            if ( File.Exists( _basePath + fileName ) )
+            if ( File.Exists( _basePath + filename ) )
             {
-				System.IO.FileInfo fi = new System.IO.FileInfo( _basePath + fileName );
-                strm = (Stream)fi.Open( FileMode.Open, FileAccess.Read );
+				System.IO.FileInfo fi = new System.IO.FileInfo( _basePath + filename );
+                strm = (Stream)fi.Open( FileMode.Open, readOnly ? FileAccess.Read : FileAccess.ReadWrite );
             }
 			popDirectory();
 
