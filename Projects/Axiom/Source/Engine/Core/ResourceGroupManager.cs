@@ -47,6 +47,7 @@ using Axiom.Scripting;
 
 using Real = System.Single;
 using System.Text;
+using System.Text.RegularExpressions;
 
 #endregion Namespace Declarations
 
@@ -405,6 +406,65 @@ namespace Axiom.Core
 
             /// <summary>Scene manager to use with linked world geometry </summary>
             public SceneManager WorldGeometrySceneManager;
+
+			public void Add(string filename, Archive arch)
+			{
+		        // internal, assumes mutex lock has already been obtained
+		        this.ResourceIndexCaseSensitive[filename] = arch;
+
+		        if (!arch.IsCaseSensitive)
+		        {
+			        string lcase = filename.ToLower();
+			        this.ResourceIndexCaseInsensitive[lcase] = arch;
+		        }
+
+			}
+
+            public void Remove(string filename, Archive arch)
+            {
+		        // internal, assumes mutex lock has already been obtained
+                if ( this.ResourceIndexCaseSensitive.ContainsKey( filename ) )
+                {
+                    this.ResourceIndexCaseSensitive.Remove( filename );
+                }
+
+		        if (!arch.IsCaseSensitive)
+		        {
+			        string lcase = filename.ToLower();
+                    if (this.ResourceIndexCaseInsensitive.ContainsKey(filename))
+                    {
+                        this.ResourceIndexCaseInsensitive.Remove(filename);
+                    }
+                }
+
+            }
+
+            public void Remove(Archive arch)
+            {
+                List<string> keys = new List<string>();
+                // Delete indexes
+                foreach ( KeyValuePair<string, Archive> kvp in this.ResourceIndexCaseSensitive )
+                {
+                    if ( kvp.Value == arch )
+                        keys.Add( kvp.Key );
+                }
+                foreach ( string key in keys )
+                {
+                    this.ResourceIndexCaseSensitive.Remove( key );
+                }
+
+                keys.Clear();
+                foreach ( KeyValuePair<string, Archive> kvp in this.ResourceIndexCaseInsensitive )
+                {
+                    if ( kvp.Value == arch )
+                        keys.Add( kvp.Key );
+                }
+                foreach ( string key in keys )
+                {
+                    this.ResourceIndexCaseInsensitive.Remove( key );
+                }
+
+            }
 
             #region IDisposable Members
 
@@ -1450,6 +1510,120 @@ namespace Axiom.Core
         }
 
         #endregion OpenResources Method
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="groupName"></param>
+        /// <param name="overwrite"></param>
+        /// <param name="locationPattern"></param>
+        /// <returns></returns>
+	    public IO.Stream CreateResource(string filename, string groupName, bool overwrite, string locationPattern)
+	    {
+	        //OGRE_LOCK_AUTO_MUTEX
+	        ResourceGroup grp = getResourceGroup( groupName );
+	        if ( grp == null )
+	        {
+	            throw new AxiomException( "Cannot find a group named {0} : ResourceGroupManager::OpenResource", groupName );
+	        }
+
+	        //OGRE_LOCK_MUTEX(grp->OGRE_AUTO_MUTEX_NAME) // lock group mutex
+
+	        foreach ( ResourceLocation rl in grp.LocationList )
+	        {
+	            Archive arch = rl.Archive;
+
+	            if ( !arch.IsReadOnly && ( String.IsNullOrEmpty( locationPattern ) || ( new Regex( locationPattern ) ).IsMatch( arch.Name ) ) )
+	            {
+	                if ( !overwrite && arch.Exists( filename ) )
+	                    throw new AxiomException( "Cannot overwrite existing file " + filename );
+
+	                // create it
+	                IO.Stream ret = arch.Create( filename );
+	                grp.Add( filename, arch );
+
+
+	                return ret;
+	            }
+	        }
+
+	        throw new AxiomException( "Cannot find a writable location in group " + groupName );
+
+	    }
+        /*
+	void ResourceGroupManager::deleteResource(const String& filename, const String& groupName, 
+		const String& locationPattern)
+	{
+		OGRE_LOCK_AUTO_MUTEX
+		ResourceGroup* grp = getResourceGroup(groupName);
+		if (!grp)
+		{
+			OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, 
+				"Cannot locate a resource group called '" + groupName + "'", 
+				"ResourceGroupManager::createResource");
+		}
+
+		OGRE_LOCK_MUTEX(grp->OGRE_AUTO_MUTEX_NAME) // lock group mutex
+
+		
+		for (LocationList::iterator li = grp->locationList.begin(); 
+			li != grp->locationList.end(); ++li)
+		{
+			Archive* arch = (*li)->archive;
+
+			if (!arch->isReadOnly() && 
+				(locationPattern.empty() || StringUtil::match(arch->getName(), locationPattern, false)))
+			{
+				if (arch->exists(filename))
+				{
+					arch->remove(filename);
+					grp->removeFromIndex(filename, arch);
+
+					// only remove one file
+					break;
+				}
+			}
+		}
+
+	}
+	//---------------------------------------------------------------------
+	void ResourceGroupManager::deleteMatchingResources(const String& filePattern, 
+		const String& groupName, const String& locationPattern)
+	{
+		OGRE_LOCK_AUTO_MUTEX
+		ResourceGroup* grp = getResourceGroup(groupName);
+		if (!grp)
+		{
+			OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, 
+				"Cannot locate a resource group called '" + groupName + "'", 
+				"ResourceGroupManager::createResource");
+		}
+
+		OGRE_LOCK_MUTEX(grp->OGRE_AUTO_MUTEX_NAME) // lock group mutex
+
+		
+		for (LocationList::iterator li = grp->locationList.begin(); 
+			li != grp->locationList.end(); ++li)
+		{
+			Archive* arch = (*li)->archive;
+
+			if (!arch->isReadOnly() && 
+				(locationPattern.empty() || StringUtil::match(arch->getName(), locationPattern, false)))
+			{
+				StringVectorPtr matchingFiles = arch->find(filePattern);
+				for (StringVector::iterator f = matchingFiles->begin(); f != matchingFiles->end(); ++f)
+				{
+					arch->remove(*f);
+					grp->removeFromIndex(*f, arch);
+
+				}
+			}
+		}
+
+
+	}
+         * */
 
         /// <summary>List all file names in a resource group.</summary>
         /// <remarks>

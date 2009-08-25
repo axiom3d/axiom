@@ -288,9 +288,6 @@ namespace Axiom.Core
             float sqLen = System.Math.Max( vmax.LengthSquared, vmin.LengthSquared );
             //mRadius = System.Math.Sqrt(sqLen);
 
-
-
-
             float maxx = vmax.x;
             float maxy = vmax.y;
             float maxz = vmax.z;
@@ -298,7 +295,6 @@ namespace Axiom.Core
             float minx = vmin.x;
             float miny = vmin.y;
             float minz = vmin.z;
-
 
             HardwareVertexBuffer buffer = vertexData.vertexBufferBinding.GetBuffer( POSITION );
 
@@ -395,8 +391,6 @@ namespace Axiom.Core
             }
             buffer.Unlock();
         }
-
-
 
         #endregion
     }
