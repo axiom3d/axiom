@@ -35,6 +35,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+
 using Axiom.Utilities;
 
 #endregion Namespace Declarations
@@ -48,6 +50,7 @@ namespace Axiom.Core
 	///		interpolation, because with the values always being cast back to a byte would lose
 	///		any small interpolated values (i.e. 223 - .25 as a byte is 223).
 	/// </summary>
+    [StructLayout( LayoutKind.Sequential )]
 	public struct ColorEx : IComparable
 	{
 		#region Member variables
@@ -2607,6 +2610,11 @@ namespace Axiom.Core
                 return false;
         }
 
+        public override string ToString()
+        {
+            return this.To_0_255_String();
+        }
+       
 		#endregion Object overloads
 
 		#region IComparable Members
