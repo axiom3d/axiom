@@ -112,7 +112,12 @@ namespace Axiom.Core
             }
         }
 
-		#region Pinned Object Access
+        public static int SizeOf(Type type)
+        {
+            return Marshal.SizeOf( type );
+        }
+
+        #region Pinned Object Access
 
 		private static Dictionary<object, GCHandle> _pinnedReferences = new Dictionary<object, GCHandle>();
 		public static IntPtr PinObject( object obj )

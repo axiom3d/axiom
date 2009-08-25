@@ -47,6 +47,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #endregion Namespace Declarations
 
+using System.Runtime.InteropServices;
+
 namespace Axiom.Math
 {
     /// <summary>
@@ -61,11 +63,10 @@ namespace Axiom.Math
     /// respectively), and a constant (D) which is the distance along
     /// the normal you have to go to move the plane back to the origin.
     /// </remarks>
+    [StructLayout(LayoutKind.Sequential)]
     public struct Plane
     {
         #region Fields
-
-        private static readonly Plane nullPlane = new Plane( Vector3.Zero, 0 );
 
         /// <summary>
         ///		Distance from the origin.
@@ -77,6 +78,7 @@ namespace Axiom.Math
         /// </summary>
         public Vector3 Normal;
 
+        private static readonly Plane nullPlane = new Plane( Vector3.Zero, 0 );
         public static Plane Null
         {
             get
