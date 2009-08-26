@@ -1516,6 +1516,43 @@ namespace Axiom.Core
         /// </summary>
         /// <remarks>This method creates a new file in a resource group and passes you back a writeable stream</remarks>
         /// <param name="filename">The name of the file to create</param>
+        /// <returns>An open Stream</returns>
+	    public IO.Stream CreateResource(string filename)
+        {
+            return CreateResource( filename, ResourceGroupManager.DefaultResourceGroupName, false, "" );
+        }
+
+        /// <summary>
+        /// Create a new resource file in a given group.
+        /// </summary>
+        /// <remarks>This method creates a new file in a resource group and passes you back a writeable stream</remarks>
+        /// <param name="filename">The name of the file to create</param>
+        /// <param name="groupName">The name of the group in which to create the file</param>
+        /// <returns>An open Stream</returns>
+	    public IO.Stream CreateResource(string filename, string groupName)
+        {
+            return CreateResource( filename, groupName, false, "" );
+        }
+
+        /// <summary>
+        /// Create a new resource file in a given group.
+        /// </summary>
+        /// <remarks>This method creates a new file in a resource group and passes you back a writeable stream</remarks>
+        /// <param name="filename">The name of the file to create</param>
+        /// <param name="groupName">The name of the group in which to create the file</param>
+        /// <param name="overwrite">If true, an existing file will be overwritten, if false
+        /// an error will occur if the file already exists</param>
+        /// <returns>An open Stream</returns>
+	    public IO.Stream CreateResource(string filename, string groupName, bool overwrite)
+        {
+            return CreateResource( filename, groupName, overwrite, "" );
+        }
+
+        /// <summary>
+        /// Create a new resource file in a given group.
+        /// </summary>
+        /// <remarks>This method creates a new file in a resource group and passes you back a writeable stream</remarks>
+        /// <param name="filename">The name of the file to create</param>
         /// <param name="groupName">The name of the group in which to create the file</param>
         /// <param name="overwrite">If true, an existing file will be overwritten, if false
         /// an error will occur if the file already exists</param>
@@ -1560,6 +1597,25 @@ namespace Axiom.Core
         /// Delete a single resource file.
         /// </summary>
         /// <param name="filename">The name of the file to delete</param>
+        public void DeleteResource(string filename)
+        {
+            DeleteResource( filename, ResourceGroupManager.DefaultResourceGroupName, "" );
+        }
+
+        /// <summary>
+        /// Delete a single resource file.
+        /// </summary>
+        /// <param name="filename">The name of the file to delete</param>
+        /// <param name="groupName">The name of the group in which to search</param>
+        public void DeleteResource(string filename, string groupName)
+        {
+            DeleteResource( filename, groupName, "" );
+        }
+
+        /// <summary>
+        /// Delete a single resource file.
+        /// </summary>
+        /// <param name="filename">The name of the file to delete</param>
         /// <param name="groupName">The name of the group in which to search</param>
         /// <param name="locationPattern">If the resource group contains multiple locations,
         /// then usually first matching file found in any location will be deleted. If you 
@@ -1594,6 +1650,25 @@ namespace Axiom.Core
                 }
             }
 
+        }
+
+        /// <summary>
+        /// Delete all matching resource files.
+        /// </summary>
+        /// <param name="filePattern">The pattern (see <seealso cref="Regex.IsMatch(string)"/>) of the files to delete. </param>
+        public void DeleteMatchingResources(string filePattern)
+        {
+            DeleteMatchingResources( filePattern, ResourceGroupManager.DefaultResourceGroupName, "" );
+        }
+
+        /// <summary>
+        /// Delete all matching resource files.
+        /// </summary>
+        /// <param name="filePattern">The pattern (see <seealso cref="Regex.IsMatch(string)"/>) of the files to delete. </param>
+        /// <param name="groupName">The name of the group in which to search</param>
+        public void DeleteMatchingResources(string filePattern, string groupName)
+        {
+            DeleteMatchingResources( filePattern, groupName, "" );
         }
 
         /// <summary>
