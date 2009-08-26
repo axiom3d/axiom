@@ -248,10 +248,22 @@ namespace Axiom.FileSystem
         /// <remarks>If the archive is read-only then this method will fail.</remarks>
         /// <param name="filename">The fully qualified name of the file</param>
         /// <returns>A Stream which can be used to read / write the file.</returns>
-		public virtual Stream Create(string filename) 
+		public Stream Create(string filename) 
 		{
-			throw new AxiomException("This archive does not support creation of files.");
+            return Create( filename, false );
 		}
+
+        /// <summary>
+        /// Create a new file (or overwrite one already there).
+        /// </summary>
+        /// <remarks>If the archive is read-only then this method will fail.</remarks>
+        /// <param name="filename">The fully qualified name of the file</param>
+        /// <param name="overwrite">True to overwrite an existing file.</param>
+        /// <returns>A Stream which can be used to read / write the file.</returns>
+        public virtual Stream Create(string filename, bool overwrite )
+        {
+            throw new AxiomException("This archive does not support creation of files.");
+        }
 
         /// <summary>
         /// Delete a named file.
@@ -450,5 +462,4 @@ namespace Axiom.FileSystem
     }
 
     #endregion Archive Abstract Class and Factory
-
 }
