@@ -209,7 +209,7 @@ namespace Axiom.FileSystem
             popDirectory();
         }
 
-        public override Stream Create(string filename)
+        public override Stream Create(string filename, bool overwrite)
         {
             if ( IsReadOnly )
             {
@@ -217,13 +217,22 @@ namespace Axiom.FileSystem
             }
 
             Stream stream = null;
-            try
+            string fullPath = _basePath + Path.DirectorySeparatorChar + filename;
+            bool exists = File.Exists( fullPath );
+            if ( !exists || overwrite )
             {
-                stream = File.Create( _basePath + Path.DirectorySeparatorChar + filename, 0, FileOptions.RandomAccess );
+                try
+                {
+                    stream = File.Create( fullPath, 1, FileOptions.RandomAccess );
+                }
+                catch( Exception ex )
+                {
+                    throw new AxiomException( "Failed to open file : " + filename, ex );
+                }
             }
-            catch( Exception ex )
+            else
             {
-                throw new AxiomException( "Failed to open file : " + filename, ex, null );
+                stream = Open( fullPath, false );
             }
 
             return stream;

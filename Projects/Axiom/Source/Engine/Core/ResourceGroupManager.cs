@@ -1512,20 +1512,26 @@ namespace Axiom.Core
         #endregion OpenResources Method
 
         /// <summary>
-        /// 
+        /// Create a new resource file in a given group.
         /// </summary>
-        /// <param name="filename"></param>
-        /// <param name="groupName"></param>
-        /// <param name="overwrite"></param>
-        /// <param name="locationPattern"></param>
-        /// <returns></returns>
+        /// <remarks>This method creates a new file in a resource group and passes you back a writeable stream</remarks>
+        /// <param name="filename">The name of the file to create</param>
+        /// <param name="groupName">The name of the group in which to create the file</param>
+        /// <param name="overwrite">If true, an existing file will be overwritten, if false
+        /// an error will occur if the file already exists</param>
+        /// <param name="locationPattern">If the resource group contains multiple locations,
+        /// then usually the file will be created in the first writable location. If you 
+        /// want to be more specific, you can include a location pattern here and 
+        /// only locations which match that pattern (as determined by <seealso cref="Regex.IsMatch(string)"/>)
+        /// will be considered candidates for creation.</param>
+        /// <returns>An open Stream</returns>
 	    public IO.Stream CreateResource(string filename, string groupName, bool overwrite, string locationPattern)
 	    {
 	        //OGRE_LOCK_AUTO_MUTEX
 	        ResourceGroup grp = getResourceGroup( groupName );
 	        if ( grp == null )
 	        {
-	            throw new AxiomException( "Cannot find a group named {0} : ResourceGroupManager::OpenResource", groupName );
+	            throw new AxiomException( "Cannot find a group named {0}.", groupName );
 	        }
 
 	        //OGRE_LOCK_MUTEX(grp->OGRE_AUTO_MUTEX_NAME) // lock group mutex
@@ -1547,83 +1553,85 @@ namespace Axiom.Core
 	                return ret;
 	            }
 	        }
-
 	        throw new AxiomException( "Cannot find a writable location in group " + groupName );
-
 	    }
-        /*
-	void ResourceGroupManager::deleteResource(const String& filename, const String& groupName, 
-		const String& locationPattern)
-	{
-		OGRE_LOCK_AUTO_MUTEX
-		ResourceGroup* grp = getResourceGroup(groupName);
-		if (!grp)
-		{
-			OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, 
-				"Cannot locate a resource group called '" + groupName + "'", 
-				"ResourceGroupManager::createResource");
-		}
 
-		OGRE_LOCK_MUTEX(grp->OGRE_AUTO_MUTEX_NAME) // lock group mutex
+        /// <summary>
+        /// Delete a single resource file.
+        /// </summary>
+        /// <param name="filename">The name of the file to delete</param>
+        /// <param name="groupName">The name of the group in which to search</param>
+        /// <param name="locationPattern">If the resource group contains multiple locations,
+        /// then usually first matching file found in any location will be deleted. If you 
+        /// want to be more specific, you can include a location pattern here and 
+        /// only locations which match that pattern (as determined by <seealso cref="Regex.IsMatch(string)"/>)
+        /// will be considered candidates for deletion.</param>
+        public void DeleteResource(string filename, string groupName, string locationPattern)
+        {
+            //OGRE_LOCK_AUTO_MUTEX
+            ResourceGroup grp = getResourceGroup( groupName );
+            if ( grp == null )
+            {
+                throw new AxiomException( "Cannot find a group named {0}.", groupName );
+            }
 
-		
-		for (LocationList::iterator li = grp->locationList.begin(); 
-			li != grp->locationList.end(); ++li)
-		{
-			Archive* arch = (*li)->archive;
+            //OGRE_LOCK_MUTEX(grp->OGRE_AUTO_MUTEX_NAME) // lock group mutex
 
-			if (!arch->isReadOnly() && 
-				(locationPattern.empty() || StringUtil::match(arch->getName(), locationPattern, false)))
-			{
-				if (arch->exists(filename))
-				{
-					arch->remove(filename);
-					grp->removeFromIndex(filename, arch);
+            foreach ( ResourceLocation rl in grp.LocationList )
+            {
+                Archive arch = rl.Archive;
 
-					// only remove one file
-					break;
-				}
-			}
-		}
+                if ( !arch.IsReadOnly && ( String.IsNullOrEmpty( locationPattern ) || ( new Regex( locationPattern ) ).IsMatch( arch.Name ) ) )
+                {
+                    if ( arch.Exists( filename ) )
+                    {
+                        arch.Remove( filename );
+                        grp.Remove( filename, arch );
 
-	}
-	//---------------------------------------------------------------------
-	void ResourceGroupManager::deleteMatchingResources(const String& filePattern, 
-		const String& groupName, const String& locationPattern)
-	{
-		OGRE_LOCK_AUTO_MUTEX
-		ResourceGroup* grp = getResourceGroup(groupName);
-		if (!grp)
-		{
-			OGRE_EXCEPT(Exception::ERR_ITEM_NOT_FOUND, 
-				"Cannot locate a resource group called '" + groupName + "'", 
-				"ResourceGroupManager::createResource");
-		}
+                        // only remove one file
+                        break;
+                    }
+                }
+            }
 
-		OGRE_LOCK_MUTEX(grp->OGRE_AUTO_MUTEX_NAME) // lock group mutex
+        }
 
-		
-		for (LocationList::iterator li = grp->locationList.begin(); 
-			li != grp->locationList.end(); ++li)
-		{
-			Archive* arch = (*li)->archive;
+        /// <summary>
+        /// Delete all matching resource files.
+        /// </summary>
+        /// <param name="filePattern">The pattern (see <seealso cref="Regex.IsMatch(string)"/>) of the files to delete. </param>
+        /// <param name="groupName">The name of the group in which to search</param>
+        /// <param name="locationPattern">If the resource group contains multiple locations, 
+        /// then usually all matching files in any location will be deleted. If you 
+        /// want to be more specific, you can include a location pattern here and 
+        /// only locations which match that pattern (as determined by <seealso cref="Regex.IsMatch(string)"/>)
+        /// will be considered candidates for deletion.</param>
+        public void DeleteMatchingResources(string filePattern, string groupName, string locationPattern)
+        {
+            //OGRE_LOCK_AUTO_MUTEX
+            ResourceGroup grp = getResourceGroup( groupName );
+            if ( grp == null )
+            {
+                throw new AxiomException( "Cannot find a group named {0}.", groupName );
+            }
 
-			if (!arch->isReadOnly() && 
-				(locationPattern.empty() || StringUtil::match(arch->getName(), locationPattern, false)))
-			{
-				StringVectorPtr matchingFiles = arch->find(filePattern);
-				for (StringVector::iterator f = matchingFiles->begin(); f != matchingFiles->end(); ++f)
-				{
-					arch->remove(*f);
-					grp->removeFromIndex(*f, arch);
+            //OGRE_LOCK_MUTEX(grp->OGRE_AUTO_MUTEX_NAME) // lock group mutex
 
-				}
-			}
-		}
+            foreach ( ResourceLocation rl in grp.LocationList )
+            {
+                Archive arch = rl.Archive;
 
+                if ( !arch.IsReadOnly && ( String.IsNullOrEmpty( locationPattern ) || ( new Regex( locationPattern ) ).IsMatch( arch.Name ) ) )
+                {
+                    foreach ( string f in arch.Find( filePattern ) )
+                    {
+                        arch.Remove( f );
+                        grp.Remove( f, arch );
 
-	}
-         * */
+                    }
+                }
+            }
+        }
 
         /// <summary>List all file names in a resource group.</summary>
         /// <remarks>
