@@ -113,6 +113,7 @@
     <Compile Include="Core\SceneManagerEnumerator.cs" />
     <Compile Include="Core\ShadowTextureManager.cs" />
     <Compile Include="Core\Singleton.cs" />
+    <Compile Include="Core\SpecialCaseRenderQueue.cs" />
     <Compile Include="Core\StaticGeometry\GeometryBucket.cs" />
     <Compile Include="Core\StaticGeometry\LODBucket.cs" />
     <Compile Include="Core\StaticGeometry\MaterialBucket.cs" />

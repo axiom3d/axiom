@@ -637,7 +637,7 @@ namespace Axiom.RenderSystems.SlimDX9
             D3D.FilterCaps filterCaps;
 
             // Minification filter is used for mipmap generation
-            // Pick the best one supported for this tex type
+            // Pick the best one supported for this texture type
             switch ( this.TextureType )
             {
                 case TextureType.OneD: // Same as 2D

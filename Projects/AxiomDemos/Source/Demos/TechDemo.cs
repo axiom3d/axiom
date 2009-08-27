@@ -151,6 +151,10 @@ namespace Axiom.Demos
             viewport.BackgroundColor = ColorEx.Black;
         }
 
+        public virtual void SetupResources()
+        {
+        }
+
         protected virtual bool Setup()
         {
             // instantiate the Root singleton
@@ -166,24 +170,44 @@ namespace Axiom.Demos
             TechDemoListener rwl = new TechDemoListener( window );
             WindowEventMonitor.Instance.RegisterListener( window, rwl );
 
-            ResourceGroupManager.Instance.InitializeAllResourceGroups();
-
-            ShowDebugOverlay( showDebugOverlay );
-
             ChooseSceneManager();
             CreateCamera();
             CreateViewports();
 
-            //CreateGUI();
-
             // set default mipmap level
             TextureManager.Instance.DefaultMipmapCount = 5;
+
+            // Create any resource listeners (for loading screens)
+            this.CreateResourceListener();
+            // Load resources
+            this.LoadResources();
+
+            ShowDebugOverlay( showDebugOverlay );
+
+            //CreateGUI();
+
 
             input = SetupInput();
 
             // call the overridden CreateScene method
             CreateScene();
             return true;
+        }
+
+        /// <summary>
+        /// Optional override method where you can create resource listeners (e.g. for loading screens)
+        /// </summary>
+        protected virtual void CreateResourceListener()
+        {
+        }   
+
+        /// <summary>
+        /// Optional override method where you can perform resource group loading
+        /// </summary>
+        /// <remarks>Must at least do ResourceGroupManager.Instance.InitializeAllResourceGroups();</remarks>
+        protected virtual void LoadResources()
+        {
+            ResourceGroupManager.Instance.InitializeAllResourceGroups();
         }
 
         protected InputReader _setupInput()
@@ -361,12 +385,15 @@ namespace Axiom.Demos
 
                 //engine.Dispose();
             }
-            scene.RemoveAllCameras();
+            if ( scene != null )
+                scene.RemoveAllCameras();
             camera = null;
-            Root.Instance.RenderSystem.DetachRenderTarget( window );
-            window.Dispose();
-
-            engine.Dispose();
+            if ( Root.Instance != null)
+                Root.Instance.RenderSystem.DetachRenderTarget( window );
+            if ( window != null )
+                window.Dispose();
+            if( engine != null )
+                engine.Dispose();
         }
 
         #endregion Public Methods

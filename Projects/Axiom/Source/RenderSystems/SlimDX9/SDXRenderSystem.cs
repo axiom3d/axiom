@@ -95,7 +95,7 @@ namespace Axiom.RenderSystems.SlimDX9
         protected int _lastVertexSourceCount;
 
         // stores texture stage info locally for convenience
-        internal D3DTextureStageDesc[] texStageDesc = new D3DTextureStageDesc[Config.MaxTextureLayers];
+        internal SDXTextureStageDesc[] texStageDesc = new SDXTextureStageDesc[Config.MaxTextureLayers];
 
         protected int primCount;
         protected int renderCount = 0;
@@ -117,7 +117,10 @@ namespace Axiom.RenderSystems.SlimDX9
 
         public bool IsDeviceLost
         {
-            get { return _deviceLost; }
+            get
+            {
+                return _deviceLost;
+            }
         }
 
         //---------------------------------------------------------------------
@@ -145,14 +148,9 @@ namespace Axiom.RenderSystems.SlimDX9
 
         protected Dictionary<ZBufferFormat, D3D.Surface> zBufferCache = new Dictionary<ZBufferFormat, D3D.Surface>();
 
-        /// <summary>
-        ///		Temp D3D vector to avoid constant allocations.
-        /// </summary>
-        private DX.Vector4 tempVec = new DX.Vector4();
-
         public SDXRenderSystem()
         {
-            LogManager.Instance.Write( "SlimDX Rendering Subsystem created." );
+            LogManager.Instance.Write( "[SDX] Rendering Subsystem created." );
 
             if ( manager == null )
             {
@@ -166,8 +164,9 @@ namespace Axiom.RenderSystems.SlimDX9
             {
                 texStageDesc[ i ].autoTexCoordType = TexCoordCalcMethod.None;
                 texStageDesc[ i ].coordIndex = 0;
-                texStageDesc[ i ].texType = D3DTexType.Normal;
-                texStageDesc[ i ].tex = null;
+                texStageDesc[ i ].textureType = SDXTextureType.Normal;
+                texStageDesc[ i ].texture = null;
+                texStageDesc[ i ].vertexTexture = null;
             }
         }
 
@@ -175,13 +174,22 @@ namespace Axiom.RenderSystems.SlimDX9
 
         public override ColorEx AmbientLight
         {
-            get { return SDXHelper.FromColor( device.GetRenderState<System.Drawing.Color>( D3D.RenderState.Ambient ) ); }
-            set { device.SetRenderState( D3D.RenderState.Ambient, SDXHelper.ToColor( value ).ToArgb() ); }
+            get
+            {
+                return SDXHelper.FromColor( device.GetRenderState<System.Drawing.Color>( D3D.RenderState.Ambient ) );
+            }
+            set
+            {
+                device.SetRenderState( D3D.RenderState.Ambient, SDXHelper.ToColor( value ).ToArgb() );
+            }
         }
 
         public override bool LightingEnabled
         {
-            get { return device.GetRenderState<bool>( D3D.RenderState.Lighting ); }
+            get
+            {
+                return device.GetRenderState<bool>( D3D.RenderState.Lighting );
+            }
             set
             {
                 if ( device.GetRenderState<bool>( D3D.RenderState.Lighting ) != value )
@@ -196,7 +204,10 @@ namespace Axiom.RenderSystems.SlimDX9
         /// </summary>
         public override bool NormalizeNormals
         {
-            get { return device.GetRenderState<bool>( D3D.RenderState.NormalizeNormals ); }
+            get
+            {
+                return device.GetRenderState<bool>( D3D.RenderState.NormalizeNormals );
+            }
             set
             {
                 if ( device.GetRenderState<bool>( D3D.RenderState.NormalizeNormals ) != value )
@@ -208,7 +219,10 @@ namespace Axiom.RenderSystems.SlimDX9
 
         public override Shading ShadingMode
         {
-            get { return SDXHelper.ConvertEnum( device.GetRenderState<D3D.ShadeMode>( D3D.RenderState.ShadeMode ) ); }
+            get
+            {
+                return SDXHelper.ConvertEnum( device.GetRenderState<D3D.ShadeMode>( D3D.RenderState.ShadeMode ) );
+            }
             set
             {
                 D3D.ShadeMode tmp = SDXHelper.ConvertEnum( value );
@@ -221,7 +235,10 @@ namespace Axiom.RenderSystems.SlimDX9
 
         public override bool StencilCheckEnabled
         {
-            get { return device.GetRenderState<bool>( D3D.RenderState.StencilEnable ); }
+            get
+            {
+                return device.GetRenderState<bool>( D3D.RenderState.StencilEnable );
+            }
             set
             {
                 if ( device.GetRenderState<bool>( D3D.RenderState.StencilEnable ) != value )
@@ -229,11 +246,6 @@ namespace Axiom.RenderSystems.SlimDX9
                     device.SetRenderState( D3D.RenderState.StencilEnable, value );
                 }
             }
-        }
-
-        public bool DeviceLost
-        {
-            get { return _deviceLost; }
         }
 
         /// <summary>
@@ -291,12 +303,12 @@ namespace Axiom.RenderSystems.SlimDX9
                 flags |= D3D.ClearFlags.ZBuffer;
             }
             // Only try to clear the stencil buffer if supported
-            if ( ( buffers & FrameBufferType.Stencil ) > 0 && _rsCapabilities.HasCapability( Axiom.Graphics.Capabilities.StencilBuffer ) )
+            if ( ( buffers & FrameBufferType.Stencil ) > 0 && _rsCapabilities.HasCapability( Capabilities.StencilBuffer ) )
             {
                 flags |= D3D.ClearFlags.Stencil;
             }
 
-            DX.Result result = device.Clear( flags , SDXHelper.ToColor(color).ToArgb(), depth, stencil );
+            DX.Result result = device.Clear( flags , color.ToARGB(), depth, stencil );
             if ( result.IsFailure )
             {
                 LogManager.Instance.Write( "[SDX] : Failed clearing flags:" + flags + " Color: " + color.ToARGB() + " depth:" + depth + " stencil:" + stencil );
@@ -335,7 +347,7 @@ namespace Axiom.RenderSystems.SlimDX9
                     strParams.AppendFormat( "{0} = {1}; ", entry.Key, entry.Value );
                 }
             }
-            LogManager.Instance.Write( "D3D9RenderSystem::createRenderWindow \"{0}\", {1}x{2} {3} miscParams: {4}",
+            LogManager.Instance.Write( "[SDX] RenderSystem.CreateRenderWindow \"{0}\", {1}x{2} {3} miscParams: {4}",
                                        name, width, height, isFullScreen ? "fullscreen" : "windowed", strParams.ToString() );
 
             // Make sure we don't already have a render target of the 
@@ -415,7 +427,7 @@ namespace Axiom.RenderSystems.SlimDX9
 
             base.Shutdown();
 
-            LogManager.Instance.Write( "[SlimDX] : " + Name + " shutdown." );
+            LogManager.Instance.Write( "[SDX] : " + Name + " shutdown." );
         }
 
         /// <summary>
@@ -524,7 +536,7 @@ namespace Axiom.RenderSystems.SlimDX9
 
         public override RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
         {
-            LogManager.Instance.Write( "[SlimDX] : Subsystem Initializing" );
+            LogManager.Instance.Write( "[SDX] : Subsystem Initializing" );
 
             WindowEventMonitor.Instance.MessagePump = Win32MessageHandling.MessagePump;
 
@@ -568,9 +580,7 @@ namespace Axiom.RenderSystems.SlimDX9
                 useWBuffer = ( renderWindow.ColorDepth == 16 );
             }
 
-            LogManager.Instance.Write( "*****************************************" );
-            LogManager.Instance.Write( "*** SlimDX : Subsystem Initialized OK ***" );
-            LogManager.Instance.Write( "*****************************************" );
+            LogManager.Instance.Write( "[SDX] : Subsystem Initialized OK" );
 
             return renderWindow;
         }
@@ -704,7 +714,7 @@ namespace Axiom.RenderSystems.SlimDX9
 			Vector4 q = matrix.inverse() * 
 				Vector4(Math::Sign(plane.normal.x), Math::Sign(plane.normal.y), 1.0f, 1.0f);
 			*/
-            Axiom.Math.Vector4 q = new Axiom.Math.Vector4();
+            Vector4 q = new Vector4();
             q.x = System.Math.Sign( plane.Normal.x ) / projMatrix.m00;
             q.y = System.Math.Sign( plane.Normal.y ) / projMatrix.m11;
             q.z = 1.0f;
@@ -720,10 +730,9 @@ namespace Axiom.RenderSystems.SlimDX9
             }
 
             // Calculate the scaled plane vector
-            Axiom.Math.Vector4 clipPlane4d =
-                new Axiom.Math.Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D );
+            Vector4 clipPlane4d = new Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D );
 
-            Axiom.Math.Vector4 c = clipPlane4d * ( 1.0f / ( clipPlane4d.Dot( q ) ) );
+            Vector4 c = clipPlane4d * ( 1.0f / ( clipPlane4d.Dot( q ) ) );
 
             // Replace the third row of the projection matrix
             projMatrix.m20 = c.x;
@@ -776,7 +785,7 @@ namespace Axiom.RenderSystems.SlimDX9
         /// 
         /// </summary>
         /// <param name="viewport"></param>
-        public override void SetViewport( Axiom.Core.Viewport viewport )
+        public override void SetViewport( Viewport viewport )
         {
             if ( activeViewport != viewport || viewport.IsUpdated )
             {
@@ -800,30 +809,26 @@ namespace Axiom.RenderSystems.SlimDX9
                         }
                     }
                 }
-                // we cannot dipose of the back buffer in fullscreen mode, since we have a direct reference to
-                // the main back buffer.  all other surfaces are safe to dispose
-                bool disposeBackBuffer = true;
 
-                if ( activeRenderTarget is SDXRenderWindow )
+                D3D.Surface depth = (D3D.Surface)activeRenderTarget[ "D3DZBUFFER" ];
+                if ( depth == null )
                 {
-                    SDXRenderWindow window = activeRenderTarget as SDXRenderWindow;
+                    /// No depth buffer provided, use our own
+                    /// Request a depth stencil that is compatible with the format, multisample type and
+                    /// dimensions of the render target.
+                    D3D.SurfaceDescription srfDesc = back[ 0 ].Description;
+                    depth = _getDepthStencilFor( srfDesc.Format, srfDesc.MultisampleType, srfDesc.Width, srfDesc.Height );
 
-                    if ( window.IsFullScreen )
-                    {
-                        disposeBackBuffer = false;
-                    }
                 }
 
-                // be sure to destroy the surface we had
-                if ( disposeBackBuffer )
+                // Bind render targets
+                int count = back.Length;
+                for ( int i = 0; i < count && back[ i ] != null; ++i )
                 {
-                    for ( int i = 0; i < back.Length; i++ )
-                        back[ i ].Dispose();
+                    device.SetRenderTarget( i, back[ i ] );
                 }
 
-                D3D.Surface depth = (D3D.Surface)activeRenderTarget.GetCustomAttribute( "D3DZBUFFER" );
-
-                // set the render target and depth stencil for the surfaces beloning to the viewport
+                // set the render target and depth stencil for the surfaces belonging to the viewport
                 device.DepthStencilSurface = depth;
 
                 // set the culling mode, to make adjustments required for viewports
@@ -1028,13 +1033,13 @@ namespace Axiom.RenderSystems.SlimDX9
                 // note used
                 texture.Touch();
 
-                if ( texStageDesc[ stage ].tex != texture.DXTexture )
+                if ( texStageDesc[ stage ].texture != texture.DXTexture )
                 {
                     device.SetTexture( stage, texture.DXTexture );
 
                     // set stage description
-                    texStageDesc[ stage ].tex = texture.DXTexture;
-                    texStageDesc[ stage ].texType = SDXHelper.ConvertEnum( texture.TextureType );
+                    texStageDesc[ stage ].texture = texture.DXTexture;
+                    texStageDesc[ stage ].textureType = SDXHelper.ConvertEnum( texture.TextureType );
                 }
                 // TODO : Set gamma now too
                 //if ( dt->isHardwareGammaReadToBeUsed() )
@@ -1048,17 +1053,17 @@ namespace Axiom.RenderSystems.SlimDX9
             }
             else
             {
-                if ( texStageDesc[ stage ].tex != null )
+                if ( texStageDesc[ stage ].texture != null )
                 {
                     device.SetTexture( stage, null );
                 }
 
                 // set stage description to defaults
                 device.SetTextureStageState( stage, D3D.TextureStage.ColorOperation, D3D.TextureOperation.Disable );
-                texStageDesc[ stage ].tex = null;
+                texStageDesc[ stage ].texture = null;
                 texStageDesc[ stage ].autoTexCoordType = TexCoordCalcMethod.None;
                 texStageDesc[ stage ].coordIndex = 0;
-                texStageDesc[ stage ].texType = D3DTexType.Normal;
+                texStageDesc[ stage ].textureType = SDXTextureType.Normal;
             }
         }
 
@@ -2017,7 +2022,7 @@ namespace Axiom.RenderSystems.SlimDX9
         /// <param name="filter"></param>
         public override void SetTextureUnitFiltering( int stage, FilterType type, FilterOptions filter )
         {
-            D3DTexType texType = texStageDesc[ stage ].texType;
+            SDXTextureType texType = texStageDesc[ stage ].textureType;
             D3D.TextureFilter texFilter = SDXHelper.ConvertEnum( type, filter, d3dCaps, texType );
 
             switch ( type )
@@ -2149,7 +2154,7 @@ namespace Axiom.RenderSystems.SlimDX9
                     //FIXME: The actually input texture coordinate dimensions should
                     //be determine by texture coordinate vertex element. Now, just trust
                     //user supplied texture type matchs texture coordinate vertex element.
-                    if ( texStageDesc[ stage ].texType == D3DTexType.Normal )
+                    if ( texStageDesc[ stage ].textureType == SDXTextureType.Normal )
                     {
                         /* It's 2D input texture coordinate:
 
@@ -2168,7 +2173,7 @@ namespace Axiom.RenderSystems.SlimDX9
                     // All texgen generate 3D input texture coordinates.
                 }
 
-                // tell D3D the dimension of tex. coord
+                // tell D3D the dimension of texture. coord
                 D3D.TextureTransform texCoordDim = D3D.TextureTransform.Count2;
 
                 if ( autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture )
@@ -2180,9 +2185,9 @@ namespace Axiom.RenderSystems.SlimDX9
                     //divide u, v by q. The w and q just ignored as it wasn't used by
                     //rasterizer.
 
-                    switch ( texStageDesc[ stage ].texType )
+                    switch ( texStageDesc[ stage ].textureType )
                     {
-                        case D3DTexType.Normal:
+                        case SDXTextureType.Normal:
                             Utility.Swap( ref d3dMat.M13, ref d3dMat.M14 );
                             Utility.Swap( ref d3dMat.M23, ref d3dMat.M24 );
                             Utility.Swap( ref d3dMat.M33, ref d3dMat.M34 );
@@ -2190,8 +2195,8 @@ namespace Axiom.RenderSystems.SlimDX9
 
                             texCoordDim = D3D.TextureTransform.Projected | D3D.TextureTransform.Count3;
                             break;
-                        case D3DTexType.Cube:
-                        case D3DTexType.Volume:
+                        case SDXTextureType.Cube:
+                        case SDXTextureType.Volume:
                             // Yes, we support 3D projective texture.
                             texCoordDim = D3D.TextureTransform.Projected | D3D.TextureTransform.Count4;
                             break;
@@ -2199,19 +2204,19 @@ namespace Axiom.RenderSystems.SlimDX9
                 }
                 else
                 {
-                    switch ( texStageDesc[ stage ].texType )
+                    switch ( texStageDesc[ stage ].textureType )
                     {
-                        case D3DTexType.Normal:
+                        case SDXTextureType.Normal:
                             texCoordDim = D3D.TextureTransform.Count2;
                             break;
-                        case D3DTexType.Cube:
-                        case D3DTexType.Volume:
+                        case SDXTextureType.Cube:
+                        case SDXTextureType.Volume:
                             texCoordDim = D3D.TextureTransform.Count3;
                             break;
                     }
                 }
 
-                // note: int values of D3D.TextureTransform correspond directly with tex dimension, so direct conversion is possible
+                // note: int values of D3D.TextureTransform correspond directly with texture dimension, so direct conversion is possible
                 // i.e. Count1 = 1, Count2 = 2, etc
                 //device.TextureState[ stage ].TextureTransform = (D3D.TextureTransform)texCoordDim;
                 device.SetTextureStageState( stage, D3D.TextureStage.TextureTransformFlags, (D3D.TextureTransform)texCoordDim );
@@ -2695,28 +2700,31 @@ namespace Axiom.RenderSystems.SlimDX9
     /// <summary>
     ///		Structure holding texture unit settings for every stage
     /// </summary>
-    internal struct D3DTextureStageDesc
+    internal struct SDXTextureStageDesc
     {
         /// the type of the texture
-        public D3DTexType texType;
+        public SDXTextureType textureType;
 
         /// wich texCoordIndex to use
         public int coordIndex;
 
-        /// type of auto tex. calc. used
+        /// type of auto texture. calc. used
         public TexCoordCalcMethod autoTexCoordType;
 
         /// Frustum, used if the above is projection
         public Frustum frustum;
 
         /// texture 
-        public D3D.BaseTexture tex;
+        public D3D.BaseTexture texture;
+
+        /// vertex texture 
+        public D3D.BaseTexture vertexTexture;
     }
 
     /// <summary>
     ///		D3D texture types
     /// </summary>
-    public enum D3DTexType
+    public enum SDXTextureType
     {
         Normal,
         Cube,

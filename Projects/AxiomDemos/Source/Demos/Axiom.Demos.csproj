@@ -103,6 +103,7 @@
     <Compile Include="FrustumCulling.cs" />
     <Compile Include="Grass.cs" />
     <Compile Include="LargeScene.cs" />
+    <Compile Include="LoadingBar.cs" />
     <Compile Include="MousePicking.cs" />
     <Compile Include="MultipleSceneManager.cs" />
     <Compile Include="OffsetMapping.cs" />

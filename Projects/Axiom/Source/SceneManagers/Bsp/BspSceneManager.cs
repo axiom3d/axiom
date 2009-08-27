@@ -140,8 +140,91 @@ namespace Axiom.SceneManagers.Bsp
         #endregion
 
         #region Public methods
+
+        public override int EstimateWorldGeometry(string filename)
+        {
+             return BspLevel.CalculateLoadingStages(filename);
+        }
+
+        public override int EstimateWorldGeometry(Stream stream, string typeName)
+        {
+            return base.EstimateWorldGeometry(stream, typeName);
+        }
+
+        public override void SetWorldGeometry(string filename)
+        {
+            if (Path.GetExtension(filename.ToLower()) != ".bsp")
+                throw new AxiomException("Unable to load world geometry. Invalid extension of map filename option (must be .bsp).");
+
+            // Load using resource manager
+            this.level = (BspLevel)BspResourceManager.Instance.Load(filename,ResourceGroupManager.Instance.WorldResourceGroupName);
+
+            //if (this.level.IsSkyEnabled)
+            //{
+            //    // Quake3 is always aligned with Z upwards
+            //    Quaternion q = Quaternion.FromAngleAxis(Utility.HALF_PI, Vector3.UnitX);
+            //    // Also draw last, and make close to camera (far clip plane is shorter)
+            //    SetSkyDome(true, this.level.SkyMaterialName, this.level.SkyCurvature, 12, 2000, false, q);
+            //}
+            //else
+            //{
+            //    SetSkyDome(false, String.Empty);
+            //}
+
+            // Init static render operation
+            this.renderOp.vertexData = this.level.VertexData;
+            // index data is per-frame
+            this.renderOp.indexData = new IndexData();
+            this.renderOp.indexData.indexStart = 0;
+            this.renderOp.indexData.indexCount = 0;
+            // Create enough index space to render whole level
+            this.renderOp.indexData.indexBuffer = HardwareBufferManager.Instance
+                .CreateIndexBuffer(
+                    IndexType.Size32, // always 32-bit
+                    this.level.NumIndexes, 
+                    BufferUsage.DynamicWriteOnlyDiscardable, false);
+
+            this.renderOp.operationType = OperationType.TriangleList;
+            this.renderOp.useIndices = true;
+
+        }
+
+        public override void SetWorldGeometry(Stream stream, string typeName)
+        {
+            // Load using resource manager
+            this.level = (BspLevel)BspResourceManager.Instance.Load(stream, ResourceGroupManager.Instance.WorldResourceGroupName);
+
+            //if (this.level.IsSkyEnabled)
+            //{
+            //    // Quake3 is always aligned with Z upwards
+            //    Quaternion q = Quaternion.FromAngleAxis(Utility.HALF_PI, Vector3.UnitX);
+            //    // Also draw last, and make close to camera (far clip plane is shorter)
+            //    SetSkyDome(true, this.level.SkyMaterialName, this.level.SkyCurvature, 12, 2000, false, q);
+            //}
+            //else
+            //{
+            //    SetSkyDome(false, String.Empty);
+            //}
+
+            // Init static render operation
+            this.renderOp.vertexData = this.level.VertexData;
+            // index data is per-frame
+            this.renderOp.indexData = new IndexData();
+            this.renderOp.indexData.indexStart = 0;
+            this.renderOp.indexData.indexCount = 0;
+            // Create enough index space to render whole level
+            this.renderOp.indexData.indexBuffer = HardwareBufferManager.Instance
+                .CreateIndexBuffer(
+                    IndexType.Size32, // always 32-bit
+                    this.level.NumIndexes,
+                    BufferUsage.DynamicWriteOnlyDiscardable, false);
+
+            this.renderOp.operationType = OperationType.TriangleList;
+            this.renderOp.useIndices = true;
+        }
+
         /// <summary>
-        ///		Specialised from SceneManager to support Quake3 bsp files.
+        ///		Specialized from SceneManager to support Quake3 bsp files.
         /// </summary>
         public override void LoadWorldGeometry( string filename )
         {
@@ -309,7 +392,7 @@ namespace Axiom.SceneManagers.Bsp
             {
                 // Add this renderable to the RenderQueue so that the BspSceneManager gets
                 // notified when the geometry needs rendering and with what lights
-                GetRenderQueue().AddRenderable( bspGeometry );
+                //GetRenderQueue().AddRenderable( bspGeometry );
             }
 
             // Clear unique list of movables for this frame
@@ -607,7 +690,6 @@ namespace Axiom.SceneManagers.Bsp
                 }
             }
 
-            // TODO BspNode.IntersectingObjectSet
             // Add movables to render queue, provided it hasn't been seen already.			
             for ( int i = 0; i < leaf.Objects.Count; i++ )
             {
@@ -784,8 +866,8 @@ namespace Axiom.SceneManagers.Bsp
         protected override bool OnRenderQueueEnded( RenderQueueGroupID group )
         {
             bool repeat = base.OnRenderQueueEnded( group );
-            //if ( group == RenderQueueGroupID.SkiesEarly )
-            //    this.RenderStaticGeometry();
+            if (group == RenderQueueGroupID.SkiesEarly)
+                this.RenderStaticGeometry();
             return repeat;
         }
 
@@ -794,6 +876,10 @@ namespace Axiom.SceneManagers.Bsp
         /// </summary>
         protected void RenderStaticGeometry()
         {
+            // Check should we be rendering
+            if ( !SpecialCaseRenderQueueList.IsRenderQueueToBeProcessed( worldGeometryRenderQueueId ) )
+                return;
+
             // no world transform required
             targetRenderSystem.WorldMatrix = Matrix4.Identity;
 
