@@ -1511,6 +1511,8 @@ namespace Axiom.Core
 
         #endregion OpenResources Method
 
+        #region CreateResource Method
+
         /// <summary>
         /// Create a new resource file in a given group.
         /// </summary>
@@ -1519,7 +1521,7 @@ namespace Axiom.Core
         /// <returns>An open Stream</returns>
 	    public IO.Stream CreateResource(string filename)
         {
-            return CreateResource( filename, ResourceGroupManager.DefaultResourceGroupName, false, "" );
+            return CreateResource( filename, ResourceGroupManager.DefaultResourceGroupName, false, String.Empty );
         }
 
         /// <summary>
@@ -1531,7 +1533,7 @@ namespace Axiom.Core
         /// <returns>An open Stream</returns>
 	    public IO.Stream CreateResource(string filename, string groupName)
         {
-            return CreateResource( filename, groupName, false, "" );
+            return CreateResource( filename, groupName, false, String.Empty );
         }
 
         /// <summary>
@@ -1545,7 +1547,7 @@ namespace Axiom.Core
         /// <returns>An open Stream</returns>
 	    public IO.Stream CreateResource(string filename, string groupName, bool overwrite)
         {
-            return CreateResource( filename, groupName, overwrite, "" );
+            return CreateResource( filename, groupName, overwrite, String.Empty );
         }
 
         /// <summary>
@@ -1591,7 +1593,11 @@ namespace Axiom.Core
 	            }
 	        }
 	        throw new AxiomException( "Cannot find a writable location in group " + groupName );
-	    }
+        }
+
+        #endregion CreateResource Method
+
+        #region DeleteResource Method
 
         /// <summary>
         /// Delete a single resource file.
@@ -1599,7 +1605,7 @@ namespace Axiom.Core
         /// <param name="filename">The name of the file to delete</param>
         public void DeleteResource(string filename)
         {
-            DeleteResource( filename, ResourceGroupManager.DefaultResourceGroupName, "" );
+            DeleteResource( filename, ResourceGroupManager.DefaultResourceGroupName, String.Empty );
         }
 
         /// <summary>
@@ -1609,7 +1615,7 @@ namespace Axiom.Core
         /// <param name="groupName">The name of the group in which to search</param>
         public void DeleteResource(string filename, string groupName)
         {
-            DeleteResource( filename, groupName, "" );
+            DeleteResource( filename, groupName, String.Empty );
         }
 
         /// <summary>
@@ -1652,13 +1658,17 @@ namespace Axiom.Core
 
         }
 
+        #endregion DeleteResource Method
+
+        #region DeleteMatchingResources Method
+
         /// <summary>
         /// Delete all matching resource files.
         /// </summary>
         /// <param name="filePattern">The pattern (see <seealso cref="Regex.IsMatch(string)"/>) of the files to delete. </param>
         public void DeleteMatchingResources(string filePattern)
         {
-            DeleteMatchingResources( filePattern, ResourceGroupManager.DefaultResourceGroupName, "" );
+            DeleteMatchingResources( filePattern, ResourceGroupManager.DefaultResourceGroupName, String.Empty );
         }
 
         /// <summary>
@@ -1668,7 +1678,7 @@ namespace Axiom.Core
         /// <param name="groupName">The name of the group in which to search</param>
         public void DeleteMatchingResources(string filePattern, string groupName)
         {
-            DeleteMatchingResources( filePattern, groupName, "" );
+            DeleteMatchingResources( filePattern, groupName, String.Empty );
         }
 
         /// <summary>
@@ -1707,6 +1717,8 @@ namespace Axiom.Core
                 }
             }
         }
+
+        #endregion DeleteMatchingResources Method
 
         /// <summary>List all file names in a resource group.</summary>
         /// <remarks>
