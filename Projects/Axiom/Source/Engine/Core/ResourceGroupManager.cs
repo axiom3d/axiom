@@ -414,10 +414,8 @@ namespace Axiom.Core
 
 		        if (!arch.IsCaseSensitive)
 		        {
-			        string lcase = filename.ToLower();
-			        this.ResourceIndexCaseInsensitive[lcase] = arch;
+			        this.ResourceIndexCaseInsensitive[ filename.ToLower() ] = arch;
 		        }
-
 			}
 
             public void Remove(string filename, Archive arch)
@@ -1186,13 +1184,7 @@ namespace Axiom.Core
             List<string> vec = arch.Find( "*", recursive );
             foreach ( string it in vec )
             {
-                // Index under full name, case sensitive
-                grp.ResourceIndexCaseSensitive[ it ] = arch;
-                if ( !arch.IsCaseSensitive )
-                {
-                    // Index under lower case name too for case insensitive match
-                    grp.ResourceIndexCaseInsensitive[ it.ToLower() ] = arch;
-                }
+                grp.Add( it, arch );
             }
 
             if ( arch.IsMonitorable && monitor )
@@ -1234,27 +1226,14 @@ namespace Axiom.Core
                 Archive arch = loc.Archive;
                 if ( arch.Name == locationName )
                 {
-                    // Delete indexes
-                    foreach ( string name in grp.ResourceIndexCaseInsensitive.Keys )
-                    {
-                        if ( grp.ResourceIndexCaseInsensitive[ name ] == arch )
-                            grp.ResourceIndexCaseInsensitive.Remove( name );
-                    }
-
-                    foreach ( string name in grp.ResourceIndexCaseSensitive.Keys )
-                    {
-                        if ( grp.ResourceIndexCaseSensitive[ name ] == arch )
-                            grp.ResourceIndexCaseSensitive.Remove( name );
-                    }
+                    // Remove from index
+                    grp.Remove( arch );
 
                     grp.LocationList.Remove( loc );
                     break;
                 }
-
             }
-
             LogManager.Instance.Write( "Removed resource location " + locationName );
-
         }
 
         #endregion RemoveResourceLocation Method
