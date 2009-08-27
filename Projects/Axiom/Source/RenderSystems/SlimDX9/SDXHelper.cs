@@ -148,20 +148,20 @@ namespace Axiom.RenderSystems.SlimDX9
         /// <param name="caps"></param>
         /// <param name="texType"></param>
         /// <returns></returns>
-        public static D3D.TextureFilter ConvertEnum( FilterType type, FilterOptions options, D3D.Capabilities devCaps, D3DTexType texType )
+        public static D3D.TextureFilter ConvertEnum( FilterType type, FilterOptions options, D3D.Capabilities devCaps, SDXTextureType texType )
         {
             // setting a default val here to keep compiler from complaining about using unassigned value types
             D3D.FilterCaps filterCaps = devCaps.TextureFilterCaps;
 
             switch ( texType )
             {
-                case D3DTexType.Normal:
+                case SDXTextureType.Normal:
                     filterCaps = devCaps.TextureFilterCaps;
                     break;
-                case D3DTexType.Cube:
+                case SDXTextureType.Cube:
                     filterCaps = devCaps.CubeTextureFilterCaps;
                     break;
-                case D3DTexType.Volume:
+                case SDXTextureType.Volume:
                     filterCaps = devCaps.VolumeTextureFilterCaps;
                     break;
             }
@@ -683,20 +683,20 @@ namespace Axiom.RenderSystems.SlimDX9
             return 0;
         }
 
-        public static D3DTexType ConvertEnum( TextureType type )
+        public static SDXTextureType ConvertEnum( TextureType type )
         {
             switch ( type )
             {
                 case TextureType.OneD:
                 case TextureType.TwoD:
-                    return D3DTexType.Normal;
+                    return SDXTextureType.Normal;
                 case TextureType.CubeMap:
-                    return D3DTexType.Cube;
+                    return SDXTextureType.Cube;
                 case TextureType.ThreeD:
-                    return D3DTexType.Volume;
+                    return SDXTextureType.Volume;
             }
 
-            return D3DTexType.None;
+            return SDXTextureType.None;
         }
 
         public static D3D.TextureAddress ConvertEnum( TextureAddressing type )

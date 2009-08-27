@@ -127,6 +127,7 @@ namespace Axiom.Demos.Browser.WinForm
                     {
                         using ( TechDemo demo = (TechDemo)Activator.CreateInstance( dlg.Demo ) )
                         {
+                            demo.SetupResources();
                             demo.Start();//show and start rendering
                         }//dispose of it when done
                     }

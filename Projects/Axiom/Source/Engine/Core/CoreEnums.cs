@@ -176,7 +176,7 @@ namespace Axiom.Core
     /// <summary>
     ///		Priorities that can be assigned to renderable objects for sorting.
     /// </summary>
-    public enum RenderQueueGroupID
+    public enum RenderQueueGroupID : uint
     {
         /// <summary>
         ///		Objects that must be rendered first (like backgrounds).
@@ -190,6 +190,7 @@ namespace Axiom.Core
         One = 10,
         /// <summary>All purpose queue.</summary>
         Two = 20,
+        WorldGeometryOne = 25,
         /// <summary>All purpose queue.</summary>
         Three = 30,
         /// <summary>All purpose queue.</summary>
@@ -200,6 +201,7 @@ namespace Axiom.Core
         Six = 60,
         /// <summary>All purpose queue.</summary>
         Seven = 70,
+        WorldGeometryTwo = 75,
         /// <summary>All purpose queue.</summary>
         Eight = 80,
         /// <summary>All purpose queue.</summary>

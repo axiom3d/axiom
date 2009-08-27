@@ -242,6 +242,32 @@ namespace Axiom.Core
         /// <summary>A queue of objects for rendering.</summary>
         protected RenderQueue renderQueue;
 
+        /// <summary>
+        /// A List of RenderQueues to either Include or Exclude in the rendering sequence.
+        /// </summary>
+        protected readonly SpecialCaseRenderQueue specialCaseRenderQueueList = new SpecialCaseRenderQueue();
+        public SpecialCaseRenderQueue SpecialCaseRenderQueueList
+        {
+            get
+            {
+                return this.specialCaseRenderQueueList;
+            }
+        }
+
+        protected RenderQueueGroupID worldGeometryRenderQueueId = RenderQueueGroupID.WorldGeometryOne;
+        public RenderQueueGroupID WorldGeometryRenderQueueId
+        {
+            get
+            {
+                return this.worldGeometryRenderQueueId;
+            }
+
+            set
+            {
+                this.worldGeometryRenderQueueId = value;
+            }
+        }
+
         /// <summary>The root of the scene graph heirarchy.</summary>
         protected SceneNode rootSceneNode;
 
@@ -265,7 +291,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Listener to use when finding shadow casters for a light within a scene.
         /// </summary>
-        protected ShadowCasterSceneQueryListener shadowCasterQueryListener = new ShadowCasterSceneQueryListener();
+        protected ShadowCasterSceneQueryListener shadowCasterQueryListener;
 
         /// <summary>
         ///		Sphere region query to find shadow casters within the attenuation range of a point/spot light.
@@ -591,14 +617,12 @@ namespace Axiom.Core
         public SceneManager(string name)
         {
             this.cameraList = new CameraList();
-            //lightList = new LightList();
-            //entityList = new EntityList();
             this.sceneNodeList = new SceneNodeCollection();
-            //billboardSetList = new BillboardSetCollection();
-            //ribbonTrailList = new SortedList<string, RibbonTrail>();
             this.animationList = new AnimationCollection();
             this.animationStateList = new AnimationStateSet();
             this.regionList = new List<StaticGeometry.Region>();
+
+            this.shadowCasterQueryListener = new ShadowCasterSceneQueryListener( this );
 
             // create the root scene node
             this.rootSceneNode = new SceneNode( this, "Root" );
@@ -6073,6 +6097,9 @@ namespace Axiom.Core
                 RenderQueueGroupID queueID = this.GetRenderQueue().GetRenderQueueGroupID( i );
                 RenderQueueGroup queueGroup = this.GetRenderQueue().GetQueueGroupByIndex( i );
 
+                if ( !this.specialCaseRenderQueueList.IsRenderQueueToBeProcessed( queueID ))
+                    continue;               
+
                 if ( queueID == RenderQueueGroupID.Main )
                 {
                     this.renderingMainGroup = true;
@@ -6526,6 +6553,7 @@ namespace Axiom.Core
         {
             #region Fields
 
+            protected SceneManager sceneManager;
             protected Camera camera;
             protected List<ShadowCaster> casterList = new List<ShadowCaster>();
             protected float farDistSquared;
@@ -6535,6 +6563,12 @@ namespace Axiom.Core
 
             #endregion Fields
 
+            #region Constructor
+            public ShadowCasterSceneQueryListener( SceneManager sceneManager)
+            {
+                this.sceneManager = sceneManager;
+            }
+            #endregion Constructor
             #region Methods
 
             /// <summary>
@@ -6567,7 +6601,8 @@ namespace Axiom.Core
 
             public bool OnQueryResult( MovableObject sceneObject )
             {
-                if ( sceneObject.CastShadows && sceneObject.IsVisible )
+                if ( sceneObject.CastShadows && sceneObject.IsVisible 
+                    && sceneManager.SpecialCaseRenderQueueList.IsRenderQueueToBeProcessed( sceneObject.RenderQueueGroup ) )
                 {
                     if ( this.farDistSquared > 0 )
                     {
@@ -6681,9 +6716,16 @@ namespace Axiom.Core
             return 0;
         }
 
-        internal void SetWorldGeometry( string resourceGroup )
+        public virtual void SetWorldGeometry( string filename )
         {
-            throw new Exception( "The method or operation is not implemented." );
+        }
+
+        public void SetWorldGeometry(Stream stream)
+        {
+        }
+
+        public virtual void SetWorldGeometry(Stream stream, string typeName)
+        {
         }
 
         #region MovableObjectFactory methods

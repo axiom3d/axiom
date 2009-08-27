@@ -757,6 +757,8 @@ namespace Axiom.Core
         /// <param name="name">The name to give the resource group.</param>
         public void CreateResourceGroup( string name )
         {
+            name = name.ToLower();
+
             LogManager.Instance.Write( "Creating resource group " + name );
             if ( getResourceGroup( name ) != null )
             {
@@ -2025,6 +2027,7 @@ namespace Axiom.Core
         /// <returns></returns>
         protected ResourceGroup getResourceGroup( string name )
         {
+            name = name.ToLower();
             if ( _resourceGroups.ContainsKey( name ) )
             {
                 return _resourceGroups[ name ];

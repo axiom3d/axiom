@@ -78,7 +78,7 @@ namespace Axiom.RenderSystems.SlimDX9
         public override void Update()
         {
             SDXRenderSystem rs = (SDXRenderSystem)Root.Instance.RenderSystem;
-            if ( rs.DeviceLost )
+            if ( rs.IsDeviceLost )
             {
                 return;
             }

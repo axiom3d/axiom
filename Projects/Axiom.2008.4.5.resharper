@@ -37,6 +37,7 @@
           <Item>volatile</Item>
         </MODIFIERS_ORDER>
         <PLACE_CONSTRUCTOR_INITIALIZER_ON_SAME_LINE>False</PLACE_CONSTRUCTOR_INITIALIZER_ON_SAME_LINE>
+        <PLACE_SIMPLE_ACCESSOR_ON_SINGLE_LINE>False</PLACE_SIMPLE_ACCESSOR_ON_SINGLE_LINE>
         <PLACE_SIMPLE_ANONYMOUSMETHOD_ON_SINGLE_LINE>False</PLACE_SIMPLE_ANONYMOUSMETHOD_ON_SINGLE_LINE>
         <PLACE_SIMPLE_INITIALIZER_ON_SINGLE_LINE>False</PLACE_SIMPLE_INITIALIZER_ON_SINGLE_LINE>
         <PLACE_SIMPLE_LINQ_ON_SINGLE_LINE>False</PLACE_SIMPLE_LINQ_ON_SINGLE_LINE>
@@ -74,8 +75,8 @@
       </FormatSettings>
       <UsingsSettings />
       <Naming2>
-        <ExceptionName IsNull="False">
-        </ExceptionName>
+        <ExceptionName>ex</ExceptionName>
+        <OverrideDefaultSettings>True</OverrideDefaultSettings>
         <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="TypesAndNamespaces" />
         <PredefinedRule Inspect="True" Prefix="I" Suffix="" Style="AaBb" ElementKind="Interfaces" />
         <PredefinedRule Inspect="True" Prefix="T" Suffix="" Style="AaBb" ElementKind="TypeParameters" />
@@ -86,11 +87,444 @@
         <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PublicFields" />
         <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Constants" />
         <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="StaticReadonly" />
-        <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" ElementKind="NotPublicStaticFields" />
-        <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" ElementKind="NotPublicInstanceFields" />
         <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="EnumMember" />
         <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Other" />
+        <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" ElementKind="PrivateInstanceFields" />
+        <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" ElementKind="PrivateStaticFields" />
+        <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PrivateConstants" />
+        <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PrivateStaticReadonly" />
+        <UserRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" StaticnessKind="Static, Instance" AccessRight="Private" Description="Private Fields">
+          <ElementKinds>
+            <Kind Name="FIELD" />
+            <Kind Name="READONLY_FIELD" />
+          </ElementKinds>
+        </UserRule>
       </Naming2>
+      <CustomMemberReorderingPatterns><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
+
+<!--
+I. Overall
+
+I.1 Each pattern can have <Match>....</Match> element. For the given type declaration, the pattern with the match, evaluated to 'true' with the largest weight, will be used 
+I.2 Each pattern consists of the sequence of <Entry>...</Entry> elements. Type member declarations are distributed between entries
+I.3 If pattern has RemoveAllRegions="true" attribute, then all regions will be cleared prior to reordering. Otherwise, only auto-generated regions will be cleared
+I.4 The contents of each entry is sorted by given keys (First key is primary,  next key is secondary, etc). Then the declarations are grouped and en-regioned by given property
+
+II. Available match operands
+
+Each operand may have Weight="..." attribute. This weight will be added to the match weight if the operand is evaluated to 'true'.
+The default weight is 1
+
+II.1 Boolean functions:
+II.1.1 <And>....</And>
+II.1.2 <Or>....</Or>
+II.1.3 <Not>....</Not>
+
+II.2 Operands
+II.2.1 <Kind Is="..."/>. Kinds are: class, struct, interface, enum, delegate, type, constructor, destructor, property, indexer, method, operator, field, constant, event, member
+II.2.2 <Name Is="..." [IgnoreCase="true/false"] />. The 'Is' attribute contains regular expression
+II.2.3 <HasAttribute CLRName="..." [Inherit="true/false"] />. The 'CLRName' attribute contains regular expression
+II.2.4 <Access Is="..."/>. The 'Is' values are: public, protected, internal, protected internal, private
+II.2.5 <Static/>
+II.2.6 <Abstract/>
+II.2.7 <Virtual/>
+II.2.8 <Override/>
+II.2.9 <Sealed/>
+II.2.10 <Readonly/>
+II.2.11 <ImplementsInterface CLRName="..."/>. The 'CLRName' attribute contains regular expression
+II.2.12 <HandlesEvent />
+-->
+
+<Patterns xmlns="urn:shemas-jetbrains-com:member-reordering-patterns">
+
+  <!--Do not reorder COM interfaces-->
+  <Pattern>
+    <Match>
+      <And Weight="100">
+        <Kind Is="interface"/>
+        <HasAttribute CLRName="System.Runtime.InteropServices.InterfaceTypeAttribute"/>
+      </And>
+    </Match>
+  </Pattern>
+
+  <!--Default pattern-->
+  <Pattern RemoveAllRegions="true">
+
+    <!--constants-->
+    <Entry>
+      <Match>
+        <Kind Is="constant"/>
+      </Match>
+      <Sort>
+        <Access Order="public internal protected private" />
+        <Name/>
+      </Sort>
+      <Group Region="Constants"/>
+    </Entry>
+
+    <!--static and readonly fields-->
+    <Entry>
+      <Match>
+        <And>
+          <Kind Is="field"/>
+          <Or>
+            <Static/>
+            <Readonly/>
+          </Or>
+        </And>
+      </Match>
+      <Sort>
+        <Access Order="public internal protected private" />
+        <Name/>
+      </Sort>
+      <Group Region="Readonly &amp; Static Fields"/>
+    </Entry>
+
+    <!--fields-->
+    <Entry>
+      <Match>
+        <Kind Is="field"/>
+      </Match>
+      <Sort>
+        <Access Order="public internal protected private" />
+        <Name/>
+      </Sort>
+      <Group Region="Fields"/>
+    </Entry>
+
+    <!--Constructors. Place static one first-->
+    <Entry>
+      <Match>
+        <Kind Is="constructor"/>
+      </Match>
+      <Sort>
+        <Static/>
+        <Access Order="public internal protected private" />
+      </Sort>
+      <Group Region="Constructors"/>
+    </Entry>
+
+    <!--Destructors. Place static one first-->
+    <Entry>
+      <Match>
+        <Kind Is="destructor"/>
+      </Match>
+      <Sort>
+        <Static/>
+        <Access Order="public internal protected private" />
+      </Sort>
+      <Group Region="Finalizers (Destructors)"/>
+    </Entry>
+
+    <!--delegate-->
+    <Entry>
+      <Match>
+        <And Weight="100">
+          <Access Is="public"/>
+          <Kind Is="delegate"/>
+        </And>
+      </Match>
+      <Sort>
+        <Access Order="public internal protected private" />
+        <Name/>
+      </Sort>
+      <Group Region="Delegates"/>
+    </Entry>
+
+    <!-- event -->
+    <Entry>
+      <Match>
+        <Kind Is="event"/>
+      </Match>
+      <Sort>
+        <Access Order="public internal protected private" />
+        <Name/>
+      </Sort>
+      <Group Region="Event Declarations"/>
+    </Entry>
+
+    <!--enums-->
+    <Entry>
+      <Match>
+        <Kind Is="enum"/>
+      </Match>
+      <Sort>
+        <Access Order="public internal protected private" />
+        <Name/>
+      </Sort>
+      <Group Region="Enums"/>
+    </Entry>
+
+    <!--nested interfaced-->
+    <Entry>
+      <Match>
+        <Kind Is="interface"/>
+      </Match>
+      <Sort>
+        <Name/>
+      </Sort>
+      <Group>
+        <Name Region="Nested Interface: ${Name}"/>
+      </Group>
+    </Entry>
+
+    <!--Class properties-->
+    <Entry>
+      <Match>
+        <And>
+          <Kind Is="property"/>
+          <Static/>
+        </And>
+      </Match>
+      <Sort>
+        <Access Order="public internal protected private" />
+        <Abstract/>
+        <Virtual/>
+        <Override/>
+        <Name/>
+      </Sort>
+      <Group Region="Class Properties"/>
+    </Entry>
+
+    <!--instance properties-->
+    <Entry>
+      <Match>
+        <And>
+          <Kind Is="property"/>
+          <Not>
+            <Static/>
+          </Not>
+          <Not>
+            <Kind Is="indexer"/>
+          </Not>
+        </And>
+      </Match>
+      <Sort>
+        <Access Order="public internal protected private" />
+        <Abstract/>
+        <Virtual/>
+        <Override/>
+        <Name/>
+      </Sort>
+      <Group Region="Instance Properties"/>
+    </Entry>
+
+    <!--Class indexers-->
+    <Entry>
+      <Match>
+        <And>
+          <Kind Is="indexer"/>
+          <Static/>
+        </And>
+      </Match>
+      <Sort>
+        <Access Order="public internal protected private" />
+        <Abstract/>
+        <Virtual/>
+        <Override/>
+        <Name/>
+      </Sort>
+      <Group Region="Class Indexers"/>
+    </Entry>
+
+    <!--Instance indexers-->
+    <Entry>
+      <Match>
+        <And>
+          <Kind Is="indexer"/>
+          <Not>
+            <Static/>
+          </Not>
+        </And>
+      </Match>
+      <Sort>
+        <Access Order="public internal protected private" />
+        <Abstract/>
+        <Virtual/>
+        <Override/>
+        <Name/>
+      </Sort>
+      <Group Region="Instance Indexers"/>
+    </Entry>
+
+    <!-- operators -->
+    <Entry>
+      <Match>
+        <Kind Is="operator"/>
+      </Match>
+      <Sort>
+        <Access Order="public internal protected private" />
+        <Name/>
+      </Sort>
+      <Group Region="Operators"/>
+    </Entry>
+
+    <!--Setup/Teardow-->
+    <Entry>
+      <Match>
+        <And>
+          <Kind Is="method"/>
+          <Or>
+            <HasAttribute CLRName="NUnit.Framework.SetUpAttribute" Inherit="true"/>
+            <HasAttribute CLRName="NUnit.Framework.TearDownAttribute" Inherit="true"/>
+            <HasAttribute CLRName="NUnit.Framework.FixtureSetUpAttribute" Inherit="true"/>
+            <HasAttribute CLRName="NUnit.Framework.FixtureTearDownAttribute" Inherit="true"/>
+            <HasAttribute CLRName="Microsoft.VisualStudio.TestTools.UnitTesting.ClassInitializeAttribute" Inherit="true"/>
+            <HasAttribute CLRName="Microsoft.VisualStudio.TestTools.UnitTesting.ClassCleanupAttribute" Inherit="true"/>
+            <HasAttribute CLRName="Microsoft.VisualStudio.TestTools.UnitTesting.TestInitializeAttribute" Inherit="false"/>
+            <HasAttribute CLRName="Microsoft.VisualStudio.TestTools.UnitTesting.TestCleanupAttribute" Inherit="false"/>
+          </Or>
+        </And>
+      </Match>
+      <Sort>
+        <Static/>
+        <Access Order="public internal protected private" />
+      </Sort>
+      <Group Region="Setup/Teardown"/>
+    </Entry>
+
+    <!--Class Methods-->
+    <Entry>
+      <Match>
+        <And>
+          <Kind Is="method"/>
+          <Static/>
+          <Not>
+            <Or>
+              <HasAttribute CLRName="NUnit.Framework.FixtureSetUpAttribute" Inherit="true"/>
+              <HasAttribute CLRName="NUnit.Framework.FixtureTearDownAttribute" Inherit="true"/>
+              <HasAttribute CLRName="Microsoft.VisualStudio.TestTools.UnitTesting.ClassInitializeAttribute" Inherit="true"/>
+              <HasAttribute CLRName="Microsoft.VisualStudio.TestTools.UnitTesting.ClassCleanupAttribute" Inherit="true"/>
+          </Or>
+          </Not>
+        </And>
+      </Match>
+      <Sort>
+        <Access Order="public internal protected private" />
+        <Abstract/>
+        <Virtual/>
+        <Override/>
+        <Name/>
+      </Sort>
+      <Group Region="Class Methods"/>
+    </Entry>
+
+    <!--Test methods-->
+    <Entry>
+      <Match>
+        <And Weight="100">
+          <Kind Is="method"/>
+          <Or>
+              <HasAttribute CLRName="NUnit.Framework.TestAttribute" Inherit="false"/>
+              <HasAttribute CLRName="Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute" Inherit="false"/>
+          </Or>
+        </And>
+      </Match>
+      <Sort>
+        <Access Order="public internal protected private" />
+        <Name/>
+      </Sort>
+      <Group Region="Tests"/>
+    </Entry>
+
+    <!--Methods-->
+    <Entry>
+      <Match>
+        <And>
+          <Kind Is="method"/>
+          <Not>
+            <Static/>
+          </Not>
+          <Not>
+          <Or>
+            <HasAttribute CLRName="NUnit.Framework.SetUpAttribute" Inherit="true"/>
+            <HasAttribute CLRName="NUnit.Framework.TearDownAttribute" Inherit="true"/>
+            <HasAttribute CLRName="Microsoft.VisualStudio.TestTools.UnitTesting.TestInitializeAttribute" Inherit="false"/>
+            <HasAttribute CLRName="Microsoft.VisualStudio.TestTools.UnitTesting.TestCleanupAttribute" Inherit="false"/>
+            <HandlesEvent />
+          </Or>
+          </Not>
+          <Not>
+            <Kind Is="destructor"/>
+          </Not>
+        </And>
+      </Match>
+      <Sort>
+        <Access Order="public internal protected private" />
+        <Abstract/>
+        <Virtual/>
+        <Override/>
+        <Name/>
+      </Sort>
+      <Group Region="Instance Methods"/>
+    </Entry>
+
+    <!--Event Handling-->
+    <Entry>
+      <Match>
+        <HandlesEvent />
+      </Match>
+      <Sort>
+        <Access Order="public internal protected private" />
+        <Abstract/>
+        <Virtual/>
+        <Override/>
+        <Name/>
+      </Sort>
+      <Group Region="Event Handling"/>
+    </Entry>
+
+    <!--nested structs-->
+    <Entry>
+      <Match>
+        <Kind Is="struct"/>
+      </Match>
+      <Sort>
+        <Name/>
+      </Sort>
+      <Group>
+        <Name Region="Nested Struct: ${Name}"/>
+      </Group>
+    </Entry>
+
+    <!--nested classes-->
+    <Entry>
+      <Match>
+        <Kind Is="class"/>
+      </Match>
+      <Sort>
+        <Name/>
+      </Sort>
+      <Group>
+        <Name Region="Nested Class: ${Name}"/>
+      </Group>
+    </Entry>
+
+    <!--all other members-->
+    <Entry>
+       <Group Region="Other Members"/>
+    </Entry>
+
+    <!--interface implementations-->
+    <Entry>
+      <Match>
+        <And Weight="100">
+          <Kind Is="member"/>
+          <ImplementsInterface/>
+        </And>
+      </Match>
+      <Sort>
+        <ImplementsInterface Immediate="true"/>
+      </Sort>
+      <Group>
+        <ImplementsInterface Immediate="true" Region="${ImplementsInterface} Members"/>
+      </Group>
+    </Entry>
+  </Pattern>
+
+</Patterns>
+
+]]></CustomMemberReorderingPatterns>
     </CSharp>
     <VB>
       <FormatSettings>
@@ -134,10 +568,46 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA]]></File
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PublicFields" />
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Constants" />
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="StaticReadonly" />
-      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="NotPublicStaticFields" />
-      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="NotPublicInstanceFields" />
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AA_BB" ElementKind="EnumMember" />
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Other" />
+      <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" ElementKind="PrivateInstanceFields" />
+      <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" ElementKind="PrivateStaticFields" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PrivateConstants" />
+      <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PrivateStaticReadonly" />
     </Naming2>
   </CodeStyleSettings>
+  <SharedSolutionTemplateManager>
+    <FileTemplates>
+      <Template uid="4e56fdf2-4786-4c22-b327-6d6d052b93de" shortcut="" description="NUnitTestClass" text="using NUnit.Framework;&#xD;&#xA;&#xD;&#xA;namespace $namespace$&#xD;&#xA;{&#xD;&#xA;    [TestFixture]&#xD;&#xA;    public class $Class$&#xD;&#xA;    {&#xD;&#xA;        [Test]&#xD;&#xA;        public void First_test()&#xD;&#xA;        {&#xD;&#xA;        }&#xD;&#xA;    }&#xD;&#xA;}" reformat="True" shortenQualifiedReferences="True">
+        <Context>
+          <ProjectLanguageContext language="CSharp" />
+        </Context>
+        <Categories />
+        <Variables>
+          <Variable name="namespace" expression="fileDefaultNamespace()" initialRange="0" />
+          <Variable name="Class" expression="getFileNameWithoutExtension()" initialRange="0" />
+        </Variables>
+        <CustomProperties>
+          <Property key="FileName" value="File" />
+          <Property key="Extension" value="cs" />
+          <Property key="ValidateFileName" value="False" />
+        </CustomProperties>
+      </Template>
+      <Template uid="1448c3d4-3a1f-4b8d-b390-d4d9f13191c6" shortcut="" description="MbUnitTestClass" text="using MbUnit.Framework;&#xD;&#xA;&#xD;&#xA;namespace $namespace$&#xD;&#xA;{&#xD;&#xA;    [TestFixture]&#xD;&#xA;    public class $Class$&#xD;&#xA;    {&#xD;&#xA;        [Test]&#xD;&#xA;        public void First_test()&#xD;&#xA;        {&#xD;&#xA;        }&#xD;&#xA;    }&#xD;&#xA;}" reformat="True" shortenQualifiedReferences="True">
+        <Context>
+          <ProjectLanguageContext language="CSharp" />
+        </Context>
+        <Categories />
+        <Variables>
+          <Variable name="namespace" expression="fileDefaultNamespace()" initialRange="0" />
+          <Variable name="Class" expression="getFileNameWithoutExtension()" initialRange="0" />
+        </Variables>
+        <CustomProperties>
+          <Property key="FileName" value="TestClass" />
+          <Property key="Extension" value="cs" />
+          <Property key="ValidateFileName" value="False" />
+        </CustomProperties>
+      </Template>
+    </FileTemplates>
+  </SharedSolutionTemplateManager>
 </Configuration>

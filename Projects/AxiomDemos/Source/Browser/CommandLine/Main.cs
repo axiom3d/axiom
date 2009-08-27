@@ -88,7 +88,7 @@ namespace Axiom.Demos.Browser.CommandLine
                 // interrogate the available resource paths
                 foreach ( EngineConfig.FilePathRow row in config.FilePath )
                 {
-                    ResourceGroupManager.Instance.AddResourceLocation( Path.GetFullPath( row.src ), row.type );
+                    ResourceGroupManager.Instance.AddResourceLocation( Path.GetFullPath( row.src ), row.type, row.group );
                 }
             }
         }
@@ -145,6 +145,7 @@ namespace Axiom.Demos.Browser.CommandLine
                         {
                             using (TechDemo demo = (TechDemo)Activator.CreateInstance(demoType))
                             {
+                                demo.SetupResources();
                                 demo.Start();//show and start rendering
                             }//dispose of it when done
                         }

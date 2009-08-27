@@ -291,6 +291,11 @@ namespace Axiom.SceneManagers.Bsp
         /// </summary>
         public void Initialize()
         {
+            Initialize( false );
+        }
+
+        public void Initialize( bool headerOnly )
+        {
             BinaryReader reader = new BinaryReader( chunk );
 
             header = new InternalBspHeader();
@@ -305,20 +310,57 @@ namespace Axiom.SceneManagers.Bsp
                 header.lumps[ i ].size = reader.ReadInt32();
             }
 
-            ReadEntities( header.lumps[ (int)Quake3LumpType.Entities ], reader );
-            ReadElements( header.lumps[ (int)Quake3LumpType.Elements ], reader );
-            ReadFaces( header.lumps[ (int)Quake3LumpType.Faces ], reader );
-            ReadLeafFaces( header.lumps[ (int)Quake3LumpType.LeafFaces ], reader );
-            ReadLeaves( header.lumps[ (int)Quake3LumpType.Leaves ], reader );
-            ReadModels( header.lumps[ (int)Quake3LumpType.Models ], reader );
-            ReadNodes( header.lumps[ (int)Quake3LumpType.Nodes ], reader );
-            ReadPlanes( header.lumps[ (int)Quake3LumpType.Planes ], reader );
-            ReadShaders( header.lumps[ (int)Quake3LumpType.Shaders ], reader );
-            ReadVisData( header.lumps[ (int)Quake3LumpType.Visibility ], reader );
-            ReadVertices( header.lumps[ (int)Quake3LumpType.Vertices ], reader );
-            ReadLeafBrushes( header.lumps[ (int)Quake3LumpType.LeafBrushes ], reader );
-            ReadBrushes( header.lumps[ (int)Quake3LumpType.Brushes ], reader );
-            ReadBrushSides( header.lumps[ (int)Quake3LumpType.BrushSides ], reader );
+            InitializeCounts(reader);
+            if (headerOnly)
+            {
+
+            }
+            else
+            {
+                this.InitializeData( reader );
+            }
+        }
+
+        public void LoadHeaderFromStream(Stream inStream)
+        {
+            // Load just the header
+            chunk = inStream;
+            // Grab all the counts, header only
+            Initialize(true);
+		    // Delete manually since delete and delete[] (as used by MemoryDataStream)
+		    // are not compatible
+        }
+
+        protected void InitializeCounts(BinaryReader reader)
+        {
+            brushes = new InternalBspBrush[header.lumps[(int)Quake3LumpType.Brushes].size / Marshal.SizeOf(typeof(InternalBspBrush))];
+            leafBrushes = new int[header.lumps[(int)Quake3LumpType.LeafBrushes].size / Marshal.SizeOf(typeof(int))];
+            vertices = new InternalBspVertex[header.lumps[(int)Quake3LumpType.Vertices].size / Marshal.SizeOf(typeof(InternalBspVertex))];
+            planes = new InternalBspPlane[header.lumps[(int)Quake3LumpType.Planes].size / Marshal.SizeOf(typeof(InternalBspPlane))];
+            nodes = new InternalBspNode[header.lumps[(int)Quake3LumpType.Nodes].size / Marshal.SizeOf(typeof(InternalBspNode))];
+            models = new InternalBspModel[header.lumps[(int)Quake3LumpType.Models].size / Marshal.SizeOf(typeof(InternalBspModel))];
+            leaves = new InternalBspLeaf[header.lumps[(int)Quake3LumpType.Leaves].size / Marshal.SizeOf(typeof(InternalBspLeaf))];
+            leafFaces = new int[header.lumps[(int)Quake3LumpType.LeafFaces].size / Marshal.SizeOf(typeof(int))];
+            faces = new InternalBspFace[header.lumps[(int)Quake3LumpType.Faces].size / Marshal.SizeOf(typeof(InternalBspFace))];
+            elements = new int[header.lumps[(int)Quake3LumpType.Elements].size / Marshal.SizeOf(typeof(int))];
+        }
+
+        protected void InitializeData(BinaryReader reader)
+        {
+            ReadEntities(header.lumps[(int)Quake3LumpType.Entities], reader);
+            ReadElements(header.lumps[(int)Quake3LumpType.Elements], reader);
+            ReadFaces(header.lumps[(int)Quake3LumpType.Faces], reader);
+            ReadLeafFaces(header.lumps[(int)Quake3LumpType.LeafFaces], reader);
+            ReadLeaves(header.lumps[(int)Quake3LumpType.Leaves], reader);
+            ReadModels(header.lumps[(int)Quake3LumpType.Models], reader);
+            ReadNodes(header.lumps[(int)Quake3LumpType.Nodes], reader);
+            ReadPlanes(header.lumps[(int)Quake3LumpType.Planes], reader);
+            ReadShaders(header.lumps[(int)Quake3LumpType.Shaders], reader);
+            ReadVisData(header.lumps[(int)Quake3LumpType.Visibility], reader);
+            ReadVertices(header.lumps[(int)Quake3LumpType.Vertices], reader);
+            ReadLeafBrushes(header.lumps[(int)Quake3LumpType.LeafBrushes], reader);
+            ReadBrushes(header.lumps[(int)Quake3LumpType.Brushes], reader);
+            ReadBrushSides(header.lumps[(int)Quake3LumpType.BrushSides], reader);
         }
 
         /// <summary>
@@ -417,7 +459,6 @@ namespace Axiom.SceneManagers.Bsp
         private void ReadElements( InternalBspLump lump, BinaryReader reader )
         {
             reader.BaseStream.Seek( lump.offset, SeekOrigin.Begin );
-            elements = new int[ lump.size / Marshal.SizeOf( typeof( int ) ) ];
 
             for ( int i = 0; i < elements.Length; i++ )
                 elements[ i ] = reader.ReadInt32();
@@ -426,7 +467,6 @@ namespace Axiom.SceneManagers.Bsp
         private void ReadFaces( InternalBspLump lump, BinaryReader reader )
         {
             reader.BaseStream.Seek( lump.offset, SeekOrigin.Begin );
-            faces = new InternalBspFace[ lump.size / Marshal.SizeOf( typeof( InternalBspFace ) ) ];
 
             for ( int i = 0; i < faces.Length; i++ )
             {
@@ -462,7 +502,6 @@ namespace Axiom.SceneManagers.Bsp
         private void ReadLeafFaces( InternalBspLump lump, BinaryReader reader )
         {
             reader.BaseStream.Seek( lump.offset, SeekOrigin.Begin );
-            leafFaces = new int[ lump.size / Marshal.SizeOf( typeof( int ) ) ];
 
             for ( int i = 0; i < leafFaces.Length; i++ )
                 leafFaces[ i ] = reader.ReadInt32();
@@ -471,7 +510,6 @@ namespace Axiom.SceneManagers.Bsp
         private void ReadLeaves( InternalBspLump lump, BinaryReader reader )
         {
             reader.BaseStream.Seek( lump.offset, SeekOrigin.Begin );
-            leaves = new InternalBspLeaf[ lump.size / Marshal.SizeOf( typeof( InternalBspLeaf ) ) ];
 
             for ( int i = 0; i < leaves.Length; i++ )
             {
@@ -496,7 +534,6 @@ namespace Axiom.SceneManagers.Bsp
         private void ReadModels( InternalBspLump lump, BinaryReader reader )
         {
             reader.BaseStream.Seek( lump.offset, SeekOrigin.Begin );
-            models = new InternalBspModel[ lump.size / Marshal.SizeOf( typeof( InternalBspModel ) ) ];
 
             for ( int i = 0; i < models.Length; i++ )
             {
@@ -518,7 +555,6 @@ namespace Axiom.SceneManagers.Bsp
         private void ReadNodes( InternalBspLump lump, BinaryReader reader )
         {
             reader.BaseStream.Seek( lump.offset, SeekOrigin.Begin );
-            nodes = new InternalBspNode[ lump.size / Marshal.SizeOf( typeof( InternalBspNode ) ) ];
 
             for ( int i = 0; i < nodes.Length; i++ )
             {
@@ -538,7 +574,6 @@ namespace Axiom.SceneManagers.Bsp
         private void ReadPlanes( InternalBspLump lump, BinaryReader reader )
         {
             reader.BaseStream.Seek( lump.offset, SeekOrigin.Begin );
-            planes = new InternalBspPlane[ lump.size / Marshal.SizeOf( typeof( InternalBspPlane ) ) ];
 
             for ( int i = 0; i < planes.Length; i++ )
             {
@@ -586,7 +621,6 @@ namespace Axiom.SceneManagers.Bsp
         private void ReadVertices( InternalBspLump lump, BinaryReader reader )
         {
             reader.BaseStream.Seek( lump.offset, SeekOrigin.Begin );
-            vertices = new InternalBspVertex[ lump.size / Marshal.SizeOf( typeof( InternalBspVertex ) ) ];
 
             for ( int i = 0; i < vertices.Length; i++ )
             {
@@ -605,7 +639,6 @@ namespace Axiom.SceneManagers.Bsp
         private void ReadLeafBrushes( InternalBspLump lump, BinaryReader reader )
         {
             reader.BaseStream.Seek( lump.offset, SeekOrigin.Begin );
-            leafBrushes = new int[ lump.size / Marshal.SizeOf( typeof( int ) ) ];
 
             for ( int i = 0; i < leafBrushes.Length; i++ )
                 leafBrushes[ i ] = reader.ReadInt32();
@@ -614,7 +647,6 @@ namespace Axiom.SceneManagers.Bsp
         private void ReadBrushes( InternalBspLump lump, BinaryReader reader )
         {
             reader.BaseStream.Seek( lump.offset, SeekOrigin.Begin );
-            brushes = new InternalBspBrush[ lump.size / Marshal.SizeOf( typeof( InternalBspBrush ) ) ];
 
             for ( int i = 0; i < brushes.Length; i++ )
             {

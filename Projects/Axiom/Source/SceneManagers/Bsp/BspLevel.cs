@@ -69,11 +69,16 @@ namespace Axiom.SceneManagers.Bsp
     /// </remarks>
     public class BspLevel : Resource
     {
-        public const int LightmapSize = ( 128 * 128 * 3 );
+        private const int NUM_FACES_PER_PROGRESS_REPORT = 100;
+        private const int NUM_NODES_PER_PROGRESS_REPORT = 50;
+        private const int NUM_LEAVES_PER_PROGRESS_REPORT = 50;
+        private const int NUM_BRUSHES_PER_PROGRESS_REPORT = 50;
+
+        public const int LightmapSize = (128 * 128 * 3);
 
         #region Protected members
 
-		protected NameValuePairList createParam;
+        protected NameValuePairList createParam;
         protected BspNode[] nodes;
         protected int numLeaves;
         protected int leafStart;
@@ -135,7 +140,7 @@ namespace Axiom.SceneManagers.Bsp
         {
             get
             {
-                return nodes[ 0 ];
+                return nodes[0];
             }
         }
 
@@ -207,7 +212,7 @@ namespace Axiom.SceneManagers.Bsp
         {
             get
             {
-                return playerStarts.ToArray( );
+                return playerStarts.ToArray();
             }
         }
 
@@ -225,8 +230,8 @@ namespace Axiom.SceneManagers.Bsp
         ///		Default constructor - used by BspResourceManager (do not call directly).
         /// </summary>
         /// <param name="name"></param>
-        public BspLevel( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
-            : base( parent, name, handle, group, isManual, loader )
+        public BspLevel(ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams)
+            : base(parent, name, handle, group, isManual, loader)
         {
             objectToNodeMap = new Map<MovableObject, BspNode>();
             this.createParam = createParams;
@@ -235,38 +240,38 @@ namespace Axiom.SceneManagers.Bsp
 
         #region Public methods
 
-        public void Load( Stream stream )
+        public void Load(Stream stream)
         {
-			if ( createParam.ContainsKey( "SetYAxisUp" ) )			
-				bool.TryParse( createParam[ "SetYAxisUp" ], out bspOptions.setYAxisUp);            
+            if (createParam.ContainsKey("SetYAxisUp"))
+                bool.TryParse(createParam["SetYAxisUp"], out bspOptions.setYAxisUp);
 
-			if ( createParam.ContainsKey( "Scale" ) )			
-				float.TryParse( createParam[ "Scale" ], out bspOptions.scale );				
+            if (createParam.ContainsKey("Scale"))
+                float.TryParse(createParam["Scale"], out bspOptions.scale);
 
-			Vector3 move = Vector3.Zero;
-			if ( createParam.ContainsKey( "MoveX" ) )			
-				 float.TryParse( createParam[ "MoveX" ], out move.x );			
-			
-			if ( createParam.ContainsKey("MoveY" ) ) 			
-				float.TryParse( createParam["MoveY"], out move.y );			
-			
-			if ( createParam.ContainsKey( "MoveZ" ) ) 			
-				float.TryParse( createParam["MoveZ"], out move.z );		
+            Vector3 move = Vector3.Zero;
+            if (createParam.ContainsKey("MoveX"))
+                float.TryParse(createParam["MoveX"], out move.x);
 
-			if ( createParam.ContainsKey( "UseLightmaps" ) )			
-				 bool.TryParse( createParam[ "UseLightmaps" ], out bspOptions.useLightmaps );			
+            if (createParam.ContainsKey("MoveY"))
+                float.TryParse(createParam["MoveY"], out move.y);
 
-			if ( createParam.ContainsKey( "AmbientEnabled" ) )
-				 bool.TryParse( createParam[ "AmbientEnabled" ], out bspOptions.ambientEnabled );
-				 
-			if ( createParam.ContainsKey( "AmbientRatio") )
-				 float.TryParse( createParam[ "AmbientRatio" ], out bspOptions.ambientRatio );
+            if (createParam.ContainsKey("MoveZ"))
+                float.TryParse(createParam["MoveZ"], out move.z);
 
-            Quake3Level q3 = new Quake3Level( bspOptions );
+            if (createParam.ContainsKey("UseLightmaps"))
+                bool.TryParse(createParam["UseLightmaps"], out bspOptions.useLightmaps);
 
-            q3.LoadFromStream( stream );
+            if (createParam.ContainsKey("AmbientEnabled"))
+                bool.TryParse(createParam["AmbientEnabled"], out bspOptions.ambientEnabled);
 
-            LoadQuake3Level( q3 );
+            if (createParam.ContainsKey("AmbientRatio"))
+                float.TryParse(createParam["AmbientRatio"], out bspOptions.ambientRatio);
+
+            Quake3Level q3 = new Quake3Level(bspOptions);
+
+            q3.LoadFromStream(stream);
+
+            LoadQuake3Level(q3);
 
         }
 
@@ -275,16 +280,16 @@ namespace Axiom.SceneManagers.Bsp
         /// </summary>
         /// <param name="?"></param>
         /// <returns></returns>
-        public bool IsLeafVisible( BspNode from, BspNode to )
+        public bool IsLeafVisible(BspNode from, BspNode to)
         {
-            if ( to.VisCluster == -1 )
+            if (to.VisCluster == -1)
                 return false;
-            if ( from.VisCluster == -1 )
+            if (from.VisCluster == -1)
                 // Camera outside world?
                 return true;
 
-            if ( !from.IsLeaf || !to.IsLeaf )
-                throw new AxiomException( "Both nodes must be leaf nodes for visibility testing." );
+            if (!from.IsLeaf || !to.IsLeaf)
+                throw new AxiomException("Both nodes must be leaf nodes for visibility testing.");
 
             // Use PVS to determine visibility
 
@@ -304,22 +309,22 @@ namespace Axiom.SceneManagers.Bsp
             return (result != 0);
             */
 
-            byte visSet = visData.tableData[ ( from.VisCluster * visData.rowLength ) + ( to.VisCluster >> 3 ) ];
-            int result = visSet & ( 1 << ( ( to.VisCluster ) & 7 ) );
+            byte visSet = visData.tableData[(from.VisCluster * visData.rowLength) + (to.VisCluster >> 3)];
+            int result = visSet & (1 << ((to.VisCluster) & 7));
 
-            return ( result != 0 );
+            return (result != 0);
         }
 
 
         /// <summary>
         ///		Walks the entire BSP tree and returns the leaf which contains the given point.
         /// </summary>r
-        public BspNode FindLeaf( Vector3 point )
+        public BspNode FindLeaf(Vector3 point)
         {
-            BspNode node = nodes[ 0 ];
+            BspNode node = nodes[0];
 
-            while ( !node.IsLeaf )
-                node = node.GetNextNode( point );
+            while (!node.IsLeaf)
+                node = node.GetNextNode(point);
 
             return node;
         }
@@ -327,35 +332,35 @@ namespace Axiom.SceneManagers.Bsp
         /// <summary>
         ///		Ensures that the <see cref="Axiom.Core.SceneObject"/> is attached to the right leaves of the BSP tree.
         /// </summary>
-        internal void NotifyObjectMoved( MovableObject obj, Vector3 pos )
+        internal void NotifyObjectMoved(MovableObject obj, Vector3 pos)
         {
-            IEnumerator objnodes = objectToNodeMap.Find( obj );
+            IEnumerator objnodes = objectToNodeMap.Find(obj);
 
-            if ( objnodes != null )
+            if (objnodes != null)
             {
-                while ( objnodes.MoveNext() )
-                    ( (BspNode)objnodes.Current ).RemoveObject( obj );
+                while (objnodes.MoveNext())
+                    ((BspNode)objnodes.Current).RemoveObject(obj);
 
-                objectToNodeMap.Clear( obj );
+                objectToNodeMap.Clear(obj);
             }
 
-            TagNodesWithObject( this.RootNode, obj, pos );
+            TagNodesWithObject(this.RootNode, obj, pos);
         }
 
         /// <summary>
         ///		Internal method, makes sure an object is removed from the leaves when detached from a node.
         /// </summary>
-        internal void NotifyObjectDetached( MovableObject obj )
+        internal void NotifyObjectDetached(MovableObject obj)
         {
-            IEnumerator objnodes = objectToNodeMap.Find( obj );
+            IEnumerator objnodes = objectToNodeMap.Find(obj);
 
-            if ( objnodes == null )
+            if (objnodes == null)
                 return;
 
-            while ( objnodes.MoveNext() )
-                ( (BspNode)objnodes.Current ).RemoveObject( obj );
+            while (objnodes.MoveNext())
+                ((BspNode)objnodes.Current).RemoveObject(obj);
 
-            objectToNodeMap.Clear( obj );
+            objectToNodeMap.Clear(obj);
         }
         #endregion
 
@@ -363,14 +368,14 @@ namespace Axiom.SceneManagers.Bsp
         /// <summary>
         ///		/** Internal utility function for loading data from Quake3.
         /// </summary>
-        protected void LoadQuake3Level( Quake3Level q3lvl )
+        protected void LoadQuake3Level(Quake3Level q3lvl)
         {
             ResourceGroupManager rgm = ResourceGroupManager.Instance;
-            rgm.notifyWorldGeometryStageStarted( "Parsing entities" );
-            LoadEntities( q3lvl );
+            rgm.notifyWorldGeometryStageStarted("Parsing entities");
+            LoadEntities(q3lvl);
             rgm.notifyWorldGeometryStageEnded();
 
-            rgm.notifyWorldGeometryStageStarted( "Extracting lightmaps" );
+            rgm.notifyWorldGeometryStageStarted("Extracting lightmaps");
             q3lvl.ExtractLightmaps();
             rgm.notifyWorldGeometryStageEnded();
 
@@ -384,31 +389,31 @@ namespace Axiom.SceneManagers.Bsp
             VertexDeclaration decl = vertexData.vertexDeclaration;
             int offset = 0;
             int lightTexOffset = 0;
-            decl.AddElement( 0, offset, VertexElementType.Float3, VertexElementSemantic.Position );
-            offset += VertexElement.GetTypeSize( VertexElementType.Float3 );
-            decl.AddElement( 0, offset, VertexElementType.Float3, VertexElementSemantic.Normal );
-            offset += VertexElement.GetTypeSize( VertexElementType.Float3 );
-            decl.AddElement( 0, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
-            offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
-            decl.AddElement( 0, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 1 );
+            decl.AddElement(0, offset, VertexElementType.Float3, VertexElementSemantic.Position);
+            offset += VertexElement.GetTypeSize(VertexElementType.Float3);
+            decl.AddElement(0, offset, VertexElementType.Float3, VertexElementSemantic.Normal);
+            offset += VertexElement.GetTypeSize(VertexElementType.Float3);
+            decl.AddElement(0, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0);
+            offset += VertexElement.GetTypeSize(VertexElementType.Float2);
+            decl.AddElement(0, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 1);
 
             // Build initial patches - we need to know how big the vertex buffer needs to be
             // to accommodate the subdivision
             // we don't want to include the elements for texture lighting, so we clone it
-            rgm.notifyWorldGeometryStageStarted( "Initializing patches" );
-            InitQuake3Patches( q3lvl, (VertexDeclaration)decl.Clone() );
+            rgm.notifyWorldGeometryStageStarted("Initializing patches");
+            InitQuake3Patches(q3lvl, (VertexDeclaration)decl.Clone());
             rgm.notifyWorldGeometryStageEnded();
 
             // this is for texture lighting color and alpha
-            decl.AddElement( 1, lightTexOffset, VertexElementType.Color, VertexElementSemantic.Diffuse );
-            lightTexOffset += VertexElement.GetTypeSize( VertexElementType.Color );
+            decl.AddElement(1, lightTexOffset, VertexElementType.Color, VertexElementSemantic.Diffuse);
+            lightTexOffset += VertexElement.GetTypeSize(VertexElementType.Color);
             // this is for texture lighting coords
-            decl.AddElement( 1, lightTexOffset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 2 );
+            decl.AddElement(1, lightTexOffset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 2);
 
-            rgm.notifyWorldGeometryStageStarted( "Setting up vertex data" );
+            rgm.notifyWorldGeometryStageStarted("Setting up vertex data");
             // Create the vertex buffer, allow space for patches
             HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer(
-                Marshal.SizeOf( typeof( BspVertex ) ),
+                Marshal.SizeOf(typeof(BspVertex)),
                 q3lvl.NumVertices + patchVertexCount,
                 BufferUsage.StaticWriteOnly,
                 // the vertices will be read often for texture lighting, use shadow buffer
@@ -417,7 +422,7 @@ namespace Axiom.SceneManagers.Bsp
 
             // Create the vertex buffer for texture lighting, allow space for patches
             HardwareVertexBuffer texLightBuf = HardwareBufferManager.Instance.CreateVertexBuffer(
-                Marshal.SizeOf( typeof( TextureLightMap ) ),
+                Marshal.SizeOf(typeof(TextureLightMap)),
                 q3lvl.NumVertices + patchVertexCount,
                 BufferUsage.DynamicWriteOnly,
                 false
@@ -435,22 +440,22 @@ namespace Axiom.SceneManagers.Bsp
                 TextureLightMap texLightMap = new TextureLightMap();
 
                 // Keep another base pointer for use later in patch building
-                for ( int v = 0; v < q3lvl.NumVertices; v++ )
+                for (int v = 0; v < q3lvl.NumVertices; v++)
                 {
-                    QuakeVertexToBspVertex( q3lvl.Vertices[ v ], out vert, out texLightMap );
+                    QuakeVertexToBspVertex(q3lvl.Vertices[v], out vert, out texLightMap);
 
                     BspVertex* bvptr = &vert;
                     TextureLightMap* tlptr = &texLightMap;
 
                     vbuf.WriteData(
-                        v * sizeof( BspVertex ),
-                        sizeof( BspVertex ),
+                        v * sizeof(BspVertex),
+                        sizeof(BspVertex),
                         (IntPtr)bvptr
                         );
 
                     texLightBuf.WriteData(
-                        v * sizeof( TextureLightMap ),
-                        sizeof( TextureLightMap ),
+                        v * sizeof(TextureLightMap),
+                        sizeof(TextureLightMap),
                         (IntPtr)tlptr
                         );
 
@@ -458,10 +463,10 @@ namespace Axiom.SceneManagers.Bsp
             }
 
             // Setup binding
-            vertexData.vertexBufferBinding.SetBinding( 0, vbuf );
+            vertexData.vertexBufferBinding.SetBinding(0, vbuf);
 
             // Setup texture lighting binding
-            vertexData.vertexBufferBinding.SetBinding( 1, texLightBuf );
+            vertexData.vertexBufferBinding.SetBinding(1, texLightBuf);
 
             // Set other data
             vertexData.vertexStart = 0;
@@ -471,11 +476,11 @@ namespace Axiom.SceneManagers.Bsp
             //-----------------------------------------------------------------------
             // Faces
             //-----------------------------------------------------------------------
-            rgm.notifyWorldGeometryStageStarted( "Setting up face data" );
-            leafFaceGroups = new int[ q3lvl.LeafFaces.Length ];
-            Array.Copy( q3lvl.LeafFaces, 0, leafFaceGroups, 0, leafFaceGroups.Length );
+            rgm.notifyWorldGeometryStageStarted("Setting up face data");
+            leafFaceGroups = new int[q3lvl.LeafFaces.Length];
+            Array.Copy(q3lvl.LeafFaces, 0, leafFaceGroups, 0, leafFaceGroups.Length);
 
-            faceGroups = new BspStaticFaceGroup[ q3lvl.Faces.Length ];
+            faceGroups = new BspStaticFaceGroup[q3lvl.Faces.Length];
 
             // Set up index buffer
             // NB Quake3 indexes are 32-bit
@@ -490,12 +495,12 @@ namespace Axiom.SceneManagers.Bsp
                 );
 
             // Write main indexes
-            indexes.WriteData( 0, Marshal.SizeOf( typeof( uint ) ) * q3lvl.NumElements, q3lvl.Elements, true );
+            indexes.WriteData(0, Marshal.SizeOf(typeof(uint)) * q3lvl.NumElements, q3lvl.Elements, true);
             rgm.notifyWorldGeometryStageEnded();
 
             // now build patch information
-            rgm.notifyWorldGeometryStageStarted( "Building patches" );
-            BuildQuake3Patches( q3lvl.NumVertices, q3lvl.NumElements );
+            rgm.notifyWorldGeometryStageStarted("Building patches");
+            BuildQuake3Patches(q3lvl.NumVertices, q3lvl.NumElements);
             rgm.notifyWorldGeometryStageEnded();
 
             //-----------------------------------------------------------------------
@@ -516,85 +521,85 @@ namespace Axiom.SceneManagers.Bsp
             // it can be used with multiple lightmaps)
             string shaderName;
             int face = q3lvl.Faces.Length;
-			int progressCountdown = 100;
-			int progressCount = 0;
+            int progressCountdown = 100;
+            int progressCount = 0;
 
-            while ( face-- > 0 )
+            while (face-- > 0)
             {
-				// Progress reporting
-				if (progressCountdown == 100)
-				{
-					++progressCount;
-					String str = String.Format( "Loading materials (phase {0})",progressCount ); 
-					rgm.notifyWorldGeometryStageStarted(str);
-				}
-				else if (progressCountdown == 0)
-				{
-					// stage report
-					rgm.notifyWorldGeometryStageEnded();
-					progressCountdown = 100 + 1; 
-				}
+                // Progress reporting
+                if (progressCountdown == 100)
+                {
+                    ++progressCount;
+                    String str = String.Format("Loading materials (phase {0})", progressCount);
+                    rgm.notifyWorldGeometryStageStarted(str);
+                }
+                else if (progressCountdown == 0)
+                {
+                    // stage report
+                    rgm.notifyWorldGeometryStageEnded();
+                    progressCountdown = 100 + 1;
+                }
 
                 // Check to see if existing material
                 // Format shader#lightmap
-                int shadIdx = q3lvl.Faces[ face ].shader;
+                int shadIdx = q3lvl.Faces[face].shader;
 
-                shaderName = String.Format( "{0}#{1}", q3lvl.Shaders[ shadIdx ].name, q3lvl.Faces[ face ].lmTexture );
-                Material shadMat = (Material)MaterialManager.Instance.GetByName( shaderName );
+                shaderName = String.Format("{0}#{1}", q3lvl.Shaders[shadIdx].name, q3lvl.Faces[face].lmTexture);
+                Material shadMat = (Material)MaterialManager.Instance.GetByName(shaderName);
 
-                if ( shadMat == null && !bspOptions.useLightmaps )
+                if (shadMat == null && !bspOptions.useLightmaps)
                 {
                     // try the no-lightmap material
-                    shaderName = String.Format( "{0}#n", q3lvl.Shaders[ shadIdx ].name );
-                    shadMat = (Material)MaterialManager.Instance.GetByName( shaderName );
+                    shaderName = String.Format("{0}#n", q3lvl.Shaders[shadIdx].name);
+                    shadMat = (Material)MaterialManager.Instance.GetByName(shaderName);
                 }
 
-                if ( shadMat == null )
+                if (shadMat == null)
                 {
                     // Colour layer
                     // NB no extension in Q3A(doh), have to try shader, .jpg, .tga
-                    string tryName = q3lvl.Shaders[ shadIdx ].name;
+                    string tryName = q3lvl.Shaders[shadIdx].name;
 
                     // Try shader first
-                    Quake3Shader shader = (Quake3Shader)Quake3ShaderManager.Instance.GetByName( tryName );
+                    Quake3Shader shader = (Quake3Shader)Quake3ShaderManager.Instance.GetByName(tryName);
 
-                    if ( shader != null )
+                    if (shader != null)
                     {
-                        shadMat = shader.CreateAsMaterial( q3lvl.Faces[ face ].lmTexture );
+                        shadMat = shader.CreateAsMaterial(q3lvl.Faces[face].lmTexture);
                     }
                     else
                     {
                         // No shader script, try default type texture
-                        shadMat = (Material)MaterialManager.Instance.Create( shaderName, rgm.WorldResourceGroupName );
-                        Pass shadPass = shadMat.GetTechnique( 0 ).GetPass( 0 );
+                        shadMat = (Material)MaterialManager.Instance.Create(shaderName, rgm.WorldResourceGroupName);
+                        Pass shadPass = shadMat.GetTechnique(0).GetPass(0);
 
                         // Try jpg
-						TextureUnitState tex = null;
-						if ( ResourceGroupManager.Instance.ResourceExists( rgm.WorldResourceGroupName, tryName + ".jpg" ) )
-						{
-							tex = shadPass.CreateTextureUnitState( tryName + ".jpg" );
-						}
-						if ( ResourceGroupManager.Instance.ResourceExists( rgm.WorldResourceGroupName, tryName + ".tga" ) )
-						{
-							tex = shadPass.CreateTextureUnitState( tryName + ".tga" );
-						}
+                        TextureUnitState tex = null;
+                        if (ResourceGroupManager.Instance.ResourceExists(rgm.WorldResourceGroupName, tryName + ".jpg"))
+                        {
+                            tex = shadPass.CreateTextureUnitState(tryName + ".jpg");
+                        }
+                        if (ResourceGroupManager.Instance.ResourceExists(rgm.WorldResourceGroupName, tryName + ".tga"))
+                        {
+                            tex = shadPass.CreateTextureUnitState(tryName + ".tga");
+                        }
 
-						if ( tex != null )
-						{
-							// Set replace on all first layer textures for now
-							tex.SetColorOperation( LayerBlendOperation.Replace );
-							tex.TextureAddressing = TextureAddressing.Wrap;
-							// for ambient lighting
-							tex.ColorBlendMode.source2 = LayerBlendSource.Manual;
-						}
+                        if (tex != null)
+                        {
+                            // Set replace on all first layer textures for now
+                            tex.SetColorOperation(LayerBlendOperation.Replace);
+                            tex.TextureAddressing = TextureAddressing.Wrap;
+                            // for ambient lighting
+                            tex.ColorBlendMode.source2 = LayerBlendSource.Manual;
+                        }
 
-                        if ( bspOptions.useLightmaps && q3lvl.Faces[ face ].lmTexture != -1 )
+                        if (bspOptions.useLightmaps && q3lvl.Faces[face].lmTexture != -1)
                         {
                             // Add lightmap, additive blending
-                            tex = shadPass.CreateTextureUnitState( String.Format( "@lightmap{0}", q3lvl.Faces[ face ].lmTexture ) );
+                            tex = shadPass.CreateTextureUnitState(String.Format("@lightmap{0}", q3lvl.Faces[face].lmTexture));
 
                             // Blend
-                            tex.SetColorOperation( LayerBlendOperation.Modulate );
+                            tex.SetColorOperation(LayerBlendOperation.Modulate);
 
                             // Use 2nd texture co-ordinate set
                             tex.TextureCoordSet = 1;
@@ -612,9 +617,9 @@ namespace Axiom.SceneManagers.Bsp
 
                 // Copy face data
                 BspStaticFaceGroup dest = new BspStaticFaceGroup();
-                InternalBspFace src = q3lvl.Faces[ face ];
+                InternalBspFace src = q3lvl.Faces[face];
 
-                if ( ( q3lvl.Shaders[ src.shader ].surfaceFlags & SurfaceFlags.Sky ) == SurfaceFlags.Sky )
+                if ((q3lvl.Shaders[src.shader].surfaceFlags & SurfaceFlags.Sky) == SurfaceFlags.Sky)
                     dest.isSky = true;
                 else
                     dest.isSky = false;
@@ -626,27 +631,27 @@ namespace Axiom.SceneManagers.Bsp
                 dest.vertexStart = src.vertStart;
                 dest.plane = new Plane();
 
-                if ( Quake3ShaderManager.Instance.GetByName( q3lvl.Shaders[ shadIdx ].name ) != null )
+                if (Quake3ShaderManager.Instance.GetByName(q3lvl.Shaders[shadIdx].name) != null)
                 {
                     // it's a quake shader
                     dest.isQuakeShader = true;
                 }
 
-                if ( src.type == BspFaceType.Normal )
+                if (src.type == BspFaceType.Normal)
                 {
                     dest.type = FaceGroup.FaceList;
 
                     // Assign plane
                     dest.plane.Normal = new Vector3(
-                        src.normal[ 0 ],
-                        src.normal[ 1 ],
-                        src.normal[ 2 ]
+                        src.normal[0],
+                        src.normal[1],
+                        src.normal[2]
                         );
                     dest.plane.D = -dest.plane.Normal.Dot(
                         new Vector3(
-                        src.org[ 0 ],
-                        src.org[ 1 ],
-                        src.org[ 2 ]
+                        src.org[0],
+                        src.org[1],
+                        src.org[2]
                         )
                         );
 
@@ -654,10 +659,10 @@ namespace Axiom.SceneManagers.Bsp
                     // groups eg repeating small details have the same relative vertex data but
                     // use the same index data.
                 }
-                else if ( src.type == BspFaceType.Patch )
+                else if (src.type == BspFaceType.Patch)
                 {
                     // Seems to be some crap in the Q3 level where vertex count = 0 or num control points = 0?
-                    if ( ( dest.numVertices == 0 ) || ( src.meshCtrl[ 0 ] == 0 ) )
+                    if ((dest.numVertices == 0) || (src.meshCtrl[0] == 0))
                     {
                         dest.type = FaceGroup.Unknown;
                     }
@@ -667,47 +672,47 @@ namespace Axiom.SceneManagers.Bsp
                         dest.type = FaceGroup.Patch;
 
                         // Locate the patch we already built
-                        if ( !patches.ContainsKey( face ) )
-                            throw new AxiomException( "Patch not found from previous built state." );
+                        if (!patches.ContainsKey(face))
+                            throw new AxiomException("Patch not found from previous built state.");
 
-                        dest.patchSurf = (PatchSurface)patches[ face ];
+                        dest.patchSurf = (PatchSurface)patches[face];
                     }
                 }
-                else if ( src.type == BspFaceType.Mesh )
+                else if (src.type == BspFaceType.Mesh)
                 {
                     dest.type = FaceGroup.FaceList;
 
                     // Assign plane
-                    dest.plane.Normal = new Vector3( src.normal[ 0 ], src.normal[ 1 ], src.normal[ 2 ] );
-                    dest.plane.D = -dest.plane.Normal.Dot( new Vector3( src.org[ 0 ], src.org[ 1 ], src.org[ 2 ] ) );
+                    dest.plane.Normal = new Vector3(src.normal[0], src.normal[1], src.normal[2]);
+                    dest.plane.D = -dest.plane.Normal.Dot(new Vector3(src.org[0], src.org[1], src.org[2]));
                 }
                 else
                 {
-                    LogManager.Instance.Write( "!!! Unknown face type !!!" );
+                    LogManager.Instance.Write("!!! Unknown face type !!!");
                 }
 
-                faceGroups[ face ] = dest;
+                faceGroups[face] = dest;
             }
 
             //-----------------------------------------------------------------------
             // Nodes
             //-----------------------------------------------------------------------
             // Allocate memory for all nodes (leaves and splitters)
-            nodes = new BspNode[ q3lvl.NumNodes + q3lvl.NumLeaves ];
+            nodes = new BspNode[q3lvl.NumNodes + q3lvl.NumLeaves];
             numLeaves = q3lvl.NumLeaves;
             leafStart = q3lvl.NumNodes;
 
             // Run through and initialize the array so front/back node pointers 
             // aren't null.
-            for ( int i = 0; i < nodes.Length; i++ )
-                nodes[ i ] = new BspNode();
+            for (int i = 0; i < nodes.Length; i++)
+                nodes[i] = new BspNode();
 
             // Convert nodes
             // In our array, first q3lvl.NumNodes are non-leaf, others are leaves
-            for ( int i = 0; i < q3lvl.NumNodes; i++ )
+            for (int i = 0; i < q3lvl.NumNodes; i++)
             {
-                BspNode node = nodes[ i ];
-                InternalBspNode q3node = q3lvl.Nodes[ i ];
+                BspNode node = nodes[i];
+                InternalBspNode q3node = q3lvl.Nodes[i];
 
                 node.IsLeaf = false;
                 node.Owner = this;
@@ -716,52 +721,52 @@ namespace Axiom.SceneManagers.Bsp
 
                 // Set plane
                 splitPlane.Normal = new Vector3(
-                    q3lvl.Planes[ q3node.plane ].normal[ 0 ],
-                    q3lvl.Planes[ q3node.plane ].normal[ 1 ],
-                    q3lvl.Planes[ q3node.plane ].normal[ 2 ]
+                    q3lvl.Planes[q3node.plane].normal[0],
+                    q3lvl.Planes[q3node.plane].normal[1],
+                    q3lvl.Planes[q3node.plane].normal[2]
                     );
-                splitPlane.D = -q3lvl.Planes[ q3node.plane ].distance;
+                splitPlane.D = -q3lvl.Planes[q3node.plane].distance;
 
                 node.SplittingPlane = splitPlane;
 
                 // Set bounding box				
                 node.BoundingBox = new AxisAlignedBox(
                     new Vector3(
-                        q3node.bbox[ 0 ],
-                        q3node.bbox[ 1 ],
-                        q3node.bbox[ 2 ]
+                        q3node.bbox[0],
+                        q3node.bbox[1],
+                        q3node.bbox[2]
                     ),
                     new Vector3(
-                        q3node.bbox[ 3 ],
-                        q3node.bbox[ 4 ],
-                        q3node.bbox[ 5 ]
+                        q3node.bbox[3],
+                        q3node.bbox[4],
+                        q3node.bbox[5]
                     )
                 );
 
                 // Set back pointer
                 // Negative indexes in Quake3 mean leaves.
-                if ( q3node.back < 0 )
-                    node.BackNode = nodes[ leafStart + ( ~( q3node.back ) ) ];
+                if (q3node.back < 0)
+                    node.BackNode = nodes[leafStart + (~(q3node.back))];
                 else
-                    node.BackNode = nodes[ q3node.back ];
+                    node.BackNode = nodes[q3node.back];
 
                 // Set front pointer
                 // Negative indexes in Quake3 mean leaves
-                if ( q3node.front < 0 )
-                    node.FrontNode = nodes[ leafStart + ( ~( q3node.front ) ) ];
+                if (q3node.front < 0)
+                    node.FrontNode = nodes[leafStart + (~(q3node.front))];
                 else
-                    node.FrontNode = nodes[ q3node.front ];
+                    node.FrontNode = nodes[q3node.front];
             }
 
             //-----------------------------------------------------------------------
             // Brushes
             //-----------------------------------------------------------------------
             // Reserve enough memory for all brushes, solid or not (need to maintain indexes)
-            brushes = new BspBrush[ q3lvl.NumBrushes ];
+            brushes = new BspBrush[q3lvl.NumBrushes];
 
-            for ( int i = 0; i < q3lvl.NumBrushes; i++ )
+            for (int i = 0; i < q3lvl.NumBrushes; i++)
             {
-                InternalBspBrush q3brush = q3lvl.Brushes[ i ];
+                InternalBspBrush q3brush = q3lvl.Brushes[i];
 
                 // Create a new OGRE brush
                 BspBrush brush = new BspBrush();
@@ -769,20 +774,20 @@ namespace Axiom.SceneManagers.Bsp
                 int brushSideIdx = q3brush.firstSide;
 
                 // Iterate over the sides and create plane for each
-                while ( numBrushSides-- > 0 )
+                while (numBrushSides-- > 0)
                 {
-                    InternalBspPlane side = q3lvl.Planes[ q3lvl.BrushSides[ brushSideIdx ].planeNum ];
+                    InternalBspPlane side = q3lvl.Planes[q3lvl.BrushSides[brushSideIdx].planeNum];
 
                     // Notice how we normally invert Q3A plane distances, but here we do not
                     // Because we want plane normals pointing out of solid brushes, not in.
                     Plane brushSide = new Plane(
                         new Vector3(
-                            q3lvl.Planes[ q3lvl.BrushSides[ brushSideIdx ].planeNum ].normal[ 0 ],
-                            q3lvl.Planes[ q3lvl.BrushSides[ brushSideIdx ].planeNum ].normal[ 1 ],
-                            q3lvl.Planes[ q3lvl.BrushSides[ brushSideIdx ].planeNum ].normal[ 2 ]
-                        ), q3lvl.Planes[ q3lvl.BrushSides[ brushSideIdx ].planeNum ].distance );
+                            q3lvl.Planes[q3lvl.BrushSides[brushSideIdx].planeNum].normal[0],
+                            q3lvl.Planes[q3lvl.BrushSides[brushSideIdx].planeNum].normal[1],
+                            q3lvl.Planes[q3lvl.BrushSides[brushSideIdx].planeNum].normal[2]
+                        ), q3lvl.Planes[q3lvl.BrushSides[brushSideIdx].planeNum].distance);
 
-                    brush.Planes.Add( brushSide );
+                    brush.Planes.Add(brushSide);
                     brushSideIdx++;
                 }
 
@@ -790,30 +795,30 @@ namespace Axiom.SceneManagers.Bsp
                 brush.Fragment.FragmentType = WorldFragmentType.PlaneBoundedRegion;
                 brush.Fragment.Planes = brush.Planes;
 
-                brushes[ i ] = brush;
+                brushes[i] = brush;
             }
 
             //-----------------------------------------------------------------------
             // Leaves
             //-----------------------------------------------------------------------
-            for ( int i = 0; i < q3lvl.NumLeaves; ++i )
+            for (int i = 0; i < q3lvl.NumLeaves; ++i)
             {
-                BspNode node = nodes[ i + this.LeafStart ];
-                InternalBspLeaf q3leaf = q3lvl.Leaves[ i ];
+                BspNode node = nodes[i + this.LeafStart];
+                InternalBspLeaf q3leaf = q3lvl.Leaves[i];
 
                 node.IsLeaf = true;
                 node.Owner = this;
 
                 // Set bounding box
                 node.BoundingBox.Minimum = new Vector3(
-                    q3leaf.bbox[ 0 ],
-                    q3leaf.bbox[ 1 ],
-                    q3leaf.bbox[ 2 ]
+                    q3leaf.bbox[0],
+                    q3leaf.bbox[1],
+                    q3leaf.bbox[2]
                     );
                 node.BoundingBox.Maximum = new Vector3(
-                    q3leaf.bbox[ 3 ],
-                    q3leaf.bbox[ 4 ],
-                    q3leaf.bbox[ 5 ]
+                    q3leaf.bbox[3],
+                    q3leaf.bbox[4],
+                    q3leaf.bbox[5]
                     );
 
                 // Set faces
@@ -826,19 +831,19 @@ namespace Axiom.SceneManagers.Bsp
                 int brushCount = q3leaf.brushCount;
                 int brushIdx = q3leaf.brushStart;
 
-                node.SolidBrushes = new BspBrush[ brushCount ];
+                node.SolidBrushes = new BspBrush[brushCount];
 
-                while ( brushCount-- > 0 )
+                while (brushCount-- > 0)
                 {
-                    realBrushIdx = q3lvl.LeafBrushes[ brushIdx ];
-                    InternalBspBrush q3brush = q3lvl.Brushes[ realBrushIdx ];
+                    realBrushIdx = q3lvl.LeafBrushes[brushIdx];
+                    InternalBspBrush q3brush = q3lvl.Brushes[realBrushIdx];
 
                     // Only load solid ones, we don't care about any other types
                     // Shader determines this.
-                    InternalBspShader brushShader = q3lvl.Shaders[ q3brush.shaderIndex ];
+                    InternalBspShader brushShader = q3lvl.Shaders[q3brush.shaderIndex];
 
-                    if ( ( brushShader.contentFlags & ContentFlags.Solid ) == ContentFlags.Solid )
-                        node.SolidBrushes[ solidIdx ] = brushes[ realBrushIdx ];
+                    if ((brushShader.contentFlags & ContentFlags.Solid) == ContentFlags.Solid)
+                        node.SolidBrushes[solidIdx] = brushes[realBrushIdx];
 
                     brushIdx++;
                     solidIdx++;
@@ -848,61 +853,61 @@ namespace Axiom.SceneManagers.Bsp
             // Vis - just copy
             visData.numClusters = q3lvl.VisData.clusterCount;
             visData.rowLength = q3lvl.VisData.rowSize;
-            visData.tableData = new byte[ q3lvl.VisData.rowSize * q3lvl.VisData.clusterCount ];
+            visData.tableData = new byte[q3lvl.VisData.rowSize * q3lvl.VisData.clusterCount];
 
-            Array.Copy( q3lvl.VisData.data, 0, visData.tableData, 0, visData.tableData.Length );
+            Array.Copy(q3lvl.VisData.data, 0, visData.tableData, 0, visData.tableData.Length);
         }
 
         /// <summary>
         ///		Internal method for parsing chosen entities.
         /// </summary>
-        protected void LoadEntities( Quake3Level q3lvl )
+        protected void LoadEntities(Quake3Level q3lvl)
         {
             Vector3 origin = new Vector3();
             float angle = 0;
             bool isPlayerStart = false;
-            string[] entities = q3lvl.Entities.Split( '\n' );
+            string[] entities = q3lvl.Entities.Split('\n');
 
-            for ( int i = 0; i < entities.Length; i++ )
+            for (int i = 0; i < entities.Length; i++)
             {
                 // Remove whitespace and quotes.
-                entities[ i ] = entities[ i ].Trim().Replace( "\"", "" );
+                entities[i] = entities[i].Trim().Replace("\"", "");
 
-                if ( entities[ i ].Length == 0 )
+                if (entities[i].Length == 0)
                     continue;
 
-                string[] paramList = entities[ i ].Split( ' ' );
+                string[] paramList = entities[i].Split(' ');
 
-                if ( paramList[ 0 ] == "origin" )
+                if (paramList[0] == "origin")
                 {
-                    float[] vector = new float[ 3 ];
-                    for ( int v = 0; v < 3; v++ )
-                        vector[ v ] = StringConverter.ParseFloat( paramList[ v + 1 ] );
+                    float[] vector = new float[3];
+                    for (int v = 0; v < 3; v++)
+                        vector[v] = StringConverter.ParseFloat(paramList[v + 1]);
 
-                    q3lvl.TransformVector( vector );
+                    q3lvl.TransformVector(vector);
 
-                    origin = new Vector3( vector[ 0 ], vector[ 1 ], vector[ 2 ] );
+                    origin = new Vector3(vector[0], vector[1], vector[2]);
                 }
 
-                if ( paramList[ 0 ] == "angle" )
-                    angle = StringConverter.ParseFloat( paramList[ 1 ] );
+                if (paramList[0] == "angle")
+                    angle = StringConverter.ParseFloat(paramList[1]);
 
-                if ( ( paramList[ 0 ] == "classname" ) && ( paramList[ 1 ] == "info_player_deathmatch" ) )
+                if ((paramList[0] == "classname") && (paramList[1] == "info_player_deathmatch"))
                     isPlayerStart = true;
 
-                if ( paramList[ 0 ] == "}" )
+                if (paramList[0] == "}")
                 {
-                    if ( isPlayerStart )
+                    if (isPlayerStart)
                     {
                         ViewPoint vp = new ViewPoint();
                         vp.position = origin;
 
-                        if ( q3lvl.Options.setYAxisUp )
-                            vp.orientation = Quaternion.FromAngleAxis( Utility.DegreesToRadians( angle ), Vector3.UnitY );
+                        if (q3lvl.Options.setYAxisUp)
+                            vp.orientation = Quaternion.FromAngleAxis(Utility.DegreesToRadians(angle), Vector3.UnitY);
                         else
-                            vp.orientation = Quaternion.FromAngleAxis( Utility.DegreesToRadians( angle ), Vector3.UnitZ );
+                            vp.orientation = Quaternion.FromAngleAxis(Utility.DegreesToRadians(angle), Vector3.UnitZ);
 
-                        playerStarts.Add( vp );
+                        playerStarts.Add(vp);
                     }
 
                     isPlayerStart = false;
@@ -910,54 +915,54 @@ namespace Axiom.SceneManagers.Bsp
             }
         }
 
-        protected void QuakeVertexToBspVertex( InternalBspVertex src, out BspVertex dest, out TextureLightMap texLightMap )
+        protected void QuakeVertexToBspVertex(InternalBspVertex src, out BspVertex dest, out TextureLightMap texLightMap)
         {
             dest = new BspVertex();
 
-            dest.position = new Vector3( src.point[ 0 ], src.point[ 1 ], src.point[ 2 ] );
-            dest.normal = new Vector3( src.normal[ 0 ], src.normal[ 1 ], src.normal[ 2 ] );
-            dest.texCoords = new Vector2( src.texture[ 0 ], src.texture[ 1 ] );
-            dest.lightMap = new Vector2( src.lightMap[ 0 ], src.lightMap[ 1 ] );
+            dest.position = new Vector3(src.point[0], src.point[1], src.point[2]);
+            dest.normal = new Vector3(src.normal[0], src.normal[1], src.normal[2]);
+            dest.texCoords = new Vector2(src.texture[0], src.texture[1]);
+            dest.lightMap = new Vector2(src.lightMap[0], src.lightMap[1]);
 
             texLightMap = new TextureLightMap();
             texLightMap.color = src.color;
         }
 
-        protected void TagNodesWithObject( BspNode node, MovableObject obj, Vector3 pos )
+        protected void TagNodesWithObject(BspNode node, MovableObject obj, Vector3 pos)
         {
-            if ( node.IsLeaf )
+            if (node.IsLeaf)
             {
                 // Add to movable->node map
                 // Insert all the time, will get current if already there
-                objectToNodeMap.Add( obj, node );
-                node.AddObject( obj );
+                objectToNodeMap.Add(obj, node);
+                node.AddObject(obj);
             }
             else
             {
                 // Find distance to dividing plane
-                float dist = node.GetDistance( pos );
+                float dist = node.GetDistance(pos);
 
                 //CHECK: treat obj as bounding box?
-                if ( Utility.Abs( dist ) < obj.BoundingRadius )
+                if (Utility.Abs(dist) < obj.BoundingRadius)
                 {
                     // Bounding sphere crosses the plane, do both.
-                    TagNodesWithObject( node.BackNode, obj, pos );
-                    TagNodesWithObject( node.FrontNode, obj, pos );
+                    TagNodesWithObject(node.BackNode, obj, pos);
+                    TagNodesWithObject(node.FrontNode, obj, pos);
                 }
-                else if ( dist < 0 )
+                else if (dist < 0)
                 {
                     // Do back.
-                    TagNodesWithObject( node.BackNode, obj, pos );
+                    TagNodesWithObject(node.BackNode, obj, pos);
                 }
                 else
                 {
                     // Do front.
-                    TagNodesWithObject( node.FrontNode, obj, pos );
+                    TagNodesWithObject(node.FrontNode, obj, pos);
                 }
             }
         }
 
-        public void InitQuake3Patches( Quake3Level q3lvl, VertexDeclaration decl )
+        public void InitQuake3Patches(Quake3Level q3lvl, VertexDeclaration decl)
         {
             int face;
 
@@ -968,14 +973,14 @@ namespace Axiom.SceneManagers.Bsp
             // although we'll reuse this information later
             face = q3lvl.NumFaces;
 
-            while ( face-- > 0 )
+            while (face-- > 0)
             {
-                InternalBspFace src = q3lvl.Faces[ face ];
+                InternalBspFace src = q3lvl.Faces[face];
 
-                if ( src.type == BspFaceType.Patch )
+                if (src.type == BspFaceType.Patch)
                 {
                     // Seems to be some crap in the Q3 level where vertex count = 0 or num control points = 0?
-                    if ( ( src.vertCount == 0 ) || ( src.meshCtrl[ 0 ] == 0 ) )
+                    if ((src.vertCount == 0) || (src.meshCtrl[0] == 0))
                         continue;
 
                     PatchSurface ps = new PatchSurface();
@@ -983,18 +988,18 @@ namespace Axiom.SceneManagers.Bsp
                     // Set up control points & format.
                     // Reuse the vertex declaration.
                     // Copy control points into a buffer so we can convert their format.
-                    BspVertex[] controlPoints = new BspVertex[ src.vertCount ];
+                    BspVertex[] controlPoints = new BspVertex[src.vertCount];
                     TextureLightMap texLightMap;
 
-                    for ( int v = 0; v < src.vertCount; v++ )
-                        QuakeVertexToBspVertex( q3lvl.Vertices[ src.vertStart + v ], out controlPoints[ v ], out texLightMap );
+                    for (int v = 0; v < src.vertCount; v++)
+                        QuakeVertexToBspVertex(q3lvl.Vertices[src.vertStart + v], out controlPoints[v], out texLightMap);
 
                     // Define the surface, but don't build it yet (no vertex / index buffer)
                     ps.DefineSurface(
                         controlPoints,
                         decl,
-                        src.meshCtrl[ 0 ],
-                        src.meshCtrl[ 1 ]
+                        src.meshCtrl[0],
+                        src.meshCtrl[1]
                         );
 
                     // Get stats
@@ -1002,23 +1007,23 @@ namespace Axiom.SceneManagers.Bsp
                     patchIndexCount += ps.RequiredIndexCount;
 
                     // Save the surface for later
-                    patches.Add( face, ps );
+                    patches.Add(face, ps);
                 }
             }
         }
-        public void BuildQuake3Patches( int vertOffset, int indexOffset )
+        public void BuildQuake3Patches(int vertOffset, int indexOffset)
         {
             // Loop through the patches
             int currVertOffset = vertOffset;
             int currIndexOffset = indexOffset;
 
-            HardwareVertexBuffer vbuf = vertexData.vertexBufferBinding.GetBuffer( 0 );
+            HardwareVertexBuffer vbuf = vertexData.vertexBufferBinding.GetBuffer(0);
 
-            for ( int i = 0; i < patches.Count; i++ )
+            for (int i = 0; i < patches.Count; i++)
             {
-                PatchSurface ps = (PatchSurface)patches[ i ];
+                PatchSurface ps = (PatchSurface)patches[i];
 
-                ps.Build( vbuf, currVertOffset, indexes, currIndexOffset );
+                ps.Build(vbuf, currVertOffset, indexes, currIndexOffset);
 
                 currVertOffset += ps.RequiredVertexCount;
                 currIndexOffset += ps.RequiredIndexCount;
@@ -1031,37 +1036,37 @@ namespace Axiom.SceneManagers.Bsp
         ///		Generic load - called by <see cref="Plugin_BSPSceneManager.BspResourceManager"/>.
         /// </summary>
         protected override void load()
-		{
-            if ( createParam.ContainsKey( "SetYAxisUp" ) )			
-				bool.TryParse( createParam[ "SetYAxisUp" ], out bspOptions.setYAxisUp);            
+        {
+            //if ( createParam.ContainsKey( "SetYAxisUp" ) )			
+            //    bool.TryParse( createParam[ "SetYAxisUp" ], out bspOptions.setYAxisUp);            
 
-			if ( createParam.ContainsKey( "Scale" ) )			
-				float.TryParse( createParam[ "Scale" ], out bspOptions.scale );				
+            //if ( createParam.ContainsKey( "Scale" ) )			
+            //    float.TryParse( createParam[ "Scale" ], out bspOptions.scale );				
 
-			Vector3 move = Vector3.Zero;
-			if ( createParam.ContainsKey( "MoveX" ) )			
-				 float.TryParse( createParam[ "MoveX" ], out move.x );			
-			
-			if ( createParam.ContainsKey("MoveY" ) ) 			
-				float.TryParse( createParam["MoveY"], out move.y );			
-			
-			if ( createParam.ContainsKey( "MoveZ" ) ) 			
-				float.TryParse( createParam["MoveZ"], out move.z );		
+            //Vector3 move = Vector3.Zero;
+            //if ( createParam.ContainsKey( "MoveX" ) )			
+            //     float.TryParse( createParam[ "MoveX" ], out move.x );			
 
-			if ( createParam.ContainsKey( "UseLightmaps" ) )			
-				 bool.TryParse( createParam[ "UseLightmaps" ], out bspOptions.useLightmaps );			
+            //if ( createParam.ContainsKey("MoveY" ) ) 			
+            //    float.TryParse( createParam["MoveY"], out move.y );			
 
-			if ( createParam.ContainsKey( "AmbientEnabled" ) )
-				 bool.TryParse( createParam[ "AmbientEnabled" ], out bspOptions.ambientEnabled );
-				 
-			if ( createParam.ContainsKey( "AmbientRatio") )
-				 float.TryParse( createParam[ "AmbientRatio" ], out bspOptions.ambientRatio );
+            //if ( createParam.ContainsKey( "MoveZ" ) ) 			
+            //    float.TryParse( createParam["MoveZ"], out move.z );		
 
-            Quake3Level q3 = new Quake3Level( bspOptions );
+            //if ( createParam.ContainsKey( "UseLightmaps" ) )			
+            //     bool.TryParse( createParam[ "UseLightmaps" ], out bspOptions.useLightmaps );			
 
-            Stream chunk = ResourceGroupManager.Instance.OpenResource( Name, ResourceGroupManager.Instance.WorldResourceGroupName );
-            q3.LoadFromStream( chunk );
-            LoadQuake3Level( q3 );
+            //if ( createParam.ContainsKey( "AmbientEnabled" ) )
+            //     bool.TryParse( createParam[ "AmbientEnabled" ], out bspOptions.ambientEnabled );
+
+            //if ( createParam.ContainsKey( "AmbientRatio") )
+            //     float.TryParse( createParam[ "AmbientRatio" ], out bspOptions.ambientRatio );
+
+            Quake3Level q3 = new Quake3Level(bspOptions);
+
+            Stream chunk = ResourceGroupManager.Instance.OpenResource(Name, ResourceGroupManager.Instance.WorldResourceGroupName);
+            q3.LoadFromStream(chunk);
+            LoadQuake3Level(q3);
             chunk.Close();
 
         }
@@ -1099,7 +1104,7 @@ namespace Axiom.SceneManagers.Bsp
         ///		<p/>
         ///		As many will notice, this is lifted directly from the Quake implementation of PVS.
         ///	</remarks>
-        [StructLayout( LayoutKind.Sequential )]
+        [StructLayout(LayoutKind.Sequential)]
         public struct VisData
         {
             public byte[] tableData;
@@ -1107,6 +1112,52 @@ namespace Axiom.SceneManagers.Bsp
             public int rowLength;
         }
         #endregion
+
+        public static int CalculateLoadingStages(string filename)
+        {
+            Stream stream = ResourceGroupManager.Instance.OpenResource(filename, ResourceGroupManager.Instance.WorldResourceGroupName);
+            return calculateLoadingStages(stream);
+        }
+        //-----------------------------------------------------------------------
+        private static int calculateLoadingStages(Stream stream)
+        {
+            Quake3Level q3 = new Quake3Level(null);
+
+            // Load header only
+            q3.LoadHeaderFromStream(stream);
+
+            // Ok, count up the things that we will report
+            int stages = 0;
+
+            // loadEntities (1 stage)
+            ++stages;
+            // extractLightmaps (external, 1 stage)
+            ++stages;
+            // initQuake3Patches
+            ++stages;
+            // vertex setup
+            ++stages;
+            // face setup
+            ++stages;
+            // patch building
+            ++stages;
+            // material setup
+            // this is not strictly based on load, since we only know the number
+            // of faces, not the number of materials
+            // raise one event for every 50 faces, plus one at the end
+            //stages += (q3.Faces.Length / NUM_FACES_PER_PROGRESS_REPORT) + 1;
+            // node setup
+            //stages += (q3.Nodes.Length / NUM_NODES_PER_PROGRESS_REPORT) + 1;
+            // brush setup
+            //stages += (q3.Brushes.Length / NUM_BRUSHES_PER_PROGRESS_REPORT) + 1;
+            // leaf setup
+            //stages += (q3.Leaves.Length / NUM_LEAVES_PER_PROGRESS_REPORT) + 1;
+            // vis
+            ++stages;
+
+            return stages;
+
+        }
     }
 
     /// <summary>

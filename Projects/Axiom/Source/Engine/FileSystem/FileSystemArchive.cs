@@ -189,12 +189,12 @@ namespace Axiom.FileSystem
 			_basePath = Path.GetFullPath( Name ) + Path.DirectorySeparatorChar;
 
             // Check we can change to it
-            pushDirectory( _basePath );
+            pushDirectory(_basePath);
 
             // check to see if it's writable
             try
             {
-                File.Create( _basePath + @"\__testWrite.Axiom", 0, FileOptions.WriteThrough | FileOptions.DeleteOnClose );
+                File.Create(_basePath + @"__testWrite.Axiom", 1, FileOptions.DeleteOnClose);
             }
             catch (Exception ex)
             {
@@ -202,11 +202,12 @@ namespace Axiom.FileSystem
             }
             finally
             {
-                IsReadOnly = false;
+                // return to previous
+                popDirectory();
             }
 
-            // return to previous
-            popDirectory();
+            IsReadOnly = false;
+
         }
 
         public override Stream Create(string filename, bool overwrite)
