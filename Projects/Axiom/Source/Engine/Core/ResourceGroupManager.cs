@@ -79,13 +79,6 @@ namespace Axiom.Core
     ///     <li>resourceGroupLoadEnded</li>
     /// </ul>
     /// </remarks>
-    /// <ogre name="ResourceGroupListener">
-    ///     <file name="OgreResourceGroupManager.h"   revision="1.12.2.4" lastUpdated="5/14/2006" lastUpdatedBy="Borrillis" />
-    ///     <file name="OgreResourceGroupManager.cpp" revision="1.16.2.10" lastUpdated="5/14/2006" lastUpdatedBy="Borrillis" />
-    ///     <Borrillis>
-    ///			Note: This has changed from a Class in OGRE to an interface here to better support derived classes
-    ///     </Borrillis>
-    /// </ogre> 
     public interface IResourceGroupListener
     {
         /// <summary>
@@ -204,10 +197,6 @@ namespace Axiom.Core
     ///	<see>ResourceGroupManager.UnloadResourceGroup</see>
     ///	<see>ResourceGroupManager.ClearResourceGroup</see>
     ///	</summary>
-    /// <ogre name="ResourceGroupListener">
-    ///     <file name="OgreResourceGroupManager.h"   revision="1.12.2.4" lastUpdated="5/14/2006" lastUpdatedBy="Borrillis" />
-    ///     <file name="OgreResourceGroupManager.cpp" revision="1.16.2.10" lastUpdated="5/14/2006" lastUpdatedBy="Borrillis" />
-    /// </ogre> 
     public class ResourceGroupManager : Singleton<ResourceGroupManager>
     {
         #region Delegates
@@ -337,6 +326,10 @@ namespace Axiom.Core
         //          typedef std::map<String, ResourceGroup*> ResourceGroupMap;
         public class ResourceGroupMap : Dictionary<String, ResourceGroup>
         {
+            public ResourceGroupMap()
+                : base(new CaseInsensitiveStringComparer())
+            {
+            }
         };
 
         //          typedef std::map<Real, LoadUnloadResourceList*> LoadResourceOrderMap;
@@ -757,7 +750,7 @@ namespace Axiom.Core
         /// <param name="name">The name to give the resource group.</param>
         public void CreateResourceGroup( string name )
         {
-            name = name.ToLower();
+            name = name;
 
             LogManager.Instance.Write( "Creating resource group " + name );
             if ( getResourceGroup( name ) != null )
@@ -905,7 +898,7 @@ namespace Axiom.Core
             ResourceGroup grp = getResourceGroup( name );
             if ( grp == null )
             {
-                throw new AxiomException( "Cannot find a group named {0} : ResourceGroupManager::parseResourceGroupScripts", name );
+                throw new AxiomException( "Cannot find a group named {0}", name );
             }
 
             // Set current group
@@ -998,7 +991,7 @@ namespace Axiom.Core
             ResourceGroup grp = getResourceGroup( groupName );
             if ( grp == null )
             {
-                throw new AxiomException( "Cannot find a group named {0} : ResourceGroupManager::parseResourceGroupScripts", groupName );
+                throw new AxiomException( "Cannot find a group named {0}", groupName );
             }
             // Set current group
             _currentGroup = grp;
@@ -1063,11 +1056,11 @@ namespace Axiom.Core
         /// <param name="name">The name to of the resource group to clear.</param>
         public void ClearResourceGroup( string groupName )
         {
-            LogManager.Instance.Write( "clearing resource group {0}", groupName );
+            LogManager.Instance.Write( "Clearing resource group {0}", groupName );
             ResourceGroup grp = getResourceGroup( groupName );
             if ( grp == null )
             {
-                throw new AxiomException( "Cannot find a group named {0} : ResourceGroupManager::ClearResourceGroup", groupName );
+                throw new AxiomException( "Cannot find a group named {0}", groupName );
             }
             // set current group
             _currentGroup = grp;
@@ -1091,7 +1084,7 @@ namespace Axiom.Core
             ResourceGroup grp = getResourceGroup( groupName );
             if ( grp == null )
             {
-                throw new AxiomException( "Cannot find a group named {0} : ResourceGroupManager::DestroyResourceGroup", groupName );
+                throw new AxiomException( "Cannot find a group named {0}", groupName );
             }
             // set current group
             _currentGroup = grp;
@@ -1174,7 +1167,6 @@ namespace Axiom.Core
                 grp = getResourceGroup( resGroup );
             }
 
-
             // Get archive
             Archive arch = ArchiveManager.Instance.Load( name, locType );
             // Add to location list
@@ -1219,7 +1211,7 @@ namespace Axiom.Core
             ResourceGroup grp = getResourceGroup( groupName );
             if ( grp == null )
             {
-                throw new AxiomException( "Cannot find a group named {0} : ResourceGroupManager::RemoveResourceLocation", groupName );
+                throw new AxiomException( "Cannot find a group named {0}", groupName );
             }
 
             // Remove from location list
@@ -1307,7 +1299,7 @@ namespace Axiom.Core
             ResourceGroup grp = getResourceGroup( groupName );
             if ( grp == null )
             {
-                throw new AxiomException( "Cannot find a group named {0} : ResourceGroupManager::DeclareResource", name );
+                throw new AxiomException( "Cannot find a group named {0}", name );
             }
 
             ResourceDeclaration dcl;
@@ -1335,7 +1327,7 @@ namespace Axiom.Core
             ResourceGroup grp = getResourceGroup( groupName );
             if ( grp == null )
             {
-                throw new AxiomException( "Cannot find a group named {0} : ResourceGroupManager::UndeclareResource", groupName );
+                throw new AxiomException( "Cannot find a group named {0}", groupName );
             }
 
             foreach ( ResourceDeclaration resDec in grp.ResourceDeclarations )
@@ -1464,7 +1456,7 @@ namespace Axiom.Core
             ResourceGroup grp = getResourceGroup( groupName );
             if ( grp == null )
             {
-                throw new AxiomException( "Cannot find a group named {0} : ResourceGroupManager::OpenResources", groupName );
+                throw new AxiomException( "Cannot find a group named {0}", groupName );
             }
 
             // Iterate through all the archives and build up a combined list of
@@ -1714,7 +1706,7 @@ namespace Axiom.Core
             ResourceGroup grp = getResourceGroup( groupName );
             if ( grp == null )
             {
-                throw new AxiomException( "Cannot find a group named {0} : ResourceGroupManager::ListResourceNames", groupName );
+                throw new AxiomException( "Cannot find a group named {0}", groupName );
             }
 
             // Iterate over the archives
@@ -1737,7 +1729,7 @@ namespace Axiom.Core
             ResourceGroup grp = getResourceGroup( groupName );
             if ( grp == null )
             {
-                throw new AxiomException( "Cannot find a group named {0} : ResourceGroupManager::ListResourceFileInfo", groupName );
+                throw new AxiomException( "Cannot find a group named {0}", groupName );
             }
 
             // Iterate over the archives
@@ -1769,7 +1761,7 @@ namespace Axiom.Core
             ResourceGroup grp = getResourceGroup( groupName );
             if ( grp == null )
             {
-                throw new AxiomException( "Cannot find a group named {0} : ResourceGroupManager::FindResourceNames", groupName );
+                throw new AxiomException( "Cannot find a group named {0}", groupName );
             }
 
 
@@ -1792,7 +1784,7 @@ namespace Axiom.Core
             ResourceGroup grp = getResourceGroup( group );
             if ( grp == null )
             {
-                throw new AxiomException( "Cannot find a group named {0} : ResourceGroupManager::ResourceExists", group );
+                throw new AxiomException( "Cannot find a group named {0}", group );
             }
 
             return ResourceExists( grp, filename );
@@ -1845,7 +1837,7 @@ namespace Axiom.Core
             ResourceGroup grp = getResourceGroup( groupName );
             if ( grp == null )
             {
-                throw new AxiomException( "Cannot find a group named {0} : ResourceGroupManager::FindResourceNames", groupName );
+                throw new AxiomException( "Cannot find a group named {0}", groupName );
             }
 
 
@@ -1941,7 +1933,7 @@ namespace Axiom.Core
             ResourceGroup grp = getResourceGroup( groupName );
             if ( grp == null )
             {
-                throw new AxiomException( "Cannot find a group named {0} : ResourceGroupManager::LinkWorldGeometryToResourceGroup", groupName );
+                throw new AxiomException( "Cannot find a group named {0}", groupName );
             }
 
             grp.WorldGeometry = worldGeometry;
@@ -1959,7 +1951,7 @@ namespace Axiom.Core
             ResourceGroup grp = getResourceGroup( groupName );
             if ( grp == null )
             {
-                throw new AxiomException( "Cannot find a group named {0} : ResourceGroupManager::UnlinkWorldGeometryFromResourceGroup", groupName );
+                throw new AxiomException( "Cannot find a group named {0}", groupName );
             }
 
             grp.WorldGeometry = "";
@@ -2011,7 +2003,7 @@ namespace Axiom.Core
             ResourceGroup grp = getResourceGroup( groupName );
             if ( grp == null )
             {
-                throw new AxiomException( "Cannot find a group named {0} : ResourceGroupManager::getResourceDeclarationList", groupName );
+                throw new AxiomException( "Cannot find a group named {0}", groupName );
             }
             return grp.ResourceDeclarations.ToArray();
         }
@@ -2027,7 +2019,7 @@ namespace Axiom.Core
         /// <returns></returns>
         protected ResourceGroup getResourceGroup( string name )
         {
-            name = name.ToLower();
+            name = name;
             if ( _resourceGroups.ContainsKey( name ) )
             {
                 return _resourceGroups[ name ];
@@ -2132,7 +2124,7 @@ namespace Axiom.Core
             {
                 return _resourceManagers[ resourceType ];
             }
-            throw new AxiomException( "Cannot locate resource manager for resource type '{0}' ResourceGroupManager::_getResourceManager", resourceType );
+            throw new AxiomException( "Cannot locate resource manager for resource type '{0}'", resourceType );
         }
 
         /// <summary>Internal method called by ResourceManager when a resource is created.</summary>
@@ -2473,7 +2465,6 @@ namespace Axiom.Core
         }
 
         #endregion Private Methods
-
 
 		#region IDisposable Members
 
