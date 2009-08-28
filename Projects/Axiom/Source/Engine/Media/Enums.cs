@@ -281,6 +281,7 @@ namespace Axiom.Media
 	/// <summary>
 	///    Flags defining some on/off properties of pixel formats
 	/// </summary>
+	[Flags]
 	public enum PixelFormatFlags
 	{
 		// No flags

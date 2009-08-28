@@ -49,7 +49,6 @@ material Examples/DynaTest3
 			specular 0.4 0.7 0.7 30
 			ambient 0.2 0.5 1.0
 			depth_write off
-			scene_blend alpha_blend
 		}
 	}
 }
