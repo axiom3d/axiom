@@ -152,6 +152,7 @@ namespace Axiom.Graphics
 		///<summary>
 		///    Get the current locked region. This is the same value as returned
 		///    by Lock(BasicBox, BufferLocking)
+		///</summary>
 		///<returns>PixelBox containing the locked region</returns>
 		public PixelBox CurrentLock
 		{

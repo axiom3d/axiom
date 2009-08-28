@@ -754,7 +754,7 @@ namespace Axiom.Media
 
 			unsafe
 			{
-				PixelConverter.PackColor( (uint)color.r, (uint)color.g, (uint)color.b, (uint)color.a, format, (byte*)( dest.ToPointer() ) );
+				PixelConverter.PackColor( color.r, color.g, color.b, color.a, format, (byte*)( dest.ToPointer() ) );
 			}
 		}
 
