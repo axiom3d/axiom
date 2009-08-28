@@ -134,7 +134,7 @@ namespace Axiom.Demos
 
 			// Cloaked fish
 			ent2 = scene.CreateEntity( "knot3", "fish.mesh" );
-			ent2.MaterialName = "Examples/DynaTest3";
+			ent2.MaterialName = "Examples/DynaTest";
 			swim = ent2.GetAnimationState( "swim" );
 			swim.IsEnabled = true;
 			blaNode.AttachObject( ent2 );
@@ -158,7 +158,7 @@ namespace Axiom.Demos
 			for ( int x = 0; x < 10; x++ )
 				runStep();
 			buildTexture();
-
+            swim.AddTime( e.TimeSinceLastFrame );
 			return base.OnFrameStarted( source, e );
 		}
 
