@@ -134,7 +134,7 @@ namespace Axiom.Demos
 
 			// Cloaked fish
 			ent2 = scene.CreateEntity( "knot3", "fish.mesh" );
-			ent2.MaterialName = "Examples/DynaTest";
+			ent2.MaterialName = "Examples/DynaTest3";
 			swim = ent2.GetAnimationState( "swim" );
 			swim.IsEnabled = true;
 			blaNode.AttachObject( ent2 );
