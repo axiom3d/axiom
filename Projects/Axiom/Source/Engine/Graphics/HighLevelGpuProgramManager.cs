@@ -190,7 +190,12 @@ namespace Axiom.Graphics
 			}
 		}
 
-		#endregion Properties
+        public bool IsLanguageSupported( string language)
+        {
+            return factories.ContainsKey( language );
+        }
+
+	    #endregion Properties
 
 		#region ResourceManager Implementation
 
