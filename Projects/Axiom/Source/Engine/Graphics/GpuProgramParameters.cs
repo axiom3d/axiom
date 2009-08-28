@@ -115,6 +115,8 @@ namespace Axiom.Graphics
 		 protected List<ParameterEntry> paramTypeList = new List<ParameterEntry>();
         //protected ArrayList paramIndexTypes = new ArrayList();
 
+	    protected bool ignoreMissingParameters = false;
+
 		#endregion
 
 		#region Constructors
@@ -1052,6 +1054,18 @@ namespace Axiom.Graphics
 	    {
 	        get { return autoConstantList; }
 	    }
+
+        public bool IgnoreMissingParameters
+        {
+            get
+            {
+                return ignoreMissingParameters;
+            }
+            set
+            {
+                ignoreMissingParameters = value;
+            }
+        }
 
 	    #endregion Properties
 
