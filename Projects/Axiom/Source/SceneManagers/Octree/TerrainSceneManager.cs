@@ -36,6 +36,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 //using System.Data;
 using System.Collections;
+using System.Threading;
+
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -91,138 +93,182 @@ namespace Axiom.SceneManagers.Octree
             options = new TerrainOptions();
 
             DataSet optionData = new DataSet();
-            optionData.ReadXml( System.IO.Path.GetDirectoryName( System.Reflection.Assembly.GetExecutingAssembly().Location ) + System.IO.Path.DirectorySeparatorChar + fileName );
-            DataTable table = optionData.Tables[ 0 ];
-            DataRow row = table.Rows[ 0 ];
+            optionData.ReadXml(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + System.IO.Path.DirectorySeparatorChar + fileName);
+            DataTable table = optionData.Tables[0];
+            DataRow row = table.Rows[0];
 
             string terrainFileName = "";
             string detailTexture = "";
             string worldTexture = "";
             string materialName = "";
 
-            if ( table.Columns[ "Terrain" ] != null )
+            if (table.Columns["Terrain"] != null)
             {
-                terrainFileName = (string)row[ "Terrain" ];
+                terrainFileName = (string)row["Terrain"];
             }
 
-            if ( table.Columns[ "DetailTexture" ] != null )
+            if (table.Columns["DetailTexture"] != null)
             {
-                detailTexture = (string)row[ "DetailTexture" ];
+                detailTexture = (string)row["DetailTexture"];
             }
 
-            if ( table.Columns[ "MaterialName" ] != null )
+            if (table.Columns["MaterialName"] != null)
             {
-                materialName = (string)row[ "MaterialName" ];
+                materialName = (string)row["MaterialName"];
             }
 
-            if ( table.Columns[ "WorldTexture" ] != null )
+            if (table.Columns["WorldTexture"] != null)
             {
-                worldTexture = (string)row[ "WorldTexture" ];
+                worldTexture = (string)row["WorldTexture"];
             }
 
-            if ( table.Columns[ "MaxMipMapLevel" ] != null )
+            if (table.Columns["MaxMipMapLevel"] != null)
             {
-                options.maxMipmap = Convert.ToInt32( row[ "MaxMipMapLevel" ] );
+                options.maxMipmap = Convert.ToInt32(row["MaxMipMapLevel"]);
             }
 
-            if ( table.Columns[ "DetailTile" ] != null )
+            if (table.Columns["DetailTile"] != null)
             {
-                options.detailTile = Convert.ToInt32( row[ "DetailTile" ] );
+                options.detailTile = Convert.ToInt32(row["DetailTile"]);
             }
 
-            if ( table.Columns[ "MaxPixelError" ] != null )
+            if (table.Columns["MaxPixelError"] != null)
             {
-                options.maxPixelError = Convert.ToInt32( row[ "MaxPixelError" ] );
+                options.maxPixelError = Convert.ToInt32(row["MaxPixelError"]);
             }
 
-            if ( table.Columns[ "TileSize" ] != null )
+            if (table.Columns["TileSize"] != null)
             {
-                options.size = Convert.ToInt32( row[ "TileSize" ] );
+                options.size = Convert.ToInt32(row["TileSize"]);
             }
 
-            if ( table.Columns[ "ScaleX" ] != null )
+            if (table.Columns["ScaleX"] != null)
             {
-                options.scalex = StringConverter.ParseFloat( (string)row[ "ScaleX" ] );
+                options.scalex = StringConverter.ParseFloat((string)row["ScaleX"]);
             }
 
-            if ( table.Columns[ "ScaleY" ] != null )
+            if (table.Columns["ScaleY"] != null)
             {
-                options.scaley = StringConverter.ParseFloat( (string)row[ "ScaleY" ] );
+                options.scaley = StringConverter.ParseFloat((string)row["ScaleY"]);
             }
 
-            if ( table.Columns[ "ScaleZ" ] != null )
+            if (table.Columns["ScaleZ"] != null)
             {
-                options.scalez = StringConverter.ParseFloat( (string)row[ "ScaleZ" ] );
+                options.scalez = StringConverter.ParseFloat((string)row["ScaleZ"]);
             }
 
-            if ( table.Columns[ "VertexNormals" ] != null )
+            if (table.Columns["VertexNormals"] != null)
             {
-                options.isLit = ( (string)row[ "VertexNormals" ] ) == "yes" ? true : false;
+                options.isLit = ((string)row["VertexNormals"]) == "yes" ? true : false;
             }
 
-            scale = new Vector3( options.scalex, options.scaley, options.scalez );
+            scale = new Vector3(options.scalex, options.scaley, options.scalez);
             tileSize = options.size;
 
             // load the heightmap
-            Image image = Image.FromFile( terrainFileName );
+            {
+                Image image = Image.FromFile( terrainFileName );
+                Real[] dest = new Real[tileSize * tileSize];
+                byte[] src = image.Data;
+                Real invScale;
 
-            // TODO: Check terrain size for 2^n + 1
+                if ( image.Format != PixelFormat.L8 && image.Format != PixelFormat.L16 )
+                    throw new AxiomException( "Heightmap is not a grey scale image!" );
 
-            // get the data from the heightmap
-            options.data = image.Data;
+                bool is16bit = ( image.Format == PixelFormat.L16 );
 
-            options.worldSize = image.Width;
+                // Determine mapping from fixed to floating
+                ulong rowSize;
+                if ( is16bit )
+                {
+                    invScale = 1.0f / 65535.0f;
+                    rowSize = (ulong)tileSize * 2;
+                }
+                else
+                {
+                    invScale = 1.0f / 255.0f;
+                    rowSize = (ulong)tileSize;
+                }
+                // Read the data
+                int srcIndex = 0;
+                int dstIndex = 0;
+                for ( ulong j = 0; j < (ulong)tileSize; ++j )
+                {
+                    for (ulong i = 0; i < (ulong)tileSize; ++i)
+                    {
+                        if ( is16bit )
+                        {
+#if OGRE_ENDIAN_BIG
+                            ushort val = (ushort)(src[srcIndex++] << 8);
+                            val += src[srcIndex++];
+#else
+                            ushort val = src[srcIndex++];
+                            val += (ushort)(src[srcIndex++] << 8);
+#endif
+                            dest[dstIndex++] = new Real(val) * invScale;
+                        }
+                        else
+                        {
+                            dest[dstIndex++] = new Real(src[srcIndex++]) * invScale;
+                        }
+                    }
+                }
+
+                // get the data from the heightmap
+                options.data = dest;
+                options.worldSize = image.Width;
+            }
 
             float maxx = options.scalex * options.worldSize;
             float maxy = 255 * options.scaley;
             float maxz = options.scalez * options.worldSize;
 
-            Resize( new AxisAlignedBox( Vector3.Zero, new Vector3( maxx, maxy, maxz ) ) );
+            Resize(new AxisAlignedBox(Vector3.Zero, new Vector3(maxx, maxy, maxz)));
 
-            terrainMaterial = (Material)(MaterialManager.Instance.CreateOrRetrieve( !String.IsNullOrEmpty( materialName )? materialName : "Terrain", ResourceGroupManager.Instance.WorldResourceGroupName ).First);
+            terrainMaterial = (Material)(MaterialManager.Instance.CreateOrRetrieve(!String.IsNullOrEmpty(materialName) ? materialName : "Terrain", ResourceGroupManager.Instance.WorldResourceGroupName).First);
 
-            if ( worldTexture != "" )
+            if (worldTexture != "")
             {
-                terrainMaterial.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( worldTexture, 0 );
+                terrainMaterial.GetTechnique(0).GetPass(0).CreateTextureUnitState(worldTexture, 0);
             }
 
-            if ( detailTexture != "" )
+            if (detailTexture != "")
             {
-                terrainMaterial.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( detailTexture, 1 );
+                terrainMaterial.GetTechnique(0).GetPass(0).CreateTextureUnitState(detailTexture, 1);
             }
 
             terrainMaterial.Lighting = options.isLit;
             terrainMaterial.Load();
 
-            terrainRoot = (SceneNode)RootSceneNode.CreateChild( "TerrainRoot" );
+            terrainRoot = (SceneNode)RootSceneNode.CreateChild("TerrainRoot");
 
-            numTiles = ( options.worldSize - 1 ) / ( options.size - 1 );
+            numTiles = (options.worldSize - 1) / (options.size - 1);
 
-            tiles = new TerrainRenderable[ numTiles, numTiles ];
+            tiles = new TerrainRenderable[numTiles, numTiles];
 
             int p = 0, q = 0;
 
-            for ( int j = 0; j < options.worldSize - 1; j += ( options.size - 1 ) )
+            for (int j = 0; j < options.worldSize - 1; j += (options.size - 1))
             {
                 p = 0;
 
-                for ( int i = 0; i < options.worldSize - 1; i += ( options.size - 1 ) )
+                for (int i = 0; i < options.worldSize - 1; i += (options.size - 1))
                 {
                     options.startx = i;
                     options.startz = j;
 
-                    string name = string.Format( "Tile[{0},{1}]", p, q );
+                    string name = string.Format("Tile[{0},{1}]", p, q);
 
-                    SceneNode node = (SceneNode)terrainRoot.CreateChild( name );
+                    SceneNode node = (SceneNode)terrainRoot.CreateChild(name);
                     TerrainRenderable tile = new TerrainRenderable();
                     tile.Name = name;
 
-                    tile.SetMaterial( terrainMaterial );
-                    tile.Init( options );
+                    tile.SetMaterial(terrainMaterial);
+                    tile.Init(options);
 
-                    tiles[ p, q ] = tile;
+                    tiles[p, q] = tile;
 
-                    node.AttachObject( tile );
+                    node.AttachObject(tile);
 
                     p++;
                 }
@@ -230,34 +276,34 @@ namespace Axiom.SceneManagers.Octree
                 q++;
             }
 
-            int size1 = tiles.GetLength( 0 );
-            int size2 = tiles.GetLength( 1 );
+            int size1 = tiles.GetLength(0);
+            int size2 = tiles.GetLength(1);
 
-            for ( int j = 0; j < size1; j++ )
+            for (int j = 0; j < size1; j++)
             {
-                for ( int i = 0; i < size2; i++ )
+                for (int i = 0; i < size2; i++)
                 {
-                    if ( j != size1 - 1 )
+                    if (j != size1 - 1)
                     {
-                        ( (TerrainRenderable)tiles[ i, j ] ).SetNeighbor( Neighbor.South, (TerrainRenderable)tiles[ i, j + 1 ] );
-                        ( (TerrainRenderable)tiles[ i, j + 1 ] ).SetNeighbor( Neighbor.North, (TerrainRenderable)tiles[ i, j ] );
+                        ((TerrainRenderable)tiles[i, j]).SetNeighbor(Neighbor.South, (TerrainRenderable)tiles[i, j + 1]);
+                        ((TerrainRenderable)tiles[i, j + 1]).SetNeighbor(Neighbor.North, (TerrainRenderable)tiles[i, j]);
                     }
 
-                    if ( i != size2 - 1 )
+                    if (i != size2 - 1)
                     {
-                        ( (TerrainRenderable)tiles[ i, j ] ).SetNeighbor( Neighbor.East, (TerrainRenderable)tiles[ i + 1, j ] );
-                        ( (TerrainRenderable)tiles[ i + 1, j ] ).SetNeighbor( Neighbor.West, (TerrainRenderable)tiles[ i, j ] );
+                        ((TerrainRenderable)tiles[i, j]).SetNeighbor(Neighbor.East, (TerrainRenderable)tiles[i + 1, j]);
+                        ((TerrainRenderable)tiles[i + 1, j]).SetNeighbor(Neighbor.West, (TerrainRenderable)tiles[i, j]);
                     }
                 }
             }
 
-            if ( options.isLit )
+            if (options.isLit)
             {
-                for ( int j = 0; j < size1; j++ )
+                for (int j = 0; j < size1; j++)
                 {
-                    for ( int i = 0; i < size2; i++ )
+                    for (int i = 0; i < size2; i++)
                     {
-                        ( (TerrainRenderable)tiles[ i, j ] ).CalculateNormals();
+                        ((TerrainRenderable)tiles[i, j]).CalculateNormals();
                     }
                 }
             }
