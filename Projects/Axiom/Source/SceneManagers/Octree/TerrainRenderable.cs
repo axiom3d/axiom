@@ -951,12 +951,12 @@ namespace Axiom.SceneManagers.Octree
 		}
 
 
-		public int GetWorldHeight( int x, int z )
+		public Real GetWorldHeight( int x, int z )
 		{
 			return data[ ( ( z * worldSize ) + x ) ];
 		}
 
-		public byte[] data;     //pointer to the world 2D data.
+		public Real[] data;     //pointer to the world 2D data.
 		public int size;         //size of this square block
 		public int worldSize;   //size of the world.
 		public int startx;
