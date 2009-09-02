@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.IO;
 using System.Threading;
@@ -111,10 +112,10 @@ namespace Axiom.Serialization
         public const uint HEADER_ID = 0x0001;
         public const uint REVERSE_HEADER_ID = 0x1000;
 
-        public const uint CHUNK_HEADER_SIZE = sizeof ( uint ) + //id
-                                              sizeof ( UInt16 ) + //version
-                                              sizeof ( uint ) + //length
-                                              sizeof ( uint ); //checksum
+        public const uint CHUNK_HEADER_SIZE = sizeof( uint ) + //id
+                                              sizeof( ushort ) + //version
+                                              sizeof( uint ) + //length
+                                              sizeof( int ); //checksum
 
         #endregion Constants and Enumerations
 
@@ -304,18 +305,12 @@ namespace Axiom.Serialization
         /// this stream is midway through a file which has already included header
         /// information.</param>
         public StreamSerializer( Stream stream, Endian endianMode, bool autoHeader )
+#if !AXIOM_DOUBLE_PRECISION
+            : this( stream, endianMode, autoHeader, RealStorageFormat.Float )
+#else
+            : this( stream, endianMode, autoHeader, RealStorageFormat.Double )
+#endif
         {
-            mStream = stream;
-            mEndian = endianMode;
-            mReadWriteHeader = autoHeader;
-
-            if ( mEndian != Endian.Auto )
-            {
-                if ( mEndian == Endian.Little )
-                {
-                    mFlipEndian = true;
-                }
-            }
         }
 
         /// <summary>
@@ -339,9 +334,29 @@ namespace Axiom.Serialization
         /// and can only be changed if autoHeader is true, since real format is stored in the header. 
         /// Defaults to float unless you're using AXIOM_DOUBLE_PRECISION.</param>
         public StreamSerializer( Stream stream, Endian endianMode, bool autoHeader, RealStorageFormat realFormat )
-            : this( stream, endianMode, autoHeader )
         {
+            mStream = stream;
+            mEndian = endianMode;
+            mReadWriteHeader = autoHeader;
+
+            if ( mEndian != Endian.Auto )
+            {
+#if AXIOM_ENDIAN_BIG
+                if ( mEndian == Endian.Little )
+                {
+                    mFlipEndian = true;
+                }
+#else
+                if ( mEndian == Endian.Big )
+                {
+                    mFlipEndian = true;
+                }
+#endif
+            }
+
             mRealFormat = realFormat;
+
+            this.CheckStream();
         }
 
         #endregion Construction and Destruction
@@ -615,6 +630,22 @@ namespace Axiom.Serialization
         }
 
         /// <summary>
+        /// Reads an item from the stream
+        /// </summary>
+        /// <typeparam name="T">Type to read</typeparam>
+        /// <param name="data">new instance of type T</param>
+        public void Read<T>( out T[] data )
+        {
+            int length;
+            byte[] buffer = new byte[ Memory.SizeOf( typeof( int ) ) ];
+            ReadData( buffer, buffer.Length, 1 );
+            length = BitConverterEx.SetBytes<int>( buffer);
+            buffer = new byte[ Memory.SizeOf( typeof( T ) ) * length ];
+            ReadData( buffer, buffer.Length, 1 );
+            BitConverterEx.SetBytes<T>( buffer, out data );
+        }
+
+        /// <summary>
         /// Reads a string from the stream
         /// </summary>
         /// <param name="data"></param>
@@ -646,6 +677,19 @@ namespace Axiom.Serialization
         public void Write<T>( T data )
         {
             byte[] buffer = BitConverterEx.GetBytes( data );
+            WriteData( buffer, buffer.Length, 1 );
+        }
+
+        /// <summary>
+        /// Write an item to the stream
+        /// </summary>
+        /// <typeparam name="T">Type to write</typeparam>
+        /// <param name="data">instance of T to write</param>
+        public void Write<T>( T[] data )
+        {
+            byte[] buffer = BitConverterEx.GetBytes( data.Length );
+            WriteData( buffer, buffer.Length, 1 );
+            buffer = BitConverterEx.GetBytes( data );
             WriteData( buffer, buffer.Length, 1 );
         }
 
@@ -699,6 +743,7 @@ namespace Axiom.Serialization
             uint headerid;
             byte[] mtp = new byte[4];
             int actually_read = mStream.Read( mtp, 0, sizeof ( uint ) );
+            mStream.Position -= actually_read;
 
             headerid = BitConverter.ToUInt32( mtp, 0 );
             if ( headerid == REVERSE_HEADER_ID )
@@ -715,6 +760,17 @@ namespace Axiom.Serialization
             }
             DetermineEndianness();
             mReadWriteHeader = false;
+
+		    Chunk chunk = ReadChunkBegin();
+		    // endian should be flipped now
+		    Debug.Assert(chunk.id == HEADER_ID);
+
+		    // read real storage format
+		    bool realIsDouble;
+		    Read(out realIsDouble);
+		    mRealFormat = realIsDouble? RealStorageFormat.Double : RealStorageFormat.Float;
+
+		    ReadChunkEnd(HEADER_ID);
         }
 
         /// <summary>
@@ -856,7 +912,7 @@ namespace Axiom.Serialization
             CheckStream( true, true, false );
 
             int totSize = size * count;
-            mStream.Read( buf, (int)mStream.Position, totSize );
+            mStream.Read( buf, 0, totSize );
 
             if ( mFlipEndian )
             {
@@ -872,7 +928,7 @@ namespace Axiom.Serialization
         /// <param name="count">The number of elements to write</param>
         protected void WriteData( byte[] buf, int size, int count )
         {
-            CheckStream( true, true, false );
+            CheckStream( false, false, true );
 
             int totSize = size * count;
 
@@ -881,7 +937,7 @@ namespace Axiom.Serialization
                 FlipEndian( buf, size, count );
             }
 
-            mStream.Write( buf, (int)mStream.Position, totSize );
+            mStream.Write( buf, 0, totSize );
         }
 
         protected void FlipEndian( byte[] pBase, int size, int count )
@@ -927,7 +983,7 @@ namespace Axiom.Serialization
 
                 if ( this.mChunkStack.Count != 0 )
                 {
-                    LogManager.Instance.Write( "Warning: stream was not fully read / written; " + mChunkStack.Count + " chunks remain unterminated." );
+                    Debug.Write( "Warning: stream was not fully read / written; " + mChunkStack.Count + " chunks remain unterminated." );
                 }
                 mChunkStack.Clear();
                 mStream.Dispose();

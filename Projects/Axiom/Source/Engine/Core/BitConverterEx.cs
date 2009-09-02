@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 #endregion Namespace Declarations
@@ -44,10 +45,27 @@ namespace Axiom.Core
     {
         public static byte[] GetBytes<T>(T value)
         {
-            int size = Marshal.SizeOf(typeof(T));
-            byte[] buffer = new byte[size];
-            IntPtr dst = Memory.PinObject(buffer);
-            Marshal.StructureToPtr(value, dst, true);
+            int size;
+            byte[] buffer;
+            IntPtr dst;
+            if ( !typeof( T ).IsArray )
+            {
+                size = Marshal.SizeOf( typeof ( T ) );
+                buffer = new byte[size];
+                dst = Memory.PinObject(buffer);
+                Marshal.StructureToPtr(value, dst, true);
+            }
+            else
+            {
+                size = Marshal.SizeOf( typeof ( T ).GetElementType() ) * (int)typeof ( T ).GetProperty( "Length" ).GetValue( value, null );
+                buffer = new byte[ size ];
+                dst = Memory.PinObject( buffer );
+
+                IntPtr src = Memory.PinObject( value );
+                Memory.Copy( src, dst, size );
+                Memory.UnpinObject( value );
+            }
+             
             Memory.UnpinObject(buffer);
 
             return buffer;
@@ -55,11 +73,24 @@ namespace Axiom.Core
 
         public static T SetBytes<T>(byte[] buffer)
         {
-            int size = Marshal.SizeOf(typeof(T));
-            IntPtr src = Memory.PinObject(buffer);
-            T retStruct = (T)Marshal.PtrToStructure(src, typeof(T));
+            int size= Marshal.SizeOf( typeof( T ) );
+            IntPtr src= Memory.PinObject( buffer );
+            T retStruct= (T)Marshal.PtrToStructure(src, typeof(T));
             Memory.UnpinObject(buffer);
             return retStruct;
         }
+
+        public static void SetBytes<T>( byte[] buffer, out T[] dest )
+        {
+            int size = buffer.Length / Marshal.SizeOf( typeof( T ) );
+            dest = new T[size];
+            IntPtr src = Memory.PinObject( buffer );
+            IntPtr dst = Memory.PinObject( dest );
+            Memory.Copy( src, dst, buffer.Length );
+            Memory.UnpinObject( buffer );
+            Memory.UnpinObject( dest );
+        }
+    
+    
     }
 }
