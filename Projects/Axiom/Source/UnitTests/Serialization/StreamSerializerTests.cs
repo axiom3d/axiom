@@ -2,9 +2,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 #if MbUnit
+using Axiom.FileSystem;
+using Axiom.Serialization;
+
 using Gallio.Framework;
 using MbUnit.Framework;
 #else
@@ -43,16 +47,64 @@ namespace Axiom.Engine.Tests.Serialization
 #endif
 
         [Test]
-        public void TestReadData()
+        public void BasicReadWriteTest()
         {
-            AxisAlignedBox actual = new AxisAlignedBox(new Vector3(0, 0, 0), new Vector3(50, 50, 50));
-            AxisAlignedBox expected = new AxisAlignedBox(new Vector3(0, 0, 0), new Vector3(150, 150, 150));
+            String fileName = "testSerialiser.dat";
+            Vector3 aTestVector = new Vector3(0.3f, 15.2f, -12.0f);
+            String aTestString = "Some text here";
+            int aTestValue = 99;
+            int[] aTestArray = new int[5]
+                               {
+                                   5, 4, 3, 2, 1
+                               };
 
-            Vector3 point = new Vector3(150, 150, 150);
+            uint chunkID = StreamSerializer.MakeIdentifier("TEST");
+            byte[] buffer = new byte[1024];
 
-            actual.Merge(point);
+            // write the data
+            {
+                Stream stream = new MemoryStream(buffer); // arch.Create(fileName, true));
 
-            Assert.AreEqual(expected, actual);
+                using ( StreamSerializer serializer = new StreamSerializer( stream ) )
+                {
+                    serializer.WriteChunkBegin( chunkID );
+
+                    serializer.Write( aTestVector );
+                    serializer.Write( aTestString );
+                    serializer.Write( aTestValue );
+                    serializer.Write( aTestArray );
+                    serializer.WriteChunkEnd( chunkID );
+                }
+            }
+
+            // read it back
+            {
+
+                Stream stream = new MemoryStream( buffer ); //arch.Open(fileName);
+
+                using ( StreamSerializer serializer = new StreamSerializer( stream ) )
+                {
+                    Chunk c = serializer.ReadChunkBegin();
+                    Assert.AreEqual( chunkID, c.id );
+                    Assert.AreEqual( sizeof( float ) * 3 + sizeof( int ) + aTestString.Length + 4 + sizeof( int ) * aTestArray.Length + sizeof( int ), (int)c.length );
+
+                    Vector3 inVector;
+                    String inString;
+                    int inValue;
+                    int[] inArray;
+
+                    serializer.Read( out inVector );
+                    serializer.Read( out inString );
+                    serializer.Read( out inValue );
+                    serializer.Read( out inArray );
+                    serializer.ReadChunkEnd( chunkID );
+
+                    Assert.AreEqual( aTestVector, inVector );
+                    Assert.AreEqual( aTestString, inString );
+                    Assert.AreEqual( aTestValue, inValue );
+                    Assert.AreEqual( aTestArray, inArray );
+                }
+            }
         }
     }
 }

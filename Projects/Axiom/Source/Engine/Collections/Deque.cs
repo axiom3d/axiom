@@ -243,7 +243,10 @@ namespace Axiom.Collections
             }
             T item = this._data[ this._tail ];
             this._data[ this._tail ] = default( T );
-            this._tail = this.Decrement( this._tail );
+            if (this._count > 1)
+            {
+                this._tail = this.Decrement( this._tail );
+            }
             return item;
         }
 
