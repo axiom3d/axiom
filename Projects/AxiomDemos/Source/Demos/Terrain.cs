@@ -34,7 +34,7 @@ namespace Axiom.Demos
             camera.Position = new Vector3( 128, 25, 128 );
             camera.LookAt( new Vector3( 0, 0, -300 ) );
             camera.Near = 1;
-            camera.Far = 384;
+            //camera.Far = 384;
         }
 
         public override void CreateScene()
@@ -49,7 +49,7 @@ namespace Axiom.Demos
 
             scene.LoadWorldGeometry( "Terrain.xml" );
 
-            scene.SetFog( FogMode.Exp2, ColorEx.White, .008f, 0, 250 );
+            //scene.SetFog( FogMode.Exp2, ColorEx.White, .008f, 0, 250 );
 
             // water plane setup
             Plane waterPlane = new Plane( Vector3.UnitY, 1.5f );
@@ -105,6 +105,20 @@ namespace Axiom.Demos
 
                 waterNode.Translate( new Vector3( 0, flowUp ? waterFlow : -waterFlow, 0 ) );
             }
+            if (input.IsMousePressed(Axiom.Input.MouseButtons.Left))
+            {
+                float mouseX = (float)input.AbsoluteMouseX / (float)window.Width;
+                float mouseY = (float)input.AbsoluteMouseY / (float)window.Height;
+
+                Ray ray = camera.GetCameraToViewportRay(mouseX, mouseY);
+                RaySceneQuery r = scene.CreateRayQuery(ray);
+                foreach (RaySceneQueryResultEntry re in r.Execute())
+                {
+                    if (re.worldFragment != null)
+                        debugText = re.worldFragment.SingleIntersection.ToString();
+                }
+            }
+
 
             return true;
         }

@@ -334,9 +334,9 @@ namespace OctreeZone
                     GpuProgramParameters paras = pass.VertexProgramParameters;
 
                     // worldviewproj
-                    paras.SetAutoConstant(0, AutoConstants.WorldViewProjMatrix);
+                    paras.SetAutoConstant(0, GpuProgramParameters.AutoConstantType.WorldViewProjMatrix);
                     // morph factor
-                    paras.SetAutoConstant(4, AutoConstants.Custom, TerrainZoneRenderable.MORPH_CUSTOM_PARAM_ID);
+                    paras.SetAutoConstant(4, GpuProgramParameters.AutoConstantType.Custom, TerrainZoneRenderable.MORPH_CUSTOM_PARAM_ID);
                     // fog exp density(if relevant)
                     if (fm == FogMode.Exp || fm == FogMode.Exp2)
                     {
@@ -356,13 +356,13 @@ namespace OctreeZone
                     pass.SetShadowReceiverVertexProgram("Terrain/VertexMorphShadowReceive");
                     paras = pass.ShadowReceiverVertexProgramParameters;
                     // worldviewproj
-                    paras.SetAutoConstant(0, AutoConstants.WorldViewProjMatrix);
+                    paras.SetAutoConstant(0, GpuProgramParameters.AutoConstantType.WorldViewProjMatrix);
                     // world
-                    paras.SetAutoConstant(4, AutoConstants.WorldMatrix);
+                    paras.SetAutoConstant(4, GpuProgramParameters.AutoConstantType.WorldMatrix);
                     // texture view / proj
-                    paras.SetAutoConstant(8, AutoConstants.TextureViewProjMatrix);
+                    paras.SetAutoConstant(8, GpuProgramParameters.AutoConstantType.TextureViewProjMatrix);
                     // morph factor
-                    paras.SetAutoConstant(12, AutoConstants.Custom, TerrainZoneRenderable.MORPH_CUSTOM_PARAM_ID);
+                    paras.SetAutoConstant(12, GpuProgramParameters.AutoConstantType.Custom, TerrainZoneRenderable.MORPH_CUSTOM_PARAM_ID);
 
 
                     // Set param index
@@ -397,8 +397,8 @@ namespace OctreeZone
                         bool found = false;
                         foreach (GpuProgramParameters.AutoConstantEntry ace in paras.AutoConstantList)
                         {
-                            if (ace.type == AutoConstants.Custom &&
-                                ace.data == TerrainZoneRenderable.MORPH_CUSTOM_PARAM_ID)
+                            if (ace.Type == GpuProgramParameters.AutoConstantType.Custom &&
+                                ace.Data == TerrainZoneRenderable.MORPH_CUSTOM_PARAM_ID)
                             {
                                 found = true;
                                 break;
@@ -409,12 +409,12 @@ namespace OctreeZone
                             if (mLodMorphParamName != "")
                             {
                                 paras.SetNamedAutoConstant(mLodMorphParamName,
-                                    AutoConstants.Custom, TerrainZoneRenderable.MORPH_CUSTOM_PARAM_ID);
+                                    GpuProgramParameters.AutoConstantType.Custom, TerrainZoneRenderable.MORPH_CUSTOM_PARAM_ID);
                             }
                             else
                             {
                                 paras.SetAutoConstant(mLodMorphParamIndex,
-                                    AutoConstants.Custom, TerrainZoneRenderable.MORPH_CUSTOM_PARAM_ID);
+                                    GpuProgramParameters.AutoConstantType.Custom, TerrainZoneRenderable.MORPH_CUSTOM_PARAM_ID);
                             }
                         }
 

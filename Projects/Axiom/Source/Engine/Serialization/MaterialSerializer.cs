@@ -2480,29 +2480,29 @@ namespace Axiom.Serialization
 		{
 			bool extras = false;
 
-			object val = ScriptEnumAttribute.Lookup( parameters[ 1 ], typeof( AutoConstants ) );
+			object val = ScriptEnumAttribute.Lookup( parameters[ 1 ], typeof( GpuProgramParameters.AutoConstantType ) );
 
 			if ( val != null )
 			{
 				bool isFloat = false;
-				AutoConstants constantType = (AutoConstants)val;
+				GpuProgramParameters.AutoConstantType constantType = (GpuProgramParameters.AutoConstantType)val;
 
 				// these types require extra data
-				if ( constantType == AutoConstants.LightDiffuseColor ||
-					constantType == AutoConstants.LightSpecularColor ||
-					constantType == AutoConstants.LightAttenuation ||
-					constantType == AutoConstants.LightPosition ||
-					constantType == AutoConstants.LightDirection ||
-					constantType == AutoConstants.LightPositionObjectSpace ||
-					constantType == AutoConstants.LightDirectionObjectSpace ||
-					constantType == AutoConstants.Custom )
+				if ( constantType == GpuProgramParameters.AutoConstantType.LightDiffuseColor ||
+					constantType == GpuProgramParameters.AutoConstantType.LightSpecularColor ||
+					constantType == GpuProgramParameters.AutoConstantType.LightAttenuation ||
+					constantType == GpuProgramParameters.AutoConstantType.LightPosition ||
+					constantType == GpuProgramParameters.AutoConstantType.LightDirection ||
+					constantType == GpuProgramParameters.AutoConstantType.LightPositionObjectSpace ||
+					constantType == GpuProgramParameters.AutoConstantType.LightDirectionObjectSpace ||
+					constantType == GpuProgramParameters.AutoConstantType.Custom )
 				{
 
 					extras = true;
 					isFloat = false;
 				}
-				else if ( constantType == AutoConstants.Time_0_X ||
-						   constantType == AutoConstants.SinTime_0_X )
+				else if ( constantType == GpuProgramParameters.AutoConstantType.Time_0_X ||
+						   constantType == GpuProgramParameters.AutoConstantType.SinTime_0_X )
 				{
 					extras = true;
 					isFloat = true;
@@ -2522,7 +2522,7 @@ namespace Axiom.Serialization
 					context.programParams.SetAutoConstant( index, constantType, float.Parse( parameters[ 2 ] ) );
 				else if ( extras )
 					context.programParams.SetAutoConstant( index, constantType, int.Parse( parameters[ 2 ] ) );
-				else if ( constantType == AutoConstants.Time )
+				else if ( constantType == GpuProgramParameters.AutoConstantType.Time )
 				{
 					if ( parameters.Length == 3 )
 						context.programParams.SetAutoConstant( index, constantType, float.Parse( parameters[ 2 ] ) );
@@ -2534,7 +2534,7 @@ namespace Axiom.Serialization
 			}
 			else
 			{
-				string legalValues = ScriptEnumAttribute.GetLegalValues( typeof( AutoConstants ) );
+				string legalValues = ScriptEnumAttribute.GetLegalValues( typeof( GpuProgramParameters.AutoConstantType ) );
 				LogParseError( context, "Bad auto gpu program param - Invalid param type '{0}', valid values are {1}.", parameters[ 1 ], legalValues );
 				return;
 			}

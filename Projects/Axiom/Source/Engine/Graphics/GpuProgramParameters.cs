@@ -69,7 +69,7 @@ namespace Axiom.Graphics
 	///    on certain boundaries, e.g. in sets of 4 values for example. Again, see
 	///    Capabilities for full details.
 	/// </remarks>
-	public class GpuProgramParameters
+	public partial class GpuProgramParameters
 	{
 		#region Structs
 
@@ -143,7 +143,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Clears all the existing automatic constants.
 		/// </summary>
-		public void ClearAutoConstants()
+		public void ClearAutoConstantType()
 		{
 			autoConstantList.Clear();
 		}
@@ -221,7 +221,7 @@ namespace Axiom.Graphics
 
 			// Iterate over auto parameters
 			// Clear existing auto constants
-			ClearAutoConstants();
+			ClearAutoConstantType();
 
 			for ( i = 0; i < source.autoConstantList.Count; i++ )
 			{
@@ -291,6 +291,10 @@ namespace Axiom.Graphics
 				}
 				else
 				{
+                    if (this.ignoreMissingParameters)
+                    {
+                        return -1;
+                    }
 					throw new Exception( string.Format( "Cannot find a param index for a param named '{0}'.", name ) );
 				}
 			}
@@ -378,7 +382,7 @@ namespace Axiom.Graphics
 		///    it is changed. Note that because of the nature of the types, we know how big the 
 		///    parameter details will be so you don't need to set that like you do for manual constants.
 		/// </param>
-		public void SetAutoConstant( int index, AutoConstants type )
+		public void SetAutoConstant( int index, AutoConstantType type )
 		{
 			SetAutoConstant( index, type, 0 );
 		}
@@ -393,10 +397,10 @@ namespace Axiom.Graphics
 		///    parameter details will be so you don't need to set that like you do for manual constants.
 		/// </param>
 		/// <param name="extraInfo">If the constant type needs more information (like a light index) put it here.</param>
-		public void SetAutoConstant( int index, AutoConstants type, int extraInfo )
+		public void SetAutoConstant( int index, AutoConstantType type, int extraInfo )
 		{
-			AutoConstantEntry entry = new AutoConstantEntry( type, index, extraInfo );
-			System.Diagnostics.Debug.Assert( type != AutoConstants.SinTime_0_X );
+			AutoConstantEntry entry = new AutoConstantEntry( type, index, extraInfo, 0 );
+			System.Diagnostics.Debug.Assert( type != AutoConstantType.SinTime_0_X );
 			autoConstantList.Add( entry );
 		}
 
@@ -425,9 +429,9 @@ namespace Axiom.Graphics
 		///    parameter details will be so you don't need to set that like you do for manual constants.
 		/// </param>
 		/// <param name="extraInfo">If the constant type needs more information (like a light index) put it here.</param>
-		public void SetAutoConstant( int index, AutoConstants type, float extraInfo )
+		public void SetAutoConstant( int index, AutoConstantType type, float extraInfo )
 		{
-			AutoConstantEntry entry = new AutoConstantEntry( type, index, extraInfo );
+			AutoConstantEntry entry = new AutoConstantEntry( type, index, extraInfo,0 );
 			autoConstantList.Add( entry );
 		}
 
@@ -537,7 +541,7 @@ namespace Axiom.Graphics
 		/// <param name="ints">Array of ints.</param>
 		public void SetIntConstant( int index, int value )
 		{
-			SetConstant( index, (float)value, 0f, 0f, 0f );
+			SetConstant( index, value, 0f, 0f, 0f );
 		}
 
 		/// <summary>
@@ -561,7 +565,7 @@ namespace Axiom.Graphics
 			int srcIndex = 0;
 			// resize if necessary
 			floatConstants.Resize( index + 1 );
-			FloatConstantEntry entry = (FloatConstantEntry)floatConstants[ index ];
+			FloatConstantEntry entry = floatConstants[ index ];
 			entry.isSet = true;
 			entry.val[ 0 ] = f0;
 			entry.val[ 1 ] = f1;
@@ -585,7 +589,7 @@ namespace Axiom.Graphics
 			// copy in chunks of 4
 			while ( count-- > 0 )
 			{
-				FloatConstantEntry entry = (FloatConstantEntry)floatConstants[ index++ ];
+				FloatConstantEntry entry = floatConstants[ index++ ];
 				entry.isSet = true;
 				Array.Copy( floats, srcIndex, entry.val, 0, 4 );
 				srcIndex += 4;
@@ -621,21 +625,27 @@ namespace Axiom.Graphics
 		///    The type of automatic constant to set.
 		/// </param>
 		/// <param name="extraInfo">
-		///    Any extra infor needed by the auto constant (i.e. light index, etc).
+		///    Any extra information needed by the auto constant (i.e. light index, etc).
 		/// </param>
-		public void SetNamedAutoConstant( string name, AutoConstants type, int extraInfo )
+		public void SetNamedAutoConstant( string name, AutoConstantType type, int extraInfo )
 		{
-			SetAutoConstant( GetParamIndex( name ), type, extraInfo );
+            int index = GetParamIndex( name );
+            if ( index != -1 )
+                SetAutoConstant( GetParamIndex( name ), type, extraInfo );
 		}
 
 		public void SetNamedConstant( string name, float val )
 		{
-			SetConstant( GetParamIndex( name ), val, 0f, 0f, 0f );
+            int index = GetParamIndex( name );
+            if ( index != -1 )
+                SetConstant( GetParamIndex( name ), val, 0f, 0f, 0f );
 		}
 
 		public void SetNamedConstant( string name, float[] val )
 		{
-			SetConstant( GetParamIndex( name ), val );
+            int index = GetParamIndex( name );
+            if ( index != -1 )
+                SetConstant( GetParamIndex( name ), val );
 		}
 
 		/// <summary>
@@ -645,7 +655,9 @@ namespace Axiom.Graphics
 		/// <param name="val">Structure containing 4 packed float values.</param>
 		public void SetNamedConstant( string name, Vector4 val )
 		{
-			SetConstant( GetParamIndex( name ), val.x, val.y, val.z, val.w );
+            int index = GetParamIndex( name );
+            if ( index != -1 )
+                SetConstant( GetParamIndex( name ), val.x, val.y, val.z, val.w );
 		}
 
 		/// <summary>
@@ -655,7 +667,9 @@ namespace Axiom.Graphics
 		/// <param name="val">Structure containing 3 packed float values.</param>
 		public void SetNamedConstant( string name, Vector3 val )
 		{
-			SetConstant( GetParamIndex( name ), val.x, val.y, val.z, 1f );
+            int index = GetParamIndex( name );
+            if ( index != -1 )
+                SetConstant( GetParamIndex( name ), val.x, val.y, val.z, 1f );
 		}
 
 		/// <summary>
@@ -665,7 +679,9 @@ namespace Axiom.Graphics
 		/// <param name="color">Structure containing 4 packed RGBA color values.</param>
 		public void SetNamedConstant( string name, ColorEx color )
 		{
-			SetConstant( GetParamIndex( name ), color.r, color.g, color.b, color.a );
+		    int index = GetParamIndex( name );
+            if (index != -1 )         
+			    SetConstant( GetParamIndex( name ), color.r, color.g, color.b, color.a );
 		}
 
 		/// <summary>
@@ -675,7 +691,9 @@ namespace Axiom.Graphics
 		/// <param name="val">Structure containing 3 packed float values.</param>
 		public void SetNamedConstant( string name, Matrix4 val )
 		{
-			SetConstant( GetParamIndex( name ), val );
+            int index = GetParamIndex( name );
+            if ( index != -1 )
+                SetConstant( GetParamIndex( name ), val );
 		}
 
 		/// <summary>
@@ -685,7 +703,9 @@ namespace Axiom.Graphics
 		/// <param name="matrices">Array of matrices.</param>
 		public void SetNamedConstant( string name, Matrix4[] matrices, int count )
 		{
-			SetConstant( GetParamIndex( name ), matrices, count );
+            int index = GetParamIndex( name );
+            if ( index != -1 )
+                SetConstant( GetParamIndex( name ), matrices, count );
 		}
 
 		/// <summary>
@@ -695,7 +715,9 @@ namespace Axiom.Graphics
 		/// <param name="factor"></param>
 		public void SetNamedConstantFromTime( string name, float factor )
 		{
-			SetConstantFromTime( GetParamIndex( name ), factor );
+            int index = GetParamIndex( name );
+            if ( index != -1 )
+                SetConstantFromTime( GetParamIndex( name ), factor );
 		}
 
 		#endregion
@@ -710,7 +732,7 @@ namespace Axiom.Graphics
 		public void UpdateAutoParamsNoLights( AutoParamDataSource source )
 		{
 			// return if no constants
-			if ( !this.HasAutoConstants )
+			if ( !this.HasAutoConstantType )
 			{
 				return;
 			}
@@ -718,26 +740,26 @@ namespace Axiom.Graphics
 			// loop through and update all constants based on their type
 			for ( int i = 0; i < autoConstantList.Count; i++ )
 			{
-				AutoConstantEntry entry = (AutoConstantEntry)autoConstantList[ i ];
+				AutoConstantEntry entry = autoConstantList[ i ];
 
 				Matrix4[] matrices = null;
 				int numMatrices = 0;
 				int index = 0;
 
-				switch ( entry.type )
+				switch ( entry.Type )
 				{
-					case AutoConstants.WorldMatrix:
-						SetConstant( entry.index, source.WorldMatrix );
+					case AutoConstantType.WorldMatrix:
+                        SetConstant( entry.PhysicalIndex, source.WorldMatrix );
 						break;
 
-					case AutoConstants.WorldMatrixArray:
-						SetConstant( entry.index, source.WorldMatrixArray, source.WorldMatrixCount );
+					case AutoConstantType.WorldMatrixArray:
+                        SetConstant( entry.PhysicalIndex, source.WorldMatrixArray, source.WorldMatrixCount );
 						break;
 
-					case AutoConstants.WorldMatrixArray3x4:
+					case AutoConstantType.WorldMatrixArray3x4:
 						matrices = source.WorldMatrixArray;
 						numMatrices = source.WorldMatrixCount;
-						index = entry.index;
+                        index = entry.PhysicalIndex;
 
 						for ( int j = 0; j < numMatrices; j++ )
 						{
@@ -749,100 +771,100 @@ namespace Axiom.Graphics
 
 						break;
 
-					case AutoConstants.ViewMatrix:
-						SetConstant( entry.index, source.ViewMatrix );
+					case AutoConstantType.ViewMatrix:
+                        SetConstant( entry.PhysicalIndex, source.ViewMatrix );
 						break;
 
-					case AutoConstants.ProjectionMatrix:
-						SetConstant( entry.index, source.ProjectionMatrix );
+					case AutoConstantType.ProjectionMatrix:
+                        SetConstant( entry.PhysicalIndex, source.ProjectionMatrix );
 						break;
 
-					case AutoConstants.ViewProjMatrix:
-						SetConstant( entry.index, source.ViewProjectionMatrix );
+					case AutoConstantType.ViewProjMatrix:
+                        SetConstant( entry.PhysicalIndex, source.ViewProjectionMatrix );
 						break;
 
-					case AutoConstants.WorldViewMatrix:
-						SetConstant( entry.index, source.WorldViewMatrix );
+					case AutoConstantType.WorldViewMatrix:
+                        SetConstant( entry.PhysicalIndex, source.WorldViewMatrix );
 						break;
 
-					case AutoConstants.WorldViewProjMatrix:
-						SetConstant( entry.index, source.WorldViewProjMatrix );
+					case AutoConstantType.WorldViewProjMatrix:
+                        SetConstant( entry.PhysicalIndex, source.WorldViewProjMatrix );
 						break;
 
-					case AutoConstants.InverseWorldMatrix:
-						SetConstant( entry.index, source.InverseWorldMatrix );
+					case AutoConstantType.InverseWorldMatrix:
+                        SetConstant( entry.PhysicalIndex, source.InverseWorldMatrix );
 						break;
 
-					case AutoConstants.InverseViewMatrix:
-						SetConstant( entry.index, source.InverseViewMatrix );
+					case AutoConstantType.InverseViewMatrix:
+                        SetConstant( entry.PhysicalIndex, source.InverseViewMatrix );
 						break;
 
-					case AutoConstants.InverseWorldViewMatrix:
-						SetConstant( entry.index, source.InverseWorldViewMatrix );
+					case AutoConstantType.InverseWorldViewMatrix:
+                        SetConstant( entry.PhysicalIndex, source.InverseWorldViewMatrix );
 						break;
 
-                    case AutoConstants.InverseTransposeWorldViewMatrix:
-                        SetConstant(entry.index, source.InverseTransposeWorldViewMatrix);
+                    case AutoConstantType.InverseTransposeWorldViewMatrix:
+                        SetConstant( entry.PhysicalIndex, source.InverseTransposeWorldViewMatrix );
                         break;
 
-					case AutoConstants.AmbientLightColor:
-						SetConstant( entry.index, source.AmbientLight );
+					case AutoConstantType.AmbientLightColor:
+                        SetConstant( entry.PhysicalIndex, source.AmbientLight );
 						break;
 
-					case AutoConstants.CameraPositionObjectSpace:
-						SetConstant( entry.index, source.CameraPositionObjectSpace );
+					case AutoConstantType.CameraPositionObjectSpace:
+                        SetConstant( entry.PhysicalIndex, source.CameraPositionObjectSpace );
 						break;
 
-					case AutoConstants.CameraPosition:
-						SetConstant( entry.index, source.CameraPosition );
+					case AutoConstantType.CameraPosition:
+                        SetConstant( entry.PhysicalIndex, source.CameraPosition );
 						break;
 
-					case AutoConstants.TextureViewProjMatrix:
-						SetConstant( entry.index, source.TextureViewProjectionMatrix );
+					case AutoConstantType.TextureViewProjMatrix:
+                        SetConstant( entry.PhysicalIndex, source.TextureViewProjectionMatrix );
 						break;
 
-					case AutoConstants.Custom:
-					case AutoConstants.AnimationParametric:
+					case AutoConstantType.Custom:
+					case AutoConstantType.AnimationParametric:
 						source.Renderable.UpdateCustomGpuParameter( entry, this );
 						break;
-					case AutoConstants.FogParams:
-						SetConstant( entry.index, source.FogParams );
+					case AutoConstantType.FogParams:
+                        SetConstant( entry.PhysicalIndex, source.FogParams );
 						break;
-					case AutoConstants.ViewDirection:
-						SetConstant( entry.index, source.ViewDirection );
+					case AutoConstantType.ViewDirection:
+                        SetConstant( entry.PhysicalIndex, source.ViewDirection );
 						break;
-					case AutoConstants.ViewSideVector:
-						SetConstant( entry.index, source.ViewSideVector );
+					case AutoConstantType.ViewSideVector:
+                        SetConstant( entry.PhysicalIndex, source.ViewSideVector );
 						break;
-					case AutoConstants.ViewUpVector:
-						SetConstant( entry.index, source.ViewUpVector );
+					case AutoConstantType.ViewUpVector:
+                        SetConstant( entry.PhysicalIndex, source.ViewUpVector );
 						break;
-					case AutoConstants.NearClipDistance:
-						SetConstant( entry.index, source.NearClipDistance, 0f, 0f, 0f );
+					case AutoConstantType.NearClipDistance:
+                        SetConstant( entry.PhysicalIndex, source.NearClipDistance, 0f, 0f, 0f );
 						break;
-					case AutoConstants.FarClipDistance:
-						SetConstant( entry.index, source.FarClipDistance, 0f, 0f, 0f );
+					case AutoConstantType.FarClipDistance:
+                        SetConstant( entry.PhysicalIndex, source.FarClipDistance, 0f, 0f, 0f );
 						break;
-					case AutoConstants.MVShadowTechnique:
-						SetConstant( entry.index, source.MVShadowTechnique );
+					case AutoConstantType.MVShadowTechnique:
+                        SetConstant( entry.PhysicalIndex, source.MVShadowTechnique );
 						break;
-					case AutoConstants.Time:
-						SetConstant( entry.index, source.Time * entry.fdata, 0f, 0f, 0f );
+					case AutoConstantType.Time:
+                        SetConstant( entry.PhysicalIndex, source.Time * entry.FData, 0f, 0f, 0f );
 						break;
-					case AutoConstants.Time_0_X:
-						SetConstant( entry.index, source.Time % entry.fdata, 0f, 0f, 0f );
+					case AutoConstantType.Time_0_X:
+                        SetConstant( entry.PhysicalIndex, source.Time % entry.FData, 0f, 0f, 0f );
 						break;
-					case AutoConstants.SinTime_0_X:
-						SetConstant( entry.index, Utility.Sin( source.Time % entry.fdata ), 0f, 0f, 0f );
+					case AutoConstantType.SinTime_0_X:
+                        SetConstant( entry.PhysicalIndex, Utility.Sin( source.Time % entry.FData ), 0f, 0f, 0f );
 						break;
-					case AutoConstants.Time_0_1:
-						SetConstant( entry.index, (float)( source.Time % 1 ), 0f, 0f, 0f );
+					case AutoConstantType.Time_0_1:
+                        SetConstant( entry.PhysicalIndex, (float)( source.Time % 1 ), 0f, 0f, 0f );
 						break;
-					case AutoConstants.RenderTargetFlipping:
-						SetIntConstant( entry.index, source.RenderTarget.RequiresTextureFlipping ? -1 : 1 );
+					case AutoConstantType.RenderTargetFlipping:
+                        SetIntConstant( entry.PhysicalIndex, source.RenderTarget.RequiresTextureFlipping ? -1 : 1 );
 						break;
-					case AutoConstants.PassNumber:
-						SetIntConstant( entry.index, source.PassNumber );
+					case AutoConstantType.PassNumber:
+                        SetIntConstant( entry.PhysicalIndex, source.PassNumber );
 						break;
 				}
 			}
@@ -858,7 +880,7 @@ namespace Axiom.Graphics
 		public void UpdateAutoParamsLightsOnly( AutoParamDataSource source )
 		{
 			// return if no constants
-			if ( !this.HasAutoConstants )
+			if ( !this.HasAutoConstantType )
 			{
 				return;
 			}
@@ -866,52 +888,52 @@ namespace Axiom.Graphics
 			// loop through and update all constants based on their type
 			for ( int i = 0; i < autoConstantList.Count; i++ )
 			{
-				AutoConstantEntry entry = (AutoConstantEntry)autoConstantList[ i ];
+				AutoConstantEntry entry = autoConstantList[ i ];
 
 				Vector3 vec3;
 
-				switch ( entry.type )
+				switch ( entry.Type )
 				{
-					case AutoConstants.LightDiffuseColor:
-						SetConstant( entry.index, source.GetLight( entry.data ).Diffuse );
+					case AutoConstantType.LightDiffuseColor:
+                        SetConstant( entry.PhysicalIndex, source.GetLight( entry.Data ).Diffuse );
 						break;
 
-					case AutoConstants.LightSpecularColor:
-						SetConstant( entry.index, source.GetLight( entry.data ).Specular );
+					case AutoConstantType.LightSpecularColor:
+                        SetConstant( entry.PhysicalIndex, source.GetLight( entry.Data ).Specular );
 						break;
 
-					case AutoConstants.LightPosition:
+					case AutoConstantType.LightPosition:
                         // Fix from Multiverse to enable Normal Mapping Sample Material from OGRE
-                        SetConstant( entry.index, source.GetLight( entry.data ).GetAs4DVector() );
+                        SetConstant( entry.PhysicalIndex, source.GetLight( entry.Data ).GetAs4DVector() );
 						break;
 
-					case AutoConstants.LightDirection:
+					case AutoConstantType.LightDirection:
 						vec3 = source.GetLight( 1 ).DerivedDirection;
-						SetConstant( entry.index, vec3.x, vec3.y, vec3.z, 1.0f );
+                        SetConstant( entry.PhysicalIndex, vec3.x, vec3.y, vec3.z, 1.0f );
 						break;
 
-					case AutoConstants.LightPositionObjectSpace:
-						SetConstant( entry.index, source.InverseWorldMatrix * source.GetLight( entry.data ).GetAs4DVector() );
+					case AutoConstantType.LightPositionObjectSpace:
+                        SetConstant( entry.PhysicalIndex, source.InverseWorldMatrix * source.GetLight( entry.Data ).GetAs4DVector() );
 						break;
 
-					case AutoConstants.LightDirectionObjectSpace:
-						vec3 = source.InverseWorldMatrix * source.GetLight( entry.data ).DerivedDirection;
+					case AutoConstantType.LightDirectionObjectSpace:
+						vec3 = source.InverseWorldMatrix * source.GetLight( entry.Data ).DerivedDirection;
 						vec3.Normalize();
-						SetConstant( entry.index, vec3.x, vec3.y, vec3.z, 1.0f );
+                        SetConstant( entry.PhysicalIndex, vec3.x, vec3.y, vec3.z, 1.0f );
 						break;
 
-					case AutoConstants.LightDistanceObjectSpace:
-						vec3 = source.InverseWorldMatrix * source.GetLight( entry.data ).DerivedPosition;
-						SetConstant( entry.index, vec3.Length, 0f, 0f, 0f );
+					case AutoConstantType.LightDistanceObjectSpace:
+						vec3 = source.InverseWorldMatrix * source.GetLight( entry.Data ).DerivedPosition;
+                        SetConstant( entry.PhysicalIndex, vec3.Length, 0f, 0f, 0f );
 						break;
 
-					case AutoConstants.ShadowExtrusionDistance:
-						SetConstant( entry.index, source.ShadowExtrusionDistance, 0f, 0f, 0f );
+					case AutoConstantType.ShadowExtrusionDistance:
+                        SetConstant( entry.PhysicalIndex, source.ShadowExtrusionDistance, 0f, 0f, 0f );
 						break;
 
-					case AutoConstants.LightAttenuation:
-						Light light = source.GetLight( entry.data );
-						SetConstant( entry.index, light.AttenuationRange, light.AttenuationConstant, light.AttenuationLinear, light.AttenuationQuadratic );
+					case AutoConstantType.LightAttenuation:
+						Light light = source.GetLight( entry.Data );
+						SetConstant( entry.PhysicalIndex, light.AttenuationRange, light.AttenuationConstant, light.AttenuationLinear, light.AttenuationQuadratic );
 						break;
 				}
 			}
@@ -955,7 +977,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Returns true if this instance contains any automatic constants.
 		/// </summary>
-		public bool HasAutoConstants
+		public bool HasAutoConstantType
 		{
 			get
 			{
@@ -1068,90 +1090,5 @@ namespace Axiom.Graphics
         }
 
 	    #endregion Properties
-
-		#region Inner classes
-
-		/// <summary>
-		///    A structure for recording the use of automatic parameters.
-		/// </summary>
-		public class AutoConstantEntry
-		{
-			/// <summary>
-			///    The type of the parameter.
-			/// </summary>
-			public AutoConstants type;
-			/// <summary>
-			///    The target index.
-			/// </summary>
-			public int index;
-			/// <summary>
-			///    Any additional info to go with the parameter.
-			/// </summary>
-			public int data;
-			/// <summary>
-			///    Any additional info to go with the parameter.
-			/// </summary>
-			public float fdata;
-
-			/// <summary>
-			///    Default constructor.
-			/// </summary>
-			/// <param name="type">Type of auto param (i.e. WorldViewMatrix, etc)</param>
-			/// <param name="index">Index of the param.</param>
-			/// <param name="data">Any additional info to go with the parameter.</param>
-			public AutoConstantEntry( AutoConstants type, int index, int data )
-			{
-				this.type = type;
-				this.index = index;
-				this.data = data;
-				System.Diagnostics.Debug.Assert( type != AutoConstants.SinTime_0_X );
-			}
-
-			/// <summary>
-			///    Default constructor.
-			/// </summary>
-			/// <param name="type">Type of auto param (i.e. WorldViewMatrix, etc)</param>
-			/// <param name="index">Index of the param.</param>
-			/// <param name="data">Any additional info to go with the parameter.</param>
-			public AutoConstantEntry( AutoConstants type, int index, float fdata )
-			{
-				this.type = type;
-				this.index = index;
-				this.fdata = fdata;
-			}
-
-			public AutoConstantEntry Clone()
-			{
-				AutoConstantEntry rv = new AutoConstantEntry( type, index, fdata );
-				rv.data = data;
-				return rv;
-			}
-		}
-
-		/// <summary>
-		///		Float parameter entry; contains both a group of 4 values and 
-		///		an indicator to say if it's been set or not. This allows us to 
-		///		filter out constant entries which have not been set by the renderer
-		///		and may actually be being used internally by the program.
-		/// </summary>
-		public class FloatConstantEntry
-		{
-			public float[] val = new float[ 4 ];
-			public bool isSet = false;
-		}
-
-		/// <summary>
-		///		Int parameter entry; contains both a group of 4 values and 
-		///		an indicator to say if it's been set or not. This allows us to 
-		///		filter out constant entries which have not been set by the renderer
-		///		and may actually be being used internally by the program.
-		/// </summary>
-		public class IntConstantEntry
-		{
-			public int[] val = new int[ 4 ];
-			public bool isSet = false;
-		}
-
-		#endregion
 	}
 }

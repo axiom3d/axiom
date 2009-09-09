@@ -926,7 +926,7 @@ namespace Axiom.Core
         /// </param>
         public ManualObject CreateManualObject( string name )
         {
-            return (ManualObject)this.CreateMovableObject( name, ManualObjectFactory.Factory_Type_Name, null );
+            return (ManualObject)this.CreateMovableObject( name, ManualObjectFactory.TypeName, null );
         }
 
         /// <summary>
@@ -943,7 +943,7 @@ namespace Axiom.Core
         /// </exception>
         public ManualObject GetManualObject( string name )
         {
-            return (ManualObject)this.GetMovableObject( name, ManualObjectFactory.Factory_Type_Name );
+            return (ManualObject)this.GetMovableObject( name, ManualObjectFactory.TypeName );
         }
 
         /// <summary>
@@ -1783,8 +1783,8 @@ namespace Axiom.Core
                         ShadowVolumeExtrudeProgram.GetProgramName( ShadowVolumeExtrudeProgram.Programs.PointLight ) );
 
                     this.infiniteExtrusionParams = this.shadowDebugPass.VertexProgramParameters;
-                    this.infiniteExtrusionParams.SetAutoConstant( 0, AutoConstants.WorldViewProjMatrix );
-                    this.infiniteExtrusionParams.SetAutoConstant( 4, AutoConstants.LightPositionObjectSpace );
+                    this.infiniteExtrusionParams.SetAutoConstant( 0, GpuProgramParameters.AutoConstantType.WorldViewProjMatrix );
+                    this.infiniteExtrusionParams.SetAutoConstant( 4, GpuProgramParameters.AutoConstantType.LightPositionObjectSpace );
                 }
 
                 matDebug.Compile();
@@ -1816,9 +1816,9 @@ namespace Axiom.Core
                             ShadowVolumeExtrudeProgram.Programs.PointLightFinite ) );
 
                     this.finiteExtrusionParams = this.shadowStencilPass.VertexProgramParameters;
-                    this.finiteExtrusionParams.SetAutoConstant( 0, AutoConstants.WorldViewProjMatrix );
-                    this.finiteExtrusionParams.SetAutoConstant( 4, AutoConstants.LightPositionObjectSpace );
-                    this.finiteExtrusionParams.SetAutoConstant( 5, AutoConstants.ShadowExtrusionDistance );
+                    this.finiteExtrusionParams.SetAutoConstant( 0, GpuProgramParameters.AutoConstantType.WorldViewProjMatrix );
+                    this.finiteExtrusionParams.SetAutoConstant( 4, GpuProgramParameters.AutoConstantType.LightPositionObjectSpace );
+                    this.finiteExtrusionParams.SetAutoConstant( 5, GpuProgramParameters.AutoConstantType.ShadowExtrusionDistance );
                 }
                 matStencil.Compile();
                 // Nothing else, we don't use this like a 'real' pass anyway,
@@ -1859,8 +1859,7 @@ namespace Axiom.Core
             if ( this.IsShadowTechniqueTextureBased )
             {
                 Pass retPass = ( this.shadowTextureCustomCasterPass != null
-                                     ?
-                                         this.shadowTextureCustomCasterPass
+                                     ? this.shadowTextureCustomCasterPass
                                      : this.shadowCasterPlainBlackPass );
                 retPass.CullingMode = pass.CullingMode;
                 retPass.ManualCullingMode = pass.ManualCullingMode;
@@ -6660,6 +6659,8 @@ namespace Axiom.Core
 
         #endregion
 
+        #region WorldGeometry
+
         /// <summary>
         /// Estimate the number of loading stages required to load the named
         /// world geometry.
@@ -6727,6 +6728,8 @@ namespace Axiom.Core
         public virtual void SetWorldGeometry(Stream stream, string typeName)
         {
         }
+
+        #endregion WorldGeometry
 
         #region MovableObjectFactory methods
 

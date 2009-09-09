@@ -57,6 +57,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Fonts\FontManagerRegressionTests.cs" />
+    <Compile Include="Graphics\GpuProgramParametersTestFixture.cs" />
     <Compile Include="Math\AxisAlignedBoxTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SceneManagers\Bsp\BspSceneManagerRegressionTests.cs">

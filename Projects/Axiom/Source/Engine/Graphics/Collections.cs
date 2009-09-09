@@ -72,39 +72,6 @@ namespace Axiom.Graphics
     public class TextureUnitStateList : List<TextureUnitState> { }
 
     /// <summary>
-    ///     Generics: List<AutoConstantEntry>
-    /// </summary>
-    public class AutoConstantEntryList : List<Axiom.Graphics.GpuProgramParameters.AutoConstantEntry> { }
-
-    /// <summary>
-    ///     Generics: List<AutoConstantEntry>
-    /// </summary>
-    public class FloatConstantEntryList : List<GpuProgramParameters.FloatConstantEntry>
-    {
-        public void Resize( int size )
-        {
-            while ( this.Count < size )
-            {
-                Add( new GpuProgramParameters.FloatConstantEntry() );
-            }
-        }
-    }
-
-    /// <summary>
-    ///     Generics: List<AutoConstantEntry>
-    /// </summary>
-    public class IntConstantEntryList : List<GpuProgramParameters.IntConstantEntry>
-    {
-        public void Resize( int size )
-        {
-            while ( this.Count < size )
-            {
-                Add( new GpuProgramParameters.IntConstantEntry() );
-            }
-        }
-    }
-
-    /// <summary>
     ///     Generics: List<IRenderable>
     /// </summary>
     public class RenderableList : List<IRenderable> { }

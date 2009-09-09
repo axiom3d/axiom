@@ -164,11 +164,11 @@ namespace Axiom.SceneManagers.Octree
 
             scale = new Vector3(options.scalex, options.scaley, options.scalez);
             tileSize = options.size;
-
             // load the heightmap
             {
                 Image image = Image.FromFile( terrainFileName );
-                Real[] dest = new Real[tileSize * tileSize];
+                worldSize = options.worldSize = image.Width;
+                Real[] dest = new Real[(int)worldSize * (int)worldSize];
                 byte[] src = image.Data;
                 Real invScale;
 
@@ -182,19 +182,19 @@ namespace Axiom.SceneManagers.Octree
                 if ( is16bit )
                 {
                     invScale = 1.0f / 65535.0f;
-                    rowSize = (ulong)tileSize * 2;
+                    rowSize = (ulong)worldSize * 2;
                 }
                 else
                 {
-                    invScale = 1.0f / 255.0f;
-                    rowSize = (ulong)tileSize;
+                    invScale = 1.0f;// / 255.0f;
+                    rowSize = (ulong)worldSize;
                 }
                 // Read the data
                 int srcIndex = 0;
                 int dstIndex = 0;
-                for ( ulong j = 0; j < (ulong)tileSize; ++j )
+                for ( ulong j = 0; j < (ulong)worldSize; ++j )
                 {
-                    for (ulong i = 0; i < (ulong)tileSize; ++i)
+                    for (ulong i = 0; i < (ulong)worldSize; ++i)
                     {
                         if ( is16bit )
                         {
@@ -209,14 +209,13 @@ namespace Axiom.SceneManagers.Octree
                         }
                         else
                         {
-                            dest[dstIndex++] = new Real(src[srcIndex++]) * invScale;
+                            dest[ dstIndex++ ] = new Real( src[ srcIndex++ ] );// *invScale;
                         }
                     }
                 }
 
                 // get the data from the heightmap
                 options.data = dest;
-                options.worldSize = image.Width;
             }
 
             float maxx = options.scalex * options.worldSize;
@@ -285,14 +284,14 @@ namespace Axiom.SceneManagers.Octree
                 {
                     if (j != size1 - 1)
                     {
-                        ((TerrainRenderable)tiles[i, j]).SetNeighbor(Neighbor.South, (TerrainRenderable)tiles[i, j + 1]);
-                        ((TerrainRenderable)tiles[i, j + 1]).SetNeighbor(Neighbor.North, (TerrainRenderable)tiles[i, j]);
+                        tiles[ i, j ].SetNeighbor( Neighbor.South, tiles[ i, j + 1 ] );
+                        tiles[ i, j + 1 ].SetNeighbor( Neighbor.North, tiles[ i, j ] );
                     }
 
                     if (i != size2 - 1)
                     {
-                        ((TerrainRenderable)tiles[i, j]).SetNeighbor(Neighbor.East, (TerrainRenderable)tiles[i + 1, j]);
-                        ((TerrainRenderable)tiles[i + 1, j]).SetNeighbor(Neighbor.West, (TerrainRenderable)tiles[i, j]);
+                        tiles[ i, j ].SetNeighbor( Neighbor.East, tiles[ i + 1, j ] );
+                        tiles[ i + 1, j ].SetNeighbor( Neighbor.West, tiles[ i, j ] );
                     }
                 }
             }
@@ -303,7 +302,7 @@ namespace Axiom.SceneManagers.Octree
                 {
                     for (int i = 0; i < size2; i++)
                     {
-                        ((TerrainRenderable)tiles[i, j]).CalculateNormals();
+                        tiles[i, j].CalculateNormals();
                     }
                 }
             }
@@ -323,7 +322,8 @@ namespace Axiom.SceneManagers.Octree
         /// </summary>
         protected override void RenderVisibleObjects()
         {
-
+            if ( tiles == null )
+                return;
             for ( int i = 0; i < tiles.GetLength( 0 ); i++ )
             {
                 for ( int j = 0; j < tiles.GetLength( 1 ); j++ )
@@ -342,6 +342,47 @@ namespace Axiom.SceneManagers.Octree
         public override void FindVisibleObjects( Camera camera, bool onlyShadowCasters )
         {
             base.FindVisibleObjects( camera, onlyShadowCasters );
+        }
+        /// <summary>
+        ///    Creates a query to return objects found along the ray.
+        /// </summary>
+        /// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
+        public virtual RaySceneQuery CreateRayQuery()
+        {
+            return this.CreateRayQuery(new Ray(), 0xffffffff);
+        }
+
+        /// <summary>
+        ///    Creates a query to return objects found along the ray.
+        /// </summary>
+        /// <param name="ray">Ray to use for the intersection query.</param>
+        /// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
+        public virtual RaySceneQuery CreateRayQuery(Ray ray)
+        {
+            return this.CreateRayQuery(ray, 0xffffffff);
+        }
+
+        /// <summary>
+        ///    Creates a query to return objects found along the ray. 
+        /// </summary>
+        /// <param name="ray">Ray to use for the intersection query.</param>
+        /// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
+        public override RaySceneQuery CreateRayQuery(Ray ray, ulong mask)
+        {
+            TerrainRaySceneQuery query = new TerrainRaySceneQuery(this);
+            query.Ray = ray;
+            query.QueryMask = mask;
+            return query;
+        }
+
+        public Vector3 IntersectSegment(Vector3 start, Vector3 end)
+        {
+            TerrainRenderable t = GetTerrainTile(start);
+            if (t == null)
+            {
+                return new Vector3(-1, -1, -1);
+            }
+            return t.IntersectSegment(start, end);
         }
 
         /// <summary>

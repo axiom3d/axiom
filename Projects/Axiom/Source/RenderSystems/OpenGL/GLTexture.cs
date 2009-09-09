@@ -560,7 +560,8 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 			catch ( AccessViolationException ave )
 			{
-				LogManager.Instance.Write( "Failed to delete Texture[{0}]", _glTextureID );
+				if ( LogManager.Instance != null ) 
+                    LogManager.Instance.Write( "Failed to delete Texture[{0}]", _glTextureID );
 			}
 		}
 
@@ -593,7 +594,6 @@ namespace Axiom.RenderSystems.OpenGL
 
 				FreeInternalResources();
 			}
-			isDisposed = true;
 
 			// If it is available, make the call to the
 			// base class's Dispose(Boolean) method

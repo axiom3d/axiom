@@ -258,7 +258,7 @@ namespace Axiom.Graphics
         /// <remarks>
         ///		This method allows a Renderable to map in a custom GPU program parameter
         ///		based on it's own data. This is represented by a GPU auto parameter
-        ///		of AutoConstants.Custom, and to allow there to be more than one of these per
+        ///		of AutoConstantType.Custom, and to allow there to be more than one of these per
         ///		Renderable, the 'data' field on the auto parameter will identify
         ///		which parameter is being updated. The implementation of this method
         ///		must identify the parameter being updated, and call a 'SetConstant' 
