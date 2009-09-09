@@ -1118,7 +1118,7 @@ namespace Axiom.RenderSystems.DirectX9
 				case GpuProgramType.Vertex:
 					if ( parms.HasIntConstants )
 					{
-						for ( int index = 0; index < parms.FloatConstantCount; index++ )
+						for ( int index = 0; index < parms.IntConstantCount; index++ )
 						{
 							GpuProgramParameters.IntConstantEntry entry = parms.GetIntConstant( index );
 
@@ -1147,7 +1147,7 @@ namespace Axiom.RenderSystems.DirectX9
 				case GpuProgramType.Fragment:
 					if ( parms.HasIntConstants )
 					{
-						for ( int index = 0; index < parms.FloatConstantCount; index++ )
+						for ( int index = 0; index < parms.IntConstantCount; index++ )
 						{
 							GpuProgramParameters.IntConstantEntry entry = parms.GetIntConstant( index );
 
