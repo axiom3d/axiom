@@ -124,6 +124,7 @@
     <Compile Include="FileSystem\Watcher.cs" />
     <Compile Include="FileSystem\ZipArchive.cs" />
     <Compile Include="Graphics\AnyBuilder.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.AutoConstants.cs" />
     <Compile Include="Graphics\CompositionPass.cs" />
     <Compile Include="Graphics\CompositionTargetPass.cs" />
     <Compile Include="Graphics\CompositionTechnique.cs" />
@@ -131,6 +132,12 @@
     <Compile Include="Graphics\CompositorChain.cs" />
     <Compile Include="Graphics\CompositorInstance.cs" />
     <Compile Include="Graphics\CompositorManager.cs" />
+    <Compile Include="Graphics\DefaultHardwareIndexBuffer.cs" />
+    <Compile Include="Graphics\DefaultHardwareVertexBuffer.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.ConstantEntry.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.GpuConstantDefinition.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.NamedConstants.cs" />
+    <Compile Include="Graphics\GpuProgramParameters.SharedParameters.cs" />
     <Compile Include="Graphics\HardwarePixelBuffer.cs" />
     <Compile Include="Graphics\MultiRenderTarget.cs" />
     <Compile Include="Graphics\QueuedRenderableCollection.cs" />

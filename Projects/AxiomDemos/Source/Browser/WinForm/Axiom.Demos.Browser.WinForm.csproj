@@ -1077,6 +1077,10 @@
       <Project>{161EA53F-8D78-4BD3-8217-442D94A593C1}</Project>
       <Name>Axiom.SceneManagers.Bsp</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\Source\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj">
+      <Project>{E0BB87B2-C59D-46D4-9AD9-A919E457E4EF}</Project>
+      <Name>Axiom.SceneManagers.Octree</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\Source\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.csproj">
       <Project>{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}</Project>
       <Name>Axiom.SceneManagers.PortalConnected</Name>

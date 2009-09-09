@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using Axiom.Math;
+
 namespace Axiom.Core
 {
 	public struct Rectangle
@@ -106,14 +108,37 @@ namespace Axiom.Core
 		#endregion Construction and Destruction
 
 		#region Methods
+
 		public bool Contains( long x, long y )
 		{
 			return x >= _left && x <= _right && y >= _top && y <= _bottom;
 		}
-		#endregion Methods
 
+        public Rectangle Intersect( Rectangle rhs)
+        {       
+            return Intersect( this, rhs );
+        }
 
-		internal static Rectangle Intersect( Rectangle lhs, Rectangle rhs )
+        public Rectangle Merge( Rectangle rhs )
+        {
+			  if (Width == 0)
+			  {
+				  this = rhs;
+			  }
+			  else
+			  {
+				  Left = System.Math.Min(Left, rhs.Left);
+				  Right = System.Math.Max(Right, rhs.Right);
+				  Top = System.Math.Min(Top, rhs.Top);
+                  Bottom = System.Math.Max(Bottom, rhs.Bottom);
+			  }
+
+			  return this;
+        }
+
+	    #endregion Methods
+
+        internal static Rectangle Intersect(Rectangle lhs, Rectangle rhs)
 		{
 			Rectangle r;
 
@@ -228,10 +253,35 @@ namespace Axiom.Core
 		#endregion Construction and Destruction
 
 		#region Methods
+
 		public bool Contains( float x, float y )
 		{
 			return x >= _left && x <= _right && y >= _top && y <= _bottom;
 		}
+
+        public RectangleF Intersect(RectangleF rhs)
+        {
+            return Intersect(this, rhs);
+        }
+
+        public RectangleF Merge(RectangleF rhs)
+        {
+            if (Width == 0)
+            {
+                this = rhs;
+            }
+            else
+            {
+                Left = System.Math.Min(Left, rhs.Left);
+                Right = System.Math.Max(Right, rhs.Right);
+                Top = System.Math.Min(Top, rhs.Top);
+                Bottom = System.Math.Max(Bottom, rhs.Bottom);
+            }
+
+            return this;
+        }
+
+
 		#endregion Methods
 
 

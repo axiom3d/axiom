@@ -1495,9 +1495,9 @@ namespace Axiom.Core
             public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry,
                                                   GpuProgramParameters gpuParams )
             {
-                if ( this.customParams[ entry.data ] != null )
+                if ( this.customParams[ entry.Data ] != null )
                 {
-                    gpuParams.SetConstant( entry.index, (Vector4) this.customParams[ entry.data ] );
+                    gpuParams.SetConstant( entry.PhysicalIndex, (Vector4) this.customParams[ entry.Data ] );
                 }
             }
 
@@ -1777,11 +1777,11 @@ namespace Axiom.Core
 
     public class ManualObjectFactory : MovableObjectFactory
     {
-        public static string Factory_Type_Name = "ManualObject";
+         public const string TypeName = "ManualObject";
 
         public ManualObjectFactory()
         {
-            this.Type = Factory_Type_Name;
+            this.Type = TypeName;
         }
 
         protected override MovableObject _createInstance( string name, NamedParameterList param )

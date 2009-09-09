@@ -317,9 +317,9 @@ namespace Axiom.Graphics
 
         public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
         {
-            if ( customParams[ entry.data ] != null )
+            if ( customParams[ entry.Data ] != null )
             {
-                gpuParams.SetConstant( entry.index, (Vector4)customParams[ entry.data ] );
+                gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
             }
         }
 

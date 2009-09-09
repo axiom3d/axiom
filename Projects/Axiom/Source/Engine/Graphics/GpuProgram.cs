@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Collections;
 
@@ -279,12 +280,20 @@ namespace Axiom.Graphics
 		#region DefaultParameters Property
 
 		/// <summary>
-		///		List of default parameters, as gathered from the program definition.
+		///	List of default parameters, as gathered from the program definition.
 		/// </summary>
 		protected GpuProgramParameters defaultParams;
 		/// <summary>
-		///		List of default parameters, as gathered from the program definition.
+		///	Get a reference to the default parameters which are to be used for all uses of this program.
 		/// </summary>
+		/// <remarks>
+		/// A program can be set up with a list of default parameters, which can save time when 
+		/// using a program many times in a material with roughly the same settings. By 
+		/// retrieving the default parameters and populating it with the most used options, 
+		/// any new parameter objects created from this program afterwards will automatically include
+		/// the default parameters; thus users of the program need only change the parameters
+		/// which are unique to their own usage of the program.
+		/// </remarks>
 		public virtual GpuProgramParameters DefaultParameters
 		{
 			get
@@ -297,11 +306,23 @@ namespace Axiom.Graphics
 			}
 		}
 
-		#endregion DefaultParameters Property
+	    #endregion DefaultParameters Property
 
-		#region PassSurfaceAndLightStates Property
+        #region HasDefaultParameters Property
 
-		/// <summary>
+        public virtual bool HasDefaultParameters
+        {
+            get
+            {
+                return defaultParams != null;
+            }
+        }
+
+        #endregion HasDefaultParameters Property
+
+        #region PassSurfaceAndLightStates Property
+
+        /// <summary>
 		///		Does this program want light states passed through fixed pipeline?
 		/// </summary>
 		protected bool passSurfaceAndLightStates;
@@ -390,6 +411,129 @@ namespace Axiom.Graphics
         }
 
         #endregion CompilerError Property
+
+		/// <summary>
+		/// Record of logical to physical buffer maps. Mandatory for low-level
+		/// programs or high-level programs which set their params the same way.
+		/// </summary>
+		//private GpuLogicalBufferStruct floatLogicalToPhysical = new GpuLogicalBufferStruct();
+        /// <summary>
+        /// Record of logical to physical buffer maps. Mandatory for low-level
+        /// programs or high-level programs which set their params the same way.
+        /// </summary>
+		//private GpuLogicalBufferStruct intLogicalToPhysical = new GpuLogicalBufferStruct();
+
+        #region ConstantDefinitions Property
+
+		/// <summary>
+        /// Parameter name -> ConstantDefinition map, shared instance used by all parameter objects
+		/// </summary>
+		private GpuProgramParameters.GpuNamedConstants constantDefs;
+        /// <summary>
+        /// Get the full list of named constants.
+        /// </summary>
+        /// <note>
+        /// Only available if this parameters object has named parameters, which means either
+        /// a high-level program which loads them, or a low-level program which has them
+        /// specified manually.
+        /// </note>
+	    public GpuProgramParameters.GpuNamedConstants ConstantDefinitions
+	    {
+	        get
+	        {
+	            return constantDefs;
+	        }
+	    }
+ 
+    	#endregion ConstantDefinitions Property
+
+        #region ManualNamedConstants Property
+		
+        /// <summary>
+        /// Allows you to manually provide a set of named parameter mappings
+        /// to a program which would not be able to derive named parameters itself.
+        /// </summary>
+        /// <remarks>
+        /// You may wish to use this if you have assembler programs that were compiled
+        /// from a high-level source, and want the convenience of still being able
+        /// to use the named parameters from the original high-level source.
+        /// <seealso cref="ManualNamedConstantsFile"/>
+        /// </remarks>
+	    public GpuProgramParameters.GpuNamedConstants ManualNamedConstants
+	    {
+	        get
+	        {
+	            return constantDefs;
+	        }
+            set
+            {
+                constantDefs = value;
+
+                /*
+                floatLogicalToPhysical.BufferSize = constantDefs.FloatBufferSize;
+                intLogicalToPhysical.BufferSize = constantDefs.IntBufferSize;
+                floatLogicalToPhysical.Map.Clear();
+                intLogicalToPhysical.Map.Clear();
+
+		        // need to set up logical mappings too for some rendersystems
+                foreach ( KeyValuePair<string, GpuProgramParameters.GpuConstantDefinition> pair in constantDefs.GpuConstantDefinitions )
+                {
+                    string name = pair.Key;
+                    GpuProgramParameters.GpuConstantDefinition def = pair.Value;
+                    // only consider non-array entries
+                    if ( name.Contains( "[" ) )
+                    {
+                        GpuLogicalIndexUse val = new GpuLogicalIndexUse( def.PhysicalIndex, def.ArraySize * def.ElementSize, def.Variability );
+                        if ( def.IsFloat )
+                        {
+                            floatLogicalToPhysical.Map.Add( def.LogicalIndex, val );
+                        }
+                        else
+                        {
+                            intLogicalToPhysical.Map.Add( def.LogicalIndex, val );
+                        }
+                    }
+                }
+                */
+            }
+	    }
+
+	    #endregion
+
+        #region ManualNamedConstantsFile Property
+
+		/// <summary>   
+        /// File from which to load named constants manually
+		/// </summary>
+		private string manualNamedConstantsFile;
+        /// <summary>
+        /// Specifies the name of a file from which to load named parameters mapping
+        /// for a program which would not be able to derive named parameters itself.
+        /// </summary>
+        /// <remarks>
+        /// You may wish to use this if you have assembler programs that were compiled
+        /// from a high-level source, and want the convenience of still being able
+        /// to use the named parameters from the original high-level source. This
+        /// method will make a low-level program search in the resource group of the
+        /// program for the named file from which to load parameter names from. 
+        /// The file must be in the format produced by <see>GpuNamedConstants.Save</see>.
+        /// </remarks>
+	    public string ManualNamedConstantsFile
+	    {
+	        get
+	        {
+	            return ManualNamedConstantsFile;
+	        }
+            set
+            {
+                manualNamedConstantsFile = value;
+            }
+	    } 
+
+	    #endregion ManualNamedConstantsFile Property
+
+        private bool loadedManualNamedConstants;
+
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
@@ -406,6 +550,7 @@ namespace Axiom.Graphics
 
 			this.type = GpuProgramType.Vertex;
 			this.loadFromFile = true;
+		    this.loadedManualNamedConstants = false;
 		}
 
 		#endregion Construction and Destruction
@@ -422,20 +567,45 @@ namespace Axiom.Graphics
 		///    they are appropriate.
 		/// </remarks>
 		/// <returns></returns>
-		public virtual GpuProgramParameters CreateParameters()
+        public virtual GpuProgramParameters CreateParameters()
 		{
-			GpuProgramParameters newParams = GpuProgramManager.Instance.CreateParameters();
+		    GpuProgramParameters newParams = GpuProgramManager.Instance.CreateParameters();
 
-			// copy the default parameters if they exist
-			if ( defaultParams != null )
-			{
-				newParams.CopyConstantsFrom( defaultParams );
-			}
+		    // optionally load manually supplied named constants
+		    if ( !String.IsNullOrEmpty( manualNamedConstantsFile ) && !loadedManualNamedConstants )
+		    {
+		        try
+		        {
+		            GpuProgramParameters.GpuNamedConstants namedConstants = new GpuProgramParameters.GpuNamedConstants();
+		            Stream stream = ResourceGroupManager.Instance.OpenResource( manualNamedConstantsFile, Group, true, this );
+		            namedConstants.Load( stream );
+		            ManualNamedConstants = namedConstants;
+		        }
+		        catch ( Exception ex )
+		        {
+		            LogManager.Instance.Write( "Unable to load manual named constants for GpuProgram {0} : {1}", Name, LogManager.BuildExceptionString( ex ) );
+		        }
+		        loadedManualNamedConstants = true;
+		    }
 
-			return newParams;
+            /*
+		    // set up named parameters, if any
+		    if ( constantDefs.GpuConstantDefinitions.Count != 0 )
+		    {
+		        newParams._setNamedConstants( constantDefs );
+		    }
+		    // link shared logical / physical map for low-level use
+		    newParams._setLogicalIndexes( floatLogicalToPhysical, intLogicalToPhysical );
+            */
+
+		    // Copy in default parameters if present
+		    if ( defaultParams != null )
+		        newParams.CopyConstantsFrom( defaultParams );
+
+		    return newParams;
 		}
 
-		/// <summary>
+	    /// <summary>
 		///    Loads this Gpu Program.
 		/// </summary>
 		protected override void load()
@@ -452,6 +622,20 @@ namespace Axiom.Graphics
 			{
 				// call polymorphic load to read source
 				LoadFromSource();
+
+                if (defaultParams != null)
+                {
+                    // Keep a reference to old ones to copy
+                    GpuProgramParameters savedParams = defaultParams;
+
+                    // Create new params
+                    defaultParams = this.CreateParameters();
+
+                    // Copy old (matching) values across
+                    // Don't use copyConstantsFrom since program may be different
+                    //defaultParams.CopyMatchingNamedConstantsFrom(savedParams);
+                }
+
 			}
 			catch ( Exception ex )
 			{

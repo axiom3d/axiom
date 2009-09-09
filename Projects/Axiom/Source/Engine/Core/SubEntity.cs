@@ -413,7 +413,6 @@ namespace Axiom.Core
 			// use LOD
 			subMesh.GetRenderOperation( op, parent.MeshLodIndex );
 			// Deal with any vertex data overrides
-			// 			if (!hardwareSkinningEnabled)
 			op.vertexData = GetVertexDataForBinding();
 		}
 
@@ -646,14 +645,14 @@ namespace Axiom.Core
 
 		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
 		{
-			if ( entry.type == AutoConstants.AnimationParametric )
+			if ( entry.Type == GpuProgramParameters.AutoConstantType.AnimationParametric )
 			{
 				// Set up to 4 values, or up to limit of hardware animation entries
 				// Pack into 4-element constants offset based on constant data index
 				// If there are more than 4 entries, this will be called more than once
 				Vector4 val = Vector4.Zero;
 
-				int animIndex = entry.data * 4;
+				int animIndex = entry.Data * 4;
 				for ( int i = 0; i < 4 &&
 					animIndex < hardwareVertexAnimVertexData.HWAnimationDataList.Count;
 					++i, ++animIndex )
@@ -661,11 +660,11 @@ namespace Axiom.Core
 					val[ i ] = hardwareVertexAnimVertexData.HWAnimationDataList[ animIndex ].Parametric;
 				}
 				// set the parametric morph value
-				gpuParams.SetConstant( entry.index, val );
+				gpuParams.SetConstant( entry.PhysicalIndex, val );
 			}
-			else if ( customParams[ entry.data ] != null )
+			else if ( customParams[ entry.Data ] != null )
 			{
-				gpuParams.SetConstant( entry.index, (Vector4)customParams[ entry.data ] );
+				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
 			}
 		}
 

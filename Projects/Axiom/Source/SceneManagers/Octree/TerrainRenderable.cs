@@ -182,15 +182,15 @@ namespace Axiom.SceneManagers.Octree
 					{
 						float height = options.GetWorldHeight( i, j ) * options.scaley;
 
-						posPtr[ posCount++ ] = (float)i * options.scalex;
+						posPtr[ posCount++ ] = i * options.scalex;
 						posPtr[ posCount++ ] = height;
-						posPtr[ posCount++ ] = (float)j * options.scalez;
+						posPtr[ posCount++ ] = j * options.scalez;
 
-						texPtr[ texCount++ ] = (float)i / (float)options.worldSize;
-						texPtr[ texCount++ ] = (float)j / (float)options.worldSize;
+						texPtr[ texCount++ ] = (float)i / options.worldSize;
+						texPtr[ texCount++ ] = (float)j / options.worldSize;
 
-						texPtr[ texCount++ ] = ( (float)i / (float)options.size ) * (float)options.detailTile;
-						texPtr[ texCount++ ] = ( (float)j / (float)options.size ) * (float)options.detailTile;
+						texPtr[ texCount++ ] = ( (float)i / options.size ) * options.detailTile;
+						texPtr[ texCount++ ] = ( (float)j / options.size ) * options.detailTile;
 
 						if ( height < min )
 						{
@@ -210,8 +210,8 @@ namespace Axiom.SceneManagers.Octree
 			texBuffer.Unlock();
 
 			box.SetExtents(
-				new Vector3( (float)options.startx * options.scalex, min, (float)options.startz * options.scalez ),
-				new Vector3( (float)( endx - 1 ) * options.scalex, max, (float)( endz - 1 ) * options.scalez ) );
+				new Vector3( options.startx * options.scalex, min, options.startz * options.scalez ),
+				new Vector3( ( endx - 1 ) * options.scalex, max, ( endz - 1 ) * options.scalez ) );
 
 
 			center = new Vector3( ( options.startx * options.scalex + endx - 1 ) / 2,
@@ -488,6 +488,63 @@ namespace Axiom.SceneManagers.Octree
 			result = left.Cross( down );
 			result.Normalize();
 		}
+
+        public Vector3 IntersectSegment(Vector3 start, Vector3 end)
+        {
+            Vector3 dir = end - start;
+            Vector3 ray = start;
+
+            //special case...
+            if (dir.x == 0 && dir.z == 0)
+            {
+                if (ray.y <= GetHeightAt(ray.x, ray.z))
+                {
+                    return start;
+                }
+            }
+
+            dir.Normalize();
+
+            //dir.x *= mScale.x;
+            //dir.y *= mScale.y;
+            //dir.z *= mScale.z;
+
+            AxisAlignedBox box = this.BoundingBox;
+            //start with the next one...
+            ray += dir;
+
+            // traverse down the ray until we are 
+            while (!((ray.x < box.Minimum.x) ||
+                (ray.x > box.Maximum.x) ||
+                (ray.z < box.Minimum.z) ||
+                (ray.z > box.Maximum.z)))
+            {
+                float h = GetHeightAt(ray.x, ray.z);
+
+                if (ray.y <= h)
+                {
+                    return ray;
+                }
+
+                else
+                {
+                    ray += dir;
+                }
+            }
+
+            if (ray.x < box.Minimum.x && GetNeighbor(Neighbor.West) != null)
+                return GetNeighbor(Neighbor.West).IntersectSegment(ray, end);
+            else if (ray.z < box.Minimum.z && GetNeighbor(Neighbor.North) != null)
+                return GetNeighbor(Neighbor.North).IntersectSegment(ray, end);
+            else if (ray.x > box.Maximum.x && GetNeighbor(Neighbor.East) != null)
+                return GetNeighbor(Neighbor.East).IntersectSegment(ray, end);
+            else if (ray.z > box.Maximum.z && GetNeighbor(Neighbor.South) != null)
+                return GetNeighbor(Neighbor.South).IntersectSegment(ray, end);
+            else
+            {
+                return new Vector3(-1, -1, -1);
+            }
+        }
 
 		#endregion Methods
 
@@ -920,9 +977,9 @@ namespace Axiom.SceneManagers.Octree
 
 		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
 		{
-			if ( customParams[ entry.data ] != null )
+			if ( customParams[ entry.Data ] != null )
 			{
-				gpuParams.SetConstant( entry.index, (Vector4)customParams[ entry.data ] );
+				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
 			}
 		}
 
