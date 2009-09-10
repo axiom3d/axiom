@@ -12,13 +12,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platform Managers", "Platfo
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Platforms.Win32", "Axiom\Source\Platforms\Win32\Axiom.Platforms.Win32.csproj", "{C0F2A7AA-6984-4F05-8607-5E2702130D65}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Platforms.Win32", "Axiom\Platforms\Win32\Axiom.Platforms.Win32.csproj", "{C0F2A7AA-6984-4F05-8607-5E2702130D65}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Platforms.SDL", "Axiom\Source\Platforms\SDL\Axiom.Platforms.SDL.csproj", "{251CA27E-5363-419A-B4E3-FD1BE5FD0396}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Platforms.SDL", "Axiom\Platforms\SDL\Axiom.Platforms.SDL.csproj", "{251CA27E-5363-419A-B4E3-FD1BE5FD0396}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -30,19 +30,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Render Systems", "Render Sy
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.OpenGL.Win32", "Axiom\Source\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.Win32.csproj", "{78A50FC2-07B7-43DD-A24F-B4440F2E6169}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.OpenGL.Win32", "Axiom\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.Win32.csproj", "{78A50FC2-07B7-43DD-A24F-B4440F2E6169}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.DirectX9", "Axiom\Source\RenderSystems\DirectX9\Axiom.RenderSystems.DirectX9.csproj", "{DE43F8B9-960F-47E4-9A12-E2F5760EECE6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.DirectX9", "Axiom\RenderSystems\DirectX9\Axiom.RenderSystems.DirectX9.csproj", "{DE43F8B9-960F-47E4-9A12-E2F5760EECE6}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.OpenGL.SDL", "Axiom\Source\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.SDL.csproj", "{3FC7E038-B500-4CAB-8525-0D3442B3052D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.OpenGL.SDL", "Axiom\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.SDL.csproj", "{3FC7E038-B500-4CAB-8525-0D3442B3052D}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -54,13 +54,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scene Managers", "Scene Man
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.SceneManagers.Bsp", "Axiom\Source\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.csproj", "{AE2065CC-32F5-48F2-988F-D7E8D0789F30}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.SceneManagers.Bsp", "Axiom\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.csproj", "{AE2065CC-32F5-48F2-988F-D7E8D0789F30}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.SceneManagers.Octree", "Axiom\Source\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj", "{F3016FCF-2A53-483E-8679-4514D57B6ACD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.SceneManagers.Octree", "Axiom\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj", "{F3016FCF-2A53-483E-8679-4514D57B6ACD}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -72,19 +72,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{DC26
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Plugins.CgProgramManager", "Axiom\Source\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.csproj", "{24CC9752-FFA0-43A7-8CCE-44812D828E7D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Plugins.CgProgramManager", "Axiom\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.csproj", "{24CC9752-FFA0-43A7-8CCE-44812D828E7D}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Plugins.ParticleFX", "Axiom\Source\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.csproj", "{731CF9B4-E674-4DC4-9FEC-DAA9B09B59AA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Plugins.ParticleFX", "Axiom\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.csproj", "{731CF9B4-E674-4DC4-9FEC-DAA9B09B59AA}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom", "Axiom\Source\Engine\Axiom.csproj", "{6436E2A4-0520-40CF-9481-0EB77946120A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom", "Axiom\Engine\Axiom.csproj", "{6436E2A4-0520-40CF-9481-0EB77946120A}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
