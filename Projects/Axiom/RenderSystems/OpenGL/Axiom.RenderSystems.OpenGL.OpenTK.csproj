@@ -74,11 +74,11 @@
   <ItemGroup>
     <Reference Include="OpenTK, Version=0.9.8.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\OpenTK\0.9.8\OpenTK.dll</HintPath>
+      <HintPath>..\..\..\..\Lib\Managed\XPlatform\OpenTK\0.9.8\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK.Utilities, Version=0.9.8.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\OpenTK\0.9.8\OpenTK.Utilities.dll</HintPath>
+      <HintPath>..\..\..\..\Lib\Managed\XPlatform\OpenTK\0.9.8\OpenTK.Utilities.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -86,7 +86,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="Tao.OpenGl, Version=2.1.0.12, Culture=neutral, PublicKeyToken=1ca010269a4501ef, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\bin\Tao.OpenGl.dll</HintPath>
+      <HintPath>..\..\..\..\Lib\Managed\XPlatform\Tao\2.1.0.0\bin\Tao.OpenGl.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

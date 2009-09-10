@@ -77,35 +77,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\Engine\Axiom.csproj">
+    <ProjectReference Include="..\..\..\..\Axiom\Engine\Axiom.csproj">
       <Project>{6436E2A4-0520-40CF-9481-0EB77946120A}</Project>
       <Name>Axiom</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.csproj">
+    <ProjectReference Include="..\..\..\..\Axiom\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.csproj">
       <Project>{24CC9752-FFA0-43A7-8CCE-44812D828E7D}</Project>
       <Name>Axiom.Plugins.CgProgramManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\Plugins\DevILCodecs\Axiom.Plugins.DevILCodecs.csproj">
+    <ProjectReference Include="..\..\..\..\Axiom\Plugins\DevILCodecs\Axiom.Plugins.DevILCodecs.csproj">
       <Project>{B2BB7F09-2AD3-49C4-9268-D33BC13AA5E7}</Project>
       <Name>Axiom.Plugins.DevILCodecs</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\Plugins\OctreeZone\OctreeZone.csproj">
+    <ProjectReference Include="..\..\..\..\Axiom\Plugins\OctreeZone\OctreeZone.csproj">
       <Project>{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}</Project>
       <Name>OctreeZone</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.csproj">
+    <ProjectReference Include="..\..\..\..\Axiom\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.csproj">
       <Project>{731CF9B4-E674-4DC4-9FEC-DAA9B09B59AA}</Project>
       <Name>Axiom.Plugins.ParticleFX</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.csproj">
+    <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.csproj">
       <Project>{AE2065CC-32F5-48F2-988F-D7E8D0789F30}</Project>
       <Name>Axiom.SceneManagers.Bsp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj">
+    <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj">
       <Project>{F3016FCF-2A53-483E-8679-4514D57B6ACD}</Project>
       <Name>Axiom.SceneManagers.Octree</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.csproj">
+    <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.csproj">
       <Project>{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}</Project>
       <Name>Axiom.SceneManagers.PortalConnected</Name>
     </ProjectReference>
@@ -113,7 +113,7 @@
       <Project>{C7286349-8DBA-4A39-991C-3D848AB10CCE}</Project>
       <Name>Axiom.Demos</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Source\Platforms\sdl\Axiom.Platforms.SDL.csproj">
+    <ProjectReference Include="..\..\..\..\Axiom\Platforms\sdl\Axiom.Platforms.SDL.csproj">
       <Project>{251CA27E-5363-419A-B4E3-FD1BE5FD0396}</Project>
       <Name>Axiom.Platforms.SDL</Name>
     </ProjectReference>
