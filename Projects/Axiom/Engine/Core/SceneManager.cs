@@ -67,6 +67,14 @@ namespace Axiom.Core
     /// </summary>
     public delegate bool RenderQueueEvent(RenderQueueGroupID priority);
 
+    /// <summary>
+    /// Delegate for FindVisibleObject events
+    /// </summary>
+    /// <param name="manager"></param>
+    /// <param name="stage"></param>
+    /// <param name="view"></param>
+    public delegate void FindVisibleObjectsEvent( SceneManager manager, IlluminationRenderStage stage, Viewport view );
+
     #endregion
 
     /// <summary>
@@ -609,6 +617,12 @@ namespace Axiom.Core
 
         /// <summary>An event that will fire when a render queue is finished being rendered.</summary>
         public event RenderQueueEvent QueueEnded;
+
+        /// <summary>Will fire before FindVisibleObjects is called</summary>
+        public event FindVisibleObjectsEvent PreFindVisibleObjects;
+
+        /// <summary>Will fire after FindVisibleObjects is called</summary>
+        public event FindVisibleObjectsEvent PostFindVisibleObjects;
 
         #endregion
 
@@ -4539,7 +4553,9 @@ namespace Axiom.Core
             findVisibleMeter.Enter();
             if ( this.findVisibleObjects )
             {
+                PreFindVisibleObjects( this, this.illuminationStage, viewport );
                 this.FindVisibleObjects( camera, this.illuminationStage == IlluminationRenderStage.RenderToTexture );
+                PostFindVisibleObjects( this, this.illuminationStage, viewport );
             }
             findVisibleMeter.Exit();
 
