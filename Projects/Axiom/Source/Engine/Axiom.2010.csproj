@@ -177,6 +177,7 @@
     <Compile Include="Animating\AnimationStateSet.cs" />
     <Compile Include="Animating\AttachmentPoint.cs" />
     <Compile Include="Animating\Pose.cs" />
+    <Compile Include="Collections\NamedCollection.cs" />
     <Compile Include="Collections\NamedParameterList.cs" />
     <Compile Include="Collections\RadixSort.cs" />
     <Compile Include="Collections\SceneManagerCollection.cs" />
@@ -185,6 +186,7 @@
     <Compile Include="Controllers\Canned\PassthroughControllerFunction.cs" />
     <Compile Include="Core\AbstractFactory.cs" />
     <Compile Include="Core\BillboardChain.cs" />
+    <Compile Include="Core\INamable.cs" />
     <Compile Include="Core\ManualObject.cs" />
     <Compile Include="Core\Meters.cs" />
     <Compile Include="Core\Pair.cs" />
@@ -200,6 +202,7 @@
     <Compile Include="Core\StaticGeometry\StaticGeometry.cs" />
     <Compile Include="Core\WindowEventMonitor.cs" />
     <Compile Include="FileSystem\FileSystemArchive.cs" />
+    <Compile Include="FileSystem\Watcher.cs" />
     <Compile Include="FileSystem\ZipArchive.cs" />
     <Compile Include="Graphics\AnyBuilder.cs" />
     <Compile Include="Graphics\CompositionPass.cs" />

@@ -155,6 +155,7 @@
     </None>
     <None Include="..\..\..\..\..\Media\Materials\smoke.particle">
       <Link>Media\Materials\smoke.particle</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Content Include="..\..\..\..\..\Media\PCZAppMedia\building_exterior.mesh">
       <Link>Media\PCZAppMedia\building_exterior.mesh</Link>
