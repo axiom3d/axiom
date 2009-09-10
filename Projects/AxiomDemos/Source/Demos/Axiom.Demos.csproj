@@ -172,11 +172,11 @@
     <Compile Include="Water.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Axiom\Source\Engine\Axiom.csproj">
+    <ProjectReference Include="..\..\..\Axiom\Engine\Axiom.csproj">
       <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
       <Name>Axiom</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Axiom\Source\Plugins\OctreeZone\OctreeZone.csproj">
+    <ProjectReference Include="..\..\..\Axiom\Plugins\OctreeZone\OctreeZone.csproj">
       <Project>{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}</Project>
       <Name>OctreeZone</Name>
     </ProjectReference>
@@ -184,7 +184,7 @@
       <Project>{F3016FCF-2A53-483E-8679-4514D57B6ACD}</Project>
       <Name>Axiom.SceneManagers.Octree</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Axiom\Source\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.csproj">
+    <ProjectReference Include="..\..\..\Axiom\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.csproj">
       <Project>{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}</Project>
       <Name>Axiom.SceneManagers.PortalConnected</Name>
     </ProjectReference>
