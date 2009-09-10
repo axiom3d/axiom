@@ -5,35 +5,35 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{1EAB961C-4
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platform Managers", "Platform Managers", "{676C7702-0B62-4E50-8211-EA5BC21A5DF5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Platforms.Win32", "Axiom\Source\Platforms\Win32\Axiom.Platforms.Win32.csproj", "{77AC0D3A-2A99-4EA6-A90E-C71BB53751C5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Platforms.Win32", "Axiom\Platforms\Win32\Axiom.Platforms.Win32.csproj", "{77AC0D3A-2A99-4EA6-A90E-C71BB53751C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Platforms.SDL", "Axiom\Source\Platforms\SDL\Axiom.Platforms.SDL.csproj", "{90813CEA-1F45-48E7-A3F1-1A64C93893C5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Platforms.SDL", "Axiom\Platforms\SDL\Axiom.Platforms.SDL.csproj", "{90813CEA-1F45-48E7-A3F1-1A64C93893C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Platforms.OpenTK", "Axiom\Source\Platforms\OpenTK\Axiom.Platforms.OpenTK.csproj", "{081F78DE-8224-4CA6-BD34-8B7939CF21AB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Platforms.OpenTK", "Axiom\Platforms\OpenTK\Axiom.Platforms.OpenTK.csproj", "{081F78DE-8224-4CA6-BD34-8B7939CF21AB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Render Systems", "Render Systems", "{FC473D51-36A2-4437-BC06-92A8E92374B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.OpenGL.Win32", "Axiom\Source\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.Win32.csproj", "{503C2DEF-293E-491F-ADDA-EE3860FCF84B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.OpenGL.Win32", "Axiom\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.Win32.csproj", "{503C2DEF-293E-491F-ADDA-EE3860FCF84B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.DirectX9", "Axiom\Source\RenderSystems\DirectX9\Axiom.RenderSystems.DirectX9.csproj", "{68DBB62F-F98D-47B5-A769-C20B461227AB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.DirectX9", "Axiom\RenderSystems\DirectX9\Axiom.RenderSystems.DirectX9.csproj", "{68DBB62F-F98D-47B5-A769-C20B461227AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.Xna", "Axiom\Source\RenderSystems\XNA\Axiom.RenderSystems.Xna.csproj", "{628E7ED7-EC58-4C93-B8AB-CB69087D381B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.Xna", "Axiom\RenderSystems\XNA\Axiom.RenderSystems.Xna.csproj", "{628E7ED7-EC58-4C93-B8AB-CB69087D381B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.OpenGL.OpenTK", "Axiom\Source\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.OpenTK.csproj", "{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.OpenGL.OpenTK", "Axiom\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.OpenTK.csproj", "{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scene Managers", "Scene Managers", "{E1A9CC1D-88A0-4CF6-9A8F-05E80D371DE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.SceneManagers.Bsp", "Axiom\Source\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.csproj", "{161EA53F-8D78-4BD3-8217-442D94A593C1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.SceneManagers.Bsp", "Axiom\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.csproj", "{161EA53F-8D78-4BD3-8217-442D94A593C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.SceneManagers.Octree", "Axiom\Source\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj", "{E0BB87B2-C59D-46D4-9AD9-A919E457E4EF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.SceneManagers.Octree", "Axiom\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj", "{E0BB87B2-C59D-46D4-9AD9-A919E457E4EF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{DC26813F-4527-477E-8068-272E10CF5C37}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Plugins.CgProgramManager", "Axiom\Source\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.csproj", "{E2B64AA9-77C8-4BED-AB5B-10B2832E0D5B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Plugins.CgProgramManager", "Axiom\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.csproj", "{E2B64AA9-77C8-4BED-AB5B-10B2832E0D5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Plugins.ParticleFX", "Axiom\Source\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.csproj", "{F81F1AAF-8BC9-4064-94C2-AD0C0A9C0ED1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Plugins.ParticleFX", "Axiom\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.csproj", "{F81F1AAF-8BC9-4064-94C2-AD0C0A9C0ED1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom", "Axiom\Source\Engine\Axiom.csproj", "{BAA6AE8A-B259-4883-9805-CE538660A59A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom", "Axiom\Engine\Axiom.csproj", "{BAA6AE8A-B259-4883-9805-CE538660A59A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demos", "Demos", "{2A0C6270-CDA1-46F8-A4D8-09C005ECF3F9}"
 EndProject
@@ -62,23 +62,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{5326DA77
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{E8E2F297-B384-4311-B5C0-F6AB9354D91B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Plugins.DevILCodecs", "Axiom\Source\Plugins\DevILCodecs\Axiom.Plugins.DevILCodecs.csproj", "{B2BB7F09-2AD3-49C4-9268-D33BC13AA5E7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Plugins.DevILCodecs", "Axiom\Plugins\DevILCodecs\Axiom.Plugins.DevILCodecs.csproj", "{B2BB7F09-2AD3-49C4-9268-D33BC13AA5E7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Demos.Browser.WinForm", "AxiomDemos\Source\Browser\WinForm\Axiom.Demos.Browser.WinForm.csproj", "{EE5785DC-D49E-44DD-BFDA-DD776C012704}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.OpenGL.SDL", "Axiom\Source\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.SDL.csproj", "{3FC7E038-B500-4CAB-8525-0D3442B3052D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.OpenGL.SDL", "Axiom\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.SDL.csproj", "{3FC7E038-B500-4CAB-8525-0D3442B3052D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctreeZone", "Axiom\Source\Plugins\OctreeZone\OctreeZone.csproj", "{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctreeZone", "Axiom\Plugins\OctreeZone\OctreeZone.csproj", "{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.SceneManagers.PortalConnected", "Axiom\Source\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.csproj", "{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.SceneManagers.PortalConnected", "Axiom\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.csproj", "{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "Axiom\Source\UnitTests\UnitTests.csproj", "{A836B773-8B22-4713-A9D4-D4E32BA73296}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "Axiom\UnitTests\UnitTests.csproj", "{A836B773-8B22-4713-A9D4-D4E32BA73296}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.SlimDX9", "Axiom\Source\RenderSystems\SlimDX9\Axiom.RenderSystems.SlimDX9.csproj", "{EDE0CDEC-8DEA-4F48-BD27-F658B83507DE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.SlimDX9", "Axiom\RenderSystems\SlimDX9\Axiom.RenderSystems.SlimDX9.csproj", "{EDE0CDEC-8DEA-4F48-BD27-F658B83507DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Platforms.SlimDX", "Axiom\Source\Platforms\SlimDX\Axiom.Platforms.SlimDX.csproj", "{C1F06405-80E4-4C60-BDDD-4BA1C8F400E0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Platforms.SlimDX", "Axiom\Platforms\SlimDX\Axiom.Platforms.SlimDX.csproj", "{C1F06405-80E4-4C60-BDDD-4BA1C8F400E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Documentation", "Axiom\Source\Documentation\Axiom.Documentation.csproj", "{D3D47DB5-4656-49E9-B945-E880F155A316}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Documentation", "Axiom\Documentation\Axiom.Documentation.csproj", "{D3D47DB5-4656-49E9-B945-E880F155A316}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
