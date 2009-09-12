@@ -4553,9 +4553,11 @@ namespace Axiom.Core
             findVisibleMeter.Enter();
             if ( this.findVisibleObjects )
             {
-                PreFindVisibleObjects( this, this.illuminationStage, viewport );
+                if (this.PreFindVisibleObjects != null )
+                    PreFindVisibleObjects( this, this.illuminationStage, viewport );
                 this.FindVisibleObjects( camera, this.illuminationStage == IlluminationRenderStage.RenderToTexture );
-                PostFindVisibleObjects( this, this.illuminationStage, viewport );
+                if ( this.PostFindVisibleObjects != null )
+                    PostFindVisibleObjects( this, this.illuminationStage, viewport );
             }
             findVisibleMeter.Exit();
 
