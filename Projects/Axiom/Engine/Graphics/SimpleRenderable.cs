@@ -182,7 +182,7 @@ namespace Axiom.Graphics
             }
         }
 
-        public Technique Technique
+        public virtual Technique Technique
         {
             get
             {
