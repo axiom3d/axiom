@@ -503,10 +503,11 @@ namespace Axiom.Core
 
         #region Fields and Properties
 
-        #region resourceManagers Property
+        #region ResourceManagers Property
 
         private ResourceManagerMap _resourceManagers = new ResourceManagerMap();
-        protected ResourceManagerMap resourceManagers
+
+        public ResourceManagerMap ResourceManagers
         {
             get
             {
@@ -514,7 +515,7 @@ namespace Axiom.Core
             }
         }
 
-        #endregion resourceManagers Property
+        #endregion ResourceManagers Property
 
         #region scriptLoaders Property
 
@@ -2441,11 +2442,11 @@ namespace Axiom.Core
         private ResourceManager _getResourceManager( string resourceType )
         {
             //OGRE_LOCK_AUTO_MUTEX
-            if ( !resourceManagers.ContainsKey( resourceType ) )
+            if ( !this.ResourceManagers.ContainsKey( resourceType ) )
             {
                 throw new Exception( "Cannot locate resource manager for resource type '" + resourceType + "'." );
             }
-            return resourceManagers[ resourceType ];
+            return this.ResourceManagers[ resourceType ];
         }
 
         private ResourceGroup _findGroupContainingResourceImpl( string filename )
