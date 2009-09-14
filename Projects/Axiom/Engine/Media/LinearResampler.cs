@@ -37,12 +37,16 @@ using System;
 
 using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Media
 {
-    class LinearResampler<T> where T : struct
+    /// <summary>
+    /// default floating-point linear resampler, does format conversion
+    /// </summary>
+    public partial class LinearResampler
     {
         #region Methods
 

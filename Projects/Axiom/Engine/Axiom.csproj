@@ -107,6 +107,7 @@
     <Compile Include="Core\INamable.cs" />
     <Compile Include="Core\ManualObject.cs" />
     <Compile Include="Core\Meters.cs" />
+    <Compile Include="Core\NameGenerator~1.cs" />
     <Compile Include="Core\Pair.cs" />
     <Compile Include="Core\PrefabFactory.cs" />
     <Compile Include="Core\ProgressiveMesh.cs" />
@@ -823,6 +824,10 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Media\LinearResampler.Byte.cs" />
+    <Compile Include="Media\LinearResampler.Float32.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>

@@ -765,16 +765,16 @@ namespace Axiom.Media
 							switch ( PixelUtil.GetNumElemBytes( src.Format ) )
 							{
 								case 1:
-									( new LinearResampler<Byte>( 1 ) ).Scale( src, temp );
+									( new LinearResampler.Byte( 1 ) ).Scale( src, temp );
 									break;
 								case 2:
-									( new LinearResampler<Byte>( 2 ) ).Scale( src, temp );
+                                    ( new LinearResampler.Byte( 2 ) ).Scale( src, temp );
 									break;
 								case 3:
-									( new LinearResampler<Byte>( 3 ) ).Scale( src, temp );
+                                    ( new LinearResampler.Byte( 3 ) ).Scale( src, temp );
 									break;
 								case 4:
-									( new LinearResampler<Byte>( 4 ) ).Scale( src, temp );
+                                    ( new LinearResampler.Byte( 4 ) ).Scale( src, temp );
 									break;
 								default:
                                     throw new NotSupportedException( String.Format( "Scaling of images using {0} byte format is not supported.", PixelUtil.GetNumElemBytes( src.Format ) ) );
@@ -791,16 +791,16 @@ namespace Axiom.Media
                             if ( scaled.Format == PixelFormat.FLOAT32_RGB || scaled.Format == PixelFormat.FLOAT32_RGBA )
                             {
                                 // float32 to float32, avoid unpack/repack overhead
-                                ( new LinearResampler<float>( 32 ) ).Scale( src, scaled );
+                                ( new LinearResampler.Float32( 32 ) ).Scale( src, scaled );
                             }
                             else
                             {
-                                ( new LinearResampler<float>() ).Scale( src, scaled );
+                                ( new LinearResampler.Float32() ).Scale( src, scaled );
                             }
                             break;
 						default:
 							// non-optimized: floating-point math, performs conversion but always works
-							( new LinearResampler<float>() ).Scale( src, scaled );
+                            ( new LinearResampler.Float32() ).Scale( src, scaled );
                             break;
 					}
 					break;
