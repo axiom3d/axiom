@@ -72,42 +72,39 @@ namespace Axiom.Media
         /// <param name="temp"></param>
         static public void Scale( PixelBox src, PixelBox dst, int elementSize )
         {
-		    // assert(src.format == dst.format);
-            unsafe
+            // assert(src.format == dst.format);
+            // srcdata stays at beginning, pdst is a moving pointer
+            //byte* srcdata = (byte*)src.Data;
+            //byte* pdst = (byte*)dst.Data;
+            int dstOffset = 0;
+
+            // sx_48,sy_48,sz_48 represent current position in source
+            // using 16/48-bit fixed precision, incremented by steps
+            ulong stepx = ( (ulong)src.Width << 48 ) / (ulong)dst.Width;
+            ulong stepy = ( (ulong)src.Height << 48 ) / (ulong)dst.Height;
+            ulong stepz = ( (ulong)src.Depth << 48 ) / (ulong)dst.Depth;
+
+            // note: ((stepz>>1) - 1) is an extra half-step increment to adjust
+            // for the center of the destination pixel, not the top-left corner
+            ulong sz_48 = ( stepz >> 1 ) - 1;
+            for ( uint z = (uint)dst.Front; z < dst.Back; z++, sz_48 += stepz )
             {
-                // srcdata stays at beginning, pdst is a moving pointer
-                byte* srcdata = (byte*)src.Data;
-                byte* pdst = (byte*)dst.Data;
-                int dstOffset = 0;
+                uint srczoff = (uint)( sz_48 >> 48 ) * (uint)src.SlicePitch;
 
-                // sx_48,sy_48,sz_48 represent current position in source
-                // using 16/48-bit fixed precision, incremented by steps
-                ulong stepx = ( (ulong)src.Width << 48 ) / (ulong)dst.Width;
-                ulong stepy = ( (ulong)src.Height << 48 ) / (ulong)dst.Height;
-                ulong stepz = ( (ulong)src.Depth << 48 ) / (ulong)dst.Depth;
-
-                // note: ((stepz>>1) - 1) is an extra half-step increment to adjust
-                // for the center of the destination pixel, not the top-left corner
-                ulong sz_48 = ( stepz >> 1 ) - 1;
-                for ( uint z = (uint)dst.Front; z < dst.Back; z++, sz_48 += stepz )
+                ulong sy_48 = ( stepy >> 1 ) - 1;
+                for ( uint y = (uint)dst.Top; y < dst.Bottom; y++, sy_48 += stepy )
                 {
-                    uint srczoff = (uint)( sz_48 >> 48 ) * (uint)src.SlicePitch;
+                    uint srcyoff = (uint)( sy_48 >> 48 ) * (uint)src.RowPitch;
 
-                    ulong sy_48 = ( stepy >> 1 ) - 1;
-                    for ( uint y = (uint)dst.Top; y < dst.Bottom; y++, sy_48 += stepy )
+                    ulong sx_48 = ( stepx >> 1 ) - 1;
+                    for ( uint x = (uint)dst.Left; x < dst.Right; x++, sx_48 += stepx )
                     {
-                        uint srcyoff = (uint)( sy_48 >> 48 ) * (uint)src.RowPitch;
-
-                        ulong sx_48 = ( stepx >> 1 ) - 1;
-                        for ( uint x = (uint)dst.Left; x < dst.Right; x++, sx_48 += stepx )
-                        {
-                            Memory.Copy( src.Data, dst.Data, (int)(elementSize * ( (uint)( sx_48 >> 48 ) + srcyoff + srczoff )), dstOffset , elementSize );
-                            dstOffset += elementSize;
-                        }
-                        dstOffset += elementSize * dst.RowSkip;
+                        Memory.Copy( src.Data, dst.Data, (int)( elementSize * ( (uint)( sx_48 >> 48 ) + srcyoff + srczoff ) ), dstOffset, elementSize );
+                        dstOffset += elementSize;
                     }
-                    dstOffset += elementSize * dst.SliceSkip;
+                    dstOffset += elementSize * dst.RowSkip;
                 }
+                dstOffset += elementSize * dst.SliceSkip;
             }
         }
 
