@@ -83,10 +83,10 @@ namespace Axiom.Core
 		///    Reference to the subMesh that represents the geometry for this SubEntity.
 		/// </summary>
 		protected SubMesh subMesh;
-		/// <summary>
-		///		Current LOD index to use.
-		/// </summary>
-		internal int materialLodIndex;
+
+	    private Camera cachedCamera;
+	    private Real cachedCameraDist;
+
 		/// <summary>
 		///		Flag indicating whether this sub entity should be rendered or not.
 		/// </summary>
@@ -353,9 +353,30 @@ namespace Axiom.Core
 
 		#endregion Methods
 
-		#region IRenderable Members
+        #region SubMesh Level of Detail
 
-		public bool CastsShadows
+        /// <summary>
+        ///	current LOD index to use.
+        /// </summary>
+        private int _materialLodIndex;
+	    public int MaterialLodIndex
+	    {
+	        
+            get
+            {
+                return _materialLodIndex;
+            }
+            set
+            {
+                _materialLodIndex = value;
+            }
+	    }
+
+        #endregion SubMesh Level of Detail
+
+        #region IRenderable Members
+
+        public bool CastsShadows
 		{
 			get
 			{
@@ -400,7 +421,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return material.GetBestTechnique( materialLodIndex );
+                return material.GetBestTechnique( _materialLodIndex, this );
 			}
 		}
 
@@ -533,17 +554,43 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="camera"></param>
 		/// <returns></returns>
-		public float GetSquaredViewDepth( Camera camera )
-		{
-			// get the parent entitie's parent node
-			Node node = parent.ParentNode;
+        public float GetSquaredViewDepth( Camera camera )
+        {
+            // First of all, check the cached value
+            // NB this is manually invalidated by parent each _notifyCurrentCamera call
+            // Done this here rather than there since we only need this for transparent objects
+            if ( cachedCamera == camera )
+                return cachedCameraDist;
 
-			Debug.Assert( node != null );
+            Node node = Parent.ParentNode;
+            Debug.Assert( node != null );
+            Real dist;
+#warning SubMesh.ExtremityPoints implementation needed.
+            //if (!subMesh.extremityPoints.empty())
+            //{
+            //    const Vector3 &cp = cam->getDerivedPosition();
+            //    const Matrix4 &l2w = mParentEntity->_getParentNodeFullTransform();
+            //    dist = std::numeric_limits<Real>::infinity();
+            //    for (vector<Vector3>::type::const_iterator i = mSubMesh->extremityPoints.begin();
+            //         i != mSubMesh->extremityPoints.end (); ++i)
+            //    {
+            //        Vector3 v = l2w * (*i);
+            //        Real d = (v - cp).squaredLength();
 
-			return node.GetSquaredViewDepth( camera );
-		}
+            //        dist = std::min(d, dist);
+            //    }
+            //}
+            //else
+            {
+                dist = node.GetSquaredViewDepth( camera );
+            }
+		    cachedCameraDist = dist;
+            cachedCamera = camera;
 
-		/// <summary>
+            return dist;
+        }
+
+	    /// <summary>
 		/// 
 		/// </summary>
 		public Quaternion WorldOrientation

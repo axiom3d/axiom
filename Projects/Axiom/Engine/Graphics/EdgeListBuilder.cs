@@ -273,7 +273,7 @@ namespace Axiom.Graphics
 			// Stage 2: Link edges.
 			ConnectEdges();
 
-			//edgeData.DebugLog(LogManager.Instance.CreateLog("EdgeListBuilder.log"));
+			//EdgeData.DebugLog(LogManager.Instance.CreateLog("EdgeListBuilder.log"));
 			//DebugLog(LogManager.Instance.CreateLog("EdgeData.log"));
 		}
 

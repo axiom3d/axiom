@@ -139,6 +139,8 @@ namespace Axiom.Core
                 new HighLevelGpuProgramManager();
                 CompositorManager.Instance.Initialize();
 
+                LodStrategyManager.Instance.Initialize();
+
                 new PluginManager();
                 PluginManager.Instance.LoadAll();
 
@@ -661,6 +663,22 @@ namespace Axiom.Core
         ///		in instance of the last one registered is returned.	
         /// </remarks>
         /// <param name="sceneType"> A mask containing one or more <see cref="SceneType"/> flags.</param>
+        /// <returns></returns>
+        public SceneManager CreateSceneManager( SceneType sceneType )
+        {
+            string instanceName = ( new NameGenerator<SceneManager>() ).GetNextUniqueName(sceneType.ToString());
+            return this.sceneManagerEnumerator.CreateSceneManager( sceneType, instanceName );
+        }
+        /// <summary>
+        ///		Creates a <see cref="SceneManager"/> instance based on scene type support.
+        /// </summary>
+        /// <remarks>
+        ///		Creates an instance of a <see cref="SceneManager"/> which supports the scene types
+        ///		identified in the parameter. If more than one type of SceneManager 
+        ///		has been registered as handling that combination of scene types, 
+        ///		in instance of the last one registered is returned.	
+        /// </remarks>
+        /// <param name="sceneType"> A mask containing one or more <see cref="SceneType"/> flags.</param>
         /// <param name="instanceName">
         ///		Optional name to given the new instance that is
         ///		created. If you leave this blank, an auto name will be assigned.
@@ -668,6 +686,10 @@ namespace Axiom.Core
         /// <returns></returns>
         public SceneManager CreateSceneManager( SceneType sceneType, string instanceName )
         {
+            if (String.IsNullOrEmpty( instanceName ) )
+            {
+                return CreateSceneManager( sceneType );
+            }
             return this.sceneManagerEnumerator.CreateSceneManager( sceneType, instanceName );
         }
 

@@ -297,55 +297,6 @@ namespace Axiom.Core
 		/// <summary>Option whether to use software or hardware blending, there are tradeoffs to both.</summary>
 		protected internal bool useSoftwareBlending;
 
-		#region IsLodManual Property
-
-		/// <summary>
-		///		Flag indicating the use of manually created LOD meshes.
-		/// </summary>
-		private bool _isLodManual;
-		/// <summary>
-		///     Returns true if this mesh is using manual LOD.
-		/// </summary>
-		/// <remarks>
-		///     A mesh can either use automatically generated LOD, or it can use alternative
-		///     meshes as provided by an artist. A mesh can only use either all manual LODs 
-		///     or all generated LODs, not a mixture of both.
-		/// </remarks>
-		public bool IsLodManual
-		{
-			get
-			{
-				return _isLodManual;
-			}
-			protected internal set
-			{
-				_isLodManual = value;
-			}
-		}
-
-		#endregion IsLodManual Property
-			
-		/// <summary>
-		///		Number of LOD meshes available.
-		/// </summary>
-		protected internal int numLods;
-
-		/// <summary>
-		///		List of data structures describing LOD usage.
-		/// </summary>
-		protected internal List<MeshLodUsage> lodUsageList = new List<MeshLodUsage>();
-		/// <summary>
-		///		Gets the current number of Lod levels associated with this mesh.
-		/// </summary>
-		public int LodLevelCount
-		{
-			get
-			{
-				return lodUsageList.Count;
-			}
-		}
-
-
 		#region VertexBufferUsage Property
 
 		/// <summary>
@@ -645,11 +596,17 @@ namespace Axiom.Core
 			_useVertexShadowBuffer = true;
 			_useIndexShadowBuffer = true;
 
-			// Init first (manual) lod
-			numLods = 1;
-			MeshLodUsage lod = new MeshLodUsage();
-			lod.fromSquaredDepth = 0.0f;
-			lodUsageList.Add( lod );
+            // Initialise to default strategy
+            _lodStrategy = LodStrategyManager.Instance.DefaultStrategy;
+
+		    // Init first (manual) lod
+		    MeshLodUsage lod = new MeshLodUsage();
+            lod.UserValue = float.NaN; // User value not used for base lod level
+		    lod.Value = _lodStrategy.BaseValue;
+            lod.EdgeData = null;
+            lod.ManualMesh = null;
+		    meshLodUsageList.Add( lod );
+
 
 			// always use software blending for now
 			useSoftwareBlending = true;
@@ -685,17 +642,8 @@ namespace Axiom.Core
 				BuildEdgeList();
 			}
 
-			return GetLodLevel( lodIndex ).edgeData;
+			return GetLodLevel( lodIndex ).EdgeData;
 		}
-
-
-
-
-
-
-
-
-
 
 		#endregion Properties
 
@@ -782,7 +730,7 @@ namespace Axiom.Core
 			}
 
 			// loop over LODs
-			for ( int lodIndex = 0; lodIndex < lodUsageList.Count; lodIndex++ )
+			for ( int lodIndex = 0; lodIndex < meshLodUsageList.Count; lodIndex++ )
 			{
 				// use getLodLevel to enforce loading of manual mesh lods
 				MeshLodUsage usage = GetLodLevel( lodIndex );
@@ -791,7 +739,7 @@ namespace Axiom.Core
 				{
 					// Delegate edge building to manual mesh
 					// It should have already built its own edge list while loading
-					usage.edgeData = usage.manualMesh.GetEdgeList( 0 );
+					usage.EdgeData = usage.ManualMesh.GetEdgeList( 0 );
 				}
 				else
 				{
@@ -801,7 +749,7 @@ namespace Axiom.Core
 					AddVertexAndIndexSets( builder, lodIndex );
 
 					// build the edge data from all accumulate vertex/index buffers
-					usage.edgeData = builder.Build();
+					usage.EdgeData = builder.Build();
 				}
 			}
 
@@ -813,10 +761,10 @@ namespace Axiom.Core
 			if ( !_edgeListsBuilt )
 				return;
 
-			for ( int i = 0; i < lodUsageList.Count; ++i )
+			for ( int i = 0; i < meshLodUsageList.Count; ++i )
 			{
-				MeshLodUsage usage = lodUsageList[ i ];
-				usage.edgeData = null;
+				MeshLodUsage usage = meshLodUsageList[ i ];
+				usage.EdgeData = null;
 			}
 
 			_edgeListsBuilt = false;
@@ -1246,42 +1194,6 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///    Retrieves the level of detail index for the given depth value.
-		/// </summary>
-		/// <param name="depth"></param>
-		/// <returns></returns>
-		public int GetLodIndex( float depth )
-		{
-			return GetLodIndexSquaredDepth( depth * depth );
-		}
-
-		/// <summary>
-		///    Gets the mesh lod level at the specified index.
-		/// </summary>
-		/// <param name="index"></param>
-		/// <returns></returns>
-		public MeshLodUsage GetLodLevel( int index )
-		{
-			Debug.Assert( index < lodUsageList.Count, "index < lodUsageList.Count" );
-
-			MeshLodUsage usage = lodUsageList[ index ];
-
-			// load the manual lod mesh for this level if not done already
-			if ( _isLodManual && index > 0 && usage.manualMesh == null )
-			{
-				usage.manualMesh = MeshManager.Instance.Load( usage.manualName, Group );
-
-				// get the edge data, if required
-				if ( !_autoBuildEdgeLists )
-				{
-					usage.edgeData = usage.manualMesh.GetEdgeList( 0 );
-				}
-			}
-
-			return usage;
-		}
-
-		/// <summary>
 		///    Internal method for making the space for a 3D texture coord buffer to hold tangents.
 		/// </summary>
 		/// <param name="vertexData">Target vertex data.</param>
@@ -1478,77 +1390,6 @@ namespace Axiom.Core
 			} // for i
 
 			return foundExisting;
-		}
-
-		public void GenerateLodLevels( List<float> lodDistances,
-									  ProgressiveMesh.VertexReductionQuota reductionMethod,
-									  float reductionValue )
-		{
-			RemoveLodLevels();
-
-			foreach ( SubMesh subMesh in _subMeshList )
-			{
-				// Set up data for reduction
-				VertexData vertexData = subMesh.useSharedVertices ? _sharedVertexData : subMesh.vertexData;
-
-				ProgressiveMesh pm = new ProgressiveMesh( vertexData, subMesh.indexData );
-				pm.Build( (ushort)lodDistances.Count, subMesh.lodFaceList, reductionMethod, reductionValue );
-			}
-
-			// Iterate over the lods and record usage
-			foreach ( float dist in lodDistances )
-			{
-				// Record usage
-				MeshLodUsage lod = new MeshLodUsage();
-				lod.fromSquaredDepth = dist * dist;
-				lod.edgeData = null;
-				lod.manualMesh = null;
-				lodUsageList.Add( lod );
-			}
-			numLods = (ushort)lodDistances.Count + 1;
-		}
-
-		public void RemoveLodLevels()
-		{
-			if ( !this.IsLodManual )
-			{
-				foreach ( SubMesh subMesh in this._subMeshList )
-					subMesh.RemoveLodLevels();
-			}
-
-			FreeEdgeList();
-			this.lodUsageList.Clear();
-			this.numLods = 1;
-			MeshLodUsage lod = new MeshLodUsage();
-			lod.fromSquaredDepth = 0.0f;
-			lod.edgeData = null;
-			lod.manualMesh = null;
-			this.lodUsageList.Add( lod );
-			this._isLodManual = false;
-		}
-
-		/// <summary>
-		///    Retrieves the level of detail index for the given squared depth value.
-		/// </summary>
-		/// <remarks>
-		///    Internally the lods are stored at squared depths to avoid having to perform
-		///    square roots when determining the lod. This method allows you to provide a
-		///    squared length depth value to avoid having to do your own square roots.
-		/// </remarks>
-		/// <param name="squaredDepth"></param>
-		/// <returns></returns>
-		public int GetLodIndexSquaredDepth( float squaredDepth )
-		{
-			for ( int i = 0; i < lodUsageList.Count; i++ )
-			{
-				if ( lodUsageList[ i ].fromSquaredDepth > squaredDepth )
-				{
-					return i - 1;
-				}
-			}
-
-			// if we fall all the wat through, use the higher value
-			return lodUsageList.Count - 1;
 		}
 
 		/// <summary>
@@ -1940,10 +1781,10 @@ namespace Axiom.Core
 		/// <param name="manualLodEntries"></param>
 		public void AddManualLodEntries( List<MeshLodUsage> manualLodEntries )
 		{
-			Debug.Assert( lodUsageList.Count == 1 );
+			Debug.Assert( meshLodUsageList.Count == 1 );
 			_isLodManual = true;
 			foreach ( MeshLodUsage usage in manualLodEntries )
-				lodUsageList.Add( usage );
+				meshLodUsageList.Add( usage );
 		}
 
 		/// <summary>
@@ -2196,9 +2037,203 @@ namespace Axiom.Core
 
 		#endregion Methods
 
-		#region Static Methods
+        #region Mesh Level of Detail
 
-		/// <summary>
+        #region IsLodManual Property
+
+        /// <summary>
+        ///	Flag indicating the use of manually created LOD meshes.
+        /// </summary>
+        private bool _isLodManual;
+        /// <summary>
+        /// Returns true if this mesh is using manual LOD.
+        /// </summary>
+        /// <remarks>
+        /// A mesh can either use automatically generated LOD, or it can use alternative
+        /// meshes as provided by an artist. A mesh can only use either all manual LODs 
+        /// or all generated LODs, not a mixture of both.
+        /// </remarks>
+        public bool IsLodManual
+        {
+            get
+            {
+                return _isLodManual;
+            }
+            protected internal set
+            {
+                _isLodManual = value;
+            }
+        }
+
+        #endregion IsLodManual Property
+
+        #region LodStrategy Property
+
+	    private LodStrategy _lodStrategy;
+        public LodStrategy LodStrategy
+        {
+            get
+            {
+                return _lodStrategy;
+            }
+            set
+            {
+                _lodStrategy = value;
+                Debug.Assert( this.meshLodUsageList.Count > 0 );
+
+                this.meshLodUsageList[ 0 ].Value = this._lodStrategy.BaseValue;
+
+                // Re-transform user lod values (starting at index 1, no need to transform base value)
+                foreach ( MeshLodUsage meshLodUsage in meshLodUsageList )
+                {
+                    meshLodUsage.Value = this._lodStrategy.TransformUserValue( meshLodUsage.UserValue );
+                }
+            }
+        }
+
+        #endregion LodStrategy Property
+
+        /// <summary>
+        ///	List of data structures describing LOD usage.
+        /// </summary>
+        protected MeshLodUsageList meshLodUsageList = new MeshLodUsageList();
+
+        public MeshLodUsageList MeshLodUsageList
+        {
+            get
+            {
+                return meshLodUsageList;
+            }
+        }
+        /// <summary>
+        ///	Gets the current number of Lod levels associated with this mesh.
+        /// </summary>
+        public int LodLevelCount
+        {
+            get
+            {
+                return meshLodUsageList.Count;
+            }
+        }
+
+        public void GenerateLodLevels( LodValueList lodValues, ProgressiveMesh.VertexReductionQuota reductionMethod, Real reductionValue )
+        {
+            RemoveLodLevels();
+
+            LogManager.Instance.Write( "Generating {0} lower LODs for mesh {1}.", lodValues.Count, Name );
+
+            foreach ( SubMesh subMesh in _subMeshList )
+            {
+                            // check if triangles are present
+                if ( subMesh.IndexData.indexCount > 0 )
+                {
+                    // Set up data for reduction
+                    VertexData vertexData = subMesh.useSharedVertices ? _sharedVertexData : subMesh.vertexData;
+
+                    ProgressiveMesh pm = new ProgressiveMesh( vertexData, subMesh.indexData );
+                    pm.Build( (ushort)lodValues.Count, subMesh.lodFaceList, reductionMethod, reductionValue );
+                }
+                else
+                {
+                    // create empty index data for each lod
+                    for ( int i = 0; i < lodValues.Count; ++i )
+                    {
+                        subMesh.LodFaceList.Add( new IndexData() );
+                    }
+                }
+            }
+
+            // Iterate over the lods and record usage
+            foreach ( Real value in lodValues )
+            {
+                // Record usage
+                MeshLodUsage lod = new MeshLodUsage();
+                lod.UserValue = value;
+                lod.Value = _lodStrategy.TransformUserValue( value );
+                lod.EdgeData = null;
+                lod.ManualMesh = null;
+                meshLodUsageList.Add( lod );
+            }
+        }
+
+        public void RemoveLodLevels()
+        {
+            if ( !this.IsLodManual )
+            {
+                foreach ( SubMesh subMesh in this._subMeshList )
+                    subMesh.RemoveLodLevels();
+            }
+
+            FreeEdgeList();
+            this.meshLodUsageList.Clear();
+            MeshLodUsage lod = new MeshLodUsage();
+            lod.UserValue = float.NaN;
+            lod.Value = _lodStrategy.BaseValue;
+            lod.EdgeData = null;
+            lod.ManualMesh = null;
+            this.meshLodUsageList.Add( lod );
+            this._isLodManual = false;
+        }
+
+        /// <summary>
+        ///    Retrieves the level of detail index for the given lod value.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public int GetLodIndex( Real value )
+        {
+            return _lodStrategy.GetIndex( value, meshLodUsageList );
+        }
+
+        /// <summary>
+        ///    Gets the mesh lod level at the specified index.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public MeshLodUsage GetLodLevel( int index )
+        {
+            Debug.Assert( index < meshLodUsageList.Count, "index < lodUsageList.Count" );
+
+            MeshLodUsage usage = meshLodUsageList[ index ];
+
+            // load the manual lod mesh for this level if not done already
+            if ( _isLodManual && index > 0 && usage.ManualMesh == null )
+            {
+                usage.ManualMesh = MeshManager.Instance.Load( usage.ManualName, Group );
+
+                // get the edge data, if required
+                if ( !_autoBuildEdgeLists )
+                {
+                    usage.EdgeData = usage.ManualMesh.GetEdgeList( 0 );
+                }
+            }
+
+            return usage;
+        }
+
+        public void SetLodInfo(int levelCount, bool isManual)
+        {
+#warning Implement Mesh.edgeListsBuilt
+            //Debug.Assert( !this.edgeListsBuilt, "Can't modify LOD after edge lists built.");\
+
+            // Basic prerequisites
+            Debug.Assert( levelCount > 0, "Must be at least one level (full detail level must exist)" );
+
+            //mNumLods = numLevels;
+            //mMeshLodUsageList.resize( numLevels );
+            //// Resize submesh face data lists too
+            //for ( SubMeshList::iterator i = mSubMeshList.begin(); i != mSubMeshList.end(); ++i )
+            //{
+            //    ( *i )->mLodFaceList.resize( numLevels - 1 );
+            //}
+            IsLodManual = isManual;
+
+        }
+        #endregion Mesh Level of Detail
+
+        #region Static Methods
+
+        /// <summary>
 		///		Performs a software indexed vertex blend, of the kind used for
 		///		skeletal animation although it can be used for other purposes. 
 		/// </summary>
@@ -2805,6 +2840,12 @@ namespace Axiom.Core
 				}
 			}
 
+            // The loading process accesses lod usages directly, so
+            // transformation of user values must occur after loading is complete.
+
+            // Transform user lod values
+            foreach ( MeshLodUsage mlu in meshLodUsageList )
+                mlu.Value = _lodStrategy.TransformUserValue( mlu.UserValue );
 
 			// meshLoadMeter.Exit();
 		}
@@ -2824,26 +2865,37 @@ namespace Axiom.Core
 		#endregion
 	}
 
-	///<summary>
-	///     A way of recording the way each LOD is recorded this Mesh.
+	/// <summary>
+	/// A way of recording the way each LOD is recorded this Mesh.
 	/// </summary>
 	public class MeshLodUsage
 	{
-		///	<summary>
-		///		Squared Z value from which this LOD will apply.
-		///	</summary>
-		public float fromSquaredDepth;
-		/// <summary>
+        /// <summary>
+        /// User-supplied values used to determine when th is lod applies.
+        /// </summary>
+        /// <remarks>
+        /// This is required in case the lod strategy changes.
+        /// </remarks>
+        public Real UserValue;
+        /// <summary>
+        /// Value used by to determine when this lod applies.
+        /// </summary>
+        /// <remarks>
+        /// May be interpretted differently by different strategies.
+        /// Transformed from user-supplied values with <see cref="LodStrategy.TransformUserValue"/>.
+        /// </remarks>
+        public Real Value;
+        /// <summary>
 		///	Only relevant if isLodManual is true, the name of the alternative mesh to use.
 		/// </summary>
-		public string manualName;
+		public string ManualName;
 		///	<summary>
 		///		Reference to the manual mesh to avoid looking up each time.
 		///	</summary>    	
-		public Mesh manualMesh;
+		public Mesh ManualMesh;
 		/// <summary>
 		///		Edge list for this LOD level (may be derived from manual mesh).	
 		/// </summary>
-		public EdgeData edgeData;
+		public EdgeData EdgeData;
 	}
 }
