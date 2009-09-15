@@ -46,6 +46,7 @@
     <Reference Include="Typemock.ArrangeActAssert, Version=5.3.1.0, Culture=neutral, PublicKeyToken=3dae460033b8d8e2, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\LodStrategyTests.cs" />
     <Compile Include="Core\ResourceGroupManager.ManualResourceCreation.Test.cs" />
     <Compile Include="Core\SceneManagerRegressionTests.cs">
       <SubType>Code</SubType>
@@ -93,7 +94,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Engine\Axiom.csproj">
       <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
-      <Name>Axiom</Name>
+      <Name>Axiom %28Axiom\Axiom%29</Name>
     </ProjectReference>
     <ProjectReference Include="..\Platforms\SlimDX\Axiom.Platforms.SlimDX.csproj">
       <Project>{C1F06405-80E4-4C60-BDDD-4BA1C8F400E0}</Project>
