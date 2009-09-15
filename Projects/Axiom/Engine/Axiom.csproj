@@ -826,6 +826,21 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\DistanceLodStrategy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\ILodListener.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\LodStrategy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\LodStrategyManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\PixelCountStrategy.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Media\LinearResampler.Byte.cs" />
     <Compile Include="Media\LinearResampler.Float32.cs" />
   </ItemGroup>

@@ -246,27 +246,6 @@ namespace Axiom.Graphics
 
         #endregion TransparencyCastsShadows Property
 
-        #region lodDistances Property
-
-        private FloatList _lodDistances = new FloatList();
-
-        /// <summary>
-        ///		List of LOD distances specified for this material.
-        /// </summary>
-        /// <ogre name="mLodDistances" />
-        protected FloatList lodDistances
-        {
-            get
-            {
-                return this._lodDistances;
-            }
-            set
-            {
-                this._lodDistances = value;
-            }
-        }
-
-        #endregion lodDistances Property
 
         /// <summary>
         ///		Determines if the material has any transparency with the rest of the scene (derived from 
@@ -303,17 +282,6 @@ namespace Axiom.Graphics
             }
         }
 
-        /// <summary>
-        ///		Gets the number of levels-of-detail this material has.
-        /// </summary>
-        /// <ogre name="getNumLodLevels" />
-        public int LodLevelsCount
-        {
-            get
-            {
-                return this.bestTechniquesByScheme.Count;
-            }
-        }
 
         #region Convience Properties
 
@@ -798,7 +766,7 @@ namespace Axiom.Graphics
                         name );
             }
 
-            this._lodDistances.Add( 0.0f );
+            this._lodValues.Add( 0.0f );
 
             this.ApplyDefaults();
         }
@@ -948,38 +916,6 @@ namespace Axiom.Graphics
             return t;
         }
 
-        /// <summary>
-        ///		Gets the LOD index to use at the given distance.
-        /// </summary>
-        /// <param name="distance"></param>
-        /// <returns></returns>
-        /// <ogre name="getLodIndex" />
-        public int GetLodIndex( float distance )
-        {
-            return this.GetLodIndexSquaredDepth( distance * distance );
-        }
-
-        /// <summary>
-        ///		Gets the LOD index to use at the given squared distance.
-        /// </summary>
-        /// <param name="squaredDistance"></param>
-        /// <returns></returns>
-        /// <ogre name="getLodIndexSquaredDepth" />
-        public int GetLodIndexSquaredDepth( float squaredDistance )
-        {
-            for ( int i = 0; i < this.lodDistances.Count; i++ )
-            {
-                float val = (float) this.lodDistances[ i ];
-
-                if ( val > squaredDistance )
-                {
-                    return i - 1;
-                }
-            }
-
-            // if we fall all the way through, use the highest value
-            return this.lodDistances.Count - 1;
-        }
 
         /// <summary>
         ///    Gets the technique at the specified index.
@@ -1037,37 +973,6 @@ namespace Axiom.Graphics
             this._compilationRequired = true;
         }
 
-        /// <summary>
-        ///		Sets the distance at which level-of-detail (LOD) levels come into effect.
-        /// </summary>
-        /// <remarks>
-        ///		You should only use this if you have assigned LOD indexes to the Technique
-        ///		instances attached to this Material. If you have done so, you should call this
-        ///		method to determine the distance at which the lowe levels of detail kick in.
-        ///		The decision about what distance is actually used is a combination of this
-        ///		and the LOD bias applied to both the current Camera and the current Entity.
-        /// </remarks>
-        /// <param name="lodDistances">
-        ///		A list of floats which indicate the distance at which to 
-        ///		switch to lower details. They are listed in LOD index order, starting at index
-        ///		1 (ie the first level down from the highest level 0, which automatically applies
-        ///		from a distance of 0).
-        /// </param>
-        /// <ogre name="setLoadLevels" />
-        public void SetLodLevels( FloatList lodDistanceList )
-        {
-            // clear and add the 0 distance entry
-            this.lodDistances.Clear();
-            this.lodDistances.Add( 0.0f );
-
-            for ( int i = 0; i < lodDistanceList.Count; i++ )
-            {
-                float val = (float) lodDistanceList[ i ];
-
-                // squared distance
-                this.lodDistances.Add( val * val );
-            }
-        }
 
         /// <summary>
         ///    Creates a copy of this Material with the specified name (must be unique).
@@ -1178,13 +1083,14 @@ namespace Axiom.Graphics
             }
 
             // clear LOD distances
-            target.lodDistances.Clear();
+            target._lodValues.Clear();
+            target.UserLodValues.Clear();
 
             // copy LOD distances
-            for ( int i = 0; i < this.lodDistances.Count; i++ )
-            {
-                target.lodDistances.Add( this.lodDistances[ i ] );
-            }
+            target._lodValues.AddRange( this._lodValues );
+            target.UserLodValues.AddRange( this.UserLodValues );
+
+            target.LodStrategy = this.LodStrategy;
 
             target.compilationRequired = this.compilationRequired;
         }
@@ -1278,6 +1184,130 @@ namespace Axiom.Graphics
         #region Material Schemes
 
         #endregion
+
+        #region Material Level of Detail
+
+        /// <summary>
+        ///	List of LOD distances specified for this material.
+        /// </summary>
+        /// <ogre name="mLodDistances" />
+        private LodValueList _lodValues = new LodValueList();
+        /// <summary>
+        /// Gets an iterator over the list of values at which each LOD comes into effect. 
+        /// </summary>
+        /// <remarks>
+        /// Note that the values returned from this method is not totally analogous to 
+        /// the one passed in by calling <see cref="SetLodLevels"/> - the list includes a zero
+        /// entry at the start (since the highest LOD starts at value 0). Also, the
+        /// values returned are after being transformed by <see cref="LodStrategy.TransformUserValue"/>.
+        /// </remarks>
+        public LodValueList LodValues
+        {
+            get
+            {
+                return _lodValues;
+            }
+        }
+
+        /// <summary>
+        ///	List of LOD distances specified for this material.
+        /// </summary>
+        /// <ogre name="mUserLodDistances" />
+        protected LodValueList UserLodValues = new LodValueList();
+
+        /// <summary>
+        /// The LOD stategy for this material
+        /// </summary>
+        /// <ogre name="mLodStrategy" />
+        private LodStrategy _lodStrategy;
+        /// <summary>
+        /// The LOD stategy for this material
+        /// </summary>
+        public LodStrategy LodStrategy
+        {
+            get
+            {
+                return _lodStrategy;
+            }
+            set
+            {
+                _lodStrategy = value;
+
+                Debug.Assert( _lodValues.Count != 0 );
+
+                _lodValues[ 0 ] = _lodStrategy.BaseValue;
+
+                for ( int index = 0; index < this.UserLodValues.Count; index++ )
+                {
+                    _lodValues[ index ] = _lodStrategy.TransformUserValue( this.UserLodValues[ index ] );
+                }
+            }
+        }
+
+        /// <summary>
+        ///		Gets the number of levels-of-detail this material has.
+        /// </summary>
+        /// <ogre name="getNumLodLevels" />
+        public int LodLevelsCount
+        {
+            get
+            {
+                return this.bestTechniquesByScheme.Count;
+            }
+        }
+
+        /// <summary>
+        ///		Sets the distance at which level-of-detail (LOD) levels come into effect.
+        /// </summary>
+        /// <remarks>
+        ///		You should only use this if you have assigned LOD indexes to the <see cref="Technique"/>
+        ///		instances attached to this <see cref="Material"/>. If you have done so, you should call this
+        ///		method to determine the distance at which the lowe levels of detail kick in.
+        ///		The decision about what distance is actually used is a combination of this
+        ///		and the LOD bias applied to both the current <see cref="Camera"/> and the current Entity.
+        /// </remarks>
+        /// <param name="lodDistances">
+        ///		A list of floats which indicate the distance at which to 
+        ///		switch to lower details. They are listed in LOD index order, starting at index
+        ///		1 (ie the first level down from the highest level 0, which automatically applies
+        ///		from a distance of 0).
+        /// </param>
+        /// <ogre name="setLoadLevels" />
+        public void SetLodLevels( LodValueList lodDistanceList )
+        {
+            // clear and add the 0 distance entry
+            this._lodValues.Clear();
+            this.UserLodValues.Clear();
+            this.UserLodValues.Add( float.NaN );
+            this._lodValues.Add( LodStrategy.BaseValue );
+
+            foreach ( Real lodValue in lodDistanceList )
+            {
+                this.UserLodValues.Add( lodValue ); 
+                if ( LodStrategy != null )
+                {
+                    this._lodValues.Add( LodStrategy.TransformUserValue( lodValue ) );
+                }
+            }
+        }
+
+        /// <summary>
+        ///	Gets the LOD index to use at the given distance.
+        /// </summary>
+        /// <remarks>
+        /// The value passed in is the 'transformed' value. If you are dealing with
+        /// an original source value (e.g. distance), use <see cref="LodStrategy.TransformUserValue"/>
+        /// to turn this into a lookup value.
+        /// </remarks>
+        /// <param name="distance"></param>
+        /// <returns></returns>
+        /// <ogre name="getLodIndex" />
+        public int GetLodIndex( Real distance )
+        {
+            return LodStrategy.GetIndex( distance, _lodValues );
+        }
+
+        #endregion Material Level of Detail
 
         #region IComparable Implementation
 

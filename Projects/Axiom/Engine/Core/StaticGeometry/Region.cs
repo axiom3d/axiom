@@ -133,7 +133,8 @@ namespace Axiom.Core
             protected List<QueuedSubMesh> queuedSubMeshes;
             protected UInt32 regionID;
             protected Vector3 center;
-            protected List<float> lodSquaredDistances;
+            protected LodValueList lodValues;
+            protected LodStrategy lodStrategy;
             protected AxisAlignedBox aabb;
             protected float boundingRadius;
             protected ushort currentLod;
@@ -239,7 +240,7 @@ namespace Axiom.Core
                 this.regionID = regionID;
                 this.center = center;
                 queuedSubMeshes = new List<QueuedSubMesh>();
-                lodSquaredDistances = new List<float>();
+                lodValues = new LodValueList();
                 aabb = new AxisAlignedBox();
                 lodBucketList = new List<LODBucket>();
                 shadowRenderables = new ShadowRenderableList();
@@ -252,25 +253,38 @@ namespace Axiom.Core
             public void Assign( QueuedSubMesh qsm )
             {
                 queuedSubMeshes.Add( qsm );
+
                 // update lod distances
                 Mesh mesh = qsm.submesh.Parent;
-                ushort lodLevels = (ushort)( mesh.IsLodManual ? 1 : mesh.LodLevelCount );
+                LodStrategy lodStrategy = mesh.LodStrategy;
+                if ( this.lodStrategy == null )
+                {
+                    this.lodStrategy = lodStrategy;
+                    // First LOD mandatory, and always from base lod value
+                    this.lodValues.Add( this.lodStrategy.BaseValue );
+                }
+                else
+                {
+                    if ( this.lodStrategy != lodStrategy )
+                        throw new AxiomException( "Lod strategies do not match." );
+                }
+
+                int lodLevels = mesh.LodLevelCount;
                 if ( qsm.geometryLodList.Count != lodLevels )
                 {
-                    string msg = string.Format( "QueuedSubMesh '{0}' lod count of {1} does not match parent count of {2}",
-                                                qsm.submesh.Name, qsm.geometryLodList.Count, lodLevels );
+                    string msg = string.Format( "QueuedSubMesh '{0}' lod count of {1} does not match parent count of {2}", qsm.submesh.Name, qsm.geometryLodList.Count, lodLevels );
                     throw new AxiomException( msg );
                 }
 
-                while ( lodSquaredDistances.Count < lodLevels )
+                while ( lodValues.Count < lodLevels )
                 {
-                    lodSquaredDistances.Add( 0.0f );
+                    lodValues.Add( 0.0f );
                 }
                 // Make sure LOD levels are max of all at the requested level
                 for ( ushort lod = 1; lod < lodLevels; ++lod )
                 {
                     MeshLodUsage meshLod = qsm.submesh.Parent.GetLodLevel( lod );
-                    lodSquaredDistances[ lod ] = Utility.Max( (float)lodSquaredDistances[ lod ], meshLod.fromSquaredDepth );
+                    lodValues[ lod ] = Utility.Max( (float)lodValues[ lod ], meshLod.Value );
                 }
 
                 // update bounds
@@ -290,9 +304,9 @@ namespace Axiom.Core
                 node.AttachObject( this );
                 // We need to create enough LOD buckets to deal with the highest LOD
                 // we encountered in all the meshes queued
-                for ( ushort lod = 0; lod < lodSquaredDistances.Count; ++lod )
+                for ( ushort lod = 0; lod < lodValues.Count; ++lod )
                 {
-                    LODBucket lodBucket = new LODBucket( this, lod, (float)lodSquaredDistances[ lod ] );
+                    LODBucket lodBucket = new LODBucket( this, lod, (float)lodValues[ lod ] );
                     lodBucketList.Add( lodBucket );
                     // Now iterate over the meshes and assign to LODs
                     // LOD bucket will pick the right LOD to use
@@ -366,10 +380,10 @@ namespace Axiom.Core
                 {
                     beyondFarDistance = false;
 
-                    currentLod = (ushort)( lodSquaredDistances.Count - 1 );
-                    for ( ushort i = 0; i < lodSquaredDistances.Count; ++i )
+                    currentLod = (ushort)( lodValues.Count - 1 );
+                    for ( ushort i = 0; i < lodValues.Count; ++i )
                     {
-                        if ( (float)lodSquaredDistances[ i ] > camDistanceSquared )
+                        if ( (float)lodValues[ i ] > camDistanceSquared )
                         {
                             currentLod = (ushort)( i - 1 );
                             break;

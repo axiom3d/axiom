@@ -158,54 +158,14 @@ namespace Axiom.Core
         protected Matrix4 lastParentXform;
 
         /// <summary>
-        ///     List of entities with various levels of detail.
-        /// </summary>
-        protected EntityList lodEntityList = new EntityList();
-
-        /// <summary>
-        ///		LOD bias factor, inverted for optimisation when calculating adjusted depth.
-        /// </summary>
-        protected float materialLodFactorInv;
-
-        /// <summary>
         ///    Name of the material to be used for this entity.
         /// </summary>
         protected string materialName;
 
         /// <summary>
-        ///		Index of maximum detail LOD (NB lower index is higher detail).
-        /// </summary>
-        protected int maxMaterialLodIndex;
-
-        /// <summary>
-        ///    Index of maximum detail LOD (lower index is higher detail).
-        /// </summary>
-        protected int maxMeshLodIndex;
-
-        /// <summary>
         ///    3D Mesh that represents this entity.
         /// </summary>
         protected Mesh mesh;
-
-        /// <summary>
-        ///    LOD bias factor, inverted for optimization when calculating adjusted depth.
-        /// </summary>
-        protected float meshLodFactorInv;
-
-        /// <summary>
-        ///    The LOD number of the mesh to use, calculated by NotifyCurrentCamera.
-        /// </summary>
-        protected int meshLodIndex;
-
-        /// <summary>
-        ///		Index of minimum detail LOD (NB higher index is lower detail).
-        /// </summary>
-        protected int minMaterialLodIndex;
-
-        /// <summary>
-        ///    Index of minimum detail LOD (higher index is lower detail).
-        /// </summary>
-        protected int minMeshLodIndex;
 
         /// <summary>
         ///    Number of matrices associated with this entity.
@@ -273,11 +233,6 @@ namespace Axiom.Core
         ///     Temp buffer details for software vertex anim of shared geometry
         /// </summary>
         protected internal TempBlendedBufferInfo tempVertexAnimInfo;
-
-        /// <summary>
-        ///    Flag indicating that mesh uses manual LOD and so might have multiple SubEntity versions.
-        /// </summary>
-        protected bool usingManualLod;
 
         /// <summary>
         ///     Have we applied any vertex animation to shared geometry?
@@ -365,7 +320,7 @@ namespace Axiom.Core
                     MeshLodUsage usage = mesh.GetLodLevel( i );
 
                     // manually create entity
-                    Entity lodEnt = new Entity( string.Format( "{0}Lod{1}", this.name, i ), usage.manualMesh );
+                    Entity lodEnt = new Entity( string.Format( "{0}Lod{1}", this.name, i ), usage.ManualMesh );
                     this.lodEntityList.Add( lodEnt );
                 }
             }
@@ -386,13 +341,13 @@ namespace Axiom.Core
             this.ReevaluateVertexProcessing();
 
             // LOD default settings
-            this.meshLodFactorInv = 1.0f;
+            this.meshLodFactorTransformed = 1.0f;
             // Backwards, remember low value = high detail
             this.minMeshLodIndex = 99;
             this.maxMeshLodIndex = 0;
 
             // Material LOD default settings
-            this.materialLodFactorInv = 1.0f;
+            this.materialLodFactor = 1.0f;
             this.maxMaterialLodIndex = 0;
             this.minMaterialLodIndex = 99;
 
@@ -408,6 +363,68 @@ namespace Axiom.Core
         #endregion
 
         #region Properties
+
+        /// <summary>
+        ///		Gets the number of bone matrices for this entity if it has a skeleton attached.
+        /// </summary>
+        public int BoneMatrixCount
+        {
+            get
+            {
+                return this.numBoneMatrices;
+            }
+        }
+
+        /// <summary>
+        ///		Gets the full local bounding box of this entity.
+        /// </summary>
+        public override AxisAlignedBox BoundingBox
+        {
+            // return the bounding box of our mesh
+            get
+            {
+                this.fullBoundingBox = this.mesh.BoundingBox;
+                this.fullBoundingBox.Merge( this.ChildObjectsBoundingBox );
+
+                // don't need to scale here anymore
+
+                return this.fullBoundingBox;
+            }
+        }
+
+        public VertexData SkelAnimVertexData
+        {
+            get
+            {
+                return this.skelAnimVertexData;
+            }
+        }
+
+        public bool IsSkeletonAnimated
+        {
+            get
+            {
+                return this.skeletonInstance != null &&
+                       ( this.HasEnabledAnimationState
+                    // 				 || skeletonInstance.HasManualBones
+                       );
+            }
+        }
+
+        public bool HasEnabledAnimationState
+        {
+            get
+            {
+                foreach ( AnimationState state in this.animationState.Values )
+                {
+                    if ( state.IsEnabled )
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
 
         public SkeletonInstance Skeleton
         {
@@ -486,21 +503,6 @@ namespace Axiom.Core
             get
             {
                 return this.skeletonInstance != null;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public int MeshLodIndex
-        {
-            get
-            {
-                return this.meshLodIndex;
-            }
-            set
-            {
-                this.meshLodIndex = value;
             }
         }
 
@@ -884,7 +886,7 @@ namespace Axiom.Core
             if ( this.mesh.IsLodManual && this.meshLodIndex > 1 )
             {
                 // use lower detail skeleton
-                Mesh lodMesh = this.mesh.GetLodLevel( this.meshLodIndex ).manualMesh;
+                Mesh lodMesh = this.mesh.GetLodLevel( this.meshLodIndex ).ManualMesh;
 
                 if ( !lodMesh.HasSkeleton )
                 {
@@ -1465,6 +1467,159 @@ namespace Axiom.Core
 
         #endregion Methods
 
+        #region Entity Level of Detail
+
+        /// <summary>
+        /// Flag indicating that mesh uses manual LOD and so might have multiple SubEntity versions.
+        /// </summary>
+        protected bool usingManualLod;
+
+        /// <summary>
+        /// List of entities with various levels of detail.
+        /// </summary>
+        protected EntityList lodEntityList = new EntityList();
+
+        /// <summary>
+        ///	LOD bias factor
+        /// </summary>
+        protected Real materialLodFactor;
+        /// <summary>
+        /// LOD bias factor, transformed for optimisation when calculating adjusted lod value
+        /// </summary>
+        protected Real materialLodFactorTransformed;
+        /// <summary>
+        ///	Index of minimum detail LOD (NB higher index is lower detail).
+        /// </summary>
+        protected int minMaterialLodIndex;
+        /// <summary>
+        ///	Index of maximum detail LOD (NB lower index is higher detail).
+        /// </summary>
+        protected int maxMaterialLodIndex;
+
+
+
+        /// <summary>
+        ///    The LOD number of the mesh to use, calculated by NotifyCurrentCamera.
+        /// </summary>
+        protected int meshLodIndex;
+        /// <summary>
+        ///    LOD bias factor, inverted for optimization when calculating adjusted depth.
+        /// </summary>
+        protected float meshLodFactorTransformed;
+        /// <summary>
+        ///    Index of minimum detail LOD (higher index is lower detail).
+        /// </summary>
+        protected int minMeshLodIndex;
+        /// <summary>
+        ///    Index of maximum detail LOD (lower index is higher detail).
+        /// </summary>
+        protected int maxMeshLodIndex;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int MeshLodIndex
+        {
+            get
+            {
+                return this.meshLodIndex;
+            }
+            set
+            {
+                this.meshLodIndex = value;
+            }
+        }
+
+        /// <summary>
+        ///    Sets a level-of-detail bias for the material detail of this entity.
+        /// </summary>
+        /// <remarks>
+        ///    Level of detail reduction is normally applied automatically based on the Material 
+        ///    settings. However, it is possible to influence this behavior for this entity
+        ///    by adjusting the LOD bias. This 'nudges' the material level of detail used for this 
+        ///    entity up or down depending on your requirements. You might want to use this
+        ///    if there was a particularly important entity in your scene which you wanted to
+        ///    detail better than the others, such as a player model.
+        ///    <p/>
+        ///    There are three parameters to this method; the first is a factor to apply; it 
+        ///    defaults to 1.0 (no change), by increasing this to say 2.0, this model would 
+        ///    take twice as long to reduce in detail, whilst at 0.5 this entity would use lower
+        ///    detail versions twice as quickly. The other 2 parameters are hard limits which 
+        ///    let you set the maximum and minimum level-of-detail version to use, after all
+        ///    other calculations have been made. This lets you say that this entity should
+        ///    never be simplified, or that it can only use LODs below a certain level even
+        ///    when right next to the camera.
+        /// </remarks>
+        /// <param name="factor">Proportional factor to apply to the distance at which LOD is changed. 
+        ///    Higher values increase the distance at which higher LODs are displayed (2.0 is 
+        ///    twice the normal distance, 0.5 is half).</param>
+        /// <param name="maxDetailIndex">The index of the maximum LOD this entity is allowed to use (lower
+        ///    indexes are higher detail: index 0 is the original full detail model).</param>
+        /// <param name="minDetailIndex">The index of the minimum LOD this entity is allowed to use (higher
+        ///    indexes are lower detail. Use something like 99 if you want unlimited LODs (the actual
+        ///    LOD will be limited by the number in the material)</param>
+        public void SetMaterialLodBias( Real factor, int maxDetailIndex, int minDetailIndex )
+        {
+            Debug.Assert( factor > 0.0f, "Bias factor must be > 0!" );
+            this.materialLodFactor = factor;
+            this.materialLodFactorTransformed = this.mesh.LodStrategy.TransformBias( factor );
+            this.maxMaterialLodIndex = maxDetailIndex;
+            this.minMaterialLodIndex = minDetailIndex;
+        }
+
+        /// <summary>
+        ///    Sets a level-of-detail bias on this entity.
+        /// </summary>
+        /// <remarks>
+        ///    Level of detail reduction is normally applied automatically based on the Mesh 
+        ///    settings. However, it is possible to influence this behavior for this entity
+        ///    by adjusting the LOD bias. This 'nudges' the level of detail used for this 
+        ///    entity up or down depending on your requirements. You might want to use this
+        ///    if there was a particularly important entity in your scene which you wanted to
+        ///    detail better than the others, such as a player model.
+        ///    <p/>
+        ///    There are three parameters to this method; the first is a factor to apply; it 
+        ///    defaults to 1.0 (no change), by increasing this to say 2.0, this model would 
+        ///    take twice as long to reduce in detail, whilst at 0.5 this entity would use lower
+        ///    detail versions twice as quickly. The other 2 parameters are hard limits which 
+        ///    let you set the maximum and minimum level-of-detail version to use, after all
+        ///    other calculations have been made. This lets you say that this entity should
+        ///    never be simplified, or that it can only use LODs below a certain level even
+        ///    when right next to the camera.
+        /// </remarks>
+        /// <param name="factor">Proportional factor to apply to the distance at which LOD is changed. 
+        ///    Higher values increase the distance at which higher LODs are displayed (2.0 is 
+        ///    twice the normal distance, 0.5 is half).</param>
+        /// <param name="maxDetailIndex">The index of the maximum LOD this entity is allowed to use (lower
+        ///    indexes are higher detail: index 0 is the original full detail model).</param>
+        /// <param name="minDetailIndex">The index of the minimum LOD this entity is allowed to use (higher
+        ///    indexes are lower detail. Use something like 99 if you want unlimited LODs (the actual
+        ///    LOD will be limited by the number in the Mesh)</param>
+        public void SetMeshLodBias( float factor, int maxDetailIndex, int minDetailIndex )
+        {
+            Debug.Assert( factor > 0.0f, "Bias factor must be > 0!" );
+            this.meshLodFactorTransformed = this.mesh.LodStrategy.TransformBias( factor );
+            this.maxMeshLodIndex = maxDetailIndex;
+            this.minMeshLodIndex = minDetailIndex;
+        }
+
+        /// <summary>
+        /// Gets a reference to the entity representing the numbered manual level of detail.
+        /// </summary>
+        /// <remarks>
+        /// The zero-based index never includes the original entity, unlike <see cref="Mesh.GetLodLevel"/>.
+        /// </remarks>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        Entity GetManualLodLevel( int index )
+        {
+            Debug.Assert( index < lodEntityList.Count );
+
+            return lodEntityList[ index ];
+        }
+
+        #endregion Entity Level of Detail
+
         #region Implementation of IDisposable
 
         /// <summary>
@@ -1491,16 +1646,15 @@ namespace Axiom.Core
         {
             if ( this.parentNode != null )
             {
-                float squaredDepth = this.parentNode.GetSquaredViewDepth( camera );
-
-                // Adjust this depth by the entity bias factor
-                float temp = squaredDepth * this.meshLodFactorInv;
-
-                // Now adjust it by the camera bias
-                temp = temp * camera.InverseLodBias;
+                // Get mesh lod strategy
+                LodStrategy meshStrategy = mesh.LodStrategy;
+                // Get the appropriate lod value
+                Real lodValue = meshStrategy.GetValue( this, camera );
+                // Bias the lod value
+                Real biasedMeshLodValue = lodValue * this.meshLodFactorTransformed;
 
                 // Get the index at this biased depth
-                this.meshLodIndex = this.mesh.GetLodIndexSquaredDepth( temp );
+                int newMeshLodIndex = this.mesh.GetLodIndex( biasedMeshLodValue );
 
                 // Apply maximum detail restriction (remember lower = higher detail)
                 this.meshLodIndex = (int) Utility.Max( this.maxMeshLodIndex, this.meshLodIndex );
@@ -1508,25 +1662,62 @@ namespace Axiom.Core
                 // Apply minimum detail restriction (remember higher = lower detail)
                 this.meshLodIndex = (int) Utility.Min( this.minMeshLodIndex, this.meshLodIndex );
 
-                // now do material LOD
-                // adjust this depth by the entity bias factor
-                temp = squaredDepth * this.materialLodFactorInv;
+                // Construct event object
+                EntityMeshLodChangedEvent evt;
+                evt.Entity = this;
+                evt.Camera = camera;
+                evt.LodValue = biasedMeshLodValue;
+                evt.PreviousLodIndex = this.meshLodIndex;
+                evt.NewLodIndex = newMeshLodIndex;
 
-                // now adjust it by the camera bias
-                temp = temp * camera.InverseLodBias;
+                // Notify lod event listeners
+                //camera.SceneManager.NotifyEntityMeshLodChanged( evt );
+
+                // Change lod index
+                this.meshLodIndex = evt.NewLodIndex;
+
+                // Now do material LOD
+                lodValue *= this.materialLodFactorTransformed;
 
                 // apply the material LOD to all sub entities
-                for ( int i = 0; i < this.subEntityList.Count; i++ )
+                foreach ( SubEntity subEntity in subEntityList.Values )
                 {
-                    // get the index at this biased depth
-                    SubEntity subEnt = this.subEntityList.Values[i];
+                    // Get sub-entity material
+                    Material material = subEntity.Material;
 
-                    int idx = subEnt.Material.GetLodIndexSquaredDepth( temp );
+                    // Get material lod strategy
+                    LodStrategy materialStrategy = material.LodStrategy;
+                    
+                    // Recalculate lod value if strategies do not match
+                    Real biasedMaterialLodValue;
+                    if ( meshStrategy == materialStrategy )
+                        biasedMaterialLodValue = lodValue;
+                    else
+                        biasedMaterialLodValue = materialStrategy.GetValue( this, camera ) * materialStrategy.TransformBias( this.materialLodFactor );
 
+                    // Get the index at this biased depth
+                    int idx = material.GetLodIndex( biasedMaterialLodValue );
                     // Apply maximum detail restriction (remember lower = higher detail)
-                    idx = (int) Utility.Max( this.maxMaterialLodIndex, idx );
+                    idx = (int)Utility.Max( this.maxMaterialLodIndex, idx );
                     // Apply minimum detail restriction (remember higher = lower detail)
-                    subEnt.materialLodIndex = (int) Utility.Min( this.minMaterialLodIndex, idx );
+                    idx = (int)Utility.Min( this.minMaterialLodIndex, idx );
+
+                    // Construct event object
+                    EntityMaterialLodChangedEvent materialLodEvent;
+                    materialLodEvent.SubEntity = subEntity;
+                    materialLodEvent.Camera = camera;
+                    materialLodEvent.LodValue = biasedMaterialLodValue;
+                    materialLodEvent.PreviousLodIndex = subEntity.MaterialLodIndex;
+                    materialLodEvent.NewLodIndex = idx;
+
+                    // Notify lod event listeners
+                    //camera.SceneManager.NotifyEntityMaterialLodChanged( materialLodEvent );
+
+                    // Change lod index
+                    subEntity.MaterialLodIndex = materialLodEvent.NewLodIndex;
+
+				    // Also invalidate any camera distance cache
+                    //subEntity.InvalidateCameraCache();
                 }
             }
 
@@ -1688,78 +1879,6 @@ namespace Axiom.Core
                     }
                 }
             }
-        }
-
-        /// <summary>
-        ///    Sets a level-of-detail bias for the material detail of this entity.
-        /// </summary>
-        /// <remarks>
-        ///    Level of detail reduction is normally applied automatically based on the Material 
-        ///    settings. However, it is possible to influence this behavior for this entity
-        ///    by adjusting the LOD bias. This 'nudges' the material level of detail used for this 
-        ///    entity up or down depending on your requirements. You might want to use this
-        ///    if there was a particularly important entity in your scene which you wanted to
-        ///    detail better than the others, such as a player model.
-        ///    <p/>
-        ///    There are three parameters to this method; the first is a factor to apply; it 
-        ///    defaults to 1.0 (no change), by increasing this to say 2.0, this model would 
-        ///    take twice as long to reduce in detail, whilst at 0.5 this entity would use lower
-        ///    detail versions twice as quickly. The other 2 parameters are hard limits which 
-        ///    let you set the maximum and minimum level-of-detail version to use, after all
-        ///    other calculations have been made. This lets you say that this entity should
-        ///    never be simplified, or that it can only use LODs below a certain level even
-        ///    when right next to the camera.
-        /// </remarks>
-        /// <param name="factor">Proportional factor to apply to the distance at which LOD is changed. 
-        ///    Higher values increase the distance at which higher LODs are displayed (2.0 is 
-        ///    twice the normal distance, 0.5 is half).</param>
-        /// <param name="maxDetailIndex">The index of the maximum LOD this entity is allowed to use (lower
-        ///    indexes are higher detail: index 0 is the original full detail model).</param>
-        /// <param name="minDetailIndex">The index of the minimum LOD this entity is allowed to use (higher
-        ///    indexes are lower detail. Use something like 99 if you want unlimited LODs (the actual
-        ///    LOD will be limited by the number in the material)</param>
-        public void SetMaterialLodBias( float factor, int maxDetailIndex, int minDetailIndex )
-        {
-            Debug.Assert( factor > 0.0f, "Bias factor must be > 0!" );
-            this.materialLodFactorInv = 1.0f / factor;
-            this.maxMaterialLodIndex = maxDetailIndex;
-            this.minMaterialLodIndex = minDetailIndex;
-        }
-
-        /// <summary>
-        ///    Sets a level-of-detail bias on this entity.
-        /// </summary>
-        /// <remarks>
-        ///    Level of detail reduction is normally applied automatically based on the Mesh 
-        ///    settings. However, it is possible to influence this behavior for this entity
-        ///    by adjusting the LOD bias. This 'nudges' the level of detail used for this 
-        ///    entity up or down depending on your requirements. You might want to use this
-        ///    if there was a particularly important entity in your scene which you wanted to
-        ///    detail better than the others, such as a player model.
-        ///    <p/>
-        ///    There are three parameters to this method; the first is a factor to apply; it 
-        ///    defaults to 1.0 (no change), by increasing this to say 2.0, this model would 
-        ///    take twice as long to reduce in detail, whilst at 0.5 this entity would use lower
-        ///    detail versions twice as quickly. The other 2 parameters are hard limits which 
-        ///    let you set the maximum and minimum level-of-detail version to use, after all
-        ///    other calculations have been made. This lets you say that this entity should
-        ///    never be simplified, or that it can only use LODs below a certain level even
-        ///    when right next to the camera.
-        /// </remarks>
-        /// <param name="factor">Proportional factor to apply to the distance at which LOD is changed. 
-        ///    Higher values increase the distance at which higher LODs are displayed (2.0 is 
-        ///    twice the normal distance, 0.5 is half).</param>
-        /// <param name="maxDetailIndex">The index of the maximum LOD this entity is allowed to use (lower
-        ///    indexes are higher detail: index 0 is the original full detail model).</param>
-        /// <param name="minDetailIndex">The index of the minimum LOD this entity is allowed to use (higher
-        ///    indexes are lower detail. Use something like 99 if you want unlimited LODs (the actual
-        ///    LOD will be limited by the number in the Mesh)</param>
-        public void SetMeshLodBias( float factor, int maxDetailIndex, int minDetailIndex )
-        {
-            Debug.Assert( factor > 0.0f, "Bias factor must be > 0!" );
-            this.meshLodFactorInv = 1.0f / factor;
-            this.maxMeshLodIndex = maxDetailIndex;
-            this.minMeshLodIndex = minDetailIndex;
         }
 
         /// <summary>
@@ -2139,72 +2258,6 @@ namespace Axiom.Core
         }
 
         #endregion Methods
-
-        #region Properties
-
-        /// <summary>
-        ///		Gets the number of bone matrices for this entity if it has a skeleton attached.
-        /// </summary>
-        public int BoneMatrixCount
-        {
-            get
-            {
-                return this.numBoneMatrices;
-            }
-        }
-
-        /// <summary>
-        ///		Gets the full local bounding box of this entity.
-        /// </summary>
-        public override AxisAlignedBox BoundingBox
-        {
-            // return the bounding box of our mesh
-            get
-            {
-                this.fullBoundingBox = this.mesh.BoundingBox;
-                this.fullBoundingBox.Merge( this.ChildObjectsBoundingBox );
-
-                // don't need to scale here anymore
-
-                return this.fullBoundingBox;
-            }
-        }
-
-        public VertexData SkelAnimVertexData
-        {
-            get
-            {
-                return this.skelAnimVertexData;
-            }
-        }
-
-        public bool IsSkeletonAnimated
-        {
-            get
-            {
-                return this.skeletonInstance != null &&
-                       ( this.HasEnabledAnimationState
-                       // 				 || skeletonInstance.HasManualBones
-                       );
-            }
-        }
-
-        public bool HasEnabledAnimationState
-        {
-            get
-            {
-                foreach ( AnimationState state in this.animationState.Values )
-                {
-                    if ( state.IsEnabled )
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        }
-
-        #endregion Properties
 
         /// <summary>
         /// 

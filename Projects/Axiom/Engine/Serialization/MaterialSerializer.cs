@@ -820,13 +820,29 @@ namespace Axiom.Serialization
 		}
 
 		#region Material
+		[MaterialAttributeParser( "lod_strategy", MaterialScriptSection.Material )]
+		protected static bool ParseLodStrategy( string parameters, MaterialScriptContext context )
+		{
+		    LodStrategy lodStrategy = LodStrategyManager.Instance.GetStrategy( parameters );
 
-		[MaterialAttributeParser( "lod_distances", MaterialScriptSection.Material )]
+            if ( lodStrategy == null )
+            {
+                LogParseError( context, "Bad lod_strategy attribute, , available lod strategy name expected." );
+            }
+
+		    context.material.LodStrategy = lodStrategy;
+
+		    return false;
+		}
+
+	    [MaterialAttributeParser( "lod_distances", MaterialScriptSection.Material )]
 		protected static bool ParseLodDistances( string parameters, MaterialScriptContext context )
 		{
+		    context.material.LodStrategy = LodStrategyManager.Instance.GetStrategy(DistanceLodStrategy.StrategyName);
+
 			string[] values = parameters.Split( new char[] { ' ', '\t' } );
 
-			FloatList lodDistances = new FloatList();
+            LodValueList lodDistances = new LodValueList();
 
 			for ( int i = 0; i < values.Length; i++ )
 			{

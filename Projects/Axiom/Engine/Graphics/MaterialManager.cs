@@ -195,6 +195,9 @@ namespace Axiom.Graphics
             // Add a single technique and pass, non-programmable
             Material.defaultSettings.CreateTechnique().CreatePass();
 
+            // Set the default lod strategy
+            Material.defaultSettings.LodStrategy = LodStrategyManager.Instance.DefaultStrategy;
+
             // create the default BaseWhite materials
             Create( "BaseWhite", ResourceGroupManager.DefaultResourceGroupName );
 

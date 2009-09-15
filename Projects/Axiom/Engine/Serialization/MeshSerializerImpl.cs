@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 using Axiom.Animating;
@@ -461,7 +462,7 @@ namespace Axiom.Serialization
 			if ( mesh.LodLevelCount > 1 )
 			{
 				LogManager.Instance.Write( "Exporting LOD information..." );
-				WriteMeshLod( writer );
+				this.WriteMeshLodInfo( writer );
 				LogManager.Instance.Write( "LOD information exported." );
 			}
 
@@ -698,11 +699,11 @@ namespace Axiom.Serialization
 			writer.Seek( (int)end_offset, SeekOrigin.Begin );
 		}
 
-		protected void WriteMeshLod( BinaryWriter writer )
+		protected void WriteMeshLodInfo( BinaryWriter writer )
 		{
 			long start_offset = writer.Seek( 0, SeekOrigin.Current );
 			WriteChunk( writer, MeshChunkID.MeshLOD, 0 );
-
+		    WriteString( writer, mesh.LodStrategy.Name );
 			WriteShort( writer, (short)mesh.LodLevelCount );
 			WriteBool( writer, mesh.IsLodManual );
 
@@ -724,9 +725,7 @@ namespace Axiom.Serialization
 			long start_offset = writer.Seek( 0, SeekOrigin.Current );
 			WriteChunk( writer, MeshChunkID.MeshLODUsage, 0 );
 
-			WriteFloat( writer, usage.fromSquaredDepth );
-
-			if ( mesh.IsLodManual )
+		    if ( mesh.IsLodManual )
 				WriteMeshLodManual( writer, usage );
 			else
 			{
@@ -748,7 +747,7 @@ namespace Axiom.Serialization
 			long start_offset = writer.Seek( 0, SeekOrigin.Current );
 			WriteChunk( writer, MeshChunkID.MeshLODManual, 0 );
 
-			WriteString( writer, usage.manualName );
+			WriteString( writer, usage.ManualName );
 
 			long end_offset = writer.Seek( 0, SeekOrigin.Current );
 			writer.Seek( (int)start_offset, SeekOrigin.Begin );
@@ -1297,7 +1296,7 @@ namespace Axiom.Serialization
 			MeshChunkID chunkId;
 
 			// number of lod levels
-			mesh.numLods = ReadShort( reader );
+			short lodLevelCount = ReadShort( reader );
 
 			// load manual?
 			mesh.IsLodManual = ReadBool( reader );
@@ -1310,16 +1309,16 @@ namespace Axiom.Serialization
 					SubMesh sub = mesh.GetSubMesh( i );
 
 					// TODO: Create typed collection and implement resize
-					for ( int j = 1; j < mesh.numLods; j++ )
+                    for ( int j = 1; j < lodLevelCount; j++ )
 					{
 						sub.lodFaceList.Add( null );
 					}
-					//sub.lodFaceList.Resize(mesh.numLods - 1);
+					//sub.lodFaceList.Resize(mesh.lodCount - 1);
 				}
 			}
 
 			// Loop from 1 rather than 0 (full detail index is not in file)
-			for ( int i = 1; i < mesh.numLods; i++ )
+            for ( int i = 1; i < lodLevelCount; i++ )
 			{
 				chunkId = ReadChunk( reader );
 
@@ -1330,7 +1329,7 @@ namespace Axiom.Serialization
 
 				// camera depth
 				MeshLodUsage usage = new MeshLodUsage();
-				usage.fromSquaredDepth = ReadFloat( reader );
+				usage.Value = ReadFloat( reader );
 
 				if ( mesh.IsLodManual )
 				{
@@ -1342,8 +1341,9 @@ namespace Axiom.Serialization
 				}
 
 				// push lod usage onto the mesh lod list
-				mesh.lodUsageList.Add( usage );
+				mesh.MeshLodUsageList.Add( usage );
 			}
+		    Debug.Assert( mesh.LodLevelCount == lodLevelCount );
 		}
 
 		protected virtual void ReadMeshLodUsageManual( BinaryReader reader, int lodNum, ref MeshLodUsage usage )
@@ -1355,16 +1355,16 @@ namespace Axiom.Serialization
 				throw new AxiomException( "Missing MeshLODManual chunk in '{0}'.", mesh.Name );
 			}
 
-			usage.manualName = ReadString( reader );
+			usage.ManualName = ReadString( reader );
 
 			// clearing the reference just in case
-			usage.manualMesh = null;
+			usage.ManualMesh = null;
 		}
 
 		protected virtual void ReadMeshLodUsageGenerated( BinaryReader reader, int lodNum, ref MeshLodUsage usage )
 		{
-			usage.manualName = "";
-			usage.manualMesh = null;
+			usage.ManualName = "";
+			usage.ManualMesh = null;
 
 			// get one set of detail per submesh
 			MeshChunkID chunkId;
@@ -1466,9 +1466,9 @@ namespace Axiom.Serialization
 					{
 						MeshLodUsage usage = mesh.GetLodLevel( lodIndex );
 
-						usage.edgeData = new EdgeData();
+						usage.EdgeData = new EdgeData();
 
-						// ToDo Assign to usage.edgeData.IsClosed
+						// ToDo Assign to usage.EdgeData.IsClosed
 						bool isClosed = ReadBool( reader );
 
 						int triCount = ReadInt( reader );
@@ -1494,7 +1494,7 @@ namespace Axiom.Serialization
 
 							tri.normal = ReadVector4( reader );
 
-							usage.edgeData.triangles.Add( tri );
+							usage.EdgeData.triangles.Add( tri );
 						}
 
 						for ( int eg = 0; eg < edgeGroupCount; eg++ )
@@ -1556,7 +1556,7 @@ namespace Axiom.Serialization
 							}
 
 							// add the edge group to the list
-							usage.edgeData.edgeGroups.Add( edgeGroup );
+							usage.EdgeData.edgeGroups.Add( edgeGroup );
 						}
 					}
 
@@ -1821,7 +1821,7 @@ namespace Axiom.Serialization
 					{
 						MeshLodUsage usage = mesh.GetLodLevel( lodIndex );
 
-						usage.edgeData = new EdgeData();
+						usage.EdgeData = new EdgeData();
 
 						int triCount = ReadInt( reader );
 						int edgeGroupCount = ReadInt( reader );
@@ -1846,7 +1846,7 @@ namespace Axiom.Serialization
 
 							tri.normal = ReadVector4( reader );
 
-							usage.edgeData.triangles.Add( tri );
+							usage.EdgeData.triangles.Add( tri );
 						}
 
 						for ( int eg = 0; eg < edgeGroupCount; eg++ )
@@ -1905,7 +1905,7 @@ namespace Axiom.Serialization
 							}
 
 							// add the edge group to the list
-							usage.edgeData.edgeGroups.Add( edgeGroup );
+							usage.EdgeData.edgeGroups.Add( edgeGroup );
 						}
 					}
 

@@ -37,6 +37,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+using Axiom.Math;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Core
@@ -45,6 +47,11 @@ namespace Axiom.Core
     ///     Generics: List<MeshLodUsage>
     /// </summary>
     public class MeshLodUsageList : List<MeshLodUsage>
+    {
+    }
+
+
+    public class LodValueList : List<Real>
     {
     }
 
