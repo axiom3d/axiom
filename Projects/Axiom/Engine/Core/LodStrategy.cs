@@ -218,7 +218,7 @@ namespace Axiom.Core
             ushort index = 0;
             for ( int i = 0; i < materialLodValueList.Count; i++, index++ )
             {
-                if ( materialLodValueList[ i ] < value )
+                if ( materialLodValueList[ i ] > value )
                     return (ushort)( index - 1 );
             }
             return (ushort)( materialLodValueList.Count - 1 );
@@ -235,7 +235,7 @@ namespace Axiom.Core
             ushort index = 0;
             for ( int i = 0; i < materialLodValueList.Count; i++, index++ )
             {
-                if ( materialLodValueList[ i ] > value )
+                if ( materialLodValueList[ i ] < value )
                     return (ushort)( index - 1 );
             }
             return (ushort)( materialLodValueList.Count - 1 );
