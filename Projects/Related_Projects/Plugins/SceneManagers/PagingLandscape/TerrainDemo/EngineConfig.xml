@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<EngineConfig xmlns="http://tempuri.org/EngineConfig.xsd">
-	<FilePath type="Folder" src="SampleData"/>
-	<FilePath type="Folder" src="SampleData/ps_height_1k"/>
-  <FilePath type="Folder" src="Media"/>
-</EngineConfig>
- 
