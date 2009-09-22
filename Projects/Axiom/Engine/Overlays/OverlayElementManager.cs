@@ -221,6 +221,19 @@ namespace Axiom.Overlays
         /// <param name="instanceName"></param>
         /// <param name="isTemplate"></param>
         /// <returns></returns>
+        public OverlayElement CreateElementFromTemplate( string templateName, string typeName, string instanceName )
+        {
+            return CreateElementFromTemplate( templateName, typeName, instanceName, false );
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="templateName"></param>
+        /// <param name="typeName"></param>
+        /// <param name="instanceName"></param>
+        /// <param name="isTemplate"></param>
+        /// <returns></returns>
         public OverlayElement CreateElementFromTemplate( string templateName, string typeName, string instanceName, bool isTemplate )
         {
             OverlayElement element = null;
