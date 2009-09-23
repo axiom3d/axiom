@@ -79,8 +79,20 @@ namespace Axiom.Core
         ///     This public contructor is intended for the user to decide when the Root object gets instantiated.
         ///     This is a critical step in preparing the engine for use.
         /// </remarks>
-        /// <param name="logFileName">Name of the default log file.</param>
-        public Root( string logFileName )
+        public Root()
+            : this( "axiom.log" )
+        {
+        }
+
+        /// <summary>
+        ///     Constructor.
+        /// </summary>
+        /// <remarks>
+        ///     This public contructor is intended for the user to decide when the Root object gets instantiated.
+        ///     This is a critical step in preparing the engine for use.
+        /// </remarks>
+        /// <param name="logFilename">Name of the default log file.</param>
+        public Root( string logFilename )
         {
             if ( instance == null )
             {
@@ -103,7 +115,7 @@ namespace Axiom.Core
 				
                 //if logFileName is null, then just the Diagnostics (debug) writes will be made
                 // create a new default log
-                this.logMgr.CreateLog( logFileName, true, true );
+                this.logMgr.CreateLog( logFilename, true, true );
 
                 this.logMgr.Write( info.ToString() );
                 this.logMgr.Write( "*-*-* Axiom Intializing" );
