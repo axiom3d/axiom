@@ -620,6 +620,11 @@ namespace Axiom.Math
                 return new IntersectResult( false, 0 );
             }
 
+            if ( box.IsInfinite )
+            {
+                return new IntersectResult( true, 0 );
+            }
+
             float lowt = 0.0f;
             float t;
             bool hit = false;
@@ -636,7 +641,7 @@ namespace Axiom.Math
             // check each face in turn, only check closest 3
 
             // Min X
-            if ( ray.origin.x < min.x && ray.direction.x > 0 )
+            if ( ray.origin.x <= min.x && ray.direction.x > 0 )
             {
                 t = ( min.x - ray.origin.x ) / ray.direction.x;
 
@@ -657,7 +662,7 @@ namespace Axiom.Math
             }
 
             // Max X
-            if ( ray.origin.x > max.x && ray.direction.x < 0 )
+            if ( ray.origin.x >= max.x && ray.direction.x < 0 )
             {
                 t = ( max.x - ray.origin.x ) / ray.direction.x;
 
@@ -678,7 +683,7 @@ namespace Axiom.Math
             }
 
             // Min Y
-            if ( ray.origin.y < min.y && ray.direction.y > 0 )
+            if ( ray.origin.y <= min.y && ray.direction.y > 0 )
             {
                 t = ( min.y - ray.origin.y ) / ray.direction.y;
 
@@ -699,7 +704,7 @@ namespace Axiom.Math
             }
 
             // Max Y
-            if ( ray.origin.y > max.y && ray.direction.y < 0 )
+            if ( ray.origin.y >= max.y && ray.direction.y < 0 )
             {
                 t = ( max.y - ray.origin.y ) / ray.direction.y;
 
@@ -720,7 +725,7 @@ namespace Axiom.Math
             }
 
             // Min Z
-            if ( ray.origin.z < min.z && ray.direction.z > 0 )
+            if ( ray.origin.z <= min.z && ray.direction.z > 0 )
             {
                 t = ( min.z - ray.origin.z ) / ray.direction.z;
 
@@ -741,7 +746,7 @@ namespace Axiom.Math
             }
 
             // Max Z
-            if ( ray.origin.z > max.z && ray.direction.z < 0 )
+            if ( ray.origin.z >= max.z && ray.direction.z < 0 )
             {
                 t = ( max.z - ray.origin.z ) / ray.direction.z;
 
@@ -763,6 +768,7 @@ namespace Axiom.Math
 
             return new IntersectResult( hit, lowt );
         }
+
         public static IntersectResult Intersects(Ray ray, Vector3 a,
             Vector3 b, Vector3 c, Vector3 normal, bool positiveSide, bool negativeSide)
         {
@@ -847,6 +853,7 @@ namespace Axiom.Math
 
             return new IntersectResult(true, t);
         }
+
         public static IntersectResult Intersects(Ray ray, Vector3 a,
             Vector3 b, Vector3 c, bool positiveSide, bool negativeSide)
         {
