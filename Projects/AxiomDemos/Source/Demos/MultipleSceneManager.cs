@@ -20,6 +20,7 @@ namespace Axiom.Demos
 		{
 			_primary = Root.Instance.CreateSceneManager( SceneType.Generic, "primary" );
 			_secondary = Root.Instance.CreateSceneManager( SceneType.Generic, "secondary" );
+		    scene = _primary;
 		}
 
 		public override void CreateScene()
@@ -87,7 +88,8 @@ namespace Axiom.Demos
 				engine.QueueEndRendering();
 				return false;
 			}
-            else if ( input.IsKeyPressed( KeyCodes.V ) && toggleDelay < 0 )
+
+            if ( input.IsKeyPressed( KeyCodes.V ) && toggleDelay < 0 )
 			{
 				_dual = !_dual;
 
@@ -95,23 +97,24 @@ namespace Axiom.Demos
 					DualViewport( window, _primary, _secondary );
 				else
 					SetupViewport( window, _primary );
-                toggleDelay = 1000f;
+                toggleDelay = .3f;
 			}
 
-            else if ( input.IsKeyPressed( KeyCodes.C ) && toggleDelay < 0 )
+            if ( input.IsKeyPressed( KeyCodes.C ) && toggleDelay < 0 )
 			{
 				Swap( ref _primary, ref _secondary );
+			    scene = _primary;
 
 				if ( _dual )
 					DualViewport( window, _primary, _secondary );
 				else
 					SetupViewport( window, _primary );
-                toggleDelay = 1000f;
+                toggleDelay = .3f;
 			}
 
-            toggleDelay -= e.TimeSinceLastEvent;
+            toggleDelay -= e.TimeSinceLastFrame;
                
-
+            UpdateStats();
             return true;
 		}
 	}
