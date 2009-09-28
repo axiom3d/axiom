@@ -645,7 +645,7 @@ namespace Axiom.Math
             {
                 t = ( min.x - ray.origin.x ) / ray.direction.x;
 
-                if ( t > 0 )
+                if ( t >= 0 )
                 {
                     // substitue t back into ray and check bounds and distance
                     hitPoint = ray.origin + ray.direction * t;
@@ -666,7 +666,7 @@ namespace Axiom.Math
             {
                 t = ( max.x - ray.origin.x ) / ray.direction.x;
 
-                if ( t > 0 )
+                if ( t >= 0 )
                 {
                     // substitue t back into ray and check bounds and distance
                     hitPoint = ray.origin + ray.direction * t;
@@ -687,7 +687,7 @@ namespace Axiom.Math
             {
                 t = ( min.y - ray.origin.y ) / ray.direction.y;
 
-                if ( t > 0 )
+                if ( t >= 0 )
                 {
                     // substitue t back into ray and check bounds and distance
                     hitPoint = ray.origin + ray.direction * t;
@@ -708,7 +708,7 @@ namespace Axiom.Math
             {
                 t = ( max.y - ray.origin.y ) / ray.direction.y;
 
-                if ( t > 0 )
+                if ( t >= 0 )
                 {
                     // substitue t back into ray and check bounds and distance
                     hitPoint = ray.origin + ray.direction * t;
@@ -729,7 +729,7 @@ namespace Axiom.Math
             {
                 t = ( min.z - ray.origin.z ) / ray.direction.z;
 
-                if ( t > 0 )
+                if ( t >= 0 )
                 {
                     // substitue t back into ray and check bounds and distance
                     hitPoint = ray.origin + ray.direction * t;
@@ -750,7 +750,7 @@ namespace Axiom.Math
             {
                 t = ( max.z - ray.origin.z ) / ray.direction.z;
 
-                if ( t > 0 )
+                if ( t >= 0 )
                 {
                     // substitue t back into ray and check bounds and distance
                     hitPoint = ray.origin + ray.direction * t;
