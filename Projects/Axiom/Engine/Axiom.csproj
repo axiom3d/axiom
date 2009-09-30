@@ -841,7 +841,6 @@
     <Compile Include="Core\PixelCountStrategy.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Media\DDSCodec.cs" />
     <Compile Include="Media\LinearResampler.Byte.cs" />
     <Compile Include="Media\LinearResampler.Float32.cs" />
   </ItemGroup>
