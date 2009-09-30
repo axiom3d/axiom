@@ -1,0 +1,26 @@
+<TerrainConfig>
+  <Terrain>terrain.png</Terrain>
+  <WorldTexture>terrain_texture.jpg</WorldTexture>
+  <DetailTexture>terrain_detail.jpg</DetailTexture>
+  <DetailTile>3</DetailTile>
+  <TileSize>65</TileSize>
+  <PageSize>513</PageSize>
+  <PageWorldX>1500</PageWorldX>
+  <MaxHeight>100</MaxHeight>
+  <PageWorldZ>1500</PageWorldZ>
+  <VertexColours>yes</VertexColours>
+  <UseTriStrips>no</UseTriStrips>
+  <VertexProgramMorph>yes</VertexProgramMorph>
+  <LODMorphStart>0.2</LODMorphStart>
+  <MaterialName></MaterialName>
+  <MorphLODFactorParamName></MorphLODFactorParamName>
+  <MorphLODFactorParamIndex></MorphLODFactorParamIndex>
+  <PageSource>Heightmap</PageSource>
+  <HeightmapImage>terrain2.png</HeightmapImage>
+  <MaxPixelError>8</MaxPixelError>
+  <ScaleX>1</ScaleX>
+  <ScaleY>0.2</ScaleY>
+  <ScaleZ>1</ScaleZ>
+  <MaxMipMapLevel>5</MaxMipMapLevel>
+  <VertexNormals>no</VertexNormals>
+</TerrainConfig>
