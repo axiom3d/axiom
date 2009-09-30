@@ -55,13 +55,13 @@ namespace Axiom.RenderSystems.Xna
 
         #region Implementation of IPlugin
 
-        public void Start()
+        public void Initialize()
         {
             // add an instance of this plugin to the list of available RenderSystems
             Axiom.Core.Root.Instance.RenderSystems.Add( "Xna", renderSystem );
         }
 
-        public void Stop()
+        public void Shutdown()
         {
             // nothing at the moment
             //renderSystem.Shutdown();

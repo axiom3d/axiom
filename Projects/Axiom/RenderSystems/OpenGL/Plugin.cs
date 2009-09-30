@@ -56,7 +56,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
         private GLRenderSystem renderSystem;
 
-		public void Start()
+		public void Initialize()
 		{
 #if OPENGL_OTK
             Contract.Requires( PlatformManager.Instance.GetType().Name == "OpenTKPlatformManager", "PlatformManager", 
@@ -70,7 +70,7 @@ namespace Axiom.RenderSystems.OpenGL
 			Root.Instance.RenderSystems.Add( "OpenGL", renderSystem );
 		}
 
-		public void Stop()
+		public void Shutdown()
 		{
 			renderSystem.Shutdown();
 		}

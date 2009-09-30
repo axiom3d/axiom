@@ -43,13 +43,13 @@ namespace Axiom.SceneManagers.Bsp
 {
 	public class BspPlugin : IPlugin
 	{
-		public void Start()
+		public void Initialize()
 		{
 			_bspSMFactory = new BspSceneManagerFactory();
 			Root.Instance.AddSceneManagerFactory( _bspSMFactory );
 		}
 
-		public void Stop()
+		public void Shutdown()
 		{
 			Root.Instance.RemoveSceneManagerFactory( _bspSMFactory );
 		}

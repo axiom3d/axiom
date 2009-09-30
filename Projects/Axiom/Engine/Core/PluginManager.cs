@@ -152,7 +152,7 @@ namespace Axiom.Core
 
                 LogManager.Instance.Write( "Unloading plugin: {0}", GetAssemblyTitle( plugin.GetType() ) );
 
-				plugin.Stop();
+				plugin.Shutdown();
 			}
 
 			// clear the plugin list
@@ -170,7 +170,7 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        ///		Loads a plugin of the given class name from the given assembly, and calls Start() on it.
+        ///		Loads a plugin of the given class name from the given assembly, and calls Initialize() on it.
         ///		This function does NOT add the plugin to the PluginManager's
         ///		list of plugins.
         /// </summary>
@@ -184,7 +184,7 @@ namespace Axiom.Core
                 // create and start the plugin
                 IPlugin plugin = creator.CreateInstance<IPlugin>();
 
-                plugin.Start();
+                plugin.Initialize();
 
                 LogManager.Instance.Write( "Loaded plugin: {0}", creator.GetAssemblyTitle() );
 

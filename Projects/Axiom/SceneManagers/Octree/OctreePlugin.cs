@@ -43,7 +43,7 @@ namespace Axiom.SceneManagers.Octree
 {
 	public class OctreePlugin : IPlugin
 	{
-		public void Start()
+		public void Initialize()
 		{
 			_octreeSMFactory = new OctreeSceneManagerFactory();
 			_terrainSMFactory = new TerrainSceneManagerFactory();
@@ -52,7 +52,7 @@ namespace Axiom.SceneManagers.Octree
 			Root.Instance.AddSceneManagerFactory(_terrainSMFactory);
 		}
 
-		public void Stop()
+		public void Shutdown()
 		{
 			Root.Instance.RemoveSceneManagerFactory(_octreeSMFactory);
 			Root.Instance.RemoveSceneManagerFactory(_terrainSMFactory);

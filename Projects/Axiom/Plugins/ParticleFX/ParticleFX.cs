@@ -52,7 +52,7 @@ namespace Axiom.ParticleFX
     {
         #region IPlugin Members
 
-        public void Start()
+        public void Initialize()
         {
             ParticleEmitterFactory emitterFactory;
             ParticleAffectorFactory affectorFactory;
@@ -118,7 +118,7 @@ namespace Axiom.ParticleFX
             ParticleSystemManager.Instance.AddAffectorFactory( affectorFactory );
         }
 
-        public void Stop()
+        public void Shutdown()
         {
             // TODO:  Add ParticleFX.Stop implementation
         }
