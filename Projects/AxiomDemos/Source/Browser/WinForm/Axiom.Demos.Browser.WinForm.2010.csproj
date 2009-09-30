@@ -252,9 +252,10 @@
     <None Include="EngineConfig.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Terrain.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <Content Include="..\..\..\..\..\Media\Configuration\Terrain.xml">
+      <Link>Media\Configuration\Terrain.xml</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>    
     <None Include="..\..\..\..\..\Media\Archives\AxiomCore.zip">
       <Link>Media\Archives\AxiomCore.zip</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
