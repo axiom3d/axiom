@@ -52,7 +52,7 @@ namespace Axiom.CgPrograms
         /// <summary>
         ///    Called when the plugin is started.
         /// </summary>
-        public void Start()
+        public void Initialize()
         {
             // register our Cg Program Factory
             factory = new CgProgramFactory();
@@ -63,7 +63,7 @@ namespace Axiom.CgPrograms
         /// <summary>
         ///    Called when the plugin is stopped.
         /// </summary>
-        public void Stop()
+        public void Shutdown()
         {
             //factory.Dispose();
         }

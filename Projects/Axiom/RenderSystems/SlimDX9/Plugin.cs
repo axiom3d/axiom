@@ -57,13 +57,13 @@ namespace Axiom.RenderSystems.SlimDX9
 
         #region Implementation of IPlugin
 
-        public void Start()
+        public void Initialize()
         {
             // add an instance of this plugin to the list of available RenderSystems
-            Root.Instance.RenderSystems.Add( "SlimDX9", renderSystem );
+            Root.Instance.RenderSystems.Add( "DirectX9", renderSystem );
         }
 
-        public void Stop()
+        public void Shutdown()
         {
             // nothiing at the moment
             renderSystem.Shutdown();

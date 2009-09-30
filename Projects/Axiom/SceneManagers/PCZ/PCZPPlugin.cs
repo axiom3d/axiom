@@ -7,7 +7,7 @@ namespace Axiom.SceneManagers.PortalConnected
 {
     public class PCZPPlugin : IPlugin
     {
-        public void Start()
+        public void Initialize()
         {
             PCZSMFactory = new PCZSceneManagerFactory();
             lightFactory = new PCZLightFactory();
@@ -16,7 +16,7 @@ namespace Axiom.SceneManagers.PortalConnected
             Root.Instance.AddMovableObjectFactory(lightFactory, true);
         }
 
-        public void Stop()
+        public void Shutdown()
         {
             Root.Instance.RemoveSceneManagerFactory(PCZSMFactory);
             Root.Instance.RemoveMovableObjectFactory(lightFactory);

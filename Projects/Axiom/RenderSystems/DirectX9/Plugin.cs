@@ -57,14 +57,14 @@ namespace Axiom.RenderSystems.DirectX9
 
         #region Implementation of IPlugin
 
-        public void Start()
+        public void Initialize()
         {
             // add an instance of this plugin to the list of available RenderSystems
             Root.Instance.RenderSystems.Add( "Direct3D9", renderSystem );
 
         }
 
-        public void Stop()
+        public void Shutdown()
         {
             // nothing at the moment
             renderSystem.Shutdown();

@@ -8,7 +8,7 @@ namespace OctreeZone
 {
     public class OctreeZonePlugin : IPlugin
     {
-        public void Start()
+        public void Initialize()
         {
             mTerrainZoneFactory = new TerrainZoneFactory("ZoneType_Terrain");
             mOctreeZoneFactory = new OctreeZoneFactory("ZoneType_Octree");
@@ -17,7 +17,7 @@ namespace OctreeZone
             PCZoneFactoryManager.Instance.RegisterPCZoneFactory(mOctreeZoneFactory);
         }
 
-        public void Stop()
+        public void Shutdown()
         {
             PCZoneFactoryManager.Instance.UnregisterPCZoneFactory(mOctreeZoneFactory);
             PCZoneFactoryManager.Instance.UnregisterPCZoneFactory(mTerrainZoneFactory);
