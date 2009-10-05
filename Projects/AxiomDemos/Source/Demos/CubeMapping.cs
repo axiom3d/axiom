@@ -678,12 +678,13 @@ namespace Axiom.Demos
         /// <param name="source"></param>
         /// <param name="e"></param>
         /// <returns></returns>
-        protected override bool OnFrameStarted( object source, FrameEventArgs e )
+        protected override void OnFrameStarted( object source, FrameEventArgs evt )
         {
-            if ( base.OnFrameStarted( source, e ) == false )
-                return false;
+            base.OnFrameStarted( source, evt );
+            if ( evt.StopRendering )
+                return;
 
-            tm += e.TimeSinceLastFrame / timeDensity;
+            tm += evt.TimeSinceLastFrame / timeDensity;
 
             if ( noiseOn )
             {
@@ -692,7 +693,7 @@ namespace Axiom.Demos
 
             if ( keyDelay > 0.0f )
             {
-                keyDelay -= e.TimeSinceLastFrame;
+                keyDelay -= evt.TimeSinceLastFrame;
 
                 if ( keyDelay < 0.0f )
                 {
@@ -706,14 +707,14 @@ namespace Axiom.Demos
                 // Adjust Density
                 if ( input.IsKeyPressed(KeyCodes.D3 ) )
                 {
-                    density += 0.1f * e.TimeSinceLastFrame;
+                    density += 0.1f * evt.TimeSinceLastFrame;
                     if ( density >= 2 )
                         density = 2;
                     updateInfoDensity(); 
                 }
                 if ( input.IsKeyPressed( KeyCodes.D4 ) )
                 {
-                    density -= 0.1f * e.TimeSinceLastFrame;
+                    density -= 0.1f * evt.TimeSinceLastFrame;
                     if ( density <= -2 )
                         density = -2;
                     updateInfoDensity();
@@ -722,14 +723,14 @@ namespace Axiom.Demos
                 // Adjust Displacement
                 if ( input.IsKeyPressed( KeyCodes.D1 ) )
                 {
-                    displacement += 10.0f * e.TimeSinceLastFrame;
+                    displacement += 10.0f * evt.TimeSinceLastFrame;
                     if ( displacement >= 500f )
                         displacement = 500f;
                     updateInfoDisplacement();
                 }
                 if ( input.IsKeyPressed( KeyCodes.D2 ) )
                 {
-                    displacement -= 10.0f * e.TimeSinceLastFrame;
+                    displacement -= 10.0f * evt.TimeSinceLastFrame;
                     if ( displacement <= 0.1f )
                         displacement = 0.1f;
                     updateInfoDisplacement();
@@ -738,14 +739,14 @@ namespace Axiom.Demos
                 // Adjust TimeDensity
                 if ( input.IsKeyPressed( KeyCodes.D5 ) )
                 {
-                    timeDensity += 10.0f * e.TimeSinceLastFrame;
+                    timeDensity += 10.0f * evt.TimeSinceLastFrame;
                     if ( timeDensity >= 10.0f )
                         timeDensity = 10.0f;
                     updateInfoTimeDensity();
                 }
                 if ( input.IsKeyPressed( KeyCodes.D6 ) )
                 {
-                    timeDensity -= 10.0f * e.TimeSinceLastFrame;
+                    timeDensity -= 10.0f * evt.TimeSinceLastFrame;
                     if ( timeDensity <= 1.0f )
                         timeDensity = 1.0f;
                     updateInfoTimeDensity();
@@ -779,8 +780,6 @@ namespace Axiom.Demos
             updateInfoDensity();
             updateInfoDisplacement();
             updateInfoTimeDensity();
-
-            return true;
         }
 
         /// <summary>

@@ -185,9 +185,9 @@ namespace Axiom.Demos
             }
         }
 
-        protected override bool OnFrameStarted( object source, FrameEventArgs e )
+        protected override void OnFrameStarted( object source, FrameEventArgs evt )
         {
-            animTime += e.TimeSinceLastFrame;
+            animTime += evt.TimeSinceLastFrame;
 
             while ( animTime > FISH_PATH_LENGTH )
             {
@@ -197,7 +197,7 @@ namespace Axiom.Demos
             for ( int i = 0; i < NUM_FISH; i++ )
             {
                 // animate the fish
-                fishAnimations[ i ].AddTime( e.TimeSinceLastFrame );
+                fishAnimations[ i ].AddTime( evt.TimeSinceLastFrame );
 
                 // move the fish
                 Vector3 newPos = fishSplines[ i ].Interpolate( animTime / FISH_PATH_LENGTH );
@@ -211,7 +211,7 @@ namespace Axiom.Demos
                 fishLastPosition[ i ] = newPos;
             }
 
-            return base.OnFrameStarted( source, e );
+            base.OnFrameStarted( source, evt );
         }
 
 

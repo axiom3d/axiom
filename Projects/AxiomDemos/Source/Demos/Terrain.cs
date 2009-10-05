@@ -72,16 +72,17 @@ namespace Axiom.Demos
             waterNode.Translate( new Vector3( 1000, 0, 1000 ) );
         }
 
-        protected override bool OnFrameStarted( object source, FrameEventArgs e )
+        protected override void OnFrameStarted( object source, FrameEventArgs evt )
         {
             float moveScale;
             float waterFlow;
 
-            if ( base.OnFrameStarted( source, e ) == false )
-                return false;
+            base.OnFrameStarted( source, evt );
+            if ( evt.StopRendering )
+                return;
 
-            moveScale = 10 * e.TimeSinceLastFrame;
-            waterFlow = FLOW_SPEED * e.TimeSinceLastFrame;
+            moveScale = 10 * evt.TimeSinceLastFrame;
+            waterFlow = FLOW_SPEED * evt.TimeSinceLastFrame;
 
             if ( waterNode != null )
             {
@@ -118,9 +119,6 @@ namespace Axiom.Demos
                         debugText = re.worldFragment.SingleIntersection.ToString();
                 }
             }
-
-
-            return true;
         }
 
     }

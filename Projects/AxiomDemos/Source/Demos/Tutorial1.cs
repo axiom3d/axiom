@@ -21,24 +21,23 @@ namespace Axiom.Demos
 
         private Vector4 color = new Vector4( 1, 0, 0, 1 );
 
-        protected override bool OnFrameStarted( object source, FrameEventArgs e )
+        protected override void OnFrameStarted( object source, FrameEventArgs evt )
         {
-            if ( base.OnFrameStarted( source, e ) == false )
-                return false;
+            base.OnFrameStarted( source, evt );
+            if ( evt.StopRendering )
+                return;
 
-            color.x += e.TimeSinceLastFrame * .6f;
+            color.x += evt.TimeSinceLastFrame * .6f;
             if ( color.x > 1 )
                 color.x = 0;
 
-            color.y += e.TimeSinceLastFrame * .6f;
+            color.y += evt.TimeSinceLastFrame * .6f;
             if ( color.y > 1 )
                 color.y = 0;
 
-            color.z += e.TimeSinceLastFrame * .6f;
+            color.z += evt.TimeSinceLastFrame * .6f;
             if ( color.z > 1 )
                 color.z = 0;
-
-            return true;
         }
 
         public override void CreateScene()

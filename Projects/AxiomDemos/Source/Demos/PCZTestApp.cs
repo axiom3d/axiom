@@ -138,7 +138,7 @@ namespace PCZDemo
             raySceneQuery.SortByDistance = true;
         }
 
-        protected override bool OnFrameStarted(object source, FrameEventArgs e)
+        protected override void OnFrameStarted(object source, FrameEventArgs evt)
         {
             buildingTranslate = new Vector3(0, 0, 0);
             if (input.IsKeyPressed(KeyCodes.U))
@@ -171,7 +171,7 @@ namespace PCZDemo
             ((PCZRaySceneQuery) raySceneQuery).ExcludeNode = camera.ParentSceneNode;
             raySceneQuery.Execute(l);
 
-            return base.OnFrameStarted(source, e);
+            base.OnFrameStarted(source, evt);
         }
 
         public override void ChooseSceneManager()

@@ -338,12 +338,14 @@ namespace Axiom.Demos
             AnimState.IsEnabled = true;
         }
 
-        protected override bool OnFrameStarted( object source, FrameEventArgs e )
+        protected override void OnFrameStarted( object source, FrameEventArgs evt )
         {
-            base.OnFrameStarted( source, e );
+            base.OnFrameStarted( source, evt );
+            if ( evt.StopRendering )
+                return;
 
             // animate Light Wibbler
-            AnimState.AddTime( e.TimeSinceLastFrame );
+            AnimState.AddTime( evt.TimeSinceLastFrame );
 
             randomRange = Math.Utility.RangeRandom( 20, 100 );
 
@@ -378,7 +380,6 @@ namespace Axiom.Demos
                     }
                 }
             }
-            return true;
         } //end function
     }
 }

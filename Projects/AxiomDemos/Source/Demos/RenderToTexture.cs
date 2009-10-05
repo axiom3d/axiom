@@ -21,19 +21,18 @@ namespace Axiom.Demos
         MovablePlane plane;
         Entity planeEntity;
 
-        protected override bool OnFrameStarted( object source, FrameEventArgs e )
+        protected override void OnFrameStarted( object source, FrameEventArgs evt )
         {
-            if ( base.OnFrameStarted( source, e ) == false )
-                return false;
+            base.OnFrameStarted( source, evt );
+            if ( evt.StopRendering )
+                return;
 
             // make sure reflection camera is updated too
             reflectCam.Orientation = camera.Orientation;
             reflectCam.Position = camera.Position;
 
             // rotate plane
-            planeNode.Yaw( 30 * e.TimeSinceLastFrame, TransformSpace.Parent );
-
-            return true;
+            planeNode.Yaw( 30 * evt.TimeSinceLastFrame, TransformSpace.Parent );
         }
 
         public override void CreateScene()

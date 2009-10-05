@@ -19,11 +19,12 @@ namespace Axiom.Demos
         protected ParticleSystem thrusters = null;
         #endregion Fields
 
-        protected override bool OnFrameStarted( Object source, FrameEventArgs e )
+        protected override void OnFrameStarted( Object source, FrameEventArgs evt )
         {
-            if ( base.OnFrameStarted( source, e ) == false )
-                return false;
-
+            base.OnFrameStarted( source, evt );
+            if ( evt.StopRendering )
+                return;
+          
             if ( input.IsKeyPressed( KeyCodes.N ) )
             {
                 thrusters.DefaultWidth = defaultDimension + 0.25f;
@@ -51,8 +52,6 @@ namespace Axiom.Demos
                 thrusters.GetEmitter( 1 ).ParticleVelocity = defaultVelocity - 1;
                 defaultVelocity -= 1;
             }
-
-            return true;
         }
 
         #region Methods

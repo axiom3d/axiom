@@ -144,10 +144,10 @@ namespace Axiom.Demos
 			camera.LookAt( new Vector3( 0f, 35f, 0f ) );
 		}
 
-		protected override bool OnFrameStarted( object source, FrameEventArgs e )
+		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
-			speakAnimState.AddTime( e.TimeSinceLastFrame );
-			return base.OnFrameStarted( source, e );
+			speakAnimState.AddTime( evt.TimeSinceLastFrame );
+			base.OnFrameStarted( source, evt );
 		}
 
 
