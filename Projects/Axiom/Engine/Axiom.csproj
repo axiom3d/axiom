@@ -826,6 +826,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\ChainedEvent.cs" />
     <Compile Include="Core\DistanceLodStrategy.cs">
       <SubType>Code</SubType>
     </Compile>
