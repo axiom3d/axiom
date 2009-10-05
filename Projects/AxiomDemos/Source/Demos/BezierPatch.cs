@@ -170,9 +170,9 @@ namespace Axiom.Demos
         #region bool OnFrameStarted(Object source, FrameEventArgs e)
 
         // Event handler to add ability to alter subdivision
-        protected override bool OnFrameStarted( Object source, FrameEventArgs e )
+        protected override void OnFrameStarted( Object source, FrameEventArgs evt )
         {
-            timeLapse += e.TimeSinceLastFrame;
+            timeLapse += evt.TimeSinceLastFrame;
 
             // Progressively grow the patch
             if ( timeLapse > 1.0f )
@@ -192,7 +192,7 @@ namespace Axiom.Demos
             }
 
             // Call default
-            return base.OnFrameStarted( source, e );
+            base.OnFrameStarted( source, evt );
         }
 
         #endregion bool OnFrameStarted(Object source, FrameEventArgs e)

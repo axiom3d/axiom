@@ -71,18 +71,17 @@ namespace Axiom.Demos
             }
         }
 
-        protected override bool OnFrameStarted( object source, FrameEventArgs e )
+        protected override void OnFrameStarted( object source, FrameEventArgs evt )
         {
-            if ( base.OnFrameStarted( source, e ) == false )
-                return false;
+            base.OnFrameStarted( source, evt );
+            if ( evt.StopRendering )
+                return;
 
             for ( int i = 0; i < NumRobots; i++ )
             {
                 // add time to the robot animation
-                animState[ i ].AddTime( e.TimeSinceLastFrame * animationSpeed[ i ] );
+                animState[ i ].AddTime( evt.TimeSinceLastFrame * animationSpeed[ i ] );
             }
-
-            return true;
         }
 
         #endregion

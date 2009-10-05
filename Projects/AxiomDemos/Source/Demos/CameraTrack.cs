@@ -102,12 +102,12 @@ namespace Axiom.Demos
 
         #region Protected Override Event Handlers
 
-        protected override bool OnFrameStarted( object source, FrameEventArgs e )
+        protected override void OnFrameStarted( object source, FrameEventArgs evt )
         {
             // add time to the animation which is driven off of rendering time per frame
-            animationState.AddTime( e.TimeSinceLastFrame );
+            animationState.AddTime( evt.TimeSinceLastFrame );
 
-            return base.OnFrameStarted( source, e );
+            base.OnFrameStarted( source, evt );
         }
 
         #endregion Protected Override Event Handlers

@@ -162,14 +162,14 @@ namespace Axiom.Demos
 			animNode.AttachObject( bbs );
 		}
 
-		protected override bool OnFrameStarted( object source, FrameEventArgs e )
+		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
 			// move the billboards around a bit
 			foreach ( AnimationState anim in animationStateList )
 			{
-				anim.AddTime( e.TimeSinceLastFrame );
+				anim.AddTime( evt.TimeSinceLastFrame );
 			}
-            return 	base.OnFrameStarted( source, e );
+            base.OnFrameStarted( source, evt );
 		}
 
 		#endregion

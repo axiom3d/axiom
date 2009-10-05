@@ -153,13 +153,13 @@ namespace Axiom.Demos
 			overlay.Show();
 		}
 
-		protected override bool OnFrameStarted( object source, FrameEventArgs e )
+		protected override void OnFrameStarted( object source, FrameEventArgs evt )
 		{
 			for ( int x = 0; x < 10; x++ )
 				runStep();
 			buildTexture();
-            swim.AddTime( e.TimeSinceLastFrame );
-			return base.OnFrameStarted( source, e );
+            swim.AddTime( evt.TimeSinceLastFrame );
+			base.OnFrameStarted( source, evt );
 		}
 
 		void resetReactor()

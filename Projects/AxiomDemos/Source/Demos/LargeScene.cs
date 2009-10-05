@@ -245,42 +245,42 @@ namespace Axiom.Demos
             //CompositorManager.Instance.SetCompositorEnabled(window.GetViewport(0), "Bloom", true);
         }
 
-        protected override bool OnFrameStarted(object source, FrameEventArgs e)
+        protected override void OnFrameStarted(object source, FrameEventArgs evt)
         {
             if (Root.Instance.CurrentFrameCount < 3)
             {
-                return true;
+                return;
             }
 
             // animate flying objects
 
             foreach (AnimationState s in flyingObjectStates)
             {
-                s.AddTime(e.TimeSinceLastFrame);
+                s.AddTime(evt.TimeSinceLastFrame);
             }
 
             // animate robots
 
             foreach (AnimationState state in robotStates)
             {
-                state.AddTime(e.TimeSinceLastFrame * 2);
+                state.AddTime(evt.TimeSinceLastFrame * 2);
             }
 
             // animate spirals
 
-            groundSpiral1Node.Rotate(Vector3.UnitY, e.TimeSinceLastFrame);
+            groundSpiral1Node.Rotate(Vector3.UnitY, evt.TimeSinceLastFrame);
 
-            firesNode.Rotate(Vector3.UnitY, e.TimeSinceLastFrame);
+            firesNode.Rotate(Vector3.UnitY, evt.TimeSinceLastFrame);
 
-            groundSpiral2Node.Rotate(Vector3.UnitY, -e.TimeSinceLastFrame);
+            groundSpiral2Node.Rotate(Vector3.UnitY, -evt.TimeSinceLastFrame);
 
-            robotNode.Rotate(Vector3.UnitY, -e.TimeSinceLastFrame);
+            robotNode.Rotate(Vector3.UnitY, -evt.TimeSinceLastFrame);
 
             // animate camera
 
             if (animateCamera)
             {
-                cameraTime += e.TimeSinceLastFrame;
+                cameraTime += evt.TimeSinceLastFrame;
 
                 if (cameraTime >= 0) // allows for initial delay
                 {
@@ -290,7 +290,7 @@ namespace Axiom.Demos
                 }
             }
 
-            return base.OnFrameStarted(source, e);
+            base.OnFrameStarted(source, evt);
         }
 
         protected SceneNode EmitObjects(Spiral spiral, int keyPointCount, ResourceKind resource, string resourceName)

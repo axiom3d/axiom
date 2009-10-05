@@ -275,14 +275,15 @@ namespace Axiom.Demos
 
         #region RAPID UPDATE FUNCTIONS
 
-        protected override bool OnFrameStarted( object source, FrameEventArgs e )
+        protected override void OnFrameStarted( object source, FrameEventArgs evt )
         {
-            if ( base.OnFrameStarted( source, e ) == false )
-                return false;
+            base.OnFrameStarted( source, evt );
+            if ( evt.StopRendering )
+                return;
 
             // Limit user input update rate, to prevent math rounding errors from deltas too small
             //   Note: Slowing down input queries will speed up Frame Rates, not slow them down.
-            if ( ( inputTimer += e.TimeSinceLastFrame ) >= inputInterval )
+            if ( ( inputTimer += evt.TimeSinceLastFrame ) >= inputInterval )
             {
                 //e.TimeSinceLastFrame = this.inputTimer;
                 //base.OnFrameStarted(source, e); // do the normal demo frame processing first
@@ -307,8 +308,6 @@ namespace Axiom.Demos
 
                 inputTimer = 0f;
             }
-
-            return true;
         }
 
         public void AnimateHead( float timeSinceLastFrame )

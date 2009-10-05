@@ -74,13 +74,13 @@ namespace Axiom.Demos
 			scene.RootSceneNode.CreateChildSceneNode().AttachObject( aureola );
 		}
 
-        protected override bool OnFrameStarted( object source, FrameEventArgs e )
+        protected override void OnFrameStarted( object source, FrameEventArgs evt )
         {
             // rotate fountains
-            fountainNode.Yaw( e.TimeSinceLastFrame * 30 );
+            fountainNode.Yaw( evt.TimeSinceLastFrame * 30 );
 
             // call base method
-            return base.OnFrameStarted( source, e );
+            base.OnFrameStarted( source, evt );
         }
 
 

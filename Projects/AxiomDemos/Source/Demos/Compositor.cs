@@ -16,10 +16,10 @@ namespace Axiom.Demos
 	    private int _compositorIndex = -1;
         private string[] _compositorList = new string[2] { "Bloom", "Motion Blur"};
 
-		protected override bool OnFrameStarted( object source, Axiom.Core.FrameEventArgs e )
+		protected override void OnFrameStarted( object source, Axiom.Core.FrameEventArgs evt )
 		{
 			if (_spinny !=null)
-				_spinny.Yaw( 10 * e.TimeSinceLastFrame );
+				_spinny.Yaw( 10 * evt.TimeSinceLastFrame );
 
             if (input.IsKeyPressed( KeyCodes.Space ))
             {
@@ -35,7 +35,7 @@ namespace Axiom.Demos
                                                                  true );
             }
 
-		    return base.OnFrameStarted( source, e );
+		    base.OnFrameStarted( source, evt );
 		}
 
 		public override void CreateScene()

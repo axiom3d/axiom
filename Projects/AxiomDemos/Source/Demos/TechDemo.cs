@@ -162,8 +162,8 @@ namespace Axiom.Demos
             engine = Root.Instance;
 
             // add event handlers for frame events
-            engine.FrameStarted += new FrameEvent( OnFrameStarted );
-            engine.FrameEnded += new FrameEvent( OnFrameEnded );
+            engine.FrameStarted += OnFrameStarted;
+            engine.FrameEnded +=OnFrameEnded;
 
             window = Root.Instance.Initialize( true, "Axiom Engine Demo Window" );
 
@@ -380,8 +380,8 @@ namespace Axiom.Demos
             if ( engine != null )
             {
                 // remove event handlers
-                engine.FrameStarted -= new FrameEvent( OnFrameStarted );
-                engine.FrameEnded -= new FrameEvent( OnFrameEnded );
+                engine.FrameStarted -= OnFrameStarted;
+                engine.FrameEnded -= OnFrameEnded;
 
                 //engine.Dispose();
             }
@@ -398,20 +398,19 @@ namespace Axiom.Demos
 
         #endregion Public Methods
 
-        protected virtual bool OnFrameEnded( Object source, FrameEventArgs e )
+        protected virtual void OnFrameEnded( Object source, FrameEventArgs e )
         {
-            return true;
         }
 
-        protected virtual bool OnFrameStarted( Object source, FrameEventArgs e )
+        protected virtual void OnFrameStarted( Object source, FrameEventArgs evt )
         {
-            float scaleMove = 200 * e.TimeSinceLastFrame;
+            float scaleMove = 200 * evt.TimeSinceLastFrame;
 
             // reset acceleration zero
             camAccel = Vector3.Zero;
 
             // set the scaling of camera motion
-            cameraScale = 100 * e.TimeSinceLastFrame;
+            cameraScale = 100 * evt.TimeSinceLastFrame;
 
 #if  !( XBOX || XBOX360 ) && !( SIS )
             // TODO: Move this into an event queueing mechanism that is processed every frame
@@ -419,8 +418,8 @@ namespace Axiom.Demos
 
             if ( input.IsKeyPressed( KeyCodes.Escape ) )
             {
-                Root.Instance.QueueEndRendering();
-                return false;
+                //Root.Instance.QueueEndRendering();
+                evt.StopRendering = true;
             }
 
             if ( input.IsKeyPressed( KeyCodes.A ) )
@@ -466,7 +465,7 @@ namespace Axiom.Demos
             }
 
             // subtract the time since last frame to delay specific key presses
-            toggleDelay -= e.TimeSinceLastFrame;
+            toggleDelay -= evt.TimeSinceLastFrame;
 
             // toggle rendering mode
             if ( input.IsKeyPressed( KeyCodes.R ) && toggleDelay < 0 )
@@ -725,12 +724,12 @@ namespace Axiom.Demos
             camVelocity += ( camAccel * scaleMove * camSpeed );
 
             // move the camera based on the accumulated movement vector
-            camera.MoveRelative( camVelocity * e.TimeSinceLastFrame );
+            camera.MoveRelative( camVelocity * evt.TimeSinceLastFrame );
 
             // Now dampen the Velocity - only if user is not accelerating
             if ( camAccel == Vector3.Zero )
             {
-                camVelocity *= ( 1 - ( 6 * e.TimeSinceLastFrame ) );
+                camVelocity *= ( 1 - ( 6 * evt.TimeSinceLastFrame ) );
             }
 
 
@@ -742,7 +741,7 @@ namespace Axiom.Demos
             }
             else
             {
-                statDelay -= e.TimeSinceLastFrame;
+                statDelay -= evt.TimeSinceLastFrame;
             }
 
             // turn off debug text when delay ends
@@ -753,14 +752,13 @@ namespace Axiom.Demos
             }
             else if ( debugTextDelay > 0.0f )
             {
-                debugTextDelay -= e.TimeSinceLastFrame;
+                debugTextDelay -= evt.TimeSinceLastFrame;
             }
 
             OverlayElement element = OverlayManager.Instance.Elements.GetElement( "Core/DebugText" );
             element.Text = debugText;
-
-            return true;
         }
+
         DateTime averageStart = DateTime.Now;
         float sum = 0;
         float average = 0;

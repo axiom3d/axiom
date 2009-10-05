@@ -62,7 +62,7 @@ namespace Axiom.Controllers
         public FrameTimeControllerValue()
         {
             // add a frame started event handler
-            Root.Instance.FrameStarted += new FrameEvent( RenderSystem_FrameStarted );
+            Root.Instance.FrameStarted += RenderSystem_FrameStarted;
 
             //frameTime = 0; //[FXCop Optimization : Do not initialize unnecessarily], Defaults to 0,  left here for clarity
 
@@ -148,7 +148,7 @@ namespace Axiom.Controllers
         /// <param name="source"></param>
         /// <param name="e"></param>
         /// <returns></returns>
-        private bool RenderSystem_FrameStarted( object source, FrameEventArgs e )
+        private void RenderSystem_FrameStarted( object source, FrameEventArgs e )
         {
             if ( frameDelay != 0 )
             {
@@ -163,8 +163,6 @@ namespace Axiom.Controllers
             }
             // Accumulate the elapsed time
             elapsedTime += frameTime;
-
-            return true;
         }
     }
 }

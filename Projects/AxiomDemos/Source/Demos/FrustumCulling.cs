@@ -86,15 +86,16 @@ namespace Axiom.Demos
         }
 
 
-        protected override bool OnFrameStarted( object source, FrameEventArgs e )
+        protected override void OnFrameStarted( object source, FrameEventArgs evt )
         {
-            if ( base.OnFrameStarted( source, e ) == false )
-                return false;
+            base.OnFrameStarted( source, evt );
+            if ( evt.StopRendering )
+                return;
 
             objectsVisible = 0;
 
-            float speed = 35 * e.TimeSinceLastFrame;
-            float change = 15 * e.TimeSinceLastFrame;
+            float speed = 35 * evt.TimeSinceLastFrame;
+            float change = 15 * evt.TimeSinceLastFrame;
 
             if ( input.IsKeyPressed( KeyCodes.I ) )
             {
@@ -162,8 +163,6 @@ namespace Axiom.Demos
 
             // report the number of objects within the frustum
             debugText = string.Format( "Objects visible: {0}", objectsVisible );
-
-            return true;
         }
 
     }

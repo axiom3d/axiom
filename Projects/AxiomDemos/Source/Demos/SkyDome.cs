@@ -21,10 +21,11 @@ namespace Axiom.Demos
 
         #endregion Fields
 
-        protected override bool OnFrameStarted( Object source, FrameEventArgs e )
+        protected override void OnFrameStarted( Object source, FrameEventArgs evt )
         {
-            if ( base.OnFrameStarted( source, e ) == false )
-                return false;
+            base.OnFrameStarted( source, evt );
+            if ( evt.StopRendering )
+                return;
 
             bool updateSky = false;
 
@@ -58,15 +59,13 @@ namespace Axiom.Demos
 
             if ( timeDelay > 0 )
             {
-                timeDelay -= e.TimeSinceLastFrame;
+                timeDelay -= evt.TimeSinceLastFrame;
             }
 
             if ( updateSky )
             {
                 scene.SetSkyDome( true, "Examples/CloudySky", curvature, tiling );
             }
-
-            return true;
         }
 
         #region Methods

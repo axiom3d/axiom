@@ -70,20 +70,19 @@ namespace Axiom.Demos
 
         #region Event Handlers
 
-        protected override bool OnFrameStarted(object source, FrameEventArgs e)
+        protected override void OnFrameStarted(object source, FrameEventArgs evt)
         {
-            if ( base.OnFrameStarted( source, e ) == false )
-                return false;
+            base.OnFrameStarted( source, evt );
+            if ( evt.StopRendering )
+                return;
 
-            float mouseX = (float)input.AbsoluteMouseX / (float)window.Width;
-            float mouseY = (float)input.AbsoluteMouseY / (float)window.Height;
+            float mouseX = input.AbsoluteMouseX / (float)window.Width;
+            float mouseY = input.AbsoluteMouseY / (float)window.Height;
 
             Ray ray = camera.GetCameraToViewportRay(mouseX, mouseY );
             headNode.ShowBoundingBox = ray.Intersects(headNode.WorldBoundingSphere).Hit;
 
             debugText = String.Format(" Mouse X:{0}, Y:{1}", mouseX, mouseY);
-
-            return true;
         }
 
         #endregion Event Handlers
