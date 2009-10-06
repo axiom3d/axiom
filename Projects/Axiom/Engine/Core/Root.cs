@@ -98,9 +98,6 @@ namespace Axiom.Core
             {
                 instance = this;
 
-                this.meterFrameCount = 0;
-                this.pendingMeterFrameCount = 0;
-
                 StringBuilder info = new StringBuilder();
 
                 // write the initial info at the top of the log
@@ -254,13 +251,6 @@ namespace Axiom.Core
         private float lowestFPS = 9999;
 
         /// <summary>
-        ///	    These variables control per-frame metering
-        /// </summary>
-        protected int meterFrameCount;
-
-        protected int pendingMeterFrameCount;
-
-        /// <summary>
         ///		True if a request has been made to shutdown the rendering engine.
         /// </summary>
         private bool queuedEnd;
@@ -333,15 +323,37 @@ namespace Axiom.Core
         /// </summary>
         private float microsecondsPerTick;
 
+        private readonly ChainedEvent<FrameEventArgs> _frameStartedEvent = new ChainedEvent<FrameEventArgs>();
         /// <summary>
         /// Fired as a frame is about to be rendered.
         /// </summary>
-        public event FrameEvent FrameStarted;
+        public event EventHandler<FrameEventArgs> FrameStarted
+        {
+            add
+            {
+                _frameStartedEvent.EventSinks += value;
+            }
+            remove
+            {
+                _frameStartedEvent.EventSinks -= value;
+            }
+        }
 
+        private readonly ChainedEvent<FrameEventArgs> _frameEndedEvent = new ChainedEvent<FrameEventArgs>();
         /// <summary>
         /// Fired after a frame has completed rendering.
         /// </summary>
-        public event FrameEvent FrameEnded;
+        public event EventHandler<FrameEventArgs> FrameEnded
+        {
+            add
+            {
+                _frameEndedEvent.EventSinks += value;
+            }
+            remove
+            {
+                _frameEndedEvent.EventSinks -= value;
+            }
+        }
 
         #endregion
 
@@ -520,22 +532,6 @@ namespace Axiom.Core
 
         #endregion
 
-        private static TimingMeter eventMeter = MeterManager.GetMeter( "Engine OS Events", "Engine" );
-        private static TimingMeter frameMeter = MeterManager.GetMeter( "Engine Frame", "Engine" );
-
-        private static TimingMeter oneFrameEndedMeter = MeterManager.GetMeter( "Engine One Frame Ended",
-                                                                               "Engine One Frame" );
-
-        private static TimingMeter oneFrameMeter = MeterManager.GetMeter( "Engine One Frame", "Engine One Frame" );
-
-        private static TimingMeter oneFrameStartedMeter = MeterManager.GetMeter( "Engine One Frame Started",
-                                                                                 "Engine One Frame" );
-
-        private static TimingMeter renderMeter = MeterManager.GetMeter( "Engine Render", "Engine" );
-
-        private static TimingMeter updateRenderTargetsMeter = MeterManager.GetMeter( "Engine One Frame Update",
-                                                                                     "Engine One Frame" );
-
         /// <summary>
         ///		Gets the number of frames drawn since startup.
         /// </summary>
@@ -655,6 +651,22 @@ namespace Axiom.Core
         ///		have discovered it by looking at the results from <see cref="Root.GetSceneManagerMetaData"/>.
         /// </remarks>
         /// <param name="typeName">String identifying a unique SceneManager type.</param>
+        /// <returns></returns>
+        public SceneManager CreateSceneManager( string typeName )
+        {
+            string instanceName = ( new NameGenerator<SceneManager>() ).GetNextUniqueName( typeName.ToString() );
+            return this.sceneManagerEnumerator.CreateSceneManager( typeName, instanceName );
+        }
+
+        /// <summary>
+        ///		Creates a <see cref="SceneManager"/> instance of a given type.
+        /// </summary>
+        /// <remarks>
+        ///		You can use this method to create a SceneManager instance of a 
+        ///		given specific type. You may know this type already, or you may
+        ///		have discovered it by looking at the results from <see cref="Root.GetSceneManagerMetaData"/>.
+        /// </remarks>
+        /// <param name="typeName">String identifying a unique SceneManager type.</param>
         /// <param name="instanceName">
         ///		Optional name to given the new instance that is created.
         ///		If you leave this blank, an auto name will be assigned.
@@ -662,6 +674,10 @@ namespace Axiom.Core
         /// <returns></returns>
         public SceneManager CreateSceneManager( string typeName, string instanceName )
         {
+            if ( String.IsNullOrEmpty( instanceName ) )
+            {
+                return CreateSceneManager( typeName );
+            }
             return this.sceneManagerEnumerator.CreateSceneManager( typeName, instanceName );
         }
 
@@ -681,6 +697,7 @@ namespace Axiom.Core
             string instanceName = ( new NameGenerator<SceneManager>() ).GetNextUniqueName(sceneType.ToString());
             return this.sceneManagerEnumerator.CreateSceneManager( sceneType, instanceName );
         }
+
         /// <summary>
         ///		Creates a <see cref="SceneManager"/> instance based on scene type support.
         /// </summary>
@@ -898,53 +915,17 @@ namespace Axiom.Core
         ///		Updates all the render targets automatically and then returns, raising frame events before and after.
         /// </remarks>
         /// <returns>True if execution should continue, false if a quit was requested.</returns>
-        public void RenderOneFrame()
+        public bool RenderOneFrame()
         {
-            // If we're capping the maximum frame rate, check to see
-            // if we should sleep
-            if ( this.microsecondsPerFrame != 0 )
-            {
-                long current = this.CaptureCurrentTime();
-                long diff = ( long ) Utility.Abs( current - this.lastFrameStartTime );
-                float microsecondsSinceLastFrame = diff * this.microsecondsPerTick;
-                float mdiff = this.microsecondsPerFrame - microsecondsSinceLastFrame;
-                // If the difference is greater than 500usec and less
-                // than 1000 ms, sleep
-                if ( mdiff > 500f && mdiff < 1000000f )
-                {
-                    Thread.Sleep( ( int ) ( Utility.Min( mdiff / 1000f, 200f ) ) );
-                    this.lastFrameStartTime = this.CaptureCurrentTime();
-                }
-                else
-                {
-                    this.lastFrameStartTime = current;
-                }
-            }
             // Stop rendering if frame callback says so
-            oneFrameMeter.Enter();
-            oneFrameStartedMeter.Enter();
-            this.OnFrameStarted();
-            oneFrameStartedMeter.Exit();
-
-            // bail out before continuing
-            if ( this.queuedEnd )
-            {
-                oneFrameMeter.Exit();
-                return;
-            }
+            if ( this.OnFrameStarted() )
+                return false;
 
             // update all current render targets
-            updateRenderTargetsMeter.Enter();
             this.UpdateAllRenderTargets();
-            updateRenderTargetsMeter.Exit();
 
             // Stop rendering if frame callback says so
-
-            oneFrameEndedMeter.Enter();
-            this.OnFrameEnded();
-            oneFrameEndedMeter.Exit();
-
-            oneFrameMeter.Exit();
+            return this.OnFrameEnded();
         }
 
         /// <summary>
@@ -952,8 +933,7 @@ namespace Axiom.Core
         /// </summary>
         public void StartRendering()
         {
-            Debug.Assert( this.activeRenderSystem != null,
-                          "Engine cannot start rendering without an active RenderSystem." );
+            Debug.Assert( this.activeRenderSystem != null, "Engine cannot start rendering without an active RenderSystem." );
 
             this.activeRenderSystem.InitRenderTargets();
 
@@ -965,55 +945,15 @@ namespace Axiom.Core
 
             while ( !this.queuedEnd )
             {
-                // Make sure we're collecting if it's called for
-                if ( this.meterFrameCount > 0 )
-                {
-                    MeterManager.Collecting = true;
-                }
-
                 // allow OS events to process (if the platform requires it
-                frameMeter.Enter();
-                eventMeter.Enter();
                 if ( WindowEventMonitor.Instance.MessagePump != null )
                 {
                     WindowEventMonitor.Instance.MessagePump();
                 }
-                eventMeter.Exit();
 
-                if ( this.suspendRendering )
-                {
-                    Thread.Sleep( 100 );
-                    frameMeter.Exit();
-                    continue;
-                }
+                if ( !this.RenderOneFrame() )
+                    break;
 
-                renderMeter.Enter();
-                this.RenderOneFrame();
-                renderMeter.Exit();
-
-                if ( this.activeRenderSystem.RenderTargetCount == 0 )
-                {
-                    this.QueueEndRendering();
-                }
-                frameMeter.Exit();
-
-                // Turn metering on or off, and generate the report if
-                // we're done
-                if ( this.meterFrameCount > 0 )
-                {
-                    this.meterFrameCount--;
-                    if ( this.meterFrameCount == 0 )
-                    {
-                        MeterManager.Collecting = false;
-                        MeterManager.Report( "Frame Processing" );
-                    }
-                }
-                else if ( this.pendingMeterFrameCount > 0 )
-                {
-                    // We'll start metering next frame
-                    this.meterFrameCount = this.pendingMeterFrameCount;
-                    this.pendingMeterFrameCount = 0;
-                }
             }
         }
 
@@ -1058,20 +998,6 @@ namespace Axiom.Core
         public void UpdateAllRenderTargets()
         {
             this.activeRenderSystem.UpdateAllRenderTargets();
-        }
-
-        public void ToggleMetering( int frameCount )
-        {
-            if ( this.meterFrameCount == 0 )
-            {
-                MeterManager.ClearEvents();
-                this.pendingMeterFrameCount = frameCount;
-            }
-            else
-            {
-                // Set it to 1 so we'll stop metering at the end of the next frame
-                this.meterFrameCount = 1;
-            }
         }
 
         #region Implementation of IDisposable
@@ -1252,14 +1178,14 @@ namespace Axiom.Core
         ///    time. If you want to specify elapsed times yourself you should call the other 
         ///    version of this method which takes event details as a parameter.
         /// </remarks>
-        public void OnFrameStarted()
+        public bool OnFrameStarted()
         {
             FrameEventArgs e = new FrameEventArgs();
             long now = this.timer.Milliseconds;
             e.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.Start );
 
             // if any event handler set this to true, that will signal the engine to shutdown
-            this.OnFrameStarted( e );
+            return this.OnFrameStarted( e );
         }
 
         /// <summary>
@@ -1276,7 +1202,7 @@ namespace Axiom.Core
         ///    time. If you want to specify elapsed times yourself you should call the other 
         ///    version of this method which takes event details as a parameter.
         /// </remarks>
-        public void OnFrameEnded()
+        public bool OnFrameEnded()
         {
             FrameEventArgs e = new FrameEventArgs();
             long now = this.timer.Milliseconds;
@@ -1284,6 +1210,7 @@ namespace Axiom.Core
 
             // if any event handler set this to true, that will signal the engine to shutdown
             this.OnFrameEnded( e );
+            return !e.StopRendering;
         }
 
         /// <summary>
@@ -1305,16 +1232,14 @@ namespace Axiom.Core
         ///    calculated.  RequestShutdown should be checked after each call, because that means
         ///    an event handler is requesting that shudown begin for one reason or another.
         /// </param>
-        public void OnFrameStarted( FrameEventArgs e )
+        public bool OnFrameStarted( FrameEventArgs e )
         {
             // increment the current frame count
             this.currentFrameCount++;
 
             // call the event, which automatically fires all registered handlers
-            if ( this.FrameStarted != null )
-            {
-                this.FrameStarted( this, e );
-            }
+            this._frameStartedEvent.Fire( this, e, ( args ) => args.StopRendering == true );
+            return e.StopRendering;
         }
 
         /// <summary>
@@ -1336,19 +1261,16 @@ namespace Axiom.Core
         ///    calculated.  RequestShutdown should be checked after each call, because that means
         ///    an event handler is requesting that shudown begin for one reason or another.
         /// </param>
-        public void OnFrameEnded( FrameEventArgs e )
+        public bool OnFrameEnded( FrameEventArgs e )
         {
-            // call the event, which automatically fires all registered handlers
-            if ( this.FrameEnded != null )
-            {
-                this.FrameEnded( this, e );
-            }
+            this._frameEndedEvent.Fire(this, e, (args) => args.StopRendering == true );
 
             // Tell buffer manager to free temp buffers used this frame
             if ( HardwareBufferManager.Instance != null )
             {
                 HardwareBufferManager.Instance.ReleaseBufferCopies( false );
             }
+            return e.StopRendering;
         }
 
         #endregion
@@ -1424,12 +1346,6 @@ namespace Axiom.Core
             }
         }
 
-        /** Allocate the next MovableObject type flag.
-        @remarks
-            This is done automatically if MovableObjectFactory::requestTypeFlags
-            returns true; don't call this manually unless you're sure you need to.
-        */
-
         /// <summary>
         ///     Register a new MovableObjectFactory which will create new MovableObject
         ///	    instances of a particular type, as identified by the Type property.
@@ -1489,15 +1405,15 @@ namespace Axiom.Core
     #region Frame Events
 
     /// <summary>
-    ///		A delegate for defining frame events.
-    /// </summary>
-    public delegate bool FrameEvent( object source, FrameEventArgs e );
-
-    /// <summary>
     ///		Used to supply info to the FrameStarted and FrameEnded events.
     /// </summary>
     public class FrameEventArgs : EventArgs
     {
+        /// <summary>
+        /// Request that the renderer stop the render loop
+        /// </summary>
+        public bool StopRendering;
+
         /// <summary>
         ///    Time elapsed (in milliseconds) since the last frame event.
         /// </summary>
