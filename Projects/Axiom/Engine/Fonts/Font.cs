@@ -571,14 +571,14 @@ namespace Axiom.Fonts
 		    FontFamily fontFamily;
 		    string fontFile = String.Empty;
 		    IntPtr pData = IntPtr.Zero;
-
+		    byte[] data = null;
 		    try
 		    {
 		        using ( Stream fileStream = Singleton<ResourceGroupManager>.Instance.OpenResource( this.Source, Group ) )
 		        {
 		            using ( PrivateFontCollection fontCollection = new PrivateFontCollection() )
 		            {
-		                byte[] data = new byte[fileStream.Length];
+		                data = new byte[fileStream.Length];
 		                fileStream.Read( data, 0, data.Length );
 		                pData = Memory.PinObject( data );
 
@@ -597,9 +597,9 @@ namespace Axiom.Fonts
 		    }
 		    finally
 		    {
-		        if ( pData != IntPtr.Zero )
+		        if ( data != null )
 		        {
-		            Memory.UnpinObject( pData );
+		            Memory.UnpinObject( data );
 		        }
 		    }
 
