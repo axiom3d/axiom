@@ -38,6 +38,7 @@ using System.Diagnostics;
 
 using Axiom.Configuration;
 using Axiom.Core;
+using Axiom.Math;
 using Axiom.Scripting;
 using Axiom.Graphics;
 
@@ -78,6 +79,7 @@ namespace Axiom.Overlays.Elements
         protected bool isTransparent;
         protected int numTexCoordsInBuffer;
         protected RenderOperation renderOp = new RenderOperation();
+        protected Vector2 topLeft, bottomRight;
 
         // source bindings for vertex buffers
         const int POSITION = 0;
@@ -100,6 +102,8 @@ namespace Axiom.Overlays.Elements
 
             // Defer creation of texcoord buffer until we know how big it needs to be
             //this.numTexCoordsInBuffer = 0; //[FXCop Optimization : Do not initialize unnecessarily], Defaults to 0, left here for clarity
+            topLeft = new Vector2(0.0f, 0.0f);
+            bottomRight = new Vector2( 1.0f, 1.0f );
         }
 
         #endregion
@@ -194,7 +198,6 @@ namespace Axiom.Overlays.Elements
                 1-----3
             */
             float left, right, top, bottom;
-            left = right = top = bottom = 0.0f;
 
             /* Convert positions into -1, 1 coordinate space (homogenous clip space).
                 - Left / right is simple range conversion
@@ -332,8 +335,8 @@ namespace Axiom.Overlays.Elements
                         for ( int i = 0; i < numLayers; i++ )
                         {
                             // Calc upper tex coords
-                            float upperX = 1.0f * tileX[ i ];
-                            float upperY = 1.0f * tileY[ i ];
+                            float upperX = bottomRight.x * tileX[ i ];
+                            float upperY = bottomRight.y * tileY[ i ];
 
                             /*
                                 0-----2
@@ -345,16 +348,16 @@ namespace Axiom.Overlays.Elements
                             // Find start offset for this set
                             texIndex = ( i * uvSize );
 
-                            texPtr[ texIndex ] = 0.0f;
-                            texPtr[ texIndex + 1 ] = 0.0f;
+                            texPtr[ texIndex ] = topLeft.x;
+                            texPtr[ texIndex + 1 ] = topLeft.y;
 
                             texIndex += vertexSize; // jump by 1 vertex stride
-                            texPtr[ texIndex ] = 0.0f;
+                            texPtr[ texIndex ] = topLeft.x;
                             texPtr[ texIndex + 1 ] = upperY;
 
                             texIndex += vertexSize;
                             texPtr[ texIndex ] = upperX;
-                            texPtr[ texIndex + 1 ] = 0.0f;
+                            texPtr[ texIndex + 1 ] = topLeft.y;
 
                             texIndex += vertexSize;
                             texPtr[ texIndex ] = upperX;
@@ -367,6 +370,14 @@ namespace Axiom.Overlays.Elements
                 }
             } // if material != null
         }
+
+        public void SetUV( Real u1, Real v1, Real u2, Real v2 )
+        {
+            topLeft = new Vector2( u1, v1 );
+            bottomRight = new Vector2( u2, v2 );
+            this.isGeomUVsOutOfDate = true;
+        }
+
 
         #endregion
 
@@ -421,6 +432,17 @@ namespace Axiom.Overlays.Elements
             Panel panel = (Panel)objects[ 0 ];
 
             panel.IsTransparent = bool.Parse( parms[ 0 ] );
+        }
+
+        [ParserCommand( "uv_coords", "Panel" )]
+        public static void ParseUVCoords( string[] parms, params object[] objects )
+        {
+            Panel panel = (Panel)objects[ 0 ];
+
+            panel.SetUV(   float.Parse( parms[ 0 ] )
+                         , float.Parse( parms[ 1 ] )
+                         , float.Parse( parms[ 2 ] )
+                         , float.Parse( parms[ 3 ] ) );
         }
 
         #endregion Script parser methods
