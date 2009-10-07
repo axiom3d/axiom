@@ -529,7 +529,7 @@ namespace Axiom.Overlays
 			while ( ( line = ParseHelper.ReadLine( script ) ) != null )
 			{
 				// inore blank lines and comments
-				if ( line.Length > 0 && !line.StartsWith( "//" ) )
+				if ( line.Length > 0 && ( !line.StartsWith( "//" ) && !line.StartsWith( "# " ) ) )
 				{
 					if ( line == "}" )
 					{
@@ -635,7 +635,7 @@ namespace Axiom.Overlays
 				skipLine = false;
 
 				// ignore comments and blank lines
-				if ( line.Length > 0 && !line.StartsWith( "//" ) )
+				if ( line.Length > 0 && ( !line.StartsWith( "//" ) && !line.StartsWith( "# ") ) )
 				{
 					// does another overlay have to be included
 					if ( line.StartsWith( "#include" ) )
