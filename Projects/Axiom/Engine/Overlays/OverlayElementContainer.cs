@@ -345,47 +345,42 @@ namespace Axiom.Overlays
 
         #endregion
 
-        //		public void CopyFromTemplate(OverlayElement templateOverlay)
-        //		{
-        //			base.CopyFromTemplate(templateOverlay);
-        //
-        //			if (templateOverlay.IsContainer() && isContainer)
-        //			{
-        //				OverlayContainer::ChildIterator it = static_cast<OverlayContainer*>(templateOverlay).getChildIterator();
-        //				while (it.hasMoreElements())
-        //				{
-        //					OverlayElement* oldChildElement = it.getNext();
-        //					if (oldChildElement.isCloneable())
-        //					{
-        //						OverlayElement* newChildElement = 
-        //						OverlayManager::getSingleton().createOverlayElement(
-        //											oldChildElement.getTypeName(), 
-        //											mName+"/"+oldChildElement.getName());
-        //						oldChildElement.copyParametersTo(newChildElement);
-        //						addChild((OverlayContainer*)newChildElement);
-        //					}
-        //				}
-        //			}
-        //		}
-        //
-        //		public OverlayElement Clone(string instanceName)
-        //		{
-        //			OverlayElementContainer newContainer;
-        //
-        //			newContainer = static_cast<OverlayContainer*>(OverlayElement::clone(instanceName));
-        //
-        //			ChildIterator it = getChildIterator();
-        //			while (it.hasMoreElements())
-        //			{
-        //				OverlayElement* oldChildElement = it.getNext();
-        //				if (oldChildElement->isCloneable())
-        //				{
-        //					OverlayElement* newChildElement = oldChildElement->clone(instanceName);
-        //					newContainer->_addChild(newChildElement);
-        //				}
-        //			}
-        //
-        //			return newContainer;
-        //		}
+        public override void CopyFromTemplate( OverlayElement templateOverlay )
+        {
+            base.CopyFromTemplate( templateOverlay );
+
+            if ( templateOverlay.IsContainer && IsContainer )
+            {
+                foreach ( OverlayElement oldChildElement in ((OverlayElementContainer)templateOverlay).Children.Values )
+                {
+                    if ( oldChildElement.IsCloneable )
+                    {
+                        OverlayElement newChildElement = OverlayManager.Instance.Elements.CreateElement(
+                            oldChildElement.GetType().Name,
+                            Name + "/" + oldChildElement.Name );
+                        oldChildElement.CopyParametersTo( newChildElement );
+                        AddChild( (OverlayElementContainer)newChildElement );
+                    }
+                }
+            }
+        }
+
+        public override OverlayElement Clone( string instanceName )
+        {
+            OverlayElementContainer newContainer;
+
+            newContainer = (OverlayElementContainer)( base.Clone( instanceName ) );
+
+            foreach ( OverlayElement oldChildElement in Children.Values )
+            {
+                if ( oldChildElement.IsCloneable )
+                {
+                    OverlayElement newChildElement = oldChildElement.Clone( instanceName );
+                    newContainer.AddChild( newChildElement );
+                }
+            }
+
+            return newContainer;
+        }
     }
 }

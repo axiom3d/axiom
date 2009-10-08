@@ -115,7 +115,7 @@ namespace Axiom.Overlays
         protected int zOrder;
 
         // world transforms
-        protected Matrix4[] xform = new Matrix4[1] { Matrix4.Identity };
+        protected Matrix4[] xform = new Matrix4[ 1 ] { Matrix4.Identity };
 
         protected bool isEnabled;
 
@@ -171,7 +171,13 @@ namespace Axiom.Overlays
         /// <returns></returns>
         public virtual void CopyFromTemplate( OverlayElement template )
         {
-            PropertyInfo[] props = template.GetType().GetProperties();
+            template.CopyParametersTo( this );
+            sourceTemplate = template;
+        }
+
+        public void CopyParametersTo( OverlayElement instance )
+        {
+            PropertyInfo[] props = instance.GetType().GetProperties();
 
             for ( int i = 0; i < props.Length; i++ )
             {
@@ -180,22 +186,23 @@ namespace Axiom.Overlays
                 // if the prop is not settable, then skip
                 if ( !prop.CanWrite || !prop.CanRead )
                 {
-					LogManager.Instance.Write( prop.Name );
                     continue;
                 }
 
-                object srcVal = prop.GetValue( template, null );
+                object srcVal = prop.GetValue( this, null );
                 if ( srcVal != null )
-                    prop.SetValue( this, srcVal, null );
+                    prop.SetValue( instance, srcVal, null );
             }
         }
-        public OverlayElement Clone( string instanceName )
+
+        public virtual OverlayElement Clone( string instanceName )
         {
             OverlayElement newElement = OverlayElementManager.Instance.CreateElement( this.GetType().Name, instanceName + "/" + name );
-            //copyParametersTo(newElement);
+            CopyParametersTo( newElement );
 
             return newElement;
         }
+
         /// <summary>
         ///    Hides an element if it is currently visible.
         /// </summary>
@@ -308,6 +315,7 @@ namespace Axiom.Overlays
 
             isGeomPositionsOutOfDate = true;
         }
+
         /// <summary>
         ///    Tells this element to recaculate it's position.
         /// </summary>
@@ -342,7 +350,7 @@ namespace Axiom.Overlays
                     ParserCommandAttribute parserAtt = parserAtts[ j ];
 
                     //attribParsers.Add( parserAtt.Name, Delegate.CreateDelegate( typeof( AttributeParserMethod ), method. ) );
-                    attribParsers.Add(parserAtt.Name, method);
+                    attribParsers.Add( parserAtt.Name, method );
                 } // for
             } // for
         }
@@ -383,11 +391,11 @@ namespace Axiom.Overlays
             }
 
             //AttributeParserMethod parser = (AttributeParserMethod)attribParsers[ param ];
-            MethodInfo parser = (MethodInfo)attribParsers[param];
+            MethodInfo parser = (MethodInfo)attribParsers[ param ];
             // call the parser method, passing in an array of the split val param, and this element for the optional object
             // MONO: As of 1.0.5, complains if the second param is not explicitly passed as an object array
             //parser( val.Split( ' ' ), new object[] { this } );
-            parser.Invoke(null, new object[] { val.Split(' '), new object[] { this } });
+            parser.Invoke( null, new object[] { val.Split( ' ' ), new object[] { this } } );
             return true;
         }
 
@@ -449,7 +457,7 @@ namespace Axiom.Overlays
 
                 case MetricsMode.Relative_Aspect_Adjusted:
                     if ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate )
-            {
+                    {
                         float vpWidth, vpHeight;
                         OverlayManager oMgr = OverlayManager.Instance;
                         vpWidth = (float)( oMgr.ViewportWidth );
@@ -468,10 +476,10 @@ namespace Axiom.Overlays
                     break;
             }
 
-			// container subclasses will update children too
+            // container subclasses will update children too
             UpdateFromParent();
 
-			// update our own position geometry
+            // update our own position geometry
             if ( isGeomPositionsOutOfDate && isInitialised )
             {
                 UpdatePositionGeometry();
@@ -484,14 +492,7 @@ namespace Axiom.Overlays
                 UpdateTextureGeometry();
                 isGeomPositionsOutOfDate = false;
             }
-       }
-
-        /// <summary>
-        /// Internal method which is triggered when the UVs of the element get updated,
-        /// meaning the element should be rebuilding it's mesh UVs. Abstract since
-        /// subclasses must implement this.
-        /// </summary>
-
+        }
 
         /// <summary>
         /// Returns true if xy is within the constraints of the component 
@@ -625,10 +626,6 @@ namespace Axiom.Overlays
                 //				clippingRegion.Bottom = derivedTop + height;
             }
         }
-
-
-
-
 
         /// <summary>
         /// Sets the left of this element in relation to the screen (where 1.0 = screen width)
@@ -969,7 +966,7 @@ namespace Axiom.Overlays
             set
             {
                 materialName = value;
-				material = (Material)MaterialManager.Instance[ materialName ];
+                material = (Material)MaterialManager.Instance[ materialName ];
 
                 if ( material == null )
                 {
@@ -1036,7 +1033,7 @@ namespace Axiom.Overlays
                             pixelScaleY = 1.0f / 10000.0f;
 
                             if ( metricsMode == MetricsMode.Relative )
-                        {
+                            {
                                 pixelLeft = left;
                                 pixelTop = top;
                                 pixelWidth = width;
@@ -1279,7 +1276,7 @@ namespace Axiom.Overlays
         /// 
         /// </summary>
         /// <param name="matrices"></param>
-		public void GetWorldTransforms( Matrix4[] matrices )
+        public void GetWorldTransforms( Matrix4[] matrices )
         {
             overlay.GetWorldTransforms( matrices );
         }

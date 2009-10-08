@@ -238,7 +238,7 @@ namespace Axiom.Overlays
         {
             OverlayElement element = null;
 
-            if ( templateName.Length == 0 )
+            if ( String.IsNullOrEmpty( templateName ) )
             {
                 element = CreateElement( typeName, instanceName, isTemplate );
             }
@@ -247,7 +247,7 @@ namespace Axiom.Overlays
                 OverlayElement template = GetElement( templateName, true );
 
                 string typeToCreate = "";
-                if ( typeName.Length == 0 )
+                if ( String.IsNullOrEmpty( typeName ) )
                 {
                     typeToCreate = template.GetType().Name;
                 }
