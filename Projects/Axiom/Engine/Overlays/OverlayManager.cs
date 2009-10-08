@@ -226,12 +226,11 @@ namespace Axiom.Overlays
 			{
 				LogManager.Instance.Write( "Overlay '" + overlay.Name + "' not found to destroy." );
 				overlay.Dispose();
-				overlay = null;
 				return;
 			}
 
 			_overlays.Remove( overlay.Name );
-			_overlays[ overlay.Name ].Dispose();
+			overlay.Dispose();
 		}
 
 		/// <summary>
