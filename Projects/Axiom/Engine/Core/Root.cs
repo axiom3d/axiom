@@ -918,11 +918,12 @@ namespace Axiom.Core
         public bool RenderOneFrame()
         {
             // Stop rendering if frame callback says so
-            if ( this.OnFrameStarted() )
+            if ( !this.OnFrameStarted() )
                 return false;
 
             // update all current render targets
-            this.UpdateAllRenderTargets();
+            /* if ( ! */ this.UpdateAllRenderTargets(); /* )
+               return false;*/
 
             // Stop rendering if frame callback says so
             return this.OnFrameEnded();
@@ -1209,8 +1210,7 @@ namespace Axiom.Core
             e.TimeSinceLastFrame = this.CalculateEventTime( now, FrameEventType.End );
 
             // if any event handler set this to true, that will signal the engine to shutdown
-            this.OnFrameEnded( e );
-            return !e.StopRendering;
+            return this.OnFrameEnded( e );
         }
 
         /// <summary>
@@ -1238,8 +1238,8 @@ namespace Axiom.Core
             this.currentFrameCount++;
 
             // call the event, which automatically fires all registered handlers
-            this._frameStartedEvent.Fire( this, e, ( args ) => args.StopRendering == true );
-            return e.StopRendering;
+            this._frameStartedEvent.Fire( this, e, ( args ) => args.StopRendering != true );
+            return !e.StopRendering;
         }
 
         /// <summary>
@@ -1263,14 +1263,14 @@ namespace Axiom.Core
         /// </param>
         public bool OnFrameEnded( FrameEventArgs e )
         {
-            this._frameEndedEvent.Fire(this, e, (args) => args.StopRendering == true );
+            this._frameEndedEvent.Fire(this, e, (args) => args.StopRendering != true );
 
             // Tell buffer manager to free temp buffers used this frame
             if ( HardwareBufferManager.Instance != null )
             {
                 HardwareBufferManager.Instance.ReleaseBufferCopies( false );
             }
-            return e.StopRendering;
+            return !e.StopRendering;
         }
 
         #endregion
