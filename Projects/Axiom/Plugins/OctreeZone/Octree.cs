@@ -10,6 +10,7 @@ using Axiom.Math;
 using Axiom.Math.Collections;
 using Axiom.SceneManagers.PortalConnected;
 using System.Collections.Generic;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -164,23 +165,28 @@ namespace OctreeZone
 
         public void RemoveNode( PCZSceneNode node )
         {
-            PCZSceneNode check;
-            int i;
-            int Index;
 
-            Index = NodeList.Count - 1;
+            //PCZSceneNode check;
+            //int i;
+            //int Index;
 
-            for ( i = Index; i >= 0; i-- )
-            {
-                check = ( PCZSceneNode ) NodeList.Values[ i ];
+            //Index = NodeList.Count - 1;
 
-                if ( check == node )
-                {
-                    ( ( OctreeZoneData ) node.GetZoneData( zone ) ).Octant = null;
-                    NodeList.RemoveAt( i );
-                    UnRef();
-                }
-            }
+            //for ( i = Index; i >= 0; i-- )
+            //{
+            //    check = ( PCZSceneNode ) NodeList.Values[ i ];
+
+            //    if ( check == node )
+            //    {
+            //        ( ( OctreeZoneData ) node.GetZoneData( zone ) ).Octant = null;
+            //        NodeList.RemoveAt( i );
+            //        UnRef();
+            //    }
+            //}
+
+            ((OctreeZoneData)node.GetZoneData(zone)).Octant = null;
+            NodeList.Remove(node);
+            UnRef();
         }
 
         /// <summary>
@@ -516,7 +522,7 @@ namespace OctreeZone
                 full = ( isect == Intersection.INSIDE );
             }
 
-            foreach ( PCZSceneNode on in nodeList )
+            foreach ( PCZSceneNode on in nodeList.Values )
             {
 
                 if ( on != exclude && ( on.HomeZone == zone || includeVisitors ) )
@@ -588,7 +594,7 @@ namespace OctreeZone
                 full = ( isect == Intersection.INSIDE );
             }
 
-            foreach ( PCZSceneNode on in nodeList )
+            foreach ( PCZSceneNode on in nodeList.Values )
             {
 
                 if ( on != exclude && ( on.HomeZone == zone || includeVisitors ) )
@@ -662,7 +668,7 @@ namespace OctreeZone
 
 
 
-            foreach ( PCZSceneNode on in nodeList )
+            foreach ( PCZSceneNode on in nodeList.Values )
             {
 
                 if ( on != exclude && ( on.HomeZone == zone || includeVisitors ) )
@@ -736,7 +742,7 @@ namespace OctreeZone
             }
 
 
-            foreach ( PCZSceneNode on in nodeList )
+            foreach ( PCZSceneNode on in nodeList.Values )
             {
 
                 if ( on != exclude && ( on.HomeZone == zone || includeVisitors ) )

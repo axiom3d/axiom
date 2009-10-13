@@ -95,18 +95,18 @@ namespace Axiom.UnitTests.Core
             node.CreateChild( Name );
         }
 
-        /// <summary>
-        /// Verifies that a new child node can be created after a node with the same name has been removed by index.
-        /// </summary>
-        [ Test ]
-        public void TestRecreationOfChildNodeAfterRemovalByIndex()
-        {
-            Node node = new SceneNode( this.fakeSceneManager );
-            node.CreateChild( Name );
+        ///// <summary>
+        ///// Verifies that a new child node can be created after a node with the same name has been removed by index.
+        ///// </summary>
+        //[ Test ]
+        //public void TestRecreationOfChildNodeAfterRemovalByIndex()
+        //{
+        //    Node node = new SceneNode( this.fakeSceneManager );
+        //    node.CreateChild( Name );
 
-            node.RemoveChild( 0 );
-            node.CreateChild( Name );
-        }
+        //    node.RemoveChild( 0 );
+        //    node.CreateChild( Name );
+        //}
 
         /// <summary>
         /// Verifies that a new child node can be added after a node with the same name has been removed by reference.
@@ -134,17 +134,17 @@ namespace Axiom.UnitTests.Core
             node.AddChild( childNode );
         }
 
-        /// <summary>
-        /// Verifies that a new child node can be added after a node with the same name has been removed by index.
-        /// </summary>
-        [ Test ]
-        public void TestReaddingOfChildNodeAfterRemovalByIndex()
-        {
-            Node node = new SceneNode( this.fakeSceneManager );
-            Node childNode = node.CreateChild( Name );
+        ///// <summary>
+        ///// Verifies that a new child node can be added after a node with the same name has been removed by index.
+        ///// </summary>
+        //[ Test ]
+        //public void TestReaddingOfChildNodeAfterRemovalByIndex()
+        //{
+        //    Node node = new SceneNode( this.fakeSceneManager );
+        //    Node childNode = node.CreateChild( Name );
 
-            node.RemoveChild( 0 );
-            node.AddChild( childNode );
-        }
+        //    node.RemoveChild( 0 );
+        //    node.AddChild( childNode );
+        //}
     }
 }

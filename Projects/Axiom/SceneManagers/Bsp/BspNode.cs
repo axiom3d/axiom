@@ -40,6 +40,7 @@ using Axiom.Core;
 using Axiom.Math;
 using Axiom.Collections;
 using Axiom.Math.Collections;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -394,7 +395,6 @@ namespace Axiom.SceneManagers.Bsp
         ///	</summary>
         public void RemoveObject( MovableObject obj )
         {
-            //thild: remove by key
             objectList.Remove( obj.Name );
         }
 
@@ -444,8 +444,8 @@ namespace Axiom.SceneManagers.Bsp
 
         public BspBrush()
         {
-            planes = new PlaneList();
-            fragment = new SceneQuery.WorldFragment();
+            this.planes = new PlaneList();
+            this.fragment = new SceneQuery.WorldFragment();
         }
 
         public BspBrush( PlaneList planes, SceneQuery.WorldFragment fragment )

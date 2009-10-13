@@ -9,6 +9,7 @@ using Axiom.Overlays;
 using Axiom.Input;
 using Axiom.Math;
 using Axiom.Graphics;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -122,7 +123,7 @@ namespace Axiom.Demos
         private Entity objectEntity = null;
         private SceneNode objectNode;
         private Material material;
-        private MaterialList clonedMaterials = new MaterialList();
+        private List<Material> clonedMaterials = new List<Material>();
         private float displacement = 0.1f;
         private float density = 50.0f;
         private float timeDensity = 5.0f;

@@ -45,6 +45,8 @@ using Axiom.Graphics;
 using Axiom.Math;
 using System.Collections.Generic;
 using Axiom.Media;
+using Axiom.Graphics.Collections;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 

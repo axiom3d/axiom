@@ -97,19 +97,6 @@ namespace Axiom.UnitTests.SceneManagers.Bsp
         }
 
         /// <summary>
-        /// Verifies that a new child node can be created after a node with the same name has been removed by index.
-        /// </summary>
-        [ Test ]
-        public void TestRecreationOfChildNodeAfterRemovalByIndex()
-        {
-            Node node = new BspSceneNode( this.fakeSceneManager );
-            node.CreateChild( Name );
-
-            node.RemoveChild( 0 );
-            node.CreateChild( Name );
-        }
-
-        /// <summary>
         /// Verifies that a new child node can be added after a node with the same name has been removed by reference.
         /// </summary>
         [ Test ]
@@ -132,19 +119,6 @@ namespace Axiom.UnitTests.SceneManagers.Bsp
             Node childNode = node.CreateChild( Name );
 
             node.RemoveChild( Name );
-            node.AddChild( childNode );
-        }
-
-        /// <summary>
-        /// Verifies that a new child node can be added after a node with the same name has been removed by index.
-        /// </summary>
-        [ Test ]
-        public void TestReaddingOfChildNodeAfterRemovalByIndex()
-        {
-            Node node = new BspSceneNode( this.fakeSceneManager );
-            Node childNode = node.CreateChild( Name );
-
-            node.RemoveChild( 0 );
             node.AddChild( childNode );
         }
     }

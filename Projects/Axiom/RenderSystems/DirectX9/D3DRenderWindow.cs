@@ -47,6 +47,7 @@ using Axiom.Media;
 using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
 using System.Runtime.InteropServices;
+using Axiom.Graphics.Collections;
 
 #endregion Namespace Declarations
 

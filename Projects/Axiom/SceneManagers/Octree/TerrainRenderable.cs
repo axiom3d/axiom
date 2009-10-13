@@ -40,6 +40,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 using System.Runtime.InteropServices;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -926,7 +927,7 @@ namespace Axiom.SceneManagers.Octree
 			}
 		}
 
-		public Axiom.Collections.LightList Lights
+		public LightList Lights
 		{
 			get
 			{

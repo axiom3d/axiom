@@ -86,9 +86,8 @@ namespace Axiom.SceneManagers.Bsp
 
             if ( checkMovables )
             {
-                for ( int i = 0; i < this.objectList.Count; i++ )
+                foreach ( MovableObject obj in this.objectList.Values )
                 {
-                    MovableObject obj = this.objectList.Values[ i ];
                     if ( obj is TextureLight )
                     {
                         // the notification of BspSceneManager when the position of
@@ -98,24 +97,6 @@ namespace Axiom.SceneManagers.Bsp
                     ( (BspSceneManager)this.Creator ).NotifyObjectMoved( obj, this.DerivedPosition );
                 }
             }
-        }
-
-        /// <summary>
-        ///		Detaches the indexed object from this scene node.
-        ///	</summary>
-        ///	<remarks>
-        ///		Detaches by index, see the alternate version to detach by name. Object indexes
-        ///		may change as other objects are added / removed.
-        /// </remarks>
-        public override MovableObject DetachObject( int index )
-        {
-            MovableObject obj = base.DetachObject( index );
-
-            // TextureLights are detached only when removed at the BspSceneManager
-            if ( !( obj is TextureLight ) )
-                ( (BspSceneManager)this.Creator ).NotifyObjectDetached( obj );
-
-            return obj;
         }
 
         public override void DetachObject( MovableObject obj )
@@ -131,13 +112,13 @@ namespace Axiom.SceneManagers.Bsp
         {
             BspSceneManager mgr = (BspSceneManager)this.Creator;
 
-            for ( int i = 0; i < this.objectList.Count; i++ )
+            foreach ( MovableObject obj in this.objectList.Values)
             {
                 // TextureLights are detached only when removed at the BspSceneManager
-                if (this.objectList.Values[i] is TextureLight)
+                if (obj is TextureLight)
                     continue;
 
-                mgr.NotifyObjectDetached(this.objectList.Values[i]);
+                mgr.NotifyObjectDetached(obj);
             }
 
             base.DetachAllObjects();

@@ -44,6 +44,7 @@ using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
+using Axiom.Graphics.Collections;
 
 #endregion
 
@@ -56,7 +57,7 @@ namespace Axiom.Core
     ///		Instances of this class are discrete, relatively small, movable objects
     ///		which are attached to SceneNode objects to define their position.						  
     /// </remarks>
-    public abstract class MovableObject : ShadowCaster, IAnimableObject, INamable //thild
+    public abstract class MovableObject : ShadowCaster, IAnimableObject
     {
         #region Fields
 
@@ -244,7 +245,6 @@ namespace Axiom.Core
             {
                 return this.name;
             }
-            //thild
             set
             {
                 name = value;

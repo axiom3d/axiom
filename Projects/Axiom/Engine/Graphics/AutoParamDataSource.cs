@@ -41,6 +41,7 @@ using Axiom.Collections;
 using Axiom.Controllers;
 using Axiom.Core;
 using Axiom.Math;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -243,7 +244,7 @@ namespace Axiom.Graphics
 			}
 			else
 			{
-				return currentLightList.Values[index];
+				return currentLightList[index];
 			}
 		}
 

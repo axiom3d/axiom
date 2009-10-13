@@ -26,6 +26,7 @@ namespace Axiom.Demos.Browser.CommandLine
     {
         private ConfigOption _renderSystems;
         private RenderSystem _currentSystem;
+        private List<RenderSystem> _renderSystemList;
         private DialogResult _result;
         private ConfigOption _currentOption;
         private ArrayList _menuItems = new ArrayList();
@@ -35,7 +36,8 @@ namespace Axiom.Demos.Browser.CommandLine
         public ConfigDialog()
         {
             Axiom.Core.Root root = Axiom.Core.Root.Instance;
-            _currentSystem = root.RenderSystems.Values[ 0 ];
+            _renderSystemList = new List<RenderSystem>(root.RenderSystems.Values);
+            _currentSystem = _renderSystemList[ 0 ];
             _renderSystems = new ConfigOption("Render System", _currentSystem.Name, false);
 
             foreach ( RenderSystem rs in root.RenderSystems )
@@ -209,7 +211,7 @@ namespace Axiom.Demos.Browser.CommandLine
                     if ( _currentOption.Name == "Render System" ) // About to change Renderers
                     {
                         _renderSystems = _currentOption;
-                        _currentSystem = Axiom.Core.Root.Instance.RenderSystems.Values[ _numericInput ];
+                        _currentSystem = _renderSystemList[ _numericInput ];
 
                         BuildOptions();
 

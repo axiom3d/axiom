@@ -44,6 +44,7 @@ using Axiom.Media;
 
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
+using Axiom.Graphics.Collections;
 
 #endregion Namespace Declarations
 

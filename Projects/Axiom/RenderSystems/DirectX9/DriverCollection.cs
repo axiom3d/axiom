@@ -45,7 +45,7 @@ namespace Axiom.RenderSystems.DirectX9
     /// <summary>
     /// Summary description for DriverCollection.
     /// </summary>
-    public class DriverCollection : UnsortedCollection<Driver>
+    public class DriverCollection : List<Driver>
     {
 		public Driver this[ string description ]
         {

@@ -49,6 +49,7 @@ using Axiom.Serialization;
 using Axiom.Graphics;
 
 using ResourceHandle = System.UInt64;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -122,8 +123,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Collection of sub meshes for this mesh.
 		///	</summary>
-		private List<SubMesh> _subMeshList = new List<SubMesh>();
-		private Dictionary<string, ushort> _subMeshNameMap = new Dictionary<string, ushort>();
+		private SubMeshList _subMeshList = new SubMeshList();
 
 		/// <summary>
 		///    Gets the number of submeshes belonging to this mesh.
@@ -1675,9 +1675,15 @@ namespace Axiom.Core
 		/// <returns>A new <see cref="SubMesh"/> with this Mesh as its parent.</returns>
 		public SubMesh CreateSubMesh( string name )
 		{
-			SubMesh subMesh = CreateSubMesh();
+            SubMesh subMesh = new SubMesh();
+            subMesh.Name = name;
 
-			nameSubMesh( name, (ushort)(_subMeshList.Count - 1) );	
+            // set the parent of the subMesh to us
+            subMesh.Parent = this;
+
+            // add to the list of child meshes
+            _subMeshList.Add(subMesh);
+
 			return subMesh;
 		}
 
@@ -1692,27 +1698,7 @@ namespace Axiom.Core
 		/// <returns>A new SubMesh with this Mesh as its parent.</returns>
 		public SubMesh CreateSubMesh()
 		{
-			SubMesh subMesh = new SubMesh();
-
-			// set the parent of the subMesh to us
-			subMesh.Parent = this;
-
-			// add to the list of child meshes
-			_subMeshList.Add( subMesh );
-
-			return subMesh;
-		}
-
-		protected void nameSubMesh( string name, ushort index)
-		{
-			if ( !_subMeshNameMap.ContainsKey( name ) )
-			{
-				_subMeshNameMap.Add( name, index );
-			}
-			else
-			{
-				_subMeshNameMap[ name ] = index;
-			}
+            return CreateSubMesh(String.Empty);
 		}
 
 		/// <summary>

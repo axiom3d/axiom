@@ -968,9 +968,8 @@ namespace Axiom.Core
 		private void _getVertices( ref Vector3[] points, Axiom.Animating.Bone bone )
 		{
 			Vector3 boneBase = bone.DerivedPosition;
-			for ( int childId = 0; childId < bone.ChildCount; ++childId )
+			foreach ( Axiom.Animating.Bone childBone in bone.Children )
 			{
-				Axiom.Animating.Bone childBone = (Axiom.Animating.Bone)bone.GetChild( childId );
 				// The tip of the bone:
 				Vector3 boneTip = childBone.DerivedPosition;
 				// the base of the bone

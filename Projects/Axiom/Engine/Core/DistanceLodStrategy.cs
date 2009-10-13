@@ -41,6 +41,7 @@ using Axiom.Math;
 using Axiom.Core;
 using Axiom.Graphics;
 using MathHelper = Axiom.Math.Utility;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 

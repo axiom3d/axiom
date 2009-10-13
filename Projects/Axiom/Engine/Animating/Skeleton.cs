@@ -46,6 +46,7 @@ using Axiom.Collections;
 using Axiom.Serialization;
 
 using ResourceHandle = System.UInt64;
+using Axiom.Animating.Collections;
 
 #endregion Namespace Declarations
 
@@ -148,6 +149,7 @@ namespace Axiom.Animating
 				return boneList.Count;
 			}
 		}
+
 		#endregion BoneList Properties
 
 		#region RootBones Properties
@@ -236,23 +238,23 @@ namespace Axiom.Animating
 
 		#endregion nextAutoHandle Property
 			
-		#region AnimationList Properties
+		#region Animations Property
 
 		/// <summary>Lookup table for animations related to this skeleton.</summary>
 		protected AnimationCollection animationList = new AnimationCollection();
 
-		/// <summary>
-		///    Gets the number of animations associated with this skeleton.
-		/// </summary>
-		public virtual int AnimationCount
-		{
-			get
-			{
-				return animationList.Count;
-			}
-		}
+        /// <summary>
+        ///     Gets the animations associated with this skeleton
+        /// </summary>
+        public virtual ICollection<Animation> Animations
+        {
+            get
+            {
+                return animationList.Values;
+            }
+        }
 
-		#endregion AnimationList Properties
+        #endregion
 
 		#region AttachmentPoints Property
 
@@ -462,18 +464,6 @@ namespace Axiom.Animating
 		}
 
 		#region GetAnimation Method
-
-		/// <summary>
-		///    Returns the animation with the specified index.
-		/// </summary>
-		/// <param name="index">Index of the animation to retrieve.</param>
-		/// <returns></returns>
-		public virtual Animation GetAnimation( int index )
-		{
-			Debug.Assert( index < animationList.Count, "index < animationList.Count" );
-
-            return animationList.Values[index];
-		}
 
 		/// <summary>
 		///    Returns the animation with the specified name.

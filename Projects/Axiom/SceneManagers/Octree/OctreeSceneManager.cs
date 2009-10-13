@@ -42,6 +42,7 @@ using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
 using System.Collections.Generic;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -224,7 +225,6 @@ namespace Axiom.SceneManagers.Octree
         public override SceneNode CreateSceneNode()
         {
             OctreeNode node = new OctreeNode( this );
-            //thild: add instead set
             sceneNodeList.Add( node );
             return node;
         }
@@ -232,7 +232,6 @@ namespace Axiom.SceneManagers.Octree
         public override SceneNode CreateSceneNode( string name )
         {
             OctreeNode node = new OctreeNode( this, name );
-            //thild: add instead set
             sceneNodeList.Add( node );
             return node;
         }
@@ -344,8 +343,6 @@ namespace Axiom.SceneManagers.Octree
         //    {
         //        if ( this.ShowBoundingBoxes )
         //        {
-        //            // TODO: Implement Octree.WireBoundingBox
-        //            //thild: implemented
         //            boxList.Add( octant.WireBoundingBox );
         //        }
 
@@ -457,7 +454,7 @@ namespace Axiom.SceneManagers.Octree
             }
             else
             {
-                    AxisAlignedBox box = temp.Octant.CullBounds;
+                AxisAlignedBox box = temp.Octant.CullBounds;
                 v = camera.GetVisibility( box );
             }
 
@@ -468,17 +465,13 @@ namespace Axiom.SceneManagers.Octree
             {
                 if ( this.ShowBoundingBoxes )
                 {
-                    // TODO: Implement Octree.WireBoundingBox
-                        //thild: implemented
-                        boxList.Add( temp.Octant.WireBoundingBox );
+                    boxList.Add( temp.Octant.WireBoundingBox );
                 }
 
                 bool vis = true;
 
-                    for ( int i = 0; i < temp.Octant.NodeList.Count; i++ )
+                foreach ( OctreeNode node in temp.Octant.NodeList.Values )
                 {
-                        OctreeNode node = (OctreeNode)temp.Octant.NodeList.Values[ i ];
-
                     // if this octree is partially visible, manually cull all
                     // scene nodes attached directly to this level.
 
@@ -726,15 +719,14 @@ namespace Axiom.SceneManagers.Octree
             octree = new Octree( null );
             octree.Box = box;
 
-            for ( int i = 0; i < nodes.Count; i++ )
+            foreach ( OctreeNode node in nodes.Values )
             {
-                OctreeNode node = (OctreeNode)nodes.Values[ i ];
                 node.Octant = null;
                 UpdateOctreeNode( node );
             }
         }
 
-        public void FindNodes( AxisAlignedBox box, Axiom.Collections.SceneNodeCollection sceneNodeList, SceneNode exclude, bool full, Octree octant )
+        public void FindNodes( AxisAlignedBox box, SceneNodeCollection sceneNodeList, SceneNode exclude, bool full, Octree octant )
         {
             List<OctreeNode> localList = new List<OctreeNode>();
             if ( octant == null )
@@ -756,10 +748,8 @@ namespace Axiom.SceneManagers.Octree
                 full = ( isect == Intersection.Inside );
             }
 
-            for ( int i = 0; i < octant.NodeList.Count; i++ )
+            foreach ( OctreeNode node in octant.NodeList.Values )
             {
-                OctreeNode node = (OctreeNode)octant.NodeList.Values[ i ];
-
                 if ( node != exclude )
                 {
                     if ( full )
@@ -804,7 +794,7 @@ namespace Axiom.SceneManagers.Octree
 
         }
 
-        public void FindNodes( Sphere sphere, Axiom.Collections.SceneNodeCollection sceneNodeList, SceneNode exclude, bool full, Octree octant )
+        public void FindNodes( Sphere sphere, SceneNodeCollection sceneNodeList, SceneNode exclude, bool full, Octree octant )
         {
             //TODO: Implement
         }

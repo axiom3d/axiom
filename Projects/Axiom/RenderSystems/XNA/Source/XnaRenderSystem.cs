@@ -50,6 +50,7 @@ using Axiom.Overlays;
 using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
 using Axiom.Collections;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -2146,7 +2147,7 @@ namespace Axiom.RenderSystems.Xna
             _fixedFunctionState.GeneralFixedFunctionState.ResetLightTypeCounts();
             for ( int index = 0; index < currentLightCount; index++ )
             {
-                Light light = lights.Values[ index ];
+                Light light = lights[ index ];
                 lightList.Add( light );
                 _fixedFunctionState.GeneralFixedFunctionState.IncrementLightTypeCount( light.Type );
             }

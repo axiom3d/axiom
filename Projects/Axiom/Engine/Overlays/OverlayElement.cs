@@ -43,6 +43,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Scripting;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 

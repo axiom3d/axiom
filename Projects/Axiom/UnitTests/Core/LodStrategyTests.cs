@@ -9,6 +9,7 @@ using Axiom.Math;
 using Gallio.Framework;
 using MbUnit.Framework;
 using MbUnit.Framework.ContractVerifiers;
+using Axiom.Core.Collections;
 
 namespace Axiom.UnitTests.Core
 {

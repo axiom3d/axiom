@@ -48,7 +48,7 @@ namespace Axiom.Collections
     /// <summary>
     ///	Serves as a basis for strongly typed collections in the engine.
     /// </summary>
-    public abstract class AxiomCollection<T> : SortedList<string, T>
+    public abstract class AxiomCollection<T> : Dictionary<string, T>
     {
         #region Constants
 
@@ -59,6 +59,7 @@ namespace Axiom.Collections
         #region Readonly & Static Fields
 
         protected static int nextUniqueKeyCounter;
+        
         protected string typeName;
 
         #endregion
@@ -74,11 +75,9 @@ namespace Axiom.Collections
         /// <summary>
         ///		
         /// </summary>
-        protected AxiomCollection()
-            : base( InitialCapacity )
+        public AxiomCollection()
+            : this( null )
         {
-            this.parent = null;
-            this.typeName = typeof( T ).Name;
         }
 
         /// <summary>
@@ -90,19 +89,6 @@ namespace Axiom.Collections
         {
             this.parent = parent;
             this.typeName = typeof( T ).Name;
-        }
-
-        #endregion
-
-        #region Instance Indexers
-
-        /// <summary>
-        ///		
-        /// </summary>
-        public virtual T this[ int index ]
-        {
-            get { return Values[ index ]; }
-            set { base[ Keys[ index ] ] = value; }
         }
 
         #endregion
@@ -119,26 +105,24 @@ namespace Axiom.Collections
         }
 
         /// <summary>
-        /// eturns an enumerator that iterates through the <see cref="AxiomCollection{T}"/>.
+        /// Adds multiple items from a specified source collection
+        /// </summary>
+        /// <param name="from"></param>
+        public virtual void AddRange(IDictionary<string, T> source)
+        {
+            foreach (KeyValuePair<string, T> entry in source)
+            {
+                this.Add(entry.Key, entry.Value);
+            }
+        }
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the <see cref="AxiomCollection{T}"/>.
         /// </summary>
         /// <returns>An <see cref="IEnumerator{T}"/> for the <see cref="AxiomCollection{T}"/> values.</returns>
         public virtual IEnumerator GetEnumerator()
         {
             return Values.GetEnumerator();
-        }
-
-        /// <summary>
-        ///	Removes the item with the specified key from the collection.
-        /// </summary>
-        /// <param name="item">The key of the item to remove.</param>
-        public virtual void RemoveByKey( string item )
-        {
-            int index = IndexOfKey( item );
-
-            if ( index != -1 )
-            {
-                RemoveAt( index );
-            }
         }
 
         #endregion
@@ -214,36 +198,6 @@ namespace Axiom.Collections
         public AxiomSortedCollection( IDictionary<TKey, TValue> dictionary, IComparer<TKey> comparer )
             : base( dictionary, comparer )
         {
-        }
-        #endregion
-
-        #region Instance Indexers
-
-        /// <summary>
-        ///		
-        /// </summary>
-        public virtual TValue this[int index]
-        {
-            get { return this.Values[index]; }
-            set { base[Keys[index]] = value; }
-        }
-
-        #endregion
-
-        #region Instance Methods
-
-        /// <summary>
-        ///	Removes the item with the specified key from the collection.
-        /// </summary>
-        /// <param name="item">The key of the item to remove.</param>
-        public virtual void RemoveByKey(TKey item)
-        {
-            int index = IndexOfKey(item);
-
-            if (index != -1)
-            {
-                RemoveAt(index);
-            }
         }
 
         #endregion

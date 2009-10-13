@@ -46,7 +46,7 @@ namespace Axiom.RenderSystems.DirectX9
     /// <summary>
     /// Summary description for VideoModeCollection.
     /// </summary>
-    public class VideoModeCollection : UnsortedCollection<VideoMode>
+    public class VideoModeCollection : List<VideoMode>
     {
         public VideoMode this[ string description ]
         {

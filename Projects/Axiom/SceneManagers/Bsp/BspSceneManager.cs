@@ -50,6 +50,7 @@ using System.Collections.Generic;
 namespace Axiom.SceneManagers.Bsp
 {
     using System.Data;
+    using Axiom.Core.Collections;
 
     /// <summary>
     ///		Specialisation of the SceneManager class to deal with indoor scenes based on a BSP tree.
@@ -85,7 +86,7 @@ namespace Axiom.SceneManagers.Bsp
         protected bool showNodeAABs;
         protected RenderOperation aaBGeometry = new RenderOperation();
 
-        protected Map<Material, BspStaticFaceGroup> matFaceGroupMap = new Map<Material, BspStaticFaceGroup>();
+        protected MultiMap<Material, BspStaticFaceGroup> matFaceGroupMap = new MultiMap<Material, BspStaticFaceGroup>();
         protected MovableObjectCollection objectsForRendering = new MovableObjectCollection();
 		protected BspGeometry bspGeometry;
         protected SpotlightFrustum spotlightFrustum;
@@ -430,8 +431,7 @@ namespace Axiom.SceneManagers.Bsp
         public override SceneNode CreateSceneNode()
         {
             BspSceneNode node = new BspSceneNode( this );
-            //thild: add instead set
-             this.sceneNodeList.Add ( node );
+            this.sceneNodeList.Add( node );
 
             return node;
         }
@@ -442,8 +442,7 @@ namespace Axiom.SceneManagers.Bsp
         public override SceneNode CreateSceneNode( string name )
         {
             BspSceneNode node = new BspSceneNode( this, name );
-            //thild: add instead set
-            this.sceneNodeList.Add ( node );
+            this.sceneNodeList.Add( node );
 
             return node;
         }
@@ -691,12 +690,10 @@ namespace Axiom.SceneManagers.Bsp
             }
 
             // Add movables to render queue, provided it hasn't been seen already.			
-            for ( int i = 0; i < leaf.Objects.Count; i++ )
+            foreach ( MovableObject obj in leaf.Objects.Values )
             {
-                if ( !objectsForRendering.ContainsKey( ( (MovableObject)leaf.Objects.Values[ i ] ).Name ) )
+                if ( !objectsForRendering.ContainsKey( obj.Name ) )
                 {
-                    MovableObject obj = leaf.Objects.Values[ i ];
-
                     if ( obj.IsVisible &&
                         ( !onlyShadowCasters || obj.CastShadows ) &&
                         camera.IsObjectVisible( obj.GetWorldBoundingBox() ) )
@@ -992,17 +989,20 @@ namespace Axiom.SceneManagers.Bsp
         }
 
         /// <summary>
-        ///		Renders the texture lighting tagged in a light with index lightIndex.
+        ///		Renders the texture lighting tagged in the specified light
         /// </summary>
-        protected void RenderTextureLighting( int lightIndex )
+        protected void RenderTextureLighting( Light light )
         {
-            TextureLight light = (TextureLight)((MovableObjectCollection)Lights).Values[ lightIndex ];
-
-            if ( !light.IsTextureLight )
+            if (!(light is TextureLight))
                 return;
 
-            if ( light.Type == LightType.Spotlight )
-                spotlightFrustum.Spotlight = light;
+            TextureLight texLight = (TextureLight)light;
+
+            if ( !texLight.IsTextureLight )
+                return;
+
+            if ( texLight.Type == LightType.Spotlight )
+                spotlightFrustum.Spotlight = texLight;
 
             // no world transform required
             targetRenderSystem.WorldMatrix = Matrix4.Identity;
@@ -1014,7 +1014,7 @@ namespace Axiom.SceneManagers.Bsp
             TextureUnitState lightTex = textureLightPass.GetTextureUnitState( 0 );
             TextureUnitState normalTex = textureLightPass.GetTextureUnitState( 1 );
 
-            switch ( light.Intensity )
+            switch ( texLight.Intensity )
             {
                 case LightIntensity.Normal:
                     normalTex.ColorBlendMode.operation = LayerBlendOperationEx.Modulate;
@@ -1029,9 +1029,9 @@ namespace Axiom.SceneManagers.Bsp
                     break;
             }
 
-            if ( light.Type == LightType.Spotlight )
+            if ( texLight.Type == LightType.Spotlight )
             {
-                spotlightFrustum.Spotlight = light;
+                spotlightFrustum.Spotlight = texLight;
                 lightTex.SetProjectiveTexturing( true, spotlightFrustum );
             }
             else
@@ -1039,7 +1039,7 @@ namespace Axiom.SceneManagers.Bsp
                 lightTex.SetProjectiveTexturing( false, null );
             }
 
-            if ( light.Type == LightType.Directional )
+            if ( texLight.Type == LightType.Directional )
             {
                 // light it using only diffuse color and alpha
                 normalTex.ColorBlendMode.source2 = LayerBlendSource.Diffuse;
@@ -1054,7 +1054,7 @@ namespace Axiom.SceneManagers.Bsp
 
             SetPass( textureLightPass );
 
-            if ( light.Type == LightType.Directional )
+            if ( texLight.Type == LightType.Directional )
             {
                 // Disable the light texture
                 targetRenderSystem.SetTexture( 0, true, lightTex.TextureName );
@@ -1091,10 +1091,10 @@ namespace Axiom.SceneManagers.Bsp
                     for ( int i = 0; i < faceGrp.Count; i++ )
                     {
                         if ( faceGrp[ i ].type != FaceGroup.Patch &&
-                            light.AffectsFaceGroup( faceGrp[ i ], cullMode ) )
+                            texLight.AffectsFaceGroup( faceGrp[ i ], cullMode ) )
                         {
                             // Cache each
-                            int numElems = CacheLightGeometry( light, pIdx, pTexLightMap, pVertices, faceGrp[ i ] );
+                            int numElems = CacheLightGeometry( texLight, pIdx, pTexLightMap, pVertices, faceGrp[ i ] );
                             renderOp.indexData.indexCount += numElems;
                             pIdx += numElems;
                         }
@@ -1231,19 +1231,9 @@ namespace Axiom.SceneManagers.Bsp
                     RenderStaticGeometry();
 
                     // render geometry affected by each visible light
-                    for ( int i = 0; i < lightsAffectingFrustum.Count; i++ )
+                    foreach ( Light l in lightsAffectingFrustum )
                     {
-                        int index;
-
-                        // find the index of the light
-                        for (index = 0; index < Lights.Count; index++)
-                            if ( ((MovableObjectCollection)Lights).Values[ index ] == lightsAffectingFrustum.Values[ i ] )
-                                break;
-
-                        if (index < Lights.Count)
-                        {
-                            RenderTextureLighting( index );
-                        }
+                        RenderTextureLighting( l );
                     }
                 }
                 else
@@ -1264,19 +1254,9 @@ namespace Axiom.SceneManagers.Bsp
                     else
                     {
                         // render only geometry affected by the provided light 
-                        for ( int i = 0; i < manualLightList.Count; i++ )
+                        foreach ( Light l in manualLightList )
                         {
-                            int index;
-
-                            // find the index of the light
-                            for (index = 0; index < Lights.Count; index++)
-                                if ( ((MovableObjectCollection)Lights).Values[ index ] == manualLightList.Values[ i ] )
-                                    break;
-
-                            if (index < Lights.Count)
-                            {
-                                RenderTextureLighting( index );
-                            }
+                            RenderTextureLighting( l );
                         }
                     }
                 }
@@ -1303,121 +1283,94 @@ namespace Axiom.SceneManagers.Bsp
         }
         #endregion
 
+        #region Fields
+
+        MultiMap<MovableObject, MovableObject> objIntersections = new MultiMap<MovableObject, MovableObject>();
+
+        MultiMap<MovableObject, BspBrush> brushIntersections = new MultiMap<MovableObject, BspBrush>();
+
+        List<MovableObject> objectsDone = new List<MovableObject>(100);
+
+        PlaneBoundedVolume boundedVolume = new PlaneBoundedVolume(PlaneSide.Positive);
+
+        #endregion
+
         #region Public methods
 
+        /// <summary>
+        /// Go through each leaf node in <see cref="BspLevel"/> and check movables against each other and against <see cref="BspBrush"/> fragments.
+        /// The bounding boxes of object are used when checking for the intersections.
+        /// </summary>
+        /// <param name="listener"></param>
         public override void Execute( IIntersectionSceneQueryListener listener )
         {
-            //Go through each leaf node in BspLevel and check movables against each other and world
             //Issue: some movable-movable intersections could be reported twice if 2 movables
             //overlap 2 leaves?
             BspLevel lvl = ( (BspSceneManager)this.creator ).Level;
             int leafPoint = lvl.LeafStart;
             int numLeaves = lvl.NumLeaves;
 
-            Map<MovableObject, MovableObject> objIntersections = new Map<MovableObject, MovableObject>();
-            PlaneBoundedVolume boundedVolume = new PlaneBoundedVolume( PlaneSide.Positive );
+            objIntersections.Clear();
+            brushIntersections.Clear();
 
-            while ( ( numLeaves-- ) != 0 )
+            while ( --numLeaves >= 0 )
             {
                 BspNode leaf = lvl.Nodes[ leafPoint ];
-                MovableObjectCollection objects = leaf.Objects;
-                int numObjects = objects.Count;
+                
+                objectsDone.Clear();
 
-                for ( int a = 0; a < numObjects; a++ )
+                foreach ( MovableObject aObj in leaf.Objects.Values )
                 {
-                    MovableObject aObj = objects.Values[ a ];
-                    // Skip this object if collision not enabled
+                    // skip this object if collision not enabled
                     if ( ( aObj.QueryFlags & queryMask ) == 0 )
                         continue;
 
-                    if ( a < ( numObjects - 1 ) )
+                    // get it's bounds
+                    AxisAlignedBox aBox = aObj.GetWorldBoundingBox();
+
+                    // check object against the others in this node
+                    foreach ( MovableObject bObj in objectsDone )
                     {
-                        // Check object against others in this node
-                        int b = a;
-                        for ( ++b; b < numObjects; ++b )
+                        if ( aBox.Intersects( bObj.GetWorldBoundingBox() ) )
                         {
-                            MovableObject bObj = objects.Values[ b ];
-                            // Apply mask to b (both must pass)
-                            if ( ( bObj.QueryFlags & queryMask ) != 0 )
+                            // check if this pair is already reported
+                            IList interObjList = objIntersections.FindBucket( aObj );
+                            if ( interObjList == null || interObjList.Contains( bObj ) == false )
                             {
-                                AxisAlignedBox box1 = aObj.GetWorldBoundingBox();
-                                AxisAlignedBox box2 = bObj.GetWorldBoundingBox();
-
-                                if ( box1.Intersects( box2 ) )
-                                {
-                                    //Check if this pair is already reported
-                                    bool alreadyReported = false;
-                                    IList interObjList = objIntersections.FindBucket( aObj );
-                                    if ( interObjList != null )
-                                        if ( interObjList.Contains( bObj ) )
-                                            alreadyReported = true;
-
-                                    if ( !alreadyReported )
-                                    {
-                                        objIntersections.Add( aObj, bObj );
-                                        listener.OnQueryResult( aObj, bObj );
-                                    }
-                                }
+                                objIntersections.Add( aObj, bObj );
+                                listener.OnQueryResult( aObj, bObj );
                             }
                         }
                     }
-                    // Check object against brushes
 
-                    /*----This is for bounding sphere-----
-                    float radius = aObj.BoundingRadius;
-                    //-------------------------------------------*/
-
-                    for ( int brushPoint = 0; brushPoint < leaf.SolidBrushes.Length; brushPoint++ )
+                    // check object against brushes
+                    foreach ( BspBrush brush in leaf.SolidBrushes)
                     {
-                        BspBrush brush = leaf.SolidBrushes[ brushPoint ];
-
                         if ( brush == null )
                             continue;
 
-                        bool brushIntersect = true; // Assume intersecting for now
-
-                        /*----This is for bounding sphere-----
-                        IEnumerator planes = brush.Planes.GetEnumerator();
-
-                        while (planes.MoveNext())
-                        {
-                            float dist = ((Plane)planes.Current).GetDistance(pos);
-                            if (dist > radius)
-                            {
-                                // Definitely excluded
-                                brushIntersect = false;
-                                break;
-                            }
-                        }
-                        //-------------------------------------------*/
-
+                        // test brush against object
                         boundedVolume.planes = brush.Planes;
-                        //Test object as bounding box
-                        if ( !boundedVolume.Intersects( aObj.GetWorldBoundingBox() ) )
-                            brushIntersect = false;
-
-                        if ( brushIntersect )
+                        if ( boundedVolume.Intersects( aBox ) )
                         {
-                            //Check if this pair is already reported
-                            bool alreadyReported = false;
-                            IList interObjList = objIntersections.FindBucket( aObj );
-                            if ( interObjList != null )
-                                if ( interObjList.Contains( brush ) )
-                                    alreadyReported = true;
-
-                            if ( !alreadyReported )
+                            // check if this pair is already reported
+                            IList interBrushList = brushIntersections.FindBucket( aObj );
+                            if ( interBrushList == null || interBrushList.Contains( brush ) == false)
                             {
-                                //objIntersections.Add( aObj, brush );
+                                brushIntersections.Add( aObj, brush );
                                 // report this brush as it's WorldFragment
-                                brush.Fragment.FragmentType = WorldFragmentType.PlaneBoundedRegion;
                                 listener.OnQueryResult( aObj, brush.Fragment );
                             }
                         }
                     }
+
+                    objectsDone.Add(aObj);
                 }
+
                 ++leafPoint;
             }
         }
+
         #endregion
     }
 
@@ -1492,13 +1445,9 @@ namespace Axiom.SceneManagers.Bsp
 
         protected virtual void ProcessLeaf( BspNode leaf, Ray tracingRay, float maxDistance, float traceDistance )
         {
-            MovableObjectCollection objects = leaf.Objects;
-            int numObjects = objects.Count;
-
             //Check ray against objects
-            for ( int a = 0; a < numObjects; a++ )
+            foreach ( MovableObject obj in leaf.Objects.Values )
             {
-                MovableObject obj = objects.Values[ a ];
                 // Skip this object if collision not enabled
                 if ( ( obj.QueryFlags & queryMask ) == 0 )
                     continue;
@@ -1546,6 +1495,7 @@ namespace Axiom.SceneManagers.Bsp
                 StopRayTracing = true;
             }
         }
+
         #endregion
     }
 
@@ -1611,13 +1561,9 @@ namespace Axiom.SceneManagers.Bsp
 
         protected virtual void ProcessLeaf( BspNode leaf )
         {
-            MovableObjectCollection objects = leaf.Objects;
-            int numObjects = objects.Count;
-
             //Check sphere against objects
-            for ( int a = 0; a < numObjects; a++ )
+            foreach ( MovableObject obj in leaf.Objects.Values )
             {
-                MovableObject obj = objects.Values[ a ];
                 // Skip this object if collision not enabled
                 if ( ( obj.QueryFlags & queryMask ) == 0 )
                     continue;

@@ -38,6 +38,7 @@ using System.Diagnostics;
 
 using Axiom.Core;
 using Axiom.Scripting;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 

@@ -41,6 +41,7 @@ using Axiom.Collections;
 using Axiom.Math;
 using Axiom.Graphics;
 using System.Collections.Generic;
+using Axiom.Core.Collections;
 #endregion Namespace Declarations
 
 namespace Axiom.Core
@@ -77,7 +78,7 @@ namespace Axiom.Core
         /// <summary>
         /// Gets the list of scene objects attached to this scene node
         /// </summary>
-        public IList<MovableObject> Objects
+        public ICollection<MovableObject> Objects
         {
             get
             {
@@ -310,7 +311,7 @@ namespace Axiom.Core
                 {
                     this.isInSceneGraph = value;
                     // notify children
-                    foreach ( Node child in childNodes )
+                    foreach ( Node child in childNodes.Values )
                     {
                         ((SceneNode)child).IsInSceneGraph = this.isInSceneGraph;
                     }
@@ -379,7 +380,7 @@ namespace Axiom.Core
         /// <summary>
         ///		Need to clear list of child objects in addition to base class functionality.
         /// </summary>
-        public override void Clear()
+        internal override void Clear()
         {
             base.Clear();
 
@@ -449,6 +450,16 @@ namespace Axiom.Core
         }
 
         /// <summary>
+        /// Rekeys the scene object using its new Name
+        /// </summary>
+        /// <param name="obj"></param>
+        public virtual void NotifyAttachedObjectNameChanged(MovableObject obj)
+        {
+            objectList.Remove(obj.Name);
+            objectList.Add(obj);
+        }
+        
+        /// <summary>
         ///    Removes all currently attached SceneObjects from this SceneNode.
         /// </summary>
         /// <remarks>
@@ -462,42 +473,6 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        ///    Removes the specified object from this scene node.
-        /// </summary>
-        /// <remarks>
-        ///    Bounds for this SceneNode are also updated.
-        /// </remarks>
-        /// <param name="index">Index of the object to remove.</param>
-        public virtual MovableObject DetachObject( int index )
-        {
-            Debug.Assert( index < objectList.Count, "index < objectList.Count" );
-
-            MovableObject obj = objectList.Values[index];
-
-            //thild: remove at
-            objectList.RemoveAt(index);
-
-            // notify the object that it was removed (sending in null sets its parent scene node to null)
-            obj.NotifyAttached( null );
-
-            // Make sure bounds get updated (must go right to the top)
-            NeedUpdate();
-
-            return obj;
-        }
-
-        /// <summary>
-        /// Rekeys the scene object using its new Name
-        /// </summary>
-        /// <param name="obj"></param>
-        public virtual void NotifyAttachedObjectNameChanged( MovableObject obj )
-        {
-            //thild: remove by name
-            objectList.Remove( obj.Name );
-            objectList.Add( obj );
-        }
-
-        /// <summary>
         ///    Removes the specifed object from this scene node.
         /// </summary>
         /// <remarks>
@@ -508,7 +483,6 @@ namespace Axiom.Core
         {
             Debug.Assert( obj != null, "obj != null" );
 
-            //thild: remove by name
             objectList.Remove( obj.Name );
 
             // notify the object that it was removed (sending in null sets its parent scene node to null)
@@ -535,13 +509,6 @@ namespace Axiom.Core
             throw new IndexOutOfRangeException( "Invalid key specified." );
         }
 
-        public MovableObject GetObject( int index )
-        {
-            if ( objectList.Count <= index )
-                return null;
-           return objectList.Values[index];
-        }
-
         /// <summary>
         /// This method removes and destroys the child and all of its children.
         /// </summary>
@@ -559,33 +526,7 @@ namespace Axiom.Core
         public virtual void RemoveAndDestroyChild( String name )
         {
             SceneNode child = (SceneNode)this.GetChild( name );
-            child.RemoveAndDestroyAllChildren();
-                    
-            this.RemoveChild( child );
-            child.Creator.DestroySceneNode( child );
-        }
-
-        /// <summary>
-        /// This method removes and destroys the child and all of its children.
-        /// </summary>
-        /// <param name="index">index of the node to remove and destroy</param>
-        /// <remarks>
-        /// Unlike removeChild, which removes a single named child from this
-        /// node but does not destroy it, this method destroys the child
-        /// and all of it's children. 
-        /// <para>
-        /// Use this if you wish to recursively destroy a node as well as 
-        /// detaching it from it's parent. Note that any objects attached to
-        /// the nodes will be detached but will not themselves be destroyed.
-        /// </para>
-        /// </remarks>
-        public virtual void RemoveAndDestroyChild( int index )
-        {
-            SceneNode child = (SceneNode) this.GetChild( index );
-            child.RemoveAndDestroyAllChildren();
-
-            this.RemoveChild( child );
-            child.Creator.DestroySceneNode( child );
+            RemoveAndDestroyChild( child );
         }
 
         /// <summary>
@@ -602,7 +543,7 @@ namespace Axiom.Core
         /// the nodes will be detached but will not themselves be destroyed.
         /// </para>
         /// </remarks>
-        public void RemoveAndDestroyChild(SceneNode sceneNode)
+        public virtual void RemoveAndDestroyChild(SceneNode sceneNode)
         {
             sceneNode.RemoveAndDestroyAllChildren();
 
@@ -611,24 +552,27 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        /// Removes and destroys all children of this node.
+        /// Removes and destroys all children in the subtree of this node.
         /// </summary>
         /// <remarks>           
-        /// Use this to destroy all child nodes of this node and remove
-        /// them from the scene graph. Note that all objects attached to this
-        /// node will be detached but will not be destroyed.
+        /// Use this to destroy all nodes found in the child subtree of this node and remove
+        /// them from the scene graph. Note that all objects attached to the
+        /// nodes will be detached but will not be destroyed.
         /// </remarks>
         public virtual void RemoveAndDestroyAllChildren()
         {
-            while( this.childNodes.Count!=  0)
+            foreach (SceneNode sn in childNodes.Values)
             {
-                SceneNode sn = (SceneNode)this.childNodes.Values[ 0 ];
-                // increment iterator before destroying (iterator invalidated by 
-                // SceneManager::destroySceneNode because it causes removal from parent)
                 sn.RemoveAndDestroyAllChildren();
-                sn.Creator.DestroySceneNode( sn );
+
+                // destroy but prevent removing from internal list yet
+                this.RemoveChild(sn, false);
+                sn.Creator.DestroySceneNode(sn, false);
             }
+
+            // finish removal
             childNodes.Clear();
+
             NeedUpdate();
         }
 
@@ -697,10 +641,8 @@ namespace Axiom.Core
 
             // add visible objects to the render queue
             //objectListMeter.Enter();
-            for ( int i = 0; i < objectList.Count; i++ )
+            foreach (MovableObject obj in objectList.Values)
             {
-                MovableObject obj = objectList.Values[i];
-
                 // tell attached object about current camera in case it wants to know
                 //notifyCameraMeter.Enter();
                 obj.NotifyCurrentCamera( camera );
@@ -721,9 +663,8 @@ namespace Axiom.Core
             if ( includeChildren )
             {
                 // ask all child nodes to update the render queue with visible objects
-                for ( int i = 0; i < childNodes.Count; i++ )
+                foreach (SceneNode childNode in childNodes.Values )
                 {
-                    SceneNode childNode = (SceneNode)childNodes.Values[i];
                     if ( childNode.IsVisible )
                         childNode.FindVisibleObjects( camera, queue, includeChildren, displayNodes, onlyShadowCasters );
                 }
@@ -770,24 +711,21 @@ namespace Axiom.Core
             float radius = worldBoundingSphere.Radius = 0;
 
             // update bounds from attached objects
-            for ( int i = 0; i < objectList.Count; i++ )
+            foreach (MovableObject obj in objectList.Values)
             {
-                MovableObject obj = objectList.Values[i];
-
                 // update
                 worldAABB.Merge( obj.GetWorldBoundingBox( true ) );
                 radius = Utility.Max( obj.BoundingRadius, radius );
             }
 
             // merge with Children
-            for ( int i = 0; i < childNodes.Count; i++ )
+            foreach (SceneNode child in childNodes.Values)
             {
-                SceneNode child = (SceneNode)childNodes.Values[i];
-
                 // merge our bounding box with that of the child node
                 worldAABB.Merge( child.worldAABB );
                 radius = Utility.Max( child.worldBoundingSphere.Radius, radius );
             }
+
             worldBoundingSphere.Radius = radius;
 
         }

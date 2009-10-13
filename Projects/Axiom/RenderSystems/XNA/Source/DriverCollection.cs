@@ -46,7 +46,7 @@ namespace Axiom.RenderSystems.Xna
     /// <summary>
     /// Summary description for DriverCollection.
     /// </summary>
-    public class DriverCollection : UnsortedCollection<Driver>
+    public class DriverCollection : List<Driver>
     {
         public Driver this[ string description ]
         {

@@ -54,6 +54,9 @@ using Axiom.Media;
 using Axiom.Overlays;
 
 using ResourceHandle = System.UInt64;
+using Axiom.Graphics.Collections;
+using Axiom.Animating.Collections;
+using Axiom.Core.Collections;
 
 #endregion
 
@@ -109,7 +112,7 @@ namespace Axiom.Core
     ///	 </remarks>
     /// TODO: Thoroughly review node removal/cleanup.
     /// TODO: Review of method visibility/virtuality to ensure consistency.
-    public abstract class SceneManager : INamable 
+    public abstract class SceneManager
     {
         #region Fields
 
@@ -158,7 +161,7 @@ namespace Axiom.Core
         protected Camera cameraInProgress;
 
         /// <summary>A list of the valid cameras for this scene for easy lookup.</summary>
-        protected CameraList cameraList;
+        protected CameraCollection cameraList;
 
         protected Viewport currentViewport;
 
@@ -536,18 +539,18 @@ namespace Axiom.Core
 
         #endregion MovableobjectFactory fields
 
-        public IList<Camera> Cameras
+        public ICollection<Camera> Cameras
         {
             get { return this.cameraList.Values; }
         }
 
         /// <summary>A list of lights in the scene for easy lookup.</summary>
-        public IList<Light> Lights
+        public ICollection<MovableObject> Lights
         {
-            get { return (IList<Light>)this.GetMovableObjectCollection( LightFactory.TypeName ).Values; }
+            get { return this.GetMovableObjectCollection( LightFactory.TypeName ).Values; }
         }
 
-        public IList<SceneNode> SceneNodes
+        public ICollection<SceneNode> SceneNodes
         {
             get { return this.sceneNodeList.Values; }
         }
@@ -630,7 +633,7 @@ namespace Axiom.Core
 
         public SceneManager(string name)
         {
-            this.cameraList = new CameraList();
+            this.cameraList = new CameraCollection();
             this.sceneNodeList = new SceneNodeCollection();
             this.animationList = new AnimationCollection();
             this.animationStateList = new AnimationStateSet();
@@ -1026,13 +1029,11 @@ namespace Axiom.Core
         /// <param name="name"></param>
         public virtual void DestroySceneNode(string name)
         {
-            if ( this.sceneNodeList[ name ] == null )
+            SceneNode node;
+            if ( !this.sceneNodeList.TryGetValue(name, out node) )
             {
                 throw new AxiomException("SceneNode named '{0}' not found.", name);
             }
-
-            // grab the node from the list
-            SceneNode node = (SceneNode)this.sceneNodeList[ name ];
 
             this.DestroySceneNode( node );
         }
@@ -1043,11 +1044,20 @@ namespace Axiom.Core
         /// <param name="node">A SceneNode</param>
         public virtual void DestroySceneNode( SceneNode node )
         {
-            // Find any scene nodes which are tracking this node, and turn them off.
-            for ( int i = 0; i < this.autoTrackingSceneNodes.Count; i++ )
-            {
-                SceneNode autoNode = autoTrackingSceneNodes.Values[ i ];
+            DestroySceneNode(node, true);
+        }
 
+        /// <summary>
+        /// Internal method to destroy and remove a node from the scene. 
+        /// Do not remove from parent by option.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="removeFromParent"></param>
+        internal void DestroySceneNode( SceneNode node, bool removeFromParent )
+        {
+            // Find any scene nodes which are tracking this node, and turn them off.
+            foreach ( SceneNode autoNode in this.autoTrackingSceneNodes)
+            {
                 // Tracking this node
                 if ( autoNode.AutoTrackTarget == node )
                 {
@@ -1061,14 +1071,13 @@ namespace Axiom.Core
                 }
             }
 
-            if ( node.Parent != null )
+            if ( removeFromParent && node.Parent != null )
             {
                 node.Parent.RemoveChild( node );
             }
 
             // removes the node from the list
             sceneNodeList.Remove( node.Name );
-
         }
 
         /// <summary>
@@ -1292,22 +1301,6 @@ namespace Axiom.Core
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public SceneNode GetSceneNode(int index)
-        {
-            int count = this.sceneNodeList.Count;
-            if ( index > count || index < 0 )
-            {
-                throw new ArgumentOutOfRangeException( "Scene node index is invalid." );
-            }
-            SceneNode node = sceneNodeList.Values[ index ];
-            return node;
-        }
-
-        /// <summary>
-        ///     Retreives the scene node with the specified name.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
         public Entity GetEntity(string name)
         {
             //Entity entity = entityList[ name ];
@@ -1317,23 +1310,6 @@ namespace Axiom.Core
              * */
             //return entity;
             return (Entity)this.GetMovableObject( name, EntityFactory.TypeName );
-        }
-
-        /// <summary>
-        ///     Retreives the scene node with the specified name.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public Entity GetEntity(int index)
-        {
-            MovableObjectCollection entityList = this.GetMovableObjectCollection( EntityFactory.TypeName );
-            int count = entityList.Count;
-            if ( index > count || index < 0 )
-            {
-                throw new ArgumentOutOfRangeException( "Entity index is invalid." );
-            }
-            Entity entity = (Entity)entityList.Values[ index ];
-            return entity;
         }
 
         /// <summary>
@@ -1494,10 +1470,8 @@ namespace Axiom.Core
             // sphere to use for testing
             Sphere sphere = new Sphere();
 
-            for (int i = 0; i < lightList.Count; i++)
+            foreach (Light light in lightList)
             {
-                Light light = (Light)lightList.Values[ i ];
-
                 if (light.IsVisible)
                 {
                     if (light.Type == LightType.Directional)
@@ -2148,6 +2122,7 @@ namespace Axiom.Core
             }
         }
 
+        LightList tmpLightList = new LightList();
         /// <summary>
         ///		Internal method for rendering all the objects for a given light into the stencil buffer.
         /// </summary>
@@ -2218,7 +2193,7 @@ namespace Axiom.Core
             }
 
             // Add light to internal list for use in render call
-            LightList tmpLightList = new LightList();
+            tmpLightList.Clear();
             tmpLightList.Add( light );
 
             // Turn off color writing and depth writing
@@ -3222,9 +3197,9 @@ namespace Axiom.Core
             if ( this.cameraList != null )
             {
                 // notify the render system of each camera being removed
-                for ( int i = 0; i < this.cameraList.Count; i++ )
+                foreach (Camera cam in this.cameraList)
                 {
-                    this.targetRenderSystem.NotifyCameraRemoved( cameraList.Values[ i ] );
+                    this.targetRenderSystem.NotifyCameraRemoved( cam );
                 }
 
                 // clear the list
@@ -3265,7 +3240,6 @@ namespace Axiom.Core
         /// <param name="camera">Reference to the camera to remove.</param>
         public virtual void RemoveCamera( Camera camera )
         {
-            //thild: remove by name
             cameraList.Remove( camera.Name );
 
             // notify all render targets
@@ -4458,9 +4432,9 @@ namespace Axiom.Core
             this.UpdateSceneGraph( camera );
 
             // Auto-track nodes
-            for ( int i = 0; i < this.autoTrackingSceneNodes.Count; i++ )
+            foreach (SceneNode sn in autoTrackingSceneNodes)
             {
-                this.autoTrackingSceneNodes.Values[ i ].AutoTrack();
+                sn.AutoTrack();
             }
 
             // ask the camera to auto track if it has a target
@@ -4702,6 +4676,9 @@ namespace Axiom.Core
         /// <param name="camera"></param>
         protected internal virtual void UpdateSceneGraph( Camera camera )
         {
+	        // Process queued needUpdate calls 
+	        Node.ProcessQueuedUpdates();
+
             // Cascade down the graph updating transforms & world bounds
             // In this implementation, just update from the root
             // Smarter SceneManager subclasses may choose to update only
@@ -4785,7 +4762,6 @@ namespace Axiom.Core
 
         public void DestroyCamera( Camera camera )
         {
-            //thild: remove by name
             cameraList.Remove( camera.Name );
             this.targetRenderSystem.NotifyCameraRemoved( camera );
         }
@@ -4966,11 +4942,13 @@ namespace Axiom.Core
             }
 
             // Iterate over the lights we've found, max out at the limit of light textures
-            for ( int i = 0, sti = 0;
-                  i < this.lightsAffectingFrustum.Count && sti < this.shadowTextures.Count;
-                  i++ )
+            int sti = 0;
+            foreach ( Light light in this.lightsAffectingFrustum)
             {
-                Light light = lightsAffectingFrustum.Values[ i ];
+                // Check limit reached
+                if (sti == this.shadowTextures.Count)
+                    break; 
+
                 // Skip non-shadowing lights
                 if ( !light.CastShadows )
                 {
@@ -5265,13 +5243,13 @@ namespace Axiom.Core
                             localLightList.Clear();
 
                             // check whether we need to filter this one out
-                            if ( pass.RunOnlyOncePerLightType && pass.OnlyLightType != rendLightList.Values[ i ].Type )
+                            if ( pass.RunOnlyOncePerLightType && pass.OnlyLightType != rendLightList[ i ].Type )
                             {
                                 // skip this one
                                 continue;
                             }
 
-                            localLightList.Add( rendLightList.Values[ i ] );
+                            localLightList.Add( rendLightList[ i ] );
                             lightListToUse = localLightList;
                         }
                         else
@@ -5478,10 +5456,8 @@ namespace Axiom.Core
         {
             LightList tempLightList = new LightList();
 
-            for ( int i = 0; i < group.NumPriorityGroups; i++ )
+            foreach ( RenderPriorityGroup priorityGroup in group.PriorityGroups.Values )
             {
-                RenderPriorityGroup priorityGroup = group.GetPriorityGroup( i );
-
                 // sort the group first
                 priorityGroup.Sort( this.cameraInProgress );
 
@@ -5499,9 +5475,8 @@ namespace Axiom.Core
                 // Now iterate per light
                 this.illuminationStage = IlluminationRenderStage.PerLight;
 
-                for ( int li = 0; li < this.lightsAffectingFrustum.Count; li++ )
+                foreach ( Light light in lightsAffectingFrustum )
                 {
-                    Light light = lightsAffectingFrustum.Values[ li ];
                     // Set light state
 
                     if ( light.CastShadows )
@@ -5516,14 +5491,8 @@ namespace Axiom.Core
                     }
 
                     // render lighting passes for this light
-                    if ( tempLightList.Count == 0 )
-                    {
-                        tempLightList.Add( light );
-                    }
-                    else
-                    {
-                         tempLightList[ 0 ] = light;
-                    }
+                    tempLightList.Clear();
+                    tempLightList.Add(light);
 
                     this.RenderSolidObjects( priorityGroup.solidPassesDiffuseSpecular, false, tempLightList );
 
@@ -5542,10 +5511,8 @@ namespace Axiom.Core
             this.illuminationStage = IlluminationRenderStage.None;
 
             // Iterate again
-            for ( int i = 0; i < group.NumPriorityGroups; i++ )
+            foreach ( RenderPriorityGroup priorityGroup in group.PriorityGroups.Values )
             {
-                RenderPriorityGroup priorityGroup = group.GetPriorityGroup( i );
-
                 // Do transparents
                 this.RenderTransparentObjects( priorityGroup.transparentPasses, true );
             } // for each priority
@@ -5565,10 +5532,8 @@ namespace Axiom.Core
             it's just that all the transparents are at the end instead of them being
             interleaved as in the normal rendering loop. 
             */
-            for ( int i = 0; i < group.NumPriorityGroups; i++ )
+            foreach ( RenderPriorityGroup priorityGroup in group.PriorityGroups.Values)
             {
-                RenderPriorityGroup priorityGroup = group.GetPriorityGroup( i );
-
                 // sort the group first
                 priorityGroup.Sort( this.cameraInProgress );
 
@@ -5577,10 +5542,8 @@ namespace Axiom.Core
             }
 
             // iterate over lights, rendering all volumes to the stencil buffer
-            for ( int i = 0; i < this.lightsAffectingFrustum.Count; i++ )
+            foreach ( Light light in this.lightsAffectingFrustum)
             {
-                Light light = lightsAffectingFrustum.Values[ i ];
-
                 if ( light.CastShadows )
                 {
                     // clear the stencil buffer
@@ -5604,20 +5567,16 @@ namespace Axiom.Core
                 }
             } // for each light
 
-            for ( int i = 0; i < group.NumPriorityGroups; i++ )
+            foreach ( RenderPriorityGroup priorityGroup in group.PriorityGroups.Values)
             {
-                RenderPriorityGroup priorityGroup = group.GetPriorityGroup( i );
-
                 // Do non-shadowable solids
                 this.renderingNoShadowQueue = true;
                 this.RenderSolidObjects( priorityGroup.solidPassesNoShadow, true );
                 this.renderingNoShadowQueue = false;
             } // for each priority
 
-            for ( int i = 0; i < group.NumPriorityGroups; i++ )
+            foreach ( RenderPriorityGroup priorityGroup in group.PriorityGroups.Values )
             {
-                RenderPriorityGroup priorityGroup = group.GetPriorityGroup( i );
-
                 // Do transparents
                 this.RenderTransparentObjects( priorityGroup.transparentPasses, true );
             } // for each priority
@@ -5648,10 +5607,8 @@ namespace Axiom.Core
             }
 
             // Iterate through priorities
-            for ( int i = 0; i < group.NumPriorityGroups; i++ )
+            foreach ( RenderPriorityGroup priorityGroup in group.PriorityGroups.Values )
             {
-                RenderPriorityGroup priorityGroup = group.GetPriorityGroup( i );
-
                 // Sort the queue first
                 priorityGroup.Sort( this.cameraInProgress );
 
@@ -5686,10 +5643,8 @@ namespace Axiom.Core
             */
             // Iterate through priorities
             this.renderModulativeGroupsMeter.Enter();
-            for ( int i = 0; i < group.NumPriorityGroups; i++ )
+            foreach ( RenderPriorityGroup priorityGroup in group.PriorityGroups.Values )
             {
-                RenderPriorityGroup priorityGroup = group.GetPriorityGroup( i );
-
                 // Sort the queue first
                 priorityGroup.Sort( this.cameraInProgress );
 
@@ -5709,11 +5664,12 @@ namespace Axiom.Core
             {
                 this.illuminationStage = IlluminationRenderStage.RenderReceiverPass;
 
-                for ( int i = 0, sti = 0;
-                      i < this.lightsAffectingFrustum.Count && sti < this.shadowTextures.Count;
-                      i++ )
+                int sti = 0;
+                foreach (Light light in this.lightsAffectingFrustum)
                 {
-                    Light light = lightsAffectingFrustum.Values[ i ];
+                    // Check limit reached
+                    if (sti == this.shadowTextures.Count)
+                        break;
 
                     if ( !light.CastShadows )
                     {
@@ -5801,10 +5757,8 @@ namespace Axiom.Core
             this.renderModulativeLightsMeter.Exit();
 
             // Iterate again
-            for ( int i = 0; i < group.NumPriorityGroups; i++ )
+            foreach ( RenderPriorityGroup priorityGroup in group.PriorityGroups.Values )
             {
-                RenderPriorityGroup priorityGroup = group.GetPriorityGroup( i );
-
                 // Do transparents
                 this.RenderTransparentObjects( priorityGroup.transparentPasses, true );
             } // for each priority
@@ -5817,10 +5771,8 @@ namespace Axiom.Core
         private void RenderAdditiveTextureShadowedQueueGroupObjects( RenderQueueGroup group )
         {
             LightList tempLightList = new LightList();
-            for ( int i = 0; i < group.NumPriorityGroups; i++ )
+            foreach ( RenderPriorityGroup priorityGroup in group.PriorityGroups.Values )
             {
-                RenderPriorityGroup priorityGroup = group.GetPriorityGroup( i );
-
                 // Sort the queue first
                 priorityGroup.Sort( this.cameraInProgress );
 
@@ -5839,9 +5791,9 @@ namespace Axiom.Core
                 if ( this.illuminationStage == IlluminationRenderStage.None )
                 {
                     // Iterate over lights, render masked
-                    for ( int li = 0, sti = 0; li < this.lightsAffectingFrustum.Count; li++ )
+                    int sti = 0;
+                    foreach ( Light light in this.lightsAffectingFrustum)
                     {
-                        Light light = lightsAffectingFrustum.Values[ li ];
                         // Set light state
                         if ( light.CastShadows && sti < this.shadowTextures.Count )
                         {
@@ -5878,14 +5830,9 @@ namespace Axiom.Core
                         }
 
                         // render lighting passes for this light
-                        if ( tempLightList.Count == 0 )
-                        {
-                            tempLightList.Add( light );
-                        }
-                        else
-                        {
-                            tempLightList[ 0 ] = light;
-                        }
+                        tempLightList.Clear();
+                        tempLightList.Add( light );
+
                         this.RenderSolidObjects( priorityGroup.solidPassesDiffuseSpecular, false, tempLightList );
                     } // for each light
                     this.illuminationStage = IlluminationRenderStage.None;
@@ -5895,10 +5842,8 @@ namespace Axiom.Core
                 }
             } // for each priority
 
-            for ( int i = 0; i < group.NumPriorityGroups; i++ )
+            foreach ( RenderPriorityGroup priorityGroup in group.PriorityGroups.Values)
             {
-                RenderPriorityGroup priorityGroup = group.GetPriorityGroup( i );
-
                 // Do transparents
                 this.RenderTransparentObjects( priorityGroup.transparentPasses, true );
             } // for each priority
@@ -5915,10 +5860,8 @@ namespace Axiom.Core
             this.targetRenderSystem.AmbientLight = ColorEx.White;
 
             // Iterate through priorities
-            for ( int i = 0; i < group.NumPriorityGroups; i++ )
+            foreach ( RenderPriorityGroup priorityGroup in group.PriorityGroups.Values )
             {
-                RenderPriorityGroup priorityGroup = group.GetPriorityGroup( i );
-
                 // Do solids, override light list in case any vertex programs use them
                 this.RenderSolidObjects( priorityGroup.solidPasses, false, this.nullLightList );
 
@@ -6060,10 +6003,8 @@ namespace Axiom.Core
         {
             // Basic render loop
             // Iterate through priorities
-            for ( int i = 0; i < group.NumPriorityGroups; i++ )
+            foreach ( RenderPriorityGroup priorityGroup in group.PriorityGroups.Values )
             {
-                RenderPriorityGroup priorityGroup = group.GetPriorityGroup( i );
-
                 // Sort the queue first
                 priorityGroup.Sort( this.cameraInProgress );
 
@@ -6236,10 +6177,8 @@ namespace Axiom.Core
             MovableObjectCollection lightList = this.GetMovableObjectCollection( LightFactory.TypeName );
 
             // loop through the scene lights an add ones in range
-            for ( int i = 0; i < lightList.Count; i++ )
+            foreach ( Light light in lightList )
             {
-                Light light = (Light)lightList.Values[ i ];
-
                 if ( light.IsVisible )
                 {
                     if ( light.Type == LightType.Directional )
@@ -6373,11 +6312,6 @@ namespace Axiom.Core
                 if ( this.skyPlaneEntity != null )
                 {
                     this.RemoveEntity( this.skyPlaneEntity );
-					#warning Patch obsolete?
-					/*
-					//thild: remove by name
-+                    entityList.Remove( skyPlaneEntity.Name );
-					*/
                 }
 
                 // create entity for the plane, using the mesh name
@@ -6431,7 +6365,6 @@ namespace Axiom.Core
             }
             else
             {
-                //thild: remove by name
                 autoTrackingSceneNodes.Remove( node.Name );
             }
         }

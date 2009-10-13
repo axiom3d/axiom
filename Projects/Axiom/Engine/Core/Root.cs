@@ -55,6 +55,8 @@ using Axiom.Media;
 using Axiom.Overlays;
 using Axiom.ParticleSystems;
 using Axiom.Serialization;
+using Axiom.Graphics.Collections;
+using Axiom.Core.Collections;
 
 #endregion
 

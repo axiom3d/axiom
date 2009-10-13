@@ -38,6 +38,7 @@ using System;
 using Axiom.Graphics;
 using Axiom.Math;
 using MathHelper = Axiom.Math.Utility;
+using Axiom.Core.Collections;
 
 #endregion NAmespace Declarations
 

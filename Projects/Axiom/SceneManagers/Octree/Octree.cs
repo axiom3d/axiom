@@ -40,6 +40,7 @@ using Axiom;
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -103,31 +104,7 @@ namespace Axiom.SceneManagers.Octree
             {
                 return nodeList;
             }
-            //set{nodeList = value;}
         }
-
-       // public WireBoundingBox BoundingBox
-       // {
-            //thild: removed BoundingBox
-            //public WireBoundingBox BoundingBox
-            //{
-            //    get
-            //    {
-            //        // Create a WireBoundingBox if needed
-            //        if ( this.wireBoundingBox == null )
-            //        {
-            //            this.wireBoundingBox = new WireBoundingBox();
-            //        }
-
-            // 		this.wireBoundingBox.InitAABB( this.box );
-            //        return this.wireBoundingBox;
-            //    }
-
-            //   set
-            //   {
-            //       wireBoundingBox = value;
-            //   }
-       // }
 
         public Vector3 HalfSize
         {
@@ -280,7 +257,6 @@ namespace Axiom.SceneManagers.Octree
             }
         }
 
-        //thild: implemented Octree.WireBoundingBox
         public WireBoundingBox WireBoundingBox
         {
             get

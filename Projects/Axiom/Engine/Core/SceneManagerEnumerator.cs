@@ -39,6 +39,7 @@ using System.Collections.Generic;
 
 using Axiom.Graphics;
 using Axiom.Collections;
+using Axiom.Core.Collections;
 
 
 #endregion Namespace Declarations
@@ -200,13 +201,14 @@ namespace Axiom.Core
         public void RemoveFactory( SceneManagerFactory fact )
         {
             // destroy all instances for this factory						
-            for ( int i = 0; i < _instances.Values.Count; i++ )
+            SceneManagerCollection tempList = new SceneManagerCollection();
+            tempList.AddRange(_instances);
+            foreach ( SceneManager sm in tempList.Values)
             {
-                if ( _instances.Values[ i ].TypeName == fact.MetaData.typeName )
+                if ( sm.TypeName == fact.MetaData.typeName )
                 {
-                    fact.DestroyInstance(_instances.Values[i]);
-                    //thild: remove by name
-                    _instances.Remove(_instances.Values[i].Name);
+                    fact.DestroyInstance(sm);
+                    _instances.Remove(sm.Name);
                 }
             }
 
@@ -342,7 +344,6 @@ namespace Axiom.Core
         public void DestroySceneManager( SceneManager sm )
         {
             // erase instance from list
-            //thild: remove by name
             _instances.Remove( sm.Name );
 
             foreach ( SceneManagerFactory factory in _factories )

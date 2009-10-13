@@ -52,6 +52,7 @@ using LightType = Axiom.Graphics.LightType;
 using StencilOperation = Axiom.Graphics.StencilOperation;
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -1254,7 +1255,7 @@ namespace Axiom.RenderSystems.SlimDX9
 
             for ( ; i < limit && i < lightList.Count; i++ )
             {
-                SetD3DLight( i, lightList.Values[ i ] );
+                SetD3DLight( i, lightList[ i ] );
             }
 
             for ( ; i < numCurrentLights; i++ )

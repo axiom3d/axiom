@@ -47,6 +47,7 @@ using XNA = Microsoft.Xna.Framework;
 using XFG = Microsoft.Xna.Framework.Graphics;
 #if !(XBOX || XBOX360 || SILVERLIGHT)
 using SWF = System.Windows.Forms;
+using Axiom.Graphics.Collections;
 #endif
 
 #endregion Namespace Declarations
