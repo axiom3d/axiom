@@ -51,6 +51,7 @@ using Axiom.Media;
 
 using DX = Microsoft.DirectX;
 using D3D = Microsoft.DirectX.Direct3D;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -1258,7 +1259,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			for ( ; i < limit && i < lightList.Count; i++ )
 			{
-				SetD3DLight( i, lightList.Values[ i ] );
+				SetD3DLight( i, lightList[ i ] );
 			}
 
 			for ( ; i < numCurrentLights; i++ )

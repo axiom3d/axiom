@@ -37,6 +37,7 @@ using System;
 using System.Collections;
 
 using Axiom.Math;
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -87,17 +88,20 @@ namespace Axiom.Animating
 
 		#region Properties
 
-		/// <summary>
-		///		Gets the number of animations on this skeleton.
-		/// </summary>
-		public override int AnimationCount
+        /// <summary>
+        ///     Gets the animations associated with this skeleton
+        /// </summary>
+        public override ICollection<Animation> Animations
 		{
 			get
 			{
-				return skeleton.AnimationCount;
+				return skeleton.Animations;
 			}
 		}
 
+        /// <summary>
+        ///     Gets the master skeleton
+        /// </summary>
 		public Skeleton MasterSkeleton
 		{
 			get
@@ -143,10 +147,8 @@ namespace Axiom.Animating
 			}
 
 			// process children
-			for ( int i = 0; i < source.ChildCount; i++ )
+			foreach (Bone child in source.Children )
 			{
-				Bone child = (Bone)source.GetChild( i );
-
 				CloneBoneAndChildren( child, newBone );
 			}
 		}
@@ -211,16 +213,6 @@ namespace Axiom.Animating
 		public override Animation GetAnimation( string name )
 		{
 			return skeleton.GetAnimation( name );
-		}
-
-		/// <summary>
-		///		Returns the <see cref="Animation"/> object at the specified index.
-		/// </summary>
-		/// <param name="index">Index of the animation to retrieve.</param>
-		/// <returns>Animation at the specified index, or null if none exists.</returns>
-		public override Animation GetAnimation( int index )
-		{
-			return skeleton.GetAnimation( index );
 		}
 
 		/// <summary>

@@ -46,6 +46,8 @@ using Axiom.Graphics;
 using Tao.OpenGl;
 using System.Collections.Generic;
 using System.Text;
+using Axiom.Graphics.Collections;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -2072,8 +2074,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 			for ( ; i < limit && i < lightList.Count; i++ )
 			{
-				SetGLLight(i, lightList.Values[i]);
-				lights[i] = lightList.Values[i];
+				SetGLLight(i, lightList[i]);
+				lights[i] = lightList[i];
 			}
 
 			for ( ; i < numCurrentLights; i++ )

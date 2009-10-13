@@ -43,6 +43,7 @@ using Axiom.Collections;
 using Axiom.Media;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -1068,7 +1069,6 @@ namespace Axiom.Graphics
 					{
 						Viewport vp = _viewportList.Values[ 0 ];
 						OnViewportRemoved( vp );
-                        //thild: remove by key
 						this._viewportList.Remove( vp.ZOrder );
 					}
 					// Write final performance stats

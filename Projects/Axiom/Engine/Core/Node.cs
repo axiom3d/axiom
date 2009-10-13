@@ -42,6 +42,7 @@ using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
 using System.Collections.Generic;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -70,7 +71,7 @@ namespace Axiom.Core
     ///		e.g. SceneNode, Bone
     ///	</remarks>
     ///	<ogre headerVersion="1.39" sourceVersion="1.53" />
-    public abstract class Node : IRenderable, INamable
+    public abstract class Node : IRenderable
     {
         #region Events
         /// <summary>
@@ -91,7 +92,7 @@ namespace Axiom.Core
         protected Node parent;
         /// <summary>Collection of this nodes child nodes.</summary>
         protected NodeCollection childNodes;
-		public IList<Node> Children
+		public ICollection<Node> Children
         {
             get
             {
@@ -162,6 +163,7 @@ namespace Axiom.Core
         ///    Empty list of lights to return for IRenderable.Lights, since nodes are not lit.
         /// </summary>
         private LightList emptyLightList = new LightList();
+        private static readonly List<Node> _queuedForUpdate = new List<Node>();
 
         #endregion
 
@@ -245,40 +247,35 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        ///    Removes all child nodes from this node.
+        ///    Simply clears the collection of children.
         /// </summary>
-        public virtual void Clear()
+        internal virtual void Clear()
         {
             childNodes.Clear();
         }
 
-
         /// <summary>
-        ///		Removes all child Nodes attached to this node.
+        ///		Removes all child nodes attached to this node.
         /// </summary>
         public virtual void RemoveAllChildren()
         {
+            foreach (Node child in Children)
+            {
+                RemoveChild(child, false);
+            }
+
             Clear();
         }
 
 		public bool HasChild( Node node )
 		{
-			return childNodes.Contains( node );
+			return childNodes.ContainsValue( node );
 		}
 
 		public bool HasChild( string name )
 		{
 			return childNodes.ContainsKey( name );
 		}
-
-        /// <summary>
-        ///    Gets a child node by index.
-        /// </summary>
-        /// <param name="index"></param>
-        public Node GetChild( int index )
-        {
-            return childNodes.Values[ index ];
-        }
 
         /// <summary>
         ///    Gets a child node by name.
@@ -291,61 +288,43 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        ///    Removes the specifed node as a child of this node.
+        ///     Removes the child node with the specified name.
+        /// </summary>
+        /// <param name="name">Name of the child node</param>
+        /// <returns>The child node that was removed</returns>
+        public virtual Node RemoveChild(string name)
+        {
+            Node child;
+            if (!childNodes.TryGetValue(name, out child))
+                throw new AxiomException("Node named '{0}' not found.", name);
+
+            RemoveChild(child);
+
+            return child;
+        }
+
+        /// <summary>
+        ///    Removes the specifed node that is a child of this node.
         /// </summary>
         /// <param name="child"></param>
         public virtual void RemoveChild( Node child )
         {
-            int index = childNodes.IndexOf( child.Name );
-            if ( index != -1 )
-            {
-                RemoveChild( child, index );
-            }
-        }
-
-
-        /// <summary>
-        ///     Removes the child node with the specified name.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public virtual Node RemoveChild( string name )
-        {
-            int index = childNodes.IndexOf( name ); //getting the index prevent traversing 2x
-            if ( index != -1 )
-            {
-                Node child = childNodes.Values[ index ];
-                if ( child.name == name )
-                {
-                    RemoveChild( child, index );
-                    return child;
-                }
-            }
-
-            throw new AxiomException( "Node named '{0}' not found.!", name );
-            return null;
+            RemoveChild( child, true );
         }
 
         /// <summary>
-        /// 
+        /// Internal method to remove a child of this node, keeping it in the list of child nodes by option.
+        /// Useful when enumerating the list of children while removing them too.
         /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public virtual Node RemoveChild( int index )
+        /// <param name="child"></param>
+        /// <param name="removeFromInternalList"></param>
+        protected virtual void RemoveChild(Node child, bool removeFromInternalList)
         {
-            if ( index < 0 || index >= childNodes.Count )
-                throw new ArgumentOutOfRangeException( string.Format( "The index must be greater then or equal to 0 and less then {0}, the number of items.", childNodes.Count ) );
-            Node child = childNodes.Values[index];
-            RemoveChild( child, index );
-            return child;
-        }
+            CancelUpdate(child);
+            child.NotifyOfNewParent(null);
 
-
-        protected virtual void RemoveChild( Node child, int index )
-        {
-            CancelUpdate( child );
-            child.NotifyOfNewParent( null );
-            childNodes.RemoveAt( index );
+            if (removeFromInternalList)
+                childNodes.Remove(child.Name);
         }
 
         /// <summary>
@@ -708,13 +687,18 @@ namespace Axiom.Core
         /// </remarks>
         public virtual void NeedUpdate()
         {
+            NeedUpdate( false );
+        }
+
+        public virtual void NeedUpdate( bool forceParentUpdate )
+        {
             needParentUpdate = true;
             needChildUpdate = true;
             needTransformUpdate = true;
             needRelativeTransformUpdate = true;
 
             // make sure we are not the root node
-            if ( parent != null && !isParentNotified )
+            if ( parent != null && ( !isParentNotified || forceParentUpdate ) )
             {
                 parent.RequestUpdate( this );
                 isParentNotified = true;
@@ -724,6 +708,22 @@ namespace Axiom.Core
             childrenToUpdate.Clear();
         }
 
+        public static void QueueNeedUpdate(Node node)
+        {
+            if ( !_queuedForUpdate.Contains( node ) )
+            {
+                _queuedForUpdate.Add( node );
+            }
+        }
+
+        public static void ProcessQueuedUpdates()
+        {
+            foreach ( var node in _queuedForUpdate )
+            {
+                node.NeedUpdate( true );
+            }
+            _queuedForUpdate.Clear();
+        }
 
         /// <summary>
         ///		Called by children to notify their parent that they need an update.
@@ -754,7 +754,6 @@ namespace Axiom.Core
         public virtual void CancelUpdate( Node child )
         {
             // remove this from the list of children to update
-            //thild: remove by name
             childrenToUpdate.Remove( child.Name );
 
             // propogate this changed if we are done
@@ -829,8 +828,10 @@ namespace Axiom.Core
                 if ( parent != value )
                 {
                     parent = value;
+                    
                     if ( parent != null )
                         parent.RemoveChild( this );
+
                     if ( value != null )
                         value.AddChild( this );
                 }
@@ -1246,16 +1247,14 @@ namespace Axiom.Core
 				{
 					NodeUpdated(this);
 				}
-
             }
 
             // see if we need to process all
             if ( needChildUpdate || hasParentChanged )
             {
                 // update all children
-                for ( int i = 0; i < childNodes.Count; i++ )
+                foreach (Node child in childNodes.Values)
                 {
-                    Node child = childNodes.Values[ i ];
                     child.Update( true, true );
                 }
 
@@ -1264,9 +1263,8 @@ namespace Axiom.Core
             else
             {
                 // just update selected children
-                for ( int i = 0; i < childrenToUpdate.Count; i++ )
+                foreach (Node child in childrenToUpdate.Values)
                 {
-                    Node child = childrenToUpdate.Values[ i ];
                     child.Update( true, false );
                 }
 

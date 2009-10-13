@@ -43,6 +43,7 @@ using Axiom.Graphics;
 using Axiom.Math;
 
 using Real = System.Single;
+using Axiom.Core.Collections;
 
 #endregion namespace Declarations
 
@@ -707,6 +708,13 @@ namespace Axiom.Core
 		{
 			Initialize();
 		}
+
+        public Frustum(string name)
+            : base(name)
+        {
+            Initialize();
+        }
+
 		private void Initialize()
 		{
 			for (int i = 0; i < 6; i++)
@@ -752,13 +760,6 @@ namespace Axiom.Core
 			lastLinkedObliqueProjPlane = new Plane();
 
 			UpdateView();
-		}
-
-		//thild
-		public Frustum(string name)
-			: base(name)
-		{
-			Initialize();
 		}
 
 		#endregion

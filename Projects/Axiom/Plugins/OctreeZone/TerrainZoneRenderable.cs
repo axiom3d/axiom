@@ -6,6 +6,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 using System.Collections;
+using Axiom.Core.Collections;
 
 namespace OctreeZone
 {

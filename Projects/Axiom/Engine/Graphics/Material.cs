@@ -48,6 +48,8 @@ using Axiom.Core;
 
 using ResourceHandle = System.UInt64;
 using Real = System.Single;
+using Axiom.Core.Collections;
+using Axiom.Graphics.Collections;
 
 #endregion
 

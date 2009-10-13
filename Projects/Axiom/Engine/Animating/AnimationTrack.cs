@@ -41,6 +41,7 @@ using Axiom.Math;
 using Axiom.Core;
 using Axiom.Collections;
 using Axiom.Graphics;
+using Axiom.Animating.Collections;
 
 #endregion Namespace Declarations
 
@@ -89,7 +90,7 @@ namespace Axiom.Animating
 		/// <summary>
 		///		Collection of key frames in this track.
 		///	</summary>
-		protected KeyFrameCollection keyFrameList = new KeyFrameCollection();
+		protected KeyFrameList keyFrameList = new KeyFrameList();
 
 		#endregion Fields
 
@@ -134,7 +135,7 @@ namespace Axiom.Animating
 		/// <summary>
 		///		Collection of the KeyFrames present in this AnimationTrack.
 		/// </summary>
-		public KeyFrameCollection KeyFrames
+		public KeyFrameList KeyFrames
 		{
 			get
 			{

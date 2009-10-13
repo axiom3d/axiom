@@ -45,7 +45,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
     /// <summary>
         /// Summary description for ShaderPassCollection.
     /// </summary>
-    public class ShaderPassCollection : List<ShaderPass> //thild
+    public class ShaderPassCollection : List<ShaderPass>
     {
         #region Constructors
 
@@ -63,5 +63,5 @@ namespace Axiom.SceneManagers.Bsp.Collections
         //public AnimationCollection(P parent) : base(parent) {}
 
         #endregion
-            }
-            }
+    }
+}

@@ -759,9 +759,8 @@ namespace Axiom.Core
 					"Using only highest LOD level for mesh " + msh.Name );
 			// queue this entities submeshes and choice of material
 			// also build the lists of geometry to be used for the source of lods
-			for ( int i = 0; i < ent.SubEntityCount; ++i )
+			foreach ( SubEntity se in ent.SubEntities )
 			{
-				SubEntity se = ent.GetSubEntity( i );
 				QueuedSubMesh q = new QueuedSubMesh();
 
 				// Get the geometry for this SubMesh
@@ -798,16 +797,14 @@ namespace Axiom.Core
 		/// <param name=node>Pointer to the node to use to provide a set of Entity templates</param>
 		public void AddSceneNode( SceneNode node )
 		{
-			for ( int i = 0; i < node.ObjectCount; i++ )
+			foreach (MovableObject mobj in node.Objects)
 			{
-				MovableObject mobj = node.GetObject( i );
 				if ( mobj is Entity )
 					AddEntity( (Entity)mobj, node.DerivedPosition, node.DerivedOrientation, node.DerivedScale );
 			}
-			// Iterate through all the child-nodes
-			for ( int i = 0; i < node.ChildCount; i++ )
+			// recursively add the child-nodes
+			foreach (SceneNode child in node.Children)
 			{
-				SceneNode child = (SceneNode)node.GetChild( i );
 				AddSceneNode( child );
 			}
 		}

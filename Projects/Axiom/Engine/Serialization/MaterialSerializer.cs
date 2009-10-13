@@ -46,6 +46,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Scripting;
 using System.Collections.Generic;
+using Axiom.Core.Collections;
 
 #endregion  Namespace Declarations
 

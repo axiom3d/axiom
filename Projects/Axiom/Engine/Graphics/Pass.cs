@@ -40,6 +40,7 @@ using System.Diagnostics;
 using Axiom.Configuration;
 using Axiom.Core;
 using System.Collections.Generic;
+using Axiom.Graphics.Collections;
 
 #endregion Namespace Declarations
 
@@ -1977,7 +1978,7 @@ namespace Axiom.Graphics
 		/// <returns>TextureUnitState at the specified index.</returns>
 		public TextureUnitState GetTextureUnitState( int index )
 		{
-			Debug.Assert( index < textureUnitStates.Count, "index < textureUnitStates.Count" );
+			Debug.Assert( index >= 0 && index < textureUnitStates.Count, "index out of range" );
 
 			return (TextureUnitState)textureUnitStates[ index ];
 		}

@@ -44,6 +44,7 @@ using Axiom.Media;
 
 using Tao.OpenGl;
 using Axiom.Math;
+using Axiom.Graphics.Collections;
 
 #endregion Namespace Declarations
 

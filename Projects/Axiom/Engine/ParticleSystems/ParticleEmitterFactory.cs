@@ -37,6 +37,7 @@ using System;
 using System.Collections;
 
 using Axiom.Collections;
+using Axiom.ParticleSystems.Collections;
 
 #endregion Namespace Declarations
 

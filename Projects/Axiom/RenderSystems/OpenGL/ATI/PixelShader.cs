@@ -37,6 +37,8 @@ using System;
 
 using Axiom.Core;
 
+using Axiom.Core.Collections;
+
 using Tao.OpenGl;
 
 #endregion Namespace Declarations

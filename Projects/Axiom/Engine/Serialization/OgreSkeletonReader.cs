@@ -319,9 +319,8 @@ namespace Axiom.Serialization
 					WriteBoneParent( writer, bone, (Bone)bone.Parent );
 			}
 
-			for ( int i = 0; i < skeleton.AnimationCount; ++i )
+			foreach (Animation anim in skeleton.Animations )
 			{
-				Animation anim = skeleton.GetAnimation( i );
 				WriteAnimation( writer, anim );
 			}
 

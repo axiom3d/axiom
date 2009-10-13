@@ -8,6 +8,7 @@ using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -225,7 +226,7 @@ namespace Axiom.Demos
 
             for ( int i = 0; i < belowWaterEnts.Count; i++ )
             {
-                ( (Entity)belowWaterEnts.Values[ i ] ).IsVisible = false;
+                ( (Entity)belowWaterEnts[ i ] ).IsVisible = false;
             }
 
             theCam.EnableReflection( reflectionPlane );
@@ -237,7 +238,7 @@ namespace Axiom.Demos
 
             for ( int i = 0; i < belowWaterEnts.Count; i++ )
             {
-                ( (Entity)belowWaterEnts.Values[ i ] ).IsVisible = true;
+                ( (Entity)belowWaterEnts[ i ] ).IsVisible = true;
             }
 
             theCam.DisableReflection();
@@ -249,7 +250,7 @@ namespace Axiom.Demos
 
             for ( int i = 0; i < aboveWaterEnts.Count; i++ )
             {
-                ( (Entity)aboveWaterEnts.Values[ i ] ).IsVisible = false;
+                ( (Entity)aboveWaterEnts[ i ] ).IsVisible = false;
             }
         }
 
@@ -259,7 +260,7 @@ namespace Axiom.Demos
 
             for ( int i = 0; i < aboveWaterEnts.Count; i++ )
             {
-                ( (Entity)aboveWaterEnts.Values[ i ] ).IsVisible = true;
+                ( (Entity)aboveWaterEnts[ i ] ).IsVisible = true;
             }
         }
 

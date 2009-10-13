@@ -240,7 +240,7 @@ namespace Axiom.Demos
                     l.Diffuse = ColorEx.Yellow;
                     l.SetAttenuation( 1000000f, 0f, 0, 0.0000001f ); // Make lights go a long way
                     l.Direction = new Vector3( 0, -0.1f, 1f );
-                    headNode.Lights.Add( ltName, l );
+
                     headNode.AttachObject( l );
                     break;
 
@@ -265,7 +265,7 @@ namespace Axiom.Demos
             l.Diffuse = color;
             l.SetAttenuation( 1000000f, 0f, 0, 0.0000001f ); // Make lights go a long way
             Billboard lightBoard = lightSet.CreateBillboard( pos, color );
-            lightNode.Lights.Add( name, l );
+
             return l;
         }
 

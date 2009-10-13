@@ -41,6 +41,7 @@ using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Math.Collections;
 using System.Collections.Generic;
+using Axiom.Core.Collections;
 #endregion Namespace Declarations
 
 namespace Axiom.Core

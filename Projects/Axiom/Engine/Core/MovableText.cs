@@ -251,7 +251,7 @@ namespace Axiom.Core
         }
 
         public MovableText( string name, string caption, string fontName, int charHeight, ColorEx color )
-            : base(name) // thild
+            : base(name)
         {
             
             if ( name == "" )

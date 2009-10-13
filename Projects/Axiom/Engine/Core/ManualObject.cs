@@ -46,6 +46,8 @@ using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Graphics;
 using Axiom.Math;
+using Axiom.Graphics.Collections;
+using Axiom.Core.Collections;
 
 #endregion
 
@@ -118,8 +120,6 @@ namespace Axiom.Core
 
         public ManualObject(string name) : base(name)
         {
-            //thild: removed
-            //base.Name = name;
             this.dynamic = false;
             this.currentSection = null;
             this.firstVertex = true;

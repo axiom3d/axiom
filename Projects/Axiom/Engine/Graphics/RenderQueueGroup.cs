@@ -40,6 +40,8 @@ using System.Diagnostics;
 using Axiom.Core;
 using Axiom.Collections;
 using Axiom.Graphics;
+using System.Collections.Generic;
+using Axiom.Graphics.Collections;
 
 #endregion Namespace Declarations
 
@@ -73,7 +75,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		List of priority groups.
 		/// </summary>
-        protected HashList<ushort, RenderPriorityGroup> priorityGroups = new HashList<ushort, RenderPriorityGroup>();
+        private RenderPriorityGroupList priorityGroups = new RenderPriorityGroupList();
 		/// <summary>
 		///		Are shadows enabled for this group?
 		/// </summary>
@@ -110,56 +112,42 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="item"></param>
 		/// <param name="priority"></param>
-		public void AddRenderable( IRenderable item, Technique technique, ushort priority )
-		{
-		    RenderPriorityGroup group = null;
+        public void AddRenderable(IRenderable item, Technique technique, ushort priority)
+        {
+            RenderPriorityGroup group = null;
 
-		    // see if there is a current queue group for this group id
-		    if ( !priorityGroups.ContainsKey( priority ) )
-		    {
-		        // create a new queue group for this group id
-		        group = new RenderPriorityGroup( this, splitPassesByLightingType, splitNoShadowPasses, splitPassesByLightingType );
+            // see if there is a current queue group for this group id
+            if (!PriorityGroups.ContainsKey(priority))
+            {
+                // create a new queue group for this group id
+                group = new RenderPriorityGroup(this, splitPassesByLightingType, splitNoShadowPasses, splitPassesByLightingType);
 
-		        // add the new group to cached render group
-		        priorityGroups.Add( priority, group );
-		    }
-		    else
-		    {
-		        // retreive the existing queue group
-		        group = (RenderPriorityGroup)priorityGroups.GetByKey( priority );
-		    }
+                // add the new group to cached render group
+                PriorityGroups.Add(priority, group);
+            }
+            else
+            {
+                // retreive the existing queue group
+                group = PriorityGroups[priority];
+            }
 
-		    // add the renderable to the appropriate group
-		    group.AddRenderable( item, technique );
-		}
+            // add the renderable to the appropriate group
+            group.AddRenderable(item, technique);
+        }
 
 		/// <summary>
 		///		Clears all the priority groups within this group.
 		/// </summary>
-		public void Clear()
-		{
-			// loop through each priority group and clear it's items.  We don't wanna clear the group
-			// list because it probably won't change frame by frame.
-			for ( int i = 0; i < priorityGroups.Count; i++ )
-			{
-				RenderPriorityGroup group = (RenderPriorityGroup)priorityGroups[ i ];
-
-				// clear the RenderPriorityGroup
-				group.Clear();
-			}
-		}
-
-		/// <summary>
-		///    Gets the hashlist entry for the priority group at the specified index.
-		/// </summary>
-		/// <param name="index"></param>
-		/// <returns></returns>
-		public RenderPriorityGroup GetPriorityGroup( int index )
-		{
-			Debug.Assert( index < priorityGroups.Count, "index < priorityGroups.Count" );
-
-			return (RenderPriorityGroup)priorityGroups[ index ];
-		}
+        public void Clear()
+        {
+            // loop through each priority group and clear it's items.  We don't wanna clear the group
+            // list because it probably won't change frame by frame.
+            foreach ( RenderPriorityGroup group in PriorityGroups.Values )
+            {
+                // clear the RenderPriorityGroup
+                group.Clear();
+            }
+        }
 
 		#endregion
 
@@ -168,16 +156,27 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Gets the number of priority groups within this queue group.
 		/// </summary>
-		public int NumPriorityGroups
-		{
-			get
-			{
-				return priorityGroups.Count;
-			}
-		}
+        public int NumPriorityGroups
+        {
+            get
+            {
+                return PriorityGroups.Count;
+            }
+        }
 
-		/// <summary>
-		///		Indicate whether a given queue group will be doing any shadow setup.
+        /// <summary>
+        /// List of priority groups.
+        /// </summary>
+        public RenderPriorityGroupList PriorityGroups
+        {
+            get
+            {
+                return priorityGroups;
+            }
+        }
+
+        /// <summary>
+        ///		Indicate whether a given queue group will be doing any shadow setup.
 		/// </summary>
 		/// <remarks>
 		///		This method allows you to inform the queue about a queue group, and to 
@@ -205,68 +204,68 @@ namespace Axiom.Graphics
 		///		Gets/Sets whether or not the queue will split passes by their lighting type,
 		///		ie ambient, per-light and decal. 
 		/// </summary>
-		public bool SplitPassesByLightingType
-		{
-			get
-			{
-				return splitPassesByLightingType;
-			}
-			set
-			{
-				splitPassesByLightingType = value;
+        public bool SplitPassesByLightingType
+        {
+            get
+            {
+                return splitPassesByLightingType;
+            }
+            set
+            {
+                splitPassesByLightingType = value;
 
-				// set the value for all priority groups as well
-				for ( int i = 0; i < priorityGroups.Count; i++ )
-				{
-					GetPriorityGroup( i ).SplitPassesByLightingType = splitPassesByLightingType;
-				}
-			}
-		}
+                // set the value for all priority groups as well
+                foreach ( RenderPriorityGroup group in PriorityGroups.Values)
+                {
+                    group.SplitPassesByLightingType = splitPassesByLightingType;
+                }
+            }
+        }
 
 		/// <summary>
 		///		Gets/Sets whether or not the queue will split passes which have shadow receive
 		///		turned off (in their parent material), which is needed when certain shadow
 		///		techniques are used.
 		/// </summary>
-		public bool SplitNoShadowPasses
-		{
-			get
-			{
-				return splitNoShadowPasses;
-			}
-			set
-			{
-				splitNoShadowPasses = value;
+        public bool SplitNoShadowPasses
+        {
+            get
+            {
+                return splitNoShadowPasses;
+            }
+            set
+            {
+                splitNoShadowPasses = value;
 
-				// set the value for all priority groups as well
-				for ( int i = 0; i < priorityGroups.Count; i++ )
-				{
-					GetPriorityGroup( i ).SplitNoShadowPasses = splitNoShadowPasses;
-				}
-			}
-		}
+                // set the value for all priority groups as well
+                foreach ( RenderPriorityGroup group in PriorityGroups.Values)
+                {
+                    group.SplitNoShadowPasses = splitNoShadowPasses;
+                }
+            }
+        }
 
 		/// <summary>
 		///		Gets/Sets whether or not the queue will disallow receivers when certain shadow
 		///		techniques are used.
 		/// </summary>
-		public bool ShadowCastersCannotBeReceivers
-		{
-			get
-			{
-				return shadowCastersCannotBeReceivers;
-			}
-			set
-			{
-				shadowCastersCannotBeReceivers = value;
+        public bool ShadowCastersCannotBeReceivers
+        {
+            get
+            {
+                return shadowCastersCannotBeReceivers;
+            }
+            set
+            {
+                shadowCastersCannotBeReceivers = value;
 
-				// set the value for all priority groups as well
-				for ( int i = 0; i < priorityGroups.Count; i++ )
-				{
-					GetPriorityGroup( i ).ShadowCastersCannotBeReceivers = shadowCastersCannotBeReceivers;
-				}
-			}
-		}
+                // set the value for all priority groups as well
+                foreach ( RenderPriorityGroup group in PriorityGroups.Values)
+                {
+                    group.ShadowCastersCannotBeReceivers = shadowCastersCannotBeReceivers;
+                }
+            }
+        }
 
 		#endregion
 	}

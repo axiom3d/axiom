@@ -149,8 +149,18 @@ namespace Axiom.Demos
             {
                 child.Scale = Vector3.UnitScale * 1.3f;
 
-                AnimationState state = ((Entity)child.GetObject(0)).GetAnimationState("Walk");
+                // get the robot entity attached
+                // no indexed access in current impl, work with enumeration
+                Entity entity = null;
+                foreach (Entity e in child.Objects)
+                {
+                    entity = e; break;
+                }
+
+                // get the animation state
+                AnimationState state = entity.GetAnimationState("Walk");
                 state.IsEnabled = true;
+
                 robotStates.Add(state);
             }
 

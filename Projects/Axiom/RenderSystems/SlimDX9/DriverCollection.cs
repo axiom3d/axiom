@@ -8,7 +8,7 @@ namespace Axiom.RenderSystems.SlimDX9
     /// <summary>
     /// Summary description for DriverCollection.
     /// </summary>
-    public class DriverCollection : UnsortedCollection<Driver>
+    public class DriverCollection : List<Driver>
     {
         /// <summary>
         /// 

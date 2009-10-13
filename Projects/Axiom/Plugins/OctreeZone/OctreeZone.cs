@@ -520,7 +520,7 @@ namespace OctreeZone
 
                 bool vis = true;
 
-                foreach (PCZSceneNode sn in octant.NodeList)
+                foreach (PCZSceneNode sn in octant.NodeList.Values)
                 {
                     // if the scene node is already visible, then we can skip it
                     if (sn.LastVisibleFrame != mLastVisibleFrame ||

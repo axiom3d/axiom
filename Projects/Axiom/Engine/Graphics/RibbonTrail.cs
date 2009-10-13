@@ -403,7 +403,7 @@ namespace Axiom.Graphics
 
             if ( this.parentNode != null )
             {
-                this.parentNode.NeedUpdate();
+                Node.QueueNeedUpdate( this.parentNode );
                 // Need to dirty the parent node, but can't do it using needUpdate() here 
                 // since we're in the middle of the scene graph update (node listener), 
                 // so re-entrant calls don't work. Queue.

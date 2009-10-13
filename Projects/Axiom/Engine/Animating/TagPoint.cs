@@ -38,6 +38,7 @@ using System;
 using Axiom.Math;
 using Axiom.Core;
 using Axiom.Collections;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 			
