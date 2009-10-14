@@ -60,11 +60,11 @@ namespace Axiom.RenderSystems.SlimDX9
         }
 
 
-        //protected override void WndProc(ref Message m)
-        //{
-        //    if (!Win32MessageHandling.WndProc(renderWindow, ref m))
-        //        base.WndProc(ref m);
-        //}
+        protected override void WndProc( ref Message m )
+        {
+            if ( !Win32MessageHandling.WndProc( renderWindow, ref m ) )
+                base.WndProc( ref m );
+        }
 
         /// <summary>
         /// 

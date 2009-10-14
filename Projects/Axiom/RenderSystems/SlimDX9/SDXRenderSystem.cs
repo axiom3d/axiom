@@ -836,7 +836,7 @@ namespace Axiom.RenderSystems.SlimDX9
                 // that may need inverted vertex winding or texture flipping
                 this.CullingMode = cullingMode;
 
-                DX.Viewport d3dvp = new DX.Viewport();
+                D3D.Viewport d3dvp = new D3D.Viewport();
 
                 // set viewport dimensions
                 d3dvp.X = viewport.ActualLeft;
@@ -966,7 +966,7 @@ namespace Axiom.RenderSystems.SlimDX9
             {
                 case OperationType.PointList:
                     primType = D3D.PrimitiveType.PointList;
-                    primCount = cnt;
+                    primCount = op.vertexData.vertexCount;
                     break;
                 case OperationType.LineList:
                     primType = D3D.PrimitiveType.LineList;
@@ -996,7 +996,7 @@ namespace Axiom.RenderSystems.SlimDX9
             this.vertexCount += vertexCount;
 
             // are we gonna use indices?
-            if ( op.useIndices )
+            if ( op.useIndices && primType != D3D.PrimitiveType.PointList )
             {
                 SDXHardwareIndexBuffer idxBuffer = (SDXHardwareIndexBuffer)op.indexData.indexBuffer;
 
@@ -2382,6 +2382,12 @@ namespace Axiom.RenderSystems.SlimDX9
             if ( d3dCaps.MaxUserClipPlanes > 0 )
             {
                 _rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.UserClipPlanes );
+            }
+
+            //3d Textures
+            if ( ( d3dCaps.TextureCaps & D3D.TextureCaps.VolumeMap ) != 0 )
+            {
+                _rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.Texture3D );
             }
 
             int vpMajor = d3dCaps.VertexShaderVersion.Major;
