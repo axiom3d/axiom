@@ -419,7 +419,12 @@ namespace Axiom.Graphics
 		///    Executes for each fragment (or pixel) for primitives that are passed through the pipeline
 		///    while this program is active..
 		/// </summary>
-		Fragment
+		Fragment,
+       /// <summary>
+        ///    Executes for each geometry for primitives that are passed through the pipeline
+        ///    while this program is active..
+        /// </summary>
+        Geometry
 	}
 
 	/// <summary>
