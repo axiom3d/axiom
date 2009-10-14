@@ -801,87 +801,100 @@ namespace Axiom.Graphics
 			RenderSystemCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
 			int numAvailTexUnits = caps.TextureUnitCount;
 
-			// check requirements for each pass
-			for ( int i = 0; i < _passes.Count; i++ )
-			{
-				Pass pass = _passes[ i ];
+		    int passNum = 0;
 
-				int numTexUnitsRequested = pass.TextureUnitStageCount;
+            for (int i = 0; i < _passes.Count; i++, passNum++)
+            {
+                Pass currPass = _passes[ i ];
 
-				if ( pass.HasFragmentProgram )
-				{
-					// check texture units
+                // Adjust pass index
+                // TODO: currPass.Index = passNum;
 
-					// check fragment program version
-					if ( !pass.FragmentProgram.IsSupported )
-					{
-						// can't do this one
-						return String.Format( "Pass {0}: Fragment Program {1} cannot be used - {2}", 
-                                              i,
-                                              pass.FragmentProgramName,
-                                              pass.FragmentProgram.HasCompileError ? "Compile Error." : "Not Supported." );
-					}
+                // Check for advanced blending operation support
+#warning Capabilities.AdvancedBlendOperation implementation required
+                //if ( ( currPass.SceneBlendingOperation != SceneBlendingOperation.Add || currPass.SceneBlendingOperationAlpha != SceneBlendingOperation.Add ) &&
+                //    !caps.HasCapability( Capabilities.AdvancedBlendOperations ) )
+                //{
+                //    return false;
+                //}
 
-					//TODO : ?? numAvailTexUnits = pass.FragmentProgram.SamplerCount;
-					if ( numTexUnitsRequested > numAvailTexUnits )
-					{
-                        if ( !autoManageTextureUnits )
+                // Check texture unit requirements
+                int numTexUnitsRequired = currPass.TextureUnitStageCount;
+
+                // Don't trust getNumTextureUnits for programmable
+                if (!currPass.HasFragmentProgram)
+                {
+                    if (numTexUnitsRequired > numAvailTexUnits)
+                    {
+                        if (!autoManageTextureUnits)
                         {
-						    // The user disabled auto pass split
-						    return String.Format( "Pass {0}: Too many texture units for the current hardware and no splitting allowed.", i );
+                            // The user disabled auto pass split
+                            return String.Format("Pass {0}: Too many texture units for the current hardware and no splitting allowed.", i);
                         }
-                        else if ( pass.HasVertexProgram )
+                        else if (currPass.HasVertexProgram)
                         {
-						    // Can't do this one, and can't split a programmable pass
-						    return String.Format( "Pass {0}: Too many texture units for the current hardware and cannot split programmable passes.", i );
+                            // Can't do this one, and can't split a programmable pass
+                            return String.Format("Pass {0}: Too many texture units for the current hardware and cannot split programmable passes.", i);
                         }
-					}
-				}
-				else
-				{
-					// check support for a few fixed function options while we are here
-					for ( int j = 0; j < pass.TextureUnitStageCount; j++ )
-					{
-						TextureUnitState texUnit = pass.GetTextureUnitState( j );
+                    }
+                }
 
-						// check to make sure we have some cube mapping support
-						if ( texUnit.Is3D && !caps.HasCapability( Capabilities.CubeMapping ) )
-						{
-                            return String.Format( "Pass {0} Tex {1} : Cube maps not supported by current environment.", i, j );
-                        }
-
-						// if this is a Dot3 blending layer, make sure we can support it
-						if ( texUnit.ColorBlendMode.operation == LayerBlendOperationEx.DotProduct && !caps.HasCapability( Capabilities.Dot3 ) )
-						{
-                            return String.Format( "Pass {0} Tex {1} : Volume textures not supported by current environment.", i, j );
-                        }
-					}
-
-					// keep splitting until the texture units required for this pass are available
-					while ( numTexUnitsRequested > numAvailTexUnits )
-					{
-						// split this pass up into more passes
-						pass = pass.Split( numAvailTexUnits );
-						numTexUnitsRequested = pass.TextureUnitStageCount;
-					}
-				}
-
-				// if this has a vertex program, check the syntax code to be sure the hardware supports it
-				if ( pass.HasVertexProgram )
-				{
-					// check vertex program version
-					if ( !pass.VertexProgram.IsSupported )
-					{
-						// can't do this one
-						return String.Format( "Pass {0}: Fragment Program {1} cannot be used - {2}", 
+                // if this has a vertex program, check the syntax code to be sure the hardware supports it
+                if (currPass.HasVertexProgram)
+                {
+                    // check vertex program version
+                    if (!currPass.VertexProgram.IsSupported)
+                    {
+                        // can't do this one
+                        return String.Format("Pass {0}: Fragment Program {1} cannot be used - {2}",
                                               i,
-                                              pass.VertexProgramName,
-                                              pass.VertexProgram.HasCompileError ? "Compile Error." : "Not Supported." );
-					}
-				}
-			} // for
+                                              currPass.VertexProgramName,
+                                              currPass.VertexProgram.HasCompileError ? "Compile Error." : "Not Supported.");
+                    }
+                }
 
-			// if we made it this far, we are good to go!
+                if (currPass.HasGeometryProgram)
+                {
+                    // check fragment program version
+                    if (!currPass.GeometryProgram.IsSupported)
+                    {
+                        // can't do this one
+                        return String.Format("Pass {0}: Geometry Program {1} cannot be used - {2}",
+                                              i,
+                                              currPass.GeometryProgramName,
+                                              currPass.GeometryProgram.HasCompileError ? "Compile Error." : "Not Supported.");
+                    }
+                }
+                else
+                {
+                    // check support for a few fixed function options while we are here
+                    for (int j = 0; j < currPass.TextureUnitStageCount; j++)
+                    {
+                        TextureUnitState texUnit = currPass.GetTextureUnitState(j);
+
+                        // check to make sure we have some cube mapping support
+                        if (texUnit.Is3D && !caps.HasCapability(Capabilities.CubeMapping))
+                        {
+                            return String.Format("Pass {0} Tex {1} : Cube maps not supported by current environment.", i, j);
+                        }
+
+                        // if this is a Dot3 blending layer, make sure we can support it
+                        if (texUnit.ColorBlendMode.operation == LayerBlendOperationEx.DotProduct && !caps.HasCapability(Capabilities.Dot3))
+                        {
+                            return String.Format("Pass {0} Tex {1} : Volume textures not supported by current environment.", i, j);
+                        }
+                    }
+
+                    // keep splitting until the texture units required for this pass are available
+                    while (numTexUnitsRequired > numAvailTexUnits)
+                    {
+                        // split this pass up into more passes
+                        currPass = currPass.Split(numAvailTexUnits);
+                        numTexUnitsRequired = currPass.TextureUnitStageCount;
+                    }
+                }
+            }
+            // if we made it this far, we are good to go!
 			_isSupported = true;
 
 			// CompileIlluminationPasses() used to be called here, but it is now done on

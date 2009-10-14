@@ -165,6 +165,7 @@ namespace Axiom.Graphics
 			set
 			{
 				_index = value;
+			    this.DirtyHash();
 			}
 		}
 
@@ -1316,7 +1317,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Gets the vertex program used by this pass.
+		///    Gets the fragment program used by this pass.
 		/// </summary>
 		/// <remarks>
 		///    Only available after Load() has been called.
@@ -1384,6 +1385,94 @@ namespace Axiom.Graphics
 		}
 
 		#endregion FragmentProgram Properties
+
+        #region GeometryProgram Properties
+
+        /// <summary>
+        ///    Details on the geometry program to be used for this pass.
+        /// </summary>
+        private GpuProgramUsage _geometryProgramUsage;
+
+        /// <summary>
+        ///    Returns true if this Pass uses the programmable geometry pipeline.
+        /// </summary>
+        public bool HasGeometryProgram
+        {
+            get
+            {
+                return _geometryProgramUsage != null;
+            }
+        }
+
+        /// <summary>
+        ///    Gets the geometry program used by this pass.
+        /// </summary>
+        /// <remarks>
+        ///    Only available after Load() has been called.
+        /// </remarks>
+        public GpuProgram GeometryProgram
+        {
+            get
+            {
+                Debug.Assert( this.HasGeometryProgram, "This pass does not contain a geometry program!" );
+                return _geometryProgramUsage.Program;
+            }
+        }
+
+        /// <summary>
+        ///    Gets/Sets the name of the geometry program to use.
+        /// </summary>
+        /// <remarks>
+        ///    Only applicable to programmable passes, and this particular call is
+        ///    designed for low-level programs; use the named parameter methods
+        ///    for setting high-level programs.
+        ///    <p/>
+        ///    This must have been created using GpuProgramManager by the time that 
+        ///    this Pass is loaded.
+        /// </remarks>
+        public string GeometryProgramName
+        {
+            get
+            {
+                // return blank if there is no geometry program in this pass
+                if ( this.HasGeometryProgram )
+                {
+                    return _geometryProgramUsage.ProgramName;
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
+            set
+            {
+                SetGeometryProgram( value );
+            }
+        }
+
+        /// <summary>
+        ///    Gets/Sets the geometry program parameters used by this pass.
+        /// </summary>
+        /// <remarks>
+        ///    Only applicable to programmable passes, and this particular call is
+        ///    designed for low-level programs; use the named parameter methods
+        ///    for setting high-level program parameters.
+        /// </remarks>
+        public GpuProgramParameters GeometryProgramParameters
+        {
+            get
+            {
+                Debug.Assert( this.HasGeometryProgram, "This pass does not contain a geomtery program!" );
+                return _geometryProgramUsage.Params;
+            }
+            set
+            {
+                Debug.Assert( this.HasGeometryProgram, "This pass does not contain a geometry program!" );
+                _geometryProgramUsage.Params = value;
+            }
+        }
+
+        #endregion GeometryProgram Properties
 
 		#region ShadowCasterVertexProgram Properties
 
@@ -2404,7 +2493,43 @@ namespace Axiom.Graphics
 			_parent.NotifyNeedsRecompile();
 		}
 
-		/// <summary>
+        /// <summary>
+        ///		
+        /// </summary>
+        /// <param name="name"></param>
+        public void SetGeometryProgram( string name )
+        {
+            SetGeometryProgram( name, true );
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="resetParams"></param>
+        public void SetGeometryProgram( string name, bool resetParams )
+        {
+            // turn off fragment programs when the name is set to null
+            if ( name.Length == 0 )
+            {
+                _geometryProgramUsage = null;
+            }
+            else
+            {
+                // create a new usage object
+                if ( !this.HasGeometryProgram )
+                {
+                    _geometryProgramUsage = new GpuProgramUsage( GpuProgramType.Geometry );
+                }
+
+                _geometryProgramUsage.ProgramName = name;
+            }
+
+            // needs recompilation
+            _parent.NotifyNeedsRecompile();
+        }
+
+        /// <summary>
 		///		
 		/// </summary>
 		/// <param name="name"></param>
