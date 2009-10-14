@@ -69,11 +69,11 @@ namespace Axiom.Platforms.SlimDX
         /// <summary>
         ///		DirectInput keyboard device.
         /// </summary>
-        protected DI.Device<DI.KeyboardState> keyboardDevice;
+        protected DI.Keyboard keyboardDevice;
         /// <summary>
         ///		DirectInput mouse device.
         /// </summary>
-        protected DI.Device<DI.MouseState> mouseDevice;
+        protected DI.Mouse mouseDevice;
 
         protected int mouseRelX, mouseRelY, mouseRelZ;
         protected int mouseAbsX, mouseAbsY, mouseAbsZ;
@@ -478,7 +478,7 @@ namespace Axiom.Platforms.SlimDX
         private void InitializeImmediateKeyboard()
         {
             // Create the device.
-            keyboardDevice = new DI.Device<DI.KeyboardState>(dinput, DI.SystemGuid.Keyboard);
+            keyboardDevice = new DI.Keyboard( dinput );
 
             // grab the keyboard non-exclusively
             keyboardDevice.SetCooperativeLevel(winHandle, DI.CooperativeLevel.Nonexclusive | DI.CooperativeLevel.Background);
@@ -502,7 +502,7 @@ namespace Axiom.Platforms.SlimDX
         private void InitializeBufferedKeyboard()
         {
             // create the device
-            keyboardDevice = new DI.Device<DI.KeyboardState>(dinput, DI.SystemGuid.Keyboard);
+            keyboardDevice = new DI.Keyboard(dinput);
 
             // Set the data format to the keyboard pre-defined format.
             //keyboardDevice.SetDataFormat( DI.DeviceDataFormat.Keyboard );
@@ -529,7 +529,7 @@ namespace Axiom.Platforms.SlimDX
         private void InitializeImmediateMouse()
         {
             // create the device
-            mouseDevice = new DI.Device<DI.MouseState>(dinput, DI.SystemGuid.Mouse);
+            mouseDevice = new DI.Mouse(dinput);
 
             //mouseDevice.Properties.AxisModeAbsolute = true;
             mouseDevice.Properties.AxisMode = DI.DeviceAxisMode.Relative;
@@ -564,7 +564,7 @@ namespace Axiom.Platforms.SlimDX
         private void ReadBufferedKeyboardData()
         {
             // grab the collection of buffered data
-            IEnumerable<DI.BufferedData<DI.KeyboardState>> bufferedData = keyboardDevice.GetBufferedData();
+            IEnumerable<DI.KeyboardState> bufferedData = keyboardDevice.GetBufferedData();
 
             // please tell me why this would ever come back null, rather than an empty collection...
             if (bufferedData == null)
@@ -572,14 +572,14 @@ namespace Axiom.Platforms.SlimDX
                 return;
             }
 
-            foreach ( DI.BufferedData<DI.KeyboardState> packet in bufferedData )
+            foreach ( DI.KeyboardState packet in bufferedData )
             {
-                foreach (DI.Key key in packet.Data.PressedKeys)
+                foreach (DI.Key key in packet.PressedKeys)
                 {
                     KeyChanged(ConvertKeyEnum(key), true);
 
                 }
-                foreach (DI.Key key in packet.Data.ReleasedKeys)
+                foreach (DI.Key key in packet.ReleasedKeys)
                 {
 
                     KeyChanged(ConvertKeyEnum(key), false);

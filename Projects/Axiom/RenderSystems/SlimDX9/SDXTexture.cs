@@ -449,8 +449,6 @@ namespace Axiom.RenderSystems.SlimDX9
             // check texture requirements
             texRequire.MipLevelCount = numMips;
             texRequire.Format = d3dPixelFormat;
-            //// NOTE: Although texRequire is an out parameter, it actually does 
-            ////       use the data passed in with that object.
             texRequire = D3D.Texture.CheckRequirements( _device, SrcWidth, SrcHeight, numMips, d3dUsage, d3dPixelFormat, D3D.Pool.Default );
 
             // Save updated texture requirements
@@ -504,17 +502,100 @@ namespace Axiom.RenderSystems.SlimDX9
 
             if ( MipmapsHardwareGenerated )
             {
-                //CHECK
-                //_texture.AutoGenerateFilterType = GetBestFilterMethod();
                 _texture.AutoMipGenerationFilter = GetBestFilterMethod();
             }
         }
 
-        //TODO
         private void CreateVolumeTexture()
         {
-            Debug.Assert( SrcWidth > 0 && SrcHeight > 0 );
-            throw new NotImplementedException();
+            Debug.Assert( SrcWidth > 0 && SrcHeight > 0 && SrcHeight > 0 );
+
+            if ( (Usage & TextureUsage.RenderTarget) != 0 )
+            {
+                throw new Exception( "SDX Volume texture can not be declared as render target!!, SDXTexture.CreateVolumeTexture" );
+            }
+
+            D3D.Format sdPF = ChooseD3DFormat();
+            D3D.Usage usage = 0;
+
+            int numMips = ( RequestedMipmapCount == 0x7FFFFFFF ) ? -1 : RequestedMipmapCount + 1;
+            if ( (Usage & TextureUsage.Dynamic ) != 0 )
+            {
+                if ( CanUseDynamicTextures( usage, D3D.ResourceType.VolumeTexture, sdPF ) )
+                {
+                    usage |= D3D.Usage.Dynamic;
+                    _dynamicTextures = true;
+                }
+                else
+                {
+                    _dynamicTextures = false;
+                }
+            }
+
+            // check if mip map volume textures are supported
+            MipmapsHardwareGenerated = false;
+            if ( (_devCaps.TextureCaps & D3D.TextureCaps.MipVolumeMap) != 0 )
+            {
+                if ( ( Usage & TextureUsage.AutoMipMap ) != 0 && RequestedMipmapCount != 0 )
+                {
+                    MipmapsHardwareGenerated = CanAutoGenMipMaps( usage, D3D.ResourceType.VolumeTexture, sdPF );
+                    if ( MipmapsHardwareGenerated )
+                    {
+                        Usage |= TextureUsage.AutoMipMap;
+                        numMips = 0;
+                    }
+                }
+            }
+            else
+            {
+                // no mip map support for this kind of textures :(
+                MipmapCount = 0;
+                numMips = 1;
+            }
+
+            // derive the pool to use
+            DeterminePool();
+
+            // create the texture
+            _volumeTexture = new D3D.VolumeTexture( _device,
+                                                    SrcWidth,
+                                                    SrcHeight,
+                                                    SrcWidth,
+                                                    numMips,
+                                                    usage,
+                                                    sdPF,
+                                                    _d3dPool );
+
+            // store base reference to the texture
+            _texture = _volumeTexture;
+
+            // set the final texture attributes
+            D3D.VolumeDescription desc = _volumeTexture.GetLevelDescription( 0 );
+            SetFinalAttributes( desc.Width, desc.Height, desc.Depth, SDXHelper.ConvertEnum( desc.Format ) );
+
+            if ( this.MipmapsHardwareGenerated )
+                _texture.AutoMipGenerationFilter = GetBestFilterMethod();
+        }
+
+        private bool UseDefaultPool()
+        {
+            // Determine D3D pool to use
+            // Use managed unless we're a render target or user has asked for 
+            // a dynamic texture, and device supports D3DUSAGE_DYNAMIC (because default pool
+            // resources without the dynamic flag are not lockable)
+            return (Usage == TextureUsage.RenderTarget) || (Usage == TextureUsage.Dynamic) && _dynamicTextures;
+        }
+
+        private void DeterminePool()
+        {
+            if (UseDefaultPool())
+            {
+                _d3dPool = D3D.Pool.Default;
+            }
+            else
+            {
+                _d3dPool = D3D.Pool.Managed;
+            }
         }
 
         private void CreateSurfaceList()
