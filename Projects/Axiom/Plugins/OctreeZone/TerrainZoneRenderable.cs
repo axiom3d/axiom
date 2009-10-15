@@ -217,6 +217,11 @@ namespace OctreeZone
             mTerrain.vertexStart = 0;
             mTerrain.vertexCount = mOptions.tileSize * mOptions.tileSize;
 
+            renderOperation.useIndices = true;
+            renderOperation.operationType = mOptions.useTriStrips ? OperationType.TriangleStrip : OperationType.TriangleList;
+            renderOperation.vertexData = mTerrain;
+            renderOperation.indexData = GetIndexData();
+
             VertexDeclaration decl = mTerrain.vertexDeclaration;
             VertexBufferBinding bind = mTerrain.vertexBufferBinding;
 
@@ -1555,19 +1560,6 @@ namespace OctreeZone
         }
 
         #region Implementation of IRenderable
-
-        /// <summary>
-        ///    Gets the render operation required to send this object to the frame buffer.
-        /// </summary>
-        public override void GetRenderOperation( RenderOperation op )
-        {
-            Debug.Assert( mInit, "Uninitialized" );
-
-            op.useIndices = true;
-            op.operationType = mOptions.useTriStrips ? OperationType.TriangleStrip : OperationType.TriangleList;
-            op.vertexData = mTerrain;
-            op.indexData = GetIndexData();
-        }
 
         /// <summary>
         ///    Gets the world transform matrix / matrices for this renderable object.

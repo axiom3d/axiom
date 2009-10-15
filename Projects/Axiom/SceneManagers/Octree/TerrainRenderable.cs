@@ -649,250 +649,259 @@ namespace Axiom.SceneManagers.Octree
 			}
 		}
 
-		public unsafe void GetRenderOperation( RenderOperation op )
-		{
-			int east = 0, west = 0, north = 0, south = 0;
+        protected RenderOperation renderOperation = new RenderOperation();
+	    public RenderOperation RenderOperation
+	    {
+	        get
+	        {
+	            IndexData indexData = this.GetIndexData();
 
-			int step = 1 << renderLevel;
+	            renderOperation.useIndices = true;
+                renderOperation.operationType = OperationType.TriangleList;
+                renderOperation.vertexData = this.terrain;
+                renderOperation.indexData = indexData;
+	            return renderOperation;
+	            //renderedTris += ( indexData->indexCount / 3 );
 
-			int indexArray = 0;
+	            //mRenderLevelChanged = false;
+	        }
+	    }
 
-			int numIndexes = 0;
+	    private IndexData GetIndexData()
+	    {
+	        int east = 0, west = 0, north = 0, south = 0;
 
-			if ( neighbors[ (int)Neighbor.East ] != null && neighbors[ (int)Neighbor.East ].renderLevel > renderLevel )
-			{
-				east = step;
-				indexArray |= (int)Tile.East;
-			}
+	        int step = 1 << this.renderLevel;
 
-			if ( neighbors[ (int)Neighbor.West ] != null && neighbors[ (int)Neighbor.West ].renderLevel > renderLevel )
-			{
-				west = step;
-				indexArray |= (int)Tile.West;
-			}
+	        int indexArray = 0;
 
-			if ( neighbors[ (int)Neighbor.North ] != null && neighbors[ (int)Neighbor.North ].renderLevel > renderLevel )
-			{
-				north = step;
-				indexArray |= (int)Tile.North;
-			}
+	        int numIndexes = 0;
 
-			if ( neighbors[ (int)Neighbor.South ] != null && neighbors[ (int)Neighbor.South ].renderLevel > renderLevel )
-			{
-				south = step;
-				indexArray |= (int)Tile.South;
-			}
+	        if ( this.neighbors[ (int)Neighbor.East ] != null && this.neighbors[ (int)Neighbor.East ].renderLevel > this.renderLevel )
+	        {
+	            east = step;
+	            indexArray |= (int)Tile.East;
+	        }
 
-			IndexData indexData = null;
+	        if ( this.neighbors[ (int)Neighbor.West ] != null && this.neighbors[ (int)Neighbor.West ].renderLevel > this.renderLevel )
+	        {
+	            west = step;
+	            indexArray |= (int)Tile.West;
+	        }
 
-			if ( levelIndex[ renderLevel, indexArray ] != null )
-			{
-				indexData = levelIndex[ renderLevel, indexArray ];
-			}
-			else
-			{
-				int newLength = ( size / step ) * ( size / step ) * 2 * 2 * 2;
-				//this is the maximum for a level.  It wastes a little, but shouldn't be a problem.
+	        if ( this.neighbors[ (int)Neighbor.North ] != null && this.neighbors[ (int)Neighbor.North ].renderLevel > this.renderLevel )
+	        {
+	            north = step;
+	            indexArray |= (int)Tile.North;
+	        }
 
-				indexData = new IndexData();
-				indexData.indexBuffer =
-				HardwareBufferManager.Instance.CreateIndexBuffer(
-					IndexType.Size16,
-					newLength,
-					BufferUsage.StaticWriteOnly );
+	        if ( this.neighbors[ (int)Neighbor.South ] != null && this.neighbors[ (int)Neighbor.South ].renderLevel > this.renderLevel )
+	        {
+	            south = step;
+	            indexArray |= (int)Tile.South;
+	        }
 
-				//indexCache.Add(indexData);
+	        IndexData indexData = null;
 
-				numIndexes = 0;
+	        if ( this.levelIndex[ this.renderLevel, indexArray ] != null )
+	        {
+	            indexData = this.levelIndex[ this.renderLevel, indexArray ];
+	        }
+	        else
+	        {
+	            int newLength = ( this.size / step ) * ( this.size / step ) * 2 * 2 * 2;
+	            //this is the maximum for a level.  It wastes a little, but shouldn't be a problem.
 
-				IntPtr idx = indexData.indexBuffer.Lock( BufferLocking.Discard );
+	            indexData = new IndexData();
+	            indexData.indexBuffer =
+	                HardwareBufferManager.Instance.CreateIndexBuffer(
+	                    IndexType.Size16,
+	                    newLength,
+	                    BufferUsage.StaticWriteOnly );
 
-				short* idxPtr = (short*)idx.ToPointer();
-				int count = 0;
+	            //indexCache.Add(indexData);
 
-				for ( int j = north; j < size - 1 - south; j += step )
-				{
-					for ( int i = west; i < size - 1 - east; i += step )
-					{
-						//triangles
-						idxPtr[ count++ ] = GetIndex( i, j );
-						numIndexes++;
-						idxPtr[ count++ ] = GetIndex( i, j + step );
-						numIndexes++;
-						idxPtr[ count++ ] = GetIndex( i + step, j );
-						numIndexes++;
+	            numIndexes = 0;
 
-						idxPtr[ count++ ] = GetIndex( i, j + step );
-						numIndexes++;
-						idxPtr[ count++ ] = GetIndex( i + step, j + step );
-						numIndexes++;
-						idxPtr[ count++ ] = GetIndex( i + step, j );
-						numIndexes++;
-					}
-				}
+	            IntPtr idx = indexData.indexBuffer.Lock( BufferLocking.Discard );
+                unsafe
+                {
+                    short* idxPtr = (short*)idx.ToPointer();
+                    int count = 0;
 
-				int substep = step << 1;
+                    for ( int j = north; j < this.size - 1 - south; j += step )
+                    {
+                        for ( int i = west; i < this.size - 1 - east; i += step )
+                        {
+                            //triangles
+                            idxPtr[ count++ ] = this.GetIndex( i, j );
+                            numIndexes++;
+                            idxPtr[ count++ ] = this.GetIndex( i, j + step );
+                            numIndexes++;
+                            idxPtr[ count++ ] = this.GetIndex( i + step, j );
+                            numIndexes++;
 
-				if ( west > 0 )
-				{
+                            idxPtr[ count++ ] = this.GetIndex( i, j + step );
+                            numIndexes++;
+                            idxPtr[ count++ ] = this.GetIndex( i + step, j + step );
+                            numIndexes++;
+                            idxPtr[ count++ ] = this.GetIndex( i + step, j );
+                            numIndexes++;
+                        }
+                    }
 
-					for ( int j = 0; j < size - 1; j += substep )
-					{
-						//skip the first bit of the corner if the north side is a different level as well.
-						if ( j > 0 || north == 0 )
-						{
-							idxPtr[ count++ ] = GetIndex( 0, j );
-							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( step, j + step );
-							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( step, j );
-							numIndexes++;
-						}
+                    int substep = step << 1;
 
-						idxPtr[ count++ ] = GetIndex( step, j + step );
-						numIndexes++;
-						idxPtr[ count++ ] = GetIndex( 0, j );
-						numIndexes++;
-						idxPtr[ count++ ] = GetIndex( 0, j + step + step );
-						numIndexes++;
+                    if ( west > 0 )
+                    {
+                        for ( int j = 0; j < this.size - 1; j += substep )
+                        {
+                            //skip the first bit of the corner if the north side is a different level as well.
+                            if ( j > 0 || north == 0 )
+                            {
+                                idxPtr[ count++ ] = this.GetIndex( 0, j );
+                                numIndexes++;
+                                idxPtr[ count++ ] = this.GetIndex( step, j + step );
+                                numIndexes++;
+                                idxPtr[ count++ ] = this.GetIndex( step, j );
+                                numIndexes++;
+                            }
 
-						if ( j < options.size - 1 - substep || south == 0 )
-						{
-							idxPtr[ count++ ] = GetIndex( step, j + step );
-							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( 0, j + step + step );
-							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( step, j + step + step );
-							numIndexes++;
-						}
-					}
-				}
+                            idxPtr[ count++ ] = this.GetIndex( step, j + step );
+                            numIndexes++;
+                            idxPtr[ count++ ] = this.GetIndex( 0, j );
+                            numIndexes++;
+                            idxPtr[ count++ ] = this.GetIndex( 0, j + step + step );
+                            numIndexes++;
 
-				if ( east > 0 )
-				{
-					int x = options.size - 1;
+                            if ( j < this.options.size - 1 - substep || south == 0 )
+                            {
+                                idxPtr[ count++ ] = this.GetIndex( step, j + step );
+                                numIndexes++;
+                                idxPtr[ count++ ] = this.GetIndex( 0, j + step + step );
+                                numIndexes++;
+                                idxPtr[ count++ ] = this.GetIndex( step, j + step + step );
+                                numIndexes++;
+                            }
+                        }
+                    }
 
-					for ( int j = 0; j < size - 1; j += substep )
-					{
-						//skip the first bit of the corner if the north side is a different level as well.
-						if ( j > 0 || north == 0 )
-						{
-							idxPtr[ count++ ] = GetIndex( x, j );
-							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( x - step, j );
-							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( x - step, j + step );
-							numIndexes++;
-						}
+                    if ( east > 0 )
+                    {
+                        int x = this.options.size - 1;
 
-						idxPtr[ count++ ] = GetIndex( x, j );
-						numIndexes++;
-						idxPtr[ count++ ] = GetIndex( x - step, j + step );
-						numIndexes++;
-						idxPtr[ count++ ] = GetIndex( x, j + step + step );
-						numIndexes++;
+                        for ( int j = 0; j < this.size - 1; j += substep )
+                        {
+                            //skip the first bit of the corner if the north side is a different level as well.
+                            if ( j > 0 || north == 0 )
+                            {
+                                idxPtr[ count++ ] = this.GetIndex( x, j );
+                                numIndexes++;
+                                idxPtr[ count++ ] = this.GetIndex( x - step, j );
+                                numIndexes++;
+                                idxPtr[ count++ ] = this.GetIndex( x - step, j + step );
+                                numIndexes++;
+                            }
 
-						if ( j < options.size - 1 - substep || south == 0 )
-						{
-							idxPtr[ count++ ] = GetIndex( x, j + step + step );
-							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( x - step, j + step );
-							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( x - step, j + step + step );
-							numIndexes++;
-						}
-					}
-				}
+                            idxPtr[ count++ ] = this.GetIndex( x, j );
+                            numIndexes++;
+                            idxPtr[ count++ ] = this.GetIndex( x - step, j + step );
+                            numIndexes++;
+                            idxPtr[ count++ ] = this.GetIndex( x, j + step + step );
+                            numIndexes++;
 
-				if ( south > 0 )
-				{
-					int x = options.size - 1;
+                            if ( j < this.options.size - 1 - substep || south == 0 )
+                            {
+                                idxPtr[ count++ ] = this.GetIndex( x, j + step + step );
+                                numIndexes++;
+                                idxPtr[ count++ ] = this.GetIndex( x - step, j + step );
+                                numIndexes++;
+                                idxPtr[ count++ ] = this.GetIndex( x - step, j + step + step );
+                                numIndexes++;
+                            }
+                        }
+                    }
 
-					for ( int j = 0; j < size - 1; j += substep )
-					{
-						//skip the first bit of the corner if the north side is a different level as well.
-						if ( j > 0 || west == 0 )
-						{
-							idxPtr[ count++ ] = GetIndex( j, x - step );
-							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( j, x );
-							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( j + step, x - step );
-							numIndexes++;
-						}
+                    if ( south > 0 )
+                    {
+                        int x = this.options.size - 1;
 
-						idxPtr[ count++ ] = GetIndex( j + step, x - step );
-						numIndexes++;
-						idxPtr[ count++ ] = GetIndex( j, x );
-						numIndexes++;
-						idxPtr[ count++ ] = GetIndex( j + step + step, x );
-						numIndexes++;
+                        for ( int j = 0; j < this.size - 1; j += substep )
+                        {
+                            //skip the first bit of the corner if the north side is a different level as well.
+                            if ( j > 0 || west == 0 )
+                            {
+                                idxPtr[ count++ ] = this.GetIndex( j, x - step );
+                                numIndexes++;
+                                idxPtr[ count++ ] = this.GetIndex( j, x );
+                                numIndexes++;
+                                idxPtr[ count++ ] = this.GetIndex( j + step, x - step );
+                                numIndexes++;
+                            }
 
-						if ( j < options.size - 1 - substep || east == 0 )
-						{
-							idxPtr[ count++ ] = GetIndex( j + step, x - step );
-							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( j + step + step, x );
-							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( j + step + step, x - step );
-							numIndexes++;
-						}
-					}
-				}
+                            idxPtr[ count++ ] = this.GetIndex( j + step, x - step );
+                            numIndexes++;
+                            idxPtr[ count++ ] = this.GetIndex( j, x );
+                            numIndexes++;
+                            idxPtr[ count++ ] = this.GetIndex( j + step + step, x );
+                            numIndexes++;
 
-				if ( north > 0 )
-				{
-					for ( int j = 0; j < size - 1; j += substep )
-					{
-						//skip the first bit of the corner if the north side is a different level as well.
-						if ( j > 0 || west == 0 )
-						{
-							idxPtr[ count++ ] = GetIndex( j, 0 );
-							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( j, step );
-							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( j + step, step );
-							numIndexes++;
-						}
+                            if ( j < this.options.size - 1 - substep || east == 0 )
+                            {
+                                idxPtr[ count++ ] = this.GetIndex( j + step, x - step );
+                                numIndexes++;
+                                idxPtr[ count++ ] = this.GetIndex( j + step + step, x );
+                                numIndexes++;
+                                idxPtr[ count++ ] = this.GetIndex( j + step + step, x - step );
+                                numIndexes++;
+                            }
+                        }
+                    }
 
-						idxPtr[ count++ ] = GetIndex( j, 0 );
-						numIndexes++;
-						idxPtr[ count++ ] = GetIndex( j + step, step );
-						numIndexes++;
-						idxPtr[ count++ ] = GetIndex( j + step + step, 0 );
-						numIndexes++;
+                    if ( north > 0 )
+                    {
+                        for ( int j = 0; j < this.size - 1; j += substep )
+                        {
+                            //skip the first bit of the corner if the north side is a different level as well.
+                            if ( j > 0 || west == 0 )
+                            {
+                                idxPtr[ count++ ] = this.GetIndex( j, 0 );
+                                numIndexes++;
+                                idxPtr[ count++ ] = this.GetIndex( j, step );
+                                numIndexes++;
+                                idxPtr[ count++ ] = this.GetIndex( j + step, step );
+                                numIndexes++;
+                            }
 
-						if ( j < options.size - 1 - substep || east == 0 )
-						{
-							idxPtr[ count++ ] = GetIndex( j + step + step, 0 );
-							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( j + step, step );
-							numIndexes++;
-							idxPtr[ count++ ] = GetIndex( j + step + step, step );
-							numIndexes++;
-						}
-					}
+                            idxPtr[ count++ ] = this.GetIndex( j, 0 );
+                            numIndexes++;
+                            idxPtr[ count++ ] = this.GetIndex( j + step, step );
+                            numIndexes++;
+                            idxPtr[ count++ ] = this.GetIndex( j + step + step, 0 );
+                            numIndexes++;
 
-				}
+                            if ( j < this.options.size - 1 - substep || east == 0 )
+                            {
+                                idxPtr[ count++ ] = this.GetIndex( j + step + step, 0 );
+                                numIndexes++;
+                                idxPtr[ count++ ] = this.GetIndex( j + step, step );
+                                numIndexes++;
+                                idxPtr[ count++ ] = this.GetIndex( j + step + step, step );
+                                numIndexes++;
+                            }
+                        }
+                    }
+                }
+	            indexData.indexBuffer.Unlock();
+	            indexData.indexCount = numIndexes;
+	            indexData.indexStart = 0;
 
-				indexData.indexBuffer.Unlock();
-				indexData.indexCount = numIndexes;
-				indexData.indexStart = 0;
+	            this.levelIndex[ this.renderLevel, indexArray ] = indexData;
+	        }
+	        return indexData;
+	    }
 
-				levelIndex[ renderLevel, indexArray ] = indexData;
-			}
-
-			op.useIndices = true;
-			op.operationType = OperationType.TriangleList;
-			op.vertexData = terrain;
-			op.indexData = indexData;
-
-			//renderedTris += ( indexData->indexCount / 3 );
-
-			//mRenderLevelChanged = false;
-		}
-
-		public short GetIndex( int x, int z )
+	    public short GetIndex( int x, int z )
 		{
 			return (short)( x + z * options.size );
 		}

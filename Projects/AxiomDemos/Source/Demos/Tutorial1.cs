@@ -113,9 +113,12 @@ namespace Axiom.Demos
             // calculate the actual endpoint
             Vector3 endPoint = startPoint + ( direction * length );
 
-            vertexData = new VertexData();
-            vertexData.vertexCount = 2;
-            vertexData.vertexStart = 0;
+            renderOperation.vertexData = new VertexData();
+            renderOperation.vertexData.vertexCount = 2;
+            renderOperation.vertexData.vertexStart = 0;
+            renderOperation.indexData = null;
+            renderOperation.operationType = OperationType.LineList;
+            renderOperation.useIndices = false;
 
             VertexDeclaration decl = vertexData.vertexDeclaration;
             VertexBufferBinding binding = vertexData.vertexBufferBinding;
@@ -186,18 +189,6 @@ namespace Axiom.Demos
             return dist.LengthSquared;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="op"></param>
-        public override void GetRenderOperation( RenderOperation op )
-        {
-            op.vertexData = vertexData;
-            op.indexData = null;
-            op.operationType = OperationType.LineList;
-            op.useIndices = false;
-        }
-
         public override float BoundingRadius
         {
             get
@@ -226,9 +217,12 @@ namespace Axiom.Demos
         /// <param name="v3"></param>
         public Triangle( Vector3 v1, Vector3 v2, Vector3 v3, ColorEx c1, ColorEx c2, ColorEx c3 )
         {
-            vertexData = new VertexData();
-            vertexData.vertexCount = 3;
-            vertexData.vertexStart = 0;
+            renderOperation.vertexData = new VertexData();
+            renderOperation.vertexData.vertexCount = 3;
+            renderOperation.vertexData.vertexStart = 0;
+            renderOperation.indexData = null;
+            renderOperation.operationType = OperationType.TriangleList;
+            renderOperation.useIndices = false;
 
             VertexDeclaration decl = vertexData.vertexDeclaration;
             VertexBufferBinding binding = vertexData.vertexBufferBinding;
@@ -308,18 +302,6 @@ namespace Axiom.Demos
             dist = camera.DerivedPosition - mid;
 
             return dist.LengthSquared;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="op"></param>
-        public override void GetRenderOperation( RenderOperation op )
-        {
-            op.vertexData = vertexData;
-            op.indexData = null;
-            op.operationType = OperationType.TriangleList;
-            op.useIndices = false;
         }
 
         public override float BoundingRadius

@@ -955,13 +955,17 @@ namespace Axiom
             }
         }
 
-
-        public void GetRenderOperation( RenderOperation operation )
+        protected RenderOperation renderOperation = new RenderOperation();
+        public RenderOperation RenderOperation
         {
-            operation.indexData = indexData;
-            operation.operationType = OperationType.TriangleList;
-            operation.useIndices = true;
-            operation.vertexData = vertexData;
+            get
+            {
+                renderOperation.indexData = this.indexData;
+                renderOperation.operationType = OperationType.TriangleList;
+                renderOperation.useIndices = true;
+                renderOperation.vertexData = this.vertexData;
+                return renderOperation;
+            }
         }
 
         /// <summary>

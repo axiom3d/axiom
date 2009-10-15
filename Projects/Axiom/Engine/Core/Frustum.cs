@@ -54,7 +54,6 @@ namespace Axiom.Core
 	///     used to represent either a visible area or a projection area. Can be used
 	///     for a number of applications.
 	/// </summary>
-	// TODO: Review attaching object in the scene and making them no longer require a name.
 	public class Frustum : MovableObject, IRenderable
 	{
 		#region Constants
@@ -1902,16 +1901,22 @@ namespace Axiom.Core
 			}
 		}
 
-		public void GetRenderOperation(RenderOperation op)
-		{
-			UpdateVertexData();
+        protected RenderOperation renderOperation = new RenderOperation();
+	    public RenderOperation RenderOperation
+	    {
+	        get
+	        {
+	            this.UpdateVertexData();
 
-			op.operationType = OperationType.LineList;
-			op.useIndices = false;
-			op.vertexData = _vertexData;
-		}
+                renderOperation.operationType = OperationType.LineList;
+                renderOperation.useIndices = false;
+                renderOperation.vertexData = this._vertexData;
 
-		public void GetWorldTransforms(Matrix4[] matrices)
+	            return renderOperation;
+	        }
+	    }
+
+	    public void GetWorldTransforms(Matrix4[] matrices)
 		{
 			if (parentNode != null)
 			{

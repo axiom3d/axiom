@@ -108,11 +108,16 @@ namespace Axiom.SceneManagers.Bsp
             }
         }
 
+        protected RenderOperation renderOperation = new RenderOperation();
         /// <summary>
         ///    Gets the render operation required to send this object to the frame buffer.
         /// </summary>
-        public void GetRenderOperation( RenderOperation op )
+        public RenderOperation RenderOperation
         {
+            get
+            {
+                return renderOperation;
+            }
         }
 
         /// <summary>
@@ -171,6 +176,20 @@ namespace Axiom.SceneManagers.Bsp
             get
             {
                 return 1;
+            }
+        }
+
+        /// <summary>
+        /// Gets whether this renderable's chosen detail level can be
+        ///	overridden (downgraded) by the camera setting. 
+        /// override true means that a lower camera detail will override this
+        /// renderables detail level, false means it won't.
+        /// </summary>
+        public bool PolygonModeOverrideable
+        {
+            get
+            {
+                return true;
             }
         }
 
@@ -313,18 +332,6 @@ namespace Axiom.SceneManagers.Bsp
         }
 
         #endregion
-
-        #endregion
-
-        #region IRenderable Members
-
-        public bool PolygonModeOverrideable
-        {
-            get
-            {
-                return true;
-            }
-        }
 
         #endregion
     }

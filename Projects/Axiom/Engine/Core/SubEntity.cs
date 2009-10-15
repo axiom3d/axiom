@@ -426,19 +426,24 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="op"></param>
-		public void GetRenderOperation( RenderOperation op )
-		{
-			// use LOD
-			subMesh.GetRenderOperation( op, parent.MeshLodIndex );
-			// Deal with any vertex data overrides
-			op.vertexData = GetVertexDataForBinding();
-		}
+        protected RenderOperation renderOperation = new RenderOperation();
+	    /// <summary>
+	    /// 
+	    /// </summary>
+	    /// <param name="value"></param>
+	    public RenderOperation RenderOperation
+	    {
+	        get
+	        {
+	            // use LOD
+	            this.subMesh.GetRenderOperation( renderOperation, this.parent.MeshLodIndex );
+	            // Deal with any vertex data overrides
+                renderOperation.vertexData = this.GetVertexDataForBinding();
+	            return renderOperation;
+	        }
+	    }
 
-		public VertexData GetVertexDataForBinding()
+	    public VertexData GetVertexDataForBinding()
 		{
 			if ( subMesh.useSharedVertices )
 				return parent.GetVertexDataForBinding();

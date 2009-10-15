@@ -60,7 +60,6 @@ namespace Axiom.Graphics
         #region Fields
 
         protected Material material;
-        protected RenderOperation renderOp = new RenderOperation();
         /// <summary>
         ///		Used only if IsLightCapSeparate == true.
         /// </summary>
@@ -124,7 +123,7 @@ namespace Axiom.Graphics
         /// <returns></returns>
         public RenderOperation GetRenderOperationForUpdate()
         {
-            return renderOp;
+            return renderOperation;
         }
 
         #endregion Methods
@@ -165,17 +164,17 @@ namespace Axiom.Graphics
             }
         }
 
+        protected RenderOperation renderOperation = new RenderOperation();
         /// <summary>
         ///		Gets the render operation for this shadow renderable.
         /// </summary>
-        /// <param name="op"></param>
-        public void GetRenderOperation( RenderOperation op )
+        /// <param name="value"></param>
+        public RenderOperation RenderOperation
         {
-            // TODO: Ensure all other places throughout the engine set these properly
-            op.indexData = renderOp.indexData;
-            op.useIndices = true;
-            op.operationType = OperationType.TriangleList;
-            op.vertexData = renderOp.vertexData;
+            get
+            {
+                return renderOperation;
+            }
         }
 
         public abstract void GetWorldTransforms( Axiom.Math.Matrix4[] matrices );

@@ -1638,26 +1638,31 @@ namespace Axiom.Core
             }
         }
 
-        public void GetRenderOperation( RenderOperation op )
+        protected RenderOperation renderOperation = new RenderOperation();
+        public RenderOperation RenderOperation
         {
-            op.vertexData = this.vertexData;
-            op.vertexData.vertexStart = 0;
+            get
+            {
+                renderOperation.vertexData = this.vertexData;
+                renderOperation.vertexData.vertexStart = 0;
 
-            if ( this.pointRendering )
-            {
-                op.operationType = OperationType.PointList;
-                op.useIndices = false;
-                op.indexData = null;
-                op.vertexData.vertexCount = this.numVisibleBillboards;
-            }
-            else
-            {
-                op.operationType = OperationType.TriangleList;
-                op.useIndices = true;
-                op.vertexData.vertexCount = this.numVisibleBillboards * 4;
-                op.indexData = this.indexData;
-                op.indexData.indexCount = this.numVisibleBillboards * 6;
-                op.indexData.indexStart = 0;
+                if ( this.pointRendering )
+                {
+                    renderOperation.operationType = OperationType.PointList;
+                    renderOperation.useIndices = false;
+                    renderOperation.indexData = null;
+                    renderOperation.vertexData.vertexCount = this.numVisibleBillboards;
+                }
+                else
+                {
+                    renderOperation.operationType = OperationType.TriangleList;
+                    renderOperation.useIndices = true;
+                    renderOperation.vertexData.vertexCount = this.numVisibleBillboards * 4;
+                    renderOperation.indexData = this.indexData;
+                    renderOperation.indexData.indexCount = this.numVisibleBillboards * 6;
+                    renderOperation.indexData.indexStart = 0;
+                }
+                return renderOperation;
             }
         }
 

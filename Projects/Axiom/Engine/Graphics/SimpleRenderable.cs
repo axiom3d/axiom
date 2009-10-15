@@ -104,26 +104,6 @@ namespace Axiom.Graphics
 
         #endregion
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="op"></param>
-        /// TODO: Refactor this into a Property
-        public virtual void SetRenderOperation( RenderOperation op )
-        {
-            renderOperation = op;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="op"></param>
-        /// TODO: Refactor this into a Property
-        public virtual void GetRenderOperation( ref RenderOperation op )
-        {
-            op = renderOperation;
-        }
-
         #region Implementation of MovableObject
 
         /// <summary>
@@ -191,11 +171,13 @@ namespace Axiom.Graphics
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="op"></param>
-        public abstract void GetRenderOperation( RenderOperation op );
+        public RenderOperation RenderOperation
+        {
+            get
+            {
+                return renderOperation;
+            }
+        }
 
         /// <summary>
         /// 

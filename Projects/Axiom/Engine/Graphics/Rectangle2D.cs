@@ -64,9 +64,11 @@ namespace Axiom.Graphics
 
         public Rectangle2D( bool includeTextureCoordinates )
         {
-            vertexData = new VertexData();
-            vertexData.vertexStart = 0;
-            vertexData.vertexCount = 4;
+            renderOperation.vertexData = new VertexData();
+            renderOperation.vertexData.vertexStart = 0;
+            renderOperation.vertexData.vertexCount = 4;
+            renderOperation.useIndices = false;
+            renderOperation.operationType = OperationType.TriangleStrip;
 
             VertexDeclaration decl = vertexData.vertexDeclaration;
             VertexBufferBinding binding = vertexData.vertexBufferBinding;
@@ -114,13 +116,6 @@ namespace Axiom.Graphics
         public override float GetSquaredViewDepth( Camera camera )
         {
             return 0;
-        }
-
-        public override void GetRenderOperation( RenderOperation op )
-        {
-            op.vertexData = vertexData;
-            op.useIndices = false;
-            op.operationType = OperationType.TriangleStrip;
         }
 
         public override void GetWorldTransforms( Axiom.Math.Matrix4[] matrices )

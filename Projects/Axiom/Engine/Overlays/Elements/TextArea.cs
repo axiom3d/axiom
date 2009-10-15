@@ -61,7 +61,6 @@ namespace Axiom.Overlays.Elements
         #region Member variables
 
         protected HorizontalAlignment textAlign;
-        protected RenderOperation renderOp = new RenderOperation();
         protected bool isTransparent;
         protected Font font;
         protected float charHeight;
@@ -120,17 +119,17 @@ namespace Axiom.Overlays.Elements
 
                 // 6 verts per char since we're doing tri lists without indexes
                 // Allocate space for positions & texture coords
-                VertexDeclaration decl = renderOp.vertexData.vertexDeclaration;
-                VertexBufferBinding binding = renderOp.vertexData.vertexBufferBinding;
+                VertexDeclaration decl = renderOperation.vertexData.vertexDeclaration;
+                VertexBufferBinding binding = renderOperation.vertexData.vertexBufferBinding;
 
-                renderOp.vertexData.vertexCount = numChars * 6;
+                renderOperation.vertexData.vertexCount = numChars * 6;
 
                 // Create dynamic since text tends to change alot
                 // positions & texcoords
                 HardwareVertexBuffer buffer =
                     HardwareBufferManager.Instance.CreateVertexBuffer(
                         decl.GetVertexSize( POSITION_TEXCOORD_BINDING ),
-                        renderOp.vertexData.vertexCount,
+                        renderOperation.vertexData.vertexCount,
                         BufferUsage.DynamicWriteOnly );
 
                 // bind the pos/tex buffer
@@ -140,7 +139,7 @@ namespace Axiom.Overlays.Elements
                 buffer =
                     HardwareBufferManager.Instance.CreateVertexBuffer(
                     decl.GetVertexSize( COLOR_BINDING ),
-                    renderOp.vertexData.vertexCount,
+                    renderOperation.vertexData.vertexCount,
                     BufferUsage.DynamicWriteOnly );
 
                 // bind the color buffer
@@ -155,17 +154,6 @@ namespace Axiom.Overlays.Elements
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="op"></param>
-        public override void GetRenderOperation( RenderOperation op )
-        {
-            op.vertexData = renderOp.vertexData;
-            op.useIndices = false;
-            op.operationType = renderOp.operationType;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         public override void Initialize()
         {
             if ( !isInitialised )
@@ -173,8 +161,8 @@ namespace Axiom.Overlays.Elements
                 // Set up the render operation
                 // Combine positions and texture coords since they tend to change together
                 // since character sizes are different
-                renderOp.vertexData = new VertexData();
-                VertexDeclaration decl = renderOp.vertexData.vertexDeclaration;
+                renderOperation.vertexData = new VertexData();
+                VertexDeclaration decl = renderOperation.vertexData.vertexDeclaration;
 
                 int offset = 0;
 
@@ -188,9 +176,9 @@ namespace Axiom.Overlays.Elements
                 // colors, stored in seperate buffer since they change less often
                 decl.AddElement( COLOR_BINDING, 0, VertexElementType.Color, VertexElementSemantic.Diffuse );
 
-                renderOp.operationType = OperationType.TriangleList;
-                renderOp.useIndices = false;
-                renderOp.vertexData.vertexStart = 0;
+                renderOperation.operationType = OperationType.TriangleList;
+                renderOperation.useIndices = false;
+                renderOperation.vertexData.vertexStart = 0;
 
                 // buffers are created in CheckMemoryAllocation
                 CheckMemoryAllocation( DEFAULT_INITIAL_CHARS );
@@ -237,7 +225,7 @@ namespace Axiom.Overlays.Elements
 
             // get the seperate color buffer
             HardwareVertexBuffer buffer =
-                renderOp.vertexData.vertexBufferBinding.GetBuffer( COLOR_BINDING );
+                renderOperation.vertexData.vertexBufferBinding.GetBuffer( COLOR_BINDING );
 
             IntPtr data = buffer.Lock( BufferLocking.Discard );
             int* colPtr = (int*)data.ToPointer();
@@ -275,10 +263,10 @@ namespace Axiom.Overlays.Elements
             // make sure the buffers are big enough
             CheckMemoryAllocation( charLength );
 
-            renderOp.vertexData.vertexCount = charLength * 6;
+            renderOperation.vertexData.vertexCount = charLength * 6;
 
             // get pos/tex buffer
-            HardwareVertexBuffer buffer = renderOp.vertexData.vertexBufferBinding.GetBuffer( POSITION_TEXCOORD_BINDING );
+            HardwareVertexBuffer buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( POSITION_TEXCOORD_BINDING );
             IntPtr data = buffer.Lock( BufferLocking.Discard );
             float largestWidth = 0.0f;
             float left = this.DerivedLeft * 2.0f - 1.0f;
@@ -334,7 +322,7 @@ namespace Axiom.Overlays.Elements
                     top -= charHeight * 2.0f;
                     newLine = true;
                     // reduce tri count
-                    renderOp.vertexData.vertexCount -= 6;
+                    renderOperation.vertexData.vertexCount -= 6;
                     continue;
                 }
 
@@ -343,7 +331,7 @@ namespace Axiom.Overlays.Elements
                     // leave a gap, no tris required
                     left += spaceWidth;
                     // reduce tri count
-                    renderOp.vertexData.vertexCount -= 6;
+                    renderOperation.vertexData.vertexCount -= 6;
                     continue;
                 }
 
