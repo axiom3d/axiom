@@ -67,8 +67,6 @@ namespace Axiom.Core
         HorizontalAlignment _horizontalAlignment = HorizontalAlignment.Left;
         VerticalAlignment _verticalAlignment = VerticalAlignment.Below;
 
-        private RenderOperation	_renderOperation;
-
         private float _additionalHeight = 0.0f;
 
 		private bool			_needUpdate;
@@ -79,7 +77,7 @@ namespace Axiom.Core
 
 		private Font			_font;
         private string _fontName;
-		public string FontName
+        public string FontName
         {
             get
             {
@@ -89,25 +87,25 @@ namespace Axiom.Core
             set
             {
                 if ( _fontName != value || this.material == null || _font == null )
-		        {
-			        _fontName = value;
-			        _font = (Font)FontManager.Instance[ _fontName ];
+                {
+                    _fontName = value;
+                    _font = (Font)FontManager.Instance[ _fontName ];
                     if ( _font == null )
-				        throw new AxiomException( String.Format( "Could not find font '{0}'.", _fontName ) );
-			        _font.Load();
+                        throw new AxiomException( String.Format( "Could not find font '{0}'.", _fontName ) );
+                    _font.Load();
                     if ( this.material != null )
-			        {
+                    {
                         if ( material.Name != "BaseWhite" )
                             MaterialManager.Instance.Unload( this.material );
                         this.material = null;
-			        }
+                    }
                     this.material = _font.Material.Clone( name + "Material", false, _font.Material.Group );
                     if ( this.material.IsLoaded == true )
                         this.material.Load();
                     this.material.DepthCheck = !_onTop;
                     this.material.Lighting = false;
-			        _needUpdate = true;
-		        }
+                    _needUpdate = true;
+                }
             }
         }
 
@@ -259,7 +257,6 @@ namespace Axiom.Core
             if ( caption == "" )
                 throw new AxiomException( "Trying to create MovableText without caption." );
 
-            _renderOperation = new RenderOperation();
             //this.name = name;
             _caption = caption;
             _characterHeight = charHeight;
@@ -296,23 +293,23 @@ namespace Axiom.Core
         private void _setupGeometry()
         {
 		    int vertexCount = _caption.Length * 6;
-		    if ( _renderOperation.vertexData != null )
-		    {
-				    _renderOperation.vertexData = null;
-				    _updateColor = true;
-			    }
+            if ( renderOperation.vertexData != null )
+            {
+                renderOperation.vertexData = null;
+                _updateColor = true;
+            }
 
-		    if ( _renderOperation.vertexData == null )
-			    _renderOperation.vertexData = new VertexData();
+            if ( renderOperation.vertexData == null )
+			    renderOperation.vertexData = new VertexData();
 
-            _renderOperation.indexData = null;
-		    _renderOperation.vertexData.vertexStart = 0;
-		    _renderOperation.vertexData.vertexCount = vertexCount;
-            _renderOperation.operationType = OperationType.TriangleList;
-            _renderOperation.useIndices = false;
+            renderOperation.indexData = null;
+		    renderOperation.vertexData.vertexStart = 0;
+		    renderOperation.vertexData.vertexCount = vertexCount;
+            renderOperation.operationType = OperationType.TriangleList;
+            renderOperation.useIndices = false;
 
-            VertexDeclaration	decl = _renderOperation.vertexData.vertexDeclaration;
-            VertexBufferBinding	bind = _renderOperation.vertexData.vertexBufferBinding;
+            VertexDeclaration	decl = renderOperation.vertexData.vertexDeclaration;
+            VertexBufferBinding	bind = renderOperation.vertexData.vertexBufferBinding;
             int offset = 0;
 
 		    // create/bind positions/tex.ccord. buffer
@@ -324,7 +321,7 @@ namespace Axiom.Core
                 decl.AddElement( POS_TEX_BINDING, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
 
             HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.GetVertexSize( POS_TEX_BINDING ),
-                                                                                           _renderOperation.vertexData.vertexCount,
+                                                                                           renderOperation.vertexData.vertexCount,
 				                                                                           BufferUsage.DynamicWriteOnly );
             bind.SetBinding( POS_TEX_BINDING, vbuf );
 
@@ -332,7 +329,7 @@ namespace Axiom.Core
 		    if ( decl.FindElementBySemantic( VertexElementSemantic.Diffuse ) == null )
 			    decl.AddElement( COLOR_BINDING, 0, VertexElementType.Color, VertexElementSemantic.Diffuse );
             HardwareVertexBuffer cbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.GetVertexSize( COLOR_BINDING ),
-                                                                                           _renderOperation.vertexData.vertexCount,
+                                                                                           renderOperation.vertexData.vertexCount,
 				                                                                           BufferUsage.DynamicWriteOnly );
             bind.SetBinding( COLOR_BINDING, cbuf );
 
@@ -402,7 +399,7 @@ namespace Axiom.Core
                         // Just leave a gap, no tris
                         left += _spaceWidth;
                         // Also reduce tri count
-                        _renderOperation.vertexData.vertexCount -= 6;
+                        renderOperation.vertexData.vertexCount -= 6;
                         continue;
                     }
 
@@ -571,12 +568,12 @@ namespace Axiom.Core
 		    // Convert to system-specific
             int color;
             color = Root.Instance.ConvertColor( _color );
-            HardwareVertexBuffer cbuf = _renderOperation.vertexData.vertexBufferBinding.GetBuffer( COLOR_BINDING );
+            HardwareVertexBuffer cbuf = renderOperation.vertexData.vertexBufferBinding.GetBuffer( COLOR_BINDING );
             IntPtr ipPos = cbuf.Lock( BufferLocking.Discard );
             unsafe
             {
                 int* pPos = (int*)ipPos.ToPointer();
-                for ( int i = 0; i < _renderOperation.vertexData.vertexCount; i++ )
+                for ( int i = 0; i < renderOperation.vertexData.vertexCount; i++ )
                     pPos[ i ] = color;
             }
             cbuf.Unlock();
@@ -584,13 +581,6 @@ namespace Axiom.Core
         }
 
         #region Implementation of SimpleRenderable
-        public override void GetRenderOperation( RenderOperation op )
-        {
-            op.useIndices = this._renderOperation.useIndices;
-            op.operationType = this._renderOperation.operationType;
-            op.vertexData = this._renderOperation.vertexData;
-            op.indexData = this._renderOperation.indexData;
-        }
 
         public override void GetWorldTransforms( Matrix4[] matrices )
         {

@@ -2313,20 +2313,20 @@ namespace Axiom.Core
                 this.currentVertexData = vertexData;
 
                 // Initialise render op
-                this.renderOp.indexData = new IndexData();
-                this.renderOp.indexData.indexBuffer = indexBuffer;
-                this.renderOp.indexData.indexStart = 0;
+                this.renderOperation.indexData = new IndexData();
+                this.renderOperation.indexData.indexBuffer = indexBuffer;
+                this.renderOperation.indexData.indexStart = 0;
                 // index start and count are sorted out later
 
                 // Create vertex data which just references position component (and 2 component)
-                this.renderOp.vertexData = new VertexData();
-                this.renderOp.vertexData.vertexDeclaration =
+                this.renderOperation.vertexData = new VertexData();
+                this.renderOperation.vertexData.vertexDeclaration =
                         HardwareBufferManager.Instance.CreateVertexDeclaration();
-                this.renderOp.vertexData.vertexBufferBinding =
+                this.renderOperation.vertexData.vertexBufferBinding =
                         HardwareBufferManager.Instance.CreateVertexBufferBinding();
 
                 // Map in position data
-                this.renderOp.vertexData.vertexDeclaration.AddElement( 0,
+                this.renderOperation.vertexData.vertexDeclaration.AddElement( 0,
                                                                        0,
                                                                        VertexElementType.Float3,
                                                                        VertexElementSemantic.Position );
@@ -2334,33 +2334,33 @@ namespace Axiom.Core
                         vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position ).Source;
 
                 this.positionBuffer = vertexData.vertexBufferBinding.GetBuffer( this.originalPosBufferBinding );
-                this.renderOp.vertexData.vertexBufferBinding.SetBinding( 0, this.positionBuffer );
+                this.renderOperation.vertexData.vertexBufferBinding.SetBinding( 0, this.positionBuffer );
 
                 // Map in w-coord buffer (if present)
                 if ( vertexData.hardwareShadowVolWBuffer != null )
                 {
-                    this.renderOp.vertexData.vertexDeclaration.AddElement( 1,
+                    this.renderOperation.vertexData.vertexDeclaration.AddElement( 1,
                                                                            0,
                                                                            VertexElementType.Float1,
                                                                            VertexElementSemantic.TexCoords,
                                                                            0 );
                     this.wBuffer = vertexData.hardwareShadowVolWBuffer;
-                    this.renderOp.vertexData.vertexBufferBinding.SetBinding( 1, this.wBuffer );
+                    this.renderOperation.vertexData.vertexBufferBinding.SetBinding( 1, this.wBuffer );
                 }
 
                 // Use same vertex start as input
-                this.renderOp.vertexData.vertexStart = vertexData.vertexStart;
+                this.renderOperation.vertexData.vertexStart = vertexData.vertexStart;
 
                 if ( isLightCap )
                 {
                     // Use original vertex count, no extrusion
-                    this.renderOp.vertexData.vertexCount = vertexData.vertexCount;
+                    this.renderOperation.vertexData.vertexCount = vertexData.vertexCount;
                 }
                 else
                 {
                     // Vertex count must take into account the doubling of the buffer,
                     // because second half of the buffer is the extruded copy
-                    this.renderOp.vertexData.vertexCount = vertexData.vertexCount * 2;
+                    this.renderOperation.vertexData.vertexCount = vertexData.vertexCount * 2;
 
                     if ( createSeparateLightCap )
                     {
@@ -2415,7 +2415,7 @@ namespace Axiom.Core
                     this.currentVertexData = vertexData;
                     this.positionBuffer =
                             this.currentVertexData.vertexBufferBinding.GetBuffer( this.originalPosBufferBinding );
-                    this.renderOp.vertexData.vertexBufferBinding.SetBinding( 0, this.positionBuffer );
+                    this.renderOperation.vertexData.vertexBufferBinding.SetBinding( 0, this.positionBuffer );
                     if ( this.lightCap != null )
                     {
                         ( (EntityShadowRenderable) this.lightCap ).RebindPositionBuffer( vertexData, force );

@@ -92,8 +92,7 @@ namespace Axiom.Graphics
         /// <summary>
         ///    Gets the render operation required to send this object to the frame buffer.
         /// </summary>
-        /// TODO: Refactor this into a Property
-        void GetRenderOperation( RenderOperation op );
+        RenderOperation RenderOperation { get; }
 
         /// <summary>
         ///    Gets the world transform matrix / matrices for this renderable object.

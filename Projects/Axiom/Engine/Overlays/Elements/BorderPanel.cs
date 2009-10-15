@@ -562,7 +562,7 @@ namespace Axiom.Overlays.Elements
 
             // Also update center geometry
             // don't use base class because we need to make it smaller because of border
-            buffer = renderOp.vertexData.vertexBufferBinding.GetBuffer( POSITION );
+            buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( POSITION );
             data = buffer.Lock( BufferLocking.Discard );
 
             index = 0;
@@ -950,15 +950,15 @@ namespace Axiom.Overlays.Elements
                 }
             }
 
-            public void GetRenderOperation( RenderOperation op )
+            public RenderOperation RenderOperation
             {
-                op.vertexData = parent.renderOp2.vertexData;
-                op.useIndices = parent.renderOp2.useIndices;
-                op.indexData = parent.renderOp2.indexData;
-                op.operationType = parent.renderOp2.operationType;
+                get
+                {
+                    return this.parent.renderOp2;
+                }
             }
 
-			public void GetWorldTransforms( Matrix4[] matrices )
+            public void GetWorldTransforms( Matrix4[] matrices )
             {
                 parent.GetWorldTransforms( matrices );
             }

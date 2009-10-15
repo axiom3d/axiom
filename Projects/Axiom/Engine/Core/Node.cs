@@ -1372,20 +1372,25 @@ namespace Axiom.Core
 			}
 		}
 
+        protected RenderOperation renderOperation = new RenderOperation();
         /// <summary>
         ///		This is only used if the SceneManager chooses to render the node. This option can be set
         ///		for SceneNodes at SceneManager.DisplaySceneNodes, and for entities based on skeletal 
         ///		models using Entity.DisplaySkeleton = true.
         ///	 </summary>
-        public void GetRenderOperation( RenderOperation op )
+        public RenderOperation RenderOperation
         {
-            if ( nodeSubMesh == null )
+            get
             {
-                Mesh nodeMesh = (Mesh)MeshManager.Instance.Load( "axes.mesh", ResourceGroupManager.BootstrapResourceGroupName );
-                nodeSubMesh = nodeMesh.GetSubMesh( 0 );
+                if ( this.nodeSubMesh == null )
+                {
+                    Mesh nodeMesh = (Mesh)MeshManager.Instance.Load( "axes.mesh", ResourceGroupManager.BootstrapResourceGroupName );
+                    this.nodeSubMesh = nodeMesh.GetSubMesh( 0 );
+                }
+                // return the render operation of the submesh itself
+                this.nodeSubMesh.GetRenderOperation( renderOperation );
+                return renderOperation;
             }
-            // return the render operation of the submesh itself
-            nodeSubMesh.GetRenderOperation( op );
         }
 
         /// <summary>

@@ -858,7 +858,7 @@ namespace Axiom.Core
         /// <remarks>
         /// You will have to call this 3 times for each face for a triangle list, 
         /// or use the alternative 3-parameter version. Other operation types
-        /// require different numbers of indexes, <see cref="RenderOperation.OperationType"/>.
+        /// require different numbers of indexes, <see cref="renderOperation.OperationType"/>.
         /// 32-bit indexes are not supported on all cards which is why this 
         /// class only allows 16-bit indexes, for simplicity and ease of use.
         /// </remarks>
@@ -1444,19 +1444,18 @@ namespace Axiom.Core
                 {
                     return this.renderOperation;
                 }
+                set
+                {
+                    value.useIndices = this.renderOperation.useIndices;
+                    value.operationType = this.renderOperation.operationType;
+                    value.vertexData = this.renderOperation.vertexData;
+                    value.indexData = this.renderOperation.indexData;
+                }
             }
 
             #endregion
 
             #region Methods
-
-            public void GetRenderOperation( RenderOperation op )
-            {
-                op.useIndices = this.renderOperation.useIndices;
-                op.operationType = this.renderOperation.operationType;
-                op.vertexData = this.renderOperation.vertexData;
-                op.indexData = this.renderOperation.indexData;
-            }
 
             public void GetWorldTransforms( Matrix4[] matrices )
             {
@@ -1657,15 +1656,15 @@ namespace Axiom.Core
             {
                 this.parent = parent;
                 // Initialise render op
-                this.renderOp.indexData = new IndexData();
-                this.renderOp.indexData.indexBuffer = indexBuffer;
-                this.renderOp.indexData.indexStart = 0;
+                this.renderOperation.indexData = new IndexData();
+                this.renderOperation.indexData.indexBuffer = indexBuffer;
+                this.renderOperation.indexData.indexStart = 0;
                 // index start and count are sorted out later
 
                 // Create vertex data which just references position component (and 2 component)
-                this.renderOp.vertexData = new VertexData();
+                this.renderOperation.vertexData = new VertexData();
                 // Map in position data
-                this.renderOp.vertexData.vertexDeclaration.AddElement( 0,
+                this.renderOperation.vertexData.vertexDeclaration.AddElement( 0,
                                                                        0,
                                                                        VertexElementType.Float3,
                                                                        VertexElementSemantic.Position );
@@ -1674,32 +1673,32 @@ namespace Axiom.Core
 
                 this.positionBuffer = vertexData.vertexBufferBinding.GetBuffer( origPosBind );
 
-                this.renderOp.vertexData.vertexBufferBinding.SetBinding( 0, this.positionBuffer );
+                this.renderOperation.vertexData.vertexBufferBinding.SetBinding( 0, this.positionBuffer );
                 // Map in w-coord buffer (if present)
                 if ( vertexData.hardwareShadowVolWBuffer != null )
                 {
-                    this.renderOp.vertexData.vertexDeclaration.AddElement( 1,
+                    this.renderOperation.vertexData.vertexDeclaration.AddElement( 1,
                                                                            0,
                                                                            VertexElementType.Float1,
                                                                            VertexElementSemantic.TexCoords,
                                                                            0 );
                     this.wBuffer = vertexData.hardwareShadowVolWBuffer;
-                    this.renderOp.vertexData.vertexBufferBinding.SetBinding( 1, this.wBuffer );
+                    this.renderOperation.vertexData.vertexBufferBinding.SetBinding( 1, this.wBuffer );
                 }
 
                 // Use same vertex start as input
-                this.renderOp.vertexData.vertexStart = vertexData.vertexStart;
+                this.renderOperation.vertexData.vertexStart = vertexData.vertexStart;
 
                 if ( isLightCap )
                 {
                     // Use original vertex count, no extrusion
-                    this.renderOp.vertexData.vertexCount = vertexData.vertexCount;
+                    this.renderOperation.vertexData.vertexCount = vertexData.vertexCount;
                 }
                 else
                 {
                     // Vertex count must take into account the doubling of the buffer,
                     // because second half of the buffer is the extruded copy
-                    this.renderOp.vertexData.vertexCount = vertexData.vertexCount * 2;
+                    this.renderOperation.vertexData.vertexCount = vertexData.vertexCount * 2;
                     if ( createSeparateLightCap )
                     {
                         // Create child light cap

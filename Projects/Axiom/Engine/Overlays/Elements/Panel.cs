@@ -78,7 +78,6 @@ namespace Axiom.Overlays.Elements
         protected float[] tileY = new float[ Config.MaxTextureLayers ];
         protected bool isTransparent;
         protected int numTexCoordsInBuffer;
-        protected RenderOperation renderOp = new RenderOperation();
         protected Vector2 topLeft, bottomRight;
 
         // source bindings for vertex buffers
@@ -111,17 +110,6 @@ namespace Axiom.Overlays.Elements
         #region Methods
 
         /// <summary>
-        ///    Returns the geometry to use during rendering.
-        /// </summary>
-        /// <param name="op"></param>
-        public override void GetRenderOperation( RenderOperation op )
-        {
-            op.vertexData = renderOp.vertexData;
-            op.operationType = renderOp.operationType;
-            op.useIndices = renderOp.useIndices;
-        }
-
-        /// <summary>
         /// 
         /// </summary>
         public override void Initialize()
@@ -131,28 +119,28 @@ namespace Axiom.Overlays.Elements
             if ( init )
             {
                 // setup the vertex data
-                renderOp.vertexData = new VertexData();
+                renderOperation.vertexData = new VertexData();
 
                 // Vertex declaration: 1 position, add texcoords later depending on #layers
                 // Create as separate buffers so we can lock & discard separately
-                VertexDeclaration decl = renderOp.vertexData.vertexDeclaration;
+                VertexDeclaration decl = renderOperation.vertexData.vertexDeclaration;
                 decl.AddElement( POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position );
-                renderOp.vertexData.vertexStart = 0;
-                renderOp.vertexData.vertexCount = 4;
+                renderOperation.vertexData.vertexStart = 0;
+                renderOperation.vertexData.vertexCount = 4;
 
                 // create the first vertex buffer, mostly static except during resizing
                 HardwareVertexBuffer buffer =
                     HardwareBufferManager.Instance.CreateVertexBuffer(
                          decl.GetVertexSize( POSITION ),
-                         renderOp.vertexData.vertexCount,
+                         renderOperation.vertexData.vertexCount,
                          BufferUsage.StaticWriteOnly );
 
                 // bind the vertex buffer
-                renderOp.vertexData.vertexBufferBinding.SetBinding( POSITION, buffer );
+                renderOperation.vertexData.vertexBufferBinding.SetBinding( POSITION, buffer );
 
                 // no indices, and issue as a tri strip
-                renderOp.useIndices = false;
-                renderOp.operationType = OperationType.TriangleStrip;
+                renderOperation.useIndices = false;
+                renderOperation.operationType = OperationType.TriangleStrip;
                 isInitialised = true;
             }
         }
@@ -214,7 +202,7 @@ namespace Axiom.Overlays.Elements
 
             // get a reference to the position buffer
             HardwareVertexBuffer buffer =
-                renderOp.vertexData.vertexBufferBinding.GetBuffer( POSITION );
+                renderOperation.vertexData.vertexBufferBinding.GetBuffer( POSITION );
 
             // lock the buffer
             IntPtr data = buffer.Lock( BufferLocking.Discard );
@@ -278,7 +266,7 @@ namespace Axiom.Overlays.Elements
             {
                 int numLayers = material.GetTechnique( 0 ).GetPass( 0 ).TextureUnitStageCount;
 
-                VertexDeclaration decl = renderOp.vertexData.vertexDeclaration;
+                VertexDeclaration decl = renderOperation.vertexData.vertexDeclaration;
 
                 // if the required layers is less than the current amount of tex coord buffers, remove
                 // the extraneous buffers
@@ -307,11 +295,11 @@ namespace Axiom.Overlays.Elements
                     HardwareVertexBuffer newBuffer =
                         HardwareBufferManager.Instance.CreateVertexBuffer(
                             decl.GetVertexSize( TEXTURE_COORDS ),
-                            renderOp.vertexData.vertexCount,
+                            renderOperation.vertexData.vertexCount,
                             BufferUsage.StaticWriteOnly );
 
                     // Bind buffer, note this will unbind the old one and destroy the buffer it had
-                    renderOp.vertexData.vertexBufferBinding.SetBinding( TEXTURE_COORDS, newBuffer );
+                    renderOperation.vertexData.vertexBufferBinding.SetBinding( TEXTURE_COORDS, newBuffer );
 
                     // record the current number of tex layers now
                     numTexCoordsInBuffer = numLayers;
@@ -320,7 +308,7 @@ namespace Axiom.Overlays.Elements
                 if ( numTexCoordsInBuffer != 0 )
                 {
                     // get the tex coord buffer
-                    HardwareVertexBuffer buffer = renderOp.vertexData.vertexBufferBinding.GetBuffer( TEXTURE_COORDS );
+                    HardwareVertexBuffer buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( TEXTURE_COORDS );
                     IntPtr data = buffer.Lock( BufferLocking.Discard );
 
                     unsafe

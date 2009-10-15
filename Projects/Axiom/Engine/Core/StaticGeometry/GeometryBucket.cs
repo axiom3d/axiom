@@ -212,16 +212,21 @@ namespace Axiom.Core
 				return parent.Parent.SquaredDistance;
 			}
 
-			public void GetRenderOperation( RenderOperation op )
-			{
-				op.indexData = indexData;
-				op.operationType = OperationType.TriangleList;
-				//op.srcRenderable = this;
-				op.useIndices = true;
-				op.vertexData = vertexData;
-			}
+		    protected RenderOperation renderOperation = new RenderOperation();
+		    public RenderOperation RenderOperation
+		    {
+		        get
+		        {
+                    renderOperation.indexData = this.indexData;
+                    renderOperation.operationType = OperationType.TriangleList;
+		            //op.srcRenderable = this;
+                    renderOperation.useIndices = true;
+                    renderOperation.vertexData = this.vertexData;
+		            return renderOperation;
+		        }
+		    }
 
-			public void GetWorldTransforms( Matrix4[] xform )
+		    public void GetWorldTransforms( Matrix4[] xform )
 			{
 				// Should be the identity transform, but lets allow transformation of the
 				// nodes the regions are attached to for kicks
@@ -464,8 +469,6 @@ namespace Axiom.Core
 			#endregion
 
 			#region IRenderable members
-
-			/// TODO: Talk to Jeff about these parameters
 
 			public bool NormalizeNormals
 			{

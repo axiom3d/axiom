@@ -1267,11 +1267,18 @@ namespace Axiom.Overlays
             }
         }
 
+        protected RenderOperation renderOperation = new RenderOperation();
         /// <summary>
-        ///    Abstract.  Force subclasses to implement this.
+        /// 
         /// </summary>
-        /// <param name="op"></param>
-        public abstract void GetRenderOperation( RenderOperation op );
+        /// <param name="value"></param>
+        public virtual RenderOperation RenderOperation
+        {
+            get
+            {
+                return renderOperation;
+            }
+        }
 
         /// <summary>
         /// 

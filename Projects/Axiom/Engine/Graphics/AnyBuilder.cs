@@ -147,8 +147,7 @@ namespace Axiom.Graphics
 			if ( obj == null )
 				throw new ArgumentNullException();
 
-			RenderOperation renderOp = new RenderOperation();
-			obj.GetRenderOperation( renderOp );
+			RenderOperation renderOp = obj.RenderOperation;
 
 			IndexData indexData;
 			if ( renderOp.useIndices )

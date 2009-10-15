@@ -5213,7 +5213,7 @@ namespace Axiom.Core
                 //targetRenderSystem.ClipPlanes = renderable.ClipPlanes;
 
                 // get the renderables render operation
-                renderable.GetRenderOperation( op );
+                op = renderable.RenderOperation;
                 // TODO: Add srcRenderable to RenderOperation.cs
                 //op.srcRenderable = renderable;
 
