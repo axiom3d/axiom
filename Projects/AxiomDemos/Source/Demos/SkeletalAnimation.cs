@@ -18,7 +18,7 @@ namespace Axiom.Demos
     {
         #region Fields
 
-        const int NumRobots = 4;
+        const int NumRobots = 10;
         AnimationState[] animState = new AnimationState[ NumRobots ];
         float[] animationSpeed = new float[ NumRobots ];
 
@@ -41,7 +41,6 @@ namespace Axiom.Demos
                 entity = scene.CreateEntity( robotName, "robot.mesh" );
                 var node = scene.RootSceneNode.CreateChildSceneNode(
                     new Vector3( 0, 0, ( i * 50 ) - ( NumRobots * 50 / 2 ) ) );
-                node.ShowBoundingBox = i % 2 == 0;
                 node.AttachObject( entity );
                 animState[ i ] = entity.GetAnimationState( "Walk" );
                 animState[ i ].IsEnabled = true;
