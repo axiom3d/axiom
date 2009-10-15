@@ -60,7 +60,6 @@ using XFG = Microsoft.Xna.Framework.Graphics;
 
 #endregion Namespace Declarations
 
-//ok, still a lot of stuff/functions to check
 namespace Axiom.RenderSystems.Xna
 {
     /// <summary>
@@ -725,6 +724,14 @@ namespace Axiom.RenderSystems.Xna
                             d3dPixelFormat );
                _texture = _normTexture;
             }
+
+            SetFinalAttributes( SrcWidth, SrcHeight, 1, XnaHelper.Convert( d3dPixelFormat ) );
+
+            if ( MipmapsHardwareGenerated )
+            {
+                _texture.GenerateMipMaps( GetBestFilterMethod() );
+            }
+
         }
 
         private void BlitImageToNormalTexture( Image image )
@@ -843,26 +850,12 @@ namespace Axiom.RenderSystems.Xna
 
         private XFG.SurfaceFormat ChooseXnaFormat()
         {
-            if ( Bpp > 16 && HasAlpha )
+            if ( Format == PixelFormat.Unknown )
             {
-                return XFG.SurfaceFormat.Color;
+                return this._bbPixelFormat;
             }
-            else if ( Bpp > 16 && !HasAlpha )
-            {
-                return XFG.SurfaceFormat.Bgr32;
-            }
-            else if ( Bpp == 16 && HasAlpha )
-            {
-                return XFG.SurfaceFormat.Bgra4444;
-            }
-            else if ( Bpp == 16 && !HasAlpha )
-            {
-                return XFG.SurfaceFormat.Bgr565;
-            }
-            else
-            {
-                throw new Exception( "Unknown pixel format!" );
-            }
+
+            return XnaHelper.Convert( XnaHelper.GetClosestSupported( Format ) );
         }
 
         /// <summary>

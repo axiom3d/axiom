@@ -251,6 +251,16 @@ namespace Axiom.RenderSystems.Xna
             }
         }
 
+        ///<summary>
+        /// Internal function to update mipmaps on update of level 0
+        ///</summary>
+        public void GenMipmaps()
+        {
+            Debug.Assert( mipTex != null );
+            // Mipmapping
+            mipTex.GenerateMipMaps(XFG.TextureFilter.Linear);
+        }
+
         #endregion Methods
 
         #region HardwarePixelBuffer Implementation
@@ -265,11 +275,44 @@ namespace Axiom.RenderSystems.Xna
         ///    The source and destination regions dimensions don't have to match, in which
         ///    case scaling is done. This scaling is generally done using a bilinear filter in hardware,
         ///    but it is faster to pass the source image in the right dimensions.
-        ///    Only call this function when both  buffers are unlocked. 
+        ///    Only call this function when both buffers are unlocked. 
         ///</remarks>
         public override void BlitFromMemory( PixelBox src, BasicBox dstBox )
         {
-            throw new NotImplementedException();
+            PixelBox converted = src;
+            GCHandle bufGCHandle = new GCHandle();
+            int bufSize = 0;
+
+            // Get src.Data as byte[]
+            bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, Format );
+            byte[] newBuffer = new byte[ bufSize ];
+            bufGCHandle = GCHandle.Alloc( newBuffer, GCHandleType.Pinned );
+            // convert to pixelbuffer's native format if necessary
+            if ( XnaHelper.Convert( src.Format ) == XFG.SurfaceFormat.Unknown )
+            {
+                converted = new PixelBox( src.Width, src.Height, src.Depth, Format, bufGCHandle.AddrOfPinnedObject() );
+                PixelConverter.BulkPixelConversion( src, converted );
+            }
+            else
+            {
+                Memory.Copy( converted.Data, bufGCHandle.AddrOfPinnedObject(), bufSize );
+            }
+
+            if ( surface != null )
+            {
+                surface.SetData<byte>( 0, XnaHelper.ToRectangle( dstBox ), newBuffer,0, bufSize, XFG.SetDataOptions.None );
+            }
+            else
+            {
+                throw new NotSupportedException( "BlitFromMemory on Volume Textures not supported." );
+            }
+
+            // If we allocated a buffer for the temporary conversion, free it here
+            if ( bufGCHandle.IsAllocated )
+                bufGCHandle.Free();
+
+            if ( doMipmapGen )
+                GenMipmaps();
         }
 
         ///<summary>
@@ -284,7 +327,6 @@ namespace Axiom.RenderSystems.Xna
         ///</remarks>
         public override void BlitToMemory( BasicBox srcBox, PixelBox dst )
         {
-            throw new NotImplementedException();
         }
 
         ///<summary>

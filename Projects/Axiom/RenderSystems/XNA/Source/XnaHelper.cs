@@ -59,12 +59,8 @@ namespace Axiom.RenderSystems.Xna
 	///		Helper class for Xna that includes conversion functions and things that are
 	///		specific to XFG.
 	/// </summary>
-	internal class XnaHelper
+	internal static class XnaHelper
 	{
-		public XnaHelper()
-		{
-		}
-
 		/// <summary>
 		///		Enumerates driver information and their supported display modes.
 		/// </summary>
@@ -862,6 +858,16 @@ namespace Axiom.RenderSystems.Xna
 	        return retVal;
 	    }
 
+        public static Rectangle ToRectangle( BasicBox rectangle )
+        {
+            Rectangle retVal;
+            retVal.X = (int)rectangle.Left;
+            retVal.Y = (int)rectangle.Top;
+            retVal.Width = (int)rectangle.Width;
+            retVal.Height = (int)rectangle.Height;
+            return retVal;
+        }
+
 	    public static PixelFormat Convert( SurfaceFormat semantic )
 	    {
             switch(semantic)
@@ -911,7 +917,7 @@ namespace Axiom.RenderSystems.Xna
         /// </summary>
         /// <param name="format"></param>
         /// <returns></returns>
-        public XFG.SurfaceFormat Convert( PixelFormat format )
+        public static XFG.SurfaceFormat Convert( PixelFormat format )
         {
             switch ( format )
             {
@@ -942,5 +948,27 @@ namespace Axiom.RenderSystems.Xna
             return XFG.SurfaceFormat.Unknown;
         }
 
-	}
+
+        public static Axiom.Media.PixelFormat GetClosestSupported( Axiom.Media.PixelFormat format )
+        {
+            if ( Convert( format ) != XFG.SurfaceFormat.Unknown )
+                return format;
+            switch ( format )
+            {
+                case Axiom.Media.PixelFormat.B5G6R5:
+                    return Axiom.Media.PixelFormat.R5G6B5;
+                case Axiom.Media.PixelFormat.B8G8R8:
+                    return Axiom.Media.PixelFormat.A8R8G8B8; // Would be R8G8B8 normaly but MDX doesn't like that format.
+                case Axiom.Media.PixelFormat.B8G8R8A8:
+                    return Axiom.Media.PixelFormat.A8R8G8B8;
+                case Axiom.Media.PixelFormat.FLOAT16_RGB:
+                    return Axiom.Media.PixelFormat.FLOAT16_RGBA;
+                case Axiom.Media.PixelFormat.FLOAT32_RGB:
+                    return Axiom.Media.PixelFormat.FLOAT32_RGBA;
+                case Axiom.Media.PixelFormat.Unknown:
+                default:
+                    return Axiom.Media.PixelFormat.A8R8G8B8;
+            }
+        }
+    }
 }
