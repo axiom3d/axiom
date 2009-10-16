@@ -67,7 +67,7 @@ namespace Axiom.Graphics
 	///		Like the other classes in this functional area, these declarations should be created and
 	///		destroyed using the <see cref="HardwareBufferManager"/>.
 	/// </remarks>
-	public class VertexDeclaration : ICloneable
+	public class VertexDeclaration : IDisposable, ICloneable
 	{
 		#region Fields
 
@@ -78,9 +78,18 @@ namespace Axiom.Graphics
 
 		#endregion Fields
 
-		#region Methods
+        #region Construction and Destruction
 
-		/// <summary>
+        ~VertexDeclaration()
+        {
+            dispose( false );
+        }
+
+	    #endregion Contruction and Destruction
+
+        #region Methods
+
+        /// <summary>
 		///     Adds a new VertexElement to this declaration.
 		/// </summary>
 		/// <remarks>
@@ -584,5 +593,75 @@ namespace Axiom.Graphics
 		}
 
 		#endregion
+
+        #region IDisposable Implementation
+
+        #region isDisposed Property
+
+        private bool _disposed = false;
+        /// <summary>
+        /// Determines if this instance has been disposed of already.
+        /// </summary>
+        protected bool isDisposed
+        {
+            get
+            {
+                return _disposed;
+            }
+            set
+            {
+                _disposed = value;
+            }
+        }
+
+        #endregion isDisposed Property
+
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        /// <remarks>
+        /// When implementing this method in an inherited class the following template should be used;
+        /// protected override void dispose( bool disposeManagedResources )
+        /// {
+        /// 	if ( !isDisposed )
+        /// 	{
+        /// 		if ( disposeManagedResources )
+        /// 		{
+        /// 			// Dispose managed resources.
+        /// 		}
+        /// 
+        /// 		// There are no unmanaged resources to release, but
+        /// 		// if we add them, they need to be released here.
+        /// 	}
+        ///
+        /// 	// If it is available, make the call to the
+        /// 	// base class's Dispose(Boolean) method
+        /// 	base.dispose( disposeManagedResources );
+        /// }
+        /// </remarks>
+        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+        protected virtual void dispose( bool disposeManagedResources )
+        {
+            if ( !isDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    // Dispose managed resources.
+                }
+
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
+            isDisposed = true;
+        }
+
+        public void Dispose()
+        {
+            dispose( true );
+            GC.SuppressFinalize( this );
+        }
+
+        #endregion IDisposable Implementation
+
 	}
 }

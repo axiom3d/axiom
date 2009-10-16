@@ -41,273 +41,330 @@ using Axiom.Math;
 using Axiom.Graphics;
 using ResourceHandle = System.UInt64;
 
-using DX = Microsoft.DirectX;
-using D3D = Microsoft.DirectX.Direct3D;
+using DX = SlimDX;
+using D3D = SlimDX.Direct3D9;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
-	/// <summary>
-	/// 	Direct3D implementation of a few things common to low-level vertex & fragment programs
-	/// </summary>
-	public abstract class D3DGpuProgram : GpuProgram
-	{
-		#region Fields
+    /// <summary>
+    /// 	Direct3D implementation of a few things common to low-level vertex & fragment programs
+    /// </summary>
+    public abstract class D3DGpuProgram : GpuProgram
+    {
+        #region Fields
 
-		/// <summary>
-		///    Reference to the current D3D device object.
-		/// </summary>
-		protected D3D.Device device;
-		/// <summary>
-		///     Microsode set externally, most likely from the HLSL compiler.
-		/// </summary>
-		protected Microsoft.DirectX.GraphicsStream externalMicrocode;
+        /// <summary>
+        ///    Reference to the current D3D device object.
+        /// </summary>
+        protected D3D.Device device;
+        /// <summary>
+        ///     Microsode set externally, most likely from the HLSL compiler.
+        /// </summary>
+        protected D3D.ShaderBytecode externalMicrocode;
 
-		#endregion Fields
+        #endregion Fields
 
-		#region Constructor
+        #region Construction and Destruction
 
-		public D3DGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, D3D.Device device )
-			: base(parent, name, handle, group, isManual, loader )
-		{
-			this.device = device;
-		}
+        protected D3DGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, D3D.Device device )
+            : base( parent, name, handle, group, isManual, loader )
+        {
+            this.device = device;
+        }
 
-		#endregion Constructor
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !isDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    if ( externalMicrocode != null && !externalMicrocode.Disposed )
+                        externalMicrocode.Dispose();
+                }
 
-		#region GpuProgram Members
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
 
-		/// <summary>
-		///     Overridden to allow for loading microcode from external sources.
-		/// </summary>
-		protected override void load()
-		{
-			if ( externalMicrocode != null )
-			{
-				// unload if needed
-				if ( IsLoaded )
-				{
-					Unload();
-				}
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose( disposeManagedResources );
+        }
 
-				// creates the shader from an external microcode source
-				// for example, a compiled HLSL program
-				LoadFromMicrocode( externalMicrocode );
-			}
-			else
-			{
-				// call base implementation
-				base.load();
-			}
-		}
+        #endregion Construction and Destruction
 
-		/// <summary>
-		///     Loads a D3D shader from the assembler source.
-		/// </summary>
-		protected override void LoadFromSource()
-		{
-			string errors;
+        #region GpuProgram Members
 
-			// load the shader from the source string
-			DX.GraphicsStream microcode = D3D.ShaderLoader.FromString( source, null, D3D.ShaderFlags.SkipValidation, out errors );
+        /// <summary>
+        ///     Overridden to allow for loading microcode from external sources.
+        /// </summary>
+        protected override void load()
+        {
+            if ( externalMicrocode != null )
+            {
+                // unload if needed
+                if ( IsLoaded )
+                {
+                    Unload();
+                }
 
-			if ( errors != null && errors.Length != 0 )
-			{
-				LogManager.Instance.Write( "Error while compiling pixel shader '{0}':\n {1}", Name, errors );
-				return;
-			}
+                // creates the shader from an external microcode source
+                // for example, a compiled HLSL program
+                LoadFromMicrocode( externalMicrocode );
+            }
+            else
+            {
+                // call base implementation
+                base.load();
+            }
+        }
 
-			// load the code into a shader object (polymorphic)
-			LoadFromMicrocode( microcode );
-		}
+        /// <summary>
+        ///     Loads a D3D shader from the assembler source.
+        /// </summary>
+        protected override void LoadFromSource()
+        {
+            string errors = null;
 
-		#endregion GpuProgram Members
+            // load the shader from the source string
+            DX.Direct3D9.ShaderBytecode microcode = D3D.ShaderBytecode.Assemble( source, null, null, 0, out errors );
 
-		#region Methods
+            if ( !string.IsNullOrEmpty( errors ) )
+            {
+                LogManager.Instance.Write( "Error while compiling pixel shader '{0}':\n {1}", Name, errors );
+                return;
+            }
 
-		/// <summary>
-		///     Loads a shader object from the supplied microcode.
-		/// </summary>
-		/// <param name="microcode">
-		///     GraphicsStream that contains the assembler instructions for the program.
-		/// </param>
-		protected abstract void LoadFromMicrocode( Microsoft.DirectX.GraphicsStream microcode );
+            // load the code into a shader object (polymorphic)
+            LoadFromMicrocode( microcode );
+        }
 
-		#endregion Methods
+        #endregion GpuProgram Members
 
-		#region Properties
+        #region Methods
 
-		/// <summary>
-		///     Gets/Sets a prepared chunk of microcode to use during Load
-		///     rather than loading from file or a string.
-		/// </summary>
-		/// <remarks>
-		///     This is used by the HLSL compiler once it compiles down to low
-		///     level microcode, which can then be loaded into a low level GPU
-		///     program.
-		/// </remarks>
-		internal Microsoft.DirectX.GraphicsStream ExternalMicrocode
-		{
-			get
-			{
-				return externalMicrocode;
-			}
-			set
-			{
-				externalMicrocode = value;
-			}
-		}
+        /// <summary>
+        ///     Loads a shader object from the supplied microcode.
+        /// </summary>
+        /// <param name="microcode">
+        ///     GraphicsStream that contains the assembler instructions for the program.
+        /// </param>
+        protected abstract void LoadFromMicrocode( D3D.ShaderBytecode microcode );
 
-		#endregion Properties
-	}
+        #endregion Methods
 
-	/// <summary>
-	///    Direct3D implementation of low-level vertex programs.
-	/// </summary>
-	public class D3DVertexProgram : D3DGpuProgram
-	{
-		#region Fields
+        #region Properties
 
-		/// <summary>
-		///    Reference to the current D3D VertexShader object.
-		/// </summary>
-		protected D3D.VertexShader vertexShader;
+        /// <summary>
+        ///     Gets/Sets a prepared chunk of microcode to use during Load
+        ///     rather than loading from file or a string.
+        /// </summary>
+        /// <remarks>
+        ///     This is used by the HLSL compiler once it compiles down to low
+        ///     level microcode, which can then be loaded into a low level GPU
+        ///     program.
+        /// </remarks>
+        internal D3D.ShaderBytecode ExternalMicrocode
+        {
+            get
+            {
+                return externalMicrocode;
+            }
+            set
+            {
+                externalMicrocode = value;
+            }
+        }
 
-		#endregion Fields
+        #endregion Properties
+    }
 
-		#region Constructor
+    /// <summary>
+    ///    Direct3D implementation of low-level vertex programs.
+    /// </summary>
+    public class D3DVertexProgram : D3DGpuProgram
+    {
+        #region Fields
 
-		internal D3DVertexProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, D3D.Device device )
-			: base( parent, name, handle, group, isManual, loader, device )
-		{
+        /// <summary>
+        ///    Reference to the current D3D VertexShader object.
+        /// </summary>
+        protected D3D.VertexShader vertexShader;
+
+        #endregion Fields
+
+        #region Construction and Destruction
+
+        internal D3DVertexProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, D3D.Device device )
+            : base( parent, name, handle, group, isManual, loader, device )
+        {
             type = GpuProgramType.Vertex;
-		}
+        }
 
-		#endregion Constructor
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !isDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    if ( vertexShader != null && !vertexShader.Disposed )
+                        vertexShader.Dispose();
+                }
 
-		#region D3DGpuProgram Memebers
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
 
-		protected override void LoadFromMicrocode( DX.GraphicsStream microcode )
-		{
-			// create the new vertex shader
-			vertexShader = new D3D.VertexShader( device, microcode );
-		}
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose( disposeManagedResources );
+        }
 
-		#endregion D3DGpuProgram Memebers
+        #endregion Construction and Destruction
 
-		#region GpuProgram Members
+        #region D3DGpuProgram Memebers
 
-		/// <summary>
-		///     Unloads the VertexShader object.
-		/// </summary>
-		protected override void unload()
-		{
-			if ( vertexShader != null )
-			{
-				vertexShader.Dispose();
-			}
-		}
+        protected override void LoadFromMicrocode( D3D.ShaderBytecode microcode )
+        {
+            // create the new vertex shader
+            vertexShader = new D3D.VertexShader( device, microcode );
+        }
 
-		#endregion GpuProgram Members
+        #endregion D3DGpuProgram Memebers
 
-		#region Properties
+        #region GpuProgram Members
 
-		/// <summary>
-		///    Used internally by the D3DRenderSystem to get a reference to the underlying
-		///    VertexShader object.
-		/// </summary>
-		internal D3D.VertexShader VertexShader
-		{
-			get
-			{
-				return vertexShader;
-			}
-		}
+        /// <summary>
+        ///     Unloads the VertexShader object.
+        /// </summary>
+        protected override void unload()
+        {
+            if ( vertexShader != null )
+            {
+                vertexShader.Dispose();
+            }
+        }
 
-		public override int SamplerCount
-		{
-			get
-			{
-				throw new AxiomException( "Attempted to query sample count for vertex shader." );
-			}
-		}
+        #endregion GpuProgram Members
 
-		#endregion Properties
-	}
+        #region Properties
 
-	/// <summary>
-	///    Direct3D implementation of low-level vertex programs.
-	/// </summary>
-	public class D3DFragmentProgram : D3DGpuProgram
-	{
-		#region Fields
+        /// <summary>
+        ///    Used internally by the D3DRenderSystem to get a reference to the underlying
+        ///    VertexShader object.
+        /// </summary>
+        internal D3D.VertexShader VertexShader
+        {
+            get
+            {
+                return vertexShader;
+            }
+        }
 
-		/// <summary>
-		///    Reference to the current D3D PixelShader object.
-		/// </summary>
-		protected D3D.PixelShader pixelShader;
+        public override int SamplerCount
+        {
+            get
+            {
+                throw new AxiomException( "Attempted to query sample count for vertex shader." );
+            }
+        }
 
-		#endregion Fields
+        #endregion Properties
+    }
 
-		#region Constructors
+    /// <summary>
+    ///    Direct3D implementation of low-level vertex programs.
+    /// </summary>
+    public class D3DFragmentProgram : D3DGpuProgram
+    {
+        #region Fields
 
-		internal D3DFragmentProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, D3D.Device device )
-			: base( parent, name, handle, group, isManual, loader, device )
-		{
+        /// <summary>
+        ///    Reference to the current D3D PixelShader object.
+        /// </summary>
+        protected D3D.PixelShader pixelShader;
+
+        #endregion Fields
+
+        #region Construction and Destruction
+
+        internal D3DFragmentProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, D3D.Device device )
+            : base( parent, name, handle, group, isManual, loader, device )
+        {
             type = GpuProgramType.Fragment;
-		}
+        }
 
-		#endregion Constructors
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !isDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    if ( pixelShader != null && !pixelShader.Disposed )
+                        pixelShader.Dispose();
+                }
 
-		#region D3DGpuProgram Memebers
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
 
-		protected override void LoadFromMicrocode( DX.GraphicsStream microcode )
-		{
-			// create a new pixel shader
-			pixelShader = new D3D.PixelShader( device, microcode );
-		}
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose( disposeManagedResources );
+        }
 
-		#endregion D3DGpuProgram Members
+        #endregion Construction and Destruction
 
-		#region GpuProgram Members
+        #region D3DGpuProgram Memebers
 
-		/// <summary>
-		///     Unloads the PixelShader object.
-		/// </summary>
-		protected override void unload()
-		{
-			if ( pixelShader != null )
-			{
-				pixelShader.Dispose();
-			}
-		}
+        protected override void LoadFromMicrocode( D3D.ShaderBytecode microcode )
+        {
+            // create a new pixel shader
+            pixelShader = new D3D.PixelShader( device, microcode );
+        }
 
-		#endregion GpuProgram Members
+        #endregion D3DGpuProgram Members
 
-		#region Properties
+        #region GpuProgram Members
 
-		/// <summary>
-		///    Used internally by the D3DRenderSystem to get a reference to the underlying
-		///    PixelShader object.
-		/// </summary>
-		internal D3D.PixelShader PixelShader
-		{
-			get
-			{
-				return pixelShader;
-			}
-		}
+        /// <summary>
+        ///     Unloads the PixelShader object.
+        /// </summary>
+        protected override void unload()
+        {
+            if ( pixelShader != null )
+            {
+                pixelShader.Dispose();
+            }
+        }
 
-		public override int SamplerCount
-		{
-			get
-			{
-				//throw new AxiomException( "Attempted to query sample count for D3D Fragment Program." );
-				return 1;
-			}
-		}
+        #endregion GpuProgram Members
 
-		#endregion Properties
-	}
+        #region Properties
+
+        /// <summary>
+        ///    Used internally by the D3DRenderSystem to get a reference to the underlying
+        ///    PixelShader object.
+        /// </summary>
+        internal D3D.PixelShader PixelShader
+        {
+            get
+            {
+                return pixelShader;
+            }
+        }
+
+        public override int SamplerCount
+        {
+            get
+            {
+                //throw new AxiomException( "Attempted to query sample count for D3D Fragment Program." );
+                return 1;
+            }
+        }
+
+        #endregion Properties
+    }
 }

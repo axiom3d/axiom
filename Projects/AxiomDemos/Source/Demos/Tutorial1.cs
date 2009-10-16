@@ -113,7 +113,8 @@ namespace Axiom.Demos
             // calculate the actual endpoint
             Vector3 endPoint = startPoint + ( direction * length );
 
-            renderOperation.vertexData = new VertexData();
+            vertexData = new VertexData();
+            renderOperation.vertexData = vertexData;
             renderOperation.vertexData.vertexCount = 2;
             renderOperation.vertexData.vertexStart = 0;
             renderOperation.indexData = null;
@@ -217,7 +218,8 @@ namespace Axiom.Demos
         /// <param name="v3"></param>
         public Triangle( Vector3 v1, Vector3 v2, Vector3 v3, ColorEx c1, ColorEx c2, ColorEx c3 )
         {
-            renderOperation.vertexData = new VertexData();
+            vertexData = new VertexData();
+            renderOperation.vertexData = vertexData;
             renderOperation.vertexData.vertexCount = 3;
             renderOperation.vertexData.vertexStart = 0;
             renderOperation.indexData = null;

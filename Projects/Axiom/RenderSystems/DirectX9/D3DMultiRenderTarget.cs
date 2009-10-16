@@ -42,8 +42,8 @@ using Axiom.Configuration;
 using Axiom.Utilities;
 using Axiom.Core;
 
-using DX = Microsoft.DirectX;
-using D3D = Microsoft.DirectX.Direct3D;
+using DX = SlimDX;
+using D3D = SlimDX.Direct3D9;
 using Axiom.Media;
 
 #endregion Namespace Declarations
@@ -52,44 +52,45 @@ namespace Axiom.RenderSystems.DirectX9
 {
     class D3DMultiRenderTarget : MultiRenderTarget
     {
-		#region Fields and Properties
+        #region Fields and Properties
 
         protected D3DHardwarePixelBuffer[] _targets = new D3DHardwarePixelBuffer[ Config.MaxMultipleRenderTargets ];
 
-		#endregion Fields and Properties
+        #endregion Fields and Properties
 
-		#region Construction and Destruction
+        #region Construction and Destruction
 
         public D3DMultiRenderTarget( string name )
             : base( name )
         {
         }
 
-		#endregion Construction and Destruction
+        #endregion Construction and Destruction
 
-		#region Methods
+        #region Methods
 
-		/// <summary>
-		/// Bind a surface to a certain attachment point.
-		/// </summary>
-		/// <param name="attachment">0 .. capabilities.MultiRenderTargetCount-1</param>
-		/// <param name="target">RenderTexture to bind.</param>
-		/// <remarks>
-		/// It does not bind the surface and fails with an exception (ERR_INVALIDPARAMS) if:
-		/// - Not all bound surfaces have the same size
-		/// - Not all bound surfaces have the same internal format 
-		/// </remarks>
+        /// <summary>
+        /// Bind a surface to a certain attachment point.
+        /// </summary>
+        /// <param name="attachment">0 .. capabilities.MultiRenderTargetCount-1</param>
+        /// <param name="target">RenderTexture to bind.</param>
+        /// <remarks>
+        /// It does not bind the surface and fails with an exception (ERR_INVALIDPARAMS) if:
+        /// - Not all bound surfaces have the same size
+        /// - Not all bound surfaces have the same internal format 
+        /// </remarks>
         public override void BindSurface( int attachment, RenderTexture target )
         {
             Contract.Requires( attachment < Config.MaxMultipleRenderTargets );
 
             // Get buffer and surface to bind to
-            D3DHardwarePixelBuffer buffer = (D3DHardwarePixelBuffer)(target["BUFFER"]);
+            D3DHardwarePixelBuffer buffer = (D3DHardwarePixelBuffer)( target[ "BUFFER" ] );
             Proclaim.NotNull( buffer );
 
             // Find first non null target
             int y;
-            for ( y = 0; y < Config.MaxMultipleRenderTargets && this._targets[ y ] == null; y++ ) ;
+            for ( y = 0; y < Config.MaxMultipleRenderTargets && this._targets[ y ] == null; y++ )
+                ;
 
             if ( y != Config.MaxMultipleRenderTargets )
             {
@@ -105,10 +106,10 @@ namespace Axiom.RenderSystems.DirectX9
             this.CheckAndUpdate();
         }
 
-		/// <summary>
-		/// Unbind Attachment
-		/// </summary>
-		/// <param name="attachment"></param>
+        /// <summary>
+        /// Unbind Attachment
+        /// </summary>
+        /// <param name="attachment"></param>
         public override void UnbindSurface( int attachment )
         {
             Contract.Requires( attachment < Config.MaxMultipleRenderTargets );
@@ -132,7 +133,7 @@ namespace Axiom.RenderSystems.DirectX9
 
         #endregion Methods
 
-		#region RenderTarget Implementation
+        #region RenderTarget Implementation
 
         public override void Update()
         {
@@ -171,6 +172,6 @@ namespace Axiom.RenderSystems.DirectX9
             }
         }
 
-		#endregion RenderTarget Implementation
+        #endregion RenderTarget Implementation
     }
 }

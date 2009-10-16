@@ -51,7 +51,7 @@ namespace Axiom.RenderSystems.SlimDX9
         /// <summary>
         ///     Reference to the render system instance.
         /// </summary>
-        private RenderSystem renderSystem = new SDXRenderSystem();
+        private RenderSystem renderSystem = new D3DRenderSystem();
 
         #endregion Fields
 

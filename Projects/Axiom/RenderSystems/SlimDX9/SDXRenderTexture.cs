@@ -77,7 +77,7 @@ namespace Axiom.RenderSystems.SlimDX9
 
         public override void Update()
         {
-            SDXRenderSystem rs = (SDXRenderSystem)Root.Instance.RenderSystem;
+            D3DRenderSystem rs = (D3DRenderSystem)Root.Instance.RenderSystem;
             if ( rs.IsDeviceLost )
             {
                 return;
@@ -118,7 +118,7 @@ namespace Axiom.RenderSystems.SlimDX9
             //// Only needed if we have to blit from AA surface
             if ( this.FSAA > 0 )
             {
-                SDXRenderSystem rs = (SDXRenderSystem)Root.Instance.RenderSystem;
+                D3DRenderSystem rs = (D3DRenderSystem)Root.Instance.RenderSystem;
                 if ( rs.IsDeviceLost )
                 {
                     return;

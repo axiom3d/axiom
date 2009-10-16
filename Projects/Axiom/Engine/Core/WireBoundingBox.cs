@@ -78,9 +78,11 @@ namespace Axiom.Core
         /// </summary>
         public WireBoundingBox()
         {
-            renderOperation.vertexData = new VertexData();
-            renderOperation.vertexData.vertexCount = 24;
-            renderOperation.vertexData.vertexStart = 0;
+            vertexData = new VertexData();
+            vertexData.vertexCount = 24;
+            vertexData.vertexStart = 0;
+
+            renderOperation.vertexData = vertexData;
             renderOperation.operationType = OperationType.LineList;
             renderOperation.useIndices = false;
 
@@ -118,11 +120,8 @@ namespace Axiom.Core
         [Obsolete( "Use WireBoundingBox.BoundingBox property." )]
         public void SetupBoundingBox( AxisAlignedBox aabb )
         {
-            // init the vertices to the aabb
-            SetupBoundingBoxVertices( aabb );
-
-            // setup the bounding box of this SimpleRenderable
-            box = aabb;
+            // store the bounding box locally
+            this.BoundingBox = box;
         }
 
         protected virtual void SetupBoundingBoxVertices( AxisAlignedBox aab )
