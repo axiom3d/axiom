@@ -136,6 +136,20 @@ namespace Axiom.RenderSystems.SlimDX9
 
         private D3D.Device _device;
 
+        public D3D.Direct3D Direct3D
+        {
+            get
+            {
+                return _direct3D;
+            }
+            set
+            {
+                _direct3D = value;
+            }
+        }
+
+        private D3D.Direct3D _direct3D;
+
         #endregion
     }
 }

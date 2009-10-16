@@ -1034,9 +1034,9 @@
       <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
       <Name>Axiom</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\Platforms\SlimDX\Axiom.Platforms.SlimDX.csproj">
-      <Project>{C1F06405-80E4-4C60-BDDD-4BA1C8F400E0}</Project>
-      <Name>Axiom.Platforms.SlimDX</Name>
+    <ProjectReference Include="..\..\..\..\Axiom\Platforms\Win32\Axiom.Platforms.Win32.csproj">
+      <Project>{77AC0D3A-2A99-4EA6-A90E-C71BB53751C5}</Project>
+      <Name>Axiom.Platforms.Win32</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.csproj">
       <Project>{E2B64AA9-77C8-4BED-AB5B-10B2832E0D5B}</Project>
@@ -1054,13 +1054,13 @@
       <Project>{F81F1AAF-8BC9-4064-94C2-AD0C0A9C0ED1}</Project>
       <Name>Axiom.Plugins.ParticleFX</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Axiom\RenderSystems\DirectX9\Axiom.RenderSystems.DirectX9.csproj">
+      <Project>{68DBB62F-F98D-47B5-A769-C20B461227AB}</Project>
+      <Name>Axiom.RenderSystems.DirectX9</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.Win32.csproj">
       <Project>{503C2DEF-293E-491F-ADDA-EE3860FCF84B}</Project>
       <Name>Axiom.RenderSystems.OpenGL.Win32</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\RenderSystems\SlimDX9\Axiom.RenderSystems.SlimDX9.csproj">
-      <Project>{EDE0CDEC-8DEA-4F48-BD27-F658B83507DE}</Project>
-      <Name>Axiom.RenderSystems.SlimDX9</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\RenderSystems\XNA\Axiom.RenderSystems.Xna.csproj">
       <Project>{628E7ED7-EC58-4C93-B8AB-CB69087D381B}</Project>
@@ -1163,8 +1163,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>if exist "Axiom.dll.locked" del "Axiom.dll.locked" 
+if not exist "Axiom.dll.locked" if exist "Axiom.dll" move "Axiom.dll" "Axiom.dll.locked"</PreBuildEvent>
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>

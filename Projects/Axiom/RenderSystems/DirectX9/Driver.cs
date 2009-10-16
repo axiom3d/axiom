@@ -35,8 +35,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-using DX = Microsoft.DirectX;
-using D3D = Microsoft.DirectX.Direct3D;
+using DX = SlimDX;
+using D3D = SlimDX.Direct3D9;
 
 #endregion Namespace Declarations
 
@@ -55,10 +55,10 @@ namespace Axiom.RenderSystems.DirectX9
 		public Driver( D3D.AdapterInformation adapterInfo )
 		{
 			this._desktopMode = adapterInfo.CurrentDisplayMode;
-			this._name = adapterInfo.Information.DriverName;
-			this._description = adapterInfo.Information.Description;
+			this._name = adapterInfo.Details.DriverName;
+			this._description = adapterInfo.Details.Description;
 			this._adapterNum = adapterInfo.Adapter;
-			this._adapterIdentifier = adapterInfo.Information.DeviceIdentifier;
+			this._adapterIdentifier = adapterInfo.Details.DeviceIdentifier;
 
 			_videoModeList = new VideoModeCollection();
 		}
@@ -169,6 +169,24 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 		#endregion D3DDevice Property
 
-		#endregion Properties
-	}
+        #region Direct3D Property
+        private D3D.Direct3D _direct3D;
+        /// <summary>
+        /// This is the main Direct3D object
+        /// </summary>
+        public D3D.Direct3D Direct3D
+        {
+            get
+            {
+                return _direct3D;
+            }
+            set
+            {
+                _direct3D = value;
+            }
+        }
+        #endregion Direct3D Property
+
+        #endregion Properties
+    }
 }

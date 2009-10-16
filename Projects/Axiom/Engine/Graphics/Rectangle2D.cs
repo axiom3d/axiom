@@ -64,7 +64,8 @@ namespace Axiom.Graphics
 
         public Rectangle2D( bool includeTextureCoordinates )
         {
-            renderOperation.vertexData = new VertexData();
+            vertexData = new VertexData();
+            renderOperation.vertexData = vertexData;
             renderOperation.vertexData.vertexStart = 0;
             renderOperation.vertexData.vertexCount = 4;
             renderOperation.useIndices = false;

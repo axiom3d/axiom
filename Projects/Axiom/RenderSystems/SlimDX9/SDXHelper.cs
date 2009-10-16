@@ -73,6 +73,7 @@ namespace Axiom.RenderSystems.SlimDX9
             foreach ( D3D.AdapterInformation adapterInfo in manager.Adapters )
             {
                 Driver driver = new Driver( adapterInfo );
+                driver.Direct3D = manager;
 
                 int lastWidth = 0, lastHeight = 0;
                 D3D.Format lastFormat = 0;
@@ -148,20 +149,20 @@ namespace Axiom.RenderSystems.SlimDX9
         /// <param name="caps"></param>
         /// <param name="texType"></param>
         /// <returns></returns>
-        public static D3D.TextureFilter ConvertEnum( FilterType type, FilterOptions options, D3D.Capabilities devCaps, SDXTextureType texType )
+        public static D3D.TextureFilter ConvertEnum( FilterType type, FilterOptions options, D3D.Capabilities devCaps, D3DTextureType texType )
         {
             // setting a default val here to keep compiler from complaining about using unassigned value types
             D3D.FilterCaps filterCaps = devCaps.TextureFilterCaps;
 
             switch ( texType )
             {
-                case SDXTextureType.Normal:
+                case D3DTextureType.Normal:
                     filterCaps = devCaps.TextureFilterCaps;
                     break;
-                case SDXTextureType.Cube:
+                case D3DTextureType.Cube:
                     filterCaps = devCaps.CubeTextureFilterCaps;
                     break;
-                case SDXTextureType.Volume:
+                case D3DTextureType.Volume:
                     filterCaps = devCaps.VolumeTextureFilterCaps;
                     break;
             }
@@ -683,20 +684,20 @@ namespace Axiom.RenderSystems.SlimDX9
             return 0;
         }
 
-        public static SDXTextureType ConvertEnum( TextureType type )
+        public static D3DTextureType ConvertEnum( TextureType type )
         {
             switch ( type )
             {
                 case TextureType.OneD:
                 case TextureType.TwoD:
-                    return SDXTextureType.Normal;
+                    return D3DTextureType.Normal;
                 case TextureType.CubeMap:
-                    return SDXTextureType.Cube;
+                    return D3DTextureType.Cube;
                 case TextureType.ThreeD:
-                    return SDXTextureType.Volume;
+                    return D3DTextureType.Volume;
             }
 
-            return SDXTextureType.None;
+            return D3DTextureType.None;
         }
 
         public static D3D.TextureAddress ConvertEnum( TextureAddressing type )

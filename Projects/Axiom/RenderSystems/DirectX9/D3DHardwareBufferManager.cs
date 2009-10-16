@@ -39,125 +39,125 @@ using Axiom.Graphics;
 using Axiom.Core;
 using VertexDeclaration = Axiom.Graphics.VertexDeclaration;
 
-using DX = Microsoft.DirectX.Direct3D;
-using D3D = Microsoft.DirectX.Direct3D;
+using DX = SlimDX.Direct3D9;
+using D3D = SlimDX.Direct3D9;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.DirectX9
 {
-	/// <summary>
-	/// 	Summary description for D3DHardwareBufferManager.
-	/// </summary>
-	public class D3DHardwareBufferManager : HardwareBufferManager
-	{
-		#region Member variables
+    /// <summary>
+    /// 	Summary description for D3DHardwareBufferManager.
+    /// </summary>
+    public class D3DHardwareBufferManager : HardwareBufferManager
+    {
+        #region Member variables
 
-		protected D3D.Device device;
+        protected D3D.Device device;
 
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Constructors
 
-		/// <summary>
-		///		
-		/// </summary>
-		/// <param name="device"></param>
-		public D3DHardwareBufferManager( D3D.Device device )
-		{
-			this.device = device;
-		}
+        /// <summary>
+        ///		
+        /// </summary>
+        /// <param name="device"></param>
+        public D3DHardwareBufferManager( D3D.Device device )
+        {
+            this.device = device;
+        }
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		public override Axiom.Graphics.HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
-		{
-			// call overloaded method with no shadow buffer
-			return CreateIndexBuffer( type, numIndices, usage, false );
-		}
+        public override Axiom.Graphics.HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
+        {
+            // call overloaded method with no shadow buffer
+            return CreateIndexBuffer( type, numIndices, usage, false );
+        }
 
-		public override Axiom.Graphics.HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
-		{
-			D3DHardwareIndexBuffer buffer = new D3DHardwareIndexBuffer( type, numIndices, usage, device, false, useShadowBuffer );
-			indexBuffers.Add( buffer );
-			return buffer;
-		}
+        public override Axiom.Graphics.HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
+        {
+            D3DHardwareIndexBuffer buffer = new D3DHardwareIndexBuffer( type, numIndices, usage, device, false, useShadowBuffer );
+            indexBuffers.Add( buffer );
+            return buffer;
+        }
 
-		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage )
-		{
-			// call overloaded method with no shadow buffer
-			return CreateVertexBuffer( vertexSize, numVerts, usage, false );
-		}
+        public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage )
+        {
+            // call overloaded method with no shadow buffer
+            return CreateVertexBuffer( vertexSize, numVerts, usage, false );
+        }
 
-		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer )
-		{
-			D3DHardwareVertexBuffer buffer = new D3DHardwareVertexBuffer( vertexSize, numVerts, usage, device, false, useShadowBuffer );
-			vertexBuffers.Add( buffer );
-			return buffer;
-		}
+        public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer )
+        {
+            D3DHardwareVertexBuffer buffer = new D3DHardwareVertexBuffer( vertexSize, numVerts, usage, device, false, useShadowBuffer );
+            vertexBuffers.Add( buffer );
+            return buffer;
+        }
 
-		public override Axiom.Graphics.VertexDeclaration CreateVertexDeclaration()
-		{
-			VertexDeclaration decl = new D3DVertexDeclaration( device );
-			vertexDeclarations.Add( decl );
-			return decl;
-		}
+        public override Axiom.Graphics.VertexDeclaration CreateVertexDeclaration()
+        {
+            VertexDeclaration decl = new D3DVertexDeclaration( device );
+            vertexDeclarations.Add( decl );
+            return decl;
+        }
 
-		//-----------------------------------------------------------------------
-		public void ReleaseDefaultPoolResources()
-		{
-			int iCount = 0;
-			int vCount = 0;
+        //-----------------------------------------------------------------------
+        public void ReleaseDefaultPoolResources()
+        {
+            int iCount = 0;
+            int vCount = 0;
 
-			foreach ( D3DHardwareVertexBuffer buffer in vertexBuffers )
-			{
-				if ( buffer.ReleaseIfDefaultPool() )
-					vCount++;
-			}
+            foreach ( D3DHardwareVertexBuffer buffer in vertexBuffers )
+            {
+                if ( buffer.ReleaseIfDefaultPool() )
+                    vCount++;
+            }
 
-			foreach ( D3DHardwareIndexBuffer buffer in indexBuffers )
-			{
-				if ( buffer.ReleaseIfDefaultPool() )
-					iCount++;
-			}
+            foreach ( D3DHardwareIndexBuffer buffer in indexBuffers )
+            {
+                if ( buffer.ReleaseIfDefaultPool() )
+                    iCount++;
+            }
 
-			LogManager.Instance.Write( "D3DHardwareBufferManager released:" );
-			LogManager.Instance.Write( "\t{0} unmanaged vertex buffers.", vCount );
-			LogManager.Instance.Write( "\t{0} unmanaged index buffers.", iCount );
-		}
+            LogManager.Instance.Write( "D3DHardwareBufferManager released:" );
+            LogManager.Instance.Write( "\t{0} unmanaged vertex buffers.", vCount );
+            LogManager.Instance.Write( "\t{0} unmanaged index buffers.", iCount );
+        }
 
-		//-----------------------------------------------------------------------
-		public void RecreateDefaultPoolResources()
-		{
-			int iCount = 0;
-			int vCount = 0;
+        //-----------------------------------------------------------------------
+        public void RecreateDefaultPoolResources()
+        {
+            int iCount = 0;
+            int vCount = 0;
 
-			foreach ( D3DHardwareVertexBuffer buffer in vertexBuffers )
-			{
-				if ( buffer.RecreateIfDefaultPool( device ) )
-					vCount++;
-			}
+            foreach ( D3DHardwareVertexBuffer buffer in vertexBuffers )
+            {
+                if ( buffer.RecreateIfDefaultPool( device ) )
+                    vCount++;
+            }
 
-			foreach ( D3DHardwareIndexBuffer buffer in indexBuffers )
-			{
-				if ( buffer.RecreateIfDefaultPool( device ) )
-					iCount++;
-			}
+            foreach ( D3DHardwareIndexBuffer buffer in indexBuffers )
+            {
+                if ( buffer.RecreateIfDefaultPool( device ) )
+                    iCount++;
+            }
 
-			LogManager.Instance.Write( "D3DHardwareBufferManager recreated:" );
-			LogManager.Instance.Write( "\t{0} unmanaged vertex buffers.", vCount );
-			LogManager.Instance.Write( "\t{0} unmanaged index buffers.", iCount );
-		}
+            LogManager.Instance.Write( "D3DHardwareBufferManager recreated:" );
+            LogManager.Instance.Write( "\t{0} unmanaged vertex buffers.", vCount );
+            LogManager.Instance.Write( "\t{0} unmanaged index buffers.", iCount );
+        }
 
-		// TODO: Disposal
+        // TODO: Disposal
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		#endregion
+        #endregion
 
-	}
+    }
 }

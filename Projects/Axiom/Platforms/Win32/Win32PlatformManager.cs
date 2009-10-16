@@ -57,13 +57,22 @@ namespace Axiom.Platforms.Win32
 
         #endregion Fields
 
+        #region Construction and Destruction
+
+        public Win32PlatformManager()
+        {
+            LogManager.Instance.Write( "Win32 Platform Manager Loaded." );
+        }
+
+        #endregion Construction and Destruction
+
         #region IPlatformManager Members
 
         /// <summary>
         ///		Creates an InputReader implemented using Microsoft DirectInput (tm).
         /// </summary>
         /// <returns></returns>
-        public Axiom.Input.InputReader CreateInputReader()
+        public InputReader CreateInputReader()
         {
             if ( inputReader == null )
                 inputReader = new Win32InputReader();

@@ -553,20 +553,27 @@ namespace Axiom.Graphics
 		{
 			// Destroy all necessary objects
 
-			vertexDeclarations.Clear();
-			vertexBufferBindings.Clear();
+            foreach ( VertexDeclaration buffer in vertexDeclarations )
+            {
+                buffer.Dispose();
+            }
+            vertexDeclarations.Clear();
+
+            vertexBufferBindings.Clear();
 
 			// destroy all vertex buffers
 			foreach ( HardwareBuffer buffer in vertexBuffers )
 			{
 				buffer.Dispose();
 			}
+            vertexBuffers.Clear();
 
 			// destroy all index buffers
 			foreach ( HardwareBuffer buffer in indexBuffers )
 			{
 				buffer.Dispose();
 			}
+		    indexBuffers.Clear();
 
 			instance = null;
 		}

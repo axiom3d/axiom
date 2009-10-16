@@ -38,8 +38,8 @@ using System;
 using Axiom.Core;
 using Axiom.Graphics;
 
-using DX = Microsoft.DirectX;
-using D3D = Microsoft.DirectX.Direct3D;
+using DX = SlimDX;
+using D3D = SlimDX.Direct3D9;
 
 #endregion Namespace Declarations
 
@@ -116,7 +116,7 @@ namespace Axiom.RenderSystems.DirectX9
 
                 if ( skipCounter == 0 )
                 { // && lastFragmentCount != 0) {
-                    query.Issue( D3D.IssueFlags.Begin );
+                    query.Issue( D3D.Issue.Begin );
                 }
             }
         }
@@ -128,7 +128,7 @@ namespace Axiom.RenderSystems.DirectX9
 
             if ( isSupported )
             {
-                lastFragmentCount = (int)query.GetData( typeof( int ), flush );
+                lastFragmentCount = (int)query.GetData<int>( flush );
             }
 
             return lastFragmentCount;
@@ -141,7 +141,7 @@ namespace Axiom.RenderSystems.DirectX9
             {
                 if ( skipCounter == 0 )
                 { // && lastFragmentCount != 0) {
-                    query.Issue( D3D.IssueFlags.End );
+                    query.Issue( D3D.Issue.End );
                 }
 
                 skipCounter++;

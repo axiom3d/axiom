@@ -53,25 +53,24 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 
         #endregion
 
-		#region HighLevelGpuProgramFactory Implementation
+        #region HighLevelGpuProgramFactory Implementation
 
-		public override HighLevelGpuProgram CreateInstance( ResourceManager creator, string name, ulong handle, string group, bool isManual, IManualResourceLoader loader )
-		{
-			return new HLSLProgram( creator, name, handle, group, isManual, loader );
-		}
+        public override HighLevelGpuProgram CreateInstance( ResourceManager creator, string name, ulong handle, string group, bool isManual, IManualResourceLoader loader )
+        {
+            return new HLSLProgram( creator, name, handle, group, isManual, loader );
+        }
 
-		/// <summary>
-		///     Gets the high level language that this factory handles requests for.
-		/// </summary>
-		public override string Language
-		{
-			get
-			{
-				return language;
-			}
-		}
+        /// <summary>
+        ///     Gets the high level language that this factory handles requests for.
+        /// </summary>
+        public override string Language
+        {
+            get
+            {
+                return language;
+            }
+        }
 
-		#endregion HighLevelGpuProgramFactory Implementation
-
-	}
+        #endregion HighLevelGpuProgramFactory Implementation
+    }
 }

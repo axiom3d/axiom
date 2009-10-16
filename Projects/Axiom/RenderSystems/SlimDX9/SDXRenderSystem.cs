@@ -1,5 +1,4 @@
 #region LGPL License
-
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
@@ -23,16 +22,13 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-
 #endregion
 
 #region SVN Version Information
-
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
-//     <id value="$Id: D3D9RenderSystem.cs 1445 2008-12-02 19:25:22Z borrillis $"/>
+//     <id value="$Id: D3DRenderSystem.cs 1661 2009-06-11 09:40:16Z borrillis $"/>
 // </file>
-
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -40,16 +36,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Windows.Forms;
 
+using FogMode = Axiom.Graphics.FogMode;
+using LightType = Axiom.Graphics.LightType;
+using StencilOperation = Axiom.Graphics.StencilOperation;
+using TextureFiltering = Axiom.Graphics.TextureFiltering;
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
+using Axiom.Media;
 
-using FogMode = Axiom.Graphics.FogMode;
-using LightType = Axiom.Graphics.LightType;
-using StencilOperation = Axiom.Graphics.StencilOperation;
 using DX = SlimDX;
 using D3D = SlimDX.Direct3D9;
 using Axiom.Core.Collections;
@@ -61,8 +60,9 @@ namespace Axiom.RenderSystems.SlimDX9
     /// <summary>
     /// DirectX9 Render System implementation.
     /// </summary>
-    public class SDXRenderSystem : RenderSystem
+    public class D3DRenderSystem : RenderSystem
     {
+
         /// <summary>
         ///    Reference to the Direct3D device.
         /// </summary>
@@ -96,7 +96,7 @@ namespace Axiom.RenderSystems.SlimDX9
         protected int _lastVertexSourceCount;
 
         // stores texture stage info locally for convenience
-        internal SDXTextureStageDesc[] texStageDesc = new SDXTextureStageDesc[Config.MaxTextureLayers];
+        internal D3DTextureStageDesc[] texStageDesc = new D3DTextureStageDesc[ Config.MaxTextureLayers ];
 
         protected int primCount;
         protected int renderCount = 0;
@@ -104,8 +104,8 @@ namespace Axiom.RenderSystems.SlimDX9
         // temp fields for tracking render states
         protected bool lightingEnabled;
 
-        private const int MAX_LIGHTS = 8;
-        protected Axiom.Core.Light[] lights = new Axiom.Core.Light[MAX_LIGHTS];
+        const int MAX_LIGHTS = 8;
+        protected Axiom.Core.Light[] lights = new Axiom.Core.Light[ MAX_LIGHTS ];
 
         protected SDXGpuProgramManager gpuProgramMgr;
 
@@ -123,10 +123,9 @@ namespace Axiom.RenderSystems.SlimDX9
                 return _deviceLost;
             }
         }
-
         //---------------------------------------------------------------------
 
-        private List<SDXRenderWindow> _secondaryWindows = new List<SDXRenderWindow>();
+        List<SDXRenderWindow> _secondaryWindows = new List<SDXRenderWindow>();
 
         protected Dictionary<D3D.Format, D3D.Format> depthStencilCache = new Dictionary<D3D.Format, D3D.Format>();
 
@@ -142,16 +141,19 @@ namespace Axiom.RenderSystems.SlimDX9
                 this.format = f;
                 this.multisample = m;
             }
-
             public D3D.Format format;
             public D3D.MultisampleType multisample;
         }
-
         protected Dictionary<ZBufferFormat, D3D.Surface> zBufferCache = new Dictionary<ZBufferFormat, D3D.Surface>();
 
-        public SDXRenderSystem()
+        /// <summary>
+        ///		Temp D3D vector to avoid constant allocations.
+        /// </summary>
+        private DX.Vector4 tempVec = new DX.Vector4();
+
+        public D3DRenderSystem()
         {
-            LogManager.Instance.Write( "[SDX] Rendering Subsystem created." );
+            LogManager.Instance.Write( "[D3D] : Direct3D9 Rendering Subsystem created." );
 
             if ( manager == null )
             {
@@ -165,9 +167,9 @@ namespace Axiom.RenderSystems.SlimDX9
             {
                 texStageDesc[ i ].autoTexCoordType = TexCoordCalcMethod.None;
                 texStageDesc[ i ].coordIndex = 0;
-                texStageDesc[ i ].textureType = SDXTextureType.Normal;
-                texStageDesc[ i ].texture = null;
-                texStageDesc[ i ].vertexTexture = null;
+                texStageDesc[ i ].texType = D3DTextureType.Normal;
+                texStageDesc[ i ].tex = null;
+                texStageDesc[ i ].vertexTex = null;
             }
         }
 
@@ -181,7 +183,8 @@ namespace Axiom.RenderSystems.SlimDX9
             }
             set
             {
-                device.SetRenderState( D3D.RenderState.Ambient, SDXHelper.ToColor( value ).ToArgb() );
+                System.Drawing.Color tmp = SDXHelper.ToColor( value );
+                SetRenderState( D3D.RenderState.Ambient, tmp );
             }
         }
 
@@ -189,14 +192,11 @@ namespace Axiom.RenderSystems.SlimDX9
         {
             get
             {
-                return device.GetRenderState<bool>( D3D.RenderState.Lighting );
+                return device.GetRenderState<bool>(D3D.RenderState.Lighting );
             }
             set
             {
-                if ( device.GetRenderState<bool>( D3D.RenderState.Lighting ) != value )
-                {
-                    device.SetRenderState( D3D.RenderState.Lighting, value );
-                }
+                SetRenderState( D3D.RenderState.Lighting, value);
             }
         }
 
@@ -211,10 +211,7 @@ namespace Axiom.RenderSystems.SlimDX9
             }
             set
             {
-                if ( device.GetRenderState<bool>( D3D.RenderState.NormalizeNormals ) != value )
-                {
-                    device.SetRenderState( D3D.RenderState.NormalizeNormals, value );
-                }
+                SetRenderState( D3D.RenderState.NormalizeNormals, value );
             }
         }
 
@@ -229,8 +226,9 @@ namespace Axiom.RenderSystems.SlimDX9
                 D3D.ShadeMode tmp = SDXHelper.ConvertEnum( value );
                 if ( device.GetRenderState<D3D.ShadeMode>( D3D.RenderState.ShadeMode ) != tmp )
                 {
-                    device.SetRenderState( D3D.RenderState.ShadeMode, SDXHelper.ConvertEnum( value ) );
+                    device.SetRenderState( D3D.RenderState.ShadeMode, tmp );
                 }
+
             }
         }
 
@@ -238,14 +236,19 @@ namespace Axiom.RenderSystems.SlimDX9
         {
             get
             {
-                return device.GetRenderState<bool>( D3D.RenderState.StencilEnable );
+                return device.GetRenderState<bool>(D3D.RenderState.StencilEnable);
             }
             set
             {
-                if ( device.GetRenderState<bool>( D3D.RenderState.StencilEnable ) != value )
-                {
-                    device.SetRenderState( D3D.RenderState.StencilEnable, value );
-                }
+                SetRenderState( D3D.RenderState.StencilEnable, value);
+            }
+        }
+
+        public bool DeviceLost
+        {
+            get
+            {
+                return _deviceLost;
             }
         }
 
@@ -279,9 +282,9 @@ namespace Axiom.RenderSystems.SlimDX9
         protected void SetVertexDeclaration( Axiom.Graphics.VertexDeclaration decl )
         {
             // TODO: Check for duplicate setting and avoid setting if dupe
-            SDXVertexDeclaration sdxVertDecl = (SDXVertexDeclaration)decl;
+            SDXVertexDeclaration d3dVertDecl = (SDXVertexDeclaration)decl;
 
-            device.VertexDeclaration = sdxVertDecl.D3DVertexDecl;
+            device.VertexDeclaration = d3dVertDecl.D3DVertexDecl;
         }
 
         /// <summary>
@@ -304,16 +307,15 @@ namespace Axiom.RenderSystems.SlimDX9
                 flags |= D3D.ClearFlags.ZBuffer;
             }
             // Only try to clear the stencil buffer if supported
-            if ( ( buffers & FrameBufferType.Stencil ) > 0 && _rsCapabilities.HasCapability( Capabilities.StencilBuffer ) )
+            if ( ( buffers & FrameBufferType.Stencil ) > 0
+                && _rsCapabilities.HasCapability( Capabilities.StencilBuffer ) )
             {
+
                 flags |= D3D.ClearFlags.Stencil;
             }
 
-            DX.Result result = device.Clear( flags , color.ToARGB(), depth, stencil );
-            if ( result.IsFailure )
-            {
-                LogManager.Instance.Write( "[SDX] : Failed clearing flags:" + flags + " Color: " + color.ToARGB() + " depth:" + depth + " stencil:" + stencil );
-            }
+            // clear the device using the specified params
+            device.Clear( flags, color.ToARGB(), depth, stencil );
         }
 
         /// <summary>
@@ -348,7 +350,7 @@ namespace Axiom.RenderSystems.SlimDX9
                     strParams.AppendFormat( "{0} = {1}; ", entry.Key, entry.Value );
                 }
             }
-            LogManager.Instance.Write( "[SDX] RenderSystem.CreateRenderWindow \"{0}\", {1}x{2} {3} miscParams: {4}",
+            LogManager.Instance.Write( "D3D9RenderSystem::createRenderWindow \"{0}\", {1}x{2} {3} miscParams: {4}",
                                        name, width, height, isFullScreen ? "fullscreen" : "windowed", strParams.ToString() );
 
             // Make sure we don't already have a render target of the 
@@ -356,10 +358,10 @@ namespace Axiom.RenderSystems.SlimDX9
             if ( renderTargets.ContainsKey( name ) )
             {
                 throw new Exception( String.Format( "A render target of the same name '{0}' already exists." +
-                                                    "You cannot create a new window with this name.", name ) );
+                                     "You cannot create a new window with this name.", name ) );
             }
 
-            RenderWindow window = new SDXRenderWindow( manager, _activeDriver, _primaryWindow != null ? device : null );
+            RenderWindow window = new SDXRenderWindow( _activeDriver, _primaryWindow != null ? device : null );
 
             // create the window
             window.Create( name, width, height, isFullScreen, miscParams );
@@ -374,8 +376,7 @@ namespace Axiom.RenderSystems.SlimDX9
                 device = (D3D.Device)window[ "D3DDEVICE" ];
 
                 // Create the texture manager for use by others
-                textureManager = new SDXTextureManager( manager, device );
-
+                textureManager = new SDXTextureManager(manager, device );
                 // Also create hardware buffer manager
                 hardwareBufferManager = new SDXHardwareBufferManager( device );
 
@@ -385,13 +386,16 @@ namespace Axiom.RenderSystems.SlimDX9
                 HighLevelGpuProgramManager.Instance.AddFactory( new HLSL.HLSLProgramFactory() );
                 gpuProgramMgr.PushSyntaxCode( "hlsl" );
 
+
                 // Initialise the capabilities structures
                 this.CheckCaps( device );
+
             }
             else
             {
                 _secondaryWindows.Add( (SDXRenderWindow)window );
             }
+
 
             return window;
         }
@@ -405,8 +409,8 @@ namespace Axiom.RenderSystems.SlimDX9
 
         public override void Shutdown()
         {
-            _activeDriver = null;
 
+            _activeDriver = null;
             // dispose of the device
             if ( device != null )
             {
@@ -428,7 +432,8 @@ namespace Axiom.RenderSystems.SlimDX9
 
             base.Shutdown();
 
-            LogManager.Instance.Write( "[SDX] : " + Name + " shutdown." );
+            LogManager.Instance.Write( "[D3D9] : " + Name + " shutdown." );
+
         }
 
         /// <summary>
@@ -438,8 +443,8 @@ namespace Axiom.RenderSystems.SlimDX9
         {
             get
             {
-                D3D.FillMode fillModeTmp = device.GetRenderState<D3D.FillMode>( D3D.RenderState.FillMode );
-                switch ( fillModeTmp )
+
+                switch ( device.GetRenderState<D3D.FillMode>( D3D.RenderState.FillMode ) )
                 {
                     case D3D.FillMode.Point:
                         return PolygonMode.Points;
@@ -453,17 +458,20 @@ namespace Axiom.RenderSystems.SlimDX9
             }
             set
             {
-                switch ( value )
+                if ( PolygonMode != value )
                 {
-                    case PolygonMode.Points:
-                        device.SetRenderState( D3D.RenderState.FillMode, D3D.FillMode.Point );
-                        break;
-                    case PolygonMode.Wireframe:
-                        device.SetRenderState( D3D.RenderState.FillMode, D3D.FillMode.Wireframe );
-                        break;
-                    case PolygonMode.Solid:
-                        device.SetRenderState( D3D.RenderState.FillMode, D3D.FillMode.Solid );
-                        break;
+                    switch ( value )
+                    {
+                        case PolygonMode.Points:
+                            device.SetRenderState( D3D.RenderState.FillMode, D3D.FillMode.Point);
+                            break;
+                        case PolygonMode.Wireframe:
+                            device.SetRenderState( D3D.RenderState.FillMode, D3D.FillMode.Wireframe);
+                            break;
+                        case PolygonMode.Solid:
+                            device.SetRenderState( D3D.RenderState.FillMode, D3D.FillMode.Solid);
+                            break;
+                    }
                 }
             }
         }
@@ -476,9 +484,11 @@ namespace Axiom.RenderSystems.SlimDX9
         /// <param name="val"></param>
         public override void SetAlphaRejectSettings( int stage, CompareFunction func, byte val )
         {
-            device.SetRenderState( D3D.RenderState.AlphaTestEnable, func != CompareFunction.AlwaysPass );
-            device.SetRenderState( D3D.RenderState.AlphaFunc, SDXHelper.ConvertEnum( func ) );
-            device.SetRenderState( D3D.RenderState.AlphaRef, (int)val );
+            SetRenderState( D3D.RenderState.AlphaTestEnable, func != CompareFunction.AlwaysPass );
+            D3D.Compare newCompare = SDXHelper.ConvertEnum( func );
+            if ( device.GetRenderState<D3D.Compare>( D3D.RenderState.AlphaFunc ) == newCompare )
+            device.SetRenderState( D3D.RenderState.AlphaFunc, newCompare );
+            SetRenderState( D3D.RenderState.AlphaRef, val);
         }
 
         public override void SetColorBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )
@@ -501,9 +511,10 @@ namespace Axiom.RenderSystems.SlimDX9
             {
                 val |= D3D.ColorWriteEnable.Alpha;
             }
-
-            device.SetRenderState( D3D.RenderState.ColorWriteEnable, val );
+            if ( device.GetRenderState<D3D.ColorWriteEnable>(D3D.RenderState.ColorWriteEnable ) != val )
+                device.SetRenderState( D3D.RenderState.ColorWriteEnable, val );
         }
+
 
         /// <summary>
         /// 
@@ -537,22 +548,20 @@ namespace Axiom.RenderSystems.SlimDX9
 
         public override RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
         {
-            LogManager.Instance.Write( "[SDX] : Subsystem Initializing" );
+            LogManager.Instance.Write( "[D3D9] : Subsystem Initializing" );
 
             WindowEventMonitor.Instance.MessagePump = Win32MessageHandling.MessagePump;
 
             _activeDriver = SDXHelper.GetDriverInfo( manager )[ ConfigOptions[ "Rendering Device" ].Value ];
             if ( _activeDriver == null )
-            {
                 throw new ArgumentException( "Problems finding requested Direct3D driver!" );
-            }
 
             RenderWindow renderWindow = null;
 
             if ( autoCreateWindow )
             {
-                int width = 640;
-                int height = 480;
+                int width = 800;
+                int height = 600;
                 int bpp = 32;
                 bool fullScreen = false;
 
@@ -563,6 +572,7 @@ namespace Axiom.RenderSystems.SlimDX9
                 width = int.Parse( vm.Substring( 0, vm.IndexOf( "x" ) ) );
                 height = int.Parse( vm.Substring( vm.IndexOf( "x" ) + 1, vm.IndexOf( "@" ) - ( vm.IndexOf( "x" ) + 1 ) ) );
                 bpp = int.Parse( vm.Substring( vm.IndexOf( "@" ) + 1, vm.IndexOf( "-" ) - ( vm.IndexOf( "@" ) + 1 ) ) );
+
 
                 NamedParameterList miscParams = new NamedParameterList();
                 miscParams.Add( "title", windowTitle );
@@ -579,9 +589,14 @@ namespace Axiom.RenderSystems.SlimDX9
 
                 // use W buffer when in 16 bit color mode
                 useWBuffer = ( renderWindow.ColorDepth == 16 );
+
             }
 
-            LogManager.Instance.Write( "[SDX] : Subsystem Initialized OK" );
+            LogManager.Instance.Write( "***************************************" );
+            LogManager.Instance.Write( "*** D3D9 : Subsystem Initialized OK ***" );
+            LogManager.Instance.Write( "***************************************" );
+
+            // call superclass method
 
             return renderWindow;
         }
@@ -631,9 +646,9 @@ namespace Axiom.RenderSystems.SlimDX9
         public override Matrix4 ConvertProjectionMatrix( Matrix4 mat, bool forGpuProgram )
         {
             Matrix4 dest = new Matrix4( mat.m00, mat.m01, mat.m02, mat.m03,
-                                        mat.m10, mat.m11, mat.m12, mat.m13,
-                                        mat.m20, mat.m21, mat.m22, mat.m23,
-                                        mat.m30, mat.m31, mat.m32, mat.m33 );
+                                       mat.m10, mat.m11, mat.m12, mat.m13,
+                                       mat.m20, mat.m21, mat.m22, mat.m23,
+                                       mat.m30, mat.m31, mat.m32, mat.m33 );
 
             // Convert depth range from [-1,+1] to [0,1]
             dest.m20 = ( dest.m20 + dest.m30 ) / 2.0f;
@@ -712,10 +727,10 @@ namespace Axiom.RenderSystems.SlimDX9
             // by the inverse of the projection matrix
 
             /* generalised version
-			Vector4 q = matrix.inverse() * 
-				Vector4(Math::Sign(plane.normal.x), Math::Sign(plane.normal.y), 1.0f, 1.0f);
-			*/
-            Vector4 q = new Vector4();
+            Vector4 q = matrix.inverse() * 
+                Vector4(Math::Sign(plane.normal.x), Math::Sign(plane.normal.y), 1.0f, 1.0f);
+            */
+            Axiom.Math.Vector4 q = new Axiom.Math.Vector4();
             q.x = System.Math.Sign( plane.Normal.x ) / projMatrix.m00;
             q.y = System.Math.Sign( plane.Normal.y ) / projMatrix.m11;
             q.z = 1.0f;
@@ -731,9 +746,10 @@ namespace Axiom.RenderSystems.SlimDX9
             }
 
             // Calculate the scaled plane vector
-            Vector4 clipPlane4d = new Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D );
+            Axiom.Math.Vector4 clipPlane4d =
+                new Axiom.Math.Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D );
 
-            Vector4 c = clipPlane4d * ( 1.0f / ( clipPlane4d.Dot( q ) ) );
+            Axiom.Math.Vector4 c = clipPlane4d * ( 1.0f / ( clipPlane4d.Dot( q ) ) );
 
             // Replace the third row of the projection matrix
             projMatrix.m20 = c.x;
@@ -766,9 +782,10 @@ namespace Axiom.RenderSystems.SlimDX9
             //	this once since renderstate changes are expensive
             if ( !_basicStatesInitialized )
             {
-                device.SetRenderState( D3D.RenderState.AlphaBlendEnable, true );
-                device.SetRenderState( D3D.RenderState.SpecularEnable, true );
-                device.SetRenderState( D3D.RenderState.ZEnable, true );
+                // enable alpha blending and specular materials
+                SetRenderState( D3D.RenderState.AlphaBlendEnable, true );
+                SetRenderState( D3D.RenderState.SpecularEnable, true );
+                SetRenderState( D3D.RenderState.ZWriteEnable, true );
                 _basicStatesInitialized = true;
             }
         }
@@ -786,7 +803,7 @@ namespace Axiom.RenderSystems.SlimDX9
         /// 
         /// </summary>
         /// <param name="viewport"></param>
-        public override void SetViewport( Viewport viewport )
+        public override void SetViewport( Axiom.Core.Viewport viewport )
         {
             if ( activeViewport != viewport || viewport.IsUpdated )
             {
@@ -794,22 +811,12 @@ namespace Axiom.RenderSystems.SlimDX9
                 activeViewport = viewport;
                 activeRenderTarget = viewport.Target;
 
+                RenderTarget target = viewport.Target;
+                // TODO: FIXME: Looks like these methods should be able to return multiple buffers
                 // get the back buffer surface for this viewport
-                D3D.Surface[] back = (D3D.Surface[])activeRenderTarget.GetCustomAttribute( "D3DBACKBUFFER" );
-                for ( int i = 0; i < back.Length; i++ )
-                {
-                    try
-                    {
-                        DX.Result result = device.SetRenderTarget( i, back[ i ] );
-                    }
-                    catch ( D3D.Direct3D9Exception ex )
-                    {
-                        if ( LogManager.Instance != null )
-                        {
-                            LogManager.Instance.Write( LogManager.BuildExceptionString( ex ) );
-                        }
-                    }
-                }
+                D3D.Surface[] back = (D3D.Surface[])activeRenderTarget[ "D3DBACKBUFFER" ];
+                if ( back == null )
+                    return;
 
                 D3D.Surface depth = (D3D.Surface)activeRenderTarget[ "D3DZBUFFER" ];
                 if ( depth == null )
@@ -844,7 +851,14 @@ namespace Axiom.RenderSystems.SlimDX9
                 d3dvp.Width = viewport.ActualWidth;
                 d3dvp.Height = viewport.ActualHeight;
 
-                // Z-values from 0.0 to 1.0 (TODO: standardize with OpenGL)
+                if ( target.RequiresTextureFlipping )
+                {
+                    // Convert "top-left" to "bottom-left"
+                    d3dvp.Y = activeRenderTarget.Height - d3dvp.Height - d3dvp.Y;
+                }
+
+                // Z-values from 0.0 to 1.0 
+                // TODO: standardize with OpenGL
                 d3dvp.MinZ = 0.0f;
                 d3dvp.MaxZ = 1.0f;
 
@@ -857,23 +871,21 @@ namespace Axiom.RenderSystems.SlimDX9
         }
 
         private static D3D.Format[] _preferredStencilFormats = {
-                                                                   D3D.Format.D24SingleS8,
-                                                                   D3D.Format.D24S8,
-                                                                   D3D.Format.D24X4S4,
-                                                                   D3D.Format.D24X8,
-                                                                   D3D.Format.D15S1,
-                                                                   D3D.Format.D16,
-                                                                   D3D.Format.D32
-                                                               };
+            D3D.Format.D24SingleS8,
+            D3D.Format.D24S8,
+            D3D.Format.D24X4S4,
+            D3D.Format.D24X8,
+            D3D.Format.D15S1,
+            D3D.Format.D16,
+            D3D.Format.D32
+        };
 
         private D3D.Format _getDepthStencilFormatFor( D3D.Format fmt )
         {
             D3D.Format dsfmt;
             /// Check if result is cached
             if ( depthStencilCache.TryGetValue( fmt, out dsfmt ) )
-            {
                 return dsfmt;
-            }
             /// If not, probe with CheckDepthStencilMatch
             dsfmt = D3D.Format.Unknown;
             /// Get description of primary render target
@@ -886,9 +898,7 @@ namespace Axiom.RenderSystems.SlimDX9
             {
                 // Verify that the depth format exists
                 if ( !manager.CheckDeviceFormat( _activeDriver.AdapterNumber, D3D.DeviceType.Hardware, srfDesc.Format, D3D.Usage.DepthStencil, D3D.ResourceType.Surface, df ) )
-                {
                     continue;
-                }
                 // Verify that the depth format is compatible
                 if ( manager.CheckDepthStencilMatch( _activeDriver.AdapterNumber, D3D.DeviceType.Hardware, srfDesc.Format, fmt, df ) )
                 {
@@ -905,19 +915,16 @@ namespace Axiom.RenderSystems.SlimDX9
         {
             D3D.Format dsfmt = _getDepthStencilFormatFor( fmt );
             if ( dsfmt == D3D.Format.Unknown )
-            {
                 return null;
-            }
             D3D.Surface surface = null;
             /// Check if result is cached
-
             ZBufferFormat zbfmt = new ZBufferFormat( dsfmt, multisample );
             D3D.Surface cachedSurface;
             if ( zBufferCache.TryGetValue( zbfmt, out cachedSurface ) )
             {
                 /// Check if size is larger or equal
                 if ( cachedSurface.Description.Width >= width &&
-                     cachedSurface.Description.Height >= height )
+                    cachedSurface.Description.Height >= height )
                 {
                     surface = cachedSurface;
                 }
@@ -930,7 +937,7 @@ namespace Axiom.RenderSystems.SlimDX9
             if ( surface == null )
             {
                 /// If not, create the depthstencil surface
-                surface = D3D.Surface.CreateDepthStencil( device, width, height, dsfmt, multisample, 0, true );
+                surface = D3D.Surface.CreateDepthStencil(device, width, height, dsfmt, multisample, 0, true );
                 zBufferCache[ zbfmt ] = surface;
             }
             return surface;
@@ -942,6 +949,7 @@ namespace Axiom.RenderSystems.SlimDX9
         /// <param name="op"></param>
         public override void Render( RenderOperation op )
         {
+
             // Increment the static count of render calls
             totalRenderCalls++;
 
@@ -964,18 +972,6 @@ namespace Axiom.RenderSystems.SlimDX9
 
             switch ( op.operationType )
             {
-                case OperationType.PointList:
-                    primType = D3D.PrimitiveType.PointList;
-                    primCount = op.vertexData.vertexCount;
-                    break;
-                case OperationType.LineList:
-                    primType = D3D.PrimitiveType.LineList;
-                    primCount = cnt / 2;
-                    break;
-                case OperationType.LineStrip:
-                    primType = D3D.PrimitiveType.LineStrip;
-                    primCount = cnt - 1;
-                    break;
                 case OperationType.TriangleList:
                     primType = D3D.PrimitiveType.TriangleList;
                     primCount = cnt / 3;
@@ -991,12 +987,24 @@ namespace Axiom.RenderSystems.SlimDX9
                     primCount = cnt - 2;
                     faceCount += primCount;
                     break;
+                case OperationType.PointList:
+                    primType = D3D.PrimitiveType.PointList;
+                    primCount = cnt;
+                    break;
+                case OperationType.LineList:
+                    primType = D3D.PrimitiveType.LineList;
+                    primCount = cnt / 2;
+                    break;
+                case OperationType.LineStrip:
+                    primType = D3D.PrimitiveType.LineStrip;
+                    primCount = cnt - 1;
+                    break;
             } // switch(primType)
 
             this.vertexCount += vertexCount;
 
             // are we gonna use indices?
-            if ( op.useIndices && primType != D3D.PrimitiveType.PointList )
+            if ( op.useIndices )
             {
                 SDXHardwareIndexBuffer idxBuffer = (SDXHardwareIndexBuffer)op.indexData.indexBuffer;
 
@@ -1034,13 +1042,13 @@ namespace Axiom.RenderSystems.SlimDX9
                 // note used
                 texture.Touch();
 
-                if ( texStageDesc[ stage ].texture != texture.DXTexture )
+                if ( texStageDesc[ stage ].tex != texture.DXTexture )
                 {
                     device.SetTexture( stage, texture.DXTexture );
 
                     // set stage description
-                    texStageDesc[ stage ].texture = texture.DXTexture;
-                    texStageDesc[ stage ].textureType = SDXHelper.ConvertEnum( texture.TextureType );
+                    texStageDesc[ stage ].tex = texture.DXTexture;
+                    texStageDesc[ stage ].texType = SDXHelper.ConvertEnum( texture.TextureType );
                 }
                 // TODO : Set gamma now too
                 //if ( dt->isHardwareGammaReadToBeUsed() )
@@ -1051,20 +1059,21 @@ namespace Axiom.RenderSystems.SlimDX9
                 //{
                 //    __SetSamplerState( stage, D3DSAMP_SRGBTEXTURE, FALSE );
                 //}
+
             }
             else
             {
-                if ( texStageDesc[ stage ].texture != null )
+                if ( texStageDesc[ stage ].tex != null )
                 {
                     device.SetTexture( stage, null );
                 }
 
                 // set stage description to defaults
                 device.SetTextureStageState( stage, D3D.TextureStage.ColorOperation, D3D.TextureOperation.Disable );
-                texStageDesc[ stage ].texture = null;
+                texStageDesc[ stage ].tex = null;
                 texStageDesc[ stage ].autoTexCoordType = TexCoordCalcMethod.None;
                 texStageDesc[ stage ].coordIndex = 0;
-                texStageDesc[ stage ].textureType = SDXTextureType.Normal;
+                texStageDesc[ stage ].texType = D3DTextureType.Normal;
             }
         }
 
@@ -1097,7 +1106,6 @@ namespace Axiom.RenderSystems.SlimDX9
             texStageDesc[ stage ].autoTexCoordType = method;
             texStageDesc[ stage ].frustum = frustum;
 
-            //device.TextureState[ stage ].TextureCoordinateIndex = SDXHelper.ConvertEnum( method, d3dCaps ) | texStageDesc[ stage ].coordIndex;
             device.SetTextureStageState( stage, D3D.TextureStage.TexCoordIndex, SDXHelper.ConvertEnum( method, d3dCaps ) | texStageDesc[ stage ].coordIndex );
         }
 
@@ -1113,6 +1121,8 @@ namespace Axiom.RenderSystems.SlimDX9
                     device.PixelShader = ( (SDXFragmentProgram)program ).PixelShader;
                     break;
             }
+
+            base.BindGpuProgram( program );
         }
 
         public override void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms )
@@ -1122,7 +1132,7 @@ namespace Axiom.RenderSystems.SlimDX9
                 case GpuProgramType.Vertex:
                     if ( parms.HasIntConstants )
                     {
-                        for ( int index = 0; index < parms.FloatConstantCount; index++ )
+                        for ( int index = 0; index < parms.IntConstantCount; index++ )
                         {
                             GpuProgramParameters.IntConstantEntry entry = parms.GetIntConstant( index );
 
@@ -1151,7 +1161,7 @@ namespace Axiom.RenderSystems.SlimDX9
                 case GpuProgramType.Fragment:
                     if ( parms.HasIntConstants )
                     {
-                        for ( int index = 0; index < parms.FloatConstantCount; index++ )
+                        for ( int index = 0; index < parms.IntConstantCount; index++ )
                         {
                             GpuProgramParameters.IntConstantEntry entry = parms.GetIntConstant( index );
 
@@ -1190,24 +1200,30 @@ namespace Axiom.RenderSystems.SlimDX9
                     device.PixelShader = null;
                     break;
             }
+
+            base.UnbindGpuProgram( type );
         }
 
         #endregion
 
-        //TODO
         public override Axiom.Math.Matrix4 WorldMatrix
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                throw new NotImplementedException();
+            }
             set
             {
-                //device.Transform.World = MakeD3DMatrix( value );
-                device.SetTransform( D3D.TransformState.World, MakeD3DMatrix( value ) );
+                device.SetTransform(D3D.TransformState.World, MakeD3DMatrix( value ));
             }
         }
 
         public override Axiom.Math.Matrix4 ViewMatrix
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                throw new NotImplementedException();
+            }
             set
             {
                 // flip the transform portion of the matrix for DX and its left-handed coord system
@@ -1219,14 +1235,16 @@ namespace Axiom.RenderSystems.SlimDX9
                 viewMatrix.m23 = -viewMatrix.m23;
 
                 DX.Matrix dxView = MakeD3DMatrix( viewMatrix );
-                //device.Transform.View = dxView;
-                device.SetTransform( D3D.TransformState.View, dxView );
+                device.SetTransform(D3D.TransformState.View, dxView);
             }
         }
 
         public override Matrix4 ProjectionMatrix
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                throw new NotImplementedException();
+            }
             set
             {
                 DX.Matrix mat = MakeD3DMatrix( value );
@@ -1239,8 +1257,7 @@ namespace Axiom.RenderSystems.SlimDX9
                     mat.M42 = -mat.M42;
                 }
 
-                //device.Transform.Projection = mat;
-                device.SetTransform( D3D.TransformState.Projection, mat );
+                device.SetTransform(D3D.TransformState.Projection, mat);
             }
         }
 
@@ -1266,6 +1283,11 @@ namespace Axiom.RenderSystems.SlimDX9
             numCurrentLights = (int)Utility.Min( limit, lightList.Count );
         }
 
+        /// <summary>
+        ///   Convert the explicit portable encoding of color to a RenderSystem one.
+        /// </summary>
+        /// <param name="color">The color </param>
+        /// <returns>the RenderSystem specific int storage of the ColorEx version</returns>
         public override int ConvertColor( ColorEx color )
         {
             return color.ToARGB();
@@ -1297,39 +1319,10 @@ namespace Axiom.RenderSystems.SlimDX9
             {
                 SetRenderState( D3D.RenderState.AlphaBlendEnable, true );
                 SetRenderState( D3D.RenderState.SeparateAlphaBlendEnable, false );
-                device.SetRenderState( D3D.RenderState.SourceBlend, SDXHelper.ConvertEnum( src ) );
-                device.SetRenderState( D3D.RenderState.DestinationBlend, SDXHelper.ConvertEnum( dest ) );
+                device.SetRenderState(D3D.RenderState.SourceBlend, SDXHelper.ConvertEnum( src ));
+                device.SetRenderState(D3D.RenderState.DestinationBlend, SDXHelper.ConvertEnum( dest ));
             }
-        }
 
-        public void SetRenderState( D3D.RenderState state, bool val )
-        {
-            bool oldVal = device.GetRenderState<bool>( state );
-            if ( oldVal == val )
-            {
-                return;
-            }
-            device.SetRenderState( state, val );
-        }
-
-        public void SetRenderState( D3D.RenderState state, float val )
-        {
-            float oldVal = device.GetRenderState<float>( state );
-            if ( oldVal == val )
-            {
-                return;
-            }
-            device.SetRenderState( state, val );
-        }
-
-        public void SetRenderState( D3D.RenderState state, int val )
-        {
-            int oldVal = device.GetRenderState<int>( state );
-            if ( oldVal == val )
-            {
-                return;
-            }
-            device.SetRenderState( state, val );
         }
 
         /// <summary>
@@ -1337,36 +1330,35 @@ namespace Axiom.RenderSystems.SlimDX9
         /// </summary>
         public override CullingMode CullingMode
         {
-            get { return cullingMode; }
+            get
+            {
+                return cullingMode;
+            }
             set
             {
                 cullingMode = value;
 
                 bool flip = activeRenderTarget.RequiresTextureFlipping ^ invertVertexWinding;
 
-                //device.RenderState.CullMode = SDXHelper.ConvertEnum( value, flip );
-                device.SetRenderState( D3D.RenderState.CullMode, SDXHelper.ConvertEnum( value, flip ) );
+                device.SetRenderState(D3D.RenderState.CullMode, SDXHelper.ConvertEnum( value, flip ));
             }
         }
 
+
         /// <summary>
-        /// 
+        ///   Set the bias on the z-values for polygons.
+        ///   For a 24 bit z buffer, something like 0.00002 should work
         /// </summary>
         public override float DepthBias
         {
-            get { return device.GetRenderState( D3D.RenderState.DepthBias ); }
+            get
+            {
+                return device.GetRenderState<float>( D3D.RenderState.DepthBias );
+            }
             set
             {
-                if ( ( d3dCaps.RasterCaps & D3D.RasterCaps.DepthBias ) != 0 )
-                {
-                    float constantBias = -value / 250000.0f;
-                    // negate and scale down bias value.  This change comes from ogre.
-                    DX.Result res = device.SetRenderState( D3D.RenderState.DepthBias, constantBias );
-                    if ( res.IsFailure )
-                    {
-                        throw new AxiomException( "Error setting constant depth bias" );
-                    }
-                }
+                // negate and scale down bias value.  This change comes from ogre.
+                SetRenderState(D3D.RenderState.DepthBias, -value / 250000f);
             }
         }
 
@@ -1375,18 +1367,17 @@ namespace Axiom.RenderSystems.SlimDX9
         /// </summary>
         public override bool DepthCheck
         {
-            get { return device.GetRenderState<bool>( D3D.RenderState.ZEnable ); }
+            get
+            {
+                throw new NotImplementedException();
+            }
             set
             {
                 if ( value )
                 {
                     // use w-buffer if available
-                    //if (useWBuffer && d3dCaps.RasterCaps.SupportsWBuffer)
                     if ( useWBuffer && ( d3dCaps.RasterCaps & D3D.RasterCaps.WBuffer ) == D3D.RasterCaps.WBuffer )
                     {
-                        //TODO
-                        //device.RenderState.UseWBuffer = true;
-
                         device.SetRenderState( D3D.RenderState.ZEnable, D3D.ZBufferType.UseWBuffer );
                     }
                     else
@@ -1396,18 +1387,24 @@ namespace Axiom.RenderSystems.SlimDX9
                 }
                 else
                 {
-                    device.SetRenderState( D3D.RenderState.ZEnable, D3D.ZBufferType.DontUseZBuffer );
+                    device.SetRenderState( D3D.RenderState.ZEnable, D3D.ZBufferType.UseZBuffer );
                 }
             }
         }
 
         /// <summary>
-        /// //TODO
+        /// 
         /// </summary>
         public override CompareFunction DepthFunction
         {
-            get { throw new NotImplementedException(); }
-            set { device.SetRenderState( D3D.RenderState.ZFunc, SDXHelper.ConvertEnum( value ) ); }
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                device.SetRenderState( D3D.RenderState.ZFunc, SDXHelper.ConvertEnum( value ));
+            }
         }
 
         /// <summary>
@@ -1415,8 +1412,14 @@ namespace Axiom.RenderSystems.SlimDX9
         /// </summary>
         public override bool DepthWrite
         {
-            get { return device.GetRenderState<bool>( D3D.RenderState.ZWriteEnable ); }
-            set { device.SetRenderState( D3D.RenderState.ZWriteEnable, value ); }
+            get
+            {
+                return device.GetRenderState<bool>( D3D.RenderState.ZWriteEnable );
+            }
+            set
+            {
+                SetRenderState( D3D.RenderState.ZWriteEnable, value);
+            }
         }
 
         /// <summary>
@@ -1445,7 +1448,6 @@ namespace Axiom.RenderSystems.SlimDX9
 
         #region Private methods
 
-        //FIXME
         /// <summary>
         ///		Sets up a light in D3D.
         /// </summary>
@@ -1455,7 +1457,6 @@ namespace Axiom.RenderSystems.SlimDX9
         {
             if ( light == null )
             {
-                //device.IsLightEnabled(index) = false;
                 device.EnableLight( index, false );
             }
             else
@@ -1466,20 +1467,14 @@ namespace Axiom.RenderSystems.SlimDX9
                 switch ( light.Type )
                 {
                     case LightType.Point:
-                        //device.Lights[ index ].Type = D3D.LightType.Point;
                         nlight.Type = D3D.LightType.Point;
                         break;
 
                     case LightType.Directional:
-                        //device.Lights[index].Type = D3D.LightType.Directional;
                         nlight.Type = D3D.LightType.Directional;
                         break;
 
                     case LightType.Spotlight:
-                        //device.Lights[index].Type = D3D.LightType.Spot;
-                        //device.Lights[index].Falloff = light.SpotlightFalloff;
-                        //device.Lights[index].InnerConeAngle = Utility.DegreesToRadians(light.SpotlightInnerAngle);
-                        //device.Lights[index].OuterConeAngle = Utility.DegreesToRadians(light.SpotlightOuterAngle);
                         nlight.Type = D3D.LightType.Spot;
                         nlight.Falloff = light.SpotlightFalloff;
                         nlight.Theta = Utility.DegreesToRadians( light.SpotlightInnerAngle );
@@ -1488,37 +1483,25 @@ namespace Axiom.RenderSystems.SlimDX9
                 } // switch
 
                 // light colors
-                //device.Lights[index].Diffuse = SDXHelper.ToColor(light.Diffuse);
                 nlight.Diffuse = SDXHelper.ToColor( light.Diffuse );
 
-                //device.Lights[index].Specular = SDXHelper.ToColor(light.Specular);
                 nlight.Specular = SDXHelper.ToColor( light.Specular );
 
-                Axiom.Math.Vector3 vec;
+                Vector3 vec;
 
                 if ( light.Type != LightType.Directional )
                 {
                     vec = light.DerivedPosition;
-                    //device.Lights[index].Position = new DX.Vector3(vec.x, vec.y, vec.z);
                     nlight.Position = new DX.Vector3( vec.x, vec.y, vec.z );
                 }
 
                 if ( light.Type != LightType.Point )
                 {
                     vec = light.DerivedDirection;
-                    //device.Lights[index].Direction = new DX.Vector3(vec.x, vec.y, vec.z);
                     nlight.Direction = new DX.Vector3( vec.x, vec.y, vec.z );
                 }
 
                 // atenuation settings
-                //device.Lights[index].Range = light.AttenuationRange;
-                //device.Lights[index].Attenuation0 = light.AttenuationConstant;
-                //device.Lights[index].Attenuation1 = light.AttenuationLinear;
-                //device.Lights[index].Attenuation2 = light.AttenuationQuadratic;
-
-                //device.Lights[index].Update();
-                //device.Lights[index].Enabled = true;
-
                 nlight.Range = light.AttenuationRange;
                 nlight.Attenuation0 = light.AttenuationConstant;
                 nlight.Attenuation1 = light.AttenuationLinear;
@@ -1526,13 +1509,11 @@ namespace Axiom.RenderSystems.SlimDX9
                 device.SetLight( index, nlight );
             } // if
         }
-
         public override void SetConfigOption( string name, string value )
         {
             if ( ConfigOptions.ContainsKey( name ) )
-            {
                 ConfigOptions[ name ].Value = value;
-            }
+
         }
 
         private void _configOptionChanged( string name, string value )
@@ -1546,9 +1527,7 @@ namespace Axiom.RenderSystems.SlimDX9
 
             // Refresh other options if D3DDriver changed
             if ( name == "Rendering Device" )
-            {
                 _refreshD3DSettings();
-            }
 
             if ( name == "Full Screen" )
             {
@@ -1601,6 +1580,7 @@ namespace Axiom.RenderSystems.SlimDX9
             {
                 _refreshFSAAOptions();
             }
+
         }
 
         private void _setFSAA( D3D.MultisampleType fsaa, int level )
@@ -1617,9 +1597,10 @@ namespace Axiom.RenderSystems.SlimDX9
         /// </summary>
         private void InitConfigOptions()
         {
+
             ConfigOption optDevice = new ConfigOption( "Rendering Device", "", false );
 
-            ConfigOption optVideoMode = new ConfigOption( "Video Mode", "800 x 600 @ 32-bit colour", false );
+            ConfigOption optVideoMode = new ConfigOption( "Video Mode", "800 x 600 @ 32-bit color", false );
 
             ConfigOption optFullScreen = new ConfigOption( "Full Screen", "No", false );
 
@@ -1631,7 +1612,7 @@ namespace Axiom.RenderSystems.SlimDX9
 
             ConfigOption optNVPerfHUD = new ConfigOption( "Allow NVPerfHUD", "No", false );
 
-            DriverCollection driverList = SDXHelper.GetDriverInfo( manager );
+            DriverCollection driverList = SDXHelper.GetDriverInfo(manager);
             foreach ( Driver driver in driverList )
             {
                 optDevice.PossibleValues.Add( driver.AdapterNumber, driver.Description );
@@ -1674,7 +1655,7 @@ namespace Axiom.RenderSystems.SlimDX9
 
         private void _refreshD3DSettings()
         {
-            DriverCollection drivers = SDXHelper.GetDriverInfo( manager );
+            DriverCollection drivers = SDXHelper.GetDriverInfo(manager);
 
             ConfigOption optDevice = ConfigOptions[ "Rendering Device" ];
             Driver driver = drivers[ optDevice.Value ];
@@ -1697,7 +1678,7 @@ namespace Axiom.RenderSystems.SlimDX9
 
                 if ( optVideoMode.PossibleValues.Values.Contains( curMode ) == false )
                 {
-                    optVideoMode.Value = "800 x 600 @ 32-bit colour";
+                    optVideoMode.Value = "800 x 600 @ 32-bit color";
                 }
 
                 // Also refresh FSAA options
@@ -1716,7 +1697,7 @@ namespace Axiom.RenderSystems.SlimDX9
             ConfigOption optFullScreen = ConfigOptions[ "Full Screen" ];
             bool windowed = optFullScreen.Value != "Yes";
 
-            DriverCollection drivers = SDXHelper.GetDriverInfo( manager );
+            DriverCollection drivers = SDXHelper.GetDriverInfo(manager);
             ConfigOption optDevice = ConfigOptions[ "Rendering Device" ];
             Driver driver = drivers[ optDevice.Value ];
             if ( driver != null )
@@ -1726,11 +1707,10 @@ namespace Axiom.RenderSystems.SlimDX9
                 if ( videoMode != null )
                 {
                     int numLevels = 0;
-                    DX.Result result;
+                    SlimDX.Result result;
 
                     // get non maskable levels supported for this VMODE
-                    manager.CheckDeviceMultisampleType( driver.AdapterNumber, D3D.DeviceType.Hardware, videoMode.Format, windowed, D3D.MultisampleType.NonMaskable, out numLevels, out result );
-
+                    manager.CheckDeviceMultisampleType( driver.AdapterNumber, D3D.DeviceType.Hardware, videoMode.Format, windowed, D3D.MultisampleType.NonMaskable, out numLevels, out result);
                     for ( int n = 0; n < numLevels; n++ )
                     {
                         optFSAA.PossibleValues.Add( optFSAA.PossibleValues.Count, String.Format( "NonMaskable {0}", n ) );
@@ -1752,6 +1732,7 @@ namespace Axiom.RenderSystems.SlimDX9
             {
                 optFSAA.Value = "None";
             }
+
         }
 
         private DX.Matrix MakeD3DMatrix( Axiom.Math.Matrix4 matrix )
@@ -1779,45 +1760,6 @@ namespace Axiom.RenderSystems.SlimDX9
             return dxMat;
         }
 
-        /// <summary>
-        ///		Helper method to compare 2 vertex element arrays for equality.
-        /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <returns></returns>
-        private bool CompareVertexDecls( D3D.VertexElement[] a, D3D.VertexElement[] b )
-        {
-            // if b is null, return false
-            if ( b == null )
-            {
-                return false;
-            }
-
-            // compare lengths of the arrays
-            if ( a.Length != b.Length )
-            {
-                return false;
-            }
-
-            // continuing on, compare each property of each element.  if any differ, return false
-            for ( int i = 0; i < a.Length; i++ )
-            {
-                if ( a[ i ].Method != b[ i ].Method ||
-                     a[ i ].Offset != b[ i ].Offset ||
-                     a[ i ].Stream != b[ i ].Stream ||
-                     a[ i ].Type != b[ i ].Type ||
-                     a[ i ].Usage != b[ i ].Usage ||
-                     a[ i ].UsageIndex != b[ i ].UsageIndex
-                    )
-                {
-                    return false;
-                }
-            }
-
-            // if we made it this far, they matched up
-            return true;
-        }
-
         #endregion
 
         public override void SetDepthBufferParams( bool depthTest, bool depthWrite, CompareFunction depthFunction )
@@ -1832,7 +1774,7 @@ namespace Axiom.RenderSystems.SlimDX9
             // 2 sided operation?
             if ( twoSidedOperation )
             {
-                if ( !_rsCapabilities.HasCapability( Axiom.Graphics.Capabilities.TwoSidedStencil ) )
+                if ( !_rsCapabilities.HasCapability( Capabilities.TwoSidedStencil ) )
                 {
                     throw new AxiomException( "2-sided stencils are not supported on this hardware!" );
                 }
@@ -1840,24 +1782,33 @@ namespace Axiom.RenderSystems.SlimDX9
                 device.SetRenderState( D3D.RenderState.TwoSidedStencilMode, true );
 
                 // use CCW version of the operations
-                device.SetRenderState( D3D.RenderState.CcwStencilFail, SDXHelper.ConvertEnum( stencilFailOp, true ) );
-                device.SetRenderState( D3D.RenderState.CcwStencilZFail, SDXHelper.ConvertEnum( depthFailOp, true ) );
-                device.SetRenderState( D3D.RenderState.CcwStencilPass, SDXHelper.ConvertEnum( passOp, true ) );
+                device.SetRenderState( D3D.RenderState.CcwStencilFail, SDXHelper.ConvertEnum( stencilFailOp, true ));
+                device.SetRenderState( D3D.RenderState.CcwStencilZFail, SDXHelper.ConvertEnum( depthFailOp, true ));
+                device.SetRenderState( D3D.RenderState.CcwStencilPass, SDXHelper.ConvertEnum( passOp, true ));
             }
             else
             {
-                device.SetRenderState( D3D.RenderState.TwoSidedStencilMode, false );
+                device.SetRenderState( D3D.RenderState.TwoSidedStencilMode, false);
             }
 
             // configure standard version of the stencil operations
-            device.SetRenderState( D3D.RenderState.StencilFunc, SDXHelper.ConvertEnum( function ) );
-            device.SetRenderState( D3D.RenderState.StencilRef, refValue );
-            device.SetRenderState( D3D.RenderState.StencilMask, mask );
-            device.SetRenderState( D3D.RenderState.StencilFail, SDXHelper.ConvertEnum( stencilFailOp ) );
-            device.SetRenderState( D3D.RenderState.StencilZFail, SDXHelper.ConvertEnum( depthFailOp ) );
-            device.SetRenderState( D3D.RenderState.StencilPass, SDXHelper.ConvertEnum( passOp ) );
+            device.SetRenderState( D3D.RenderState.StencilFunc, SDXHelper.ConvertEnum( function ));
+            device.SetRenderState( D3D.RenderState.StencilRef, refValue);
+            device.SetRenderState( D3D.RenderState.StencilMask, mask);
+            device.SetRenderState( D3D.RenderState.StencilFail, SDXHelper.ConvertEnum( stencilFailOp ));
+            device.SetRenderState( D3D.RenderState.StencilZFail, SDXHelper.ConvertEnum( depthFailOp ));
+            device.SetRenderState( D3D.RenderState.StencilPass, SDXHelper.ConvertEnum( passOp ));
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ambient"></param>
+        /// <param name="diffuse"></param>
+        /// <param name="specular"></param>
+        /// <param name="emissive"></param>
+        /// <param name="shininess"></param>
         public override void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess, TrackVertexColor tracking )
         {
             // TODO: Cache color values to prune unneccessary setting
@@ -1868,23 +1819,51 @@ namespace Axiom.RenderSystems.SlimDX9
             mat.Ambient = SDXHelper.ToColor( ambient );
             mat.Specular = SDXHelper.ToColor( specular );
             mat.Emissive = SDXHelper.ToColor( emissive );
-            //mat.S = shininess;
+            mat.Power = shininess;
 
             // set the current material
             device.Material = mat;
 
             if ( tracking != TrackVertexColor.None )
             {
-                device.SetRenderState( D3D.RenderState.ColorVertex, true );
-                device.SetRenderState( D3D.RenderState.AmbientMaterialSource, (int)( ( ( tracking & TrackVertexColor.Ambient ) != 0 ) ? D3D.ColorSource.Color1 : D3D.ColorSource.Material ) );
-                device.SetRenderState( D3D.RenderState.DiffuseMaterialSource, (int)( ( ( tracking & TrackVertexColor.Diffuse ) != 0 ) ? D3D.ColorSource.Color1 : D3D.ColorSource.Material ) );
-                device.SetRenderState( D3D.RenderState.SpecularMaterialSource, (int)( ( ( tracking & TrackVertexColor.Specular ) != 0 ) ? D3D.ColorSource.Color1 : D3D.ColorSource.Material ) );
-                device.SetRenderState( D3D.RenderState.EmissiveMaterialSource, (int)( ( ( tracking & TrackVertexColor.Emissive ) != 0 ) ? D3D.ColorSource.Color1 : D3D.ColorSource.Material ) );
+                SetRenderState( D3D.RenderState.ColorVertex, true );
+                SetRenderState( D3D.RenderState.AmbientMaterialSource, (int)( ( ( tracking & TrackVertexColor.Ambient ) != 0 ) ? D3D.ColorSource.Color1 : D3D.ColorSource.Material ) );
+                SetRenderState( D3D.RenderState.DiffuseMaterialSource, (int)( ( ( tracking & TrackVertexColor.Diffuse ) != 0 ) ? D3D.ColorSource.Color1 : D3D.ColorSource.Material ) );
+                SetRenderState( D3D.RenderState.SpecularMaterialSource, (int)( ( ( tracking & TrackVertexColor.Specular ) != 0 ) ? D3D.ColorSource.Color1 : D3D.ColorSource.Material ) );
+                SetRenderState( D3D.RenderState.EmissiveMaterialSource, (int)( ( ( tracking & TrackVertexColor.Emissive ) != 0 ) ? D3D.ColorSource.Color1 : D3D.ColorSource.Material ) );
             }
             else
             {
                 device.SetRenderState( D3D.RenderState.ColorVertex, false );
             }
+        }
+
+        public void SetRenderState( D3D.RenderState state, bool val )
+        {
+            bool oldVal = device.GetRenderState<bool>( state );
+            if ( oldVal != val )
+                device.SetRenderState( state, val );
+        }
+
+        public void SetRenderState( D3D.RenderState state, int val )
+        {
+            int oldVal = device.GetRenderState<int>( state );
+            if ( oldVal != val )
+                device.SetRenderState( state, val );
+        }
+
+        public void SetRenderState( D3D.RenderState state, float val )
+        {
+            float oldVal = device.GetRenderState<float>( state );
+            if ( oldVal != val )
+                device.SetRenderState( state, val );
+        }
+
+        public void SetRenderState( D3D.RenderState state, System.Drawing.Color val )
+        {
+            System.Drawing.Color oldVal = System.Drawing.Color.FromArgb( device.GetRenderState<int>( state ) );
+            if ( oldVal != val )
+                device.SetRenderState( state, val.ToArgb() );
         }
 
         /// <summary>
@@ -1902,7 +1881,6 @@ namespace Axiom.RenderSystems.SlimDX9
             device.SetSamplerState( stage, D3D.SamplerState.AddressW, d3dMode );
         }
 
-        //FIXME
         public override void SetTextureBorderColor( int stage, ColorEx borderColor )
         {
             device.SetSamplerState( stage, D3D.SamplerState.BorderColor, SDXHelper.ToColor( borderColor ).ToArgb() );
@@ -1915,25 +1893,21 @@ namespace Axiom.RenderSystems.SlimDX9
             // TODO: Verify byte ordering
             if ( blendMode.operation == LayerBlendOperationEx.BlendManual )
             {
-                //device.RenderState.TextureFactor = ( new ColorEx( blendMode.blendFactor, 0, 0, 0 ) ).ToARGB();
                 device.SetRenderState( D3D.RenderState.TextureFactor, new ColorEx( blendMode.blendFactor, 0, 0, 0 ).ToARGB() );
             }
 
             if ( blendMode.blendType == LayerBlendType.Color )
             {
                 // Make call to set operation
-                //device.TextureState[ stage ].ColorOperation = d3dTexOp;
                 device.SetTextureStageState( stage, D3D.TextureStage.ColorOperation, d3dTexOp );
             }
             else if ( blendMode.blendType == LayerBlendType.Alpha )
             {
                 // Make call to set operation
-                //device.TextureState[ stage ].AlphaOperation = d3dTexOp;
                 device.SetTextureStageState( stage, D3D.TextureStage.AlphaOperation, d3dTexOp );
             }
 
             // Now set up sources
-            //System.Drawing.Color factor = System.Drawing.Color.FromArgb( device.RenderState.TextureFactor );
             System.Drawing.Color factor = System.Drawing.Color.FromArgb( device.GetRenderState( D3D.RenderState.TextureFactor ) );
 
             ColorEx manualD3D = SDXHelper.FromColor( factor );
@@ -1956,7 +1930,6 @@ namespace Axiom.RenderSystems.SlimDX9
                 // set the texture blend factor if this is manual blending
                 if ( blendSource == LayerBlendSource.Manual )
                 {
-                    //device.RenderState.TextureFactor = manualD3D.ToARGB();
                     device.SetRenderState( D3D.RenderState.TextureFactor, manualD3D.ToARGB() );
                 }
 
@@ -1965,12 +1938,10 @@ namespace Axiom.RenderSystems.SlimDX9
                 {
                     if ( i == 0 )
                     {
-                        //device.TextureState[ stage ].ColorArgument1 = d3dTexArg;
                         device.SetTextureStageState( stage, D3D.TextureStage.ColorArg1, d3dTexArg );
                     }
                     else if ( i == 1 )
                     {
-                        //device.TextureState[ stage ].ColorArgument2 = d3dTexArg;
                         device.SetTextureStageState( stage, D3D.TextureStage.ColorArg2, d3dTexArg );
                     }
                 }
@@ -1978,12 +1949,10 @@ namespace Axiom.RenderSystems.SlimDX9
                 {
                     if ( i == 0 )
                     {
-                        //device.TextureState[ stage ].AlphaArgument1 = d3dTexArg;
                         device.SetTextureStageState( stage, D3D.TextureStage.AlphaArg1, d3dTexArg );
                     }
                     else if ( i == 1 )
                     {
-                        //device.TextureState[ stage ].AlphaArgument2 = d3dTexArg;
                         device.SetTextureStageState( stage, D3D.TextureStage.AlphaArg2, d3dTexArg );
                     }
                 }
@@ -2011,7 +1980,6 @@ namespace Axiom.RenderSystems.SlimDX9
         {
             // store
             texStageDesc[ stage ].coordIndex = index;
-
             device.SetTextureStageState( stage, D3D.TextureStage.TexCoordIndex, ( SDXHelper.ConvertEnum( texStageDesc[ stage ].autoTexCoordType, d3dCaps ) | index ) );
         }
 
@@ -2023,7 +1991,7 @@ namespace Axiom.RenderSystems.SlimDX9
         /// <param name="filter"></param>
         public override void SetTextureUnitFiltering( int stage, FilterType type, FilterOptions filter )
         {
-            SDXTextureType texType = texStageDesc[ stage ].textureType;
+            D3DTextureType texType = texStageDesc[ stage ].texType;
             D3D.TextureFilter texFilter = SDXHelper.ConvertEnum( type, filter, d3dCaps, texType );
 
             switch ( type )
@@ -2069,10 +2037,10 @@ namespace Axiom.RenderSystems.SlimDX9
                 else
                 {
                     /* If envmap is applied, but device doesn't support spheremap,
-					then we have to use texture transform to make the camera space normal
-					reference the envmap properly. This isn't exactly the same as spheremap
-					(it looks nasty on flat areas because the camera space normals are the same)
-					but it's the best approximation we have in the absence of a proper spheremap */
+                    then we have to use texture transform to make the camera space normal
+                    reference the envmap properly. This isn't exactly the same as spheremap
+                    (it looks nasty on flat areas because the camera space normals are the same)
+                    but it's the best approximation we have in the absence of a proper spheremap */
 
                     // concatenate with the xform
                     newMat = newMat * Matrix4.ClipSpace2DToImageSpace;
@@ -2155,14 +2123,14 @@ namespace Axiom.RenderSystems.SlimDX9
                     //FIXME: The actually input texture coordinate dimensions should
                     //be determine by texture coordinate vertex element. Now, just trust
                     //user supplied texture type matchs texture coordinate vertex element.
-                    if ( texStageDesc[ stage ].textureType == SDXTextureType.Normal )
+                    if ( texStageDesc[ stage ].texType == D3DTextureType.Normal )
                     {
                         /* It's 2D input texture coordinate:
 
-						texcoord in vertex buffer     D3D expanded to     We are adjusted to
-						-->                           -->
-						(u, v)                        (u, v, 1, 0)        (u, v, 0, 1)
-						*/
+                        texcoord in vertex buffer     D3D expanded to     We are adjusted to
+                        -->                           -->
+                        (u, v)                        (u, v, 1, 0)        (u, v, 0, 1)
+                        */
                         Utility.Swap( ref d3dMat.M31, ref d3dMat.M41 );
                         Utility.Swap( ref d3dMat.M32, ref d3dMat.M42 );
                         Utility.Swap( ref d3dMat.M33, ref d3dMat.M43 );
@@ -2174,7 +2142,7 @@ namespace Axiom.RenderSystems.SlimDX9
                     // All texgen generate 3D input texture coordinates.
                 }
 
-                // tell D3D the dimension of texture. coord
+                // tell D3D the dimension of tex. coord
                 D3D.TextureTransform texCoordDim = D3D.TextureTransform.Count2;
 
                 if ( autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture )
@@ -2186,9 +2154,9 @@ namespace Axiom.RenderSystems.SlimDX9
                     //divide u, v by q. The w and q just ignored as it wasn't used by
                     //rasterizer.
 
-                    switch ( texStageDesc[ stage ].textureType )
+                    switch ( texStageDesc[ stage ].texType )
                     {
-                        case SDXTextureType.Normal:
+                        case D3DTextureType.Normal:
                             Utility.Swap( ref d3dMat.M13, ref d3dMat.M14 );
                             Utility.Swap( ref d3dMat.M23, ref d3dMat.M24 );
                             Utility.Swap( ref d3dMat.M33, ref d3dMat.M34 );
@@ -2196,30 +2164,30 @@ namespace Axiom.RenderSystems.SlimDX9
 
                             texCoordDim = D3D.TextureTransform.Projected | D3D.TextureTransform.Count3;
                             break;
-                        case SDXTextureType.Cube:
-                        case SDXTextureType.Volume:
+                        case D3DTextureType.Cube:
+                        case D3DTextureType.Volume:
                             // Yes, we support 3D projective texture.
                             texCoordDim = D3D.TextureTransform.Projected | D3D.TextureTransform.Count4;
                             break;
                     }
+
                 }
                 else
                 {
-                    switch ( texStageDesc[ stage ].textureType )
+                    switch ( texStageDesc[ stage ].texType )
                     {
-                        case SDXTextureType.Normal:
+                        case D3DTextureType.Normal:
                             texCoordDim = D3D.TextureTransform.Count2;
                             break;
-                        case SDXTextureType.Cube:
-                        case SDXTextureType.Volume:
+                        case D3DTextureType.Cube:
+                        case D3DTextureType.Volume:
                             texCoordDim = D3D.TextureTransform.Count3;
                             break;
                     }
                 }
 
-                // note: int values of D3D.TextureTransform correspond directly with texture dimension, so direct conversion is possible
+                // note: int values of D3D.TextureTransform correspond directly with tex dimension, so direct conversion is possible
                 // i.e. Count1 = 1, Count2 = 2, etc
-                //device.TextureState[ stage ].TextureTransform = (D3D.TextureTransform)texCoordDim;
                 device.SetTextureStageState( stage, D3D.TextureStage.TextureTransformFlags, (D3D.TextureTransform)texCoordDim );
 
                 // set the manually calculated texture matrix
@@ -2228,7 +2196,6 @@ namespace Axiom.RenderSystems.SlimDX9
             else
             {
                 // disable texture transformation
-                //device.TextureState[ stage ].TextureTransform = D3D.TextureTransform.Disable;
                 device.SetTextureStageState( stage, D3D.TextureStage.TextureTransformFlags, D3D.TextureTransform.Disable );
 
                 // set as the identity matrix
@@ -2236,37 +2203,25 @@ namespace Axiom.RenderSystems.SlimDX9
             }
         }
 
-        //FIXME
         public override void SetClipPlane( ushort index, float A, float B, float C, float D )
         {
-            float[] plane = {
-                                A, B, C, D
-                            };
-            //device.SetClipPlane(index, SlimDX.Plane.
-            //device.SetClipPlane(index, plane);
-            //device.ClipPlanes[index].SetSingleArray(plane);
-            device.SetRenderState( D3D.RenderState.Clipping, true );
         }
 
-        //FIXME
         public override void EnableClipPlane( ushort index, bool enable )
         {
-            device.SetRenderState( D3D.RenderState.ClipPlaneEnable, enable );
-            //device.ClipPlanes[index].Enabled = enable;
         }
+
 
         public override void SetScissorTest( bool enable, int left, int top, int right, int bottom )
         {
             if ( enable )
             {
-                //device.ScissorRectangle = new System.Drawing.Rectangle( left, top, right - left, bottom - top );
                 device.ScissorRect = new System.Drawing.Rectangle( left, top, right - left, bottom - top );
-                device.SetRenderState( D3D.RenderState.ScissorTestEnable, true );
+                device.SetRenderState( D3D.RenderState.ScissorTestEnable, true);
             }
             else
             {
-                //device.RenderState.ScissorTestEnable = false;
-                device.SetRenderState( D3D.RenderState.ScissorTestEnable, false );
+                device.SetRenderState( D3D.RenderState.ScissorTestEnable, false);
             }
         }
 
@@ -2275,8 +2230,6 @@ namespace Axiom.RenderSystems.SlimDX9
         /// </summary>
         private void CheckCaps( D3D.Device device )
         {
-            Debug.Assert( device != null, "Device can't be null" );
-
             d3dCaps = device.Capabilities;
 
             // get the number of possible texture units
@@ -2291,76 +2244,69 @@ namespace Axiom.RenderSystems.SlimDX9
 
             if ( surfaceDesc.Format == D3D.Format.D24S8 || surfaceDesc.Format == D3D.Format.D24X8 )
             {
-                _rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.StencilBuffer );
+                _rsCapabilities.SetCapability( Capabilities.StencilBuffer );
                 // always 8 here
                 _rsCapabilities.StencilBufferBitCount = 8;
             }
 
             // some cards, oddly enough, do not support this
-            //if (d3dCaps.DeclTypes.SupportsUByte4)
             if ( ( d3dCaps.DeclarationTypes & D3D.DeclarationTypeCaps.UByte4 ) == D3D.DeclarationTypeCaps.UByte4 )
             {
-                _rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.VertexFormatUByte4 );
+                _rsCapabilities.SetCapability( Capabilities.VertexFormatUByte4 );
             }
 
             // Anisotropy?
             if ( d3dCaps.MaxAnisotropy > 1 )
             {
-                _rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.AnisotropicFiltering );
+                _rsCapabilities.SetCapability( Capabilities.AnisotropicFiltering );
             }
 
             // Hardware mipmapping?
-            //if (d3dCaps.DriverCaps.CanAutoGenerateMipMap)
             if ( ( d3dCaps.Caps2 & D3D.Caps2.CanAutoGenerateMipMap ) == D3D.Caps2.CanAutoGenerateMipMap )
             {
-                _rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.HardwareMipMaps );
+                _rsCapabilities.SetCapability( Capabilities.HardwareMipMaps );
             }
 
             // blending between stages is definately supported
-            _rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.TextureBlending );
-            _rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.MultiTexturing );
+            _rsCapabilities.SetCapability( Capabilities.TextureBlending );
+            _rsCapabilities.SetCapability( Capabilities.MultiTexturing );
 
             // Dot3 bump mapping?
-            //if (d3dCaps.TextureOperationCaps.SupportsDotProduct3)
             if ( ( d3dCaps.TextureOperationCaps & D3D.TextureOperationCaps.DotProduct3 ) == D3D.TextureOperationCaps.DotProduct3 )
             {
-                _rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.Dot3 );
+                _rsCapabilities.SetCapability( Capabilities.Dot3 );
             }
 
             // Cube mapping?
-            //if (d3dCaps.TextureCaps.SupportsCubeMap)
             if ( ( d3dCaps.TextureCaps & D3D.TextureCaps.CubeMap ) == D3D.TextureCaps.CubeMap )
             {
-                _rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.CubeMapping );
+                _rsCapabilities.SetCapability( Capabilities.CubeMapping );
             }
 
             // Texture Compression
             // We always support compression, D3DX will decompress if device does not support
-            _rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.TextureCompression );
-            _rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.TextureCompressionDXT );
+            _rsCapabilities.SetCapability( Capabilities.TextureCompression );
+            _rsCapabilities.SetCapability( Capabilities.TextureCompressionDXT );
 
             // D3D uses vertex buffers for everything
-            _rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.VertexBuffer );
+            _rsCapabilities.SetCapability( Capabilities.VertexBuffer );
 
             // Scissor test
-            //if (d3dCaps.RasterCaps.SupportsScissorTest)
             if ( ( d3dCaps.RasterCaps & D3D.RasterCaps.ScissorTest ) == D3D.RasterCaps.ScissorTest )
             {
-                _rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.ScissorTest );
+                _rsCapabilities.SetCapability( Capabilities.ScissorTest );
             }
 
             // 2 sided stencil
-            //if (d3dCaps.StencilCaps.SupportsTwoSided)
             if ( ( d3dCaps.StencilCaps & D3D.StencilCaps.TwoSided ) == D3D.StencilCaps.TwoSided )
             {
-                _rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.TwoSidedStencil );
+                _rsCapabilities.SetCapability( Capabilities.TwoSidedStencil );
             }
 
             // stencil wrap
-            //if (d3dCaps.StencilCaps.SupportsIncrement && d3dCaps.StencilCaps.SupportsDecrement)
             if ( ( ( d3dCaps.StencilCaps & D3D.StencilCaps.Increment ) == D3D.StencilCaps.Increment ) && ( ( d3dCaps.StencilCaps & D3D.StencilCaps.Decrement ) == D3D.StencilCaps.Decrement ) )
             {
-                _rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.StencilWrap );
+                _rsCapabilities.SetCapability( Capabilities.StencilWrap );
             }
 
             // Hardware Occlusion
@@ -2369,7 +2315,7 @@ namespace Axiom.RenderSystems.SlimDX9
                 D3D.Query test = new D3D.Query( device, D3D.QueryType.Occlusion );
 
                 // if we made it this far, it is supported
-                _rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.HardwareOcculusion );
+                _rsCapabilities.SetCapability( Capabilities.HardwareOcculusion );
 
                 test.Dispose();
             }
@@ -2381,7 +2327,7 @@ namespace Axiom.RenderSystems.SlimDX9
 
             if ( d3dCaps.MaxUserClipPlanes > 0 )
             {
-                _rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.UserClipPlanes );
+                _rsCapabilities.SetCapability( Capabilities.UserClipPlanes );
             }
 
             //3d Textures
@@ -2428,6 +2374,7 @@ namespace Axiom.RenderSystems.SlimDX9
                     _rsCapabilities.VertexProgramConstantIntCount = 16 * 4;
                     // 4d float vectors
                     _rsCapabilities.VertexProgramConstantFloatCount = d3dCaps.MaxVertexShaderConstants;
+
                     break;
                 default:
                     // not gonna happen
@@ -2438,7 +2385,7 @@ namespace Axiom.RenderSystems.SlimDX9
             // check for supported vertex program syntax codes
             if ( vpMajor >= 1 )
             {
-                _rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.VertexPrograms );
+                _rsCapabilities.SetCapability( Capabilities.VertexPrograms );
                 gpuProgramMgr.PushSyntaxCode( "vs_1_1" );
             }
             if ( vpMajor >= 2 )
@@ -2509,7 +2456,7 @@ namespace Axiom.RenderSystems.SlimDX9
             // Fragment Program syntax code checks
             if ( fpMajor >= 1 )
             {
-                _rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.FragmentPrograms );
+                _rsCapabilities.SetCapability( Capabilities.FragmentPrograms );
                 gpuProgramMgr.PushSyntaxCode( "ps_1_1" );
 
                 if ( fpMajor > 1 || fpMinor >= 2 )
@@ -2530,7 +2477,7 @@ namespace Axiom.RenderSystems.SlimDX9
             {
                 gpuProgramMgr.PushSyntaxCode( "ps_2_0" );
 
-                if ( fpMinor > 0 )
+                if ( fpMajor > 2 || fpMinor > 0 )
                 {
                     gpuProgramMgr.PushSyntaxCode( "ps_2_x" );
                 }
@@ -2550,13 +2497,12 @@ namespace Axiom.RenderSystems.SlimDX9
             // We have no capability for this, so we have to base this on our
             // experience and reports from users
             // Non-vertex program capable hardware does not appear to support it
-            if ( _rsCapabilities.HasCapability( Axiom.Graphics.Capabilities.VertexPrograms ) )
+            if ( _rsCapabilities.HasCapability( Capabilities.VertexPrograms ) )
             {
                 // GeForce4 Ti (and presumably GeForce3) does not
                 // render infinite projection properly, even though it does in GL
                 // So exclude all cards prior to the FX range from doing infinite
-                DriverCollection driverList = SDXHelper.GetDriverInfo( manager );
-
+                DriverCollection driverList = SDXHelper.GetDriverInfo(manager);
                 Driver driver = driverList[ ConfigOptions[ "Rendering Device" ].Value ];
 
                 D3D.AdapterDetails details = manager.Adapters[ driver.AdapterNumber ].Details;
@@ -2564,8 +2510,7 @@ namespace Axiom.RenderSystems.SlimDX9
                 // not nVidia or GeForceFX and above
                 if ( details.VendorId != 0x10DE || details.DeviceId >= 0x0301 )
                 {
-                    _rsCapabilities.SetCapability( Axiom.Graphics.Capabilities.InfiniteFarPlane );
-                    // caps.SetCap( Axiom.Graphics.Capabilities.InfiniteFarPlane );
+                    _rsCapabilities.SetCapability( Capabilities.InfiniteFarPlane );
                 }
             }
 
@@ -2673,6 +2618,7 @@ namespace Axiom.RenderSystems.SlimDX9
             vertexProgramBound = false;
             fragmentProgramBound = false;
 
+
             // recreate additional swap chains
             foreach ( SDXRenderWindow sw in _secondaryWindows )
             {
@@ -2687,10 +2633,10 @@ namespace Axiom.RenderSystems.SlimDX9
 
             _deviceLost = false;
 
-            // device.RenderState.Clipping = true;
             device.SetRenderState( D3D.RenderState.Clipping, true );
 
             //TODO fireEvent("DeviceRestored");
+
         }
 
         public void notifyDeviceLost()
@@ -2707,31 +2653,26 @@ namespace Axiom.RenderSystems.SlimDX9
     /// <summary>
     ///		Structure holding texture unit settings for every stage
     /// </summary>
-    internal struct SDXTextureStageDesc
+    internal struct D3DTextureStageDesc
     {
         /// the type of the texture
-        public SDXTextureType textureType;
-
+        public D3DTextureType texType;
         /// wich texCoordIndex to use
         public int coordIndex;
-
-        /// type of auto texture. calc. used
+        /// type of auto tex. calc. used
         public TexCoordCalcMethod autoTexCoordType;
-
         /// Frustum, used if the above is projection
         public Frustum frustum;
-
         /// texture 
-        public D3D.BaseTexture texture;
-
+        public D3D.BaseTexture tex;
         /// vertex texture 
-        public D3D.BaseTexture vertexTexture;
+        public D3D.BaseTexture vertexTex;
     }
 
     /// <summary>
-    ///		D3D texture types
+    ///	D3D texture types
     /// </summary>
-    public enum SDXTextureType
+    public enum D3DTextureType
     {
         Normal,
         Cube,

@@ -42,8 +42,8 @@ using Axiom.Graphics;
 using Axiom.Media;
     using Image=Axiom.Media.Image;
 
-using DX = Microsoft.DirectX;
-using D3D = Microsoft.DirectX.Direct3D;
+using DX = SlimDX;
+using D3D = SlimDX.Direct3D9;
 using Axiom.Configuration;
 
 #endregion Namespace Declarations
@@ -51,114 +51,113 @@ using Axiom.Configuration;
 namespace Axiom.RenderSystems.DirectX9
 {
 
-	/// <summary>
-	///     Summary description for D3DRenderTexture.
-	/// </summary>
-	public class D3DRenderTexture : RenderTexture
-	{
+    /// <summary>
+    ///     Summary description for D3DRenderTexture.
+    /// </summary>
+    public class D3DRenderTexture : RenderTexture
+    {
 
-		public D3DRenderTexture( string name, HardwarePixelBuffer buffer )
-			: base( buffer, 0 )
-		{
-			this.Name = name;
-		}
+        public D3DRenderTexture( string name, HardwarePixelBuffer buffer )
+            : base( buffer, 0 )
+        {
+            this.Name = name;
+        }
 
-		public void Rebind( D3DHardwarePixelBuffer buffer )
-		{
-			pixelBuffer = buffer;
-			Width = pixelBuffer.Width;
-			Height = pixelBuffer.Height;
-			ColorDepth = PixelUtil.GetNumElemBits( buffer.Format );
-		}
+        public void Rebind( D3DHardwarePixelBuffer buffer )
+        {
+            pixelBuffer = buffer;
+            Width = pixelBuffer.Width;
+            Height = pixelBuffer.Height;
+            ColorDepth = PixelUtil.GetNumElemBits( buffer.Format );
+        }
 
-		#region Axiom.Graphics.RenderTexture Implementation
+        #region Axiom.Graphics.RenderTexture Implementation
 
-		public override void Update()
-		{
-			D3DRenderSystem rs = (D3DRenderSystem)Root.Instance.RenderSystem;
-			if ( rs.DeviceLost )
-				return;
+        public override void Update()
+        {
+            D3DRenderSystem rs = (D3DRenderSystem)Root.Instance.RenderSystem;
+            if ( rs.DeviceLost )
+                return;
 
-			base.Update();
-		}
+            base.Update();
+        }
 
-		public override object this[ string attribute ]
-		{
-			get
-			{
-				switch ( attribute.ToUpper() )
-				{
-					case "D3DBACKBUFFER":
+        public override object this[ string attribute ]
+        {
+            get
+            {
+                switch ( attribute.ToUpper() )
+                {
+                    case "D3DBACKBUFFER":
                         D3D.Surface[] surface = new D3D.Surface[ Config.MaxMultipleRenderTargets ];
-						if ( this.FSAA > 0 )
-						{
+                        if ( this.FSAA > 0 )
+                        {
                             surface[ 0 ] = ( (D3DHardwarePixelBuffer)pixelBuffer ).FSAASurface;
-						}
-						else
-						{
+                        }
+                        else
+                        {
                             surface[ 0 ] = ( (D3DHardwarePixelBuffer)pixelBuffer ).Surface;
-						}
+                        }
                         return surface;
-					case "HWND":
-						return null;
-					case "BUFFER":
-						return (HardwarePixelBuffer)pixelBuffer;
+                    case "HWND":
+                        return null;
+                    case "BUFFER":
+                        return (HardwarePixelBuffer)pixelBuffer;
                     default:
                         return null;
-				}
-				return null;
-			}
-		}
+                }
+                return null;
+            }
+        }
 
-		public override bool RequiresTextureFlipping
-		{
-			get
-			{
-				return false;
-			}
-		}
+        public override bool RequiresTextureFlipping
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-		public override void SwapBuffers( bool waitForVSync )
-		{
-			//// Only needed if we have to blit from AA surface
-			if ( this.FSAA > 0 )
-			{
+        public override void SwapBuffers( bool waitForVSync )
+        {
+            //// Only needed if we have to blit from AA surface
+            if ( this.FSAA > 0 )
+            {
 
-			    D3DRenderSystem rs = (D3DRenderSystem)Root.Instance.RenderSystem;
-			    if (rs.IsDeviceLost)
-			        return;
+                D3DRenderSystem rs = (D3DRenderSystem)Root.Instance.RenderSystem;
+                if ( rs.IsDeviceLost )
+                    return;
 
-			    D3DHardwarePixelBuffer buf = (D3DHardwarePixelBuffer)this.pixelBuffer;
+                D3DHardwarePixelBuffer buf = (D3DHardwarePixelBuffer)this.pixelBuffer;
 
-            // TODO: Implement rs.Device.StretchRect()
-			//    rs.Device.StretchRect(buf.FSAASurface, 0, buf.Surface, 0, D3DTEXF_NONE);
-			//    if (FAILED(hr))
-			//    {
-			//        OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, 
-			//            "Unable to copy AA buffer to final buffer: " + String(DXGetErrorDescription9(hr)), 
-			//            "D3D9RenderTexture::swapBuffers");
-			//    }
-				
+                // TODO: Implement rs.Device.StretchRect()
+                //    rs.Device.StretchRect(buf.FSAASurface, 0, buf.Surface, 0, D3DTEXF_NONE);
+                //    if (FAILED(hr))
+                //    {
+                //        OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, 
+                //            "Unable to copy AA buffer to final buffer: " + String(DXGetErrorDescription9(hr)), 
+                //            "D3D9RenderTexture::swapBuffers");
+                //    }
 
-			}
-		}
 
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !isDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					// Dispose managed resources.
-				}
-			}
+            }
+        }
 
-			// If it is available, make the call to the
-			// base class's Dispose(Boolean) method
-			base.dispose( disposeManagedResources );
-		}
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !isDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    // Dispose managed resources.
+                }
+            }
 
-		#endregion Axiom.Graphics.RenderTexture Implementation
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose( disposeManagedResources );
+        }
 
-	}
+        #endregion Axiom.Graphics.RenderTexture Implementation
+    }
 }

@@ -39,7 +39,8 @@ using System.Runtime.InteropServices;
 using Axiom.Core;
 using Axiom.Graphics;
 
-using D3D = Microsoft.DirectX.Direct3D;
+using DX = SlimDX;
+using D3D = SlimDX.Direct3D9;
 
 #endregion Namespace Declarations
 
@@ -53,9 +54,9 @@ namespace Axiom.RenderSystems.DirectX9
         #region Member variables
 
         protected D3D.VertexBuffer d3dBuffer;
-		protected D3D.Pool d3dPool;
+        protected D3D.Pool d3dPool;
 
-		TimingMeter vbufferLockTimer = MeterManager.GetMeter( "Buffer Lock", "Axiom.RenderSystems.DirectX9" );
+        TimingMeter vbufferLockTimer = MeterManager.GetMeter( "Buffer Lock", "Axiom.RenderSystems.DirectX9" );
 
         #endregion
 
@@ -66,27 +67,28 @@ namespace Axiom.RenderSystems.DirectX9
             : base( vertexSize, numVertices, usage, useSystemMemory, useShadowBuffer )
         {
 #if !NO_OGRE_D3D_MANAGE_BUFFERS
-			d3dPool = useSystemMemory ? D3D.Pool.SystemMemory :
-				// If not system mem, use managed pool UNLESS buffer is discardable
-				// if discardable, keeping the software backing is expensive
-				( ( usage & BufferUsage.Discardable ) != 0 ) ? D3D.Pool.Default : D3D.Pool.Managed;
+            d3dPool = useSystemMemory ? D3D.Pool.SystemMemory :
+                // If not system mem, use managed pool UNLESS buffer is discardable
+                // if discardable, keeping the software backing is expensive
+                ( ( usage & BufferUsage.Discardable ) != 0 ) ? D3D.Pool.Default : D3D.Pool.Managed;
 #else
             d3dPool = useSystemMemory ? Pool.SystemMemory : Pool.Default;
 #endif
             // Create the d3d vertex buffer
-			d3dBuffer = new D3D.VertexBuffer( device,
+            d3dBuffer = new D3D.VertexBuffer(
+                device,
                 sizeInBytes,
                 D3DHelper.ConvertEnum( usage ),
-				D3D.VertexFormats.None,
-				d3dPool );
-		}
+                D3D.VertexFormat.None,
+                d3dPool );
+        }
 
-		~D3DHardwareVertexBuffer()
-		{
-			if ( d3dBuffer != null )
-			{
-				d3dBuffer.Dispose();
-			}
+        ~D3DHardwareVertexBuffer()
+        {
+            if ( d3dBuffer != null )
+            {
+                d3dBuffer.Dispose();
+            }
         }
 
         #endregion
@@ -102,9 +104,9 @@ namespace Axiom.RenderSystems.DirectX9
         /// <returns></returns>
         protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
         {
-			D3D.LockFlags d3dLocking = D3DHelper.ConvertEnum( locking, usage );
-            Microsoft.DirectX.GraphicsStream s = d3dBuffer.Lock( offset, length, d3dLocking );
-            return s.InternalData;
+            D3D.LockFlags d3dLocking = D3DHelper.ConvertEnum( locking, usage );
+            DX.DataStream s = d3dBuffer.Lock( offset, length, d3dLocking );
+            return s.DataPointer;
         }
 
         /// <summary>
@@ -143,10 +145,10 @@ namespace Axiom.RenderSystems.DirectX9
         /// <param name="discardWholeBuffer"></param>
         public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
         {
-			vbufferLockTimer.Enter();
+            vbufferLockTimer.Enter();
             // lock the buffer real quick
             IntPtr dest = this.Lock( offset, length, discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
-			vbufferLockTimer.Exit();
+            vbufferLockTimer.Exit();
             // copy that data in there
             Memory.Copy( src, dest, length );
 
@@ -154,59 +156,58 @@ namespace Axiom.RenderSystems.DirectX9
             this.Unlock();
         }
 
-		//---------------------------------------------------------------------
-		public bool ReleaseIfDefaultPool()
-		{
-			if ( d3dPool == D3D.Pool.Default )
-			{
-				if ( d3dBuffer != null )
-				{
-					d3dBuffer.Dispose();
-					d3dBuffer = null;
-				}
-				return true;
-			}
-			return false;
-		}
+        //---------------------------------------------------------------------
+        public bool ReleaseIfDefaultPool()
+        {
+            if ( d3dPool == D3D.Pool.Default )
+            {
+                if ( d3dBuffer != null )
+                {
+                    d3dBuffer.Dispose();
+                    d3dBuffer = null;
+                }
+                return true;
+            }
+            return false;
+        }
 
-		//---------------------------------------------------------------------
-		public bool RecreateIfDefaultPool( D3D.Device device )
-		{
-			if ( d3dPool == D3D.Pool.Default )
-			{
-				// Create the d3d vertex buffer
-				d3dBuffer = new D3D.VertexBuffer(
-					typeof( byte ),
-					sizeInBytes,
-					device,
-					D3DHelper.ConvertEnum( usage ),
-					D3D.VertexFormats.None,
-					d3dPool );
-				return true;
-			}
-			return false;
-		}
+        //---------------------------------------------------------------------
+        public bool RecreateIfDefaultPool( D3D.Device device )
+        {
+            if ( d3dPool == D3D.Pool.Default )
+            {
+                // Create the d3d vertex buffer
+                d3dBuffer = new D3D.VertexBuffer(
+                    device,
+                    sizeInBytes,
+                    D3DHelper.ConvertEnum( usage ),
+                    D3D.VertexFormat.None,
+                    d3dPool );
+                return true;
+            }
+            return false;
+        }
 
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !isDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-				}
+        protected override void dispose( bool disposeManagedResources )
+        {
+            if ( !isDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                }
 
-				if ( d3dBuffer != null )
-				{
-					d3dBuffer.Dispose();
-					d3dBuffer = null;
-				}
+                if ( d3dBuffer != null )
+                {
+                    d3dBuffer.Dispose();
+                    d3dBuffer = null;
+                }
 
-			}
+            }
 
-			// If it is available, make the call to the
-			// base class's Dispose(Boolean) method
-			base.dispose( disposeManagedResources );
-		}
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose( disposeManagedResources );
+        }
 
         #endregion
 

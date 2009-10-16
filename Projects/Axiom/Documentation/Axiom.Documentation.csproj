@@ -59,7 +59,7 @@
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties Sandcastle_ShowEntireBuildComponentStack="True" Sandcastle_DocumentationSetName="Axiom" ProcessComponentTypeName="Axiom.Documentation.BuildProcess" IsDocProject="true" DocProjectVersion="1.11.0.0" BuildEngineProviderName="Sandcastle" Sandcastle_Version="2.4.10520.1" Sandcastle_PresentationName="Sandcastle Hana" ExternalSources="" />
+      <UserProperties ExternalSources="" Sandcastle_PresentationName="Sandcastle Hana" Sandcastle_Version="2.4.10520.1" BuildEngineProviderName="Sandcastle" DocProjectVersion="1.11.0.0" IsDocProject="true" ProcessComponentTypeName="Axiom.Documentation.BuildProcess" Sandcastle_DocumentationSetName="Axiom" Sandcastle_ShowEntireBuildComponentStack="True" />
     </VisualStudio>
   </ProjectExtensions>
   <ItemGroup>
@@ -345,14 +345,6 @@
       <Project>{081F78DE-8224-4CA6-BD34-8B7939CF21AB}</Project>
       <Name>Axiom.Platforms.OpenTK</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Platforms\SDL\Axiom.Platforms.SDL.csproj">
-      <Project>{90813CEA-1F45-48E7-A3F1-1A64C93893C5}</Project>
-      <Name>Axiom.Platforms.SDL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Platforms\SlimDX\Axiom.Platforms.SlimDX.csproj">
-      <Project>{C1F06405-80E4-4C60-BDDD-4BA1C8F400E0}</Project>
-      <Name>Axiom.Platforms.SlimDX</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Platforms\Win32\Axiom.Platforms.Win32.csproj">
       <Project>{77AC0D3A-2A99-4EA6-A90E-C71BB53751C5}</Project>
       <Name>Axiom.Platforms.Win32</Name>
@@ -381,17 +373,9 @@
       <Project>{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}</Project>
       <Name>Axiom.RenderSystems.OpenGL.OpenTK</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.SDL.csproj">
-      <Project>{3FC7E038-B500-4CAB-8525-0D3442B3052D}</Project>
-      <Name>Axiom.RenderSystems.OpenGL.SDL</Name>
-    </ProjectReference>
     <ProjectReference Include="..\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.Win32.csproj">
       <Project>{503C2DEF-293E-491F-ADDA-EE3860FCF84B}</Project>
       <Name>Axiom.RenderSystems.OpenGL.Win32</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\RenderSystems\SlimDX9\Axiom.RenderSystems.SlimDX9.csproj">
-      <Project>{EDE0CDEC-8DEA-4F48-BD27-F658B83507DE}</Project>
-      <Name>Axiom.RenderSystems.SlimDX9</Name>
     </ProjectReference>
     <ProjectReference Include="..\RenderSystems\XNA\Axiom.RenderSystems.Xna.csproj">
       <Project>{628E7ED7-EC58-4C93-B8AB-CB69087D381B}</Project>
