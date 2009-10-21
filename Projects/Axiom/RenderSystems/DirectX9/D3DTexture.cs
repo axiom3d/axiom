@@ -499,7 +499,7 @@ namespace Axiom.RenderSystems.DirectX9
 
             // check if mip maps are supported on hardware
             MipmapsHardwareGenerated = false;
-            if ( ( _devCaps.TextureCaps & D3D.TextureCaps.MipCubeMap ) != D3D.TextureCaps.MipCubeMap )
+            if ( ( _devCaps.TextureCaps & D3D.TextureCaps.MipMap ) == D3D.TextureCaps.MipMap )
             {
                 if ( ( ( Usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap ) && RequestedMipmapCount > 0 )
                 {
@@ -890,42 +890,24 @@ namespace Axiom.RenderSystems.DirectX9
             HasAlpha = PixelUtil.HasAlpha( format );
 
             // say to the world what we are doing
-            const string RenderTargetFormat = "D3D : Creating {0} RenderTarget, name : '{1}' with {2} mip map levels.";
-            const string TextureFormat = "D3D : Loading {0} Texture, image name : '{1}' with {2} mip map levels.";
+            const string RenderTargetFormat = "D3D9 : Creating {0} RenderTarget, name : '{1}' with {2} mip map levels.";
+            const string TextureFormat = "D3D9 : Loading {0} Texture, image name : '{1}' with {2} mip map levels.";
+
+            string formatStr = ( Usage & TextureUsage.RenderTarget ) == TextureUsage.RenderTarget ? RenderTargetFormat : TextureFormat;
 
             switch ( this.TextureType )
             {
                 case TextureType.OneD:
-                    if ( ( Usage & TextureUsage.RenderTarget ) == TextureUsage.RenderTarget )
-                    {
-                        LogManager.Instance.Write( String.Format( RenderTargetFormat, TextureType.OneD, this.Name, MipmapCount ) );
-                    }
-                    else
-                        LogManager.Instance.Write( String.Format( TextureFormat, TextureType.OneD, this.Name, MipmapCount ) );
+                    LogManager.Instance.Write( String.Format( formatStr, TextureType.OneD, this.Name, MipmapCount ) );
                     break;
                 case TextureType.TwoD:
-                    if ( ( Usage & TextureUsage.RenderTarget ) == TextureUsage.RenderTarget )
-                    {
-                        LogManager.Instance.Write( String.Format( RenderTargetFormat, TextureType.TwoD, this.Name, MipmapCount ) );
-                    }
-                    else
-                        LogManager.Instance.Write( String.Format( TextureFormat, TextureType.TwoD, this.Name, MipmapCount ) );
+                    LogManager.Instance.Write( String.Format( formatStr, TextureType.TwoD, this.Name, MipmapCount ) );
                     break;
                 case TextureType.ThreeD:
-                    if ( ( Usage & TextureUsage.RenderTarget ) == TextureUsage.RenderTarget )
-                    {
-                        LogManager.Instance.Write( String.Format( RenderTargetFormat, TextureType.ThreeD, this.Name, MipmapCount ) );
-                    }
-                    else
-                        LogManager.Instance.Write( String.Format( TextureFormat, TextureType.ThreeD, this.Name, MipmapCount ) );
+                    LogManager.Instance.Write( String.Format( formatStr, TextureType.ThreeD, this.Name, MipmapCount ) );
                     break;
                 case TextureType.CubeMap:
-                    if ( ( Usage & TextureUsage.RenderTarget ) == TextureUsage.RenderTarget )
-                    {
-                        LogManager.Instance.Write( String.Format( RenderTargetFormat, TextureType.CubeMap, this.Name, MipmapCount ) );
-                    }
-                    else
-                        LogManager.Instance.Write( String.Format( TextureFormat, TextureType.CubeMap, this.Name, MipmapCount ) );
+                    LogManager.Instance.Write( String.Format( formatStr, TextureType.CubeMap, this.Name, MipmapCount ) );
                     break;
                 default:
                     this.FreeInternalResources();
