@@ -95,6 +95,20 @@ namespace Axiom.Core
         ///	</summary>
         protected WireBoundingBox wireBox;
         /// <summary>
+        /// Wireframe bounding box for this scenenode
+        /// </summary>
+        public WireBoundingBox WireBoundingBox
+        {
+            get
+            {
+                return wireBox;
+            }
+            set
+            {
+                wireBox = value;
+            }
+        }
+        /// <summary>
         ///		Whether or not to display this node's bounding box.
         ///	</summary>
         protected bool showBoundingBox;
