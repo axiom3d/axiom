@@ -333,22 +333,27 @@ namespace Axiom.RenderSystems.Xna
                 case TextureType.TwoD:
                     Debug.Assert( this._normTexture != null, "texture must be intialized." );
 
+                    // instead of passing a new texture2d to the hardware pixel buffer that wont have any reference to this normalTexture,
+                    // we pass the normTexture and bind each mip level
+                    // not sure but seems to work, each hardwarePixelBuffer will have the same reference to this same texture, 
+                    // but with different mips level, that will be updated with SetData(miplevel,ect...)
+                  
                     // For all mipmaps, store surfaces as HardwarePixelBuffer
-                    for ( int mip = 0; mip <= MipmapCount; ++mip )
+                    for ( ushort mip = 0; mip <= MipmapCount; ++mip )
                     {
-                        int size = PixelUtil.GetMemorySize( this._normTexture.Width / (int)Utility.Pow( 2, mip ), this._normTexture.Height / (int)Utility.Pow( 2, mip ), 1, XnaHelper.Convert( this._normTexture.Format ) );
-                        byte[] data = new byte[size];
-                        this._normTexture.GetData( mip, null,data,0, size );
+                        //int size = PixelUtil.GetMemorySize( this._normTexture.Width / (int)Utility.Pow( 2, mip ), this._normTexture.Height / (int)Utility.Pow( 2, mip ), 1, XnaHelper.Convert( this._normTexture.Format ) );
+                        //byte[] data = new byte[size];
+                        //this._normTexture.GetData( mip, null,data,0, size );
 
-                        texture = new Texture2D( this._device, this._normTexture.Width / (int)Utility.Pow( 2, mip ), this._normTexture.Height / (int)Utility.Pow( 2, mip ), 1, this._normTexture.TextureUsage, this._normTexture.Format );
-                        texture.SetData( data );
+                        //texture = new Texture2D( this._device, this._normTexture.Width / (int)Utility.Pow( 2, mip ), this._normTexture.Height / (int)Utility.Pow( 2, mip ), 1, this._normTexture.TextureUsage, this._normTexture.Format );
+                        //texture.SetData( data );
 
-                        this.GetSurfaceAtLevel( 0, mip ).Bind( this._device, texture, updateOldList );
-                        this._managedObjects.Add( texture );
+                        this.GetSurfaceAtLevel(0, mip).Bind(this._device, _normTexture,mip, updateOldList);
+                        //this._managedObjects.Add( texture );
                     }
-
                     break;
-
+                    //this.GetSurfaceAtLevel(0, 0).Bind(this._device, _normTexture, updateOldList);
+                    break;
                 case TextureType.CubeMap:
                     Debug.Assert( _cubeTexture != null, "texture must be initialized." );
 
@@ -737,7 +742,19 @@ namespace Axiom.RenderSystems.Xna
         private void BlitImageToNormalTexture( Image image )
         {
             // TODO: check pixel formats and convert if needed
-            _normTexture.SetData<byte>( image.Data );
+           // image.Save("C:\\ori" + Name + ".jpg");
+
+            if (image.Format != XnaHelper.Convert(_normTexture.Format) )
+            {
+                Color[] colors = new Color[image.Width * image.Height];
+                for (int i = 0, j = 0; i < image.Width * image.Height * 3; i += 3, j++)
+                {
+                    colors[j] = new Color(image.Data[i + 2], image.Data[i + 1], image.Data[i]);
+                }
+                _normTexture.SetData<Color>(colors);
+                //_normTexture.Save("C:\\" + Name + ".jpg", ImageFileFormat.Jpg);
+            }
+            //_normTexture.SetData<byte>( image.Data );
             _texture = _normTexture;
             _texture.GenerateMipMaps( GetBestFilterMethod() );
         }

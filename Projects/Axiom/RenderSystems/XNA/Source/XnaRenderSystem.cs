@@ -875,7 +875,7 @@ namespace Axiom.RenderSystems.Xna
             }
             set
             {
-                throw new Exception( "The method or operation is not implemented." );
+                //throw new Exception( "The method or operation is not implemented." );
             }
         }
 
