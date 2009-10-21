@@ -167,14 +167,14 @@ namespace Axiom.RenderSystems.Xna
         ///<summary>
         ///    Call this to associate a Xna Texture2D with this pixel buffer
         ///</summary>
-        public void Bind( XFG.GraphicsDevice device, XFG.Texture2D surface,ushort miplevel, bool update )
+        public void Bind( XFG.GraphicsDevice device, XFG.Texture2D surface, ushort miplevel, bool update )
         {
             this.device = device;
             this.surface = surface;
             this.mipLevel = miplevel;
 
-            Width = surface.Width / (int)Axiom.Math.Utility.Pow(2, mipLevel);
-            Height = surface.Height / (int)Axiom.Math.Utility.Pow(2, mipLevel);
+            Width = surface.Width / (int)Axiom.Math.Utility.Pow( 2, mipLevel );
+            Height = surface.Height / (int)Axiom.Math.Utility.Pow( 2, mipLevel );
             Depth = 1;
             Format = XnaHelper.Convert( surface.Format );
             // Default

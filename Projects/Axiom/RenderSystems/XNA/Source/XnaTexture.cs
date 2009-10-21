@@ -337,23 +337,18 @@ namespace Axiom.RenderSystems.Xna
                     // we pass the normTexture and bind each mip level
                     // not sure but seems to work, each hardwarePixelBuffer will have the same reference to this same texture, 
                     // but with different mips level, that will be updated with SetData(miplevel,ect...)
+
+                    // This is required because .GetData<byte>( level ... ) copies the data from the buffer whereas in DX GetSurfaceLevel 
+                    // creates a new Surface object that references the same data.
+                    // - borrillis
                   
                     // For all mipmaps, store surfaces as HardwarePixelBuffer
                     for ( ushort mip = 0; mip <= MipmapCount; ++mip )
                     {
-                        //int size = PixelUtil.GetMemorySize( this._normTexture.Width / (int)Utility.Pow( 2, mip ), this._normTexture.Height / (int)Utility.Pow( 2, mip ), 1, XnaHelper.Convert( this._normTexture.Format ) );
-                        //byte[] data = new byte[size];
-                        //this._normTexture.GetData( mip, null,data,0, size );
-
-                        //texture = new Texture2D( this._device, this._normTexture.Width / (int)Utility.Pow( 2, mip ), this._normTexture.Height / (int)Utility.Pow( 2, mip ), 1, this._normTexture.TextureUsage, this._normTexture.Format );
-                        //texture.SetData( data );
-
-                        this.GetSurfaceAtLevel(0, mip).Bind(this._device, _normTexture,mip, updateOldList);
-                        //this._managedObjects.Add( texture );
+                        this.GetSurfaceAtLevel( 0, mip ).Bind( this._device, _normTexture, mip, updateOldList );
                     }
                     break;
-                    //this.GetSurfaceAtLevel(0, 0).Bind(this._device, _normTexture, updateOldList);
-                    break;
+
                 case TextureType.CubeMap:
                     Debug.Assert( _cubeTexture != null, "texture must be initialized." );
 

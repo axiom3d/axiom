@@ -277,7 +277,10 @@ namespace Axiom.RenderSystems.Xna
             DriverCollection driverList = XnaHelper.GetDriverInfo();
             foreach ( Driver driver in driverList )
             {
-                optDevice.PossibleValues.Add( driver.AdapterNumber, driver.Description );
+                if ( !optDevice.PossibleValues.ContainsKey( driver.AdapterNumber ) )
+                {
+                    optDevice.PossibleValues.Add( driver.AdapterNumber, driver.Description );
+                }
             }
             optDevice.Value = driverList[ 0 ].Description;
 
