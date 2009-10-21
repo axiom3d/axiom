@@ -737,18 +737,15 @@ namespace Axiom.RenderSystems.Xna
         private void BlitImageToNormalTexture( Image image )
         {
             // TODO: check pixel formats and convert if needed
-           // image.Save("C:\\ori" + Name + ".jpg");
-
-            if (image.Format != XnaHelper.Convert(_normTexture.Format) )
+            // image.Save("C:\\ori" + Name + ".jpg");
+            Color[] colors = new Color[image.Width * image.Height];
+            for (int i = 0, j = 0; i < image.Width * image.Height * 3; i += 3, j++)
             {
-                Color[] colors = new Color[image.Width * image.Height];
-                for (int i = 0, j = 0; i < image.Width * image.Height * 3; i += 3, j++)
-                {
-                    colors[j] = new Color(image.Data[i + 2], image.Data[i + 1], image.Data[i]);
-                }
-                _normTexture.SetData<Color>(colors);
-                //_normTexture.Save("C:\\" + Name + ".jpg", ImageFileFormat.Jpg);
+                colors[j] = new Color(image.Data[i + 2], image.Data[i + 1], image.Data[i]);
             }
+            _normTexture.SetData<Color>(colors);
+            //_normTexture.Save("C:\\" + Name + ".jpg", ImageFileFormat.Jpg);
+        
             //_normTexture.SetData<byte>( image.Data );
             _texture = _normTexture;
             _texture.GenerateMipMaps( GetBestFilterMethod() );
