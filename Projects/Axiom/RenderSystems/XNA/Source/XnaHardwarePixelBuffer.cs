@@ -106,6 +106,10 @@ namespace Axiom.RenderSystems.Xna
         ///</summary>
         protected List<RenderTexture> sliceTRT;
 
+
+        private byte[] _bufferBytes;
+        BasicBox _lockedBox;
+
         ///<summary>
         ///    Accessor for surface
         ///</summary>
@@ -334,10 +338,22 @@ namespace Axiom.RenderSystems.Xna
         ///<summary>
         ///    Internal implementation of <see cref="HardwareBuffer.Lock"/>.
         ///</summary>
-        protected override PixelBox LockImpl( BasicBox lockBox, BufferLocking options )
+        unsafe protected override PixelBox LockImpl( BasicBox lockBox, BufferLocking options )
         {
+            _lockedBox = lockBox;
             // Set extents and format
             PixelBox rval = new PixelBox( lockBox, Format );
+            int sizeInBytes = PixelUtil.GetMemorySize(lockBox.Width, lockBox.Height, lockBox.Depth, XnaHelper.Convert(surface.Format));
+            _bufferBytes = new byte[sizeInBytes];
+
+            surface.GetData(mipLevel,
+                            new Microsoft.Xna.Framework.Rectangle(lockBox.Left, lockBox.Top, lockBox.Right, lockBox.Bottom),
+                           _bufferBytes, 0, _bufferBytes.Length);
+
+            fixed (byte* bytes = &_bufferBytes[0])
+            {
+                rval.Data = new IntPtr(bytes);
+            }
 
             return rval;
         }
@@ -347,7 +363,12 @@ namespace Axiom.RenderSystems.Xna
         /// </summary>
         protected override void UnlockImpl()
         {
-            // Nothing to do here
+            //set the bytes array inside the texture
+            surface.SetData(mipLevel,
+                            new Microsoft.Xna.Framework.Rectangle(_lockedBox.Left, _lockedBox.Top, _lockedBox.Right, _lockedBox.Bottom),
+                            _bufferBytes, 0,
+                            _bufferBytes.Length,
+                            Microsoft.Xna.Framework.Graphics.SetDataOptions.None);
         }
 
         #endregion HardwarePixelBuffer Implementation
