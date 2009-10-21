@@ -193,13 +193,14 @@ namespace Axiom.RenderSystems.DirectX9
             {
                 if ( disposeManagedResources )
                 {
+                    if ( d3dBuffer != null && !d3dBuffer.Disposed )
+                    {
+                        d3dBuffer.Dispose();
+                        d3dBuffer = null;
+                    }
+
                 }
 
-                if ( d3dBuffer != null )
-                {
-                    d3dBuffer.Dispose();
-                    d3dBuffer = null;
-                }
 
             }
 

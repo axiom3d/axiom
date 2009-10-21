@@ -134,17 +134,13 @@ namespace Axiom.RenderSystems.DirectX9
         #region RenderSurface Property
 
         private D3D.Surface _renderSurface;
+        private bool isDeviceLost;
+
         public D3D.Surface RenderSurface
         {
             get
             {
-                if ( _renderSurface.Disposed )
-                {
-                    LogManager.Instance.Write( "[D3D] : BackBuffer was disposed, reinitializing." );
-                    _renderSurface = _driver.D3DDevice.GetRenderTarget( 0 );
-                }
-
-                return _renderSurface;
+                return ((D3D.Surface[])this[ "D3DBACKBUFFER" ])[0];
             }
         }
 
@@ -712,16 +708,17 @@ namespace Axiom.RenderSystems.DirectX9
                         return false;
 
                     case "D3DZBUFFER":
-                        if ( _renderZBuffer.Disposed )
+                        if ( this.testLostDevice() || _renderZBuffer.Disposed )
                         {
-                            _renderZBuffer = _driver.D3DDevice.DepthStencilSurface;
+                            //_renderZBuffer =  _driver.D3DDevice.DepthStencilSurface;
                             LogManager.Instance.Write( "[D3D] : ZBuffer was disposed, reinitializing." );
+                            return null;
                         }
                         return _renderZBuffer;
 
                     case "D3DBACKBUFFER":
                         D3D.Surface[] surface = new D3D.Surface[ 1 ];
-                        if ( _renderSurface.Disposed )
+                        if ( this.testLostDevice() || _renderSurface.Disposed )
                         {
                             LogManager.Instance.Write( "[D3D] : BackBuffer was disposed, reinitializing." );
                             _renderSurface = _driver.D3DDevice.GetRenderTarget( 0 );
@@ -730,9 +727,9 @@ namespace Axiom.RenderSystems.DirectX9
                         return surface;
 
                     case "D3DFRONTBUFFER":
-                        if ( _renderSurface.Disposed )
+                        if ( this.testLostDevice() || _renderSurface.Disposed )
                         {
-                            LogManager.Instance.Write( "[D3D] : BackBuffer was disposed, reinitializing." );
+                            LogManager.Instance.Write( "[D3D] : FrontBuffer was disposed, reinitializing." );
                             _renderSurface = _driver.D3DDevice.GetRenderTarget( 0 );
                         }
                         return _renderSurface;
@@ -746,16 +743,13 @@ namespace Axiom.RenderSystems.DirectX9
             // Dispose D3D Resources
             if ( _isSwapChain )
             {
-                _renderZBuffer.Dispose();
-                _renderZBuffer = null;
                 _swapChain.Dispose();
                 _swapChain = null;
             }
-            else
-            {
-                _renderZBuffer = null;
-            }
-            _renderSurface.Dispose();
+            if ( _renderZBuffer != null && !_renderZBuffer.Disposed )
+                _renderZBuffer.Dispose();
+            if ( _renderSurface != null && !_renderSurface.Disposed )
+                _renderSurface.Dispose();
         }
 
         protected override void dispose( bool disposeManagedResources )
@@ -825,9 +819,6 @@ namespace Axiom.RenderSystems.DirectX9
             if ( Width == width && Height == height )
                 return;
 
-            //if ( _renderSurface != null )
-            //    _renderSurface.ReleaseGraphics();
-
             if ( _isSwapChain )
             {
 
@@ -880,7 +871,7 @@ namespace Axiom.RenderSystems.DirectX9
             {
                 _d3dpp.BackBufferWidth = Width = width;
                 _d3dpp.BackBufferHeight = Height = height;
-                ( (D3DRenderSystem)( Root.Instance.RenderSystem ) ).notifyDeviceLost();
+                ( (D3DRenderSystem)( Root.Instance.RenderSystem ) ).IsDeviceLost = true;
             }
 
             // Notify viewports of resize
@@ -914,6 +905,11 @@ namespace Axiom.RenderSystems.DirectX9
         {
             DX.Result result;
             D3D.Device device = _driver.D3DDevice;
+
+            // Skip if the device is already lost
+            if ( isDeviceLost || testLostDevice() )
+                return;
+
             if ( device != null )
             {
 
@@ -921,7 +917,8 @@ namespace Axiom.RenderSystems.DirectX9
                 if ( result.Code == D3D.ResultCode.DeviceLost.Code )
                 {
                     _renderSurface.ReleaseDC( _renderSurface.GetDC() );
-                    ( (D3DRenderSystem)( Root.Instance.RenderSystem ) ).notifyDeviceLost();
+                    isDeviceLost = true;
+                    ( (D3DRenderSystem)( Root.Instance.RenderSystem ) ).IsDeviceLost = true;
                 }
                 else if ( result.IsFailure )
                 {
@@ -930,16 +927,13 @@ namespace Axiom.RenderSystems.DirectX9
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public override bool IsFullScreen
+        private bool testLostDevice()
         {
-            get
-            {
-                return base.IsFullScreen;
-            }
+            DX.Result result = Driver.D3DDevice.TestCooperativeLevel();
+            return ( result == D3D.ResultCode.DeviceLost ) ||
+                   ( result == D3D.ResultCode.DeviceNotReset );
         }
+
 
         public override void CopyContentsToMemory( PixelBox dst, FrameBuffer buffer )
         {
@@ -1073,7 +1067,6 @@ namespace Axiom.RenderSystems.DirectX9
 
             PixelConverter.BulkPixelConversion( src, dst );
 
-            surface.Dispose();
             if ( tmpSurface != null )
                 tmpSurface.Dispose();
         }

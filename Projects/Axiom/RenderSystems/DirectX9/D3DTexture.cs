@@ -1137,25 +1137,25 @@ namespace Axiom.RenderSystems.DirectX9
 
         protected override void freeInternalResources()
         {
-            if ( this._texture != null )
+            if ( this._texture != null && !_texture.Disposed )
             {
                 this._texture.Dispose();
                 this._texture = null;
             }
 
-            if ( this._normTexture != null )
+            if ( this._normTexture != null && !_normTexture.Disposed )
             {
                 this._normTexture.Dispose();
                 this._normTexture = null;
             }
 
-            if ( this._cubeTexture != null )
+            if ( this._cubeTexture != null && !_cubeTexture.Disposed )
             {
                 this._cubeTexture.Dispose();
                 this._cubeTexture = null;
             }
 
-            if ( this._volumeTexture != null )
+            if ( this._volumeTexture != null && !_volumeTexture.Disposed )
             {
                 this._volumeTexture.Dispose();
                 this._volumeTexture = null;
