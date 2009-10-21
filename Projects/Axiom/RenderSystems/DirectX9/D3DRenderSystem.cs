@@ -112,16 +112,8 @@ namespace Axiom.RenderSystems.DirectX9
         protected Matrix4 viewMatrix = Matrix4.Identity;
 
         //---------------------------------------------------------------------
-        private bool _deviceLost;
         private bool _basicStatesInitialized;
 
-        public bool IsDeviceLost
-        {
-            get
-            {
-                return _deviceLost;
-            }
-        }
         //---------------------------------------------------------------------
 
         List<D3DRenderWindow> _secondaryWindows = new List<D3DRenderWindow>();
@@ -154,7 +146,7 @@ namespace Axiom.RenderSystems.DirectX9
         {
             LogManager.Instance.Write( "[D3D] : Direct3D9 Rendering Subsystem created." );
 
-            if ( manager == null )
+            if ( manager == null || manager.Disposed )
             {
                 manager = new D3D.Direct3D();
             }
@@ -243,11 +235,28 @@ namespace Axiom.RenderSystems.DirectX9
             }
         }
 
-        public bool DeviceLost
+        private bool _deviceLost;
+        public bool IsDeviceLost
         {
             get
             {
                 return _deviceLost;
+            }
+            set
+            {
+                if ( value )
+                {
+                    LogManager.Instance.Write( "!!! Direct3D Device Lost!" );
+                    _deviceLost = true;
+                    // will have lost basic states
+                    _basicStatesInitialized = false;
+
+                    //TODO fireEvent("DeviceLost");
+                }
+                else
+                {
+                    throw new AxiomException( "DeviceLost can only be set to true." );
+                }
             }
         }
 
@@ -409,9 +418,14 @@ namespace Axiom.RenderSystems.DirectX9
 
             _activeDriver = null;
             // dispose of the device
-            if ( device != null )
+            if ( device != null && !device.Disposed )
             {
                 device.Dispose();
+            }
+
+            if ( this.manager != null && !manager.Disposed )
+            {
+                manager.Dispose();
             }
 
             if ( gpuProgramMgr != null )
@@ -594,6 +608,19 @@ namespace Axiom.RenderSystems.DirectX9
             LogManager.Instance.Write( "***************************************" );
 
             // call superclass method
+
+            // Configure SlimDX
+            DX.Configuration.ThrowOnError = true;
+            DX.Configuration.AddResultWatch( D3D.ResultCode.DeviceLost, DX.ResultWatchFlags.AlwaysIgnore );
+            DX.Configuration.AddResultWatch( D3D.ResultCode.WasStillDrawing, DX.ResultWatchFlags.AlwaysIgnore );
+
+#if DEBUG
+            DX.Configuration.DetectDoubleDispose = false;
+            DX.Configuration.EnableObjectTracking = true;
+#else
+            DX.Configuration.DetectDoubleDispose = false;
+            DX.Configuration.EnableObjectTracking = false;
+#endif
 
             return renderWindow;
         }
@@ -2639,16 +2666,6 @@ namespace Axiom.RenderSystems.DirectX9
 
             //TODO fireEvent("DeviceRestored");
 
-        }
-
-        public void notifyDeviceLost()
-        {
-            LogManager.Instance.Write( "!!! Direct3D Device Lost!" );
-            _deviceLost = true;
-            // will have lost basic states
-            _basicStatesInitialized = false;
-
-            //TODO fireEvent("DeviceLost");
         }
     }
 
