@@ -71,6 +71,7 @@ namespace Axiom.RenderSystems.Xna
         ///<summary>
         ///    Surface abstracted by this buffer
         ///</summary>
+        protected ushort mipLevel;
         protected XFG.Texture2D surface;
         ///<summary>
         ///    FSAA Surface abstracted by this buffer
@@ -112,7 +113,7 @@ namespace Axiom.RenderSystems.Xna
         {
             get
             {
-                return null;
+                return fsaaSurface;
             }
         }
 
@@ -124,7 +125,7 @@ namespace Axiom.RenderSystems.Xna
         {
             get
             {
-                return null;
+                return surface;
             }
         }
 
@@ -166,13 +167,14 @@ namespace Axiom.RenderSystems.Xna
         ///<summary>
         ///    Call this to associate a Xna Texture2D with this pixel buffer
         ///</summary>
-        public void Bind( XFG.GraphicsDevice device, XFG.Texture2D surface, bool update )
+        public void Bind( XFG.GraphicsDevice device, XFG.Texture2D surface,ushort miplevel, bool update )
         {
             this.device = device;
             this.surface = surface;
+            this.mipLevel = miplevel;
 
-            Width = surface.Width;
-            Height = surface.Height;
+            Width = surface.Width / (int)Axiom.Math.Utility.Pow(2, mipLevel);
+            Height = surface.Height / (int)Axiom.Math.Utility.Pow(2, mipLevel);
             Depth = 1;
             Format = XnaHelper.Convert( surface.Format );
             // Default
@@ -300,7 +302,7 @@ namespace Axiom.RenderSystems.Xna
 
             if ( surface != null )
             {
-                surface.SetData<byte>( 0, XnaHelper.ToRectangle( dstBox ), newBuffer,0, bufSize, XFG.SetDataOptions.None );
+                surface.SetData<byte>( mipLevel, XnaHelper.ToRectangle( dstBox ), newBuffer,0, bufSize, XFG.SetDataOptions.None );
             }
             else
             {
