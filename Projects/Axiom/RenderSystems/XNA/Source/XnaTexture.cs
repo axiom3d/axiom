@@ -162,6 +162,10 @@ namespace Axiom.RenderSystems.Xna
             {
                 return _texture;
             }
+            set
+            {
+                _texture = value;
+            }
         }
 
         public XFG.Texture2D NormalTexture
@@ -289,11 +293,12 @@ namespace Axiom.RenderSystems.Xna
 
         private void CreateSurfaceList()
         {
-            Debug.Assert( this._texture != null, "texture must be intialized." );
+            //Debug.Assert( this._texture != null, "texture must be intialized." );
             XFG.Texture2D texture = null;
 
             // Make sure number of mips is right
-            _mipmapCount = this._texture.LevelCount - 1;
+            if(Usage != TextureUsage.RenderTarget)
+                _mipmapCount = this._texture.LevelCount - 1;
 
             // Need to know static / dynamic
             BufferUsage bufusage;
@@ -331,7 +336,7 @@ namespace Axiom.RenderSystems.Xna
             {
                 case TextureType.OneD:
                 case TextureType.TwoD:
-                    Debug.Assert( this._normTexture != null, "texture must be intialized." );
+                    //Debug.Assert( this._normTexture != null, "texture must be intialized." );
 
                     // instead of passing a new texture2d to the hardware pixel buffer that wont have any reference to this normalTexture,
                     // we pass the normTexture and bind each mip level
@@ -342,11 +347,15 @@ namespace Axiom.RenderSystems.Xna
                     // creates a new Surface object that references the same data.
                     // - borrillis
                   
-                    // For all mipmaps, store surfaces as HardwarePixelBuffer
-                    for ( ushort mip = 0; mip <= MipmapCount; ++mip )
-                    {
-                        this.GetSurfaceAtLevel( 0, mip ).Bind( this._device, _normTexture, mip, updateOldList );
-                    }
+                    if (Usage == TextureUsage.RenderTarget)
+                        this.GetSurfaceAtLevel(0, 0).Bind(this._device, renderTarget, this, updateOldList);
+                    else// For all mipmaps, store surfaces as HardwarePixelBuffer
+                        for ( ushort mip = 0; mip <= MipmapCount; ++mip )
+                        {
+                            
+                                this.GetSurfaceAtLevel(0, mip).Bind(this._device, _normTexture, mip, updateOldList);
+                            
+                        }
                     break;
 
                 case TextureType.CubeMap:
@@ -712,6 +721,7 @@ namespace Axiom.RenderSystems.Xna
             {
                 renderTarget = new XFG.RenderTarget2D(_device, SrcWidth, SrcHeight, numMips, d3dPixelFormat);
                 CreateDepthStencil();
+              
             }
             else
             {
@@ -724,7 +734,7 @@ namespace Axiom.RenderSystems.Xna
                             d3dPixelFormat );
                _texture = _normTexture;
             }
-
+            
             SetFinalAttributes( SrcWidth, SrcHeight, 1, XnaHelper.Convert( d3dPixelFormat ) );
 
             if ( MipmapsHardwareGenerated )
@@ -950,8 +960,9 @@ namespace Axiom.RenderSystems.Xna
             }
 
             Size = width * height * depth * bytesPerPixel * ( ( TextureType == TextureType.CubeMap ) ? 6 : 1 );
-
             this.CreateSurfaceList();
+            
+
         }
 
         public override void Unload()

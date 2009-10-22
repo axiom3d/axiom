@@ -2071,7 +2071,7 @@ namespace Axiom.RenderSystems.Xna
             }
         }
 
-        XFG.DepthStencilBuffer oriDSB;
+        //XFG.DepthStencilBuffer oriDSB;
         public override void SetViewport( Axiom.Core.Viewport viewport )
         {
             if ( activeViewport != viewport || viewport.IsUpdated )
@@ -2080,28 +2080,19 @@ namespace Axiom.RenderSystems.Xna
                 activeViewport = viewport;
                 activeRenderTarget = viewport.Target;
 
-                //save the original dephstencil buffer
-                if ( oriDSB == null )
-                {
-                    oriDSB = _device.DepthStencilBuffer;
-                }
                 // get the back buffer surface for this viewport
-
-                XFG.RenderTarget2D back = (XFG.RenderTarget2D)activeRenderTarget.GetCustomAttribute( "XNABACKBUFFER" );
-
+                XFG.RenderTarget2D back = (XFG.RenderTarget2D)activeRenderTarget[ "XNABACKBUFFER" ];
+                
                 _device.SetRenderTarget( 0, back );
 
-                XFG.DepthStencilBuffer depth = (XFG.DepthStencilBuffer)activeRenderTarget.GetCustomAttribute( "XNAZBUFFER" );
+                XFG.DepthStencilBuffer depth = (XFG.DepthStencilBuffer)activeRenderTarget["XNAZBUFFER"];
 
                 // set the render target and depth stencil for the surfaces belonging to the viewport
 
-                //dont know why the depthstencil buffer is disposing itself, have to keep it
-                //if (depth.IsDisposed) _device.DepthStencilBuffer = oriDSB;
-                //else _device.DepthStencilBuffer = depth;
 
-                //if(depth!=null)
+                if(depth!=null)
                 //if(depth.Format==_device.DepthStencilBuffer.Format)
-                _device.DepthStencilBuffer = depth;
+                    _device.DepthStencilBuffer = depth;
 
                 // set the culling mode, to make adjustments required for viewports
                 // that may need inverted vertex winding or texture flipping
