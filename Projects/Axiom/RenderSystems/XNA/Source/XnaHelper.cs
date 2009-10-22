@@ -921,6 +921,8 @@ namespace Axiom.RenderSystems.Xna
         {
             switch ( format )
             {
+                case PixelFormat.BYTE_LA:
+                    return XFG.SurfaceFormat.LuminanceAlpha16;
                 case PixelFormat.L8:
                     return XFG.SurfaceFormat.Luminance8;
                 case PixelFormat.A8:
