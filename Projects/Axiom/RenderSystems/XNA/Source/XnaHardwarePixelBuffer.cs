@@ -64,6 +64,15 @@ namespace Axiom.RenderSystems.Xna
     {
         #region Fields and Properties
 
+        private XnaTexture parentTexture;
+        public XnaTexture ParentTexture
+        {
+            get
+            {
+                return parentTexture;
+            }
+            
+        }
         ///<summary>
         ///    Xna Device
         ///</summary>
@@ -109,7 +118,14 @@ namespace Axiom.RenderSystems.Xna
 
         private byte[] _bufferBytes;
         BasicBox _lockedBox;
-
+        XFG.RenderTarget2D renderTarget;
+        public XFG.RenderTarget RenderTarget
+        {
+            get
+            {
+                return renderTarget;
+            }
+        }
         ///<summary>
         ///    Accessor for surface
         ///</summary>
@@ -130,6 +146,10 @@ namespace Axiom.RenderSystems.Xna
             get
             {
                 return surface;
+            }
+            set
+            {
+                surface = (XFG.Texture2D) value;
             }
         }
 
@@ -186,9 +206,28 @@ namespace Axiom.RenderSystems.Xna
             SlicePitch = Height * Width;
             sizeInBytes = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 
-            if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
-                CreateRenderTextures( update );
+            //if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
+              //  CreateRenderTextures( update );
         }
+        public void Bind(XFG.GraphicsDevice device, XFG.RenderTarget surface, XnaTexture pTexture, bool update)
+        {
+            parentTexture = pTexture;
+            this.device = device;
+            this.renderTarget = (XFG.RenderTarget2D)surface;
+           
+            Width = surface.Width / (int)Axiom.Math.Utility.Pow(2, mipLevel);
+            Height = surface.Height / (int)Axiom.Math.Utility.Pow(2, mipLevel);
+            Depth = 1;
+            Format = XnaHelper.Convert(surface.Format);
+            // Default
+            RowPitch = Width;
+            SlicePitch = Height * Width;
+            sizeInBytes = PixelUtil.GetMemorySize(Width, Height, Depth, Format);
+
+            if (((int)usage & (int)TextureUsage.RenderTarget) != 0)
+                CreateRenderTextures(update);
+        }
+
 
         ///<summary>
         ///    Call this to associate a Xna Texture3D with this pixel buffer
@@ -226,9 +265,6 @@ namespace Axiom.RenderSystems.Xna
             }
 
             DestroyRenderTextures();
-            if ( surface == null )
-                throw new Exception( "Rendering to 3D slices not supported yet for Direct3D; in " +
-                                    "D3DHardwarePixelBuffer.CreateRenderTexture" );
             // Create render target for each slice
             sliceTRT.Clear();
             Debug.Assert( Depth == 1 );
@@ -370,6 +406,12 @@ namespace Axiom.RenderSystems.Xna
                             _bufferBytes.Length,
                             Microsoft.Xna.Framework.Graphics.SetDataOptions.None);
         }
+
+        public override RenderTexture GetRenderTarget(int slice)
+        {
+            return sliceTRT[slice];
+        }
+
 
         #endregion HardwarePixelBuffer Implementation
 
