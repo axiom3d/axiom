@@ -925,16 +925,10 @@ namespace Axiom.RenderSystems.Xna
                     return XFG.SurfaceFormat.Luminance8;
                 case PixelFormat.A8:
                     return XFG.SurfaceFormat.Alpha8;
-                case PixelFormat.B5G6R5:
                 case PixelFormat.R5G6B5:
                     return XFG.SurfaceFormat.Bgr565;
-                case PixelFormat.B4G4R4A4:
                 case PixelFormat.A4R4G4B4:
                     return XFG.SurfaceFormat.Bgra4444;
-                case PixelFormat.B8G8R8:
-                case PixelFormat.R8G8B8:
-                    return XFG.SurfaceFormat.Bgr24;
-                case PixelFormat.B8G8R8A8:
                 case PixelFormat.A8R8G8B8:
                     return XFG.SurfaceFormat.Color;
                 //case PixelFormat.L4A4:
