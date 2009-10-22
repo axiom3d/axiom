@@ -52,13 +52,11 @@ namespace Axiom.RenderSystems.Xna
     /// </summary>
     public class XnaRenderTexture : RenderTexture
     {
-        XFG.GraphicsDevice _device;
 
         public XnaRenderTexture( string name, HardwarePixelBuffer buffer )
             : base( buffer, 0 )
         {
             this.Name = name;
-            _device = ((XnaHardwarePixelBuffer)buffer).RenderTarget.GraphicsDevice;
         }
 
         public void Rebind( XnaHardwarePixelBuffer buffer )
@@ -81,22 +79,6 @@ namespace Axiom.RenderSystems.Xna
             //}
 
             base.Update();
-
-            //release the rendertarget so that we can extract the texture2d
-            _device.SetRenderTarget(0, null);
-            
-            //saving the texture shows that the scene is rendered inside this rendertarget
-            //((XFG.RenderTarget2D)((XnaHardwarePixelBuffer)this.pixelBuffer).RenderTarget).GetTexture().Save("C:\\test.jpg", Microsoft.Xna.Framework.Graphics.ImageFileFormat.Jpg);
-
-            //now we have to set this texture back to the _normalTexture _texture of the parent Axiom texture that holds this rendertexture!
-            //or maybe copy the pixels of this render texture via the xna hardware pixel surface (that reference the _normaltexture from his parent,
-            //but it will be slower
-            
-            ((XnaHardwarePixelBuffer)this.pixelBuffer).ParentTexture.DXTexture = ((XFG.RenderTarget2D)((XnaHardwarePixelBuffer)this.pixelBuffer).RenderTarget).GetTexture();
-                
-
-
-
         }
 
         public override object this[ string attribute ]

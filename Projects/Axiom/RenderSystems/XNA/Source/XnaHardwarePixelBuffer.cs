@@ -64,15 +64,6 @@ namespace Axiom.RenderSystems.Xna
     {
         #region Fields and Properties
 
-        private XnaTexture parentTexture;
-        public XnaTexture ParentTexture
-        {
-            get
-            {
-                return parentTexture;
-            }
-            
-        }
         ///<summary>
         ///    Xna Device
         ///</summary>
@@ -206,12 +197,12 @@ namespace Axiom.RenderSystems.Xna
             SlicePitch = Height * Width;
             sizeInBytes = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 
-            //if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
-              //  CreateRenderTextures( update );
+            if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
+                CreateRenderTextures( update );
         }
-        public void Bind(XFG.GraphicsDevice device, XFG.RenderTarget surface, XnaTexture pTexture, bool update)
+
+        public void Bind(XFG.GraphicsDevice device, XFG.RenderTarget surface, bool update)
         {
-            parentTexture = pTexture;
             this.device = device;
             this.renderTarget = (XFG.RenderTarget2D)surface;
            
