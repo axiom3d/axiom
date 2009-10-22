@@ -114,6 +114,33 @@ namespace Axiom.Demos
             if ( o == null )
             {
                 LogManager.Instance.Write( string.Format( "Could not find overlay named '{0}'.", "Core/DebugOverlay" ) );
+                return;
+            }
+
+            if ( show )
+            {
+                o.Show();
+            }
+            else
+            {
+                o.Hide();
+            }
+
+            if ( this.Engine.RenderSystem.Name.Contains( "Xna" ))
+            {
+                this.ShowXnaLogo( show );
+            }
+        }
+
+        protected void ShowXnaLogo( bool show )
+        {
+            // gets a reference to the default overlay
+            Overlay o = OverlayManager.Instance.GetByName( "Core/XnaOverlay" );
+
+            if ( o == null )
+            {
+                LogManager.Instance.Write( string.Format( "Could not find overlay named '{0}'.", "Core/DebugOverlay" ) );
+                return;
             }
 
             if ( show )

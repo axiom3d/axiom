@@ -204,6 +204,14 @@
       <Link>Media\PCZAppMedia\terrain2.cfg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="..\..\..\..\..\Media\Materials\XnaLogo.material">
+      <Link>Media\Materials\XnaLogo.material</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\Media\Overlays\XnaLogo.overlay">
+      <Link>Media\Overlays\XnaLogo.overlay</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="EngineConfig.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1158,6 +1166,10 @@
     </Content>
     <Content Include="..\..\..\..\..\Media\Textures\ribbonband.png">
       <Link>Media\Textures\ribbonband.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\..\..\..\Media\Textures\XnaLogo.jpg">
+      <Link>Media\Textures\XnaLogo.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
