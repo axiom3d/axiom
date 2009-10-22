@@ -1640,7 +1640,7 @@ namespace Axiom.RenderSystems.Xna
                     //uncomment this to see the texture shadow
                     //the problem is that texture states are not set and texture are set  in vertexdeclaration
                     //
-                    if (//op.vertexData.vertexDeclaration[i].Type == VertexElementType.Float1 &&
+                    /*if (//op.vertexData.vertexDeclaration[i].Type == VertexElementType.Float1 &&
                         op.vertexData.vertexDeclaration[ i ].Semantic == VertexElementSemantic.TexCoords )
                     {
                         if ( !texStageDesc[ textureLayer ].Enabled )
@@ -1670,7 +1670,7 @@ namespace Axiom.RenderSystems.Xna
                             //texStageDesc[textureLayer].layerBlendMode = new LayerBlendModeEx();
                         }
                         textureLayer++;
-                    }
+                    }*/
 
                     lvbe.Add( element );
                 }
