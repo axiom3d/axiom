@@ -1330,6 +1330,7 @@ namespace Axiom.Serialization
 				// camera depth
 				MeshLodUsage usage = new MeshLodUsage();
 				usage.Value = ReadFloat( reader );
+			    usage.UserValue = Utility.Sqrt( usage.Value );
 
 				if ( mesh.IsLodManual )
 				{
