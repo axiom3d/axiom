@@ -766,11 +766,11 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        /// Initialises a resource group.
+        /// Initializes a resource group.
         /// </summary>
         /// <remarks>
         ///	After creating a resource group, adding some resource locations, and
-        ///	perhaps pre-declaring some resources using declareResource(), but 
+        ///	perhaps pre-declaring some resources using <see cref="DeclareResource"/> , but 
         ///	before you need to use the resources in the group, you 
         ///	should call this method to initialise the group. By calling this,
         ///	you are triggering the following processes:
@@ -779,29 +779,29 @@ namespace Axiom.Core
         ///		parsed from the resource locations, and resources within them are
         ///		created (but not loaded yet).</li>
         ///	<li>Creates all the resources which have just pre-declared using
-        ///	declareResource (again, these are not loaded yet)</li>
+        ///	<see cref="DeclareResource"/> (again, these are not loaded yet)</li>
         ///	</ol>
-        ///	So what this essentially does is create a bunch of unloaded Resource entries
+        ///	So what this essentially does is create a bunch of unloaded <see cref="Resource"/>  entries
         ///	in the respective ResourceManagers based on scripts, and resources
         ///	you've pre-declared. That means that code looking for these resources
         ///	will find them, but they won't be taking up much memory yet, until
-        ///	they are either used, or they are loaded in bulk using loadResourceGroup.
+        ///	they are either used, or they are loaded in bulk using <see cref="LoadResourceGroup"/>.
         ///	Loading the resource group in bulk is entirely optional, but has the 
         ///	advantage of coming with progress reporting as resources are loaded.
         /// <para>
-        ///	Failure to call this method means that loadResourceGroup will do 
+        ///	Failure to call this method means that <see cref="LoadResourceGroup"/>  will do 
         ///	nothing, and any resources you define in scripts will not be found.
         ///	Similarly, once you have called this method you won't be able to
         ///	pick up any new scripts or pre-declared resources, unless you
-        ///	call clearResourceGroup, set up declared resources, and call this
+        ///	call <see cref="ClearResourceGroup"/> , set up declared resources, and call this
         ///	method again.
         /// </para>
         /// <para>
-        ///	When you call Root.Initialise, all resource groups that have already been
+        ///	When you call <see cref="Root.Initialize"/> , all resource groups that have already been
         ///	created are automatically initialised too. Therefore you do not need to 
         ///	call this method for groups you define and set up before you call 
-        ///	Root.Initialise. However, since one of the most useful features of 
-        ///	resource groups is to set them up after the main system initialisation
+        ///	<see cref="Root.Initialize"/>. However, since one of the most useful features of 
+        ///	resource groups is to set them up after the main system initialization
         ///	has occurred (e.g. a group per game level), you must remember to call this
         ///	method for the groups you create after this.
         /// </para>
@@ -831,7 +831,7 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        /// Initialise all resource groups which are yet to be initialised.
+        /// Initialize all resource groups which are yet to be initialised.
         /// </summary>
         /// <see cref="ResourceGroupManager.initializeResourceGroup"/>
         public void InitializeAllResourceGroups()
@@ -843,15 +843,14 @@ namespace Axiom.Core
 			if ( resourceGroups.ContainsKey( ResourceGroupManager.BootstrapResourceGroupName ) )
 				InitializeResourceGroup( ResourceGroupManager.BootstrapResourceGroupName );
 
-            // Intialise all declared resource groups
+            // Intialize all declared resource groups
             foreach ( KeyValuePair<string, ResourceGroup> pair in resourceGroups )
             {
                 ResourceGroup grp = pair.Value;
 
-                LogManager.Instance.Write( "Initializing resource group {0}.", grp.Name );
-
                 if ( !grp.Initialized )
                 {
+                    LogManager.Instance.Write( "Initializing resource group {0}.", grp.Name );
                     // Set current group
                     _parseResourceGroupScripts( grp );
                     _currentGroup = grp;
@@ -860,8 +859,8 @@ namespace Axiom.Core
 
                     // Reset current group
                     _currentGroup = null;
+                    LogManager.Instance.Write( "\t{0} initialized.", grp.Name );
                 }
-                LogManager.Instance.Write( "\t{0} initialized.", grp.Name );
             }
         }
 
@@ -1249,7 +1248,7 @@ namespace Axiom.Core
         /// available (e.g. .material).
         /// <para>			
         /// Declared resources are not created as Resource instances (and thus
-        /// are not available through their ResourceManager) until initialiseResourceGroup
+        /// are not available through their ResourceManager) until <see cref="InitializeResourceGroup"/> 
         /// is called, at which point all declared resources will become created 
         /// (but unloaded) Resource instances, along with any resources declared
         /// in scripts in resource locations associated with the group.
