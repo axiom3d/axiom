@@ -836,7 +836,7 @@ namespace Axiom.Graphics
                 }
                 else
                 {
-                    LogManager.Instance.Write( "Warning: Material '{0}' Technique {1}{2} is not supported./n{3}",
+                    LogManager.Instance.Write( "Warning: Material '{0}' Technique {1}{2} is not supported.\n{3}",
                                                this._name,
                                                i,
                                                !String.IsNullOrEmpty( t.Name ) ? "(" + t.Name + ")" : "",
