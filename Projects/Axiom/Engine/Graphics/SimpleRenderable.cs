@@ -171,7 +171,7 @@ namespace Axiom.Graphics
             }
         }
 
-        public RenderOperation RenderOperation
+        public virtual RenderOperation RenderOperation
         {
             get
             {
