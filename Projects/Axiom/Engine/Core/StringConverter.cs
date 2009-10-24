@@ -241,7 +241,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public static bool ParseBool( string val )
 		{
-			switch ( val )
+			switch ( val.ToLower() )
 			{
 				case "true":
 				case "on":
@@ -387,5 +387,10 @@ namespace Axiom.Core
 		}
 
 		#endregion Static Methods
-	}
+
+        public static Quaternion ParseQuaternion( string p )
+        {
+            return Quaternion.Identity;
+        }
+    }
 }
