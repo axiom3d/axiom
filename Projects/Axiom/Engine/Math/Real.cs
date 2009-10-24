@@ -253,7 +253,7 @@ namespace Axiom.Math
         }
         #endregion Int Conversions
 
-        #region Int Conversions
+        #region Long Conversions
         /// <summary>
         /// Implicit conversion from int to Real
         /// </summary>
@@ -273,7 +273,7 @@ namespace Axiom.Math
         {
             return (long)real._value;
         }
-        #endregion Int Conversions
+        #endregion Long Conversions
 
         #region Float Conversions
 
