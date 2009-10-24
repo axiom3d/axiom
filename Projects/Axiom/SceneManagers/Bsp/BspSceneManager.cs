@@ -627,9 +627,7 @@ namespace Axiom.SceneManagers.Bsp
                 if ( level.IsLeafVisible( cameraNode, node ) )
                 {
                     // Visible according to PVS, check bounding box against frustum
-                    FrustumPlane plane;
-
-                    if ( camera.IsObjectVisible( node.BoundingBox, out plane ) )
+                    //if ( camera.IsObjectVisible( node.BoundingBox ) )
                     {
                         ProcessVisibleLeaf( node, camera, onlyShadowCasters );
 
