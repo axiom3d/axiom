@@ -73,17 +73,17 @@ namespace Axiom.Media
 	            // assert(src.format == dst.format);
 
 	            // only optimized for 2D
-	            if (src.Depth > 1 || dst.Depth> 1) 
-	            {
-	                (new LinearResampler()).Scale(src, dst);
-	                return;
-	            }
+                if ( src.Depth > 1 || dst.Depth > 1 )
+                {
+                    ( new LinearResampler() ).Scale( src, dst );
+                    return;
+                }
 
 	            unsafe
 	            {
 	                // srcdata stays at beginning of slice, pdst is a moving pointer
-	                char* srcdata = (char*)src.Data;
-	                char* pdst = (char*)dst.Data;
+	                byte* srcdata = (byte*)src.Data;
+	                byte* pdst = (byte*)dst.Data;
 
 	                // sx_48,sy_48 represent current position in source
 	                // using 16/48-bit fixed precision, incremented by steps
@@ -126,7 +126,7 @@ namespace Axiom.Media
 	                                                   srcdata[ ( sx2 + syoff2 ) * this._channels + k ] * (char)sxfsyf);
 	                            // accum is computed using 8/24-bit fixed-point math
 	                            // (maximum is 0xFF000000; rounding will not cause overflow)
-	                            *pdst++ = (char)(( accum + 0x800000 ) >> 24);
+	                            *pdst++ = (byte)(( accum + 0x800000 ) >> 24);
 	                        }
 	                    }
 	                    pdst += this._channels * dst.RowSkip;
