@@ -877,7 +877,7 @@ namespace Axiom.Graphics
 				viewPortUpdateMeter.Exit();
 
 				_statistics.TriangleCount += viewport.Camera.RenderedFaceCount;
-				//TODO : _statistics.BatchCount += viewport.Camera.RenderedBatchCount;
+				_statistics.BatchCount += viewport.Camera.RenderedBatchCount;
 
 				// notify event handlers the the viewport is updated
 				afterViewPortUpdateMeter.Enter();
