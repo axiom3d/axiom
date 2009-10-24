@@ -780,7 +780,7 @@ namespace Axiom.Media
 			else
 			{
 				// Convert to float
-				PackColor( (float)r / 255.0f, (float)g / 255.0f, (float)b / 255.0f, (float)a / 255.0f, format, dest );
+				PackColor( r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f, format, dest );
 			}
 		}
 
