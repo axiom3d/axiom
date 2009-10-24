@@ -265,7 +265,7 @@ namespace Axiom.SceneManagers.Octree
                 if (wireBoundingBox == null)
                     wireBoundingBox = new WireBoundingBox();
 
-                wireBoundingBox.SetupBoundingBox(box);
+                wireBoundingBox.BoundingBox = box;
                 return wireBoundingBox;
             }
         }
