@@ -1592,7 +1592,7 @@ namespace Axiom.Serialization
 			return false;
 		}
 
-		[MaterialAttributeParser( "alpha_rejection", MaterialScriptSection.TextureUnit )]
+		[MaterialAttributeParser( "alpha_rejection", MaterialScriptSection.Pass )]
 		protected static bool ParseAlphaRejection( string parameters, MaterialScriptContext context )
 		{
 			string[] values = parameters.Split( new char[] { ' ', '\t' } );
@@ -1609,7 +1609,7 @@ namespace Axiom.Serialization
 			// if a value was found, assign it
 			if ( val != null )
 			{
-				context.textureUnit.SetAlphaRejectSettings( (CompareFunction)val, byte.Parse( values[ 1 ] ) );
+				context.pass.SetAlphaRejectSettings( (CompareFunction)val, byte.Parse( values[ 1 ] ) );
 			}
 			else
 			{

@@ -636,7 +636,7 @@ namespace Axiom.Graphics
 		/// <para>This option applies in both the fixed function and the programmable pipeline.</para></remarks>
 		/// <param name="alphaRejectFunction">The comparison which must pass for the pixel to be written.</param>
 		/// <param name="value">value against which alpha values will be tested [(0-255]</param>
-		public void SetAlphaReject( CompareFunction alphaRejectFunction, int value )
+		public void SetAlphaRejectSettings( CompareFunction alphaRejectFunction, int value )
 		{
 			_alphaRejectFunction = alphaRejectFunction;
 			_alphaRejectValue = value;
