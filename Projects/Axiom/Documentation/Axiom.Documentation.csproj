@@ -59,7 +59,7 @@
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties ExternalSources="" Sandcastle_PresentationName="Sandcastle Hana" Sandcastle_Version="2.4.10520.1" BuildEngineProviderName="Sandcastle" DocProjectVersion="1.11.0.0" IsDocProject="true" ProcessComponentTypeName="Axiom.Documentation.BuildProcess" Sandcastle_DocumentationSetName="Axiom" Sandcastle_ShowEntireBuildComponentStack="True" />
+      <UserProperties Sandcastle_ShowEntireBuildComponentStack="True" Sandcastle_DocumentationSetName="Axiom" ProcessComponentTypeName="Axiom.Documentation.BuildProcess" IsDocProject="true" DocProjectVersion="1.11.0.0" BuildEngineProviderName="Sandcastle" Sandcastle_Version="2.4.10520.1" Sandcastle_PresentationName="Sandcastle Hana" ExternalSources="" />
     </VisualStudio>
   </ProjectExtensions>
   <ItemGroup>
@@ -339,7 +339,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Engine\Axiom.csproj">
       <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
-      <Name>Axiom</Name>
+      <Name>Axiom %28Axiom\Axiom%29</Name>
     </ProjectReference>
     <ProjectReference Include="..\Platforms\OpenTK\Axiom.Platforms.OpenTK.csproj">
       <Project>{081F78DE-8224-4CA6-BD34-8B7939CF21AB}</Project>
