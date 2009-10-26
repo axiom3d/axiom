@@ -373,7 +373,7 @@ namespace Axiom.SceneManagers.Bsp
                     t.SetColorOperation( LayerBlendOperation.Replace );
 
                     // Alpha Settings
-                    pass.SetAlphaReject( _pass[ p ].alphaFunc, _pass[ p ].alphaVal );
+                    pass.SetAlphaRejectSettings( _pass[ p ].alphaFunc, _pass[ p ].alphaVal );
                 }
                 else
                 {
@@ -393,7 +393,7 @@ namespace Axiom.SceneManagers.Bsp
                     if ( _pass[ p ].alphaFunc > currFunc
                         || ( _pass[ p ].alphaFunc == currFunc && _pass[ p ].alphaVal < currValue ) )
                     {
-                        pass.SetAlphaReject( _pass[ p ].alphaFunc, _pass[ p ].alphaVal );
+                        pass.SetAlphaRejectSettings( _pass[ p ].alphaFunc, _pass[ p ].alphaVal );
                     }
                 }
 

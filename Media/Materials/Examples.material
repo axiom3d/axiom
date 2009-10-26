@@ -468,10 +468,10 @@ material Examples/GrassBlades
 	    scene_blend alpha_blend
 	    cull_hardware none
             cull_software none
+			alpha_rejection greater 150 
             
             texture_unit
             {
-		alpha_rejection greater 150 
                 texture grassWalpha.tga 
             }
         }
