@@ -179,8 +179,8 @@
       <Project>{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}</Project>
       <Name>OctreeZone</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Axiom\Source\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj">
-      <Project>{F3016FCF-2A53-483E-8679-4514D57B6ACD}</Project>
+    <ProjectReference Include="..\..\..\Axiom\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj">
+      <Project>{E0BB87B2-C59D-46D4-9AD9-A919E457E4EF}</Project>
       <Name>Axiom.SceneManagers.Octree</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Axiom\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.csproj">
