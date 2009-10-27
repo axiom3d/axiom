@@ -497,7 +497,7 @@ namespace Axiom.RenderSystems.DirectX9
         {
             SetRenderState( D3D.RenderState.AlphaTestEnable, func != CompareFunction.AlwaysPass );
             D3D.Compare newCompare = D3DHelper.ConvertEnum( func );
-            if ( device.GetRenderState<D3D.Compare>( D3D.RenderState.AlphaFunc ) == newCompare )
+            if ( device.GetRenderState<D3D.Compare>( D3D.RenderState.AlphaFunc ) != newCompare )
                 device.SetRenderState( D3D.RenderState.AlphaFunc, newCompare );
             SetRenderState( D3D.RenderState.AlphaRef, val );
         }
