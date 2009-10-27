@@ -1609,7 +1609,14 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void SetAlphaRejectSettings( int stage, CompareFunction func, byte val )
 		{
-			Gl.glEnable( Gl.GL_ALPHA_TEST );
+            if ( func != CompareFunction.AlwaysPass )
+			{
+                Gl.glEnable( Gl.GL_ALPHA_TEST );
+            }
+            else
+            {
+                Gl.glDisable( Gl.GL_ALPHA_TEST );
+            }
 			Gl.glAlphaFunc( GLHelper.ConvertEnum( func ), val / 255.0f );
 		}
 
