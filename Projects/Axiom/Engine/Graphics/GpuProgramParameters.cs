@@ -938,6 +938,7 @@ namespace Axiom.Graphics
 						break;
                     case AutoConstantType.LightPowerScale:
                         SetConstant( entry.PhysicalIndex, source.GetLightPowerScale( entry.Data ) );
+				        break;
 				}
 			}
 		}
