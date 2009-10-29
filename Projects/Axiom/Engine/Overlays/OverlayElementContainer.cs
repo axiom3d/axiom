@@ -70,7 +70,6 @@ namespace Axiom.Overlays
         #region Member variables
 
         protected Dictionary<string, OverlayElement> children = new Dictionary<string, OverlayElement>();
-        protected List<OverlayElement> childList = new List<OverlayElement>();
         protected Dictionary<string, OverlayElement> childContainers = new Dictionary<string, OverlayElement>();
         protected bool childrenProcessEvents;
 
@@ -110,9 +109,9 @@ namespace Axiom.Overlays
                 container.Initialize();
             }
 
-            for (int i = 0; i < childList.Count; i++)
+            foreach ( OverlayElement child in children.Values )
             {
-                childList[i].Initialize();
+                child.Initialize();
             }
 
         }
@@ -143,7 +142,6 @@ namespace Axiom.Overlays
 
             // add to lookup table and list
             children.Add( element.Name, element );
-            childList.Add( element );
 
             // inform this child about his/her parent and zorder
             element.NotifyParent( this, overlay );
@@ -174,7 +172,7 @@ namespace Axiom.Overlays
         {
             OverlayElement element = GetChild( name );
             children.Remove( name );
-            childList.Remove( element );
+
             // remove from container list (if found)
             if ( childContainers.ContainsKey( name ) )
             {
@@ -201,9 +199,9 @@ namespace Axiom.Overlays
             // call baseclass method
             base.PositionsOutOfDate();
 
-            for ( int i = 0; i < childList.Count; i++ )
+            foreach ( OverlayElement child in children.Values )
             {
-                childList[ i ].PositionsOutOfDate();
+                child.PositionsOutOfDate();
             }
         }
 
@@ -212,9 +210,9 @@ namespace Axiom.Overlays
             // call base class method
             base.Update();
 
-            for ( int i = 0; i < childList.Count; i++ )
+            foreach ( OverlayElement child in children.Values )
             {
-                childList[ i ].Update();
+                child.Update();
             }
         }
 
@@ -226,9 +224,9 @@ namespace Axiom.Overlays
             //One for us
             zOrder++;
 
-            for ( int i = 0; i < childList.Count; i++ )
+            foreach ( OverlayElement child in children.Values )
             {
-                zOrder = childList[ i ].NotifyZOrder( zOrder );
+                child.NotifyZOrder( zOrder );
             }
 
             return zOrder;
@@ -240,9 +238,9 @@ namespace Axiom.Overlays
             base.NotifyWorldTransforms( xform );
 
             // Update children
-            for ( int i = 0; i < childList.Count; i++ )
+            foreach ( OverlayElement child in children.Values )
             {
-                childList[ i ].NotifyWorldTransforms( xform );
+                child.NotifyWorldTransforms( xform );
             }
         }
 
@@ -250,10 +248,9 @@ namespace Axiom.Overlays
         {
             base.NotifyViewport();
             // Update children
-            for ( int i = 0; i < childList.Count; i++ )
+            foreach ( OverlayElement child in children.Values )
             {
-                OverlayElement overlayElement = childList[ i ];
-                overlayElement.NotifyViewport();
+                child.NotifyViewport();
             }
         }
 
@@ -262,25 +259,34 @@ namespace Axiom.Overlays
             // call the base class method
             base.NotifyParent( parent, overlay );
 
-            for ( int i = 0; i < childList.Count; i++ )
+            foreach ( OverlayElement child in children.Values )
             {
-                childList[ i ].NotifyParent( this, overlay );
+                child.NotifyParent( this, overlay );
             }
         }
 
-        public override void UpdateRenderQueue( RenderQueue queue )
+        public void UpdateRenderQueue( RenderQueue queue, bool updateChildren )
         {
             if ( isVisible )
             {
                 // call base class method
                 base.UpdateRenderQueue( queue );
 
-                for ( int i = 0; i < childList.Count; i++ )
+                if ( updateChildren )
                 {
-                    childList[ i ].UpdateRenderQueue( queue );
+                    foreach ( OverlayElement child in children.Values )
+                    {
+                        child.UpdateRenderQueue( queue );
+                    }
                 }
             }
         }
+
+        public override void UpdateRenderQueue( RenderQueue queue )
+        {
+            this.UpdateRenderQueue( queue, true );
+        }
+
         public override OverlayElement FindElementAt( float x, float y )
         {
             OverlayElement ret = null;
@@ -292,10 +298,8 @@ namespace Axiom.Overlays
                 ret = base.FindElementAt( x, y );	//default to the current container if no others are found
                 if ( ret != null && childrenProcessEvents )
                 {
-                    for ( int i = 0; i < childList.Count; i++ )
+                    foreach ( OverlayElement currentOverlayElement in children.Values )
                     {
-                        OverlayElement currentOverlayElement = childList[ i ];
-
                         if ( currentOverlayElement.IsVisible && currentOverlayElement.Enabled )
                         {
                             int z = currentOverlayElement.ZOrder;
@@ -358,8 +362,8 @@ namespace Axiom.Overlays
                         OverlayElement newChildElement = OverlayManager.Instance.Elements.CreateElement(
                             oldChildElement.GetType().Name,
                             Name + "/" + oldChildElement.Name );
-                        oldChildElement.CopyParametersTo( newChildElement );
-                        AddChild( (OverlayElementContainer)newChildElement );
+                        newChildElement.CopyFromTemplate( oldChildElement );
+                        AddChild( (OverlayElement)newChildElement );
                     }
                 }
             }

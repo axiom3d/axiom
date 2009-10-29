@@ -51,22 +51,23 @@ namespace Axiom.Scripting
 	/// </summary>
 	/// <typeparam name="ObjectType">Type of the object to operate on.</typeparam>
 	/// <typeparam name="PropertyType">Type of the property to operate on.</typeparam>
-	public interface IPropertyCommand<ObjectType, PropertyType>
+	public interface IPropertyCommand<TObjectType, TPropertyType>
 	{
 		/// <summary>
 		///    Gets the value for this command from the target object.
 		/// </summary>
 		/// <param name="target"></param>
 		/// <returns></returns>
-		PropertyType Get( ObjectType target );
+		TPropertyType Get( TObjectType target );
 
-		/// <summary>
-		///    Sets the value for this command on the target object.
-		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="val"></param>
-		void Set( ObjectType target, PropertyType val );
-	}
+        /// <summary>
+        ///    Sets the value for this command on the target object.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="val"></param>
+        void Set( TObjectType target, TPropertyType val );
+    
+    }
 
 
 }
