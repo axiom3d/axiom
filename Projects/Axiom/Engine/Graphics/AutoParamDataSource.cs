@@ -231,7 +231,9 @@ namespace Axiom.Graphics
 
 		#region Methods
 
-		/// <summary>
+        #region Lights
+
+        /// <summary>
 		///    Get the light which is 'index'th closest to the current object 
 		/// </summary>
 		/// <param name="index">Ordinal value signifying the light to retreive, with 0 being closest, 1 being next closest, etc.</param>
@@ -254,9 +256,21 @@ namespace Axiom.Graphics
 		public void SetCurrentLightList( LightList lightList )
 		{
 			currentLightList = lightList;
-		}
+        }
 
-		/// <summary>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index">Ordinal value signifying the light to retreive. <see cref="GetLight"/></param>
+        /// <returns></returns>
+	    public Real GetLightPowerScale( int index )
+	    {
+            return this.GetLight( index ).PowerScale;
+        }
+
+	    #endregion Lights
+
+        /// <summary>
 		///		Sets the constant extrusion distance for directional lights.
 		/// </summary>
 		/// <param name="distance"></param>
