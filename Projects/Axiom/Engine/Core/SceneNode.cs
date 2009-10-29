@@ -710,7 +710,7 @@ namespace Axiom.Core
                 wireBox = new WireBoundingBox();
 
             // add the wire bounding box to the render queue
-            wireBox.InitAABB( worldAABB );
+            wireBox.BoundingBox =  worldAABB;
             queue.AddRenderable( wireBox );
         }
 
