@@ -290,84 +290,8 @@ namespace Axiom.Overlays
 		}
 
 		#region Script Parsing
-/*
-		/// <summary>
-		///    Load a specific overlay file by name.
-		/// </summary>
-		/// <remarks>
-        ///    This is required to allow .overlay scripts to include other overlay files.  It
-		///    is not guaranteed what order the files will be loaded in, so this can be used to ensure
-		///    depencies in a script are loaded prior to the script itself being loaded.
-		/// </remarks>
-		/// <param name="fileName"></param>
-		public void LoadAndParseOverlayFile( string fileName )
-		{
-			if ( _loadedScripts.Contains( fileName ) )
-			{
-				LogManager.Instance.Write( "Skipping load of overlay include: {0}, as it is already loaded.", fileName );
-				return;
-			}
 
-			// file has not been loaded, so load it now
-
-			// look in local resource data
-			Stream data = this.FindResourceData( fileName );
-
-			if ( data == null )
-			{
-				// wasnt found, so look in common resource data.
-				data = ResourceManager.FindCommonResourceData( fileName );
-
-				if ( data == null )
-				{
-					throw new Exception( string.Format( "Unable to find overlay file '{0}'", fileName ) );
-				}
-			}
-
-			// parse the overlay script
-			ParseOverlayScript( data );
-		}
-
-		/// <summary>
-		///    Parses all overlay files in resource folders and archives.
-		/// </summary>
-		public void ParseAllSources()
-		{
-			string extension = ".overlay";
-
-			// search archives
-			for ( int i = 0; i < archives.Count; i++ )
-			{
-				Archive archive = (Archive)archives[ i ];
-				string[] files = archive.GetFileNamesLike( "", extension );
-
-				for ( int j = 0; j < files.Length; j++ )
-				{
-					Stream data = archive.ReadFile( files[ j ] );
-
-					// parse the materials
-					ParseOverlayScript( data );
-				}
-			}
-
-			// search common archives
-			for ( int i = 0; i < commonArchives.Count; i++ )
-			{
-				Archive archive = (Archive)commonArchives[ i ];
-				string[] files = archive.GetFileNamesLike( "", extension );
-
-				for ( int j = 0; j < files.Length; j++ )
-				{
-
-					Stream data = archive.ReadFile( files[ j ] );
-
-					// parse the materials
-					ParseOverlayScript( data );
-				}
-			}
-		}
-*/
-		/// <summary>
+        /// <summary>
 		///    Parses an attribute belonging to an Overlay.
 		/// </summary>
 		/// <param name="line"></param>
@@ -542,7 +466,6 @@ namespace Axiom.Overlays
 						{
 							container = (OverlayElementContainer)element;
 						}
-						//if ( isContainer && ParseChildren( script, line, overlay, isTemplate, (OverlayElementContainer)element ) )
 						if ( isContainer && ParseChildren( script, line, overlay, isTemplate, container ) )
 						{
 							// nested children, so don't reparse it
@@ -555,14 +478,6 @@ namespace Axiom.Overlays
 					}
 				}
 			}
-		}
-
-		/// <summary>
-		///    Parses an individual .overlay file.
-		/// </summary>
-		/// <param name="data"></param>
-		public void ParseOverlayScript( Stream data )
-		{
 		}
 
 		#endregion Script Parsing

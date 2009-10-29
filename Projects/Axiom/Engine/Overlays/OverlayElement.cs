@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -75,7 +76,7 @@ namespace Axiom.Overlays
     /// 	in physical pixels 0.5 is wider than it is tall, so a 0.5x0.5 panel will not be
     /// 	square on the screen (but it will take up exactly half the screen in both dimensions).
     /// </remarks>
-    public abstract class OverlayElement : IRenderable
+    public abstract class OverlayElement : ScriptableObject,IRenderable
     {
         #region Member variables
 
@@ -121,12 +122,11 @@ namespace Axiom.Overlays
         protected bool isEnabled;
 
         // is element initialised
-        protected bool isInitialised;
+        protected bool isInitialized;
 
         // Used to see if this element is created from a Template
         protected OverlayElement sourceTemplate;
-        /// <summary>Parser method lookup for script parameters.</summary>
-        protected Hashtable attribParsers = new Hashtable();
+
         protected LightList emptyLightList = new LightList();
         protected Hashtable customParams = new Hashtable();
 
@@ -141,24 +141,30 @@ namespace Axiom.Overlays
         protected internal OverlayElement( string name )
         {
             this.name = name;
+            isVisible = true;
+            isCloneable = true;
+            left = 0.0f;
+            top = 0.0f;
             width = 1.0f;
             height = 1.0f;
-            isVisible = true;
-            isDerivedOutOfDate = true;
-            isCloneable = true;
             metricsMode = MetricsMode.Relative;
             horzAlign = HorizontalAlignment.Left;
             vertAlign = VerticalAlignment.Top;
-            isGeomPositionsOutOfDate = true;
-            isGeomUVsOutOfDate = true;
-            isEnabled = true;
+            pixelTop = 0.0f;
+            pixelLeft = 0.0f;
             pixelWidth = 1.0f;
             pixelHeight = 1.0f;
             pixelScaleX = 1.0f;
             pixelScaleY = 1.0f;
+            parent = null;
+            overlay = null;
+            isDerivedOutOfDate = true;
+            isGeomPositionsOutOfDate = true;
+            isGeomUVsOutOfDate = true;
+            zOrder = 0;
+            isEnabled = true;
+            isInitialized = false;
             sourceTemplate = null;
-            isInitialised = false;
-            RegisterParsers();
         }
 
         #endregion
@@ -178,21 +184,10 @@ namespace Axiom.Overlays
 
         public void CopyParametersTo( OverlayElement instance )
         {
-            PropertyInfo[] props = instance.GetType().GetProperties();
-
-            for ( int i = 0; i < props.Length; i++ )
+            foreach ( IPropertyCommand command in Attributes() )
             {
-                PropertyInfo prop = props[ i ];
-
-                // if the prop is not settable, then skip
-                if ( !prop.CanWrite || !prop.CanRead )
-                {
-                    continue;
-                }
-
-                object srcVal = prop.GetValue( this, null );
-                if ( srcVal != null )
-                    prop.SetValue( instance, srcVal, null );
+                string srcValue = command.Get( this );
+                command.Set( instance, srcValue  );
             }
         }
 
@@ -227,7 +222,7 @@ namespace Axiom.Overlays
             this.parent = parent;
             this.overlay = overlay;
 
-            if ( overlay != null && overlay.IsInitialized && !isInitialised )
+            if ( overlay != null && overlay.IsInitialized && !this.isInitialized )
             {
                 Initialize();
             }
@@ -277,10 +272,13 @@ namespace Axiom.Overlays
             {
                 case MetricsMode.Pixels:
                     {
-                        float vpWidth, vpHeight;
                         OverlayManager oMgr = OverlayManager.Instance;
-                        vpWidth = (float)( oMgr.ViewportWidth );
-                        vpHeight = (float)( oMgr.ViewportHeight );
+                        float vpWidth = oMgr.ViewportWidth;
+                        float vpHeight = oMgr.ViewportHeight;
+
+                        // cope with temporarily zero dimensions, avoid divide by zero
+                        vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
+                        vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
                         pixelScaleX = 1.0f / vpWidth;
                         pixelScaleY = 1.0f / vpHeight;
@@ -289,10 +287,13 @@ namespace Axiom.Overlays
 
                 case MetricsMode.Relative_Aspect_Adjusted:
                     {
-                        float vpWidth, vpHeight;
                         OverlayManager oMgr = OverlayManager.Instance;
-                        vpWidth = (float)( oMgr.ViewportWidth );
-                        vpHeight = (float)( oMgr.ViewportHeight );
+                        float vpWidth = oMgr.ViewportWidth;
+                        float vpHeight = oMgr.ViewportHeight;
+
+                        // cope with temporarily zero dimensions, avoid divide by zero
+                        vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
+                        vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
                         pixelScaleX = 1.0f / ( 10000.0f * ( vpWidth / vpHeight ) );
                         pixelScaleY = 1.0f / 10000.0f;
@@ -326,37 +327,6 @@ namespace Axiom.Overlays
         }
 
         /// <summary>
-        ///		Registers all attribute names with their respective parser.
-        /// </summary>
-        /// <remarks>
-        ///		Methods meant to serve as attribute parsers should use a method attribute to 
-        /// </remarks>
-        protected virtual void RegisterParsers()
-        {
-            MethodInfo[] methods = this.GetType().GetMethods( BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Static );
-
-            // loop through all methods and look for ones marked with attributes
-            for ( int i = 0; i < methods.Length; i++ )
-            {
-                // get the current method in the loop
-                MethodInfo method = methods[ i ];
-
-                // see if the method should be used to parse one or more material attributes
-                ParserCommandAttribute[] parserAtts =
-                    (ParserCommandAttribute[])method.GetCustomAttributes( typeof( ParserCommandAttribute ), true );
-
-                // loop through each one we found and register its parser
-                for ( int j = 0; j < parserAtts.Length; j++ )
-                {
-                    ParserCommandAttribute parserAtt = parserAtts[ j ];
-
-                    //attribParsers.Add( parserAtt.Name, Delegate.CreateDelegate( typeof( AttributeParserMethod ), method. ) );
-                    attribParsers.Add( parserAtt.Name, method );
-                } // for
-            } // for
-        }
-
-        /// <summary>
         /// Sets the dimensions.
         /// </summary>
         /// <param name="width">The width.</param>
@@ -386,19 +356,15 @@ namespace Axiom.Overlays
         /// <param name="val"></param>
         public bool SetParam( string param, string val )
         {
-            if ( !attribParsers.ContainsKey( param ) )
+            IPropertyCommand command = Attributes( param );
+            if ( command == null )
             {
                 return false;
             }
 
-            //AttributeParserMethod parser = (AttributeParserMethod)attribParsers[ param ];
-            MethodInfo parser = (MethodInfo)attribParsers[ param ];
-            // call the parser method, passing in an array of the split val param, and this element for the optional object
-            // MONO: As of 1.0.5, complains if the second param is not explicitly passed as an object array
-            //parser( val.Split( ' ' ), new object[] { this } );
-            parser.Invoke( null, new object[] { val.Split( ' ' ), new object[] { this } } );
+            command.Set( this, val );
             return true;
-        }
+       }
 
         /// <summary>
         /// Sets the position of this element.
@@ -441,10 +407,13 @@ namespace Axiom.Overlays
                 case MetricsMode.Pixels:
                     if ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate )
                     {
-                        float vpWidth, vpHeight;
                         OverlayManager oMgr = OverlayManager.Instance;
-                        vpWidth = (float)( oMgr.ViewportWidth );
-                        vpHeight = (float)( oMgr.ViewportHeight );
+                        float vpWidth = oMgr.ViewportWidth;
+                        float vpHeight = oMgr.ViewportHeight;
+
+                        // cope with temporarily zero dimensions, avoid divide by zero
+                        vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
+                        vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
                         pixelScaleX = 1.0f / vpWidth;
                         pixelScaleY = 1.0f / vpHeight;
@@ -459,10 +428,13 @@ namespace Axiom.Overlays
                 case MetricsMode.Relative_Aspect_Adjusted:
                     if ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate )
                     {
-                        float vpWidth, vpHeight;
                         OverlayManager oMgr = OverlayManager.Instance;
-                        vpWidth = (float)( oMgr.ViewportWidth );
-                        vpHeight = (float)( oMgr.ViewportHeight );
+                        float vpWidth = oMgr.ViewportWidth;
+                        float vpHeight = oMgr.ViewportHeight;
+
+                        // cope with temporarily zero dimensions, avoid divide by zero
+                        vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
+                        vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
                         pixelScaleX = 1.0f / ( 10000.0f * ( vpWidth / vpHeight ) );
                         pixelScaleY = 1.0f / 10000.0f;
@@ -481,13 +453,13 @@ namespace Axiom.Overlays
             UpdateFromParent();
 
             // update our own position geometry
-            if ( isGeomPositionsOutOfDate && isInitialised )
+            if ( isGeomPositionsOutOfDate && this.isInitialized )
             {
                 UpdatePositionGeometry();
                 isGeomPositionsOutOfDate = false;
             }
             // Tell self to update own texture geometry
-            if ( isGeomUVsOutOfDate && isInitialised )
+            if ( isGeomUVsOutOfDate && this.isInitialized )
             {
 
                 UpdateTextureGeometry();
@@ -610,21 +582,13 @@ namespace Axiom.Overlays
 
                 parentRect = parent.ClippingRegion;
 
-                Rectangle childRect = new Rectangle( (long)derivedLeft, (long)derivedTop, (long)width, (long)height );
-                //				child.Left   = derivedLeft;
-                //				child.Top    = derivedTop;
-                //				child.Right  = derivedLeft + width;
-                //				child.Bottom = derivedTop + height;
+                Rectangle childRect = new Rectangle( (long)derivedLeft, (long)derivedTop, (long)( derivedLeft + width ), (long)( derivedTop + height ) );
 
                 this.clippingRegion = Rectangle.Intersect( parentRect, childRect );
             }
             else
             {
-                clippingRegion = new Rectangle( (long)derivedLeft, (long)derivedTop, (long)width, (long)height );
-                //				clippingRegion.Left   = derivedLeft;
-                //				clippingRegion.Top    = derivedTop;
-                //				clippingRegion.Right  = derivedLeft + width;
-                //				clippingRegion.Bottom = derivedTop + height;
+                clippingRegion = new Rectangle( (long)derivedLeft, (long)derivedTop, (long)( derivedLeft + width ), (long)( derivedTop + height ) );
             }
         }
 
@@ -1007,8 +971,12 @@ namespace Axiom.Overlays
                         {
                             float vpWidth, vpHeight;
                             OverlayManager oMgr = OverlayManager.Instance;
-                            vpWidth = (float)( oMgr.ViewportWidth );
-                            vpHeight = (float)( oMgr.ViewportHeight );
+                            vpWidth = oMgr.ViewportWidth;
+                            vpHeight = oMgr.ViewportHeight;
+
+                            // cope with temporarily zero dimensions, avoid divide by zero
+                            vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
+                            vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
                             pixelScaleX = 1.0f / vpWidth;
                             pixelScaleY = 1.0f / vpHeight;
@@ -1027,8 +995,12 @@ namespace Axiom.Overlays
                         {
                             float vpWidth, vpHeight;
                             OverlayManager oMgr = OverlayManager.Instance;
-                            vpWidth = (float)( oMgr.ViewportWidth );
-                            vpHeight = (float)( oMgr.ViewportHeight );
+                            vpWidth = oMgr.ViewportWidth;
+                            vpHeight = oMgr.ViewportHeight;
+
+                            // cope with temporarily zero dimensions, avoid divide by zero
+                            vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
+                            vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
                             pixelScaleX = 1.0f / ( 10000.0f * ( vpWidth / vpHeight ) );
                             pixelScaleY = 1.0f / 10000.0f;
@@ -1411,100 +1383,408 @@ namespace Axiom.Overlays
 
         #endregion
 
-        #region Script parser methods
+        #region ScriptableObject Interface Command Classes
 
-        [ParserCommand( "metrics_mode", "OverlayElement" )]
-        public static void ParseMetricsMode( string[] parms, params object[] objects )
+        [Command( "metrics_mode", "The type of metrics to use, either 'relative' to the screen, 'pixels' or 'relative_aspect_adjusted'.", typeof( OverlayElement ) )]
+        private class MetricsModeAttributeCommand : IPropertyCommand
         {
-            OverlayElement element = (OverlayElement)objects[ 0 ];
+            #region Implementation of IPropertyCommand<object,string>
 
-            element.MetricsMode = (MetricsMode)ScriptEnumAttribute.Lookup( parms[ 0 ], typeof( MetricsMode ) );
-        }
-
-        [ParserCommand( "horz_align", "OverlayElement" )]
-        public static void ParseHorzAlign( string[] parms, params object[] objects )
-        {
-            OverlayElement element = (OverlayElement)objects[ 0 ];
-
-            element.HorizontalAlignment = (HorizontalAlignment)ScriptEnumAttribute.Lookup( parms[ 0 ], typeof( HorizontalAlignment ) );
-        }
-
-        [ParserCommand( "vert_align", "OverlayElement" )]
-        public static void ParseVertAlign( string[] parms, params object[] objects )
-        {
-            OverlayElement element = (OverlayElement)objects[ 0 ];
-
-            element.VerticalAlignment = (VerticalAlignment)ScriptEnumAttribute.Lookup( parms[ 0 ], typeof( VerticalAlignment ) );
-        }
-
-        [ParserCommand( "top", "OverlayElement" )]
-        public static void ParseTop( string[] parms, params object[] objects )
-        {
-            OverlayElement element = (OverlayElement)objects[ 0 ];
-
-            element.Top = StringConverter.ParseFloat( parms[ 0 ] );
-        }
-
-        [ParserCommand( "left", "OverlayElement" )]
-        public static void ParseLeft( string[] parms, params object[] objects )
-        {
-            OverlayElement element = (OverlayElement)objects[ 0 ];
-
-            element.Left = StringConverter.ParseFloat( parms[ 0 ] );
-        }
-
-        [ParserCommand( "width", "OverlayElement" )]
-        public static void ParseWidth( string[] parms, params object[] objects )
-        {
-            OverlayElement element = (OverlayElement)objects[ 0 ];
-
-            element.Width = StringConverter.ParseFloat( parms[ 0 ] );
-        }
-
-        [ParserCommand( "height", "OverlayElement" )]
-        public static void ParseHeight( string[] parms, params object[] objects )
-        {
-            OverlayElement element = (OverlayElement)objects[ 0 ];
-
-            element.Height = StringConverter.ParseFloat( parms[ 0 ] );
-        }
-
-        [ParserCommand( "visible", "OverlayElement" )]
-        public static void ParseVisible( string[] parms, params object[] objects )
-        {
-            OverlayElement element = (OverlayElement)objects[ 0 ];
-
-            element.isVisible = StringConverter.ParseBool( parms[ 0 ] );
-        }
-
-        [ParserCommand( "caption", "OverlayElement" )]
-        public static void ParseCaption( string[] parms, params object[] objects )
-        {
-            OverlayElement element = (OverlayElement)objects[ 0 ];
-
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
-
-            // reconstruct the single string since the caption could have spaces
-            for ( int i = 0; i < parms.Length; i++ )
+            /// <summary>
+            ///    Gets the value for this command from the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <returns></returns>
+            public string Get( object target )
             {
-                sb.Append( parms[ i ] );
-                if ( i != parms.Length - 1 )
+                var element = target as OverlayElement;
+                if ( element != null )
                 {
-                    sb.Append( " " );
+                    return ScriptEnumAttribute.GetScriptAttribute( (int)element.MetricsMode, typeof ( MetricsMode ) );
+                }
+                else
+                {
+                    return String.Empty;
                 }
             }
 
-            element.Text = sb.ToString();
+            /// <summary>
+            ///    Sets the value for this command on the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="val"></param>
+            public void Set( object target, string val )
+            {
+                var element = target as OverlayElement;
+                if ( element != null )
+                {
+                    element.MetricsMode = (MetricsMode)ScriptEnumAttribute.Lookup( val, typeof( MetricsMode ) );
+                }
+            }
+
+            #endregion
         }
 
-        [ParserCommand( "material", "OverlayElement" )]
-        public static void ParseMaterial( string[] parms, params object[] objects )
+        [Command( "horz_align", "The horizontal alignment, 'left', 'right' or 'center'.", typeof( OverlayElement ) )]
+        private class HorizontalAlignmentAttributeCommand : IPropertyCommand
         {
-            OverlayElement element = (OverlayElement)objects[ 0 ];
+            #region Implementation of IPropertyCommand<object,string>
 
-            element.MaterialName = parms[ 0 ];
+            /// <summary>
+            ///    Gets the value for this command from the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <returns></returns>
+            public string Get( object target )
+            {
+                var element = target as OverlayElement;
+                if ( element != null )
+                {
+                    return ScriptEnumAttribute.GetScriptAttribute( (int)element.HorizontalAlignment, typeof( HorizontalAlignment ) );
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
+
+            /// <summary>
+            ///    Sets the value for this command on the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="val"></param>
+            public void Set( object target, string val )
+            {
+                var element = target as OverlayElement;
+                if ( element != null )
+                {
+                    element.HorizontalAlignment = (HorizontalAlignment)ScriptEnumAttribute.Lookup( val, typeof( HorizontalAlignment ) );
+                }
+            }
+
+            #endregion
         }
 
-        #endregion Script parser methods
+        [Command( "vert_align", "The vertical alignment, 'top', 'bottom' or 'center'.", typeof( OverlayElement ) )]
+        private class VerticalAlignmentAttributeCommand : IPropertyCommand
+        {
+            #region Implementation of IPropertyCommand<object,string>
+
+            /// <summary>
+            ///    Gets the value for this command from the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <returns></returns>
+            public string Get( object target )
+            {
+                var element = target as OverlayElement;
+                if ( element != null )
+                {
+                    return ScriptEnumAttribute.GetScriptAttribute( (int)element.VerticalAlignment, typeof( VerticalAlignment ) );
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
+
+            /// <summary>
+            ///    Sets the value for this command on the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="val"></param>
+            public void Set( object target, string val )
+            {
+                var element = target as OverlayElement;
+                if ( element != null )
+                {
+                    element.VerticalAlignment = (VerticalAlignment)ScriptEnumAttribute.Lookup( val, typeof( VerticalAlignment ) );
+                }
+            }
+
+            #endregion
+        }
+
+        [Command( "top", "The position of the top border of the gui element.", typeof( OverlayElement ) )]
+        private class TopAttributeCommand : IPropertyCommand
+        {
+            #region Implementation of IPropertyCommand<object,string>
+
+            /// <summary>
+            ///    Gets the value for this command from the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <returns></returns>
+            public string Get( object target )
+            {
+                var element = target as OverlayElement;
+                if ( element != null )
+                {
+                    return element.Top.ToString();
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
+
+            /// <summary>
+            ///    Sets the value for this command on the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="val"></param>
+            public void Set( object target, string val )
+            {
+                var element = target as OverlayElement;
+                if ( element != null )
+                {
+                    element.Top = StringConverter.ParseFloat( val );
+                }
+            }
+
+            #endregion
+        }
+
+        [Command( "left", "The position of the left border of the gui element.", typeof( OverlayElement ) )]
+        private class LeftAttributeCommand : IPropertyCommand
+        {
+            #region Implementation of IPropertyCommand<object,string>
+
+            /// <summary>
+            ///    Gets the value for this command from the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <returns></returns>
+            public string Get( object target )
+            {
+                var element = target as OverlayElement;
+                if ( element != null )
+                {
+                    return element.Left.ToString();
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
+
+            /// <summary>
+            ///    Sets the value for this command on the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="val"></param>
+            public void Set( object target, string val )
+            {
+                var element = target as OverlayElement;
+                if ( element != null )
+                {
+                    element.Left = StringConverter.ParseFloat( val );
+                }
+            }
+
+            #endregion
+        }
+
+        [Command( "width", "The width of the gui element.", typeof( OverlayElement ) )]
+        private class WidthAttributeCommand : IPropertyCommand
+        {
+            #region Implementation of IPropertyCommand<object,string>
+
+            /// <summary>
+            ///    Gets the value for this command from the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <returns></returns>
+            public string Get( object target )
+            {
+                var element = target as OverlayElement;
+                if ( element != null )
+                {
+                    return element.Width.ToString();
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
+
+            /// <summary>
+            ///    Sets the value for this command on the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="val"></param>
+            public void Set( object target, string val )
+            {
+                var element = target as OverlayElement;
+                if ( element != null )
+                {
+                    element.Width = StringConverter.ParseFloat( val );
+                }
+            }
+
+            #endregion
+        }
+
+        [Command( "height", "The height of the gui element.", typeof( OverlayElement ) )]
+        private class HeightAttributeCommand : IPropertyCommand
+        {
+            #region Implementation of IPropertyCommand<object,string>
+
+            /// <summary>
+            ///    Gets the value for this command from the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <returns></returns>
+            public string Get( object target )
+            {
+                var element = target as OverlayElement;
+                if ( element != null )
+                {
+                    return element.Height.ToString();
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
+
+            /// <summary>
+            ///    Sets the value for this command on the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="val"></param>
+            public void Set( object target, string val )
+            {
+                var element = target as OverlayElement;
+                if ( element != null )
+                {
+                    element.Height = StringConverter.ParseFloat( val );
+                }
+            }
+
+            #endregion
+        }
+
+        [Command( "visible", "Initial visibility of element, either 'true' or 'false' (default true).", typeof( OverlayElement ) )]
+        private class VisibleAttributeCommand : IPropertyCommand
+        {
+            #region Implementation of IPropertyCommand<object,string>
+
+            /// <summary>
+            ///    Gets the value for this command from the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <returns></returns>
+            public string Get( object target )
+            {
+                var element = target as OverlayElement;
+                if ( element != null )
+                {
+                    return element.IsVisible.ToString();
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
+
+            /// <summary>
+            ///    Sets the value for this command on the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="val"></param>
+            public void Set( object target, string val )
+            {
+                var element = target as OverlayElement;
+                if ( element != null )
+                {
+                    element.IsVisible = StringConverter.ParseBool( val );
+                }
+            }
+
+            #endregion
+        }
+
+        [Command( "caption", "The element caption, if supported.", typeof( OverlayElement ) )]
+        private class CaptionAttributeCommand : IPropertyCommand
+        {
+            #region Implementation of IPropertyCommand<object,string>
+
+            /// <summary>
+            ///    Gets the value for this command from the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <returns></returns>
+            public string Get( object target )
+            {
+                var element = target as OverlayElement;
+                if ( element != null )
+                {
+                    return element.Text;
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
+
+            /// <summary>
+            ///    Sets the value for this command on the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="val"></param>
+            public void Set( object target, string val )
+            {
+                var element = target as OverlayElement;
+                if ( element != null )
+                {
+                    element.Text = val;
+                }
+            }
+
+            #endregion
+        }
+
+        [Command( "material", "The name of the material to use.", typeof( OverlayElement ) )]
+        private class MaterialAttributeCommand : IPropertyCommand
+        {
+            #region Implementation of IPropertyCommand<object,string>
+
+            /// <summary>
+            ///    Gets the value for this command from the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <returns></returns>
+            public string Get( object target )
+            {
+                var element = target as OverlayElement;
+                if ( element != null )
+                {
+                    return element.MaterialName;
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
+
+            /// <summary>
+            ///    Sets the value for this command on the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="val"></param>
+            public void Set( object target, string val )
+            {
+                var element = target as OverlayElement;
+                if ( element != null && val != null )
+                {
+                    element.MaterialName = val;
+                }
+            }
+
+            #endregion
+        }
+
+        #endregion ScriptableObject Interface Command Classes
     }
 }

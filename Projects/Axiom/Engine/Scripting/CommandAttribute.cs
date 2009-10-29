@@ -42,7 +42,7 @@ namespace Axiom.Scripting
     /// <summary>
     /// 	Summary description for CommandAttribute.
     /// </summary>
-    [AttributeUsage( AttributeTargets.Class )]
+    [AttributeUsage( AttributeTargets.Class, AllowMultiple = true )]
     public sealed class CommandAttribute : Attribute
     {
 
