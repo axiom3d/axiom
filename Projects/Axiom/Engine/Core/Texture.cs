@@ -101,7 +101,7 @@ namespace Axiom.Core
             }
             set
             {
-                _width = value;
+                _width = _srcWidth = value;
             }
         }
 
@@ -124,7 +124,7 @@ namespace Axiom.Core
             }
             set
             {
-                _height = value;
+                _height = _srcHeight = value;
             }
         }
 
@@ -147,7 +147,7 @@ namespace Axiom.Core
             }
             set
             {
-                _depth = value;
+                _depth = _srcDepth = value;
             }
         }
 
