@@ -1,18 +1,8 @@
-﻿#define MbUnit 
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-#if MbUnit
-using Gallio.Framework;
 using MbUnit.Framework;
-#else
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-using TestFixture = Microsoft.VisualStudio.TestTools.UnitTesting.TestClassAttribute;
-using Test = Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute;
-#endif
 
 using Axiom.Math;
 
@@ -21,26 +11,6 @@ namespace Axiom.Engine.Tests.Math
     [TestFixture]
     public class AxisAlignedBoxTests
     {
-
-#if !MbUnit
-        private TestContext testContextInstance;
-
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext
-        {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
-        }
-#endif
 
         [Test]
         public void TestMergePoint()
@@ -54,5 +24,34 @@ namespace Axiom.Engine.Tests.Math
 
             Assert.AreEqual(expected, actual);
         }
+
+        [Test]
+        public void TestMergeAABB()
+        {
+            AxisAlignedBox[] boxA = {
+                                        new AxisAlignedBox( new Vector3( -500.00000f, 0.00000000f, 500.00000f ),
+                                                            new Vector3( -499.00000f, 1.0000000f, 501.00000f ) ),
+                                    };
+            AxisAlignedBox[] boxB = {
+                                        new AxisAlignedBox( new Vector3( -0.50000000f, -0.50000000f, -0.50000000f ),
+                                                            new Vector3( 0.50000000f, 0.50000000f, 0.50000000f ) ),
+                                    };
+
+            AxisAlignedBox[] expected = {
+                                            new AxisAlignedBox( new Vector3( -500.00000f, 0.00000000f, 500.00000f ),
+                                                                new Vector3( -499.00000f, 1.0000000f, 501.00000f ) ),
+                                        };
+
+            AxisAlignedBox actual;
+
+            for ( int index = 0; index < boxA.Length; index++ )
+            {
+                actual = boxA[ index ];
+                actual.Merge( boxB[ index ] );
+
+                Assert.AreEqual( expected[ index ], actual );
+            }
+        }
+
     }
 }
