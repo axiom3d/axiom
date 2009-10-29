@@ -329,6 +329,15 @@ namespace Axiom.Graphics
         #endregion Properties
 
         #region Methods
+        /// <summary>
+        /// Validates the configuration of the rendering system
+        /// </summary>
+        /// <remarks>Calling this method can cause the rendering system to modify the ConfigOptions collection.</remarks>
+        /// <returns>Error message is configuration is invalid <see cref="String.Empty"/> if valid.</returns>
+        public virtual string ValidateConfiguration()
+        {
+            return String.Empty;
+        }
 
         /// <summary>
         ///    Attaches a render target to this render system.
@@ -964,6 +973,36 @@ namespace Axiom.Graphics
             set;
         }
 
+        /// <summary>
+        /// Gets the maximum (closest) depth value to be used when rendering using identity transforms.
+        /// </summary>
+        /// <remarks>
+        /// When using identity transforms you can manually set the depth
+        /// of a vertex; however the input values required differ per
+        /// rendersystem. This method lets you retrieve the correct value.
+        /// <see cref="SimpleRenderable.UseIdentityView"/>
+        /// <see cref="SimpleRenderable.UseIdentityProjection"/>
+        /// </remarks>
+        public abstract Real MinimumDepthInputValue
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the maximum (farthest) depth value to be used when rendering using identity transforms.
+        /// </summary>
+        /// <remarks>
+        /// When using identity transforms you can manually set the depth
+        /// of a vertex; however the input values required differ per
+        /// rendersystem. This method lets you retrieve the correct value.
+        /// <see cref="SimpleRenderable.UseIdentityView"/>
+        /// <see cref="SimpleRenderable.UseIdentityProjection"/>
+        /// </remarks>
+        public abstract Real MaximumDepthInputValue
+        {
+            get;
+        }
+
         #endregion Properties
 
         #region Methods
@@ -1052,42 +1091,6 @@ namespace Axiom.Graphics
         /// <param name="color"></param>
         /// <returns></returns>
         public abstract ColorEx ConvertColor( int color );
-
-        /// <summary>
-        ///    Creates and registers a render texture object.
-        /// </summary>
-        /// <param name="name">The name for the new render texture. Note that names must be unique.</param>
-        /// <param name="width">Requested width for the render texture.</param>
-        /// <param name="height">Requested height for the render texture.</param>
-        /// <param name="format">Requested pixel format for the render texture.</param>
-        /// <returns>
-        ///    On success, a reference to a new API-dependent, RenderTexture-derived
-        ///    class is returned. On failure, null is returned.
-        /// </returns>
-        /// <remarks>
-        ///    Because a render texture is basically a wrapper around a texture object,
-        ///    the width and height parameters of this method just hint the preferred
-        ///    size for the texture. Depending on the hardware driver or the underlying
-        ///    API, these values might change when the texture is created.
-        /// </remarks>
-        //public abstract RenderTexture CreateRenderTexture(string name, int width, int height, PixelFormat format);
-
-        //public virtual RenderTexture CreateRenderTexture(string name, int width, int height, 
-        //                                         TextureType ttype, PixelFormat format,
-        //                                         Dictionary<string, string> miscParams) {
-        //    /// Create a new 2D texture, and return surface to render to
-        //    Texture texture = 
-        //        TextureManager.Instance.CreateManual(name, ttype, width, height, 
-        //                                             0, format, TextureUsage.RenderTarget);
-        //    // Ensure texture loaded and internal resources created
-        //    texture.Load();
-
-        //    return texture.GetBuffer().GetRenderTarget();
-        //}
-
-        //public RenderTexture CreateRenderTexture(string name, int width, int height) {
-        //    return CreateRenderTexture(name, width, height, PixelFormat.R8G8B8);
-        //}		
 
         /// <summary>
         ///		Creates a new render window.

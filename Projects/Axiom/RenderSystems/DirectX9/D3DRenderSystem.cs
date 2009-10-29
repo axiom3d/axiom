@@ -741,6 +741,25 @@ namespace Axiom.RenderSystems.DirectX9
             return dest;
         }
 
+        public override Real MinimumDepthInputValue
+        {
+            get
+            {
+                // Range [0.0f, 1.0f]
+                return 0.0f;
+            }
+        }
+
+        public override Real MaximumDepthInputValue
+        {
+            get
+            {
+                // Range [0.0f, 1.0f]
+                // D3D inverts even identity view matrixes so maximum INPUT is -1.0f
+                return -1.0f;
+            }
+        }
+
         public override void ApplyObliqueDepthProjection( ref Axiom.Math.Matrix4 projMatrix, Axiom.Math.Plane plane, bool forGpuProgram )
         {
             // Thanks to Eric Lenyel for posting this calculation at www.terathon.com
