@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using SWF = System.Windows.Forms;
 
 using DX = SlimDX;
 using DI = SlimDX.DirectInput;
@@ -302,6 +303,15 @@ namespace Axiom.Platforms.Win32
 
             // for Windows, this should be an IntPtr to a Window Handle
             winHandle = (IntPtr)window[ "WINDOW" ];
+
+            // Keyboard and mouse capture must use Form's handle not child
+            SWF.Control control = SWF.Control.FromHandle( winHandle );
+            while ( control != null && control.Parent != null )
+            {
+                control = control.Parent;
+            }
+            if ( control != null )
+                winHandle = control.Handle;
 
             if ( dinput == null )
             {
