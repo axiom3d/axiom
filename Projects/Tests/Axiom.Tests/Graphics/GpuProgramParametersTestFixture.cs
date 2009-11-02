@@ -104,7 +104,8 @@ namespace Axiom.UnitTests.Graphics
                                         (float)Utility.SymmetricRandom(), (float)Utility.SymmetricRandom(), (float)Utility.SymmetricRandom(), (float)Utility.SymmetricRandom(),
                                         (float)Utility.SymmetricRandom(), (float)Utility.SymmetricRandom(), (float)Utility.SymmetricRandom(), (float)Utility.SymmetricRandom(),
                                         (float)Utility.SymmetricRandom(), (float)Utility.SymmetricRandom(), (float)Utility.SymmetricRandom(), (float)Utility.SymmetricRandom() };
-            float[] actual;
+
+            float[] actual = new float[16];
 
             GpuProgramParameters parameters = new GpuProgramParameters();
             //var floatLogical = new GpuLogicalBufferStruct();
@@ -115,7 +116,14 @@ namespace Axiom.UnitTests.Graphics
                                                     expected[ 12 ], expected[ 13 ], expected[ 14 ], expected[ 15 ] ) );
 
             Assert.IsTrue( parameters.GetFloatConstant( 0 ).isSet );
-            actual = parameters.GetFloatConstant( 0 ).val;
+            Assert.IsTrue( parameters.GetFloatConstant( 1 ).isSet );
+            Assert.IsTrue( parameters.GetFloatConstant( 2 ).isSet );
+            Assert.IsTrue( parameters.GetFloatConstant( 3 ).isSet );
+            parameters.GetFloatConstant( 0 ).val.CopyTo( actual, 0 ) ;
+            parameters.GetFloatConstant( 1 ).val.CopyTo( actual, 4 );
+            parameters.GetFloatConstant( 2 ).val.CopyTo( actual, 8 );
+            parameters.GetFloatConstant( 3 ).val.CopyTo( actual, 12 );
+
             Assert.AreEqual( expected, actual );
         }
     }
