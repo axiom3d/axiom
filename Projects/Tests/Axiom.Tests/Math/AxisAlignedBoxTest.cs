@@ -38,8 +38,8 @@ namespace Axiom.Engine.Tests.Math
                                     };
 
             AxisAlignedBox[] expected = {
-                                            new AxisAlignedBox( new Vector3( -500.00000f, 0.00000000f, 500.00000f ),
-                                                                new Vector3( -499.00000f, 1.0000000f, 501.00000f ) ),
+                                            new AxisAlignedBox( new Vector3( -500.00000f, -0.50000000f, -0.50000000f ),
+                                                                new Vector3( 0.50000000f, 1.0000000f, 501.00000f ) ),
                                         };
 
             AxisAlignedBox actual;
