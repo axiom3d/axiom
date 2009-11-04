@@ -1822,7 +1822,7 @@ namespace Axiom.Core
 
 		#endregion
 
-		#region SceneObject Members
+		#region MovableObject Implementation
 
 		/// <summary>
 		///    Local bounding radius of this camera.
@@ -1865,13 +1865,21 @@ namespace Axiom.Core
 			{
 				queue.AddRenderable(this);
 			}
-		}
+        }
 
-		#endregion SceneObject Members
+        public override ulong TypeFlags
+        {
+            get
+            {
+                return (ulong)SceneQueryTypeMask.Frustum;
+            }
+        }
 
-		#region IRenderable Members
+        #endregion  MovableObject Implementation
 
-		public bool CastsShadows
+        #region IRenderable Members
+
+        public bool CastsShadows
 		{
 			get
 			{

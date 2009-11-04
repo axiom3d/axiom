@@ -1616,7 +1616,7 @@ namespace Axiom.Core
 
         #endregion
 
-        #region Implementation of SceneObject
+        #region MovableObject Implementation
 
         private static TimingMeter copyAnimationMeter = MeterManager.GetMeter( "Copy Animation", "Entity Queue" );
         private static TimingMeter updateAnimationMeter = MeterManager.GetMeter( "Update Animation", "Entity Queue" );
@@ -2216,7 +2216,15 @@ namespace Axiom.Core
             return this.shadowRenderables.GetEnumerator();
         }
 
-        #endregion Methods
+        public override ulong TypeFlags
+        {
+            get
+            {
+                return (ulong)SceneQueryTypeMask.Entity;
+            }
+        }
+
+        #endregion MovableObject Implementation
 
         /// <summary>
         /// 

@@ -161,6 +161,11 @@ namespace Axiom.Core
         /// </summary>
         protected LightType type;
 
+        protected Real powerScale = 1.0f;
+        protected bool ownShadowFarDistance = false;
+        protected Real shadowFarDistance = 0.0f;
+        protected Real shadowFarDistanceSquared = 0.0f;
+
         #endregion
 
         #region Constructors
@@ -439,11 +444,21 @@ namespace Axiom.Core
         {
             get
             {
-                throw new NotImplementedException();
+                return ownShadowFarDistance ? shadowFarDistance : Manager.ShadowFarDistance;
             }
             set
             {
-                throw new NotImplementedException();
+                ownShadowFarDistance = true;
+                shadowFarDistance = value;
+                shadowFarDistanceSquared = value * value;
+            }
+        }
+
+        public float ShadowFarDistanceSquared
+        {
+            get
+            {
+                return ownShadowFarDistance ? shadowFarDistanceSquared : Manager.ShadowFarDistanceSquared;
             }
         }
 
@@ -451,11 +466,11 @@ namespace Axiom.Core
         {
             get
             {
-                throw new NotImplementedException();
+                return powerScale;
             }
             set
             {
-                throw new NotImplementedException();
+                powerScale = value;
             }
         }
 
@@ -1224,6 +1239,14 @@ namespace Axiom.Core
         public override void UpdateRenderQueue( RenderQueue queue )
         {
             // Do Nothing	
+        }
+
+        public override ulong TypeFlags
+        {
+            get
+            {
+                return (ulong)SceneQueryTypeMask.Light;
+            }
         }
 
         #endregion MovableObject Implementation
