@@ -1644,6 +1644,14 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
+        public override ulong TypeFlags
+        {
+            get
+            {
+                return (ulong)SceneQueryTypeMask.Fx;
+            }
+        }
+
 		internal ParticleSystemRenderer Renderer
 		{
 			get

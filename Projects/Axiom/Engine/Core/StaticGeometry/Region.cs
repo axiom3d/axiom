@@ -507,6 +507,13 @@ namespace Axiom.Core
                 }
             }
 
+            public override ulong TypeFlags
+            {
+                get
+                {
+                    return (ulong)SceneQueryTypeMask.StaticGeometry;
+                }
+            }
             #endregion MovableObject Implementation
         }
     }

@@ -1702,6 +1702,14 @@ namespace OctreeZone
             return diff.SquaredLength;
         }
 
+        public override ulong TypeFlags
+        {
+            get
+            {
+                return (ulong)SceneQueryTypeMask.WorldGeometry;
+            }
+        }
+
         #endregion
     }
 

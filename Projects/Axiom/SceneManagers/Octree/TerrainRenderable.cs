@@ -549,7 +549,7 @@ namespace Axiom.SceneManagers.Octree
 
 		#endregion Methods
 
-		#region SceneObject Members
+		#region MovableObject Implementation
 
 		public override AxisAlignedBox BoundingBox
 		{
@@ -566,6 +566,14 @@ namespace Axiom.SceneManagers.Octree
 				return 0;
 			}
 		}
+
+        public override ulong TypeFlags
+        {
+            get
+            {
+                return (ulong)SceneQueryTypeMask.WorldGeometry;
+            }
+        }
 
 		public override void NotifyCurrentCamera( Camera camera )
 		{
@@ -604,13 +612,13 @@ namespace Axiom.SceneManagers.Octree
 		public override void UpdateRenderQueue( RenderQueue queue )
 		{
 			queue.AddRenderable( this );
-		}
+        }
 
-		#endregion SceneObject Members
+        #endregion MovableObject Implementation
 
-		#region IRenderable Members
+        #region IRenderable Implementation
 
-		public bool CastsShadows
+        public bool CastsShadows
 		{
 			get
 			{
@@ -993,7 +1001,7 @@ namespace Axiom.SceneManagers.Octree
 			}
 		}
 
-		#endregion
+		#endregion IRenderable Implementation
 	}
 
 	public class TerrainOptions

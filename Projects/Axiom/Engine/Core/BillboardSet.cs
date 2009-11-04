@@ -1797,7 +1797,7 @@ namespace Axiom.Core
 
         #endregion
 
-        #region Implementation of SceneObject
+        #region MovableObject Implementation
 
         public override AxisAlignedBox BoundingBox
         {
@@ -2035,7 +2035,15 @@ namespace Axiom.Core
             }
         }
 
-        #endregion
+        public override ulong TypeFlags
+        {
+            get
+            {
+                return (ulong)SceneQueryTypeMask.Fx;
+            }
+        }
+
+        #endregion MovableObject Implementation
     }
 
     #region MovableObjectFactory implementation
