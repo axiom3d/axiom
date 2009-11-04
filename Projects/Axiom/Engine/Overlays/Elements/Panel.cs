@@ -88,6 +88,11 @@ namespace Axiom.Overlays.Elements
 
         #region Constructors
 
+        static Panel()
+        {
+            ScriptableObject.CreateParameterDictionary( typeof(Panel) );
+        }
+
         internal Panel( string name )
             : base( name )
         {
@@ -114,7 +119,7 @@ namespace Axiom.Overlays.Elements
         /// </summary>
         public override void Initialize()
         {
-            bool init = !isInitialised;
+            bool init = !isInitialized;
             base.Initialize();
             if ( init )
             {
@@ -141,7 +146,7 @@ namespace Axiom.Overlays.Elements
                 // no indices, and issue as a tri strip
                 renderOperation.useIndices = false;
                 renderOperation.operationType = OperationType.TriangleStrip;
-                isInitialised = true;
+                isInitialized = true;
             }
         }
 
@@ -210,8 +215,7 @@ namespace Axiom.Overlays.Elements
 
             // Use the furthest away depth value, since materials should have depth-check off
             // This initialised the depth buffer for any 3D objects in front
-            //float zValue = Root.Instance.RenderSystem.MaximumDepthInputValue;
-            float zValue = -1;
+            float zValue = Root.Instance.RenderSystem.MaximumDepthInputValue;
             unsafe
             {
                 float* posPtr = (float*)data.ToPointer();
@@ -230,7 +234,7 @@ namespace Axiom.Overlays.Elements
 
                 posPtr[ index++ ] = right;
                 posPtr[ index++ ] = bottom;
-                posPtr[ index++ ] = zValue;
+                posPtr[ index ] = zValue;
             }
 
             // unlock the position buffer
@@ -246,12 +250,12 @@ namespace Axiom.Overlays.Elements
                 // and the children would still be rendered
                 if ( !isTransparent && material != null )
                 {
-                    base.UpdateRenderQueue( queue );
+                    base.UpdateRenderQueue( queue, false );
                 }
 
-                for ( int i = 0; i < childList.Count; i++ )
+                foreach ( OverlayElement child in children.Values )
                 {
-                    ( (OverlayElement)childList[ i ] ).UpdateRenderQueue( queue );
+                    child.UpdateRenderQueue( queue );
                 }
             }
         }
@@ -262,7 +266,7 @@ namespace Axiom.Overlays.Elements
         /// </summary>
         protected override void UpdateTextureGeometry()
         {
-            if ( material != null && isInitialised )
+            if ( material != null && isInitialized )
             {
                 int numLayers = material.GetTechnique( 0 ).GetPass( 0 ).TextureUnitStageCount;
 
@@ -366,6 +370,13 @@ namespace Axiom.Overlays.Elements
             this.isGeomUVsOutOfDate = true;
         }
 
+        public void GetUV( out Real u1, out Real v1,out Real u2, out Real v2 )
+        {
+            u1 = topLeft.x;
+            v1 = topLeft.y;
+            u2 = bottomRight.x;
+            v2 = bottomRight.y;
+        }
 
         #endregion
 
@@ -404,36 +415,138 @@ namespace Axiom.Overlays.Elements
 
         #endregion
 
-        #region Script parser methods
+        #region ScriptableObject Interface Command Classes
 
-        [ParserCommand( "tiling", "Panel" )]
-        public static void ParseTiling( string[] parms, params object[] objects )
+        [Command( "tiling", "The number of times to repeat the background texture.", typeof( Panel ) )]
+        private class TilingAttributeCommand : IPropertyCommand
         {
-            Panel panel = (Panel)objects[ 0 ];
+            #region Implementation of IPropertyCommand<object,string>
 
-            panel.SetTiling( StringConverter.ParseFloat( parms[ 0 ] ), StringConverter.ParseFloat( parms[ 1 ] ), int.Parse( parms[ 2 ] ) );
+            /// <summary>
+            ///    Gets the value for this command from the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <returns></returns>
+            public string Get( object target )
+            {
+                var element = target as Panel;
+                if ( element != null )
+                {
+                    // NOTE: Only returns the top tiling
+                    return String.Format( "{0} {1} {2}", "0", element.GetTileX( 0 ), element.GetTileY( 0 ) );
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
+
+            /// <summary>
+            ///    Sets the value for this command on the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="val"></param>
+            public void Set( object target, string val )
+            {
+                var element = target as Panel;
+                var parms = val.Split( ' ' );
+                if ( element != null )
+                {
+                    element.SetTiling( StringConverter.ParseFloat( parms[ 1 ] ), StringConverter.ParseFloat( parms[ 2 ] ), int.Parse( parms[ 0 ] ) );
+                }
+            }
+
+            #endregion
         }
 
-        [ParserCommand( "transparent", "Panel" )]
-        public static void ParseTransparent( string[] parms, params object[] objects )
+        [Command( "transparent", "Sets whether the panel is transparent, i.e. invisible, itself " +
+            "but it's contents are still displayed.", typeof( Panel ) )]
+        private class TransparentAttributeCommand : IPropertyCommand
         {
-            Panel panel = (Panel)objects[ 0 ];
+            #region Implementation of IPropertyCommand<object,string>
 
-            panel.IsTransparent = bool.Parse( parms[ 0 ] );
+            /// <summary>
+            ///    Gets the value for this command from the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <returns></returns>
+            public string Get( object target )
+            {
+                var element = target as Panel;
+                if ( element != null )
+                {
+                    return element.IsTransparent.ToString();
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
+
+            /// <summary>
+            ///    Sets the value for this command on the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="val"></param>
+            public void Set( object target, string val )
+            {
+                var element = target as Panel;
+                if ( element != null )
+                {
+                    element.IsTransparent = StringConverter.ParseBool( val );
+                }
+            }
+
+            #endregion
         }
 
-        [ParserCommand( "uv_coords", "Panel" )]
-        public static void ParseUVCoords( string[] parms, params object[] objects )
+        [Command( "uv_coords", "The texture coordinates for the texture. 1 set of uv values.", typeof( Panel ) )]
+        private class UVCoordinatesModeAttributeCommand : IPropertyCommand
         {
-            Panel panel = (Panel)objects[ 0 ];
+            #region Implementation of IPropertyCommand<object,string>
 
-            panel.SetUV(   float.Parse( parms[ 0 ] )
-                         , float.Parse( parms[ 1 ] )
-                         , float.Parse( parms[ 2 ] )
-                         , float.Parse( parms[ 3 ] ) );
+            /// <summary>
+            ///    Gets the value for this command from the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <returns></returns>
+            public string Get( object target )
+            {
+                var element = target as Panel;
+                if ( element != null )
+                {
+                    Real u1, v1, u2, v2;
+                    element.GetUV( out u1, out v1, out u2, out v2 );
+                    return string.Format( "{0} {1} {2} {3}", u1, v1, u2, v2 );
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
+
+            /// <summary>
+            ///    Sets the value for this command on the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="val"></param>
+            public void Set( object target, string val )
+            {
+                var element = target as Panel;
+                var parms = val.Split( ' ' );
+                if ( element != null )
+                {
+                    element.SetUV( StringConverter.ParseFloat( parms[ 0 ] ),
+                                   StringConverter.ParseFloat( parms[ 1 ] ),
+                                   StringConverter.ParseFloat( parms[ 2 ] ),
+                                   StringConverter.ParseFloat( parms[ 3 ] ) );
+                }
+            }
+
+            #endregion
         }
 
-        #endregion Script parser methods
+        #endregion ScriptableObject Interface Command Classes
 
     }
 }

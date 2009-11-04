@@ -27,47 +27,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
-//     <id value="$Id: IPropertyCommand.cs 1537 2009-03-30 19:25:01Z borrillis $"/>
+//     <id value="$Id: AssemblyInfo.cs 1538 2009-04-02 01:39:25Z borrillis $"/>
 // </file>
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
+using System.Reflection;
 
 #endregion Namespace Declarations
 
-namespace Axiom.Scripting
-{
-	/// <summary>
-	/// Specialization of the IPropertyCommand using object and string
-	/// </summary>
-	public interface IPropertyCommand : IPropertyCommand<object, string>
-	{
-	}
-
-	/// <summary>
-	/// Provides an interface for setting object properties via a Command Pattern.
-	/// </summary>
-	/// <typeparam name="ObjectType">Type of the object to operate on.</typeparam>
-	/// <typeparam name="PropertyType">Type of the property to operate on.</typeparam>
-	public interface IPropertyCommand<TObjectType, TPropertyType>
-	{
-		/// <summary>
-		///    Gets the value for this command from the target object.
-		/// </summary>
-		/// <param name="target"></param>
-		/// <returns></returns>
-		TPropertyType Get( TObjectType target );
-
-        /// <summary>
-        ///    Sets the value for this command on the target object.
-        /// </summary>
-        /// <param name="target"></param>
-        /// <param name="val"></param>
-        void Set( TObjectType target, TPropertyType val );
-    
-    }
-
-
-}
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+[assembly: AssemblyTitle("Axiom Rendering Engine Library - Unit Tests")]

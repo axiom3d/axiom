@@ -108,19 +108,60 @@ namespace Axiom.Scripting
                 // if we found 1, take a look at it
                 if ( atts.Length > 0 )
                 {
-                    // convert the first element to the right type (assume there is only 1 attribute)
-                    ScriptEnumAttribute scriptAtt = (ScriptEnumAttribute)atts[ 0 ];
-
-                    // if the values match
-                    if ( scriptAtt.ScriptValue == val )
+                    for ( int index = 0; index < atts.Length; index++ )
                     {
-                        // return the enum value for this script equivalent
-                        return Enum.Parse( type, field.Name, true );
+                        // convert the first element to the right type (assume there is only 1 attribute)
+                        ScriptEnumAttribute scriptAtt = (ScriptEnumAttribute)atts[ index ];
+
+                        // if the values match
+                        if ( scriptAtt.ScriptValue == val )
+                        {
+                            // return the enum value for this script equivalent
+                            return Enum.Parse( type, field.Name, true );
+                        }
                     }
                 } // if
             } // for
 
             //	invalid enum value
+            return null;
+        }
+
+        /// <summary>
+        /// Looksup the script attibute for the enumeration value
+        /// </summary>
+        /// <param name="enumValue">The enumeration value</param>
+        /// <param name="type">The Enumeration</param>
+        /// <returns>The first script attribute found to match the enumeration value</returns>
+        public static string GetScriptAttribute( int enumValue, Type type )
+        {
+            // get the list of fields in the enum
+            FieldInfo[] fields = type.GetFields();
+
+            // loop through each one and see if it is mapped to the supplied value
+            for ( int i = 0; i < fields.Length; i++ )
+            {
+                FieldInfo field = fields[ i ];
+                if ( type == field.FieldType.UnderlyingSystemType && 
+                    (int)field.GetRawConstantValue() == enumValue )
+                {
+                    // find custom attributes declared for this field
+                    object[] atts = field.GetCustomAttributes( typeof( ScriptEnumAttribute ), false );
+
+                    // if we found 1, take a look at it
+                    if ( atts.Length > 0 )
+                    {
+                        // convert the first element to the right type (assume there is only 1 attribute)
+                        ScriptEnumAttribute scriptAtt = (ScriptEnumAttribute)atts[ 0 ];
+
+                        // if the values match
+                        return scriptAtt.ScriptValue;
+                    } // if
+
+                }
+            }
+
+            // invalid 
             return null;
         }
 
@@ -150,11 +191,14 @@ namespace Axiom.Scripting
                 // if we found 1, take a look at it
                 if ( atts.Length > 0 )
                 {
-                    // convert the first element to the right type (assume there is only 1 attribute)
-                    ScriptEnumAttribute scriptAtt = (ScriptEnumAttribute)atts[ 0 ];
+                    for ( int index = 0; index < atts.Length; index++ )
+                    {
+                        // convert the first element to the right type (assume there is only 1 attribute)
+                        ScriptEnumAttribute scriptAtt = (ScriptEnumAttribute)atts[ 0 ];
 
-                    // if the values match
-                    legalValues.AppendFormat( "'{0}',", scriptAtt.ScriptValue );
+                        // if the values match
+                        legalValues.AppendFormat( "'{0}',", scriptAtt.ScriptValue );
+                    }
                 } // if
             } // for
 
@@ -163,38 +207,6 @@ namespace Axiom.Scripting
                 return "(No values found for type " + type.Name.ToString() + ")";
             else
                 return legalValues.ToString( 0, legalValues.Length - 1 );
-        }
-    }
-
-    /// <summary>
-    ///		Custom attribute to mark methods as handling the parsing for a material script attribute.
-    /// </summary>
-    [AttributeUsage( AttributeTargets.Method, AllowMultiple = true )]
-    public sealed class AttributeParserAttribute : Attribute
-    {
-        private string attributeName;
-        private string parserType;
-
-        public AttributeParserAttribute( string name, string parserType )
-        {
-            this.attributeName = name;
-            this.parserType = parserType;
-        }
-
-        public string Name
-        {
-            get
-            {
-                return attributeName;
-            }
-        }
-
-        public string ParserType
-        {
-            get
-            {
-                return parserType;
-            }
         }
     }
 }

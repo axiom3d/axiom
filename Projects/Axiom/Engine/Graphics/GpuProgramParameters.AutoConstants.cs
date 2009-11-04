@@ -162,6 +162,11 @@ namespace Axiom.Graphics
             [ScriptEnum("light_distance_object_space")]
             LightDistanceObjectSpace,
             /// <summary>
+            /// Light power level, a single scalar as set in Light.PowerScale  (index determined by SetAutoConstant call)
+            /// </summary>
+            [ScriptEnum("light_power")]
+            LightPowerScale,
+            /// <summary>
             ///    The distance a shadow volume should be extruded when using finite extrusion programs.
             /// </summary>
             [ScriptEnum("shadow_extrusion_distance")]

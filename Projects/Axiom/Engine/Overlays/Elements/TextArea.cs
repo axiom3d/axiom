@@ -82,6 +82,11 @@ namespace Axiom.Overlays.Elements
 
         #region Constructors
 
+        static TextArea()
+        {
+            ScriptableObject.CreateParameterDictionary( typeof(TextArea) );
+        }
+
         /// <summary>
         ///    Basic constructor, internal since it should only be created by factories.
         /// </summary>
@@ -156,7 +161,7 @@ namespace Axiom.Overlays.Elements
         /// </summary>
         public override void Initialize()
         {
-            if ( !isInitialised )
+            if ( !isInitialized )
             {
                 // Set up the render operation
                 // Combine positions and texture coords since they tend to change together
@@ -183,7 +188,7 @@ namespace Axiom.Overlays.Elements
                 // buffers are created in CheckMemoryAllocation
                 CheckMemoryAllocation( DEFAULT_INITIAL_CHARS );
 
-                isInitialised = true;
+                isInitialized = true;
             }
         }
 
@@ -207,7 +212,7 @@ namespace Axiom.Overlays.Elements
 
             base.Update();
 
-            if ( this.haveColorsChanged && isInitialised )
+            if ( this.haveColorsChanged && isInitialized )
             {
                 UpdateColors();
                 haveColorsChanged = false;
@@ -526,7 +531,7 @@ namespace Axiom.Overlays.Elements
         {
             get
             {
-                return font.Name;
+                return font != null ? font.Name : null;
             }
             set
             {
@@ -665,60 +670,291 @@ namespace Axiom.Overlays.Elements
 
         #endregion
 
-        #region Script parser methods
+        #region ScriptableObject Interface Command Classes
 
-        [ParserCommand( "char_height", "TextArea" )]
-        public static void ParseCharHeight( string[] parms, params object[] objects )
+        [Command( "char_height", "", typeof(TextArea) )]
+        private class CharacterHeightAttributeCommand : IPropertyCommand
         {
-            TextArea textArea = (TextArea)objects[ 0 ];
+            #region Implementation of IPropertyCommand<object,string>
 
-            textArea.CharHeight = StringConverter.ParseFloat( parms[ 0 ] );
+            /// <summary>
+            ///    Gets the value for this command from the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <returns></returns>
+            public string Get( object target )
+            {
+                var element = target as TextArea;
+                if ( element != null )
+                {
+                    return element.CharHeight.ToString();
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
+
+            /// <summary>
+            ///    Sets the value for this command on the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="val"></param>
+            public void Set( object target, string val )
+            {
+                var element = target as TextArea;
+                if ( element != null )
+                {
+                    element.CharHeight = StringConverter.ParseFloat( val );
+                }
+            }
+
+            #endregion
         }
 
-        [ParserCommand( "space_width", "TextArea" )]
-        public static void ParseSpaceWidth( string[] parms, params object[] objects )
+        [Command( "space_width", "", typeof( TextArea ) )]
+        private class SpaceWidthAttributeCommand : IPropertyCommand
         {
-            TextArea textArea = (TextArea)objects[ 0 ];
+            #region Implementation of IPropertyCommand<object,string>
 
-            textArea.SpaceWidth = StringConverter.ParseFloat( parms[ 0 ] );
+            /// <summary>
+            ///    Gets the value for this command from the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <returns></returns>
+            public string Get( object target )
+            {
+                var element = target as TextArea;
+                if ( element != null )
+                {
+                    return element.SpaceWidth.ToString();
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
+
+            /// <summary>
+            ///    Sets the value for this command on the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="val"></param>
+            public void Set( object target, string val )
+            {
+                var element = target as TextArea;
+                if ( element != null )
+                {
+                    element.SpaceWidth = StringConverter.ParseFloat( val );
+                }
+            }
+
+            #endregion
         }
 
-        [ParserCommand( "font_name", "TextArea" )]
-        public static void ParseFontName( string[] parms, params object[] objects )
+        [Command( "font_name", "", typeof( TextArea ) )]
+        private class FontNameAttributeCommand : IPropertyCommand
         {
-            TextArea textArea = (TextArea)objects[ 0 ];
+            #region Implementation of IPropertyCommand<object,string>
 
-            textArea.FontName = parms[ 0 ];
+            /// <summary>
+            ///    Gets the value for this command from the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <returns></returns>
+            public string Get( object target )
+            {
+                var element = target as TextArea;
+                if ( element != null )
+                {
+                    return element.FontName;
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
+
+            /// <summary>
+            ///    Sets the value for this command on the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="val"></param>
+            public void Set( object target, string val )
+            {
+                var element = target as TextArea;
+                if ( element != null )
+                {
+                    element.FontName = val;
+                }
+            }
+
+            #endregion
         }
 
-        [ParserCommand( "color", "TextArea" )]
-        [ParserCommand( "colour", "TextArea" )]
-        public static void ParseColor( string[] parms, params object[] objects )
+        [Command( "alignment", "The horizontal alignment, 'left', 'right' or 'center'.", typeof( TextArea ) )]
+        private class HorizontalAlignmentAttributeCommand : IPropertyCommand
         {
-            TextArea textArea = (TextArea)objects[ 0 ];
+            #region Implementation of IPropertyCommand<object,string>
 
-            textArea.Color = StringConverter.ParseColor( parms );
+            /// <summary>
+            ///    Gets the value for this command from the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <returns></returns>
+            public string Get( object target )
+            {
+                var element = target as TextArea;
+                if ( element != null )
+                {
+                    return ScriptEnumAttribute.GetScriptAttribute( (int)element.TextAlign, typeof( HorizontalAlignment ) );
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
+
+            /// <summary>
+            ///    Sets the value for this command on the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="val"></param>
+            public void Set( object target, string val )
+            {
+                var element = target as TextArea;
+                if ( element != null )
+                {
+                    element.TextAlign = (HorizontalAlignment)ScriptEnumAttribute.Lookup( val, typeof( HorizontalAlignment ) );
+                }
+            }
+
+            #endregion
+        }
+        [Command( "color", "", typeof( TextArea ) )]
+        [Command( "colour", "", typeof( TextArea ) )]
+        private class ColorAttributeCommand : IPropertyCommand
+        {
+            #region Implementation of IPropertyCommand<object,string>
+
+            /// <summary>
+            ///    Gets the value for this command from the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <returns></returns>
+            public string Get( object target )
+            {
+                var element = target as TextArea;
+                if ( element != null )
+                {
+                    return StringConverter.ToString( element.Color );
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
+
+            /// <summary>
+            ///    Sets the value for this command on the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="val"></param>
+            public void Set( object target, string val )
+            {
+                var element = target as TextArea;
+                if ( element != null )
+                {
+                    element.Color = StringConverter.ParseColor( val );
+                }
+            }
+
+            #endregion
         }
 
-        [ParserCommand( "color_top", "TextArea" )]
-        [ParserCommand( "colour_top", "TextArea" )]
-        public static void ParseColorTop( string[] parms, params object[] objects )
+        [Command( "color_top", "", typeof( TextArea ) )]
+        [Command( "colour_top", "", typeof( TextArea ) )]
+        private class TopColorAttributeCommand : IPropertyCommand
         {
-            TextArea textArea = (TextArea)objects[ 0 ];
+            #region Implementation of IPropertyCommand<object,string>
 
-            textArea.ColorTop = StringConverter.ParseColor( parms );
+            /// <summary>
+            ///    Gets the value for this command from the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <returns></returns>
+            public string Get( object target )
+            {
+                var element = target as TextArea;
+                if ( element != null )
+                {
+                    return StringConverter.ToString( element.ColorTop );
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
+
+            /// <summary>
+            ///    Sets the value for this command on the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="val"></param>
+            public void Set( object target, string val )
+            {
+                var element = target as TextArea;
+                if ( element != null )
+                {
+                    element.ColorTop = StringConverter.ParseColor( val );
+                }
+            }
+
+            #endregion
         }
 
-        [ParserCommand( "color_bottom", "TextArea" )]
-        [ParserCommand( "colour_bottom", "TextArea" )]
-        public static void ParseColorBottom( string[] parms, params object[] objects )
+        [Command( "color_bottom", "", typeof( TextArea ) )]
+        [Command( "colour_bottom", "", typeof( TextArea ) )]
+        private class BottomColorAttributeCommand : IPropertyCommand
         {
-            TextArea textArea = (TextArea)objects[ 0 ];
+            #region Implementation of IPropertyCommand<object,string>
 
-            textArea.ColorBottom = StringConverter.ParseColor( parms );
+            /// <summary>
+            ///    Gets the value for this command from the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <returns></returns>
+            public string Get( object target )
+            {
+                var element = target as TextArea;
+                if ( element != null )
+                {
+                    return StringConverter.ToString( element.ColorBottom );
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
+
+            /// <summary>
+            ///    Sets the value for this command on the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="val"></param>
+            public void Set( object target, string val )
+            {
+                var element = target as TextArea;
+                if ( element != null )
+                {
+                    element.ColorBottom = StringConverter.ParseColor( val );
+                }
+            }
+
+            #endregion
         }
 
-        #endregion
+        #endregion ScriptableObject Interface Command Classes
 
         protected override void UpdateTextureGeometry()
         {

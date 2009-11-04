@@ -497,7 +497,7 @@ namespace Axiom.RenderSystems.DirectX9
         {
             SetRenderState( D3D.RenderState.AlphaTestEnable, func != CompareFunction.AlwaysPass );
             D3D.Compare newCompare = D3DHelper.ConvertEnum( func );
-            if ( device.GetRenderState<D3D.Compare>( D3D.RenderState.AlphaFunc ) == newCompare )
+            if ( device.GetRenderState<D3D.Compare>( D3D.RenderState.AlphaFunc ) != newCompare )
                 device.SetRenderState( D3D.RenderState.AlphaFunc, newCompare );
             SetRenderState( D3D.RenderState.AlphaRef, val );
         }
@@ -739,6 +739,25 @@ namespace Axiom.RenderSystems.DirectX9
             dest.m23 = qn;
 
             return dest;
+        }
+
+        public override Real MinimumDepthInputValue
+        {
+            get
+            {
+                // Range [0.0f, 1.0f]
+                return 0.0f;
+            }
+        }
+
+        public override Real MaximumDepthInputValue
+        {
+            get
+            {
+                // Range [0.0f, 1.0f]
+                // D3D inverts even identity view matrixes so maximum INPUT is -1.0f
+                return -1.0f;
+            }
         }
 
         public override void ApplyObliqueDepthProjection( ref Axiom.Math.Matrix4 projMatrix, Axiom.Math.Plane plane, bool forGpuProgram )
