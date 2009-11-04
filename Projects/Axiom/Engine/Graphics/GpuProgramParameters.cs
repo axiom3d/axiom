@@ -111,7 +111,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Flag to indicate if names not found will be automatically added.
 		/// </summary>
-		protected bool autoAddParamName;
+		protected bool autoAddParamName = true;
 
 		 protected List<ParameterEntry> paramTypeList = new List<ParameterEntry>();
         //protected ArrayList paramIndexTypes = new ArrayList();
