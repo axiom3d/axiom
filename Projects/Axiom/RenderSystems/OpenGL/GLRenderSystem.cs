@@ -689,7 +689,25 @@ namespace Axiom.RenderSystems.OpenGL
             return dest;
         }
 
-		public override void ApplyObliqueDepthProjection( ref Axiom.Math.Matrix4 projMatrix, Axiom.Math.Plane plane, bool forGpuProgram )
+	    public override Real MinimumDepthInputValue
+	    {
+	        get
+	        {
+                // Range [0.0f, 1.0f]
+                return 0.0f;
+	        }
+	    }
+
+	    public override Real MaximumDepthInputValue
+        {
+            get
+            {
+                // Range [-1.0f, 1.0f]
+                return 1.0f;
+            }
+        }
+
+	    public override void ApplyObliqueDepthProjection( ref Axiom.Math.Matrix4 projMatrix, Axiom.Math.Plane plane, bool forGpuProgram )
 		{
 			// Thanks to Eric Lenyel for posting this calculation at www.terathon.com
 
@@ -1609,7 +1627,14 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void SetAlphaRejectSettings( int stage, CompareFunction func, byte val )
 		{
-			Gl.glEnable( Gl.GL_ALPHA_TEST );
+            if ( func != CompareFunction.AlwaysPass )
+			{
+                Gl.glEnable( Gl.GL_ALPHA_TEST );
+            }
+            else
+            {
+                Gl.glDisable( Gl.GL_ALPHA_TEST );
+            }
 			Gl.glAlphaFunc( GLHelper.ConvertEnum( func ), val / 255.0f );
 		}
 

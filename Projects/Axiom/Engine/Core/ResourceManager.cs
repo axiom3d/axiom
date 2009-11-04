@@ -217,7 +217,7 @@ namespace Axiom.Core
 		///    Gets a reference to the specified named resource.
 		/// </summary>
 		/// <param name="name">Name of the resource to retreive.</param>
-		/// <returns></returns>
+        /// <returns>A reference to a Resource with the given name or null.</returns>
 		/// <ogre name="getByName" />
 		public Resource this[ string name ]
 		{
@@ -225,15 +225,13 @@ namespace Axiom.Core
 			{
 				Debug.Assert( _resources != null, "A resource was being retreived, but the list of Resources is null.", "" );
 
-				Resource resource = null;
+				Resource resource;
 
-				// find the resource in the Hashtable and return it
-				if ( _resources.ContainsKey( name ) == true )
-				{
-					resource = (Resource)_resources[ name ];
-				}
+                // try to obtain the resource
+                _resources.TryGetValue(name, out resource);
 
-				return resource;
+                // return the resource or null
+                return resource;
 			}
 		}
 
@@ -241,7 +239,7 @@ namespace Axiom.Core
 		///		Gets a resource with the given handle.
 		/// </summary>
 		/// <param name="handle">Handle of the resource to retrieve.</param>
-		/// <returns>A reference to a Resource with the given handle.</returns>
+		/// <returns>A reference to a Resource with the given handle or null.</returns>
 		/// <ogre name="getByHandle" />
 		public Resource this[ ResourceHandle handle ]
 		{
@@ -249,15 +247,15 @@ namespace Axiom.Core
 			{
 				Debug.Assert( _resourceHandleMap != null, "A resource was being retreived, but the list of Resources is null.", "" );
 
-				Resource resource = null;
+				Resource resource;
 
-				// find the resource in the Hashtable and return it
-				if ( _resourceHandleMap.ContainsKey( handle ) == true )
+				// try to obtain the resource
+				if ( _resourceHandleMap.TryGetValue( handle, out resource ) )
 				{
-					resource = (Resource)_resourceHandleMap[ handle ];
 					resource.Touch();
 				}
 
+                // return the resource or null
 				return resource;
 			}
 		}

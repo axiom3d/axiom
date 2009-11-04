@@ -1543,7 +1543,7 @@ namespace Axiom.Core
                                                         light,
                                                         camera,
                                                         this.shadowCasterList,
-                                                        this.shadowFarDistanceSquared );
+                                                        light.ShadowFarDistanceSquared );
                 this.shadowCasterAABBQuery.Execute( this.shadowCasterQueryListener );
             }
             else
@@ -1582,7 +1582,7 @@ namespace Axiom.Core
                         light,
                         camera,
                         this.shadowCasterList,
-                        this.shadowFarDistanceSquared );
+                        light.ShadowFarDistanceSquared );
 
                     this.shadowCasterSphereQuery.Execute( this.shadowCasterQueryListener );
                 }
@@ -3769,9 +3769,12 @@ namespace Axiom.Core
         ///		You should tweak this value to suit your chosen shadow technique
         ///		and scene setup.
         /// </remarks>
-        public float ShadowFarDistance
+        public Real ShadowFarDistance
         {
-            get { return this.shadowFarDistance; }
+            get
+            {
+                return this.shadowFarDistance;
+            }
             set
             {
                 this.shadowFarDistance = value;
@@ -3779,6 +3782,13 @@ namespace Axiom.Core
             }
         }
 
+        public Real ShadowFarDistanceSquared
+        {
+            get
+            {
+                return this.shadowFarDistance;
+            }
+        }
         /// <summary>
         ///		Sets the maximum size of the index buffer used to render shadow primitives.
         /// </summary>

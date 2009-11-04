@@ -457,21 +457,21 @@ material Examples/GrassBlades
     {
         pass
         {
-	    vertex_program_ref Examples/GrassWaverVp
-	    {
-		param_named_auto worldViewProj worldviewproj_matrix
-		param_named_auto ambient ambient_light_colour
-		param_named_auto objSpaceLight light_position_object_space 0
-		param_named_auto lightColour light_diffuse_colour 0
-		param_named_auto offset custom 999
-	    }
-	    scene_blend alpha_blend
-	    cull_hardware none
+			vertex_program_ref Examples/GrassWaverVp
+			{
+				param_named_auto worldViewProj worldviewproj_matrix
+				param_named_auto ambient ambient_light_colour
+				param_named_auto objSpaceLight light_position_object_space 0
+				param_named_auto lightColour light_diffuse_colour 0
+				param_named_auto offset custom 999
+			}
+			scene_blend alpha_blend
+			cull_hardware none
             cull_software none
-			alpha_rejection greater 150 
             
             texture_unit
             {
+				alpha_rejection greater 150 
                 texture grassWalpha.tga 
             }
         }
@@ -482,13 +482,13 @@ material Examples/GrassBlades
     {
         pass
         {
-	    alpha_rejection greater 150 
-	    scene_blend alpha_blend
-	    cull_hardware none
+			scene_blend alpha_blend
+			cull_hardware none
             cull_software none
             
             texture_unit
             {
+				alpha_rejection greater 150 
                 texture grassWalpha.tga 
             }
         }

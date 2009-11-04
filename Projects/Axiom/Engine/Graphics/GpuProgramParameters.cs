@@ -936,6 +936,9 @@ namespace Axiom.Graphics
 						Light light = source.GetLight( entry.Data );
 						SetConstant( entry.PhysicalIndex, light.AttenuationRange, light.AttenuationConstant, light.AttenuationLinear, light.AttenuationQuadratic );
 						break;
+                    case AutoConstantType.LightPowerScale:
+                        SetConstant( entry.PhysicalIndex, source.GetLightPowerScale( entry.Data ) );
+				        break;
 				}
 			}
 		}
