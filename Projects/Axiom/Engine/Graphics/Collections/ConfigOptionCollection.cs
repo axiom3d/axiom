@@ -48,6 +48,8 @@ namespace Axiom.Graphics.Collections
     public class ConfigOptionCollection : AxiomCollection<ConfigOption>
     {
         #region Instance Methods
+
+
         public override void Add(ConfigOption item)
         {
             base.Add(item.Name, item);

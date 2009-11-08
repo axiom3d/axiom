@@ -49,6 +49,10 @@ namespace Axiom.Core.Collections
     /// </summary>
     public class MovableObjectCollection : AxiomCollection<MovableObject>
     {
+        public override void Add( MovableObject item )
+        {
+            base.Add(item.Name, item);
+        }
     }
 
     /// <summary>

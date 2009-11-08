@@ -47,5 +47,9 @@ namespace Axiom.Core.Collections
     /// </summary>
     public class CameraCollection : AxiomCollection<Camera>
     {
+        public override void Add( Camera item )
+        {
+            base.Add( item.Name, item );
+        }
     }
 }
