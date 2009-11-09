@@ -1914,6 +1914,35 @@ namespace Axiom.RenderSystems.Xna
             }
         }
 
+        /// <summary>
+        /// Sets the global blending factors for combining subsequent renders with the existing frame contents.
+        /// The result of the blending operation is:
+        /// final = (texture * sourceFactor) + (pixel * destFactor).
+        /// Each of the factors is specified as one of a number of options, as specified in the SceneBlendFactor
+        /// enumerated type.
+        /// </summary>
+        /// <param name="sourceFactor">The source factor in the above calculation, i.e. multiplied by the texture colour components.</param>
+        /// <param name="destFactor">The destination factor in the above calculation, i.e. multiplied by the pixel colour components.</param>
+        /// <param name="sourceFactorAlpha">The source factor in the above calculation for the alpha channel, i.e. multiplied by the texture alpha components.</param>
+        /// <param name="destFactorAlpha">The destination factor in the above calculation for the alpha channel, i.e. multiplied by the pixel alpha components.</param>
+        public override void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha )
+        {
+            if ( sourceFactor == SceneBlendFactor.One && destFactor == SceneBlendFactor.Zero &&
+                sourceFactorAlpha == SceneBlendFactor.One && destFactorAlpha == SceneBlendFactor.Zero )
+            {
+                _device.RenderState.AlphaBlendEnable = false;
+            }
+            else
+            {
+                _device.RenderState.AlphaBlendEnable = true;
+                _device.RenderState.SeparateAlphaBlendEnabled = true;
+                _device.RenderState.SourceBlend = XnaHelper.Convert( sourceFactor );
+                _device.RenderState.DestinationBlend = XnaHelper.Convert( destFactor );
+                _device.RenderState.AlphaSourceBlend = XnaHelper.Convert( sourceFactorAlpha );
+                _device.RenderState.AlphaDestinationBlend = XnaHelper.Convert( destFactorAlpha );
+            }
+        }
+
         public override void SetScissorTest( bool enable, int left, int top, int right, int bottom )
         {
             if ( enable )
@@ -1986,6 +2015,60 @@ namespace Axiom.RenderSystems.Xna
                 //_ffProgramParameters.MaterialShininess = shininess;
             }
 #endif
+        }
+
+        /// <summary>
+        /// Sets whether or not rendering points using PointList will 
+        /// render point sprites (textured quads) or plain points.
+        /// </summary>
+        /// <value></value>
+        public override bool PointSprites
+        {
+            set
+            {
+                _device.RenderState.PointSpriteEnable = value;
+            }
+        }
+
+        /// <summary>
+        /// Sets the size of points and how they are attenuated with distance.
+        /// <remarks>
+        /// When performing point rendering or point sprite rendering,
+        /// point size can be attenuated with distance. The equation for
+        /// doing this is attenuation = 1 / (constant + linear * dist + quadratic * d^2) .
+        /// </remarks>
+        /// </summary>
+        /// <param name="size"></param>
+        /// <param name="attenuationEnabled"></param>
+        /// <param name="constant"></param>
+        /// <param name="linear"></param>
+        /// <param name="quadratic"></param>
+        /// <param name="minSize"></param>
+        /// <param name="maxSize"></param>
+        public override void SetPointParameters( float size, bool attenuationEnabled, float constant, float linear, float quadratic, float minSize, float maxSize )
+        {
+            if ( attenuationEnabled )
+            {
+                //scaling required
+                _device.RenderState.PointSpriteEnable = true;
+                // NOTE: PointSize scaling is FFP and Xna doesn't support them anymore
+                // http://social.msdn.microsoft.com/forums/en-US/xnagamestudioexpress/thread/8adc396e-f7b6-47a9-98a9-7f94e840cd3b/
+                // The constant, linear, and quadratic parameters need to be cached and passed into the ShaderGenerator
+                // The ShaderGenerator will then need to generate the approtiate values in the vertex shader
+            }
+            else
+            {
+                //no scaling required
+                _device.RenderState.PointSpriteEnable = false;
+            }
+
+            _device.RenderState.PointSize = size;
+            _device.RenderState.PointSizeMin = minSize;
+            if ( maxSize == 0.0f )
+            {
+                maxSize = HardwareCapabilities.MaxPointSize;
+            }
+            _device.RenderState.PointSizeMax = maxSize;
         }
 
         public override void SetTexture( int stage, bool enabled, string textureName )

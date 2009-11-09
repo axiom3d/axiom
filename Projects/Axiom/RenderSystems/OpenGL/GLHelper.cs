@@ -73,6 +73,36 @@ namespace Axiom.RenderSystems.OpenGL
             }
         }
 
+        public static int ConvertEnum( SceneBlendFactor blend )
+        {
+            switch ( blend )
+            {
+                case SceneBlendFactor.One:
+                    return Gl.GL_ONE;
+                case SceneBlendFactor.Zero:
+                    return Gl.GL_ZERO;
+                case SceneBlendFactor.DestColor:
+                    return Gl.GL_DST_COLOR;
+                case SceneBlendFactor.SourceColor:
+                    return Gl.GL_SRC_COLOR;
+                case SceneBlendFactor.OneMinusDestColor:
+                    return Gl.GL_ONE_MINUS_DST_COLOR;
+                case SceneBlendFactor.OneMinusSourceColor:
+                    return Gl.GL_ONE_MINUS_SRC_COLOR;
+                case SceneBlendFactor.DestAlpha:
+                    return Gl.GL_DST_ALPHA;
+                case SceneBlendFactor.SourceAlpha:
+                    return Gl.GL_SRC_ALPHA;
+                case SceneBlendFactor.OneMinusDestAlpha:
+                    return Gl.GL_ONE_MINUS_DST_ALPHA;
+                case SceneBlendFactor.OneMinusSourceAlpha:
+                    return Gl.GL_ONE_MINUS_SRC_ALPHA;
+            }
+            ;
+            // to keep compiler happy
+            return Gl.GL_ONE;
+        }
+
         /// <summary>
         /// 
         /// </summary>
