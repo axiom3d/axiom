@@ -511,7 +511,7 @@ namespace Axiom.SceneManagers.Bsp
         /// </remarks>
         /// <param name="sphere">Details of the sphere which describes the region for this query.</param>
         /// <param name="mask">The query mask to apply to this query; can be used to filter out	certain objects; see SceneQuery for details.</param>
-        public override SphereRegionSceneQuery CreateSphereRegionQuery( Sphere sphere, ulong mask )
+        public override SphereRegionSceneQuery CreateSphereRegionQuery( Sphere sphere, uint mask )
         {
             BspSphereRegionSceneQuery q = new BspSphereRegionSceneQuery( this );
             q.Sphere = sphere;
@@ -530,7 +530,7 @@ namespace Axiom.SceneManagers.Bsp
         /// </remarks>
         /// <param name="ray">Details of the ray which describes the region for this query.</param>
         /// <param name="mask">The query mask to apply to this query; can be used to filter out certain objects; see SceneQuery for details.</param>
-        public override RaySceneQuery CreateRayQuery( Ray ray, ulong mask )
+        public override RaySceneQuery CreateRayQuery( Ray ray, uint mask )
         {
             BspRaySceneQuery q = new BspRaySceneQuery( this );
             q.Ray = ray;
@@ -548,7 +548,7 @@ namespace Axiom.SceneManagers.Bsp
         ///		for full details.
         /// </remarks>
         /// <param name="mask">The query mask to apply to this query; can be used to filter out certain objects; see SceneQuery for details.</param>
-        public override IntersectionSceneQuery CreateIntersectionQuery( ulong mask )
+        public override IntersectionSceneQuery CreateIntersectionQuery( uint mask )
         {
             BspIntersectionSceneQuery q = new BspIntersectionSceneQuery( this );
             q.QueryMask = mask;
@@ -1341,27 +1341,29 @@ namespace Axiom.SceneManagers.Bsp
                         }
                     }
 
-                    // check object against brushes
-                    foreach ( BspBrush brush in leaf.SolidBrushes)
+                    if ( ( QueryTypeMask & (uint)SceneQueryTypeMask.WorldGeometry ) != 0 )
                     {
-                        if ( brush == null )
-                            continue;
-
-                        // test brush against object
-                        boundedVolume.planes = brush.Planes;
-                        if ( boundedVolume.Intersects( aBox ) )
+                        // check object against brushes
+                        foreach ( BspBrush brush in leaf.SolidBrushes )
                         {
-                            // check if this pair is already reported
-                            IList interBrushList = brushIntersections.FindBucket( aObj );
-                            if ( interBrushList == null || interBrushList.Contains( brush ) == false)
+                            if ( brush == null )
+                                continue;
+
+                            // test brush against object
+                            boundedVolume.planes = brush.Planes;
+                            if ( boundedVolume.Intersects( aBox ) )
                             {
-                                brushIntersections.Add( aObj, brush );
-                                // report this brush as it's WorldFragment
-                                listener.OnQueryResult( aObj, brush.Fragment );
+                                // check if this pair is already reported
+                                IList interBrushList = brushIntersections.FindBucket( aObj );
+                                if ( interBrushList == null || interBrushList.Contains( brush ) == false )
+                                {
+                                    brushIntersections.Add( aObj, brush );
+                                    // report this brush as it's WorldFragment
+                                    listener.OnQueryResult( aObj, brush.Fragment );
+                                }
                             }
                         }
                     }
-
                     objectsDone.Add(aObj);
                 }
 
@@ -1464,25 +1466,28 @@ namespace Axiom.SceneManagers.Bsp
             BspBrush intersectBrush = null;
             float intersectBrushDist = float.PositiveInfinity;
 
-            // Check ray against brushes
-            for ( int brushPoint = 0; brushPoint < leaf.SolidBrushes.Length; brushPoint++ )
+            if ( ( QueryTypeMask & (ulong)SceneQueryTypeMask.WorldGeometry ) != 0 )
             {
-                BspBrush brush = leaf.SolidBrushes[ brushPoint ];
-
-                if ( brush == null )
-                    continue;
-
-                boundedVolume.planes = brush.Planes;
-
-                IntersectResult result = tracingRay.Intersects( boundedVolume );
-                // if the result came back positive and intersection point is inside
-                // the node, check if this brush is closer
-                if ( result.Hit && result.Distance <= maxDistance )
+                // Check ray against brushes
+                for ( int brushPoint = 0; brushPoint < leaf.SolidBrushes.Length; brushPoint++ )
                 {
-                    if ( result.Distance < intersectBrushDist )
+                    BspBrush brush = leaf.SolidBrushes[ brushPoint ];
+
+                    if ( brush == null )
+                        continue;
+
+                    boundedVolume.planes = brush.Planes;
+
+                    IntersectResult result = tracingRay.Intersects( boundedVolume );
+                    // if the result came back positive and intersection point is inside
+                    // the node, check if this brush is closer
+                    if ( result.Hit && result.Distance <= maxDistance )
                     {
-                        intersectBrushDist = result.Distance;
-                        intersectBrush = brush;
+                        if ( result.Distance < intersectBrushDist )
+                        {
+                            intersectBrushDist = result.Distance;
+                            intersectBrush = brush;
+                        }
                     }
                 }
             }

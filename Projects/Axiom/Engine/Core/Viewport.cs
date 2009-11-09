@@ -458,7 +458,7 @@ namespace Axiom.Core
         /// <summary>
         /// the per-viewport visibility mask
         /// </summary>
-        private uint _visibilityMask;
+        private uint _visibilityMask = unchecked(0xFFFFFFFF);
         /// <summary>
         /// a per-viewport visibility mask.
         /// </summary>
@@ -466,7 +466,7 @@ namespace Axiom.Core
         /// The visibility mask is a way to exclude objects from rendering for
         /// a given viewport. For each object in the frustum, a check is made
         /// between this mask and the objects visibility flags 
-        /// (MovableObject.VisibilityFlags), and if a binary 'and'
+        /// <see cref="MovableObject.VisibilityFlags"/> , and if a binary 'and'
         /// returns zero, the object will not be rendered.
         /// </remarks>
         public uint VisibilityMask

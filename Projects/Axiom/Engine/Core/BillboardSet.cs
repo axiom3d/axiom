@@ -1797,7 +1797,7 @@ namespace Axiom.Core
 
         #endregion
 
-        #region Implementation of SceneObject
+        #region Implementation of MovableObject
 
         public override AxisAlignedBox BoundingBox
         {
@@ -2032,6 +2032,18 @@ namespace Axiom.Core
                     // Different buffer structure (1 or 4 verts per billboard)
                     this.DestroyBuffers();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Get the 'type flags' for this <see cref="BillboardSet"/>.
+        /// </summary>
+        /// <seealso cref="MovableObject.TypeFlags"/>
+        public override uint TypeFlags
+        {
+            get
+            {
+                return (uint)SceneQueryTypeMask.Fx;
             }
         }
 

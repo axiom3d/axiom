@@ -367,7 +367,7 @@ namespace Axiom.SceneManagers.Octree
         /// </summary>
         /// <param name="ray">Ray to use for the intersection query.</param>
         /// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
-        public override RaySceneQuery CreateRayQuery(Ray ray, ulong mask)
+        public override RaySceneQuery CreateRayQuery(Ray ray, uint mask)
         {
             TerrainRaySceneQuery query = new TerrainRaySceneQuery(this);
             query.Ray = ray;

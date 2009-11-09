@@ -1702,6 +1702,19 @@ namespace OctreeZone
             return diff.SquaredLength;
         }
 
+        /// <summary>
+        /// Get the 'type flags' for this <see cref="TerrainZoneRenderable"/>.
+        /// </summary>
+        /// <seealso cref="MovableObject.TypeFlags"/>
+        public override uint TypeFlags
+        {
+            get
+            {
+                return (uint)SceneQueryTypeMask.WorldGeometry;
+            }
+        }
+
+
         #endregion
     }
 

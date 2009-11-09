@@ -1249,7 +1249,7 @@ namespace Axiom.SceneManagers.PortalConnected
         }
 
         //---------------------------------------------------------------------
-        public override AxisAlignedBoxRegionSceneQuery CreateAABBRegionQuery( AxisAlignedBox box, ulong mask )
+        public override AxisAlignedBoxRegionSceneQuery CreateAABBRegionQuery( AxisAlignedBox box, uint mask )
         {
             PCZAxisAlignedBoxSceneQuery q = new PCZAxisAlignedBoxSceneQuery( this );
             q.Box = box;
@@ -1258,7 +1258,7 @@ namespace Axiom.SceneManagers.PortalConnected
         }
 
         //---------------------------------------------------------------------
-        public override SphereRegionSceneQuery CreateSphereRegionQuery( Sphere sphere, ulong mask )
+        public override SphereRegionSceneQuery CreateSphereRegionQuery( Sphere sphere, uint mask )
         {
             PCZSphereSceneQuery q = new PCZSphereSceneQuery( this );
             q.Sphere = sphere;
@@ -1267,7 +1267,7 @@ namespace Axiom.SceneManagers.PortalConnected
         }
 
         //---------------------------------------------------------------------
-        public override PlaneBoundedVolumeListSceneQuery CreatePlaneBoundedVolumeQuery( PlaneBoundedVolumeList volumes, ulong mask )
+        public override PlaneBoundedVolumeListSceneQuery CreatePlaneBoundedVolumeQuery( PlaneBoundedVolumeList volumes, uint mask )
         {
             PCZPlaneBoundedVolumeListSceneQuery q = new PCZPlaneBoundedVolumeListSceneQuery( this );
             q.Volumes = volumes;
@@ -1276,7 +1276,7 @@ namespace Axiom.SceneManagers.PortalConnected
         }
 
         //---------------------------------------------------------------------
-        public override RaySceneQuery CreateRayQuery( Ray ray, ulong mask )
+        public override RaySceneQuery CreateRayQuery( Ray ray, uint mask )
         {
             PCZRaySceneQuery q = new PCZRaySceneQuery( this );
             q.Ray = ray;
@@ -1285,7 +1285,7 @@ namespace Axiom.SceneManagers.PortalConnected
         }
 
         //---------------------------------------------------------------------
-        public override IntersectionSceneQuery CreateIntersectionQuery( ulong mask )
+        public override IntersectionSceneQuery CreateIntersectionQuery( uint mask )
         {
             PCZIntersectionSceneQuery q = new PCZIntersectionSceneQuery( this );
             q.QueryMask = mask;

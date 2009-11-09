@@ -1616,7 +1616,7 @@ namespace Axiom.Core
 
         #endregion
 
-        #region Implementation of SceneObject
+        #region Implementation of MovableObject
 
         private static TimingMeter copyAnimationMeter = MeterManager.GetMeter( "Copy Animation", "Entity Queue" );
         private static TimingMeter updateAnimationMeter = MeterManager.GetMeter( "Update Animation", "Entity Queue" );
@@ -1714,157 +1714,14 @@ namespace Axiom.Core
         }
 
         /// <summary>
-        ///    Gets the SubEntity at the specified index.
+        /// Get the 'type flags' for this <see cref="Entity"/>.
         /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public SubEntity GetSubEntity( int index )
+        /// <seealso cref="MovableObject.TypeFlags"/>
+        public override uint TypeFlags
         {
-            Debug.Assert(index >= 0 && index < this.subEntityList.Count, "index out of range");
-
-            return this.subEntityList[index];
-        }
-
-        /// <summary>
-        ///		Trigger an evaluation of whether hardware skinning is supported for this entity.
-        /// </summary>
-        protected internal void ReevaluateVertexProcessing()
-        {
-            // init
-            this.hardwareAnimation = false;
-            this.vertexProgramInUse = false; // assume false because we just assign this
-            bool firstPass = true;
-
-            // check for each sub entity
-            foreach (SubEntity subEntity in this.subEntityList)
+            get
             {
-                // grab the material and make sure it is loaded first
-                Material m = subEntity.Material;
-                m.Load();
-
-                Technique t = m.GetBestTechnique();
-
-                if ( t == null )
-                {
-                    // no supported techniques
-                    continue;
-                }
-
-                Pass p = t.GetPass( 0 );
-
-                if ( p == null )
-                {
-                    // no passes, so invalid
-                    continue;
-                }
-
-                if ( p.HasVertexProgram )
-                {
-                    // If one material uses a vertex program, set this flag 
-                    // Causes some special processing like forcing a separate light cap
-                    this.vertexProgramInUse = true;
-
-                    if ( this.HasSkeleton )
-                    {
-                        // All materials must support skinning for us to consider using
-                        // hardware animation - if one fails we use software
-                        bool skeletallyAnimated = p.VertexProgram.IsSkeletalAnimationIncluded;
-                        subEntity.HardwareSkinningEnabled = skeletallyAnimated;
-                        subEntity.VertexProgramInUse = true;
-                        if ( firstPass )
-                        {
-                            this.hardwareAnimation = skeletallyAnimated;
-                            firstPass = false;
-                        }
-                        else
-                        {
-                            this.hardwareAnimation = this.hardwareAnimation && skeletallyAnimated;
-                        }
-                    }
-
-                    VertexAnimationType animType = VertexAnimationType.None;
-                    if ( subEntity.SubMesh.useSharedVertices )
-                    {
-                        animType = this.mesh.SharedVertexDataAnimationType;
-                    }
-                    else
-                    {
-                        animType = subEntity.SubMesh.VertexAnimationType;
-                    }
-                    if ( animType == VertexAnimationType.Morph )
-                    {
-                        // All materials must support morph animation for us to consider using
-                        // hardware animation - if one fails we use software
-                        if ( firstPass )
-                        {
-                            this.hardwareAnimation = p.VertexProgram.IsMorphAnimationIncluded;
-                            firstPass = false;
-                        }
-                        else
-                        {
-                            this.hardwareAnimation = this.hardwareAnimation && p.VertexProgram.IsMorphAnimationIncluded;
-                        }
-                    }
-                    else if ( animType == VertexAnimationType.Pose )
-                    {
-                        // All materials must support pose animation for us to consider using
-                        // hardware animation - if one fails we use software
-                        if ( firstPass )
-                        {
-                            this.hardwareAnimation = p.VertexProgram.PoseAnimationCount > 0;
-                            if ( subEntity.SubMesh.useSharedVertices )
-                            {
-                                this.hardwarePoseCount = p.VertexProgram.PoseAnimationCount;
-                            }
-                            else
-                            {
-                                subEntity.HardwarePoseCount = p.VertexProgram.PoseAnimationCount;
-                            }
-                            firstPass = false;
-                        }
-                        else
-                        {
-                            this.hardwareAnimation = this.hardwareAnimation && p.VertexProgram.PoseAnimationCount > 0;
-                            if ( subEntity.SubMesh.useSharedVertices )
-                            {
-                                this.hardwarePoseCount =
-                                        (ushort)
-                                        Utility.Max( this.hardwarePoseCount, p.VertexProgram.PoseAnimationCount );
-                            }
-                            else
-                            {
-                                subEntity.HardwarePoseCount = (ushort) Utility.Max( subEntity.HardwarePoseCount,
-                                                                                    p.VertexProgram.PoseAnimationCount );
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Copies a subset of animation states from source to target.
-        /// </summary>
-        /// <remarks>
-        ///     This routine assume target is a subset of source, it will copy all animation state
-        ///     of the target with the settings from source.
-        /// </remarks>
-        /// <param name="target">Reference to animation state set which will receive the states.</param>
-        /// <param name="source">Reference to animation state set which will use as source.</param>
-        public void CopyAnimationStateSubset( AnimationStateSet target, AnimationStateSet source )
-        {
-            foreach ( AnimationState targetState in target.Values )
-            {
-                AnimationState sourceState = source.GetAnimationState( targetState.Name );
-
-                if ( sourceState == null )
-                {
-                    throw new AxiomException( "No animation entry found named '{0}'.", targetState.Name );
-                }
-                else
-                {
-                    targetState.CopyFrom( sourceState );
-                }
+                return (uint)SceneQueryTypeMask.Entity;
             }
         }
 
@@ -1930,115 +1787,6 @@ namespace Axiom.Core
                     }
                 }
             }
-        }
-
-        /// <summary>
-        ///		Internal method for preparing this Entity for use in animation.
-        /// </summary>
-        protected internal void PrepareTempBlendedBuffers()
-        {
-            if ( this.skelAnimVertexData != null )
-            {
-                this.skelAnimVertexData = null;
-            }
-            if ( this.softwareVertexAnimVertexData != null )
-            {
-                this.softwareVertexAnimVertexData = null;
-            }
-            if ( this.hardwareVertexAnimVertexData != null )
-            {
-                this.hardwareVertexAnimVertexData = null;
-            }
-
-            if ( this.mesh.HasVertexAnimation )
-            {
-                // Shared data
-                if ( this.mesh.SharedVertexData != null &&
-                     this.mesh.SharedVertexDataAnimationType != VertexAnimationType.None )
-                {
-                    // Create temporary vertex blend info
-                    // Prepare temp vertex data if needed
-                    // Clone without copying data, don't remove any blending info
-                    // (since if we skeletally animate too, we need it)
-                    this.softwareVertexAnimVertexData = this.mesh.SharedVertexData.Clone( false );
-                    this.ExtractTempBufferInfo( this.softwareVertexAnimVertexData, this.tempVertexAnimInfo );
-
-                    // Also clone for hardware usage, don't remove blend info since we'll
-                    // need it if we also hardware skeletally animate
-                    this.hardwareVertexAnimVertexData = this.mesh.SharedVertexData.Clone( false );
-                }
-            }
-
-            if ( this.HasSkeleton )
-            {
-                // shared data
-                if ( this.mesh.SharedVertexData != null )
-                {
-                    // Create temporary vertex blend info
-                    // Prepare temp vertex data if needed
-                    // Clone without copying data, remove blending info
-                    // (since blend is performed in software)
-                    this.skelAnimVertexData = this.CloneVertexDataRemoveBlendInfo( this.mesh.SharedVertexData );
-                    this.ExtractTempBufferInfo( this.skelAnimVertexData, this.tempSkelAnimInfo );
-                }
-            }
-
-            // prepare temp blending buffers for subentites as well
-            foreach (SubEntity se in this.subEntityList)
-            {
-                se.PrepareTempBlendBuffers();
-            }
-        }
-
-        /// <summary>
-        ///		Internal method to clone vertex data definitions but to remove blend buffers.
-        /// </summary>
-        /// <param name="sourceData">Vertex data to clone.</param>
-        /// <returns>A cloned instance of 'source' without blending information.</returns>
-        protected internal VertexData CloneVertexDataRemoveBlendInfo( VertexData source )
-        {
-            // Clone without copying data
-            VertexData ret = source.Clone( false );
-            VertexElement blendIndexElem =
-                    source.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendIndices );
-            VertexElement blendWeightElem =
-                    source.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendWeights );
-
-            // Remove blend index
-            if ( blendIndexElem != null )
-            {
-                // Remove buffer reference
-                ret.vertexBufferBinding.UnsetBinding( blendIndexElem.Source );
-            }
-
-            if ( blendWeightElem != null &&
-                 blendWeightElem.Source != blendIndexElem.Source )
-            {
-                // Remove buffer reference
-                ret.vertexBufferBinding.UnsetBinding( blendWeightElem.Source );
-            }
-            // remove elements from declaration
-            ret.vertexDeclaration.RemoveElement( VertexElementSemantic.BlendIndices );
-            ret.vertexDeclaration.RemoveElement( VertexElementSemantic.BlendWeights );
-
-            // copy reference to w-coord buffer
-            if ( source.hardwareShadowVolWBuffer != null )
-            {
-                ret.hardwareShadowVolWBuffer = source.hardwareShadowVolWBuffer;
-            }
-
-            return ret;
-        }
-
-        /// <summary>
-        ///		Internal method for extracting metadata out of source vertex data
-        ///		for fast assignment of temporary buffers later.
-        /// </summary>
-        /// <param name="sourceData"></param>
-        /// <param name="info"></param>
-        protected internal void ExtractTempBufferInfo( VertexData sourceData, TempBlendedBufferInfo info )
-        {
-            info.ExtractFrom( sourceData );
         }
 
         public override IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique,
@@ -2216,7 +1964,271 @@ namespace Axiom.Core
             return this.shadowRenderables.GetEnumerator();
         }
 
-        #endregion Methods
+        #endregion Implementation of MovableObject
+
+        /// <summary>
+        ///		Internal method for preparing this Entity for use in animation.
+        /// </summary>
+        protected internal void PrepareTempBlendedBuffers()
+        {
+            if ( this.skelAnimVertexData != null )
+            {
+                this.skelAnimVertexData = null;
+            }
+            if ( this.softwareVertexAnimVertexData != null )
+            {
+                this.softwareVertexAnimVertexData = null;
+            }
+            if ( this.hardwareVertexAnimVertexData != null )
+            {
+                this.hardwareVertexAnimVertexData = null;
+            }
+
+            if ( this.mesh.HasVertexAnimation )
+            {
+                // Shared data
+                if ( this.mesh.SharedVertexData != null &&
+                     this.mesh.SharedVertexDataAnimationType != VertexAnimationType.None )
+                {
+                    // Create temporary vertex blend info
+                    // Prepare temp vertex data if needed
+                    // Clone without copying data, don't remove any blending info
+                    // (since if we skeletally animate too, we need it)
+                    this.softwareVertexAnimVertexData = this.mesh.SharedVertexData.Clone( false );
+                    this.ExtractTempBufferInfo( this.softwareVertexAnimVertexData, this.tempVertexAnimInfo );
+
+                    // Also clone for hardware usage, don't remove blend info since we'll
+                    // need it if we also hardware skeletally animate
+                    this.hardwareVertexAnimVertexData = this.mesh.SharedVertexData.Clone( false );
+                }
+            }
+
+            if ( this.HasSkeleton )
+            {
+                // shared data
+                if ( this.mesh.SharedVertexData != null )
+                {
+                    // Create temporary vertex blend info
+                    // Prepare temp vertex data if needed
+                    // Clone without copying data, remove blending info
+                    // (since blend is performed in software)
+                    this.skelAnimVertexData = this.CloneVertexDataRemoveBlendInfo( this.mesh.SharedVertexData );
+                    this.ExtractTempBufferInfo( this.skelAnimVertexData, this.tempSkelAnimInfo );
+                }
+            }
+
+            // prepare temp blending buffers for subentites as well
+            foreach ( SubEntity se in this.subEntityList )
+            {
+                se.PrepareTempBlendBuffers();
+            }
+        }
+
+        /// <summary>
+        ///		Internal method to clone vertex data definitions but to remove blend buffers.
+        /// </summary>
+        /// <param name="sourceData">Vertex data to clone.</param>
+        /// <returns>A cloned instance of 'source' without blending information.</returns>
+        protected internal VertexData CloneVertexDataRemoveBlendInfo( VertexData source )
+        {
+            // Clone without copying data
+            VertexData ret = source.Clone( false );
+            VertexElement blendIndexElem =
+                    source.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendIndices );
+            VertexElement blendWeightElem =
+                    source.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendWeights );
+
+            // Remove blend index
+            if ( blendIndexElem != null )
+            {
+                // Remove buffer reference
+                ret.vertexBufferBinding.UnsetBinding( blendIndexElem.Source );
+            }
+
+            if ( blendWeightElem != null &&
+                 blendWeightElem.Source != blendIndexElem.Source )
+            {
+                // Remove buffer reference
+                ret.vertexBufferBinding.UnsetBinding( blendWeightElem.Source );
+            }
+            // remove elements from declaration
+            ret.vertexDeclaration.RemoveElement( VertexElementSemantic.BlendIndices );
+            ret.vertexDeclaration.RemoveElement( VertexElementSemantic.BlendWeights );
+
+            // copy reference to w-coord buffer
+            if ( source.hardwareShadowVolWBuffer != null )
+            {
+                ret.hardwareShadowVolWBuffer = source.hardwareShadowVolWBuffer;
+            }
+
+            return ret;
+        }
+
+        /// <summary>
+        ///		Internal method for extracting metadata out of source vertex data
+        ///		for fast assignment of temporary buffers later.
+        /// </summary>
+        /// <param name="sourceData"></param>
+        /// <param name="info"></param>
+        protected internal void ExtractTempBufferInfo( VertexData sourceData, TempBlendedBufferInfo info )
+        {
+            info.ExtractFrom( sourceData );
+        }
+
+        /// <summary>
+        ///    Gets the SubEntity at the specified index.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public SubEntity GetSubEntity( int index )
+        {
+            Debug.Assert( index >= 0 && index < this.subEntityList.Count, "index out of range" );
+
+            return this.subEntityList[ index ];
+        }
+
+        /// <summary>
+        ///		Trigger an evaluation of whether hardware skinning is supported for this entity.
+        /// </summary>
+        protected internal void ReevaluateVertexProcessing()
+        {
+            // init
+            this.hardwareAnimation = false;
+            this.vertexProgramInUse = false; // assume false because we just assign this
+            bool firstPass = true;
+
+            // check for each sub entity
+            foreach ( SubEntity subEntity in this.subEntityList )
+            {
+                // grab the material and make sure it is loaded first
+                Material m = subEntity.Material;
+                m.Load();
+
+                Technique t = m.GetBestTechnique();
+
+                if ( t == null )
+                {
+                    // no supported techniques
+                    continue;
+                }
+
+                Pass p = t.GetPass( 0 );
+
+                if ( p == null )
+                {
+                    // no passes, so invalid
+                    continue;
+                }
+
+                if ( p.HasVertexProgram )
+                {
+                    // If one material uses a vertex program, set this flag 
+                    // Causes some special processing like forcing a separate light cap
+                    this.vertexProgramInUse = true;
+
+                    if ( this.HasSkeleton )
+                    {
+                        // All materials must support skinning for us to consider using
+                        // hardware animation - if one fails we use software
+                        bool skeletallyAnimated = p.VertexProgram.IsSkeletalAnimationIncluded;
+                        subEntity.HardwareSkinningEnabled = skeletallyAnimated;
+                        subEntity.VertexProgramInUse = true;
+                        if ( firstPass )
+                        {
+                            this.hardwareAnimation = skeletallyAnimated;
+                            firstPass = false;
+                        }
+                        else
+                        {
+                            this.hardwareAnimation = this.hardwareAnimation && skeletallyAnimated;
+                        }
+                    }
+
+                    VertexAnimationType animType = VertexAnimationType.None;
+                    if ( subEntity.SubMesh.useSharedVertices )
+                    {
+                        animType = this.mesh.SharedVertexDataAnimationType;
+                    }
+                    else
+                    {
+                        animType = subEntity.SubMesh.VertexAnimationType;
+                    }
+                    if ( animType == VertexAnimationType.Morph )
+                    {
+                        // All materials must support morph animation for us to consider using
+                        // hardware animation - if one fails we use software
+                        if ( firstPass )
+                        {
+                            this.hardwareAnimation = p.VertexProgram.IsMorphAnimationIncluded;
+                            firstPass = false;
+                        }
+                        else
+                        {
+                            this.hardwareAnimation = this.hardwareAnimation && p.VertexProgram.IsMorphAnimationIncluded;
+                        }
+                    }
+                    else if ( animType == VertexAnimationType.Pose )
+                    {
+                        // All materials must support pose animation for us to consider using
+                        // hardware animation - if one fails we use software
+                        if ( firstPass )
+                        {
+                            this.hardwareAnimation = p.VertexProgram.PoseAnimationCount > 0;
+                            if ( subEntity.SubMesh.useSharedVertices )
+                            {
+                                this.hardwarePoseCount = p.VertexProgram.PoseAnimationCount;
+                            }
+                            else
+                            {
+                                subEntity.HardwarePoseCount = p.VertexProgram.PoseAnimationCount;
+                            }
+                            firstPass = false;
+                        }
+                        else
+                        {
+                            this.hardwareAnimation = this.hardwareAnimation && p.VertexProgram.PoseAnimationCount > 0;
+                            if ( subEntity.SubMesh.useSharedVertices )
+                            {
+                                this.hardwarePoseCount =
+                                        (ushort)
+                                        Utility.Max( this.hardwarePoseCount, p.VertexProgram.PoseAnimationCount );
+                            }
+                            else
+                            {
+                                subEntity.HardwarePoseCount = (ushort)Utility.Max( subEntity.HardwarePoseCount,
+                                                                                    p.VertexProgram.PoseAnimationCount );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Copies a subset of animation states from source to target.
+        /// </summary>
+        /// <remarks>
+        ///     This routine assume target is a subset of source, it will copy all animation state
+        ///     of the target with the settings from source.
+        /// </remarks>
+        /// <param name="target">Reference to animation state set which will receive the states.</param>
+        /// <param name="source">Reference to animation state set which will use as source.</param>
+        public void CopyAnimationStateSubset( AnimationStateSet target, AnimationStateSet source )
+        {
+            foreach ( AnimationState targetState in target.Values )
+            {
+                AnimationState sourceState = source.GetAnimationState( targetState.Name );
+
+                if ( sourceState == null )
+                {
+                    throw new AxiomException( "No animation entry found named '{0}'.", targetState.Name );
+                }
+                else
+                {
+                    targetState.CopyFrom( sourceState );
+                }
+            }
+        }
 
         /// <summary>
         /// 

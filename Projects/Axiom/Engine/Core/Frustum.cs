@@ -1822,7 +1822,7 @@ namespace Axiom.Core
 
 		#endregion
 
-		#region SceneObject Members
+		#region Implementation of MovableObject
 
 		/// <summary>
 		///    Local bounding radius of this camera.
@@ -1867,7 +1867,19 @@ namespace Axiom.Core
 			}
 		}
 
-		#endregion SceneObject Members
+        /// <summary>
+        /// Get the 'type flags' for this <see cref="Frustum"/>.
+        /// </summary>
+        /// <seealso cref="MovableObject.TypeFlags"/>
+        public override uint TypeFlags
+        {
+            get
+            {
+                return (uint)SceneQueryTypeMask.Frustum;
+            }
+        }
+
+		#endregion Implementation of MovableObject
 
 		#region IRenderable Members
 
