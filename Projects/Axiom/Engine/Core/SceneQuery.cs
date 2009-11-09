@@ -85,11 +85,11 @@ namespace Axiom.Core
         /// <summary>
         ///		User definable query bit mask which can be used to filter the results of a query.
         /// </summary>
-        protected ulong queryMask;
+        protected uint queryMask;
         /// <summary>
         ///		query bit mask which can be used to filter the results of a query based on object type.
         /// </summary>
-        protected ulong queryTypeMask;
+        protected uint queryTypeMask;
         /// <summary>
         ///		A flag enum which holds the world fragment types supported by this query.
         /// </summary>
@@ -106,6 +106,9 @@ namespace Axiom.Core
         internal SceneQuery( SceneManager creator )
         {
             this.creator = creator;
+
+            // default type mask to everything except lights & fx (previous behaviour)
+            this.queryTypeMask = ( 0xFFFFFFFF & (uint)~SceneQueryTypeMask.Fx ) & (uint)~SceneQueryTypeMask.Light;
 
             // default to no world fragments queried
             AddWorldFragmentType( WorldFragmentType.None );
@@ -138,7 +141,7 @@ namespace Axiom.Core
         ///    SceneObject.QueryFlags value is non-zero. The application will
         ///    have to decide what each of the bits means.
         /// </remarks>
-        public ulong QueryMask
+        public uint QueryMask
         {
             get
             {
@@ -160,7 +163,7 @@ namespace Axiom.Core
         ///    flags set per type of object. Both may exclude an object from query
         ///    results.
         /// </remarks>
-        public ulong QueryTypeMask
+        public uint QueryTypeMask
         {
             get
             {

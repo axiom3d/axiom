@@ -642,9 +642,46 @@ namespace Axiom.Core
 
 		#endregion LodBias Property
 
-		#region InverseLodBias Property
+        #region LodCamera Property
 
-		/// <summary>
+	    private Camera _lodCamera;
+        /// <summary>
+        /// Get/Sets a reference to the Camera which should be used to determine LOD settings. 
+        /// </summary>
+        /// <remarks>
+        /// Sometimes you don't want the LOD of a render to be based on the camera
+        /// that's doing the rendering, you want it to be based on a different
+        /// camera. A good example is when rendering shadow maps, since they will 
+        /// be viewed from the perspective of another camera. Therefore this method
+        /// lets you associate a different camera instance to use to determine the LOD.
+        /// <para />
+        /// To revert the camera to determining LOD based on itself, set this property with 
+        /// a reference to itself. 
+        /// </remarks>
+        public Camera LodCamera
+        {
+            get
+            {
+                return this._lodCamera ?? this;
+            }
+            set
+            {
+                if ( this == value )
+                {
+                    _lodCamera = null;
+                }
+                else
+                {
+                    _lodCamera = value;
+                }
+            }
+        }
+
+        #endregion LodCamera Property
+
+        #region InverseLodBias Property
+
+        /// <summary>
 		///		Inverted scene LOD factor, can be used by Renderables to adjust their LOD.
 		/// </summary>
 		protected float invSceneLodFactor;

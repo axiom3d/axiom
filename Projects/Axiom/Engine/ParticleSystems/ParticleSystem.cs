@@ -1644,6 +1644,18 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
+        /// <summary>
+        /// Get the 'type flags' for this <see cref="ParticleSystem"/>.
+        /// </summary>
+        /// <seealso cref="MovableObject.TypeFlags"/>
+        public override uint TypeFlags
+        {
+            get
+            {
+                return (uint)SceneQueryTypeMask.Fx;
+            }
+        }
+
 		internal ParticleSystemRenderer Renderer
 		{
 			get

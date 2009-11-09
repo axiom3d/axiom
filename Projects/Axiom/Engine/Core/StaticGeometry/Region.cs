@@ -142,9 +142,6 @@ namespace Axiom.Core
             protected ushort currentLod;
             protected float camDistanceSquared;
             protected List<LODBucket> lodBucketList;
-            protected LightList lightList;
-            protected ulong lightListUpdated;
-            protected bool beyondFarDistance;
             protected EdgeData edgeList;
             protected ShadowRenderableList shadowRenderables;
             protected bool vertexProgramInUse;
@@ -412,8 +409,7 @@ namespace Axiom.Core
                                                                   bool extrudeVertices, float extrusionDistance, ulong flags )
             {
                 Debug.Assert( indexBuffer != null, "Only external index buffers are supported right now" );
-                Debug.Assert( indexBuffer.Type == IndexType.Size16,
-                              "Only 16-bit indexes supported for now" );
+                Debug.Assert( indexBuffer.Type == IndexType.Size16, "Only 16-bit indexes supported for now" );
 
                 // Calculate the object space light details
                 Vector4 lightPos = light.GetAs4DVector();
@@ -504,6 +500,18 @@ namespace Axiom.Core
                 set
                 {
                     throw new NotSupportedException( "Cannot set value of MoveableType." );
+                }
+            }
+
+            /// <summary>
+            /// Get the 'type flags' for this <see cref="Region"/>.
+            /// </summary>
+            /// <seealso cref="MovableObject.TypeFlags"/>
+            public override uint TypeFlags
+            {
+                get
+                {
+                    return (uint)SceneQueryTypeMask.StaticGeometry;
                 }
             }
 

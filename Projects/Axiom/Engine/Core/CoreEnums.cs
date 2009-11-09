@@ -76,6 +76,29 @@ namespace Axiom.Core
 	}
 
     /// <summary>
+    /// Scene Query Type Mask values
+    /// </summary>
+    /// <seealso cref="SceneQuery"/>
+    [Flags]
+    public enum SceneQueryTypeMask : uint
+    {
+        /// <summary>Query type mask which will be used for world geometry <see cref="SceneQuery"/></summary>
+        WorldGeometry = 0x80000000,
+        /// <summary>Query type mask which will be used for entities <see cref="SceneQuery"/></summary>
+        Entity = 0x40000000,
+        /// <summary>Query type mask which will be used for effects like billboardsets / particle systems <see cref="SceneQuery"/></summary>
+        Fx = 0x20000000,
+        /// <summary>Query type mask which will be used for StaticGeometry <see cref="SceneQuery"/></summary>
+        StaticGeometry = 0x10000000,
+        /// <summary>Query type mask which will be used for lights <see cref="SceneQuery"/></summary>
+        Light = 0x08000000,
+        /// <summary>Query type mask which will be used for frusta and cameras <see cref="SceneQuery"/></summary>
+        Frustum = 0x04000000,
+        /// <summary>User type mask limit</summary>
+        UserLimit = Frustum
+    }
+
+    /// <summary>
     ///		Covers what a billboards position means.
     /// </summary>
     public enum BillboardOrigin

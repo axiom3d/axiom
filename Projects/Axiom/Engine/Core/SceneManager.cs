@@ -1493,6 +1493,10 @@ namespace Axiom.Core
                     }
                 }
             }
+
+            // notify light dirty, so all movable objects will re-populate
+            // their light list next time
+            NotifyLightsDirty();
         }
 
         /// <summary>
@@ -3024,7 +3028,7 @@ namespace Axiom.Core
         /// <param name="box">AxisAlignedBox to use for the region query.</param>
         /// <param name="mask">Custom user defined flags to use for the query.</param>
         /// <returns>A specialized implementation of AxisAlignedBoxRegionSceneQuery for this scene manager.</returns>
-        public virtual AxisAlignedBoxRegionSceneQuery CreateAABBRegionQuery( AxisAlignedBox box, ulong mask )
+        public virtual AxisAlignedBoxRegionSceneQuery CreateAABBRegionQuery( AxisAlignedBox box, uint mask )
         {
             DefaultAxisAlignedBoxRegionSceneQuery query = new DefaultAxisAlignedBoxRegionSceneQuery( this );
             query.Box = box;
@@ -3057,7 +3061,7 @@ namespace Axiom.Core
         /// </summary>
         /// <param name="ray">Ray to use for the intersection query.</param>
         /// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
-        public virtual RaySceneQuery CreateRayQuery( Ray ray, ulong mask )
+        public virtual RaySceneQuery CreateRayQuery( Ray ray, uint mask )
         {
             DefaultRaySceneQuery query = new DefaultRaySceneQuery( this );
             query.Ray = ray;
@@ -3102,7 +3106,7 @@ namespace Axiom.Core
         /// <param name="sphere">Sphere to use for the region query.</param>
         /// <param name="mask">Custom user defined flags to use for the query.</param>
         /// <returns>A specialized implementation of SphereRegionSceneQuery for this scene manager.</returns>
-        public virtual SphereRegionSceneQuery CreateSphereRegionQuery( Sphere sphere, ulong mask )
+        public virtual SphereRegionSceneQuery CreateSphereRegionQuery( Sphere sphere, uint mask )
         {
             DefaultSphereRegionSceneQuery query = new DefaultSphereRegionSceneQuery( this );
             query.Sphere = sphere;
@@ -3149,7 +3153,7 @@ namespace Axiom.Core
         /// <param name="mask">Custom user defined flags to use for the query.</param>
         /// <returns>A specialized implementation of PlaneBoundedVolumeListSceneQuery for this scene manager.</returns>
         public virtual PlaneBoundedVolumeListSceneQuery CreatePlaneBoundedVolumeQuery( PlaneBoundedVolumeList volumes,
-                                                                                       ulong mask )
+                                                                                       uint mask )
         {
             DefaultPlaneBoundedVolumeListSceneQuery query = new DefaultPlaneBoundedVolumeListSceneQuery( this );
             query.Volumes = volumes;
@@ -3182,7 +3186,7 @@ namespace Axiom.Core
         /// </remarks>
         /// <param name="mask">The query mask to apply to this query; can be used to filter out certain objects.</param>
         /// <returns>A specialized implementation of IntersectionSceneQuery for this scene manager.</returns>
-        public virtual IntersectionSceneQuery CreateIntersectionQuery( ulong mask )
+        public virtual IntersectionSceneQuery CreateIntersectionQuery( uint mask )
         {
             DefaultIntersectionSceneQuery query = new DefaultIntersectionSceneQuery( this );
             query.QueryMask = mask;
@@ -4309,6 +4313,17 @@ namespace Axiom.Core
         }
 
         /// <summary>
+        ///		Gets ths combined object visibility mask of this scenemanager and the current viewport
+        /// </summary>
+        public ulong CombinedVisibilityMask
+        {
+            get
+            {
+                return currentViewport != null ? currentViewport.VisibilityMask & this.visibilityMask : this.visibilityMask;
+            }
+        }
+
+        /// <summary>
         ///		Gets and sets the object visibility mask
         /// </summary>
         public bool FindVisibleObjectsBool
@@ -4334,6 +4349,47 @@ namespace Axiom.Core
         ///		the type name of the SceneManagerFactory which created it.
         ///</remarks>
         public abstract string TypeName { get; }
+
+        protected ulong _lightsDirtyCounter;
+        /// <summary>
+        /// Gets the lights dirty counter.
+        /// </summary>
+        /// <remarks>
+        /// Scene manager tracking lights that affecting the frustum, if changes
+        /// detected (the changes includes light list itself and the light's position
+        /// and attenuation range), then increase the lights dirty counter.
+        /// <para />
+        /// When implementing customise lights finding algorithm relied on either
+        /// <see cref="lightsAffectingFrustum"/> or <see cref="PopulateLightList"/>,
+        /// might check this value for sure that the light list are really need to
+        /// re-populate, otherwise, returns cached light list (if exists) for better
+        /// performance.
+        /// </remarks>
+        public ulong LightsDirtyCounter
+        {
+            get
+            {
+                return _lightsDirtyCounter;
+            }
+        }
+
+        
+        /// <summary>
+        /// Advance method to increase the lights dirty counter due lights changed.
+        /// </summary>
+        /// <remarks>
+        /// Scene manager tracking lights that affecting the frustum, if changes
+        /// detected (the changes includes light list itself and the light's position
+        /// and attenuation range), then increase the lights dirty counter.
+        /// <para />
+        /// For some reason, you can call this method to force whole scene objects
+        /// re-populate their light list. But near in mind, call to this method
+        /// will harm performance, so should avoid if possible.
+        /// </remarks>
+        protected internal virtual void NotifyLightsDirty()
+        {
+            ++_lightsDirtyCounter;
+        }
 
         #endregion
 
@@ -4972,6 +5028,9 @@ namespace Axiom.Core
                 // rebind camera, incase another SM in use which has switched to its cam
                 // This seems pretty silly - - is there any reason to do it?
                 shadowView.Camera = texCam;
+
+                // Associate main view camera as LOD camera
+                texCam.LodCamera = camera;
 
                 Vector3 pos, dir;
 

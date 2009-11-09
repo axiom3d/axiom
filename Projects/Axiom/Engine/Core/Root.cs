@@ -290,8 +290,6 @@ namespace Axiom.Core
 
         #region MovableObjectFactory fields
 
-        public static ulong USER_TYPE_MASK_LIMIT = 0x04000000;
-
         protected readonly MovableObjectFactoryMap movableObjectFactoryMap = new MovableObjectFactoryMap();
 
         protected EntityFactory entityFactory;
@@ -299,7 +297,7 @@ namespace Axiom.Core
         protected BillboardSetFactory billboardSetFactory;
         protected BillboardChainFactory billboardChainFactory;
         protected ManualObjectFactory manualObjectFactory;
-        protected ulong nextMovableObjectTypeFlag;
+        protected uint nextMovableObjectTypeFlag;
         protected RibbonTrailFactory ribbonTrailFactory;
 
         #endregion MovableObjectFactory fields
@@ -1286,15 +1284,15 @@ namespace Axiom.Core
         ///     This is done automatically if MovableObjectFactory.RequestTypeFlags
         ///	    returns true; don't call this manually unless you're sure you need to.
         /// </remarks>
-        public ulong NextMovableObjectTypeFlag()
+        public uint NextMovableObjectTypeFlag()
         {
-            if ( this.nextMovableObjectTypeFlag == USER_TYPE_MASK_LIMIT )
+            if ( this.nextMovableObjectTypeFlag == (uint)SceneQueryTypeMask.UserLimit )
             {
                 throw new AxiomException(
                         "Cannot allocate a type flag since all the available flags have been used." );
             }
 
-            ulong ret = this.nextMovableObjectTypeFlag;
+            uint ret = this.nextMovableObjectTypeFlag;
             this.nextMovableObjectTypeFlag <<= 1;
             return ret;
         }

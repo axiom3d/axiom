@@ -42,6 +42,7 @@ using System.Collections;
 
 using Axiom.Animating;
 using Axiom.Collections;
+using Axiom.Core.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Graphics.Collections;
@@ -59,8 +60,22 @@ namespace Axiom.Core
     /// </remarks>
     public abstract class MovableObject : ShadowCaster, IAnimableObject
     {
+    	public delegate void ObjectDelegate(MovableObject obj);
+    	public delegate bool ObjectRenderingDelegate(MovableObject obj,Camera camera);
+    	public delegate LightList ObjectQueryLightsDelegate(MovableObject obj);
+    	
+    	// Define all events Handler
+        public event ObjectDelegate ObjectDestroyed;
+        public event ObjectDelegate ObjectAttached;
+        public event ObjectDelegate ObjectDetached;
+        public event ObjectDelegate ObjectMoved;
+        
+        public event ObjectRenderingDelegate ObjectRendering;
+        public event ObjectQueryLightsDelegate ObjectQueryLights;
+        
         #region Fields
 
+		
         /// <summary>
         ///		Does this object cast shadows?
         /// </summary>
@@ -79,7 +94,23 @@ namespace Axiom.Core
         ///    Name of this object.
         /// </summary>
         protected string name;
-
+        /// Is debug display enabled?
+		protected bool debugDisplay;
+		/// Upper distance to still render
+		protected float upperDistance;
+		protected float squaredUpperDistance;
+		/// Hidden because of distance?
+		protected bool beyondFarDistance;
+		
+		/// Does rendering this object disabled by listener?
+        protected bool renderingDisabled;
+        
+        // List of lights for this object
+        protected LightList lightList = new LightList();
+        
+        /// The last frame that this light list was updated in
+        protected ulong lightListUpdated;
+        
         /// <summary>
         ///		Flag which indicates whether this objects parent is a <see cref="TagPoint"/>.
         /// </summary>
@@ -147,7 +178,8 @@ namespace Axiom.Core
             this.isVisible = true;
             // set default RenderQueueGroupID for this movable object
             this.renderQueueID = RenderQueueGroupID.Main;
-            this.queryFlags = unchecked( 0xffffffff );
+            this.queryFlags = DefaultQueryFlags;
+			this.visibilityFlags = DefaultVisibilityFlags;
             this.worldAABB = AxisAlignedBox.Null;
             this.castShadows = true;
 			this.name = "Unnamed_" + nextUnnamedNodeExtNum++;
@@ -226,14 +258,18 @@ namespace Axiom.Core
         /// </summary>
         public virtual bool IsVisible
         {
-            get
-            {
-                return this.isVisible;
-            }
-            set
-            {
-                this.isVisible = value;
-            }
+        	get
+			{
+        		if ( !isVisible || beyondFarDistance || renderingDisabled )
+		            return false;
+                
+		        SceneManager sm = Root.Instance.SceneManager;
+                return ( sm != null ) && ( ( visibilityFlags & sm.CombinedVisibilityMask ) != 0 );
+        	}
+			set
+			{
+				isVisible = value;
+			}
         }
 
         /// <summary>
@@ -281,7 +317,7 @@ namespace Axiom.Core
         /// Custom objects which don't use MovableObjectFactory will need to 
         /// override this if they want to be included in queries.
         /// </remarks>
-        public virtual ulong TypeFlags
+        public virtual uint TypeFlags
         {
             get
             {
@@ -369,6 +405,99 @@ namespace Axiom.Core
         #endregion Properties
 
         #region Methods
+        /// <summary>
+        /// Detaches an object from a parent SceneNode or TagPoint, if attached.
+        /// </summary>
+        /// <param name="void"></param>
+        public virtual void DetachFromParent()
+        {
+        	if (IsAttached)
+			{
+				if (parentIsTagPoint)
+				{
+					TagPoint tp = ( TagPoint ) parentNode;
+					tp.ParentEntity.DetachObjectFromBone( this );
+					
+				}
+				else
+				{
+					SceneNode sn = (SceneNode) parentNode;
+					sn.DetachObject(this);
+				}
+			}
+        }
+        
+        internal virtual void NotifyMoved()
+        {
+        	// Mark light list being dirty, simply decrease
+	        // counter by one for minimise overhead
+	        --lightListUpdated;
+	
+	        // Notify listener if exists
+	        if (ObjectMoved != null)
+	        {
+	            ObjectMoved(this);
+	        }
+        }
+
+        public virtual LightList QueryLights()
+        {
+            // Try listener first
+            if ( ObjectQueryLights != null )
+            {
+                lightList = ObjectQueryLights( this );
+                if ( lightList != null )
+                {
+                    return lightList;
+                }
+            }
+
+            // Query from parent entity if exists
+            if ( parentIsTagPoint )
+            {
+                TagPoint tp = (TagPoint)parentNode;
+                return tp.ParentEntity.QueryLights();
+            }
+
+            if ( parentNode != null )
+            {
+                SceneNode sn = (SceneNode)parentNode;
+
+                // Make sure we only update this only if need.
+                ulong frame = sn.Creator.LightsDirtyCounter;
+                if ( lightListUpdated != frame )
+                {
+                    lightListUpdated = frame;
+
+                    lightList = sn.FindLights( this.BoundingRadius );
+                }
+            }
+            else
+            {
+                if ( lightList != null )
+                {
+                    lightList.Clear();
+                }
+            }
+
+            return lightList;
+        }
+
+        /// <summary>
+        /// Gets/Sets the distance at which the object is no longer rendered.
+        /// </summary>
+        public virtual float RenderingDistance
+        {
+            get
+            {
+                return upperDistance;
+            }
+            set
+            {
+                upperDistance = value;
+                squaredUpperDistance = upperDistance * upperDistance;
+            }
+        }
 
         /// <summary>
         ///    Retrieves the axis-aligned bounding box for this object in world coordinates.
@@ -417,17 +546,17 @@ namespace Axiom.Core
         /// <summary>
         ///    Flags determining whether this object is included/excluded from scene queries.
         /// </summary>
-        protected ulong queryFlags;
+        protected uint queryFlags;
 
         /// <summary>
         /// default query flags for all future MovableObject instances.
         /// </summary>
-        protected ulong defaultQueryFlags;
+        protected uint defaultQueryFlags = unchecked(0xFFFFFFFF);
 
         /// <summary>
         /// Gets/Sets default query flags for all future MovableObject instances.
         /// </summary>
-        public ulong DefaultQueryFlags
+        public uint DefaultQueryFlags
         {
             get 
             { 
@@ -448,7 +577,7 @@ namespace Axiom.Core
         ///		a bit on these flags is set, will it be included in a query asking for that flag. The
         ///		meaning of the bits is application-specific.
         /// </remarks>
-        public ulong QueryFlags
+        public uint QueryFlags
         {
             get
             {
@@ -464,7 +593,7 @@ namespace Axiom.Core
         ///		Appends the specified flags to the current flags for this object.
         /// </summary>
         /// <param name="flags"></param>
-        public void AddQueryFlags( ulong flags )
+        public void AddQueryFlags( uint flags )
         {
             this.queryFlags |= flags;
         }
@@ -473,7 +602,7 @@ namespace Axiom.Core
         ///		Removes the specified flags from the current flags for this object.
         /// </summary>
         /// <param name="flags"></param>
-        public void RemoveQueryFlags( ulong flags )
+        public void RemoveQueryFlags( uint flags )
         {
             this.queryFlags ^= flags;
         }
@@ -485,17 +614,17 @@ namespace Axiom.Core
         /// <summary>
         /// Flags determining whether this object is visible (compared to SceneManager mask)
         /// </summary>
-        protected ulong visibilityFlags;
+        protected uint visibilityFlags;
 
         /// <summary>
         /// default visibility flags for all future MovableObject instances.
         /// </summary>
-        protected static ulong defaultVisibilityFlags;
+        protected static uint defaultVisibilityFlags = unchecked(0xFFFFFFFF);
 
         /// <summary>
         /// Gets/Sets default visibility flags for all future MovableObject instances.
         /// </summary>
-        public static ulong DefaultVisibilityFlags
+        public static uint DefaultVisibilityFlags
         {
             get
             {
@@ -511,11 +640,11 @@ namespace Axiom.Core
         ///	Gets/Sets the visibility flags for this object.
         /// </summary>
         /// <remarks>
-        ///	As well as a simple true/false value for visibility (as seen in setVisible),
+        ///	As well as a simple true/false value for visibility (as seen in <see cref="Visible"/>),
         ///	you can also set visiblity flags which when 'and'ed with the SceneManager's
         ///	visibility mask can also make an object invisible.
         /// </remarks>
-        public ulong VisibilityFlags
+        public uint VisibilityFlags
         {
             get
             {
@@ -531,7 +660,7 @@ namespace Axiom.Core
         ///		Appends the specified flags to the current flags for this object.
         /// </summary>
         /// <param name="flags"></param>
-        public void AddVisibilityFlags( ulong flags )
+        public void AddVisibilityFlags( uint flags )
         {
             this.visibilityFlags |= flags;
         }
@@ -540,7 +669,7 @@ namespace Axiom.Core
         ///		Removes the specified flags from the current flags for this object.
         /// </summary>
         /// <param name="flags"></param>
-        public void RemoveVisibilityFlags( ulong flags )
+        public void RemoveVisibilityFlags( uint flags )
         {
             this.visibilityFlags ^= flags;
         }
@@ -560,6 +689,28 @@ namespace Axiom.Core
             {
                 this.castShadows = value;
             }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether or not the debug display of this object is enabled.
+        /// <remarks>
+        /// Some objects aren't visible themselves but it can be useful to display
+		///	a debug representation of them. Or, objects may have an additional 
+		///	debug display on top of their regular display. This option enables / 
+		///	disables that debug display. Objects that are not visible never display
+		///	debug geometry regardless of this setting.
+        /// </remarks>
+        /// </summary>
+        public bool DebugDisplayEnabled
+        {
+        	get
+        	{
+        		return debugDisplay;
+        	}
+        	set
+        	{
+        		debugDisplay = value;
+        	}
         }
 
         public override AxisAlignedBox GetLightCapBounds()
@@ -670,8 +821,32 @@ namespace Axiom.Core
         /// <param name="node">Scene node to notify.</param>
         internal virtual void NotifyAttached( Node node, bool isTagPoint )
         {
+			bool parentChanged = (node != this.parentNode);
             this.parentNode = node;
             this.parentIsTagPoint = isTagPoint;
+            // Mark light list being dirty, simply decrease
+	        // counter by one for minimise overhead
+	        --lightListUpdated;
+	        
+	        if( parentChanged )
+	        {
+	            if ( this.parentNode != null )
+	            {
+	                if ( ObjectAttached != null )
+	                {
+	                    //Fire Event
+	                    ObjectAttached( this );
+	                }
+	            }
+	            else
+	            {
+	                if ( ObjectDetached != null )
+	                {
+	                    //Fire Event
+	                    ObjectDetached( this );
+	                }
+	            }
+	        }
         }
 
         /// <summary>
@@ -682,10 +857,43 @@ namespace Axiom.Core
         ///		them incase they wish to do this.
         /// </remarks>
         /// <param name="camera">Reference to the Camera being used for the current rendering operation.</param>
-        public abstract void NotifyCurrentCamera( Camera camera );
+        public virtual void NotifyCurrentCamera( Camera camera )
+        {
+            if ( parentNode != null )
+            {
+                if ( camera.UseRenderingDistance && upperDistance > 0 )
+                {
+                    float rad = this.BoundingRadius;
+                    float squaredDepth = parentNode.GetSquaredViewDepth( camera.LodCamera );
+                    // Max distance to still render
+                    float maxDist = upperDistance + rad;
+                    if ( squaredDepth > Utility.Sqr( maxDist ) )
+                    {
+                        beyondFarDistance = true;
+                    }
+                    else
+                    {
+                        beyondFarDistance = false;
+                    }
+                }
+                else
+                {
+                    beyondFarDistance = false;
+                }
+            }
+
+            if( ObjectRendering != null )
+        	{
+        		renderingDisabled = ObjectRendering( this, camera );
+        	}
+			else 
+			{
+				renderingDisabled = false;
+			}
+        }
 
         /// <summary>
-        ///		An abstract method that causes the specified RenderQueue to update itself.  
+        ///	An abstract method that causes the specified RenderQueue to update itself.  
         /// </summary>
         /// <remarks>This is an internal method used by the engine assembly only.</remarks>
         /// <param name="queue">The render queue that this object should be updated in.</param>
@@ -745,7 +953,7 @@ namespace Axiom.Core
     {
         public const string TypeName = "MovableObject";
         private string _type;
-        private ulong _typeFlag;
+        private uint _typeFlag;
 
         protected MovableObjectFactory()
         {
@@ -765,7 +973,7 @@ namespace Axiom.Core
         ///	    to a number of different types of object, should you always wish them
         ///	    to be treated the same in queries.
         /// </remarks>
-        public virtual ulong TypeFlag
+        public virtual uint TypeFlag
         {
             get
             {

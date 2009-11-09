@@ -567,6 +567,18 @@ namespace Axiom.SceneManagers.Octree
 			}
 		}
 
+	    /// <summary>
+	    /// Get the 'type flags' for this <see cref="TerrainRenderable"/>.
+	    /// </summary>
+	    /// <seealso cref="MovableObject.TypeFlags"/>
+	    public override uint TypeFlags
+        {
+            get
+            {
+                return (uint)SceneQueryTypeMask.WorldGeometry;
+            }
+        }
+
 		public override void NotifyCurrentCamera( Camera camera )
 		{
 			if ( forcedRenderLevel >= 0 )

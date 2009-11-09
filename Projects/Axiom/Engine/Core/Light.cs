@@ -1241,6 +1241,19 @@ namespace Axiom.Core
             // Do Nothing	
         }
 
+        /// <summary>
+        /// Get the 'type flags' for this <see cref="Light"/>.
+        /// </summary>
+        /// <seealso cref="MovableObject.TypeFlags"/>
+        public override uint TypeFlags
+        {
+            get
+            {
+                return (uint)SceneQueryTypeMask.Light;
+            }
+        }
+
+
         #endregion MovableObject Implementation
 
         #region IComparable Members
