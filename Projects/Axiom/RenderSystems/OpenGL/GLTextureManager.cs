@@ -52,6 +52,13 @@ namespace Axiom.RenderSystems.OpenGL
 	{
 		private BaseGLSupport _glSupport;
 		private int _warningTextureId;
+        public int WarningTextureId
+        {
+            get
+            {
+                return _warningTextureId;
+            }
+        }
 
 		internal GLTextureManager( BaseGLSupport glSupport )
 			: base()

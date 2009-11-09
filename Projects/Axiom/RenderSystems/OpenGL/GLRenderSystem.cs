@@ -160,6 +160,8 @@ namespace Axiom.RenderSystems.OpenGL
 		protected GLGpuProgram currentVertexProgram;
 		protected GLGpuProgram currentFragmentProgram;
 
+	    private int _activeTextureUnit;
+
 		#endregion Fields
 
 		#region Constructors
@@ -317,7 +319,22 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				InitGL( window );
 
-				// Initialise the main context
+                // set the number of texture units
+                _fixedFunctionTextureUnits = _rsCapabilities.TextureUnitCount;
+
+                // in GL there can be less fixed function texture units than general
+                // texture units. use the smaller of the two.
+                if ( HardwareCapabilities.HasCapability( Capabilities.FragmentPrograms ))
+                {
+                    int maxTexUnits;
+                    Gl.glGetIntegerv(Gl.GL_MAX_TEXTURE_UNITS, out maxTexUnits );
+                    if ( _fixedFunctionTextureUnits > maxTexUnits )
+                    {
+                        _fixedFunctionTextureUnits = maxTexUnits;
+                    }
+                }
+
+			    // Initialise the main context
 				_oneTimeContextInitialization();
 				if ( _currentContext != null )
 					_currentContext.Initialized = true;
@@ -905,7 +922,117 @@ namespace Axiom.RenderSystems.OpenGL
 			//}
 		}
 
-		/// <summary>
+	    /// <summary>
+	    /// Sets whether or not rendering points using PointList will 
+	    /// render point sprites (textured quads) or plain points.
+	    /// </summary>
+	    /// <value></value>
+	    public override bool PointSprites
+	    {
+	        set
+	        {
+	            if ( !HardwareCapabilities.HasCapability( Capabilities.PointSprites ))
+	                return;
+
+	            if ( value )
+	            {
+	                Gl.glEnable( Gl.GL_POINTS );
+	            }
+	            else
+	            {
+	                Gl.glDisable( Gl.GL_POINTS );
+	            }
+
+                // Set sprite Texture coord calulation
+                // Don't offer this as an option as DX links it to sprite enabled
+                for ( int i = 0; i < _fixedFunctionTextureUnits; i++)
+	            {
+	                activateGLTextureUnit( i );
+	                Gl.glTexEnvi( Gl.GL_POINT_SPRITE, Gl.GL_COORD_REPLACE, value ? Gl.GL_TRUE : Gl.GL_FALSE );
+	            }
+	            activateGLTextureUnit( 0 );
+	        }
+	    }
+
+	    /// <summary>
+	    /// Sets the size of points and how they are attenuated with distance.
+	    /// <remarks>
+	    /// When performing point rendering or point sprite rendering,
+	    /// point size can be attenuated with distance. The equation for
+	    /// doing this is attenuation = 1 / (constant + linear * dist + quadratic * d^2) .
+	    /// </remarks>
+	    /// </summary>
+	    /// <param name="size"></param>
+	    /// <param name="attenuationEnabled"></param>
+	    /// <param name="constant"></param>
+	    /// <param name="linear"></param>
+	    /// <param name="quadratic"></param>
+	    /// <param name="minSize"></param>
+	    /// <param name="maxSize"></param>
+	    public override void SetPointParameters( float size, bool attenuationEnabled, float constant, float linear, float quadratic, float minSize, float maxSize )
+	    {
+		float[] val = new float[] {1, 0, 0, 1};
+		
+		if(attenuationEnabled) 
+		{
+			// Point size is still calculated in pixels even when attenuation is
+			// enabled, which is pretty awkward, since you typically want a viewport
+			// independent size if you're looking for attenuation.
+			// So, scale the point size up by viewport size (this is equivalent to
+			// what D3D does as standard)
+			size = size * activeViewport.ActualHeight;
+			minSize = minSize * activeViewport.ActualHeight;
+			if (maxSize == 0.0f)
+				maxSize = HardwareCapabilities.MaxPointSize; // pixels
+			else
+				maxSize = maxSize * activeViewport.ActualHeight;
+			
+			// XXX: why do I need this for results to be consistent with D3D?
+			// Equations are supposedly the same once you factor in vp height
+			Real correction = 0.005;
+			// scaling required
+			val[0] = constant;
+			val[1] = linear * correction;
+			val[2] = quadratic * correction;
+			val[3] = 1;
+			
+			if (HardwareCapabilities.HasCapability(Capabilities.VertexPrograms))
+				Gl.glEnable(Gl.GL_VERTEX_PROGRAM_POINT_SIZE);
+		} 
+		else 
+		{
+			if (maxSize == 0.0f)
+				maxSize = HardwareCapabilities.MaxPointSize;
+            if ( HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) )
+                Gl.glDisable( Gl.GL_VERTEX_PROGRAM_POINT_SIZE );
+        }
+		
+		// no scaling required
+		// GL has no disabled flag for this so just set to constant
+		Gl.glPointSize(size);
+
+        if ( HardwareCapabilities.HasCapability( Capabilities.PointExtendedParameters ) )
+		{
+            Gl.glPointParameterfv( Gl.GL_POINT_DISTANCE_ATTENUATION, val );
+            Gl.glPointParameterf( Gl.GL_POINT_SIZE_MIN, minSize );
+            Gl.glPointParameterf( Gl.GL_POINT_SIZE_MAX, maxSize );
+		}
+        // TODO : Need HarwareCapabilities Update to support RenderSystem Specific Capabilities
+        //else if ( HardwareCapabilities.HasCapability( Capabilities.PointExtendedParametersARB ) )
+        //{
+        //    Gl.glPointParameterfvARB( Gl.GL_POINT_DISTANCE_ATTENUATION, val );
+        //    Gl.glPointParameterfARB( Gl.GL_POINT_SIZE_MIN, minSize );
+        //    Gl.glPointParameterfARB( Gl.GL_POINT_SIZE_MAX, maxSize );
+        //}
+        //else if ( HardwareCapabilities.HasCapability( Capabilities.PointExtendedParametersEXT ) )
+        //{
+        //    Gl.glPointParameterfvEXT( Gl.GL_POINT_DISTANCE_ATTENUATION, val );
+        //    Gl.glPointParameterfEXT( Gl.GL_POINT_SIZE_MIN, minSize );
+        //    Gl.glPointParameterfEXT( Gl.GL_POINT_SIZE_MAX, maxSize );
+        //}
+	    }
+
+	    /// <summary>
 		/// 
 		/// </summary>
 		/// <param name="stage"></param>
@@ -1601,28 +1728,41 @@ namespace Axiom.RenderSystems.OpenGL
 
 				if ( lastTextureType != textureTypes[ stage ] && lastTextureType != 0 )
 				{
-					Gl.glDisable( lastTextureType );
+                    if ( stage < _fixedFunctionTextureUnits )
+                    {
+                        Gl.glDisable( lastTextureType );
+                    }
 				}
 
-				Gl.glEnable( textureTypes[ stage ] );
+                if ( stage < _fixedFunctionTextureUnits )
+                {
+                    Gl.glEnable( textureTypes[ stage ] );
+                }
 
 				if ( texture != null )
 				{
 					Gl.glBindTexture( textureTypes[ stage ], texture.TextureID );
 				}
+                else
+				{
+				    Gl.glBindTexture( textureTypes[ stage ], ((GLTextureManager)textureManager).WarningTextureId );
+				}
 			}
 			else
 			{
-				if ( textureTypes[ stage ] != 0 )
-				{
-					Gl.glDisable( textureTypes[ stage ] );
-				}
+                if ( stage < _fixedFunctionTextureUnits )
+                {
+                    if ( lastTextureType != 0 )
+                    {
+                        Gl.glDisable( textureTypes[ stage ] );
+                    }
+                    Gl.glTexEnvf( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_MODULATE );
+                }
 
-				Gl.glTexEnvf( Gl.GL_TEXTURE_ENV, Gl.GL_TEXTURE_ENV_MODE, Gl.GL_MODULATE );
-			}
-
-			// reset active texture to unit 0
-			Gl.glActiveTextureARB( Gl.GL_TEXTURE0 );
+			    // reset active texture to unit 0
+                Gl.glActiveTextureARB( Gl.GL_TEXTURE0 );
+            }
+		    activateGLTextureUnit( 0 );
 		}
 
 		public override void SetAlphaRejectSettings( int stage, CompareFunction func, byte val )
@@ -2217,8 +2357,8 @@ namespace Axiom.RenderSystems.OpenGL
 				return;
 			}
 
-			int srcFactor = ConvertBlendFactor( src );
-			int destFactor = ConvertBlendFactor( dest );
+            int srcFactor = GLHelper.ConvertEnum( src );
+            int destFactor = GLHelper.ConvertEnum( dest );
 
 			if ( src == SceneBlendFactor.One && dest == SceneBlendFactor.Zero )
 			{
@@ -2235,7 +2375,38 @@ namespace Axiom.RenderSystems.OpenGL
 			lastBlendDest = dest;
 		}
 
-		/// <summary>
+	    /// <summary>
+	    /// Sets the global blending factors for combining subsequent renders with the existing frame contents.
+	    /// The result of the blending operation is:
+	    /// final = (texture * sourceFactor) + (pixel * destFactor).
+	    /// Each of the factors is specified as one of a number of options, as specified in the SceneBlendFactor
+	    /// enumerated type.
+	    /// </summary>
+	    /// <param name="sourceFactor">The source factor in the above calculation, i.e. multiplied by the texture colour components.</param>
+	    /// <param name="destFactor">The destination factor in the above calculation, i.e. multiplied by the pixel colour components.</param>
+	    /// <param name="sourceFactorAlpha">The source factor in the above calculation for the alpha channel, i.e. multiplied by the texture alpha components.</param>
+	    /// <param name="destFactorAlpha">The destination factor in the above calculation for the alpha channel, i.e. multiplied by the pixel alpha components.</param>
+	    public override void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha )
+	    {
+            int sourceBlend = GLHelper.ConvertEnum( sourceFactor );
+            int destBlend = GLHelper.ConvertEnum( destFactor );
+            int sourceBlendAlpha = GLHelper.ConvertEnum( sourceFactorAlpha );
+            int destBlendAlpha = GLHelper.ConvertEnum( destFactorAlpha );
+
+            if ( sourceFactor == SceneBlendFactor.One && destFactor == SceneBlendFactor.Zero &&
+                sourceFactorAlpha == SceneBlendFactor.One && destFactorAlpha == SceneBlendFactor.Zero )
+            {
+                Gl.glDisable( Gl.GL_BLEND );
+            }
+            else
+            {
+                Gl.glEnable( Gl.GL_BLEND );
+                Gl.glBlendFuncSeparate( sourceBlend, destBlend, sourceBlendAlpha, destBlendAlpha );
+            }
+
+        }
+
+	    /// <summary>
 		/// 
 		/// </summary>
 		public override float DepthBias
@@ -2450,53 +2621,6 @@ namespace Axiom.RenderSystems.OpenGL
 		#region Private methods
 
 		/// <summary>
-		///		Private method to convert our blend factors to that of Open GL
-		/// </summary>
-		/// <param name="factor"></param>
-		/// <returns></returns>
-		private int ConvertBlendFactor( SceneBlendFactor factor )
-		{
-			int glFactor = Gl.GL_ONE;
-
-			switch ( factor )
-			{
-				case SceneBlendFactor.One:
-					glFactor = Gl.GL_ONE;
-					break;
-				case SceneBlendFactor.Zero:
-					glFactor = Gl.GL_ZERO;
-					break;
-				case SceneBlendFactor.DestColor:
-					glFactor = Gl.GL_DST_COLOR;
-					break;
-				case SceneBlendFactor.SourceColor:
-					glFactor = Gl.GL_SRC_COLOR;
-					break;
-				case SceneBlendFactor.OneMinusDestColor:
-					glFactor = Gl.GL_ONE_MINUS_DST_COLOR;
-					break;
-				case SceneBlendFactor.OneMinusSourceColor:
-					glFactor = Gl.GL_ONE_MINUS_SRC_COLOR;
-					break;
-				case SceneBlendFactor.DestAlpha:
-					glFactor = Gl.GL_DST_ALPHA;
-					break;
-				case SceneBlendFactor.SourceAlpha:
-					glFactor = Gl.GL_SRC_ALPHA;
-					break;
-				case SceneBlendFactor.OneMinusDestAlpha:
-					glFactor = Gl.GL_ONE_MINUS_DST_ALPHA;
-					break;
-				case SceneBlendFactor.OneMinusSourceAlpha:
-					glFactor = Gl.GL_ONE_MINUS_SRC_ALPHA;
-					break;
-			}
-
-			// return the GL equivalent
-			return glFactor;
-		}
-
-		/// <summary>
 		///		Converts a Matrix4 object to a float[16] that contains the matrix
 		///		in top to bottom, left to right order.
 		///		i.e.	glMatrix[0] = matrix[0,0]
@@ -2665,7 +2789,7 @@ namespace Axiom.RenderSystems.OpenGL
 				_rsCapabilities.TextureUnitCount = 1;
 			}
 
-			// anisotropic filtering
+            // anisotropic filtering
 			if ( _glSupport.CheckExtension( "GL_EXT_texture_filter_anisotropic" ) )
 			{
 				_rsCapabilities.SetCapability( Capabilities.AnisotropicFiltering );
@@ -3059,7 +3183,33 @@ namespace Axiom.RenderSystems.OpenGL
 			return new IntPtr( i );
 		}
 
-		private void _setRenderTarget( RenderTarget target )
+        private bool activateGLTextureUnit( int unit )
+        {
+            if ( _activeTextureUnit != unit )
+            {
+                if ( _glSupport.CheckMinVersion( "1.2" ) && unit < HardwareCapabilities.TextureUnitCount )
+                {
+                    Gl.glActiveTextureARB( Gl.GL_TEXTURE0 + unit );
+                    _activeTextureUnit = unit;
+                    return true;
+                }
+                else if ( unit == 0)
+                {
+                    // always ok to use the first unit;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+	    private void _setRenderTarget( RenderTarget target )
 		{
 			// Unbind frame buffer object
 			if ( activeRenderTarget != null )

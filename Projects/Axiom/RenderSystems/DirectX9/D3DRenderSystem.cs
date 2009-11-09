@@ -526,7 +526,6 @@ namespace Axiom.RenderSystems.DirectX9
                 device.SetRenderState( D3D.RenderState.ColorWriteEnable, val );
         }
 
-
         /// <summary>
         /// 
         /// </summary>
@@ -1071,6 +1070,46 @@ namespace Axiom.RenderSystems.DirectX9
         }
 
         /// <summary>
+        /// Sets the size of points and how they are attenuated with distance.
+        /// <remarks>
+        /// When performing point rendering or point sprite rendering,
+        /// point size can be attenuated with distance. The equation for
+        /// doing this is attenuation = 1 / (constant + linear * dist + quadratic * d^2) .
+        /// </remarks>
+        /// </summary>
+        /// <param name="size"></param>
+        /// <param name="attenuationEnabled"></param>
+        /// <param name="constant"></param>
+        /// <param name="linear"></param>
+        /// <param name="quadratic"></param>
+        /// <param name="minSize"></param>
+        /// <param name="maxSize"></param>
+        public override void SetPointParameters( float size, bool attenuationEnabled, float constant, float linear, float quadratic, float minSize, float maxSize )
+        {
+            if ( attenuationEnabled )
+            {
+                //scaling required
+                SetRenderState( D3D.RenderState.PointScaleEnable, true );
+                SetRenderState( D3D.RenderState.PointScaleA, constant );
+                SetRenderState( D3D.RenderState.PointScaleB, linear );
+                SetRenderState( D3D.RenderState.PointScaleC, quadratic );
+            }
+            else
+            {
+                //no scaling required
+                SetRenderState( D3D.RenderState.PointScaleEnable, false );
+            }
+
+            SetRenderState( D3D.RenderState.PointSize, size );
+            SetRenderState( D3D.RenderState.PointSizeMin, minSize );
+            if ( maxSize == 0.0f)
+            {
+                maxSize = HardwareCapabilities.MaxPointSize;
+            }
+            SetRenderState( D3D.RenderState.PointSizeMax, maxSize );
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="stage"></param>
@@ -1362,10 +1401,38 @@ namespace Axiom.RenderSystems.DirectX9
             {
                 SetRenderState( D3D.RenderState.AlphaBlendEnable, true );
                 SetRenderState( D3D.RenderState.SeparateAlphaBlendEnable, false );
-                device.SetRenderState( D3D.RenderState.SourceBlend, D3DHelper.ConvertEnum( src ) );
-                device.SetRenderState( D3D.RenderState.DestinationBlend, D3DHelper.ConvertEnum( dest ) );
+                SetRenderState( D3D.RenderState.SourceBlend, (int)D3DHelper.ConvertEnum( src ) );
+                SetRenderState( D3D.RenderState.DestinationBlend, (int)D3DHelper.ConvertEnum( dest ) );
             }
+        }
 
+        /// <summary>
+        /// Sets the global blending factors for combining subsequent renders with the existing frame contents.
+        /// The result of the blending operation is:
+        /// final = (texture * sourceFactor) + (pixel * destFactor).
+        /// Each of the factors is specified as one of a number of options, as specified in the SceneBlendFactor
+        /// enumerated type.
+        /// </summary>
+        /// <param name="sourceFactor">The source factor in the above calculation, i.e. multiplied by the texture colour components.</param>
+        /// <param name="destFactor">The destination factor in the above calculation, i.e. multiplied by the pixel colour components.</param>
+        /// <param name="sourceFactorAlpha">The source factor in the above calculation for the alpha channel, i.e. multiplied by the texture alpha components.</param>
+        /// <param name="destFactorAlpha">The destination factor in the above calculation for the alpha channel, i.e. multiplied by the pixel alpha components.</param>
+        public override void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha )
+        {
+            if ( sourceFactor == SceneBlendFactor.One && destFactor == SceneBlendFactor.Zero &&
+                 sourceFactorAlpha == SceneBlendFactor.One && destFactorAlpha == SceneBlendFactor.Zero )
+            {
+                SetRenderState( D3D.RenderState.AlphaBlendEnable, false );
+            }
+            else
+            {
+                SetRenderState( D3D.RenderState.AlphaBlendEnable, true );
+                SetRenderState( D3D.RenderState.SeparateAlphaBlendEnable, true );
+                SetRenderState( D3D.RenderState.SourceBlend, (int)D3DHelper.ConvertEnum( sourceFactor ) );
+                SetRenderState( D3D.RenderState.DestinationBlend, (int)D3DHelper.ConvertEnum( destFactor ) );
+                SetRenderState( D3D.RenderState.SourceBlendAlpha, (int)D3DHelper.ConvertEnum( sourceFactorAlpha ) );
+                SetRenderState( D3D.RenderState.DestinationBlendAlpha, (int)D3DHelper.ConvertEnum( destFactorAlpha ) );
+            }
         }
 
         /// <summary>
@@ -1878,6 +1945,19 @@ namespace Axiom.RenderSystems.DirectX9
             else
             {
                 device.SetRenderState( D3D.RenderState.ColorVertex, false );
+            }
+        }
+
+        /// <summary>
+        /// Sets whether or not rendering points using PointList will 
+        /// render point sprites (textured quads) or plain points.
+        /// </summary>
+        /// <value></value>
+        public override bool PointSprites
+        {
+            set
+            {
+                SetRenderState( D3D.RenderState.PointSpriteEnable, value );
             }
         }
 

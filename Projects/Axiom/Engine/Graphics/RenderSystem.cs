@@ -1263,6 +1263,21 @@ namespace Axiom.Graphics
         /// <param name="depthFunction">Sets the function required for the depth test.</param>
         public abstract void SetDepthBufferParams( bool depthTest, bool depthWrite, CompareFunction depthFunction );
 
+        public void SetFog()
+        {
+            SetFog(FogMode.None, ColorEx.White,1.0f, 0.0f, 1.0f );
+        }
+
+        public void SetFog(FogMode mode)
+        {
+            SetFog(mode, ColorEx.White, 1.0f, 0.0f, 1.0f);
+        }
+
+        public void SetFog(FogMode mode, ColorEx color)
+        {
+            SetFog(mode, color, 1.0f, 0.0f, 1.0f);
+        }
+
         /// <summary>
         ///		Sets the fog with the given params.
         /// </summary>
@@ -1283,6 +1298,19 @@ namespace Axiom.Graphics
         /// <param name="src">The source factor in the above calculation, i.e. multiplied by the texture color components.</param>
         /// <param name="dest">The destination factor in the above calculation, i.e. multiplied by the pixel color components.</param>
         public abstract void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest );
+
+        /// <summary>
+        /// Sets the global blending factors for combining subsequent renders with the existing frame contents.
+		/// The result of the blending operation is:
+        /// final = (texture * sourceFactor) + (pixel * destFactor).
+        /// Each of the factors is specified as one of a number of options, as specified in the SceneBlendFactor
+		/// enumerated type.
+        /// </summary>
+        /// <param name="sourceFactor">The source factor in the above calculation, i.e. multiplied by the texture colour components.</param>
+        /// <param name="destFactor">The destination factor in the above calculation, i.e. multiplied by the pixel colour components.</param>
+        /// <param name="sourceFactorAlpha">The source factor in the above calculation for the alpha channel, i.e. multiplied by the texture alpha components.</param>
+        /// <param name="destFactorAlpha">The destination factor in the above calculation for the alpha channel, i.e. multiplied by the pixel alpha components.</param>
+        public abstract void SetSeparateSceneBlending(SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha);
 
         /// <summary>
         ///     Sets the 'scissor region' ie the region of the target in which rendering can take place.
@@ -1363,6 +1391,30 @@ namespace Axiom.Graphics
         /// <param name="tracking"></param>
         public abstract void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, float shininess, TrackVertexColor tracking );
 
+        /// <summary>
+        /// Sets whether or not rendering points using PointList will 
+        /// render point sprites (textured quads) or plain points.
+        /// </summary>
+        /// <value></value>
+        public abstract bool PointSprites { set; }
+
+        /// <summary>
+        /// Sets the size of points and how they are attenuated with distance.
+        /// <remarks>
+        /// When performing point rendering or point sprite rendering,
+		/// point size can be attenuated with distance. The equation for
+		/// doing this is attenuation = 1 / (constant + linear * dist + quadratic * d^2) .
+        /// </remarks>
+        /// </summary>
+        /// <param name="size"></param>
+        /// <param name="attenuationEnabled"></param>
+        /// <param name="constant"></param>
+        /// <param name="linear"></param>
+        /// <param name="quadratic"></param>
+        /// <param name="minSize"></param>
+        /// <param name="maxSize"></param>
+        public abstract void SetPointParameters(float size, bool attenuationEnabled, float constant, float linear, float quadratic, float minSize, float maxSize);
+        
         /// <summary>
         ///		Sets the details of a texture stage, to be used for all primitives
         ///		rendered afterwards. User processes would
