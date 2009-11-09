@@ -115,14 +115,14 @@ namespace Axiom.UnitTests.Graphics
                                                     expected[ 8 ],  expected[ 9 ],  expected[ 10 ], expected[ 11 ],
                                                     expected[ 12 ], expected[ 13 ], expected[ 14 ], expected[ 15 ] ) );
 
-            Assert.IsTrue( parameters.GetFloatConstant( 0 ).isSet );
-            Assert.IsTrue( parameters.GetFloatConstant( 1 ).isSet );
-            Assert.IsTrue( parameters.GetFloatConstant( 2 ).isSet );
-            Assert.IsTrue( parameters.GetFloatConstant( 3 ).isSet );
-            parameters.GetFloatConstant( 0 ).val.CopyTo( actual, 0 ) ;
-            parameters.GetFloatConstant( 1 ).val.CopyTo( actual, 4 );
-            parameters.GetFloatConstant( 2 ).val.CopyTo( actual, 8 );
-            parameters.GetFloatConstant( 3 ).val.CopyTo( actual, 12 );
+            GpuProgramParameters.FloatConstantEntry fcEntry;
+            for (int i = 0; i < 4; i++)
+            {
+                fcEntry = parameters.GetFloatConstant(i);
+                Assert.IsTrue(fcEntry.isSet);
+
+                fcEntry.val.CopyTo(actual, i * 4);
+            }
 
             Assert.AreEqual( expected, actual );
         }
