@@ -483,7 +483,7 @@ namespace Axiom.Core
         {
             objectList.Clear();
 
-            UpdateBounds();
+            NeedUpdate();
         }
 
         /// <summary>
