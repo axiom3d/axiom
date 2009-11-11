@@ -128,20 +128,6 @@ namespace Axiom.Core
 		#region Methods
 
 		/// <summary>
-		///		Returns a copy of this ColorEx instance.
-		/// </summary>
-		/// <returns></returns>
-		public ColorEx Clone()
-		{
-            ColorEx retVal;
-            retVal.a = this.a;
-            retVal.r = this.r;
-            retVal.g = this.g;
-            retVal.b = this.g;
-            return retVal;
-		}
-
-		/// <summary>
 		///		Converts this instance to a <see cref="System.Drawing.Color"/> structure.
 		/// </summary>
 		/// <returns></returns>
@@ -2602,7 +2588,7 @@ namespace Axiom.Core
 			return this.ToARGB();
 		}
 
-        public override bool Equals( object obj )
+	    public override bool Equals( object obj )
         {
             if ( typeof( object ) is ColorEx )
                 return this == (ColorEx)obj;
@@ -2641,5 +2627,26 @@ namespace Axiom.Core
 		}
 
 		#endregion
-	}
+
+        #region ICloneable Implementation
+
+        /// <summary>
+        /// Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// <returns>
+        /// A new object that is a copy of this instance.
+        /// </returns>
+        /// <filterpriority>2</filterpriority>
+        public ColorEx Clone()
+        {
+            ColorEx clone;
+            clone.a = this.a;
+            clone.r = this.r;
+            clone.g = this.g;
+            clone.b = this.b;
+            return clone;
+        }
+
+        #endregion IClonable Implementation
+    }
 }
