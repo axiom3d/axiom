@@ -775,29 +775,39 @@ namespace Axiom.Core
 			InvalidateFrustum();
 		}
 
-		public void SetCustomViewMatrix(bool enable, Matrix4 viewMatrix)
-		{
-			_customViewMatrix = enable;
-			if (enable)
-			{
-				Debug.Assert(viewMatrix.IsAffine);
-				_viewMatrix = viewMatrix;
-			}
-			InvalidateView();
-		}
+        public void SetCustomViewMatrix( bool enable )
+        {
+            SetCustomViewMatrix( enable, Matrix4.Identity );
+        }
 
-		public void SetCustomProjectionMatrix(bool enable, Matrix4 projMatrix)
-		{
-			_customProjectionMatrix = enable;
-			if (enable)
-			{
-				_projectionMatrix = projMatrix;
-			}
+        public void SetCustomViewMatrix( bool enable, Matrix4 viewMatrix )
+        {
+            _customViewMatrix = enable;
+            if ( enable )
+            {
+                Debug.Assert( viewMatrix.IsAffine );
+                _viewMatrix = viewMatrix;
+            }
+            InvalidateView();
+        }
 
-			InvalidateFrustum();
-		}
+        public void SetCustomProjectionMatrix( bool enable )
+        {
+            SetCustomProjectionMatrix( enable, Matrix4.Identity );
+        }
 
-		/// <summary>
+        public void SetCustomProjectionMatrix( bool enable, Matrix4 projMatrix )
+        {
+            _customProjectionMatrix = enable;
+            if ( enable )
+            {
+                _projectionMatrix = projMatrix;
+            }
+
+            InvalidateFrustum();
+        }
+
+	    /// <summary>
 		///     Disables reflection modification previously turned on with <see cref="EnableReflection"/>.
 		/// </summary>
 		public virtual void DisableReflection()
