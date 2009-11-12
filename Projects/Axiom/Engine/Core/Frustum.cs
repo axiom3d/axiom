@@ -1196,7 +1196,7 @@ namespace Axiom.Core
 				// Calculate general projection parameters
 
 				float thetaY = _fieldOfView * 0.5f;
-				float tanThetaY = Utility.Tan(thetaY);
+                float tanThetaY = Utility.Tan( (Radian)thetaY );
 				float tanThetaX = tanThetaY * _aspectRatio;
 
 				// Unknown how to apply frustum offset to orthographic camera, just ignore here

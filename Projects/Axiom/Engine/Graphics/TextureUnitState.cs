@@ -1805,8 +1805,8 @@ namespace Axiom.Graphics
                 Matrix4 rotation = Matrix4.Identity;
 
                 float theta = Utility.DegreesToRadians( rotate );
-                float cosTheta = Utility.Cos( theta );
-                float sinTheta = Utility.Sin( theta );
+                float cosTheta = Utility.Cos( (Radian)theta );
+                float sinTheta = Utility.Sin( (Radian)theta );
 
                 // set the rotation portion of the matrix
                 rotation.m00 = cosTheta;

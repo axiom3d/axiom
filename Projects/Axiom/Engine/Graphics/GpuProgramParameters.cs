@@ -856,7 +856,7 @@ namespace Axiom.Graphics
                         SetConstant( entry.PhysicalIndex, source.Time % entry.FData, 0f, 0f, 0f );
 						break;
 					case AutoConstantType.SinTime_0_X:
-                        SetConstant( entry.PhysicalIndex, Utility.Sin( source.Time % entry.FData ), 0f, 0f, 0f );
+                        SetConstant( entry.PhysicalIndex, Utility.Sin( (Radian)( source.Time % entry.FData ) ), 0f, 0f, 0f );
 						break;
 					case AutoConstantType.Time_0_1:
                         SetConstant( entry.PhysicalIndex, (float)( source.Time % 1 ), 0f, 0f, 0f );

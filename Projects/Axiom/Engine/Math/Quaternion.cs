@@ -477,10 +477,10 @@ namespace Axiom.Math
 				return quatA;
 			}
 
-			float sin = Utility.Sin( angle );
+			float sin = Utility.Sin( (Radian)angle );
 			float inverseSin = 1.0f / sin;
-			float coeff0 = Utility.Sin( ( 1.0f - time ) * angle ) * inverseSin;
-			float coeff1 = Utility.Sin( time * angle ) * inverseSin;
+		    float coeff0 = Utility.Sin( (Radian)( ( 1.0f - time ) * angle ) ) * inverseSin;
+		    float coeff1 = Utility.Sin( (Radian)( time * angle ) ) * inverseSin;
 
 			Quaternion result;
 
@@ -543,9 +543,9 @@ namespace Axiom.Math
 			Quaternion quat = new Quaternion();
 
 			float halfAngle = 0.5f * angle;
-			float sin = Utility.Sin( halfAngle );
+            float sin = Utility.Sin( (Radian)halfAngle );
 
-			quat.w = Utility.Cos( halfAngle );
+            quat.w = Utility.Cos( (Radian)halfAngle );
 			quat.x = sin * axis.x;
 			quat.y = sin * axis.y;
 			quat.z = sin * axis.z;
@@ -931,7 +931,7 @@ namespace Axiom.Math
 			if ( Utility.Abs( w ) < 1.0f )
 			{
 				float angle = (Real)Utility.ACos( w );
-				float sin = Utility.Sin( angle );
+                float sin = Utility.Sin( (Radian)angle );
 
 				if ( Utility.Abs( sin ) >= EPSILON )
 				{
@@ -962,12 +962,12 @@ namespace Axiom.Math
 			// use exp(q) = cos(A)+A*(x*i+y*j+z*k) since A/sin(A) has limit 1.
 
 			float angle = Utility.Sqrt( x * x + y * y + z * z );
-			float sin = Utility.Sin( angle );
+            float sin = Utility.Sin( (Radian)angle );
 
 			// start off with a zero quat
 			Quaternion result = Quaternion.Zero;
 
-			result.w = Utility.Cos( angle );
+            result.w = Utility.Cos( (Radian)angle );
 
 			if ( Utility.Abs( sin ) >= EPSILON )
 			{

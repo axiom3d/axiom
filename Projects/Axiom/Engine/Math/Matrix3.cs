@@ -222,16 +222,16 @@ namespace Axiom.Math
 		/// <param name="roll"></param>
 		public void FromEulerAnglesXYZ( float yaw, float pitch, float roll )
 		{
-			float cos = Utility.Cos( yaw );
-			float sin = Utility.Sin( yaw );
+			float cos = Utility.Cos( (Radian)yaw );
+            float sin = Utility.Sin( (Radian)yaw );
 			Matrix3 xMat = new Matrix3( 1, 0, 0, 0, cos, -sin, 0, sin, cos );
 
-			cos = Utility.Cos( pitch );
-			sin = Utility.Sin( pitch );
+            cos = Utility.Cos( (Radian)pitch );
+            sin = Utility.Sin( (Radian)pitch );
 			Matrix3 yMat = new Matrix3( cos, 0, sin, 0, 1, 0, -sin, 0, cos );
 
-			cos = Utility.Cos( roll );
-			sin = Utility.Sin( roll );
+            cos = Utility.Cos( (Radian)roll );
+            sin = Utility.Sin( (Radian)roll );
 			Matrix3 zMat = new Matrix3( cos, -sin, 0, sin, cos, 0, 0, 0, 1 );
 
 			this = xMat * ( yMat * zMat );
