@@ -583,7 +583,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public override Matrix4 MakeOrthoMatrix( float fov, float aspectRatio, float near, float far, bool forGpuPrograms )
 		{
 			float thetaY = Utility.DegreesToRadians( fov / 2.0f );
-			float tanThetaY = Utility.Tan( thetaY );
+            float tanThetaY = Utility.Tan( (Radian)thetaY );
 			float tanThetaX = tanThetaY * aspectRatio;
 
 			float halfW = tanThetaX * near;
@@ -624,7 +624,7 @@ namespace Axiom.RenderSystems.OpenGL
             Matrix4 matrix = Matrix4.Zero;
 
 			float thetaY = Utility.DegreesToRadians( fov * 0.5f );
-			float tanThetaY = Utility.Tan( thetaY );
+            float tanThetaY = Utility.Tan( (Radian)thetaY );
 
 			float w = ( 1.0f / tanThetaY ) / aspectRatio;
 			float h = 1.0f / tanThetaY;

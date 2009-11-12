@@ -135,9 +135,9 @@ namespace Axiom.ParticleFX
             // ellipsoid and the outer sphere (radius 1.0)
             // with alpha and beta we select on point on this random ellipsoid
             // and calculate the 3D coordinates of this point
-            x = a * Utility.Cos( alpha ) * Utility.Sin( beta );
-            y = b * Utility.Sin( alpha ) * Utility.Sin( beta );
-            z = c * Utility.Cos( beta );
+            x = a * Utility.Cos( (Radian)alpha ) * Utility.Sin( (Radian)beta );
+            y = b * Utility.Sin( (Radian)alpha ) * Utility.Sin( (Radian)beta );
+            z = c * Utility.Cos( (Radian)beta );
 
             // scale the found point to the ellipsoid's size and move it
             // relatively to the center of the emitter point
