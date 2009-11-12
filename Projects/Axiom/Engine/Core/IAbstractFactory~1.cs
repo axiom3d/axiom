@@ -81,7 +81,7 @@ namespace Axiom.Core
         /// An object created by the factory. The type of the object depends on
         /// the factory.
         /// </returns>
-        T CreateInstance( string name, NameValuePairList parms );  
+        //T CreateInstance( string name, NameValuePairList parms );  
 
         /// <summary>
         /// Destroys an object which was created by this factory.
