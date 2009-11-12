@@ -73,11 +73,10 @@ namespace Axiom.Math
 
         public static implicit operator Degree( Real value )    { return new Degree( value ); }
         public static implicit operator Degree( Radian value )  { return new Degree( value ); }
-        public static implicit operator Degree( Numeric value ) { return new Degree( (Real)value ); }
         public static explicit operator Degree( int value )     { return new Degree( (Real)value ); }
 
         public static implicit operator Real( Degree value )    { return value._value; }
-        public static explicit operator Numeric( Degree value ) { return (Numeric)value._value; }
+        public static implicit operator Numeric( Degree value ) { return (Numeric)value._value; }
 
 		public static Degree operator + ( Degree left, Real right )    { return left._value + right; }
 		public static Degree operator + ( Degree left, Degree right )  { return left._value + right._value; }
